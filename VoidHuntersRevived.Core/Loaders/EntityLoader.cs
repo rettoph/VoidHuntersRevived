@@ -15,19 +15,22 @@ namespace VoidHuntersRevived.Core.Loaders
         private readonly ILogger _logger;
         private readonly IServiceProvider _provider;
         private List<RegisterdEntityInfo> _registeredEntityInfoList;
-        private Dictionary<Type, EntityInfo> _entityInfoTable;
+        private Dictionary<String, EntityInfo> _entityInfoTable;
+        public IReadOnlyCollection<EntityInfo> EntityInfoCollection;
 
         #region Structs
         private struct RegisterdEntityInfo
         {
+            public readonly String Handle;
             public readonly Type Type;
             public readonly String NameHandle;
             public readonly String DescriptionHandle;
             public readonly Int32 Priority;
             public readonly Object Data;
 
-            public RegisterdEntityInfo(Type type, String nameHandle, String descriptionHandle, Int32 priority = 0, Object data = null)
+            public RegisterdEntityInfo(String handle, Type type, String nameHandle, String descriptionHandle, Int32 priority = 0, Object data = null)
             {
+                this.Handle = handle;
                 this.Type = type;
                 this.NameHandle = nameHandle;
                 this.DescriptionHandle = descriptionHandle;
@@ -45,16 +48,18 @@ namespace VoidHuntersRevived.Core.Loaders
         }
 
         public void Register<TEntity>(
+            String handle,
             String nameHandle,
             String descriptionHandle,
-            Int32 priority = 0,
-            Object data = null)
+            Object data = null,
+            Int32 priority = 0)
             where TEntity : class, IEntity
         {
-            _logger.LogDebug($"Registering new IEntity<{typeof(TEntity).Name}> => nameHandle: '{nameHandle}', descriptionHandle: '{descriptionHandle}'");
+            _logger.LogDebug($"Registering new IEntity<{typeof(TEntity).Name}>('{handle}') => nameHandle: '{nameHandle}', descriptionHandle: '{descriptionHandle}'");
 
             _registeredEntityInfoList.Add(
                 new RegisterdEntityInfo(
+                    handle: handle,
                     type: typeof(TEntity),
                     nameHandle: nameHandle,
                     descriptionHandle: descriptionHandle,
@@ -68,20 +73,30 @@ namespace VoidHuntersRevived.Core.Loaders
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="scene"></param>
         /// <returns></returns>
-        public TEntity Create<TEntity>(IScene scene)
+        public TEntity Create<TEntity>(String handle, IScene scene)
             where TEntity : class, IEntity
         {
             var type = typeof(TEntity);
 
-            _logger.LogDebug($"Attempting to create new IEntity<{type.Name}>");
-            if(!_entityInfoTable.ContainsKey(type))
+            _logger.LogDebug($"Attempting to create new IEntity<{type.Name}>('{handle}')");
+            if(!_entityInfoTable.ContainsKey(handle) || !_entityInfoTable[handle].Type.IsAssignableFrom(type))
             {
-                _logger.LogError($"Unknown entity type. Please ensure IEntity<{type.Name}> has been registered.");
+                _logger.LogError($"Unknown entity handle or type. Please ensure IEntity<{type.Name}>('{handle}') has been registered.");
                 return default(TEntity);
             }
 
-            // Create & return a new instance of the entity
-            TEntity entity = (TEntity)ActivatorUtilities.CreateInstance(_provider, type, _entityInfoTable[type]);
+            return this.Create(_entityInfoTable[handle], scene) as TEntity;
+        }
+        /// <summary>
+        /// Create a new entity with a given entity info object
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="scene"></param>
+        /// <returns></returns>
+        public IEntity Create(EntityInfo info, IScene scene)
+        {
+            // Create & return a new instance of an entity
+            IEntity entity = (IEntity)ActivatorUtilities.CreateInstance(_provider, info.Type, info);
 
             // begin entity initialization
             entity.TryBoot();
@@ -104,7 +119,7 @@ namespace VoidHuntersRevived.Core.Loaders
             var stringLoader = _provider.GetLoader<StringLoader>();
 
             _entityInfoTable = _registeredEntityInfoList
-                .GroupBy(rei => rei.Type)
+                .GroupBy(rei => rei.Handle)
                 .ToDictionary(
                     keySelector: g => g.Key,
                     elementSelector: g =>
@@ -115,11 +130,17 @@ namespace VoidHuntersRevived.Core.Loaders
                             .First();
 
                         return new EntityInfo(
+                            rei.Handle,
                             rei.Type,
                             stringLoader.Get(rei.NameHandle),
                             stringLoader.Get(rei.DescriptionHandle),
                             data: rei.Data);
                     });
+
+            // Create a new colllection containing all the registered and initialized entity info objects
+            this.EntityInfoCollection = _entityInfoTable
+                .Select(g => g.Value)
+                .ToArray();
         }
     }
 }

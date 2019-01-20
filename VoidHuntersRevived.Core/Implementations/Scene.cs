@@ -11,20 +11,25 @@ namespace VoidHuntersRevived.Core.Implementations
     public class Scene : GameObject, IScene
     {
         public SceneEntityCollection Entities { get; protected set; }
+        public LayerCollection Layers { get; protected set; }
+        public IServiceProvider Provider { get; protected set; }
 
-        public Scene(IGame game) : base(game)
+        public Scene(IServiceProvider provider, IGame game) : base(game)
         {
             this.Entities = new SceneEntityCollection(this.Game.Logger, this);
+            this.Layers = new LayerCollection(this.Game.Logger, this);
+            this.Provider = provider;
         }
 
         public override void Draw(GameTime gameTime)
         {
-            // throw new NotImplementedException();
+            this.Layers.Draw(gameTime);
         }
 
         public override void Update(GameTime gameTime)
         {
             this.Entities.Update(gameTime);
+            this.Layers.Update(gameTime);
         }
 
         protected override void Boot()

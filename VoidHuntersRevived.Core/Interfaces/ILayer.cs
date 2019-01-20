@@ -5,10 +5,8 @@ using VoidHuntersRevived.Core.Collections;
 
 namespace VoidHuntersRevived.Core.Interfaces
 {
-    public interface IScene : IGameObject
+    public interface ILayer : ISceneObject
     {
-        SceneEntityCollection Entities { get; }
-        LayerCollection Layers { get; }
-        IServiceProvider Provider { get; }
+        LayerEntityCollection Entities { get; }
     }
 }

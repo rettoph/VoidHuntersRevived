@@ -5,7 +5,7 @@ using VoidHuntersRevived.Core.Structs;
 
 namespace VoidHuntersRevived.Core.Interfaces
 {
-    public interface IEntity : ISceneObject
+    public interface IEntity : ILayerObject
     {
         EntityInfo Info { get; }
     }

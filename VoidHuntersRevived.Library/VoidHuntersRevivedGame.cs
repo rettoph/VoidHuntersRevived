@@ -8,11 +8,12 @@ using VoidHuntersRevived.Core.Factories;
 using VoidHuntersRevived.Core.Implementations;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Library.Scenes;
-using Game = VoidHuntersRevived.Core.Implementations.Game;
 using System.Linq;
 using Microsoft.Xna.Framework.Content;
 using VoidHuntersRevived.Core.Loaders;
 using VoidHuntersRevived.Library.Entities;
+using Game = VoidHuntersRevived.Core.Implementations.Game;
+using VoidHuntersRevived.Library.MetaData;
 
 namespace VoidHuntersRevived.Library
 {
@@ -36,7 +37,8 @@ namespace VoidHuntersRevived.Library
             stringLoader.Register("entity_description:brick", "A simple brick");
 
             var entityLoader = this.Provider.GetLoader<EntityLoader>();
-            entityLoader.Register<Brick>("entity_name:brick", "entity_description:brick");
+            entityLoader.Register<Brick>("entity:red_brick", "entity_name:brick", "entity_description:brick", new BrickData(Color.Red));
+            entityLoader.Register<Brick>("entity:blue_brick", "entity_name:brick", "entity_description:brick", new BrickData(Color.Blue));
         }
 
         protected override void Initialize()

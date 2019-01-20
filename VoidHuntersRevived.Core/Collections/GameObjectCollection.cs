@@ -23,19 +23,24 @@ namespace VoidHuntersRevived.Core.Collections
             _dirtyUpdatables = true;
         }
 
-        public void Update(GameTime gameTime)
+        public virtual void Clean()
         {
             if (_dirtyDrawables)
                 this.UpdateDrawables();
 
             if (_dirtyUpdatables)
                 this.UpdateUpdatables();
+        }
+
+        public virtual void Update(GameTime gameTime)
+        {
+            this.Clean();
 
             foreach (TGameObject item in _updatables)
                 item.Update(gameTime);
         }
 
-        public void Draw(GameTime gameTime)
+        public virtual void Draw(GameTime gameTime)
         {
             foreach (TGameObject item in _drawables)
                 item.Draw(gameTime);

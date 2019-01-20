@@ -51,10 +51,16 @@ namespace VoidHuntersRevived.Core.Collections
         #region Methods
         protected virtual Boolean add(TObject item)
         {
+            if (item == null)
+                return false;
+
             _list.Add(item);
             return true;
         }
         protected virtual Boolean remove(TObject item) {
+            if (item == null)
+                return false;
+
             return _list.Remove(item);
         }
 

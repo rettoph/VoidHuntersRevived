@@ -30,10 +30,15 @@ namespace VoidHuntersRevived.Core.Collections
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
-        public TEntity Create<TEntity>()
+        public TEntity Create<TEntity>(String handle, ILayer layer = null)
             where TEntity : class, IEntity
         {
-            return _entityLoader.Create<TEntity>(_scene);
+            var entity = _entityLoader.Create<TEntity>(handle, _scene);
+
+            if(this.add(entity))
+                entity.Layer = layer;
+
+            return entity;
         }
 
         protected override bool add(IEntity item)
@@ -41,6 +46,9 @@ namespace VoidHuntersRevived.Core.Collections
             if (base.add(item))
             {
                 item.Scene = _scene;
+
+                item.OnAddedToLayer += this.HandleEntityAddedToLayer;
+
                 return true;
             }
 
@@ -52,10 +60,23 @@ namespace VoidHuntersRevived.Core.Collections
             if (base.remove(item))
             {
                 item.Scene = null;
+                item.Layer = null;
+
+                item.OnAddedToLayer -= this.HandleEntityAddedToLayer;
+
                 return true;
             }
 
             return false;
         }
+
+        #region Event Handlers 
+        private void HandleEntityAddedToLayer(object sender, ILayerObject e)
+        {
+            // Add the entity to its new layer
+            var entity = sender as IEntity;
+            entity.Layer?.Entities.Add(entity);
+        }
+        #endregion
     }
 }

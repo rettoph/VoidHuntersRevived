@@ -6,7 +6,7 @@ using VoidHuntersRevived.Core.Structs;
 
 namespace VoidHuntersRevived.Core.Implementations
 {
-    public abstract class Entity : SceneObject, IEntity
+    public abstract class Entity : LayerObject, IEntity
     {
         public EntityInfo Info { get; protected set; }
 

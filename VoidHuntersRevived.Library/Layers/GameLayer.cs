@@ -3,34 +3,30 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using VoidHuntersRevived.Core.Extensions;
 using VoidHuntersRevived.Core.Implementations;
 using VoidHuntersRevived.Core.Interfaces;
-using VoidHuntersRevived.Core.Providers;
-using VoidHuntersRevived.Core.Structs;
-using VoidHuntersRevived.Library.MetaData;
 
-namespace VoidHuntersRevived.Library.Entities
+namespace VoidHuntersRevived.Library.Layers
 {
-    public class Brick : Entity
+    public class GameLayer : Layer
     {
-        private Texture2D _texture;
         private SpriteBatch _spriteBatch;
 
-        public Brick(IServiceProvider provider, SpriteBatch spriteBatch, EntityInfo info, IGame game) : base(info, game)
+        public GameLayer(SpriteBatch spriteBatch, IGame game) : base(game)
         {
-            _texture = provider.GetLoader<ContentLoader>().Get<Texture2D>("basic_brick");
+            this.Visible = true;
+            this.Enabled = true;
+
             _spriteBatch = spriteBatch;
         }
 
         public override void Draw(GameTime gameTime)
         {
-            _spriteBatch.Draw(_texture, Vector2.Zero, (this.Info.Data as BrickData).Color);
-        }
+            _spriteBatch.Begin();
 
-        public override void Update(GameTime gameTime)
-        {
-            // throw new NotImplementedException();
+            this.Entities.Draw(gameTime);
+
+            _spriteBatch.End();
         }
 
         protected override void Boot()
