@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using VoidHuntersRevived.Core.Interfaces;
 
@@ -37,6 +38,19 @@ namespace VoidHuntersRevived.Core.Collections
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// will automatically create scene service and
+        /// add it to the current collection
+        /// </summary>
+        /// <typeparam name="TSceneService"></typeparam>
+        public TSceneService Create<TSceneService>()
+            where TSceneService : ISceneService
+        {
+            // Use the factory to create a new scene and add it to the collection
+            return (TSceneService)this.Add(
+                (TSceneService)ActivatorUtilities.CreateInstance(_scene.Provider, typeof(TSceneService)));
         }
     }
 }

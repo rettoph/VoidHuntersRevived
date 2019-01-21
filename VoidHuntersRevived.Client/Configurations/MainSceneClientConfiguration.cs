@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Client.Configurations
     {
         public void Configure(IScene scene)
         {
-            scene.Services.Add(new FarseerDebugOverlayService(scene.Game));
+            scene.Services.Create<FarseerDebugOverlayService>();
         }
     }
 }

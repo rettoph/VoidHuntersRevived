@@ -46,19 +46,19 @@ namespace VoidHuntersRevived.Core.Implementations
         protected override void PreInitialize()
         {
             foreach (ISceneService service in this.Services)
-                service.TryBoot();
+                service.TryPreInitialize();
         }
 
         protected override void Initialize()
         {
             foreach (ISceneService service in this.Services)
-                service.TryBoot();
+                service.TryInitialize();
         }
 
         protected override void PostInitialize()
         {
             foreach (ISceneService service in this.Services)
-                service.TryBoot();
+                service.TryPostInitialize();
         }
     }
 }

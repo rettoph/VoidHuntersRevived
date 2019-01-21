@@ -27,14 +27,20 @@ namespace VoidHuntersRevived.Library.Scenes
             // Create a new farseer world
             this.World = new World(Vector2.Zero);
 
-            var floor = BodyFactory.CreateBody(this.World, Vector2.Zero, 0, BodyType.Dynamic);
+            var floor = BodyFactory.CreateRectangle(
+                this.World,
+                1,
+                1,
+                10f,
+                Vector2.Zero,
+                0);
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
+            this.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
         }
     }
 }

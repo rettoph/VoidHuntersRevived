@@ -65,6 +65,10 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Submodules\FarseerPhysics\DebugViews\DebugView MonoGame\DebugView MonoGame.csproj">
+      <Project>{566F1803-90B5-4947-8730-57F092FBB002}</Project>
+      <Name>DebugView MonoGame</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Submodules\FarseerPhysics\SourceFiles\Farseer Physics MonoGame.csproj">
       <Project>{0AAD36E3-51A5-4A07-AB60-5C8A66BD38B7}</Project>
       <Name>Farseer Physics MonoGame</Name>
