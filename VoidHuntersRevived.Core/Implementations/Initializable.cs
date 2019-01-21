@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Core.Implementations
             else
             {
                 InitializationState = InitializationState.Preinitializing;
-                _logger.LogDebug("Calling Initializable.PostInitialize()");
+                _logger.LogDebug("Calling Initializable.PreInitialize()");
                 this.PreInitialize();
                 this.OnPreInitialize?.Invoke(this, this);
             }
@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Core.Implementations
             else
             {
                 InitializationState = InitializationState.Initializing;
-                _logger.LogDebug("Calling Initializable.PostInitialize()");
+                _logger.LogDebug("Calling Initializable.Initialize()");
                 this.Initialize();
                 this.OnInitialize?.Invoke(this, this);
             }

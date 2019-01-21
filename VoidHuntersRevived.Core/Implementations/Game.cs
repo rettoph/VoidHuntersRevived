@@ -19,6 +19,7 @@ namespace VoidHuntersRevived.Core.Implementations
     {
         private readonly ContentManager _content;
         private readonly IServiceCollection _services;
+        private readonly GameWindow _window;
         public IServiceProvider Provider { get; protected set; }
         public SceneCollection Scenes { get; protected set; }
 
@@ -27,13 +28,14 @@ namespace VoidHuntersRevived.Core.Implementations
         public ILogger Logger { get; private set; }
         public GraphicsDeviceManager Graphics { get; set; }
 
-        public Game(ILogger logger, GraphicsDeviceManager graphics = null, ContentManager content = null, IServiceCollection services = null)
+        public Game(ILogger logger, GraphicsDeviceManager graphics = null, ContentManager content = null, GameWindow window = null, IServiceCollection services = null)
             : base(logger)
         {
             this.Logger = logger;
             this.Graphics = graphics;
             _services = services ?? new ServiceCollection();
             _content = content;
+            _window = window;
 
             // Begin game initialization
             this.TryBoot();
@@ -97,6 +99,10 @@ namespace VoidHuntersRevived.Core.Implementations
             if(_content != null)
             {
                 services.AddSingleton<ContentManager>(_content);
+            }
+            if(_window != null)
+            {
+                services.AddSingleton<GameWindow>(_window);
             }
 
             _serviceLoaderCollection.TryConfigureServices(services);

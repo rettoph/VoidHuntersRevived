@@ -9,6 +9,7 @@ namespace VoidHuntersRevived.Core.Interfaces
     {
         SceneEntityCollection Entities { get; }
         LayerCollection Layers { get; }
+        SceneServiceCollection Services { get; }
         IServiceProvider Provider { get; }
     }
 }

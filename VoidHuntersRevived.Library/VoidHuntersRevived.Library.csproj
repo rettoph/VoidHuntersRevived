@@ -9,7 +9,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Submodules\FarseerPhysics\SourceFiles\Farseer Physics MonoGame.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Core\VoidHuntersRevived.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Entities\" />
   </ItemGroup>
 
 </Project>
