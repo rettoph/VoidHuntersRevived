@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FarseerPhysics;
 using FarseerPhysics.DebugView;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -60,6 +61,9 @@ namespace VoidHuntersRevived.Client.Services
             _scene = this.Scene as MainSceneClient;
             _debug = new DebugViewXNA(_scene.World);
             _debug.LoadContent(_graphics, _content);
+
+            _debug.AppendFlags(DebugViewFlags.ContactPoints);
+            _debug.AppendFlags(DebugViewFlags.ContactNormals);
         }
 
         protected override void PreInitialize()

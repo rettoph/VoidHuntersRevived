@@ -8,7 +8,6 @@ using System.Text;
 using VoidHuntersRevived.Core.Implementations;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
-using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Client.Entities
 {
@@ -60,9 +59,11 @@ namespace VoidHuntersRevived.Client.Entities
             this.Zoom = 1f;
             this.position = Vector2.Zero;
             // Create a new basic effect to handle the farseer coordinate transformation
-            this.BasicEffect = new BasicEffect(this.Game.Graphics.GraphicsDevice);
-            this.BasicEffect.VertexColorEnabled = true;
-            this.BasicEffect.TextureEnabled = true;
+            this.BasicEffect = new BasicEffect(this.Game.Graphics.GraphicsDevice)
+            {
+                VertexColorEnabled = true,
+                TextureEnabled = true
+            };
 
             this.UpdateBounds();
             _window.ClientSizeChanged += this.HandleClientSizeChanged;

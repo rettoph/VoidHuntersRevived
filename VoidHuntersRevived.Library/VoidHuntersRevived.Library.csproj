@@ -10,11 +10,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Submodules\FarseerPhysics\SourceFiles\Farseer Physics MonoGame.csproj" />
+    <ProjectReference Include="..\Submodules\MonoGame\MonoGame.Framework\MonoGame.Framework.WindowsGL.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Core\VoidHuntersRevived.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\" />
+    <Folder Include="Utilities\" />
   </ItemGroup>
 
 </Project>

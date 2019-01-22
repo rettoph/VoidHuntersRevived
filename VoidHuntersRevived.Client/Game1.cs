@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace VoidHuntersRevived.Client
 {
     public class Game1 : Game
     {
-        private GraphicsDeviceManager _graphics;
+        private readonly GraphicsDeviceManager _graphics;
         private VoidHuntersRevivedGame _game;
 
         public Game1()
@@ -19,11 +20,13 @@ namespace VoidHuntersRevived.Client
             this.Content.RootDirectory = "Content";
 
             this.IsMouseVisible = true;
+            this.Window.AllowUserResizing = true;
         }
 
         protected override void Initialize()
         {
             base.Initialize();
+
 
             _game = new VoidHuntersRevivedClientGame(new VoidHuntersRevivedLogger(), _graphics, this.Content, this.Window);
         }
