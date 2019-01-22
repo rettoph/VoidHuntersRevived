@@ -58,8 +58,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Hulls
             this.Body.Friction = 0f;
             this.Body.LinearDamping = 1f;
             this.Body.AngularDamping = 1f;
-            //this.Body.CollidesWith = Category.Cat1;
-            //this.Body.CollisionCategories = Category.Cat2;
+            this.Body.CollidesWith = Category.Cat1;
+            this.Body.CollisionCategories = Category.Cat2;
         }
     }
 }

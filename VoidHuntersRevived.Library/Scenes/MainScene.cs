@@ -17,6 +17,7 @@ namespace VoidHuntersRevived.Library.Scenes
     public class MainScene : Scene
     {
         public World World { get; set; }
+        public Wall Wall { get; set; }
 
         public MainScene(IServiceProvider provider, IGame game) : base(provider, game)
         {
@@ -30,8 +31,8 @@ namespace VoidHuntersRevived.Library.Scenes
             this.World = new World(Vector2.Zero);
 
             // Create and setup a new wall
-            var wall = this.Entities.Create<Wall>("entity:wall");
-            wall.Configure(150, 150);
+            this.Wall = this.Entities.Create<Wall>("entity:wall");
+            this.Wall.Configure(50, 50);
         }
 
         public override void Update(GameTime gameTime)

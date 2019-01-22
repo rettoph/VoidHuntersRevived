@@ -13,6 +13,9 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using FarseerPhysics.Common;
 using VoidHuntersRevived.Library.Entities.MetaData;
+using VoidHuntersRevived.Library.Entities.Ships;
+using VoidHuntersRevived.Library.Entities.TractorBeams;
+using FarseerPhysics;
 
 namespace VoidHuntersRevived.Library
 {

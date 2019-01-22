@@ -6,8 +6,9 @@ using VoidHuntersRevived.Core.Implementations;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Entities.TractorBeams;
 
-namespace VoidHuntersRevived.Library.Entities
+namespace VoidHuntersRevived.Library.Entities.Ships
 {
     /// <summary>
     /// A Ship acts as a main container for a collection of parts
@@ -18,9 +19,9 @@ namespace VoidHuntersRevived.Library.Entities
     /// It will manage global ship-wide functions like tractor beams,
     /// overal health & status, shooting, spells, and movement
     /// </summary>
-    class Ship : Entity
+    public class Ship : Entity
     {
-        public TractorBeam TractorBeam { get; private set; }
+        public TractorBeam TractorBeam { get; protected set; }
         public ShipPart Bridge { get; set; }
 
         public Ship(EntityInfo info, IGame game) : base(info, game)
@@ -32,7 +33,7 @@ namespace VoidHuntersRevived.Library.Entities
             base.HandleAddedToScene(sender, e);
 
             // Create a tractor beam
-            this.TractorBeam = this.Scene.Entities.Create<TractorBeam>("entity:tractor_beam");
+            // this.TractorBeam = this.Scene.Entities.Create<TractorBeam>("entity:tractor_beam");
         }
 
         protected override void HandleRemovedFromScene(object sender, ISceneObject e)
@@ -45,12 +46,12 @@ namespace VoidHuntersRevived.Library.Entities
 
         public override void Draw(GameTime gameTime)
         {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
 
         public override void Update(GameTime gameTime)
         {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
     }
 }

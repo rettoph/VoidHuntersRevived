@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Client.Entities;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
+using VoidHuntersRevived.Library.Entities.Ships;
 using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Client.Scenes
@@ -32,21 +33,27 @@ namespace VoidHuntersRevived.Client.Scenes
             // Create a new camera
 
             this.Camera = this.Entities.Create<Camera>("entity:camera");
+            var ship = this.Entities.Create<Ship>("entity:ship:current_client");
+
 
             var center = this.Entities.Create<Hull>("entity:hull_square");
 
             var random = new Random(1);
 
-            for (var i = 0; i < 1000; i++) {
+            for (var i = 0; i < 50; i++) {
                 var entity = this.Entities.Create<Hull>("entity:hull_square");
-                entity.Body.Position = new Vector2((float)(random.NextDouble() * 149.9) - 74.95f, (float)(random.NextDouble() * 149.9) - 74.95f);
+                entity.Body.Position = new Vector2(
+                    (float)(random.NextDouble() * this.Wall.Boundaries.Width) + this.Wall.Boundaries.Left,
+                    (float)(random.NextDouble() * this.Wall.Boundaries.Height) + this.Wall.Boundaries.Top);
                 entity.Body.Rotation = (float)random.NextDouble() * (float)Math.PI;
             }
 
-            for (var i = 0; i < 1000; i++)
+            for (var i = 0; i < 50; i++)
             {
                 var entity = this.Entities.Create<Hull>("entity:hull_beam");
-                entity.Body.Position = new Vector2((float)(random.NextDouble() * 149.9) - 74.95f, (float)(random.NextDouble() * 149.9) - 74.95f);
+                entity.Body.Position = new Vector2(
+                    (float)(random.NextDouble() * this.Wall.Boundaries.Width) + this.Wall.Boundaries.Left,
+                    (float)(random.NextDouble() * this.Wall.Boundaries.Height) + this.Wall.Boundaries.Top);
                 entity.Body.Rotation = (float)random.NextDouble() * (float)Math.PI;
             }
 

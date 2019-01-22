@@ -16,6 +16,8 @@ using VoidHuntersRevived.Client.Entities;
 using VoidHuntersRevived.Client.Scenes;
 using VoidHuntersRevived.Core.Factories;
 using VoidHuntersRevived.Client.Configurations;
+using VoidHuntersRevived.Client.Entities.TractorBeams;
+using VoidHuntersRevived.Client.Entities.Ships;
 
 namespace VoidHuntersRevived.Client
 {
@@ -38,6 +40,8 @@ namespace VoidHuntersRevived.Client
 
             var entityLoader = this.Provider.GetLoader<EntityLoader>();
             entityLoader.Register<Camera>("entity:camera", "entity_name:camera", "entity_description:camera");
+            entityLoader.Register<CurrentClientShip>("entity:ship:current_client", "entity_name:ship", "entity_description:ship");
+            entityLoader.Register<CurrentClientTractorBeam>("entity:tractor_beam:current_client", "entity_name:tractor_beam", "entity_description:tractor_beam");
         }
 
         protected override void Initialize()

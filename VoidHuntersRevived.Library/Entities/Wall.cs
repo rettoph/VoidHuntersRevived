@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Dynamics;
@@ -14,6 +15,8 @@ namespace VoidHuntersRevived.Library.Entities
 {
     public class Wall : FarseerEntity
     {
+        public RectangleF Boundaries { get; private set; }
+
         public Wall(EntityInfo info, IGame game) : base(info, game)
         {
         }
@@ -32,6 +35,8 @@ namespace VoidHuntersRevived.Library.Entities
             this.Body.CreateFixture(new EdgeShape(new Vector2(halfWidth, -halfHeight), new Vector2(halfWidth, halfHeight)));
             this.Body.CreateFixture(new EdgeShape(new Vector2(-halfWidth, halfHeight), new Vector2(halfWidth, halfHeight)));
             this.Body.CreateFixture(new EdgeShape(new Vector2(-halfWidth, halfHeight), new Vector2(-halfWidth, -halfHeight)));
+
+            this.Boundaries = new RectangleF(-halfWidth, -halfHeight, width, height);
         }
 
         public override void Draw(GameTime gameTime)

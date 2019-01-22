@@ -79,7 +79,7 @@ namespace VoidHuntersRevived.Core.Loaders
             var type = typeof(TEntity);
 
             _logger.LogDebug($"Attempting to create new IEntity<{type.Name}>('{handle}')");
-            if(!_entityInfoTable.ContainsKey(handle) || !_entityInfoTable[handle].Type.IsAssignableFrom(type))
+            if(!_entityInfoTable.ContainsKey(handle) || !type.IsAssignableFrom(_entityInfoTable[handle].Type))
             {
                 _logger.LogError($"Unknown entity handle or type. Please ensure IEntity<{type.Name}>('{handle}') has been registered.");
                 return default(TEntity);

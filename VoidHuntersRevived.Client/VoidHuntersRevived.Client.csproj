@@ -54,6 +54,8 @@
   <ItemGroup>
     <Compile Include="Configurations\MainSceneClientConfiguration.cs" />
     <Compile Include="Entities\Camera.cs" />
+    <Compile Include="Entities\Ships\CurrentClientShip.cs" />
+    <Compile Include="Entities\TractorBeams\CurrentClientTractorBeam.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
