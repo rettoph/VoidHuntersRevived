@@ -14,6 +14,7 @@ namespace VoidHuntersRevived.Client.Configurations
         public void Configure(IScene scene)
         {
             scene.Services.Create<FarseerDebugOverlayService>();
+            scene.Services.Create<CameraControllerService>();
         }
     }
 }

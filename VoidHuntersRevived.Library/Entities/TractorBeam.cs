@@ -1,32 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
 
-namespace VoidHuntersRevived.Core.Implementations
+namespace VoidHuntersRevived.Library.Entities
 {
-    public abstract class Entity : LayerObject, IEntity
+    /// <summary>
+    /// A tractor beam is a simple item that acts as a players
+    /// mouse, allowing them to pick up objects
+    /// </summary>
+    public class TractorBeam : FarseerEntity
     {
-        public EntityInfo Info { get; protected set; }
-
-        public Entity(EntityInfo info, IGame game) : base(game)
+        public TractorBeam(EntityInfo info, IGame game) : base(info, game)
         {
-            this.Info = info;
-
-            this.Visible = true;
-            this.Enabled = true;
-
-            this.OnAddedToScene += this.HandleAddedToScene;
-            this.OnRemovedFromScene += this.HandleRemovedFromScene;
         }
 
-        protected virtual void HandleRemovedFromScene(object sender, ISceneObject e)
+        public override void Draw(GameTime gameTime)
         {
             // throw new NotImplementedException();
         }
 
-        protected virtual void HandleAddedToScene(object sender, ISceneObject e)
+        public override void Update(GameTime gameTime)
         {
             // throw new NotImplementedException();
         }

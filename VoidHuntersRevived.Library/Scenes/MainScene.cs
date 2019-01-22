@@ -31,26 +31,7 @@ namespace VoidHuntersRevived.Library.Scenes
 
             // Create and setup a new wall
             var wall = this.Entities.Create<Wall>("entity:wall");
-            wall.Configure(5, 5);
-
-            for (Int32 i = 0; i < 5; i++)
-            {
-                var box = BodyFactory.CreateRectangle(
-                    this.World,
-                    0.5f,
-                    0.5f,
-                    10f,
-                    new Vector2(0f, 0.5f),
-                    0.785398f,
-                    BodyType.Dynamic);
-
-                box.LinearVelocity = new Vector2(1, -1);
-                box.Restitution = 1f;
-                box.Friction = 0f;
-
-                box.FixtureList[0].Restitution = -1f;
-                box.FixtureList[0].Friction = 0f;
-            }
+            wall.Configure(150, 150);
         }
 
         public override void Update(GameTime gameTime)

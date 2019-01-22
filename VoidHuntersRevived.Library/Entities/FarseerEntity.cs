@@ -1,4 +1,5 @@
 ﻿using FarseerPhysics.Dynamics;
+using FarseerPhysics.Factories;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,6 +17,7 @@ namespace VoidHuntersRevived.Library.Entities
     public abstract class FarseerEntity : Entity
     {
         protected World World { get; private set; }
+        public Body Body { get; protected set; }
 
         public FarseerEntity(EntityInfo info, IGame game) : base(info, game)
         {
@@ -23,14 +25,21 @@ namespace VoidHuntersRevived.Library.Entities
             this.OnRemovedFromScene += this.HandleRemovedFromScene;
         }
 
-        protected virtual void HandleAddedToScene(object sender, ISceneObject e)
+        protected override void HandleAddedToScene(object sender, ISceneObject e)
         {
             this.World = (this.Scene as MainScene).World;
+            this.Body = BodyFactory.CreateBody(world: this.World, userData: this);
         }
 
-        protected virtual void HandleRemovedFromScene(object sender, ISceneObject e)
+        protected override void HandleRemovedFromScene(object sender, ISceneObject e)
         {
-            // throw new NotImplementedException();
+            if (this.Body != null)
+            {
+                this.World.RemoveBody(this.Body);
+                this.Body.Dispose();
+
+                this.World = null;
+            }
         }
     }
 }

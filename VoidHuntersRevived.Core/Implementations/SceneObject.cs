@@ -16,14 +16,17 @@ namespace VoidHuntersRevived.Core.Implementations
             }
             set
             {
-                if (_scene != null)
-                { // Only invoke removed from scene if the object has a scene defined
-                    _scene = null;
-                    this.OnRemovedFromScene?.Invoke(this, this);
-                }
+                if (_scene != value)
+                {
+                    if (_scene != null)
+                    { // Only invoke removed from scene if the object has a scene defined
+                        _scene = null;
+                        this.OnRemovedFromScene?.Invoke(this, this);
+                    }
 
-                _scene = value;
-                this.OnAddedToScene?.Invoke(this, this);
+                    _scene = value;
+                    this.OnAddedToScene?.Invoke(this, this);
+                }
             }
         }
 

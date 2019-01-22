@@ -58,6 +58,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scenes\MainSceneClient.cs" />
+    <Compile Include="Services\CameraControllerService.cs" />
     <Compile Include="Services\FarseerDebugOverlayService.cs" />
     <Compile Include="VoidHuntersRevivedClientGame.cs" />
   </ItemGroup>

@@ -8,6 +8,7 @@ using System.Text;
 using VoidHuntersRevived.Core.Implementations;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
+using VoidHuntersRevived.Library.Entities;
 
 namespace VoidHuntersRevived.Client.Entities
 {
@@ -46,6 +47,8 @@ namespace VoidHuntersRevived.Client.Entities
 
         private GameWindow _window;
         #endregion
+
+        public FarseerEntity Follow { get; set; }
 
         public Camera(GameWindow window, EntityInfo info, IGame game) : base(info, game)
         {
@@ -157,6 +160,11 @@ namespace VoidHuntersRevived.Client.Entities
 
         public override void Update(GameTime gameTime)
         {
+            if(this.Follow != null)
+            {
+                this.position = this.Follow.Body.Position;
+            }
+
             this.UpdateMatrix();
 
             this.BasicEffect.Projection = this.Projection;
