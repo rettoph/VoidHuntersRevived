@@ -30,14 +30,22 @@ namespace VoidHuntersRevived.Client.Scenes
             base.Initialize();
 
             // Create a new camera
+
             this.Camera = this.Entities.Create<Camera>("entity:camera");
 
             var center = this.Entities.Create<Hull>("entity:hull_square");
 
             var random = new Random(1);
 
-            for (var i = 0; i < 100; i++) {
+            for (var i = 0; i < 1000; i++) {
                 var entity = this.Entities.Create<Hull>("entity:hull_square");
+                entity.Body.Position = new Vector2((float)(random.NextDouble() * 149.9) - 74.95f, (float)(random.NextDouble() * 149.9) - 74.95f);
+                entity.Body.Rotation = (float)random.NextDouble() * (float)Math.PI;
+            }
+
+            for (var i = 0; i < 1000; i++)
+            {
+                var entity = this.Entities.Create<Hull>("entity:hull_beam");
                 entity.Body.Position = new Vector2((float)(random.NextDouble() * 149.9) - 74.95f, (float)(random.NextDouble() * 149.9) - 74.95f);
                 entity.Body.Rotation = (float)random.NextDouble() * (float)Math.PI;
             }

@@ -56,6 +56,18 @@ namespace VoidHuntersRevived.Library
                         new Vector2(0.5f, 0.5f),
                         new Vector2(-0.5f, 0.5f)
                     }));
+
+            entityLoader.Register<Hull>(
+                handle: "entity:hull_beam",
+                nameHandle: "entity_name:hull_square",
+                descriptionHandle: "entity_description:hull_square",
+                data: new HullData(
+                    vertices: new Vector2[] {
+                        new Vector2(-1.5f, -0.5f),
+                        new Vector2(1.5f, -0.5f),
+                        new Vector2(1.5f, 0.5f),
+                        new Vector2(-1.5f, 0.5f)
+                    }));
         }
     }
 }

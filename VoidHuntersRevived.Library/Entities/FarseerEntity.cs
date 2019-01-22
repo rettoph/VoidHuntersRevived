@@ -21,8 +21,6 @@ namespace VoidHuntersRevived.Library.Entities
 
         public FarseerEntity(EntityInfo info, IGame game) : base(info, game)
         {
-            this.OnAddedToScene += this.HandleAddedToScene;
-            this.OnRemovedFromScene += this.HandleRemovedFromScene;
         }
 
         protected override void HandleAddedToScene(object sender, ISceneObject e)

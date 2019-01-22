@@ -34,9 +34,7 @@ namespace VoidHuntersRevived.Core.Collections
             where TEntity : class, IEntity
         {
             var entity = _entityLoader.Create<TEntity>(handle, _scene);
-
-            if(this.add(entity))
-                entity.Layer = layer;
+            entity.Layer = layer;
 
             return entity;
         }
