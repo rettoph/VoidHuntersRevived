@@ -33,6 +33,7 @@ namespace VoidHuntersRevived.Client.Scenes
             base.Initialize();
 
             var layer = this.Layers.Create<FarseerEntityLayer>();
+            this.Entities.SetDefaultLayer(layer);
 
             // Create the basic global entities
             this.Cursor = this.Entities.Create<Cursor>("entity:cursor");
@@ -42,7 +43,7 @@ namespace VoidHuntersRevived.Client.Scenes
             
 
             // Create a new test centerpiece
-            var center = this.Entities.Create<Hull>("entity:hull_square", layer);
+            var center = this.Entities.Create<Hull>("entity:hull_square");
             center.Body.Mass = 10f;
             this.Camera.Follow = center;
 
@@ -50,7 +51,7 @@ namespace VoidHuntersRevived.Client.Scenes
             var random = new Random(1);
 
             for (var i = 0; i < 20; i++) {
-                var entity = this.Entities.Create<Hull>("entity:hull_square", layer);
+                var entity = this.Entities.Create<Hull>("entity:hull_square");
                 entity.Body.Position = new Vector2(
                     (float)(random.NextDouble() * this.Wall.Boundaries.Width) + this.Wall.Boundaries.Left,
                     (float)(random.NextDouble() * this.Wall.Boundaries.Height) + this.Wall.Boundaries.Top);
@@ -59,7 +60,7 @@ namespace VoidHuntersRevived.Client.Scenes
 
             for (var i = 0; i < 20; i++)
             {
-                var entity = this.Entities.Create<Hull>("entity:hull_beam", layer);
+                var entity = this.Entities.Create<Hull>("entity:hull_beam");
                 entity.Body.Position = new Vector2(
                     (float)(random.NextDouble() * this.Wall.Boundaries.Width) + this.Wall.Boundaries.Left,
                     (float)(random.NextDouble() * this.Wall.Boundaries.Height) + this.Wall.Boundaries.Top);

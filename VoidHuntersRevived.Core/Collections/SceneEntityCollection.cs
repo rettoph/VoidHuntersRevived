@@ -18,11 +18,17 @@ namespace VoidHuntersRevived.Core.Collections
     {
         private IScene _scene;
         private EntityLoader _entityLoader;
+        private ILayer _defaultLayer;
 
         public SceneEntityCollection(ILogger logger, IScene scene) : base(logger)
         {
             _scene = scene;
             _entityLoader = _scene.Game.Provider.GetLoader<EntityLoader>();
+        }
+
+        public void SetDefaultLayer(ILayer layer)
+        {
+            _defaultLayer = layer;
         }
 
         /// <summary>
@@ -34,7 +40,7 @@ namespace VoidHuntersRevived.Core.Collections
             where TEntity : class, IEntity
         {
             var entity = _entityLoader.Create<TEntity>(handle, _scene, parameters);
-            entity.Layer = layer;
+            entity.Layer = layer ?? _defaultLayer;
 
             return entity;
         }

@@ -3,18 +3,15 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Library.Entities.Connections;
 
 namespace VoidHuntersRevived.Library.Entities.MetaData
 {
     public class HullData : ShipPartData
     {
-        public readonly Vertices Vertices;
-        public readonly FemaleConnection[] FemaleConnections;
+        public readonly Vector3[] FemaleConnections;
 
-        public HullData(MaleConnection maleConnection, Vector2[] vertices, FemaleConnection[] femaleConnections) : base(maleConnection)
+        public HullData(Vector3 maleConnection, Vector2[] vertices, Vector3[] femaleConnections) : base(maleConnection, vertices)
         {
-            this.Vertices = new Vertices(vertices);
             this.FemaleConnections = femaleConnections;
         }
     }

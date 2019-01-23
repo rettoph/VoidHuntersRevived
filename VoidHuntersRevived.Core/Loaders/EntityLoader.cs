@@ -49,8 +49,8 @@ namespace VoidHuntersRevived.Core.Loaders
 
         public void Register<TEntity>(
             String handle,
-            String nameHandle,
-            String descriptionHandle,
+            String nameHandle = "entity_name:default",
+            String descriptionHandle = "entity_description:default",
             Object data = null,
             Int32 priority = 0)
             where TEntity : class, IEntity

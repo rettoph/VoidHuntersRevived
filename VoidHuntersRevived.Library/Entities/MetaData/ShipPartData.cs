@@ -1,18 +1,21 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FarseerPhysics.Common;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Library.Entities.Connections;
+using VoidHuntersRevived.Library.Entities.ConnectionNodes;
 
 namespace VoidHuntersRevived.Library.Entities.MetaData
 {
     public class ShipPartData
     {
-        public readonly MaleConnection MaleConnection;
+        public readonly Vector3 MaleConnection;
+        public readonly Vertices Vertices;
 
-        public ShipPartData(MaleConnection maleConnection)
+        public ShipPartData(Vector3 maleConnection, Vector2[] vertices)
         {
             this.MaleConnection = maleConnection;
+            this.Vertices = new Vertices(vertices);
         }
     }
 }

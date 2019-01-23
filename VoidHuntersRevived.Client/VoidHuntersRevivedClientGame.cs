@@ -49,8 +49,8 @@ namespace VoidHuntersRevived.Client
             entityLoader.Register<CurrentClientShip>("entity:ship:current_client", "entity_name:ship:current_client", "entity_description:ship:current_client");
 
             var contentLoader = this.Provider.GetLoader<ContentLoader>();
-            contentLoader.Register<Texture2D>("texture:male_connection", "Sprites/male-connection");
-            contentLoader.Register<Texture2D>("texture:female_connection", "Sprites/female-connection");
+            contentLoader.Register<Texture2D>("texture:connection_node:male", "Sprites/male-connection");
+            contentLoader.Register<Texture2D>("texture:connection_node:female", "Sprites/female-connection");
         }
 
         protected override void Initialize()

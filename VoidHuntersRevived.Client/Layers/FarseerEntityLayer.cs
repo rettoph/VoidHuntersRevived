@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Client.Layers
 
         public override void Draw(GameTime gameTime)
         {
-            _spriteBatch.Begin(effect: _scene.Camera.BasicEffect);
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp, effect: _scene.Camera.BasicEffect);
 
             this.Entities.Draw(gameTime);
 

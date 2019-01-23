@@ -14,7 +14,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using FarseerPhysics.Common;
 using VoidHuntersRevived.Library.Entities.MetaData;
 using FarseerPhysics;
-using VoidHuntersRevived.Library.Entities.Connections;
+using VoidHuntersRevived.Library.Entities.ConnectionNodes;
 
 namespace VoidHuntersRevived.Library
 {
@@ -29,6 +29,9 @@ namespace VoidHuntersRevived.Library
             base.PreInitialize();
 
             var stringLoader = this.Provider.GetLoader<StringLoader>();
+            stringLoader.Register("entity_name:default", "Unnamed");
+            stringLoader.Register("entity_description:default", "An unnamed entity.");
+
             stringLoader.Register("entity_name:tractor_beam", "Tractor Beam");
             stringLoader.Register("entity_description:tractor_beam", "A tractor beam.");
 
@@ -41,6 +44,8 @@ namespace VoidHuntersRevived.Library
             var entityLoader = this.Provider.GetLoader<EntityLoader>();
             entityLoader.Register<TractorBeam>("entity:tractor_beam", "entity_name:tractor_beam", "entity_description:tractor_beam");
             entityLoader.Register<Wall>("entity:wall", "entity_name:wall", "entity_description:wall");
+            entityLoader.Register<MaleConnectionNode>("entity:connection_node:male");
+            entityLoader.Register<FemaleConnectionNode>("entity:connection_node:female");
 
             // Register all the default hull piece types
             entityLoader.Register<Hull>(
@@ -48,15 +53,17 @@ namespace VoidHuntersRevived.Library
                 nameHandle: "entity_name:hull_square",
                 descriptionHandle: "entity_description:hull_square",
                 data: new HullData(
-                    maleConnection: new MaleConnection(new Vector2(-0.5f, 0), 0),
+                    maleConnection: new Vector3(-0.5f, 0, (float)Math.PI),
                     vertices: new Vector2[] {
                         new Vector2(-0.5f, -0.5f),
                         new Vector2(0.5f, -0.5f),
                         new Vector2(0.5f, 0.5f),
                         new Vector2(-0.5f, 0.5f)
                     },
-                    femaleConnections: new FemaleConnection[] {
-                        new FemaleConnection(new Vector2(0.5f, 0), 0)
+                    femaleConnections: new Vector3[] {
+                        new Vector3(0.5f, 0, 0),
+                        new Vector3(0f, -0.5f, -(float)Math.PI/2),
+                        new Vector3(0f, 0.5f, (float)Math.PI/2)
                     }));
 
             entityLoader.Register<Hull>(
@@ -64,14 +71,21 @@ namespace VoidHuntersRevived.Library
                 nameHandle: "entity_name:hull_square",
                 descriptionHandle: "entity_description:hull_square",
                 data: new HullData(
-                    maleConnection: new MaleConnection(new Vector2(-1.5f, 0), 0),
+                    maleConnection: new Vector3(-1.5f, 0, (float)Math.PI),
                     vertices: new Vector2[] {
                         new Vector2(-1.5f, -0.5f),
                         new Vector2(1.5f, -0.5f),
                         new Vector2(1.5f, 0.5f),
                         new Vector2(-1.5f, 0.5f)
                     },
-                    femaleConnections: new FemaleConnection[] {
+                    femaleConnections: new Vector3[] {
+                        new Vector3(1.5f, 0, 0),
+                        new Vector3(-1f, -0.5f, -(float)Math.PI/2),
+                        new Vector3(0f, -0.5f, -(float)Math.PI/2),
+                        new Vector3(1f, -0.5f, -(float)Math.PI/2),
+                        new Vector3(-1f, 0.5f, (float)Math.PI/2),
+                        new Vector3(0f, 0.5f, (float)Math.PI/2),
+                        new Vector3(1f, 0.5f, (float)Math.PI/2),
                     }));
         }
     }
