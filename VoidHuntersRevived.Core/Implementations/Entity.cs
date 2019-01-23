@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
 
@@ -16,17 +17,14 @@ namespace VoidHuntersRevived.Core.Implementations
 
             this.Visible = true;
             this.Enabled = true;
-
-            this.OnAddedToScene += this.HandleAddedToScene;
-            this.OnRemovedFromScene += this.HandleRemovedFromScene;
         }
 
-        protected virtual void HandleRemovedFromScene(object sender, ISceneObject e)
+        public override void Draw(GameTime gameTime)
         {
             // throw new NotImplementedException();
         }
 
-        protected virtual void HandleAddedToScene(object sender, ISceneObject e)
+        public override void Update(GameTime gameTime)
         {
             // throw new NotImplementedException();
         }

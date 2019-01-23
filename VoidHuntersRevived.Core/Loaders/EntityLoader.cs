@@ -73,7 +73,7 @@ namespace VoidHuntersRevived.Core.Loaders
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="scene"></param>
         /// <returns></returns>
-        public TEntity Create<TEntity>(String handle, IScene scene)
+        public TEntity Create<TEntity>(String handle, IScene scene, params object[] parameters)
             where TEntity : class, IEntity
         {
             var type = typeof(TEntity);
@@ -85,7 +85,7 @@ namespace VoidHuntersRevived.Core.Loaders
                 return default(TEntity);
             }
 
-            return this.Create(_entityInfoTable[handle], scene) as TEntity;
+            return this.Create(_entityInfoTable[handle], scene, parameters) as TEntity;
         }
         /// <summary>
         /// Create a new entity with a given entity info object
@@ -93,10 +93,12 @@ namespace VoidHuntersRevived.Core.Loaders
         /// <param name="info"></param>
         /// <param name="scene"></param>
         /// <returns></returns>
-        public IEntity Create(EntityInfo info, IScene scene)
+        public IEntity Create(EntityInfo info, IScene scene, params object[] parameters)
         {
             // Create & return a new instance of an entity
-            IEntity entity = (IEntity)ActivatorUtilities.CreateInstance(_provider, info.Type, info);
+            var instancePrams = parameters.ToList();
+            instancePrams.Add(info);
+            IEntity entity = (IEntity)ActivatorUtilities.CreateInstance(_provider, info.Type, instancePrams.ToArray());
 
             // begin entity initialization
             entity.TryBoot();

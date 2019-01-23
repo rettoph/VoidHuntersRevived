@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Core.Collections
             where TLayer : class, ILayer
         {
             // Use the factory to create a new scene and add it to the collection
-            return (TLayer)this.Add(_factory.Create<TLayer>());
+            return _factory.Create<TLayer>(_scene);
         }
 
         protected override bool add(ILayer item)

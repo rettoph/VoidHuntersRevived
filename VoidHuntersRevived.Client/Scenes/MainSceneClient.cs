@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Client.Entities;
+using VoidHuntersRevived.Client.Entities.Ships;
+using VoidHuntersRevived.Client.Layers;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
-using VoidHuntersRevived.Library.Entities.Ships;
 using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Client.Scenes
@@ -16,6 +17,7 @@ namespace VoidHuntersRevived.Client.Scenes
     public class MainSceneClient : MainScene
     {
         public Camera Camera { get; set; }
+        public Cursor Cursor { get; set; }
         private GraphicsDevice _grapihcs;
 
         public MainSceneClient(GraphicsDevice graphics, IServiceProvider provider, IGame game) : base(provider, game)
@@ -30,34 +32,41 @@ namespace VoidHuntersRevived.Client.Scenes
         {
             base.Initialize();
 
-            // Create a new camera
+            var layer = this.Layers.Create<FarseerEntityLayer>();
 
+            // Create the basic global entities
+            this.Cursor = this.Entities.Create<Cursor>("entity:cursor");
             this.Camera = this.Entities.Create<Camera>("entity:camera");
-            var ship = this.Entities.Create<Ship>("entity:ship:current_client");
 
+            var ship = this.Entities.Create<CurrentClientShip>("entity:ship:current_client");
+            
 
-            var center = this.Entities.Create<Hull>("entity:hull_square");
+            // Create a new test centerpiece
+            var center = this.Entities.Create<Hull>("entity:hull_square", layer);
+            center.Body.Mass = 10f;
+            this.Camera.Follow = center;
 
+            // Generate a random map of parts
             var random = new Random(1);
 
-            for (var i = 0; i < 50; i++) {
-                var entity = this.Entities.Create<Hull>("entity:hull_square");
+            for (var i = 0; i < 20; i++) {
+                var entity = this.Entities.Create<Hull>("entity:hull_square", layer);
                 entity.Body.Position = new Vector2(
                     (float)(random.NextDouble() * this.Wall.Boundaries.Width) + this.Wall.Boundaries.Left,
                     (float)(random.NextDouble() * this.Wall.Boundaries.Height) + this.Wall.Boundaries.Top);
                 entity.Body.Rotation = (float)random.NextDouble() * (float)Math.PI;
             }
 
-            for (var i = 0; i < 50; i++)
+            for (var i = 0; i < 20; i++)
             {
-                var entity = this.Entities.Create<Hull>("entity:hull_beam");
+                var entity = this.Entities.Create<Hull>("entity:hull_beam", layer);
                 entity.Body.Position = new Vector2(
                     (float)(random.NextDouble() * this.Wall.Boundaries.Width) + this.Wall.Boundaries.Left,
                     (float)(random.NextDouble() * this.Wall.Boundaries.Height) + this.Wall.Boundaries.Top);
                 entity.Body.Rotation = (float)random.NextDouble() * (float)Math.PI;
             }
 
-            this.Camera.Follow = center;
+            
         }
 
         public override void Update(GameTime gameTime)

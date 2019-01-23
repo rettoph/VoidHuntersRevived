@@ -4,10 +4,8 @@ using System.Text;
 
 namespace VoidHuntersRevived.Core.Interfaces
 {
-    public interface ISceneObject : IGameObject
+    public interface ISceneObject : IGameObject, IDisposable
     {
         IScene Scene { get; set; }
-        event EventHandler<ISceneObject> OnAddedToScene;
-        event EventHandler<ISceneObject> OnRemovedFromScene;
     }
 }

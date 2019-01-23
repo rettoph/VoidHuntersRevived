@@ -39,39 +39,9 @@ namespace VoidHuntersRevived.Library.Entities
             this.Boundaries = new RectangleF(-halfWidth, -halfHeight, width, height);
         }
 
-        public override void Draw(GameTime gameTime)
-        {
-            // throw new NotImplementedException();
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            // throw new NotImplementedException();
-        }
-
-        protected override void Boot()
-        {
-            // throw new NotImplementedException();
-        }
-
-        protected override void PreInitialize()
-        {
-            // throw new NotImplementedException();
-        }
-
         protected override void Initialize()
         {
-            // throw new NotImplementedException();
-        }
-
-        protected override void PostInitialize()
-        {
-            // throw new NotImplementedException();
-        }
-
-        protected override void HandleAddedToScene(object sender, ISceneObject e)
-        {
-            base.HandleAddedToScene(sender, e);
+            base.Initialize();
 
             this.Body.BodyType = BodyType.Kinematic;
             this.Body.IsBullet = true;

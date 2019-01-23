@@ -16,7 +16,6 @@ using VoidHuntersRevived.Client.Entities;
 using VoidHuntersRevived.Client.Scenes;
 using VoidHuntersRevived.Core.Factories;
 using VoidHuntersRevived.Client.Configurations;
-using VoidHuntersRevived.Client.Entities.TractorBeams;
 using VoidHuntersRevived.Client.Entities.Ships;
 
 namespace VoidHuntersRevived.Client
@@ -38,10 +37,19 @@ namespace VoidHuntersRevived.Client
             stringLoader.Register("entity_name:camera", "Camera");
             stringLoader.Register("entity_description:camera", "A basic camera that auto adjusts for Farseer positioning via BasicEffect.");
 
+            stringLoader.Register("entity_name:cursor", "Cursor");
+            stringLoader.Register("entity_description:cursor", "The current client's cursor.");
+
+            stringLoader.Register("entity_name:ship:current_client", "Current Client Ship");
+            stringLoader.Register("entity_description:ship:current_client", "A ship controllable by the current client.");
+
             var entityLoader = this.Provider.GetLoader<EntityLoader>();
             entityLoader.Register<Camera>("entity:camera", "entity_name:camera", "entity_description:camera");
-            entityLoader.Register<CurrentClientShip>("entity:ship:current_client", "entity_name:ship", "entity_description:ship");
-            entityLoader.Register<CurrentClientTractorBeam>("entity:tractor_beam:current_client", "entity_name:tractor_beam", "entity_description:tractor_beam");
+            entityLoader.Register<Cursor>("entity:cursor", "entity_name:cursor", "entity_description:cursor");
+            entityLoader.Register<CurrentClientShip>("entity:ship:current_client", "entity_name:ship:current_client", "entity_description:ship:current_client");
+
+            var contentLoader = this.Provider.GetLoader<ContentLoader>();
+            contentLoader.Register<Texture2D>("texture:male_connection", "Sprites/male-connection");
         }
 
         protected override void Initialize()

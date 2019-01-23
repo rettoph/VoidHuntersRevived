@@ -3,28 +3,44 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Client.Entities.TractorBeams;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using VoidHuntersRevived.Client.Scenes;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
+using VoidHuntersRevived.Library.Entities.Interfaces;
 using VoidHuntersRevived.Library.Entities.Ships;
 
 namespace VoidHuntersRevived.Client.Entities.Ships
 {
-    /// <summary>
-    /// A specific version of the ship entity 
-    /// controllable by the current client
-    /// </summary>
-    public class CurrentClientShip : Ship
+    class CurrentClientShip : Ship
     {
+        private MainSceneClient _scene;
+
         public CurrentClientShip(EntityInfo info, IGame game) : base(info, game)
         {
         }
 
-        protected override void HandleAddedToScene(object sender, ISceneObject e)
+        protected override void Initialize()
         {
-            base.HandleAddedToScene(sender, e);
+            base.Initialize();
 
-            this.TractorBeam = this.Scene.Entities.Create<CurrentClientTractorBeam>("entity:tractor_beam:current_client");
+            _scene = this.Scene as MainSceneClient;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            this.TractorBeam.Body.Position = _scene.Cursor.Body.Position;
+
+            if(Mouse.GetState().RightButton == ButtonState.Pressed)
+                if(_scene.Cursor.Over is ITractorableEntity)
+                    this.TractorBeam.TrySelect(_scene.Cursor.Over as ITractorableEntity);
+
+            if (Mouse.GetState().RightButton == ButtonState.Released)
+                if (this.TractorBeam.SelectedEntity != null)
+                    this.TractorBeam.TryRelease();
         }
     }
 }

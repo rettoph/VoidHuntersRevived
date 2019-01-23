@@ -30,10 +30,10 @@ namespace VoidHuntersRevived.Core.Collections
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
-        public TEntity Create<TEntity>(String handle, ILayer layer = null)
+        public TEntity Create<TEntity>(String handle, ILayer layer = null, params object[] parameters)
             where TEntity : class, IEntity
         {
-            var entity = _entityLoader.Create<TEntity>(handle, _scene);
+            var entity = _entityLoader.Create<TEntity>(handle, _scene, parameters);
             entity.Layer = layer;
 
             return entity;
@@ -57,8 +57,8 @@ namespace VoidHuntersRevived.Core.Collections
         {
             if (base.remove(item))
             {
-                item.Scene = null;
                 item.Layer = null;
+                item.Dispose();
 
                 item.OnAddedToLayer -= this.HandleEntityAddedToLayer;
 

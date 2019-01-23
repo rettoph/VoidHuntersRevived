@@ -65,6 +65,8 @@ namespace VoidHuntersRevived.Client.Services
             _debug.AppendFlags(DebugViewFlags.ContactPoints);
             _debug.AppendFlags(DebugViewFlags.ContactNormals);
             _debug.AppendFlags(DebugViewFlags.DebugPanel);
+            _debug.AppendFlags(DebugViewFlags.CenterOfMass);
+            _debug.AppendFlags(DebugViewFlags.Joint);
             //_debug.AppendFlags(DebugViewFlags.PerformanceGraph);
             //_debug.AppendFlags(DebugViewFlags.Shape);
         }

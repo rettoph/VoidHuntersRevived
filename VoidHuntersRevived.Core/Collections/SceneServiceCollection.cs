@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Core.Collections
         {
             if (base.remove(item))
             {
-                item.Scene = null;
+                item.Dispose();
 
                 return true;
             }

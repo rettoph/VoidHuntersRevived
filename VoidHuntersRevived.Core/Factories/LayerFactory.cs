@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Core.Factories
             _scene = scene;
         }
 
-        public TLayer Create<TLayer>()
+        public TLayer Create<TLayer>(IScene scene)
             where TLayer : ILayer
         {
             var type = typeof(TLayer);
@@ -29,6 +29,9 @@ namespace VoidHuntersRevived.Core.Factories
             // Initialize the scene
             layer.TryBoot();
             layer.TryPreInitialize();
+
+            scene.Layers.Add(layer);
+
             layer.TryInitialize();
             layer.TryPostInitialize();
 

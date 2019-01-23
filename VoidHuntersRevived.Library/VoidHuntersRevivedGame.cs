@@ -13,8 +13,6 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using FarseerPhysics.Common;
 using VoidHuntersRevived.Library.Entities.MetaData;
-using VoidHuntersRevived.Library.Entities.Ships;
-using VoidHuntersRevived.Library.Entities.TractorBeams;
 using FarseerPhysics;
 
 namespace VoidHuntersRevived.Library
@@ -30,22 +28,18 @@ namespace VoidHuntersRevived.Library
             base.PreInitialize();
 
             var stringLoader = this.Provider.GetLoader<StringLoader>();
+            stringLoader.Register("entity_name:tractor_beam", "Tractor Beam");
+            stringLoader.Register("entity_description:tractor_beam", "A tractor beam.");
+
             stringLoader.Register("entity_name:wall", "Wall");
             stringLoader.Register("entity_description:wall", "A collection of Farseer rectangles forming an enclosed arena.");
-
-            stringLoader.Register("entity_name:ship", "Ship");
-            stringLoader.Register("entity_description:ship", "A Ship.");
-
-            stringLoader.Register("entity_name:tractor_beam", "Tractor Beam");
-            stringLoader.Register("entity_description:tractor_beam", "A Tractor Beam.");
 
             stringLoader.Register("entity_name:hull_square", "Hull Square");
             stringLoader.Register("entity_description:hull_square", "A Simple hull square.");
 
             var entityLoader = this.Provider.GetLoader<EntityLoader>();
-            entityLoader.Register<Wall>("entity:wall", "entity_name:wall", "entity_description:wall");
-            entityLoader.Register<Ship>("entity:ship", "entity_name:ship", "entity_description:ship");
             entityLoader.Register<TractorBeam>("entity:tractor_beam", "entity_name:tractor_beam", "entity_description:tractor_beam");
+            entityLoader.Register<Wall>("entity:wall", "entity_name:wall", "entity_description:wall");
 
             // Register all the default hull piece types
             entityLoader.Register<Hull>(

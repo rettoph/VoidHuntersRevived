@@ -7,36 +7,15 @@ namespace VoidHuntersRevived.Core.Implementations
 {
     public abstract class SceneObject : GameObject, ISceneObject
     {
-        private IScene _scene;
-        public IScene Scene
-        {
-            get
-            {
-                return _scene;
-            }
-            set
-            {
-                if (_scene != value)
-                {
-                    if (_scene != null)
-                    { // Only invoke removed from scene if the object has a scene defined
-                        _scene = null;
-                        this.OnRemovedFromScene?.Invoke(this, this);
-                    }
-
-                    _scene = value;
-                    this.OnAddedToScene?.Invoke(this, this);
-                }
-            }
-        }
-
-        public event EventHandler<ISceneObject> OnAddedToScene;
-        public event EventHandler<ISceneObject> OnRemovedFromScene;
+        public IScene Scene { get; set; }
 
         public SceneObject(IGame game) : base(game)
         {
         }
 
-        
+        public void Dispose()
+        {
+            this.Scene = null;
+        }
     }
 }

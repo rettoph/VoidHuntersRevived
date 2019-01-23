@@ -8,13 +8,14 @@ using System.Text;
 using VoidHuntersRevived.Core.Implementations;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Scenes.Interfaces;
 
 namespace VoidHuntersRevived.Library.Scenes
 {
     /// <summary>
     /// The main scene will manage actual gameplay within the game
     /// </summary>
-    public class MainScene : Scene
+    public class MainScene : Scene, IFarseerScene
     {
         public World World { get; set; }
         public Wall Wall { get; set; }
