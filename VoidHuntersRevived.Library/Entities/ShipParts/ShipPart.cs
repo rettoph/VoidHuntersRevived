@@ -9,22 +9,28 @@ using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Providers;
 using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities.Interfaces;
+using VoidHuntersRevived.Library.Entities.MetaData;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
     public abstract class ShipPart : TractorableEntity
     {
+        public readonly ShipPartData ShipPartData;
+
         private Texture2D _maleConnectionTexture;
         private SpriteBatch _spriteBatch;
+        protected Matrix _rotationMatrix;
 
         public ShipPart(SpriteBatch spriteBatch, IServiceProvider provider, EntityInfo info, IGame game) : base(info, game)
         {
             var contentLoader = provider.GetLoader<ContentLoader>();
-
             _maleConnectionTexture = contentLoader.Get<Texture2D>("texture:male_connection");
+
             _spriteBatch = spriteBatch;
 
             this.Visible = true;
+
+            this.ShipPartData = info.Data as ShipPartData;
         }
 
         protected override void PostInitialize()
@@ -44,9 +50,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             base.Draw(gameTime);
 
+            var maleJointOffset = Vector2.Transform(this.ShipPartData.MaleConnection.LocalPoint, _rotationMatrix);
             _spriteBatch.Draw(
                 texture: _maleConnectionTexture,
-                position: this.Body.Position,
+                position: this.Body.Position + maleJointOffset,
                 sourceRectangle: _maleConnectionTexture.Bounds,
                 color: Color.White,
                 rotation: this.Body.Rotation,
@@ -54,6 +61,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 scale: 0.01f,
                 effects: SpriteEffects.None,
                 layerDepth: 0);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            _rotationMatrix = Matrix.CreateRotationZ(this.Body.Rotation);
         }
     }
 }

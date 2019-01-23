@@ -52,6 +52,12 @@ namespace VoidHuntersRevived.Client.Services
                 _camera.Follow.Body.ApplyLinearImpulse(new Vector2(0, 5));
             if (keyboard.IsKeyDown(Keys.D))
                 _camera.Follow.Body.ApplyLinearImpulse(new Vector2(5, 0));
+
+            if (keyboard.IsKeyDown(Keys.Q))
+                _camera.Follow.Body.ApplyAngularImpulse(-0.01f);
+
+            if (keyboard.IsKeyDown(Keys.E))
+                _camera.Follow.Body.ApplyAngularImpulse(0.01f);
         }
 
         protected override void Boot()

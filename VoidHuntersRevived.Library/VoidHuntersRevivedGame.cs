@@ -14,6 +14,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using FarseerPhysics.Common;
 using VoidHuntersRevived.Library.Entities.MetaData;
 using FarseerPhysics;
+using VoidHuntersRevived.Library.Entities.Connections;
 
 namespace VoidHuntersRevived.Library
 {
@@ -47,11 +48,15 @@ namespace VoidHuntersRevived.Library
                 nameHandle: "entity_name:hull_square",
                 descriptionHandle: "entity_description:hull_square",
                 data: new HullData(
+                    maleConnection: new MaleConnection(new Vector2(-0.5f, 0), 0),
                     vertices: new Vector2[] {
                         new Vector2(-0.5f, -0.5f),
                         new Vector2(0.5f, -0.5f),
                         new Vector2(0.5f, 0.5f),
                         new Vector2(-0.5f, 0.5f)
+                    },
+                    femaleConnections: new FemaleConnection[] {
+                        new FemaleConnection(new Vector2(0.5f, 0), 0)
                     }));
 
             entityLoader.Register<Hull>(
@@ -59,11 +64,14 @@ namespace VoidHuntersRevived.Library
                 nameHandle: "entity_name:hull_square",
                 descriptionHandle: "entity_description:hull_square",
                 data: new HullData(
+                    maleConnection: new MaleConnection(new Vector2(-1.5f, 0), 0),
                     vertices: new Vector2[] {
                         new Vector2(-1.5f, -0.5f),
                         new Vector2(1.5f, -0.5f),
                         new Vector2(1.5f, 0.5f),
                         new Vector2(-1.5f, 0.5f)
+                    },
+                    femaleConnections: new FemaleConnection[] {
                     }));
         }
     }

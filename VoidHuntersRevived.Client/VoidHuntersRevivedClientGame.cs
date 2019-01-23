@@ -50,6 +50,7 @@ namespace VoidHuntersRevived.Client
 
             var contentLoader = this.Provider.GetLoader<ContentLoader>();
             contentLoader.Register<Texture2D>("texture:male_connection", "Sprites/male-connection");
+            contentLoader.Register<Texture2D>("texture:female_connection", "Sprites/female-connection");
         }
 
         protected override void Initialize()
