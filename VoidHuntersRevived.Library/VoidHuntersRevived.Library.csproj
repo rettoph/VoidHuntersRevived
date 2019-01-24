@@ -18,6 +18,7 @@
     <ProjectReference Include="..\Submodules\FarseerPhysics\SourceFiles\Farseer Physics MonoGame.csproj" />
     <ProjectReference Include="..\Submodules\MonoGame\MonoGame.Framework\MonoGame.Framework.WindowsGL.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Core\VoidHuntersRevived.Core.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Networking\VoidHuntersRevived.Networking.csproj" />
   </ItemGroup>
 
 </Project>

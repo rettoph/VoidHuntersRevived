@@ -90,6 +90,10 @@
       <Project>{15C5CCC4-CFEC-46B8-A988-185C749E82CA}</Project>
       <Name>VoidHuntersRevived.Library</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VoidHuntersRevived.Networking\VoidHuntersRevived.Networking.csproj">
+      <Project>{758FAD0B-76BD-4E43-8BB7-F8F189505945}</Project>
+      <Name>VoidHuntersRevived.Networking</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

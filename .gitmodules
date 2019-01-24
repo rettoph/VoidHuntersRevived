@@ -1,3 +1,6 @@
 [submodule "Submodules/MonoGame"]
 	path = Submodules/MonoGame
 	url = https://github.com/MonoGame/MonoGame
+[submodule "Submodules/lidgren-network-gen3"]
+	path = Submodules/lidgren-network-gen3
+	url = https://github.com/rettoph/lidgren-network-gen3

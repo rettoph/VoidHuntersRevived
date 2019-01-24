@@ -15,10 +15,11 @@ using FarseerPhysics.Common;
 using VoidHuntersRevived.Library.Entities.MetaData;
 using FarseerPhysics;
 using VoidHuntersRevived.Library.Entities.ConnectionNodes;
+using VoidHuntersRevived.Networking;
 
 namespace VoidHuntersRevived.Library
 {
-    public class VoidHuntersRevivedGame : Game
+    public class VoidHuntersRevivedGame : NetworkGame
     {
         public VoidHuntersRevivedGame(ILogger logger, GraphicsDeviceManager graphics = null, ContentManager content = null, GameWindow window = null, IServiceCollection services = null) : base(logger, graphics, content, window, services)
         {
