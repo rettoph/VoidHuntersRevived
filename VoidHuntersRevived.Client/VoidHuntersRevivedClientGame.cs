@@ -17,13 +17,17 @@ using VoidHuntersRevived.Client.Scenes;
 using VoidHuntersRevived.Core.Factories;
 using VoidHuntersRevived.Client.Configurations;
 using VoidHuntersRevived.Client.Entities.Ships;
+using VoidHuntersRevived.Networking.Peers;
 
 namespace VoidHuntersRevived.Client
 {
     class VoidHuntersRevivedClientGame : VoidHuntersRevivedGame
     {
+        public ClientPeer Client { get; private set; }
+
         public VoidHuntersRevivedClientGame(ILogger logger, GraphicsDeviceManager graphics = null, ContentManager content = null, GameWindow window = null, IServiceCollection services = null) : base(logger, graphics, content, window, services)
         {
+            
         }
 
         protected override void PreInitialize()
@@ -56,6 +60,10 @@ namespace VoidHuntersRevived.Client
         protected override void Initialize()
         {
             base.Initialize();
+
+            // Create the peer
+            this.Client = new ClientPeer("chr", this, this.Logger);
+            this.Peer = this.Client;
 
             // Create a new client scene instance
             this.Scenes.Create<MainSceneClient>();

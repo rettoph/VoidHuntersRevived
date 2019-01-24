@@ -19,7 +19,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugView MonoGame", "Submo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lidgren.Network", "Submodules\lidgren-network-gen3\Lidgren.Network\Lidgren.Network.csproj", "{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Networking", "VoidHuntersRevived.Networking\VoidHuntersRevived.Networking.csproj", "{758FAD0B-76BD-4E43-8BB7-F8F189505945}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Networking", "VoidHuntersRevived.Networking\VoidHuntersRevived.Networking.csproj", "{758FAD0B-76BD-4E43-8BB7-F8F189505945}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Server", "VoidHuntersRevived.Server\VoidHuntersRevived.Server.csproj", "{8CF0C966-C5AE-4DCD-BD5A-F98B5C1E6E7A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,6 +89,14 @@ Global
 		{758FAD0B-76BD-4E43-8BB7-F8F189505945}.Release|Any CPU.Build.0 = Release|Any CPU
 		{758FAD0B-76BD-4E43-8BB7-F8F189505945}.Release|x86.ActiveCfg = Release|Any CPU
 		{758FAD0B-76BD-4E43-8BB7-F8F189505945}.Release|x86.Build.0 = Release|Any CPU
+		{8CF0C966-C5AE-4DCD-BD5A-F98B5C1E6E7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CF0C966-C5AE-4DCD-BD5A-F98B5C1E6E7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CF0C966-C5AE-4DCD-BD5A-F98B5C1E6E7A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8CF0C966-C5AE-4DCD-BD5A-F98B5C1E6E7A}.Debug|x86.Build.0 = Debug|Any CPU
+		{8CF0C966-C5AE-4DCD-BD5A-F98B5C1E6E7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CF0C966-C5AE-4DCD-BD5A-F98B5C1E6E7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CF0C966-C5AE-4DCD-BD5A-F98B5C1E6E7A}.Release|x86.ActiveCfg = Release|Any CPU
+		{8CF0C966-C5AE-4DCD-BD5A-F98B5C1E6E7A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
