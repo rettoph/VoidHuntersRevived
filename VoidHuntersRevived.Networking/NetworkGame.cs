@@ -17,12 +17,12 @@ namespace VoidHuntersRevived.Networking
         {
         }
 
-        protected override void PostInitialize()
+        protected override void Initialize()
         {
-            base.PostInitialize();
+            base.Initialize();
 
-            if (this.Peer == null)
-                this.Logger.LogError($"No INetworkGame.Peer defined at post initialization time. Please ensure this value is set.");
+            if ((this.Peer = this.Provider.GetService<IPeer>()) == null)
+                this.Logger.LogError($"No IPeer service is not defined. Please ensure it is added as a service at ConfigureServices time.");
             else
                 this.Peer.Start();
         }

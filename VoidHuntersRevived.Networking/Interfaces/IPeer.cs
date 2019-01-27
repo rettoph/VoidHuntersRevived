@@ -2,13 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Networking.Collections;
+using VoidHuntersRevived.Networking.Enums;
 
 namespace VoidHuntersRevived.Networking.Interfaces
 {
     public interface IPeer : IGroup
     {
+        GroupCollection Groups { get; }
+
         void Start();
 
-        void Update();
+        NetOutgoingMessage CreateMessage(MessageTarget target);
     }
 }

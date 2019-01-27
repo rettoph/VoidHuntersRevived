@@ -10,8 +10,13 @@ namespace VoidHuntersRevived.Core.Collections
     {
         protected List<TObject> _list;
 
-        public event EventHandler<IGameCollection<TObject>> OnAdd;
-        public event EventHandler<IGameCollection<TObject>> OnRemove;
+        public event EventHandler<TObject> OnAdd;
+        public event EventHandler<TObject> OnRemove;
+
+        public GameCollection()
+        {
+            _list = new List<TObject>();
+        }
 
         #region Methods
         protected virtual Boolean add(TObject item)
@@ -35,7 +40,7 @@ namespace VoidHuntersRevived.Core.Collections
             if(this.CanAlter())
             {
                 this.add(item);
-                this.OnAdd?.Invoke(this, this);
+                this.OnAdd?.Invoke(this, item);
             }
 
             return item;
@@ -46,7 +51,7 @@ namespace VoidHuntersRevived.Core.Collections
             if (this.CanAlter())
             {
                 this.remove(item);
-                this.OnRemove?.Invoke(this, this);
+                this.OnRemove?.Invoke(this, item);
             }
 
             return item;
@@ -65,5 +70,10 @@ namespace VoidHuntersRevived.Core.Collections
             return _list.GetEnumerator();
         }
         #endregion
+
+        public Int32 Count()
+        {
+            return _list.Count;
+        }
     }
 }

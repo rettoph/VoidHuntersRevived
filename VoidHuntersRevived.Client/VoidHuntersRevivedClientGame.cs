@@ -19,16 +19,24 @@ using VoidHuntersRevived.Client.Configurations;
 using VoidHuntersRevived.Client.Entities.Ships;
 using VoidHuntersRevived.Networking.Peers;
 using VoidHuntersRevived.Networking.Implementations;
+using VoidHuntersRevived.Networking.Interfaces;
 
 namespace VoidHuntersRevived.Client
 {
     class VoidHuntersRevivedClientGame : VoidHuntersRevivedGame
     {
-        public ClientPeer Client { get; private set; }
+        private ClientPeer _client;
 
         public VoidHuntersRevivedClientGame(ILogger logger, GraphicsDeviceManager graphics = null, ContentManager content = null, GameWindow window = null, IServiceCollection services = null) : base(logger, graphics, content, window, services)
         {
             
+        }
+
+        protected override void ConfigureServices(IServiceCollection services)
+        {
+            base.ConfigureServices(services);
+
+            services.AddSingleton<IPeer>(new ClientPeer("vhr", this, this.Logger));
         }
 
         protected override void PreInitialize()
@@ -62,21 +70,16 @@ namespace VoidHuntersRevived.Client
         {
             base.Initialize();
 
-            // Create the peer
-            this.Client = new ClientPeer("vhr", this, this.Logger);
-            this.Peer = this.Client;
+            _client = this.Provider.GetService<IPeer>() as ClientPeer;
         }
 
         protected override void PostInitialize()
         {
             base.PostInitialize();
 
-            this.Client.Connect("localhost", 1337);
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
+            var hail = _client.CreateMessage();
+            hail.Write("Rettoph");
+            _client.Connect("localhost", 1337, hail);
         }
     }
 }

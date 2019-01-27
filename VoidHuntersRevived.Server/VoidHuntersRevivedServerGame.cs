@@ -14,24 +14,21 @@ using Microsoft.Xna.Framework.Content;
 using VoidHuntersRevived.Core.Loaders;
 using VoidHuntersRevived.Core.Factories;
 using VoidHuntersRevived.Networking.Peers;
+using VoidHuntersRevived.Networking.Interfaces;
 
 namespace VoidHuntersRevived.Server
 {
     class VoidHuntersRevivedServerGame : VoidHuntersRevivedGame
     {
-        public ServerPeer Server { get; private set; }
-
         public VoidHuntersRevivedServerGame(ILogger logger, GraphicsDeviceManager graphics = null, ContentManager content = null, GameWindow window = null, IServiceCollection services = null) : base(logger, graphics, content, window, services)
         {
         }
 
-        protected override void Initialize()
+        protected override void ConfigureServices(IServiceCollection services)
         {
-            base.Initialize();
+            base.ConfigureServices(services);
 
-            // Create the peer
-            this.Server = new ServerPeer("vhr", 1337, this, this.Logger);
-            this.Peer = this.Server;
+            services.AddSingleton<IPeer>(new ServerPeer("vhr", 1337, this, this.Logger));
         }
     }
 }
