@@ -16,8 +16,6 @@ namespace VoidHuntersRevived.Networking.Implementations
         protected NetPeerConfiguration _configuration;
         protected ILogger _logger;
 
-        private NetOutgoingMessage _om;
-
         public Peer(String appIdentifier, INetworkGame game, ILogger logger)
         {
             this.Id = Guid.NewGuid();
@@ -29,25 +27,24 @@ namespace VoidHuntersRevived.Networking.Implementations
             _configuration.EnableMessageType(NetIncomingMessageType.ConnectionLatencyUpdated);
         }
 
+        #region IPeer Implementation
+        /// <summary>
+        /// Start the internal peer
+        /// </summary>
         public void Start()
         {
             _logger.LogDebug("Starting peer...");
             _peer.Start();
         }
 
+        public abstract void Update();
+        #endregion
+
+        #region IGroup Implementation
         public NetOutgoingMessage CreateMessage()
         {
-            _om = _peer.CreateMessage();
-            _om.Write((Byte)MessageTarget.Peer);
-
-            return _om;
+            return _peer.CreateMessage();
         }
-
-        public abstract void SendMessage(NetOutgoingMessage om, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced);
-
-        public void SendMessage(NetOutgoingMessage om, IUser user, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
     }
 }

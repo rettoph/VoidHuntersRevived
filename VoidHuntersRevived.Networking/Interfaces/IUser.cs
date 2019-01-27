@@ -6,7 +6,7 @@ namespace VoidHuntersRevived.Networking.Interfaces
 {
     public interface IUser
     {
-        Int32 Id { get; set; }
-        String Name { get; set; }
+        Int32 Id { get; }
+        String Name { get; }
     }
 }

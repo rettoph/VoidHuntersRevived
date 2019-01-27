@@ -8,5 +8,7 @@ namespace VoidHuntersRevived.Networking.Interfaces
     public interface IPeer : IGroup
     {
         void Start();
+
+        void Update();
     }
 }

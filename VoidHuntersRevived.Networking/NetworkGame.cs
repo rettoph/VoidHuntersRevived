@@ -26,5 +26,13 @@ namespace VoidHuntersRevived.Networking
             else
                 this.Peer.Start();
         }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            // Update the peer
+            this.Peer.Update();
+        }
     }
 }

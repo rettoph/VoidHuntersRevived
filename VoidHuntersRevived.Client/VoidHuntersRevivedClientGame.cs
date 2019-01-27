@@ -18,6 +18,7 @@ using VoidHuntersRevived.Core.Factories;
 using VoidHuntersRevived.Client.Configurations;
 using VoidHuntersRevived.Client.Entities.Ships;
 using VoidHuntersRevived.Networking.Peers;
+using VoidHuntersRevived.Networking.Implementations;
 
 namespace VoidHuntersRevived.Client
 {
@@ -62,11 +63,15 @@ namespace VoidHuntersRevived.Client
             base.Initialize();
 
             // Create the peer
-            this.Client = new ClientPeer("chr", this, this.Logger);
+            this.Client = new ClientPeer("vhr", this, this.Logger);
             this.Peer = this.Client;
+        }
 
-            // Create a new client scene instance
-            this.Scenes.Create<MainSceneClient>();
+        protected override void PostInitialize()
+        {
+            base.PostInitialize();
+
+            this.Client.Connect("localhost", 1337);
         }
 
         public override void Draw(GameTime gameTime)

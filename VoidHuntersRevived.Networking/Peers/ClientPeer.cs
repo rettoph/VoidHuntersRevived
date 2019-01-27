@@ -22,9 +22,19 @@ namespace VoidHuntersRevived.Networking.Peers
             _peer = _client;
         }
 
-        public override void SendMessage(NetOutgoingMessage om, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced)
+        /// <summary>
+        /// Attempt to connect to an external server at a given address
+        /// </summary>
+        /// <param name="host"></param>
+        /// <param name="port"></param>
+        public void Connect(String host, Int32 port, IUser user)
         {
-            _client.SendMessage(om, method);
+            _client.Connect(host, port);
+        }
+
+        public override void Update()
+        {
+            throw new NotImplementedException();
         }
     }
 }

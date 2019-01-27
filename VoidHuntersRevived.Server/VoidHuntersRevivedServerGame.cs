@@ -24,5 +24,14 @@ namespace VoidHuntersRevived.Server
         public VoidHuntersRevivedServerGame(ILogger logger, GraphicsDeviceManager graphics = null, ContentManager content = null, GameWindow window = null, IServiceCollection services = null) : base(logger, graphics, content, window, services)
         {
         }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            // Create the peer
+            this.Server = new ServerPeer("vhr", 1337, this, this.Logger);
+            this.Peer = this.Server;
+        }
     }
 }
