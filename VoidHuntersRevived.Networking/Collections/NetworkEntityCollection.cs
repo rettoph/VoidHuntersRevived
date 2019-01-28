@@ -9,10 +9,12 @@ namespace VoidHuntersRevived.Networking.Collections
     public class NetworkEntityCollection : GameCollection<INetworkEntity>
     {
         private Dictionary<Int64, INetworkEntity> _networkEntityTable;
+        public Queue<INetworkEntity> DirtyNetworkEntityQueue { get; private set; }
 
         public NetworkEntityCollection()
         {
             _networkEntityTable = new Dictionary<Int64, INetworkEntity>();
+            this.DirtyNetworkEntityQueue = new Queue<INetworkEntity>();
         }
 
         protected override bool add(INetworkEntity item)
@@ -20,6 +22,7 @@ namespace VoidHuntersRevived.Networking.Collections
             if (base.add(item))
             {
                 _networkEntityTable.Add(item.Id, item);
+                item.OnDirty += this.HandleNetworkEntityDirty;
 
                 return true;
             }
@@ -32,6 +35,7 @@ namespace VoidHuntersRevived.Networking.Collections
             if (base.remove(item))
             {
                 _networkEntityTable.Remove(item.Id);
+                item.OnDirty -= this.HandleNetworkEntityDirty;
 
                 return true;
             }
@@ -51,5 +55,13 @@ namespace VoidHuntersRevived.Networking.Collections
         {
             return this.Remove(this.GetById(id));
         }
+
+        #region EventHandlers
+        private void HandleNetworkEntityDirty(object sender, INetworkEntity e)
+        {
+            // Add the dirty entity to the dirty entities queue
+            this.DirtyNetworkEntityQueue.Enqueue(e);
+        }
+        #endregion
     }
 }

@@ -8,5 +8,7 @@ namespace VoidHuntersRevived.Networking.Interfaces
 {
     public interface INetworkEntity : INetworkObject, IEntity
     {
+        Boolean Dirty { get; set; }
+        event EventHandler<INetworkEntity> OnDirty;
     }
 }

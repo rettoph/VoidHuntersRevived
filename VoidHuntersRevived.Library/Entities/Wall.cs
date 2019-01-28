@@ -15,7 +15,7 @@ using VoidHuntersRevived.Networking.Interfaces;
 
 namespace VoidHuntersRevived.Library.Entities
 {
-    public class Wall : FarseerEntity, INetworkEntity
+    public class Wall : NetworkedFarseerEntity
     {
         public RectangleF Boundaries { get; private set; }
 
@@ -65,13 +65,16 @@ namespace VoidHuntersRevived.Library.Entities
         #region INetworkEntity Methods
         public override void Write(NetOutgoingMessage om)
         {
-            om.Write(this.Id);
+            base.Write(om);
+
             om.Write(this.Boundaries.Width);
             om.Write(this.Boundaries.Height);
         }
 
         public override void Read(NetIncomingMessage im)
         {
+            base.Read(im);
+
             this.Configure(im.ReadSingle(), im.ReadSingle());
         }
         #endregion

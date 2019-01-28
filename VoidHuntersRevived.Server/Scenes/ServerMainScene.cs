@@ -39,11 +39,17 @@ namespace VoidHuntersRevived.Server.Scenes
 
             // Create and setup a new wall
             this.Wall = this.Entities.Create<Wall>("entity:wall");
-            this.Wall.Configure(5, 5);
+            this.Wall.Configure(50, 50);
 
-            for(Int32 i=0; i<1; i++)
+            var rand = new Random();
+            for(Int32 i=0; i<100; i++)
             {
-                this.Entities.Create<Hull>("entity:hull:square");
+                var e = this.Entities.Create<Hull>("entity:hull:square");
+                e.Driver.Position = new Vector2((float)(rand.NextDouble() * 48) - 24, (float)(rand.NextDouble() * 48) - 24);
+                e.Driver.LinearVelocity = new Vector2((float)(rand.NextDouble() * 2) - 1, (float)(rand.NextDouble() * 2) - 1);
+
+                e.Driver.Rotation = (float)(rand.NextDouble() * 6.28318530718) - 3.14159265359f;
+                e.Driver.AngularVelocity = (float)(rand.NextDouble() * 6.28318530718) - 3.14159265359f;
             }
         }
 

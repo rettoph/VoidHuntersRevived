@@ -7,7 +7,7 @@ using VoidHuntersRevived.Library.Entities.Interfaces;
 
 namespace VoidHuntersRevived.Library.Entities
 {
-    public class TractorableEntity : FarseerEntity, ITractorableEntity
+    public class TractorableEntity : NetworkedFarseerEntity, ITractorableEntity
     {
         public ITractorBeam TractorBeam { get; set; }
 

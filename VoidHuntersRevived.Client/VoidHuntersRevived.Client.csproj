@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configurations\MainSceneClientConfiguration.cs" />
+    <Compile Include="Drivers\ClientFarseerEntityDriver.cs" />
     <Compile Include="Entities\Camera.cs" />
     <Compile Include="Entities\Cursor.cs" />
     <Compile Include="Entities\Ships\CurrentUserShip.cs" />

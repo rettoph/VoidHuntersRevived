@@ -7,7 +7,7 @@ using VoidHuntersRevived.Networking.Interfaces;
 
 namespace VoidHuntersRevived.Library.Entities.Interfaces
 {
-    public interface IFarseerEntity : IEntity, INetworkEntity
+    public interface IFarseerEntity : IEntity
     {
         World World { get; }
         Body Body { get; }

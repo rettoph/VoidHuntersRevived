@@ -1,6 +1,10 @@
 ﻿using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
 using Lidgren.Network;
+using Lidgren.Network.Xna;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,8 +12,10 @@ using VoidHuntersRevived.Core.Implementations;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities.Interfaces;
+using VoidHuntersRevived.Library.Interfaces;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Scenes.Interfaces;
+using VoidHuntersRevived.Networking.Implementations;
 using VoidHuntersRevived.Networking.Interfaces;
 
 namespace VoidHuntersRevived.Library.Entities
@@ -23,31 +29,15 @@ namespace VoidHuntersRevived.Library.Entities
         public World World { get; private set; }
         public Body Body { get; protected set; }
 
-        public Int64 Id { get; private set; }
 
         public FarseerEntity(EntityInfo info, IGame game) : base(info, game)
         {
-            this.Id = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0);
-        }
-        public FarseerEntity(Int64 id, EntityInfo info, IGame game) : base(info, game)
-        {
-            this.Id = id;
         }
 
         protected override void Initialize()
         {
             this.World = (this.Scene as IFarseerScene).World;
             this.Body = BodyFactory.CreateBody(world: this.World, userData: this);
-        }
-
-        public virtual void Read(NetIncomingMessage im)
-        {
-            // throw new NotImplementedException();
-        }
-
-        public virtual void Write(NetOutgoingMessage om)
-        {
-            // throw new NotImplementedException();
         }
     }
 }

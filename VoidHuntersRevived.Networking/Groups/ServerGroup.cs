@@ -87,7 +87,7 @@ namespace VoidHuntersRevived.Networking.Groups
             { // Send every connected user (including the new user) to the new user
                 om = this.CreateMessage("network:user:joined");
                 user.Write(om);
-                this.SendMessage(om, NetDeliveryMethod.ReliableOrdered);
+                this.SendMessage(om, connection, NetDeliveryMethod.ReliableOrdered);
             }
         }
 

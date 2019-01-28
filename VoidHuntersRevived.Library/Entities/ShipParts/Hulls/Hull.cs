@@ -53,22 +53,5 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Hulls
         {
             base.Draw(gameTime);
         }
-
-        public override void Read(NetIncomingMessage im)
-        {
-            this.Body.Position = im.ReadVector2();
-            this.Body.Rotation = im.ReadSingle();
-            this.Body.LinearVelocity = im.ReadVector2();
-            this.Body.AngularVelocity = im.ReadSingle();
-        }
-
-        public override void Write(NetOutgoingMessage om)
-        {
-            om.Write(this.Id);
-            om.Write(this.Body.Position);
-            om.Write(this.Body.Rotation);
-            om.Write(this.Body.LinearVelocity);
-            om.Write(this.Body.AngularVelocity);
-        }
     }
 }

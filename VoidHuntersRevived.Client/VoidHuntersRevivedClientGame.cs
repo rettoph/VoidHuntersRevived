@@ -22,6 +22,8 @@ using VoidHuntersRevived.Networking.Implementations;
 using VoidHuntersRevived.Networking.Interfaces;
 using Lidgren.Network;
 using VoidHuntersRevived.Networking.Enums;
+using VoidHuntersRevived.Client.Drivers;
+using VoidHuntersRevived.Library.Entities;
 
 namespace VoidHuntersRevived.Client
 {
@@ -39,6 +41,9 @@ namespace VoidHuntersRevived.Client
             base.ConfigureServices(services);
 
             services.AddSingleton<IPeer>(new ClientPeer("vhr", this, this.Logger));
+
+            // Set the default farseer entity driver... (how to manage changing this on the fly?)
+            NetworkedFarseerEntity.DefaultDriverType = typeof(ClientFarseerEntityDriver);
         }
 
         protected override void PreInitialize()
