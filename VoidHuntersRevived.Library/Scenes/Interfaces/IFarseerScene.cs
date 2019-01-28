@@ -13,6 +13,5 @@ namespace VoidHuntersRevived.Library.Scenes.Interfaces
     public interface IFarseerScene : IScene
     {
         World World { get; }
-        Wall Wall { get; }
     }
 }

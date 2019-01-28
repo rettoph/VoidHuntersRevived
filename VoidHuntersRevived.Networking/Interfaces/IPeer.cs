@@ -9,6 +9,8 @@ namespace VoidHuntersRevived.Networking.Interfaces
 {
     public interface IPeer : IGroup
     {
+        Int64 UniqueIdentifier { get; }
+
         GroupCollection Groups { get; }
 
         void Start();

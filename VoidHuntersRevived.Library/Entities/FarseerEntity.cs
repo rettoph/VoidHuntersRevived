@@ -1,5 +1,6 @@
 ﻿using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
+using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,6 +10,7 @@ using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities.Interfaces;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Scenes.Interfaces;
+using VoidHuntersRevived.Networking.Interfaces;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -21,8 +23,15 @@ namespace VoidHuntersRevived.Library.Entities
         public World World { get; private set; }
         public Body Body { get; protected set; }
 
+        public Int64 Id { get; private set; }
+
         public FarseerEntity(EntityInfo info, IGame game) : base(info, game)
         {
+            this.Id = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0);
+        }
+        public FarseerEntity(Int64 id, EntityInfo info, IGame game) : base(info, game)
+        {
+            this.Id = id;
         }
 
         protected override void Initialize()

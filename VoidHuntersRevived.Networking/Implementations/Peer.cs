@@ -11,6 +11,7 @@ namespace VoidHuntersRevived.Networking.Implementations
 {
     public abstract class Peer : Group, IPeer
     {
+        public Int64 UniqueIdentifier { get { return _peer.UniqueIdentifier; } }
         public GroupCollection Groups { get; protected set; }
 
         protected NetPeer _peer;
@@ -25,6 +26,7 @@ namespace VoidHuntersRevived.Networking.Implementations
 
             _configuration = new NetPeerConfiguration(appIdentifier);
             _configuration.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
+            _configuration.EnableMessageType(NetIncomingMessageType.UnconnectedData);
             _configuration.EnableMessageType(NetIncomingMessageType.ConnectionLatencyUpdated);
             _configuration.ConnectionTimeout = 10;
         }

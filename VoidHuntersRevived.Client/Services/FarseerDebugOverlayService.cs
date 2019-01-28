@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Client.Services
     {
         private SpriteBatch _spriteBatch;
         private DebugViewXNA _debug;
-        private MainSceneClient _scene;
+        private ClientMainScene _scene;
         private GraphicsDevice _graphics;
         private ContentManager _content;
 
@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Client.Services
 
         protected override void PostInitialize()
         {
-            _scene = this.Scene as MainSceneClient;
+            _scene = this.Scene as ClientMainScene;
             _debug = new DebugViewXNA(_scene.World);
             _debug.LoadContent(_graphics, _content);
 

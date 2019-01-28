@@ -20,6 +20,8 @@ using VoidHuntersRevived.Client.Entities.Ships;
 using VoidHuntersRevived.Networking.Peers;
 using VoidHuntersRevived.Networking.Implementations;
 using VoidHuntersRevived.Networking.Interfaces;
+using Lidgren.Network;
+using VoidHuntersRevived.Networking.Enums;
 
 namespace VoidHuntersRevived.Client
 {
@@ -44,7 +46,7 @@ namespace VoidHuntersRevived.Client
             base.PreInitialize();
 
             var sceneFactory = this.Provider.GetService<SceneFactory>();
-            sceneFactory.ApplyConfiguration<MainSceneClient>(new MainSceneClientConfiguration());
+            sceneFactory.ApplyConfiguration<ClientMainScene>(new MainSceneClientConfiguration());
 
             var stringLoader = this.Provider.GetLoader<StringLoader>();
             stringLoader.Register("entity_name:camera", "Camera");
@@ -53,13 +55,13 @@ namespace VoidHuntersRevived.Client
             stringLoader.Register("entity_name:cursor", "Cursor");
             stringLoader.Register("entity_description:cursor", "The current client's cursor.");
 
-            stringLoader.Register("entity_name:ship:current_client", "Current Client Ship");
-            stringLoader.Register("entity_description:ship:current_client", "A ship controllable by the current client.");
+            stringLoader.Register("entity_name:ship:user:current", "Current User Ship");
+            stringLoader.Register("entity_description:ship:user:current", "A ship controllable by the current user.");
 
             var entityLoader = this.Provider.GetLoader<EntityLoader>();
             entityLoader.Register<Camera>("entity:camera", "entity_name:camera", "entity_description:camera");
             entityLoader.Register<Cursor>("entity:cursor", "entity_name:cursor", "entity_description:cursor");
-            entityLoader.Register<CurrentClientShip>("entity:ship:current_client", "entity_name:ship:current_client", "entity_description:ship:current_client");
+            entityLoader.Register<CurrentUserShip>("entity:ship:user:current", "entity_name:ship:user:current", "entity_description:ship:user:current");
 
             var contentLoader = this.Provider.GetLoader<ContentLoader>();
             contentLoader.Register<Texture2D>("texture:connection_node:male", "Sprites/male-connection");
@@ -71,13 +73,15 @@ namespace VoidHuntersRevived.Client
             base.Initialize();
 
             _client = this.Provider.GetService<IPeer>() as ClientPeer;
+
+            var scene = this.Scenes.Create<ClientMainScene>();
         }
 
         protected override void PostInitialize()
         {
             base.PostInitialize();
 
-            var hail = _client.CreateMessage();
+            var hail = _client.CreateMessage(MessageType.ConnectionApproval);
             hail.Write("Rettoph");
             _client.Connect("localhost", 1337, hail);
         }

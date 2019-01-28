@@ -13,11 +13,11 @@ using VoidHuntersRevived.Library.Entities.Ships;
 
 namespace VoidHuntersRevived.Client.Entities.Ships
 {
-    class CurrentClientShip : Ship
+    class CurrentUserShip : Ship
     {
-        private MainSceneClient _scene;
+        private ClientMainScene _scene;
 
-        public CurrentClientShip(EntityInfo info, IGame game) : base(info, game)
+        public CurrentUserShip(EntityInfo info, IGame game) : base(info, game)
         {
         }
 
@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Client.Entities.Ships
         {
             base.Initialize();
 
-            _scene = this.Scene as MainSceneClient;
+            _scene = this.Scene as ClientMainScene;
         }
 
         public override void Update(GameTime gameTime)

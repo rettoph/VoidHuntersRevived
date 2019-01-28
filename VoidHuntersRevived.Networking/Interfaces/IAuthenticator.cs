@@ -14,6 +14,6 @@ namespace VoidHuntersRevived.Networking.Interfaces
     /// </summary>
     public interface IAuthenticator
     {
-        AuthenticationResponse Authenticate(ServerPeer server, NetIncomingMessage im);
+        AuthenticationResponse Authenticate(ServerPeer server, NetConnection connection);
     }
 }

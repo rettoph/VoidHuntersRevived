@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Client.Services
 {
     public class CameraControllerService : SceneObject, ISceneService
     {
-        private MainSceneClient _scene;
+        private ClientMainScene _scene;
         private Camera _camera;
         private Int32 _lastScrollWheelValue;
         private Int32 _scrollWheelDelta;
@@ -41,6 +41,7 @@ namespace VoidHuntersRevived.Client.Services
 
             _lastScrollWheelValue = mouse.ScrollWheelValue;
 
+            /*
             // Update followed ship
             var keyboard = Keyboard.GetState();
 
@@ -58,6 +59,7 @@ namespace VoidHuntersRevived.Client.Services
 
             if (keyboard.IsKeyDown(Keys.E))
                 _camera.Follow.Body.ApplyAngularImpulse(0.01f);
+            */
         }
 
         protected override void Boot()
@@ -77,7 +79,7 @@ namespace VoidHuntersRevived.Client.Services
 
         protected override void PostInitialize()
         {
-            _scene = this.Scene as MainSceneClient;
+            _scene = this.Scene as ClientMainScene;
             _camera = _scene.Camera;
         }
     }

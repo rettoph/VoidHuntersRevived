@@ -55,12 +55,12 @@
     <Compile Include="Configurations\MainSceneClientConfiguration.cs" />
     <Compile Include="Entities\Camera.cs" />
     <Compile Include="Entities\Cursor.cs" />
-    <Compile Include="Entities\Ships\CurrentClientShip.cs" />
+    <Compile Include="Entities\Ships\CurrentUserShip.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Layers\FarseerEntityLayer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scenes\MainSceneClient.cs" />
+    <Compile Include="Scenes\ClientMainScene.cs" />
     <Compile Include="Services\CameraControllerService.cs" />
     <Compile Include="Services\FarseerDebugOverlayService.cs" />
     <Compile Include="VoidHuntersRevivedClientGame.cs" />

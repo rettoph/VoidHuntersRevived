@@ -28,7 +28,8 @@ namespace VoidHuntersRevived.Networking.Groups
         #region Send Methods
         public override void SendMessage(NetOutgoingMessage msg, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, int sequenceChannel = 0)
         {
-            _server.SendMessage(msg, _connections, method, sequenceChannel);
+            if(_connections.Count > 0)
+                _server.SendMessage(msg, _connections, method, sequenceChannel);
         }
         #endregion
 
@@ -69,6 +70,13 @@ namespace VoidHuntersRevived.Networking.Groups
 
             // Add the new user to the connections list
             _connections.Add(connection);
+
+            foreach(IUser user in this.Users)
+            { // Send every connected user (including the new user) to the new user
+                om = this.CreateMessage(MessageType.UserJoined);
+                user.Write(om);
+                this.SendMessage(om, NetDeliveryMethod.ReliableOrdered);
+            }
         }
 
         private void HandleUserRemoved(object sender, IUser e)

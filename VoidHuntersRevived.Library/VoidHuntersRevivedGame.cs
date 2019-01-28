@@ -16,6 +16,7 @@ using VoidHuntersRevived.Library.Entities.MetaData;
 using FarseerPhysics;
 using VoidHuntersRevived.Library.Entities.ConnectionNodes;
 using VoidHuntersRevived.Networking;
+using VoidHuntersRevived.Library.Entities.Ships;
 
 namespace VoidHuntersRevived.Library
 {
@@ -39,12 +40,16 @@ namespace VoidHuntersRevived.Library
             stringLoader.Register("entity_name:wall", "Wall");
             stringLoader.Register("entity_description:wall", "A collection of Farseer rectangles forming an enclosed arena.");
 
+            stringLoader.Register("entity_name:ship:user", "User Ship");
+            stringLoader.Register("entity_description:ship:user", "A ship controllable by a user.");
+
             stringLoader.Register("entity_name:hull_square", "Hull Square");
             stringLoader.Register("entity_description:hull_square", "A Simple hull square.");
 
             var entityLoader = this.Provider.GetLoader<EntityLoader>();
             entityLoader.Register<TractorBeam>("entity:tractor_beam", "entity_name:tractor_beam", "entity_description:tractor_beam");
             entityLoader.Register<Wall>("entity:wall", "entity_name:wall", "entity_description:wall");
+            entityLoader.Register<UserShip>("entity:ship:user", "entity_name:ship:user", "entity_description:ship:user");
             entityLoader.Register<MaleConnectionNode>("entity:connection_node:male");
             entityLoader.Register<FemaleConnectionNode>("entity:connection_node:female");
 

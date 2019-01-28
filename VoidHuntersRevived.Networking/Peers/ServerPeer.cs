@@ -8,6 +8,7 @@ using VoidHuntersRevived.Networking.Enums;
 using VoidHuntersRevived.Networking.Groups;
 using VoidHuntersRevived.Networking.Implementations;
 using VoidHuntersRevived.Networking.Interfaces;
+using VoidHuntersRevived.Networking.Responses;
 
 namespace VoidHuntersRevived.Networking.Peers
 {
@@ -83,12 +84,13 @@ namespace VoidHuntersRevived.Networking.Peers
         {
             _logger.LogDebug("New incoming connection...");
 
-            var target = (MessageTarget)im.ReadByte();
-            var authResponse = this.Authenticator.Authenticate(this, im);
+            var target = (MessageTarget)im.SenderConnection.RemoteHailMessage.ReadByte();
+            var type = (MessageType)im.SenderConnection.RemoteHailMessage.ReadByte();
+            AuthenticationResponse authResponse = this.Authenticator.Authenticate(this, im.SenderConnection);
 
             // Ensure that the incoming message contains the peer target type
 
-            if (target != MessageTarget.Peer)
+            if (target != MessageTarget.Peer || type != MessageType.ConnectionApproval)
             {
                 _logger.LogWarning("Connection denied. Malformed packet.");
                 im.SenderConnection.Deny("Malformed packet");
@@ -134,12 +136,14 @@ namespace VoidHuntersRevived.Networking.Peers
                     // from the _approvedUsers collection and add it to the global users collection
                     user = _approvedUsers.GetById(im.SenderConnection.RemoteUniqueIdentifier);
                     this.Users.Add(user);
+                    this.DataHandler?.HandleUserJoined(user, im.SenderConnection);
                     _approvedUsers.Remove(user);
                     break;
                 case NetConnectionStatus.Disconnecting:
                     break;
                 case NetConnectionStatus.Disconnected:
                     user = this.Users.GetById(im.SenderConnection.RemoteUniqueIdentifier);
+                    this.DataHandler?.HandleUserLeft(user, im.SenderConnection);
                     user.Disconnect();
                     break;
             }
@@ -171,6 +175,10 @@ namespace VoidHuntersRevived.Networking.Peers
         public void SendMessage(NetOutgoingMessage msg, List<NetConnection> recipients, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, Int32 sequenceChannel = 0)
         {
             _server.SendMessage(msg, recipients, method, sequenceChannel);
+        }
+        public void SendMessage(NetOutgoingMessage msg, NetConnection recipient, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, Int32 sequenceChannel = 0)
+        {
+            _server.SendMessage(msg, recipient, method, sequenceChannel);
         }
         public override void SendMessage(NetOutgoingMessage msg, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, int sequenceChannel = 0)
         {

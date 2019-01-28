@@ -26,7 +26,10 @@ namespace VoidHuntersRevived.Networking.Groups
         #region MessageType Handlers
         protected override void HandleUserJoined(NetIncomingMessage im)
         {
-            throw new NotImplementedException();
+            var user = new User(im.ReadInt64(), im.ReadString());
+            this.Users.Add(user);
+
+            this.DataHandler?.HandleUserJoined(user);
         }
 
         protected override void HandleUserLeft(NetIncomingMessage im)

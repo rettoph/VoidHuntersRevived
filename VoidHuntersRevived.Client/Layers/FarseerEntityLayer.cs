@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Client.Layers
     public class FarseerEntityLayer : Layer
     {
         private SpriteBatch _spriteBatch;
-        private MainSceneClient _scene;
+        private ClientMainScene _scene;
 
         public FarseerEntityLayer(SpriteBatch spriteBatch, IGame game) : base(game)
         {
@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Client.Layers
 
         protected override void Initialize()
         {
-            _scene = this.Scene as MainSceneClient;
+            _scene = this.Scene as ClientMainScene;
         }
 
         protected override void PostInitialize()

@@ -38,6 +38,7 @@ namespace VoidHuntersRevived.Networking.Implementations
                     switch ((MessageType)_im.ReadByte())
                     {
                         case MessageType.Data:
+                            this.DataHandler?.HandleData(_im);
                             break;
                         case MessageType.UserJoined:
                             this.HandleUserJoined(_im);

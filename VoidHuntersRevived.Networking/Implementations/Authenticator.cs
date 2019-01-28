@@ -14,13 +14,14 @@ namespace VoidHuntersRevived.Networking.Implementations
     /// </summary>
     public class Authenticator : IAuthenticator
     {
-        public AuthenticationResponse Authenticate(ServerPeer server, NetIncomingMessage im)
+        public AuthenticationResponse Authenticate(ServerPeer server, NetConnection connection)
         {
+            var name = connection.RemoteHailMessage.ReadString();
             var response = new AuthenticationResponse(
                 true,
                 new User(
-                    im.SenderConnection.RemoteUniqueIdentifier,
-                    im.ReadString()));
+                    connection.RemoteUniqueIdentifier,
+                    name));
 
             return response;
         }

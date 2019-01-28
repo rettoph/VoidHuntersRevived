@@ -15,6 +15,8 @@ using VoidHuntersRevived.Core.Loaders;
 using VoidHuntersRevived.Core.Factories;
 using VoidHuntersRevived.Networking.Peers;
 using VoidHuntersRevived.Networking.Interfaces;
+using Lidgren.Network;
+using VoidHuntersRevived.Server.Scenes;
 
 namespace VoidHuntersRevived.Server
 {
@@ -30,5 +32,22 @@ namespace VoidHuntersRevived.Server
 
             services.AddSingleton<IPeer>(new ServerPeer("vhr", 1337, this, this.Logger));
         }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            var scene = this.Scenes.Create<ServerMainScene>();
+
+            this.Peer.Users.OnAdd += this.HandleUserAdd;
+        }
+
+        private void HandleUserAdd(object sender, IUser e)
+        {
+            this.Peer.Groups.GetById(69).Users.Add(e);
+        }
+
+        #region Event Handlers
+        #endregion
     }
 }

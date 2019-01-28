@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Client.Entities
 {
     public class Cursor : FarseerEntity
     {
-        private MainSceneClient _scene;
+        private ClientMainScene _scene;
         private MouseState _mouse;
 
         private List<IFarseerEntity> _contacts;
@@ -55,7 +55,7 @@ namespace VoidHuntersRevived.Client.Entities
         {
             base.Initialize();
 
-            _scene = this.Scene as MainSceneClient;
+            _scene = this.Scene as ClientMainScene;
 
             this.Body.CreateFixture(
                 new CircleShape(2, 0f));
@@ -79,9 +79,13 @@ namespace VoidHuntersRevived.Client.Entities
         {
             if(contact.FixtureB.Body == this.Body)
                 if (contact.FixtureA.Body.UserData is IFarseerEntity)
-                    using (var entity = contact.FixtureA.Body.UserData as IFarseerEntity)
-                        if (!_contacts.Contains(entity))
-                            _contacts.Add(entity);
+                {
+                    var entity = contact.FixtureA.Body.UserData as IFarseerEntity;
+
+                    if (!_contacts.Contains(entity))
+                        _contacts.Add(entity);
+                }
+                        
 
             return true;
         }

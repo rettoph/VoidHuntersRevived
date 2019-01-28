@@ -6,6 +6,7 @@ namespace VoidHuntersRevived.Networking.Enums
 {
     public enum MessageType
     {
+        ConnectionApproval,
         Data,
         UserJoined,
         UserLeft

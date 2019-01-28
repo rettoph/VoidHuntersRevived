@@ -9,16 +9,18 @@ using VoidHuntersRevived.Core.Implementations;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Scenes.Interfaces;
+using VoidHuntersRevived.Networking.Interfaces;
+using VoidHuntersRevived.Networking.Scenes;
 
 namespace VoidHuntersRevived.Library.Scenes
 {
     /// <summary>
     /// The main scene will manage actual gameplay within the game
     /// </summary>
-    public class MainScene : Scene, IFarseerScene
+    public class MainScene : NetworkScene, IFarseerScene
     {
         public World World { get; set; }
-        public Wall Wall { get; set; }
+        public IGroup Group { get; set; }
 
         public MainScene(IServiceProvider provider, IGame game) : base(provider, game)
         {
@@ -30,10 +32,6 @@ namespace VoidHuntersRevived.Library.Scenes
 
             // Create a new farseer world
             this.World = new World(Vector2.Zero);
-
-            // Create and setup a new wall
-            this.Wall = this.Entities.Create<Wall>("entity:wall");
-            this.Wall.Configure(50, 50);
         }
 
         public override void Update(GameTime gameTime)
