@@ -17,14 +17,13 @@ namespace VoidHuntersRevived.Networking.Interfaces
 
         IPeer Peer { get; }
 
-        IDataHandler DataHandler { get; set; }
-
         UserCollection Users { get; }
+
+        Dictionary<String, Action<NetIncomingMessage>> MessageTypeHandlers { get; }
 
         Queue<NetIncomingMessage> UnreadMessagesQueue { get; }
 
-        NetOutgoingMessage CreateMessage();
-        NetOutgoingMessage CreateMessage(MessageType type);
+        NetOutgoingMessage CreateMessage(String messageType);
 
         void Update();
 

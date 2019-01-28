@@ -14,7 +14,6 @@ using VoidHuntersRevived.Client.Layers;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
-using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Networking.Groups;
 using VoidHuntersRevived.Networking.Interfaces;
@@ -22,7 +21,7 @@ using VoidHuntersRevived.Networking.Peers;
 
 namespace VoidHuntersRevived.Client.Scenes
 {
-    public class ClientMainScene : MainScene, IDataHandler
+    public class ClientMainScene : MainScene
     {
         public Camera Camera { get; set; }
         public Cursor Cursor { get; set; }
@@ -45,8 +44,9 @@ namespace VoidHuntersRevived.Client.Scenes
             base.Initialize();
 
             _group = _client.Groups.GetById(69) as ClientGroup;
-            _group.DataHandler = this;
             this.Group = _group;
+            this.Group.MessageTypeHandlers.Add("setup", this.HandleSetupMessage);
+            this.Group.MessageTypeHandlers.Add("create", this.HandleCreateMessage);
 
             var layer = this.Layers.Create<FarseerEntityLayer>();
             this.Entities.SetDefaultLayer(layer);
@@ -71,34 +71,20 @@ namespace VoidHuntersRevived.Client.Scenes
             base.Draw(gameTime);
         }
 
-        #region IDataHandler Implementation
-        public void HandleData(NetIncomingMessage data)
+        #region MessageType Handlers
+        private void HandleSetupMessage(NetIncomingMessage im)
         {
-            switch ((DataAction)data.ReadByte())
-            {
-                case DataAction.Configure:
-                    this.World.Gravity = data.ReadVector2();
-                    var wall = this.Entities.Create<Wall>(data.ReadString(), null, data.ReadInt64());
-                    wall.Read(data);
-                    break;
-                case DataAction.Create:
-                    break;
-                case DataAction.Update:
-                    break;
-                case DataAction.Delete:
-                    break;
-            }
-
+            this.World.Gravity = im.ReadVector2();
         }
 
-        public void HandleUserJoined(IUser user, NetConnection connection = null)
+        /// <summary>
+        /// Used to create an entity when commanded by the server
+        /// </summary>
+        /// <param name="obj"></param>
+        private void HandleCreateMessage(NetIncomingMessage im)
         {
-            // throw new NotImplementedException();
-        }
-
-        public void HandleUserLeft(IUser user, NetConnection connection = null)
-        {
-            throw new NotImplementedException();
+            INetworkEntity entity = this.Entities.Create<INetworkEntity>(im.ReadString(), null, im.ReadInt64());
+            entity.Read(im);
         }
         #endregion
     }

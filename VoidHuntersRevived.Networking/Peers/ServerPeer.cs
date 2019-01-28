@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Networking.Peers
         {
             while ((_im = _peer.ReadMessage()) != null)
             { // Read any new incoming messages
-                _logger.LogInformation(_im.MessageType.ToString());
+                Logger.LogInformation(_im.MessageType.ToString());
 
                 switch (_im.MessageType)
                 {
@@ -82,28 +82,28 @@ namespace VoidHuntersRevived.Networking.Peers
         /// <param name="im"></param>
         protected virtual void HandleConnectionApprovalMessage(NetIncomingMessage im)
         {
-            _logger.LogDebug("New incoming connection...");
+            Logger.LogDebug("New incoming connection...");
 
             var target = (MessageTarget)im.SenderConnection.RemoteHailMessage.ReadByte();
-            var type = (MessageType)im.SenderConnection.RemoteHailMessage.ReadByte();
+            var messageType = im.SenderConnection.RemoteHailMessage.ReadString();
             AuthenticationResponse authResponse = this.Authenticator.Authenticate(this, im.SenderConnection);
 
             // Ensure that the incoming message contains the peer target type
 
-            if (target != MessageTarget.Peer || type != MessageType.ConnectionApproval)
+            if (target != MessageTarget.Peer || messageType != "network:user:connection-request")
             {
-                _logger.LogWarning("Connection denied. Malformed packet.");
+                Logger.LogWarning("Connection denied. Malformed packet.");
                 im.SenderConnection.Deny("Malformed packet");
 
             }
             else if(!authResponse.Authenticated)
             {
-                _logger.LogWarning("Connection denied. Unauthorized.");
+                Logger.LogWarning("Connection denied. Unauthorized.");
                 im.SenderConnection.Deny("Unauthorized");
             }
             else
             {
-                _logger.LogDebug("Connection approved.");
+                Logger.LogDebug("Connection approved.");
 
                 // Add the user to the hidden approved users list
                 _approvedUsers.Add(authResponse.User);
@@ -115,7 +115,7 @@ namespace VoidHuntersRevived.Networking.Peers
 
         private void HandleStatusChanged(NetIncomingMessage im)
         {
-            _logger.LogTrace(im.SenderConnection.Status.ToString());
+            Logger.LogTrace(im.SenderConnection.Status.ToString());
 
             IUser user;
 
@@ -136,14 +136,12 @@ namespace VoidHuntersRevived.Networking.Peers
                     // from the _approvedUsers collection and add it to the global users collection
                     user = _approvedUsers.GetById(im.SenderConnection.RemoteUniqueIdentifier);
                     this.Users.Add(user);
-                    this.DataHandler?.HandleUserJoined(user, im.SenderConnection);
                     _approvedUsers.Remove(user);
                     break;
                 case NetConnectionStatus.Disconnecting:
                     break;
                 case NetConnectionStatus.Disconnected:
                     user = this.Users.GetById(im.SenderConnection.RemoteUniqueIdentifier);
-                    this.DataHandler?.HandleUserLeft(user, im.SenderConnection);
                     user.Disconnect();
                     break;
             }

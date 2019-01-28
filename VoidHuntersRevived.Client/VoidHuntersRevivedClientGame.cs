@@ -81,7 +81,7 @@ namespace VoidHuntersRevived.Client
         {
             base.PostInitialize();
 
-            var hail = _client.CreateMessage(MessageType.ConnectionApproval);
+            var hail = _client.CreateMessage("network:user:connection-request");
             hail.Write("Rettoph");
             _client.Connect("localhost", 1337, hail);
         }

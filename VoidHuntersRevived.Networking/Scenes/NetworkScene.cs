@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Core.Implementations;
 using VoidHuntersRevived.Core.Interfaces;
+using VoidHuntersRevived.Networking.Collections;
 using VoidHuntersRevived.Networking.Interfaces;
 
 namespace VoidHuntersRevived.Networking.Scenes
 {
     public class NetworkScene : Scene
     {
-        protected Dictionary<Int64, INetworkEntity> NetworkEntityTable;
+        protected NetworkEntityCollection NetworkEntities;
 
         public NetworkScene(IServiceProvider provider, IGame game) : base(provider, game)
         {
-            this.NetworkEntityTable = new Dictionary<Int64, INetworkEntity>();
+            this.NetworkEntities = new NetworkEntityCollection();
         }
 
         protected override void Initialize()
@@ -29,7 +30,7 @@ namespace VoidHuntersRevived.Networking.Scenes
             if (e is INetworkEntity)
             {
                 var ne = e as INetworkEntity;
-                this.NetworkEntityTable.Add(ne.Id, ne);
+                this.NetworkEntities.Add(ne);
             }
         }
 
@@ -38,7 +39,7 @@ namespace VoidHuntersRevived.Networking.Scenes
             if (e is INetworkEntity)
             {
                 var ne = e as INetworkEntity;
-                this.NetworkEntityTable.Remove(ne.Id);
+                this.NetworkEntities.Remove(ne);
             }
                     
         }

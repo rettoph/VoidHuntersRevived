@@ -15,11 +15,13 @@ namespace VoidHuntersRevived.Networking.Groups
     {
         private ServerPeer _server;
         private List<NetConnection> _connections;
+        private Dictionary<Int64, NetConnection> _connectionTable;
 
         public ServerGroup(Int64 id, ServerPeer peer) : base(id, peer)
         {
             _server = peer;
             _connections = new List<NetConnection>();
+            _connectionTable = new Dictionary<Int64, NetConnection>();
 
             this.Users.OnAdd += this.HandleUserAdded;
             this.Users.OnRemove += this.HandleUserRemoved;
@@ -30,6 +32,16 @@ namespace VoidHuntersRevived.Networking.Groups
         {
             if(_connections.Count > 0)
                 _server.SendMessage(msg, _connections, method, sequenceChannel);
+        }
+        public void SendMessage(NetOutgoingMessage msg, NetConnection recipient, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, int sequenceChannel = 0)
+        {
+            if (_connections.Contains(recipient))
+                _server.SendMessage(msg, recipient, method, sequenceChannel);
+        }
+        public void SendMessage(NetOutgoingMessage msg, IUser user, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, int sequenceChannel = 0)
+        {
+            if (this.Users.GetById(user.Id) != null)
+                _server.SendMessage(msg, _connectionTable[user.Id], method, sequenceChannel);
         }
         #endregion
 
@@ -60,20 +72,20 @@ namespace VoidHuntersRevived.Networking.Groups
         {
             // When a new user gets added to the group, we want to send a message to all connected users
             // Alerting them of the new user
-            var om = this.CreateMessage(MessageType.UserJoined);
+            var om = this.CreateMessage("network:user:joined");
             e.Write(om);
             this.SendMessage(om, NetDeliveryMethod.ReliableOrdered);
 
             // Run the custom updator (if needed)
             var connection = _server.Connections.First(c => c.RemoteUniqueIdentifier == e.Id);
-            this.DataHandler?.HandleUserJoined(e, connection);
 
             // Add the new user to the connections list
             _connections.Add(connection);
+            _connectionTable.Add(connection.RemoteUniqueIdentifier, connection);
 
-            foreach(IUser user in this.Users)
+            foreach (IUser user in this.Users)
             { // Send every connected user (including the new user) to the new user
-                om = this.CreateMessage(MessageType.UserJoined);
+                om = this.CreateMessage("network:user:joined");
                 user.Write(om);
                 this.SendMessage(om, NetDeliveryMethod.ReliableOrdered);
             }
@@ -81,7 +93,10 @@ namespace VoidHuntersRevived.Networking.Groups
 
         private void HandleUserRemoved(object sender, IUser e)
         {
-            _connections.Remove(_server.Connections.First(c => c.RemoteUniqueIdentifier == e.Id));
+            var connection = _server.Connections.First(c => c.RemoteUniqueIdentifier == e.Id);
+
+            _connections.Remove(connection);
+            _connectionTable.Remove(connection.RemoteUniqueIdentifier);
         }
         #endregion
     }

@@ -1,4 +1,5 @@
 ﻿using Lidgren.Network;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,6 +13,8 @@ namespace VoidHuntersRevived.Networking.Interfaces
         Int64 UniqueIdentifier { get; }
 
         GroupCollection Groups { get; }
+
+        ILogger Logger { get; }
 
         void Start();
 

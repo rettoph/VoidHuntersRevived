@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Networking.Peers
         {
             while ((_im = _peer.ReadMessage()) != null)
             { // Read any new incoming messages
-                _logger.LogInformation(_im.MessageType.ToString());
+                Logger.LogInformation(_im.MessageType.ToString());
 
                 switch (_im.MessageType)
                 {

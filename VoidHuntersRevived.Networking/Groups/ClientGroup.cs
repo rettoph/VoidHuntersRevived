@@ -11,11 +11,8 @@ namespace VoidHuntersRevived.Networking.Groups
     {
         public ClientGroup(long id, IPeer peer) : base(id, peer)
         {
-        }
-
-        public override NetOutgoingMessage CreateMessage()
-        {
-            throw new NotImplementedException();
+            this.MessageTypeHandlers.Add("network:user:joined", this.HandleUserJoined);
+            this.MessageTypeHandlers.Add("network:user:left", this.HandleUserLeft);
         }
 
         public override void SendMessage(NetOutgoingMessage msg, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, int sequenceChannel = 0)
@@ -28,8 +25,6 @@ namespace VoidHuntersRevived.Networking.Groups
         {
             var user = new User(im.ReadInt64(), im.ReadString());
             this.Users.Add(user);
-
-            this.DataHandler?.HandleUserJoined(user);
         }
 
         protected override void HandleUserLeft(NetIncomingMessage im)

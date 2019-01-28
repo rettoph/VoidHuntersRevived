@@ -16,13 +16,13 @@ namespace VoidHuntersRevived.Networking.Implementations
 
         protected NetPeer _peer;
         protected NetPeerConfiguration _configuration;
-        protected ILogger _logger;
+        public ILogger Logger { get; private set; }
         private NetOutgoingMessage _om;
 
         public Peer(String appIdentifier, INetworkGame game, ILogger logger)
             : base(-1, null)
         {
-            _logger = logger;
+            Logger = logger;
 
             _configuration = new NetPeerConfiguration(appIdentifier);
             _configuration.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
@@ -37,20 +37,16 @@ namespace VoidHuntersRevived.Networking.Implementations
         /// </summary>
         public void Start()
         {
-            _logger.LogDebug("Starting peer...");
+            Logger.LogDebug("Starting peer...");
             _peer.Start();
         }
         #endregion
 
         #region IGroup Implementation
-        public override NetOutgoingMessage CreateMessage()
+        public override NetOutgoingMessage CreateMessage(String messageType)
         {
-            return this.CreateMessage(MessageType.Data);
-        }
-        public override NetOutgoingMessage CreateMessage(MessageType type)
-        {
-            _om =  this.CreateMessage(MessageTarget.Peer);
-            _om.Write((Byte)type);
+            _om = this.CreateMessage(MessageTarget.Peer);
+            _om.Write(messageType);
 
             return _om;
         }

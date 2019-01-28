@@ -5,7 +5,6 @@ using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Library.Entities;
-using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Networking.Groups;
 using VoidHuntersRevived.Networking.Interfaces;
@@ -14,7 +13,7 @@ using Lidgren.Network.Xna;
 
 namespace VoidHuntersRevived.Server.Scenes
 {
-    public class ServerMainScene : MainScene, IDataHandler
+    public class ServerMainScene : MainScene
     {
         public Wall Wall { get; protected set; }
 
@@ -31,8 +30,10 @@ namespace VoidHuntersRevived.Server.Scenes
             base.Initialize();
 
             _group = _server.Groups.GetById(69) as ServerGroup;
-            _group.DataHandler = this;
             this.Group = _group;
+
+            // Add group events
+            this.Group.Users.OnAdd += this.HandlerUserJoined;
 
             // Create and setup a new wall
             this.Wall = this.Entities.Create<Wall>("entity:wall");
@@ -47,26 +48,24 @@ namespace VoidHuntersRevived.Server.Scenes
             _group.Update();
         }
 
-        public void HandleData(NetIncomingMessage data)
+        private void HandlerUserJoined(object sender, IUser e)
         {
-            throw new NotImplementedException();
-        }
+            // When a user joins we will send them a quick update about the current state of
+            // the scene
+            var om = this.Group.CreateMessage("setup");
 
-        public void HandleUserJoined(IUser user, NetConnection connection = null)
-        {
-            // Send the user the current world state...
-            var om = this.Group.CreateMessage();
-            om.Write((Byte)DataAction.Configure);
             om.Write(this.World.Gravity);
-            this.Wall.Create(om);
 
-            // Update the client with the basic world data
-            _server.SendMessage(om, connection, NetDeliveryMethod.ReliableOrdered, 0);
-        }
+            // Send the message
+            _group.SendMessage(om, e, NetDeliveryMethod.ReliableOrdered, 0);
 
-        public void HandleUserLeft(IUser user, NetConnection connection = null)
-        {
-            throw new NotImplementedException();
+            foreach(INetworkEntity ne in this.NetworkEntities)
+            {
+                om = this.Group.CreateMessage("create");
+                ne.Create(om);
+
+                _group.SendMessage(om, e, NetDeliveryMethod.ReliableOrdered, 0);
+            }
         }
     }
 }
