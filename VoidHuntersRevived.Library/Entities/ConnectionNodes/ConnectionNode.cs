@@ -24,18 +24,22 @@ namespace VoidHuntersRevived.Library.Entities.ConnectionNodes
         private ShipPart _owner;
 
         #region Constructors
-        public ConnectionNode(String textureName, Vector3 connectionData, ShipPart owner, EntityInfo info, IServiceProvider provider, IGame game)
+        public ConnectionNode(String textureName, Vector3 connectionData, ShipPart owner, EntityInfo info, IServiceProvider provider, IGame game, SpriteBatch spriteBatch = null)
             : base(info, game)
         {
-            var contentLoader = provider.GetLoader<ContentLoader>();
-            _texture = contentLoader.Get<Texture2D>(textureName);
-            _spriteBatch = provider.GetService(typeof(SpriteBatch)) as SpriteBatch;
+            if (spriteBatch != null)
+            {
+                var contentLoader = provider.GetLoader<ContentLoader>();
+                _texture = contentLoader.Get<Texture2D>(textureName);
+                _spriteBatch = spriteBatch;
+                //_spriteBatch = provider.GetService(typeof(SpriteBatch)) as SpriteBatch;
 
-            // Calculate the centerpoint of the connection node texture
-            _origin = _texture == null ? Vector2.Zero : new Vector2(_texture.Bounds.Width / 2, _texture.Bounds.Height / 2);
+                // Calculate the centerpoint of the connection node texture
+                _origin = _texture == null ? Vector2.Zero : new Vector2(_texture.Bounds.Width / 2, _texture.Bounds.Height / 2);
 
-            this.DrawOrder = 10;
-            this.Visible = true;
+                this.DrawOrder = 10;
+                this.Visible = true;
+            }
 
             // Run the general constructor
             this.Construct(connectionData, owner);

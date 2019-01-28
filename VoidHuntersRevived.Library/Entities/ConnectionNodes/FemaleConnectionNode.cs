@@ -11,8 +11,8 @@ namespace VoidHuntersRevived.Library.Entities.ConnectionNodes
 {
     public class FemaleConnectionNode : ConnectionNode
     {
-        public FemaleConnectionNode(Vector3 connectionData, ShipPart owner, EntityInfo info, IServiceProvider provider, IGame game)
-            : base("texture:connection_node:female", connectionData, owner, info, provider, game)
+        public FemaleConnectionNode(Vector3 connectionData, ShipPart owner, EntityInfo info, IServiceProvider provider, IGame game, SpriteBatch spriteBatch = null)
+            : base("texture:connection_node:female", connectionData, owner, info, provider, game, spriteBatch)
         {
         }
     }
