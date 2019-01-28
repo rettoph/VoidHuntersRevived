@@ -63,22 +63,16 @@ namespace VoidHuntersRevived.Library.Entities
         }
 
         #region INetworkEntity Methods
-        public void Write(NetOutgoingMessage om)
+        public override void Write(NetOutgoingMessage om)
         {
             om.Write(this.Id);
             om.Write(this.Boundaries.Width);
             om.Write(this.Boundaries.Height);
         }
 
-        public void Read(NetIncomingMessage im)
+        public override void Read(NetIncomingMessage im)
         {
             this.Configure(im.ReadSingle(), im.ReadSingle());
-        }
-
-        public void Create(NetOutgoingMessage om)
-        {
-            om.Write(this.Info.Handle);
-            this.Write(om);
         }
         #endregion
     }

@@ -43,8 +43,8 @@ namespace VoidHuntersRevived.Library
             stringLoader.Register("entity_name:ship:user", "User Ship");
             stringLoader.Register("entity_description:ship:user", "A ship controllable by a user.");
 
-            stringLoader.Register("entity_name:hull_square", "Hull Square");
-            stringLoader.Register("entity_description:hull_square", "A Simple hull square.");
+            stringLoader.Register("entity_name:hull:square", "Hull Square");
+            stringLoader.Register("entity_description:hull:square", "A Simple hull square.");
 
             var entityLoader = this.Provider.GetLoader<EntityLoader>();
             entityLoader.Register<TractorBeam>("entity:tractor_beam", "entity_name:tractor_beam", "entity_description:tractor_beam");
@@ -55,9 +55,9 @@ namespace VoidHuntersRevived.Library
 
             // Register all the default hull piece types
             entityLoader.Register<Hull>(
-                handle: "entity:hull_square",
-                nameHandle: "entity_name:hull_square",
-                descriptionHandle: "entity_description:hull_square",
+                handle: "entity:hull:square",
+                nameHandle: "entity_name:hull:square",
+                descriptionHandle: "entity_description:hull:square",
                 data: new HullData(
                     maleConnection: new Vector3(-0.5f, 0, (float)Math.PI),
                     vertices: new Vector2[] {
@@ -73,9 +73,9 @@ namespace VoidHuntersRevived.Library
                     }));
 
             entityLoader.Register<Hull>(
-                handle: "entity:hull_beam",
-                nameHandle: "entity_name:hull_square",
-                descriptionHandle: "entity_description:hull_square",
+                handle: "entity:hull:beam",
+                nameHandle: "entity_name:hull:square",
+                descriptionHandle: "entity_description:hull:square",
                 data: new HullData(
                     maleConnection: new Vector3(-1.5f, 0, (float)Math.PI),
                     vertices: new Vector2[] {

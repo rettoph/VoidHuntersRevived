@@ -13,20 +13,24 @@ using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities.ConnectionNodes;
 using VoidHuntersRevived.Library.Entities.MetaData;
 using System.Linq;
+using Lidgren.Network;
+using Lidgren.Network.Xna;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Hulls
 {
     public class Hull : ShipPart
     {
         public readonly HullData HullData;
-        private SpriteBatch _spriteBatch;
 
         public FemaleConnectionNode[] FemaleConnectionNodes { get; private set; }
 
-        public Hull(SpriteBatch spriteBatch, IServiceProvider provider, EntityInfo info, IGame game) : base(spriteBatch, provider, info, game)
-        {
-            _spriteBatch = spriteBatch;
 
+        public Hull(EntityInfo info, IGame game) : base(info, game)
+        {
+            this.HullData = this.Info.Data as HullData;
+        }
+        public Hull(Int64 id, EntityInfo info, IGame game) : base(id, info, game)
+        {
             this.HullData = this.Info.Data as HullData;
         }
 
@@ -48,6 +52,23 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Hulls
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
+        }
+
+        public override void Read(NetIncomingMessage im)
+        {
+            this.Body.Position = im.ReadVector2();
+            this.Body.Rotation = im.ReadSingle();
+            this.Body.LinearVelocity = im.ReadVector2();
+            this.Body.AngularVelocity = im.ReadSingle();
+        }
+
+        public override void Write(NetOutgoingMessage om)
+        {
+            om.Write(this.Id);
+            om.Write(this.Body.Position);
+            om.Write(this.Body.Rotation);
+            om.Write(this.Body.LinearVelocity);
+            om.Write(this.Body.AngularVelocity);
         }
     }
 }

@@ -13,7 +13,8 @@ namespace VoidHuntersRevived.Library.Entities.ConnectionNodes
 {
     public class MaleConnectionNode : ConnectionNode
     {
-        public MaleConnectionNode(Vector3 connectionData, ShipPart owner, EntityInfo info, IServiceProvider provider, SpriteBatch spriteBatch, IGame game) : base("texture:connection_node:male", connectionData, owner, info, provider, spriteBatch, game)
+        public MaleConnectionNode(Vector3 connectionData, ShipPart owner, EntityInfo info, IServiceProvider provider, IGame game)
+            : base("texture:connection_node:male", connectionData, owner, info, provider, game)
         {
         }
     }

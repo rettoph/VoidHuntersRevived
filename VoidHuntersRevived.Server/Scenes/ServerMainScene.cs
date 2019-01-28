@@ -10,6 +10,8 @@ using VoidHuntersRevived.Networking.Groups;
 using VoidHuntersRevived.Networking.Interfaces;
 using VoidHuntersRevived.Networking.Peers;
 using Lidgren.Network.Xna;
+using VoidHuntersRevived.Server.Helpers;
+using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 
 namespace VoidHuntersRevived.Server.Scenes
 {
@@ -38,6 +40,11 @@ namespace VoidHuntersRevived.Server.Scenes
             // Create and setup a new wall
             this.Wall = this.Entities.Create<Wall>("entity:wall");
             this.Wall.Configure(5, 5);
+
+            for(Int32 i=0; i<1; i++)
+            {
+                this.Entities.Create<Hull>("entity:hull:square");
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -61,10 +68,11 @@ namespace VoidHuntersRevived.Server.Scenes
 
             foreach(INetworkEntity ne in this.NetworkEntities)
             {
-                om = this.Group.CreateMessage("create");
-                ne.Create(om);
-
-                _group.SendMessage(om, e, NetDeliveryMethod.ReliableOrdered, 0);
+                _group.SendMessage(
+                    ServerMessageHelper.BuildCreateMessage(ne, _group),
+                    e,
+                    NetDeliveryMethod.ReliableOrdered,
+                    0);
             }
         }
     }

@@ -39,5 +39,15 @@ namespace VoidHuntersRevived.Library.Entities
             this.World = (this.Scene as IFarseerScene).World;
             this.Body = BodyFactory.CreateBody(world: this.World, userData: this);
         }
+
+        public virtual void Read(NetIncomingMessage im)
+        {
+            // throw new NotImplementedException();
+        }
+
+        public virtual void Write(NetOutgoingMessage om)
+        {
+            // throw new NotImplementedException();
+        }
     }
 }

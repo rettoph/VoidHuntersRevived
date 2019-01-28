@@ -17,7 +17,9 @@ namespace VoidHuntersRevived.Library.Entities
         public TractorableEntity(EntityInfo info, IGame game) : base(info, game)
         {
         }
-
+        public TractorableEntity(Int64 id, EntityInfo info, IGame game) : base(id, info, game)
+        {
+        }
 
 
         public virtual Boolean CanBeSelectedBy(ITractorBeam tractorBeam)

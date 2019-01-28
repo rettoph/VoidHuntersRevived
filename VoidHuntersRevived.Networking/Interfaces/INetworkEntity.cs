@@ -8,6 +8,5 @@ namespace VoidHuntersRevived.Networking.Interfaces
 {
     public interface INetworkEntity : INetworkObject, IEntity
     {
-        void Create(NetOutgoingMessage om);
     }
 }

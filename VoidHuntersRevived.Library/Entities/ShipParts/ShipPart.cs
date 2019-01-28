@@ -19,20 +19,24 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
     public abstract class ShipPart : TractorableEntity
     {
-        public readonly ShipPartData ShipPartData;
+        public ShipPartData ShipPartData { get; private set; }
         public MaleConnectionNode MaleConnectionNode { get; private set; }
         public Matrix RotationMatrix { get; private set; }
 
-        private SpriteBatch _spriteBatch;
-
-        public ShipPart(SpriteBatch spriteBatch, IServiceProvider provider, EntityInfo info, IGame game) : base(info, game)
+        #region Constructors
+        public ShipPart(EntityInfo info, IGame game) : base(info, game)
         {
-            _spriteBatch = spriteBatch;
-
-            this.Visible = true;
-
-            this.ShipPartData = info.Data as ShipPartData;
+            this.Construct(info.Data as ShipPartData);
         }
+        public ShipPart(Int64 id, EntityInfo info, IGame game) : base(id, info, game)
+        {
+            this.Construct(info.Data as ShipPartData);
+        }
+        private void Construct(ShipPartData data)
+        {
+            this.ShipPartData = data;
+        }
+        #endregion
 
         protected override void Initialize()
         {
