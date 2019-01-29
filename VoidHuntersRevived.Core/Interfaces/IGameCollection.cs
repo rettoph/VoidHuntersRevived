@@ -36,5 +36,18 @@ namespace VoidHuntersRevived.Core.Interfaces
         /// </summary>
         /// <returns></returns>
         List<TObject> ToList();
+
+        /// <summary>
+        /// Return the current colletion size
+        /// </summary>
+        /// <returns></returns>
+        Int32 Count();
+
+        /// <summary>
+        /// Return an element at a specific index
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        TObject ElementAt(Int32 index);
     }
 }

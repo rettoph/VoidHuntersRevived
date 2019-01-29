@@ -43,12 +43,13 @@ namespace VoidHuntersRevived.Networking.Peers
         {
             while ((_im = _peer.ReadMessage()) != null)
             { // Read any new incoming messages
-                Logger.LogInformation(_im.MessageType.ToString());
-
                 switch (_im.MessageType)
                 {
                     case NetIncomingMessageType.Data:
                         this.HandleData(_im);
+                        break;
+                    default:
+                        Logger.LogWarning($"Unhandled MessageType => '{_im.MessageType.ToString()}'");
                         break;
                 }
             }

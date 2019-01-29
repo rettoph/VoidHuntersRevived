@@ -1,6 +1,7 @@
 ﻿using FarseerPhysics.Common;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
+using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -22,8 +23,13 @@ namespace VoidHuntersRevived.Library.Scenes
         public World World { get; set; }
         public IGroup Group { get; set; }
 
+        private INetworkEntity _dirtyEntity;
+        private NetOutgoingMessage _om;
+
+
         public MainScene(IServiceProvider provider, IGame game) : base(provider, game)
         {
+            this.Enabled = true;
         }
 
         protected override void Initialize()
@@ -39,6 +45,20 @@ namespace VoidHuntersRevived.Library.Scenes
             base.Update(gameTime);
 
             this.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
+
+            while(this.NetworkEntities.DirtyNetworkEntityQueue.Count > 0)
+            {
+                // Select the dirty entity
+                _dirtyEntity = this.NetworkEntities.DirtyNetworkEntityQueue.Dequeue();
+
+                // Create a new message and send it to the group
+                _om = this.Group.CreateMessage("update");
+                _dirtyEntity.Write(_om);
+                this.Group.SendMessage(_om, NetDeliveryMethod.UnreliableSequenced, 0);
+
+                // Mark the entity as clean
+                _dirtyEntity.Dirty = false;
+            }
         }
     }
 }

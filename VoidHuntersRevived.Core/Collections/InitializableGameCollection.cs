@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using VoidHuntersRevived.Core.Implementations;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Enums;
+using System.Linq;
 
 namespace VoidHuntersRevived.Core.Collections
 {
@@ -114,6 +115,16 @@ namespace VoidHuntersRevived.Core.Collections
         public List<TObject> ToList()
         {
             return _list;
+        }
+
+        public int Count()
+        {
+            return _list.Count();
+        }
+
+        public TObject ElementAt(int index)
+        {
+            return _list.ElementAt(index);
         }
         #endregion
 

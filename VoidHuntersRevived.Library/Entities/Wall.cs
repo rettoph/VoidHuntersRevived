@@ -21,9 +21,11 @@ namespace VoidHuntersRevived.Library.Entities
 
         public Wall(EntityInfo info, IGame game) : base(info, game)
         {
+            this.Enabled = false;
         }
         public Wall(Int64 id, EntityInfo info, IGame game) : base(id, info, game)
         {
+            this.Enabled = false;
         }
 
 

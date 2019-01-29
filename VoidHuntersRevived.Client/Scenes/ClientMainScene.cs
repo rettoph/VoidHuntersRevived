@@ -36,7 +36,6 @@ namespace VoidHuntersRevived.Client.Scenes
             _grapihcs = graphics;
 
             this.Visible = true;
-            this.Enabled = true;
         }
 
         protected override void Initialize()
@@ -45,8 +44,11 @@ namespace VoidHuntersRevived.Client.Scenes
 
             _group = _client.Groups.GetById(69) as ClientGroup;
             this.Group = _group;
+
             this.Group.MessageTypeHandlers.Add("setup", this.HandleSetupMessage);
+            this.Group.MessageTypeHandlers.Add("setup:complete", this.HandleSetupCompleteMessage);
             this.Group.MessageTypeHandlers.Add("create", this.HandleCreateMessage);
+            
 
             var layer = this.Layers.Create<FarseerEntityLayer>();
             this.Entities.SetDefaultLayer(layer);
@@ -74,6 +76,9 @@ namespace VoidHuntersRevived.Client.Scenes
         #region MessageType Handlers
         private void HandleSetupMessage(NetIncomingMessage im)
         {
+            // Remove any message type handlers we dont want pre supet completion
+            this.Group.MessageTypeHandlers.Remove("update");
+
             this.World.Gravity = im.ReadVector2();
         }
 
@@ -85,6 +90,26 @@ namespace VoidHuntersRevived.Client.Scenes
         {
             INetworkEntity entity = this.Entities.Create<INetworkEntity>(im.ReadString(), null, im.ReadInt64());
             entity.Read(im);
+        }
+
+        /// <summary>
+        /// Handles incoming update messages
+        /// </summary>
+        /// <param name="im"></param>
+        private void HandleUpdateMessage(NetIncomingMessage im)
+        {
+            var entity = this.NetworkEntities.GetById(im.ReadInt64());
+            entity.Read(im);
+        }
+
+        /// <summary>
+        /// Handle the status complete message
+        /// </summary>
+        /// <param name="obj"></param>
+        private void HandleSetupCompleteMessage(NetIncomingMessage obj)
+        {
+            // Add message handlers that matter now
+            this.Group.MessageTypeHandlers.Add("update", this.HandleUpdateMessage);
         }
         #endregion
     }

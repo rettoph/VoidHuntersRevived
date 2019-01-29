@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Networking.Implementations
                 {
                     _dirty = value;
 
-                    if (!_dirty)
+                    if (_dirty)
                         this.OnDirty?.Invoke(this, this);
                 }
             }

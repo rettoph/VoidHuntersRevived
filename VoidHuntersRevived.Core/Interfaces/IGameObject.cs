@@ -8,5 +8,8 @@ namespace VoidHuntersRevived.Core.Interfaces
     public interface IGameObject : IDrawable, IUpdateable, IInitializable
     {
         IGame Game { get; }
+
+        void SetEnabled(Boolean enabled);
+        void SetVisible(Boolean visible);
     }
 }

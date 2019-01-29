@@ -12,6 +12,8 @@ using VoidHuntersRevived.Networking.Peers;
 using Lidgren.Network.Xna;
 using VoidHuntersRevived.Server.Helpers;
 using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
+using VoidHuntersRevived.Library.Entities.Interfaces;
+using System.Linq;
 
 namespace VoidHuntersRevived.Server.Scenes
 {
@@ -25,6 +27,13 @@ namespace VoidHuntersRevived.Server.Scenes
         public ServerMainScene(IPeer peer, IServiceProvider provider, IGame game) : base(provider, game)
         {
             _server = peer as ServerPeer;
+        }
+
+        protected override void PreInitialize()
+        {
+            base.PreInitialize();
+
+            this.NetworkEntities.OnAdd += this.HandleNetworkEntityAdd;
         }
 
         protected override void Initialize()
@@ -42,7 +51,7 @@ namespace VoidHuntersRevived.Server.Scenes
             this.Wall.Configure(50, 50);
 
             var rand = new Random();
-            for(Int32 i=0; i<100; i++)
+            for(Int32 i=0; i<1000; i++)
             {
                 var e = this.Entities.Create<Hull>("entity:hull:square");
                 e.Driver.Position = new Vector2((float)(rand.NextDouble() * 48) - 24, (float)(rand.NextDouble() * 48) - 24);
@@ -70,7 +79,7 @@ namespace VoidHuntersRevived.Server.Scenes
             om.Write(this.World.Gravity);
 
             // Send the message
-            _group.SendMessage(om, e, NetDeliveryMethod.ReliableOrdered, 0);
+            _group.SendMessage(om, e, NetDeliveryMethod.ReliableOrdered, 1);
 
             foreach(INetworkEntity ne in this.NetworkEntities)
             {
@@ -78,8 +87,21 @@ namespace VoidHuntersRevived.Server.Scenes
                     ServerMessageHelper.BuildCreateMessage(ne, _group),
                     e,
                     NetDeliveryMethod.ReliableOrdered,
-                    0);
+                    1);
             }
+
+            // Send a merker to the client, alerting it that setup is complete
+            om = this.Group.CreateMessage("setup:complete");
+            _group.SendMessage(om, e, NetDeliveryMethod.ReliableOrdered, 1);
+        }
+
+        private void HandleNetworkEntityAdd(object sender, INetworkEntity ne)
+        { // Send a create message to all connected clients
+            if(_group.Users.Count() > 0)
+                _group.SendMessage(
+                        ServerMessageHelper.BuildCreateMessage(ne, _group),
+                        NetDeliveryMethod.ReliableOrdered,
+                        0);
         }
     }
 }

@@ -35,6 +35,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         private void Construct(ShipPartData data)
         {
             this.ShipPartData = data;
+
+            this.Enabled = true;
         }
         #endregion
 

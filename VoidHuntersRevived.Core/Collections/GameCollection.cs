@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Core.Interfaces;
 
@@ -61,6 +62,16 @@ namespace VoidHuntersRevived.Core.Collections
         {
             return _list;
         }
+
+        public Int32 Count()
+        {
+            return _list.Count();
+        }
+
+        public TObject ElementAt(int index)
+        {
+            return _list.ElementAt(index);
+        }
         #endregion
 
 
@@ -70,10 +81,5 @@ namespace VoidHuntersRevived.Core.Collections
             return _list.GetEnumerator();
         }
         #endregion
-
-        public Int32 Count()
-        {
-            return _list.Count;
-        }
     }
 }

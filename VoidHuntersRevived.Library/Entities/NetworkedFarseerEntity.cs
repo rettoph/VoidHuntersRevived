@@ -70,6 +70,8 @@ namespace VoidHuntersRevived.Library.Entities
 
                 this.Driver.Rotation = im.ReadSingle();
                 this.Driver.AngularVelocity = im.ReadSingle();
+
+                this.Body.Awake = true;
             }
         }
 
@@ -77,7 +79,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             om.Write(this.Id);
 
-            if (this.Body != null && this.Body.Awake)
+            if (this.Body != null)
             { // Only write the body data if it is not null and is awake..
                 om.Write(true);
 

@@ -65,5 +65,15 @@ namespace VoidHuntersRevived.Core.Implementations
 
         public abstract void Draw(GameTime gameTime);
         public abstract void Update(GameTime gameTime);
+
+        public void SetEnabled(bool enabled)
+        {
+            this.Enabled = enabled;
+        }
+
+        public void SetVisible(bool visible)
+        {
+            this.Visible = visible;
+        }
     }
 }

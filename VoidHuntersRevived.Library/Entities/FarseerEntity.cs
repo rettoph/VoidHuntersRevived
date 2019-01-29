@@ -32,6 +32,7 @@ namespace VoidHuntersRevived.Library.Entities
 
         public FarseerEntity(EntityInfo info, IGame game) : base(info, game)
         {
+            this.Enabled = false;
         }
 
         protected override void Initialize()
