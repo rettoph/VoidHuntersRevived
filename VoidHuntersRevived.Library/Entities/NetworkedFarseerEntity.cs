@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Library.Entities
             this.Body = BodyFactory.CreateBody(world: this.World, userData: this);
 
             // Create a new driver for the current entity
-            this.Driver = this.Scene.Entities.Create<IFarseerEntityDriver>("entity:farseer_entity_driver", null, this);
+            this.Driver = this.Scene.Entities.Create<IFarseerEntityDriver>(_driverHandle, null, this);
         }
 
         public override void Update(GameTime gameTime)
