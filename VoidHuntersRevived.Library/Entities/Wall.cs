@@ -40,8 +40,8 @@ namespace VoidHuntersRevived.Library.Entities
             var halfHeight = height / 2;
 
             // Remove any preexisting fixtures
-            foreach (var fixture in this.Body.FixtureList)
-                this.Body.DestroyFixture(fixture);
+            while(this.Body.FixtureList.Count > 0)
+                this.Body.DestroyFixture(this.Body.FixtureList[0]);
 
             this.Body.CreateFixture(new EdgeShape(new Vector2(halfWidth, -halfHeight), new Vector2(-halfWidth, -halfHeight)));
             this.Body.CreateFixture(new EdgeShape(new Vector2(halfWidth, -halfHeight), new Vector2(halfWidth, halfHeight)));

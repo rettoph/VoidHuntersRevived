@@ -43,6 +43,9 @@ namespace VoidHuntersRevived.Server.Scenes
             _group = _server.Groups.GetById(69) as ServerGroup;
             this.Group = _group;
 
+            // Setup message handlers
+            this.Group.MessageTypeHandlers.Add("update", this.HandleUpdateMessage);
+
             // Add group events
             this.Group.Users.OnAdd += this.HandlerUserJoined;
 
@@ -76,7 +79,7 @@ namespace VoidHuntersRevived.Server.Scenes
             // the scene
             var om = this.Group.CreateMessage("setup");
             om.Write(this.World.Gravity);
-            _group.SendMessage(om, e, NetDeliveryMethod.ReliableOrdered, 1);
+            _group.SendMessage(om, e, NetDeliveryMethod.ReliableOrdered, 0);
 
             // Update the client of every single existing entity in the world
             foreach(INetworkEntity ne in this.NetworkEntities)
@@ -85,7 +88,7 @@ namespace VoidHuntersRevived.Server.Scenes
                     ServerMessageHelper.BuildCreateMessage(ne, _group),
                     e,
                     NetDeliveryMethod.ReliableOrdered,
-                    1);
+                    0);
             }
 
             // Create a new player object for the new user
@@ -93,7 +96,7 @@ namespace VoidHuntersRevived.Server.Scenes
 
             // Send a marker to the client, alerting it that setup is complete
             om = this.Group.CreateMessage("setup:complete");
-            _group.SendMessage(om, e, NetDeliveryMethod.ReliableOrdered, 1);
+            _group.SendMessage(om, e, NetDeliveryMethod.ReliableOrdered, 0);
         }
 
         private void HandleNetworkEntityAdd(object sender, INetworkEntity ne)
@@ -104,5 +107,17 @@ namespace VoidHuntersRevived.Server.Scenes
                         NetDeliveryMethod.ReliableOrdered,
                         0);
         }
+
+        #region Message Handlers
+        /// <summary>
+        /// Handles incoming update messages
+        /// </summary>
+        /// <param name="im"></param>
+        private void HandleUpdateMessage(NetIncomingMessage im)
+        {
+            var entity = this.NetworkEntities.GetById(im.ReadInt64());
+            entity.Read(im);
+        }
+        #endregion
     }
 }

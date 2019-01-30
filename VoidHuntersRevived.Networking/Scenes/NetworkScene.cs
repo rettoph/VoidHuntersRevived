@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Networking.Scenes
 {
     public class NetworkScene : Scene
     {
-        protected NetworkEntityCollection NetworkEntities;
+        public NetworkEntityCollection NetworkEntities;
 
         public NetworkScene(IServiceProvider provider, IGame game) : base(provider, game)
         {

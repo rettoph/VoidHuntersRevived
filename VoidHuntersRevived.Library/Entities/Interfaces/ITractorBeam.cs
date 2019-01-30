@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Lidgren.Network;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,5 +16,8 @@ namespace VoidHuntersRevived.Library.Entities.Interfaces
 
         void TrySelect(ITractorableEntity entity);
         void TryRelease();
+
+        void Read(NetIncomingMessage im);
+        void Write(NetOutgoingMessage om);
     }
 }

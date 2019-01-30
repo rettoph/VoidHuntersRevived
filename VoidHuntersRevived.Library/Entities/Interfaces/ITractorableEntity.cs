@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Networking.Interfaces;
 
 namespace VoidHuntersRevived.Library.Entities.Interfaces
 {
-    public interface ITractorableEntity : IFarseerEntity
+    public interface ITractorableEntity : IFarseerEntity, INetworkEntity
     {
         /// <summary>
         /// The current tractor beam selecting the

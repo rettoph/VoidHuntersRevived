@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Networking.Implementations
             _configuration.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
             _configuration.EnableMessageType(NetIncomingMessageType.UnconnectedData);
             _configuration.EnableMessageType(NetIncomingMessageType.ConnectionLatencyUpdated);
-            _configuration.ConnectionTimeout = 10;
+            _configuration.ConnectionTimeout = 10000;
         }
 
         #region IPeer Implementation

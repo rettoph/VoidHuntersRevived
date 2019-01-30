@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Lidgren.Network;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
@@ -21,6 +22,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
         {
             get { return _user.Name; }
         }
+        public TractorBeam TractorBeam { get; private set; }
 
         public UserPlayer(IUser user, EntityInfo info, IGame game) : base(info, game)
         {
@@ -36,6 +38,9 @@ namespace VoidHuntersRevived.Library.Entities.Players
         protected override void Initialize()
         {
             base.Initialize();
+
+            // Create a new tractorbeam for the player
+            this.TractorBeam = this.Scene.Entities.Create<TractorBeam>("entity:tractor_beam", null, this);
 
             // Update the default driver for the current player isntance
             this.UpdateDriver();
@@ -72,16 +77,47 @@ namespace VoidHuntersRevived.Library.Entities.Players
             var group = (this.Scene as MainScene).Group;
 
             // Load the incoming user
-            _user = group.Users.GetById(im.ReadInt64());
+            var userId = im.ReadInt64();
 
-            this.UpdateDriver();
+            if (_user == null)
+            { // If the user isnt already defined, define it now
+                _user = group.Users.GetById(userId);
+                this.UpdateDriver();
+            }
+
+            if(userId != _user.Id)
+            { // If the claimed user is not the pre defined user, theres an issue
+                this.Game.Logger.LogCritical($"Incorrect user claimed by player!");
+            }
+
+
+            if(im.ReadBoolean())
+            {
+                // read to the driver
+                _driver.Read(im);
+            }
+            
         }
 
         public override void Write(NetOutgoingMessage om)
         {
             om.Write(this.Id);
 
+            // Write the user id
             om.Write(_user.Id);
+
+            if(_driver == null)
+            { // Only sync driver info if the driver even exists at this time
+                om.Write(false);
+            }
+            else
+            { // Only sync driver info if the driver even exists at this time
+                om.Write(true);
+
+                // Write from the driver
+                _driver.Write(om);
+            }
+            
         }
     }
 }

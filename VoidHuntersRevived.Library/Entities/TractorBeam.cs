@@ -1,6 +1,8 @@
 ﻿using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Dynamics.Joints;
 using FarseerPhysics.Factories;
+using Lidgren.Network;
+using Lidgren.Network.Xna;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -9,6 +11,8 @@ using VoidHuntersRevived.Core.Implementations;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities.Interfaces;
+using VoidHuntersRevived.Library.Interfaces;
+using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -18,11 +22,12 @@ namespace VoidHuntersRevived.Library.Entities
         public Vector2 Position { get; set; }
 
         private WeldJoint _joint;
+        private MainScene _scene;
 
         public event EventHandler<ITractorBeam> OnSelect;
         public event EventHandler<ITractorBeam> OnRelease;
 
-        public TractorBeam(EntityInfo info, IGame game) : base(info, game)
+        public TractorBeam(IPlayer player, EntityInfo info, IGame game) : base(info, game)
         {
             this.SelectedEntity = null;
         }
@@ -30,6 +35,8 @@ namespace VoidHuntersRevived.Library.Entities
         protected override void Initialize()
         {
             base.Initialize();
+
+            _scene = this.Scene as MainScene;
 
             this.Body.BodyType = FarseerPhysics.Dynamics.BodyType.Dynamic;
             this.Body.SleepingAllowed = false;
@@ -65,6 +72,48 @@ namespace VoidHuntersRevived.Library.Entities
 
                 _joint.DampingRatio = 1000f;
                 _joint.FrequencyHz = 100f;
+            }
+        }
+
+
+        public void Read(NetIncomingMessage im)
+        {
+            this.Body.Position = im.ReadVector2();
+
+            if (im.ReadBoolean())
+            { // The next boolean indicates wether or not the tractor beam has an object selected
+                var selectedId = im.ReadInt64();
+
+                if (this.SelectedEntity == null)
+                { // We only need to do anything if the tractor beam doesnt current have a selection
+                    var target = _scene.NetworkEntities.GetById(selectedId);
+
+                    // Only bother trying if the input entity is a tractorable object
+                    if (target is ITractorableEntity)
+                        this.TrySelect(target as ITractorableEntity);
+                }
+            }
+            else
+            {
+                if (this.SelectedEntity != null)
+                { // try to release the input entity
+                    this.TryRelease();
+                }
+            }
+        }
+
+        public void Write(NetOutgoingMessage om)
+        {
+            om.Write(this.Body.Position);
+
+            if (this.SelectedEntity == null)
+            {
+                om.Write(false);
+            }
+            else
+            {
+                om.Write(true);
+                om.Write(this.SelectedEntity.Id);
             }
         }
     }

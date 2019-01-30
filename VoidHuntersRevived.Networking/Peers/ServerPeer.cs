@@ -57,15 +57,19 @@ namespace VoidHuntersRevived.Networking.Peers
         {
             while ((_im = _peer.ReadMessage()) != null)
             { // Read any new incoming messages
-                Logger.LogInformation(_im.MessageType.ToString());
-
                 switch (_im.MessageType)
                 {
+                    case NetIncomingMessageType.Data:
+                        this.HandleData(_im);
+                        break;
                     case NetIncomingMessageType.ConnectionApproval:
                         this.HandleConnectionApprovalMessage(_im);
                         break;
                     case NetIncomingMessageType.StatusChanged:
                         this.HandleStatusChanged(_im);
+                        break;
+                    default:
+                        Logger.LogWarning($"Unhandled incoming MessageType => '{_im.MessageType.ToString()}'");
                         break;
                 }
             }
@@ -75,6 +79,25 @@ namespace VoidHuntersRevived.Networking.Peers
         }
 
         #region MessageType Handlers
+        /// <summary>
+        /// Handle incoming data
+        /// </summary>
+        /// <param name="im"></param>
+        private void HandleData(NetIncomingMessage im)
+        {
+            switch ((MessageTarget)im.ReadByte())
+            {
+                case MessageTarget.Peer:
+                    this.UnreadMessagesQueue.Enqueue(im);
+                    break;
+                case MessageTarget.Group:
+                    this.Groups.GetById(im.ReadInt64())
+                        .UnreadMessagesQueue
+                        .Enqueue(im);
+                    break;
+            }
+        }
+
         /// <summary>
         /// Parse an incoming connection approval message into the
         /// clients claimed user, then run the current authenticator

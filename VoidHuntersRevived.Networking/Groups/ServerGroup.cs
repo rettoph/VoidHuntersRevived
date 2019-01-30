@@ -93,10 +93,10 @@ namespace VoidHuntersRevived.Networking.Groups
 
         private void HandleUserRemoved(object sender, IUser e)
         {
-            var connection = _server.Connections.First(c => c.RemoteUniqueIdentifier == e.Id);
+            var connection = _server.Connections.FirstOrDefault(c => c.RemoteUniqueIdentifier == e.Id);
 
             _connections.Remove(connection);
-            _connectionTable.Remove(connection.RemoteUniqueIdentifier);
+            _connectionTable.Remove(e.Id);
         }
         #endregion
     }
