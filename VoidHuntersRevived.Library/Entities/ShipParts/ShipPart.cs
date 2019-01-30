@@ -66,10 +66,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             base.PostInitialize();
 
             this.Body.BodyType = BodyType.Dynamic;
-            this.Body.Restitution = 0.80f;
+            this.Body.Restitution = 1f;
             this.Body.Friction = 0f;
             this.Body.LinearDamping = 1f;
-            this.Body.AngularDamping = 1f;
+            this.Body.AngularDamping = 2f;
             this.Body.CollidesWith = Category.Cat1;
             this.Body.CollisionCategories = Category.Cat2;
         }

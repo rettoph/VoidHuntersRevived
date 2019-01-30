@@ -27,7 +27,6 @@ namespace VoidHuntersRevived.Client
         {
             base.Initialize();
 
-
             _game = new VoidHuntersRevivedClientGame(new VoidHuntersRevivedLogger(), _graphics, this.Content, this.Window);
         }
 

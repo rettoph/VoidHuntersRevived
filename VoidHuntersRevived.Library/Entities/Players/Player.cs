@@ -64,13 +64,14 @@ namespace VoidHuntersRevived.Library.Entities.Players
             if (this.Bridge != null)
             {
                 if (this.Movement[0])
-                    this.Bridge.Body.ApplyForce(new Vector2(0, -2));
-                if (this.Movement[1])
-                    this.Bridge.Body.ApplyForce(new Vector2(2, 0));
+                    this.Bridge.Body.ApplyForce(Vector2.Transform(new Vector2(200, 0), this.Bridge.RotationMatrix));
                 if (this.Movement[2])
-                    this.Bridge.Body.ApplyForce(new Vector2(0, 2));
+                    this.Bridge.Body.ApplyForce(Vector2.Transform(new Vector2(-200, 0), this.Bridge.RotationMatrix));
+
+                if (this.Movement[1])
+                    this.Bridge.Body.ApplyAngularImpulse(0.001f);
                 if (this.Movement[3])
-                    this.Bridge.Body.ApplyForce(new Vector2(-2, 0));
+                    this.Bridge.Body.ApplyAngularImpulse(-0.001f);
             }
         }
 
@@ -91,6 +92,8 @@ namespace VoidHuntersRevived.Library.Entities.Players
                 this.Bridge.Body.SleepingAllowed = true;
                 this.Bridge.BridgeFor = null;
                 this.Bridge.SetEnabled(false);
+                this.Bridge.Body.Mass = 0f;
+                this.Bridge.Body.IsBullet = false;
             }
 
             this.Bridge = bridge;
@@ -101,6 +104,8 @@ namespace VoidHuntersRevived.Library.Entities.Players
             this.Bridge.Body.CollidesWith = Category.Cat1 | Category.Cat3;
             this.Bridge.Body.CollisionCategories = Category.Cat3;
             this.Bridge.Body.SleepingAllowed = false;
+            this.Bridge.Body.Mass = 10f;
+            this.Bridge.Body.IsBullet = true;
         }
 
         #region Network Read & Write methods

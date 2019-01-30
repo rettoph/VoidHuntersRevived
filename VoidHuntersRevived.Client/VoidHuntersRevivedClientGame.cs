@@ -32,7 +32,6 @@ namespace VoidHuntersRevived.Client
 
         public VoidHuntersRevivedClientGame(ILogger logger, GraphicsDeviceManager graphics = null, ContentManager content = null, GameWindow window = null, IServiceCollection services = null) : base(logger, graphics, content, window, services)
         {
-            
         }
 
         protected override void ConfigureServices(IServiceCollection services)
@@ -81,9 +80,15 @@ namespace VoidHuntersRevived.Client
         {
             base.PostInitialize();
 
+            Console.WriteLine("Server Ip: ");
+            var server = Console.ReadLine();
+
+            Console.WriteLine("Name: ");
+            var name = Console.ReadLine();
+
             var hail = _client.CreateMessage("network:user:connection-request");
-            hail.Write("Rettoph");
-            _client.Connect("localhost", 1337, hail);
+            hail.Write(name);
+            _client.Connect(server, 1337, hail);
         }
     }
 }
