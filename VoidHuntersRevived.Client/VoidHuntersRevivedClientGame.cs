@@ -16,14 +16,13 @@ using VoidHuntersRevived.Client.Entities;
 using VoidHuntersRevived.Client.Scenes;
 using VoidHuntersRevived.Core.Factories;
 using VoidHuntersRevived.Client.Configurations;
-using VoidHuntersRevived.Client.Entities.Ships;
 using VoidHuntersRevived.Networking.Peers;
 using VoidHuntersRevived.Networking.Implementations;
 using VoidHuntersRevived.Networking.Interfaces;
 using Lidgren.Network;
 using VoidHuntersRevived.Networking.Enums;
-using VoidHuntersRevived.Client.Drivers;
 using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Client.Entities.Drivers;
 
 namespace VoidHuntersRevived.Client
 {
@@ -41,9 +40,6 @@ namespace VoidHuntersRevived.Client
             base.ConfigureServices(services);
 
             services.AddSingleton<IPeer>(new ClientPeer("vhr", this, this.Logger));
-
-            // Set the default farseer entity driver... (how to manage changing this on the fly?)
-            NetworkedFarseerEntity.DefaultDriverType = typeof(ClientFarseerEntityDriver);
         }
 
         protected override void PreInitialize()
@@ -60,13 +56,12 @@ namespace VoidHuntersRevived.Client
             stringLoader.Register("entity_name:cursor", "Cursor");
             stringLoader.Register("entity_description:cursor", "The current client's cursor.");
 
-            stringLoader.Register("entity_name:ship:user:current", "Current User Ship");
-            stringLoader.Register("entity_description:ship:user:current", "A ship controllable by the current user.");
-
             var entityLoader = this.Provider.GetLoader<EntityLoader>();
             entityLoader.Register<Camera>("entity:camera", "entity_name:camera", "entity_description:camera");
             entityLoader.Register<Cursor>("entity:cursor", "entity_name:cursor", "entity_description:cursor");
-            entityLoader.Register<CurrentUserShip>("entity:ship:user:current", "entity_name:ship:user:current", "entity_description:ship:user:current");
+            entityLoader.Register<ClientFarseerEntityDriver>(handle: "entity:farseer_entity_driver");
+            entityLoader.Register<ClientLocalUserPlayerDriver>(handle: "entity:player_driver:local", priority: 1);
+            entityLoader.Register<ClientRemoteUserPlayerDriver>(handle: "entity:player_driver:remote", priority: 1);
 
             var contentLoader = this.Provider.GetLoader<ContentLoader>();
             contentLoader.Register<Texture2D>("texture:connection_node:male", "Sprites/male-connection");

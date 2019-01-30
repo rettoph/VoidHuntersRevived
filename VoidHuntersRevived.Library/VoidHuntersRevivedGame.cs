@@ -16,7 +16,7 @@ using VoidHuntersRevived.Library.Entities.MetaData;
 using FarseerPhysics;
 using VoidHuntersRevived.Library.Entities.ConnectionNodes;
 using VoidHuntersRevived.Networking;
-using VoidHuntersRevived.Library.Entities.Ships;
+using VoidHuntersRevived.Library.Entities.Players;
 
 namespace VoidHuntersRevived.Library
 {
@@ -34,6 +34,9 @@ namespace VoidHuntersRevived.Library
             stringLoader.Register("entity_name:default", "Unnamed");
             stringLoader.Register("entity_description:default", "An unnamed entity.");
 
+            stringLoader.Register("entity_name:player:user", "User Player");
+            stringLoader.Register("entity_description:player:user", "A player controlled by a real human player.");
+
             stringLoader.Register("entity_name:tractor_beam", "Tractor Beam");
             stringLoader.Register("entity_description:tractor_beam", "A tractor beam.");
 
@@ -47,9 +50,9 @@ namespace VoidHuntersRevived.Library
             stringLoader.Register("entity_description:hull:square", "A Simple hull square.");
 
             var entityLoader = this.Provider.GetLoader<EntityLoader>();
+            entityLoader.Register<UserPlayer>("entity:player:user", "entity_name:player:user", "entity_description:player:user");
             entityLoader.Register<TractorBeam>("entity:tractor_beam", "entity_name:tractor_beam", "entity_description:tractor_beam");
             entityLoader.Register<Wall>("entity:wall", "entity_name:wall", "entity_description:wall");
-            entityLoader.Register<UserShip>("entity:ship:user", "entity_name:ship:user", "entity_description:ship:user");
             entityLoader.Register<MaleConnectionNode>("entity:connection_node:male");
             entityLoader.Register<FemaleConnectionNode>("entity:connection_node:female");
 

@@ -4,12 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Core.Implementations;
+using VoidHuntersRevived.Core.Interfaces;
+using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities.Interfaces;
 using VoidHuntersRevived.Library.Interfaces;
 
-namespace VoidHuntersRevived.Client.Drivers
+namespace VoidHuntersRevived.Client.Entities.Drivers
 {
-    class ClientFarseerEntityDriver : IFarseerEntityDriver
+    class ClientFarseerEntityDriver : Entity, IFarseerEntityDriver
     {
         public Vector2 Position { get; set; }
         public Vector2 LinearVelocity { get; set; }
@@ -19,12 +22,12 @@ namespace VoidHuntersRevived.Client.Drivers
         private IFarseerEntity _parent;
         private Single _lerpStrength = 0.5f;
 
-        public ClientFarseerEntityDriver(IFarseerEntity parent)
+        public ClientFarseerEntityDriver(IFarseerEntity parent, EntityInfo info, IGame game) : base(info, game)
         {
             _parent = parent;
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             if (_parent.Body.Awake)
             {

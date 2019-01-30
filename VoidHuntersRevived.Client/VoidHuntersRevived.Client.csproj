@@ -53,10 +53,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configurations\MainSceneClientConfiguration.cs" />
-    <Compile Include="Drivers\ClientFarseerEntityDriver.cs" />
+    <Compile Include="Entities\Drivers\ClientFarseerEntityDriver.cs" />
     <Compile Include="Entities\Camera.cs" />
     <Compile Include="Entities\Cursor.cs" />
-    <Compile Include="Entities\Ships\CurrentUserShip.cs" />
+    <Compile Include="Entities\Drivers\ClientLocalUserPlayerDriver.cs" />
+    <Compile Include="Entities\Drivers\ClientRemoteUserPlayerDriver.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Layers\FarseerEntityLayer.cs" />
     <Compile Include="Program.cs" />

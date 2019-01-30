@@ -9,13 +9,11 @@ using VoidHuntersRevived.Core.Implementations;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities.Interfaces;
-using VoidHuntersRevived.Library.Entities.Ships;
 
 namespace VoidHuntersRevived.Library.Entities
 {
     public class TractorBeam : FarseerEntity, ITractorBeam
     {
-        public Ship Ship { get; private set; }
         public ITractorableEntity SelectedEntity { get; private set; }
         public Vector2 Position { get; set; }
 
@@ -24,11 +22,9 @@ namespace VoidHuntersRevived.Library.Entities
         public event EventHandler<ITractorBeam> OnSelect;
         public event EventHandler<ITractorBeam> OnRelease;
 
-        public TractorBeam(Ship ship, EntityInfo info, IGame game) : base(info, game)
+        public TractorBeam(EntityInfo info, IGame game) : base(info, game)
         {
-            this.Ship = ship;
             this.SelectedEntity = null;
-            this.Position = this.Ship.Body.Position;
         }
 
         protected override void Initialize()

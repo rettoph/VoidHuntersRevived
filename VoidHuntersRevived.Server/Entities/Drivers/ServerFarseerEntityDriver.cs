@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
+using VoidHuntersRevived.Core.Implementations;
+using VoidHuntersRevived.Core.Interfaces;
+using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Interfaces;
 using VoidHuntersRevived.Library.Interfaces;
 
 namespace VoidHuntersRevived.Server.Drivers
 {
-    public class ServerFarseerEntityDriver : IFarseerEntityDriver
+    public class ServerFarseerEntityDriver : Entity, IFarseerEntityDriver
     {
         private NetworkedFarseerEntity _parent;
 
@@ -17,12 +20,12 @@ namespace VoidHuntersRevived.Server.Drivers
         public Single Rotation { get { return _parent.Body.Rotation; } set { _parent.Body.Rotation = value; } }
         public Single AngularVelocity { get { return _parent.Body.AngularVelocity; } set { _parent.Body.AngularVelocity = value; } }
 
-        public ServerFarseerEntityDriver(NetworkedFarseerEntity parent)
+        public ServerFarseerEntityDriver(NetworkedFarseerEntity parent, EntityInfo info, IGame game) : base(info, game)
         {
             _parent = parent;
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             // No need for lerping on the server :)
             // throw new NotImplementedException();

@@ -48,13 +48,13 @@ namespace VoidHuntersRevived.Server.Scenes
 
             // Create and setup a new wall
             this.Wall = this.Entities.Create<Wall>("entity:wall");
-            this.Wall.Configure(50, 50);
+            this.Wall.Configure(10, 10);
 
             var rand = new Random();
-            for(Int32 i=0; i<1000; i++)
+            for(Int32 i=0; i<10; i++)
             {
                 var e = this.Entities.Create<Hull>("entity:hull:square");
-                e.Driver.Position = new Vector2((float)(rand.NextDouble() * 48) - 24, (float)(rand.NextDouble() * 48) - 24);
+                e.Driver.Position = new Vector2((float)(rand.NextDouble() * 10) - 5, (float)(rand.NextDouble() * 10) - 5);
                 e.Driver.LinearVelocity = new Vector2((float)(rand.NextDouble() * 2) - 1, (float)(rand.NextDouble() * 2) - 1);
 
                 e.Driver.Rotation = (float)(rand.NextDouble() * 6.28318530718) - 3.14159265359f;
@@ -75,12 +75,10 @@ namespace VoidHuntersRevived.Server.Scenes
             // When a user joins we will send them a quick update about the current state of
             // the scene
             var om = this.Group.CreateMessage("setup");
-
             om.Write(this.World.Gravity);
-
-            // Send the message
             _group.SendMessage(om, e, NetDeliveryMethod.ReliableOrdered, 1);
 
+            // Update the client of every single existing entity in the world
             foreach(INetworkEntity ne in this.NetworkEntities)
             {
                 _group.SendMessage(
@@ -90,7 +88,10 @@ namespace VoidHuntersRevived.Server.Scenes
                     1);
             }
 
-            // Send a merker to the client, alerting it that setup is complete
+            // Create a new player object for the new user
+            this.Entities.Create<IEntity>("entity:player:user", null, e);
+
+            // Send a marker to the client, alerting it that setup is complete
             om = this.Group.CreateMessage("setup:complete");
             _group.SendMessage(om, e, NetDeliveryMethod.ReliableOrdered, 1);
         }

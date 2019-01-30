@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Client.Entities;
-using VoidHuntersRevived.Client.Entities.Ships;
 using VoidHuntersRevived.Client.Layers;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Library.Entities;

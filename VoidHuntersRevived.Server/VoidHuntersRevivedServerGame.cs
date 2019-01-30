@@ -19,6 +19,7 @@ using Lidgren.Network;
 using VoidHuntersRevived.Server.Scenes;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Server.Drivers;
+using VoidHuntersRevived.Server.Entities.Drivers;
 
 namespace VoidHuntersRevived.Server
 {
@@ -33,9 +34,16 @@ namespace VoidHuntersRevived.Server
             base.ConfigureServices(services);
 
             services.AddSingleton<IPeer>(new ServerPeer("vhr", 1337, this, this.Logger));
+        }
 
-            // Set the default farseer entity driver... (how to manage changing this on the fly?)
-            NetworkedFarseerEntity.DefaultDriverType = typeof(ServerFarseerEntityDriver);
+        protected override void PreInitialize()
+        {
+            base.PreInitialize();
+
+            // Register required entities (and loaders)
+            var entityLoader = this.Provider.GetLoader<EntityLoader>();
+            entityLoader.Register<ServerFarseerEntityDriver>(handle: "entity:farseer_entity_driver");
+            entityLoader.Register<ServerRemoteUserPlayerDriver>(handle: "entity:player_driver:remote", priority: 1);
         }
 
         protected override void Initialize()

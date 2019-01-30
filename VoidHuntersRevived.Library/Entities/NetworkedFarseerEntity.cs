@@ -20,38 +20,29 @@ namespace VoidHuntersRevived.Library.Entities
 {
     public class NetworkedFarseerEntity : NetworkEntity, IFarseerEntity
     {
-        // The default driver type used
-        public static Type DefaultDriverType { get; set; }
-
         public World World { get; private set; }
         public Body Body { get; protected set; }
 
         public IFarseerEntityDriver Driver { get; protected set; }
-        private Type _driverType;
 
-        public NetworkedFarseerEntity(EntityInfo info, IGame game, Type driverType = null) : base(info, game)
+        private String _driverHandle;
+
+        public NetworkedFarseerEntity(EntityInfo info, IGame game) : base(info, game)
         {
-            _driverType = driverType ?? NetworkedFarseerEntity.DefaultDriverType;
+            _driverHandle = "entity:farseer_entity_driver";
         }
-        public NetworkedFarseerEntity(long id, EntityInfo info, IGame game, Type driverType = null) : base(id, info, game)
+        public NetworkedFarseerEntity(long id, EntityInfo info, IGame game) : base(id, info, game)
         {
-            _driverType = driverType ?? NetworkedFarseerEntity.DefaultDriverType;
-        }
-
-        protected override void PreInitialize()
-        {
-            base.PreInitialize();
-
-            if (typeof(IFarseerEntityDriver).IsAssignableFrom(_driverType))
-                this.Driver = (IFarseerEntityDriver)ActivatorUtilities.CreateInstance(this.Game.Provider, _driverType, this);
-            else
-                this.Game.Logger.LogCritical($"Invalid IFarseerEntityDriver type => '{_driverType?.Name}'");
+            _driverHandle = "entity:farseer_entity_driver";
         }
 
         protected override void Initialize()
         {
             this.World = (this.Scene as IFarseerScene).World;
             this.Body = BodyFactory.CreateBody(world: this.World, userData: this);
+
+            // Create a new driver for the current entity
+            this.Driver = this.Scene.Entities.Create<IFarseerEntityDriver>("entity:farseer_entity_driver", null, this);
         }
 
         public override void Update(GameTime gameTime)
