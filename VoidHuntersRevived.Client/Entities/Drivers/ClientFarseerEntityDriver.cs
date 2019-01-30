@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
         public Single AngularVelocity { get; set; }
 
         private IFarseerEntity _parent;
-        private Single _lerpStrength = 0.5f;
+        private Single _lerpStrength = 0.1f;
 
         public ClientFarseerEntityDriver(IFarseerEntity parent, EntityInfo info, IGame game) : base(info, game)
         {

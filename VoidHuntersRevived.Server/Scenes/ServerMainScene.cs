@@ -92,7 +92,11 @@ namespace VoidHuntersRevived.Server.Scenes
             }
 
             // Create a new player object for the new user
-            this.Entities.Create<IEntity>("entity:player:user", null, e);
+            this.Entities.Create<IEntity>(
+                "entity:player:user",
+                null,
+                e,
+                this.Entities.Create<IEntity>("entity:hull:triangle", null));
 
             // Send a marker to the client, alerting it that setup is complete
             om = this.Group.CreateMessage("setup:complete");

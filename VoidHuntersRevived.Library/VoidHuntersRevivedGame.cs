@@ -17,6 +17,9 @@ using FarseerPhysics;
 using VoidHuntersRevived.Library.Entities.ConnectionNodes;
 using VoidHuntersRevived.Networking;
 using VoidHuntersRevived.Library.Entities.Players;
+using FarseerPhysics.Collision.Shapes;
+using VoidHuntersRevived.Library.Helpers;
+using VoidHuntersRevived.Library.Extensions;
 
 namespace VoidHuntersRevived.Library
 {
@@ -95,6 +98,27 @@ namespace VoidHuntersRevived.Library
                         new Vector3(-1f, 0.5f, (float)Math.PI/2),
                         new Vector3(0f, 0.5f, (float)Math.PI/2),
                         new Vector3(1f, 0.5f, (float)Math.PI/2),
+                    }));
+
+            // https://www.desmos.com/calculator/akwfwhe8vp
+            // Build triangle vertices with a side length of 1
+            var d = (float)Math.Sqrt(1f / 3f) * 1;
+            var nd = (float)(Math.Cos((1 * Math.PI) / 3) * d);
+
+            entityLoader.Register<Hull>(
+                handle: "entity:hull:triangle",
+                nameHandle: "entity_name:hull:square",
+                descriptionHandle: "entity_description:hull:square",
+                data: new HullData(
+                    maleConnection: Vector2Helper.FromThetaDistance((float)(3 * Math.PI) / 3, nd).ToVector3((float)(3 * Math.PI) / 3),
+                    vertices: new Vector2[] {
+                        Vector2Helper.FromThetaDistance((float)(0 * Math.PI) / 3, d),
+                        Vector2Helper.FromThetaDistance((float)(2 * Math.PI) / 3, d),
+                        Vector2Helper.FromThetaDistance((float)(4 * Math.PI) / 3, d),
+                    },
+                    femaleConnections: new Vector3[] {
+                        Vector2Helper.FromThetaDistance((float)(1 * Math.PI) / 3, nd).ToVector3((float)(1 * Math.PI) / 3),
+                        Vector2Helper.FromThetaDistance((float)(5 * Math.PI) / 3, nd).ToVector3((float)(5 * Math.PI) / 3),
                     }));
         }
     }

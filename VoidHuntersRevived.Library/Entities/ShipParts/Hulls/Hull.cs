@@ -15,6 +15,8 @@ using VoidHuntersRevived.Library.Entities.MetaData;
 using System.Linq;
 using Lidgren.Network;
 using Lidgren.Network.Xna;
+using VoidHuntersRevived.Library.Interfaces;
+using VoidHuntersRevived.Library.Entities.Interfaces;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Hulls
 {
@@ -23,6 +25,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Hulls
         public readonly HullData HullData;
 
         public FemaleConnectionNode[] FemaleConnectionNodes { get; private set; }
+        public IPlayer BridgeFor { get; set; }
 
 
         public Hull(EntityInfo info, IGame game) : base(info, game)
@@ -52,6 +55,16 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Hulls
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
+        }
+
+        public override bool CanBeSelectedBy(ITractorBeam tractorBeam)
+        {
+            if(base.CanBeSelectedBy(tractorBeam))
+            {
+                return this.BridgeFor == null;
+            }
+
+            return false;
         }
     }
 }

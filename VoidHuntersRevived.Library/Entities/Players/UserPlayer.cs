@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using FarseerPhysics.Dynamics;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
+using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using VoidHuntersRevived.Library.Interfaces;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Networking.Implementations;
@@ -13,34 +15,27 @@ using VoidHuntersRevived.Networking.Interfaces;
 
 namespace VoidHuntersRevived.Library.Entities.Players
 {
-    public class UserPlayer : NetworkEntity, IPlayer
+    public class UserPlayer : Player
     {
         private IUser _user;
         private IUserPlayerDriver _driver;
 
-        public String Name
+        public override String Name
         {
             get { return _user.Name; }
         }
-        public TractorBeam TractorBeam { get; private set; }
 
-        public UserPlayer(IUser user, EntityInfo info, IGame game) : base(info, game)
+        public UserPlayer(IUser user, Hull bridge, EntityInfo info, IGame game) : base(bridge, info, game)
         {
             _user = user;
-
-            this.Enabled = true;
         }
         public UserPlayer(long id, EntityInfo info, IGame game) : base(id, info, game)
         {
-            this.Enabled = true;
         }
 
         protected override void Initialize()
         {
             base.Initialize();
-
-            // Create a new tractorbeam for the player
-            this.TractorBeam = this.Scene.Entities.Create<TractorBeam>("entity:tractor_beam", null, this);
 
             // Update the default driver for the current player isntance
             this.UpdateDriver();
@@ -74,6 +69,8 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
         public override void Read(NetIncomingMessage im)
         {
+            base.Read(im);
+
             var group = (this.Scene as MainScene).Group;
 
             // Load the incoming user
@@ -96,14 +93,12 @@ namespace VoidHuntersRevived.Library.Entities.Players
                 // read to the driver
                 _driver.Read(im);
             }
-            
         }
 
         public override void Write(NetOutgoingMessage om)
         {
-            om.Write(this.Id);
+            base.Write(om);
 
-            // Write the user id
             om.Write(_user.Id);
 
             if(_driver == null)
@@ -117,7 +112,6 @@ namespace VoidHuntersRevived.Library.Entities.Players
                 // Write from the driver
                 _driver.Write(om);
             }
-            
         }
     }
 }

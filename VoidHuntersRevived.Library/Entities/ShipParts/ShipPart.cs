@@ -14,6 +14,7 @@ using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities.ConnectionNodes;
 using VoidHuntersRevived.Library.Entities.Interfaces;
 using VoidHuntersRevived.Library.Entities.MetaData;
+using VoidHuntersRevived.Library.Interfaces;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {

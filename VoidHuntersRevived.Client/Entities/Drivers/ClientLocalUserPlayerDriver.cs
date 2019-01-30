@@ -14,6 +14,7 @@ using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities.Interfaces;
 using VoidHuntersRevived.Library.Entities.Players;
+using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using VoidHuntersRevived.Library.Interfaces;
 using VoidHuntersRevived.Networking.Interfaces;
 
@@ -24,6 +25,9 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
         private UserPlayer _parent;
         private Cursor _cursor;
 
+        private ClientMainScene _scene;
+        private Camera _camera;
+
         public ClientLocalUserPlayerDriver(UserPlayer parent, EntityInfo info, IGame game) : base(info, game)
         {
             _parent = parent;
@@ -33,9 +37,10 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
         {
             base.Initialize();
 
-            var scene = this.Scene as ClientMainScene;
+            _scene = this.Scene as ClientMainScene;
 
-            _cursor = scene.Cursor;
+            _cursor = _scene.Cursor;
+            _camera = _scene.Camera;
         }
 
         public override void Update(GameTime gameTime)
@@ -62,16 +67,52 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
                     _parent.Dirty = true;
                     break;
             }
+
+            var keyboard = Keyboard.GetState();
+
+            if (keyboard.IsKeyDown(Keys.W) != _parent.Movement[0])
+            {
+                _parent.Movement[0] = !_parent.Movement[0];
+                _parent.Dirty = true;
+            }
+            if (keyboard.IsKeyDown(Keys.D) != _parent.Movement[1])
+            {
+                _parent.Movement[1] = !_parent.Movement[1];
+                _parent.Dirty = true;
+            }
+            if (keyboard.IsKeyDown(Keys.S) != _parent.Movement[2])
+            {
+                _parent.Movement[2] = !_parent.Movement[2];
+                _parent.Dirty = true;
+            }
+            if (keyboard.IsKeyDown(Keys.A) != _parent.Movement[3])
+            {
+                _parent.Movement[3] = !_parent.Movement[3];
+                _parent.Dirty = true;
+            }
+
+            // Update the camera position to follow the clients bridge
+            if(_parent.Bridge != null)
+            {
+                _camera.Position = _parent.Bridge.Body.Position;
+            }
         }
 
         public void Read(NetIncomingMessage im)
         {
-            _parent.TractorBeam.Read(im);
+            if(im.ReadBoolean())
+            {
+                var bridgeId = im.ReadInt64();
+
+                if (_parent.Bridge == null || _parent.Bridge.Id != bridgeId)
+                {
+                    _parent.SetBridge(_scene.NetworkEntities.GetById(bridgeId) as Hull);   
+                }
+            }
         }
 
         public void Write(NetOutgoingMessage om)
         {
-            _parent.TractorBeam.Write(om);
         }
     }
 }

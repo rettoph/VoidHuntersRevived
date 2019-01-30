@@ -62,6 +62,7 @@ namespace VoidHuntersRevived.Library.Entities
                 this.OnSelect?.Invoke(this, this);
 
                 this.SelectedEntity.Body.Position = this.Body.Position;
+                this.SelectedEntity.SetEnabled(true);
 
                 _joint = JointFactory.CreateWeldJoint(
                     this.World,
