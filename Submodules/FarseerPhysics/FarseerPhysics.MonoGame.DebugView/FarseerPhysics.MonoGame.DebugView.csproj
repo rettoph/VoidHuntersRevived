@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
   
@@ -10,8 +9,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Submodules\FarseerPhysics\FarseerPhysics.MonoGame\FarseerPhysics.MonoGame.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Library\VoidHuntersRevived.Library.csproj" />
+    <ProjectReference Include="..\FarseerPhysics.MonoGame\FarseerPhysics.MonoGame.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="Content\Font.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

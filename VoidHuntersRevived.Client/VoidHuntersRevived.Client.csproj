@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Submodules\FarseerPhysics\DebugViews\DebugView MonoGame\DebugView MonoGame.csproj" />
-    <ProjectReference Include="..\Submodules\FarseerPhysics\SourceFiles\Farseer Physics MonoGame.csproj" />
+    <ProjectReference Include="..\Submodules\FarseerPhysics\FarseerPhysics.MonoGame.DebugView\FarseerPhysics.MonoGame.DebugView.csproj" />
+    <ProjectReference Include="..\Submodules\FarseerPhysics\FarseerPhysics.MonoGame\FarseerPhysics.MonoGame.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Core\VoidHuntersRevived.Core.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Library\VoidHuntersRevived.Library.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Networking\VoidHuntersRevived.Networking.csproj" />
