@@ -87,25 +87,15 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
             if (this.Bridge != null)
             { // reghost the old bridge
-                this.Bridge.Body.CollidesWith = Category.Cat1;
-                this.Bridge.Body.CollisionCategories = Category.Cat2;
-                this.Bridge.Body.SleepingAllowed = true;
                 this.Bridge.BridgeFor = null;
+                this.Bridge.SetGhost(true);
                 this.Bridge.SetEnabled(false);
-                this.Bridge.Body.Mass = 0f;
-                this.Bridge.Body.IsBullet = false;
             }
 
             this.Bridge = bridge;
             this.Bridge.BridgeFor = this;
-            this.Bridge.SetEnabled(true);
-
-            // Unghost the new bridge
-            this.Bridge.Body.CollidesWith = Category.Cat1 | Category.Cat3;
-            this.Bridge.Body.CollisionCategories = Category.Cat3;
-            this.Bridge.Body.SleepingAllowed = false;
-            this.Bridge.Body.Mass = 10f;
-            this.Bridge.Body.IsBullet = true;
+            this.Bridge.SetGhost(false);
+            this.Bridge.SetEnabled(true);            
         }
 
         #region Network Read & Write methods

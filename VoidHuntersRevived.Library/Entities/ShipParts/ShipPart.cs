@@ -24,6 +24,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public MaleConnectionNode MaleConnectionNode { get; private set; }
         public Matrix RotationMatrix { get; private set; }
 
+        public Boolean Ghost { get; private set; }
+
         #region Constructors
         public ShipPart(EntityInfo info, IGame game) : base(info, game)
         {
@@ -47,7 +49,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             // Create the male connection node
             this.MaleConnectionNode = this.Scene.Entities.Create<MaleConnectionNode>("entity:connection_node:male", null, this.ShipPartData.MaleConnection, this);
-
             /*
             var fixture = this.Body.CreateFixture(new PolygonShape(new Vertices(new Vector2[] {
                 new Vector2(-0.5f, -0.5f),
@@ -70,8 +71,43 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             this.Body.Friction = 0f;
             this.Body.LinearDamping = 1f;
             this.Body.AngularDamping = 2f;
-            this.Body.CollidesWith = Category.Cat1;
-            this.Body.CollisionCategories = Category.Cat2;
+
+            this.SetGhost(true);
+            this.UpdateRotationMatrix();
+        }
+
+        /// <summary>
+        /// Ghosted shipparts are "detached freefloating" parts. The will only collide
+        /// with the world boundries. Nothing else, not even themselves.
+        /// </summary>
+        /// <param name="ghost"></param>
+        public void SetGhost(Boolean ghost)
+        {
+            if (ghost != this.Ghost)
+            {
+                if (ghost)
+                {
+                    this.Body.CollidesWith = Category.Cat1;
+                    this.Body.CollisionCategories = Category.Cat2;
+                    this.Body.SleepingAllowed = true;
+                    this.Body.Mass = 0f;
+                    this.Body.IsBullet = false;
+                    this.SetEnabled(false);
+
+                    this.Ghost = ghost;
+                }
+                else
+                {
+                    this.Body.CollidesWith = Category.Cat1 | Category.Cat3;
+                    this.Body.CollisionCategories = Category.Cat3;
+                    this.Body.SleepingAllowed = false;
+                    this.Body.Mass = 10f;
+                    this.Body.IsBullet = true;
+                    this.SetEnabled(true);
+
+                    this.Ghost = ghost;
+                }
+            }
         }
 
         public override void Draw(GameTime gameTime)
@@ -83,7 +119,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             base.Update(gameTime);
 
-            // Update the current parts rotation matrix
+            this.UpdateRotationMatrix();
+        }
+
+        /// <summary>
+        /// Updates the current rotation matrix
+        /// </summary>
+        private void UpdateRotationMatrix()
+        {
             this.RotationMatrix = Matrix.CreateRotationZ(this.Body.Rotation);
         }
     }
