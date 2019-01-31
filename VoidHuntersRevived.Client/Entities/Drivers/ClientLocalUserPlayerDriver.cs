@@ -27,6 +27,7 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
 
         private ClientMainScene _scene;
         private Camera _camera;
+        private Boolean[] _movement;
 
         public ClientLocalUserPlayerDriver(UserPlayer parent, EntityInfo info, IGame game) : base(info, game)
         {
@@ -41,6 +42,13 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
 
             _cursor = _scene.Cursor;
             _camera = _scene.Camera;
+            _movement = new Boolean[]
+            {
+                _parent.Movement[0],
+                _parent.Movement[1],
+                _parent.Movement[2],
+                _parent.Movement[3]
+            };
         }
 
         public override void Update(GameTime gameTime)
@@ -70,24 +78,24 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
 
             var keyboard = Keyboard.GetState();
 
-            if (keyboard.IsKeyDown(Keys.W) != _parent.Movement[0])
+            if (keyboard.IsKeyDown(Keys.W) != _movement[0])
             {
-                _parent.Movement[0] = !_parent.Movement[0];
+                _movement[0] = !_movement[0];
                 _parent.Dirty = true;
             }
-            if (keyboard.IsKeyDown(Keys.D) != _parent.Movement[1])
+            if (keyboard.IsKeyDown(Keys.D) != _movement[1])
             {
-                _parent.Movement[1] = !_parent.Movement[1];
+                _movement[1] = !_movement[1];
                 _parent.Dirty = true;
             }
-            if (keyboard.IsKeyDown(Keys.S) != _parent.Movement[2])
+            if (keyboard.IsKeyDown(Keys.S) != _movement[2])
             {
-                _parent.Movement[2] = !_parent.Movement[2];
+                _movement[2] = !_movement[2];
                 _parent.Dirty = true;
             }
-            if (keyboard.IsKeyDown(Keys.A) != _parent.Movement[3])
+            if (keyboard.IsKeyDown(Keys.A) != _movement[3])
             {
-                _parent.Movement[3] = !_parent.Movement[3];
+                _movement[3] = !_movement[3];
                 _parent.Dirty = true;
             }
 
@@ -113,6 +121,10 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
 
         public void Write(NetOutgoingMessage om)
         {
+            om.Write(_movement[0]);
+            om.Write(_movement[1]);
+            om.Write(_movement[2]);
+            om.Write(_movement[3]);
         }
     }
 }

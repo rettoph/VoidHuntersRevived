@@ -10,8 +10,15 @@ namespace VoidHuntersRevived.Client
     {
         static void Main(string[] args)
         {
-            var game = new Game1();
-            game.Run();
+            try
+            {
+                var game = new Game1();
+                game.Run();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine($"{e.GetType().Name} => {e.Message}");
+            }
         }
     }
 }

@@ -30,6 +30,11 @@ namespace VoidHuntersRevived.Server.Entities.Drivers
 
         public void Read(NetIncomingMessage im)
         {
+            _parent.Movement[0] = im.ReadBoolean();
+            _parent.Movement[1] = im.ReadBoolean();
+            _parent.Movement[2] = im.ReadBoolean();
+            _parent.Movement[3] = im.ReadBoolean();
+
             // We must update all clients of this development
             _parent.Dirty = true;
         }
