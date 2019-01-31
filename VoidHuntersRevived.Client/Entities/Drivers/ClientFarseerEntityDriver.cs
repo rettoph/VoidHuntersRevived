@@ -25,6 +25,9 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
         public ClientFarseerEntityDriver(IFarseerEntity parent, EntityInfo info, IGame game) : base(info, game)
         {
             _parent = parent;
+
+            this.Enabled = false;
+            this.Visible = false;
         }
 
         public override void Update(GameTime gameTime)

@@ -29,9 +29,15 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
         private Camera _camera;
         private Boolean[] _movement;
 
+        private Boolean _tractorBeamState;
+        private Int64 _tractorBeamTargetId;
+
         public ClientLocalUserPlayerDriver(UserPlayer parent, EntityInfo info, IGame game) : base(info, game)
         {
             _parent = parent;
+
+            this.Enabled = false;
+            this.Visible = false;
         }
 
         protected override void Initialize()
@@ -42,6 +48,8 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
 
             _cursor = _scene.Cursor;
             _camera = _scene.Camera;
+            _scene.CurrentPlayer = _parent;
+
             _movement = new Boolean[]
             {
                 _parent.Movement[0],
@@ -55,24 +63,24 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
         {
             base.Update(gameTime);
 
-            _parent.TractorBeam.Body.Position = _cursor.Body.Position;
+            //_parent.TractorBeam.Body.Position = _cursor.Body.Position;
 
             switch (Mouse.GetState().RightButton)
             {
                 case ButtonState.Released:
-                    if (_parent.TractorBeam.SelectedEntity != null)
+                    if (_parent.TractorBeam.Connection != null)
                     {
-                        _parent.TractorBeam.TryRelease();
+                        _tractorBeamState = false;
                         _parent.Dirty = true;
                     }
                     break;
                 case ButtonState.Pressed:
-                    if(_parent.TractorBeam.SelectedEntity == null && _cursor.Over is ITractorableEntity)
+                    if(_parent.TractorBeam.Connection == null && _cursor.Over is ITractorableEntity)
                     {
-                        _parent.TractorBeam.TrySelect(_cursor.Over as ITractorableEntity);
-                    }
-
-                    _parent.Dirty = true;
+                        _tractorBeamState = true;
+                        _tractorBeamTargetId = (_cursor.Over as ITractorableEntity).Id;
+                        _parent.Dirty = true;
+                    }  
                     break;
             }
 
@@ -104,18 +112,25 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
             {
                 _camera.Position = _parent.Bridge.Body.Position;
             }
+
+            _parent.Dirty = true;
         }
 
         public void Read(NetIncomingMessage im)
         {
             if(im.ReadBoolean())
-            {
+            { // Read the bridge settings
                 var bridgeId = im.ReadInt64();
 
                 if (_parent.Bridge == null || _parent.Bridge.Id != bridgeId)
                 {
                     _parent.SetBridge(_scene.NetworkEntities.GetById(bridgeId) as Hull);   
                 }
+            }
+
+            if(im.ReadBoolean())
+            { // Read the tractor beam settings
+                _parent.TractorBeam.Read(im);
             }
         }
 
@@ -125,6 +140,13 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
             om.Write(_movement[1]);
             om.Write(_movement[2]);
             om.Write(_movement[3]);
+
+            // Write the cursor position
+            om.Write(_cursor.Body.Position);
+
+            // Write tractor beam settings
+            om.Write(_tractorBeamState);
+            om.Write(_tractorBeamTargetId);
         }
     }
 }

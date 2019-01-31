@@ -63,6 +63,7 @@ namespace VoidHuntersRevived.Client
             entityLoader.Register<ClientRemoteUserPlayerDriver>(handle: "entity:player_driver:remote", priority: 1);
 
             var contentLoader = this.Provider.GetLoader<ContentLoader>();
+            contentLoader.Register<SpriteFont>("font:debug", "Fonts/debug");
             contentLoader.Register<Texture2D>("texture:connection_node:male", "Sprites/male-connection");
             contentLoader.Register<Texture2D>("texture:connection_node:female", "Sprites/female-connection");
         }
@@ -80,6 +81,11 @@ namespace VoidHuntersRevived.Client
         {
             base.PostInitialize();
 
+#if DEBUG
+            var hail = _client.CreateMessage("network:user:connection-request");
+            hail.Write("tony");
+            _client.Connect("localhost", 1337, hail);
+#else
             Console.WriteLine("Server Ip: ");
             var server = Console.ReadLine();
 
@@ -89,6 +95,7 @@ namespace VoidHuntersRevived.Client
             var hail = _client.CreateMessage("network:user:connection-request");
             hail.Write(name);
             _client.Connect(server, 1337, hail);
+#endif
         }
     }
 }

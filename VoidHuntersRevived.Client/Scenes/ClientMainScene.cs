@@ -12,6 +12,7 @@ using VoidHuntersRevived.Client.Entities;
 using VoidHuntersRevived.Client.Layers;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Networking.Groups;
@@ -24,6 +25,10 @@ namespace VoidHuntersRevived.Client.Scenes
     {
         public Camera Camera { get; set; }
         public Cursor Cursor { get; set; }
+
+        // The current clients player object
+        public UserPlayer CurrentPlayer { get; set; }
+
         private GraphicsDevice _grapihcs;
 
         private ClientPeer _client;

@@ -25,6 +25,9 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
         public ClientRemoteUserPlayerDriver(UserPlayer parent, EntityInfo info, IGame game) : base(info, game)
         {
             _parent = parent;
+
+            this.Enabled = false;
+            this.Visible = false;
         }
 
         protected override void Initialize()
@@ -37,13 +40,18 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
         public void Read(NetIncomingMessage im)
         {
             if (im.ReadBoolean())
-            {
+            { // Read the bridge settings
                 var bridgeId = im.ReadInt64();
 
                 if (_parent.Bridge == null || _parent.Bridge.Id != bridgeId)
                 {
                     _parent.SetBridge(_scene.NetworkEntities.GetById(bridgeId) as Hull);
                 }
+            }
+
+            if (im.ReadBoolean())
+            { // Read the tractor beam settings
+                _parent.TractorBeam.Read(im);
             }
         }
 

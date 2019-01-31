@@ -17,7 +17,9 @@ namespace VoidHuntersRevived.Client
             }
             catch(Exception e)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"{e.GetType().Name} => {e.Message}");
+                Console.WriteLine($"{e.StackTrace.ToString()}");
             }
         }
     }
