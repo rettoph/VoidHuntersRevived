@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farseer Physics MonoGame", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugView MonoGame", "Submodules\FarseerPhysics\DebugViews\DebugView MonoGame\DebugView MonoGame.csproj", "{566F1803-90B5-4947-8730-57F092FBB002}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lidgren.Network", "Submodules\lidgren-network-gen3\Lidgren.Network\Lidgren.Network.csproj", "{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Networking", "VoidHuntersRevived.Networking\VoidHuntersRevived.Networking.csproj", "{758FAD0B-76BD-4E43-8BB7-F8F189505945}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Server", "VoidHuntersRevived.Server\VoidHuntersRevived.Server.csproj", "{7657A195-99D8-4AC9-A795-F3EFDDE979E9}"
@@ -57,13 +55,6 @@ Global
 		{566F1803-90B5-4947-8730-57F092FBB002}.Release|Any CPU.ActiveCfg = Release|x86
 		{566F1803-90B5-4947-8730-57F092FBB002}.Release|x86.ActiveCfg = Release|x86
 		{566F1803-90B5-4947-8730-57F092FBB002}.Release|x86.Build.0 = Release|x86
-		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Debug|x86.Build.0 = Debug|Any CPU
-		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Release|x86.ActiveCfg = Release|Any CPU
-		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Release|x86.Build.0 = Release|Any CPU
 		{758FAD0B-76BD-4E43-8BB7-F8F189505945}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{758FAD0B-76BD-4E43-8BB7-F8F189505945}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{758FAD0B-76BD-4E43-8BB7-F8F189505945}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -95,7 +86,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{0AAD36E3-51A5-4A07-AB60-5C8A66BD38B7} = {734E0AAC-E1F9-421A-AC04-038873C9C2BB}
 		{566F1803-90B5-4947-8730-57F092FBB002} = {734E0AAC-E1F9-421A-AC04-038873C9C2BB}
-		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8} = {734E0AAC-E1F9-421A-AC04-038873C9C2BB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FCB1CA3-2B6C-469F-B569-084FC0B57488}
