@@ -63,6 +63,7 @@ namespace VoidHuntersRevived.Library.Entities
                 this.Driver.AngularVelocity = im.ReadSingle();
 
                 this.Body.Awake = true;
+                this.SetEnabled(true);
             }
         }
 

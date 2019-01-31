@@ -10,13 +10,13 @@ using VoidHuntersRevived.Core.Extensions;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Providers;
 using VoidHuntersRevived.Core.Structs;
-using VoidHuntersRevived.Library.Entities.ConnectionNodes;
 using VoidHuntersRevived.Library.Entities.MetaData;
 using System.Linq;
 using Lidgren.Network;
 using Lidgren.Network.Xna;
 using VoidHuntersRevived.Library.Interfaces;
 using VoidHuntersRevived.Library.Entities.Interfaces;
+using VoidHuntersRevived.Library.Entities.Connections.Nodes;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Hulls
 {
@@ -41,8 +41,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Hulls
         {
             base.Initialize();
 
-            this.Body.CreateFixture(new PolygonShape(this.HullData.Vertices, 0.1f));
-
             // Create the female connection nodes
             this.FemaleConnectionNodes = this.HullData.FemaleConnections
                 .Select(fcnd =>
@@ -65,6 +63,27 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Hulls
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Return a list of all available female connection nodes found
+        /// within the current hull piece (and any of its children)
+        /// </summary>
+        /// <returns></returns>
+        public List<FemaleConnectionNode> GetAvailabaleFemaleConnectioNodes(List<FemaleConnectionNode> addTo = null)
+        {
+            if (addTo == null)
+                addTo = new List<FemaleConnectionNode>();
+
+            foreach(FemaleConnectionNode female in this.FemaleConnectionNodes)
+            {
+                if(female.Connection == null)
+                    addTo.Add(female);
+                else if(female.Connection.MaleNode.Owner is Hull)
+                    (female.Connection.MaleNode.Owner as Hull).GetAvailabaleFemaleConnectioNodes(addTo);
+            }
+
+            return addTo;
         }
     }
 }

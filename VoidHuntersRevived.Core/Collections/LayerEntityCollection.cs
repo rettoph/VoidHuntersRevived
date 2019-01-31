@@ -14,10 +14,12 @@ namespace VoidHuntersRevived.Core.Collections
     public class LayerEntityCollection : GameObjectCollection<IEntity>
     {
         private ILayer _layer;
+        private ILogger _logger;
 
         public LayerEntityCollection(ILogger logger, ILayer layer) : base(logger)
         {
             _layer = layer;
+            _logger = logger;
         }
 
         /// <summary>
@@ -64,6 +66,7 @@ namespace VoidHuntersRevived.Core.Collections
         #region Event Handlers
         private void HandleEntityRemovedFromLayer(object sender, ILayerObject e)
         {
+            _logger.LogDebug($"Removing IEntity<{e.GetType().Name}> from LayerEntityCollection.");
             var entity = (IEntity)sender;
             this.remove(entity);
         }

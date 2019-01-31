@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Library.Entities.ConnectionNodes;
 
 namespace VoidHuntersRevived.Library.Entities.MetaData
 {

@@ -14,12 +14,13 @@ using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using FarseerPhysics.Common;
 using VoidHuntersRevived.Library.Entities.MetaData;
 using FarseerPhysics;
-using VoidHuntersRevived.Library.Entities.ConnectionNodes;
+using VoidHuntersRevived.Library.Entities.Connections.Nodes;
 using VoidHuntersRevived.Networking;
 using VoidHuntersRevived.Library.Entities.Players;
 using FarseerPhysics.Collision.Shapes;
 using VoidHuntersRevived.Library.Helpers;
 using VoidHuntersRevived.Library.Extensions;
+using VoidHuntersRevived.Library.Entities.Connections;
 
 namespace VoidHuntersRevived.Library
 {
@@ -56,8 +57,12 @@ namespace VoidHuntersRevived.Library
             entityLoader.Register<UserPlayer>("entity:player:user", "entity_name:player:user", "entity_description:player:user");
             entityLoader.Register<TractorBeam>("entity:tractor_beam", "entity_name:tractor_beam", "entity_description:tractor_beam");
             entityLoader.Register<Wall>("entity:wall", "entity_name:wall", "entity_description:wall");
+            
             entityLoader.Register<MaleConnectionNode>("entity:connection_node:male");
             entityLoader.Register<FemaleConnectionNode>("entity:connection_node:female");
+
+            entityLoader.Register<TractorBeamConnection>("entity:connection:tractor_beam");
+            entityLoader.Register<NodeConnection>("entity:connection:node");
 
             // Register all the default hull piece types
             entityLoader.Register<Hull>(
@@ -117,8 +122,8 @@ namespace VoidHuntersRevived.Library
                         Vector2Helper.FromThetaDistance((float)(4 * Math.PI) / 3, d),
                     },
                     femaleConnections: new Vector3[] {
-                        Vector2Helper.FromThetaDistance((float)(1 * Math.PI) / 3, nd).ToVector3((float)(1 * Math.PI) / 3),
-                        Vector2Helper.FromThetaDistance((float)(5 * Math.PI) / 3, nd).ToVector3((float)(5 * Math.PI) / 3),
+                        Vector2Helper.FromThetaDistance((float)(1 * Math.PI) / 3, nd).ToVector3((float)(4 * Math.PI) / 3),
+                        Vector2Helper.FromThetaDistance((float)(5 * Math.PI) / 3, nd).ToVector3((float)(2 * Math.PI) / 3),
                     }));
         }
     }

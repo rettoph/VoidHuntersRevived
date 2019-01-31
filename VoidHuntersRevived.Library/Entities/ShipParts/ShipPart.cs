@@ -5,26 +5,39 @@ using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Common;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Core.Extensions;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Providers;
 using VoidHuntersRevived.Core.Structs;
-using VoidHuntersRevived.Library.Entities.ConnectionNodes;
+using VoidHuntersRevived.Library.Entities.Connections;
+using VoidHuntersRevived.Library.Entities.Connections.Nodes;
 using VoidHuntersRevived.Library.Entities.Interfaces;
 using VoidHuntersRevived.Library.Entities.MetaData;
+using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using VoidHuntersRevived.Library.Interfaces;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
     public abstract class ShipPart : TractorableEntity
     {
-        public ShipPartData ShipPartData { get; private set; }
+        protected ShipPartData ShipPartData { get; private set; }
         public MaleConnectionNode MaleConnectionNode { get; private set; }
         public Matrix RotationMatrix { get; private set; }
 
         public Boolean Ghost { get; private set; }
+
+        // The rootmost part of the current ship parts chain
+        public ShipPart Root { get; protected set; }
+
+        // The shipparts immediate parent (if any)
+        public Hull Parent { get; protected set; }
+
+        // Represents the current fixture of the ship part.
+        // This is used to interface with the cursor
+        protected Shape CurrentShape;
 
         #region Constructors
         public ShipPart(EntityInfo info, IGame game) : base(info, game)
@@ -39,6 +52,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             this.ShipPartData = data;
 
+            this.UpdateOrder = 100;
+
             this.Enabled = true;
         }
         #endregion
@@ -46,6 +61,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         protected override void Initialize()
         {
             base.Initialize();
+
+            this.CurrentShape = this.CreateShape();
+            this.Body.CreateFixture(this.CurrentShape);
+
 
             // Create the male connection node
             this.MaleConnectionNode = this.Scene.Entities.Create<MaleConnectionNode>("entity:connection_node:male", null, this.ShipPartData.MaleConnection, this);
@@ -110,6 +129,32 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             }
         }
 
+        #region Create Shape Methods
+        protected Shape CreateShape()
+        {
+            return new PolygonShape(this.ShipPartData.Vertices, 0.1f);
+        }
+        public Shape CreateShape(Matrix transformation)
+        {
+            var vertices = new Vertices(this.ShipPartData.Vertices.ToArray());
+            vertices.Transform(ref transformation);
+
+            return new PolygonShape(vertices, 0.1f);
+        }
+        #endregion
+
+        #region Attatch Methods
+        public void AttatchTo(FemaleConnectionNode female)
+        {
+            if (female.Connection != null)
+                this.Game.Logger.LogCritical($"Unable to connect nodes, female connection already exists!");
+            else if (this.MaleConnectionNode.Connection != null)
+                this.Game.Logger.LogCritical("Unable to connect nodes, male connection already exists!");
+            else // Create a new connection instance
+                this.Scene.Entities.Create<NodeConnection>("entity:connection:node", null, female, this.MaleConnectionNode);
+        }
+        #endregion
+
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
@@ -125,7 +170,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// <summary>
         /// Updates the current rotation matrix
         /// </summary>
-        private void UpdateRotationMatrix()
+        public void UpdateRotationMatrix()
         {
             this.RotationMatrix = Matrix.CreateRotationZ(this.Body.Rotation);
         }

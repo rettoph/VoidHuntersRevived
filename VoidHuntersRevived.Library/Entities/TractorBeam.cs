@@ -3,6 +3,7 @@ using FarseerPhysics.Dynamics.Joints;
 using FarseerPhysics.Factories;
 using Lidgren.Network;
 using Lidgren.Network.Xna;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,9 @@ using System.Text;
 using VoidHuntersRevived.Core.Implementations;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
+using VoidHuntersRevived.Library.Entities.Connections;
 using VoidHuntersRevived.Library.Entities.Interfaces;
+using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Interfaces;
 using VoidHuntersRevived.Library.Scenes;
 
@@ -18,18 +21,17 @@ namespace VoidHuntersRevived.Library.Entities
 {
     public class TractorBeam : FarseerEntity, ITractorBeam
     {
-        public ITractorableEntity SelectedEntity { get; private set; }
+        public TractorBeamConnection Connection { get; private set; }
         public Vector2 Position { get; set; }
 
-        private WeldJoint _joint;
         private MainScene _scene;
 
-        public event EventHandler<ITractorBeam> OnSelect;
-        public event EventHandler<ITractorBeam> OnRelease;
+        public event EventHandler<ITractorBeam> OnConnected;
+        public event EventHandler<ITractorBeam> OnDisconnected;
 
         public TractorBeam(IPlayer player, EntityInfo info, IGame game) : base(info, game)
         {
-            this.SelectedEntity = null;
+            this.Connection = null;
         }
 
         protected override void Initialize()
@@ -42,40 +44,38 @@ namespace VoidHuntersRevived.Library.Entities
             this.Body.SleepingAllowed = false;
         }
 
-        public void TryRelease()
+        public void CreateConnection(ITractorableEntity target)
         {
-            if(this.SelectedEntity != null)
-            {
-                this.SelectedEntity.Released();
-                this.SelectedEntity = null;
-                this.World.RemoveJoint(_joint);
-
-                this.OnRelease?.Invoke(this, this);
-            }
+            if (this.Connection != null)
+                this.Game.Logger.LogCritical("Unable to create TractorBeam Connection, TractorBeam already has an active connection!");
+            else if (target.TractorBeamConnection != null)
+                this.Game.Logger.LogCritical("Unable to create TractorBeam Connection, Target already has an active connection!");
+            else // Create the tractor beam connection
+                this.Scene.Entities.Create<TractorBeamConnection>("entity:connection:tractor_beam", null, this, target);
         }
-        public void TrySelect(ITractorableEntity entity)
+        public void Connect(TractorBeamConnection connection)
         {
-            if (this.SelectedEntity == null && entity.CanBeSelectedBy(this))
-            {
-                this.SelectedEntity = entity;
-                this.SelectedEntity.SelectedBy(this);
-                this.OnSelect?.Invoke(this, this);
+            // The connection can only connect if its not already connnected
+            if (this.Connection != null)
+                throw new Exception("Unable to connect! Already bound to another connection.");
+            else if (connection.TractorBeam != this)
+                throw new Exception("Unable to connect! Connection already mapped to another tractor beam");
+            else if(connection.State != ConnectionState.Connecting)
+                throw new Exception("Unable to connect! Current connection status invalid.");
 
-                this.SelectedEntity.Body.Position = this.Body.Position;
-                this.SelectedEntity.SetEnabled(true);
-
-                _joint = JointFactory.CreateWeldJoint(
-                    this.World,
-                    this.Body,
-                    this.SelectedEntity.Body,
-                    this.Body.LocalCenter,
-                    this.SelectedEntity.Body.LocalCenter);
-
-                _joint.DampingRatio = 1000f;
-                _joint.FrequencyHz = 100f;
-            }
+            // Save the connection
+            this.Connection = connection;
+            this.OnConnected?.Invoke(this, this);
         }
+        public void Disconnect()
+        {
+            if (this.Connection.State != ConnectionState.Disconnecting)
+                throw new Exception("Unable to disconnect! Connection state is not set to Disconnected.");
 
+            this.Connection = null;
+
+            this.OnDisconnected?.Invoke(this, this);
+        }
 
         public void Read(NetIncomingMessage im)
         {
@@ -85,20 +85,20 @@ namespace VoidHuntersRevived.Library.Entities
             { // The next boolean indicates wether or not the tractor beam has an object selected
                 var selectedId = im.ReadInt64();
 
-                if (this.SelectedEntity == null)
+                if (this.Connection == null)
                 { // We only need to do anything if the tractor beam doesnt current have a selection
                     var target = _scene.NetworkEntities.GetById(selectedId);
 
                     // Only bother trying if the input entity is a tractorable object
                     if (target is ITractorableEntity)
-                        this.TrySelect(target as ITractorableEntity);
+                        this.CreateConnection(target as ITractorableEntity);
                 }
             }
             else
             {
-                if (this.SelectedEntity != null)
+                if (this.Connection != null)
                 { // try to release the input entity
-                    this.TryRelease();
+                    this.Connection.Disconnect();
                 }
             }
         }
@@ -107,14 +107,14 @@ namespace VoidHuntersRevived.Library.Entities
         {
             om.Write(this.Body.Position);
 
-            if (this.SelectedEntity == null)
+            if (this.Connection == null)
             {
                 om.Write(false);
             }
             else
             {
                 om.Write(true);
-                om.Write(this.SelectedEntity.Id);
+                om.Write(this.Connection.Target.Id);
             }
         }
     }

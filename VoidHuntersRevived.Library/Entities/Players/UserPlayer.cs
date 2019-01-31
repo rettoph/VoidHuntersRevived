@@ -17,17 +17,17 @@ namespace VoidHuntersRevived.Library.Entities.Players
 {
     public class UserPlayer : Player
     {
-        private IUser _user;
+        public IUser User;
         private IUserPlayerDriver _driver;
 
         public override String Name
         {
-            get { return _user.Name; }
+            get { return User.Name; }
         }
 
         public UserPlayer(IUser user, Hull bridge, EntityInfo info, IGame game) : base(bridge, info, game)
         {
-            _user = user;
+            User = user;
         }
         public UserPlayer(long id, EntityInfo info, IGame game) : base(id, info, game)
         {
@@ -50,11 +50,14 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
         private void UpdateDriver()
         {
-            if (_user != null)
+            if (this.User != null)
             {
+                if(_driver != null) // Remove the old driver
+                    this.Scene.Entities.Remove(_driver);
+
                 var group = (this.Scene as MainScene).Group;
 
-                if (_user.Id == group.Peer.UniqueIdentifier)
+                if (User.Id == group.Peer.UniqueIdentifier)
                 { // Create a local driver
                     _driver = this.Scene.Entities.Create<IUserPlayerDriver>("entity:player_driver:local", null, this);
                 }
@@ -76,13 +79,13 @@ namespace VoidHuntersRevived.Library.Entities.Players
             // Load the incoming user
             var userId = im.ReadInt64();
 
-            if (_user == null)
+            if (User == null)
             { // If the user isnt already defined, define it now
-                _user = group.Users.GetById(userId);
+                User = group.Users.GetById(userId);
                 this.UpdateDriver();
             }
 
-            if(userId != _user.Id)
+            if(userId != User.Id)
             { // If the claimed user is not the pre defined user, theres an issue
                 this.Game.Logger.LogCritical($"Incorrect user claimed by player!");
             }
@@ -99,7 +102,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
         {
             base.Write(om);
 
-            om.Write(_user.Id);
+            om.Write(User.Id);
 
             if(_driver == null)
             { // Only sync driver info if the driver even exists at this time

@@ -29,6 +29,8 @@ namespace VoidHuntersRevived.Library.Scenes
         private DateTime _lastMessagePush;
         protected Int32 MessagePushInterval = 0;
 
+        public Int32 MessageCount { get; private set; }
+
 
         public MainScene(IServiceProvider provider, IGame game) : base(provider, game)
         {
@@ -47,27 +49,32 @@ namespace VoidHuntersRevived.Library.Scenes
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
+            this.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000); // Step world forward first
 
-            this.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
+            base.Update(gameTime);
 
             if (DateTime.Now.Subtract(_lastMessagePush).TotalMilliseconds >= this.MessagePushInterval)
             {
-                while (this.NetworkEntities.DirtyNetworkEntityQueue.Count > 0)
+                if (this.NetworkEntities.DirtyNetworkEntityQueue.Count > 0)
                 {
-                    // Select the dirty entity
-                    _dirtyEntity = this.NetworkEntities.DirtyNetworkEntityQueue.Dequeue();
+                    this.MessageCount = this.NetworkEntities.DirtyNetworkEntityQueue.Count;
 
-                    // Create a new message and send it to the group
-                    _om = this.Group.CreateMessage("update");
-                    _dirtyEntity.Write(_om);
-                    this.Group.SendMessage(_om, NetDeliveryMethod.UnreliableSequenced, 0);
+                    while (this.NetworkEntities.DirtyNetworkEntityQueue.Count > 0)
+                    {
+                        // Select the dirty entity
+                        _dirtyEntity = this.NetworkEntities.DirtyNetworkEntityQueue.Dequeue();
 
-                    // Mark the entity as clean
-                    _dirtyEntity.Dirty = false;
+                        // Create a new message and send it to the group
+                        _om = this.Group.CreateMessage("update");
+                        _dirtyEntity.Write(_om);
+                        this.Group.SendMessage(_om, NetDeliveryMethod.UnreliableSequenced, 0);
+
+                        // Mark the entity as clean
+                        _dirtyEntity.Dirty = false;
+                    }
+
+                    _lastMessagePush = DateTime.Now;
                 }
-
-                _lastMessagePush = DateTime.Now;
             }
         }
     }

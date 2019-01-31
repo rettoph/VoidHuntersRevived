@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
+using VoidHuntersRevived.Library.Entities.Connections.Nodes;
 using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using VoidHuntersRevived.Library.Interfaces;
 using VoidHuntersRevived.Networking.Implementations;
@@ -19,6 +20,11 @@ namespace VoidHuntersRevived.Library.Entities.Players
         public TractorBeam TractorBeam { get; private set; }
         public Hull Bridge { get; private set; }
         public Boolean[] Movement { get; set; }
+
+        /// <summary>
+        /// A list of all available female connection nodes found within the current bridge chain
+        /// </summary>
+        public FemaleConnectionNode[] AvailableFemaleConnectionNodes { get; private set; }
 
         public Player(Hull bridge, EntityInfo info, IGame game) : base(info, game)
         {
@@ -95,7 +101,19 @@ namespace VoidHuntersRevived.Library.Entities.Players
             this.Bridge = bridge;
             this.Bridge.BridgeFor = this;
             this.Bridge.SetGhost(false);
-            this.Bridge.SetEnabled(true);            
+            this.Bridge.SetEnabled(true);
+
+            this.UpdateAvailableFemaleConnectionNodes();
+        }
+
+        /// <summary>
+        /// Dynamically search through the bridge connection chain
+        /// and create ann array containing all available female connection
+        /// nodes. Save that array to the local AvailableFemaleConnectionNodes array
+        /// </summary>
+        private void UpdateAvailableFemaleConnectionNodes()
+        {
+            this.AvailableFemaleConnectionNodes = this.Bridge.GetAvailabaleFemaleConnectioNodes().ToArray();
         }
 
         #region Network Read & Write methods
@@ -106,10 +124,6 @@ namespace VoidHuntersRevived.Library.Entities.Players
             this.Movement[1] = im.ReadBoolean();
             this.Movement[2] = im.ReadBoolean();
             this.Movement[3] = im.ReadBoolean();
-
-            // Update the tractor beam settings
-            if(im.ReadBoolean())
-                this.TractorBeam.Read(im);
         }
 
         public override void Write(NetOutgoingMessage om)
@@ -121,18 +135,6 @@ namespace VoidHuntersRevived.Library.Entities.Players
             om.Write(this.Movement[1]);
             om.Write(this.Movement[2]);
             om.Write(this.Movement[3]);
-
-            // Write the tractor beam settings
-            if(this.TractorBeam == null)
-            {
-                om.Write(false);
-            }
-            else
-            {
-                om.Write(true);
-                this.TractorBeam.Write(om);
-            }
-            
         }
         #endregion
     }

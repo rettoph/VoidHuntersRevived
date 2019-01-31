@@ -11,6 +11,9 @@ namespace VoidHuntersRevived.Core.Collections
     public class GameObjectCollection<TGameObject> : InitializableGameCollection<TGameObject>
         where TGameObject : IGameObject
     {
+        public Int32 EnabledCount { get { return _updatables.Length; } }
+        public Int32 VisibleCount { get { return _drawables.Length; } }
+
         private TGameObject[] _drawables;
         private TGameObject[] _updatables;
 

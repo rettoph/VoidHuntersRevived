@@ -19,11 +19,13 @@ namespace VoidHuntersRevived.Core.Collections
         private IScene _scene;
         private EntityLoader _entityLoader;
         private ILayer _defaultLayer;
+        private ILogger _logger;
 
         public SceneEntityCollection(ILogger logger, IScene scene) : base(logger)
         {
             _scene = scene;
             _entityLoader = _scene.Game.Provider.GetLoader<EntityLoader>();
+            _logger = logger;
         }
 
         public void SetDefaultLayer(ILayer layer)
@@ -63,10 +65,13 @@ namespace VoidHuntersRevived.Core.Collections
         {
             if (base.remove(item))
             {
-                item.Layer = null;
-                item.Dispose();
+                _logger.LogDebug($"Removing IEntity<{item.GetType().Name}> from SceneEntityCollection.");
 
+                item.Layer = null;
                 item.OnAddedToLayer -= this.HandleEntityAddedToLayer;
+
+
+                item.Dispose();
 
                 return true;
             }

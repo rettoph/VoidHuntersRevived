@@ -14,6 +14,7 @@ using VoidHuntersRevived.Server.Helpers;
 using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using VoidHuntersRevived.Library.Entities.Interfaces;
 using System.Linq;
+using VoidHuntersRevived.Library.Entities.Players;
 
 namespace VoidHuntersRevived.Server.Scenes
 {
@@ -92,11 +93,14 @@ namespace VoidHuntersRevived.Server.Scenes
             }
 
             // Create a new player object for the new user
-            this.Entities.Create<IEntity>(
+            var player = this.Entities.Create<UserPlayer>(
                 "entity:player:user",
                 null,
                 e,
                 this.Entities.Create<IEntity>("entity:hull:triangle", null));
+
+            // Mark the player as dirty, again, to resync initialization changes to all clients
+            player.Dirty = true;
 
             // Send a marker to the client, alerting it that setup is complete
             om = this.Group.CreateMessage("setup:complete");

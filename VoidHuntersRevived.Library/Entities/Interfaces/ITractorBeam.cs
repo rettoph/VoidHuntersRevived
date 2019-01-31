@@ -4,18 +4,21 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Core.Interfaces;
+using VoidHuntersRevived.Library.Entities.Connections;
+
 namespace VoidHuntersRevived.Library.Entities.Interfaces
 {
     public interface ITractorBeam : IFarseerEntity
     {
-        ITractorableEntity SelectedEntity { get; }
+        TractorBeamConnection Connection { get; }
         Vector2 Position { get; set; }
 
-        event EventHandler<ITractorBeam> OnSelect;
-        event EventHandler<ITractorBeam> OnRelease;
+        event EventHandler<ITractorBeam> OnConnected;
+        event EventHandler<ITractorBeam> OnDisconnected;
 
-        void TrySelect(ITractorableEntity entity);
-        void TryRelease();
+        void CreateConnection(ITractorableEntity target);
+        void Connect(TractorBeamConnection connection);
+        void Disconnect();
 
         void Read(NetIncomingMessage im);
         void Write(NetOutgoingMessage om);

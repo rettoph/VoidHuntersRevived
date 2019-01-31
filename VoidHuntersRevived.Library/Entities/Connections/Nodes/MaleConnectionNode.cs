@@ -9,7 +9,7 @@ using VoidHuntersRevived.Core.Providers;
 using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 
-namespace VoidHuntersRevived.Library.Entities.ConnectionNodes
+namespace VoidHuntersRevived.Library.Entities.Connections.Nodes
 {
     public class MaleConnectionNode : ConnectionNode
     {
