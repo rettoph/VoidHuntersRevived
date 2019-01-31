@@ -14,6 +14,7 @@ using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities.Interfaces;
 using VoidHuntersRevived.Library.Entities.Players;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using VoidHuntersRevived.Library.Interfaces;
 using VoidHuntersRevived.Networking.Interfaces;
@@ -49,6 +50,7 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
             _cursor = _scene.Cursor;
             _camera = _scene.Camera;
             _scene.CurrentPlayer = _parent;
+            _parent.UpdateOrder = 10000; // Increase update order, to ensure client gets updated last
 
             _movement = new Boolean[]
             {
@@ -106,6 +108,30 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
                 _movement[3] = !_movement[3];
                 _parent.Dirty = true;
             }
+
+            // TractorBeam Target Preview Rendering
+            // The following code will place the tractorbeams current target (if any)
+            // Onto the nearest available female node
+            if(_parent.TractorBeam.Connection != null && _parent.TractorBeam.Connection.Target is ShipPart && _parent.AvailableFemaleConnectionNodes?.Length > 0)
+            { // Only proceed if there is a connection and there are open female nodes
+                var node = _parent.AvailableFemaleConnectionNodes
+                    .OrderBy(fn => Vector2.Distance(fn.WorldPoint, _parent.TractorBeam.Body.Position)).First();
+
+                if(Vector2.Distance(node.WorldPoint, _parent.TractorBeam.Body.Position) < 1)
+                {
+                    var target = _parent.TractorBeam.Connection.Target as ShipPart;
+
+                    _parent.TractorBeam.Connection.Target.Body.Rotation = _parent.Bridge.Body.Rotation + node.LocalRotation + target.MaleConnectionNode.LocalRotation;
+                    target.UpdateRotationMatrix(); // Update the targets rotation matrix
+
+                    _parent.TractorBeam.Connection.Target.Body.Position = _parent.Bridge.Body.Position + Vector2.Transform(node.LocalPoint, node.Owner.RotationMatrix) - Vector2.Transform(target.MaleConnectionNode.LocalPoint, target.RotationMatrix);
+                    
+
+                    
+                }
+
+            }
+
 
             // Update the camera position to follow the clients bridge
             if(_parent.Bridge != null)
