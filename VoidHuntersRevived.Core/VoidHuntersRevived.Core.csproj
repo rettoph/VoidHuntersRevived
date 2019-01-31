@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
+  <Import Project="..\netfx.props" />
+  
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>VoidHuntersRevived.Core</RootNamespace>
