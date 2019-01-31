@@ -26,10 +26,15 @@ namespace VoidHuntersRevived.Library.Scenes
         private INetworkEntity _dirtyEntity;
         private NetOutgoingMessage _om;
 
+        private DateTime _lastMessagePush;
+        protected Int32 MessagePushInterval = 0;
+
 
         public MainScene(IServiceProvider provider, IGame game) : base(provider, game)
         {
             this.Enabled = true;
+
+            _lastMessagePush = DateTime.Now;
         }
 
         protected override void Initialize()
@@ -46,18 +51,23 @@ namespace VoidHuntersRevived.Library.Scenes
 
             this.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
 
-            while(this.NetworkEntities.DirtyNetworkEntityQueue.Count > 0)
+            if (DateTime.Now.Subtract(_lastMessagePush).TotalMilliseconds >= this.MessagePushInterval)
             {
-                // Select the dirty entity
-                _dirtyEntity = this.NetworkEntities.DirtyNetworkEntityQueue.Dequeue();
+                while (this.NetworkEntities.DirtyNetworkEntityQueue.Count > 0)
+                {
+                    // Select the dirty entity
+                    _dirtyEntity = this.NetworkEntities.DirtyNetworkEntityQueue.Dequeue();
 
-                // Create a new message and send it to the group
-                _om = this.Group.CreateMessage("update");
-                _dirtyEntity.Write(_om);
-                this.Group.SendMessage(_om, NetDeliveryMethod.UnreliableSequenced, 0);
+                    // Create a new message and send it to the group
+                    _om = this.Group.CreateMessage("update");
+                    _dirtyEntity.Write(_om);
+                    this.Group.SendMessage(_om, NetDeliveryMethod.UnreliableSequenced, 0);
 
-                // Mark the entity as clean
-                _dirtyEntity.Dirty = false;
+                    // Mark the entity as clean
+                    _dirtyEntity.Dirty = false;
+                }
+
+                _lastMessagePush = DateTime.Now;
             }
         }
     }
