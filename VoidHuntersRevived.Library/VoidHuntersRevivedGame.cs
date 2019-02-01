@@ -10,7 +10,6 @@ using FarseerPhysics.Dynamics;
 using VoidHuntersRevived.Core.Extensions;
 using VoidHuntersRevived.Core.Loaders;
 using VoidHuntersRevived.Library.Entities;
-using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using FarseerPhysics.Common;
 using VoidHuntersRevived.Library.Entities.MetaData;
 using FarseerPhysics;
@@ -21,6 +20,7 @@ using FarseerPhysics.Collision.Shapes;
 using VoidHuntersRevived.Library.Helpers;
 using VoidHuntersRevived.Library.Extensions;
 using VoidHuntersRevived.Library.Entities.Connections;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Library
 {
@@ -65,11 +65,11 @@ namespace VoidHuntersRevived.Library
             entityLoader.Register<NodeConnection>("entity:connection:node");
 
             // Register all the default hull piece types
-            entityLoader.Register<Hull>(
+            entityLoader.Register<ShipPart>(
                 handle: "entity:hull:square",
                 nameHandle: "entity_name:hull:square",
                 descriptionHandle: "entity_description:hull:square",
-                data: new HullData(
+                data: new ShipPartData(
                     maleConnection: new Vector3(-0.5f, 0, (float)Math.PI),
                     vertices: new Vector2[] {
                         new Vector2(-0.5f, -0.5f),
@@ -78,16 +78,16 @@ namespace VoidHuntersRevived.Library
                         new Vector2(-0.5f, 0.5f)
                     },
                     femaleConnections: new Vector3[] {
-                        new Vector3(0.5f, 0, 0),
-                        new Vector3(0f, -0.5f, -(float)Math.PI/2),
-                        new Vector3(0f, 0.5f, (float)Math.PI/2)
+                        new Vector3(0.5f, 0, (float)Math.PI),
+                        new Vector3(0f, -0.5f, (float)Math.PI/2),
+                        new Vector3(0f, 0.5f, -(float)Math.PI/2)
                     }));
 
-            entityLoader.Register<Hull>(
+            entityLoader.Register<ShipPart>(
                 handle: "entity:hull:beam",
                 nameHandle: "entity_name:hull:square",
                 descriptionHandle: "entity_description:hull:square",
-                data: new HullData(
+                data: new ShipPartData(
                     maleConnection: new Vector3(-1.5f, 0, (float)Math.PI),
                     vertices: new Vector2[] {
                         new Vector2(-1.5f, -0.5f),
@@ -110,11 +110,11 @@ namespace VoidHuntersRevived.Library
             var d = (float)Math.Sqrt(1f / 3f) * 1;
             var nd = (float)(Math.Cos((1 * Math.PI) / 3) * d);
 
-            entityLoader.Register<Hull>(
+            entityLoader.Register<ShipPart>(
                 handle: "entity:hull:triangle",
                 nameHandle: "entity_name:hull:square",
                 descriptionHandle: "entity_description:hull:square",
-                data: new HullData(
+                data: new ShipPartData(
                     maleConnection: Vector2Helper.FromThetaDistance((float)(3 * Math.PI) / 3, nd).ToVector3((float)(3 * Math.PI) / 3),
                     vertices: new Vector2[] {
                         Vector2Helper.FromThetaDistance((float)(0 * Math.PI) / 3, d),

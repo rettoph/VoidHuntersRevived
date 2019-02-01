@@ -4,11 +4,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities.Connections.Nodes;
-using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Interfaces;
 using VoidHuntersRevived.Networking.Implementations;
 
@@ -18,7 +19,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
     {
         public abstract String Name { get; }
         public TractorBeam TractorBeam { get; private set; }
-        public Hull Bridge { get; private set; }
+        public ShipPart Bridge { get; private set; }
         public Boolean[] Movement { get; set; }
 
         /// <summary>
@@ -26,7 +27,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
         /// </summary>
         public FemaleConnectionNode[] AvailableFemaleConnectionNodes { get; private set; }
 
-        public Player(Hull bridge, EntityInfo info, IGame game) : base(info, game)
+        public Player(ShipPart bridge, EntityInfo info, IGame game) : base(info, game)
         {
             this.SetBridge(bridge);
 
@@ -70,9 +71,9 @@ namespace VoidHuntersRevived.Library.Entities.Players
             if (this.Bridge != null)
             {
                 if (this.Movement[0])
-                    this.Bridge.Body.ApplyForce(Vector2.Transform(new Vector2(200, 0), this.Bridge.RotationMatrix));
+                    this.Bridge.Body.ApplyForce(Vector2.Transform(new Vector2(200, 0), this.Bridge.TransformationOffsetMatrix));
                 if (this.Movement[2])
-                    this.Bridge.Body.ApplyForce(Vector2.Transform(new Vector2(-200, 0), this.Bridge.RotationMatrix));
+                    this.Bridge.Body.ApplyForce(Vector2.Transform(new Vector2(-200, 0), this.Bridge.TransformationOffsetMatrix));
 
                 if (this.Movement[1])
                     this.Bridge.Body.ApplyAngularImpulse(0.001f);
@@ -87,7 +88,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
         /// Update the current players bridge, if possible
         /// </summary>
         /// <param name="bridge"></param>
-        public virtual void SetBridge(Hull bridge)
+        public virtual void SetBridge(ShipPart bridge)
         {
             this.Game.Logger.LogDebug($"Updating Bridge!");
 

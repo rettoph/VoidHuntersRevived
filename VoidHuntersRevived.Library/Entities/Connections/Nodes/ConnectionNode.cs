@@ -10,6 +10,7 @@ using VoidHuntersRevived.Core.Providers;
 using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Extensions;
 
 namespace VoidHuntersRevived.Library.Entities.Connections.Nodes
 {
@@ -25,8 +26,10 @@ namespace VoidHuntersRevived.Library.Entities.Connections.Nodes
         /// </summary>
         public Single LocalRotation { get; protected set; }
 
-        public Vector2 WorldPoint { get { return this.Owner.Body.Position + Vector2.Transform(this.LocalPoint, this.Owner.RotationMatrix); } }
-        public Single WorldRotation { get { return this.Owner.Body.Rotation + this.LocalRotation; } }
+        public Vector2 WorldPoint { get { return this.Owner.Root.Body.Position + Vector2.Transform(this.LocalPoint, this.Owner.TransformationOffsetMatrix); } }
+        public Single WorldRotation { get { return this.Owner.RotationOffset.ToAxisAngle().Z + this.LocalRotation; } }
+
+        public Matrix TranslationMatrix { get; private set; }
 
         private SpriteBatch _spriteBatch;
         private Texture2D _texture;
@@ -74,6 +77,9 @@ namespace VoidHuntersRevived.Library.Entities.Connections.Nodes
             this.LocalPoint = new Vector2(connectionData.X, connectionData.Y);
             this.LocalRotation = connectionData.Z;
 
+            this.TranslationMatrix = Matrix.CreateRotationZ(this.LocalRotation)
+                *  Matrix.CreateTranslation(this.LocalPoint.X, this.LocalPoint.Y, 0);
+
             Owner = owner;
         }
         #endregion
@@ -117,10 +123,10 @@ namespace VoidHuntersRevived.Library.Entities.Connections.Nodes
         {
             _spriteBatch.Draw(
                 texture: _texture,
-                position: Owner.Body.Position + Vector2.Transform(this.LocalPoint, Owner.RotationMatrix),
+                position: this.WorldPoint,
                 sourceRectangle: _texture.Bounds,
                 color: Color.White,
-                rotation: Owner.Body.Rotation + this.LocalRotation,
+                rotation: this.WorldRotation,
                 origin: _origin,
                 scale: 0.01f,
                 effects: SpriteEffects.None,

@@ -11,7 +11,7 @@ using VoidHuntersRevived.Core.Implementations;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities.Players;
-using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Interfaces;
 
 namespace VoidHuntersRevived.Client.Entities.Drivers
@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
 
                 if (_parent.Bridge == null || _parent.Bridge.Id != bridgeId)
                 {
-                    _parent.SetBridge(_scene.NetworkEntities.GetById(bridgeId) as Hull);
+                    _parent.SetBridge(_scene.NetworkEntities.GetById(bridgeId) as ShipPart);
                 }
             }
 

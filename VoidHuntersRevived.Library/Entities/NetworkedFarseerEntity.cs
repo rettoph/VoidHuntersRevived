@@ -27,13 +27,13 @@ namespace VoidHuntersRevived.Library.Entities
 
         private String _driverHandle;
 
-        public NetworkedFarseerEntity(EntityInfo info, IGame game) : base(info, game)
+        public NetworkedFarseerEntity(EntityInfo info, IGame game, String driverHandle = "entity:farseer_entity_driver") : base(info, game)
         {
-            _driverHandle = "entity:farseer_entity_driver";
+            _driverHandle = driverHandle;
         }
-        public NetworkedFarseerEntity(long id, EntityInfo info, IGame game) : base(id, info, game)
+        public NetworkedFarseerEntity(long id, EntityInfo info, IGame game, String driverHandle = "entity:farseer_entity_driver") : base(id, info, game)
         {
-            _driverHandle = "entity:farseer_entity_driver";
+            _driverHandle = driverHandle;
         }
 
         protected override void Initialize()

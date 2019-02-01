@@ -9,6 +9,7 @@ using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Providers;
 using VoidHuntersRevived.Core.Extensions;
 using VoidHuntersRevived.Library.Entities.Players;
+using VoidHuntersRevived.Library.Extensions;
 
 namespace VoidHuntersRevived.Client.Services
 {
@@ -35,7 +36,8 @@ namespace VoidHuntersRevived.Client.Services
                 new Vector2(10, 10),
                 new Vector2(10, 30),
                 new Vector2(10, 50),
-                new Vector2(10, 70)
+                new Vector2(10, 70),
+                new Vector2(10, 90)
             };
         }
 
@@ -47,6 +49,7 @@ namespace VoidHuntersRevived.Client.Services
             _spriteBatch.DrawString(_font, $"Entities: {_scene.Entities.Count()}, Enabled: {_scene.Entities.EnabledCount}, Visible: {_scene.Entities.VisibleCount}", _lines[1], Color.White);
             _spriteBatch.DrawString(_font, "Available Female Nodes: " + _scene.CurrentPlayer?.AvailableFemaleConnectionNodes?.Length, _lines[2], Color.White);
             _spriteBatch.DrawString(_font, "Users: " + _scene.Group.Users.Count(), _lines[3], Color.White);
+            _spriteBatch.DrawString(_font, "Translation Matrix Data: " + _scene.CurrentPlayer?.Bridge?.RotationOffset.ToAxisAngle().Z, _lines[4], Color.White);
 
             _spriteBatch.End();
         }

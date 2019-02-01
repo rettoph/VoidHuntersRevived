@@ -9,12 +9,14 @@ namespace VoidHuntersRevived.Library.Entities.MetaData
     public class ShipPartData
     {
         public readonly Vector3 MaleConnection;
-        public readonly Vertices Vertices;
+        public readonly Vector2[] Vertices;
+        public readonly Vector3[] FemaleConnections;
 
-        public ShipPartData(Vector3 maleConnection, Vector2[] vertices)
+        public ShipPartData(Vector3 maleConnection, Vector2[] vertices, Vector3[] femaleConnections)
         {
             this.MaleConnection = maleConnection;
-            this.Vertices = new Vertices(vertices);
+            this.Vertices = vertices;
+            this.FemaleConnections = femaleConnections ?? new Vector3[0];
         }
     }
 }

@@ -12,7 +12,7 @@ using VoidHuntersRevived.Library.Interfaces;
 
 namespace VoidHuntersRevived.Client.Entities.Drivers
 {
-    class ClientFarseerEntityDriver : Entity, IFarseerEntityDriver
+    public class ClientFarseerEntityDriver : Entity, IFarseerEntityDriver
     {
         public Vector2 Position { get; set; }
         public Vector2 LinearVelocity { get; set; }

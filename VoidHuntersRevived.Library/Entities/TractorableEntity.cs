@@ -16,10 +16,10 @@ namespace VoidHuntersRevived.Library.Entities
         public event EventHandler<ITractorableEntity> OnTractorBeamConnected;
         public event EventHandler<ITractorableEntity> OnTractorBeamDisconnedted;
 
-        public TractorableEntity(EntityInfo info, IGame game) : base(info, game)
+        public TractorableEntity(EntityInfo info, IGame game, String diverHandle = "entity:farseer_entity_driver") : base(info, game, diverHandle)
         {
         }
-        public TractorableEntity(Int64 id, EntityInfo info, IGame game) : base(id, info, game)
+        public TractorableEntity(Int64 id, EntityInfo info, IGame game, String diverHandle = "entity:farseer_entity_driver") : base(id, info, game, diverHandle)
         {
         }
 

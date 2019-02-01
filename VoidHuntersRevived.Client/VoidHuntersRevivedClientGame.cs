@@ -59,6 +59,7 @@ namespace VoidHuntersRevived.Client
             entityLoader.Register<Camera>("entity:camera", "entity_name:camera", "entity_description:camera");
             entityLoader.Register<Cursor>("entity:cursor", "entity_name:cursor", "entity_description:cursor");
             entityLoader.Register<ClientFarseerEntityDriver>(handle: "entity:farseer_entity_driver");
+            entityLoader.Register<ClientShipPartDriver>(handle: "entity:ship_part_driver", priority: 1);
             entityLoader.Register<ClientLocalUserPlayerDriver>(handle: "entity:player_driver:local", priority: 1);
             entityLoader.Register<ClientRemoteUserPlayerDriver>(handle: "entity:player_driver:remote", priority: 1);
 

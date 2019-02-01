@@ -18,7 +18,6 @@ using VoidHuntersRevived.Networking.Interfaces;
 using Lidgren.Network;
 using VoidHuntersRevived.Server.Scenes;
 using VoidHuntersRevived.Library.Entities;
-using VoidHuntersRevived.Server.Drivers;
 using VoidHuntersRevived.Server.Entities.Drivers;
 
 namespace VoidHuntersRevived.Server
@@ -44,6 +43,7 @@ namespace VoidHuntersRevived.Server
             var entityLoader = this.Provider.GetLoader<EntityLoader>();
             entityLoader.Register<ServerFarseerEntityDriver>(handle: "entity:farseer_entity_driver");
             entityLoader.Register<ServerRemoteUserPlayerDriver>(handle: "entity:player_driver:remote", priority: 1);
+            entityLoader.Register<ServerShipPartDriver>(handle: "entity:ship_part_driver", priority: 1);
         }
 
         protected override void Initialize()

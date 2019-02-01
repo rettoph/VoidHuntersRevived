@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
-using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Interfaces;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Networking.Implementations;
@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
             get { return User.Name; }
         }
 
-        public UserPlayer(IUser user, Hull bridge, EntityInfo info, IGame game) : base(bridge, info, game)
+        public UserPlayer(IUser user, ShipPart bridge, EntityInfo info, IGame game) : base(bridge, info, game)
         {
             User = user;
         }

@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Library.Entities
                 this.Game.Logger.LogCritical("Unable to create TractorBeam Connection, TractorBeam already has an active connection!");
             else if (target.TractorBeamConnection != null)
                 this.Game.Logger.LogCritical("Unable to create TractorBeam Connection, Target already has an active connection!");
-            else // Create the tractor beam connection
+            else if(target.CanBeSelectedBy(this)) // Create the tractor beam connection
                 this.Scene.Entities.Create<TractorBeamConnection>("entity:connection:tractor_beam", null, this, target);
         }
         public void Connect(TractorBeamConnection connection)

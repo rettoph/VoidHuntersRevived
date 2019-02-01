@@ -9,7 +9,7 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Interfaces;
 using VoidHuntersRevived.Library.Interfaces;
 
-namespace VoidHuntersRevived.Server.Drivers
+namespace VoidHuntersRevived.Server.Entities.Drivers
 {
     public class ServerFarseerEntityDriver : Entity, IFarseerEntityDriver
     {

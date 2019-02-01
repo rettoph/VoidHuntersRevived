@@ -13,7 +13,7 @@ using VoidHuntersRevived.Client.Layers;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
-using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Networking.Groups;
 using VoidHuntersRevived.Networking.Interfaces;
@@ -52,6 +52,7 @@ namespace VoidHuntersRevived.Client.Scenes
             this.Group.MessageTypeHandlers.Add("setup", this.HandleSetupMessage);
             this.Group.MessageTypeHandlers.Add("setup:complete", this.HandleSetupCompleteMessage);
             this.Group.MessageTypeHandlers.Add("create", this.HandleCreateMessage);
+            this.Group.MessageTypeHandlers.Add("create:node-connection", this.HandleCreateNodeConnectionMessage);
             
 
             var layer = this.Layers.Create<FarseerEntityLayer>();
@@ -109,11 +110,28 @@ namespace VoidHuntersRevived.Client.Scenes
         /// <summary>
         /// Handle the status complete message
         /// </summary>
-        /// <param name="obj"></param>
-        private void HandleSetupCompleteMessage(NetIncomingMessage obj)
+        /// <param name="im"></param>
+        private void HandleSetupCompleteMessage(NetIncomingMessage im)
         {
             // Add message handlers that matter now
             this.Group.MessageTypeHandlers.Add("update", this.HandleUpdateMessage);
+        }
+
+        /// <summary>
+        /// Handle a create node connection message
+        /// </summary>
+        /// <param name="im"></param>
+        private void HandleCreateNodeConnectionMessage(NetIncomingMessage im)
+        {
+            var malePartId = im.ReadInt64();
+            var femalePartId = im.ReadInt64();
+            var femaleNodeIndex = im.ReadInt32();
+
+            var malePart = this.NetworkEntities.GetById(malePartId) as ShipPart;
+            var femalePart = this.NetworkEntities.GetById(femalePartId) as ShipPart;
+
+            // Create the connection
+            malePart.AttatchTo(femalePart.FemaleConnectionNodes[femaleNodeIndex]);
         }
         #endregion
     }

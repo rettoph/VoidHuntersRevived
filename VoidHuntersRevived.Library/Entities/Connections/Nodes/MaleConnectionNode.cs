@@ -17,5 +17,10 @@ namespace VoidHuntersRevived.Library.Entities.Connections.Nodes
             : base("texture:connection_node:male", connectionData, owner, info, provider, game, spriteBatch)
         {
         }
+
+        public override void Connect(NodeConnection connection)
+        {
+            base.Connect(connection);
+        }
     }
 }

@@ -15,7 +15,6 @@ using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities.Interfaces;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
-using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using VoidHuntersRevived.Library.Interfaces;
 using VoidHuntersRevived.Networking.Interfaces;
 
@@ -117,17 +116,15 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
                 var node = _parent.AvailableFemaleConnectionNodes
                     .OrderBy(fn => Vector2.Distance(fn.WorldPoint, _parent.TractorBeam.Body.Position)).First();
 
-                if(Vector2.Distance(node.WorldPoint, _parent.TractorBeam.Body.Position) < 1)
+                if(Vector2.Distance(node.WorldPoint, _parent.TractorBeam.Body.Position) < 0.5)
                 {
                     var target = _parent.TractorBeam.Connection.Target as ShipPart;
 
-                    _parent.TractorBeam.Connection.Target.Body.Rotation = _parent.Bridge.Body.Rotation + node.LocalRotation + target.MaleConnectionNode.LocalRotation;
-                    target.UpdateRotationMatrix(); // Update the targets rotation matrix
+                    target.Root.Body.Rotation = node.WorldRotation - target.Root.MaleConnectionNode.LocalRotation;
+                    target.Root.UpdateOffsetFields();
 
-                    _parent.TractorBeam.Connection.Target.Body.Position = _parent.Bridge.Body.Position + Vector2.Transform(node.LocalPoint, node.Owner.RotationMatrix) - Vector2.Transform(target.MaleConnectionNode.LocalPoint, target.RotationMatrix);
-                    
 
-                    
+                    target.Root.Body.Position = node.WorldPoint - Vector2.Transform(target.Root.MaleConnectionNode.LocalPoint, target.Root.RotationOffset);
                 }
 
             }
@@ -150,7 +147,7 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
 
                 if (_parent.Bridge == null || _parent.Bridge.Id != bridgeId)
                 {
-                    _parent.SetBridge(_scene.NetworkEntities.GetById(bridgeId) as Hull);   
+                    _parent.SetBridge(_scene.NetworkEntities.GetById(bridgeId) as ShipPart);   
                 }
             }
 
