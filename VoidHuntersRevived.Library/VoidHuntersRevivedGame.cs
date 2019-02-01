@@ -96,7 +96,7 @@ namespace VoidHuntersRevived.Library
                         new Vector2(-1.5f, 0.5f)
                     },
                     femaleConnections: new Vector3[] {
-                        new Vector3(1.5f, 0, 0),
+                        new Vector3(1.5f, 0, (float)Math.PI),
                         new Vector3(-1f, -0.5f, (float)Math.PI/2),
                         new Vector3(0f, -0.5f, (float)Math.PI/2),
                         new Vector3(1f, -0.5f, (float)Math.PI/2),

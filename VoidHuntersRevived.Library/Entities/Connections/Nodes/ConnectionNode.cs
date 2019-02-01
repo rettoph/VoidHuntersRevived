@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Library.Entities.Connections.Nodes
         public Single LocalRotation { get; protected set; }
 
         public Vector2 WorldPoint { get { return this.Owner.Root.Body.Position + Vector2.Transform(this.LocalPoint, (this.Owner == this.Owner.Root ? this.Owner.TransformationOffsetMatrix : this.Owner.TransformationOffsetMatrix * this.Owner.Root.TransformationOffsetMatrix)); } }
-        public Single WorldRotation { get { return this.Owner.RotationOffset.ToAxisAngle().Z + this.LocalRotation + this.Owner.Root.Body.Rotation; } }
+        public Single WorldRotation { get { return (this.Owner == this.Owner.Root ? this.LocalRotation + this.Owner.Root.Body.Rotation : this.Owner.RotationOffset.ToAxisAngle().Z + this.LocalRotation + this.Owner.Root.Body.Rotation); } }
 
         public Matrix TranslationMatrix { get; private set; }
 

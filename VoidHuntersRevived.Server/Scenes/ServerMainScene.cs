@@ -17,6 +17,7 @@ using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.Connections.Nodes;
 using Microsoft.Extensions.Logging;
+using VoidHuntersRevived.Library.Entities.Connections;
 
 namespace VoidHuntersRevived.Server.Scenes
 {
@@ -57,7 +58,7 @@ namespace VoidHuntersRevived.Server.Scenes
             this.Wall.Configure(100, 100);
 
             var rand = new Random();
-            for(Int32 i=0; i<100; i++)
+            for(Int32 i=0; i<25; i++)
             {
                 var e = this.Entities.Create<ShipPart>("entity:hull:square");
                 e.Driver.Position = new Vector2((float)(rand.NextDouble() * 100) - 50, (float)(rand.NextDouble() * 100) - 50);
@@ -67,9 +68,19 @@ namespace VoidHuntersRevived.Server.Scenes
                 e.Driver.AngularVelocity = (float)(rand.NextDouble() * 6.28318530718) - 3.14159265359f;
             }
 
-            for (Int32 i = 0; i < 100; i++)
+            for (Int32 i = 0; i < 25; i++)
             {
                 var e = this.Entities.Create<ShipPart>("entity:hull:beam");
+                e.Driver.Position = new Vector2((float)(rand.NextDouble() * 100) - 50, (float)(rand.NextDouble() * 100) - 50);
+                e.Driver.LinearVelocity = new Vector2((float)(rand.NextDouble() * 20) - 10, (float)(rand.NextDouble() * 20) - 10);
+
+                e.Driver.Rotation = (float)(rand.NextDouble() * 6.28318530718) - 3.14159265359f;
+                e.Driver.AngularVelocity = (float)(rand.NextDouble() * 6.28318530718) - 3.14159265359f;
+            }
+
+            for (Int32 i = 0; i < 25; i++)
+            {
+                var e = this.Entities.Create<ShipPart>("entity:hull:triangle");
                 e.Driver.Position = new Vector2((float)(rand.NextDouble() * 100) - 50, (float)(rand.NextDouble() * 100) - 50);
                 e.Driver.LinearVelocity = new Vector2((float)(rand.NextDouble() * 20) - 10, (float)(rand.NextDouble() * 20) - 10);
 
@@ -94,7 +105,7 @@ namespace VoidHuntersRevived.Server.Scenes
             om.Write(this.World.Gravity);
             _group.SendMessage(om, e, NetDeliveryMethod.ReliableOrdered, 0);
 
-            // Update the client of every single existing entity in the world
+            // Update the client of every single existing network entity in the world
             foreach(INetworkEntity ne in this.NetworkEntities)
             {
                 _group.SendMessage(
@@ -102,6 +113,19 @@ namespace VoidHuntersRevived.Server.Scenes
                     e,
                     NetDeliveryMethod.ReliableOrdered,
                     0);
+            }
+
+            // Update the client with every existing node connection in the world
+            foreach(IEntity entity in this.Entities)
+            {
+                if(entity is NodeConnection)
+                {
+                    _group.SendMessage(
+                        ServerMessageHelper.BuildCreateNodeConnectionMessage(entity as NodeConnection, _group),
+                        e,
+                        NetDeliveryMethod.ReliableOrdered,
+                        0);
+                }
             }
 
             // Create a new player object for the new user

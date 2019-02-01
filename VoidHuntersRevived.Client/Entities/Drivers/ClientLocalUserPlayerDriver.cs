@@ -111,12 +111,12 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
             // TractorBeam Target Preview Rendering
             // The following code will place the tractorbeams current target (if any)
             // Onto the nearest available female node
-            if(_parent.TractorBeam.Connection != null && _parent.TractorBeam.Connection.Target is ShipPart && _parent.AvailableFemaleConnectionNodes?.Length > 0)
+            if(_parent.TractorBeam.Connection != null && _parent.TractorBeam.Connection.Target is ShipPart && _parent.AvailableFemaleConnectionNodes?.Length > 0 && (_parent.TractorBeam.Connection.Target as ShipPart).MaleConnectionNode.Connection == null)
             { // Only proceed if there is a connection and there are open female nodes
                 var node = _parent.AvailableFemaleConnectionNodes
                     .OrderBy(fn => Vector2.Distance(fn.WorldPoint, _parent.TractorBeam.Body.Position)).First();
 
-                if(Vector2.Distance(node.WorldPoint, _parent.TractorBeam.Body.Position) < 0.5)
+                if(Vector2.Distance(node.WorldPoint, _parent.TractorBeam.Body.Position) < 1.75)
                 {
                     var target = _parent.TractorBeam.Connection.Target as ShipPart;
 

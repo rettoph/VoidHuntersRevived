@@ -62,7 +62,7 @@ namespace VoidHuntersRevived.Server.Entities.Drivers
                     var node = _parent.AvailableFemaleConnectionNodes
                         .OrderBy(fn => Vector2.Distance(fn.WorldPoint, _parent.TractorBeam.Body.Position)).First();
 
-                    if (Vector2.Distance(node.WorldPoint, _parent.TractorBeam.Body.Position) < 0.5)
+                    if (Vector2.Distance(node.WorldPoint, _parent.TractorBeam.Body.Position) < 1.75)
                     {
                         var target = _parent.TractorBeam.Connection.Target as ShipPart;
 

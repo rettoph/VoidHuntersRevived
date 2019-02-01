@@ -37,9 +37,15 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             if (this.Fixture != null) // Remove the old fixture if there is one
                 this.Fixture.Body.DestroyFixture(this.Fixture);
 
+            var pos = this.Root.Body.Position;
+            var rot = this.Root.Body.Rotation;
+
             this.Fixture = this.Root.Body.CreateFixture(this.CreateShape(this.TransformationOffsetMatrix), this);
             this.Fixture.CollidesWith = this.Root.Fixture.CollidesWith;
             this.Fixture.CollisionCategories = this.Root.Fixture.CollisionCategories;
+
+            this.Root.Body.Position = pos;
+            this.Root.Body.Rotation = rot;
 
             return this.Fixture;
         }
