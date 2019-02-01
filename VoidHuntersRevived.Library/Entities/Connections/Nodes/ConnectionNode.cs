@@ -26,8 +26,8 @@ namespace VoidHuntersRevived.Library.Entities.Connections.Nodes
         /// </summary>
         public Single LocalRotation { get; protected set; }
 
-        public Vector2 WorldPoint { get { return this.Owner.Root.Body.Position + Vector2.Transform(this.LocalPoint, this.Owner.TransformationOffsetMatrix); } }
-        public Single WorldRotation { get { return this.Owner.RotationOffset.ToAxisAngle().Z + this.LocalRotation; } }
+        public Vector2 WorldPoint { get { return this.Owner.Root.Body.Position + Vector2.Transform(this.LocalPoint, (this.Owner == this.Owner.Root ? this.Owner.TransformationOffsetMatrix : this.Owner.TransformationOffsetMatrix * this.Owner.Root.TransformationOffsetMatrix)); } }
+        public Single WorldRotation { get { return this.Owner.RotationOffset.ToAxisAngle().Z + this.LocalRotation + this.Owner.Root.Body.Rotation; } }
 
         public Matrix TranslationMatrix { get; private set; }
 
@@ -101,6 +101,8 @@ namespace VoidHuntersRevived.Library.Entities.Connections.Nodes
 
             // Save the incoming connection
             this.Connection = connection;
+
+            this.Owner.UpdateOffsetFields();
 
             this.OnConnected?.Invoke(this, this);
         }

@@ -58,9 +58,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             }
         }
 
-        // Represents the current fixture of the ship part.
-        // This is used to interface with the cursor
-        protected Shape CurrentShape;
+        // The current live fixture represented by the current ship part
+        protected Fixture Fixture; 
 
         #region Constructors
         public ShipPart(EntityInfo info, IGame game) : base(info, game, "entity:ship_part_driver")
@@ -85,9 +84,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             base.Initialize();
 
-            this.CurrentShape = this.CreateShape();
-            this.Body.CreateFixture(this.CurrentShape);
-
 
             // Create the male connection node
             this.MaleConnectionNode = this.Scene.Entities.Create<MaleConnectionNode>("entity:connection_node:male", null, this.ShipPartData.MaleConnection, this);
@@ -99,17 +95,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                     return this.Scene.Entities.Create<FemaleConnectionNode>("entity:connection_node:female", null, fcnd, this);
                 })
                 .ToArray();
-            /*
-            var fixture = this.Body.CreateFixture(new PolygonShape(new Vertices(new Vector2[] {
-                new Vector2(-0.5f, -0.5f),
-                new Vector2(0.5f, -0.5f),
-                new Vector2(0.5f, 0.5f),
-                new Vector2(-0.5f, 0.5f)
-            }), 10f));
-
-            var shape = fixture.Shape as PolygonShape;
-            shape.Clone();
-            */
 
             this.MaleConnectionNode.OnConnected += this.HandleMaleNodeConnected;
             this.MaleConnectionNode.OnDisconnected += this.HandleMaleNodeDisconneced;
@@ -125,8 +110,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             this.Body.LinearDamping = 1f;
             this.Body.AngularDamping = 2f;
 
-            this.SetGhost(true);
             this.UpdateOffsetFields();
+            this.UpdateFixture();
+            this.SetGhost(true);
         }
 
         /// <summary>
@@ -162,20 +148,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 }
             }
         }
-
-        #region Create Shape Methods
-        protected Shape CreateShape()
-        {
-            return new PolygonShape(new Vertices(this.ShipPartData.Vertices), 0.1f);
-        }
-        public Shape CreateShape(Matrix transformation)
-        {
-            var vertices = new Vertices(this.ShipPartData.Vertices);
-            vertices.Transform(ref transformation);
-
-            return new PolygonShape(vertices, 0.1f);
-        }
-        #endregion
 
         #region Attatch Methods
         public Boolean AttatchTo(FemaleConnectionNode female)
@@ -227,6 +199,12 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             {
                 this.TransformationOffsetMatrix = Matrix.CreateRotationZ(this.Body.Rotation);
             }
+            else if(this.Parent == this.Root)
+            { // When the parent is the root we will exclude it, allowing for easy relative updates
+                this.TransformationOffsetMatrix =
+                    (this.MaleConnectionNode.TranslationMatrix *
+                    this.MaleConnectionNode.Connection.FemaleNode.TranslationMatrix); ;
+            }
             else
             {
                 this.TransformationOffsetMatrix =
@@ -236,11 +214,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             }
 
             this.TransformationOffsetMatrix.Decompose(out _scaleOffset, out _rotationOffset, out _translateOffset);
-
-            // Update the parts children rotational values too
-            foreach (FemaleConnectionNode femaleNode in this.FemaleConnectionNodes)
-                if (femaleNode.Connection != null)
-                    femaleNode.Connection.MaleNode.Owner.UpdateOffsetFields();
         }
 
         /// <summary>

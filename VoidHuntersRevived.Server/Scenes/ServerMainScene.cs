@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Server.Scenes
             this.Wall.Configure(100, 100);
 
             var rand = new Random();
-            for(Int32 i=0; i<1; i++)
+            for(Int32 i=0; i<100; i++)
             {
                 var e = this.Entities.Create<ShipPart>("entity:hull:square");
                 e.Driver.Position = new Vector2((float)(rand.NextDouble() * 100) - 50, (float)(rand.NextDouble() * 100) - 50);
@@ -103,9 +103,6 @@ namespace VoidHuntersRevived.Server.Scenes
 
             var part1 = this.Entities.Create<ShipPart>("entity:hull:square", null);
             part1.AttatchTo(player.Bridge.GetAvailabaleFemaleConnectioNodes()[0]);
-
-            var part2 = this.Entities.Create<ShipPart>("entity:hull:square", null);
-            part2.AttatchTo(player.Bridge.GetAvailabaleFemaleConnectioNodes()[0]);
 
             var part3 = this.Entities.Create<ShipPart>("entity:hull:square", null);
             part3.AttatchTo(player.Bridge.FemaleConnectionNodes[1]);
