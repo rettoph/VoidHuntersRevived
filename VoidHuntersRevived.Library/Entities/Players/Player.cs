@@ -112,7 +112,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
         /// and create ann array containing all available female connection
         /// nodes. Save that array to the local AvailableFemaleConnectionNodes array
         /// </summary>
-        private void UpdateAvailableFemaleConnectionNodes()
+        public void UpdateAvailableFemaleConnectionNodes()
         {
             this.AvailableFemaleConnectionNodes = this.Bridge.GetAvailabaleFemaleConnectioNodes().ToArray();
         }

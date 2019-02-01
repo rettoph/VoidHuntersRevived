@@ -66,6 +66,16 @@ namespace VoidHuntersRevived.Server.Scenes
                 e.Driver.Rotation = (float)(rand.NextDouble() * 6.28318530718) - 3.14159265359f;
                 e.Driver.AngularVelocity = (float)(rand.NextDouble() * 6.28318530718) - 3.14159265359f;
             }
+
+            for (Int32 i = 0; i < 100; i++)
+            {
+                var e = this.Entities.Create<ShipPart>("entity:hull:beam");
+                e.Driver.Position = new Vector2((float)(rand.NextDouble() * 100) - 50, (float)(rand.NextDouble() * 100) - 50);
+                e.Driver.LinearVelocity = new Vector2((float)(rand.NextDouble() * 20) - 10, (float)(rand.NextDouble() * 20) - 10);
+
+                e.Driver.Rotation = (float)(rand.NextDouble() * 6.28318530718) - 3.14159265359f;
+                e.Driver.AngularVelocity = (float)(rand.NextDouble() * 6.28318530718) - 3.14159265359f;
+            }
         }
 
         public override void Update(GameTime gameTime)

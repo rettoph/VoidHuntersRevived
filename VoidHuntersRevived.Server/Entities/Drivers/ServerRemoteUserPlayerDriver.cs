@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Lidgren.Network;
 using Lidgren.Network.Xna;
 using Microsoft.Extensions.Logging;
+using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Core.Implementations;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities.Interfaces;
 using VoidHuntersRevived.Library.Entities.Players;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Interfaces;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Networking.Scenes;
@@ -54,9 +57,19 @@ namespace VoidHuntersRevived.Server.Entities.Drivers
                         _parent.TractorBeam.CreateConnection(target);
                     }
                 }
-                else
+                else if(_parent.TractorBeam.Connection != null)
                 { // If the client requests a tractor beam disconnect...
-                    _parent.TractorBeam.Connection?.Disconnect();
+                    var node = _parent.AvailableFemaleConnectionNodes
+                        .OrderBy(fn => Vector2.Distance(fn.WorldPoint, _parent.TractorBeam.Body.Position)).First();
+
+                    if (Vector2.Distance(node.WorldPoint, _parent.TractorBeam.Body.Position) < 0.5)
+                    {
+                        var target = _parent.TractorBeam.Connection.Target as ShipPart;
+
+                        target.AttatchTo(node);
+                    }
+
+                    _parent.TractorBeam.Connection.Disconnect();
                 }
 
                 // We must update all clients of this development

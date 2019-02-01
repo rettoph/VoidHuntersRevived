@@ -97,12 +97,12 @@ namespace VoidHuntersRevived.Library
                     },
                     femaleConnections: new Vector3[] {
                         new Vector3(1.5f, 0, 0),
-                        new Vector3(-1f, -0.5f, -(float)Math.PI/2),
-                        new Vector3(0f, -0.5f, -(float)Math.PI/2),
-                        new Vector3(1f, -0.5f, -(float)Math.PI/2),
-                        new Vector3(-1f, 0.5f, (float)Math.PI/2),
-                        new Vector3(0f, 0.5f, (float)Math.PI/2),
-                        new Vector3(1f, 0.5f, (float)Math.PI/2),
+                        new Vector3(-1f, -0.5f, (float)Math.PI/2),
+                        new Vector3(0f, -0.5f, (float)Math.PI/2),
+                        new Vector3(1f, -0.5f, (float)Math.PI/2),
+                        new Vector3(-1f, 0.5f, -(float)Math.PI/2),
+                        new Vector3(0f, 0.5f, -(float)Math.PI/2),
+                        new Vector3(1f, 0.5f, -(float)Math.PI/2),
                     }));
 
             // https://www.desmos.com/calculator/akwfwhe8vp
