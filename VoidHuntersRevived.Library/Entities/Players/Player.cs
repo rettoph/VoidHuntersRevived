@@ -1,141 +1,138 @@
-﻿using FarseerPhysics.Dynamics;
-using Lidgren.Network;
-using Microsoft.Extensions.Logging;
-using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using Lidgren.Network;
+using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
-using VoidHuntersRevived.Library.Entities.Connections.Nodes;
 using VoidHuntersRevived.Library.Entities.ShipParts;
-using VoidHuntersRevived.Library.Interfaces;
+using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Networking.Implementations;
+using System.Linq;
 
 namespace VoidHuntersRevived.Library.Entities.Players
 {
-    public abstract class Player : NetworkEntity, IPlayer
+    /// <summary>
+    /// The player class holds everything that a single player can physically
+    /// do when interacting with the world. The default player only contains
+    /// possible actions, but does none of them itself. Look at extension player
+    /// classes to see how this class is utilized.
+    /// </summary>
+    public class Player : NetworkEntity
     {
-        public abstract String Name { get; }
-        public TractorBeam TractorBeam { get; private set; }
+        #region Protected Fields
+        protected MainGameScene GameScene;
+        #endregion
+
+        #region Public Attributes
         public ShipPart Bridge { get; private set; }
-        public Boolean[] Movement { get; set; }
+        public Dictionary<MovementType, Boolean> Movement { get; private set; }
+        #endregion
 
-        /// <summary>
-        /// A list of all available female connection nodes found within the current bridge chain
-        /// </summary>
-        public FemaleConnectionNode[] AvailableFemaleConnectionNodes { get; private set; }
-
+        #region Constructors
         public Player(ShipPart bridge, EntityInfo info, IGame game) : base(info, game)
         {
-            this.SetBridge(bridge);
-
-            this.Enabled = true;
+            this.Bridge = bridge;
+            this.Bridge.Body.SleepingAllowed = false;
         }
 
         public Player(long id, EntityInfo info, IGame game) : base(id, info, game)
         {
-            this.Enabled = true;
         }
+        #endregion
 
         #region Initialization Methods
-        protected override void PreInitialize()
-        {
-            base.PreInitialize();
-
-            // Set the default movement values
-            this.Movement = new Boolean[]
-            {
-                false,
-                false,
-                false,
-                false,
-            };
-        }
-
         protected override void Initialize()
         {
             base.Initialize();
 
-            // Create a new tractorbeam for the player
-            this.TractorBeam = this.Scene.Entities.Create<TractorBeam>("entity:tractor_beam", null, this);
+            // Store the players main game scene
+            this.GameScene = this.Scene as MainGameScene;
+
+            // Create a default movement array
+            Movement = new Dictionary<MovementType, Boolean>(6);
+            Movement.Add(MovementType.GoForward, false);
+            Movement.Add(MovementType.TurnRight, false);
+            Movement.Add(MovementType.GoBackward, false);
+            Movement.Add(MovementType.TurnLeft, false);
+            Movement.Add(MovementType.StrafeRight, false);
+            Movement.Add(MovementType.StrafeLeft, false);
+
+            // Ensure the player is always enabled
+            this.SetEnabled(true);
         }
         #endregion
 
+        #region Frame Methods
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            // Move the bridge relative to the requested movement values
-            if (this.Bridge != null)
-            {
-                if (this.Movement[0])
-                    this.Bridge.Body.ApplyForce(Vector2.Transform(new Vector2(1000, 0), this.Bridge.TransformationOffsetMatrix));
-                if (this.Movement[2])
-                    this.Bridge.Body.ApplyForce(Vector2.Transform(new Vector2(-1000, 0), this.Bridge.TransformationOffsetMatrix));
+            // Handle player movement
+            foreach(KeyValuePair<MovementType, Boolean> kvp in Movement)
+                if(kvp.Value)
+                    switch (kvp.Key)
+                    {
+                        case MovementType.GoForward:
+                            this.Bridge.Body.ApplyLinearImpulse(Vector2.Transform(new Vector2(2, 0), this.Bridge.RotationMatrix));
+                            break;
+                        case MovementType.TurnRight:
+                            this.Bridge.Body.ApplyAngularImpulse(0.1f);
+                            break;
+                        case MovementType.GoBackward:
+                            this.Bridge.Body.ApplyLinearImpulse(Vector2.Transform(new Vector2(-2, 0), this.Bridge.RotationMatrix));
+                            break;
+                        case MovementType.TurnLeft:
+                            this.Bridge.Body.ApplyAngularImpulse(-0.1f);
+                            break;
+                        case MovementType.StrafeRight:
+                            this.Bridge.Body.ApplyLinearImpulse(Vector2.Transform(new Vector2(0.1f, -2), this.Bridge.RotationMatrix));
+                            break;
+                        case MovementType.StrafeLeft:
+                            this.Bridge.Body.ApplyLinearImpulse(Vector2.Transform(new Vector2(0.1f, 2), this.Bridge.RotationMatrix));
+                            break;
+                    }
 
-                if (this.Movement[1])
-                    this.Bridge.Body.ApplyAngularImpulse(2f);
-                if (this.Movement[3])
-                    this.Bridge.Body.ApplyAngularImpulse(-2f);
-            }
+            // Players should be synced every frame..
+            if(!this.Dirty)
+                this.Dirty = true;
         }
+        #endregion
 
-
-
-        /// <summary>
-        /// Update the current players bridge, if possible
-        /// </summary>
-        /// <param name="bridge"></param>
-        public virtual void SetBridge(ShipPart bridge)
-        {
-            this.Game.Logger.LogDebug($"Updating Bridge!");
-
-            if (this.Bridge != null)
-            { // reghost the old bridge
-                this.Bridge.BridgeFor = null;
-                this.Bridge.SetGhost(true);
-                this.Bridge.SetEnabled(false);
-            }
-
-            this.Bridge = bridge;
-            this.Bridge.BridgeFor = this;
-            this.Bridge.SetGhost(false);
-            this.Bridge.SetEnabled(true);
-
-            this.UpdateAvailableFemaleConnectionNodes();
-        }
-
-        /// <summary>
-        /// Dynamically search through the bridge connection chain
-        /// and create ann array containing all available female connection
-        /// nodes. Save that array to the local AvailableFemaleConnectionNodes array
-        /// </summary>
-        public void UpdateAvailableFemaleConnectionNodes()
-        {
-            this.AvailableFemaleConnectionNodes = this.Bridge.GetAvailabaleFemaleConnectioNodes().ToArray();
-        }
-
-        #region Network Read & Write methods
+        #region INetworkEntity Implementation
         public override void Read(NetIncomingMessage im)
         {
-            // Update the movement inputs
-            this.Movement[0] = im.ReadBoolean();
-            this.Movement[1] = im.ReadBoolean();
-            this.Movement[2] = im.ReadBoolean();
-            this.Movement[3] = im.ReadBoolean();
+            // Read the current Player's bridge
+            this.Bridge = this.GameScene.NetworkEntities.GetById(im.ReadInt64()) as ShipPart;
+            this.Bridge.Body.SleepingAllowed = false;
+
+
+            if (im.ReadBoolean()) // Check if movement data was recieved
+                for (Int32 i = 0; i < this.Movement.Count; i++) // Read the current movement settings
+                    this.Movement[(MovementType)im.ReadByte()] = im.ReadBoolean();
         }
 
         public override void Write(NetOutgoingMessage om)
         {
             om.Write(this.Id);
 
-            // Write the ship movements
-            om.Write(this.Movement[0]);
-            om.Write(this.Movement[1]);
-            om.Write(this.Movement[2]);
-            om.Write(this.Movement[3]);
+            // Write the current Player's bridge
+            om.Write(this.Bridge.Id);
+
+
+            if (this.Movement == null) // No movement info to send, so no data to send
+                om.Write(false);
+            else
+            { // Send the movement confirmation byte, then send the movement data
+                om.Write(true);
+                // Write the current movement settings
+                foreach (KeyValuePair<MovementType, Boolean> kvp in this.Movement)
+                {
+                    om.Write((Byte)kvp.Key);
+                    om.Write(kvp.Value);
+                }
+            }
         }
         #endregion
     }

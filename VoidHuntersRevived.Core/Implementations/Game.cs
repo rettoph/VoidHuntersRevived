@@ -43,6 +43,8 @@ namespace VoidHuntersRevived.Core.Implementations
             this.TryPreInitialize();
             this.TryInitialize();
             this.TryPostInitialize();
+
+            this.Logger.LogInformation("Ready!");
         }
 
         #region IGame Implementation

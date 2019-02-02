@@ -2,239 +2,161 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using FarseerPhysics.Collision.Shapes;
-using FarseerPhysics.Common;
 using FarseerPhysics.Dynamics;
-using FarseerPhysics.Factories;
-using Microsoft.Extensions.Logging;
+using Lidgren.Network;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using VoidHuntersRevived.Core.Extensions;
 using VoidHuntersRevived.Core.Interfaces;
-using VoidHuntersRevived.Core.Providers;
 using VoidHuntersRevived.Core.Structs;
-using VoidHuntersRevived.Library.Entities.Connections;
-using VoidHuntersRevived.Library.Entities.Connections.Nodes;
-using VoidHuntersRevived.Library.Entities.Interfaces;
+using VoidHuntersRevived.Library.Entities.ConnectionNodes;
+using VoidHuntersRevived.Library.Entities.Drivers;
 using VoidHuntersRevived.Library.Entities.MetaData;
-using VoidHuntersRevived.Library.Interfaces;
+using VoidHuntersRevived.Library.Scenes;
+using VoidHuntersRevived.Networking.Implementations;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
-    public partial class ShipPart : TractorableEntity
+    /// <summary>
+    /// A ShipPart represents the base class all ship related entities extend from.
+    /// By default, ship parts are all grabbable by a tractor beam, have a single
+    /// male connection node, and can have multiple female connection nodes 
+    /// </summary>
+    public partial class ShipPart : NetworkEntity
     {
-        private Quaternion _rotationOffset;
-        private Vector3 _scaleOffset;
-        private Vector3 _translateOffset;
+        #region Private Fields
+        private String _driverHandle;
+        private Driver _driver;
+        #endregion
 
-        protected ShipPartData ShipPartData { get; private set; }
-        public Matrix TransformationOffsetMatrix { get; private set; }
-        public Quaternion RotationOffset { get { return _rotationOffset; } }
-        public Vector3 ScaleOffset { get { return _scaleOffset; } }
-        public Vector3 TranslateOffset { get { return _translateOffset; } }
+        #region Protected Fields
+        protected MainGameScene _scene;
+        #endregion
 
-        public IPlayer BridgeFor { get; set; }
+        #region Public Attributes
+        /// <summary>
+        /// The current ShipPart's data. This contains info such as connection node locations, and
+        /// base shap vertices
+        /// </summary>
+        public ShipPartData Data { get; private set; }
 
+        /// <summary>
+        /// The ShipPart's rootmost ShipPart. If there is no connetion, this will return the current ship part.
+        /// </summary>
+        public ShipPart Root { get { return this.MaleConnectionNode.Connection == null ? this : this.MaleConnectionNode.Connection.FemaleConnectionNode.Owner.Root; } }
+
+        /// <summary>
+        /// The ShipPart's immediate parent. If there is no connection, this will return null.
+        /// </summary>
+        public ShipPart Parent { get { return this.MaleConnectionNode.Connection == null ? null : this.MaleConnectionNode.Connection.FemaleConnectionNode.Owner; } }
+
+        public Boolean IsRoot { get { return this.Root == this; } }
+        public Boolean HasParent { get { return this.Parent != null; } }
+
+        /// <summary>
+        /// The ShipPart's current Farseer Fixture. Note, this might not reside within the ShipPart's Body
+        /// (In the instance of a ShipPart being attatched to another ShipPart)
+        /// </summary>
+        public Fixture Fixture { get; private set; }
+
+        /// <summary>
+        /// The ShipPart's main Farseer Body. Note, this body is usually only in use if the ShipPart is the
+        /// chains root, or if the ShipPart uses a join to attatch to another ShipPart
+        /// (Like rotating weapons)
+        /// </summary>
+        public Body Body { get; private set; }
+
+        /// <summary>
+        /// The ShipPart's MaleConnectionNode
+        /// </summary>
         public MaleConnectionNode MaleConnectionNode { get; private set; }
+
+        /// <summary>
+        /// The ShipPart's FemaleConnectionNodes
+        /// </summary>
         public FemaleConnectionNode[] FemaleConnectionNodes { get; private set; }
-
-        public Boolean Ghost { get; private set; }
-
-        // The rootmost part of the current ship parts chain
-        public ShipPart Root
-        {
-            get
-            {
-                return (this.MaleConnectionNode.Connection == null ? this : this.MaleConnectionNode.Connection.FemaleNode.Owner.Root);
-            }
-        }
-
-        // The shipparts immediate parent (if any)
-        public ShipPart Parent
-        {
-            get
-            {
-                return (this.MaleConnectionNode.Connection == null ? null : this.MaleConnectionNode.Connection.FemaleNode.Owner);
-            }
-        }
-
-        // The current live fixture represented by the current ship part
-        protected Fixture Fixture; 
+        #endregion
 
         #region Constructors
-        public ShipPart(EntityInfo info, IGame game) : base(info, game, "entity:ship_part_driver")
+        public ShipPart(EntityInfo info, IGame game, String driverHandle = "entity:driver:ship_part") : base(info, game)
         {
-            this.Construct(info.Data as ShipPartData);
-        }
-        public ShipPart(Int64 id, EntityInfo info, IGame game) : base(id, info, game, "entity:ship_part_driver")
-        {
-            this.Construct(info.Data as ShipPartData);
-        }
-        private void Construct(ShipPartData data)
-        {
-            this.ShipPartData = data;
+            _driverHandle = driverHandle;
 
-            this.UpdateOrder = 100;
+            this.Data = this.Info.Data as ShipPartData;
+        }
 
-            this.Enabled = true;
+        public ShipPart(long id, EntityInfo info, IGame game, String driverHandle = "entity:driver:ship_part") : base(id, info, game)
+        {
+            _driverHandle = driverHandle;
+
+            this.Data = this.Info.Data as ShipPartData;
         }
         #endregion
 
+        #region Initialization Methods
         protected override void Initialize()
         {
             base.Initialize();
 
+            // Store the ShipPart's main game scene
+            _scene = this.Scene as MainGameScene;
 
-            // Create the male connection node
-            this.MaleConnectionNode = this.Scene.Entities.Create<MaleConnectionNode>("entity:connection_node:male", null, this.ShipPartData.MaleConnection, this);
+            // Create a new Body and Fixture for the current ship part
+            this.Body = this.CreateBody();
+            this.Fixture = this.CreateFixture(this.Body);
 
-            // Create the female connection nodes
-            this.FemaleConnectionNodes = this.ShipPartData.FemaleConnections
+            // Create a new Driver for the current ShipPart
+            _driver = this.Scene.Entities.Create<Driver>(_driverHandle, null, this);
+
+            // Create the ShipPart's MaleConnectionNode
+            this.MaleConnectionNode = this.Scene.Entities.Create<MaleConnectionNode>("entity:connection_node:male", this.Layer, this, this.Data.MaleConnectionNodeData);
+
+            // Create the ShipPart's FemaleConnectionNodes
+            this.FemaleConnectionNodes = this.Data.FemaleConnectionNodesData
                 .Select(fcnd =>
                 {
-                    return this.Scene.Entities.Create<FemaleConnectionNode>("entity:connection_node:female", null, fcnd, this);
+                    return this.Scene.Entities.Create<FemaleConnectionNode>("entity:connection_node:female", this.Layer, this, fcnd);
                 })
                 .ToArray();
 
-            this.MaleConnectionNode.OnConnected += this.HandleMaleNodeConnected;
-            this.MaleConnectionNode.OnDisconnected += this.HandleMaleNodeDisconneced;
-        }
-
-        protected override void PostInitialize()
-        {
-            base.PostInitialize();
-
-            this.Body.BodyType = BodyType.Dynamic;
-            this.Body.Restitution = 1f;
-            this.Body.Friction = 0f;
-            this.Body.LinearDamping = 1f;
-            this.Body.AngularDamping = 2f;
-
-            this.UpdateOffsetFields();
-            this.UpdateFixture();
-            this.SetGhost(true);
-        }
-
-        /// <summary>
-        /// Ghosted shipparts are "detached freefloating" parts. The will only collide
-        /// with the world boundries. Nothing else, not even themselves.
-        /// </summary>
-        /// <param name="ghost"></param>
-        public void SetGhost(Boolean ghost)
-        {
-            if (ghost != this.Ghost)
-            {
-                if (ghost)
-                {
-                    this.Body.CollidesWith = Category.Cat1;
-                    this.Body.CollisionCategories = Category.Cat2;
-                    this.Body.SleepingAllowed = true;
-                    this.Body.Mass = 0f;
-                    this.Body.IsBullet = false;
-                    this.SetEnabled(false);
-
-                    this.Ghost = ghost;
-                }
-                else
-                {
-                    this.Body.CollidesWith = Category.Cat1 | Category.Cat3;
-                    this.Body.CollisionCategories = Category.Cat3;
-                    this.Body.SleepingAllowed = false;
-                    this.Body.Mass = 10f;
-                    this.Body.IsBullet = true;
-                    this.SetEnabled(true);
-
-                    this.Ghost = ghost;
-                }
-            }
-        }
-
-        #region Attatch Methods
-        public Boolean AttatchTo(FemaleConnectionNode female)
-        {
-            if (female.Connection != null)
-                this.Game.Logger.LogCritical($"Unable to connect nodes, female connection already exists!");
-            else if (this.MaleConnectionNode.Connection != null)
-                this.Game.Logger.LogCritical("Unable to connect nodes, male connection already exists!");
-            else
-            { // Create a new connection instance
-                this.Scene.Entities.Create<NodeConnection>("entity:connection:node", null, female, this.MaleConnectionNode);
-
-                return true;
-            }
-
-            return false;
-        }
-
-        public override bool CanBeSelectedBy(ITractorBeam tractorBeam)
-        {
-            if (base.CanBeSelectedBy(tractorBeam))
-            {
-                return this.BridgeFor == null;
-            }
-
-            return false;
+            // Update the initial transformation data
+            this.UpdateTransformationData();
         }
         #endregion
 
-        public override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-        }
-
+        #region Frame Methods
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            this.UpdateOffsetFields();
+            // Update the transformation data
+            this.UpdateTransformationData();
+
+            // Update the driver..
+            _driver.Update(gameTime);
+        }
+        #endregion
+
+        #region INetworkEntity Implementation
+        /// <inheritdoc />
+        public override void Read(NetIncomingMessage im)
+        {
+            if(im.ReadBoolean()) // Only read to the driver if the confirmation byte was recieved
+                _driver.Read(im);
         }
 
-        /// <summary>
-        /// Offset fields are values that contain relative offsets to the
-        /// parts current parent (if any)
-        /// </summary>
-        public void UpdateOffsetFields()
+        /// <inheritdoc />
+        public override void Write(NetOutgoingMessage om)
         {
-            if(this.Parent == null)
-            {
-                this.TransformationOffsetMatrix = Matrix.CreateRotationZ(this.Body.Rotation);
-            }
-            else if(this.Parent == this.Root)
-            { // When the parent is the root we will exclude it, allowing for easy relative updates
-                this.TransformationOffsetMatrix =
-                    (this.MaleConnectionNode.TranslationMatrix *
-                    this.MaleConnectionNode.Connection.FemaleNode.TranslationMatrix); ;
-            }
+            // Write the current id
+            om.Write(this.Id);
+
+            if (_driver == null) // No driver to send, so so data to send
+                om.Write(false);
             else
-            {
-                this.TransformationOffsetMatrix =
-                    (this.MaleConnectionNode.TranslationMatrix *
-                    this.MaleConnectionNode.Connection.FemaleNode.TranslationMatrix)
-                    * this.Parent.TransformationOffsetMatrix;
+            { // Send the driver confirmation byte, then send the driver data
+                om.Write(true);
+                _driver.Write(om);
             }
-
-            this.TransformationOffsetMatrix.Decompose(out _scaleOffset, out _rotationOffset, out _translateOffset);
         }
-
-        /// <summary>
-        /// Return a list of all available female connection nodes found
-        /// within the current hull piece (and any of its children)
-        /// </summary>
-        /// <returns></returns>
-        public List<FemaleConnectionNode> GetAvailabaleFemaleConnectioNodes(List<FemaleConnectionNode> addTo = null)
-        {
-            if (addTo == null)
-                addTo = new List<FemaleConnectionNode>();
-
-            foreach (FemaleConnectionNode female in this.FemaleConnectionNodes)
-            {
-                if (female.Connection == null)
-                    addTo.Add(female);
-                else if (female.Connection.MaleNode.Owner is ShipPart)
-                    female.Connection.MaleNode.Owner.GetAvailabaleFemaleConnectioNodes(addTo);
-            }
-
-            return addTo;
-        }
+        #endregion
     }
 }

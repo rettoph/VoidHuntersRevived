@@ -1,120 +1,85 @@
-﻿using System;
+﻿using Lidgren.Network;
+using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using FarseerPhysics.Dynamics;
-using Lidgren.Network;
-using Microsoft.Extensions.Logging;
-using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
+using VoidHuntersRevived.Library.Entities.Drivers;
 using VoidHuntersRevived.Library.Entities.ShipParts;
-using VoidHuntersRevived.Library.Interfaces;
-using VoidHuntersRevived.Library.Scenes;
-using VoidHuntersRevived.Networking.Implementations;
 using VoidHuntersRevived.Networking.Interfaces;
 
 namespace VoidHuntersRevived.Library.Entities.Players
 {
+    /// <summary>
+    /// UserPlayer is a specific implementation of the 
+    /// </summary>
     public class UserPlayer : Player
     {
-        public IUser User;
-        private IUserPlayerDriver _driver;
+        #region Private Fields
+        private Driver _driver;
+        #endregion
 
-        public override String Name
-        {
-            get { return User.Name; }
-        }
+        #region Public Attributes
+        public IUser User { get; private set; }
+        #endregion
 
+        #region Constructors
         public UserPlayer(IUser user, ShipPart bridge, EntityInfo info, IGame game) : base(bridge, info, game)
         {
-            User = user;
+            this.User = user;
         }
         public UserPlayer(long id, EntityInfo info, IGame game) : base(id, info, game)
         {
         }
+        #endregion
 
+        #region Initialization Methods
         protected override void Initialize()
         {
             base.Initialize();
 
-            // Update the default driver for the current player isntance
-            this.UpdateDriver();
+            // Create the UserPlayer's IDriver..
+            _driver = this.Scene.Entities.Create<Driver>("entity:driver:user_player", null, this);
         }
+        #endregion
 
+        #region Frame Methods
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            _driver?.Update(gameTime);
+            _driver.Update(gameTime);
         }
+        #endregion
 
-        private void UpdateDriver()
-        {
-            if (this.User != null)
-            {
-                if(_driver != null) // Remove the old driver
-                    this.Scene.Entities.Remove(_driver);
-
-                var group = (this.Scene as MainScene).Group;
-
-                if (User.Id == group.Peer.UniqueIdentifier)
-                { // Create a local driver
-                    _driver = this.Scene.Entities.Create<IUserPlayerDriver>("entity:player_driver:local", null, this);
-                }
-                else
-                { // Create a remote driver
-                    _driver = this.Scene.Entities.Create<IUserPlayerDriver>("entity:player_driver:remote", null, this);
-                }
-            }
-        }
-
-        
-
+        #region INetworkEntity Implementation
         public override void Read(NetIncomingMessage im)
         {
             base.Read(im);
 
-            var group = (this.Scene as MainScene).Group;
+            // Read the current UserPlayer's IUser
+            this.User = this.GameScene.Group.Users.GetById(im.ReadInt64());
 
-            // Load the incoming user
-            var userId = im.ReadInt64();
-
-            if (User == null)
-            { // If the user isnt already defined, define it now
-                User = group.Users.GetById(userId);
-                this.UpdateDriver();
-            }
-
-            if(userId != User.Id)
-            { // If the claimed user is not the pre defined user, theres an issue
-                this.Game.Logger.LogCritical($"Incorrect user claimed by player!");
-            }
-
-
-            if(im.ReadBoolean())
-            {
-                // read to the driver
+            if (im.ReadBoolean()) // Only read to the driver if the confirmation byte was recieved
                 _driver.Read(im);
-            }
         }
 
         public override void Write(NetOutgoingMessage om)
         {
             base.Write(om);
 
-            om.Write(User.Id);
+            // Write the current UserPlayer's IUser
+            om.Write(this.User.Id);
 
-            if(_driver == null)
-            { // Only sync driver info if the driver even exists at this time
+            if (_driver == null) // No driver to send, so so data to send
                 om.Write(false);
-            }
             else
-            { // Only sync driver info if the driver even exists at this time
+            { // Send the driver confirmation byte, then send the driver data
                 om.Write(true);
-
-                // Write from the driver
                 _driver.Write(om);
             }
         }
+        #endregion
     }
 }

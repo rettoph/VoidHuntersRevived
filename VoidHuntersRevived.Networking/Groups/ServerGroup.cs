@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Networking.Groups
             _connections = new List<NetConnection>();
             _connectionTable = new Dictionary<Int64, NetConnection>();
 
-            this.Users.OnAdd += this.HandleUserAdded;
+            this.Users.OnAdded += this.HandleUserAdded;
             this.Users.OnRemove += this.HandleUserRemoved;
         }
 

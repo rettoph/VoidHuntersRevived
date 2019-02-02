@@ -44,8 +44,18 @@ namespace VoidHuntersRevived.Networking.Implementations
         }
 
 
-
+        /// <summary>
+        /// Update the current object from the data contained
+        /// within a given NetIncomingMessage
+        /// </summary>
+        /// <param name="im"></param>
         public abstract void Read(NetIncomingMessage im);
+
+        /// <summary>
+        /// Write the current object data to a given
+        /// NetOutgoingMessage
+        /// </summary>
+        /// <param name="om"></param>
         public abstract void Write(NetOutgoingMessage om);
     }
 }

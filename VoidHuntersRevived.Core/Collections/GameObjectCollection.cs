@@ -22,6 +22,9 @@ namespace VoidHuntersRevived.Core.Collections
 
         public GameObjectCollection(ILogger logger) : base(logger)
         {
+            _drawables = new TGameObject[0];
+            _updatables = new TGameObject[0];
+
             _dirtyDrawables = true;
             _dirtyUpdatables = true;
         }

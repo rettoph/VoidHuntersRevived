@@ -1,58 +1,130 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Core.Implementations;
+using Lidgren.Network;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
-using VoidHuntersRevived.Library.Entities.Connections.Nodes;
+using VoidHuntersRevived.Library.Entities.ConnectionNodes;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Scenes;
+using VoidHuntersRevived.Networking.Implementations;
 
 namespace VoidHuntersRevived.Library.Entities.Connections
 {
     /// <summary>
-    /// A connection represents a linkage between a female node and
-    /// a male node
+    /// Represents a link between 2 ConnectionNodes.
+    /// One female and the other male. The creation 
+    /// of a NodeConnection must be validated in several
+    /// ways. Primarily, each ConnectionNode cannot already
+    /// have another connection.
+    /// 
+    /// If there is an error in any way during creation, this
+    /// will throw an exception...
     /// </summary>
-    public class NodeConnection : Entity
+    public class NodeConnection : NetworkEntity
     {
-        public ConnectionState State;
+        #region Public Attributes
+        public MaleConnectionNode MaleConnectionNode { get; private set; }
+        public FemaleConnectionNode FemaleConnectionNode { get; private set; }
 
-        public readonly FemaleConnectionNode FemaleNode;
-        public readonly MaleConnectionNode MaleNode;
+        public ConnectionStatus Status { get; private set; }
+        #endregion
 
-        public Matrix MaleNodeOffset { get; private set; }
-
-        public NodeConnection(FemaleConnectionNode female, MaleConnectionNode male, EntityInfo info, IGame game) : base(info, game)
+        #region Constructors
+        public NodeConnection(
+            MaleConnectionNode maleConnectionNode,
+            FemaleConnectionNode femaleConnectionNode,
+            EntityInfo info,
+            IGame game) : base(info, game)
         {
-            this.Enabled = false;
-            this.Visible = false;
+            this.Status = ConnectionStatus.Initializing;
 
-            this.State = ConnectionState.Connecting;
+            this.MaleConnectionNode = maleConnectionNode;
+            this.FemaleConnectionNode = femaleConnectionNode;
 
-            this.FemaleNode = female;
-            this.MaleNode = male;
-
-            this.FemaleNode.Connect(this);
-            this.MaleNode.Connect(this);
-
-            this.MaleNodeOffset = Matrix.CreateTranslation(new Vector3(0, 0, 0));
-
-            this.State = ConnectionState.Connected;
+            // Complete the connection
+            this.ApplyConnection();
         }
 
-        // Terminate the connection
+        public NodeConnection(
+            long id,
+            EntityInfo info, 
+            IGame game) : base(id, info, game)
+        {
+            this.Status = ConnectionStatus.Initializing;
+        }
+        #endregion
+
+        /// <summary>
+        /// Once all the connection info required has been recieved we can alert
+        /// the MaleConnectionNode and FemaleConnectionNode of the connections creation. 
+        /// The following method validates the input MaleConnectionNode and 
+        /// FemaleConnectionNode, mark them as connected, and complete and additional 
+        /// setup as needed
+        /// </summary>
+        private void ApplyConnection()
+        {
+            // Update the current connection status
+            this.Status = ConnectionStatus.Connecting;
+
+            if (this.MaleConnectionNode.Owner == this.FemaleConnectionNode.Owner)
+                throw new Exception("Unable to apply NodeConnection. MaleConnectionNode and FemaleConnectionNode have the same owner.");
+
+            // Mark the ConnectionNodes as connected
+            this.MaleConnectionNode.Connect(this);
+            this.FemaleConnectionNode.Connect(this);
+
+            // Update the current connection status
+            this.Status = ConnectionStatus.Connected;
+        }
+
+        /// <summary>
+        /// Destroy the current NodeConnection
+        /// </summary>
         public void Disconnect()
         {
-            this.State = ConnectionState.Disconnecting;
+            // Update the current connection status
+            this.Status = ConnectionStatus.Disconnecting;
 
-            this.MaleNode.Disconnect();
-            this.FemaleNode.Disconnect();
+            // Mark the ConnectionNodes as disconnected
+            this.MaleConnectionNode.Disconnect();
+            this.FemaleConnectionNode.Disconnect();
 
-            this.State = ConnectionState.Disconnected;
-
-            // Remove the entity
-            this.Scene.Entities.Remove(this);
+            // Update the current connection status
+            this.Status = ConnectionStatus.Disconnecting;
         }
+
+        #region INetworkEntity Implemntation
+        public override void Read(NetIncomingMessage im)
+        {
+            if (this.Status != ConnectionStatus.Initializing)
+                throw new Exception("Unable to read incoming NodeConnection data. Invalid Connection Status.");
+
+            // Temp load the current NodeConnection's scene, to select the relevant ShipPart's ConnectionNodes
+            var scene = this.Scene as MainGameScene;
+
+            // Read the MaleConnectionNode...
+            this.MaleConnectionNode = (scene.NetworkEntities.GetById(im.ReadInt64()) as ShipPart).MaleConnectionNode;
+
+            // Read the FemaleConnectionNode...
+            this.FemaleConnectionNode = (scene.NetworkEntities.GetById(im.ReadInt64()) as ShipPart).FemaleConnectionNodes[im.ReadInt32()];
+
+            // Now that we have the required ConnectionNode data we can apply the connection
+            this.ApplyConnection();
+        }
+
+        public override void Write(NetOutgoingMessage om)
+        {
+            om.Write(this.Id);
+
+            // Write the required MaleConnectionNode data
+            om.Write(this.MaleConnectionNode.Owner.Id);
+
+            // Write the required FemaleConnectionNode data
+            om.Write(this.FemaleConnectionNode.Owner.Id);
+            om.Write(Array.IndexOf(this.FemaleConnectionNode.Owner.FemaleConnectionNodes, this.FemaleConnectionNode));
+        }
+        #endregion
     }
 }

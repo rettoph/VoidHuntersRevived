@@ -14,6 +14,8 @@ namespace VoidHuntersRevived.Core.Implementations
         public Layer(IGame game) : base(game)
         {
             this.Entities = new LayerEntityCollection(game.Logger, this);
+
+            this.SetEnabled(true);
         }
 
         public override void Update(GameTime gameTime)

@@ -8,7 +8,6 @@ using System.Text;
 using VoidHuntersRevived.Core.Implementations;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
-using VoidHuntersRevived.Library.Entities;
 
 namespace VoidHuntersRevived.Client.Entities
 {
@@ -72,29 +71,7 @@ namespace VoidHuntersRevived.Client.Entities
             _window.ClientSizeChanged += this.HandleClientSizeChanged;
         }
 
-        #region Initializable Implementation
-        protected override void Boot()
-        {
-            // throw new NotImplementedException();
-        }
-
-        protected override void PreInitialize()
-        {
-            // throw new NotImplementedException();
-        }
-
-        protected override void Initialize()
-        {
-            // throw new NotImplementedException();
-        }
-
-        protected override void PostInitialize()
-        {
-            // throw new NotImplementedException();
-        }
-        #endregion
-
-        #region Methods
+        #region Update Methods
         /// <summary>
         /// Set the bounds values based on the output graphics device
         /// </summary>

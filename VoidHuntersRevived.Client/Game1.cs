@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Client
         {
             base.Initialize();
 
-            _game = new VoidHuntersRevivedClientGame(new VoidHuntersRevivedLogger(), _graphics, this.Content, this.Window);
+            _game = new ClientVoidHuntersRevivedGame(new VoidHuntersRevivedLogger(), _graphics, this.Content, this.Window);
         }
 
         protected override void Draw(GameTime gameTime)

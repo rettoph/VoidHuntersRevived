@@ -1,22 +1,28 @@
-﻿using FarseerPhysics.Common;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace VoidHuntersRevived.Library.Entities.MetaData
 {
+    /// <summary>
+    /// Contains general information about a ship part.
+    /// This should only be used within the game initializer 
+    /// when registering a new ship part. Use an instance of
+    /// the ShipPartData class for the custom data attribute
+    /// within the EntityLoader
+    /// </summary>
     public class ShipPartData
     {
-        public readonly Vector3 MaleConnection;
+        public readonly Vector3 MaleConnectionNodeData;
         public readonly Vector2[] Vertices;
-        public readonly Vector3[] FemaleConnections;
+        public readonly Vector3[] FemaleConnectionNodesData;
 
-        public ShipPartData(Vector3 maleConnection, Vector2[] vertices, Vector3[] femaleConnections)
+        public ShipPartData(Vector3 maleConnectionNodeData, Vector2[] vertices, Vector3[] femaleConnectionNodesData)
         {
-            this.MaleConnection = maleConnection;
+            this.MaleConnectionNodeData = maleConnectionNodeData;
             this.Vertices = vertices;
-            this.FemaleConnections = femaleConnections ?? new Vector3[0];
+            this.FemaleConnectionNodesData = femaleConnectionNodesData;
         }
     }
 }

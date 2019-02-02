@@ -1,60 +1,61 @@
-﻿using Lidgren.Network;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Lidgren.Network;
+using Microsoft.Xna.Framework;
+using VoidHuntersRevived.Core.Implementations;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
-using VoidHuntersRevived.Library.Entities;
-using VoidHuntersRevived.Library.Entities.Connections.Nodes;
 using VoidHuntersRevived.Library.Entities.ShipParts;
-using VoidHuntersRevived.Server.Helpers;
-using VoidHuntersRevived.Server.Scenes;
+using Lidgren.Network.Xna;
+using VoidHuntersRevived.Library.Entities.Drivers;
 
 namespace VoidHuntersRevived.Server.Entities.Drivers
 {
-    public class ServerShipPartDriver : ServerFarseerEntityDriver
+    /// <summary>
+    /// The server specific implementation of the IDriver, designed
+    /// specifically for ShipPart instances.
+    /// </summary>
+    public class ServerShipPartDriver : Driver
     {
+        #region Private Fields
+        // The parent ShipPart
         private ShipPart _parent;
-        private ServerMainScene _scene;
+        #endregion
 
-        public ServerShipPartDriver(ShipPart parent, EntityInfo info, IGame game) : base(parent, info, game)
+        #region Constructors
+        public ServerShipPartDriver(ShipPart parent, EntityInfo info, IGame game) : base(info, game)
         {
             _parent = parent;
-            _parent.OnInitialize += this.HandleParentInitialize;
         }
+        #endregion
 
-        protected override void Initialize()
+        #region Frame Methods
+        public override void Update(GameTime gameTime)
         {
-            base.Initialize();
+            base.Update(gameTime);
 
-            _scene = this.Scene as ServerMainScene;
+            // If the current entity is awake, then it is dirty.
+            // That way, all connected clients will recieve an update
+            if (_parent.Body.Awake && !_parent.Dirty)
+                _parent.Dirty = true;
         }
+        #endregion
 
-        private void HandleParentInitialize(object sender, IInitializable e)
-        {
-            _parent.MaleConnectionNode.OnConnected += this.HandleMaleNodeConnection;
-            _parent.MaleConnectionNode.OnDisconnected += this.HandleMaleNodeDisconneced;
-        }
-
-        /// <summary>
-        /// When a new connection is made we must alert all clients.
-        /// this will construct a message and push it to all 
-        /// connections
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void HandleMaleNodeConnection(object sender, ConnectionNode e)
-        {
-            // Send the message to all clients
-            _scene.Group.SendMessage(
-                ServerMessageHelper.BuildCreateNodeConnectionMessage(e.Connection, _scene.Group),
-                NetDeliveryMethod.ReliableOrdered,
-                0);
-        }
-
-        private void HandleMaleNodeDisconneced(object sender, ConnectionNode e)
-        {
+        #region Networking Methods (IDriver Implementation)
+        public override void Read(NetIncomingMessage im)
+        { // The server should never read ship part data from the client
             throw new NotImplementedException();
         }
+
+        public override void Write(NetOutgoingMessage om)
+        {
+            // Write the parent ShipPart's positional data
+            om.Write(_parent.Body.Position);
+            om.Write(_parent.Body.LinearVelocity);
+            om.Write(_parent.Body.Rotation);
+            om.Write(_parent.Body.AngularVelocity);
+        }
+        #endregion
     }
 }

@@ -8,7 +8,7 @@ namespace VoidHuntersRevived.Core.Interfaces
     public interface IGameCollection<TObject> : IEnumerable
     {
 
-        event EventHandler<TObject> OnAdd;
+        event EventHandler<TObject> OnAdded;
         event EventHandler<TObject> OnRemove;
 
         /// <summary>

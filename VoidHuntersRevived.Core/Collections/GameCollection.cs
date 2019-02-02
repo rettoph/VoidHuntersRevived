@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Core.Collections
     {
         protected List<TObject> _list;
 
-        public event EventHandler<TObject> OnAdd;
+        public event EventHandler<TObject> OnAdded;
         public event EventHandler<TObject> OnRemove;
 
         public GameCollection()
@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Core.Collections
             if(this.CanAlter())
             {
                 this.add(item);
-                this.OnAdd?.Invoke(this, item);
+                this.OnAdded?.Invoke(this, item);
             }
 
             return item;

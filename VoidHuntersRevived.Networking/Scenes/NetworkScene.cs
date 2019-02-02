@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Networking.Scenes
         {
             base.Initialize();
 
-            this.Entities.OnAdd += this.HandleEntityAdd;
+            this.Entities.OnAdded += this.HandleEntityAdd;
             this.Entities.OnRemove += this.HandleEntityRemove;
         }
 
@@ -40,8 +40,7 @@ namespace VoidHuntersRevived.Networking.Scenes
             {
                 var ne = e as INetworkEntity;
                 this.NetworkEntities.Remove(ne);
-            }
-                    
+            }     
         }
     }
 }

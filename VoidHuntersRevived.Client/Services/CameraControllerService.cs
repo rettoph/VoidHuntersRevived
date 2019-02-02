@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
+using System.Text;
 using VoidHuntersRevived.Client.Entities;
 using VoidHuntersRevived.Client.Scenes;
 using VoidHuntersRevived.Core.Implementations;
@@ -12,9 +10,9 @@ using VoidHuntersRevived.Core.Interfaces;
 
 namespace VoidHuntersRevived.Client.Services
 {
-    public class CameraControllerService : SceneObject, ISceneService
+    class CameraControllerService : SceneObject, ISceneService
     {
-        private ClientMainScene _scene;
+        private ClientMainGameScene _scene;
         private Camera _camera;
         private Int32 _lastScrollWheelValue;
         private Int32 _scrollWheelDelta;
@@ -37,14 +35,13 @@ namespace VoidHuntersRevived.Client.Services
             var mouse = Mouse.GetState();
             _scrollWheelDelta = _lastScrollWheelValue - mouse.ScrollWheelValue;
 
-            _camera.Zoom *= 1 + ((_scrollWheelDelta/120) * -0.1f);
+            _camera.Zoom *= 1 + ((_scrollWheelDelta / 120) * -0.1f);
 
             _lastScrollWheelValue = mouse.ScrollWheelValue;
 
             /*
             // Update followed ship
             var keyboard = Keyboard.GetState();
-
             if (keyboard.IsKeyDown(Keys.W))
                 _camera.Follow.Body.ApplyLinearImpulse(new Vector2(0, -5));
             if (keyboard.IsKeyDown(Keys.A))
@@ -53,10 +50,8 @@ namespace VoidHuntersRevived.Client.Services
                 _camera.Follow.Body.ApplyLinearImpulse(new Vector2(0, 5));
             if (keyboard.IsKeyDown(Keys.D))
                 _camera.Follow.Body.ApplyLinearImpulse(new Vector2(5, 0));
-
             if (keyboard.IsKeyDown(Keys.Q))
                 _camera.Follow.Body.ApplyAngularImpulse(-0.01f);
-
             if (keyboard.IsKeyDown(Keys.E))
                 _camera.Follow.Body.ApplyAngularImpulse(0.01f);
             */
@@ -79,7 +74,7 @@ namespace VoidHuntersRevived.Client.Services
 
         protected override void PostInitialize()
         {
-            _scene = this.Scene as ClientMainScene;
+            _scene = this.Scene as ClientMainGameScene;
             _camera = _scene.Camera;
         }
     }

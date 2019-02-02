@@ -1,27 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FarseerPhysics;
+﻿using FarseerPhysics;
 using FarseerPhysics.DebugView;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Text;
 using VoidHuntersRevived.Client.Scenes;
 using VoidHuntersRevived.Core.Implementations;
 using VoidHuntersRevived.Core.Interfaces;
 
 namespace VoidHuntersRevived.Client.Services
 {
+    /// <summary>
+    /// A service used to interface directly with FarseerPhysics.MonoGame.DebigView
+    /// and render the current world state as is...
+    /// </summary>
     class FarseerDebugOverlayService : SceneObject, ISceneService
     {
+        #region Private Fields
         private SpriteBatch _spriteBatch;
         private DebugViewXNA _debug;
-        private ClientMainScene _scene;
+        private ClientMainGameScene _scene;
         private GraphicsDevice _graphics;
         private ContentManager _content;
+        #endregion
 
+        #region Constructors
         public FarseerDebugOverlayService(GraphicsDevice graphics, ContentManager content, SpriteBatch spriteBatch, IGame game) : base(game)
         {
             _graphics = graphics;
@@ -31,21 +36,9 @@ namespace VoidHuntersRevived.Client.Services
             this.Enabled = true;
             this.Visible = true;
         }
+        #endregion
 
-        public override void Draw(GameTime gameTime)
-        {
-            _spriteBatch.Begin();
-
-            _debug.RenderDebugData(_scene.Camera.Projection, Matrix.Identity);
-
-            _spriteBatch.End();
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            // throw new NotImplementedException();
-        }
-
+        #region Initialization Methods
         protected override void Boot()
         {
             // throw new NotImplementedException();
@@ -58,7 +51,7 @@ namespace VoidHuntersRevived.Client.Services
 
         protected override void PostInitialize()
         {
-            _scene = this.Scene as ClientMainScene;
+            _scene = this.Scene as ClientMainGameScene;
             _debug = new DebugViewXNA(_scene.World);
             _debug.LoadContent(_graphics, _content);
 
@@ -75,5 +68,22 @@ namespace VoidHuntersRevived.Client.Services
         {
             // throw new NotImplementedException();
         }
+        #endregion
+
+        #region Frame Methods
+        public override void Draw(GameTime gameTime)
+        {
+            _spriteBatch.Begin();
+
+            _debug.RenderDebugData(_scene.Camera.Projection, Matrix.Identity);
+
+            _spriteBatch.End();
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            // throw new NotImplementedException();
+        }
+        #endregion
     }
 }

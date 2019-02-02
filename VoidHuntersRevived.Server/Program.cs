@@ -9,14 +9,12 @@ namespace VoidHuntersRevived.Server
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-
             GameTime gameTime;
             DateTime start = DateTime.Now;
             DateTime old = DateTime.Now;
             DateTime now;
 
-            VoidHuntersRevivedServerGame game = new VoidHuntersRevivedServerGame(new VoidHuntersRevivedLogger());
+            ServerVoidHuntersRevivedGame game = new ServerVoidHuntersRevivedGame(new VoidHuntersRevivedLogger());
 
             while(true)
             {
