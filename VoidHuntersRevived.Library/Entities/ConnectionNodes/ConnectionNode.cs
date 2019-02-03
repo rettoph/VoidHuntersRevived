@@ -91,7 +91,7 @@ namespace VoidHuntersRevived.Library.Entities.ConnectionNodes
                 _spriteBatch = spriteBatch; // Save the input SpriteBatch
 
                 // Calculate the centerpoint of the connection node texture
-                _origin = _texture == null ? Vector2.Zero : new Vector2(_texture.Bounds.Width / 2, _texture.Bounds.Height / 2);
+                _origin = _texture == null ? Vector2.Zero : new Vector2((float)_texture.Bounds.Width / 2, (float)_texture.Bounds.Height / 2);
             }
 
             this.SetEnabled(false);

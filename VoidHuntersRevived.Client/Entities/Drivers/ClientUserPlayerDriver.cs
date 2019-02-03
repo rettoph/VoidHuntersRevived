@@ -13,7 +13,7 @@ using VoidHuntersRevived.Library.Enums;
 
 namespace VoidHuntersRevived.Client.Entities.Drivers
 {
-    class ClientUserPlayerDriver : Driver
+    public class ClientUserPlayerDriver : Driver
     {
         #region Private Fields
         private Dictionary<MovementType, Boolean> _requestedMovement;
@@ -82,8 +82,11 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
         #region Networking Methods (Driver Implementation)
         public override void Read(NetIncomingMessage im)
         {
-            // Update the user Players user
-            this.UserPlayer.User = _scene.Group.Users.GetById(im.ReadInt64());
+            var userId = im.ReadInt64();
+
+            // Update the UserPlayer's User value, if it is not already defined
+            if(this.UserPlayer.User == null)
+                this.UserPlayer.User = _scene.Group.Users.GetById(userId);
         }
 
         public override void Write(NetOutgoingMessage om)

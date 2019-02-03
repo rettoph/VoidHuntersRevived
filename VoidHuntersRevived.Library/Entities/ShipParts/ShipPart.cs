@@ -98,7 +98,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             // Load the center of mass texture
             var contentLoader = game.Provider.GetLoader<ContentLoader>();
             _centerOfMass = contentLoader.Get<Texture2D>("texture:center_of_mass");
-            _centerOfMassOrigin = new Vector2(_centerOfMass.Width / 2, _centerOfMass.Height / 2);
+            _centerOfMassOrigin = new Vector2((float)_centerOfMass.Width / 2, (float)_centerOfMass.Height / 2);
 
             this.Data = this.Info.Data as ShipPartData;
         }
