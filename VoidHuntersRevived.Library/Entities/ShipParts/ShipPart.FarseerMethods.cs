@@ -45,6 +45,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             // Set some body defaults
             body.BodyType = BodyType.Dynamic;
+            body.AngularDamping = 1f;
+            body.LinearDamping = 1f;
 
             return body;
         }

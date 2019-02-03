@@ -114,6 +114,9 @@ namespace VoidHuntersRevived.Server.Scenes
             var square4 = this.Entities.Create<ShipPart>("entity:hull:square", null);
             this.Entities.Create<NodeConnection>("entity:connection:connection_node", null, square4.MaleConnectionNode, square1.FemaleConnectionNodes[2]);
 
+            var square5 = this.Entities.Create<ShipPart>("entity:hull:square", null);
+            this.Entities.Create<NodeConnection>("entity:connection:connection_node", null, square5.MaleConnectionNode, square2.FemaleConnectionNodes[0]);
+
             // Send a final setup:end message, alerting the client that they have recieved all setup info
             om = this.Group.CreateMessage("setup:end");
             _group.SendMessage(om, user, NetDeliveryMethod.ReliableOrdered);

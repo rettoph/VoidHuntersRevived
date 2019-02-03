@@ -5,13 +5,16 @@ using System.Text;
 using FarseerPhysics.Dynamics;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Core.Interfaces;
+using VoidHuntersRevived.Core.Providers;
 using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities.ConnectionNodes;
 using VoidHuntersRevived.Library.Entities.Drivers;
 using VoidHuntersRevived.Library.Entities.MetaData;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Networking.Implementations;
+using VoidHuntersRevived.Core.Extensions;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -25,6 +28,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #region Private Fields
         private String _driverHandle;
         private Driver _driver;
+
+        private SpriteBatch _spriteBatch;
+        private Texture2D _centerOfMass;
+        private Vector2 _centerOfMassOrigin;
         #endregion
 
         #region Protected Fields
@@ -83,9 +90,15 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             this.Data = this.Info.Data as ShipPartData;
         }
 
-        public ShipPart(long id, EntityInfo info, IGame game, String driverHandle = "entity:driver:ship_part") : base(id, info, game)
+        public ShipPart(long id, EntityInfo info, IGame game, SpriteBatch spriteBatch, String driverHandle = "entity:driver:ship_part") : base(id, info, game)
         {
             _driverHandle = driverHandle;
+            _spriteBatch = spriteBatch;
+
+            // Load the center of mass texture
+            var contentLoader = game.Provider.GetLoader<ContentLoader>();
+            _centerOfMass = contentLoader.Get<Texture2D>("texture:center_of_mass");
+            _centerOfMassOrigin = new Vector2(_centerOfMass.Width / 2, _centerOfMass.Height / 2);
 
             this.Data = this.Info.Data as ShipPartData;
         }
@@ -101,8 +114,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             // Create a new Body and Fixture for the current ship part
             this.Body = this.CreateBody();
-            this.Fixture = this.CreateFixture(this.Body);
-
+            
             // Create a new Driver for the current ShipPart
             _driver = this.Scene.Entities.Create<Driver>(_driverHandle, null, this);
 
@@ -119,6 +131,53 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             // Update the initial transformation data
             this.UpdateTransformationData();
+
+            // Update the current chain placement
+            this.UpdateChainPlacement();
+
+            // Add ShipPart event handlers
+            this.MaleConnectionNode.OnConnected += this.HandleMaleConnectionNodeConnected;
+            this.MaleConnectionNode.OnDisconnected += this.HandleMaleConnectionNodeDisonnected;
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// When a ShipPart gets added to another, certain actions must
+        /// take place. By default, a ShipPart will create a new fixture
+        /// with proper translations and add it to the Root most
+        /// ship part.
+        /// 
+        /// Other ShipParts may override this functionality, however. 
+        /// Such as weapons, which will use a ROtationJoint for attatcment
+        /// rather than a fixture transplant
+        /// </summary>
+        protected virtual void UpdateChainPlacement()
+        {
+            // Delete the old fixture, if it existed
+            this.Fixture?.Body.DestroyFixture(this.Fixture);
+
+            // Create a new fixture on the root body
+            this.Fixture = this.CreateFixture(this.Root.Body, this.OffsetTranslationMatrix);
+
+            
+            if (this.IsRoot)
+            { // Root only updates here:
+                // When a chain gets updates, the root must update its center of mass
+                this.Body.ResetMassData();
+            }
+            else
+            { // Children updates here:
+                // First, ensure the transformation data is up to date
+                this.UpdateTransformationData();
+
+                // Update the current root data
+                this.Root.UpdateChainPlacement();
+
+                // Update all the current ShipPart's children as well
+                foreach (FemaleConnectionNode femaleConnectionNode in this.FemaleConnectionNodes)
+                    femaleConnectionNode.Connection?.MaleConnectionNode.Owner.UpdateChainPlacement();
+            }
         }
         #endregion
 
@@ -132,6 +191,25 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             // Update the driver..
             _driver.Update(gameTime);
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            if(this.IsRoot)
+            {
+                _spriteBatch.Draw(
+                    texture: _centerOfMass,
+                    position: this.Body.Position + Vector2.Transform(this.Body.LocalCenter, this.RotationMatrix),
+                    sourceRectangle: _centerOfMass.Bounds,
+                    color: Color.White,
+                    rotation: this.Body.Rotation,
+                    origin: _centerOfMassOrigin,
+                    scale: 0.01f,
+                    effects: SpriteEffects.None,
+                    layerDepth: 0);
+            }
         }
         #endregion
 

@@ -38,6 +38,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public Matrix RotationMatrix { get; private set; }
         #endregion
 
+        /// <summary>
+        /// Update the ShipPart's current transformation data
+        /// This includes a translation matrix, rotation matrix,
+        /// and rotation value (Single)
+        /// </summary>
         internal void UpdateTransformationData()
         {
             if(this.IsRoot)

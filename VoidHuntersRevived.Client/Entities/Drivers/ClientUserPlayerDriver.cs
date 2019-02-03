@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
         {
             base.Update(gameTime);
 
-            if(this.UserPlayer.User.Id == _scene.Group.Peer.UniqueIdentifier)
+            if(this.UserPlayer.User != null && this.UserPlayer.User.Id == _scene.Group.Peer.UniqueIdentifier)
             { // Only track the current user actions if they are the user in control of the current UserPlayer
                 var keyboard = Keyboard.GetState();
 
@@ -69,8 +69,10 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
                 _requestedMovement[MovementType.StrafeLeft]  = keyboard.IsKeyDown(Keys.Q);
 
                 // Update the camera position
-                _scene.Camera.Position = this.UserPlayer.Bridge.Body.Position;
-                _scene.Camera.Rotation = this.UserPlayer.Bridge.Body.Rotation;
+                _scene.Camera.Position = this.UserPlayer.Bridge.Body.Position + Vector2.Transform(this.UserPlayer.Bridge.Body.LocalCenter, this.UserPlayer.Bridge.RotationMatrix);
+                // The current UserPlayer should be synced every frame..
+                if (!this.UserPlayer.Dirty)
+                    this.UserPlayer.Dirty = true;
             }
         }
         #endregion
@@ -80,7 +82,8 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
         #region Networking Methods (Driver Implementation)
         public override void Read(NetIncomingMessage im)
         {
-            // throw new NotImplementedException();
+            // Update the user Players user
+            this.UserPlayer.User = _scene.Group.Users.GetById(im.ReadInt64());
         }
 
         public override void Write(NetOutgoingMessage om)

@@ -75,28 +75,24 @@ namespace VoidHuntersRevived.Library.Entities.Players
                     switch (kvp.Key)
                     {
                         case MovementType.GoForward:
-                            this.Bridge.Body.ApplyLinearImpulse(Vector2.Transform(new Vector2(2, 0), this.Bridge.RotationMatrix));
+                            this.Bridge.Body.ApplyLinearImpulse(Vector2.Transform(new Vector2(4, 0), this.Bridge.RotationMatrix));
                             break;
                         case MovementType.TurnRight:
-                            this.Bridge.Body.ApplyAngularImpulse(0.1f);
+                            this.Bridge.Body.ApplyAngularImpulse(3f);
                             break;
                         case MovementType.GoBackward:
-                            this.Bridge.Body.ApplyLinearImpulse(Vector2.Transform(new Vector2(-2, 0), this.Bridge.RotationMatrix));
+                            this.Bridge.Body.ApplyLinearImpulse(Vector2.Transform(new Vector2(-4, 0), this.Bridge.RotationMatrix));
                             break;
                         case MovementType.TurnLeft:
-                            this.Bridge.Body.ApplyAngularImpulse(-0.1f);
+                            this.Bridge.Body.ApplyAngularImpulse(-4f);
                             break;
                         case MovementType.StrafeRight:
-                            this.Bridge.Body.ApplyLinearImpulse(Vector2.Transform(new Vector2(0.1f, -2), this.Bridge.RotationMatrix));
+                            this.Bridge.Body.ApplyLinearImpulse(Vector2.Transform(new Vector2(0.1f, -4), this.Bridge.RotationMatrix));
                             break;
                         case MovementType.StrafeLeft:
-                            this.Bridge.Body.ApplyLinearImpulse(Vector2.Transform(new Vector2(0.1f, 2), this.Bridge.RotationMatrix));
+                            this.Bridge.Body.ApplyLinearImpulse(Vector2.Transform(new Vector2(0.1f, 4), this.Bridge.RotationMatrix));
                             break;
                     }
-
-            // Players should be synced every frame..
-            if(!this.Dirty)
-                this.Dirty = true;
         }
         #endregion
 

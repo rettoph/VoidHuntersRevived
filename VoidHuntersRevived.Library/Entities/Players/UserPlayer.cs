@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
         #endregion
 
         #region Public Attributes
-        public IUser User { get; private set; }
+        public IUser User { get; set; }
         #endregion
 
         #region Constructors
@@ -58,9 +58,6 @@ namespace VoidHuntersRevived.Library.Entities.Players
         {
             base.Read(im);
 
-            // Read the current UserPlayer's IUser
-            this.User = this.GameScene.Group.Users.GetById(im.ReadInt64());
-
             if (im.ReadBoolean()) // Only read to the driver if the confirmation byte was recieved
                 _driver.Read(im);
         }
@@ -68,9 +65,6 @@ namespace VoidHuntersRevived.Library.Entities.Players
         public override void Write(NetOutgoingMessage om)
         {
             base.Write(om);
-
-            // Write the current UserPlayer's IUser
-            om.Write(this.User.Id);
 
             if (_driver == null) // No driver to send, so so data to send
                 om.Write(false);

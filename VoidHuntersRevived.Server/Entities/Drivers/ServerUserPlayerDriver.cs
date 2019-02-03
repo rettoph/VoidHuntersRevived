@@ -1,4 +1,5 @@
 ﻿using Lidgren.Network;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -23,6 +24,17 @@ namespace VoidHuntersRevived.Server.Entities.Drivers
         }
         #endregion
 
+        #region Frame Methods
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            // UserPlayers should be synced every frame..
+            if (!this.UserPlayer.Dirty)
+                this.UserPlayer.Dirty = true;
+        }
+        #endregion
+
         #region Networking Methods (Driver Implementation)
         public override void Read(NetIncomingMessage im)
         {
@@ -40,7 +52,8 @@ namespace VoidHuntersRevived.Server.Entities.Drivers
 
         public override void Write(NetOutgoingMessage om)
         {
-            // throw new NotImplementedException();
+            // Write the current UserPlayer's IUser
+            om.Write(this.UserPlayer.User.Id);
         }
         #endregion
     }

@@ -64,8 +64,8 @@ namespace VoidHuntersRevived.Library.Entities.ConnectionNodes
         #endregion
 
         #region Events
-        event EventHandler<NodeConnection> OnConnected;
-        event EventHandler<ConnectionNode> OnDisconnected;
+        public event EventHandler<NodeConnection> OnConnected;
+        public event EventHandler<ConnectionNode> OnDisconnected;
         #endregion
 
         #region Constructors
