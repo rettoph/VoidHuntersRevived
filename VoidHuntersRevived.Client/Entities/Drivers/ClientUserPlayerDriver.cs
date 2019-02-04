@@ -82,11 +82,6 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
         #region Networking Methods (Driver Implementation)
         public override void Read(NetIncomingMessage im)
         {
-            var userId = im.ReadInt64();
-
-            // Update the UserPlayer's User value, if it is not already defined
-            if(this.UserPlayer.User == null)
-                this.UserPlayer.User = _scene.Group.Users.GetById(userId);
         }
 
         public override void Write(NetOutgoingMessage om)

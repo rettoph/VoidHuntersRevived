@@ -95,7 +95,7 @@ namespace VoidHuntersRevived.Client.Scenes
         {
             // Create a brand new entity from the server sent data...
             INetworkEntity entity = this.Entities.Create<INetworkEntity>(im.ReadString(), null, im.ReadInt64());
-            entity.Read(im);
+            entity.FullRead(im);
         }
 
         private void HandleUpdateMessageType(NetIncomingMessage im)
