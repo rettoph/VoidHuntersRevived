@@ -35,6 +35,10 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
         // The lerp strength (multiplied by the number om milliseconds per frame)
         private Single _baseLerpStrength;
         private Single _currentLerpStrength;
+
+        // If the server gives a value further away than these threshold values, the ship part will snap to its location
+        private Single _positionSnapThreshold;
+        private Single _rotationSnapThreshold;
         #endregion
 
         #region Constructors
@@ -51,6 +55,10 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
 
             // Set the default lerp strength
             _baseLerpStrength = 0.01f;
+
+            // Set default snip thresholds
+            _positionSnapThreshold = 1;
+            _rotationSnapThreshold = (float)Math.PI / 4;
         }
         #endregion
 
@@ -63,11 +71,11 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
             _currentLerpStrength = _baseLerpStrength * (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
             // Update the parent ShipPart's positional values based on what was recieved from the server
-            _parent.Body.Position       = Vector2.Lerp(_parent.Body.Position      , _position      , _currentLerpStrength);
-            _parent.Body.LinearVelocity = Vector2.Lerp(_parent.Body.LinearVelocity, _linearVelocity, _currentLerpStrength);
+            _parent.Body.Position       = Vector2.Distance(_parent.Body.Position, _position) > _positionSnapThreshold ? _position : Vector2.Lerp(_parent.Body.Position, _position, _currentLerpStrength);
+            _parent.Body.LinearVelocity = Vector2.Distance(_parent.Body.Position, _linearVelocity) > _positionSnapThreshold ? _linearVelocity : Vector2.Lerp(_parent.Body.LinearVelocity, _linearVelocity, _currentLerpStrength);
 
-            _parent.Body.Rotation        = MathHelper.Lerp(_parent.Body.Rotation       , _rotation       , _currentLerpStrength);
-            _parent.Body.AngularVelocity = MathHelper.Lerp(_parent.Body.AngularVelocity, _angularVelocity, _currentLerpStrength);
+            _parent.Body.Rotation        = Math.Abs(_parent.Body.Rotation - _rotation) > _rotationSnapThreshold ? _rotation : MathHelper.Lerp(_parent.Body.Rotation, _rotation, _currentLerpStrength);
+            _parent.Body.AngularVelocity = Math.Abs(_parent.Body.Rotation - _angularVelocity) > _rotationSnapThreshold ? _angularVelocity :  MathHelper.Lerp(_parent.Body.AngularVelocity, _angularVelocity, _currentLerpStrength);
         }
         #endregion
 
