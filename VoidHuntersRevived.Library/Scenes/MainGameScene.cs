@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Library.Scenes
             this.Group.Update();
 
             // Step world forward second
-            this.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000); 
+            this.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
 
             // Update the entities third
             base.Update(gameTime);

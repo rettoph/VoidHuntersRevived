@@ -205,8 +205,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// <inheritdoc />
         public override void Read(NetIncomingMessage im)
         {
-            if(im.ReadBoolean()) // Only read to the driver if the confirmation byte was recieved
-                _driver.Read(im);
+            // Read the incoming driver data
+            _driver.Read(im);
         }
 
         /// <inheritdoc />
@@ -215,13 +215,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             // Write the current id
             om.Write(this.Id);
 
-            if (_driver == null) // No driver to send, so so data to send
-                om.Write(false);
-            else
-            { // Send the driver confirmation byte, then send the driver data
-                om.Write(true);
-                _driver.Write(om);
-            }
+            // Write the current driver data
+            _driver.Write(om);
         }
         #endregion
     }

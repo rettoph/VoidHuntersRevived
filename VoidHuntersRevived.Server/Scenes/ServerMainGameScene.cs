@@ -22,6 +22,8 @@ namespace VoidHuntersRevived.Server.Scenes
     {
         #region Private Fields
         private ServerGroup _group;
+        private Queue<INetworkEntity> _addedNetworkEntities;
+        private Queue<INetworkEntity> _removedNetworkEntities;
         #endregion
 
         #region Constructors
@@ -44,6 +46,10 @@ namespace VoidHuntersRevived.Server.Scenes
             // Save the server instance of the scenes group
             _group = this.Group as ServerGroup;
 
+            // Create queue meant to contain new and removed entities
+            _addedNetworkEntities = new Queue<INetworkEntity>();
+            _removedNetworkEntities = new Queue<INetworkEntity>();
+
             // Add all event handlers
             this.NetworkEntities.OnAdded += this.HandleNetworkEntityAdded;
             this.NetworkEntities.OnRemove += this.HandleNetworkEntityRemoved;
@@ -53,6 +59,25 @@ namespace VoidHuntersRevived.Server.Scenes
         protected override void Initialize()
         {
             base.Initialize();
+        }
+        #endregion
+
+        #region Frame Methods
+        public override void Update(GameTime gameTime)
+        {
+            // Push all new entities to all peers at this time
+            while(_addedNetworkEntities.Count > 0)
+                this.Group.SendMessage(
+                ServerMessageHelper.BuildCreateNetworkEntityMessage(_addedNetworkEntities.Dequeue(), this.Group),
+                NetDeliveryMethod.ReliableOrdered);
+
+            base.Update(gameTime);
+
+            // Push all removed entities to all peers at this time
+            while (_removedNetworkEntities.Count > 0)
+                this.Group.SendMessage(
+                    ServerMessageHelper.BuildDestroyNetworkEntityMessage(_removedNetworkEntities.Dequeue(), this.Group),
+                    NetDeliveryMethod.ReliableOrdered);
         }
         #endregion
 
@@ -68,30 +93,23 @@ namespace VoidHuntersRevived.Server.Scenes
         #region Event Handlers
         /// <summary>
         /// The following method will handle any new incoming network entities and
-        /// automatically sync those entites with any connected clients
+        /// automatically add the entity to a message queue to be updated
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void HandleNetworkEntityAdded(object sender, INetworkEntity e)
         {
-            // Using the MessageHelper, build a create message and send it to all clients
-            this.Group.SendMessage(
-                ServerMessageHelper.BuildCreateNetworkEntityMessage(e, this.Group),
-                NetDeliveryMethod.ReliableOrdered);
-        }
+            _addedNetworkEntities.Enqueue(e);        }
 
         /// <summary>
         /// The following method will handle any removed network entities and
-        /// automatically alert all clients of the change
+        /// automatically add the entity to a message queue to be updated
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void HandleNetworkEntityRemoved(object sender, INetworkEntity e)
         {
-            // Using the MessageHelper, build a destroy message and send it to all clients
-            this.Group.SendMessage(
-                ServerMessageHelper.BuildDestroyNetworkEntityMessage(e, this.Group),
-                NetDeliveryMethod.ReliableOrdered);
+            _removedNetworkEntities.Enqueue(e);
         }
 
         /// <summary>

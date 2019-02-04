@@ -104,9 +104,8 @@ namespace VoidHuntersRevived.Library.Entities.Players
             this.Bridge.Body.SleepingAllowed = false;
 
 
-            if (im.ReadBoolean()) // Check if movement data was recieved
-                for (Int32 i = 0; i < this.Movement.Count; i++) // Read the current movement settings
-                    this.Movement[(MovementType)im.ReadByte()] = im.ReadBoolean();
+            for (Int32 i = 0; i < this.Movement.Count; i++) // Read the current movement settings
+                this.Movement[(MovementType)im.ReadByte()] = im.ReadBoolean();
         }
 
         public override void Write(NetOutgoingMessage om)
@@ -117,17 +116,11 @@ namespace VoidHuntersRevived.Library.Entities.Players
             om.Write(this.Bridge.Id);
 
 
-            if (this.Movement == null) // No movement info to send, so no data to send
-                om.Write(false);
-            else
-            { // Send the movement confirmation byte, then send the movement data
-                om.Write(true);
-                // Write the current movement settings
-                foreach (KeyValuePair<MovementType, Boolean> kvp in this.Movement)
-                {
-                    om.Write((Byte)kvp.Key);
-                    om.Write(kvp.Value);
-                }
+            // Write the current movement settings
+            foreach (KeyValuePair<MovementType, Boolean> kvp in this.Movement)
+            {
+                om.Write((Byte)kvp.Key);
+                om.Write(kvp.Value);
             }
         }
         #endregion

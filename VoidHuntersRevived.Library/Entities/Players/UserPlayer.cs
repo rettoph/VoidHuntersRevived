@@ -58,21 +58,16 @@ namespace VoidHuntersRevived.Library.Entities.Players
         {
             base.Read(im);
 
-            if (im.ReadBoolean()) // Only read to the driver if the confirmation byte was recieved
-                _driver.Read(im);
+            // Read the current driver info
+            _driver.Read(im);
         }
 
         public override void Write(NetOutgoingMessage om)
         {
             base.Write(om);
 
-            if (_driver == null) // No driver to send, so so data to send
-                om.Write(false);
-            else
-            { // Send the driver confirmation byte, then send the driver data
-                om.Write(true);
-                _driver.Write(om);
-            }
+            // Write the current driver info
+            _driver.Write(om);
         }
 
         public override void FullRead(NetIncomingMessage im)
