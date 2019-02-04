@@ -72,10 +72,10 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
 
             // Update the parent ShipPart's positional values based on what was recieved from the server
             _parent.Body.Position       = Vector2.Distance(_parent.Body.Position, _position) > _positionSnapThreshold ? _position : Vector2.Lerp(_parent.Body.Position, _position, _currentLerpStrength);
-            _parent.Body.LinearVelocity = Vector2.Distance(_parent.Body.Position, _linearVelocity) > _positionSnapThreshold ? _linearVelocity : Vector2.Lerp(_parent.Body.LinearVelocity, _linearVelocity, _currentLerpStrength);
+            _parent.Body.LinearVelocity = Vector2.Distance(_parent.Body.LinearVelocity, _linearVelocity) > _positionSnapThreshold ? _linearVelocity : Vector2.Lerp(_parent.Body.LinearVelocity, _linearVelocity, _currentLerpStrength);
 
             _parent.Body.Rotation        = Math.Abs(_parent.Body.Rotation - _rotation) > _rotationSnapThreshold ? _rotation : MathHelper.Lerp(_parent.Body.Rotation, _rotation, _currentLerpStrength);
-            _parent.Body.AngularVelocity = Math.Abs(_parent.Body.Rotation - _angularVelocity) > _rotationSnapThreshold ? _angularVelocity :  MathHelper.Lerp(_parent.Body.AngularVelocity, _angularVelocity, _currentLerpStrength);
+            _parent.Body.AngularVelocity = Math.Abs(_parent.Body.AngularVelocity - _angularVelocity) > _rotationSnapThreshold ? _angularVelocity :  MathHelper.Lerp(_parent.Body.AngularVelocity, _angularVelocity, _currentLerpStrength);
         }
         #endregion
 
