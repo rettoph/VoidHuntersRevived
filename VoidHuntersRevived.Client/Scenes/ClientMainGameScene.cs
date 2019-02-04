@@ -53,6 +53,7 @@ namespace VoidHuntersRevived.Client.Scenes
             // Add default client specific message type handlers
             this.Group.MessageTypeHandlers.Add("update"     , this.HandleUpdateMessageType);
             this.Group.MessageTypeHandlers.Add("create"     , this.HandleCreateMessageType);
+            this.Group.MessageTypeHandlers.Add("destroy"    , this.HandleDestroyMessageType);
             this.Group.MessageTypeHandlers.Add("setup:begin", this.HandleSetupBeginMessageType);
             this.Group.MessageTypeHandlers.Add("setup:end"  , this.HandleSetupEndMessageType); 
         }
@@ -103,6 +104,13 @@ namespace VoidHuntersRevived.Client.Scenes
             // Create a brand new entity from the server sent data...
             INetworkEntity entity = this.NetworkEntities.GetById(im.ReadInt64());
             entity.Read(im);
+        }
+
+        private void HandleDestroyMessageType(NetIncomingMessage im)
+        {
+            // Create a brand new entity from the server sent data...
+            INetworkEntity entity = this.NetworkEntities.GetById(im.ReadInt64());
+            entity.Delete();
         }
         #endregion
     }
