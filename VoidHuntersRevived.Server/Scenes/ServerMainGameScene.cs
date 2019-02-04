@@ -46,6 +46,7 @@ namespace VoidHuntersRevived.Server.Scenes
 
             // Add all event handlers
             this.NetworkEntities.OnAdded += this.HandleNetworkEntityAdded;
+            this.NetworkEntities.OnRemove += this.HandleNetworkEntityRemoved;
             this.Group.Users.OnAdded += this.HandleUserAdded;
         }
 
@@ -80,6 +81,20 @@ namespace VoidHuntersRevived.Server.Scenes
         }
 
         /// <summary>
+        /// The following method will handle any removed network entities and
+        /// automatically alert all clients of the change
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void HandleNetworkEntityRemoved(object sender, INetworkEntity e)
+        {
+            // Using the MessageHelper, build a destroy message and send it to all clients
+            this.Group.SendMessage(
+                ServerMessageHelper.BuildDestroyNetworkEntityMessage(e, this.Group),
+                NetDeliveryMethod.ReliableOrdered);
+        }
+
+        /// <summary>
         /// When a new user joins we must update them with the current world state.
         /// </summary>
         /// <param name="sender"></param>
@@ -102,6 +117,8 @@ namespace VoidHuntersRevived.Server.Scenes
             var bridge = this.Entities.Create<ShipPart>("entity:hull:square", null);
             this.Entities.Create<UserPlayer>("entity:player:user", null, user, bridge);
 
+            bridge.Body.Rotation = 1f;
+
             var square1 = this.Entities.Create<ShipPart>("entity:hull:square", null);
             this.Entities.Create<NodeConnection>("entity:connection:connection_node", null, square1.MaleConnectionNode, bridge.FemaleConnectionNodes[0]);
 
@@ -116,6 +133,9 @@ namespace VoidHuntersRevived.Server.Scenes
 
             var square5 = this.Entities.Create<ShipPart>("entity:hull:square", null);
             this.Entities.Create<NodeConnection>("entity:connection:connection_node", null, square5.MaleConnectionNode, square2.FemaleConnectionNodes[0]);
+
+            // Auto disconnect this particular node
+            square2.MaleConnectionNode.Connection.Disconnect();
 
             // Send a final setup:end message, alerting the client that they have recieved all setup info
             om = this.Group.CreateMessage("setup:end");

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
@@ -11,13 +12,21 @@ namespace VoidHuntersRevived.Core.Implementations
     {
         public EntityInfo Info { get; protected set; }
 
+        public bool IsDeleted { get; private set; }
+
+        public event EventHandler<IEntity> OnDeleted;
+
         public Entity(EntityInfo info, IGame game) : base(game)
         {
             this.Info = info;
 
             this.Visible = true;
             this.Enabled = true;
+
+            this.IsDeleted = false;
         }
+
+        
 
         public override void Draw(GameTime gameTime)
         {
@@ -47,6 +56,24 @@ namespace VoidHuntersRevived.Core.Implementations
         protected override void PreInitialize()
         {
             // throw new NotImplementedException();
+        }
+
+        public virtual Boolean Delete()
+        {
+            if(this.IsDeleted)
+            {
+                this.Game.Logger.LogWarning("Attempting to delete entity already marked for deletion.");
+
+                return false;
+            }
+            else
+            {
+                this.IsDeleted = true;
+
+                this.OnDeleted?.Invoke(this, this);
+
+                return true;
+            }
         }
     }
 }

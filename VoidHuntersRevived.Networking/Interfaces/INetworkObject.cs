@@ -25,5 +25,19 @@ namespace VoidHuntersRevived.Networking.Interfaces
         /// </summary>
         /// <param name="om"></param>
         void Write(NetOutgoingMessage om);
+
+        /// <summary>
+        /// Update the current object from the data contained
+        /// within a given NetIncomingMessage
+        /// </summary>
+        /// <param name="im"></param>
+        void FullRead(NetIncomingMessage im);
+
+        /// <summary>
+        /// Write the current object data to a given
+        /// NetOutgoingMessage
+        /// </summary>
+        /// <param name="om"></param>
+        void FullWrite(NetOutgoingMessage om);
     }
 }

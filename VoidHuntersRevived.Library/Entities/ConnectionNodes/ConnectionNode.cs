@@ -103,7 +103,7 @@ namespace VoidHuntersRevived.Library.Entities.ConnectionNodes
         /// Attempt to connect to a given NodeConnection
         /// </summary>
         /// <param name="connection"></param>
-        internal void Connect(NodeConnection connection)
+        internal virtual void Connect(NodeConnection connection)
         {
             if (connection.Status != ConnectionStatus.Connecting)
                 throw new Exception("Unable to bind ConnectionNode to requested connection. Invalid Connection Status.");
@@ -125,7 +125,7 @@ namespace VoidHuntersRevived.Library.Entities.ConnectionNodes
         /// <summary>
         /// Attempt to disconnect from the current NodeConnection
         /// </summary>
-        internal void Disconnect()
+        internal virtual void Disconnect()
         {
             if (this.Connection == null)
                 throw new Exception("Unable to un-bind ConnectionNode from current connection. No current connection.");

@@ -57,5 +57,25 @@ namespace VoidHuntersRevived.Networking.Implementations
         /// </summary>
         /// <param name="om"></param>
         public abstract void Write(NetOutgoingMessage om);
+
+        /// <summary>
+        /// Update the current object from the data contained
+        /// within a given NetIncomingMessage
+        /// </summary>
+        /// <param name="im"></param>
+        public virtual void FullRead(NetIncomingMessage im)
+        {
+            this.Read(im);
+        }
+
+        /// <summary>
+        /// Write the current object data to a given
+        /// NetOutgoingMessage
+        /// </summary>
+        /// <param name="om"></param>
+        public virtual void FullWrite(NetOutgoingMessage om)
+        {
+            this.Write(om);
+        }
     }
 }

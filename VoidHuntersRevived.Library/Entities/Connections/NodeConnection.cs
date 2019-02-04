@@ -91,8 +91,24 @@ namespace VoidHuntersRevived.Library.Entities.Connections
             this.MaleConnectionNode.Disconnect();
             this.FemaleConnectionNode.Disconnect();
 
+            // Delete the current connection entity from the scene
+            this.Delete();
+
             // Update the current connection status
             this.Status = ConnectionStatus.Disconnecting;
+        }
+
+        public override bool Delete()
+        {
+            if(base.Delete())
+            {
+                if (this.Status == ConnectionStatus.Connected)
+                    this.Disconnect();
+
+                return true;
+            }
+
+            return false;
         }
 
         #region INetworkEntity Implemntation

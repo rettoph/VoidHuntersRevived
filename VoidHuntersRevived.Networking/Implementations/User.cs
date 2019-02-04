@@ -42,6 +42,16 @@ namespace VoidHuntersRevived.Networking.Implementations
             om.Write(this.Id);
             om.Write(this.Name);
         }
+
+        public void FullRead(NetIncomingMessage im)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void FullWrite(NetOutgoingMessage om)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }

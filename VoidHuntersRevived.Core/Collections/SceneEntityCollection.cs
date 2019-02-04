@@ -21,11 +21,17 @@ namespace VoidHuntersRevived.Core.Collections
         private ILayer _defaultLayer;
         private ILogger _logger;
 
+        private Queue<IEntity> _deletedEntities;
+
+        public event EventHandler<IEntity> OnDeleted;
+
         public SceneEntityCollection(ILogger logger, IScene scene) : base(logger)
         {
             _scene = scene;
             _entityLoader = _scene.Game.Provider.GetLoader<EntityLoader>();
             _logger = logger;
+
+            _deletedEntities = new Queue<IEntity>();
         }
 
         public void SetDefaultLayer(ILayer layer)
@@ -54,12 +60,15 @@ namespace VoidHuntersRevived.Core.Collections
                 item.Scene = _scene;
 
                 item.OnAddedToLayer += this.HandleEntityAddedToLayer;
+                item.OnDeleted += this.HandleEntityDeleted;
 
                 return true;
             }
 
             return false;
         }
+
+
 
         protected override bool remove(IEntity item)
         {
@@ -69,6 +78,7 @@ namespace VoidHuntersRevived.Core.Collections
 
                 item.Layer = null;
                 item.OnAddedToLayer -= this.HandleEntityAddedToLayer;
+                item.OnDeleted -= this.HandleEntityDeleted;
 
 
                 item.Dispose();
@@ -79,12 +89,28 @@ namespace VoidHuntersRevived.Core.Collections
             return false;
         }
 
+        public override void Clean()
+        {
+            base.Clean();
+
+            // Remove any deleted entities
+            while(_deletedEntities.Count > 0)
+                this.Remove(_deletedEntities.Dequeue());
+        }
+
         #region Event Handlers 
         private void HandleEntityAddedToLayer(object sender, ILayerObject e)
         {
             // Add the entity to its new layer
             var entity = sender as IEntity;
             entity.Layer?.Entities.Add(entity);
+        }
+
+        private void HandleEntityDeleted(object sender, IEntity e)
+        {
+            _deletedEntities.Enqueue(e);
+
+            this.OnDeleted?.Invoke(this, e);
         }
         #endregion
     }

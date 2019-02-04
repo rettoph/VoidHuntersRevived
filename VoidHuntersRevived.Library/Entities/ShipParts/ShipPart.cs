@@ -154,30 +154,18 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// </summary>
         protected virtual void UpdateChainPlacement()
         {
+            // First, ensure the transformation data is up to date
+            this.UpdateTransformationData();
+
             // Delete the old fixture, if it existed
             this.Fixture?.Body.DestroyFixture(this.Fixture);
 
             // Create a new fixture on the root body
             this.Fixture = this.CreateFixture(this.Root.Body, this.OffsetTranslationMatrix);
 
-            
-            if (this.IsRoot)
-            { // Root only updates here:
-                // When a chain gets updates, the root must update its center of mass
-                this.Body.ResetMassData();
-            }
-            else
-            { // Children updates here:
-                // First, ensure the transformation data is up to date
-                this.UpdateTransformationData();
-
-                // Update the current root data
-                this.Root.UpdateChainPlacement();
-
-                // Update all the current ShipPart's children as well
-                foreach (FemaleConnectionNode femaleConnectionNode in this.FemaleConnectionNodes)
-                    femaleConnectionNode.Connection?.MaleConnectionNode.Owner.UpdateChainPlacement();
-            }
+            // Update all the current ShipPart's children as well
+            foreach (FemaleConnectionNode femaleConnectionNode in this.FemaleConnectionNodes)
+                femaleConnectionNode.Connection?.MaleConnectionNode.Owner.UpdateChainPlacement();
         }
         #endregion
 

@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
         #endregion
 
         #region Public Attributes
-        public IUser User { get; set; }
+        public IUser User { get; private set; }
         #endregion
 
         #region Constructors
@@ -73,6 +73,22 @@ namespace VoidHuntersRevived.Library.Entities.Players
                 om.Write(true);
                 _driver.Write(om);
             }
+        }
+
+        public override void FullRead(NetIncomingMessage im)
+        {
+            base.FullRead(im);
+
+            // Update the UserPlayer's User value
+            this.User = this.GameScene.Group.Users.GetById(im.ReadInt64());
+        }
+
+        public override void FullWrite(NetOutgoingMessage om)
+        {
+            base.FullWrite(om);
+
+            // Write the players id
+            om.Write(this.User.Id);
         }
         #endregion
     }

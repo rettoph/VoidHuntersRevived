@@ -1,4 +1,5 @@
-﻿using Lidgren.Network;
+﻿using System;
+using Lidgren.Network;
 using VoidHuntersRevived.Networking.Interfaces;
 
 namespace VoidHuntersRevived.Server.Helpers
@@ -13,7 +14,7 @@ namespace VoidHuntersRevived.Server.Helpers
         {
             var om = group.CreateMessage("create");
             om.Write(networkEntity.Info.Handle);
-            networkEntity.Write(om);
+            networkEntity.FullWrite(om);
 
             return om;
         }
@@ -22,6 +23,14 @@ namespace VoidHuntersRevived.Server.Helpers
         {
             var om = group.CreateMessage("update");
             networkEntity.Write(om);
+
+            return om;
+        }
+
+        public static NetOutgoingMessage BuildDestroyNetworkEntityMessage(INetworkEntity networkEntity, IGroup group)
+        {
+            var om = group.CreateMessage("destroy");
+            om.Write(networkEntity.Id);
 
             return om;
         }

@@ -52,8 +52,6 @@ namespace VoidHuntersRevived.Server.Entities.Drivers
 
         public override void Write(NetOutgoingMessage om)
         {
-            // Write the current UserPlayer's IUser
-            om.Write(this.UserPlayer.User.Id);
         }
         #endregion
     }
