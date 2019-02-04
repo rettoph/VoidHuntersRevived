@@ -16,7 +16,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             this.UpdateChainPlacement();
 
-
             this.Body.CollidesWith = FarseerPhysics.Dynamics.Category.Cat1;
             this.Body.CollisionCategories = FarseerPhysics.Dynamics.Category.Cat10;
 

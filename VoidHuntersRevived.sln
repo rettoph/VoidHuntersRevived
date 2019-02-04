@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FarseerPhysics.MonoGame.Deb
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FarseerPhysics.MonoGame", "Submodules\FarseerPhysics\FarseerPhysics.MonoGame\FarseerPhysics.MonoGame.csproj", "{453DC9FE-05B6-48F0-9761-D0D1EE49F1FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Library", "VoidHuntersRevived.Library\VoidHuntersRevived.Library.csproj", "{D5A501B9-783B-4200-961A-CF73EF668EC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Library", "VoidHuntersRevived.Library\VoidHuntersRevived.Library.csproj", "{D5A501B9-783B-4200-961A-CF73EF668EC2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VoidHuntersRevived.Libraries", "VoidHuntersRevived.Libraries", "{76A70704-10B9-46A0-98B9-F1914B3EDFC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,6 +92,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{900481E1-4EEE-48C7-BEBB-2AFE3D2D4624} = {76A70704-10B9-46A0-98B9-F1914B3EDFC2}
+		{758FAD0B-76BD-4E43-8BB7-F8F189505945} = {76A70704-10B9-46A0-98B9-F1914B3EDFC2}
 		{DFAEC9DF-994B-45BF-8242-E63D3481A52E} = {734E0AAC-E1F9-421A-AC04-038873C9C2BB}
 		{2E9C877F-4726-404E-96D6-763AF74CC5A7} = {DFAEC9DF-994B-45BF-8242-E63D3481A52E}
 		{453DC9FE-05B6-48F0-9761-D0D1EE49F1FB} = {DFAEC9DF-994B-45BF-8242-E63D3481A52E}

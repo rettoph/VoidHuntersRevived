@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
+using VoidHuntersRevived.Library.Entities.Connections;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Library.Entities.ConnectionNodes
