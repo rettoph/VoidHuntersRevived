@@ -76,6 +76,9 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
 
             _parent.Body.Rotation        = Math.Abs(_parent.Body.Rotation - _rotation) > _rotationSnapThreshold ? _rotation : MathHelper.Lerp(_parent.Body.Rotation, _rotation, _currentLerpStrength);
             _parent.Body.AngularVelocity = Math.Abs(_parent.Body.AngularVelocity - _angularVelocity) > _rotationSnapThreshold ? _angularVelocity :  MathHelper.Lerp(_parent.Body.AngularVelocity, _angularVelocity, _currentLerpStrength);
+
+            if (!_parent.Body.Awake)
+                _parent.SetEnabled(false);
         }
         #endregion
 
@@ -88,6 +91,9 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
 
             _rotation        = im.ReadSingle();
             _angularVelocity = im.ReadSingle();
+
+            _parent.SetEnabled(true);
+            _parent.Body.Awake = true;
         }
 
         public override void Write(NetOutgoingMessage om)

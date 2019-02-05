@@ -23,6 +23,10 @@ namespace VoidHuntersRevived.Library.Entities.ConnectionNodes
 
         internal override void Disconnect()
         {
+            // Ensure both the root and current connection node owner are up to date
+            this.Owner.Root.UpdateTransformationData();
+            this.Owner.UpdateTransformationData();
+
             this.Owner.Body.Position = Vector2.Transform(
                 this.Owner.Root.Body.Position,
                 this.Owner.OffsetTranslationMatrix * this.Owner.Root.RotationMatrix);

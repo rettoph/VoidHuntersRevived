@@ -35,6 +35,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
         {
             this.Bridge = bridge;
             this.Bridge.Body.SleepingAllowed = false;
+            this.Bridge.SetEnabled(true);
         }
 
         public Player(long id, EntityInfo info, IGame game) : base(id, info, game)
@@ -102,6 +103,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
             // Read the current Player's bridge
             this.Bridge = this.GameScene.NetworkEntities.GetById(im.ReadInt64()) as ShipPart;
             this.Bridge.Body.SleepingAllowed = false;
+            this.Bridge.SetEnabled(true);
 
 
             for (Int32 i = 0; i < this.Movement.Count; i++) // Read the current movement settings

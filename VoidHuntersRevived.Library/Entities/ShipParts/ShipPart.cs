@@ -138,6 +138,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             // Add ShipPart event handlers
             this.MaleConnectionNode.OnConnected += this.HandleMaleConnectionNodeConnected;
             this.MaleConnectionNode.OnDisconnected += this.HandleMaleConnectionNodeDisonnected;
+
+            // Set default enabled status
+            this.SetEnabled(false);
         }
         #endregion
 

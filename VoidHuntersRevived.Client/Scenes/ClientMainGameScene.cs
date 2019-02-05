@@ -22,6 +22,7 @@ namespace VoidHuntersRevived.Client.Scenes
 
         #region Public Attributes
         public Camera Camera { get; protected set; }
+        public Cursor Cursor { get; protected set; }
         #endregion
 
         #region Constructors
@@ -68,6 +69,8 @@ namespace VoidHuntersRevived.Client.Scenes
 
             // Create a new camera for the current client
             this.Camera = this.Entities.Create<Camera>("entity:camera");
+            // Create a new cursor for the current client
+            this.Cursor = this.Entities.Create<Cursor>("entity:cursor");
         }
         #endregion
 
