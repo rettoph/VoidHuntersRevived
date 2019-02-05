@@ -15,6 +15,7 @@ using VoidHuntersRevived.Library.Entities.MetaData;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Networking.Implementations;
 using VoidHuntersRevived.Core.Extensions;
+using VoidHuntersRevived.Library.Entities.Interfaces;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -23,7 +24,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
     /// By default, ship parts are all grabbable by a tractor beam, have a single
     /// male connection node, and can have multiple female connection nodes 
     /// </summary>
-    public partial class ShipPart : NetworkEntity
+    public partial class ShipPart : NetworkEntity, IFarseerEntity
     {
         #region Private Fields
         private String _driverHandle;

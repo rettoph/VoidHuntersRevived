@@ -10,6 +10,11 @@ using VoidHuntersRevived.Client.Scenes;
 using VoidHuntersRevived.Core.Implementations;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
+using System.Linq;
+using FarseerPhysics.Collision;
+using FarseerPhysics.Dynamics.Contacts;
+using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Entities.Interfaces;
 
 namespace VoidHuntersRevived.Client.Entities
 {
@@ -29,11 +34,18 @@ namespace VoidHuntersRevived.Client.Entities
         private Body _body;
         private Camera _camera;
 
-        private Vector2 _origin;
+        private World _world;
+
+        private List<IFarseerEntity> _contactList;
+
+        private IFarseerEntity _target;
         #endregion
+
+        
 
         public Cursor(EntityInfo info, IGame game) : base(info, game)
         {
+            _contactList = new List<IFarseerEntity>();
         }
 
         #region Initialization Methods
@@ -45,29 +57,61 @@ namespace VoidHuntersRevived.Client.Entities
 
             // Save the scenes camera
             _camera = scene.Camera;
+            // Save the scenes world
+            _world = scene.World;
 
             // Create a new body
             _body = BodyFactory.CreateCircle(
-                scene.World,
+                _world,
                 1f,
                 0f,
                 Vector2.Zero,
-                BodyType.Static);
+                BodyType.Dynamic);
 
             // Mark the cursor as a sensor
             _body.IsSensor = true;
+            _body.SleepingAllowed = false;
 
             // Ensure the cursor is enabled
             this.SetEnabled(true);
+
+            // Add event listeners
+            _body.OnCollision += this.HandleCollision;
+            _body.OnSeparation += this.HandleSeperation;
         }
         #endregion
+
+        public IFarseerEntity GetTarget()
+        {
+            return _target;
+        }
 
         #region Frame Methods
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
+            // Update the Cursor's position
             _body.Position = Vector2.Transform(ConvertUnits.ToSimUnits(Mouse.GetState().Position.ToVector2()), _camera.InverseViewMatrix);
+
+            // Select the current Cursor's target
+            _target = _contactList.OrderBy(fe => Vector2.Distance(_body.Position, fe.Body.Position)).FirstOrDefault();
+        }
+        #endregion
+
+        #region Event Handlers
+        private bool HandleCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
+        {
+            if(fixtureB.UserData is IFarseerEntity)
+                _contactList.Add(fixtureB.UserData as IFarseerEntity);
+
+            return true;
+        }
+
+        private void HandleSeperation(Fixture fixtureA, Fixture fixtureB)
+        {
+            if (fixtureB.UserData is IFarseerEntity)
+                _contactList.Remove(fixtureB.UserData as IFarseerEntity);
         }
         #endregion
     }
