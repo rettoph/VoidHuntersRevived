@@ -39,12 +39,17 @@ namespace VoidHuntersRevived.Client.Entities
         private List<IFarseerEntity> _contactList;
 
         private IFarseerEntity _target;
+
+        private Microsoft.Xna.Framework.Game _monoGame;
         #endregion
 
-        
+        #region Public Attributes
+        public Vector2 Position { get { return _body.Position; } }
+        #endregion
 
-        public Cursor(EntityInfo info, IGame game) : base(info, game)
+        public Cursor(Microsoft.Xna.Framework.Game monoGame, EntityInfo info, IGame game) : base(info, game)
         {
+            _monoGame = monoGame;
             _contactList = new List<IFarseerEntity>();
         }
 
@@ -91,11 +96,14 @@ namespace VoidHuntersRevived.Client.Entities
         {
             base.Update(gameTime);
 
-            // Update the Cursor's position
-            _body.Position = Vector2.Transform(ConvertUnits.ToSimUnits(Mouse.GetState().Position.ToVector2()), _camera.InverseViewMatrix);
+            if (_monoGame.IsActive)
+            { // Disable cursor updates if the current game is not the active window
+                // Update the Cursor's position
+                _body.Position = Vector2.Transform(ConvertUnits.ToSimUnits(Mouse.GetState().Position.ToVector2()), _camera.InverseViewMatrix);
 
-            // Select the current Cursor's target
-            _target = _contactList.OrderBy(fe => Vector2.Distance(_body.Position, fe.Body.Position)).FirstOrDefault();
+                // Select the current Cursor's target
+                _target = _contactList.OrderBy(fe => Vector2.Distance(_body.Position, fe.Body.Position)).FirstOrDefault();
+            }
         }
         #endregion
 

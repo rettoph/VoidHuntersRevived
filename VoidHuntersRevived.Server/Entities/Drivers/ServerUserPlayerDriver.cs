@@ -1,4 +1,5 @@
 ﻿using Lidgren.Network;
+using Lidgren.Network.Xna;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -43,6 +44,9 @@ namespace VoidHuntersRevived.Server.Entities.Drivers
                 if (im.ReadBoolean()) // Check if movement data was recieved
                     for (Int32 i = 0; i < this.UserPlayer.Movement.Count; i++) // Read the current movement settings
                         this.UserPlayer.Movement[(MovementType)im.ReadByte()] = im.ReadBoolean();
+
+                // Read the requested tractor beam position
+                this.UserPlayer.TractorBeam.Position = im.ReadVector2();
             }
             else
             { // Someone tried spoofing another players ship...
@@ -52,6 +56,7 @@ namespace VoidHuntersRevived.Server.Entities.Drivers
 
         public override void Write(NetOutgoingMessage om)
         {
+            om.Write(this.UserPlayer.TractorBeam.Position);
         }
         #endregion
     }

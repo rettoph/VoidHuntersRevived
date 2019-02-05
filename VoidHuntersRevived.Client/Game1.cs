@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,10 @@ namespace VoidHuntersRevived.Client
         {
             base.Initialize();
 
-            _game = new ClientVoidHuntersRevivedGame(new VoidHuntersRevivedLogger(), _graphics, this.Content, this.Window);
+            var collection = new ServiceCollection();
+            collection.AddSingleton<Game>(this);
+
+            _game = new ClientVoidHuntersRevivedGame(new VoidHuntersRevivedLogger(), _graphics, this.Content, this.Window, collection);
         }
 
         protected override void Draw(GameTime gameTime)

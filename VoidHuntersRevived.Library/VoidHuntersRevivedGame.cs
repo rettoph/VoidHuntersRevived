@@ -13,6 +13,7 @@ using VoidHuntersRevived.Library.Entities.MetaData;
 using VoidHuntersRevived.Library.Entities.ConnectionNodes;
 using VoidHuntersRevived.Library.Entities.Connections;
 using VoidHuntersRevived.Library.Entities.Players;
+using VoidHuntersRevived.Library.Entities;
 
 namespace VoidHuntersRevived.Library
 {
@@ -51,6 +52,7 @@ namespace VoidHuntersRevived.Library
             entityLoader.Register<NodeConnection>("entity:connection:connection_node");
             entityLoader.Register<MaleConnectionNode>("entity:connection_node:male");
             entityLoader.Register<FemaleConnectionNode>("entity:connection_node:female");
+            entityLoader.Register<TractorBeam>("entity:tractor_beam");
             entityLoader.Register<UserPlayer>("entity:player:user");
 
             entityLoader.Register<ShipPart>(

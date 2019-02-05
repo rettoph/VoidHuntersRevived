@@ -13,7 +13,12 @@ namespace VoidHuntersRevived.Networking
     {
         public IPeer Peer { get; protected set; }
 
-        public NetworkGame(ILogger logger, GraphicsDeviceManager graphics = null, ContentManager content = null, GameWindow window = null, IServiceCollection services = null) : base(logger, graphics, content, window, services)
+        public NetworkGame(
+            ILogger logger,
+            GraphicsDeviceManager graphics = null,
+            ContentManager content = null,
+            GameWindow window = null,
+            IServiceCollection services = null) : base(logger, graphics, content, window, services)
         {
         }
 

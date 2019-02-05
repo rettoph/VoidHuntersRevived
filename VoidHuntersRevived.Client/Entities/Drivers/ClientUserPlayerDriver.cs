@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Lidgren.Network;
+using Lidgren.Network.Xna;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using VoidHuntersRevived.Client.Scenes;
@@ -70,6 +71,10 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
 
                 // Update the camera position
                 _scene.Camera.Position = this.UserPlayer.Bridge.Body.Position + Vector2.Transform(this.UserPlayer.Bridge.Body.LocalCenter, this.UserPlayer.Bridge.RotationMatrix);
+
+                // Update the tractor beam position
+                this.UserPlayer.TractorBeam.Position = _scene.Cursor.Position;
+
                 // The current UserPlayer should be synced every frame..
                 if (!this.UserPlayer.Dirty)
                     this.UserPlayer.Dirty = true;
@@ -82,6 +87,8 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
         #region Networking Methods (Driver Implementation)
         public override void Read(NetIncomingMessage im)
         {
+            // Read the incoming TractorBeam position
+            this.UserPlayer.TractorBeam.Position = im.ReadVector2();
         }
 
         public override void Write(NetOutgoingMessage om)
@@ -97,6 +104,9 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
                     om.Write((Byte)kvp.Key);
                     om.Write(kvp.Value);
                 }
+
+                // Write the current TractorBeam position
+                om.Write(this.UserPlayer.TractorBeam.Position);
             }
         }
         #endregion

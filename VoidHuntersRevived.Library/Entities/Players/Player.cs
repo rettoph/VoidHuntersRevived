@@ -26,6 +26,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
         #endregion
 
         #region Public Attributes
+        public TractorBeam TractorBeam { get; private set; }
         public ShipPart Bridge { get; private set; }
         public Dictionary<MovementType, Boolean> Movement { get; private set; }
         #endregion
@@ -59,6 +60,9 @@ namespace VoidHuntersRevived.Library.Entities.Players
             Movement.Add(MovementType.TurnLeft, false);
             Movement.Add(MovementType.StrafeRight, false);
             Movement.Add(MovementType.StrafeLeft, false);
+
+            // Create a new TractorBeam instance for the current player
+            this.TractorBeam = this.Scene.Entities.Create<TractorBeam>("entity:tractor_beam", null, this);
 
             // Ensure the player is always enabled
             this.SetEnabled(true);
