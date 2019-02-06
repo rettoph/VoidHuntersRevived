@@ -126,19 +126,19 @@ namespace VoidHuntersRevived.Library.Entities
                 ShipPart target = hovered.Root.IsBridge ? hovered : hovered.Root;
 
                 if (target.Root.IsBridge && this.Player != target.Root.BridgeFor)
-                    throw new Exception("Requested TractorBeam target belongs to another player!");
+                    this.Game.Logger.LogError("Requested TractorBeam target belongs to another player!");
                 else if (this.Connection != null)
-                    throw new Exception("TractorBeam already contains another TractorBeamConnection!");
+                    this.Game.Logger.LogError("TractorBeam already contains another TractorBeamConnection!");
                 else if (target.Connection != null)
-                    throw new Exception("ShipPart target already contains another TractorBeamConnection!");
+                    this.Game.Logger.LogError("ShipPart target already contains another TractorBeamConnection!");
+                else
+                { // Now that we have been validated...
+                    // Destroy any pre-existing male connection on the target, if any
+                    target.MaleConnectionNode.Connection?.Disconnect();
 
-                // Now that we have been validated...
-
-                // Destroy any pre-existing male connection on the target, if any
-                target.MaleConnectionNode.Connection?.Disconnect();
-
-                // Create a new TractorBeamConnection...
-                this.Scene.Entities.Create<TractorBeamConnection>("entity:connection:tractor_beam", null, this, target);
+                    // Create a new TractorBeamConnection...
+                    this.Scene.Entities.Create<TractorBeamConnection>("entity:connection:tractor_beam", null, this, target);
+                }
             }
         }
 
