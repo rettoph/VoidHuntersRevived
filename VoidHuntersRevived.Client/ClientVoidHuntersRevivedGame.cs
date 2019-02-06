@@ -85,7 +85,7 @@ namespace VoidHuntersRevived.Client
             // Auto login to localhost
             var hail = _client.CreateMessage("network:user:connection-request");
             hail.Write("tony");
-            _client.Connect("localhost", 1337, hail);
+            _client.Connect("35.227.76.174", 1337, hail);
         }
         #endregion
     }

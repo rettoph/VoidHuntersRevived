@@ -51,7 +51,6 @@ namespace VoidHuntersRevived.Client.Scenes
             base.PreInitialize();
 
             // Add default client specific message type handlers
-            this.Group.MessageTypeHandlers.Add("update"     , this.HandleUpdateMessageType);
             this.Group.MessageTypeHandlers.Add("create"     , this.HandleCreateMessageType);
             this.Group.MessageTypeHandlers.Add("destroy"    , this.HandleDestroyMessageType);
             this.Group.MessageTypeHandlers.Add("setup:begin", this.HandleSetupBeginMessageType);
@@ -90,6 +89,7 @@ namespace VoidHuntersRevived.Client.Scenes
         {
             // No useful data is sent with the end message, it just acts as a marker
             // alerting the current client that setup is complete...
+            this.Group.MessageTypeHandlers.Add("update", this.HandleUpdateMessageType);
         }
 
         private void HandleCreateMessageType(NetIncomingMessage im)
