@@ -28,6 +28,14 @@ namespace VoidHuntersRevived.Library.Entities
     /// </summary>
     public class TractorBeam : Entity, IFarseerEntity
     {
+        #region Static Fields
+        /// <summary>
+        /// The distance the TractorBeam can be from an available FemaleConnectionNode
+        /// when deselecting an entity in order for a new NodeConnection to be created.
+        /// </summary>
+        public static Single AttachmentDistance = 1;
+        #endregion
+
         #region Private Fields
         private SpriteBatch _spriteBatch;
 

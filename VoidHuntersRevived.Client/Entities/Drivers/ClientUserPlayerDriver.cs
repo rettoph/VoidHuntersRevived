@@ -13,6 +13,9 @@ using VoidHuntersRevived.Library.Entities.Drivers;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
+using System.Linq;
+using VoidHuntersRevived.Library.Entities;
+using Microsoft.Extensions.Logging;
 
 namespace VoidHuntersRevived.Client.Entities.Drivers
 {
@@ -93,6 +96,20 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
 
                 if (!this.UserPlayer.Dirty) // Mark the local player as dirty
                     this.UserPlayer.Dirty = true;
+            }
+
+            // Render the TractorBeam ConnectionNode preview, if applicable
+            if(this.UserPlayer.TractorBeam.Connection != null)
+            {
+                // Select the closest female connection node in the current player
+                var nearestFemale = this.UserPlayer.Bridge.OpenFemaleConnectionNodes()
+                    .OrderBy(fn => Vector2.Distance(this.UserPlayer.TractorBeam.Body.Position, fn.WorldPoint))
+                    .FirstOrDefault();
+
+                if(nearestFemale != null && Vector2.Distance(this.UserPlayer.TractorBeam.Body.Position, nearestFemale.WorldPoint) <= TractorBeam.AttachmentDistance)
+                { // If the nearest female connection node is closer than the TractorBeam.AttachmentDistance, render a preview of where the connection will take palce
+                    this.UserPlayer.TractorBeam.Connection.ShipPart.Preview(nearestFemale);
+                }
             }
         }
         #endregion

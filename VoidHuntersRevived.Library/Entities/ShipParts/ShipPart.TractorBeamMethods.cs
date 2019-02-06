@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Library.Entities.ConnectionNodes;
 using VoidHuntersRevived.Library.Entities.Connections;
 using VoidHuntersRevived.Library.Enums;
 
@@ -62,6 +64,22 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             // Invoke the OnDisconnected event
             this.OnDisconnected?.Invoke(this, this);
+        }
+
+        /// <summary>
+        /// Place the current ShipPart directly onto a given FemaleConnectionNode.
+        /// Node, this will not create a new NodeConnection, rather it will simply place
+        /// the ShipPart where it would be if a new NodeConnection were created
+        /// </summary>
+        /// <param name="female"></param>
+        public void Preview(FemaleConnectionNode female)
+        {
+            this.Body.Position = female.WorldPoint +
+                        Vector2.Transform(this.MaleConnectionNode.LocalPoint, Matrix.CreateRotationZ(female.WorldRotation));
+
+            this.Body.Rotation = female.WorldRotation + this.MaleConnectionNode.LocalRotation;
+
+            this.UpdateTransformationData();
         }
     }
 }

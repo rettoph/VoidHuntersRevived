@@ -50,6 +50,8 @@ namespace VoidHuntersRevived.Library.Entities.Players
         {
             base.Initialize();
 
+            this.UpdateOrder = 100;
+
             // Store the players main game scene
             this.GameScene = this.Scene as MainGameScene;
 

@@ -174,9 +174,34 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             // Create a new fixture on the root body
             this.Fixture = this.CreateFixture(this.Root.Body, this.OffsetTranslationMatrix);
 
+            this.Body.CollidesWith = Category.Cat1;
+            this.Body.CollisionCategories = Category.Cat10;
+            this.Body.Mass = 0;
+
             // Update all the current ShipPart's children as well
             foreach (FemaleConnectionNode femaleConnectionNode in this.FemaleConnectionNodes)
                 femaleConnectionNode.Connection?.MaleConnectionNode.Owner.UpdateChainPlacement();
+        }
+
+        /// <summary>
+        /// Returns a list of open FemaleConnectionNodes
+        /// Used when selecting which FemaleConnectionNode
+        /// to use when creating a new NodeConnection
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public List<FemaleConnectionNode> OpenFemaleConnectionNodes(List<FemaleConnectionNode> list = null)
+        {
+            if (list == null)
+                list = new List<FemaleConnectionNode>();
+
+            foreach (FemaleConnectionNode femaleNode in this.FemaleConnectionNodes)
+                if (femaleNode.Connection == null)
+                    list.Add(femaleNode);
+                else
+                    femaleNode.Connection.MaleConnectionNode.Owner.OpenFemaleConnectionNodes(list);
+
+            return list;
         }
         #endregion
 

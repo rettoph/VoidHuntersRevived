@@ -48,6 +48,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             body.AngularDamping = 1f;
             body.LinearDamping = 1f;
 
+            body.CollidesWith = Category.Cat1;
+            body.CollisionCategories = Category.Cat10;
+
             return body;
         }
     }

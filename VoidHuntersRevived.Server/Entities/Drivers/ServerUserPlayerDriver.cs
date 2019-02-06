@@ -11,6 +11,9 @@ using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Scenes;
+using System.Linq;
+using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Entities.Connections;
 
 namespace VoidHuntersRevived.Server.Entities.Drivers
 {
@@ -61,13 +64,28 @@ namespace VoidHuntersRevived.Server.Entities.Drivers
                 for (Int32 i = 0; i < this.UserPlayer.Movement.Count; i++) 
                     this.UserPlayer.Movement[(MovementType)im.ReadByte()] = im.ReadBoolean();
 
+                // Read the incoming TractorBeamposition
                 this.UserPlayer.TractorBeam.Body.Position = im.ReadVector2();
 
                 var tractorBeamHeld = im.ReadBoolean();
                 if (tractorBeamHeld && this.UserPlayer.TractorBeam.Connection == null)
                     this.UserPlayer.TractorBeam.Select(); // Attempt to select the hovered ShipPart
                 else if (!tractorBeamHeld && this.UserPlayer.TractorBeam.Connection != null)
-                    this.UserPlayer.TractorBeam.Connection.Disconnect(); // Attempt to disconnect the current tractor beam connection
+                {
+                    // Select the closest female connection node in the current player
+                    var nearestFemale = this.UserPlayer.Bridge.OpenFemaleConnectionNodes()
+                        .OrderBy(fn => Vector2.Distance(this.UserPlayer.TractorBeam.Body.Position, fn.WorldPoint))
+                        .FirstOrDefault();
+
+                    if (nearestFemale != null && Vector2.Distance(this.UserPlayer.TractorBeam.Body.Position, nearestFemale.WorldPoint) <= TractorBeam.AttachmentDistance)
+                    { // If the nearest female connection node is closer than the TractorBeam.AttachmentDistance, create a new connection
+                        this.Scene.Entities.Create<NodeConnection>("entity:connection:connection_node", null, this.UserPlayer.TractorBeam.Connection.ShipPart.MaleConnectionNode, nearestFemale);
+                    }
+
+                    // Attempt to disconnect the current tractor beam connection
+                    this.UserPlayer.TractorBeam.Connection.Disconnect(); 
+                }
+                    
             }
             else
             { // Someone tried spoofing another players ship...
