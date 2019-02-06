@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.ConnectionNodes;
@@ -29,6 +30,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             this.Body.CollidesWith = FarseerPhysics.Dynamics.Category.Cat1;
             this.Body.CollisionCategories = FarseerPhysics.Dynamics.Category.Cat10;
+            this.Body.Mass = 0;
         }
     }
 }

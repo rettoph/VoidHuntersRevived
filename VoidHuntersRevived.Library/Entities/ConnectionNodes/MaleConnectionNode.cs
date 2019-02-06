@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -27,8 +28,8 @@ namespace VoidHuntersRevived.Library.Entities.ConnectionNodes
             this.Owner.Root.UpdateTransformationData();
             this.Owner.UpdateTransformationData();
 
-            this.Owner.Body.Position = Vector2.Transform(
-                this.Owner.Root.Body.Position,
+            this.Owner.Body.Position = this.Owner.Root.Body.Position + Vector2.Transform(
+                this.Owner.Body.LocalCenter,
                 this.Owner.OffsetTranslationMatrix * this.Owner.Root.RotationMatrix);
 
             this.Owner.Body.Rotation = this.Owner.Root.Body.Rotation + this.Owner.OffsetRotation;

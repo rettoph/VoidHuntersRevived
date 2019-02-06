@@ -153,7 +153,7 @@ namespace VoidHuntersRevived.Server.Scenes
             this.Entities.Create<NodeConnection>("entity:connection:connection_node", null, square5.MaleConnectionNode, square2.FemaleConnectionNodes[0]);
 
             // Auto disconnect this particular node
-            square2.MaleConnectionNode.Connection.Disconnect();
+            //square2.MaleConnectionNode.Connection.Disconnect();
 
             // Send a final setup:end message, alerting the client that they have recieved all setup info
             om = this.Group.CreateMessage("setup:end");

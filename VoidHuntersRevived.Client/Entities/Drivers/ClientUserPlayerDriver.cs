@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using FarseerPhysics;
 using Lidgren.Network;
 using Lidgren.Network.Xna;
 using Microsoft.Xna.Framework;
@@ -10,6 +11,7 @@ using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities.Drivers;
 using VoidHuntersRevived.Library.Entities.Players;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
 
 namespace VoidHuntersRevived.Client.Entities.Drivers
@@ -19,6 +21,12 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
         #region Private Fields
         private Dictionary<MovementType, Boolean> _requestedMovement;
         private ClientMainGameScene _scene;
+        private Microsoft.Xna.Framework.Game _monoGame;
+
+        private Boolean _tractorBeamHeld;
+
+        private Single _cameraLerpStrength = 0.01f;
+        private Vector2 _cameraOffset;
         #endregion
 
         #region Protected Fields
@@ -26,9 +34,12 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
         #endregion
 
         #region Constructors
-        public ClientUserPlayerDriver(UserPlayer userPlayer, EntityInfo info, IGame game) : base(info, game)
+        public ClientUserPlayerDriver(Microsoft.Xna.Framework.Game monoGame, UserPlayer userPlayer, EntityInfo info, IGame game) : base(info, game)
         {
             this.UserPlayer = userPlayer;
+            _monoGame = monoGame;
+
+            _cameraOffset = Vector2.Zero;
         }
         #endregion
 
@@ -70,44 +81,42 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
                 _requestedMovement[MovementType.StrafeLeft]  = keyboard.IsKeyDown(Keys.Q);
 
                 // Update the camera position
-                _scene.Camera.Position = this.UserPlayer.Bridge.Body.Position + Vector2.Transform(this.UserPlayer.Bridge.Body.LocalCenter, this.UserPlayer.Bridge.RotationMatrix);
+                _cameraOffset = Vector2.Lerp(_cameraOffset, this.UserPlayer.Bridge.Body.LocalCenter, _cameraLerpStrength * (float)gameTime.ElapsedGameTime.TotalMilliseconds);
+                _scene.Camera.Position = this.UserPlayer.Bridge.Body.Position + Vector2.Transform(_cameraOffset, this.UserPlayer.Bridge.RotationMatrix);
 
-                // Update the tractor beam position
-                this.UserPlayer.TractorBeam.Position = _scene.Cursor.Position;
+                // Update the local clients TractorBeam position to match the mouse
+                if (_monoGame.IsActive)
+                {
+                    this.UserPlayer.TractorBeam.Body.Position = Vector2.Transform(ConvertUnits.ToSimUnits(Mouse.GetState().Position.ToVector2()), _scene.Camera.InverseViewMatrix);
+                    _tractorBeamHeld = Mouse.GetState().RightButton == ButtonState.Pressed;
+                }
 
-                // The current UserPlayer should be synced every frame..
-                if (!this.UserPlayer.Dirty)
+                if (!this.UserPlayer.Dirty) // Mark the local player as dirty
                     this.UserPlayer.Dirty = true;
             }
         }
         #endregion
 
-
-
         #region Networking Methods (Driver Implementation)
         public override void Read(NetIncomingMessage im)
         {
             // Read the incoming TractorBeam position
-            this.UserPlayer.TractorBeam.Position = im.ReadVector2();
+            this.UserPlayer.TractorBeam.Body.Position = im.ReadVector2();
         }
 
         public override void Write(NetOutgoingMessage om)
         {
-            if (_requestedMovement == null) // No requested movement info to send, so no data to send
-                om.Write(false);
-            else
-            { // Send the requested movement confirmation byte, then send the movement data
-                om.Write(true);
-                // Write the current requested movement settings
-                foreach (KeyValuePair<MovementType, Boolean> kvp in _requestedMovement)
-                {
-                    om.Write((Byte)kvp.Key);
-                    om.Write(kvp.Value);
-                }
-
-                // Write the current TractorBeam position
-                om.Write(this.UserPlayer.TractorBeam.Position);
+            // Write the current requested movement settings
+            foreach (KeyValuePair<MovementType, Boolean> kvp in _requestedMovement)
+            {
+                om.Write((Byte)kvp.Key);
+                om.Write(kvp.Value);
             }
+
+            // Write the new TractorBeam position
+            om.Write(this.UserPlayer.TractorBeam.Body.Position);
+            // Write the TractorBeam held state
+            om.Write(_tractorBeamHeld);
         }
         #endregion
     }

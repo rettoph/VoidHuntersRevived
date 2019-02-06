@@ -8,12 +8,18 @@ using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities.Drivers;
 using VoidHuntersRevived.Library.Entities.Players;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Server.Entities.Drivers
 {
     class ServerUserPlayerDriver : Driver
     {
+        #region Private Fields
+        private MainGameScene _scene;
+        #endregion
+
         #region Protected Fields
         protected UserPlayer UserPlayer;
         #endregion
@@ -22,6 +28,15 @@ namespace VoidHuntersRevived.Server.Entities.Drivers
         public ServerUserPlayerDriver(UserPlayer userPlayer, EntityInfo info, IGame game) : base(info, game)
         {
             this.UserPlayer = userPlayer;
+        }
+        #endregion
+
+        #region Initialization Methods
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            _scene = this.Scene as MainGameScene;
         }
         #endregion
 
@@ -41,12 +56,18 @@ namespace VoidHuntersRevived.Server.Entities.Drivers
         {
             if (im.SenderConnection.RemoteUniqueIdentifier == this.UserPlayer.User.Id)
             { // Only read the data if the sender connection id matches the user id
-                if (im.ReadBoolean()) // Check if movement data was recieved
-                    for (Int32 i = 0; i < this.UserPlayer.Movement.Count; i++) // Read the current movement settings
-                        this.UserPlayer.Movement[(MovementType)im.ReadByte()] = im.ReadBoolean();
 
-                // Read the requested tractor beam position
-                this.UserPlayer.TractorBeam.Position = im.ReadVector2();
+                // Read the current movement settings
+                for (Int32 i = 0; i < this.UserPlayer.Movement.Count; i++) 
+                    this.UserPlayer.Movement[(MovementType)im.ReadByte()] = im.ReadBoolean();
+
+                this.UserPlayer.TractorBeam.Body.Position = im.ReadVector2();
+
+                var tractorBeamHeld = im.ReadBoolean();
+                if (tractorBeamHeld && this.UserPlayer.TractorBeam.Connection == null)
+                    this.UserPlayer.TractorBeam.Select(); // Attempt to select the hovered ShipPart
+                else if (!tractorBeamHeld && this.UserPlayer.TractorBeam.Connection != null)
+                    this.UserPlayer.TractorBeam.Connection.Disconnect(); // Attempt to disconnect the current tractor beam connection
             }
             else
             { // Someone tried spoofing another players ship...
@@ -56,7 +77,7 @@ namespace VoidHuntersRevived.Server.Entities.Drivers
 
         public override void Write(NetOutgoingMessage om)
         {
-            om.Write(this.UserPlayer.TractorBeam.Position);
+            om.Write(this.UserPlayer.TractorBeam.Body.Position);
         }
         #endregion
     }

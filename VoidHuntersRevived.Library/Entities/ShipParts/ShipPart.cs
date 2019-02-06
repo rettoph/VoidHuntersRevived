@@ -16,6 +16,7 @@ using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Networking.Implementations;
 using VoidHuntersRevived.Core.Extensions;
 using VoidHuntersRevived.Library.Entities.Interfaces;
+using VoidHuntersRevived.Library.Entities.Players;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -47,6 +48,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public ShipPartData Data { get; private set; }
 
         /// <summary>
+        /// If the current ShipPart is a Player's bridge, this will link back to the bridge
+        /// </summary>
+        public Player BridgeFor { get; internal set; }
+
+        /// <summary>
         /// The ShipPart's rootmost ShipPart. If there is no connetion, this will return the current ship part.
         /// </summary>
         public ShipPart Root { get { return this.MaleConnectionNode.Connection == null ? this : this.MaleConnectionNode.Connection.FemaleConnectionNode.Owner.Root; } }
@@ -56,6 +62,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// </summary>
         public ShipPart Parent { get { return this.MaleConnectionNode.Connection == null ? null : this.MaleConnectionNode.Connection.FemaleConnectionNode.Owner; } }
 
+        public Boolean IsBridge { get { return this.BridgeFor != null; } }
         public Boolean IsRoot { get { return this.Root == this; } }
         public Boolean HasParent { get { return this.Parent != null; } }
 

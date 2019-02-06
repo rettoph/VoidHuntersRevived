@@ -65,7 +65,6 @@ namespace VoidHuntersRevived.Client
 
             // Register client specific entities
             var entityLoader = this.Provider.GetLoader<EntityLoader>();
-            entityLoader.Register<Cursor>("entity:cursor");
             entityLoader.Register<Camera>("entity:camera");
             entityLoader.Register<ClientShipPartDriver>("entity:driver:ship_part");
             entityLoader.Register<ClientUserPlayerDriver>("entity:driver:user_player");
