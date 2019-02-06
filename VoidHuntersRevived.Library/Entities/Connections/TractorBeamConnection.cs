@@ -4,6 +4,7 @@ using System.Text;
 using FarseerPhysics.Dynamics.Joints;
 using FarseerPhysics.Factories;
 using Lidgren.Network;
+using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities.Players;
@@ -89,8 +90,7 @@ namespace VoidHuntersRevived.Library.Entities.Connections
                 this.TractorBeam.Body,
                 this.ShipPart.Body,
                 this.TractorBeam.Body.LocalCenter,
-                this.ShipPart.Body.LocalCenter);
-
+                this.ShipPart.MaleConnectionNode.LocalPoint - Vector2.Transform(new Vector2(0.5f, 0f), Matrix.CreateRotationZ(this.ShipPart.MaleConnectionNode.LocalRotation)));
             // Update the current connection status
             this.Status = ConnectionStatus.Connected;
         }

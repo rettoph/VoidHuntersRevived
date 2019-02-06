@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
 
         private Boolean _tractorBeamHeld;
 
-        private Single _cameraLerpStrength = 0.01f;
+        private Single _cameraLerpStrength = 0.00075f;
         private Vector2 _cameraOffset;
         #endregion
 
