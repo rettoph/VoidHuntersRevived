@@ -8,6 +8,7 @@ using VoidHuntersRevived.Core.Interfaces;
 using VoidHuntersRevived.Core.Structs;
 using VoidHuntersRevived.Library.Entities.Connections;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Extensions;
 
 namespace VoidHuntersRevived.Library.Entities.ConnectionNodes
 {
@@ -15,10 +16,10 @@ namespace VoidHuntersRevived.Library.Entities.ConnectionNodes
     {
         public MaleConnectionNode(
             ShipPart owner,
-            Vector3 connectionData,
+            Vector2 connectionData,
             EntityInfo info,
             IGame game,
-            SpriteBatch spriteBatch = null) : base("texture:connection_node:male", owner, connectionData, info, game, spriteBatch)
+            SpriteBatch spriteBatch = null) : base("texture:connection_node:male", owner, connectionData.ToVector3((float)Math.PI), info, game, spriteBatch)
         {
         }
 

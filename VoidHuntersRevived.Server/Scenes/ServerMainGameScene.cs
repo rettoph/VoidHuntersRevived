@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Server.Scenes
             base.Initialize();
 
             var rand = new Random();
-            for (Int32 i = 0; i < 25; i++)
+            for (Int32 i = 0; i < 10; i++)
             {
                 var e = this.Entities.Create<ShipPart>("entity:hull:square");
                 e.Body.Position = new Vector2((float)(rand.NextDouble() * 100) - 50, (float)(rand.NextDouble() * 100) - 50);
@@ -71,7 +71,7 @@ namespace VoidHuntersRevived.Server.Scenes
                 e.Body.AngularVelocity = (float)(rand.NextDouble() * 6.28318530718) - 3.14159265359f;
             }
 
-            for (Int32 i = 0; i < 25; i++)
+            for (Int32 i = 0; i < 10; i++)
             {
                 var e = this.Entities.Create<ShipPart>("entity:hull:beam");
                 e.Body.Position = new Vector2((float)(rand.NextDouble() * 100) - 50, (float)(rand.NextDouble() * 100) - 50);
@@ -81,9 +81,19 @@ namespace VoidHuntersRevived.Server.Scenes
                 e.Body.AngularVelocity = (float)(rand.NextDouble() * 6.28318530718) - 3.14159265359f;
             }
 
-            for (Int32 i = 0; i < 25; i++)
+            for (Int32 i = 0; i < 10; i++)
             {
                 var e = this.Entities.Create<ShipPart>("entity:hull:triangle");
+                e.Body.Position = new Vector2((float)(rand.NextDouble() * 100) - 50, (float)(rand.NextDouble() * 100) - 50);
+                e.Body.LinearVelocity = new Vector2((float)(rand.NextDouble() * 20) - 10, (float)(rand.NextDouble() * 20) - 10);
+
+                e.Body.Rotation = (float)(rand.NextDouble() * 6.28318530718) - 3.14159265359f;
+                e.Body.AngularVelocity = (float)(rand.NextDouble() * 6.28318530718) - 3.14159265359f;
+            }
+
+            for (Int32 i = 0; i < 10; i++)
+            {
+                var e = this.Entities.Create<ShipPart>("entity:hull:hexagon");
                 e.Body.Position = new Vector2((float)(rand.NextDouble() * 100) - 50, (float)(rand.NextDouble() * 100) - 50);
                 e.Body.LinearVelocity = new Vector2((float)(rand.NextDouble() * 20) - 10, (float)(rand.NextDouble() * 20) - 10);
 
@@ -169,19 +179,19 @@ namespace VoidHuntersRevived.Server.Scenes
             bridge.Body.Rotation = 1f;
 
             var square1 = this.Entities.Create<ShipPart>("entity:hull:square", null);
-            this.Entities.Create<NodeConnection>("entity:connection:connection_node", null, square1.MaleConnectionNode, bridge.FemaleConnectionNodes[0]);
+            this.Entities.Create<NodeConnection>("entity:connection:connection_node", null, square1.MaleConnectionNode, bridge.FemaleConnectionNodes[1]);
 
-            var square2 = this.Entities.Create<ShipPart>("entity:hull:square", null);
-            this.Entities.Create<NodeConnection>("entity:connection:connection_node", null, square2.MaleConnectionNode, square1.FemaleConnectionNodes[0]);
-
-            var square3 = this.Entities.Create<ShipPart>("entity:hull:square", null);
-            this.Entities.Create<NodeConnection>("entity:connection:connection_node", null, square3.MaleConnectionNode, square1.FemaleConnectionNodes[1]);
-
-            var square4 = this.Entities.Create<ShipPart>("entity:hull:square", null);
-            this.Entities.Create<NodeConnection>("entity:connection:connection_node", null, square4.MaleConnectionNode, square1.FemaleConnectionNodes[2]);
-
-            var square5 = this.Entities.Create<ShipPart>("entity:hull:square", null);
-            this.Entities.Create<NodeConnection>("entity:connection:connection_node", null, square5.MaleConnectionNode, square2.FemaleConnectionNodes[0]);
+           // var square2 = this.Entities.Create<ShipPart>("entity:hull:square", null);
+           // this.Entities.Create<NodeConnection>("entity:connection:connection_node", null, square2.MaleConnectionNode, square1.FemaleConnectionNodes[0]);
+           //
+           // var square3 = this.Entities.Create<ShipPart>("entity:hull:square", null);
+           // this.Entities.Create<NodeConnection>("entity:connection:connection_node", null, square3.MaleConnectionNode, square1.FemaleConnectionNodes[1]);
+           //
+           // var square4 = this.Entities.Create<ShipPart>("entity:hull:square", null);
+           // this.Entities.Create<NodeConnection>("entity:connection:connection_node", null, square4.MaleConnectionNode, square1.FemaleConnectionNodes[2]);
+           //
+           // var square5 = this.Entities.Create<ShipPart>("entity:hull:square", null);
+           // this.Entities.Create<NodeConnection>("entity:connection:connection_node", null, square5.MaleConnectionNode, square2.FemaleConnectionNodes[0]);
 
             // Auto disconnect this particular node
             //square2.MaleConnectionNode.Connection.Disconnect();

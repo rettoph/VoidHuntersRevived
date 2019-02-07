@@ -74,10 +74,12 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// <param name="female"></param>
         public void Preview(FemaleConnectionNode female)
         {
-            this.Body.Position = female.WorldPoint +
-                        Vector2.Transform(this.MaleConnectionNode.LocalPoint, Matrix.CreateRotationZ(female.WorldRotation));
+            this.Body.Rotation = female.WorldRotation - this.MaleConnectionNode.LocalRotation;
 
-            this.Body.Rotation = female.WorldRotation + this.MaleConnectionNode.LocalRotation;
+            this.Body.Position = female.WorldPoint -
+                        Vector2.Transform(this.MaleConnectionNode.LocalPoint, Matrix.CreateRotationZ(this.Body.Rotation));
+
+            
 
             this.UpdateTransformationData();
         }

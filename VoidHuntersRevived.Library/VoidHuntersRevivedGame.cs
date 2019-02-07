@@ -63,7 +63,7 @@ namespace VoidHuntersRevived.Library
                 nameHandle: "entity_name:hull:square",
                 descriptionHandle: "entity_description:hull:square",
                 data: new ShipPartData(
-                    maleConnectionNodeData: new Vector3(-0.5f, 0, (float)Math.PI),
+                    maleConnectionNodeData: new Vector2(-0.5f, 0),
                     vertices: new Vector2[] {
                         new Vector2(-0.5f, -0.5f),
                         new Vector2(0.5f, -0.5f),
@@ -81,7 +81,7 @@ namespace VoidHuntersRevived.Library
                 nameHandle: "entity_name:hull:square",
                 descriptionHandle: "entity_description:hull:square",
                 data: new ShipPartData(
-                    maleConnectionNodeData: new Vector3(-1.5f, 0, (float)Math.PI),
+                    maleConnectionNodeData: new Vector2(-1.5f, 0),
                     vertices: new Vector2[] {
                         new Vector2(-1.5f, -0.5f),
                         new Vector2(1.5f, -0.5f),
@@ -108,7 +108,7 @@ namespace VoidHuntersRevived.Library
                 nameHandle: "entity_name:hull:square",
                 descriptionHandle: "entity_description:hull:square",
                 data: new ShipPartData(
-                    maleConnectionNodeData: Vector2Helper.FromThetaDistance((float)(3 * Math.PI) / 3, nd).ToVector3((float)(3 * Math.PI) / 3),
+                    maleConnectionNodeData: Vector2Helper.FromThetaDistance((float)(3 * Math.PI) / 3, nd),
                     vertices: new Vector2[] {
                         Vector2Helper.FromThetaDistance((float)(0 * Math.PI) / 3, d),
                         Vector2Helper.FromThetaDistance((float)(2 * Math.PI) / 3, d),
@@ -117,6 +117,31 @@ namespace VoidHuntersRevived.Library
                     femaleConnectionNodesData: new Vector3[] {
                         Vector2Helper.FromThetaDistance((float)(1 * Math.PI) / 3, nd).ToVector3((float)(4 * Math.PI) / 3),
                         Vector2Helper.FromThetaDistance((float)(5 * Math.PI) / 3, nd).ToVector3((float)(2 * Math.PI) / 3),
+                    }));
+
+            d = 1;
+            nd = (float)(Math.Cos((1 * Math.PI) / 6) * d);
+
+            entityLoader.Register<ShipPart>(
+                handle: "entity:hull:hexagon",
+                nameHandle: "entity_name:hull:square",
+                descriptionHandle: "entity_description:hull:square",
+                data: new ShipPartData(
+                    maleConnectionNodeData: Vector2Helper.FromThetaDistance((float)(6 * Math.PI) / 6, nd),
+                    vertices: new Vector2[] {
+                        Vector2Helper.FromThetaDistance((float)(1 * Math.PI) / 6, d),
+                        Vector2Helper.FromThetaDistance((float)(3 * Math.PI) / 6, d),
+                        Vector2Helper.FromThetaDistance((float)(5 * Math.PI) / 6, d),
+                        Vector2Helper.FromThetaDistance((float)(7 * Math.PI) / 6, d),
+                        Vector2Helper.FromThetaDistance((float)(9 * Math.PI) / 6, d),
+                        Vector2Helper.FromThetaDistance((float)(11 * Math.PI) / 6, d),
+                    },
+                    femaleConnectionNodesData: new Vector3[] {
+                        Vector2Helper.FromThetaDistance((float)(0 * Math.PI) / 6, nd).ToVector3((float)(6 * Math.PI) / 6),
+                        Vector2Helper.FromThetaDistance((float)(2 * Math.PI) / 6, nd).ToVector3((float)(8 * Math.PI) / 6),
+                        Vector2Helper.FromThetaDistance((float)(4 * Math.PI) / 6, nd).ToVector3((float)(10 * Math.PI) / 6),
+                        Vector2Helper.FromThetaDistance((float)(8 * Math.PI) / 6, nd).ToVector3((float)(14 * Math.PI) / 6),
+                        Vector2Helper.FromThetaDistance((float)(10 * Math.PI) / 6, nd).ToVector3((float)(16 * Math.PI) / 6)
                     }));
         }
         #endregion
