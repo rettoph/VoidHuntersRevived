@@ -173,30 +173,11 @@ namespace VoidHuntersRevived.Server.Scenes
                     NetDeliveryMethod.ReliableOrdered);
 
             // Create a new UserPlayer instance for the new user..
-            var bridge = this.Entities.Create<ShipPart>("entity:hull:square", null);
+            var bridge = this.Entities.Create<ShipPart>("entity:hull:triangle", null);
             this.Entities.Create<UserPlayer>("entity:player:user", null, user, bridge);
 
             bridge.Body.Rotation = 1f;
 
-            var square1 = this.Entities.Create<ShipPart>("entity:hull:square", null);
-            this.Entities.Create<NodeConnection>("entity:connection:connection_node", null, square1.MaleConnectionNode, bridge.FemaleConnectionNodes[1]);
-
-           // var square2 = this.Entities.Create<ShipPart>("entity:hull:square", null);
-           // this.Entities.Create<NodeConnection>("entity:connection:connection_node", null, square2.MaleConnectionNode, square1.FemaleConnectionNodes[0]);
-           //
-           // var square3 = this.Entities.Create<ShipPart>("entity:hull:square", null);
-           // this.Entities.Create<NodeConnection>("entity:connection:connection_node", null, square3.MaleConnectionNode, square1.FemaleConnectionNodes[1]);
-           //
-           // var square4 = this.Entities.Create<ShipPart>("entity:hull:square", null);
-           // this.Entities.Create<NodeConnection>("entity:connection:connection_node", null, square4.MaleConnectionNode, square1.FemaleConnectionNodes[2]);
-           //
-           // var square5 = this.Entities.Create<ShipPart>("entity:hull:square", null);
-           // this.Entities.Create<NodeConnection>("entity:connection:connection_node", null, square5.MaleConnectionNode, square2.FemaleConnectionNodes[0]);
-
-            // Auto disconnect this particular node
-            //square2.MaleConnectionNode.Connection.Disconnect();
-
-            // Send a final setup:end message, alerting the client that they have recieved all setup info
             om = this.Group.CreateMessage("setup:end");
             _group.SendMessage(om, user, NetDeliveryMethod.ReliableOrdered);
         }

@@ -203,6 +203,26 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             return list;
         }
+
+        /// <summary>
+        /// Returns a list containing the current ship part
+        /// and all of its children (recursive)
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public List<ShipPart> Children(List<ShipPart> list = null)
+        {
+            if (list == null)
+                list = new List<ShipPart>();
+
+            list.Add(this);
+
+            foreach (FemaleConnectionNode femaleNode in this.FemaleConnectionNodes)
+                if (femaleNode.Connection != null)
+                    femaleNode.Connection.MaleConnectionNode.Owner.Children(list);
+
+            return list;
+        }
         #endregion
 
         #region Frame Methods
