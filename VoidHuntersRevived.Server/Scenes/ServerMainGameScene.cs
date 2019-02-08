@@ -112,13 +112,13 @@ namespace VoidHuntersRevived.Server.Scenes
                 ServerMessageHelper.BuildCreateNetworkEntityMessage(_addedNetworkEntities.Dequeue(), this.Group),
                 NetDeliveryMethod.ReliableOrdered);
 
-            base.Update(gameTime);
-
             // Push all removed entities to all peers at this time
             while (_removedNetworkEntities.Count > 0)
                 this.Group.SendMessage(
                     ServerMessageHelper.BuildDestroyNetworkEntityMessage(_removedNetworkEntities.Dequeue(), this.Group),
                     NetDeliveryMethod.ReliableOrdered);
+
+            base.Update(gameTime);
         }
         #endregion
 
