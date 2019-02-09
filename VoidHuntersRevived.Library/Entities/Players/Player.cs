@@ -10,6 +10,10 @@ using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Networking.Implementations;
 using System.Linq;
+using Microsoft.Extensions.Logging;
+using VoidHuntersRevived.Library.Entities.ConnectionNodes;
+using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
+using System.Collections;
 
 namespace VoidHuntersRevived.Library.Entities.Players
 {
@@ -29,15 +33,17 @@ namespace VoidHuntersRevived.Library.Entities.Players
         public TractorBeam TractorBeam { get; private set; }
         public ShipPart Bridge { get; private set; }
         public Dictionary<MovementType, Boolean> Movement { get; private set; }
+
+        public FemaleConnectionNode[] OpenFemaleConnectionNodes { get; private set; }
+
+        private Dictionary<MovementType, ArrayList> _thrusters;
+        private Thruster[] _allThrusters;
         #endregion
 
         #region Constructors
         public Player(ShipPart bridge, EntityInfo info, IGame game) : base(info, game)
         {
-            this.Bridge = bridge;
-            this.Bridge.Body.SleepingAllowed = false;
-            this.Bridge.SetEnabled(true);
-            this.Bridge.BridgeFor = this;
+            this.SetBridge(bridge);
         }
 
         public Player(long id, EntityInfo info, IGame game) : base(id, info, game)
@@ -67,8 +73,72 @@ namespace VoidHuntersRevived.Library.Entities.Players
             // Create a new TractorBeam instance for the current player
             this.TractorBeam = this.Scene.Entities.Create<TractorBeam>("entity:tractor_beam", null, this);
 
+            // Create a new empty thrusters containers
+            _thrusters = new Dictionary<MovementType, ArrayList>();
+            _thrusters.Add(MovementType.GoForward  , new ArrayList());
+            _thrusters.Add(MovementType.TurnRight  , new ArrayList());
+            _thrusters.Add(MovementType.GoBackward , new ArrayList());
+            _thrusters.Add(MovementType.TurnLeft   , new ArrayList());
+            _thrusters.Add(MovementType.StrafeRight, new ArrayList());
+            _thrusters.Add(MovementType.StrafeLeft , new ArrayList());
+
+            // Update internal chain data
+            this.ChainUpdated();
+
             // Ensure the player is always enabled
             this.SetEnabled(true);
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Signaled when the bridge chain structure
+        /// updates in any way . This will update the stored
+        /// vairables, such as available female nodes, thruster
+        /// configuration, and more
+        /// </summary>
+        internal void ChainUpdated()
+        {
+            this.Game.Logger.LogDebug("Player Chain Updated...");
+
+            // Get a list of all open female nodes within the player
+            this.OpenFemaleConnectionNodes = this.Bridge?.OpenFemaleConnectionNodes().ToArray();
+
+            // Get a list of all thrusters on the ship
+            _allThrusters = this.Bridge?.Children()
+                .Where(sp => sp is Thruster)
+                .Select(sp => sp as Thruster)
+                .ToArray() ?? new Thruster[0];
+
+            // Clear old thruster configuration
+            _thrusters[MovementType.GoForward].Clear();
+            _thrusters[MovementType.TurnRight].Clear();
+            _thrusters[MovementType.GoBackward].Clear();
+            _thrusters[MovementType.TurnLeft].Clear();
+            _thrusters[MovementType.StrafeRight].Clear();
+            _thrusters[MovementType.StrafeLeft].Clear();
+
+            // Parse each thruster and find its relative position to the ship
+            foreach (Thruster thruster in _allThrusters)
+                foreach (KeyValuePair<MovementType, ArrayList> kvp in _thrusters)
+                    if (thruster.MatchesMovementType(kvp.Key))
+                        kvp.Value.Add(thruster);
+        }
+
+        /// <summary>
+        /// Update the current players bridge
+        /// </summary>
+        /// <param name="shipPart"></param>
+        internal void SetBridge(ShipPart bridge)
+        {
+            this.Bridge = bridge;
+            this.Bridge.Body.SleepingAllowed = false;
+            this.Bridge.SetEnabled(true);
+            this.Bridge.BridgeFor = this;
+
+            // Update internal chain data
+            if(this.InitializationState >= Core.Enums.InitializationState.Initializing)
+            this.ChainUpdated();
         }
         #endregion
 
@@ -77,43 +147,21 @@ namespace VoidHuntersRevived.Library.Entities.Players
         {
             base.Update(gameTime);
 
+            // Disable all thrusters by default
+            foreach (Thruster thruster in _allThrusters)
+                thruster.SetActive(false);
+
             // Handle player movement
-            foreach(KeyValuePair<MovementType, Boolean> kvp in Movement)
+            foreach (KeyValuePair<MovementType, Boolean> kvp in Movement)
                 if(kvp.Value)
-                    switch (kvp.Key)
-                    {
-                        case MovementType.GoForward:
-                            this.Bridge.Body.ApplyLinearImpulse(Vector2.Transform(new Vector2(4, 0), this.Bridge.RotationMatrix));
-                            break;
-                        case MovementType.TurnRight:
-                            this.Bridge.Body.ApplyAngularImpulse(3f);
-                            break;
-                        case MovementType.GoBackward:
-                            this.Bridge.Body.ApplyLinearImpulse(Vector2.Transform(new Vector2(-4, 0), this.Bridge.RotationMatrix));
-                            break;
-                        case MovementType.TurnLeft:
-                            this.Bridge.Body.ApplyAngularImpulse(-4f);
-                            break;
-                        case MovementType.StrafeRight:
-                            this.Bridge.Body.ApplyLinearImpulse(Vector2.Transform(new Vector2(0.1f, -4), this.Bridge.RotationMatrix));
-                            break;
-                        case MovementType.StrafeLeft:
-                            this.Bridge.Body.ApplyLinearImpulse(Vector2.Transform(new Vector2(0.1f, 4), this.Bridge.RotationMatrix));
-                            break;
-                    }
+                    foreach (Thruster thruster in _thrusters[kvp.Key])
+                        thruster.SetActive(true); // Re-enable selected thrusters
         }
         #endregion
 
         #region INetworkEntity Implementation
         public override void Read(NetIncomingMessage im)
         {
-            // Read the current Player's bridge
-            this.Bridge = this.GameScene.NetworkEntities.GetById(im.ReadInt64()) as ShipPart;
-            this.Bridge.Body.SleepingAllowed = false;
-            this.Bridge.SetEnabled(true);
-            this.Bridge.BridgeFor = this;
-
-
             for (Int32 i = 0; i < this.Movement.Count; i++) // Read the current movement settings
                 this.Movement[(MovementType)im.ReadByte()] = im.ReadBoolean();
         }
@@ -122,16 +170,28 @@ namespace VoidHuntersRevived.Library.Entities.Players
         {
             om.Write(this.Id);
 
-            // Write the current Player's bridge
-            om.Write(this.Bridge.Id);
-
-
             // Write the current movement settings
             foreach (KeyValuePair<MovementType, Boolean> kvp in this.Movement)
             {
                 om.Write((Byte)kvp.Key);
                 om.Write(kvp.Value);
             }
+        }
+
+        public override void FullRead(NetIncomingMessage im)
+        {
+            base.FullRead(im);
+
+            // Read the current Player's bridge
+            this.SetBridge(this.GameScene.NetworkEntities.GetById(im.ReadInt64()) as ShipPart);
+        }
+
+        public override void FullWrite(NetOutgoingMessage om)
+        {
+            base.FullWrite(om);
+
+            // Write the current Player's bridge
+            om.Write(this.Bridge.Id);
         }
         #endregion
     }

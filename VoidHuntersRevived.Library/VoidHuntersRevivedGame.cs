@@ -16,6 +16,7 @@ using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Helpers;
 using VoidHuntersRevived.Library.Extensions;
+using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 
 namespace VoidHuntersRevived.Library
 {
@@ -58,6 +59,7 @@ namespace VoidHuntersRevived.Library
             entityLoader.Register<TractorBeam>("entity:tractor_beam");
             entityLoader.Register<UserPlayer>("entity:player:user");
 
+            #region Hull Pieces
             entityLoader.Register<ShipPart>(
                 handle: "entity:hull:square",
                 nameHandle: "entity_name:hull:square",
@@ -143,6 +145,26 @@ namespace VoidHuntersRevived.Library
                         Vector2Helper.FromThetaDistance((float)(8 * Math.PI) / 6, nd).ToVector3((float)(14 * Math.PI) / 6),
                         Vector2Helper.FromThetaDistance((float)(10 * Math.PI) / 6, nd).ToVector3((float)(16 * Math.PI) / 6)
                     }));
+            #endregion
+
+            #region Thrusters
+            d = (float)Math.Sqrt(1f / 3f) * 0.75f;
+
+            entityLoader.Register<Thruster>(
+                handle: "entity:thruster",
+                nameHandle: "entity_name:hull:square",
+                descriptionHandle: "entity_description:hull:square",
+                data: new ThrusterData(
+                    maleConnectionNodeData: new Vector2(-0.15f, 0),
+                    vertices: new Vector2[]
+                    {
+                        Vector2Helper.FromThetaDistance((float)(1 * Math.PI) / 3, d * 1.1f),
+                        Vector2Helper.FromThetaDistance((float)(5 * Math.PI) / 3, d * 1.1f),
+                        Vector2Helper.FromThetaDistance((float)(2.5 * Math.PI) / 3, d),
+                        Vector2Helper.FromThetaDistance((float)(3.5 * Math.PI) / 3, d)
+                    },
+                    acceleration: 2));
+            #endregion
         }
         #endregion
     }

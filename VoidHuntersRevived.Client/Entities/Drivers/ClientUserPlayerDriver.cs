@@ -102,7 +102,7 @@ namespace VoidHuntersRevived.Client.Entities.Drivers
             if(this.UserPlayer.TractorBeam.Connection != null)
             {
                 // Select the closest female connection node in the current player
-                var nearestFemale = this.UserPlayer.Bridge.OpenFemaleConnectionNodes()
+                var nearestFemale = this.UserPlayer.OpenFemaleConnectionNodes
                     .OrderBy(fn => Vector2.Distance(this.UserPlayer.TractorBeam.Body.Position, fn.WorldPoint))
                     .FirstOrDefault();
 

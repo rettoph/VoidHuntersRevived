@@ -75,6 +75,9 @@ namespace VoidHuntersRevived.Library.Entities.Connections
             this.MaleConnectionNode.Connect(this);
             this.FemaleConnectionNode.Connect(this);
 
+            // Alert the Root's Player of the change (if there is a player)
+            this.MaleConnectionNode.Owner.Root.BridgeFor?.ChainUpdated();
+
             // Update the current connection status
             this.Status = ConnectionStatus.Connected;
         }
@@ -90,6 +93,9 @@ namespace VoidHuntersRevived.Library.Entities.Connections
             // Mark the ConnectionNodes as disconnected
             this.MaleConnectionNode.Disconnect();
             this.FemaleConnectionNode.Disconnect();
+
+            // Alert the Root's Player of the change (if there is a player)
+            this.FemaleConnectionNode.Owner.Root.BridgeFor?.ChainUpdated();
 
             // Delete the current connection entity from the scene
             this.Delete();
