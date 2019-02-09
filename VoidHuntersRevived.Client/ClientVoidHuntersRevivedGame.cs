@@ -62,6 +62,7 @@ namespace VoidHuntersRevived.Client
             contentLoader.Register<Texture2D>("texture:connection_node:female", "Sprites/female-connection");
             contentLoader.Register<Texture2D>("texture:center_of_mass", "Sprites/center-of-mass");
             contentLoader.Register<Texture2D>("texture:tractor_beam", "Sprites/tractor-beam");
+            contentLoader.Register<Texture2D>("texture:thruster_overlay:active", "Sprites/thruster-active-overlay");
 
             // Register client specific entities
             var entityLoader = this.Provider.GetLoader<EntityLoader>();

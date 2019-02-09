@@ -163,7 +163,7 @@ namespace VoidHuntersRevived.Library
                         Vector2Helper.FromThetaDistance((float)(2.5 * Math.PI) / 3, d),
                         Vector2Helper.FromThetaDistance((float)(3.5 * Math.PI) / 3, d)
                     },
-                    acceleration: 2));
+                    acceleration: 5));
             #endregion
         }
         #endregion

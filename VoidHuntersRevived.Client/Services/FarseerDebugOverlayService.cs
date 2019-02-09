@@ -62,6 +62,7 @@ namespace VoidHuntersRevived.Client.Services
             //_debug.AppendFlags(DebugViewFlags.Joint);
             //_debug.AppendFlags(DebugViewFlags.PerformanceGraph);
             //_debug.AppendFlags(DebugViewFlags.Shape);
+            _debug.AppendFlags(DebugViewFlags.Controllers);
         }
 
         protected override void PreInitialize()
