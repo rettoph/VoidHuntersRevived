@@ -59,6 +59,7 @@ namespace VoidHuntersRevived.Client.Layers
             _spriteBatch.Begin(
                 sortMode: SpriteSortMode.Immediate,
                 effect: _scene.Camera.BasicEffect,
+                blendState: BlendState.AlphaBlend,
                 rasterizerState: new RasterizerState { MultiSampleAntiAlias = true });
 
             this.Entities.Draw(gameTime);

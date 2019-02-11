@@ -14,7 +14,8 @@ namespace VoidHuntersRevived.Library.Entities.MetaData
             Vector2[] vertices,
             Single acceleration,
             String textureHandle,
-            Vector2 textureOrigin) : base(maleConnectionNodeData, vertices, new Vector3[0], textureHandle, textureOrigin)
+            Vector2 textureOrigin,
+            String colorHandle) : base(maleConnectionNodeData, vertices, new Vector3[0], textureHandle, textureOrigin, colorHandle)
         {
             this.Acceleration = acceleration;
         }

@@ -17,6 +17,7 @@ using VoidHuntersRevived.Networking.Implementations;
 using VoidHuntersRevived.Core.Extensions;
 using VoidHuntersRevived.Library.Entities.Interfaces;
 using VoidHuntersRevived.Library.Entities.Players;
+using VoidHuntersRevived.Core.Loaders;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -37,6 +38,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
         // The ship parts texture directly
         private Texture2D _texture;
+        private Color _color;
         #endregion
 
         #region Protected Fields
@@ -114,11 +116,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             // Load the center of mass texture
             var contentLoader = game.Provider.GetLoader<ContentLoader>();
+            var colorLoader = game.Provider.GetLoader<ColorLoader>();
             _centerOfMass = contentLoader.Get<Texture2D>("texture:center_of_mass");
             _centerOfMassOrigin = new Vector2((float)_centerOfMass.Width / 2, (float)_centerOfMass.Height / 2);
 
             // Load the texture data
             _texture = contentLoader.Get<Texture2D>(this.Data.TextureHandle);
+            _color = colorLoader.Get(this.Data.ColorHandle);
         }
         #endregion
 
@@ -188,6 +192,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             this.Body.CollisionCategories = Category.Cat10;
             this.Body.Mass = 0;
 
+            // Inherit the draw order
+            this.DrawOrder = this.Root.DrawOrder;
+
             // Update all the current ShipPart's children as well
             foreach (FemaleConnectionNode femaleConnectionNode in this.FemaleConnectionNodes)
                 femaleConnectionNode.Connection?.MaleConnectionNode.Owner.UpdateChainPlacement();
@@ -233,6 +240,23 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             return list;
         }
+
+        /// <summary>
+        /// Get the ShipPart's current color. This will mutate based on several factors,
+        /// such as current health, root color, and whether it is being colntrolled by a player
+        /// or not.
+        /// </summary>
+        /// <returns></returns>
+        internal Color GetColor()
+        {
+            if (this.IsBridge)
+                return this.BridgeFor.Color;
+            else if (this.IsRoot)
+                return _color;
+            else
+                return this.Root.GetColor();
+
+        }
         #endregion
 
         #region Frame Methods
@@ -255,7 +279,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                     texture: _texture,
                     position: this.Root.Body.Position + Vector2.Transform(Vector2.Zero, this.OffsetTranslationMatrix * this.Root.RotationMatrix),
                     sourceRectangle: _texture.Bounds,
-                    color: Color.CornflowerBlue,
+                    color: this.GetColor() * 0.75f,
                     rotation: this.Root.Body.Rotation + this.OffsetRotation,
                     origin: this.Data.TextureOrigin,
                     scale: 0.01f,

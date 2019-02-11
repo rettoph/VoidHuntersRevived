@@ -50,6 +50,11 @@ namespace VoidHuntersRevived.Library
             stringLoader.Register("entity_name:hull:square", "Hull Square");
             stringLoader.Register("entity_description:hull:square", "A Hull Square");
 
+            // Register global game colors
+            var colorLoader = this.Provider.GetLoader<ColorLoader>();
+            colorLoader.Register("color:hull", Color.Orange);
+            colorLoader.Register("color:thruster", Color.Green);
+
             // Register global game entities
             var entityLoader = this.Provider.GetLoader<EntityLoader>();
             entityLoader.Register<NodeConnection>("entity:connection:connection_node");
@@ -78,7 +83,8 @@ namespace VoidHuntersRevived.Library
                         new Vector3(0f, 0.5f, -(float)Math.PI/2)
                     },
                     textureHandle: "texture:hull:square",
-                    textureOrigin: new Vector2(50, 50)));
+                    textureOrigin: new Vector2(50, 50),
+                    colorHandle: "color:hull"));
 
             entityLoader.Register<ShipPart>(
                 handle: "entity:hull:beam",
@@ -102,7 +108,8 @@ namespace VoidHuntersRevived.Library
                         new Vector3(1f, 0.5f, -(float)Math.PI/2),
                     },
                     textureHandle: "texture:hull:beam",
-                    textureOrigin: Vector2.Zero));
+                    textureOrigin: new Vector2(150, 50),
+                    colorHandle: "color:hull"));
 
             // https://www.desmos.com/calculator/akwfwhe8vp
             // Build triangle vertices with a side length of 1
@@ -125,7 +132,8 @@ namespace VoidHuntersRevived.Library
                         Vector2Helper.FromThetaDistance((float)(5 * Math.PI) / 3, nd).ToVector3((float)(2 * Math.PI) / 3),
                     },
                     textureHandle: "texture:hull:triangle",
-                    textureOrigin:new Vector2((d/2)*100, 50)));
+                    textureOrigin:new Vector2((d/2)*100, 50),
+                    colorHandle: "color:hull"));
 
             d = 1;
             nd = (float)(Math.Cos((1 * Math.PI) / 6) * d);
@@ -152,7 +160,8 @@ namespace VoidHuntersRevived.Library
                         Vector2Helper.FromThetaDistance((float)(10 * Math.PI) / 6, nd).ToVector3((float)(16 * Math.PI) / 6)
                     },
                     textureHandle: "texture:hull:hexagon",
-                    textureOrigin: Vector2.Zero));
+                    textureOrigin: Vector2.Zero,
+                    colorHandle: "color:hull"));
             #endregion
 
             #region Thrusters
@@ -171,8 +180,8 @@ namespace VoidHuntersRevived.Library
                     },
                     acceleration: 5,
                     textureHandle: "texture:thruster",
-                    textureOrigin: new Vector2(6, 32))
-                );
+                    textureOrigin: new Vector2(6, 32),
+                    colorHandle: "color:thruster"));
             #endregion
         }
         #endregion

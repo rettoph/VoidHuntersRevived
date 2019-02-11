@@ -66,6 +66,7 @@ namespace VoidHuntersRevived.Client
             contentLoader.Register<Texture2D>("texture:hull:square", "Sprites/hull-square");
             contentLoader.Register<Texture2D>("texture:hull:triangle", "Sprites/hull-triangle");
             contentLoader.Register<Texture2D>("texture:thruster", "Sprites/thruster");
+            contentLoader.Register<Texture2D>("texture:hull:beam", "Sprites/hull-beam");
 
             // Register client specific entities
             var entityLoader = this.Provider.GetLoader<EntityLoader>();

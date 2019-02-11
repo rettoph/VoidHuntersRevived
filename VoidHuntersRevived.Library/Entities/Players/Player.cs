@@ -38,6 +38,8 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
         private Dictionary<MovementType, ArrayList> _thrusters;
         private Thruster[] _allThrusters;
+
+        public Color Color { get; set; }
         #endregion
 
         #region Constructors
@@ -84,6 +86,10 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
             // Update internal chain data
             this.ChainUpdated();
+
+            // Create a new random color
+            var rand = new Random();
+            this.Color = new Color((float)rand.NextDouble(), (float)rand.NextDouble(), (float)rand.NextDouble());
 
             // Ensure the player is always enabled
             this.SetEnabled(true);
@@ -135,10 +141,11 @@ namespace VoidHuntersRevived.Library.Entities.Players
             this.Bridge.Body.SleepingAllowed = false;
             this.Bridge.SetEnabled(true);
             this.Bridge.BridgeFor = this;
+            this.Bridge.DrawOrder = 100;
 
             // Update internal chain data
             if(this.InitializationState >= Core.Enums.InitializationState.Initializing)
-            this.ChainUpdated();
+                this.ChainUpdated();
         }
         #endregion
 
@@ -184,6 +191,8 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
             // Read the current Player's bridge
             this.SetBridge(this.GameScene.NetworkEntities.GetById(im.ReadInt64()) as ShipPart);
+
+            this.Color = new Color(im.ReadByte(), im.ReadByte(), im.ReadByte());
         }
 
         public override void FullWrite(NetOutgoingMessage om)
@@ -192,6 +201,10 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
             // Write the current Player's bridge
             om.Write(this.Bridge.Id);
+
+            om.Write(this.Color.R);
+            om.Write(this.Color.G);
+            om.Write(this.Color.B);
         }
         #endregion
     }
