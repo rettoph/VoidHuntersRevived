@@ -28,6 +28,11 @@ namespace VoidHuntersRevived.Client
         {
             base.Initialize();
 
+            _graphics.GraphicsProfile = GraphicsProfile.HiDef;
+            _graphics.PreferMultiSampling = true;
+            GraphicsDevice.PresentationParameters.MultiSampleCount = 32;
+            _graphics.ApplyChanges();
+
             var collection = new ServiceCollection();
             collection.AddSingleton<Game>(this);
 

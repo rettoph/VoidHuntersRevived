@@ -89,6 +89,7 @@ namespace VoidHuntersRevived.Core.Implementations
 
             // Add all base loaders
             services.AddLoader<StringLoader>();
+            services.AddLoader<ColorLoader>();
             services.AddLoader<ContentLoader>();
             services.AddLoader<EntityLoader>();
 

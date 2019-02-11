@@ -31,13 +31,18 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         private String _driverHandle;
         private Driver _driver;
 
-        private SpriteBatch _spriteBatch;
+        
         private Texture2D _centerOfMass;
         private Vector2 _centerOfMassOrigin;
+
+        // The ship parts texture directly
+        private Texture2D _texture;
         #endregion
 
         #region Protected Fields
-        protected MainGameScene _scene;
+        protected MainGameScene scene;
+
+        protected SpriteBatch spriteBatch;
         #endregion
 
         #region Public Attributes
@@ -101,14 +106,19 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public ShipPart(long id, EntityInfo info, IGame game, SpriteBatch spriteBatch, String driverHandle = "entity:driver:ship_part") : base(id, info, game)
         {
             _driverHandle = driverHandle;
-            _spriteBatch = spriteBatch;
+
+            this.Data = this.Info.Data as ShipPartData;
+
+            // Texture relation functions here
+            this.spriteBatch = spriteBatch;
 
             // Load the center of mass texture
             var contentLoader = game.Provider.GetLoader<ContentLoader>();
             _centerOfMass = contentLoader.Get<Texture2D>("texture:center_of_mass");
             _centerOfMassOrigin = new Vector2((float)_centerOfMass.Width / 2, (float)_centerOfMass.Height / 2);
 
-            this.Data = this.Info.Data as ShipPartData;
+            // Load the texture data
+            _texture = contentLoader.Get<Texture2D>(this.Data.TextureHandle);
         }
         #endregion
 
@@ -118,7 +128,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             base.Initialize();
 
             // Store the ShipPart's main game scene
-            _scene = this.Scene as MainGameScene;
+            scene = this.Scene as MainGameScene;
 
             // Create a new Body and Fixture for the current ship part
             this.Body = this.CreateBody();
@@ -241,9 +251,21 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             base.Draw(gameTime);
 
-            if(this.IsRoot)
+            this.spriteBatch.Draw(
+                    texture: _texture,
+                    position: this.Root.Body.Position + Vector2.Transform(Vector2.Zero, this.OffsetTranslationMatrix * this.Root.RotationMatrix),
+                    sourceRectangle: _texture.Bounds,
+                    color: Color.CornflowerBlue,
+                    rotation: this.Root.Body.Rotation + this.OffsetRotation,
+                    origin: this.Data.TextureOrigin,
+                    scale: 0.01f,
+                    effects: SpriteEffects.None,
+                    layerDepth: 0);
+
+
+            if (this.IsRoot)
             {
-                _spriteBatch.Draw(
+                this.spriteBatch.Draw(
                     texture: _centerOfMass,
                     position: this.Body.Position + Vector2.Transform(this.Body.LocalCenter, this.RotationMatrix),
                     sourceRectangle: _centerOfMass.Bounds,

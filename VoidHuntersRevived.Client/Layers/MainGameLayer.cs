@@ -56,7 +56,10 @@ namespace VoidHuntersRevived.Client.Layers
         #region Frame Methods
         public override void Draw(GameTime gameTime)
         {
-            _spriteBatch.Begin(samplerState: SamplerState.PointClamp, effect: _scene.Camera.BasicEffect);
+            _spriteBatch.Begin(
+                sortMode: SpriteSortMode.Immediate,
+                effect: _scene.Camera.BasicEffect,
+                rasterizerState: new RasterizerState { MultiSampleAntiAlias = true });
 
             this.Entities.Draw(gameTime);
 

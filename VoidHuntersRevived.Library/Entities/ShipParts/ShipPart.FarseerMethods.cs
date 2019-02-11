@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         internal Body CreateBody()
         {
             // Create a new body
-            var body = BodyFactory.CreateBody(world: _scene.World, userData: this);
+            var body = BodyFactory.CreateBody(world: scene.World, userData: this);
 
             // Set some body defaults
             body.BodyType = BodyType.Dynamic;

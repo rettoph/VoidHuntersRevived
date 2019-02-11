@@ -142,6 +142,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
 
         public override void Draw(GameTime gameTime)
         {
+            base.Draw(gameTime);
+
             if(_active)
                 _spriteBatch.Draw(
                     texture: _texture,

@@ -14,15 +14,25 @@ namespace VoidHuntersRevived.Library.Entities.MetaData
     /// </summary>
     public class ShipPartData
     {
+        public readonly String TextureHandle;
+        public readonly Vector2 TextureOrigin;
+
         public readonly Vector2 MaleConnectionNodeData;
         public readonly Vector2[] Vertices;
         public readonly Vector3[] FemaleConnectionNodesData;
 
-        public ShipPartData(Vector2 maleConnectionNodeData, Vector2[] vertices, Vector3[] femaleConnectionNodesData)
+        public ShipPartData(
+            Vector2 maleConnectionNodeData,
+            Vector2[] vertices,
+            Vector3[] femaleConnectionNodesData,
+            String textureHandle,
+            Vector2 textureOrigin)
         {
             this.MaleConnectionNodeData = maleConnectionNodeData;
             this.Vertices = vertices;
             this.FemaleConnectionNodesData = femaleConnectionNodesData;
+            this.TextureHandle = textureHandle;
+            this.TextureOrigin = textureOrigin;
         }
     }
 }

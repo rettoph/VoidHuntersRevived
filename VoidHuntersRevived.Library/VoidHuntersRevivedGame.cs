@@ -76,7 +76,9 @@ namespace VoidHuntersRevived.Library
                         new Vector3(0.5f, 0, (float)Math.PI),
                         new Vector3(0f, -0.5f, (float)Math.PI/2),
                         new Vector3(0f, 0.5f, -(float)Math.PI/2)
-                    }));
+                    },
+                    textureHandle: "texture:hull:square",
+                    textureOrigin: new Vector2(50, 50)));
 
             entityLoader.Register<ShipPart>(
                 handle: "entity:hull:beam",
@@ -98,7 +100,9 @@ namespace VoidHuntersRevived.Library
                         new Vector3(-1f, 0.5f, -(float)Math.PI/2),
                         new Vector3(0f, 0.5f, -(float)Math.PI/2),
                         new Vector3(1f, 0.5f, -(float)Math.PI/2),
-                    }));
+                    },
+                    textureHandle: "texture:hull:beam",
+                    textureOrigin: Vector2.Zero));
 
             // https://www.desmos.com/calculator/akwfwhe8vp
             // Build triangle vertices with a side length of 1
@@ -119,7 +123,9 @@ namespace VoidHuntersRevived.Library
                     femaleConnectionNodesData: new Vector3[] {
                         Vector2Helper.FromThetaDistance((float)(1 * Math.PI) / 3, nd).ToVector3((float)(4 * Math.PI) / 3),
                         Vector2Helper.FromThetaDistance((float)(5 * Math.PI) / 3, nd).ToVector3((float)(2 * Math.PI) / 3),
-                    }));
+                    },
+                    textureHandle: "texture:hull:triangle",
+                    textureOrigin:new Vector2((d/2)*100, 50)));
 
             d = 1;
             nd = (float)(Math.Cos((1 * Math.PI) / 6) * d);
@@ -144,26 +150,29 @@ namespace VoidHuntersRevived.Library
                         Vector2Helper.FromThetaDistance((float)(4 * Math.PI) / 6, nd).ToVector3((float)(10 * Math.PI) / 6),
                         Vector2Helper.FromThetaDistance((float)(8 * Math.PI) / 6, nd).ToVector3((float)(14 * Math.PI) / 6),
                         Vector2Helper.FromThetaDistance((float)(10 * Math.PI) / 6, nd).ToVector3((float)(16 * Math.PI) / 6)
-                    }));
+                    },
+                    textureHandle: "texture:hull:hexagon",
+                    textureOrigin: Vector2.Zero));
             #endregion
 
             #region Thrusters
-            d = (float)Math.Sqrt(1f / 3f) * 0.75f;
-
             entityLoader.Register<Thruster>(
                 handle: "entity:thruster",
                 nameHandle: "entity_name:hull:square",
                 descriptionHandle: "entity_description:hull:square",
                 data: new ThrusterData(
-                    maleConnectionNodeData: new Vector2(-0.15f, 0),
+                    maleConnectionNodeData: new Vector2(0, 0),
                     vertices: new Vector2[]
                     {
-                        Vector2Helper.FromThetaDistance((float)(1 * Math.PI) / 3, d * 1.1f),
-                        Vector2Helper.FromThetaDistance((float)(5 * Math.PI) / 3, d * 1.1f),
-                        Vector2Helper.FromThetaDistance((float)(2.5 * Math.PI) / 3, d),
-                        Vector2Helper.FromThetaDistance((float)(3.5 * Math.PI) / 3, d)
+                        new Vector2(-0.0f, -0.1f),
+                        new Vector2(0.2f, -0.1f),
+                        new Vector2(0.2f, 0.1f),
+                        new Vector2(-0.0f, 0.1f)
                     },
-                    acceleration: 5));
+                    acceleration: 5,
+                    textureHandle: "texture:thruster",
+                    textureOrigin: new Vector2(6, 32))
+                );
             #endregion
         }
         #endregion

@@ -12,7 +12,9 @@ namespace VoidHuntersRevived.Library.Entities.MetaData
         public ThrusterData(
             Vector2 maleConnectionNodeData,
             Vector2[] vertices,
-            Single acceleration) : base(maleConnectionNodeData, vertices, new Vector3[0])
+            Single acceleration,
+            String textureHandle,
+            Vector2 textureOrigin) : base(maleConnectionNodeData, vertices, new Vector3[0], textureHandle, textureOrigin)
         {
             this.Acceleration = acceleration;
         }

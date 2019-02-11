@@ -95,7 +95,7 @@ namespace VoidHuntersRevived.Library.Entities.ConnectionNodes
             }
 
             this.SetEnabled(false);
-            this.SetVisible(true);
+            this.SetVisible(false);
         }
         #endregion
 
