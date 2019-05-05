@@ -2,21 +2,18 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Lidgren.Network.Core2" Version="1.0.0" />
     <PackageReference Include="MonoGame.Content.Builder" Version="3.7.0.9" />
     <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.7.0.7" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Submodules\FarseerPhysics\FarseerPhysics.MonoGame.DebugView\FarseerPhysics.MonoGame.DebugView.csproj" />
-    <ProjectReference Include="..\Submodules\FarseerPhysics\FarseerPhysics.MonoGame\FarseerPhysics.MonoGame.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Core\VoidHuntersRevived.Core.csproj" />
+    <ProjectReference Include="..\Submodules\Guppy\Guppy.UI\Guppy.UI.csproj" />
+    <ProjectReference Include="..\Submodules\Guppy\Guppy\Guppy.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Library\VoidHuntersRevived.Library.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Networking\VoidHuntersRevived.Networking.csproj" />
   </ItemGroup>
 
   <ItemGroup>
