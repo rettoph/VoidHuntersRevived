@@ -18,6 +18,7 @@ namespace VoidHuntersRevived.Client
             services.AddGame<VoidHuntersClientGame>();
             services.AddScene<VoidHuntersClientWorldScene>();
             services.AddLayer<CameraLayer>();
+            services.AddLayer<HudLayer>();
         }
 
         public void Boot(IServiceProvider provider)

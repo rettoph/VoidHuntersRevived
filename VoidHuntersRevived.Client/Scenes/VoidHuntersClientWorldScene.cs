@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Client.Scenes
         {
             base.PreInitialize();
 
-            var layer = this.layers.Create<CameraLayer>();
+            var layer = this.layers.Create<HudLayer>();
             var stage = this.entities.Create("ui:stage") as Stage;
             var c = stage.Content.CreateElement<Container>(100, 100, 100, 100);
             stage.Content.CreateElement<TextInput>(250, 250, 300, 30);
