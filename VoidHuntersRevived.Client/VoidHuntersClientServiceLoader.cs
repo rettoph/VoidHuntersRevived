@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Layers;
 using VoidHuntersRevived.Client.Scenes;
+using VoidHuntersRevived.Client.Utilities.Cameras;
 
 namespace VoidHuntersRevived.Client
 {
@@ -19,6 +20,8 @@ namespace VoidHuntersRevived.Client
             services.AddScene<VoidHuntersClientWorldScene>();
             services.AddLayer<CameraLayer>();
             services.AddLayer<HudLayer>();
+
+            services.AddScoped<FarseerCamera2D>();
         }
 
         public void Boot(IServiceProvider provider)

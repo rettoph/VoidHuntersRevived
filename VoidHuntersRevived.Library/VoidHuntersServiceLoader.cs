@@ -1,5 +1,7 @@
-﻿using Guppy.Interfaces;
+﻿using FarseerPhysics.Dynamics;
+using Guppy.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,7 +12,10 @@ namespace VoidHuntersRevived.Library
     {
         public void ConfigureServiceCollection(IServiceCollection services)
         {
-            // throw new NotImplementedException();
+            services.AddScoped<World>(p =>
+            {
+                return new World(Vector2.Zero);
+            });
         }
 
         public void Boot(IServiceProvider provider)

@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Client.Utilities.Cameras;
 
 namespace VoidHuntersRevived.Client.Layers
 {
@@ -14,9 +15,9 @@ namespace VoidHuntersRevived.Client.Layers
         private BasicEffect _effect;
 
         protected SpriteBatch spriteBatch;
-        protected Camera camera;
+        protected FarseerCamera2D camera;
 
-        public CameraLayer(Camera2D camera, LayerConfiguration configuration, BasicEffect effect, SpriteBatch spriteBatch, IServiceProvider provider) : base(configuration, provider, camera)
+        public CameraLayer(FarseerCamera2D camera, LayerConfiguration configuration, BasicEffect effect, SpriteBatch spriteBatch, IServiceProvider provider) : base(configuration, provider, camera)
         {
             _effect = effect;
             _effect.TextureEnabled = true;

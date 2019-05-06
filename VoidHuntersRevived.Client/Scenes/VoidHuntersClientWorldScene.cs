@@ -1,30 +1,78 @@
-﻿using Guppy.UI.Elements;
+﻿using FarseerPhysics;
+using FarseerPhysics.DebugView;
+using FarseerPhysics.Dynamics;
+using Guppy.UI.Elements;
 using Guppy.UI.Entities;
+using Guppy.Utilities.Cameras;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Layers;
+using VoidHuntersRevived.Client.Utilities.Cameras;
 using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Client.Scenes
 {
     public class VoidHuntersClientWorldScene : VoidHuntersWorldScene
     {
-        public VoidHuntersClientWorldScene(IServiceProvider provider) : base(provider)
+        private GraphicsDevice _graphics;
+        private DebugViewXNA _debug;
+        private SpriteBatch _spriteBatch;
+        private ContentManager _content;
+
+        private FarseerCamera2D _camera;
+
+        public VoidHuntersClientWorldScene(FarseerCamera2D camera, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, ContentManager content, World world, IServiceProvider provider) : base(world, provider)
         {
+            _camera = camera;
+            _spriteBatch = spriteBatch;
+            _graphics = graphicsDevice;
+            _content = content;
         }
 
+        protected override void Boot()
+        {
+            base.Boot();
+
+            _debug = new DebugViewXNA(this.world);
+            _debug.LoadContent(_graphics, _content);
+        }
         protected override void PreInitialize()
         {
             base.PreInitialize();
 
-            var layer = this.layers.Create<HudLayer>();
-            var stage = this.entities.Create("ui:stage") as Stage;
-            var c = stage.Content.CreateElement<Container>(100, 100, 100, 100);
-            stage.Content.CreateElement<TextInput>(250, 250, 300, 30);
-            c.StateBlacklist = Guppy.UI.Enums.ElementState.Active;
+            _debug.AppendFlags(DebugViewFlags.ContactPoints);
+            _debug.AppendFlags(DebugViewFlags.ContactNormals);
+            _debug.AppendFlags(DebugViewFlags.Controllers);
 
+            this.DefaultLayerDepth = 1;
+
+            var layer = this.layers.Create<HudLayer>(0, 0, 0, 1);
+            this.layers.Create<CameraLayer>(1, 1, 0, 0);
+            
+            var stage = this.entities.Create<Stage>("ui:stage", 0);
+            stage.Content.CreateElement<TextInput>(100, 0, 300, 30);
             layer.Debug = true;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            _camera.Update(gameTime);
+        }
+        public override void Draw(GameTime gameTime)
+        {
+            _graphics.Clear(Color.Black);
+
+            base.Draw(gameTime);
+
+            _spriteBatch.Begin();
+            _debug.RenderDebugData(_camera.Projection, Matrix.Identity);
+            _spriteBatch.End();
         }
     }
 }
