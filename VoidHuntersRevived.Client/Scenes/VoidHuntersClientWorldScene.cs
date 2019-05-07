@@ -11,7 +11,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Layers;
+using VoidHuntersRevived.Client.Players;
 using VoidHuntersRevived.Client.Utilities.Cameras;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Client.Scenes
@@ -50,12 +52,17 @@ namespace VoidHuntersRevived.Client.Scenes
 
             this.DefaultLayerDepth = 1;
 
-            var layer = this.layers.Create<HudLayer>(0, 0, 0, 1);
+            this.layers.Create<HudLayer>(0, 0, 0, 1);
             this.layers.Create<CameraLayer>(1, 1, 0, 0);
-            
-            var stage = this.entities.Create<Stage>("ui:stage", 0);
-            stage.Content.CreateElement<TextInput>(100, 0, 300, 30);
-            layer.Debug = true;
+        }
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            this.players.Add(
+                new LocalPlayer(
+                    this.entities.Create<ShipPart>("entity:ship-part"), 
+                    this.logger));
         }
 
         public override void Update(GameTime gameTime)
