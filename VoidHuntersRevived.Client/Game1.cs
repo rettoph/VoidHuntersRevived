@@ -1,6 +1,7 @@
 ﻿using Guppy;
 using Guppy.Loggers;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -25,6 +26,12 @@ namespace VoidHuntersRevived.Client
         {
             base.Initialize();
 
+            _graphics.SynchronizeWithVerticalRetrace = false;
+            _graphics.GraphicsProfile = GraphicsProfile.HiDef;
+            _graphics.PreferMultiSampling = true;
+            this.GraphicsDevice.PresentationParameters.MultiSampleCount = 32;
+            this.InactiveSleepTime = TimeSpan.Zero;
+            this.IsFixedTimeStep = false;
             this.IsMouseVisible = true;
             this.Window.AllowUserResizing = true;
             this.Window.Title = "Void Hunters Revived 0.0.2";

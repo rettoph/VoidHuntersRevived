@@ -28,10 +28,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             base.Boot();
 
             FixtureFactory.AttachPolygon(new Vertices(new Vector2[] {
-                new Vector2(0, 0),
-                new Vector2(1, 0),
-                new Vector2(1, 1),
-                new Vector2(0, 1)
+                new Vector2(-0.5f, -0.5f),
+                new Vector2(-0.5f, 0.5f),
+                new Vector2(0.5f, 0.5f),
+                new Vector2(0.5f, -0.5f)
             }), 1f, this.Body, this);
         }
 

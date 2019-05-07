@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Client.Scenes
 
             this.DefaultLayerDepth = 1;
 
-            this.layers.Create<HudLayer>(0, 0, 0, 1);
+            // this.layers.Create<HudLayer>(0, 0, 0, 1);
             this.layers.Create<CameraLayer>(1, 1, 0, 0);
         }
         protected override void Initialize()
@@ -61,8 +61,12 @@ namespace VoidHuntersRevived.Client.Scenes
 
             this.players.Add(
                 new LocalPlayer(
+                    _camera,
                     this.entities.Create<ShipPart>("entity:ship-part"), 
                     this.logger));
+
+            var part = this.entities.Create<ShipPart>("entity:ship-part");
+            part.Body.Position = new Vector2(3, 0);
         }
 
         public override void Update(GameTime gameTime)
@@ -78,7 +82,7 @@ namespace VoidHuntersRevived.Client.Scenes
             base.Draw(gameTime);
 
             _spriteBatch.Begin();
-            _debug.RenderDebugData(_camera.Projection, Matrix.Identity);
+            _debug.RenderDebugData(_camera.Projection, _camera.View);
             _spriteBatch.End();
         }
     }

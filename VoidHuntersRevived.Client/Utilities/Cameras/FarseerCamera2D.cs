@@ -11,11 +11,11 @@ namespace VoidHuntersRevived.Client.Utilities.Cameras
 {
     public class FarseerCamera2D : Camera2D
     {
-        private Viewport _viewport;
+        private GraphicsDevice _graphics;
 
         public FarseerCamera2D(GraphicsDevice graphics, GameWindow window) : base(graphics, window)
         {
-            _viewport = graphics.Viewport;
+            _graphics = graphics;
             this.MoveBy(2f, 0);
         }
 
@@ -24,8 +24,8 @@ namespace VoidHuntersRevived.Client.Utilities.Cameras
             return new RectangleF(
                 x: 0,
                 y: 0,
-                width: ConvertUnits.ToSimUnits(_viewport.Bounds.Width),
-                height: ConvertUnits.ToSimUnits(_viewport.Bounds.Height));
+                width: ConvertUnits.ToSimUnits(_graphics.Viewport.Bounds.Width),
+                height: ConvertUnits.ToSimUnits(_graphics.Viewport.Bounds.Height));
         }
     }
 }
