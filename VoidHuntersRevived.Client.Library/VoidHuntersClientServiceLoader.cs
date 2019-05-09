@@ -6,11 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Client.Layers;
-using VoidHuntersRevived.Client.Scenes;
-using VoidHuntersRevived.Client.Utilities.Cameras;
+using VoidHuntersRevived.Client.Library.Layers;
+using VoidHuntersRevived.Client.Library.Scenes;
+using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 
-namespace VoidHuntersRevived.Client
+namespace VoidHuntersRevived.Client.Library
 {
     public class VoidHuntersClientServiceLoader : IServiceLoader
     {

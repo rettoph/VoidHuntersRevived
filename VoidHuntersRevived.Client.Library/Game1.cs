@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace VoidHuntersRevived.Client
+namespace VoidHuntersRevived.Client.Library
 {
     public class Game1 : Microsoft.Xna.Framework.Game
     {

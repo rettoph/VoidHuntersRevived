@@ -4,11 +4,11 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using VoidHuntersRevived.Client.Utilities.Cameras;
+using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Players;
 
-namespace VoidHuntersRevived.Client.Players
+namespace VoidHuntersRevived.Client.Library.Players
 {
     public class LocalPlayer : Player
     {

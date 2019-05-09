@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 
-namespace VoidHuntersRevived.Client.Utilities.Cameras
+namespace VoidHuntersRevived.Client.Library.Utilities.Cameras
 {
     public class FarseerCamera2D : Camera2D
     {

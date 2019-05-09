@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
-using VoidHuntersRevived.Client.Scenes;
+using VoidHuntersRevived.Client.Library.Scenes;
 using VoidHuntersRevived.Library;
 
-namespace VoidHuntersRevived.Client
+namespace VoidHuntersRevived.Client.Library
 {
     public class VoidHuntersClientGame : VoidHuntersGame
     {

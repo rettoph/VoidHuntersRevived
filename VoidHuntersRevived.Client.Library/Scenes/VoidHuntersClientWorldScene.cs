@@ -10,13 +10,13 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Client.Layers;
-using VoidHuntersRevived.Client.Players;
-using VoidHuntersRevived.Client.Utilities.Cameras;
+using VoidHuntersRevived.Client.Library.Layers;
+using VoidHuntersRevived.Client.Library.Players;
+using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Scenes;
 
-namespace VoidHuntersRevived.Client.Scenes
+namespace VoidHuntersRevived.Client.Library.Scenes
 {
     public class VoidHuntersClientWorldScene : VoidHuntersWorldScene
     {

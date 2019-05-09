@@ -7,9 +7,9 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Client.Utilities.Cameras;
+using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 
-namespace VoidHuntersRevived.Client.Layers
+namespace VoidHuntersRevived.Client.Library.Layers
 {
     public class CameraLayer : Layer
     {

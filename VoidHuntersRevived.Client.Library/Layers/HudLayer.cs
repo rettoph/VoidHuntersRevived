@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace VoidHuntersRevived.Client.Layers
+namespace VoidHuntersRevived.Client.Library.Layers
 {
     public class HudLayer : Layer
     {
