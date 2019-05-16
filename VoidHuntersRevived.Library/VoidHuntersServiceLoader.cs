@@ -2,6 +2,7 @@
 using Guppy.Extensions;
 using Guppy.Interfaces;
 using Guppy.Loaders;
+using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using System;
@@ -18,6 +19,13 @@ namespace VoidHuntersRevived.Library
             services.AddScoped<World>(p =>
             {
                 return new World(Vector2.Zero);
+            });
+
+            services.AddSingleton<NetPeerConfiguration>(p =>
+            {
+                var config = new NetPeerConfiguration("vhr");
+
+                return config;
             });
         }
 

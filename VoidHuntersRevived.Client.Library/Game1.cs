@@ -1,10 +1,17 @@
 ﻿using Guppy;
 using Guppy.Loggers;
+using Guppy.Network;
+using Guppy.Network.Peers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Client.Library;
+using Microsoft.Extensions.DependencyInjection;
+using Lidgren.Network;
+using Microsoft.Extensions.Logging;
+using Guppy.Network.Extensions.Guppy;
 
 namespace VoidHuntersRevived.Client.Library
 {
@@ -31,7 +38,7 @@ namespace VoidHuntersRevived.Client.Library
             _graphics.PreferMultiSampling = true;
             this.GraphicsDevice.PresentationParameters.MultiSampleCount = 32;
             this.InactiveSleepTime = TimeSpan.Zero;
-            this.IsFixedTimeStep = false;
+            this.IsFixedTimeStep = true;
             this.IsMouseVisible = true;
             this.Window.AllowUserResizing = true;
             this.Window.Title = "Void Hunters Revived 0.0.2";
@@ -41,6 +48,7 @@ namespace VoidHuntersRevived.Client.Library
             // _graphics.ToggleFullScreen();
 
             _guppy.ConfigureMonogame(_graphics, this.Window, this.Content);
+            _guppy.ConfigureNetwork(this.PeerFactory, NetworkSceneDriver.DefaultClient);
             _guppy.Initialize();
 
             _game = _guppy.Games.Create<VoidHuntersClientGame>();
@@ -65,6 +73,13 @@ namespace VoidHuntersRevived.Client.Library
             base.OnExiting(sender, args);
 
             Environment.Exit(0);
+        }
+
+        private Peer PeerFactory(IServiceProvider arg)
+        {
+            var config = arg.GetService<NetPeerConfiguration>();
+
+            return new ClientPeer(config, arg.GetService<ILogger>());
         }
     }
 }

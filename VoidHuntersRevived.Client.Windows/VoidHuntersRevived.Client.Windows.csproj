@@ -8,12 +8,13 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>VoidHuntersRevived.Client.Windows</RootNamespace>
     <AssemblyName>VoidHuntersRevived.Client.Windows</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,6 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Lidgren.Network, Version=2012.1.7.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="Microsoft.Extensions.Configuration, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Configuration.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.dll</HintPath>
     </Reference>
@@ -89,7 +91,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -101,6 +102,10 @@
     <ProjectReference Include="..\Submodules\FarseerPhysics\FarseerPhysics.MonoGame.DebugView\FarseerPhysics.MonoGame.DebugView.csproj">
       <Project>{2e9c877f-4726-404e-96d6-763af74cc5a7}</Project>
       <Name>FarseerPhysics.MonoGame.DebugView</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Submodules\Guppy\Guppy.Network\Guppy.Network.csproj">
+      <Project>{0B1386F9-8A9A-4CA8-B7C5-8FEEABD3F5A0}</Project>
+      <Name>Guppy.Network</Name>
     </ProjectReference>
     <ProjectReference Include="..\Submodules\Guppy\Guppy\Guppy.csproj">
       <Project>{88B8F7ED-F2AA-4411-B664-37D43FCEA39D}</Project>

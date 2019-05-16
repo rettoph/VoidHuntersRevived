@@ -1,6 +1,7 @@
 ﻿using FarseerPhysics;
 using FarseerPhysics.DebugView;
 using FarseerPhysics.Dynamics;
+using Guppy.Network.Peers;
 using Guppy.UI.Elements;
 using Guppy.UI.Entities;
 using Guppy.Utilities.Cameras;
@@ -27,7 +28,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
         private FarseerCamera2D _camera;
 
-        public VoidHuntersClientWorldScene(FarseerCamera2D camera, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, ContentManager content, World world, IServiceProvider provider) : base(world, provider)
+        public VoidHuntersClientWorldScene(FarseerCamera2D camera, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, ContentManager content, Peer peer, World world, IServiceProvider provider) : base(peer, world, provider)
         {
             _camera = camera;
             _spriteBatch = spriteBatch;

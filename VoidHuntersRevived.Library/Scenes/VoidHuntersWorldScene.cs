@@ -2,6 +2,8 @@
 using FarseerPhysics.Factories;
 using Guppy;
 using Guppy.Collections;
+using Guppy.Network;
+using Guppy.Network.Peers;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -11,13 +13,15 @@ using VoidHuntersRevived.Library.Players;
 
 namespace VoidHuntersRevived.Library.Scenes
 {
-    public class VoidHuntersWorldScene : Scene
+    public class VoidHuntersWorldScene : NetworkScene
     {
+        protected Peer peer;
         protected World world;
         protected LivingObjectCollection<Player> players;
 
-        public VoidHuntersWorldScene(World world, IServiceProvider provider) : base(provider)
+        public VoidHuntersWorldScene(Peer peer, World world, IServiceProvider provider) : base(peer.Groups.GetOrCreateById(Guid.Empty), provider)
         {
+            this.peer = peer;
             this.world = world;
         }
 
@@ -37,9 +41,9 @@ namespace VoidHuntersRevived.Library.Scenes
         {
             this.world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
 
-            this.players.Update(gameTime);
-
             base.Update(gameTime);
+
+            this.players.Update(gameTime);
         }
     }
 }

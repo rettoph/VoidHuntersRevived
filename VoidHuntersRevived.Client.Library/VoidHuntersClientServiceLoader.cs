@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Client.Library.Entities.Drivers;
 using VoidHuntersRevived.Client.Library.Layers;
 using VoidHuntersRevived.Client.Library.Scenes;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
@@ -26,6 +27,9 @@ namespace VoidHuntersRevived.Client.Library
 
         public void Boot(IServiceProvider provider)
         {
+            var entityLoader = provider.GetLoader<EntityLoader>();
+
+            entityLoader.Register<ClientShipPartDriver>("driver:ship-part", "name:driver:ship-part", "description:driver:ship-part");
         }
 
         public void PreInitialize(IServiceProvider provider)
