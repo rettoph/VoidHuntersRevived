@@ -32,6 +32,7 @@ namespace VoidHuntersRevived.Client.Library
             base.PostInitialize();
 
             var user = new User();
+            user.Set("name", "Tony");
             this.client.Connect("localhost", 1337, user);
         }
 

@@ -17,6 +17,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
     public class Player : NetworkEntity
     {
         public User User { get; private set; }
+        public String Name { get { return this.User.Get("name"); } }
 
         public Player(User user, EntityConfiguration configuration, Scene scene, ILogger logger) : base(configuration, scene, logger)
         {
