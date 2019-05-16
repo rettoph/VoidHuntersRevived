@@ -1,10 +1,14 @@
 ﻿using FarseerPhysics;
 using FarseerPhysics.DebugView;
 using FarseerPhysics.Dynamics;
+using Guppy.Network;
+using Guppy.Network.Extensions.Lidgren;
+using Guppy.Network.Groups;
 using Guppy.Network.Peers;
 using Guppy.UI.Elements;
 using Guppy.UI.Entities;
 using Guppy.Utilities.Cameras;
+using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,7 +16,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Layers;
-using VoidHuntersRevived.Client.Library.Players;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Scenes;
@@ -25,8 +28,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private DebugViewXNA _debug;
         private SpriteBatch _spriteBatch;
         private ContentManager _content;
-
         private FarseerCamera2D _camera;
+        private Queue<NetIncomingMessage> _updateMessageQueue;
 
         public VoidHuntersClientWorldScene(FarseerCamera2D camera, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, ContentManager content, Peer peer, World world, IServiceProvider provider) : base(peer, world, provider)
         {
@@ -42,7 +45,11 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             _debug = new DebugViewXNA(this.world);
             _debug.LoadContent(_graphics, _content);
+
+            this.group.MessageHandler.Add("setup:begin", this.HandleSetupStartMessage);
+            this.group.MessageHandler.Add("setup:end", this.HandleSetupEndMessage);
         }
+
         protected override void PreInitialize()
         {
             base.PreInitialize();
@@ -55,19 +62,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             // this.layers.Create<HudLayer>(0, 0, 0, 1);
             this.layers.Create<CameraLayer>(1, 1, 0, 0);
-        }
-        protected override void Initialize()
-        {
-            base.Initialize();
-
-            this.players.Add(
-                new LocalPlayer(
-                    _camera,
-                    this.entities.Create<ShipPart>("entity:ship-part"), 
-                    this.logger));
-
-            var part = this.entities.Create<ShipPart>("entity:ship-part");
-            part.Body.Position = new Vector2(3, 0);
         }
 
         public override void Update(GameTime gameTime)
@@ -86,5 +80,47 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _debug.RenderDebugData(_camera.Projection, _camera.View);
             _spriteBatch.End();
         }
+
+        #region NetMessage Handlers
+        private void HandleSetupStartMessage(NetIncomingMessage obj)
+        {
+            _updateMessageQueue = new Queue<NetIncomingMessage>();
+
+            this.group.MessageHandler["create"] = this.HandleCreateMessage;
+            this.group.MessageHandler["update"] = this.EnqueueUpdateMessage;
+        }
+        private void HandleSetupEndMessage(NetIncomingMessage obj)
+        {
+            this.group.MessageHandler["update"] = this.HandleUpdateMessage;
+
+            // Flush the collected queue while the client was settingup
+            while (_updateMessageQueue.Count > 0)
+                this.HandleUpdateMessage(_updateMessageQueue.Dequeue());
+
+            // Empty the update queue
+            _updateMessageQueue.Clear();
+        }
+
+        private void HandleCreateMessage(NetIncomingMessage obj)
+        {
+            var ne = this.entities.Create<NetworkEntity>(obj.ReadString(), obj.ReadGuid());
+            ne.Read(obj);
+        }
+        private void HandleUpdateMessage(NetIncomingMessage obj)
+        {
+            this.networkEntities.GetById(obj.ReadGuid()).Read(obj);
+        }
+
+        /// <summary>
+        /// Special message queues used to hold group methods
+        /// recieved before setup is complete.
+        /// </summary>
+        /// <param name="obj"></param>
+        private void EnqueueUpdateMessage(NetIncomingMessage obj)
+        {
+            _updateMessageQueue.Enqueue(obj);
+        }
+        #endregion
+
     }
 }

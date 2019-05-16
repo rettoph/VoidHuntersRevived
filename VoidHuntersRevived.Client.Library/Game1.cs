@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
 using Guppy.Network.Extensions.Guppy;
+using Guppy.Network.Groups;
 
 namespace VoidHuntersRevived.Client.Library
 {
@@ -48,7 +49,7 @@ namespace VoidHuntersRevived.Client.Library
             // _graphics.ToggleFullScreen();
 
             _guppy.ConfigureMonogame(_graphics, this.Window, this.Content);
-            _guppy.ConfigureNetwork(this.PeerFactory, NetworkSceneDriver.DefaultClient);
+            _guppy.ConfigureNetwork<ClientPeer>(this.PeerFactory, NetworkSceneDriver.DefaultClient);
             _guppy.Initialize();
 
             _game = _guppy.Games.Create<VoidHuntersClientGame>();
@@ -75,7 +76,7 @@ namespace VoidHuntersRevived.Client.Library
             Environment.Exit(0);
         }
 
-        private Peer PeerFactory(IServiceProvider arg)
+        private ClientPeer PeerFactory(IServiceProvider arg)
         {
             var config = arg.GetService<NetPeerConfiguration>();
 

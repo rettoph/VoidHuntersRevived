@@ -3,13 +3,14 @@ using FarseerPhysics.Factories;
 using Guppy;
 using Guppy.Collections;
 using Guppy.Network;
+using Guppy.Network.Collections;
+using Guppy.Network.Groups;
 using Guppy.Network.Peers;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.ShipParts;
-using VoidHuntersRevived.Library.Players;
 
 namespace VoidHuntersRevived.Library.Scenes
 {
@@ -17,7 +18,8 @@ namespace VoidHuntersRevived.Library.Scenes
     {
         protected Peer peer;
         protected World world;
-        protected LivingObjectCollection<Player> players;
+
+        public UserCollection Users { get { return this.group.Users; } }
 
         public VoidHuntersWorldScene(Peer peer, World world, IServiceProvider provider) : base(peer.Groups.GetOrCreateById(Guid.Empty), provider)
         {
@@ -28,8 +30,6 @@ namespace VoidHuntersRevived.Library.Scenes
         protected override void Boot()
         {
             base.Boot();
-
-            this.players = new LivingObjectCollection<Player>(initializeOnAdd: true);
         }
 
         protected override void Initialize()
@@ -42,8 +42,6 @@ namespace VoidHuntersRevived.Library.Scenes
             this.world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
 
             base.Update(gameTime);
-
-            this.players.Update(gameTime);
         }
     }
 }

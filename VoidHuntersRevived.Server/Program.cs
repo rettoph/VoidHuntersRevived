@@ -7,6 +7,7 @@ using System;
 using Microsoft.Extensions.DependencyInjection;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
+using Guppy.Network.Groups;
 
 namespace VoidHuntersRevived.Server
 {
@@ -15,14 +16,14 @@ namespace VoidHuntersRevived.Server
         static void Main(string[] args)
         {
             var guppy = new GuppyLoader(new ConsoleLogger());
-            guppy.ConfigureNetwork(Program.PeerFactory, NetworkSceneDriver.DefaultServer);
+            guppy.ConfigureNetwork<ServerPeer>(Program.PeerFactory, NetworkSceneDriver.DefaultServer);
             guppy.Initialize();
 
             var game = guppy.Games.Create<VoidHuntersServerGame>();
             game.StartAsyc();
         }
 
-        private static Peer PeerFactory(IServiceProvider provider)
+        private static ServerPeer PeerFactory(IServiceProvider provider)
         {
             var config = provider.GetService<NetPeerConfiguration>();
             config.Port = 1337;

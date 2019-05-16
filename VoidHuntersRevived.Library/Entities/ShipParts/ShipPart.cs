@@ -49,6 +49,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                     provider,
                     "driver:ship-part")
         {
+            this.Body = BodyFactory.CreateBody(
+                world: world,
+                userData: this,
+                bodyType: BodyType.Dynamic);
         }
 
         protected override void Boot()

@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Library
@@ -23,7 +24,14 @@ namespace VoidHuntersRevived.Library
 
             services.AddSingleton<NetPeerConfiguration>(p =>
             {
-                var config = new NetPeerConfiguration("vhr");
+                var config = new NetPeerConfiguration("vhr")
+                {
+                    ConnectionTimeout = 5
+                };
+
+                // Enable required message types...
+                config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
+                
 
                 return config;
             });
@@ -33,6 +41,7 @@ namespace VoidHuntersRevived.Library
         {
             var entityLoader = provider.GetLoader<EntityLoader>();
 
+            entityLoader.Register<Player>("entity:player", "name:entity:player", "description:entity:player");
             entityLoader.Register<ShipPart>("entity:ship-part", "name:entity:ship-part", "description:entity:ship-part");
         }
 

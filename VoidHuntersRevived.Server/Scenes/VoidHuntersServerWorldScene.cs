@@ -2,8 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using FarseerPhysics.Dynamics;
+using Guppy.Network;
+using Guppy.Network.Groups;
 using Guppy.Network.Peers;
+using Guppy.Network.Security;
+using Lidgren.Network;
 using Microsoft.Xna.Framework;
+using VoidHuntersRevived.Library.Entities.Players;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Server.Scenes
@@ -11,10 +17,51 @@ namespace VoidHuntersRevived.Server.Scenes
     class VoidHuntersServerWorldScene : VoidHuntersWorldScene
     {
         protected ServerPeer server;
+        protected new ServerGroup group { get { return base.group as ServerGroup; } }
 
-        public VoidHuntersServerWorldScene(ServerPeer peer, World world, IServiceProvider provider) : base(peer, world, provider)
+        public VoidHuntersServerWorldScene(ServerPeer server, World world, IServiceProvider provider) : base(server, world, provider)
         {
             this.server = server;
         }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            this.entities.Create<ShipPart>("entity:ship-part");
+
+            this.group.Users.Added += this.HandleUserAdded;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+        }
+
+        #region Event Handlers
+        private void HandleUserAdded(object sender, User user)
+        {
+            /*
+             * BEGIN NEW USER SETUP
+             */
+            // Cache all network entities as is
+            var networkEntities = this.networkEntities.ToArray();
+
+            // Send setup begin message to new user...
+            this.group.SendMesssage(this.group.CreateMessage("setup:begin"), user, NetDeliveryMethod.ReliableOrdered);
+
+            foreach (NetworkEntity ne in networkEntities)
+                this.group.SendMesssage(ne.BuildCreateMessage(this.group), user, NetDeliveryMethod.ReliableOrdered);
+
+            // Send setup end message to new user...
+            this.group.SendMesssage(this.group.CreateMessage("setup:end"), user, NetDeliveryMethod.ReliableOrdered);
+            /*
+             * END NEW USER SETUP
+             */
+
+            // Create a player entity for the new user
+            var player = this.entities.Create<Player>("entity:player", user);
+        }
+        #endregion
     }
 }

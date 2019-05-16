@@ -19,6 +19,7 @@ namespace VoidHuntersRevived.Client.Library
         {
             services.AddGame<VoidHuntersClientGame>();
             services.AddScene<VoidHuntersClientWorldScene>();
+            services.AddScene<LobbyScene>();
             services.AddLayer<CameraLayer>();
             services.AddLayer<HudLayer>();
 
