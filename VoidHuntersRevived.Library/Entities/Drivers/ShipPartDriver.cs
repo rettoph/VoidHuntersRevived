@@ -9,19 +9,21 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Library.Entities.Drivers
 {
-    public abstract class ShipPartDriver : Driver<ShipPart>
+    public abstract class ShipPartDriver : Driver
     {
+        protected ShipPart parent { get; private set; }
+
         public ShipPartDriver(
             ShipPart parent,
             EntityConfiguration configuration,
             Scene scene,
             ILogger logger) : 
                 base(
-                    parent,
                     configuration,
                     scene, 
                     logger)
         {
+            this.parent = parent;
         }
     }
 }

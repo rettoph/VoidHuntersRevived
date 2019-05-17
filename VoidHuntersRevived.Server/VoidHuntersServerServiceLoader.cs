@@ -23,6 +23,7 @@ namespace VoidHuntersRevived.Server
             var entityLoader = provider.GetLoader<EntityLoader>();
 
             entityLoader.Register<ServerShipPartDriver>("driver:ship-part", "name:driver:ship-part", "description:driver:ship-part");
+            entityLoader.Register<ServerPlayerDriver>("driver:player", "name:driver:player", "description:driver:player");
         }
 
         public void PreInitialize(IServiceProvider provider)

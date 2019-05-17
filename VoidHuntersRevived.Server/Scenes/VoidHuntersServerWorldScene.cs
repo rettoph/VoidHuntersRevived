@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using FarseerPhysics.Dynamics;
 using Guppy.Network;
+using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Groups;
 using Guppy.Network.Peers;
 using Guppy.Network.Security;
@@ -24,11 +26,16 @@ namespace VoidHuntersRevived.Server.Scenes
             this.server = server;
         }
 
+        protected override void Boot()
+        {
+            base.Boot();
+
+            this.group.MessageHandler.Add("action", this.HandleActionMessage);
+        }
+
         protected override void Initialize()
         {
             base.Initialize();
-
-            this.entities.Create<ShipPart>("entity:ship-part");
 
             this.group.Users.Added += this.HandleUserAdded;
         }
@@ -36,6 +43,8 @@ namespace VoidHuntersRevived.Server.Scenes
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            this.entities.Update(gameTime);
         }
 
         #region Event Handlers
@@ -50,8 +59,8 @@ namespace VoidHuntersRevived.Server.Scenes
             // Send setup begin message to new user...
             this.group.SendMesssage(this.group.CreateMessage("setup:begin"), user, NetDeliveryMethod.ReliableOrdered);
 
-            foreach (NetworkEntity ne in networkEntities)
-                this.group.SendMesssage(ne.BuildCreateMessage(this.group), user, NetDeliveryMethod.ReliableOrdered);
+            foreach (NetworkEntity ne in networkEntities.OrderBy(ne => ne.UpdateOrder))
+                this.group.SendMesssage(ne.BuildCreateMessage(), user, NetDeliveryMethod.ReliableOrdered);
 
             // Send setup end message to new user...
             this.group.SendMesssage(this.group.CreateMessage("setup:end"), user, NetDeliveryMethod.ReliableOrdered);
@@ -61,7 +70,15 @@ namespace VoidHuntersRevived.Server.Scenes
 
             // Create a player entity for the new user
             var player = this.entities.Create<Player>("entity:player", user);
+            var bridge = this.entities.Create<ShipPart>("entity:ship-part");
+
+            player.UpdateBridge(bridge);
         }
         #endregion
+
+        private void HandleActionMessage(NetIncomingMessage obj)
+        {
+            this.networkEntities.GetById(obj.ReadGuid()).HandleAction(obj.ReadString(), obj);
+        }
     }
 }

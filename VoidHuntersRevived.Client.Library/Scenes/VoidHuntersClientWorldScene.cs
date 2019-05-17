@@ -30,6 +30,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private ContentManager _content;
         private FarseerCamera2D _camera;
         private Queue<NetIncomingMessage> _updateMessageQueue;
+        private Queue<NetIncomingMessage> _actionMessageQueue;
 
         public VoidHuntersClientWorldScene(FarseerCamera2D camera, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, ContentManager content, Peer peer, World world, IServiceProvider provider) : base(peer, world, provider)
         {
@@ -85,20 +86,27 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private void HandleSetupStartMessage(NetIncomingMessage obj)
         {
             _updateMessageQueue = new Queue<NetIncomingMessage>();
+            _actionMessageQueue = new Queue<NetIncomingMessage>();
 
-            this.group.MessageHandler["create"] = this.HandleCreateMessage;
+            this.group.MessageHandler["action"] = this.EnqueueActionMessage;
             this.group.MessageHandler["update"] = this.EnqueueUpdateMessage;
+            this.group.MessageHandler["create"] = this.HandleCreateMessage;
+            
         }
         private void HandleSetupEndMessage(NetIncomingMessage obj)
         {
+            this.group.MessageHandler["action"] = this.HandleActionMessage;
             this.group.MessageHandler["update"] = this.HandleUpdateMessage;
 
             // Flush the collected queue while the client was settingup
             while (_updateMessageQueue.Count > 0)
                 this.HandleUpdateMessage(_updateMessageQueue.Dequeue());
+            while (_actionMessageQueue.Count > 0)
+                this.HandleActionMessage(_actionMessageQueue.Dequeue());
 
-            // Empty the update queue
+            // Empty the message queue
             _updateMessageQueue.Clear();
+            _actionMessageQueue.Clear();
         }
 
         private void HandleCreateMessage(NetIncomingMessage obj)
@@ -110,6 +118,10 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         {
             this.networkEntities.GetById(obj.ReadGuid()).Read(obj);
         }
+        private void HandleActionMessage(NetIncomingMessage obj)
+        {
+            this.networkEntities.GetById(obj.ReadGuid()).HandleAction(obj.ReadString(), obj);
+        }
 
         /// <summary>
         /// Special message queues used to hold group methods
@@ -119,6 +131,10 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private void EnqueueUpdateMessage(NetIncomingMessage obj)
         {
             _updateMessageQueue.Enqueue(obj);
+        }
+        private void EnqueueActionMessage(NetIncomingMessage obj)
+        {
+            _actionMessageQueue.Enqueue(obj);
         }
         #endregion
 
