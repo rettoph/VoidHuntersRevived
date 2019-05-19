@@ -18,17 +18,6 @@ namespace VoidHuntersRevived.Server.Entities.Drivers
     public class ServerPlayerDriver : PlayerDriver
     {
         private ServerPeer _server;
-        
-        private Int32 _lastPositionUpdate;
-        private Int32 _lastVelocityUpdate;
-
-        private Vector2 _oldPosition;
-        private Vector2 _oldVelocity;
-
-        private Single _oldRotation;
-        private Single _oldAngularVelocity;
-
-        private Int32 _updateInterval;
 
         public ServerPlayerDriver(
             Player parent, 
@@ -38,7 +27,6 @@ namespace VoidHuntersRevived.Server.Entities.Drivers
             ServerPeer server) : base(parent, configuration, scene, logger)
         {
             _server = server;
-            _updateInterval = 1000;
 
             this.parent.ActionHandlers.Add("update:direction", this.HandleUpdateDirectionAction);
         }
