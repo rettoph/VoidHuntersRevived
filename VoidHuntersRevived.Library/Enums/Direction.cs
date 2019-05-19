@@ -6,6 +6,9 @@ namespace VoidHuntersRevived.Library.Enums
 {
     public enum Direction
     {
-        Forward
+        Forward,
+        Backward,
+        TurnLeft,
+        TurnRight
     }
 }

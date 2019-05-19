@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Library.Entities.Drivers;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Structs;
 
 namespace VoidHuntersRevived.Client.Library.Entities.Drivers
 {

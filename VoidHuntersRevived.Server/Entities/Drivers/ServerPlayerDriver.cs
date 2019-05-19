@@ -50,24 +50,7 @@ namespace VoidHuntersRevived.Server.Entities.Drivers
 
         public override void Update(GameTime gameTime)
         {
-            if (this.parent.Bridge.Body.Awake)
-            {
-                if (_oldPosition != this.parent.Bridge.Body.Position || _oldRotation != this.parent.Bridge.Body.Rotation)
-                {
-                    _lastPositionUpdate += (Int32)gameTime.ElapsedGameTime.TotalMilliseconds;
-
-                    if (_lastPositionUpdate > _updateInterval)
-                        this.SendUpdatePositionAction();
-                }
-
-                if (_oldVelocity != this.parent.Bridge.Body.LinearVelocity || _oldAngularVelocity != this.parent.Bridge.Body.AngularVelocity)
-                {
-                    _lastVelocityUpdate += (Int32)gameTime.ElapsedGameTime.TotalMilliseconds;
-
-                    if (_lastVelocityUpdate > _updateInterval)
-                        this.SendUpdateVelocityAction();
-                }
-            }
+            // throw new NotImplementedException();
         }
 
         public override void HandleUpdateBridge()
@@ -81,10 +64,6 @@ namespace VoidHuntersRevived.Server.Entities.Drivers
             var action = this.parent.CreateActionMessage("update:direction");
             action.Write((Byte)direction);
             action.Write(value);
-
-            // Push new update actions
-            this.SendUpdatePositionAction();
-            this.SendUpdateVelocityAction();
         }
 
         #region Action Handlers
@@ -104,27 +83,5 @@ namespace VoidHuntersRevived.Server.Entities.Drivers
             }
         }
         #endregion
-
-        private void SendUpdatePositionAction()
-        {
-            var action = this.parent.CreateActionMessage("update:position");
-            action.Write(this.parent.Bridge.Body.Position);
-            action.Write(this.parent.Bridge.Body.Rotation);
-
-            _oldPosition = this.parent.Bridge.Body.Position;
-            _oldRotation = this.parent.Bridge.Body.Rotation;
-            _lastPositionUpdate = _lastPositionUpdate % _updateInterval;
-        }
-
-        private void SendUpdateVelocityAction()
-        {
-            var action = this.parent.CreateActionMessage("update:velocity");
-            action.Write(this.parent.Bridge.Body.LinearVelocity);
-            action.Write(this.parent.Bridge.Body.AngularVelocity);
-
-            _oldVelocity = this.parent.Bridge.Body.LinearVelocity;
-            _oldAngularVelocity = this.parent.Bridge.Body.AngularVelocity;
-            _lastVelocityUpdate = _lastPositionUpdate % _updateInterval;
-        }
     }
 }

@@ -30,6 +30,7 @@ namespace VoidHuntersRevived.Client.Library
         {
             var entityLoader = provider.GetLoader<EntityLoader>();
 
+            entityLoader.Register<ClientFarseerEntityDriver>("driver:farseer-entity", "name:driver:farseer-entity", "description:driver:farseer-entity");
             entityLoader.Register<ClientShipPartDriver>("driver:ship-part", "name:driver:ship-part", "description:driver:ship-part");
             entityLoader.Register<ClientPlayerDriver>("driver:player", "name:driver:player", "description:driver:player");
         }

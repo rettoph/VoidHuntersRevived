@@ -17,12 +17,10 @@ using Guppy.Network.Extensions.Lidgren;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
-    public class ShipPart : NetworkEntity
+    public class ShipPart : FarseerEntity
     {
         private IServiceProvider _provider;
         private ShipPartDriver _driver;
-
-        public Body Body { get; private set; }
 
         public ShipPart(
             EntityConfiguration configuration, 
@@ -32,7 +30,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 base(
                     configuration,
                     scene,
-                    logger)
+                    logger,
+                    provider)
         {
             _provider = provider;
         }
@@ -47,7 +46,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                     id, 
                     configuration, 
                     scene, 
-                    logger)
+                    logger,
+                    provider)
         {
             _provider = provider;
         }
@@ -55,15 +55,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         protected override void Boot()
         {
             base.Boot();
-
-            _driver = _provider.GetService<EntityCollection>().Create<ShipPartDriver>("driver:ship-part", this);
-
-            this.Body = BodyFactory.CreateBody(
-                world: _provider.GetService<World>(),
-                userData: this,
-                bodyType: BodyType.Dynamic);
-            this.Body.AngularDamping = 1f;
-            this.Body.LinearDamping = 1f;
 
             FixtureFactory.AttachPolygon(new Vertices(new Vector2[] {
                 new Vector2(-0.5f, -0.5f),
@@ -73,13 +64,24 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             }), 1f, this.Body, this);
         }
 
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            _driver = _provider.GetService<EntityCollection>().Create<ShipPartDriver>("driver:ship-part", this);
+        }
+
         public override void Draw(GameTime gameTime)
         {
+            base.Draw(gameTime);
+
             _driver.Draw(gameTime);
         }
 
         public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
+
             _driver.Update(gameTime);
         }
 

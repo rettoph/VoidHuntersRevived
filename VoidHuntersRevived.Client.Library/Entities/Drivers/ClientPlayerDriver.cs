@@ -40,8 +40,6 @@ namespace VoidHuntersRevived.Client.Library.Entities.Drivers
 
             this.parent.ActionHandlers.Add("update:bridge", this.HandleUpdateBridgeAction);
             this.parent.ActionHandlers.Add("update:direction", this.HandleUpdateDirectionAction);
-            this.parent.ActionHandlers.Add("update:position", this.HandleUpdatePositionAction);
-            this.parent.ActionHandlers.Add("update:velocity", this.HandleUpdateVelocityAction);
         }
 
         public override void Draw(GameTime gameTime)
@@ -57,6 +55,12 @@ namespace VoidHuntersRevived.Client.Library.Entities.Drivers
 
                 if(kState.IsKeyDown(Keys.W) != this.parent.Directions[Direction.Forward])
                     this.UpdateLocalDirection(Direction.Forward, !this.parent.Directions[Direction.Forward]);
+                if (kState.IsKeyDown(Keys.S) != this.parent.Directions[Direction.Backward])
+                    this.UpdateLocalDirection(Direction.Backward, !this.parent.Directions[Direction.Backward]);
+                if (kState.IsKeyDown(Keys.A) != this.parent.Directions[Direction.TurnLeft])
+                    this.UpdateLocalDirection(Direction.TurnLeft, !this.parent.Directions[Direction.TurnLeft]);
+                if (kState.IsKeyDown(Keys.D) != this.parent.Directions[Direction.TurnRight])
+                    this.UpdateLocalDirection(Direction.TurnRight, !this.parent.Directions[Direction.TurnRight]);
             }
         }
 
@@ -82,22 +86,15 @@ namespace VoidHuntersRevived.Client.Library.Entities.Drivers
                 (Direction)obj.ReadByte(), 
                 obj.ReadBoolean());
         }
-
-        private void HandleUpdatePositionAction(NetIncomingMessage obj)
-        {
-            this.parent.Bridge.Body.Position = obj.ReadVector2();
-            this.parent.Bridge.Body.Rotation = obj.ReadSingle();
-        }
-
-        private void HandleUpdateVelocityAction(NetIncomingMessage obj)
-        {
-            this.parent.Bridge.Body.LinearVelocity = obj.ReadVector2();
-            this.parent.Bridge.Body.AngularVelocity = obj.ReadSingle();
-        }
         #endregion
 
         /// <summary>
-        /// Update the player's directions locally, then send an action request to the server
+        /// Update the player's directions locally,
+        /// then send an action request to the server.
+        /// 
+        /// Generally this is used to predict what the server
+        /// will tell the client to do, as the client claims
+        /// ownership over the current player.
         /// </summary>
         private void UpdateLocalDirection(Direction direction, Boolean value)
         {
