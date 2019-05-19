@@ -10,6 +10,7 @@ using Lidgren.Network;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Entities.Drivers;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
@@ -19,10 +20,12 @@ namespace VoidHuntersRevived.Client.Library.Entities.Drivers
 {
     public class ClientPlayerDriver : PlayerDriver
     {
+        private FarseerCamera2D _camera;
         private ClientPeer _client;
         private EntityCollection _entities;
 
         public ClientPlayerDriver(
+            FarseerCamera2D camera,
             Player parent, 
             EntityConfiguration configuration, 
             Scene scene, 
@@ -30,6 +33,7 @@ namespace VoidHuntersRevived.Client.Library.Entities.Drivers
             ClientPeer client,
             EntityCollection entities) : base(parent, configuration, scene, logger)
         {
+            _camera = camera;
             _client = client;
             _entities = entities;
         }
@@ -61,6 +65,9 @@ namespace VoidHuntersRevived.Client.Library.Entities.Drivers
                     this.UpdateLocalDirection(Direction.TurnLeft, !this.parent.Directions[Direction.TurnLeft]);
                 if (kState.IsKeyDown(Keys.D) != this.parent.Directions[Direction.TurnRight])
                     this.UpdateLocalDirection(Direction.TurnRight, !this.parent.Directions[Direction.TurnRight]);
+
+                // Update the camera position
+                _camera.MoveTo(Vector2.Lerp(_camera.Position, this.parent.Bridge.Body.Position, 0.1f));
             }
         }
 

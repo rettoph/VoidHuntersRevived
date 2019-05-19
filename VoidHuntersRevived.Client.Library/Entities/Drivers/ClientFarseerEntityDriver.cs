@@ -14,10 +14,27 @@ namespace VoidHuntersRevived.Client.Library.Entities.Drivers
 {
     public class ClientFarseerEntityDriver : FarseerEntityDriver
     {
+        /// <summary>
+        /// Wether or not the entity's body was awake last frame
+        /// </summary>
         private Boolean _wasAwake;
+
+        /// <summary>
+        /// The servers claimed body info
+        /// </summary>
         private BodyInfo _serverBodyInfo;
+
+        /// <summary>
+        /// The client body to server body lerp strength
+        /// </summary>
         private Single _clientOffsetLerpStrength;
-        private Single _clientOffsetSnap;
+
+        /// <summary>
+        /// The client to server ratio threshold 
+        /// that must be passed to snap the client to
+        /// server claim.
+        /// </summary>
+        private Single _clientOffsetSnapThreshold;
 
         public ClientFarseerEntityDriver(FarseerEntity parent, EntityConfiguration configuration, Scene scene, ILogger logger) : base(parent, configuration, scene, logger)
         {
@@ -27,7 +44,7 @@ namespace VoidHuntersRevived.Client.Library.Entities.Drivers
         {
             base.Boot();
 
-            _clientOffsetSnap = 5;
+            _clientOffsetSnapThreshold = 5;
             _clientOffsetLerpStrength = 0.1f;
             _serverBodyInfo = new BodyInfo(this.parent.Body);
 
@@ -54,7 +71,7 @@ namespace VoidHuntersRevived.Client.Library.Entities.Drivers
 
 
                 
-                if (clientPositionDifference / _serverBodyInfo.LinearVelocity.Length() > _clientOffsetSnap)
+                if (clientPositionDifference / _serverBodyInfo.LinearVelocity.Length() > _clientOffsetSnapThreshold)
                 { // If the client position offset is too much, snap to what the server position claim
                     this.logger.LogWarning($"Snapping FarseerEntity<{this.parent.GetType().Name}>({this.parent.Id}) to server position!");
                     this.parent.Body.Position = _serverBodyInfo.Position;
@@ -65,7 +82,7 @@ namespace VoidHuntersRevived.Client.Library.Entities.Drivers
                 }
 
                 // If the client rotation offset is too much, snap to what the server position claim
-                if (clientRotationDifference / _serverBodyInfo.AngularVelocity > _clientOffsetSnap)
+                if (clientRotationDifference / _serverBodyInfo.AngularVelocity > _clientOffsetSnapThreshold)
                     this.parent.Body.Rotation = _serverBodyInfo.Rotation;
                 else // Otherwise lerp to the server rotation claim
                     this.parent.Body.Rotation = MathHelper.Lerp(this.parent.Body.Rotation, _serverBodyInfo.Rotation, _clientOffsetLerpStrength);
