@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using FarseerPhysics.Collision.Shapes;
 using Guppy;
 using Guppy.Configurations;
 using Microsoft.Extensions.Logging;
+using Microsoft.Xna.Framework;
 
 namespace VoidHuntersRevived.Library.Entities.Drivers
 {
@@ -19,5 +21,22 @@ namespace VoidHuntersRevived.Library.Entities.Drivers
         {
             this.parent = parent;
         }
+
+        #region Farseer Methods
+        public virtual void ApplyLinearImpulse(Vector2 impulse)
+        {
+            this.parent.Body.ApplyLinearImpulse(impulse);
+        }
+
+        public virtual void ApplyAngularImpulse(Single impulse)
+        {
+            this.parent.Body.ApplyAngularImpulse(impulse);
+        }
+
+        public virtual void CreateFixture(Shape shape)
+        {
+            this.parent.Body.CreateFixture(shape, this.parent);
+        }
+        #endregion
     }
 }

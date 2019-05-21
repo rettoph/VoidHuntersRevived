@@ -1,6 +1,7 @@
 ﻿using FarseerPhysics;
 using FarseerPhysics.DebugView;
 using FarseerPhysics.Dynamics;
+using FarseerPhysics.Factories;
 using Guppy.Network;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Groups;
@@ -24,40 +25,53 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 {
     public class VoidHuntersClientWorldScene : VoidHuntersWorldScene
     {
+        public World ServerWorld { get; private set; }
+
+        private ClientPeer _client;
         private GraphicsDevice _graphics;
         private DebugViewXNA _debug;
+        private DebugViewXNA _debugServer;
         private SpriteBatch _spriteBatch;
         private ContentManager _content;
         private FarseerCamera2D _camera;
         private Queue<NetIncomingMessage> _updateMessageQueue;
         private Queue<NetIncomingMessage> _actionMessageQueue;
 
-        public VoidHuntersClientWorldScene(FarseerCamera2D camera, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, ContentManager content, Peer peer, World world, IServiceProvider provider) : base(peer, world, provider)
+        public VoidHuntersClientWorldScene(FarseerCamera2D camera, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, ContentManager content, ClientPeer peer, World world, IServiceProvider provider) : base(peer, world, provider)
         {
             _camera = camera;
             _spriteBatch = spriteBatch;
             _graphics = graphicsDevice;
             _content = content;
+            _client = peer;
         }
 
         protected override void Boot()
         {
             base.Boot();
 
-            _debug = new DebugViewXNA(this.world);
-            _debug.LoadContent(_graphics, _content);
-
             this.group.MessageHandler.Add("setup:begin", this.HandleSetupStartMessage);
             this.group.MessageHandler.Add("setup:end", this.HandleSetupEndMessage);
+
+            this.ServerWorld = new World(Vector2.Zero);
         }
 
         protected override void PreInitialize()
         {
             base.PreInitialize();
 
+            _debug = new DebugViewXNA(this.world);
+            _debug.LoadContent(_graphics, _content);
             _debug.AppendFlags(DebugViewFlags.ContactPoints);
             _debug.AppendFlags(DebugViewFlags.ContactNormals);
             _debug.AppendFlags(DebugViewFlags.Controllers);
+
+            _debugServer = new DebugViewXNA(this.ServerWorld);
+            _debugServer.LoadContent(_graphics, _content);
+            _debugServer.AppendFlags(DebugViewFlags.ContactPoints);
+            _debugServer.AppendFlags(DebugViewFlags.ContactNormals);
+            _debugServer.AppendFlags(DebugViewFlags.Controllers);
+            _debugServer.DefaultShapeColor = Color.Blue;
 
             this.DefaultLayerDepth = 1;
 
@@ -69,6 +83,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         {
             base.Update(gameTime);
 
+            this.ServerWorld.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
             _camera.Update(gameTime);
         }
         public override void Draw(GameTime gameTime)
@@ -79,6 +94,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             _spriteBatch.Begin();
             _debug.RenderDebugData(_camera.Projection, _camera.View);
+            _debugServer.RenderDebugData(_camera.Projection, _camera.View);
             _spriteBatch.End();
         }
 
@@ -137,6 +153,5 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _actionMessageQueue.Enqueue(obj);
         }
         #endregion
-
     }
 }

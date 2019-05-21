@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Drivers;
-using VoidHuntersRevived.Library.Structs;
+using Guppy.Network.Extensions.Lidgren;
 
 namespace VoidHuntersRevived.Server.Entities.Drivers
 {
@@ -18,11 +18,6 @@ namespace VoidHuntersRevived.Server.Entities.Drivers
         /// was flushed to clients
         /// </summary>
         private Double _timeWhenFlushed;
-
-        /// <summary>
-        /// The position of the farseer body last time the server flushed it.
-        /// </summary>
-        private BodyInfo _flushedBodyInfo;
 
         /// <summary>
         /// Simple bool used to track if the body was awake
@@ -43,8 +38,7 @@ namespace VoidHuntersRevived.Server.Entities.Drivers
         {
             base.Boot();
 
-            _timeToFlush = 250;
-            _flushedBodyInfo = new BodyInfo(this.parent.Body);
+            _timeToFlush = 100;
         }
 
         public override void Draw(GameTime gameTime)
@@ -80,12 +74,12 @@ namespace VoidHuntersRevived.Server.Entities.Drivers
         /// <param name="snapTo">Should the clients instantly snap to this position.</param>
         private void FlushBodyInfo(Boolean snapTo = false)
         {
-            // First update the body info data
-            _flushedBodyInfo.Import(this.parent.Body);
-
             // Create a new action method for the body data...
             var action = this.parent.CreateActionMessage("update:body-info");
-            _flushedBodyInfo.Write(action);
+            action.Write(this.parent.Body.Position);
+            action.Write(this.parent.Body.Rotation);
+            action.Write(this.parent.Body.LinearVelocity);
+            action.Write(this.parent.Body.AngularVelocity);
             action.Write(snapTo);
         }
     }

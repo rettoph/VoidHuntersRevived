@@ -11,6 +11,7 @@ using VoidHuntersRevived.Library.Entities.Drivers;
 using Microsoft.Extensions.DependencyInjection;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
+using FarseerPhysics.Collision.Shapes;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -26,6 +27,7 @@ namespace VoidHuntersRevived.Library.Entities
 
         public Body Body { get; private set; }
 
+        #region Constructor Methods
         public FarseerEntity(EntityConfiguration configuration, Scene scene, ILogger logger, IServiceProvider provider) : base(configuration, scene, logger)
         {
             _provider = provider;
@@ -34,7 +36,9 @@ namespace VoidHuntersRevived.Library.Entities
         {
             _provider = provider;
         }
+        #endregion
 
+        #region Initialization Methods
         protected override void Boot()
         {
             base.Boot();
@@ -54,7 +58,9 @@ namespace VoidHuntersRevived.Library.Entities
             // Build the entity's driver...
             _driver = _provider.GetService<EntityCollection>().Create<FarseerEntityDriver>("driver:farseer-entity", this);
         }
+        #endregion
 
+        #region Frame Methods
         public override void Draw(GameTime gameTime)
         {
             _driver.Draw(gameTime);
@@ -64,6 +70,24 @@ namespace VoidHuntersRevived.Library.Entities
         {
             _driver.Update(gameTime);
         }
+        #endregion
 
+        #region Farseer Methods
+        public virtual void ApplyLinearImpulse(Vector2 impulse)
+        {
+            _driver.ApplyLinearImpulse(impulse);
+        }
+
+        public virtual void ApplyAngularImpulse(Single impulse)
+        {
+            _driver.ApplyAngularImpulse(impulse);
+        }
+
+        public virtual void CreateFixture(Shape shape)
+        {
+            // Alert the farseer entity driver to create a fixture
+            _driver.CreateFixture(shape);
+        }
+        #endregion
     }
 }

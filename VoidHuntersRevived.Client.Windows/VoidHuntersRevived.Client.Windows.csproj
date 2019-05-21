@@ -100,8 +100,12 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Submodules\FarseerPhysics\FarseerPhysics.MonoGame.DebugView\FarseerPhysics.MonoGame.DebugView.csproj">
-      <Project>{2e9c877f-4726-404e-96d6-763af74cc5a7}</Project>
+      <Project>{2b3ba11a-324c-49c8-b5e5-1b7e9c43e9ca}</Project>
       <Name>FarseerPhysics.MonoGame.DebugView</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Submodules\FarseerPhysics\FarseerPhysics.MonoGame\FarseerPhysics.MonoGame.csproj">
+      <Project>{efa482d2-5848-4f77-b90f-d00b75de9069}</Project>
+      <Name>FarseerPhysics.MonoGame</Name>
     </ProjectReference>
     <ProjectReference Include="..\Submodules\Guppy\Guppy.Network\Guppy.Network.csproj">
       <Project>{0B1386F9-8A9A-4CA8-B7C5-8FEEABD3F5A0}</Project>

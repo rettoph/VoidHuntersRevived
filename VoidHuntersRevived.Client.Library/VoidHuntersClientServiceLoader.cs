@@ -17,13 +17,13 @@ namespace VoidHuntersRevived.Client.Library
     {
         public void ConfigureServiceCollection(IServiceCollection services)
         {
+            services.AddScoped<FarseerCamera2D>();
+
             services.AddGame<VoidHuntersClientGame>();
             services.AddScene<VoidHuntersClientWorldScene>();
             services.AddScene<LobbyScene>();
             services.AddLayer<CameraLayer>();
             services.AddLayer<HudLayer>();
-
-            services.AddScoped<FarseerCamera2D>();
         }
 
         public void Boot(IServiceProvider provider)

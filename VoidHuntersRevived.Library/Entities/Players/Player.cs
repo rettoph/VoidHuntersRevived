@@ -76,13 +76,13 @@ namespace VoidHuntersRevived.Library.Entities.Players
             {
                 var thrust = Vector2.Transform(new Vector2(0.1f, 0), Matrix.CreateRotationZ(this.Bridge.Body.Rotation));
                 if (this.Directions[Direction.Forward])
-                    this.Bridge.Body.ApplyLinearImpulse(thrust);
+                    this.Bridge.ApplyLinearImpulse(thrust);
                 if (this.Directions[Direction.Backward])
-                    this.Bridge.Body.ApplyLinearImpulse(-thrust);
+                    this.Bridge.ApplyLinearImpulse(-thrust);
                 if (this.Directions[Direction.TurnLeft])
-                    this.Bridge.Body.ApplyAngularImpulse(-0.05f);
+                    this.Bridge.ApplyAngularImpulse(-0.05f);
                 if (this.Directions[Direction.TurnRight])
-                    this.Bridge.Body.ApplyAngularImpulse(0.05f);
+                    this.Bridge.ApplyAngularImpulse(0.05f);
             }
 
             _driver.Update(gameTime);

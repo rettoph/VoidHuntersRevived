@@ -67,7 +67,8 @@ namespace VoidHuntersRevived.Client.Library.Entities.Drivers
                     this.UpdateLocalDirection(Direction.TurnRight, !this.parent.Directions[Direction.TurnRight]);
 
                 // Update the camera position
-                _camera.MoveTo(Vector2.Lerp(_camera.Position, this.parent.Bridge.Body.Position, 0.1f));
+                if(this.parent.Bridge != null)
+                    _camera.MoveTo(Vector2.Lerp(_camera.Position, this.parent.Bridge.Body.Position, 0.1f));
             }
         }
 
@@ -105,7 +106,8 @@ namespace VoidHuntersRevived.Client.Library.Entities.Drivers
         /// </summary>
         private void UpdateLocalDirection(Direction direction, Boolean value)
         {
-            this.parent.UpdateDirection(direction, value);
+            if(value)
+                this.parent.UpdateDirection(direction, value);
 
             var action = this.parent.CreateActionMessage("update:direction");
             action.Write((Byte)direction);
