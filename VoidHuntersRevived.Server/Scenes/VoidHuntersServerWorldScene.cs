@@ -70,7 +70,7 @@ namespace VoidHuntersRevived.Server.Scenes
 
             // Create a player entity for the new user
             var player = this.entities.Create<Player>("entity:player", user);
-            var bridge = this.entities.Create<ShipPart>("entity:ship-part");
+            var bridge = this.entities.Create<ShipPart>("entity:hull:square");
 
             player.UpdateBridge(bridge);
         }

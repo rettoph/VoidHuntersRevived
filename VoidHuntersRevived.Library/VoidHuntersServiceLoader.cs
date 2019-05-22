@@ -1,4 +1,6 @@
-﻿using FarseerPhysics.Controllers;
+﻿using FarseerPhysics.Collision.Shapes;
+using FarseerPhysics.Common;
+using FarseerPhysics.Controllers;
 using FarseerPhysics.Dynamics;
 using Guppy.Extensions;
 using Guppy.Interfaces;
@@ -9,6 +11,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Library.Configurations;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 
@@ -43,7 +46,19 @@ namespace VoidHuntersRevived.Library
             var entityLoader = provider.GetLoader<EntityLoader>();
 
             entityLoader.Register<Player>("entity:player", "name:entity:player", "description:entity:player");
-            entityLoader.Register<ShipPart>("entity:ship-part", "name:entity:ship-part", "description:entity:ship-part");
+            entityLoader.Register<ShipPart>(
+                "entity:hull:square", 
+                "name:entity:hull:square", 
+                "description:entity:hull:square",
+                new ShipPartConfiguration(
+                    shape: new PolygonShape(
+                        vertices: new Vertices(new Vector2[] {
+                            new Vector2(0, 0),
+                            new Vector2(1, 0),
+                            new Vector2(1, 1),
+                            new Vector2(1, 0)
+                        }),
+                        density: 1f)));
         }
 
         public void PreInitialize(IServiceProvider provider)

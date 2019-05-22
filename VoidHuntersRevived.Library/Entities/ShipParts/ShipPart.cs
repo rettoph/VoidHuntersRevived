@@ -15,6 +15,7 @@ using VoidHuntersRevived.Library.Entities.Drivers;
 using Lidgren.Network;
 using Guppy.Network.Extensions.Lidgren;
 using FarseerPhysics.Collision.Shapes;
+using VoidHuntersRevived.Library.Configurations;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -22,8 +23,12 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
     {
         private IServiceProvider _provider;
         private ShipPartDriver _driver;
+        private ShipPartConfiguration _configuration;
 
-        public Shape Shape { get; private set; }
+        public Shape Shape
+        {
+            get { return _configuration.Shape; }
+        }
 
         #region Constructor Methods
         public ShipPart(
@@ -58,36 +63,15 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #endregion
 
         #region Initialization Methods
-        protected override void Boot()
-        {
-            base.Boot();
-
-            this.Shape = this.CreateShape();
-        }
-
         protected override void Initialize()
         {
             base.Initialize();
 
             _driver = _provider.GetService<EntityCollection>().Create<ShipPartDriver>("driver:ship-part", this);
+            _configuration = (ShipPartConfiguration)this.Configuration.Data;
 
             // Attatch the default shape to the current ship part
             this.CreateFixture(this.Shape);
-        }
-
-        /// <summary>
-        /// Create the main shape used within the current ship part.
-        /// </summary>
-        /// <returns></returns>
-        protected virtual Shape CreateShape()
-        {
-            return new PolygonShape(new Vertices(new Vector2[]
-            {
-                new Vector2(-0.5f, 0.5f),
-                new Vector2(0.5f, 0.5f),
-                new Vector2(0.5f, -0.5f),
-                new Vector2(-0.5f, -0.5f)
-            }), 1f);
         }
         #endregion
 

@@ -68,7 +68,7 @@ namespace VoidHuntersRevived.Client.Library.Entities.Drivers
 
                 // Update the camera position
                 if(this.parent.Bridge != null)
-                    _camera.MoveTo(Vector2.Lerp(_camera.Position, this.parent.Bridge.Body.Position, 0.1f));
+                    _camera.MoveTo(Vector2.Lerp(_camera.Position, this.parent.Bridge.Body.WorldCenter, 0.1f));
             }
         }
 

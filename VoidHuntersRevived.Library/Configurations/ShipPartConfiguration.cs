@@ -1,4 +1,5 @@
-﻿using Guppy.Interfaces;
+﻿using FarseerPhysics.Collision.Shapes;
+using Guppy.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -8,12 +9,12 @@ namespace VoidHuntersRevived.Library.Configurations
 {
     public struct ShipPartConfiguration : IEntityData
     {
-        public readonly Vector2[] Vertices;
+        public readonly Shape Shape;
 
         public ShipPartConfiguration(
-            Vector2[] vertices)
+            Shape shape)
         {
-            this.Vertices = vertices;
+            this.Shape = shape;
         }
 
         public void Initialize(IServiceProvider provider)
