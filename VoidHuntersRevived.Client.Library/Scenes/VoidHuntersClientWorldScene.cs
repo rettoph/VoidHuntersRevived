@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Layers;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
-using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Client.Library.Scenes

@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Library.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Library.Scenes
 {
@@ -25,16 +24,6 @@ namespace VoidHuntersRevived.Library.Scenes
         {
             this.peer = peer;
             this.world = world;
-        }
-
-        protected override void Boot()
-        {
-            base.Boot();
-        }
-
-        protected override void Initialize()
-        {
-            base.Initialize();
         }
 
         public override void Update(GameTime gameTime)

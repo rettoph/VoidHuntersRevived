@@ -6,10 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Client.Library.Entities.Drivers;
+using VoidHuntersRevived.Client.Library.Drivers;
 using VoidHuntersRevived.Client.Library.Layers;
 using VoidHuntersRevived.Client.Library.Scenes;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
+using VoidHuntersRevived.Library.Entities;
 
 namespace VoidHuntersRevived.Client.Library
 {
@@ -28,11 +29,8 @@ namespace VoidHuntersRevived.Client.Library
 
         public void Boot(IServiceProvider provider)
         {
-            var entityLoader = provider.GetLoader<EntityLoader>();
-
-            entityLoader.Register<ClientFarseerEntityDriver>("driver:farseer-entity", "name:driver:farseer-entity", "description:driver:farseer-entity");
-            entityLoader.Register<ClientShipPartDriver>("driver:ship-part", "name:driver:ship-part", "description:driver:ship-part");
-            entityLoader.Register<ClientPlayerDriver>("driver:player", "name:driver:player", "description:driver:player");
+            var driverLoader = provider.GetLoader<DriverLoader>();
+            driverLoader.Register<FarseerEntity, ClientFarseerEntityDriver>();
         }
 
         public void PreInitialize(IServiceProvider provider)

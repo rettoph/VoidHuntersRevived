@@ -12,8 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Configurations;
-using VoidHuntersRevived.Library.Entities.Players;
-using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Entities;
 
 namespace VoidHuntersRevived.Library
 {
@@ -44,21 +43,7 @@ namespace VoidHuntersRevived.Library
         public void Boot(IServiceProvider provider)
         {
             var entityLoader = provider.GetLoader<EntityLoader>();
-
-            entityLoader.Register<Player>("entity:player", "name:entity:player", "description:entity:player");
-            entityLoader.Register<ShipPart>(
-                "entity:hull:square", 
-                "name:entity:hull:square", 
-                "description:entity:hull:square",
-                new ShipPartConfiguration(
-                    shape: new PolygonShape(
-                        vertices: new Vertices(new Vector2[] {
-                            new Vector2(0, 0),
-                            new Vector2(1, 0),
-                            new Vector2(1, 1),
-                            new Vector2(0, 1)
-                        }),
-                        density: 1f)));
+            entityLoader.Register<FarseerEntity>("entity:farseer-entity", "name:entity:farseer-entity", "description:entity:farseer-entity");
         }
 
         public void PreInitialize(IServiceProvider provider)
