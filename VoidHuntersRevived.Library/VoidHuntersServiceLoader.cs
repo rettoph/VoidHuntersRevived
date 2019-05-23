@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Library
     {
         public void ConfigureServiceCollection(IServiceCollection services)
         {
-            services.AddScoped<World>(p =>
+            services.AddSingleton<World>(p =>
             {
                 return new World(Vector2.Zero);
             });

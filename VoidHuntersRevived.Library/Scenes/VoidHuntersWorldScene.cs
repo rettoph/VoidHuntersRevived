@@ -16,19 +16,19 @@ namespace VoidHuntersRevived.Library.Scenes
     public class VoidHuntersWorldScene : NetworkScene
     {
         protected Peer peer;
-        protected World world;
 
+        public World World { get; private set; }
         public UserCollection Users { get { return this.group.Users; } }
 
         public VoidHuntersWorldScene(Peer peer, World world, IServiceProvider provider) : base(peer.Groups.GetOrCreateById(Guid.Empty), provider)
         {
             this.peer = peer;
-            this.world = world;
+            this.World = world;
         }
 
         public override void Update(GameTime gameTime)
         {
-            this.world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
+            this.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
 
             base.Update(gameTime);
         }

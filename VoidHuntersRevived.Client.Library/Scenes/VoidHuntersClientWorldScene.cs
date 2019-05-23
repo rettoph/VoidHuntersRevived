@@ -10,6 +10,7 @@ using Guppy.UI.Elements;
 using Guppy.UI.Entities;
 using Guppy.Utilities.Cameras;
 using Lidgren.Network;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -52,14 +53,14 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             this.group.MessageHandler.Add("setup:begin", this.HandleSetupStartMessage);
             this.group.MessageHandler.Add("setup:end", this.HandleSetupEndMessage);
 
-            this.ServerWorld = new World(Vector2.Zero);
+            this.ServerWorld = this.provider.GetRequiredService<World>();
         }
 
         protected override void PreInitialize()
         {
             base.PreInitialize();
 
-            _debug = new DebugViewXNA(this.world);
+            _debug = new DebugViewXNA(this.World);
             _debug.LoadContent(_graphics, _content);
             _debug.AppendFlags(DebugViewFlags.ContactPoints);
             _debug.AppendFlags(DebugViewFlags.ContactNormals);
