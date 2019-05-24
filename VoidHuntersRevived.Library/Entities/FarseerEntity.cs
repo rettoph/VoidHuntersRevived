@@ -41,7 +41,12 @@ namespace VoidHuntersRevived.Library.Entities
 
             this.Body = this.CreateBody((this.scene as VoidHuntersWorldScene).World);
 
-            this.CreateFixture(new PolygonShape(PolygonTools.CreateRectangle(1, 1), 1f));
+            this.CreateFixture(new PolygonShape(new Vertices(new Vector2[] {
+                new Vector2(0, 0),
+                new Vector2(0, 1),
+                new Vector2(1, 1),
+                new Vector2(1, 0)
+            }), 1f));
         }
         #endregion
 
@@ -57,14 +62,13 @@ namespace VoidHuntersRevived.Library.Entities
         public virtual Body CreateBody(
             World world, 
             Vector2 position = new Vector2(), 
-            float rotation = 0, 
-            BodyType bodyType = BodyType.Static)
+            float rotation = 0)
         {
             var body = BodyFactory.CreateBody(
                 world,
                 position,
                 rotation,
-                bodyType,
+                BodyType.Dynamic,
                 this);
 
             body.LinearDamping = 1f;

@@ -1,4 +1,4 @@
-﻿using Guppy.Extensions;
+﻿using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,12 +17,13 @@ namespace VoidHuntersRevived.Server
         {
             services.AddGame<VoidHuntersServerGame>();
             services.AddScene<VoidHuntersServerWorldScene>();
+
+            services.AddDriver<FarseerEntity, ServerFarseerEntityDriver>();
         }
 
         public void Boot(IServiceProvider provider)
         {
-            var driverLoader = provider.GetLoader<DriverLoader>();
-            driverLoader.Register<FarseerEntity, ServerFarseerEntityDriver>();
+            // throw new NotImplementedException();
         }
 
         public void PreInitialize(IServiceProvider provider)

@@ -2,7 +2,7 @@
 using FarseerPhysics.Common;
 using FarseerPhysics.Controllers;
 using FarseerPhysics.Dynamics;
-using Guppy.Extensions;
+using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Loaders;
 using Lidgren.Network;

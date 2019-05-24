@@ -11,6 +11,7 @@ using Guppy.UI.Entities;
 using Guppy.Utilities.Cameras;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -44,16 +45,20 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _graphics = graphicsDevice;
             _content = content;
             _client = peer;
+
+            this.logger.LogInformation("Constructing!");
         }
 
         protected override void Boot()
         {
+            this.logger.LogInformation("Booting!");
+
             base.Boot();
+
+            this.ServerWorld = this.provider.GetRequiredService<World>();
 
             this.group.MessageHandler.Add("setup:begin", this.HandleSetupStartMessage);
             this.group.MessageHandler.Add("setup:end", this.HandleSetupEndMessage);
-
-            this.ServerWorld = this.provider.GetRequiredService<World>();
         }
 
         protected override void PreInitialize()

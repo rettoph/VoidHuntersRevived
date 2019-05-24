@@ -1,5 +1,5 @@
 ﻿using Guppy.Collections;
-using Guppy.Extensions;
+using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,12 +25,13 @@ namespace VoidHuntersRevived.Client.Library
             services.AddScene<LobbyScene>();
             services.AddLayer<CameraLayer>();
             services.AddLayer<HudLayer>();
+
+            services.AddDriver<FarseerEntity, ClientFarseerEntityDriver>();
         }
 
         public void Boot(IServiceProvider provider)
         {
-            var driverLoader = provider.GetLoader<DriverLoader>();
-            driverLoader.Register<FarseerEntity, ClientFarseerEntityDriver>();
+            // throw new NotImplementedException();
         }
 
         public void PreInitialize(IServiceProvider provider)

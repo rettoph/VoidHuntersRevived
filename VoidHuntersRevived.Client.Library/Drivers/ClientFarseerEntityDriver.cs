@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             base.Initialize();
 
             // Create a new body within the server world to represent the server render of the current entity
-            // _serverBody = _entity.CreateBody(_scene.ServerWorld, _entity.Body.Position, _entity.Body.Rotation, _entity.Body.BodyType);
+            _serverBody = _entity.CreateBody(_scene.ServerWorld, _entity.Body.Position, _entity.Body.Rotation);
         }
         #endregion
 
