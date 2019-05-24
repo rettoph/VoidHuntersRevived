@@ -45,5 +45,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             // throw new NotImplementedException();
         }
         #endregion
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            _serverBody.Dispose();
+        }
     }
 }

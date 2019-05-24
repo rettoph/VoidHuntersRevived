@@ -43,6 +43,7 @@ namespace VoidHuntersRevived.Library
         public void Boot(IServiceProvider provider)
         {
             var entityLoader = provider.GetLoader<EntityLoader>();
+            entityLoader.Register<Player>("entity:player", "name:entity:player", "description:entity:player");
             entityLoader.Register<FarseerEntity>("entity:farseer-entity", "name:entity:farseer-entity", "description:entity:farseer-entity");
         }
 

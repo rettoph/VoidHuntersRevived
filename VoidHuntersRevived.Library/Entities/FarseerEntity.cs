@@ -86,5 +86,12 @@ namespace VoidHuntersRevived.Library.Entities
             return fixture;
         }
         #endregion
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.Body.Dispose();
+        }
     }
 }

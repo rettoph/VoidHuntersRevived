@@ -10,6 +10,7 @@ using Guppy.Network.Peers;
 using Guppy.Network.Security;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
+using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Server.Scenes
@@ -63,8 +64,10 @@ namespace VoidHuntersRevived.Server.Scenes
             // Send setup end message to new user...
             this.group.SendMesssage(this.group.CreateMessage("setup:end"), user, NetDeliveryMethod.ReliableOrdered);
 
+            var player = this.entities.Create<Player>("entity:player");
+            var bridge = this.entities.Create<FarseerEntity>("entity:farseer-entity");
 
-            var bridge = this.entities.Create("entity:farseer-entity");
+            player.UpdateBridge(bridge);
         }
         #endregion
 
