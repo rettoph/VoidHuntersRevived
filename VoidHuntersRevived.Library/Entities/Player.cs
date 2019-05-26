@@ -15,6 +15,7 @@ using Guppy.Network.Peers;
 using Microsoft.Xna.Framework;
 using Guppy.Network.Groups;
 using VoidHuntersRevived.Library.Scenes;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -30,7 +31,7 @@ namespace VoidHuntersRevived.Library.Entities
 
         #region Public Attributes
         public User User { get; private set; }
-        public FarseerEntity Bridge { get; private set; }
+        public ShipPart Bridge { get; private set; }
         #endregion
 
         #region Events
@@ -98,7 +99,7 @@ namespace VoidHuntersRevived.Library.Entities
             }
         }
 
-        public void SetBridge(FarseerEntity bridge)
+        public void SetBridge(ShipPart bridge)
         {
             if (bridge != this.Bridge)
             {
@@ -115,7 +116,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             if (_directions[direction] != value)
             {
-                this.logger.LogDebug($"Updating Player({this.Id}) Direction<{direction}) to {value}.");
+                this.logger.LogDebug($"Updating Player({this.Id}) Direction<{direction}> to {value}.");
 
                 _directions[direction] = value;
 
@@ -139,7 +140,7 @@ namespace VoidHuntersRevived.Library.Entities
                 this.SetUser(null);
 
             if (im.ReadBoolean())
-                this.SetBridge(_entities.GetById(im.ReadGuid()) as FarseerEntity);
+                this.SetBridge(_entities.GetById(im.ReadGuid()) as ShipPart);
             else
                 this.SetBridge(null);
         }

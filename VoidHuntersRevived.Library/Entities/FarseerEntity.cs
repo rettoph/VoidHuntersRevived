@@ -19,10 +19,12 @@ namespace VoidHuntersRevived.Library.Entities
     /// </summary>
     public class FarseerEntity : NetworkEntity
     {
+        private Dictionary<Shape, Fixture> _shapeFixtureTable;
         public Body Body { get; private set; }
 
         #region Events
         public event EventHandler<Shape> OnFixtureCreated;
+        public event EventHandler<Shape> OnFixtureDestroyed;
         public event EventHandler<Vector2> OnLinearImpulseApplied;
         public event EventHandler<Single> OnAngularImpulseApplied;
         #endregion
@@ -37,6 +39,13 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Initialization Methods
+        protected override void Boot()
+        {
+            base.Boot();
+
+            _shapeFixtureTable = new Dictionary<Shape, Fixture>();
+        }
+
         protected override void PreInitialize()
         {
             base.PreInitialize();
@@ -47,13 +56,6 @@ namespace VoidHuntersRevived.Library.Entities
         protected override void Initialize()
         {
             base.Initialize();
-
-            this.CreateFixture(new PolygonShape(new Vertices(new Vector2[] {
-                new Vector2(0, 0),
-                new Vector2(0, 1),
-                new Vector2(1, 1),
-                new Vector2(1, 0)
-            }), 1f));
         }
         #endregion
 
@@ -84,13 +86,25 @@ namespace VoidHuntersRevived.Library.Entities
             return body;
         }
 
-        public Fixture CreateFixture(Shape shape)
+        public Shape CreateFixture(Shape shape)
         {
             var fixture = this.Body.CreateFixture(shape, this);
+            _shapeFixtureTable.Add(shape, fixture);
 
             this.OnFixtureCreated?.Invoke(this, shape);
 
-            return fixture;
+            return shape;
+        }
+
+        public void DestroyFixture(Shape shape)
+        {
+            if (!_shapeFixtureTable.ContainsKey(shape))
+                throw new Exception("Unable to destroy fixture, shape unknown.");
+
+            this.Body.DestroyFixture(_shapeFixtureTable[shape]);
+            _shapeFixtureTable.Remove(shape);
+
+            this.OnFixtureDestroyed?.Invoke(this, shape);
         }
 
         public void ApplyLinearImpulse(Vector2 impulse)

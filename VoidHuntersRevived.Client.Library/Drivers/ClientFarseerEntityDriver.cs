@@ -16,6 +16,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 {
     public class ClientFarseerEntityDriver : Driver
     {
+        private Dictionary<Shape, Fixture> _serverShapeFixtureTable;
         private Body _serverBody;
         private VoidHuntersClientWorldScene _scene;
         private FarseerEntity _entity;
@@ -30,6 +31,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         #endregion
 
         #region Initialization Methods
+        protected override void Boot()
+        {
+            base.Boot();
+
+            _serverShapeFixtureTable = new Dictionary<Shape, Fixture>();
+        }
+
         protected override void PreInitialize()
         {
             base.PreInitialize();
@@ -39,6 +47,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
             // Bind event handlers
             _entity.OnFixtureCreated += this.HandleFixtureCreated;
+            _entity.OnFixtureDestroyed += this.HandleFixtureDestroyed;
             _entity.OnLinearImpulseApplied += this.HandleLinearImpulseApplied;
             _entity.OnAngularImpulseApplied += this.HandleAngularImpulseApplied;
         }
@@ -85,13 +94,26 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         #region Event Handlers
         /// <summary>
         /// When the client render recieves a fixture,
-        /// buplocate it on the server render too
+        /// duplocate it on the server render too
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="shape"></param>
         private void HandleFixtureCreated(object sender, Shape shape)
         {
-            _serverBody.CreateFixture(shape);
+            var fixture = _serverBody.CreateFixture(shape);
+            _serverShapeFixtureTable.Add(shape, fixture);
+        }
+
+        /// <summary>
+        /// When the client render destroyed a fixture,
+        /// duplicate it on the server render too
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="shape"></param>
+        private void HandleFixtureDestroyed(object sender, Shape shape)
+        {
+            _serverBody.DestroyFixture(_serverShapeFixtureTable[shape]);
+            _serverShapeFixtureTable.Remove(shape);
         }
 
         private void HandleAngularImpulseApplied(object sender, float e)
@@ -110,6 +132,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             base.Dispose();
 
             _serverBody.Dispose();
+
+            _entity.OnFixtureCreated -= this.HandleFixtureCreated;
+            _entity.OnFixtureDestroyed -= this.HandleFixtureDestroyed;
+            _entity.OnLinearImpulseApplied -= this.HandleLinearImpulseApplied;
+            _entity.OnAngularImpulseApplied -= this.HandleAngularImpulseApplied;
         }
     }
 }

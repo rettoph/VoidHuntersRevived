@@ -11,6 +11,7 @@ using Guppy.Network.Security;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Server.Scenes
@@ -64,7 +65,7 @@ namespace VoidHuntersRevived.Server.Scenes
             // Send setup end message to new user...
             this.group.SendMesssage(this.group.CreateMessage("setup:end"), user, NetDeliveryMethod.ReliableOrdered);
             
-            var bridge = this.entities.Create<FarseerEntity>("entity:farseer-entity");
+            var bridge = this.entities.Create<ShipPart>("entity:ship-part");
 
             var player = this.entities.Create<Player>("entity:player");
             player.SetUser(user);

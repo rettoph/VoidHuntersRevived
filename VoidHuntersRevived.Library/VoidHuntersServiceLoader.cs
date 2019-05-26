@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Configurations;
 using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Library
@@ -47,7 +48,19 @@ namespace VoidHuntersRevived.Library
         {
             var entityLoader = provider.GetLoader<EntityLoader>();
             entityLoader.Register<Player>("entity:player", "name:entity:player", "description:entity:player");
-            entityLoader.Register<FarseerEntity>("entity:farseer-entity", "name:entity:farseer-entity", "description:entity:farseer-entity");
+            entityLoader.Register<ShipPart>(
+                "entity:ship-part", 
+                "name:entity:ship-part", 
+                "description:entity:ship-part",
+                new ShipPartConfiguration(
+                    new PolygonShape(
+                        new Vertices(
+                            new Vector2[] {
+                                new Vector2(0, 0),
+                                new Vector2(0, 1),
+                                new Vector2(1, 1),
+                                new Vector2(1, 0)
+                            }), 1f)));
         }
 
         public void PreInitialize(IServiceProvider provider)
