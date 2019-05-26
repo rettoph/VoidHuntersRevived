@@ -97,10 +97,9 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             base.Draw(gameTime);
 
-            _spriteBatch.Begin();
             _debug.RenderDebugData(_camera.Projection, _camera.View);
             _debugServer.RenderDebugData(_camera.Projection, _camera.View);
-            _spriteBatch.End();
+
         }
 
         #region NetMessage Handlers
@@ -137,7 +136,11 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         }
         private void HandleUpdateMessage(NetIncomingMessage obj)
         {
-            this.networkEntities.GetById(obj.ReadGuid()).Read(obj);
+            var ne = this.networkEntities.GetById(obj.ReadGuid());
+            ne.Read(obj);
+
+            // Mark the entity as clean now
+            ne.Dirty = false;
         }
         private void HandleActionMessage(NetIncomingMessage obj)
         {

@@ -22,7 +22,9 @@ namespace VoidHuntersRevived.Library.Entities
         public Body Body { get; private set; }
 
         #region Events
-        public event EventHandler<Fixture> OnFixtureCreated;
+        public event EventHandler<Shape> OnFixtureCreated;
+        public event EventHandler<Vector2> OnLinearImpulseApplied;
+        public event EventHandler<Single> OnAngularImpulseApplied;
         #endregion
 
         #region Constructors
@@ -40,6 +42,11 @@ namespace VoidHuntersRevived.Library.Entities
             base.PreInitialize();
 
             this.Body = this.CreateBody((this.scene as VoidHuntersWorldScene).World);
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
 
             this.CreateFixture(new PolygonShape(new Vertices(new Vector2[] {
                 new Vector2(0, 0),
@@ -81,9 +88,23 @@ namespace VoidHuntersRevived.Library.Entities
         {
             var fixture = this.Body.CreateFixture(shape, this);
 
-            this.OnFixtureCreated?.Invoke(this, fixture);
+            this.OnFixtureCreated?.Invoke(this, shape);
 
             return fixture;
+        }
+
+        public void ApplyLinearImpulse(Vector2 impulse)
+        {
+            this.Body.ApplyLinearImpulse(impulse);
+
+            this.OnLinearImpulseApplied?.Invoke(this, impulse);
+        }
+
+        public void ApplyAngularImpulse(Single impulse)
+        {
+            this.Body.ApplyAngularImpulse(impulse);
+
+            this.OnAngularImpulseApplied?.Invoke(this, impulse);
         }
         #endregion
 

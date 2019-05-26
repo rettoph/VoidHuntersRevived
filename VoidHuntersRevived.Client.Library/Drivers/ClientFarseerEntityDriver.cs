@@ -1,5 +1,8 @@
-﻿using FarseerPhysics.Dynamics;
+﻿using FarseerPhysics.Collision.Shapes;
+using FarseerPhysics.Dynamics;
 using Guppy;
+using Guppy.Network.Extensions.Lidgren;
+using Lidgren.Network;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
@@ -15,6 +18,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private Body _serverBody;
         private VoidHuntersClientWorldScene _scene;
         private FarseerEntity _entity;
+        private Single _lerpStrength;
 
         #region Constructors
         public ClientFarseerEntityDriver(VoidHuntersClientWorldScene scene, FarseerEntity entity, ILogger logger) : base(entity, logger)
@@ -25,9 +29,24 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         #endregion
 
         #region Initialization Methods
+        protected override void PreInitialize()
+        {
+            base.PreInitialize();
+
+            // Bind action handlers
+            _entity.ActionHandlers.Add("update:position", this.HandleUpdatePositionAction);
+
+            // Bind event handlers
+            _entity.OnFixtureCreated += this.HandleFixtureCreated;
+            _entity.OnLinearImpulseApplied += this.HandleLinearImpulseApplied;
+            _entity.OnAngularImpulseApplied += this.HandleAngularImpulseApplied;
+        }
+
         protected override void Initialize()
         {
             base.Initialize();
+
+            _lerpStrength = 0.05f;
 
             // Create a new body within the server world to represent the server render of the current entity
             _serverBody = _entity.CreateBody(_scene.ServerWorld, _entity.Body.Position, _entity.Body.Rotation);
@@ -42,7 +61,46 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
         public override void Update(GameTime gameTime)
         {
-            // throw new NotImplementedException();
+            if(_serverBody.Awake)
+            {
+                _entity.Body.Position = Vector2.Lerp(_entity.Body.Position, _serverBody.Position, _lerpStrength);
+                _entity.Body.Rotation = MathHelper.Lerp(_entity.Body.Rotation, _serverBody.Rotation, _lerpStrength);
+                _entity.Body.LinearVelocity = Vector2.Lerp(_entity.Body.LinearVelocity, _serverBody.LinearVelocity, _lerpStrength);
+                _entity.Body.AngularVelocity = MathHelper.Lerp(_entity.Body.AngularVelocity, _serverBody.AngularVelocity, _lerpStrength);
+            }
+        }
+        #endregion
+
+        #region Action Handlers
+        private void HandleUpdatePositionAction(NetIncomingMessage obj)
+        {
+            _serverBody.Position = obj.ReadVector2();
+            _serverBody.Rotation = obj.ReadSingle();
+            _serverBody.LinearVelocity = obj.ReadVector2();
+            _serverBody.AngularVelocity = obj.ReadSingle();
+        }
+        #endregion
+
+        #region Event Handlers
+        /// <summary>
+        /// When the client render recieves a fixture,
+        /// buplocate it on the server render too
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="shape"></param>
+        private void HandleFixtureCreated(object sender, Shape shape)
+        {
+            _serverBody.CreateFixture(shape);
+        }
+
+        private void HandleAngularImpulseApplied(object sender, float e)
+        {
+            _serverBody.ApplyAngularImpulse(e);
+        }
+
+        private void HandleLinearImpulseApplied(object sender, Vector2 e)
+        {
+            _serverBody.ApplyLinearImpulse(e);
         }
         #endregion
 

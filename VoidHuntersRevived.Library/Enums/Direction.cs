@@ -8,6 +8,8 @@ namespace VoidHuntersRevived.Library.Enums
     {
         Forward,
         Backward,
+        Left,
+        Right,
         TurnLeft,
         TurnRight
     }

@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Configurations;
 using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Library
 {
@@ -20,7 +21,9 @@ namespace VoidHuntersRevived.Library
     {
         public void ConfigureServiceCollection(IServiceCollection services)
         {
-            services.AddSingleton<World>(p =>
+            services.AddScene<VoidHuntersWorldScene>();
+
+            services.AddTransient<World>(p =>
             {
                 return new World(Vector2.Zero);
             });

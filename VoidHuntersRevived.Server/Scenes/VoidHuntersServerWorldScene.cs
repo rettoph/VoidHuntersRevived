@@ -63,11 +63,12 @@ namespace VoidHuntersRevived.Server.Scenes
 
             // Send setup end message to new user...
             this.group.SendMesssage(this.group.CreateMessage("setup:end"), user, NetDeliveryMethod.ReliableOrdered);
-
-            var player = this.entities.Create<Player>("entity:player");
+            
             var bridge = this.entities.Create<FarseerEntity>("entity:farseer-entity");
 
-            player.UpdateBridge(bridge);
+            var player = this.entities.Create<Player>("entity:player");
+            player.SetUser(user);
+            player.SetBridge(bridge);
         }
         #endregion
 
