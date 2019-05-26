@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities;
 using Guppy.Network.Extensions.Lidgren;
+using Guppy.Implementations;
 
 namespace VoidHuntersRevived.Server.Drivers
 {
@@ -15,7 +16,7 @@ namespace VoidHuntersRevived.Server.Drivers
         private Double _lastUpdatePositionAction;
         private Double _updatePositionActionRate;
 
-        public ServerFarseerEntityDriver(FarseerEntity entity, ILogger logger) : base(entity, logger)
+        public ServerFarseerEntityDriver(FarseerEntity entity, IServiceProvider provider, ILogger logger) : base(entity, provider, logger)
         {
             _entity = entity;
         }

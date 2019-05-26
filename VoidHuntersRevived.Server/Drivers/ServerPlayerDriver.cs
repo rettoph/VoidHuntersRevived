@@ -10,6 +10,7 @@ using Lidgren.Network;
 using Guppy.Network.Peers;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Scenes;
+using Guppy.Implementations;
 
 namespace VoidHuntersRevived.Server.Drivers
 {
@@ -18,7 +19,7 @@ namespace VoidHuntersRevived.Server.Drivers
         private Player _player;
         private VoidHuntersWorldScene _scene;
 
-        public ServerPlayerDriver(Player entity, VoidHuntersWorldScene scene, ILogger logger) : base(entity, logger)
+        public ServerPlayerDriver(Player entity, VoidHuntersWorldScene scene, IServiceProvider provider, ILogger logger) : base(entity, provider, logger)
         {
             _player = entity;
             _scene = scene;

@@ -1,6 +1,7 @@
 ﻿using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Dynamics;
 using Guppy;
+using Guppy.Implementations;
 using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
@@ -21,7 +22,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private Single _lerpStrength;
 
         #region Constructors
-        public ClientFarseerEntityDriver(VoidHuntersClientWorldScene scene, FarseerEntity entity, ILogger logger) : base(entity, logger)
+        public ClientFarseerEntityDriver(VoidHuntersClientWorldScene scene, FarseerEntity entity, IServiceProvider provider, ILogger logger) : base(entity, provider, logger)
         {
             _scene = scene;
             _entity = entity;

@@ -9,8 +9,8 @@ namespace VoidHuntersRevived.Library
     public class VoidHuntersGame : Game
     {
         public VoidHuntersGame(
-            ILogger logger, 
-            IServiceProvider provider) : base(logger, provider)
+            IServiceProvider provider,
+            ILogger logger) : base(provider, logger)
         {
         }
     }

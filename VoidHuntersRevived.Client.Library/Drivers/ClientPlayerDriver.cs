@@ -1,5 +1,6 @@
 ﻿using Guppy;
 using Guppy.Collections;
+using Guppy.Implementations;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Peers;
 using Lidgren.Network;
@@ -22,7 +23,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private EntityCollection _entities;
         private FarseerCamera2D _camera;
 
-        public ClientPlayerDriver(Player entity, ClientPeer client, FarseerCamera2D camera, EntityCollection entities, ILogger logger) : base(entity, logger)
+        public ClientPlayerDriver(Player entity, ClientPeer client, FarseerCamera2D camera, EntityCollection entities, IServiceProvider provider, ILogger logger) : base(entity, provider, logger)
         {
             _player = entity;
             _client = client;
