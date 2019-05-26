@@ -9,10 +9,10 @@ namespace VoidHuntersRevived.Library.Configurations
 {
     public struct ShipPartConfiguration : IEntityData
     {
-        public readonly Shape Shape;
+        public readonly PolygonShape Shape;
 
         public ShipPartConfiguration(
-            Shape shape)
+            PolygonShape shape)
         {
             this.Shape = shape;
         }

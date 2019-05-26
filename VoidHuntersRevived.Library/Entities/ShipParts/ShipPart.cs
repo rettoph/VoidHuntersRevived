@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using FarseerPhysics.Collision.Shapes;
 using Guppy;
 using Guppy.Configurations;
 using Microsoft.Extensions.Logging;
@@ -12,6 +13,17 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
     {
         #region Private Fields
         private ShipPartConfiguration _config;
+        #endregion
+
+        #region Public Attributes
+        /// <summary>
+        /// The current live shape used within the current
+        /// parts fixture
+        /// </summary>
+        public PolygonShape Shape { get; private set; }
+
+        public ShipPart Root { get; private set; }
+        public ShipPart Parent { get; private set; }
         #endregion
 
         #region Constructors
@@ -35,7 +47,37 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             base.Initialize();
 
-            this.CreateFixture(_config.Shape);
+            // By default there is no parent
+            this.SetParent(null);
+        }
+        #endregion
+
+        #region Utility Methods
+        internal void SetParent(ShipPart parent)
+        {
+            if (parent == null)
+                this.logger.LogDebug($"Clearing {this.GetType().Name}({this.Id}) parent");
+            else
+                this.logger.LogDebug($"Setting {this.GetType().Name}({this.Id}) parent to {parent.GetType().Name}({parent.Id})");
+
+            this.Parent = parent;
+
+            this.UpdateRoot();
+        }
+
+        private void UpdateRoot()
+        {
+            // First clear the old fixture...
+            if (this.Shape != null)
+                this.DestroyFixture(this.Shape);
+
+            if (this.Parent == null)
+                this.Root = this;
+            else
+                this.Root = this.Parent.Root;
+
+            // Now create a new fixture...
+            this.Shape = this.Root.CreateFixture(_config.Shape.Clone() as PolygonShape);
         }
         #endregion
     }

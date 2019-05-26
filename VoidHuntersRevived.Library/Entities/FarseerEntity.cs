@@ -86,7 +86,7 @@ namespace VoidHuntersRevived.Library.Entities
             return body;
         }
 
-        public Shape CreateFixture(Shape shape)
+        public PolygonShape CreateFixture(PolygonShape shape)
         {
             var fixture = this.Body.CreateFixture(shape, this);
             _shapeFixtureTable.Add(shape, fixture);
