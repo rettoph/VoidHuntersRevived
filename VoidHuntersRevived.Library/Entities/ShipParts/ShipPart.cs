@@ -47,37 +47,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             base.Initialize();
 
-            // By default there is no parent
-            this.SetParent(null);
-        }
-        #endregion
-
-        #region Utility Methods
-        internal void SetParent(ShipPart parent)
-        {
-            if (parent == null)
-                this.logger.LogDebug($"Clearing {this.GetType().Name}({this.Id}) parent");
-            else
-                this.logger.LogDebug($"Setting {this.GetType().Name}({this.Id}) parent to {parent.GetType().Name}({parent.Id})");
-
-            this.Parent = parent;
-
-            this.UpdateRoot();
-        }
-
-        private void UpdateRoot()
-        {
-            // First clear the old fixture...
-            if (this.Shape != null)
-                this.DestroyFixture(this.Shape);
-
-            if (this.Parent == null)
-                this.Root = this;
-            else
-                this.Root = this.Parent.Root;
-
-            // Now create a new fixture...
-            this.Shape = this.Root.CreateFixture(_config.Shape.Clone() as PolygonShape);
+            this.CreateFixture(_config.Shape);
         }
         #endregion
     }

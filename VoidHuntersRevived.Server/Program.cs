@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
 using Guppy.Network.Groups;
+using Guppy.Network.Drivers;
 
 namespace VoidHuntersRevived.Server
 {
@@ -16,7 +17,7 @@ namespace VoidHuntersRevived.Server
         static void Main(string[] args)
         {
             var guppy = new GuppyLoader(new ConsoleLogger());
-            guppy.ConfigureNetwork<ServerPeer>(Program.PeerFactory, NetworkSceneDriver.DefaultServer);
+            guppy.ConfigureNetwork<ServerPeer, ServerNetworkSceneDriver>(Program.PeerFactory);
             guppy.Initialize();
 
             var game = guppy.Games.Create<VoidHuntersServerGame>();

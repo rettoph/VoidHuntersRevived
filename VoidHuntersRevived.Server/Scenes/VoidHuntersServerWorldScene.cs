@@ -19,7 +19,6 @@ namespace VoidHuntersRevived.Server.Scenes
     class VoidHuntersServerWorldScene : VoidHuntersWorldScene
     {
         protected ServerPeer server;
-        protected new ServerGroup group { get { return base.group as ServerGroup; } }
 
         public VoidHuntersServerWorldScene(ServerPeer server, World world, IServiceProvider provider) : base(server, world, provider)
         {
@@ -29,15 +28,13 @@ namespace VoidHuntersRevived.Server.Scenes
         protected override void Boot()
         {
             base.Boot();
-
-            this.group.MessageHandler.Add("action", this.HandleActionMessage);
         }
 
         protected override void Initialize()
         {
             base.Initialize();
 
-            this.group.Users.Added += this.HandleUserAdded;
+            this.Group.Users.Added += this.HandleUserAdded;
         }
 
         public override void Update(GameTime gameTime)
@@ -50,21 +47,6 @@ namespace VoidHuntersRevived.Server.Scenes
         #region Event Handlers
         private void HandleUserAdded(object sender, User user)
         {
-            /*
-             * BEGIN NEW USER SETUP
-             */
-            // Cache all network entities as is
-            var networkEntities = this.networkEntities.ToArray();
-
-            // Send setup begin message to new user...
-            this.group.SendMesssage(this.group.CreateMessage("setup:begin"), user, NetDeliveryMethod.ReliableOrdered);
-
-            foreach (NetworkEntity ne in networkEntities.OrderBy(ne => ne.UpdateOrder))
-                this.group.SendMesssage(ne.BuildCreateMessage(), user, NetDeliveryMethod.ReliableOrdered);
-
-            // Send setup end message to new user...
-            this.group.SendMesssage(this.group.CreateMessage("setup:end"), user, NetDeliveryMethod.ReliableOrdered);
-            
             var bridge = this.entities.Create<ShipPart>("entity:ship-part");
 
             var player = this.entities.Create<Player>("entity:player");
@@ -72,10 +54,5 @@ namespace VoidHuntersRevived.Server.Scenes
             player.SetBridge(bridge);
         }
         #endregion
-
-        private void HandleActionMessage(NetIncomingMessage obj)
-        {
-            this.networkEntities.GetById(obj.ReadGuid()).HandleAction(obj.ReadString(), obj);
-        }
     }
 }

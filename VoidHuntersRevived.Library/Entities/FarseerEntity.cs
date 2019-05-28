@@ -19,10 +19,66 @@ namespace VoidHuntersRevived.Library.Entities
     /// </summary>
     public class FarseerEntity : NetworkEntity
     {
+        private Category _collidesWith;
+        private Category _collisionCategories;
+
         private Dictionary<Shape, Fixture> _shapeFixtureTable;
-        public Body Body { get; private set; }
+        private Body _body;
+
+        #region Public Attributes
+        public Vector2 Position
+        {
+            get { return _body.Position; }
+            set { _body.Position = value; }
+        }
+        public Single Rotation
+        {
+            get { return _body.Rotation; }
+            set { _body.Rotation = value; }
+        }
+        public Vector2 LinearVelocity
+        {
+            get { return _body.LinearVelocity; }
+            set { _body.LinearVelocity = value; }
+        }
+        public Single AngularVelocity
+        {
+            get { return _body.AngularVelocity; }
+            set { _body.AngularVelocity = value; }
+        }
+        public Vector2 WorldCenter
+        {
+            get { return _body.WorldCenter; }
+        }
+        public Boolean Awake
+        {
+            get { return _body.Awake; }
+        }
+        public Category CollidesWith
+        {
+            get { return _collidesWith; }
+            set
+            {
+                _collidesWith = value;
+                _body.CollidesWith = _collidesWith;
+                this.OnCollidesWithChanged?.Invoke(this, _collidesWith);
+            }
+        }
+        public Category CollisionCategories
+        {
+            get { return _collisionCategories; }
+            set
+            {
+                _collisionCategories = value;
+                _body.CollisionCategories = _collisionCategories;
+                this.OnCollisionCategoriesChanged?.Invoke(this, _collisionCategories);
+            }
+        }
+        #endregion
 
         #region Events
+        public event EventHandler<Category> OnCollidesWithChanged;
+        public event EventHandler<Category> OnCollisionCategoriesChanged;
         public event EventHandler<Shape> OnFixtureCreated;
         public event EventHandler<Shape> OnFixtureDestroyed;
         public event EventHandler<Vector2> OnLinearImpulseApplied;
@@ -43,6 +99,8 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Boot();
 
+            _collidesWith = Category.All;
+            _collisionCategories = Category.Cat1;
             _shapeFixtureTable = new Dictionary<Shape, Fixture>();
         }
 
@@ -50,7 +108,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.PreInitialize();
 
-            this.Body = this.CreateBody((this.scene as VoidHuntersWorldScene).World);
+            this._body = this.CreateBody((this.scene as VoidHuntersWorldScene).World);
         }
 
         protected override void Initialize()
@@ -86,10 +144,14 @@ namespace VoidHuntersRevived.Library.Entities
             return body;
         }
 
-        public PolygonShape CreateFixture(PolygonShape shape)
+        public Shape CreateFixture(Shape shape)
         {
-            var fixture = this.Body.CreateFixture(shape, this);
+            var fixture = _body.CreateFixture(shape, this);
             _shapeFixtureTable.Add(shape, fixture);
+
+            // Update the fixture collision categories
+            fixture.CollidesWith = this.CollidesWith;
+            fixture.CollisionCategories = this.CollisionCategories;
 
             this.OnFixtureCreated?.Invoke(this, shape);
 
@@ -101,7 +163,7 @@ namespace VoidHuntersRevived.Library.Entities
             if (!_shapeFixtureTable.ContainsKey(shape))
                 throw new Exception("Unable to destroy fixture, shape unknown.");
 
-            this.Body.DestroyFixture(_shapeFixtureTable[shape]);
+            _body.DestroyFixture(_shapeFixtureTable[shape]);
             _shapeFixtureTable.Remove(shape);
 
             this.OnFixtureDestroyed?.Invoke(this, shape);
@@ -109,14 +171,14 @@ namespace VoidHuntersRevived.Library.Entities
 
         public void ApplyLinearImpulse(Vector2 impulse)
         {
-            this.Body.ApplyLinearImpulse(impulse);
+            _body.ApplyLinearImpulse(impulse);
 
             this.OnLinearImpulseApplied?.Invoke(this, impulse);
         }
 
         public void ApplyAngularImpulse(Single impulse)
         {
-            this.Body.ApplyAngularImpulse(impulse);
+            _body.ApplyAngularImpulse(impulse);
 
             this.OnAngularImpulseApplied?.Invoke(this, impulse);
         }
@@ -126,7 +188,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Dispose();
 
-            this.Body.Dispose();
+            _body.Dispose();
         }
     }
 }

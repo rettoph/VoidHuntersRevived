@@ -13,6 +13,7 @@ using Lidgren.Network;
 using Microsoft.Extensions.Logging;
 using Guppy.Network.Extensions.Guppy;
 using Guppy.Network.Groups;
+using Guppy.Network.Drivers;
 
 namespace VoidHuntersRevived.Client.Library
 {
@@ -49,7 +50,7 @@ namespace VoidHuntersRevived.Client.Library
             // _graphics.ToggleFullScreen();
 
             _guppy.ConfigureMonogame(_graphics, this.Window, this.Content);
-            _guppy.ConfigureNetwork<ClientPeer>(this.PeerFactory, NetworkSceneDriver.DefaultClient);
+            _guppy.ConfigureNetwork<ClientPeer, ClientNetworkSceneDriver>(this.PeerFactory);
             _guppy.Initialize();
 
             _game = _guppy.Games.Create<VoidHuntersClientGame>();

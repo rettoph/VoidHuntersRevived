@@ -46,6 +46,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _entity.ActionHandlers.Add("update:position", this.HandleUpdatePositionAction);
 
             // Bind event handlers
+            _entity.OnCollidesWithChanged += this.HandleCollidesWithChanged;
+            _entity.OnCollisionCategoriesChanged += this.CollidesCollisionCategoriesChanged;
             _entity.OnFixtureCreated += this.HandleFixtureCreated;
             _entity.OnFixtureDestroyed += this.HandleFixtureDestroyed;
             _entity.OnLinearImpulseApplied += this.HandleLinearImpulseApplied;
@@ -59,7 +61,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _lerpStrength = 0.05f;
 
             // Create a new body within the server world to represent the server render of the current entity
-            _serverBody = _entity.CreateBody(_scene.ServerWorld, _entity.Body.Position, _entity.Body.Rotation);
+            _serverBody = _entity.CreateBody(_scene.ServerWorld, _entity.Position, _entity.Rotation);
         }
         #endregion
 
@@ -73,10 +75,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             if(_serverBody.Awake)
             {
-                _entity.Body.Position = Vector2.Lerp(_entity.Body.Position, _serverBody.Position, _lerpStrength);
-                _entity.Body.Rotation = MathHelper.Lerp(_entity.Body.Rotation, _serverBody.Rotation, _lerpStrength);
-                _entity.Body.LinearVelocity = Vector2.Lerp(_entity.Body.LinearVelocity, _serverBody.LinearVelocity, _lerpStrength);
-                _entity.Body.AngularVelocity = MathHelper.Lerp(_entity.Body.AngularVelocity, _serverBody.AngularVelocity, _lerpStrength);
+                _entity.Position = Vector2.Lerp(_entity.Position, _serverBody.Position, _lerpStrength);
+                _entity.Rotation = MathHelper.Lerp(_entity.Rotation, _serverBody.Rotation, _lerpStrength);
+                _entity.LinearVelocity = Vector2.Lerp(_entity.LinearVelocity, _serverBody.LinearVelocity, _lerpStrength);
+                _entity.AngularVelocity = MathHelper.Lerp(_entity.AngularVelocity, _serverBody.AngularVelocity, _lerpStrength);
             }
         }
         #endregion
@@ -101,6 +103,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private void HandleFixtureCreated(object sender, Shape shape)
         {
             var fixture = _serverBody.CreateFixture(shape);
+            fixture.CollidesWith = _entity.CollidesWith;
+            fixture.CollisionCategories = _entity.CollisionCategories;
+
             _serverShapeFixtureTable.Add(shape, fixture);
         }
 
@@ -116,14 +121,24 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _serverShapeFixtureTable.Remove(shape);
         }
 
-        private void HandleAngularImpulseApplied(object sender, float e)
+        private void HandleAngularImpulseApplied(object sender, float impulse)
         {
-            _serverBody.ApplyAngularImpulse(e);
+            _serverBody.ApplyAngularImpulse(impulse);
         }
 
-        private void HandleLinearImpulseApplied(object sender, Vector2 e)
+        private void HandleLinearImpulseApplied(object sender, Vector2 impulse)
         {
-            _serverBody.ApplyLinearImpulse(e);
+            _serverBody.ApplyLinearImpulse(impulse);
+        }
+
+        private void CollidesCollisionCategoriesChanged(object sender, Category category)
+        {
+            _serverBody.CollisionCategories = category;
+        }
+
+        private void HandleCollidesWithChanged(object sender, Category category)
+        {
+            _serverBody.CollidesWith = category;
         }
         #endregion
 
@@ -133,6 +148,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
             _serverBody.Dispose();
 
+            _entity.OnCollidesWithChanged -= this.HandleCollidesWithChanged;
+            _entity.OnCollisionCategoriesChanged -= this.CollidesCollisionCategoriesChanged;
             _entity.OnFixtureCreated -= this.HandleFixtureCreated;
             _entity.OnFixtureDestroyed -= this.HandleFixtureDestroyed;
             _entity.OnLinearImpulseApplied -= this.HandleLinearImpulseApplied;

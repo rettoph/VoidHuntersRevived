@@ -11,18 +11,34 @@ using Guppy.Network.Peers;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Scenes;
 using Guppy.Implementations;
+using Guppy.Collections;
+using VoidHuntersRevived.Library.Drivers;
 
 namespace VoidHuntersRevived.Server.Drivers
 {
-    public class ServerPlayerDriver : Driver
+    public class ServerPlayerDriver : PlayerDriver
     {
         private Player _player;
         private VoidHuntersWorldScene _scene;
+        private EntityCollection _entities;
 
-        public ServerPlayerDriver(Player entity, VoidHuntersWorldScene scene, IServiceProvider provider, ILogger logger) : base(entity, provider, logger)
+        public ServerPlayerDriver(Player entity, VoidHuntersWorldScene scene, EntityCollection entities, IServiceProvider provider, ILogger logger) : base(entity, provider, logger)
         {
             _player = entity;
             _scene = scene;
+            _entities = entities;
+        }
+
+        protected override void Boot()
+        {
+            base.Boot();
+        }
+
+        public override void ConfigurePlayer(ref TractorBeam tractorbeam)
+        {
+            base.ConfigurePlayer(ref tractorbeam);
+
+            tractorbeam = _entities.Create<TractorBeam>("entity:tractor-beam");
         }
 
         protected override void PreInitialize()

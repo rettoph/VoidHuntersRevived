@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Server.Drivers
         {
             _lastUpdatePositionAction += gameTime.ElapsedGameTime.TotalMilliseconds;
 
-            if(_entity.Body.Awake && _lastUpdatePositionAction >= _updatePositionActionRate)
+            if(_entity.Awake && _lastUpdatePositionAction >= _updatePositionActionRate)
             {
                 this.SendUpdatePositionAction();
                 _lastUpdatePositionAction = _lastUpdatePositionAction % _updatePositionActionRate;
@@ -54,10 +54,10 @@ namespace VoidHuntersRevived.Server.Drivers
         private void SendUpdatePositionAction()
         {
             var action = _entity.CreateActionMessage("update:position");
-            action.Write(_entity.Body.Position);
-            action.Write(_entity.Body.Rotation);
-            action.Write(_entity.Body.LinearVelocity);
-            action.Write(_entity.Body.AngularVelocity);
+            action.Write(_entity.Position);
+            action.Write(_entity.Rotation);
+            action.Write(_entity.LinearVelocity);
+            action.Write(_entity.AngularVelocity);
         }
         #endregion
 

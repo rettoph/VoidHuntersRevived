@@ -11,12 +11,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
+using VoidHuntersRevived.Library.Drivers;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Enums;
 
 namespace VoidHuntersRevived.Client.Library.Drivers
 {
-    public class ClientPlayerDriver : Driver
+    public class ClientPlayerDriver : PlayerDriver
     {
         private Player _player;
         private ClientPeer _client;
@@ -61,8 +62,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers
                 if ((keyDown = kState.IsKeyDown(Keys.D)) != _player.GetDirection(Direction.TurnRight))
                     this.UpdateLocalDirection(Direction.TurnRight, keyDown);
 
-                if(_player.Bridge.Body != null)
-                    _camera.MoveTo(_player.Bridge.Body.WorldCenter);
+                if(_player.Bridge != null)
+                    _camera.MoveTo(_player.Bridge.WorldCenter);
             }
         }
 

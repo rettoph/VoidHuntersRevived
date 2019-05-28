@@ -18,8 +18,7 @@ namespace VoidHuntersRevived.Library.Scenes
         protected Peer peer;
 
         public World World { get; private set; }
-        public UserCollection Users { get { return this.group.Users; } }
-        public Group Group { get { return this.group; } }
+        public UserCollection Users { get { return this.Group.Users; } }
 
         public VoidHuntersWorldScene(Peer peer, World world, IServiceProvider provider) : base(peer.Groups.GetOrCreateById(Guid.Empty), provider)
         {

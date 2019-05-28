@@ -35,8 +35,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private SpriteBatch _spriteBatch;
         private ContentManager _content;
         private FarseerCamera2D _camera;
-        private Queue<NetIncomingMessage> _updateMessageQueue;
-        private Queue<NetIncomingMessage> _actionMessageQueue;
 
         public VoidHuntersClientWorldScene(FarseerCamera2D camera, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, ContentManager content, ClientPeer peer, World world, IServiceProvider provider) : base(peer, world, provider)
         {
@@ -56,9 +54,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             base.Boot();
 
             this.ServerWorld = this.provider.GetRequiredService<World>();
-
-            this.group.MessageHandler.Add("setup:begin", this.HandleSetupStartMessage);
-            this.group.MessageHandler.Add("setup:end", this.HandleSetupEndMessage);
         }
 
         protected override void PreInitialize()
@@ -101,65 +96,5 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _debugServer.RenderDebugData(_camera.Projection, _camera.View);
 
         }
-
-        #region NetMessage Handlers
-        private void HandleSetupStartMessage(NetIncomingMessage obj)
-        {
-            _updateMessageQueue = new Queue<NetIncomingMessage>();
-            _actionMessageQueue = new Queue<NetIncomingMessage>();
-
-            this.group.MessageHandler["action"] = this.EnqueueActionMessage;
-            this.group.MessageHandler["update"] = this.EnqueueUpdateMessage;
-            this.group.MessageHandler["create"] = this.HandleCreateMessage;
-            
-        }
-        private void HandleSetupEndMessage(NetIncomingMessage obj)
-        {
-            this.group.MessageHandler["action"] = this.HandleActionMessage;
-            this.group.MessageHandler["update"] = this.HandleUpdateMessage;
-
-            // Flush the collected queue while the client was settingup
-            while (_updateMessageQueue.Count > 0)
-                this.HandleUpdateMessage(_updateMessageQueue.Dequeue());
-            while (_actionMessageQueue.Count > 0)
-                this.HandleActionMessage(_actionMessageQueue.Dequeue());
-
-            // Empty the message queue
-            _updateMessageQueue.Clear();
-            _actionMessageQueue.Clear();
-        }
-
-        private void HandleCreateMessage(NetIncomingMessage obj)
-        {
-            var ne = this.entities.Create<NetworkEntity>(obj.ReadString(), obj.ReadGuid());
-            ne.Read(obj);
-        }
-        private void HandleUpdateMessage(NetIncomingMessage obj)
-        {
-            var ne = this.networkEntities.GetById(obj.ReadGuid());
-            ne.Read(obj);
-
-            // Mark the entity as clean now
-            ne.Dirty = false;
-        }
-        private void HandleActionMessage(NetIncomingMessage obj)
-        {
-            this.networkEntities.GetById(obj.ReadGuid()).HandleAction(obj.ReadString(), obj);
-        }
-
-        /// <summary>
-        /// Special message queues used to hold group methods
-        /// recieved before setup is complete.
-        /// </summary>
-        /// <param name="obj"></param>
-        private void EnqueueUpdateMessage(NetIncomingMessage obj)
-        {
-            _updateMessageQueue.Enqueue(obj);
-        }
-        private void EnqueueActionMessage(NetIncomingMessage obj)
-        {
-            _actionMessageQueue.Enqueue(obj);
-        }
-        #endregion
     }
 }
