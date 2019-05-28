@@ -24,6 +24,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Initialize();
 
+            this.CollidesWith = Category.None;
             this.CreateFixture(new CircleShape(1f, 1f));
         }
 
