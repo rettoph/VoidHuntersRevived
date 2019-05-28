@@ -10,23 +10,25 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
-using VoidHuntersRevived.Library.Drivers;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Enums;
 
 namespace VoidHuntersRevived.Client.Library.Drivers
 {
-    public class ClientPlayerDriver : PlayerDriver
+    public class ClientPlayerDriver : Driver
     {
         private Player _player;
+        private Pointer _pointer;
         private ClientPeer _client;
         private EntityCollection _entities;
         private FarseerCamera2D _camera;
 
-        public ClientPlayerDriver(Player entity, ClientPeer client, FarseerCamera2D camera, EntityCollection entities, IServiceProvider provider, ILogger logger) : base(entity, provider, logger)
+        public ClientPlayerDriver(Player entity, Pointer pointer, ClientPeer client, FarseerCamera2D camera, EntityCollection entities, IServiceProvider provider, ILogger logger) : base(entity, provider, logger)
         {
             _player = entity;
+            _pointer = pointer;
             _client = client;
             _camera = camera;
             _entities = entities;

@@ -16,7 +16,6 @@ using Microsoft.Xna.Framework;
 using Guppy.Network.Groups;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Entities.ShipParts;
-using VoidHuntersRevived.Library.Drivers;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -26,7 +25,6 @@ namespace VoidHuntersRevived.Library.Entities
     public class Player : NetworkEntity
     {
         #region Private Attributes
-        private TractorBeam _tractorBeam;
         private Dictionary<Direction, Boolean> _directions;
         private EntityCollection _entities;
         #endregion
@@ -34,10 +32,9 @@ namespace VoidHuntersRevived.Library.Entities
         #region Public Attributes
         public User User { get; private set; }
         public ShipPart Bridge { get; private set; }
-        public TractorBeam TractorBeam { get { return _tractorBeam; } }
         #endregion
 
-                #region Events
+        #region Events
         public event EventHandler<User> OnUserUpdated;
         public event EventHandler<FarseerEntity> OnBridgeUpdated;
         public event EventHandler<Direction> OnDirectionUpdated;
@@ -63,10 +60,6 @@ namespace VoidHuntersRevived.Library.Entities
                 .ToDictionary(
                 keySelector: d => d,
                 elementSelector: d => false);
-
-            // Allow all self contained player drivers to configure the current player
-            foreach (PlayerDriver driver in this.GetDrivers<PlayerDriver>())
-                driver.ConfigurePlayer(ref _tractorBeam);
         }
         #endregion
 
@@ -137,10 +130,8 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Network Methods
-        public override void Read(NetIncomingMessage im)
+        protected override void read(NetIncomingMessage im)
         {
-            base.Read(im);
-
             if (im.ReadBoolean())
                 this.SetUser((this.scene as VoidHuntersWorldScene).Group.Users.GetById(im.ReadGuid()));
             else
@@ -150,14 +141,10 @@ namespace VoidHuntersRevived.Library.Entities
                 this.SetBridge(_entities.GetById(im.ReadGuid()) as ShipPart);
             else
                 this.SetBridge(null);
-
-            _tractorBeam = _entities.GetById(im.ReadGuid()) as TractorBeam;
         }
 
-        public override void Write(NetOutgoingMessage om)
+        protected override void write(NetOutgoingMessage om)
         {
-            base.Write(om);
-
             if (this.User == null)
                 om.Write(false);
             else
@@ -173,8 +160,6 @@ namespace VoidHuntersRevived.Library.Entities
                 om.Write(true);
                 om.Write(this.Bridge.Id);
             }
-
-            om.Write(this.TractorBeam.Id);
         }
         #endregion
     }

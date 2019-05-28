@@ -75,7 +75,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             this.DefaultLayerDepth = 1;
 
-            // this.layers.Create<HudLayer>(0, 0, 0, 1);
+            this.layers.Create<HudLayer>(0, 0, 0, 1);
             this.layers.Create<CameraLayer>(1, 1, 0, 0);
         }
 

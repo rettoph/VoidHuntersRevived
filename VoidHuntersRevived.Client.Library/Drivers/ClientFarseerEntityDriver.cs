@@ -2,6 +2,7 @@
 using FarseerPhysics.Dynamics;
 using Guppy;
 using Guppy.Implementations;
+using Guppy.Network;
 using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
@@ -52,6 +53,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _entity.OnFixtureDestroyed += this.HandleFixtureDestroyed;
             _entity.OnLinearImpulseApplied += this.HandleLinearImpulseApplied;
             _entity.OnAngularImpulseApplied += this.HandleAngularImpulseApplied;
+            _entity.OnRead += this.HandleRead;
         }
 
         protected override void Initialize()
@@ -140,6 +142,14 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             _serverBody.CollidesWith = category;
         }
+
+        private void HandleRead(object sender, NetworkEntity e)
+        {
+            _serverBody.Position = _entity.Position;
+            _serverBody.Rotation = _entity.Rotation;
+            _serverBody.LinearVelocity = _entity.LinearVelocity;
+            _serverBody.AngularVelocity = _entity.AngularVelocity;
+        }
         #endregion
 
         public override void Dispose()
@@ -154,6 +164,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _entity.OnFixtureDestroyed -= this.HandleFixtureDestroyed;
             _entity.OnLinearImpulseApplied -= this.HandleLinearImpulseApplied;
             _entity.OnAngularImpulseApplied -= this.HandleAngularImpulseApplied;
+            _entity.OnRead -= this.HandleRead;
         }
     }
 }

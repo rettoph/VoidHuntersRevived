@@ -5,6 +5,8 @@ using FarseerPhysics.Factories;
 using Guppy;
 using Guppy.Configurations;
 using Guppy.Network;
+using Guppy.Network.Extensions.Lidgren;
+using Lidgren.Network;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
@@ -181,6 +183,24 @@ namespace VoidHuntersRevived.Library.Entities
             _body.ApplyAngularImpulse(impulse);
 
             this.OnAngularImpulseApplied?.Invoke(this, impulse);
+        }
+        #endregion
+
+        #region Network Methods
+        protected override void read(NetIncomingMessage im)
+        {
+            this.Position = im.ReadVector2();
+            this.Rotation = im.ReadSingle();
+            this.LinearVelocity = im.ReadVector2();
+            this.AngularVelocity = im.ReadSingle();
+        }
+
+        protected override void write(NetOutgoingMessage om)
+        {
+            om.Write(this.Position);
+            om.Write(this.Rotation);
+            om.Write(this.LinearVelocity);
+            om.Write(this.AngularVelocity);
         }
         #endregion
 

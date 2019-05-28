@@ -48,7 +48,6 @@ namespace VoidHuntersRevived.Library
         {
             var entityLoader = provider.GetLoader<EntityLoader>();
             entityLoader.Register<Player>("entity:player", "name:entity:player", "description:entity:player");
-            entityLoader.Register<TractorBeam>("entity:tractor-beam", "name:entity:tractor-beam", "description:entity:tractor-beam");
             entityLoader.Register<ShipPart>(
                 "entity:ship-part", 
                 "name:entity:ship-part", 
