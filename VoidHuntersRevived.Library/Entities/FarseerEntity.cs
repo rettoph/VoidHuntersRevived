@@ -146,9 +146,9 @@ namespace VoidHuntersRevived.Library.Entities
             return body;
         }
 
-        public Shape CreateFixture(Shape shape)
+        public Shape CreateFixture(Shape shape, Object userData = null)
         {
-            var fixture = _body.CreateFixture(shape, this);
+            var fixture = _body.CreateFixture(shape, userData);
             _shapeFixtureTable.Add(shape, fixture);
 
             // Update the fixture collision categories

@@ -1,4 +1,6 @@
 ﻿using FarseerPhysics.Dynamics;
+using FarseerPhysics.Dynamics.Contacts;
+using FarseerPhysics.Dynamics.Joints;
 using FarseerPhysics.Factories;
 using Guppy;
 using Guppy.Configurations;
@@ -8,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Scenes;
+using VoidHuntersRevived.Library.Entities;
 
 namespace VoidHuntersRevived.Client.Library.Entities
 {
@@ -31,11 +34,22 @@ namespace VoidHuntersRevived.Client.Library.Entities
         private Double _idle;
         private Body _body;
         private Fixture _fixture;
+        private List<FarseerEntity> _contacts;
 
+        public IReadOnlyCollection<FarseerEntity> Contacts
+        {
+            get { return _contacts.AsReadOnly(); }
+        }
         public Vector2 Position { get { return _position; } }
+        public Boolean Primary { get; private set; }
+        public Boolean Secondary { get; private set; }
 
         public event EventHandler<Vector2> OnPointerMovementStarted;
         public event EventHandler<Vector2> OnPointerMovementEnded;
+        public event EventHandler<FarseerEntity> OnContactStarted;
+        public event EventHandler<FarseerEntity> OnContactEnded;
+        public event EventHandler<Boolean> OnPrimaryChanged;
+        public event EventHandler<Boolean> OnSecondaryChanged;
 
         public Pointer(EntityConfiguration configuration, VoidHuntersClientWorldScene scene, IServiceProvider provider, ILogger logger) : base(configuration, scene, provider, logger)
         {
@@ -44,18 +58,25 @@ namespace VoidHuntersRevived.Client.Library.Entities
                 Vector2.Zero,
                 0,
                 BodyType.Dynamic);
+            _body.SleepingAllowed = false;
+
+            _fixture = FixtureFactory.AttachCircle(1f, 0.0f, _body);
+            _fixture.IsSensor = true;
+            _fixture.CollidesWith = Category.All;
+
+            scene.World.ContactManager.BeginContact += this.HandleBeginContact;
+            scene.World.ContactManager.EndContact += this.HandleEndContact;
         }
 
         protected override void Boot()
         {
             base.Boot();
 
-            _idleDelay = 1000;
+            _idleDelay = 250;
             _newPosition = Vector2.Zero;
             _position = Vector2.Zero;
+            _contacts = new List<FarseerEntity>();
 
-            _fixture = FixtureFactory.AttachCircle(1f, 0f, _body);
-            _fixture.IsSensor = true;
 
         }
 
@@ -99,5 +120,63 @@ namespace VoidHuntersRevived.Client.Library.Entities
             _position.X = x;
             _position.Y = y;
         }
+
+        public void SetPrimary(Boolean value)
+        {
+            if(value != this.Primary)
+            {
+                this.Primary = value;
+                this.OnPrimaryChanged?.Invoke(this, this.Primary);
+            }
+        }
+
+        public void SetSecondary(Boolean value)
+        {
+            if (value != this.Secondary)
+            {
+                this.Secondary = value;
+                this.OnSecondaryChanged?.Invoke(this, this.Secondary);
+            }
+        }
+
+        private void StartContact(FarseerEntity target)
+        {
+            if (target != null)
+            {
+                _contacts.Add(target);
+
+                this.OnContactStarted?.Invoke(this, target);
+            }
+        }
+
+        private void EndContact(FarseerEntity target)
+        {
+            if (target != null)
+            {
+                _contacts.Remove(target);
+
+                this.OnContactEnded?.Invoke(this, target);
+            }
+        }
+
+        #region Event Handlers
+        private bool HandleBeginContact(Contact contact)
+        {
+            if (contact.FixtureA == _fixture)
+                this.StartContact(contact.FixtureB.Body.UserData as FarseerEntity);
+            if (contact.FixtureB == _fixture)
+                this.StartContact(contact.FixtureA.Body.UserData as FarseerEntity);
+
+            return true;
+        }
+
+        private void HandleEndContact(Contact contact)
+        {
+            if (contact.FixtureA == _fixture)
+                this.EndContact(contact.FixtureB.Body.UserData as FarseerEntity);
+            if (contact.FixtureB == _fixture)
+                this.EndContact(contact.FixtureA.Body.UserData as FarseerEntity);
+        }
+        #endregion
     }
 }

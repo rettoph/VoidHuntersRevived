@@ -46,6 +46,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             // Update the pointer position
             _pointer.MoveTo(mPos.X, mPos.Y);
 
+            // Update the primary and secondary values
+            _pointer.SetPrimary(mState.LeftButton == ButtonState.Pressed);
+            _pointer.SetSecondary(mState.RightButton == ButtonState.Pressed);
+
             // Update the camera zoom value
             var scrollDelta = mState.ScrollWheelValue - _oldScrollValue;
             _camera.ZoomBy(1 + (0.1f * ((Single)scrollDelta / 120)));

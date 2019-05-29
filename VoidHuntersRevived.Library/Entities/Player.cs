@@ -16,6 +16,7 @@ using Microsoft.Xna.Framework;
 using Guppy.Network.Groups;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Entities.Connections;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -27,6 +28,7 @@ namespace VoidHuntersRevived.Library.Entities
         #region Private Attributes
         private Dictionary<Direction, Boolean> _directions;
         private EntityCollection _entities;
+        private TractorBeamConnection _tractorBeam;
         #endregion
 
         #region Public Attributes
@@ -126,6 +128,10 @@ namespace VoidHuntersRevived.Library.Entities
         public Boolean GetDirection(Direction direction)
         {
             return _directions[direction];
+        }
+        public void Tractor(ShipPart target, Vector2 offset)
+        {
+            _tractorBeam = _entities.Create<TractorBeamConnection>("entity:connection:tractor-beam");
         }
         #endregion
 

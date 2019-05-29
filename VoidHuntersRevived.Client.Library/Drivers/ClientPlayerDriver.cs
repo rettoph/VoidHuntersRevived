@@ -3,6 +3,7 @@ using Guppy.Collections;
 using Guppy.Implementations;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Peers;
+using Guppy.Network.Security;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
@@ -40,6 +41,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
             // Bind action handlers
             _player.ActionHandlers.Add("update:direction", this.HandleUpdateDirectionAction);
+
+            _player.OnUserUpdated += this.HandleUserUpdated;
         }
 
         public override void Draw(GameTime gameTime)
@@ -75,6 +78,25 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _player.UpdateDirection(
                 (Direction)obj.ReadByte(),
                 obj.ReadBoolean());
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandleUserUpdated(object sender, User e)
+        {
+            if (_client.CurrentUser == _player.User)
+            {
+                _pointer.OnSecondaryChanged += this.HandlePointerSecondaryChanged;
+            }
+            else
+            {
+                _pointer.OnSecondaryChanged -= this.HandlePointerSecondaryChanged;
+            }
+        }
+
+        private void HandlePointerSecondaryChanged(object sender, bool e)
+        {
+            Console.WriteLine(_pointer.Contacts.Count);
         }
         #endregion
 
