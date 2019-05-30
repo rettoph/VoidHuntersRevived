@@ -43,9 +43,8 @@ namespace VoidHuntersRevived.Server.Drivers
             base.PreInitialize();
 
             // Bind action handlers
-            _player.ActionHandlers.Add("update:direction", this.HandleSetDirectionAction);
-
-            
+            _player.ActionHandlers["update:direction"] = this.HandleSetDirectionAction;
+            _player.ActionHandlers["update:tractor-beam:offset"] = this.HandleUpdateTractorBeamPositionAction;
         }
 
         public override void Draw(GameTime gameTime)
@@ -72,6 +71,11 @@ namespace VoidHuntersRevived.Server.Drivers
                 obj.SenderConnection.Disconnect("Goodbye.");
             }
         }
+
+        private void HandleUpdateTractorBeamPositionAction(NetIncomingMessage obj)
+        {
+            _player.TractorBeam.SetOffset(obj.ReadVector2());
+        }
         #endregion
 
         #region Event Handlers
@@ -85,7 +89,7 @@ namespace VoidHuntersRevived.Server.Drivers
 
         private void HandlePlayerInitializatingInternals(object sender, PlayerInstanceInternalsConfiguration e)
         {
-            e.TractorBeam = _entities.Create<TractorBeam>("entity:tractor-beam");
+            e.TractorBeam = _entities.Create<TractorBeam>("entity:tractor-beam", _player);
         }
         #endregion
     }

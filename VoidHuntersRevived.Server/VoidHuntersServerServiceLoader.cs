@@ -20,6 +20,7 @@ namespace VoidHuntersRevived.Server
 
             services.AddDriver<Player, ServerPlayerDriver>();
             services.AddDriver<FarseerEntity, ServerFarseerEntityDriver>();
+            services.AddDriver<TractorBeam, ServerTractorBeamDriver>();
         }
 
         public void Boot(IServiceProvider provider)

@@ -21,6 +21,7 @@ namespace VoidHuntersRevived.Library.Entities
     /// </summary>
     public class FarseerEntity : NetworkEntity
     {
+        private Boolean _isSensor;
         private Category _collidesWith;
         private Category _collisionCategories;
 
@@ -55,15 +56,19 @@ namespace VoidHuntersRevived.Library.Entities
         public Boolean Awake
         {
             get { return _body.Awake; }
+            set { _body.Awake = value; }
         }
         public Category CollidesWith
         {
             get { return _collidesWith; }
             set
             {
-                _collidesWith = value;
-                _body.CollidesWith = _collidesWith;
-                this.OnCollidesWithChanged?.Invoke(this, _collidesWith);
+                if (value != _collidesWith)
+                {
+                    _collidesWith = value;
+                    _body.CollidesWith = _collidesWith;
+                    this.OnCollidesWithChanged?.Invoke(this, _collidesWith);
+                }
             }
         }
         public Category CollisionCategories
@@ -71,9 +76,37 @@ namespace VoidHuntersRevived.Library.Entities
             get { return _collisionCategories; }
             set
             {
-                _collisionCategories = value;
-                _body.CollisionCategories = _collisionCategories;
-                this.OnCollisionCategoriesChanged?.Invoke(this, _collisionCategories);
+                if (value != _collisionCategories)
+                {
+                    _collisionCategories = value;
+                    _body.CollisionCategories = _collisionCategories;
+                    this.OnCollisionCategoriesChanged?.Invoke(this, _collisionCategories);
+                }
+            }
+        }
+        public Boolean IsSensor
+        {
+            get { return _isSensor; }
+            set
+            {
+                if (value != _isSensor)
+                {
+                    _isSensor = value;
+                    _body.IsSensor = value;
+                    this.OnIsSensorChanged?.Invoke(this, _isSensor);
+                }
+            }
+        }
+        public Boolean SleepingAllowed
+        {
+            get { return _body.SleepingAllowed; }
+            set
+            {
+                if (value != _body.SleepingAllowed)
+                {
+                    _body.SleepingAllowed = value;
+                    this.OnSleepingAllowedChanged?.Invoke(this, _body.SleepingAllowed);
+                }
             }
         }
         #endregion
@@ -81,6 +114,8 @@ namespace VoidHuntersRevived.Library.Entities
         #region Events
         public event EventHandler<Category> OnCollidesWithChanged;
         public event EventHandler<Category> OnCollisionCategoriesChanged;
+        public event EventHandler<Boolean> OnIsSensorChanged;
+        public event EventHandler<Boolean> OnSleepingAllowedChanged;
         public event EventHandler<Shape> OnFixtureCreated;
         public event EventHandler<Shape> OnFixtureDestroyed;
         public event EventHandler<Vector2> OnLinearImpulseApplied;
@@ -154,6 +189,7 @@ namespace VoidHuntersRevived.Library.Entities
             // Update the fixture collision categories
             fixture.CollidesWith = this.CollidesWith;
             fixture.CollisionCategories = this.CollisionCategories;
+            fixture.IsSensor = this.IsSensor;
 
             this.OnFixtureCreated?.Invoke(this, shape);
 

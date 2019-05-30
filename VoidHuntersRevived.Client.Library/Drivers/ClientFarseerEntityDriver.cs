@@ -49,6 +49,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             // Bind event handlers
             _entity.OnCollidesWithChanged += this.HandleCollidesWithChanged;
             _entity.OnCollisionCategoriesChanged += this.CollidesCollisionCategoriesChanged;
+            _entity.OnIsSensorChanged += this.HandleIsSensorChanged;
+            _entity.OnSleepingAllowedChanged += this.HandleSleepingAllowedChanged;
             _entity.OnFixtureCreated += this.HandleFixtureCreated;
             _entity.OnFixtureDestroyed += this.HandleFixtureDestroyed;
             _entity.OnLinearImpulseApplied += this.HandleLinearImpulseApplied;
@@ -64,6 +66,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
             // Create a new body within the server world to represent the server render of the current entity
             _serverBody = _entity.CreateBody(_scene.ServerWorld, _entity.Position, _entity.Rotation);
+            _serverBody.SleepingAllowed = _entity.SleepingAllowed;
         }
         #endregion
 
@@ -92,6 +95,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _serverBody.Rotation = obj.ReadSingle();
             _serverBody.LinearVelocity = obj.ReadVector2();
             _serverBody.AngularVelocity = obj.ReadSingle();
+
+            _serverBody.Awake = true;
         }
         #endregion
 
@@ -107,6 +112,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             var fixture = _serverBody.CreateFixture(shape);
             fixture.CollidesWith = _entity.CollidesWith;
             fixture.CollisionCategories = _entity.CollisionCategories;
+            fixture.IsSensor = _entity.IsSensor;
 
             _serverShapeFixtureTable.Add(shape, fixture);
         }
@@ -141,6 +147,16 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private void HandleCollidesWithChanged(object sender, Category category)
         {
             _serverBody.CollidesWith = category;
+        }
+
+        private void HandleIsSensorChanged(object sender, bool e)
+        {
+            _serverBody.IsSensor = e;
+        }
+
+        private void HandleSleepingAllowedChanged(object sender, bool e)
+        {
+            _serverBody.SleepingAllowed = e;
         }
 
         private void HandleRead(object sender, NetworkEntity e)

@@ -29,6 +29,7 @@ namespace VoidHuntersRevived.Client.Library
 
             services.AddDriver<Player, ClientPlayerDriver>();
             services.AddDriver<FarseerEntity, ClientFarseerEntityDriver>();
+            services.AddDriver<TractorBeam, ClientTractorBeamDriver>();
             services.AddDriver<Pointer, MousePointerDriver>();
 
             services.AddScoped<Pointer>(p => {
