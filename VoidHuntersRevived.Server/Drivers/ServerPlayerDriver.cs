@@ -12,6 +12,7 @@ using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Scenes;
 using Guppy.Implementations;
 using Guppy.Collections;
+using VoidHuntersRevived.Library.Configurations;
 
 namespace VoidHuntersRevived.Server.Drivers
 {
@@ -31,6 +32,10 @@ namespace VoidHuntersRevived.Server.Drivers
         protected override void Boot()
         {
             base.Boot();
+
+            // Bind event handlers
+            _player.OnDirectionUpdated += this.HandleDirectionUpdated;
+            _player.OnInitializatingInternals += this.HandlePlayerInitializatingInternals;
         }
 
         protected override void PreInitialize()
@@ -40,8 +45,7 @@ namespace VoidHuntersRevived.Server.Drivers
             // Bind action handlers
             _player.ActionHandlers.Add("update:direction", this.HandleSetDirectionAction);
 
-            // Bind event handlers
-            _player.OnDirectionUpdated += this.HandleDirectionUpdated;
+            
         }
 
         public override void Draw(GameTime gameTime)
@@ -77,6 +81,11 @@ namespace VoidHuntersRevived.Server.Drivers
             var action = _player.CreateActionMessage("update:direction");
             action.Write((Byte)direction);
             action.Write(_player.GetDirection(direction));
+        }
+
+        private void HandlePlayerInitializatingInternals(object sender, PlayerInstanceInternalsConfiguration e)
+        {
+            e.TractorBeam = _entities.Create<TractorBeam>("entity:tractor-beam");
         }
         #endregion
     }

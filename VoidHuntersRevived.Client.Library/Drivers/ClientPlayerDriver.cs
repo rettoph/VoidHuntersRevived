@@ -96,7 +96,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
         private void HandlePointerSecondaryChanged(object sender, bool e)
         {
-            Console.WriteLine(_pointer.Contacts.Count);
         }
         #endregion
 

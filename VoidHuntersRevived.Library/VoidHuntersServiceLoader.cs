@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Configurations;
 using VoidHuntersRevived.Library.Entities;
-using VoidHuntersRevived.Library.Entities.Connections;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Scenes;
 
@@ -49,7 +48,7 @@ namespace VoidHuntersRevived.Library
         {
             var entityLoader = provider.GetLoader<EntityLoader>();
             entityLoader.Register<Player>("entity:player", "name:entity:player", "description:entity:player");
-            entityLoader.Register<TractorBeamConnection>("entity:connection:tractor-beam", "name:entity:connection:tractor-beam", "description:entity:connection:tractor-beam");
+            entityLoader.Register<TractorBeam>("entity:tractor-beam", "name:entity:tractor-beam", "description:entity:tractor-beam");
             entityLoader.Register<ShipPart>(
                 "entity:ship-part", 
                 "name:entity:ship-part", 

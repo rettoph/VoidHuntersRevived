@@ -16,7 +16,7 @@ using Microsoft.Xna.Framework;
 using Guppy.Network.Groups;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Entities.ShipParts;
-using VoidHuntersRevived.Library.Entities.Connections;
+using VoidHuntersRevived.Library.Configurations;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -28,18 +28,19 @@ namespace VoidHuntersRevived.Library.Entities
         #region Private Attributes
         private Dictionary<Direction, Boolean> _directions;
         private EntityCollection _entities;
-        private TractorBeamConnection _tractorBeam;
         #endregion
 
         #region Public Attributes
         public User User { get; private set; }
         public ShipPart Bridge { get; private set; }
+        public TractorBeam TractorBeam { get; private set; }
         #endregion
 
         #region Events
         public event EventHandler<User> OnUserUpdated;
         public event EventHandler<FarseerEntity> OnBridgeUpdated;
         public event EventHandler<Direction> OnDirectionUpdated;
+        public event EventHandler<PlayerInstanceInternalsConfiguration> OnInitializatingInternals;
         #endregion
 
         #region Constructors
@@ -62,6 +63,16 @@ namespace VoidHuntersRevived.Library.Entities
                 .ToDictionary(
                 keySelector: d => d,
                 elementSelector: d => false);
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            var internals = new PlayerInstanceInternalsConfiguration();
+            this.OnInitializatingInternals?.Invoke(this, internals);
+
+            this.TractorBeam = internals.TractorBeam;
         }
         #endregion
 
@@ -129,10 +140,6 @@ namespace VoidHuntersRevived.Library.Entities
         {
             return _directions[direction];
         }
-        public void Tractor(ShipPart target, Vector2 offset)
-        {
-            _tractorBeam = _entities.Create<TractorBeamConnection>("entity:connection:tractor-beam");
-        }
         #endregion
 
         #region Network Methods
@@ -147,6 +154,8 @@ namespace VoidHuntersRevived.Library.Entities
                 this.SetBridge(_entities.GetById(im.ReadGuid()) as ShipPart);
             else
                 this.SetBridge(null);
+
+            this.TractorBeam = _entities.GetById(im.ReadGuid()) as TractorBeam;
         }
 
         protected override void write(NetOutgoingMessage om)
@@ -166,6 +175,8 @@ namespace VoidHuntersRevived.Library.Entities
                 om.Write(true);
                 om.Write(this.Bridge.Id);
             }
+
+            om.Write(this.TractorBeam.Id);
         }
         #endregion
     }
