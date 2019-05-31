@@ -17,8 +17,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 {
     public class ClientFarseerEntityDriver : Driver
     {
+        public static Dictionary<FarseerEntity, Body> ServerBody;
+
         private Dictionary<Shape, Fixture> _serverShapeFixtureTable;
-        private Body _serverBody;
+        private Body _serverBody {
+            get { return ClientFarseerEntityDriver.ServerBody[_entity]; }
+            set { ClientFarseerEntityDriver.ServerBody[_entity] = value; }
+        }
         private VoidHuntersClientWorldScene _scene;
         private FarseerEntity _entity;
         private Single _lerpStrength;
@@ -28,6 +33,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             _scene = scene;
             _entity = entity;
+        }
+        static ClientFarseerEntityDriver()
+        {
+            ClientFarseerEntityDriver.ServerBody = new Dictionary<FarseerEntity, Body>();
         }
         #endregion
 
@@ -173,6 +182,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             base.Dispose();
 
             _serverBody.Dispose();
+            ClientFarseerEntityDriver.ServerBody.Remove(_entity);
 
             _entity.OnCollidesWithChanged -= this.HandleCollidesWithChanged;
             _entity.OnCollisionCategoriesChanged -= this.CollidesCollisionCategoriesChanged;

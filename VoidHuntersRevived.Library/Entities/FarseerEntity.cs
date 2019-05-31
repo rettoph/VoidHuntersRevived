@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Library.Entities
     /// <summary>
     /// Entity representing an object within the farseer world.
     /// </summary>
-    public class FarseerEntity : NetworkEntity
+    public partial class FarseerEntity : NetworkEntity
     {
         private Boolean _isSensor;
         private Category _collidesWith;
@@ -246,5 +246,12 @@ namespace VoidHuntersRevived.Library.Entities
 
             _body.Dispose();
         }
+
+        #region Operator Overrides
+        public static implicit operator FarseerEntity(Body body)
+        {
+            return body.UserData as FarseerEntity;
+        }
+        #endregion
     }
 }
