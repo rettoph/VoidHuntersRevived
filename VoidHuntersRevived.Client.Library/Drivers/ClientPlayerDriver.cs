@@ -109,6 +109,14 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
         private void HandlePointerSecondaryChanged(object sender, bool e)
         {
+            if(e)
+            {
+                _player.TractorBeam.Select();
+            }
+            else
+            {
+                _player.TractorBeam.Release();
+            }
         }
 
         private void HandlePointerLocalMovementEnded(object sender, Vector2 e)

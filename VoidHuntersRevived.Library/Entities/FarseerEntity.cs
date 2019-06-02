@@ -54,6 +54,10 @@ namespace VoidHuntersRevived.Library.Entities
         {
             get { return _body.WorldCenter; }
         }
+        public Vector2 LocalCenter
+        {
+            get { return _body.LocalCenter; }
+        }
         public Boolean Awake
         {
             get { return _body.Awake; }
@@ -236,6 +240,11 @@ namespace VoidHuntersRevived.Library.Entities
             _body.ApplyAngularImpulse(impulse);
 
             this.OnAngularImpulseApplied?.Invoke(this, impulse);
+        }
+
+        protected internal Body GetBody()
+        {
+            return _body;
         }
         #endregion
 

@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             base.Initialize();
 
-            this.CreateFixture(_config.Shape);
+            this.CreateFixture(_config.Shape, this);
         }
         #endregion
     }

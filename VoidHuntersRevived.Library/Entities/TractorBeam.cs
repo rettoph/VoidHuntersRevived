@@ -1,5 +1,6 @@
 ﻿using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Dynamics;
+using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Factories;
 using Guppy;
 using Guppy.Collections;
@@ -13,6 +14,8 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Scenes;
+using System.Linq;
+using FarseerPhysics.Dynamics.Joints;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -23,6 +26,9 @@ namespace VoidHuntersRevived.Library.Entities
         private Single _reach;
         private Guid _selectedFocusedId;
         private Fixture _sensor;
+        private List<ShipPart> _contacts;
+        private World _world;
+        private WeldJoint _joint;
         #endregion
 
         #region Public Attributes
@@ -33,6 +39,8 @@ namespace VoidHuntersRevived.Library.Entities
 
         #region Events
         public event EventHandler<Vector2> OnOffsetChanged;
+        public event EventHandler<ShipPart> OnSelected;
+        public event EventHandler<ShipPart> OnReleased;
         #endregion
 
         #region Constructors
@@ -54,10 +62,15 @@ namespace VoidHuntersRevived.Library.Entities
             base.Initialize();
 
             _reach = 25;
+            _contacts = new List<ShipPart>();
+            _world = (this.scene as VoidHuntersWorldScene).World;
 
             this.IsSensor = true;
 
             _sensor = this.CreateFixture(new CircleShape(1f, 1f));
+
+            _world.ContactManager.BeginContact += this.HandleBeginContact;
+            _world.ContactManager.EndContact += this.HandleEndContact;
         }
         #endregion
 
@@ -89,16 +102,82 @@ namespace VoidHuntersRevived.Library.Entities
             }
         }
 
-        public void Select(ShipPart shipPart)
+        public void Select(ShipPart target = null)
         {
-            // First, ensure that the old ship part gets released
-            if (this.Selected != null)
-                this.Release();
+            // First, ensure that the target is valid.
+            if(target == null)
+            {
+                target = _contacts
+                    .Where(c => this.ValidateTarget(c))
+                    .OrderBy(c => Vector2.Distance(this.WorldCenter, c.WorldCenter))
+                    .FirstOrDefault();
+            }
+
+            if (this.ValidateTarget(target))
+            { // Only proceed if the target passes validation
+                // Ensure that the old ship part gets released
+                if (this.Selected != null)
+                    this.Release();
+
+                // Select the new target
+                this.Selected = target;
+                _selectedFocusedId = this.Selected.Focused.Add();
+                _joint = JointFactory.CreateWeldJoint(
+                    _world,
+                    this.GetBody(),
+                    this.Selected.GetBody(),
+                    this.LocalCenter,
+                    this.Selected.LocalCenter);
+
+                this.OnSelected?.Invoke(this, this.Selected);
+            }
         }
 
-        private void Release()
+        public void Release()
         {
-            throw new NotImplementedException();
+            if (this.Selected != null)
+            {
+                _world.RemoveJoint(_joint);
+
+                var oldSelected = this.Selected;
+                this.Selected.Focused.Remove(_selectedFocusedId);
+                this.Selected = null;
+
+                this.OnReleased?.Invoke(this, oldSelected);
+            }
+        }
+
+        private Boolean ValidateTarget(ShipPart target)
+        {
+            return target != null;
+        }
+        #endregion
+
+        #region Event Handlers
+        private bool HandleBeginContact(Contact contact)
+        {
+            if(contact.FixtureA == _sensor && contact.FixtureB.UserData is ShipPart)
+            {
+                _contacts.Add(contact.FixtureB.UserData as ShipPart);
+            }
+            else if(contact.FixtureB == _sensor && contact.FixtureA.UserData is ShipPart)
+            {
+                _contacts.Add(contact.FixtureA.UserData as ShipPart);
+            }
+
+            return true;
+        }
+
+        private void HandleEndContact(Contact contact)
+        {
+            if (contact.FixtureA == _sensor && contact.FixtureB.UserData is ShipPart)
+            {
+                _contacts.Remove(contact.FixtureB.UserData as ShipPart);
+            }
+            else if (contact.FixtureB == _sensor && contact.FixtureA.UserData is ShipPart)
+            {
+                _contacts.Remove(contact.FixtureA.UserData as ShipPart);
+            }
         }
         #endregion
 
