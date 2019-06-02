@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Scenes;
+using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -121,6 +122,7 @@ namespace VoidHuntersRevived.Library.Entities
                 }
             }
         }
+        public CounterBoolean Focused { get; private set; }
         #endregion
 
         #region Events
@@ -152,6 +154,8 @@ namespace VoidHuntersRevived.Library.Entities
             _collidesWith = Category.All;
             _collisionCategories = Category.Cat1;
             _fixtureList = new List<Fixture>();
+
+            this.Focused = new CounterBoolean();
         }
 
         protected override void PreInitialize()

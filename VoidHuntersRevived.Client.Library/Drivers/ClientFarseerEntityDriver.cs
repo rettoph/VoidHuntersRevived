@@ -88,7 +88,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
         public override void Update(GameTime gameTime)
         {
-            if(_entity.PhysicsEnabled && _serverBody.Awake)
+            if(!_entity.Focused.Value && _serverBody.Awake)
             {
                 _entity.Position = Vector2.Lerp(_entity.Position, _serverBody.Position, _lerpStrength);
                 _entity.Rotation = MathHelper.Lerp(_entity.Rotation, _serverBody.Rotation, _lerpStrength);
