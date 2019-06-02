@@ -6,10 +6,12 @@ using Guppy;
 using Guppy.Configurations;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Scenes;
+using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Entities;
 
 namespace VoidHuntersRevived.Client.Library.Entities
@@ -26,24 +28,37 @@ namespace VoidHuntersRevived.Client.Library.Entities
     /// </summary>
     public class Pointer : Entity
     {
-        private Vector2 _newPosition;
-        private Vector2 _position;
-        private Single _delta;
-        private Boolean _moving;
+        private GraphicsDevice _graphics;
+        private FarseerCamera2D _camera;
+        private Vector3 _screenPosition;
+        private Vector2 _newWorldPosition;
+        private Vector2 _worldPosition;
+        private Single _worldDelta;
+        private Boolean _worldMoving;
+        private Double _worldIdle;
+        private Vector2 _newLocalPosition;
+        private Vector2 _localPosition;
+        private Single _localDelta;
+        private Boolean _localMoving;
+        private Double _localIdle;
         private Double _idleDelay;
-        private Double _idle;
 
-        public Vector2 Position { get { return _position; } }
+        public Vector2 LocalPosition { get { return _localPosition; } }
+        public Vector2 Position { get { return _worldPosition; } }
         public Boolean Primary { get; private set; }
         public Boolean Secondary { get; private set; }
 
         public event EventHandler<Vector2> OnPointerMovementStarted;
         public event EventHandler<Vector2> OnPointerMovementEnded;
+        public event EventHandler<Vector2> OnPointerLocalMovementStarted;
+        public event EventHandler<Vector2> OnPointerLocalMovementEnded;
         public event EventHandler<Boolean> OnPrimaryChanged;
         public event EventHandler<Boolean> OnSecondaryChanged;
 
-        public Pointer(EntityConfiguration configuration, VoidHuntersClientWorldScene scene, IServiceProvider provider, ILogger logger) : base(configuration, scene, provider, logger)
+        public Pointer(GraphicsDevice graphics, FarseerCamera2D camera, EntityConfiguration configuration, VoidHuntersClientWorldScene scene, IServiceProvider provider, ILogger logger) : base(configuration, scene, provider, logger)
         {
+            _graphics = graphics;
+            _camera = camera;
         }
 
         protected override void Boot()
@@ -51,47 +66,107 @@ namespace VoidHuntersRevived.Client.Library.Entities
             base.Boot();
 
             _idleDelay = 250;
-            _newPosition = Vector2.Zero;
-            _position = Vector2.Zero;
+            _screenPosition = Vector3.Zero;
+            _newWorldPosition = Vector2.Zero;
+            _worldPosition = Vector2.Zero;
+            _newLocalPosition = Vector2.Zero;
+            _localPosition = Vector2.Zero;
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            if (_delta == 0 && _moving)
+            // Local movement calculations
+            if (_localDelta == 0 && _localMoving)
             {
-                _idle += gameTime.ElapsedGameTime.TotalMilliseconds;
+                _localIdle += gameTime.ElapsedGameTime.TotalMilliseconds;
 
-                if(_idle >= _idleDelay)
+                if (_localIdle >= _idleDelay)
                 {
-                    _moving = false;
+                    _localMoving = false;
+
+                    this.OnPointerLocalMovementEnded?.Invoke(this, this.LocalPosition);
+                }
+            }
+            else if (_localDelta > 0)
+            {
+                if (!_localMoving)
+                {
+                    _localMoving = true;
+
+                    this.OnPointerLocalMovementStarted?.Invoke(this, this.LocalPosition);
+                }
+
+                _localIdle = 0;
+            }
+
+            // World movement calculations
+            if (_worldDelta == 0 && _worldMoving)
+            {
+                _worldIdle += gameTime.ElapsedGameTime.TotalMilliseconds;
+
+                if(_worldIdle >= _idleDelay)
+                {
+                    _worldMoving = false;
 
                     this.OnPointerMovementEnded?.Invoke(this, this.Position);
                 }               
             }
-            else if (_delta > 0)
+            else if (_worldDelta > 0)
             {
-                if (!_moving)
+                if (!_worldMoving)
                 {
-                    _moving = true;
+                    _worldMoving = true;
 
                     this.OnPointerMovementStarted?.Invoke(this, this.Position);
                 }
 
-                _idle = 0;
+                _worldIdle = 0;
             }
         }
 
+        /// <summary>
+        /// Input screen coordinates
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public void MoveTo(Single x, Single y)
         {
-            _newPosition.X = x;
-            _newPosition.Y = y;
+            _screenPosition.X = x;
+            _screenPosition.Y = y;
 
-            _delta = Vector2.Distance(_newPosition, _position);
+            // Calculate the local position of the screen coordinates
+            var lPos = _graphics.Viewport.Unproject(
+                _screenPosition,
+                Matrix.Identity,
+                _camera.View,
+                _camera.World);
 
-            _position.X = x;
-            _position.Y = y;
+
+            _newLocalPosition.X = lPos.X;
+            _newLocalPosition.Y = lPos.Y;
+
+            _localDelta = Vector2.Distance(_newLocalPosition, _localPosition);
+
+            _localPosition.X = lPos.X;
+            _localPosition.Y = lPos.Y;
+
+            // Calculate the world position of the screen coordinates
+            var wPos = _graphics.Viewport.Unproject(
+                _screenPosition, 
+                _camera.Projection, 
+                _camera.View,
+                _camera.World);
+
+
+            _newWorldPosition.X = wPos.X;
+            _newWorldPosition.Y = wPos.Y;
+
+            _worldDelta = Vector2.Distance(_newWorldPosition, _worldPosition);
+
+            _worldPosition.X = wPos.X;
+            _worldPosition.Y = wPos.Y;
         }
 
         public void SetPrimary(Boolean value)

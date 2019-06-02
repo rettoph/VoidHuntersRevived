@@ -19,15 +19,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers
     public class MousePointerDriver : Driver
     {
         private Pointer _pointer;
-        private GraphicsDevice _graphics;
         private FarseerCamera2D _camera;
 
         private Single _oldScrollValue;
 
-        public MousePointerDriver(Pointer pointer, GraphicsDevice graphics, FarseerCamera2D camera, IServiceProvider provider, ILogger logger) : base(pointer, provider, logger)
+        public MousePointerDriver(FarseerCamera2D camera, Pointer pointer, IServiceProvider provider, ILogger logger) : base(pointer, provider, logger)
         {
             _pointer = pointer;
-            _graphics = graphics;
             _camera = camera;
         }
 
@@ -37,14 +35,14 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
             var mState = Mouse.GetState();
 
-            var mPos = _graphics.Viewport.Unproject(
-                new Vector3(mState.Position.X, mState.Position.Y, 0), 
-                _camera.Projection, 
-                _camera.View,
-                _camera.World);
+            // var mPos = _graphics.Viewport.Unproject(
+            //     new Vector3(mState.Position.X, mState.Position.Y, 0), 
+            //     _camera.Projection, 
+            //     _camera.View,
+            //     _camera.World);
 
             // Update the pointer position
-            _pointer.MoveTo(mPos.X, mPos.Y);
+            _pointer.MoveTo(mState.Position.X, mState.Position.Y);
 
             // Update the primary and secondary values
             _pointer.SetPrimary(mState.LeftButton == ButtonState.Pressed);

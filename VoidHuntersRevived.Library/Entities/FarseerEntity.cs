@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Library.Entities
         private Category _collidesWith;
         private Category _collisionCategories;
 
-        private Dictionary<Shape, Fixture> _shapeFixtureTable;
+        private List<Fixture> _fixtureList;
         private Body _body;
 
         #region Public Attributes
@@ -109,6 +109,18 @@ namespace VoidHuntersRevived.Library.Entities
                 }
             }
         }
+        public Boolean PhysicsEnabled
+        {
+            get { return _body.Enabled; }
+            set
+            {
+                if (value != _body.Enabled)
+                {
+                    _body.Enabled = value;
+                    this.OnPhysicsEnabledChanged?.Invoke(this, _body.Enabled);
+                }
+            }
+        }
         #endregion
 
         #region Events
@@ -116,8 +128,9 @@ namespace VoidHuntersRevived.Library.Entities
         public event EventHandler<Category> OnCollisionCategoriesChanged;
         public event EventHandler<Boolean> OnIsSensorChanged;
         public event EventHandler<Boolean> OnSleepingAllowedChanged;
-        public event EventHandler<Shape> OnFixtureCreated;
-        public event EventHandler<Shape> OnFixtureDestroyed;
+        public event EventHandler<Boolean> OnPhysicsEnabledChanged;
+        public event EventHandler<Fixture> OnFixtureCreated;
+        public event EventHandler<Fixture> OnFixtureDestroyed;
         public event EventHandler<Vector2> OnLinearImpulseApplied;
         public event EventHandler<Single> OnAngularImpulseApplied;
         #endregion
@@ -138,7 +151,7 @@ namespace VoidHuntersRevived.Library.Entities
 
             _collidesWith = Category.All;
             _collisionCategories = Category.Cat1;
-            _shapeFixtureTable = new Dictionary<Shape, Fixture>();
+            _fixtureList = new List<Fixture>();
         }
 
         protected override void PreInitialize()
@@ -181,30 +194,30 @@ namespace VoidHuntersRevived.Library.Entities
             return body;
         }
 
-        public Shape CreateFixture(Shape shape, Object userData = null)
+        public Fixture CreateFixture(Shape shape, Object userData = null)
         {
             var fixture = _body.CreateFixture(shape, userData);
-            _shapeFixtureTable.Add(shape, fixture);
+            _fixtureList.Add(fixture);
 
             // Update the fixture collision categories
             fixture.CollidesWith = this.CollidesWith;
             fixture.CollisionCategories = this.CollisionCategories;
             fixture.IsSensor = this.IsSensor;
 
-            this.OnFixtureCreated?.Invoke(this, shape);
+            this.OnFixtureCreated?.Invoke(this, fixture);
 
-            return shape;
+            return fixture;
         }
 
-        public void DestroyFixture(Shape shape)
+        public void DestroyFixture(Fixture fixture)
         {
-            if (!_shapeFixtureTable.ContainsKey(shape))
+            if (!_fixtureList.Contains(fixture))
                 throw new Exception("Unable to destroy fixture, shape unknown.");
 
-            _body.DestroyFixture(_shapeFixtureTable[shape]);
-            _shapeFixtureTable.Remove(shape);
+            _body.DestroyFixture(fixture);
+            _fixtureList.Remove(fixture);
 
-            this.OnFixtureDestroyed?.Invoke(this, shape);
+            this.OnFixtureDestroyed?.Invoke(this, fixture);
         }
 
         public void ApplyLinearImpulse(Vector2 impulse)

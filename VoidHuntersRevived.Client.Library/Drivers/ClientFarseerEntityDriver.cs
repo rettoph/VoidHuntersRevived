@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
     {
         public static Dictionary<FarseerEntity, Body> ServerBody;
 
-        private Dictionary<Shape, Fixture> _serverShapeFixtureTable;
+        private Dictionary<Fixture, Fixture> _clientServerFixtureTable;
         private Body _serverBody {
             get { return ClientFarseerEntityDriver.ServerBody[_entity]; }
             set { ClientFarseerEntityDriver.ServerBody[_entity] = value; }
@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             base.Boot();
 
-            _serverShapeFixtureTable = new Dictionary<Shape, Fixture>();
+            _clientServerFixtureTable = new Dictionary<Fixture, Fixture>();
         }
 
         protected override void PreInitialize()
@@ -60,6 +60,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _entity.OnCollisionCategoriesChanged += this.CollidesCollisionCategoriesChanged;
             _entity.OnIsSensorChanged += this.HandleIsSensorChanged;
             _entity.OnSleepingAllowedChanged += this.HandleSleepingAllowedChanged;
+            _entity.OnPhysicsEnabledChanged += this.HandlePhysicsEnabledChanged;
             _entity.OnFixtureCreated += this.HandleFixtureCreated;
             _entity.OnFixtureDestroyed += this.HandleFixtureDestroyed;
             _entity.OnLinearImpulseApplied += this.HandleLinearImpulseApplied;
@@ -87,7 +88,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
         public override void Update(GameTime gameTime)
         {
-            if(_serverBody.Awake)
+            if(_entity.PhysicsEnabled && _serverBody.Awake)
             {
                 _entity.Position = Vector2.Lerp(_entity.Position, _serverBody.Position, _lerpStrength);
                 _entity.Rotation = MathHelper.Lerp(_entity.Rotation, _serverBody.Rotation, _lerpStrength);
@@ -116,14 +117,14 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="shape"></param>
-        private void HandleFixtureCreated(object sender, Shape shape)
+        private void HandleFixtureCreated(object sender, Fixture fixture)
         {
-            var fixture = _serverBody.CreateFixture(shape);
-            fixture.CollidesWith = _entity.CollidesWith;
-            fixture.CollisionCategories = _entity.CollisionCategories;
-            fixture.IsSensor = _entity.IsSensor;
+            var sFixture = _serverBody.CreateFixture(fixture.Shape);
+            sFixture.CollidesWith = _entity.CollidesWith;
+            sFixture.CollisionCategories = _entity.CollisionCategories;
+            sFixture.IsSensor = _entity.IsSensor;
 
-            _serverShapeFixtureTable.Add(shape, fixture);
+            _clientServerFixtureTable.Add(fixture, sFixture);
         }
 
         /// <summary>
@@ -132,10 +133,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="shape"></param>
-        private void HandleFixtureDestroyed(object sender, Shape shape)
+        private void HandleFixtureDestroyed(object sender, Fixture fixture)
         {
-            _serverBody.DestroyFixture(_serverShapeFixtureTable[shape]);
-            _serverShapeFixtureTable.Remove(shape);
+            _serverBody.DestroyFixture(_clientServerFixtureTable[fixture]);
+            _clientServerFixtureTable.Remove(fixture);
         }
 
         private void HandleAngularImpulseApplied(object sender, float impulse)
@@ -166,6 +167,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private void HandleSleepingAllowedChanged(object sender, bool e)
         {
             _serverBody.SleepingAllowed = e;
+        }
+
+        private void HandlePhysicsEnabledChanged(object sender, bool e)
+        {
+            _serverBody.Enabled = e;
         }
 
         private void HandleRead(object sender, NetworkEntity e)

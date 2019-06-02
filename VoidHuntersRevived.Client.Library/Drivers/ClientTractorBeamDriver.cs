@@ -26,6 +26,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _tractorBeam.ActionHandlers["update:offset"] = this.HandleUpdateOffsetAction;
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+            if (_tractorBeam.Player.Bridge != null)
+                ClientFarseerEntityDriver.ServerBody[_tractorBeam].Position = _tractorBeam.Player.Bridge.WorldCenter + _tractorBeam.Offset;
+        }
+
         #region Action Handlers
         private void HandleUpdateOffsetAction(NetIncomingMessage obj)
         {

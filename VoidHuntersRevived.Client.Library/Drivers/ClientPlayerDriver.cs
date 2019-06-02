@@ -71,7 +71,15 @@ namespace VoidHuntersRevived.Client.Library.Drivers
                     _camera.MoveTo(_player.Bridge.WorldCenter);
 
                 if (_player.TractorBeam != null)
-                    _player.TractorBeam.SetOffset(_pointer.Position - _player.Bridge.WorldCenter);
+                {
+                    var curOffset = _pointer.Position - _player.Bridge.WorldCenter;
+
+                    if(_player.TractorBeam.Offset != curOffset)
+                    {
+                        _player.TractorBeam.SetOffset(curOffset);
+                    }
+                }
+                    
             }
         }
 
@@ -90,12 +98,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             if (_client.CurrentUser == _player.User)
             {
                 _pointer.OnSecondaryChanged += this.HandlePointerSecondaryChanged;
-                _pointer.OnPointerMovementEnded += this.HandlePointerMovementEnded;
+                _pointer.OnPointerLocalMovementEnded += this.HandlePointerLocalMovementEnded;
             }
             else
             {
                 _pointer.OnSecondaryChanged -= this.HandlePointerSecondaryChanged;
-                _pointer.OnPointerMovementEnded -= this.HandlePointerMovementEnded;
+                _pointer.OnPointerLocalMovementEnded -= this.HandlePointerLocalMovementEnded;
             }
         }
 
@@ -103,7 +111,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
         }
 
-        private void HandlePointerMovementEnded(object sender, Vector2 e)
+        private void HandlePointerLocalMovementEnded(object sender, Vector2 e)
         {
             // update the server alerting them of the new tractor beam position...
             var action = _player.CreateActionMessage("update:tractor-beam:offset");
