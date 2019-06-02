@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Library.Entities
@@ -20,11 +21,14 @@ namespace VoidHuntersRevived.Library.Entities
         #region Private Fields
         private EntityCollection _entities;
         private Single _reach;
+        private Guid _selectedFocusedId;
+        private Fixture _sensor;
         #endregion
 
         #region Public Attributes
         public Vector2 Offset { get; private set; }
         public Player Player { get; private set; }
+        public ShipPart Selected { get; private set; }
         #endregion
 
         #region Events
@@ -53,7 +57,7 @@ namespace VoidHuntersRevived.Library.Entities
 
             this.IsSensor = true;
 
-            this.CreateFixture(new CircleShape(1f, 1f));
+            _sensor = this.CreateFixture(new CircleShape(1f, 1f));
         }
         #endregion
 
@@ -83,6 +87,18 @@ namespace VoidHuntersRevived.Library.Entities
 
                 this.OnOffsetChanged?.Invoke(this, this.Offset);
             }
+        }
+
+        public void Select(ShipPart shipPart)
+        {
+            // First, ensure that the old ship part gets released
+            if (this.Selected != null)
+                this.Release();
+        }
+
+        private void Release()
+        {
+            throw new NotImplementedException();
         }
         #endregion
 

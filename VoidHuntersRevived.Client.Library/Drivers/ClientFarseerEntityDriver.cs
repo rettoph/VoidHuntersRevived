@@ -119,10 +119,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         /// <param name="shape"></param>
         private void HandleFixtureCreated(object sender, Fixture fixture)
         {
-            var sFixture = _serverBody.CreateFixture(fixture.Shape);
-            sFixture.CollidesWith = _entity.CollidesWith;
-            sFixture.CollisionCategories = _entity.CollisionCategories;
-            sFixture.IsSensor = _entity.IsSensor;
+            var sFixture = fixture.CloneOnto(_serverBody);
 
             _clientServerFixtureTable.Add(fixture, sFixture);
         }
