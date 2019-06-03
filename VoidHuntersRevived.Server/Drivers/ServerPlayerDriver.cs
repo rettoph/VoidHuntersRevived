@@ -21,6 +21,7 @@ namespace VoidHuntersRevived.Server.Drivers
         private Player _player;
         private VoidHuntersWorldScene _scene;
         private EntityCollection _entities;
+        private Queue<Boolean> _tractorBeamSelectQueue;
 
         public ServerPlayerDriver(Player entity, VoidHuntersWorldScene scene, EntityCollection entities, IServiceProvider provider, ILogger logger) : base(entity, provider, logger)
         {
@@ -32,6 +33,8 @@ namespace VoidHuntersRevived.Server.Drivers
         protected override void Boot()
         {
             base.Boot();
+
+            _tractorBeamSelectQueue = new Queue<Boolean>();
 
             // Bind event handlers
             _player.OnDirectionUpdated += this.HandleDirectionUpdated;
@@ -45,6 +48,7 @@ namespace VoidHuntersRevived.Server.Drivers
             // Bind action handlers
             _player.ActionHandlers["update:direction"] = this.HandleSetDirectionAction;
             _player.ActionHandlers["update:tractor-beam:offset"] = this.HandleUpdateTractorBeamPositionAction;
+            _player.ActionHandlers["update:tractor-beam:select"] = this.HandleUpdateTractorBeamSelectAction;
         }
 
         public override void Draw(GameTime gameTime)
@@ -54,27 +58,54 @@ namespace VoidHuntersRevived.Server.Drivers
 
         public override void Update(GameTime gameTime)
         {
-            // throw new NotImplementedException();
+            while(_tractorBeamSelectQueue.Count > 0)
+            {
+                if (_tractorBeamSelectQueue.Dequeue())
+                    _player.TractorBeam.Select();
+                else
+                    _player.TractorBeam.Release();
+            }
         }
 
         #region Action Handlers 
         private void HandleSetDirectionAction(NetIncomingMessage obj)
         {
-            if (_scene.Group.Users.GetByNetConnection(obj.SenderConnection) == _player.User)
+            if (this.ValidateSender(obj))
             { // If the action request came from the user who owns the player...
                 _player.UpdateDirection(
                     (Direction)obj.ReadByte(),
                     obj.ReadBoolean());
             }
-            else
-            { // Invalid message recieved. Ban them!
-                obj.SenderConnection.Disconnect("Goodbye.");
-            }
         }
 
         private void HandleUpdateTractorBeamPositionAction(NetIncomingMessage obj)
         {
-            _player.TractorBeam.SetOffset(obj.ReadVector2());
+            if (this.ValidateSender(obj))
+                _player.TractorBeam.SetOffset(obj.ReadVector2());
+        }
+
+
+        private void HandleUpdateTractorBeamSelectAction(NetIncomingMessage obj)
+        {
+            if (this.ValidateSender(obj))
+            {
+                _player.TractorBeam.SetOffset(obj.ReadVector2());
+
+                _tractorBeamSelectQueue.Enqueue(obj.ReadBoolean());
+            }
+        }
+
+        private Boolean ValidateSender(NetIncomingMessage obj)
+        {
+            if (_scene.Group.Users.GetByNetConnection(obj.SenderConnection) == _player.User)
+            { // If the action request came from the user who owns the player...
+                return true;
+            }
+            else
+            { // Invalid message recieved. Ban them!
+                obj.SenderConnection.Disconnect("Goodbye.");
+                return false;
+            }
         }
         #endregion
 

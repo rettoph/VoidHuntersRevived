@@ -66,6 +66,8 @@ namespace VoidHuntersRevived.Library.Entities
             _world = (this.scene as VoidHuntersWorldScene).World;
 
             this.IsSensor = true;
+            this.SleepingAllowed = false;
+            this.Focused.Add();
 
             _sensor = this.CreateFixture(new CircleShape(1f, 1f));
 
@@ -79,8 +81,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Update(gameTime);
 
-            if (this.Player.Bridge != null)
-                this.Position = this.Player.Bridge.WorldCenter + this.Offset;
+            this.UpdatePosition();
         }
         #endregion
 
@@ -100,6 +101,9 @@ namespace VoidHuntersRevived.Library.Entities
 
                 this.OnOffsetChanged?.Invoke(this, this.Offset);
             }
+
+            // Immediately update the tractor beam position
+            this.UpdatePosition();
         }
 
         public void Select(ShipPart target = null)
@@ -141,6 +145,7 @@ namespace VoidHuntersRevived.Library.Entities
 
                 var oldSelected = this.Selected;
                 this.Selected.Focused.Remove(_selectedFocusedId);
+                this.Selected.Dirty = true;
                 this.Selected = null;
 
                 this.OnReleased?.Invoke(this, oldSelected);
@@ -150,6 +155,12 @@ namespace VoidHuntersRevived.Library.Entities
         private Boolean ValidateTarget(ShipPart target)
         {
             return target != null;
+        }
+
+        private void UpdatePosition()
+        {
+            if (this.Player.Bridge != null)
+                this.Position = this.Player.Bridge.WorldCenter + this.Offset;
         }
         #endregion
 

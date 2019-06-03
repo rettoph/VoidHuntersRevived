@@ -26,12 +26,5 @@ namespace VoidHuntersRevived.Library.Scenes
             this.peer = peer;
             this.World = world;
         }
-
-        public override void Update(GameTime gameTime)
-        {
-            this.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
-
-            base.Update(gameTime);
-        }
     }
 }

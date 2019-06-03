@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Configurations;
+using VoidHuntersRevived.Library.Drivers;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Scenes;
@@ -23,6 +24,7 @@ namespace VoidHuntersRevived.Library
         public void ConfigureServiceCollection(IServiceCollection services)
         {
             services.AddScene<VoidHuntersWorldScene>();
+            services.AddDriver<VoidHuntersWorldScene, VoidHuntersWorldSceneDriver>(95);
 
             services.AddTransient<World>(p =>
             {

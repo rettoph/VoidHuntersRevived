@@ -1,6 +1,7 @@
 ﻿using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Joints;
 using FarseerPhysics.Factories;
+using Guppy.Collections;
 using Guppy.Implementations;
 using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
@@ -21,11 +22,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private TractorBeam _tractorBeam;
         private WeldJoint _joint;
         private World _world;
+        private EntityCollection _entities;
 
-        public ClientTractorBeamDriver(VoidHuntersClientWorldScene scene, TractorBeam tractorBeam, IServiceProvider provider, ILogger logger) : base(tractorBeam, provider, logger)
+        public ClientTractorBeamDriver(VoidHuntersClientWorldScene scene, EntityCollection entities, TractorBeam tractorBeam, IServiceProvider provider, ILogger logger) : base(tractorBeam, provider, logger)
         {
             _world = scene.ServerWorld;
             _tractorBeam = tractorBeam;
+            _entities = entities;
         }
 
         protected override void PreInitialize()
@@ -33,6 +36,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             base.PreInitialize();
 
             _tractorBeam.ActionHandlers["update:offset"] = this.HandleUpdateOffsetAction;
+            _tractorBeam.ActionHandlers["select"] = this.HandleSelectAction;
+            _tractorBeam.ActionHandlers["release"] = this.HandleReleaseAction;
 
             _tractorBeam.OnSelected += this.HandleSelected;
             _tractorBeam.OnReleased += this.HandleReleased;
@@ -49,6 +54,18 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private void HandleUpdateOffsetAction(NetIncomingMessage obj)
         {
             _tractorBeam.SetOffset(obj.ReadVector2());
+        }
+
+        private void HandleSelectAction(NetIncomingMessage obj)
+        {
+            _tractorBeam.Select(
+                _entities.GetById(obj.ReadGuid()) as ShipPart);
+        }
+
+        private void HandleReleaseAction(NetIncomingMessage obj)
+        {
+            if (_tractorBeam.Selected?.Id == obj.ReadGuid())
+                _tractorBeam.Release();
         }
         #endregion
 

@@ -63,6 +63,8 @@ namespace VoidHuntersRevived.Library.Entities
                 .ToDictionary(
                 keySelector: d => d,
                 elementSelector: d => false);
+
+            this.SetUpdateOrder(100);
         }
 
         protected override void Initialize()
