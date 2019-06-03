@@ -37,8 +37,15 @@ namespace VoidHuntersRevived.Server.Drivers
 
         private void HandleSelected(object sender, ShipPart e)
         {
-            var action = _tractorBeam.CreateActionMessage("select");
-            action.Write(e.Id);
+            if(e == null)
+            { // Force a release on all clients
+                var action = _tractorBeam.CreateActionMessage("release:force");
+            }
+            else
+            { // Alert all clients that a piece was selected
+                var action = _tractorBeam.CreateActionMessage("select");
+                action.Write(e.Id);
+            }
         }
 
         private void HandleReleased(object sender, ShipPart e)

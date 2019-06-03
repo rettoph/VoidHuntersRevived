@@ -69,7 +69,7 @@ namespace VoidHuntersRevived.Library.Entities
             this.SleepingAllowed = false;
             this.Focused.Add();
 
-            _sensor = this.CreateFixture(new CircleShape(1f, 1f));
+            _sensor = this.CreateFixture(new CircleShape(5f, 0f));
 
             _world.ContactManager.BeginContact += this.HandleBeginContact;
             _world.ContactManager.EndContact += this.HandleEndContact;
@@ -135,6 +135,10 @@ namespace VoidHuntersRevived.Library.Entities
 
                 this.OnSelected?.Invoke(this, this.Selected);
             }
+            else
+            {
+                this.OnSelected?.Invoke(this, null);
+            }
         }
 
         public void Release()
@@ -145,6 +149,7 @@ namespace VoidHuntersRevived.Library.Entities
 
                 var oldSelected = this.Selected;
                 this.Selected.Focused.Remove(_selectedFocusedId);
+                this.Selected.Position = this.Position - Vector2.Transform(this.Selected.LocalCenter, Matrix.CreateRotationZ(this.Selected.Rotation));
                 this.Selected.Dirty = true;
                 this.Selected = null;
 
@@ -160,7 +165,7 @@ namespace VoidHuntersRevived.Library.Entities
         private void UpdatePosition()
         {
             if (this.Player.Bridge != null)
-                this.Position = this.Player.Bridge.WorldCenter + this.Offset;
+                this.SetTransform(this.Player.Bridge.WorldCenter + this.Offset, 0);
         }
         #endregion
 

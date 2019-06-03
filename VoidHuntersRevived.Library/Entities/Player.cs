@@ -85,7 +85,7 @@ namespace VoidHuntersRevived.Library.Entities
 
             if (this.Bridge != null)
             {
-                var thrust = Vector2.Transform(new Vector2(0.1f, 0), Matrix.CreateRotationZ(this.Bridge.Rotation));
+                var thrust = Vector2.Transform(new Vector2(0.25f, 0), Matrix.CreateRotationZ(this.Bridge.Rotation));
 
                 if (_directions[Direction.Forward])
                     this.Bridge.ApplyLinearImpulse(thrust);

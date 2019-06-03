@@ -135,10 +135,12 @@ namespace VoidHuntersRevived.Library.Entities
         public event EventHandler<Boolean> OnIsSensorChanged;
         public event EventHandler<Boolean> OnSleepingAllowedChanged;
         public event EventHandler<Boolean> OnPhysicsEnabledChanged;
+        public event EventHandler<Body> OnBodyCreated;
         public event EventHandler<Fixture> OnFixtureCreated;
         public event EventHandler<Fixture> OnFixtureDestroyed;
         public event EventHandler<Vector2> OnLinearImpulseApplied;
         public event EventHandler<Single> OnAngularImpulseApplied;
+        public event EventHandler<Body> OnSetTransform;
         #endregion
 
         #region Constructors
@@ -166,7 +168,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.PreInitialize();
 
-            this._body = this.CreateBody((this.scene as VoidHuntersWorldScene).World);
+            _body = this.CreateBody((this.scene as VoidHuntersWorldScene).World);
         }
 
         protected override void Initialize()
@@ -184,9 +186,18 @@ namespace VoidHuntersRevived.Library.Entities
         /// <param name="rotation"></param>
         /// <param name="bodyType"></param>
         /// <returns></returns>
-        public virtual Body CreateBody(
+        private Body CreateBody(
             World world, 
             Vector2 position = new Vector2(), 
+            float rotation = 0)
+        {
+            var body = this.BuildBody(world, position, rotation);
+            this.OnBodyCreated?.Invoke(this, body);
+            return body;
+        }
+
+        protected virtual Body BuildBody(World world,
+            Vector2 position = new Vector2(),
             float rotation = 0)
         {
             var body = BodyFactory.CreateBody(
@@ -240,6 +251,13 @@ namespace VoidHuntersRevived.Library.Entities
             _body.ApplyAngularImpulse(impulse);
 
             this.OnAngularImpulseApplied?.Invoke(this, impulse);
+        }
+
+        public void SetTransform(Vector2 position, Single rotation)
+        {
+            _body.SetTransform(position, rotation);
+
+            this.OnSetTransform?.Invoke(this, _body);
         }
 
         protected internal Body GetBody()

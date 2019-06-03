@@ -27,6 +27,7 @@ namespace VoidHuntersRevived.Client.Library
             services.AddLayer<CameraLayer>();
             services.AddLayer<HudLayer>();
 
+            services.AddDriver<VoidHuntersClientWorldScene, VoidHuntersClientWorldSceneDriver>(96);
             services.AddDriver<Player, ClientPlayerDriver>();
             services.AddDriver<FarseerEntity, ClientFarseerEntityDriver>();
             services.AddDriver<TractorBeam, ClientTractorBeamDriver>();

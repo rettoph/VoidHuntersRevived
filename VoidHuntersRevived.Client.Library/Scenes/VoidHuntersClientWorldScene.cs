@@ -83,7 +83,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         {
             base.Update(gameTime);
 
-            this.ServerWorld.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
             _camera.Update(gameTime);
         }
         public override void Draw(GameTime gameTime)
@@ -93,7 +92,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             base.Draw(gameTime);
 
             _debug.RenderDebugData(_camera.Projection, _camera.View);
-            _debugServer.RenderDebugData(_camera.Projection, _camera.View);
+            // _debugServer.RenderDebugData(_camera.Projection, _camera.View);
 
         }
     }

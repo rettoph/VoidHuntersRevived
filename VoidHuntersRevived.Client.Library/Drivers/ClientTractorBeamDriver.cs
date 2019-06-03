@@ -38,6 +38,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _tractorBeam.ActionHandlers["update:offset"] = this.HandleUpdateOffsetAction;
             _tractorBeam.ActionHandlers["select"] = this.HandleSelectAction;
             _tractorBeam.ActionHandlers["release"] = this.HandleReleaseAction;
+            _tractorBeam.ActionHandlers["release:force"] = this.HandleReleaseForceAction;
 
             _tractorBeam.OnSelected += this.HandleSelected;
             _tractorBeam.OnReleased += this.HandleReleased;
@@ -46,8 +47,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if (_tractorBeam.Player.Bridge != null)
-                ClientFarseerEntityDriver.ServerBody[_tractorBeam].Position = _tractorBeam.Player.Bridge.WorldCenter + _tractorBeam.Offset;
         }
 
         #region Action Handlers
@@ -67,24 +66,36 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             if (_tractorBeam.Selected?.Id == obj.ReadGuid())
                 _tractorBeam.Release();
         }
+
+        private void HandleReleaseForceAction(NetIncomingMessage obj)
+        {
+            if(_tractorBeam.Selected != null)
+            {
+                this.logger.LogWarning($"Recieving force release message for TractorBeam({_tractorBeam.Id})");
+                _tractorBeam.Release();
+            }
+        }
         #endregion
 
         #region Event Handlers
         private void HandleSelected(object sender, ShipPart target)
         {
-            // When selected, a client side tractor beam should never sleep
-            _tractorBeam.SleepingAllowed = false;
+            if (target != null)
+            {
+                // When selected, a client side tractor beam should never sleep
+                _tractorBeam.SleepingAllowed = false;
 
-            // When the tractor beam selects an object we must create a new joint to simulate the changes
-            var beamBody = ClientFarseerEntityDriver.ServerBody[_tractorBeam];
-            var targetBody = ClientFarseerEntityDriver.ServerBody[target];
+                // When the tractor beam selects an object we must create a new joint to simulate the changes
+                var beamBody = ClientFarseerEntityDriver.ServerBody[_tractorBeam];
+                var targetBody = ClientFarseerEntityDriver.ServerBody[target];
 
-            _joint = JointFactory.CreateWeldJoint(
-                _world,
-                beamBody,
-                targetBody,
-                beamBody.LocalCenter,
-                targetBody.LocalCenter);
+                _joint = JointFactory.CreateWeldJoint(
+                    _world,
+                    beamBody,
+                    targetBody,
+                    beamBody.LocalCenter,
+                    targetBody.LocalCenter);
+            }
         }
 
         private void HandleReleased(object sender, ShipPart e)

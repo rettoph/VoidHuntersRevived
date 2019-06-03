@@ -61,10 +61,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _entity.OnIsSensorChanged += this.HandleIsSensorChanged;
             _entity.OnSleepingAllowedChanged += this.HandleSleepingAllowedChanged;
             _entity.OnPhysicsEnabledChanged += this.HandlePhysicsEnabledChanged;
+            _entity.OnBodyCreated += this.HandleBodyCreated;
             _entity.OnFixtureCreated += this.HandleFixtureCreated;
             _entity.OnFixtureDestroyed += this.HandleFixtureDestroyed;
             _entity.OnLinearImpulseApplied += this.HandleLinearImpulseApplied;
             _entity.OnAngularImpulseApplied += this.HandleAngularImpulseApplied;
+            _entity.OnSetTransform += this.HandleSetTransform;
             _entity.OnRead += this.HandleRead;
         }
 
@@ -73,10 +75,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             base.Initialize();
 
             _lerpStrength = 0.05f;
-
-            // Create a new body within the server world to represent the server render of the current entity
-            _serverBody = _entity.CreateBody(_scene.ServerWorld, _entity.Position, _entity.Rotation);
-            _serverBody.SleepingAllowed = _entity.SleepingAllowed;
         }
         #endregion
 
@@ -111,6 +109,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         #endregion
 
         #region Event Handlers
+        private void HandleBodyCreated(object sender, Body e)
+        {
+            _serverBody = e.DeepClone(_scene.ServerWorld);
+        }
+
         /// <summary>
         /// When the client render recieves a fixture,
         /// duplocate it on the server render too
@@ -171,6 +174,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _serverBody.Enabled = e;
         }
 
+        private void HandleSetTransform(object sender, Body e)
+        {
+            _serverBody.SetTransform(e.Position, e.Rotation);
+        }
+
         private void HandleRead(object sender, NetworkEntity e)
         {
             _serverBody.Position = _entity.Position;
@@ -189,10 +197,15 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
             _entity.OnCollidesWithChanged -= this.HandleCollidesWithChanged;
             _entity.OnCollisionCategoriesChanged -= this.CollidesCollisionCategoriesChanged;
+            _entity.OnIsSensorChanged -= this.HandleIsSensorChanged;
+            _entity.OnSleepingAllowedChanged -= this.HandleSleepingAllowedChanged;
+            _entity.OnPhysicsEnabledChanged -= this.HandlePhysicsEnabledChanged;
+            _entity.OnBodyCreated -= this.HandleBodyCreated;
             _entity.OnFixtureCreated -= this.HandleFixtureCreated;
             _entity.OnFixtureDestroyed -= this.HandleFixtureDestroyed;
             _entity.OnLinearImpulseApplied -= this.HandleLinearImpulseApplied;
             _entity.OnAngularImpulseApplied -= this.HandleAngularImpulseApplied;
+            _entity.OnSetTransform -= this.HandleSetTransform;
             _entity.OnRead -= this.HandleRead;
         }
     }
