@@ -14,6 +14,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Configurations;
 using VoidHuntersRevived.Library.Drivers;
 using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Entities.ConnectionNodes;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Scenes;
 
@@ -51,19 +52,21 @@ namespace VoidHuntersRevived.Library
             var entityLoader = provider.GetLoader<EntityLoader>();
             entityLoader.Register<Player>("entity:player", "name:entity:player", "description:entity:player");
             entityLoader.Register<TractorBeam>("entity:tractor-beam", "name:entity:tractor-beam", "description:entity:tractor-beam");
+            entityLoader.Register<MaleConnectionNode>("connection-node:male", "name:connection-node:male", "description:connection-node:male");
             entityLoader.Register<ShipPart>(
                 "entity:ship-part", 
                 "name:entity:ship-part", 
                 "description:entity:ship-part",
                 new ShipPartConfiguration(
-                    new PolygonShape(
+                    shape: new PolygonShape(
                         new Vertices(
                             new Vector2[] {
                                 new Vector2(0, 0),
                                 new Vector2(0, 1),
                                 new Vector2(1, 1),
                                 new Vector2(1, 0)
-                            }), 1f)));
+                            }), 1f),
+                    maleConnectionNode: new Vector3(0.5f, 0.5f, 0.785398f)));
         }
 
         public void PreInitialize(IServiceProvider provider)

@@ -17,6 +17,7 @@ using Guppy.Network.Groups;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Configurations;
+using FarseerPhysics.Dynamics;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -121,6 +122,8 @@ namespace VoidHuntersRevived.Library.Entities
                 this.logger.LogDebug($"Setting Player({this.Id}) bridge to {bridge.GetType().Name}({bridge.Id})");
 
                 this.Bridge = bridge;
+                this.Bridge.BridgeFor = this;
+                this.Bridge.CollidesWith = Category.Cat1 | Category.Cat2;
 
                 this.Dirty = true;
                 this.OnBridgeUpdated?.Invoke(this, bridge);

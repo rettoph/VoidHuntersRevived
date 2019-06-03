@@ -13,6 +13,7 @@ using VoidHuntersRevived.Library.Scenes;
 using Guppy.Implementations;
 using Guppy.Collections;
 using VoidHuntersRevived.Library.Configurations;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Server.Drivers
 {
@@ -21,7 +22,7 @@ namespace VoidHuntersRevived.Server.Drivers
         private Player _player;
         private VoidHuntersWorldScene _scene;
         private EntityCollection _entities;
-        private Queue<Boolean> _tractorBeamSelectQueue;
+        private Queue<NetIncomingMessage> _tractorBeamSelectQueue;
 
         public ServerPlayerDriver(Player entity, VoidHuntersWorldScene scene, EntityCollection entities, IServiceProvider provider, ILogger logger) : base(entity, provider, logger)
         {
@@ -34,7 +35,7 @@ namespace VoidHuntersRevived.Server.Drivers
         {
             base.Boot();
 
-            _tractorBeamSelectQueue = new Queue<Boolean>();
+            _tractorBeamSelectQueue = new Queue<NetIncomingMessage>();
 
             // Bind event handlers
             _player.OnDirectionUpdated += this.HandleDirectionUpdated;
@@ -60,8 +61,10 @@ namespace VoidHuntersRevived.Server.Drivers
         {
             while(_tractorBeamSelectQueue.Count > 0)
             {
-                if (_tractorBeamSelectQueue.Dequeue())
-                    _player.TractorBeam.Select();
+                var im = _tractorBeamSelectQueue.Dequeue();
+                if (im.ReadBoolean())
+                    _player.TractorBeam.Select(
+                        _entities.GetById(im.ReadGuid()) as ShipPart);
                 else
                     _player.TractorBeam.Release();
             }
@@ -91,7 +94,7 @@ namespace VoidHuntersRevived.Server.Drivers
             {
                 _player.TractorBeam.SetOffset(obj.ReadVector2());
 
-                _tractorBeamSelectQueue.Enqueue(obj.ReadBoolean());
+                _tractorBeamSelectQueue.Enqueue(obj);
             }
         }
 

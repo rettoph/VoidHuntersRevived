@@ -159,7 +159,7 @@ namespace VoidHuntersRevived.Library.Entities
 
         private Boolean ValidateTarget(ShipPart target)
         {
-            return target != null;
+            return (target != null) && (!target.IsBridge);
         }
 
         private void UpdatePosition()

@@ -109,14 +109,28 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
         private void HandlePointerSecondaryChanged(object sender, bool e)
         {
-            var action = _player.CreateActionMessage("update:tractor-beam:select");
-            action.Write(_player.TractorBeam.Offset);
-            action.Write(e);
+            
 
             if (e)
+            {
                 _player.TractorBeam.Select();
+
+                if (_player.TractorBeam.Selected != null)
+                {
+                    var action = _player.CreateActionMessage("update:tractor-beam:select");
+                    action.Write(_player.TractorBeam.Offset);
+                    action.Write(e);
+                    action.Write(_player.TractorBeam.Selected.Id);
+                }
+            }
             else
+            {
                 _player.TractorBeam.Release();
+
+                var action = _player.CreateActionMessage("update:tractor-beam:select");
+                action.Write(_player.TractorBeam.Offset);
+                action.Write(e);
+            }
         }
 
         private void HandlePointerLocalMovementEnded(object sender, Vector2 e)

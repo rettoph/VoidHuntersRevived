@@ -10,11 +10,14 @@ namespace VoidHuntersRevived.Library.Configurations
     public struct ShipPartConfiguration : IEntityData
     {
         public readonly PolygonShape Shape;
+        public readonly Vector3 MaleConnectionNode;
 
         public ShipPartConfiguration(
-            PolygonShape shape)
+            PolygonShape shape,
+            Vector3 maleConnectionNode)
         {
             this.Shape = shape;
+            this.MaleConnectionNode = maleConnectionNode;
         }
 
         public void Initialize(IServiceProvider provider)
