@@ -10,7 +10,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Library.Entities.ConnectionNodes
 {
-    public abstract class ConnectionNode : DebuggableEntity
+    public abstract class ConnectionNode : Entity
     {
         protected readonly ShipPart parent;
 

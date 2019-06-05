@@ -45,6 +45,9 @@ namespace VoidHuntersRevived.Client.Library
 
         public void Boot(IServiceProvider provider)
         {
+            var contentLoader = provider.GetLoader<ContentLoader>();
+            contentLoader.Register("texture:connection-node:male", "Sprites/male-connection-node");
+
             var entityLoader = provider.GetLoader<EntityLoader>();
 
             entityLoader.Register<Pointer>("entity:pointer", "name:entity:pointer", "description:entity:pointer");

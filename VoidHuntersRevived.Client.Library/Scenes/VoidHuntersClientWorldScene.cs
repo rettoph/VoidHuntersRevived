@@ -77,9 +77,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             this.layers.Create<HudLayer>(0, 0, 0, 1);
             this.layers.Create<CameraLayer>(1, 1, 0, 0);
-
-            this.layers[0].Debug = true;
-            this.layers[1].Debug = true;
         }
 
         public override void Update(GameTime gameTime)

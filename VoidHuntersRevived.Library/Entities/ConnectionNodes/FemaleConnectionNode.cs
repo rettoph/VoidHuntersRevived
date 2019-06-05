@@ -15,10 +15,5 @@ namespace VoidHuntersRevived.Library.Entities.ConnectionNodes
         public FemaleConnectionNode(ShipPart parent, float rotation, Vector2 position, EntityConfiguration configuration, Scene scene, IServiceProvider provider, ILogger logger) : base(parent, rotation, position, configuration, scene, provider, logger)
         {
         }
-
-        public override void AddDebugVertices(ref List<VertexPositionColor> vertices)
-        {
-            // throw new NotImplementedException();
-        }
     }
 }

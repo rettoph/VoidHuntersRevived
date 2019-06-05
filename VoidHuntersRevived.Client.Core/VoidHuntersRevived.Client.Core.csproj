@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,5 +11,9 @@
     <ProjectReference Include="..\Submodules\FarseerPhysics\FarseerPhysics.MonoGame\FarseerPhysics.MonoGame.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Client.Library\VoidHuntersRevived.Client.Library.csproj" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="echo D|xcopy /E /Y /R &quot;$(SolutionDir)VoidHuntersRevived.Client.Library\Content\bin\DesktopGL\Content&quot; &quot;$(OutDir)Content\&quot;" />
+  </Target>
 
 </Project>
