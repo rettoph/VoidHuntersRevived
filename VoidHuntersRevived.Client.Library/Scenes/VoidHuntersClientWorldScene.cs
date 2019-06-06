@@ -89,11 +89,10 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         {
             _graphics.Clear(Color.Black);
 
-            base.Draw(gameTime);
-
             _debug.RenderDebugData(_camera.Projection, _camera.View);
             // _debugServer.RenderDebugData(_camera.Projection, _camera.View);
 
+            base.Draw(gameTime);
         }
     }
 }

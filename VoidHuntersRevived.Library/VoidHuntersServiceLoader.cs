@@ -61,12 +61,12 @@ namespace VoidHuntersRevived.Library
                     shape: new PolygonShape(
                         new Vertices(
                             new Vector2[] {
-                                new Vector2(0, 0),
-                                new Vector2(0, 1),
-                                new Vector2(1, 1),
-                                new Vector2(1, 0)
+                                new Vector2(-0.5f, -0.5f),
+                                new Vector2(-0.5f, 0.5f),
+                                new Vector2(0.5f, 0.5f),
+                                new Vector2(0.5f, -0.5f)
                             }), 1f),
-                    maleConnectionNode: new Vector3(0.5f, 0.5f, 0.785398f)));
+                    maleConnectionNode: new Vector3(-0.5f, 0, (Single)Math.PI)));
         }
 
         public void PreInitialize(IServiceProvider provider)
