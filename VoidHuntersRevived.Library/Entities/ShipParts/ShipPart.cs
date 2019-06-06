@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Dynamics;
@@ -19,6 +20,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         private EntityCollection _entities;
         private ShipPartConfiguration _config;
         private MaleConnectionNode _maleConnectionNode;
+        private FemaleConnectionNode[] _femaleConnectionNodes;
         #endregion
 
         #region Public Attributes
@@ -59,6 +61,15 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 this, 
                 _config.MaleConnectionNode.Z,
                 new Vector2(_config.MaleConnectionNode.X, _config.MaleConnectionNode.Y));
+
+            _femaleConnectionNodes = _config.FemaleConnectionNodes
+                .Select(fcn => _entities.Create<FemaleConnectionNode>(
+                    "connection-node:female",
+                    this,
+                    fcn.Z,
+                    new Vector2(fcn.X, fcn.Y)
+                ))
+                .ToArray();
         }
 
         protected override void Initialize()

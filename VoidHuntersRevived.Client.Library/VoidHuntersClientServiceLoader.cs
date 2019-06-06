@@ -47,6 +47,7 @@ namespace VoidHuntersRevived.Client.Library
         {
             var contentLoader = provider.GetLoader<ContentLoader>();
             contentLoader.Register("texture:connection-node:male", "Sprites/male-connection-node");
+            contentLoader.Register("texture:connection-node:female", "Sprites/female-connection-node");
 
             var entityLoader = provider.GetLoader<EntityLoader>();
 

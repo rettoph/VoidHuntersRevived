@@ -11,13 +11,16 @@ namespace VoidHuntersRevived.Library.Configurations
     {
         public readonly PolygonShape Shape;
         public readonly Vector3 MaleConnectionNode;
+        public readonly Vector3[] FemaleConnectionNodes;
 
         public ShipPartConfiguration(
             PolygonShape shape,
-            Vector3 maleConnectionNode)
+            Vector3 maleConnectionNode,
+            Vector3[] femaleConnectionNodes = null)
         {
             this.Shape = shape;
             this.MaleConnectionNode = maleConnectionNode;
+            this.FemaleConnectionNodes = femaleConnectionNodes == null ? new Vector3[0] : femaleConnectionNodes;
         }
 
         public void Initialize(IServiceProvider provider)

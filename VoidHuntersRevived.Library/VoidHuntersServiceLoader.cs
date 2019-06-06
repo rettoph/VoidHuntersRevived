@@ -53,6 +53,7 @@ namespace VoidHuntersRevived.Library
             entityLoader.Register<Player>("entity:player", "name:entity:player", "description:entity:player");
             entityLoader.Register<TractorBeam>("entity:tractor-beam", "name:entity:tractor-beam", "description:entity:tractor-beam");
             entityLoader.Register<MaleConnectionNode>("connection-node:male", "name:connection-node:male", "description:connection-node:male");
+            entityLoader.Register<FemaleConnectionNode>("connection-node:female", "name:connection-node:female", "description:connection-node:female");
             entityLoader.Register<ShipPart>(
                 "entity:ship-part", 
                 "name:entity:ship-part", 
@@ -66,7 +67,12 @@ namespace VoidHuntersRevived.Library
                                 new Vector2(0.5f, 0.5f),
                                 new Vector2(0.5f, -0.5f)
                             }), 1f),
-                    maleConnectionNode: new Vector3(-0.5f, 0, (Single)Math.PI)));
+                    maleConnectionNode: new Vector3(-0.5f, 0, (Single)Math.PI),
+                    femaleConnectionNodes: new Vector3[] {
+                        new Vector3(0, -0.5f, (Single)Math.PI/2),
+                        new Vector3(0.5f, 0, (Single)Math.PI),
+                        new Vector3(0, 0.5f, -(Single)Math.PI/2)
+                    }));
         }
 
         public void PreInitialize(IServiceProvider provider)

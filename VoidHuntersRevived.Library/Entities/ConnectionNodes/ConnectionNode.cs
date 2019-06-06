@@ -12,6 +12,9 @@ namespace VoidHuntersRevived.Library.Entities.ConnectionNodes
 {
     public abstract class ConnectionNode : Entity
     {
+        private SpriteBatch _spriteBatch;
+
+        protected Texture2D texture;
         protected readonly ShipPart parent;
 
         public readonly Single LocalRotation;
@@ -41,8 +44,10 @@ namespace VoidHuntersRevived.Library.Entities.ConnectionNodes
         }
 
         #region Constructors
-        public ConnectionNode(ShipPart parent, Single rotation, Vector2 position, EntityConfiguration configuration, Scene scene, IServiceProvider provider, ILogger logger) : base(configuration, scene, provider, logger)
+        public ConnectionNode(ShipPart parent, Single rotation, Vector2 position, EntityConfiguration configuration, Scene scene, IServiceProvider provider, ILogger logger, SpriteBatch spriteBatch = null) : base(configuration, scene, provider, logger)
         {
+            _spriteBatch = spriteBatch;
+
             this.parent = parent;
 
             this.LocalRotation = rotation;
@@ -51,5 +56,21 @@ namespace VoidHuntersRevived.Library.Entities.ConnectionNodes
             this.SetUpdateOrder(200);
         }
         #endregion
+
+        public override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            _spriteBatch.Draw(
+                texture: this.texture,
+                position: this.WorldPosition,
+                sourceRectangle: this.texture.Bounds,
+                color: Color.White,
+                rotation: this.WorldRotation,
+                origin: this.texture.Bounds.Center.ToVector2(),
+                scale: 0.01f,
+                effects: SpriteEffects.None,
+                layerDepth: 0);
+        }
     }
 }
