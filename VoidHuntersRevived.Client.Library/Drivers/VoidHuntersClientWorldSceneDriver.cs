@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             base.Update(gameTime);
 
-            _scene.ServerWorld.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
+            _scene.Server.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
         }
     }
 }

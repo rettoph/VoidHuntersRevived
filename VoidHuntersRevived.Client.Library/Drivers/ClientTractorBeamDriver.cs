@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Scenes;
+using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Scenes;
@@ -21,12 +22,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers
     {
         private TractorBeam _tractorBeam;
         private WeldJoint _joint;
-        private World _world;
         private EntityCollection _entities;
+        private ServerRender _server;
 
-        public ClientTractorBeamDriver(VoidHuntersClientWorldScene scene, EntityCollection entities, TractorBeam tractorBeam, IServiceProvider provider, ILogger logger) : base(tractorBeam, provider, logger)
+        public ClientTractorBeamDriver(ServerRender server, VoidHuntersClientWorldScene scene, EntityCollection entities, TractorBeam tractorBeam, IServiceProvider provider, ILogger logger) : base(tractorBeam, provider, logger)
         {
-            _world = scene.ServerWorld;
+            _server = server;
             _tractorBeam = tractorBeam;
             _entities = entities;
         }
@@ -86,11 +87,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers
                 _tractorBeam.SleepingAllowed = false;
 
                 // When the tractor beam selects an object we must create a new joint to simulate the changes
-                var beamBody = ClientFarseerEntityDriver.ServerBody[_tractorBeam];
-                var targetBody = ClientFarseerEntityDriver.ServerBody[target];
+                var beamBody = _server.Bodies[_tractorBeam];
+                var targetBody = _server.Bodies[target];
 
                 _joint = JointFactory.CreateWeldJoint(
-                    _world,
+                    _server.World,
                     beamBody,
                     targetBody,
                     beamBody.LocalCenter,
@@ -102,7 +103,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             _tractorBeam.SleepingAllowed = true;
 
-            _world.RemoveJoint(_joint);
+            _server.World.RemoveJoint(_joint);
         }
         #endregion
     }

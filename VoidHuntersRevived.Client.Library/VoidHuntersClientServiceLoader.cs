@@ -10,6 +10,7 @@ using VoidHuntersRevived.Client.Library.Drivers;
 using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Client.Library.Layers;
 using VoidHuntersRevived.Client.Library.Scenes;
+using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Entities;
 
@@ -33,6 +34,7 @@ namespace VoidHuntersRevived.Client.Library
             services.AddDriver<TractorBeam, ClientTractorBeamDriver>();
             services.AddDriver<Pointer, MousePointerDriver>();
 
+            services.AddScoped<ServerRender>();
             services.AddScoped<Pointer>(p => {
                 var pointer = p.GetRequiredService<EntityCollection>().Create<Pointer>("entity:pointer");
                 pointer.SetUpdateOrder(0);

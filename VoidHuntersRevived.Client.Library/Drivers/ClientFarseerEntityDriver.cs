@@ -11,32 +11,25 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Scenes;
+using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Library.Entities;
 
 namespace VoidHuntersRevived.Client.Library.Drivers
 {
     public class ClientFarseerEntityDriver : Driver
     {
-        public static Dictionary<FarseerEntity, Body> ServerBody;
-
         private Dictionary<Fixture, Fixture> _clientServerFixtureTable;
-        private Body _serverBody {
-            get { return ClientFarseerEntityDriver.ServerBody[_entity]; }
-            set { ClientFarseerEntityDriver.ServerBody[_entity] = value; }
-        }
         private VoidHuntersClientWorldScene _scene;
         private FarseerEntity _entity;
         private Single _lerpStrength;
+        private ServerRender _server;
 
         #region Constructors
-        public ClientFarseerEntityDriver(VoidHuntersClientWorldScene scene, FarseerEntity entity, IServiceProvider provider, ILogger logger) : base(entity, provider, logger)
+        public ClientFarseerEntityDriver(ServerRender server, VoidHuntersClientWorldScene scene, FarseerEntity entity, IServiceProvider provider, ILogger logger) : base(entity, provider, logger)
         {
+            _server = server;
             _scene = scene;
             _entity = entity;
-        }
-        static ClientFarseerEntityDriver()
-        {
-            ClientFarseerEntityDriver.ServerBody = new Dictionary<FarseerEntity, Body>();
         }
         #endregion
 
@@ -86,12 +79,27 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
         public override void Update(GameTime gameTime)
         {
-            if(!_entity.Focused.Value && (_serverBody.Awake || _entity.Awake))
+            if(!_entity.Focused.Value && (_server.Bodies[_entity].Awake || _entity.Awake))
             {
-                _entity.Position = Vector2.Lerp(_entity.Position, _serverBody.Position, _lerpStrength);
-                _entity.Rotation = MathHelper.Lerp(_entity.Rotation, _serverBody.Rotation, _lerpStrength);
-                _entity.LinearVelocity = Vector2.Lerp(_entity.LinearVelocity, _serverBody.LinearVelocity, _lerpStrength);
-                _entity.AngularVelocity = MathHelper.Lerp(_entity.AngularVelocity, _serverBody.AngularVelocity, _lerpStrength);
+                _entity.Position = Vector2.Lerp(
+                    _entity.Position, 
+                    _server.Bodies[_entity].Position, 
+                    _lerpStrength);
+
+                _entity.Rotation = MathHelper.Lerp(
+                    _entity.Rotation, 
+                    _server.Bodies[_entity].Rotation, 
+                    _lerpStrength);
+
+                _entity.LinearVelocity = Vector2.Lerp(
+                    _entity.LinearVelocity, 
+                    _server.Bodies[_entity].LinearVelocity, 
+                    _lerpStrength);
+
+                _entity.AngularVelocity = MathHelper.Lerp(
+                    _entity.AngularVelocity, 
+                    _server.Bodies[_entity].AngularVelocity, 
+                    _lerpStrength);
             }
         }
         #endregion
@@ -99,19 +107,19 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         #region Action Handlers
         private void HandleUpdatePositionAction(NetIncomingMessage obj)
         {
-            _serverBody.Position = obj.ReadVector2();
-            _serverBody.Rotation = obj.ReadSingle();
-            _serverBody.LinearVelocity = obj.ReadVector2();
-            _serverBody.AngularVelocity = obj.ReadSingle();
+            _server.Bodies[_entity].Position = obj.ReadVector2();
+            _server.Bodies[_entity].Rotation = obj.ReadSingle();
+            _server.Bodies[_entity].LinearVelocity = obj.ReadVector2();
+            _server.Bodies[_entity].AngularVelocity = obj.ReadSingle();
 
-            _serverBody.Awake = true;
+            _server.Bodies[_entity].Awake = true;
         }
         #endregion
 
         #region Event Handlers
         private void HandleBodyCreated(object sender, Body e)
         {
-            _serverBody = e.DeepClone(_scene.ServerWorld);
+            _server.Bodies.Add(_entity, e.DeepClone(_server.World));
         }
 
         /// <summary>
@@ -122,7 +130,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         /// <param name="shape"></param>
         private void HandleFixtureCreated(object sender, Fixture fixture)
         {
-            var sFixture = fixture.CloneOnto(_serverBody);
+            var sFixture = fixture.CloneOnto(_server.Bodies[_entity]);
 
             _clientServerFixtureTable.Add(fixture, sFixture);
         }
@@ -135,56 +143,56 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         /// <param name="shape"></param>
         private void HandleFixtureDestroyed(object sender, Fixture fixture)
         {
-            _serverBody.DestroyFixture(_clientServerFixtureTable[fixture]);
+            _server.Bodies[_entity].DestroyFixture(_clientServerFixtureTable[fixture]);
             _clientServerFixtureTable.Remove(fixture);
         }
 
         private void HandleAngularImpulseApplied(object sender, float impulse)
         {
-            _serverBody.ApplyAngularImpulse(impulse);
+            _server.Bodies[_entity].ApplyAngularImpulse(impulse);
         }
 
         private void HandleLinearImpulseApplied(object sender, Vector2 impulse)
         {
-            _serverBody.ApplyLinearImpulse(impulse);
+            _server.Bodies[_entity].ApplyLinearImpulse(impulse);
         }
 
         private void CollidesCollisionCategoriesChanged(object sender, Category category)
         {
-            _serverBody.CollisionCategories = category;
+            _server.Bodies[_entity].CollisionCategories = category;
         }
 
         private void HandleCollidesWithChanged(object sender, Category category)
         {
-            _serverBody.CollidesWith = category;
+            _server.Bodies[_entity].CollidesWith = category;
         }
 
         private void HandleIsSensorChanged(object sender, bool e)
         {
-            _serverBody.IsSensor = e;
+            _server.Bodies[_entity].IsSensor = e;
         }
 
         private void HandleSleepingAllowedChanged(object sender, bool e)
         {
-            _serverBody.SleepingAllowed = e;
+            _server.Bodies[_entity].SleepingAllowed = e;
         }
 
         private void HandlePhysicsEnabledChanged(object sender, bool e)
         {
-            _serverBody.Enabled = e;
+            _server.Bodies[_entity].Enabled = e;
         }
 
         private void HandleSetTransform(object sender, Body e)
         {
-            _serverBody.SetTransform(e.Position, e.Rotation);
+            _server.Bodies[_entity].SetTransform(e.Position, e.Rotation);
         }
 
         private void HandleRead(object sender, NetworkEntity e)
         {
-            _serverBody.Position = _entity.Position;
-            _serverBody.Rotation = _entity.Rotation;
-            _serverBody.LinearVelocity = _entity.LinearVelocity;
-            _serverBody.AngularVelocity = _entity.AngularVelocity;
+            _server.Bodies[_entity].Position = _entity.Position;
+            _server.Bodies[_entity].Rotation = _entity.Rotation;
+            _server.Bodies[_entity].LinearVelocity = _entity.LinearVelocity;
+            _server.Bodies[_entity].AngularVelocity = _entity.AngularVelocity;
         }
         #endregion
 
@@ -192,8 +200,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             base.Dispose();
 
-            _serverBody.Dispose();
-            ClientFarseerEntityDriver.ServerBody.Remove(_entity);
+            _server.Bodies[_entity].Dispose();
+            _server.Bodies.Remove(_entity);
 
             _entity.OnCollidesWithChanged -= this.HandleCollidesWithChanged;
             _entity.OnCollisionCategoriesChanged -= this.CollidesCollisionCategoriesChanged;

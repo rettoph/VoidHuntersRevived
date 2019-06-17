@@ -17,10 +17,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <MonoGameContentReference Include="Content\Content.mgcb" />
-  </ItemGroup>
-  
-  <ItemGroup>
     <ProjectReference Include="..\Submodules\FarseerPhysics\FarseerPhysics.MonoGame.DebugView\FarseerPhysics.MonoGame.DebugView.csproj" />
     <ProjectReference Include="..\Submodules\FarseerPhysics\FarseerPhysics.MonoGame\FarseerPhysics.MonoGame.csproj" />
     <ProjectReference Include="..\Submodules\Guppy\Guppy.Network\Guppy.Network.csproj" />

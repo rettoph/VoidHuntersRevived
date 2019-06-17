@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Layers;
+using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Scenes;
 
@@ -26,7 +27,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 {
     public class VoidHuntersClientWorldScene : VoidHuntersWorldScene
     {
-        public World ServerWorld { get; private set; }
+        public ServerRender Server { get; private set; }
 
         private ClientPeer _client;
         private GraphicsDevice _graphics;
@@ -53,7 +54,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             base.Boot();
 
-            this.ServerWorld = this.provider.GetRequiredService<World>();
+            this.Server = this.provider.GetRequiredService<ServerRender>();
         }
 
         protected override void PreInitialize()
@@ -66,7 +67,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _debug.AppendFlags(DebugViewFlags.ContactNormals);
             _debug.AppendFlags(DebugViewFlags.Controllers);
 
-            _debugServer = new DebugViewXNA(this.ServerWorld);
+            _debugServer = new DebugViewXNA(this.Server.World);
             _debugServer.LoadContent(_graphics, _content);
             _debugServer.AppendFlags(DebugViewFlags.ContactPoints);
             _debugServer.AppendFlags(DebugViewFlags.ContactNormals);
