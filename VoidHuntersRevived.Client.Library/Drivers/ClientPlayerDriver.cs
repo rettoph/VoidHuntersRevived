@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Entities;
+using VoidHuntersRevived.Client.Library.Scenes;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Enums;
@@ -25,9 +26,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private ClientPeer _client;
         private EntityCollection _entities;
         private FarseerCamera2D _camera;
+        private VoidHuntersClientWorldScene _scene;
 
-        public ClientPlayerDriver(Player entity, Pointer pointer, ClientPeer client, FarseerCamera2D camera, EntityCollection entities, IServiceProvider provider) : base(entity, provider)
+        public ClientPlayerDriver(VoidHuntersClientWorldScene scene, Player entity, Pointer pointer, ClientPeer client, FarseerCamera2D camera, EntityCollection entities, IServiceProvider provider) : base(entity, provider)
         {
+            _scene = scene;
             _player = entity;
             _pointer = pointer;
             _client = client;
@@ -58,28 +61,42 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
                 Boolean keyDown;
 
-                if((keyDown = kState.IsKeyDown(Keys.W)) != _player.GetDirection(Direction.Forward))
-                    this.UpdateLocalDirection(Direction.Forward, keyDown);
-                if ((keyDown = kState.IsKeyDown(Keys.A)) != _player.GetDirection(Direction.TurnLeft))
-                    this.UpdateLocalDirection(Direction.TurnLeft, keyDown);
-                if ((keyDown = kState.IsKeyDown(Keys.S)) != _player.GetDirection(Direction.Backward))
-                    this.UpdateLocalDirection(Direction.Backward, keyDown);
-                if ((keyDown = kState.IsKeyDown(Keys.D)) != _player.GetDirection(Direction.TurnRight))
-                    this.UpdateLocalDirection(Direction.TurnRight, keyDown);
+                if (_scene.Chat.Typing)
+                { // If the player is typing we must stop all user actions...
+                    if (_player.GetDirection(Direction.Forward))
+                        this.UpdateLocalDirection(Direction.Forward, false);
+                    if (_player.GetDirection(Direction.TurnLeft))
+                        this.UpdateLocalDirection(Direction.TurnLeft, false);
+                    if (_player.GetDirection(Direction.Backward))
+                        this.UpdateLocalDirection(Direction.Backward, false);
+                    if (_player.GetDirection(Direction.TurnRight))
+                        this.UpdateLocalDirection(Direction.TurnRight, false);
+                }
+                else
+                { // No typing
+                    if ((keyDown = kState.IsKeyDown(Keys.W)) != _player.GetDirection(Direction.Forward))
+                        this.UpdateLocalDirection(Direction.Forward, keyDown);
+                    if ((keyDown = kState.IsKeyDown(Keys.A)) != _player.GetDirection(Direction.TurnLeft))
+                        this.UpdateLocalDirection(Direction.TurnLeft, keyDown);
+                    if ((keyDown = kState.IsKeyDown(Keys.S)) != _player.GetDirection(Direction.Backward))
+                        this.UpdateLocalDirection(Direction.Backward, keyDown);
+                    if ((keyDown = kState.IsKeyDown(Keys.D)) != _player.GetDirection(Direction.TurnRight))
+                        this.UpdateLocalDirection(Direction.TurnRight, keyDown);
 
-                if(_player.Bridge != null)
-                    _camera.MoveTo(_player.Bridge.WorldCenter);
-
-                if (_player.TractorBeam != null)
-                {
-                    var curOffset = _pointer.Position - _player.Bridge.WorldCenter;
-
-                    if(_player.TractorBeam.Offset != curOffset)
+                    if (_player.TractorBeam != null)
                     {
-                        _player.TractorBeam.SetOffset(curOffset);
+                        var curOffset = _pointer.Position - _player.Bridge.WorldCenter;
+
+                        if (_player.TractorBeam.Offset != curOffset)
+                        {
+                            _player.TractorBeam.SetOffset(curOffset);
+                        }
                     }
                 }
-                    
+
+                // Update camera position
+                if (_player.Bridge != null)
+                    _camera.MoveTo(_player.Bridge.WorldCenter);
             }
         }
 

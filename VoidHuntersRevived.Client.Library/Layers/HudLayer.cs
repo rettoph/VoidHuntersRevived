@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Client.Library.Layers
 
         public override void Draw(GameTime gameTime)
         {
-            this.spriteBatch.Begin(effect: _effect);
+            this.spriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend, effect: _effect);
             this.entities.Draw(gameTime);
             this.spriteBatch.End();
         }
@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Client.Library.Layers
             this.entities.Update(gameTime);
 
             _effect.Projection = this.Camera.Projection;
-            _effect.World = this.Camera.World;
+            _effect.World = this.Camera.World * Matrix.CreateTranslation(0.5f, 0.5f, 0);
         }
 
         private void HandleClientBoundsChanged(object sender, EventArgs e)

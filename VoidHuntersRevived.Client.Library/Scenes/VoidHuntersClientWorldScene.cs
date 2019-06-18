@@ -8,6 +8,8 @@ using Guppy.Network.Groups;
 using Guppy.Network.Peers;
 using Guppy.UI.Elements;
 using Guppy.UI.Entities;
+using Guppy.UI.Utilities.Units;
+using Guppy.UI.Utilities.Units.UnitValues;
 using Guppy.Utilities.Cameras;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Layers;
+using VoidHuntersRevived.Client.Library.UI;
 using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Scenes;
@@ -27,6 +30,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 {
     public class VoidHuntersClientWorldScene : VoidHuntersWorldScene
     {
+        public ChatWindow Chat { get; private set; }
+
         private ServerRender _server;
         private ClientPeer _client;
         private GraphicsDevice _graphics;
@@ -73,8 +78,16 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             this.DefaultLayerDepth = 1;
 
-            this.layers.Create<HudLayer>(0, 0, 0, 1);
-            this.layers.Create<CameraLayer>(1, 1, 0, 0);
+            this.layers.Create<HudLayer>(0, 0, 0, 200);
+            this.layers.Create<CameraLayer>(1, 1, 0, 100);
+        }
+
+        protected override void PostInitialize()
+        {
+            base.PostInitialize();
+
+            var stage = this.entities.Create<Stage>("ui:stage", 0);
+            this.Chat = stage.Content.CreateElement<ChatWindow>(0, new UnitValue[] { 1f, -150 }, 450, 150, this.Group);
         }
 
         public override void Update(GameTime gameTime)

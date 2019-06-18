@@ -26,6 +26,10 @@ namespace VoidHuntersRevived.Client.Library
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
+            _graphics.PreparingDeviceSettings += (object s, PreparingDeviceSettingsEventArgs args) =>
+            {
+                args.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
+            };
             _guppy = new GuppyLoader(new ConsoleLogger());
 
             this.Content.RootDirectory = "Content";
@@ -38,6 +42,7 @@ namespace VoidHuntersRevived.Client.Library
             _graphics.SynchronizeWithVerticalRetrace = false;
             _graphics.GraphicsProfile = GraphicsProfile.HiDef;
             _graphics.PreferMultiSampling = true;
+
             this.GraphicsDevice.PresentationParameters.MultiSampleCount = 32;
             this.InactiveSleepTime = TimeSpan.Zero;
             this.IsFixedTimeStep = true;

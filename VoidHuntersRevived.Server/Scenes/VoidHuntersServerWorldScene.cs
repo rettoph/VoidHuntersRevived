@@ -46,12 +46,21 @@ namespace VoidHuntersRevived.Server.Scenes
             this.Group.Users.Added += this.HandleUserAdded;
         }
 
+        protected override void PostInitialize()
+        {
+            base.PostInitialize();
+
+            this.Group.MessageHandler.Add("chat", this.HandleChatMessage);
+        }
+
+        #region Frame Methods
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
             this.entities.Update(gameTime);
         }
+        #endregion
 
         #region Event Handlers
         private void HandleUserAdded(object sender, User user)
@@ -61,6 +70,28 @@ namespace VoidHuntersRevived.Server.Scenes
             var player = this.entities.Create<Player>("entity:player");
             player.SetUser(user);
             player.SetBridge(bridge);
+
+            var om = this.Group.CreateMessage("chat");
+
+            om.Write(false);
+            om.Write($"Welcome, {user.Get("name")}.");
+
+            this.Group.SendMesssage(om, NetDeliveryMethod.ReliableOrdered, 2);
+        }
+        #endregion
+
+        #region Message Handlers
+        private void HandleChatMessage(NetIncomingMessage obj)
+        {
+            // Parse the message then broadcast to all users
+            var user = this.Users.GetByNetConnection(obj.SenderConnection);
+            var om = this.Group.CreateMessage("chat");
+
+            om.Write(true);
+            om.Write(user.Id);
+            om.Write(obj.ReadString());
+
+            this.Group.SendMesssage(om, NetDeliveryMethod.ReliableOrdered, 2);
         }
         #endregion
     }

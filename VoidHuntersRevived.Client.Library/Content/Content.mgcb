@@ -1,8 +1,8 @@
 
 #----------------------------- Global Properties ----------------------------#
 
-/outputDir:../bin/$(Platform)
-/intermediateDir:../obj/$(Platform)
+/outputDir:./bin/$(Platform)
+/intermediateDir:./obj/$(Platform)
 /platform:DesktopGL
 /config:
 /profile:Reach
@@ -36,4 +36,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Sprites/female-connection-node.png
+
+#begin Sprites/text-area.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Sprites/text-area.png
 

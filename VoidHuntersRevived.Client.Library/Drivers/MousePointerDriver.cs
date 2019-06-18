@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Entities;
+using VoidHuntersRevived.Client.Library.Scenes;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 
 namespace VoidHuntersRevived.Client.Library.Drivers
@@ -18,13 +19,15 @@ namespace VoidHuntersRevived.Client.Library.Drivers
     /// </summary>
     public class MousePointerDriver : Driver
     {
+        private VoidHuntersClientWorldScene _scene;
         private Pointer _pointer;
         private FarseerCamera2D _camera;
 
         private Single _oldScrollValue;
 
-        public MousePointerDriver(FarseerCamera2D camera, Pointer pointer, IServiceProvider provider) : base(pointer, provider)
+        public MousePointerDriver(VoidHuntersClientWorldScene scene, FarseerCamera2D camera, Pointer pointer, IServiceProvider provider) : base(pointer, provider)
         {
+            _scene = scene;
             _pointer = pointer;
             _camera = camera;
         }
@@ -33,25 +36,28 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             base.Update(gameTime);
 
-            var mState = Mouse.GetState();
+            if (!_scene.Chat.Typing)
+            {
+                var mState = Mouse.GetState();
 
-            // var mPos = _graphics.Viewport.Unproject(
-            //     new Vector3(mState.Position.X, mState.Position.Y, 0), 
-            //     _camera.Projection, 
-            //     _camera.View,
-            //     _camera.World);
+                // var mPos = _graphics.Viewport.Unproject(
+                //     new Vector3(mState.Position.X, mState.Position.Y, 0), 
+                //     _camera.Projection, 
+                //     _camera.View,
+                //     _camera.World);
 
-            // Update the pointer position
-            _pointer.MoveTo(mState.Position.X, mState.Position.Y);
+                // Update the pointer position
+                _pointer.MoveTo(mState.Position.X, mState.Position.Y);
 
-            // Update the primary and secondary values
-            _pointer.SetPrimary(mState.LeftButton == ButtonState.Pressed);
-            _pointer.SetSecondary(mState.RightButton == ButtonState.Pressed);
+                // Update the primary and secondary values
+                _pointer.SetPrimary(mState.LeftButton == ButtonState.Pressed);
+                _pointer.SetSecondary(mState.RightButton == ButtonState.Pressed);
 
-            // Update the camera zoom value
-            var scrollDelta = mState.ScrollWheelValue - _oldScrollValue;
-            _camera.ZoomBy(1 + (0.1f * ((Single)scrollDelta / 120)));
-            _oldScrollValue = mState.ScrollWheelValue;
+                // Update the camera zoom value
+                var scrollDelta = mState.ScrollWheelValue - _oldScrollValue;
+                _camera.ZoomBy(1 + (0.1f * ((Single)scrollDelta / 120)));
+                _oldScrollValue = mState.ScrollWheelValue;
+            }
         }
     }
 }
