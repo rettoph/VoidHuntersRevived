@@ -55,7 +55,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
         public event EventHandler<Boolean> OnPrimaryChanged;
         public event EventHandler<Boolean> OnSecondaryChanged;
 
-        public Pointer(GraphicsDevice graphics, FarseerCamera2D camera, EntityConfiguration configuration, VoidHuntersClientWorldScene scene, IServiceProvider provider, ILogger logger) : base(configuration, scene, provider, logger)
+        public Pointer(GraphicsDevice graphics, FarseerCamera2D camera, EntityConfiguration configuration, IServiceProvider provider) : base(configuration, provider)
         {
             _graphics = graphics;
             _camera = camera;

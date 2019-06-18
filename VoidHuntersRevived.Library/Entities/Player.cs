@@ -28,7 +28,6 @@ namespace VoidHuntersRevived.Library.Entities
     {
         #region Private Attributes
         private Dictionary<Direction, Boolean> _directions;
-        private EntityCollection _entities;
         #endregion
 
         #region Public Attributes
@@ -45,13 +44,11 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Constructors
-        public Player(EntityConfiguration configuration, Scene scene, IServiceProvider provider, ILogger logger, EntityCollection entities) : base(configuration, scene, provider, logger)
+        public Player(EntityConfiguration configuration, IServiceProvider provider) : base(configuration, provider)
         {
-            _entities = entities;
         }
-        public Player(Guid id, EntityConfiguration configuration, Scene scene, IServiceProvider provider, ILogger logger, EntityCollection entities) : base(id, configuration, scene, provider, logger)
+        public Player(Guid id, EntityConfiguration configuration, IServiceProvider provider) : base(id, configuration, provider)
         {
-            _entities = entities;
         }
         #endregion
 
@@ -156,11 +153,11 @@ namespace VoidHuntersRevived.Library.Entities
                 this.SetUser(null);
 
             if (im.ReadBoolean())
-                this.SetBridge(_entities.GetById(im.ReadGuid()) as ShipPart);
+                this.SetBridge(this.entities.GetById(im.ReadGuid()) as ShipPart);
             else
                 this.SetBridge(null);
 
-            this.TractorBeam = _entities.GetById(im.ReadGuid()) as TractorBeam;
+            this.TractorBeam = this.entities.GetById(im.ReadGuid()) as TractorBeam;
         }
 
         protected override void write(NetOutgoingMessage om)

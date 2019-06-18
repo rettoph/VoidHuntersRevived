@@ -17,7 +17,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
     public partial class ShipPart : FarseerEntity
     {
         #region Private Fields
-        private EntityCollection _entities;
         private ShipPartConfiguration _config;
         private MaleConnectionNode _maleConnectionNode;
         private FemaleConnectionNode[] _femaleConnectionNodes;
@@ -40,13 +39,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #endregion
 
         #region Constructors
-        public ShipPart(EntityCollection entities, EntityConfiguration configuration, Scene scene, IServiceProvider provider, ILogger logger) : base(configuration, scene, provider, logger)
+        public ShipPart(EntityConfiguration configuration, IServiceProvider provider) : base(configuration, provider)
         {
-            _entities = entities;
         }
-        public ShipPart(Guid id, EntityCollection entities, EntityConfiguration configuration, Scene scene, IServiceProvider provider, ILogger logger) : base(id, configuration, scene, provider, logger)
+        public ShipPart(Guid id, EntityConfiguration configuration, IServiceProvider provider) : base(id, configuration, provider)
         {
-            _entities = entities;
         }
         #endregion
 
@@ -56,14 +53,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             base.Boot();
 
             _config = (ShipPartConfiguration)this.Configuration.Data;
-            _maleConnectionNode = _entities.Create<MaleConnectionNode>(
+            _maleConnectionNode = this.entities.Create<MaleConnectionNode>(
                 "connection-node:male",
                 this, 
                 _config.MaleConnectionNode.Z,
                 new Vector2(_config.MaleConnectionNode.X, _config.MaleConnectionNode.Y));
 
             _femaleConnectionNodes = _config.FemaleConnectionNodes
-                .Select(fcn => _entities.Create<FemaleConnectionNode>(
+                .Select(fcn => this.entities.Create<FemaleConnectionNode>(
                     "connection-node:female",
                     this,
                     fcn.Z,

@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Server.Drivers
     {
         private TractorBeam _tractorBeam;
 
-        public ServerTractorBeamDriver(TractorBeam tractorBeam, IServiceProvider provider, ILogger logger) : base(tractorBeam, provider, logger)
+        public ServerTractorBeamDriver(TractorBeam tractorBeam, IServiceProvider provider) : base(tractorBeam, provider)
         {
             _tractorBeam = tractorBeam;
         }

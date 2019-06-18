@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Client.Library.Layers
 
         protected SpriteBatch spriteBatch;
 
-        public HudLayer(LayerConfiguration configuration, IServiceProvider provider, GameWindow window, BasicEffect effect, SpriteBatch spriteBatch, Camera2D camera, ILogger logger) : base(configuration, provider, logger, camera)
+        public HudLayer(LayerConfiguration configuration, IServiceProvider provider, GameWindow window, BasicEffect effect, SpriteBatch spriteBatch, Camera2D camera) : base(configuration, provider, camera)
         {
             _camera = camera;
             _window = window;

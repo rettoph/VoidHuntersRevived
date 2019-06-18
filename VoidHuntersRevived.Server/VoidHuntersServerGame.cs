@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Server
     {
         protected ServerPeer server;
 
-        public VoidHuntersServerGame(ServerPeer server, IServiceProvider provider, ILogger logger) : base(provider, logger)
+        public VoidHuntersServerGame(ServerPeer server, IServiceProvider provider) : base(provider)
         {
             this.server = server;
         }

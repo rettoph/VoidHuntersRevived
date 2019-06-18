@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
 
         public ServerRender(World world)
         {
-            this.World = world;
+            this.World = new World(world.Gravity);
 
             this.Bodies = new Dictionary<FarseerEntity, Body>();
         }

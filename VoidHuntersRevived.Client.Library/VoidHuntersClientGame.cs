@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Client.Library
     {
         protected ClientPeer client;
 
-        public VoidHuntersClientGame(ClientPeer client, IServiceProvider provider, ILogger logger) : base(provider, logger)
+        public VoidHuntersClientGame(ClientPeer client, IServiceProvider provider) : base(provider)
         {
             this.client = client;
         }

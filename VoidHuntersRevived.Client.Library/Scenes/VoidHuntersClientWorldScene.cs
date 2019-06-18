@@ -27,8 +27,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 {
     public class VoidHuntersClientWorldScene : VoidHuntersWorldScene
     {
-        public ServerRender Server { get; private set; }
-
+        private ServerRender _server;
         private ClientPeer _client;
         private GraphicsDevice _graphics;
         private DebugViewXNA _debug;
@@ -44,30 +43,28 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _graphics = graphicsDevice;
             _content = content;
             _client = peer;
-
-            this.logger.LogInformation("Constructing!");
         }
 
         protected override void Boot()
         {
-            this.logger.LogInformation("Booting!");
-
             base.Boot();
 
-            this.Server = this.provider.GetRequiredService<ServerRender>();
+            this.logger.LogInformation("Booting!");
+
+            _server = this.provider.GetRequiredService<ServerRender>();
         }
 
         protected override void PreInitialize()
         {
             base.PreInitialize();
 
-            _debug = new DebugViewXNA(this.World);
+            _debug = new DebugViewXNA(this.provider.GetRequiredService<World>());
             _debug.LoadContent(_graphics, _content);
             _debug.AppendFlags(DebugViewFlags.ContactPoints);
             _debug.AppendFlags(DebugViewFlags.ContactNormals);
             _debug.AppendFlags(DebugViewFlags.Controllers);
 
-            _debugServer = new DebugViewXNA(this.Server.World);
+            _debugServer = new DebugViewXNA(_server.World);
             _debugServer.LoadContent(_graphics, _content);
             _debugServer.AppendFlags(DebugViewFlags.ContactPoints);
             _debugServer.AppendFlags(DebugViewFlags.ContactNormals);

@@ -7,6 +7,7 @@ using Guppy.Configurations;
 using Guppy.Network;
 using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
@@ -28,6 +29,10 @@ namespace VoidHuntersRevived.Library.Entities
 
         private List<Fixture> _fixtureList;
         private Body _body;
+
+        #region Protected Fields
+        protected World world { get; private set; }
+        #endregion
 
         #region Public Attributes
         public Vector2 Position
@@ -144,10 +149,10 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Constructors
-        public FarseerEntity(EntityConfiguration configuration, Scene scene, IServiceProvider provider, ILogger logger) : base(configuration, scene, provider, logger)
+        public FarseerEntity(EntityConfiguration configuration, IServiceProvider provider) : base(configuration, provider)
         {
         }
-        public FarseerEntity(Guid id, EntityConfiguration configuration, Scene scene, IServiceProvider provider, ILogger logger) : base(id, configuration, scene, provider, logger)
+        public FarseerEntity(Guid id, EntityConfiguration configuration, IServiceProvider provider) : base(id, configuration, provider)
         {
         }
         #endregion
@@ -156,6 +161,8 @@ namespace VoidHuntersRevived.Library.Entities
         protected override void Boot()
         {
             base.Boot();
+
+            this.world = this.provider.GetRequiredService<World>();
 
             _collidesWith = Category.All;
             _collisionCategories = Category.Cat1;
@@ -168,7 +175,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.PreInitialize();
 
-            _body = this.CreateBody((this.scene as VoidHuntersWorldScene).World);
+            _body = this.CreateBody(this.world);
         }
 
         protected override void Initialize()

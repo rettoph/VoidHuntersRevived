@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Server.Drivers
         private Double _lastUpdatePositionAction;
         private Double _updatePositionActionRate;
 
-        public ServerFarseerEntityDriver(FarseerEntity entity, IServiceProvider provider, ILogger logger) : base(entity, provider, logger)
+        public ServerFarseerEntityDriver(FarseerEntity entity, IServiceProvider provider) : base(entity, provider)
         {
             _entity = entity;
         }

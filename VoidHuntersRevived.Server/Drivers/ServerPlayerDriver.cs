@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Server.Drivers
         private EntityCollection _entities;
         private Queue<NetIncomingMessage> _tractorBeamSelectQueue;
 
-        public ServerPlayerDriver(Player entity, VoidHuntersWorldScene scene, EntityCollection entities, IServiceProvider provider, ILogger logger) : base(entity, provider, logger)
+        public ServerPlayerDriver(Player entity, VoidHuntersWorldScene scene, EntityCollection entities, IServiceProvider provider) : base(entity, provider)
         {
             _player = entity;
             _scene = scene;

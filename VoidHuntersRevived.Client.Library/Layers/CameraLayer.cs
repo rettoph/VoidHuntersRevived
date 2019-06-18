@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Client.Library.Layers
         protected SpriteBatch spriteBatch;
         protected FarseerCamera2D camera;
 
-        public CameraLayer(FarseerCamera2D camera, LayerConfiguration configuration, BasicEffect effect, SpriteBatch spriteBatch, IServiceProvider provider, ILogger logger) : base(configuration, provider, logger, camera)
+        public CameraLayer(FarseerCamera2D camera, LayerConfiguration configuration, BasicEffect effect, SpriteBatch spriteBatch, IServiceProvider provider) : base(configuration, provider, camera)
         {
             _effect = effect;
             _effect.TextureEnabled = true;

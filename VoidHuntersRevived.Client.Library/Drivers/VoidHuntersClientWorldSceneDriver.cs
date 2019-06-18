@@ -5,23 +5,24 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Scenes;
+using VoidHuntersRevived.Client.Library.Utilities;
 
 namespace VoidHuntersRevived.Client.Library.Drivers
 {
     class VoidHuntersClientWorldSceneDriver : Driver
     {
-        private VoidHuntersClientWorldScene _scene;
+        private ServerRender _server;
 
-        public VoidHuntersClientWorldSceneDriver(VoidHuntersClientWorldScene scene, IServiceProvider provider, ILogger logger) : base(scene, provider, logger)
+        public VoidHuntersClientWorldSceneDriver(ServerRender server, VoidHuntersClientWorldScene scene, IServiceProvider provider) : base(scene, provider)
         {
-            _scene = scene;
+            _server = server;
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            _scene.Server.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
+            _server.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
         }
     }
 }

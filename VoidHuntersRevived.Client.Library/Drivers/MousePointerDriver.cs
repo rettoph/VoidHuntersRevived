@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
         private Single _oldScrollValue;
 
-        public MousePointerDriver(FarseerCamera2D camera, Pointer pointer, IServiceProvider provider, ILogger logger) : base(pointer, provider, logger)
+        public MousePointerDriver(FarseerCamera2D camera, Pointer pointer, IServiceProvider provider) : base(pointer, provider)
         {
             _pointer = pointer;
             _camera = camera;

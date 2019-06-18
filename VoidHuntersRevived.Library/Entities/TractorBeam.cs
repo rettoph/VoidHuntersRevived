@@ -22,12 +22,10 @@ namespace VoidHuntersRevived.Library.Entities
     public class TractorBeam : FarseerEntity
     {
         #region Private Fields
-        private EntityCollection _entities;
         private Single _reach;
         private Guid _selectedFocusedId;
         private Fixture _sensor;
         private List<ShipPart> _contacts;
-        private World _world;
         private WeldJoint _joint;
         #endregion
 
@@ -44,15 +42,12 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Constructors
-        public TractorBeam(Player player, EntityCollection entities, EntityConfiguration configuration, VoidHuntersWorldScene scene, IServiceProvider provider, ILogger logger) : base(configuration, scene, provider, logger)
+        public TractorBeam(Player player, EntityConfiguration configuration, VoidHuntersWorldScene scene, IServiceProvider provider, ILogger logger) : base(configuration, provider)
         {
-            _entities = entities;
-
             this.Player = player;
         }
-        public TractorBeam(Guid id, EntityCollection entities, EntityConfiguration configuration, Scene scene, IServiceProvider provider, ILogger logger) : base(id, configuration, scene, provider, logger)
+        public TractorBeam(Guid id, EntityConfiguration configuration, Scene scene, IServiceProvider provider, ILogger logger) : base(id, configuration, provider)
         {
-            _entities = entities;
         }
         #endregion
 
@@ -63,7 +58,6 @@ namespace VoidHuntersRevived.Library.Entities
 
             _reach = 25;
             _contacts = new List<ShipPart>();
-            _world = (this.scene as VoidHuntersWorldScene).World;
 
             this.IsSensor = true;
             this.SleepingAllowed = false;
@@ -71,8 +65,8 @@ namespace VoidHuntersRevived.Library.Entities
 
             _sensor = this.CreateFixture(new CircleShape(5f, 0f));
 
-            _world.ContactManager.BeginContact += this.HandleBeginContact;
-            _world.ContactManager.EndContact += this.HandleEndContact;
+            this.world.ContactManager.BeginContact += this.HandleBeginContact;
+            this.world.ContactManager.EndContact += this.HandleEndContact;
         }
         #endregion
 
@@ -127,7 +121,7 @@ namespace VoidHuntersRevived.Library.Entities
                 this.Selected = target;
                 _selectedFocusedId = this.Selected.Focused.Add();
                 _joint = JointFactory.CreateWeldJoint(
-                    _world,
+                    this.world,
                     this.GetBody(),
                     this.Selected.GetBody(),
                     this.LocalCenter,
@@ -145,7 +139,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             if (this.Selected != null)
             {
-                _world.RemoveJoint(_joint);
+                this.world.RemoveJoint(_joint);
 
                 var oldSelected = this.Selected;
                 this.Selected.Focused.Remove(_selectedFocusedId);
@@ -202,7 +196,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.read(im);
 
-            this.Player = _entities.GetById(im.ReadGuid()) as Player;
+            this.Player = this.entities.GetById(im.ReadGuid()) as Player;
         }
 
         protected override void write(NetOutgoingMessage om)

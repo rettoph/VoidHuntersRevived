@@ -11,18 +11,18 @@ namespace VoidHuntersRevived.Library.Drivers
 {
     public class VoidHuntersWorldSceneDriver : Driver
     {
-        private VoidHuntersWorldScene _scene;
+        private World _world;
 
-        public VoidHuntersWorldSceneDriver(VoidHuntersWorldScene scene, IServiceProvider provider, ILogger logger) : base(scene, provider, logger)
+        public VoidHuntersWorldSceneDriver(World world, VoidHuntersWorldScene scene, IServiceProvider provider) : base(scene, provider)
         {
-            _scene = scene;
+            _world = world;
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            _scene.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
+            _world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
         }
     }
 }

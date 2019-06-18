@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private EntityCollection _entities;
         private ServerRender _server;
 
-        public ClientTractorBeamDriver(ServerRender server, VoidHuntersClientWorldScene scene, EntityCollection entities, TractorBeam tractorBeam, IServiceProvider provider, ILogger logger) : base(tractorBeam, provider, logger)
+        public ClientTractorBeamDriver(ServerRender server, VoidHuntersClientWorldScene scene, EntityCollection entities, TractorBeam tractorBeam, IServiceProvider provider) : base(tractorBeam, provider)
         {
             _server = server;
             _tractorBeam = tractorBeam;

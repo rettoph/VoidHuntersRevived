@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Library.Entities.ConnectionNodes
     {
         private IServiceProvider _provider;
 
-        public MaleConnectionNode(ShipPart parent, float rotation, Vector2 position, EntityConfiguration configuration, Scene scene, IServiceProvider provider, ILogger logger, SpriteBatch spriteBatch = null) : base(parent, rotation, position, configuration, scene, provider, logger, spriteBatch)
+        public MaleConnectionNode(ShipPart parent, float rotation, Vector2 position, EntityConfiguration configuration, IServiceProvider provider, SpriteBatch spriteBatch = null) : base(parent, rotation, position, configuration, provider, spriteBatch)
         {
             _provider = provider;
         }

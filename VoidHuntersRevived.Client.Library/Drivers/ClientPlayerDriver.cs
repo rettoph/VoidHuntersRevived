@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private EntityCollection _entities;
         private FarseerCamera2D _camera;
 
-        public ClientPlayerDriver(Player entity, Pointer pointer, ClientPeer client, FarseerCamera2D camera, EntityCollection entities, IServiceProvider provider, ILogger logger) : base(entity, provider, logger)
+        public ClientPlayerDriver(Player entity, Pointer pointer, ClientPeer client, FarseerCamera2D camera, EntityCollection entities, IServiceProvider provider) : base(entity, provider)
         {
             _player = entity;
             _pointer = pointer;

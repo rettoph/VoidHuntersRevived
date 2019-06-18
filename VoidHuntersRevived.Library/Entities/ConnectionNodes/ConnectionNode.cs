@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Library.Entities.ConnectionNodes
         }
 
         #region Constructors
-        public ConnectionNode(ShipPart parent, Single rotation, Vector2 position, EntityConfiguration configuration, Scene scene, IServiceProvider provider, ILogger logger, SpriteBatch spriteBatch = null) : base(configuration, scene, provider, logger)
+        public ConnectionNode(ShipPart parent, Single rotation, Vector2 position, EntityConfiguration configuration, IServiceProvider provider, SpriteBatch spriteBatch = null) : base(configuration, provider)
         {
             _spriteBatch = spriteBatch;
 

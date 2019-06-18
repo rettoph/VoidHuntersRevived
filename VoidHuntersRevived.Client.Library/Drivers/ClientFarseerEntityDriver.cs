@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private ServerRender _server;
 
         #region Constructors
-        public ClientFarseerEntityDriver(ServerRender server, VoidHuntersClientWorldScene scene, FarseerEntity entity, IServiceProvider provider, ILogger logger) : base(entity, provider, logger)
+        public ClientFarseerEntityDriver(ServerRender server, VoidHuntersClientWorldScene scene, FarseerEntity entity, IServiceProvider provider) : base(entity, provider)
         {
             _server = server;
             _scene = scene;

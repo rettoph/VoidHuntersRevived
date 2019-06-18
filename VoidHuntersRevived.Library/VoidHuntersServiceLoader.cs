@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Library
             services.AddScene<VoidHuntersWorldScene>();
             services.AddDriver<VoidHuntersWorldScene, VoidHuntersWorldSceneDriver>(95);
 
-            services.AddTransient<World>(p =>
+            services.AddScoped<World>(p =>
             {
                 return new World(Vector2.Zero);
             });
