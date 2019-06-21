@@ -14,7 +14,6 @@ using System.Text;
 using VoidHuntersRevived.Library.Configurations;
 using VoidHuntersRevived.Library.Drivers;
 using VoidHuntersRevived.Library.Entities;
-using VoidHuntersRevived.Library.Entities.ConnectionNodes;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Scenes;
 
@@ -52,8 +51,6 @@ namespace VoidHuntersRevived.Library
             var entityLoader = provider.GetLoader<EntityLoader>();
             entityLoader.Register<Player>("entity:player", "name:entity:player", "description:entity:player");
             entityLoader.Register<TractorBeam>("entity:tractor-beam", "name:entity:tractor-beam", "description:entity:tractor-beam");
-            entityLoader.Register<MaleConnectionNode>("connection-node:male", "name:connection-node:male", "description:connection-node:male");
-            entityLoader.Register<FemaleConnectionNode>("connection-node:female", "name:connection-node:female", "description:connection-node:female");
             entityLoader.Register<ShipPart>(
                 "entity:ship-part", 
                 "name:entity:ship-part", 

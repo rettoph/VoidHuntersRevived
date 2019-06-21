@@ -10,7 +10,7 @@ using Guppy.Configurations;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Library.Configurations;
-using VoidHuntersRevived.Library.Entities.ConnectionNodes;
+using VoidHuntersRevived.Library.Utilities.ConnectionNodes;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -18,8 +18,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
     {
         #region Private Fields
         private ShipPartConfiguration _config;
-        private MaleConnectionNode _maleConnectionNode;
-        private FemaleConnectionNode[] _femaleConnectionNodes;
         #endregion
 
         #region Public Attributes
@@ -53,20 +51,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             base.Boot();
 
             _config = (ShipPartConfiguration)this.Configuration.Data;
-            _maleConnectionNode = this.entities.Create<MaleConnectionNode>(
-                "connection-node:male",
-                this, 
-                _config.MaleConnectionNode.Z,
-                new Vector2(_config.MaleConnectionNode.X, _config.MaleConnectionNode.Y));
 
-            _femaleConnectionNodes = _config.FemaleConnectionNodes
-                .Select(fcn => this.entities.Create<FemaleConnectionNode>(
-                    "connection-node:female",
-                    this,
-                    fcn.Z,
-                    new Vector2(fcn.X, fcn.Y)
-                ))
-                .ToArray();
+            // Call the internal connection node boot method
+            this.ConnectionNodes_Boot();
         }
 
         protected override void Initialize()
@@ -81,5 +68,17 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             this.SetUpdateOrder(100);
         }
         #endregion
+
+        public override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+#if DEBUG
+            _maleConnectionNode.Draw(gameTime);
+
+            foreach(FemaleConnectionNode female in this.FemaleConnectionNodes)
+                female.Draw(gameTime);
+#endif
+        }
     }
 }
