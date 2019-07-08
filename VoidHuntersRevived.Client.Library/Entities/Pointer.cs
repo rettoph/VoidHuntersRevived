@@ -73,10 +73,8 @@ namespace VoidHuntersRevived.Client.Library.Entities
             _localPosition = Vector2.Zero;
         }
 
-        public override void Update(GameTime gameTime)
+        protected override void update(GameTime gameTime)
         {
-            base.Update(gameTime);
-
             // Local movement calculations
             if (_localDelta == 0 && _localMoving)
             {

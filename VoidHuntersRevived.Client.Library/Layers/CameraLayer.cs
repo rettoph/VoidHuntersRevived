@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Client.Library.Layers
             this.camera = camera;
         }
 
-        public override void Draw(GameTime gameTime)
+        protected override void draw(GameTime gameTime)
         {
             _effect.Projection = this.camera.Projection;
             _effect.World = this.camera.World;
@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Client.Library.Layers
             this.spriteBatch.End();
         }
 
-        public override void Update(GameTime gameTime)
+        protected override void update(GameTime gameTime)
         {
             this.entities.Update(gameTime);
         }

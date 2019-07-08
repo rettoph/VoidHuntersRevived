@@ -36,11 +36,11 @@ namespace VoidHuntersRevived.Client.Library
             this.client.Connect("localhost", 1337, user);
         }
 
-        public override void Update(GameTime gameTime)
+        protected override void update(GameTime gameTime)
         {
             this.client.Update();
 
-            base.Update(gameTime);
+            base.update(gameTime);
         }
 
         private void HandleStatusChanged(object sender, NetIncomingMessage e)

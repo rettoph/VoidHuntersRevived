@@ -30,12 +30,7 @@ namespace VoidHuntersRevived.Server.Drivers
         }
         #endregion
 
-        public override void Draw(GameTime gameTime)
-        {
-            // throw new NotImplementedException();
-        }
-
-        public override void Update(GameTime gameTime)
+        protected override void update(GameTime gameTime)
         {
             _lastUpdatePositionAction += gameTime.ElapsedGameTime.TotalMilliseconds;
 

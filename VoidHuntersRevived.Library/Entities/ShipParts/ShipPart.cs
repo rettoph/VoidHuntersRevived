@@ -69,16 +69,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         }
         #endregion
 
-        public override void Draw(GameTime gameTime)
+        protected override void draw(GameTime gameTime)
         {
-            base.Draw(gameTime);
-
-#if DEBUG
+            #if DEBUG
             _maleConnectionNode.Draw(gameTime);
 
             foreach(FemaleConnectionNode female in this.FemaleConnectionNodes)
                 female.Draw(gameTime);
-#endif
+            #endif
         }
     }
 }

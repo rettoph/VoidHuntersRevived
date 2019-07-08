@@ -72,12 +72,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         #endregion
 
         #region Frame Methods
-        public override void Draw(GameTime gameTime)
+        protected override void draw(GameTime gameTime)
         {
             // throw new NotImplementedException();
         }
 
-        public override void Update(GameTime gameTime)
+        protected override void update(GameTime gameTime)
         {
             if(!_entity.Focused.Value && (_server.Bodies[_entity].Awake || _entity.Awake))
             {

@@ -90,20 +90,20 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             this.Chat = stage.Content.CreateElement<ChatWindow>(0, new UnitValue[] { 1f, -150 }, 450, 150, this.Group);
         }
 
-        public override void Update(GameTime gameTime)
+        protected override void update(GameTime gameTime)
         {
-            base.Update(gameTime);
+            base.update(gameTime);
 
             _camera.Update(gameTime);
         }
-        public override void Draw(GameTime gameTime)
+        protected override void draw(GameTime gameTime)
         {
             _graphics.Clear(Color.Black);
 
             _debug.RenderDebugData(_camera.Projection, _camera.View);
             // _debugServer.RenderDebugData(_camera.Projection, _camera.View);
 
-            base.Draw(gameTime);
+            base.draw(gameTime);
         }
     }
 }

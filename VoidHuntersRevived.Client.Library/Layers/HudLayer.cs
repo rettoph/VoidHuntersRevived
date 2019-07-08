@@ -31,14 +31,14 @@ namespace VoidHuntersRevived.Client.Library.Layers
             _window.ClientSizeChanged += this.HandleClientBoundsChanged;
         }
 
-        public override void Draw(GameTime gameTime)
+        protected override void draw(GameTime gameTime)
         {
             this.spriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend, effect: _effect);
             this.entities.Draw(gameTime);
             this.spriteBatch.End();
         }
 
-        public override void Update(GameTime gameTime)
+        protected override void update(GameTime gameTime)
         {
             this.Camera.Update(gameTime);
             this.entities.Update(gameTime);

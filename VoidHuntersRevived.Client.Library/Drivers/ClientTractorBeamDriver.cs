@@ -45,11 +45,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _tractorBeam.OnReleased += this.HandleReleased;
         }
 
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-        }
-
         #region Action Handlers
         private void HandleUpdateOffsetAction(NetIncomingMessage obj)
         {

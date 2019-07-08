@@ -77,9 +77,9 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Frame Methods
-        public override void Update(GameTime gameTime)
+        protected override void update(GameTime gameTime)
         {
-            base.Update(gameTime);
+            base.update(gameTime);
 
             if (this.Bridge != null)
             {

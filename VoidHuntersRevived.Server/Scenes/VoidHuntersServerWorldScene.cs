@@ -25,6 +25,7 @@ namespace VoidHuntersRevived.Server.Scenes
             this.server = server;
         }
 
+        #region Initialization Methods
         protected override void Boot()
         {
             base.Boot();
@@ -52,11 +53,12 @@ namespace VoidHuntersRevived.Server.Scenes
 
             this.Group.MessageHandler.Add("chat", this.HandleChatMessage);
         }
+        #endregion
 
         #region Frame Methods
-        public override void Update(GameTime gameTime)
+        protected override void update(GameTime gameTime)
         {
-            base.Update(gameTime);
+            base.update(gameTime);
 
             this.entities.Update(gameTime);
         }

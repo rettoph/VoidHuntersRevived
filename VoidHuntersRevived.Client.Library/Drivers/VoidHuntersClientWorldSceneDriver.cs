@@ -18,11 +18,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _server = server;
         }
 
-        public override void Update(GameTime gameTime)
+        #region Frame Methods
+        protected override void update(GameTime gameTime)
         {
-            base.Update(gameTime);
+            base.update(gameTime);
 
             _server.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
         }
+        #endregion
     }
 }

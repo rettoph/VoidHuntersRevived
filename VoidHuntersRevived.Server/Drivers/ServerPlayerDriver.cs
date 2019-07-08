@@ -52,12 +52,13 @@ namespace VoidHuntersRevived.Server.Drivers
             _player.ActionHandlers["update:tractor-beam:select"] = this.HandleUpdateTractorBeamSelectAction;
         }
 
-        public override void Draw(GameTime gameTime)
+        #region Frame Methods
+        protected override void draw(GameTime gameTime)
         {
             // throw new NotImplementedException();
         }
 
-        public override void Update(GameTime gameTime)
+        protected override void update(GameTime gameTime)
         {
             while(_tractorBeamSelectQueue.Count > 0)
             {
@@ -69,6 +70,7 @@ namespace VoidHuntersRevived.Server.Drivers
                     _player.TractorBeam.Release();
             }
         }
+        #endregion
 
         #region Action Handlers 
         private void HandleSetDirectionAction(NetIncomingMessage obj)

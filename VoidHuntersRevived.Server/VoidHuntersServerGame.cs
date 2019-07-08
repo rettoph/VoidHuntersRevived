@@ -20,6 +20,7 @@ namespace VoidHuntersRevived.Server
             this.server = server;
         }
 
+        #region Initialization Methods
         protected override void Initialize()
         {
             base.Initialize();
@@ -27,13 +28,16 @@ namespace VoidHuntersRevived.Server
             this.SetScene(this.CreateScene<VoidHuntersServerWorldScene>());
             this.server.OnUserConnected += this.HandleUserConnected;
         }
+        #endregion
 
-        public override void Update(GameTime gameTime)
+        #region Frame Methods
+        protected override void update(GameTime gameTime)
         {
             this.server.Update();
 
-            base.Update(gameTime);
+            base.update(gameTime);
         }
+        #endregion
 
         private void HandleUserConnected(object sender, User e)
         {

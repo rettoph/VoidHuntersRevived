@@ -32,9 +32,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _camera = camera;
         }
 
-        public override void Update(GameTime gameTime)
+        protected override void update(GameTime gameTime)
         {
-            base.Update(gameTime);
+            base.update(gameTime);
 
             if (!_scene.Chat.Typing)
             {
