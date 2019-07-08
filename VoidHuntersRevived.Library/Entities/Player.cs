@@ -18,6 +18,7 @@ using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Configurations;
 using FarseerPhysics.Dynamics;
+using VoidHuntersRevived.Library.Utilities.ConnectionNodes;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -34,6 +35,7 @@ namespace VoidHuntersRevived.Library.Entities
         public User User { get; private set; }
         public ShipPart Bridge { get; private set; }
         public TractorBeam TractorBeam { get; private set; }
+        public IReadOnlyCollection<FemaleConnectionNode> OpenFemaleConnectionNodes { get; private set; }
         #endregion
 
         #region Events
@@ -116,11 +118,17 @@ namespace VoidHuntersRevived.Library.Entities
         {
             if (bridge != this.Bridge)
             {
+                if(this.Bridge != null)
+                { // Unbind from any of the old bridge events...
+                    this.Bridge.OnConnectionNodesRemapped += this.HandleBridgeConnectionNodesRemapped;
+                }
+
                 this.logger.LogDebug($"Setting Player({this.Id}) bridge to {bridge.GetType().Name}({bridge.Id})");
 
                 this.Bridge = bridge;
                 this.Bridge.BridgeFor = this;
                 this.Bridge.CollidesWith = Category.Cat1 | Category.Cat2;
+                this.OpenFemaleConnectionNodes = this.Bridge.GetOpenFemaleConnectionNodes();
 
                 this.Dirty = true;
                 this.OnBridgeUpdated?.Invoke(this, bridge);
@@ -141,6 +149,14 @@ namespace VoidHuntersRevived.Library.Entities
         public Boolean GetDirection(Direction direction)
         {
             return _directions[direction];
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandleBridgeConnectionNodesRemapped(object sender, ShipPart e)
+        {
+            // Update the open female connection node list
+            this.OpenFemaleConnectionNodes = this.Bridge.GetOpenFemaleConnectionNodes();
         }
         #endregion
 

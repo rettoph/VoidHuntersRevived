@@ -13,9 +13,18 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
     public partial class ShipPart
     {
+        #region Private Fields
         private MaleConnectionNode _maleConnectionNode;
+        #endregion
 
+
+        #region Public Attributes
         public FemaleConnectionNode[] FemaleConnectionNodes { get; private set; }
+        #endregion
+
+        #region Events
+        public event EventHandler<ShipPart> OnConnectionNodesRemapped;
+        #endregion
 
         #region Initialization Methods
         private void ConnectionNodes_Boot()
@@ -39,6 +48,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         }
         #endregion
 
+        #region Utility Methods
         /// <summary>
         /// Attempt to attatch the current ship-part
         /// to a target female connection node. This will
@@ -51,31 +61,57 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             _maleConnectionNode.AttatchTo(target);
         }
 
+        /// <summary>
+        /// Used to alert the current part and its entire chain
+        /// to remap the self contained parts.
+        /// </summary>
         protected internal void RemapConnectioNodes()
         {
+            // Mark the current part as dirty...
             this.Dirty = true;
+
+            // Trigger the event
+            this.OnConnectionNodesRemapped?.Invoke(this, this);
         }
+
+
+        /// <summary>
+        /// Recursively update the input list of all 
+        /// available female connection nodes
+        /// 
+        /// </summary>
+        /// <param name="list"></param>
+        public void GetOpenFemaleNodes(ref List<FemaleConnectionNode> list)
+        {
+            foreach (FemaleConnectionNode female in this.FemaleConnectionNodes)
+                if (female.Target == null)
+                    list.Add(female);
+                else
+                    female.Target.Parent.GetOpenFemaleNodes(ref list);
+        }
+
+        /// <summary>
+        /// Return a list of all open female nodes
+        /// </summary>
+        public List<FemaleConnectionNode> GetOpenFemaleConnectionNodes()
+        {
+            var list = new List<FemaleConnectionNode>();
+
+            this.GetOpenFemaleNodes(ref list);
+
+            return list;
+        }
+        #endregion
 
         #region Network Methods
         private void ConnectionNodes_Read(NetIncomingMessage im)
         {
-            if(im.ReadBoolean())
-            {
-
-            }
+            //
         }
 
         private void ConnectionNodes_Write(NetOutgoingMessage om)
         {
-            if(_maleConnectionNode.Target == null)
-            {
-                om.Write(false);
-            }
-            else
-            {
-                om.Write(_maleConnectionNode.Target.Parent.Id);
-                om.Write(_maleConnectionNode.Target.Id);
-            }
+            //   
         }
         #endregion
     }

@@ -69,6 +69,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         }
         #endregion
 
+        #region Frame Methods
         protected override void draw(GameTime gameTime)
         {
             #if DEBUG
@@ -78,5 +79,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 female.Draw(gameTime);
             #endif
         }
+        #endregion
     }
 }
