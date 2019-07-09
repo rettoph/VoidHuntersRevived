@@ -73,7 +73,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         protected override void draw(GameTime gameTime)
         {
             #if DEBUG
-            _maleConnectionNode.Draw(gameTime);
+            MaleConnectionNode.Draw(gameTime);
 
             foreach(FemaleConnectionNode female in this.FemaleConnectionNodes)
                 female.Draw(gameTime);

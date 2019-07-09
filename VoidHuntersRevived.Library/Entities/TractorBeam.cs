@@ -26,13 +26,13 @@ namespace VoidHuntersRevived.Library.Entities
         private Guid _selectedFocusedId;
         private Fixture _sensor;
         private List<ShipPart> _contacts;
-        private WeldJoint _joint;
         #endregion
 
         #region Public Attributes
         public Vector2 Offset { get; private set; }
         public Player Player { get; private set; }
         public ShipPart Selected { get; private set; }
+        public WeldJoint Joint { get; private set; }
         #endregion
 
         #region Events
@@ -64,6 +64,8 @@ namespace VoidHuntersRevived.Library.Entities
             this.Focused.Add();
 
             _sensor = this.CreateFixture(new CircleShape(5f, 0f));
+            this.SleepingAllowed = false;
+            this.SetUpdateOrder(110);
 
             this.world.ContactManager.BeginContact += this.HandleBeginContact;
             this.world.ContactManager.EndContact += this.HandleEndContact;
@@ -120,7 +122,7 @@ namespace VoidHuntersRevived.Library.Entities
                 // Select the new target
                 this.Selected = target;
                 _selectedFocusedId = this.Selected.Focused.Add();
-                _joint = JointFactory.CreateWeldJoint(
+                this.Joint = JointFactory.CreateWeldJoint(
                     this.world,
                     this.GetBody(),
                     this.Selected.GetBody(),
@@ -139,7 +141,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             if (this.Selected != null)
             {
-                this.world.RemoveJoint(_joint);
+                this.world.RemoveJoint(this.Joint);
 
                 var oldSelected = this.Selected;
                 this.Selected.Focused.Remove(_selectedFocusedId);

@@ -128,7 +128,8 @@ namespace VoidHuntersRevived.Library.Entities
                 this.Bridge = bridge;
                 this.Bridge.BridgeFor = this;
                 this.Bridge.CollidesWith = Category.Cat1 | Category.Cat2;
-                this.OpenFemaleConnectionNodes = this.Bridge.GetOpenFemaleConnectionNodes();
+                this.Bridge.OnConnectionNodesRemapped += this.HandleBridgeConnectionNodesRemapped;
+                this.HandleBridgeConnectionNodesRemapped(null, this.Bridge);
 
                 this.Dirty = true;
                 this.OnBridgeUpdated?.Invoke(this, bridge);

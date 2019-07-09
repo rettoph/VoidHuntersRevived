@@ -15,6 +15,8 @@ using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Scenes;
+using System.Linq;
+using VoidHuntersRevived.Library.Utilities.ConnectionNodes;
 
 namespace VoidHuntersRevived.Client.Library.Drivers
 {
@@ -25,13 +27,16 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private EntityCollection _entities;
         private ServerRender _server;
 
+        #region Constructors
         public ClientTractorBeamDriver(ServerRender server, VoidHuntersClientWorldScene scene, EntityCollection entities, TractorBeam tractorBeam, IServiceProvider provider) : base(tractorBeam, provider)
         {
             _server = server;
             _tractorBeam = tractorBeam;
             _entities = entities;
         }
+        #endregion
 
+        #region Initialization Methods
         protected override void PreInitialize()
         {
             base.PreInitialize();
@@ -44,6 +49,40 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _tractorBeam.OnSelected += this.HandleSelected;
             _tractorBeam.OnReleased += this.HandleReleased;
         }
+        #endregion
+
+        #region Frame Methods
+        protected override void update(GameTime gameTime)
+        {
+            base.update(gameTime);
+
+            // Render a preview of where a particular part will be places if it is currently being held by the tractor beam
+            if(_tractorBeam.Selected != null)
+            {
+                // Select the closest open female connection node
+                var closest = _tractorBeam
+                    .Player
+                    .OpenFemaleConnectionNodes
+                    .Where(f => Vector2.Distance(f.WorldPosition, _tractorBeam.Position) < 1f)
+                    .OrderBy(f => Vector2.Distance(f.WorldPosition, _tractorBeam.Position))
+                    .FirstOrDefault();
+
+                if(closest != default(FemaleConnectionNode))
+                { // Only proceed if there is a valud female node to preview...
+                    _tractorBeam.Joint.Enabled = false;
+
+                    var rotation = closest.WorldRotation + _tractorBeam.Selected.MaleConnectionNode.LocalRotation;
+                    var position = closest.WorldPosition - Vector2.Transform(_tractorBeam.Selected.MaleConnectionNode.LocalPosition, Matrix.CreateRotationZ(rotation));
+
+                    _tractorBeam.Selected.SetTransform(position, rotation);
+                }
+                else
+                {
+                    _tractorBeam.Joint.Enabled = true;
+                }   
+            }
+        }
+        #endregion
 
         #region Action Handlers
         private void HandleUpdateOffsetAction(NetIncomingMessage obj)

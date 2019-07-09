@@ -14,12 +14,12 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
     public partial class ShipPart
     {
         #region Private Fields
-        private MaleConnectionNode _maleConnectionNode;
+        
         #endregion
-
 
         #region Public Attributes
         public FemaleConnectionNode[] FemaleConnectionNodes { get; private set; }
+        public MaleConnectionNode MaleConnectionNode { get; private set; }
         #endregion
 
         #region Events
@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #region Initialization Methods
         private void ConnectionNodes_Boot()
         {
-            _maleConnectionNode = ActivatorUtilities.CreateInstance<MaleConnectionNode>(
+            MaleConnectionNode = ActivatorUtilities.CreateInstance<MaleConnectionNode>(
                 this.provider,
                 this,
                 _config.MaleConnectionNode.Z,
@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// <param name="target"></param>
         public void AttatchTo(FemaleConnectionNode target)
         {
-            _maleConnectionNode.AttatchTo(target);
+            MaleConnectionNode.AttatchTo(target);
         }
 
         /// <summary>
