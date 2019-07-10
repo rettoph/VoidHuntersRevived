@@ -108,12 +108,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         #region Action Handlers
         private void HandleUpdatePositionAction(NetIncomingMessage obj)
         {
-            // _server.Bodies[_entity].Position = obj.ReadVector2();
-            // _server.Bodies[_entity].Rotation = obj.ReadSingle();
-            // _server.Bodies[_entity].LinearVelocity = obj.ReadVector2();
-            // _server.Bodies[_entity].AngularVelocity = obj.ReadSingle();
-            // 
-            // _server.Bodies[_entity].Awake = true;
+            _server.Bodies[_entity].Position = obj.ReadVector2();
+            _server.Bodies[_entity].Rotation = obj.ReadSingle();
+            _server.Bodies[_entity].LinearVelocity = obj.ReadVector2();
+            _server.Bodies[_entity].AngularVelocity = obj.ReadSingle();
+            
+            _server.Bodies[_entity].Awake = true;
         }
         #endregion
 

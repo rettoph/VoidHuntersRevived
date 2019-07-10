@@ -101,7 +101,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         {
             _graphics.Clear(Color.Black);
 
-            _debugServer.RenderDebugData(_camera.Projection, _camera.View);
+            // _debugServer.RenderDebugData(_camera.Projection, _camera.View);
             _debug.RenderDebugData(_camera.Projection, _camera.View);
             
 

@@ -27,6 +27,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private EntityCollection _entities;
         private FarseerCamera2D _camera;
         private VoidHuntersClientWorldScene _scene;
+        private Vector2 _localCenter;
 
         public ClientPlayerDriver(VoidHuntersClientWorldScene scene, Player entity, Pointer pointer, ClientPeer client, FarseerCamera2D camera, EntityCollection entities, IServiceProvider provider) : base(entity, provider)
         {
@@ -96,7 +97,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
                 // Update camera position
                 if (_player.Bridge != null)
-                    _camera.MoveTo(_player.Bridge.WorldCenter);
+                {
+                    _localCenter = Vector2.Lerp(_localCenter, _player.Bridge.LocalCenter, 0.1f);
+
+                    _camera.MoveTo(_player.Bridge.Position + Vector2.Transform(_localCenter, Matrix.CreateRotationZ(_player.Bridge.Rotation)));
+                }
+                    
             }
         }
 
