@@ -106,15 +106,10 @@ namespace VoidHuntersRevived.Library.Entities
         public void Select(ShipPart target = null)
         {
             // First, ensure that the target is valid.
-            if(target == null)
-            {
-                target = _contacts
-                    .Where(c => this.ValidateTarget(c))
-                    .OrderBy(c => Vector2.Distance(this.WorldCenter, c.Root.Position + Vector2.Transform(Vector2.Zero, c.LocalTransformation)))
-                    .FirstOrDefault();
-            }
+            if (target == null)
+                target = this.GetOver();
 
-            if (this.ValidateTarget(target))
+            if (target != null)
             { // Only proceed if the target passes validation
                 // Ensure that the old ship part gets released
                 if (this.Selected != null)
@@ -178,6 +173,23 @@ namespace VoidHuntersRevived.Library.Entities
         {
             if (this.Player.Bridge != null)
                 this.SetTransform(this.Player.Bridge.WorldCenter + this.Offset, 0);
+        }
+
+        /// <summary>
+        /// Get the current ship-part the tractor beam is currently over
+        /// </summary>
+        /// <returns></returns>
+        public ShipPart GetOver()
+        {
+            var over = _contacts
+                .Where(c => this.ValidateTarget(c))
+                .OrderBy(c => Vector2.Distance(this.Position, c.Root.Position + Vector2.Transform(Vector2.Zero, c.LocalTransformation * Matrix.CreateRotationZ(c.Root.Rotation))))
+                .FirstOrDefault();
+
+            if (over != null && !over.IsRoot && !over.Root.IsBridge)
+                return over.Root;
+
+            return over;
         }
         #endregion
 

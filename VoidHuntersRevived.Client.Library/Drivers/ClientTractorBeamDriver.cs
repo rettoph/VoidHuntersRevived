@@ -17,6 +17,8 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Scenes;
 using System.Linq;
 using VoidHuntersRevived.Library.Utilities.ConnectionNodes;
+using Guppy.Loaders;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace VoidHuntersRevived.Client.Library.Drivers
 {
@@ -26,13 +28,17 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private WeldJoint _joint;
         private EntityCollection _entities;
         private ServerRender _server;
+        private Texture2D _texture;
+        private SpriteBatch _spriteBatch;
 
         #region Constructors
-        public ClientTractorBeamDriver(ServerRender server, VoidHuntersClientWorldScene scene, EntityCollection entities, TractorBeam tractorBeam, IServiceProvider provider) : base(tractorBeam, provider)
+        public ClientTractorBeamDriver(SpriteBatch spriteBatch, ContentLoader content, ServerRender server, VoidHuntersClientWorldScene scene, EntityCollection entities, TractorBeam tractorBeam, IServiceProvider provider) : base(tractorBeam, provider)
         {
             _server = server;
             _tractorBeam = tractorBeam;
             _entities = entities;
+            _texture = content.Get<Texture2D>("texture:connection-node:female");
+            _spriteBatch = spriteBatch;
         }
         #endregion
 
@@ -52,6 +58,24 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         #endregion
 
         #region Frame Methods
+        protected override void draw(GameTime gameTime)
+        {
+            base.draw(gameTime);
+
+            var t = _tractorBeam.GetOver();
+            if (t != null)
+                _spriteBatch.Draw(
+                texture: _texture,
+                position: t.Root.Position + Vector2.Transform(Vector2.Zero, t.LocalTransformation * Matrix.CreateRotationZ(t.Root.Rotation)),
+                sourceRectangle: _texture.Bounds,
+                color: Color.White,
+                rotation: t.LocalRotation + t.Root.Rotation,
+                origin: _texture.Bounds.Center.ToVector2(),
+                scale: 0.01f,
+                effects: SpriteEffects.None,
+                layerDepth: 0);
+
+        }
         protected override void update(GameTime gameTime)
         {
             base.update(gameTime);
@@ -135,8 +159,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
         private void HandleReleased(object sender, ShipPart e)
         {
-            _tractorBeam.SleepingAllowed = true;
-
             _server.World.RemoveJoint(_joint);
         }
         #endregion
