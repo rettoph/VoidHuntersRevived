@@ -16,6 +16,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Scenes;
 using System.Linq;
 using FarseerPhysics.Dynamics.Joints;
+using VoidHuntersRevived.Library.Utilities.ConnectionNodes;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -109,7 +110,7 @@ namespace VoidHuntersRevived.Library.Entities
             {
                 target = _contacts
                     .Where(c => this.ValidateTarget(c))
-                    .OrderBy(c => Vector2.Distance(this.WorldCenter, c.WorldCenter))
+                    .OrderBy(c => Vector2.Distance(this.WorldCenter, c.Root.Position + Vector2.Transform(Vector2.Zero, c.LocalTransformation)))
                     .FirstOrDefault();
             }
 
@@ -118,6 +119,9 @@ namespace VoidHuntersRevived.Library.Entities
                 // Ensure that the old ship part gets released
                 if (this.Selected != null)
                     this.Release();
+
+                if (target.Root.IsBridge) // If the target is part of the current ship... detatch it.
+                    (target.MaleConnectionNode.Target as FemaleConnectionNode).Detatch();
 
                 // Select the new target
                 this.Selected = target;
@@ -149,13 +153,25 @@ namespace VoidHuntersRevived.Library.Entities
                 this.Selected.Dirty = true;
                 this.Selected = null;
 
+
+                // Select the closest open female connection node
+                var closest = this
+                    .Player
+                    .OpenFemaleConnectionNodes
+                    .Where(f => Vector2.Distance(f.WorldPosition, this.Position) < 1f)
+                    .OrderBy(f => Vector2.Distance(f.WorldPosition, this.Position))
+                    .FirstOrDefault();
+                // If there is a valid open female connection node, attempt to attatch it to the players ship
+                if (closest != null)
+                    oldSelected.AttatchTo(closest);
+
                 this.OnReleased?.Invoke(this, oldSelected);
             }
         }
 
         private Boolean ValidateTarget(ShipPart target)
         {
-            return (target != null) && (!target.IsBridge);
+            return (target != null) && ((!target.Root.IsBridge) || (target.Root.BridgeFor == this.Player && !target.IsBridge));
         }
 
         private void UpdatePosition()

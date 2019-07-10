@@ -14,10 +14,10 @@ using VoidHuntersRevived.Library.Utilities.ConnectionNodes;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
-    public partial class ShipPart : FarseerEntity
+    public abstract partial class ShipPart : FarseerEntity
     {
-        #region Private Fields
-        private ShipPartConfiguration _config;
+        #region Protected Attributes
+        protected ShipPartConfiguration config { get; private set; }
         #endregion
 
         #region Public Attributes
@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// The current live shape used within the current
         /// parts fixture
         /// </summary>
-        public PolygonShape Shape { get; private set; }
+        public Fixture Fixture { get; protected set; }
 
         public Player BridgeFor { get; internal set; }
         public Boolean IsBridge { get { return this.BridgeFor != null; } }
@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public ShipPart Root { get { return this.Parent == null ? this : this.Parent.Root; } }
         public Boolean IsRoot { get { return this.Parent == null; } }
 
-        public ShipPart Parent { get; internal set; }
+        public ShipPart Parent { get { return this.MaleConnectionNode.Target?.Parent; } }
         #endregion
 
         #region Constructors
@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             base.Boot();
 
-            _config = (ShipPartConfiguration)this.Configuration.Data;
+            this.config = (ShipPartConfiguration)this.Configuration.Data;
 
             // Call the internal connection node boot method
             this.ConnectionNodes_Boot();
@@ -60,7 +60,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             base.Initialize();
 
-            this.CreateFixture(_config.Shape, this);
+            this.Fixture = this.CreateFixture(this.config.Shape, this);
 
             this.CollisionCategories = Category.Cat2;
             this.CollidesWith = Category.Cat1;
@@ -79,6 +79,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 female.Draw(gameTime);
             #endif
         }
+        #endregion
+
+        #region Abstract Methods
+        /// <summary>
+        /// Update the internal ship part's placement in its current chain.
+        /// </summary>
+        protected abstract void UpdateChainPlacement();
         #endregion
     }
 }

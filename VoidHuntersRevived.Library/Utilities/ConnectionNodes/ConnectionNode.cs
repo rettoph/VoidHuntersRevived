@@ -33,25 +33,22 @@ namespace VoidHuntersRevived.Library.Utilities.ConnectionNodes
         public readonly Single LocalRotation;
         public readonly Vector2 LocalPosition;
 
+        public readonly Matrix LocalRotationMatrix;
+        public readonly Matrix LocalTranslationMatrix;
+        public readonly Matrix LocalTransformationMatrix;
+
         public Vector2 WorldPosition
         {
             get
             {
-                return this.Parent.Position + Vector2.Transform(this.LocalPosition, this.OffsetMatrix);
+                return this.Parent.Root.Position + Vector2.Transform(this.LocalPosition, this.Parent.LocalTransformation * Matrix.CreateRotationZ(this.Parent.Root.Rotation));
             }
         }
         public Single WorldRotation
         {
             get
             {
-                return this.Parent.Rotation + this.LocalRotation;
-            }
-        }
-        public Matrix OffsetMatrix
-        {
-            get
-            {
-                return Matrix.CreateRotationZ(this.Parent.Rotation);
+                return this.Parent.Root.Rotation + this.Parent.LocalRotation + this.LocalRotation;
             }
         }
         #endregion
@@ -65,6 +62,12 @@ namespace VoidHuntersRevived.Library.Utilities.ConnectionNodes
 
             this.LocalRotation = rotation;
             this.LocalPosition = position;
+
+            this.LocalRotationMatrix = Matrix.CreateRotationZ(this.LocalRotation);
+            this.LocalTranslationMatrix = Matrix.CreateTranslation(this.LocalPosition.X, this.LocalPosition.Y, 0);
+
+            // A onestep transformation, first move to rotation position then translate by position offset.
+            this.LocalTransformationMatrix = this.LocalRotationMatrix * this.LocalTranslationMatrix;
         }
         #endregion
 

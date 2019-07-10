@@ -35,6 +35,11 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Public Attributes
+        public Int32 BodyId
+        {
+            get { return _body.BodyId; }
+        }
+
         public Vector2 Position
         {
             get { return _body.Position; }

@@ -8,6 +8,7 @@ using VoidHuntersRevived.Library.Utilities.ConnectionNodes;
 using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Extensions.System;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -32,11 +33,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             MaleConnectionNode = ActivatorUtilities.CreateInstance<MaleConnectionNode>(
                 this.provider,
                 this,
-                _config.MaleConnectionNode.Z,
-                new Vector2(_config.MaleConnectionNode.X, _config.MaleConnectionNode.Y));
+                this.config.MaleConnectionNode.Z,
+                new Vector2(this.config.MaleConnectionNode.X, this.config.MaleConnectionNode.Y));
 
             Int32 i = 0;
-            this.FemaleConnectionNodes = _config.FemaleConnectionNodes
+            this.FemaleConnectionNodes = this.config.FemaleConnectionNodes
                 .Select(fcn => ActivatorUtilities.CreateInstance<FemaleConnectionNode>(
                     this.provider,
                     this,
@@ -58,17 +59,33 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// <param name="target"></param>
         public void AttatchTo(FemaleConnectionNode target)
         {
-            MaleConnectionNode.AttatchTo(target);
+            this.logger.LogInformation($"Attempting to attatch ShipPart<{this.GetType().Name}>({this.Id}) to ShipPart<{target.Parent.GetType().Name}>({target.Parent.Id}) FemaleConnectionNode({target.Id})");
+
+            target.Attatch(this);
         }
 
         /// <summary>
-        /// Used to alert the current part and its entire chain
-        /// to remap the self contained parts.
+        /// Used to refresh a specific part's connection node mapping.
+        /// When not deep, no changes will happen but the map event will be
+        /// triggered. When shallow is false, all parts will be re-attatched
+        /// to their current chain allowing for the growth and updating of specific
+        /// chain objects.
         /// </summary>
-        protected internal void RemapConnectioNodes()
+        /// <param name="deep"></param>
+        protected internal void RemapConnectioNodes(Boolean deep = true)
         {
-            // Mark the current part as dirty...
-            this.Dirty = true;
+            // Update the local translation matrix
+            this.UpdateLocalTranslation();
+
+            // Update the current shipparts chain placement
+            this.UpdateChainPlacement();
+
+
+            // Recursively remap all nodes in the chain, if requested.
+            if (deep)
+                foreach (FemaleConnectionNode female in this.FemaleConnectionNodes)
+                    if (female.Target != null)
+                        female.Target.Parent.RemapConnectioNodes(deep);
 
             // Trigger the event
             this.OnConnectionNodesRemapped?.Invoke(this, this);
