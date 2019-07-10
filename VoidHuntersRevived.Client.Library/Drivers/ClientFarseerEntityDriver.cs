@@ -50,7 +50,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
             // Bind event handlers
             _entity.OnCollidesWithChanged += this.HandleCollidesWithChanged;
-            _entity.OnCollisionCategoriesChanged += this.CollidesCollisionCategoriesChanged;
+            _entity.OnCollisionCategoriesChanged += this.HandleCollisionCategoriesChanged;
+            _entity.OnCollisionGroupChanged += this.HandleCollisionGroupChanged;
             _entity.OnIsSensorChanged += this.HandleIsSensorChanged;
             _entity.OnSleepingAllowedChanged += this.HandleSleepingAllowedChanged;
             _entity.OnPhysicsEnabledChanged += this.HandlePhysicsEnabledChanged;
@@ -107,12 +108,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         #region Action Handlers
         private void HandleUpdatePositionAction(NetIncomingMessage obj)
         {
-            _server.Bodies[_entity].Position = obj.ReadVector2();
-            _server.Bodies[_entity].Rotation = obj.ReadSingle();
-            _server.Bodies[_entity].LinearVelocity = obj.ReadVector2();
-            _server.Bodies[_entity].AngularVelocity = obj.ReadSingle();
-
-            _server.Bodies[_entity].Awake = true;
+            // _server.Bodies[_entity].Position = obj.ReadVector2();
+            // _server.Bodies[_entity].Rotation = obj.ReadSingle();
+            // _server.Bodies[_entity].LinearVelocity = obj.ReadVector2();
+            // _server.Bodies[_entity].AngularVelocity = obj.ReadSingle();
+            // 
+            // _server.Bodies[_entity].Awake = true;
         }
         #endregion
 
@@ -124,7 +125,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
         /// <summary>
         /// When the client render recieves a fixture,
-        /// duplocate it on the server render too
+        /// duplicate it on the server render too
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="shape"></param>
@@ -157,7 +158,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _server.Bodies[_entity].ApplyLinearImpulse(impulse);
         }
 
-        private void CollidesCollisionCategoriesChanged(object sender, Category category)
+        private void HandleCollisionCategoriesChanged(object sender, Category category)
         {
             _server.Bodies[_entity].CollisionCategories = category;
         }
@@ -165,6 +166,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private void HandleCollidesWithChanged(object sender, Category category)
         {
             _server.Bodies[_entity].CollidesWith = category;
+        }
+
+        private void HandleCollisionGroupChanged(object sender, short group)
+        {
+            _server.Bodies[_entity].CollisionGroup = group;
         }
 
         private void HandleIsSensorChanged(object sender, bool e)
@@ -204,7 +210,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _server.Bodies.Remove(_entity);
 
             _entity.OnCollidesWithChanged -= this.HandleCollidesWithChanged;
-            _entity.OnCollisionCategoriesChanged -= this.CollidesCollisionCategoriesChanged;
+            _entity.OnCollisionCategoriesChanged -= this.HandleCollisionCategoriesChanged;
+            _entity.OnCollisionGroupChanged -= this.HandleCollisionGroupChanged;
             _entity.OnIsSensorChanged -= this.HandleIsSensorChanged;
             _entity.OnSleepingAllowedChanged -= this.HandleSleepingAllowedChanged;
             _entity.OnPhysicsEnabledChanged -= this.HandlePhysicsEnabledChanged;

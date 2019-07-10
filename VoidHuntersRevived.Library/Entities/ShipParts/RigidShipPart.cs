@@ -4,6 +4,8 @@ using System.Text;
 using FarseerPhysics.Collision.Shapes;
 using Guppy.Configurations;
 using Microsoft.Xna.Framework;
+using System.Linq;
+using FarseerPhysics.Common;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -32,13 +34,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             if (this.Fixture?.Body.BodyId != this.Root.BodyId || _currentChainTranslation != this.LocalTransformation)
             { // Only proceed if the ship-parts chain has been changed...
                 if (this.Fixture != null) // Clear the old fixture...
-                    this.Fixture.Body.DestroyFixture(this.Fixture);
+                    (this.Fixture.Body.UserData as FarseerEntity).DestroyFixture(this.Fixture);
 
                 // Create the new fixture based on the updated chain translations
-                var shape = this.config.Shape.Clone() as PolygonShape;
+                var vertices = new Vertices(this.config.Vertices.Select(v => new Vector2(v.X, v.Y)));
                 _currentChainTranslation = this.LocalTransformation;
-                shape.Vertices.Transform(ref _currentChainTranslation);
-                this.Fixture = this.Root.CreateFixture(shape, this);
+                vertices.Transform(ref _currentChainTranslation);
+                this.Fixture = this.Root.CreateFixture(new PolygonShape(vertices, 1f), this);
             }
         }
     }

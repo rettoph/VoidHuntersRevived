@@ -1,4 +1,5 @@
 ﻿using FarseerPhysics.Collision.Shapes;
+using FarseerPhysics.Common;
 using Guppy.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
@@ -9,16 +10,16 @@ namespace VoidHuntersRevived.Library.Configurations
 {
     public struct ShipPartConfiguration : IEntityData
     {
-        public readonly PolygonShape Shape;
+        public readonly Vertices Vertices;
         public readonly Vector3 MaleConnectionNode;
         public readonly Vector3[] FemaleConnectionNodes;
 
         public ShipPartConfiguration(
-            PolygonShape shape,
+            Vertices vertices,
             Vector3 maleConnectionNode,
             Vector3[] femaleConnectionNodes = null)
         {
-            this.Shape = shape;
+            this.Vertices = vertices;
             this.MaleConnectionNode = maleConnectionNode;
             this.FemaleConnectionNodes = femaleConnectionNodes == null ? new Vector3[0] : femaleConnectionNodes;
         }

@@ -160,7 +160,17 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private void HandleReleased(object sender, ShipPart e)
         {
             _server.World.RemoveJoint(_joint);
+
+            _tractorBeam.Player.TryAttach(e);
         }
         #endregion
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            _tractorBeam.OnSelected -= this.HandleSelected;
+            _tractorBeam.OnReleased -= this.HandleReleased;
+        }
     }
 }

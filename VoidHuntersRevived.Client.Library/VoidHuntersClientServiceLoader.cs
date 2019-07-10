@@ -22,6 +22,7 @@ using VoidHuntersRevived.Client.Library.UI;
 using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Client.Library
 {
@@ -42,6 +43,7 @@ namespace VoidHuntersRevived.Client.Library
             services.AddDriver<FarseerEntity, ClientFarseerEntityDriver>();
             services.AddDriver<TractorBeam, ClientTractorBeamDriver>();
             services.AddDriver<Pointer, MousePointerDriver>();
+            services.AddDriver<ShipPart, ClientShipPartDriver>();
 
             services.AddScoped<ServerRender>();
             services.AddScoped<Pointer>(p => {

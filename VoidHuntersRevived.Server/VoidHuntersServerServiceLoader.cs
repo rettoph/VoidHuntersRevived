@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Server.Drivers;
 using VoidHuntersRevived.Server.Scenes;
 
@@ -21,6 +22,7 @@ namespace VoidHuntersRevived.Server
             services.AddDriver<Player, ServerPlayerDriver>();
             services.AddDriver<FarseerEntity, ServerFarseerEntityDriver>();
             services.AddDriver<TractorBeam, ServerTractorBeamDriver>();
+            services.AddDriver<ShipPart, ServerShipPartDriver>();
         }
 
         public void Boot(IServiceProvider provider)

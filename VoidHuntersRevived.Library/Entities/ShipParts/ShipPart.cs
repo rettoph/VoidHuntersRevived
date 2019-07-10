@@ -60,7 +60,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             base.Initialize();
 
-            this.Fixture = this.CreateFixture(this.config.Shape, this);
+            this.Fixture = this.CreateFixture(new PolygonShape(this.config.Vertices, 1f), this);
 
             this.CollisionCategories = Category.Cat2;
             this.CollidesWith = Category.Cat1;

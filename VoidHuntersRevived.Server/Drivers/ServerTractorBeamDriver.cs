@@ -53,7 +53,18 @@ namespace VoidHuntersRevived.Server.Drivers
         {
             var action = _tractorBeam.CreateActionMessage("release");
             action.Write(e.Id);
+
+            // Attempt to attach the part to the ship.
+            _tractorBeam.Player.TryAttach(e);
         }
         #endregion
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            _tractorBeam.OnSelected -= this.HandleSelected;
+            _tractorBeam.OnReleased -= this.HandleReleased;
+        }
     }
 }

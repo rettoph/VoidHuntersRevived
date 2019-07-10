@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Library.Entities
         private Single _reach;
         private Guid _selectedFocusedId;
         private Fixture _sensor;
-        private List<ShipPart> _contacts;
+        private HashSet<ShipPart> _contacts;
         #endregion
 
         #region Public Attributes
@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Library.Entities
             base.Initialize();
 
             _reach = 25;
-            _contacts = new List<ShipPart>();
+            _contacts = new HashSet<ShipPart>();
 
             this.IsSensor = true;
             this.SleepingAllowed = false;
@@ -116,7 +116,7 @@ namespace VoidHuntersRevived.Library.Entities
                     this.Release();
 
                 if (target.Root.IsBridge) // If the target is part of the current ship... detatch it.
-                    (target.MaleConnectionNode.Target as FemaleConnectionNode).Detatch();
+                    target.DetatchFrom();
 
                 // Select the new target
                 this.Selected = target;
@@ -148,17 +148,8 @@ namespace VoidHuntersRevived.Library.Entities
                 this.Selected.Dirty = true;
                 this.Selected = null;
 
-
-                // Select the closest open female connection node
-                var closest = this
-                    .Player
-                    .OpenFemaleConnectionNodes
-                    .Where(f => Vector2.Distance(f.WorldPosition, this.Position) < 1f)
-                    .OrderBy(f => Vector2.Distance(f.WorldPosition, this.Position))
-                    .FirstOrDefault();
-                // If there is a valid open female connection node, attempt to attatch it to the players ship
-                if (closest != null)
-                    oldSelected.AttatchTo(closest);
+                // The tractor beam is probably still over the item, so add it back to the contact manager
+                _contacts.Add(oldSelected);
 
                 this.OnReleased?.Invoke(this, oldSelected);
             }

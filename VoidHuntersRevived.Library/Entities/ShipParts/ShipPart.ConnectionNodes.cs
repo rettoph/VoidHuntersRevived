@@ -61,7 +61,19 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             this.logger.LogInformation($"Attempting to attatch ShipPart<{this.GetType().Name}>({this.Id}) to ShipPart<{target.Parent.GetType().Name}>({target.Parent.Id}) FemaleConnectionNode({target.Id})");
 
-            target.Attatch(this);
+            this.MaleConnectionNode.AttatchTo(target);
+        }
+
+        /// <summary>
+        /// Detatch the current ship-part from
+        /// whatever part it is currently attatched to
+        /// if any
+        /// </summary>
+        public void DetatchFrom()
+        {
+            this.logger.LogInformation($"Attempting to detach ShipPart<{this.GetType().Name}>({this.Id}) from ShipPart<{this.MaleConnectionNode.Target?.Parent.GetType().Name}>({this.MaleConnectionNode.Target?.Parent.Id}) FemaleConnectionNode({this.MaleConnectionNode.Target?.Id})");
+
+            this.MaleConnectionNode.DetatchFrom();
         }
 
         /// <summary>

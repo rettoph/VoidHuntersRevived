@@ -26,6 +26,7 @@ namespace VoidHuntersRevived.Library.Entities
         private Boolean _isSensor;
         private Category _collidesWith;
         private Category _collisionCategories;
+        private Int16 _collisionGroup;
 
         private List<Fixture> _fixtureList;
         private Body _body;
@@ -99,6 +100,19 @@ namespace VoidHuntersRevived.Library.Entities
                 }
             }
         }
+        public Int16 CollisionGroup
+        {
+            get { return _collisionGroup; }
+            set
+            {
+                if (value != _collisionGroup)
+                {
+                    _collisionGroup = value;
+                    _body.CollisionGroup = _collisionGroup;
+                    this.OnCollisionGroupChanged?.Invoke(this, _collisionGroup);
+                }
+            }
+        }
         public Boolean IsSensor
         {
             get { return _isSensor; }
@@ -142,6 +156,7 @@ namespace VoidHuntersRevived.Library.Entities
         #region Events
         public event EventHandler<Category> OnCollidesWithChanged;
         public event EventHandler<Category> OnCollisionCategoriesChanged;
+        public event EventHandler<Int16> OnCollisionGroupChanged;
         public event EventHandler<Boolean> OnIsSensorChanged;
         public event EventHandler<Boolean> OnSleepingAllowedChanged;
         public event EventHandler<Boolean> OnPhysicsEnabledChanged;
@@ -233,6 +248,7 @@ namespace VoidHuntersRevived.Library.Entities
             // Update the fixture collision categories
             fixture.CollidesWith = this.CollidesWith;
             fixture.CollisionCategories = this.CollisionCategories;
+            fixture.CollisionGroup = this.CollisionGroup;
             fixture.IsSensor = this.IsSensor;
 
             this.OnFixtureCreated?.Invoke(this, fixture);
@@ -243,7 +259,7 @@ namespace VoidHuntersRevived.Library.Entities
         public void DestroyFixture(Fixture fixture)
         {
             if (!_fixtureList.Contains(fixture))
-                throw new Exception("Unable to destroy fixture, shape unknown.");
+                throw new Exception("Unable to destroy fixture, fixture unknown.");
 
             _body.DestroyFixture(fixture);
             _fixtureList.Remove(fixture);

@@ -58,6 +58,8 @@ namespace VoidHuntersRevived.Library.Utilities.ConnectionNodes
         {
             _spriteBatch = spriteBatch;
 
+            this.Id = id;
+
             this.Parent = parent;
 
             this.LocalRotation = rotation;

@@ -151,6 +151,29 @@ namespace VoidHuntersRevived.Library.Entities
         {
             return _directions[direction];
         }
+
+        /// <summary>
+        /// Attach a given ship-part to the closest
+        /// valid female connection node if applicable
+        /// </summary>
+        /// <param name="target"></param>
+        public void TryAttach(ShipPart target)
+        {
+            if (target.MaleConnectionNode.Target == null)
+            { // If the old selected item 
+              // Select the closest open female connection node
+                var closest = this
+                    .OpenFemaleConnectionNodes
+                    .Where(f => Vector2.Distance(f.WorldPosition, target.Position) < 1f)
+                    .OrderBy(f => Vector2.Distance(f.WorldPosition, target.Position))
+                    .FirstOrDefault();
+                // If there is a valid open female connection node, attempt to attatch it to the players ship
+                if (closest != null)
+                    target.AttatchTo(closest);
+                else
+                    target.DetatchFrom();
+            }
+        }
         #endregion
 
         #region Event Handlers

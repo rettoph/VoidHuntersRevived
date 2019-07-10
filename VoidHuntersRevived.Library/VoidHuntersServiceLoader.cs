@@ -56,14 +56,13 @@ namespace VoidHuntersRevived.Library
                 "name:entity:ship-part", 
                 "description:entity:ship-part",
                 new ShipPartConfiguration(
-                    shape: new PolygonShape(
-                        new Vertices(
-                            new Vector2[] {
-                                new Vector2(-0.5f, -0.5f),
-                                new Vector2(-0.5f, 0.5f),
-                                new Vector2(0.5f, 0.5f),
-                                new Vector2(0.5f, -0.5f)
-                            }), 1f),
+                    vertices: new Vertices(
+                        new Vector2[] {
+                            new Vector2(-0.5f, -0.5f),
+                            new Vector2(-0.5f, 0.5f),
+                            new Vector2(0.5f, 0.5f),
+                            new Vector2(0.5f, -0.5f)
+                        }),
                     maleConnectionNode: new Vector3(-0.5f, 0, (Single)Math.PI),
                     femaleConnectionNodes: new Vector3[] {
                         new Vector3(0, -0.5f, (Single)Math.PI/2),
