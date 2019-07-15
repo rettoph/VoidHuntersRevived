@@ -49,8 +49,6 @@ namespace VoidHuntersRevived.Library
         public void Boot(IServiceProvider provider)
         {
             var entityLoader = provider.GetLoader<EntityLoader>();
-            entityLoader.Register<Player>("entity:player", "name:entity:player", "description:entity:player");
-            entityLoader.Register<TractorBeam>("entity:tractor-beam", "name:entity:tractor-beam", "description:entity:tractor-beam");
             entityLoader.Register<RigidShipPart>(
                 "entity:ship-part", 
                 "name:entity:ship-part", 

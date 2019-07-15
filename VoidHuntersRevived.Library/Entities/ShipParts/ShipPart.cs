@@ -27,9 +27,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// </summary>
         public Fixture Fixture { get; protected set; }
 
-        public Player BridgeFor { get; internal set; }
-        public Boolean IsBridge { get { return this.BridgeFor != null; } }
-
         public ShipPart Root { get { return this.Parent == null ? this : this.Parent.Root; } }
         public Boolean IsRoot { get { return this.Parent == null; } }
 

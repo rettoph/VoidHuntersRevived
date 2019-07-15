@@ -69,10 +69,6 @@ namespace VoidHuntersRevived.Server.Scenes
         {
             var bridge = this.entities.Create<ShipPart>("entity:ship-part");
 
-            var player = this.entities.Create<Player>("entity:player");
-            player.SetUser(user);
-            player.SetBridge(bridge);
-
             var om = this.Group.CreateMessage("chat");
 
             om.Write(false);
