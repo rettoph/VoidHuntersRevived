@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace VoidHuntersRevived.Library.Utilities
+namespace VoidHuntersRevived.Library.CustomEventArgs
 {
     public class ChangedEventArgs<TChanged> : EventArgs
     {

@@ -3,9 +3,11 @@ using Guppy.Network;
 using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Library.CustomEventArgs;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Utilities;
@@ -16,7 +18,7 @@ namespace VoidHuntersRevived.Library.Entities
     /// A ship represents a player controlled in-game object.
     /// A player object can gain control of a ship at any time
     /// </summary>
-    public class Ship : NetworkEntity
+    public partial class Ship : NetworkEntity
     {
         #region Public Attributes
         public TractorBeam TractorBeam { get; private set; }
@@ -48,6 +50,24 @@ namespace VoidHuntersRevived.Library.Entities
             this.SetUpdateOrder(91);
 
             this.TractorBeam = this.entities.Create<TractorBeam>("entity:tractor-beam");
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            // Initialize any partial components...
+            this.InitializeMovement();
+        }
+        #endregion
+
+        #region Frame Methods
+        protected override void update(GameTime gameTime)
+        {
+            base.update(gameTime);
+
+            // Call component update methods...
+            this.UpdateMovement(gameTime);
         }
         #endregion
 

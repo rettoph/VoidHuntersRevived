@@ -22,6 +22,7 @@ using VoidHuntersRevived.Client.Library.UI;
 using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Client.Library
@@ -38,10 +39,11 @@ namespace VoidHuntersRevived.Client.Library
             services.AddLayer<CameraLayer>();
             services.AddLayer<HudLayer>();
 
-            services.AddDriver<VoidHuntersClientWorldScene, VoidHuntersClientWorldSceneDriver>(96);
-            services.AddDriver<FarseerEntity, ClientFarseerEntityDriver>();
+            services.AddDriver<UserPlayer, ClientUserPlayerDriver>();
             services.AddDriver<Pointer, MousePointerDriver>();
+            services.AddDriver<VoidHuntersClientWorldScene, VoidHuntersClientWorldSceneDriver>(96);
             services.AddDriver<Ship, ClientShipDriver>();
+            services.AddDriver<FarseerEntity, ClientFarseerEntityDriver>();
             services.AddDriver<ShipPart, ClientShipPartDriver>();
 
             services.AddScoped<ServerRender>();

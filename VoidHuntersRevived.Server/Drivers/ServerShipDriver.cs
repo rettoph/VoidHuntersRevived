@@ -6,6 +6,7 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Network.Extensions.Lidgren;
+using VoidHuntersRevived.Library.CustomEventArgs;
 
 namespace VoidHuntersRevived.Server.Drivers
 {

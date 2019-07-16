@@ -43,15 +43,25 @@ namespace VoidHuntersRevived.Client.Library.Entities
         private Double _localIdle;
         private Double _idleDelay;
 
+        private Int32 _scroll;
+        private Int32 _scrollDelta;
+        private Double _scrollIdle;
+        private Boolean _scrollMoving;
+
         public Vector2 LocalPosition { get { return _localPosition; } }
         public Vector2 Position { get { return _worldPosition; } }
         public Boolean Primary { get; private set; }
         public Boolean Secondary { get; private set; }
+        public Int32 Scroll { get { return _scroll; } }
+        public Int32 ScrollDelta { get { return _scrollDelta; } }
 
-        public event EventHandler<Vector2> OnPointerMovementStarted;
-        public event EventHandler<Vector2> OnPointerMovementEnded;
-        public event EventHandler<Vector2> OnPointerLocalMovementStarted;
-        public event EventHandler<Vector2> OnPointerLocalMovementEnded;
+        public event EventHandler<Int32> OnScrollStarted;
+        public event EventHandler<Int32> OnScrollEnded;
+        public event EventHandler<Int32> OnScrolled;
+        public event EventHandler<Vector2> OnMovementStarted;
+        public event EventHandler<Vector2> OnMovementEnded;
+        public event EventHandler<Vector2> OnLocalMovementStarted;
+        public event EventHandler<Vector2> OnLocalMovementEnded;
         public event EventHandler<Boolean> OnPrimaryChanged;
         public event EventHandler<Boolean> OnSecondaryChanged;
 
@@ -84,7 +94,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
                 {
                     _localMoving = false;
 
-                    this.OnPointerLocalMovementEnded?.Invoke(this, this.LocalPosition);
+                    this.OnLocalMovementEnded?.Invoke(this, this.LocalPosition);
                 }
             }
             else if (_localDelta > 0)
@@ -93,7 +103,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
                 {
                     _localMoving = true;
 
-                    this.OnPointerLocalMovementStarted?.Invoke(this, this.LocalPosition);
+                    this.OnLocalMovementStarted?.Invoke(this, this.LocalPosition);
                 }
 
                 _localIdle = 0;
@@ -108,7 +118,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
                 {
                     _worldMoving = false;
 
-                    this.OnPointerMovementEnded?.Invoke(this, this.Position);
+                    this.OnMovementEnded?.Invoke(this, this.Position);
                 }               
             }
             else if (_worldDelta > 0)
@@ -117,10 +127,36 @@ namespace VoidHuntersRevived.Client.Library.Entities
                 {
                     _worldMoving = true;
 
-                    this.OnPointerMovementStarted?.Invoke(this, this.Position);
+                    this.OnMovementStarted?.Invoke(this, this.Position);
                 }
 
                 _worldIdle = 0;
+            }
+
+            // Scroll calculations
+            if (_scrollDelta == 0 && _scrollMoving)
+            {
+                _scrollIdle += gameTime.ElapsedGameTime.TotalMilliseconds;
+
+                if (_scrollIdle >= _idleDelay)
+                {
+                    _scrollMoving = false;
+
+                    this.OnScrollEnded?.Invoke(this, _scroll);
+                }
+            }
+            else if (_scrollDelta != 0)
+            {
+                if(!_scrollMoving)
+                {
+                    _scrollMoving = true;
+
+                    this.OnScrollStarted?.Invoke(this, _scroll);
+                }
+
+                this.OnScrolled?.Invoke(this, _scrollDelta);
+
+                _scrollIdle = 0;
             }
         }
 
@@ -165,6 +201,12 @@ namespace VoidHuntersRevived.Client.Library.Entities
 
             _worldPosition.X = wPos.X;
             _worldPosition.Y = wPos.Y;
+        }
+
+        public void ScrollTo(Int32 value)
+        {
+            _scrollDelta = value - _scroll;
+            _scroll = value;
         }
 
         public void SetPrimary(Boolean value)
