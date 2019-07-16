@@ -11,9 +11,11 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Library.Collections;
 using VoidHuntersRevived.Library.Configurations;
 using VoidHuntersRevived.Library.Drivers;
 using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Scenes;
 
@@ -26,6 +28,7 @@ namespace VoidHuntersRevived.Library
             services.AddScene<VoidHuntersWorldScene>();
             services.AddDriver<VoidHuntersWorldScene, VoidHuntersWorldSceneDriver>(95);
 
+            services.AddScoped<ShipCollection>();
             services.AddScoped<World>(p =>
             {
                 return new World(Vector2.Zero);
@@ -67,6 +70,18 @@ namespace VoidHuntersRevived.Library
                         new Vector3(0.5f, 0, (Single)Math.PI),
                         new Vector3(0, 0.5f, -(Single)Math.PI/2)
                     }));
+            entityLoader.Register<TractorBeam>(
+                "entity:tractor-beam", 
+                "name:entity:tractor-beam", 
+                "description:entity:tractor-beam");
+            entityLoader.Register<Ship>(
+                "entity:ship",
+                "name:entity:ship",
+                "description:entity:ship");
+            entityLoader.Register<UserPlayer>(
+                "entity:player:user",
+                "name:entity:player:user",
+                "description:entity:player:user");
         }
 
         public void PreInitialize(IServiceProvider provider)

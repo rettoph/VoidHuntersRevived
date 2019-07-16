@@ -30,6 +30,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public ShipPart Root { get { return this.Parent == null ? this : this.Parent.Root; } }
         public Boolean IsRoot { get { return this.Parent == null; } }
 
+        public Ship BridgeFor { get; internal set; }
+        public Boolean IsBridge { get { return this.BridgeFor != null; } }
+
         public ShipPart Parent { get { return this.MaleConnectionNode.Target?.Parent; } }
         #endregion
 

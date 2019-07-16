@@ -41,6 +41,7 @@ namespace VoidHuntersRevived.Client.Library
             services.AddDriver<VoidHuntersClientWorldScene, VoidHuntersClientWorldSceneDriver>(96);
             services.AddDriver<FarseerEntity, ClientFarseerEntityDriver>();
             services.AddDriver<Pointer, MousePointerDriver>();
+            services.AddDriver<Ship, ClientShipDriver>();
             services.AddDriver<ShipPart, ClientShipPartDriver>();
 
             services.AddScoped<ServerRender>();

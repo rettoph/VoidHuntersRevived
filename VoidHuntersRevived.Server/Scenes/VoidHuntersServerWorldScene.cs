@@ -10,7 +10,9 @@ using Guppy.Network.Peers;
 using Guppy.Network.Security;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
+using VoidHuntersRevived.Library.Collections;
 using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Scenes;
 
@@ -18,10 +20,14 @@ namespace VoidHuntersRevived.Server.Scenes
 {
     class VoidHuntersServerWorldScene : VoidHuntersWorldScene
     {
+        private ShipCollection _ships;
+
         protected ServerPeer server;
 
-        public VoidHuntersServerWorldScene(ServerPeer server, World world, IServiceProvider provider) : base(server, world, provider)
+        public VoidHuntersServerWorldScene(ShipCollection ships, ServerPeer server, World world, IServiceProvider provider) : base(server, world, provider)
         {
+            _ships = ships;
+
             this.server = server;
         }
 
@@ -68,6 +74,11 @@ namespace VoidHuntersRevived.Server.Scenes
         private void HandleUserAdded(object sender, User user)
         {
             var bridge = this.entities.Create<ShipPart>("entity:ship-part");
+            var ship = _ships.GetOrCreateAvailableShip();
+            var player = this.entities.Create<Player>("entity:player:user", user);
+
+            player.TrySetShip(ship);
+            ship.TrySetBridge(bridge);
 
             var om = this.Group.CreateMessage("chat");
 
