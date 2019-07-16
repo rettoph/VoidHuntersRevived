@@ -105,12 +105,8 @@ namespace VoidHuntersRevived.Library.Entities
         public void ReadBridgeData(NetIncomingMessage im)
         {
             // Update the local bridge value
-            if (im.ReadBoolean())
-                this.TrySetBridge(
-                    this.entities.GetById<ShipPart>(
-                        im.ReadGuid()));
-            else
-                this.TrySetBridge(null);
+            this.TrySetBridge(
+                im.ReadEntity<ShipPart>(this.entities));
         }
 
         /// <summary>
@@ -119,15 +115,7 @@ namespace VoidHuntersRevived.Library.Entities
         /// <param name="om"></param>
         public void WriteBridgeData(NetOutgoingMessage om)
         {
-            if (this.Bridge == null)
-            {
-                om.Write(false);
-            }
-            else
-            {
-                om.Write(true);
-                om.Write(this.Bridge.Id);
-            }
+            om.Write(this.Bridge);
         }
         #endregion
     }
