@@ -10,6 +10,7 @@ using System.Text;
 using VoidHuntersRevived.Library.CustomEventArgs;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.Entities
@@ -136,6 +137,19 @@ namespace VoidHuntersRevived.Library.Entities
         public void WriteBridgeData(NetOutgoingMessage om)
         {
             om.Write(this.Bridge);
+        }
+
+        public void ReadDirectionData(NetIncomingMessage im)
+        {
+            this.SetDirection(
+                (Direction)im.ReadByte(),
+                im.ReadBoolean());
+        }
+
+        public void WriteDirectionData(NetOutgoingMessage om, Direction direction)
+        {
+            om.Write((Byte)direction);
+            om.Write(_directions[direction]);
         }
         #endregion
     }

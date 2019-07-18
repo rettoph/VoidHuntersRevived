@@ -53,6 +53,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers
                     Boolean d;
                     if ((d = kState.IsKeyDown(Keys.W)) != _player.Ship.GetDirection(Direction.Forward))
                         this.SetLocalDirection(Direction.Forward, d);
+                    if ((d = kState.IsKeyDown(Keys.A)) != _player.Ship.GetDirection(Direction.TurnLeft))
+                        this.SetLocalDirection(Direction.TurnLeft, d);
+                    if ((d = kState.IsKeyDown(Keys.S)) != _player.Ship.GetDirection(Direction.Backward))
+                        this.SetLocalDirection(Direction.Backward, d);
+                    if ((d = kState.IsKeyDown(Keys.D)) != _player.Ship.GetDirection(Direction.TurnRight))
+                        this.SetLocalDirection(Direction.TurnRight, d);
 
                     // Update the camera position
                     _camera.MoveTo(_player.Ship.Bridge.Position);
@@ -75,11 +81,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         /// <param name="value"></param>
         private void SetLocalDirection(Direction direction, Boolean value)
         {
-            _player.Ship.SetDirection(Direction.Forward, value);
+            _player.Ship.SetDirection(direction, value);
 
             var action = _player.CreateActionMessage("set:direction");
-            action.Write((Byte)direction);
-            action.Write(value);
+            _player.Ship.WriteDirectionData(action, direction);
         }
         #endregion
     }

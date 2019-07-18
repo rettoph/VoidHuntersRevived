@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             base.PreInitialize();
 
             // Bind action handlers
-            _entity.ActionHandlers.Add("update:position", this.HandleUpdatePositionAction);
+            _entity.AddActionHandler("update:position", this.HandleUpdatePositionAction);
 
             // Bind event handlers
             _entity.OnCollidesWithChanged += this.HandleCollidesWithChanged;

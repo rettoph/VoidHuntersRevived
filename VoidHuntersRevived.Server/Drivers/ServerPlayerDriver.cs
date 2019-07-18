@@ -33,6 +33,35 @@ namespace VoidHuntersRevived.Server.Drivers
         {
             var action = _player.CreateActionMessage("set:ship");
             _player.WriteShipData(action);
+
+            // Remove any old ship events, and add any new ones
+            if (e.Old != null)
+                this.RemoveShipEvents(e.Old);
+            if (e.New != null)
+                this.AddShipEvents();
+        }
+
+        private void AddShipEvents()
+        {
+            _player.Ship.OnDirectionChanged += this.HandleShipDirectionChanged;
+        }
+
+        private void RemoveShipEvents(Ship ship)
+        {
+            ship.OnDirectionChanged -= this.HandleShipDirectionChanged;
+        }
+
+        /// <summary>
+        /// When a server side ship's direction is changed, we
+        /// must broadcast an update message to all connected
+        /// clients.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void HandleShipDirectionChanged(object sender, DirectionChangedEventArgs e)
+        {
+            var action = _player.CreateActionMessage("set:direction");
+            _player.Ship.WriteDirectionData(action, e.Direction);
         }
         #endregion
     }

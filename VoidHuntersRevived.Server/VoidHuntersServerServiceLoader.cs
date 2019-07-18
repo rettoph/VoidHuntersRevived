@@ -22,6 +22,7 @@ namespace VoidHuntersRevived.Server
             services.AddScene<VoidHuntersServerWorldScene>();
 
             services.AddDriver<Player, ServerPlayerDriver>();
+            services.AddDriver<UserPlayer, ServerUserPlayerDriver>();
             services.AddDriver<FarseerEntity, ServerFarseerEntityDriver>();
             services.AddDriver<Ship, ServerShipDriver>();
             services.AddDriver<ShipPart, ServerShipPartDriver>();

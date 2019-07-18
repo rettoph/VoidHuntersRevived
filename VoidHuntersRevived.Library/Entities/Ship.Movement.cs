@@ -44,8 +44,17 @@ namespace VoidHuntersRevived.Library.Entities
         {
             if (this.Bridge != null)
             { // We only need to bother moving the ship if there is a bridge defined...
+                var thrust = new Vector2(0.25f, 0);
+
                 if (_directions[Direction.Forward])
-                    this.Bridge.ApplyLinearImpulse(new Vector2(1, 0));
+                    this.Bridge.ApplyLinearImpulse(Vector2.Transform(thrust, Matrix.CreateRotationZ(this.Bridge.Rotation)));
+                if (_directions[Direction.Backward])
+                    this.Bridge.ApplyLinearImpulse(Vector2.Transform(thrust, Matrix.CreateRotationZ(this.Bridge.Rotation + MathHelper.Pi)));
+
+                if (_directions[Direction.TurnLeft])
+                    this.Bridge.ApplyAngularImpulse(-0.03f);
+                if (_directions[Direction.TurnRight])
+                    this.Bridge.ApplyAngularImpulse(0.03f);
             }
 
         }

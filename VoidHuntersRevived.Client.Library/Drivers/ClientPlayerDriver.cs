@@ -23,7 +23,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             base.Initialize();
 
-            _player.ActionHandlers["set:ship"] = this.HandleSetShipAction;
+            _player.AddActionHandler("set:ship", this.HandleSetShipAction);
+            _player.AddActionHandler("set:direction", this.HandleSetShipDirection);
         }
         #endregion
 
@@ -31,6 +32,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private void HandleSetShipAction(NetIncomingMessage obj)
         {
             _player.ReadShipData(obj);
+        }
+
+        private void HandleSetShipDirection(NetIncomingMessage obj)
+        {
+            // Read any incoming ship direction data
+            _player.Ship.ReadDirectionData(obj);
         }
         #endregion
     }

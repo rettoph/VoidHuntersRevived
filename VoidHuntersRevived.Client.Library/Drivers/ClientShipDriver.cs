@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             base.Initialize();
 
-            _ship.ActionHandlers["set:bridge"] = this.HandleSetBridgeAction;
+            _ship.AddActionHandler("set:bridge", this.HandleSetBridgeAction);
         }
         #endregion
 

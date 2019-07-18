@@ -104,7 +104,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             // _debugServer.RenderDebugData(_camera.Projection, _camera.View);
             _debug.RenderDebugData(_camera.Projection, _camera.View);
             
-
             base.draw(gameTime);
         }
     }
