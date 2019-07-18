@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             base.update(gameTime);
 
-            if (_client.CurrentUser == _player.User)
+            if (_client.CurrentUser == _player.User && _player.Ship != null)
             { // If the current player represents the locally signed in user...
                 var kState = Keyboard.GetState();
 

@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Client.Library.UI
 
             this.Input.OnEnter += this.HandleInputEnter;
 
-            _group.MessageHandler.Add("chat", this.HandleChatMessage);
+            _group.AddMessageHandler("chat", this.HandleChatMessage);
         }
 
         public override void Update(MouseState mouse)
@@ -77,9 +77,8 @@ namespace VoidHuntersRevived.Client.Library.UI
 
         private void HandleInputEnter(object sender, string e)
         {
-            var om = _group.CreateMessage("chat");
+            var om = _group.CreateMessage("chat", NetDeliveryMethod.ReliableOrdered, 2);
             om.Write(this.Input.Text);
-            _group.SendMesssage(om, Lidgren.Network.NetDeliveryMethod.ReliableOrdered, 2);
             this.Input.Text = "";
             this.Typing = false;
             this.Input.Hidden = true;

@@ -17,19 +17,11 @@ namespace VoidHuntersRevived.Server
         static void Main(string[] args)
         {
             var guppy = new GuppyLoader(new ConsoleLogger());
-            guppy.ConfigureNetwork<ServerPeer, ServerNetworkSceneDriver>(Program.PeerFactory);
+            guppy.ConfigureServer();
             guppy.Initialize();
 
             var game = guppy.Games.Create<VoidHuntersServerGame>();
             game.StartAsyc();
-        }
-
-        private static ServerPeer PeerFactory(IServiceProvider provider)
-        {
-            var config = provider.GetService<NetPeerConfiguration>();
-            config.Port = 1337;
-
-            return new ServerPeer(config, provider.GetService<ILogger>());
         }
     }
 }

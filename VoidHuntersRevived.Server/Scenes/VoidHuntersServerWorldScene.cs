@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Server.Scenes
         {
             base.PostInitialize();
 
-            this.Group.MessageHandler.Add("chat", this.HandleChatMessage);
+            // this.Group.MessageHandler.Add("chat", this.HandleChatMessage);
         }
         #endregion
 
@@ -80,12 +80,10 @@ namespace VoidHuntersRevived.Server.Scenes
             player.TrySetShip(ship);
             ship.TrySetBridge(bridge);
 
-            var om = this.Group.CreateMessage("chat");
+            var om = this.Group.CreateMessage("chat", NetDeliveryMethod.ReliableOrdered, 2);
 
             om.Write(false);
             om.Write($"Welcome, {user.Get("name")}.");
-
-            this.Group.SendMesssage(om, NetDeliveryMethod.ReliableOrdered, 2);
         }
         #endregion
 
@@ -94,13 +92,11 @@ namespace VoidHuntersRevived.Server.Scenes
         {
             // Parse the message then broadcast to all users
             var user = this.Users.GetByNetConnection(obj.SenderConnection);
-            var om = this.Group.CreateMessage("chat");
+            var om = this.Group.CreateMessage("chat", NetDeliveryMethod.ReliableOrdered, 2);
 
             om.Write(true);
             om.Write(user.Id);
             om.Write(obj.ReadString());
-
-            this.Group.SendMesssage(om, NetDeliveryMethod.ReliableOrdered, 2);
         }
         #endregion
     }

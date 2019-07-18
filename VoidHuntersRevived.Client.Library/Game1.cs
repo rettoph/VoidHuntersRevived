@@ -55,7 +55,7 @@ namespace VoidHuntersRevived.Client.Library
             // _graphics.ToggleFullScreen();
 
             _guppy.ConfigureMonogame(_graphics, this.Window, this.Content);
-            _guppy.ConfigureNetwork<ClientPeer, ClientNetworkSceneDriver>(this.PeerFactory);
+            _guppy.ConfigureClient();
             _guppy.Initialize();
 
             _game = _guppy.Games.Create<VoidHuntersClientGame>();
@@ -80,13 +80,6 @@ namespace VoidHuntersRevived.Client.Library
             base.OnExiting(sender, args);
 
             Environment.Exit(0);
-        }
-
-        private ClientPeer PeerFactory(IServiceProvider arg)
-        {
-            var config = arg.GetService<NetPeerConfiguration>();
-
-            return new ClientPeer(config, arg.GetService<ILogger>());
         }
     }
 }

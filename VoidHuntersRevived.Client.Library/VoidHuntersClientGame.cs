@@ -2,6 +2,7 @@
 using Guppy.Network.Peers;
 using Guppy.Network.Security;
 using Lidgren.Network;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Client.Library.Scenes;
@@ -31,7 +32,7 @@ namespace VoidHuntersRevived.Client.Library
         {
             base.PostInitialize();
 
-            var user = new User();
+            var user = ActivatorUtilities.CreateInstance<User>(this.provider);
             user.Set("name", "Tony");
             this.client.Connect("localhost", 1337, user);
         }

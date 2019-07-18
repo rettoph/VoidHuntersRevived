@@ -68,26 +68,23 @@ namespace VoidHuntersRevived.Library.Entities.Players
         #region Network Methods
         protected override void read(NetIncomingMessage im)
         {
-            if(im.ReadBoolean())
-            {
-                this.TrySetShip(
-                    this.entities.GetById<Ship>(
-                        im.ReadGuid()));
-            }
+            this.ReadShipData(im);
         }
 
         protected override void write(NetOutgoingMessage om)
         {
-            if(this.Ship == null)
-            {
-                om.Write(false);
-            }
-            else
-            {
-                om.Write(true);
-                om.Write(this.Ship.Id);
-            }
-            
+            this.WriteShipData(om);
+        }
+
+        public void ReadShipData(NetIncomingMessage im)
+        {
+            this.TrySetShip(
+                im.ReadEntity<Ship>(this.entities));
+        }
+
+        public void WriteShipData(NetOutgoingMessage om)
+        {
+            om.Write(this.Ship);
         }
         #endregion
 

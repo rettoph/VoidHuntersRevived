@@ -40,6 +40,7 @@ namespace VoidHuntersRevived.Client.Library
             services.AddLayer<HudLayer>();
 
             services.AddDriver<UserPlayer, ClientUserPlayerDriver>();
+            services.AddDriver<Player, ClientPlayerDriver>();
             services.AddDriver<Pointer, MousePointerDriver>();
             services.AddDriver<VoidHuntersClientWorldScene, VoidHuntersClientWorldSceneDriver>(96);
             services.AddDriver<Ship, ClientShipDriver>();
