@@ -39,14 +39,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             base.Boot();
 
             _clientServerFixtureTable = new Dictionary<Fixture, Fixture>();
-        }
-
-        protected override void PreInitialize()
-        {
-            base.PreInitialize();
-
-            // Bind action handlers
-            _entity.AddActionHandler("update:position", this.HandleUpdatePositionAction);
 
             // Bind event handlers
             _entity.OnCollidesWithChanged += this.HandleCollidesWithChanged;
@@ -62,6 +54,14 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _entity.OnAngularImpulseApplied += this.HandleAngularImpulseApplied;
             _entity.OnSetTransform += this.HandleSetTransform;
             _entity.OnRead += this.HandleRead;
+        }
+
+        protected override void PreInitialize()
+        {
+            base.PreInitialize();
+
+            // Bind action handlers
+            _entity.AddActionHandler("update:position", this.HandleUpdatePositionAction);
         }
 
         protected override void Initialize()

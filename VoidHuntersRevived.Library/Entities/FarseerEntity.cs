@@ -187,20 +187,9 @@ namespace VoidHuntersRevived.Library.Entities
             _collidesWith = Category.All;
             _collisionCategories = Category.Cat1;
             _fixtureList = new List<Fixture>();
+            _body = this.CreateBody(this.world);
 
             this.Focused = new CounterBoolean();
-        }
-
-        protected override void PreInitialize()
-        {
-            base.PreInitialize();
-
-            _body = this.CreateBody(this.world);
-        }
-
-        protected override void Initialize()
-        {
-            base.Initialize();
         }
         #endregion
 
@@ -297,18 +286,24 @@ namespace VoidHuntersRevived.Library.Entities
         #region Network Methods
         protected override void read(NetIncomingMessage im)
         {
-            this.Position = im.ReadVector2();
-            this.Rotation = im.ReadSingle();
-            this.LinearVelocity = im.ReadVector2();
-            this.AngularVelocity = im.ReadSingle();
+            if (im.ReadExists())
+            { // Only read the body data if the server sent any
+                this.Position = im.ReadVector2();
+                this.Rotation = im.ReadSingle();
+                this.LinearVelocity = im.ReadVector2();
+                this.AngularVelocity = im.ReadSingle();
+            }
         }
 
         protected override void write(NetOutgoingMessage om)
         {
-            om.Write(this.Position);
-            om.Write(this.Rotation);
-            om.Write(this.LinearVelocity);
-            om.Write(this.AngularVelocity);
+            if(om.WriteExists(_body))
+            { // Only write the body data if the body exists
+                om.Write(this.Position);
+                om.Write(this.Rotation);
+                om.Write(this.LinearVelocity);
+                om.Write(this.AngularVelocity);
+            }
         }
         #endregion
 

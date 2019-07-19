@@ -1,4 +1,5 @@
 ﻿using Guppy.Configurations;
+using Guppy.Interfaces;
 using Guppy.Network;
 using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
@@ -50,7 +51,7 @@ namespace VoidHuntersRevived.Library.Entities
 
             this.SetUpdateOrder(91);
 
-            this.TractorBeam = this.entities.Create<TractorBeam>("entity:tractor-beam");
+            this.TractorBeam = this.entities.Create<TractorBeam>("entity:tractor-beam", this);
         }
 
         protected override void Initialize()
@@ -86,10 +87,25 @@ namespace VoidHuntersRevived.Library.Entities
             {
                 this.logger.LogDebug($"Setting Ship({this.Id}) bridge to ShipPart<{target.GetType().Name}>({target.Id})...");
 
+                // Hold onto the old bridge so we can trigger a changed event
                 var old = this.Bridge;
 
-                this.Bridge = target;
-                target.BridgeFor = this;
+                // Unbind the old bridge...
+                if (this.Bridge != null)
+                {
+                    this.Bridge.BridgeFor = null;
+
+                    this.Bridge.Disposing -= this.HandleBridgeDisposing;
+                }
+
+                // Setup the new bridge
+                if (target != null)
+                {
+                    this.Bridge = target;
+                    this.Bridge.BridgeFor = this;
+
+                    this.Bridge.Disposing += this.HandleBridgeDisposing;
+                }
 
                 // Trigger the bridge changed event
                 this.OnBridgeChanged?.Invoke(this, new ChangedEventArgs<ShipPart>(old, target));
@@ -104,6 +120,19 @@ namespace VoidHuntersRevived.Library.Entities
             this.Player = player;
 
             this.OnPlayerChanged?.Invoke(this, new ChangedEventArgs<Player>(old, this.Player));
+        }
+        #endregion
+
+        #region Event Handlers
+        /// <summary>
+        /// When the bridge ship-part is disposed of,
+        /// we must remove the current bridge value.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void HandleBridgeDisposing(object sender, ITrackedDisposable e)
+        {
+            this.TrySetBridge(null);
         }
         #endregion
 
@@ -152,5 +181,17 @@ namespace VoidHuntersRevived.Library.Entities
             om.Write(_directions[direction]);
         }
         #endregion
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            // Unset the bridge...
+            this.TrySetBridge(null);
+
+            // Dispose of internal objects...
+            this.TractorBeam.Dispose();
+            
+        }
     }
 }

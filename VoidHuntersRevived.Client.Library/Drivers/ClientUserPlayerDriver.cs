@@ -1,4 +1,5 @@
-﻿using Guppy.Implementations;
+﻿using FarseerPhysics.Dynamics;
+using Guppy.Implementations;
 using Guppy.Network.Peers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -26,6 +27,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private Pointer _pointer;
         private ClientPeer _client;
         private UserPlayer _player;
+        private Fixture _sensor;
         #endregion
 
         #region Constructors
@@ -35,6 +37,15 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _pointer = pointer;
             _client = client;
             _player = parent;
+        }
+        #endregion
+
+        #region Initialization Methods
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            
         }
         #endregion
 
