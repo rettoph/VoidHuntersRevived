@@ -52,7 +52,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _entity.OnFixtureDestroyed += this.HandleFixtureDestroyed;
             _entity.OnLinearImpulseApplied += this.HandleLinearImpulseApplied;
             _entity.OnAngularImpulseApplied += this.HandleAngularImpulseApplied;
-            _entity.OnSetTransform += this.HandleSetTransform;
             _entity.OnRead += this.HandleRead;
         }
 
@@ -82,16 +81,18 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             if(!_entity.Focused.Value && (_server.Bodies[_entity].Awake || _entity.Awake))
             {
-                _entity.Position = Vector2.Lerp(
-                    _entity.Position, 
-                    _server.Bodies[_entity].Position, 
-                    _lerpStrength);
+                // Update the entity position & rotation
+                _entity.SetTransform(
+                    Vector2.Lerp(
+                        _entity.Position,
+                        _server.Bodies[_entity].Position,
+                        _lerpStrength), 
+                    MathHelper.Lerp(
+                    _entity.Rotation,
+                        _server.Bodies[_entity].Rotation,
+                        _lerpStrength));
 
-                _entity.Rotation = MathHelper.Lerp(
-                    _entity.Rotation, 
-                    _server.Bodies[_entity].Rotation, 
-                    _lerpStrength);
-
+                // Update the entity velocities
                 _entity.LinearVelocity = Vector2.Lerp(
                     _entity.LinearVelocity, 
                     _server.Bodies[_entity].LinearVelocity, 
@@ -188,11 +189,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _server.Bodies[_entity].Enabled = e;
         }
 
-        private void HandleSetTransform(object sender, Body e)
-        {
-            _server.Bodies[_entity].SetTransform(e.Position, e.Rotation);
-        }
-
         private void HandleRead(object sender, NetworkEntity e)
         {
             _server.Bodies[_entity].Position = _entity.Position;
@@ -206,8 +202,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             base.Dispose();
 
-            _server.Bodies[_entity].Dispose();
-            _server.Bodies.Remove(_entity);
+            if (_server.Bodies.ContainsKey(_entity))
+            {
+                _server.Bodies[_entity].Dispose();
+                _server.Bodies.Remove(_entity);
+            }
 
             _entity.OnCollidesWithChanged -= this.HandleCollidesWithChanged;
             _entity.OnCollisionCategoriesChanged -= this.HandleCollisionCategoriesChanged;
@@ -220,7 +219,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _entity.OnFixtureDestroyed -= this.HandleFixtureDestroyed;
             _entity.OnLinearImpulseApplied -= this.HandleLinearImpulseApplied;
             _entity.OnAngularImpulseApplied -= this.HandleAngularImpulseApplied;
-            _entity.OnSetTransform -= this.HandleSetTransform;
             _entity.OnRead -= this.HandleRead;
         }
     }

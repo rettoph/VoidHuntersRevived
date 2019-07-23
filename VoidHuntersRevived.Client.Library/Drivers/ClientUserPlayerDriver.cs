@@ -1,16 +1,21 @@
 ﻿using FarseerPhysics.Dynamics;
+using FarseerPhysics.Dynamics.Contacts;
+using FarseerPhysics.Factories;
 using Guppy.Implementations;
 using Guppy.Network.Peers;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.CustomEventArgs;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
 
 namespace VoidHuntersRevived.Client.Library.Drivers
@@ -27,16 +32,20 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private Pointer _pointer;
         private ClientPeer _client;
         private UserPlayer _player;
-        private Fixture _sensor;
+        private World _world;
+        private Body _sensor;
+        private HashSet<ShipPart> _contacts;
         #endregion
 
         #region Constructors
-        public ClientUserPlayerDriver(FarseerCamera2D camera, Pointer pointer, ClientPeer client, UserPlayer parent, IServiceProvider provider) : base(parent, provider)
+        public ClientUserPlayerDriver(World world, FarseerCamera2D camera, Pointer pointer, ClientPeer client, UserPlayer parent, IServiceProvider provider) : base(parent, provider)
         {
+            _world = world;
             _camera = camera;
             _pointer = pointer;
             _client = client;
             _player = parent;
+            _contacts = new HashSet<ShipPart>();
         }
         #endregion
 
@@ -45,7 +54,17 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             base.Initialize();
 
-            
+            if (_player.User == _client.CurrentUser)
+            {
+                _sensor = BodyFactory.CreateCircle(_world, 1, 0f, Vector2.Zero, BodyType.Dynamic, null);
+                _sensor.IsSensor = true;
+                _sensor.SleepingAllowed = false;
+                _sensor.CollisionCategories = Category.Cat1;
+                _sensor.CollidesWith = Category.All;
+
+                _sensor.OnCollision += this.HandleSensorCollision;
+                _sensor.OnSeparation += this.HandleSensorSeperation;
+            }
         }
         #endregion
 
@@ -73,6 +92,26 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
                     // Update the camera position
                     _camera.MoveTo(_player.Ship.Bridge.Position);
+
+                    // Update the tractor beam target sensor
+                    _sensor.SetTransform(_pointer.Position, 0);
+                    _player.Ship.TractorBeam.SetOffset(_pointer.Position - _player.Ship.Bridge.Position);
+
+                    if(_player.Ship.TractorBeam.Selecting)
+                    {
+                        if (!_pointer.Secondary)
+                            _player.Ship.TractorBeam.TryRelease();
+                    }
+                    else
+                    {
+                        var hovered = _player.Ship.TractorBeam.GetTarget(
+                            _contacts.Where(sp => _player.Ship.TractorBeam.ValidateTarget(sp))
+                                .OrderBy(sp => Vector2.Distance(_player.Ship.TractorBeam.Position, sp.Position))
+                                .FirstOrDefault());
+
+                        if (_pointer.Secondary)
+                            _player.Ship.TractorBeam.TrySelect(hovered);
+                    }
                 }
 
                 // Update the camera zoom as needed...
@@ -96,6 +135,26 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
             var action = _player.CreateActionMessage("set:direction");
             _player.Ship.WriteDirectionData(action, direction);
+        }
+        #endregion
+
+        #region Event Handlers
+        private bool HandleSensorCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
+        {
+            if (fixtureA.UserData is ShipPart)
+                _contacts.Add(fixtureA.UserData as ShipPart);
+            else if (fixtureB.UserData is ShipPart)
+                _contacts.Add(fixtureB.UserData as ShipPart);
+
+            return true;
+        }
+
+        private void HandleSensorSeperation(Fixture fixtureA, Fixture fixtureB)
+        {
+            if (fixtureA.UserData is ShipPart)
+                _contacts.Remove(fixtureA.UserData as ShipPart);
+            else if (fixtureB.UserData is ShipPart)
+                _contacts.Remove(fixtureB.UserData as ShipPart);
         }
         #endregion
     }
