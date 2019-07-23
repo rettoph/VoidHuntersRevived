@@ -45,12 +45,12 @@ namespace VoidHuntersRevived.Server.Scenes
 
             var r = new Random();
 
-            // for(Int32 i=0; i<100; i++)
-            // {
-            //     var e = this.entities.Create<ShipPart>("entity:ship-part");
-            //     e.Position = new Vector2((Single)((r.NextDouble() * 100) - 50), (Single)((r.NextDouble() * 100) - 50));
-            //     e.Rotation = (Single)((r.NextDouble() * 10) - 5);
-            // }
+            for(Int32 i=0; i<250; i++)
+            {
+                var e = this.entities.Create<ShipPart>("entity:ship-part");
+                e.Position = new Vector2((Single)((r.NextDouble() * 100) - 50), (Single)((r.NextDouble() * 100) - 50));
+                e.Rotation = (Single)((r.NextDouble() * 10) - 5);
+            }
 
             this.Group.Users.Added += this.HandleUserAdded;
         }
