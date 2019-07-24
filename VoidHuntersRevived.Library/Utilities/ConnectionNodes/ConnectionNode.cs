@@ -25,6 +25,11 @@ namespace VoidHuntersRevived.Library.Utilities.ConnectionNodes
         public ConnectionNode Target { get; protected internal set; }
 
         /// <summary>
+        /// Whether or not the current node is connected to another node
+        /// </summary>
+        public Boolean Connected { get { return this.Target != null; } }
+
+        /// <summary>
         /// The current nodes parent
         /// </summary>
         public readonly ShipPart Parent;

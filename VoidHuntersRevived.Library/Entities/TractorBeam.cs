@@ -6,8 +6,11 @@ using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using VoidHuntersRevived.Library.CustomEventArgs;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Utilities.ConnectionNodes;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -24,7 +27,8 @@ namespace VoidHuntersRevived.Library.Entities
         /// <summary>
         /// The distance a target may be from the ship and still get selected.
         /// </summary>
-        private Single _reach;
+        private Single _selectionReach;
+        private Single _atachmentReach;
         private Guid _targetFocus;
         private EntityCollection _entities;
         #endregion
@@ -41,12 +45,14 @@ namespace VoidHuntersRevived.Library.Entities
         public event EventHandler<ShipPart> OnSelected;
         public event EventHandler<ShipPart> OnReleased;
         public event EventHandler<Vector2> OnOffsetChanged;
+        public event EventHandler<ShipPart> OnAttached;
         #endregion
 
         #region Constructors
         public TractorBeam(Ship ship, EntityCollection entities, EntityConfiguration configuration, IServiceProvider provider) : base(configuration, provider)
         {
-            _reach = 20;
+            _selectionReach = 20;
+            _atachmentReach = 1f;
             _entities = entities;
             this.Ship = ship;
         }
@@ -70,9 +76,9 @@ namespace VoidHuntersRevived.Library.Entities
         public Boolean TrySelect(ShipPart target)
         {
             // Ensure that the proper target is recieved
-            target = this.GetTarget(target);
+            target = this.GetSelectionTarget(target);
 
-            if (!this.ValidateTarget(target))
+            if (!this.ValidateSelectionTarget(target))
                 return false;
 
             // Attempt to release the old target (if there is any)
@@ -101,6 +107,31 @@ namespace VoidHuntersRevived.Library.Entities
             this.OnReleased?.Invoke(this, oldTarget);
             return true;
         }
+
+        /// <summary>
+        /// Attempt to attach the currently selected
+        /// ship part to a given female connection node.
+        /// 
+        /// This will automatically release the ship-part.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public Boolean TryAttatch(FemaleConnectionNode target)
+        {
+            var oldSelected = this.Selected;
+
+            if (!this.ValidateAttachmentTarget(target))
+                return false;
+
+            // Create the attachment...
+            this.Selected.TryAttatchTo(target);
+            this.OnAttached?.Invoke(this, this.Selected);
+
+            // Release the old selected target...
+            this.TryRelease();
+
+            return true;
+        }
         #endregion
 
         #region Helper Methods
@@ -110,7 +141,7 @@ namespace VoidHuntersRevived.Library.Entities
         /// </summary>
         /// <param name="target"></param>
         /// <returns></returns>
-        public Boolean ValidateTarget(ShipPart target)
+        public Boolean ValidateSelectionTarget(ShipPart target)
         {
             // If there is no bridge bound to the current tractor beam...
             if (this.Ship.Bridge == null)
@@ -125,7 +156,7 @@ namespace VoidHuntersRevived.Library.Entities
                 return false;
 
             // If the part is too far away from the current ship...
-            if (Vector2.Distance(target.Position, this.Ship.Bridge.Position) > _reach)
+            if (Vector2.Distance(target.Position, this.Ship.Bridge.Position) > _selectionReach)
                 return false;
 
             // If the target is attached to another ship...
@@ -146,14 +177,43 @@ namespace VoidHuntersRevived.Library.Entities
         /// </summary>
         /// <param name="target"></param>
         /// <returns></returns>
-        public ShipPart GetTarget(ShipPart target)
+        public ShipPart GetSelectionTarget(ShipPart target)
         {
-            if (!this.ValidateTarget(target))
+            if (!this.ValidateSelectionTarget(target))
                 return default(ShipPart);
             if (target.Root.IsBridge)
                 return target;
 
             return target.Root;
+        }
+
+        /// <summary>
+        /// Validate whether or not the current selected
+        /// ship part (if any) can attach to the given female
+        /// connection node...
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public Boolean ValidateAttachmentTarget(FemaleConnectionNode target)
+        {
+            // If the tractor beam isnt currently selecting something...
+            if (!this.Selecting)
+                return false;
+
+            // If the target is too far away from the tractor beam...
+            if (Vector2.Distance(target.WorldPosition, this.Position) > _atachmentReach)
+                return false;
+
+            // If the given female is already connected to something else...
+            if (target.Connected)
+                return false;
+
+            // If the given connection node doesnt belong to the same ship as the tractor beam...
+            if (target.Parent.Root.BridgeFor != this.Ship)
+                return false;
+
+
+            return true;
         }
         #endregion
 
@@ -195,9 +255,9 @@ namespace VoidHuntersRevived.Library.Entities
             om.Write(this.Selected);
         }
 
-        public void ReadSelectedData(NetIncomingMessage im)
+        public Boolean ReadSelectedData(NetIncomingMessage im)
         {
-            this.TrySelect(
+            return this.TrySelect(
                 im.ReadEntity<ShipPart>(_entities));
         }
         #endregion

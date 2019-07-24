@@ -9,6 +9,7 @@ using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Extensions.System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using VoidHuntersRevived.Library.Extensions.Lidgren;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -57,11 +58,19 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// connection if any exists.
         /// </summary>
         /// <param name="target"></param>
-        public void AttatchTo(FemaleConnectionNode target)
+        public Boolean TryAttatchTo(FemaleConnectionNode target)
         {
-            this.logger.LogInformation($"Attempting to attatch ShipPart<{this.GetType().Name}>({this.Id}) to ShipPart<{target.Parent.GetType().Name}>({target.Parent.Id}) FemaleConnectionNode({target.Id})");
+            // If the nodes are siblings...
+            if (this.MaleConnectionNode.Parent == target.Parent)
+                return false;
 
+            // If the node is already connected to something else...
+            if (this.MaleConnectionNode.Connected)
+                return false;
+
+            this.logger.LogInformation($"Attempting to attach ShipPart<{this.GetType().Name}>({this.Id}) to ShipPart<{target.Parent.GetType().Name}>({target.Parent.Id}) FemaleConnectionNode({target.Id})");
             this.MaleConnectionNode.AttatchTo(target);
+            return true;
         }
 
         /// <summary>
@@ -69,11 +78,15 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// whatever part it is currently attatched to
         /// if any
         /// </summary>
-        public void DetatchFrom()
+        public Boolean TryDetatchFrom()
         {
-            this.logger.LogInformation($"Attempting to detach ShipPart<{this.GetType().Name}>({this.Id}) from ShipPart<{this.MaleConnectionNode.Target?.Parent.GetType().Name}>({this.MaleConnectionNode.Target?.Parent.Id}) FemaleConnectionNode({this.MaleConnectionNode.Target?.Id})");
+            // If the male node is not connected to anything...
+            if (!this.MaleConnectionNode.Connected)
+                return false;
 
+            this.logger.LogInformation($"Attempting to detach ShipPart<{this.GetType().Name}>({this.Id}) from ShipPart<{this.MaleConnectionNode.Target?.Parent.GetType().Name}>({this.MaleConnectionNode.Target?.Parent.Id}) FemaleConnectionNode({this.MaleConnectionNode.Target?.Id})");
             this.MaleConnectionNode.DetatchFrom();
+            return true;
         }
 
         /// <summary>
@@ -110,13 +123,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// 
         /// </summary>
         /// <param name="list"></param>
-        public void GetOpenFemaleNodes(ref List<FemaleConnectionNode> list)
+        public void GetOpenFemaleConnectionNodes(ref List<FemaleConnectionNode> list)
         {
             foreach (FemaleConnectionNode female in this.FemaleConnectionNodes)
                 if (female.Target == null)
                     list.Add(female);
                 else
-                    female.Target.Parent.GetOpenFemaleNodes(ref list);
+                    female.Target.Parent.GetOpenFemaleConnectionNodes(ref list);
         }
 
         /// <summary>
@@ -126,7 +139,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             var list = new List<FemaleConnectionNode>();
 
-            this.GetOpenFemaleNodes(ref list);
+            this.GetOpenFemaleConnectionNodes(ref list);
 
             return list;
         }
@@ -142,6 +155,21 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             //   
         }
+
+        public void ReadAttachmentData(NetIncomingMessage im)
+        {
+            if (im.ReadBoolean())
+                this.TryAttatchTo(
+                    im.ReadFemaleConnectionNode(this.entities));
+        }
+
+        public void WriteAttachmentData(NetOutgoingMessage om)
+        {
+            if (om.WriteIf(this.MaleConnectionNode.Connected))
+                om.Write(this.MaleConnectionNode.Target as FemaleConnectionNode);
+        }
+
+
         #endregion
     }
 }

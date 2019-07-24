@@ -17,6 +17,9 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Utilities.ConnectionNodes;
+using Guppy.Network.Extensions.Lidgren;
+using VoidHuntersRevived.Library.Extensions.Lidgren;
 
 namespace VoidHuntersRevived.Client.Library.Drivers
 {
@@ -65,6 +68,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
                 _sensor.OnCollision += this.HandleSensorCollision;
                 _sensor.OnSeparation += this.HandleSensorSeperation;
                 _pointer.OnLocalMovementEnded += this.HandlePointerLocalMovementEnded;
+                _pointer.OnSecondaryChanged += this.HandlePointerSecondaryChanged;
             }
         }
         #endregion
@@ -97,22 +101,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers
                     // Update the tractor beam target sensor
                     _sensor.SetTransform(_pointer.Position, 0);
                     _player.Ship.TractorBeam.SetOffset(_pointer.Position - _player.Ship.Bridge.Position);
-
-                    if(_player.Ship.TractorBeam.Selecting)
-                    {
-                        if (!_pointer.Secondary)
-                            this.TryTractorBeamLocalRelease();
-                    }
-                    else
-                    {
-                        var hovered = _player.Ship.TractorBeam.GetTarget(
-                            _contacts.Where(sp => _player.Ship.TractorBeam.ValidateTarget(sp))
-                                .OrderBy(sp => Vector2.Distance(_player.Ship.TractorBeam.Position, sp.Position))
-                                .FirstOrDefault());
-
-                        if (_pointer.Secondary)
-                            this.TryTractorBeamLocalSelect(hovered);
-                    }
                 }
 
                 // Update the camera zoom as needed...
@@ -155,7 +143,18 @@ namespace VoidHuntersRevived.Client.Library.Drivers
                 var action = _player.CreateActionMessage("tractor-beam:release");
                 _player.Ship.TractorBeam.WriteOffsetData(action);
             }
+        }
 
+        private void TryTractorBeamLocalAttach(FemaleConnectionNode target)
+        {
+            if (_player.Ship.TractorBeam.TryAttatch(target))
+            { // If the local release was successfull...
+                var action = _player.CreateActionMessage("tractor-beam:attach");
+                // Write the tractor beam offset data...
+                _player.Ship.TractorBeam.WriteOffsetData(action);
+                // Write the female's male's parent connection data...
+                action.Write(target);
+            }
         }
         #endregion
 
@@ -182,6 +181,40 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             var action = _player.CreateActionMessage("tractor-beam:set:offset");
             _player.Ship.TractorBeam.WriteOffsetData(action);
+        }
+
+        private void HandlePointerSecondaryChanged(object sender, bool secondary)
+        {
+            if (_player.Ship != null)
+            {
+                if (_player.Ship.TractorBeam.Selecting)
+                {
+                    if (!secondary)
+                    {
+                        // Load the attachment target, if there is any
+                        var target = _player.Ship.Bridge.GetOpenFemaleConnectionNodes()
+                            .Where(f => _player.Ship.TractorBeam.ValidateAttachmentTarget(f))
+                            .OrderBy(f => Vector2.Distance(_player.Ship.TractorBeam.Position, f.WorldPosition))
+                            .FirstOrDefault();
+
+                        if (target == default(FemaleConnectionNode))
+                            this.TryTractorBeamLocalRelease();
+                        else
+                            this.TryTractorBeamLocalAttach(target);
+                    }
+                }
+                else
+                {
+                    // Select the current ship part getting hovered...
+                    var hovered = _player.Ship.TractorBeam.GetSelectionTarget(
+                        _contacts.Where(sp => _player.Ship.TractorBeam.ValidateSelectionTarget(sp))
+                            .OrderBy(sp => Vector2.Distance(_player.Ship.TractorBeam.Position, sp.Position))
+                            .FirstOrDefault());
+
+                    if (secondary)
+                        this.TryTractorBeamLocalSelect(hovered);
+                }
+            }
         }
         #endregion
     }

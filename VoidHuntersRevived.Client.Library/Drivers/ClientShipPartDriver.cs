@@ -40,19 +40,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             // Only detatch if the ship part is connected to anything
             if (_shipPart.MaleConnectionNode.Target != null)
-                _shipPart.DetatchFrom();
+                _shipPart.TryDetatchFrom();
         }
 
         private void HandleMaleConnectionNodeAttachAction(NetIncomingMessage obj)
         {
-            // Load the target female node...
-            var target = (_entities.GetById(obj.ReadGuid()) as ShipPart)
-                .FemaleConnectionNodes
-                .First(f => f.Id == obj.PeekInt32());
-
-            // If the male node is not already connected to that target, attempt to connect to it
-            if (_shipPart.MaleConnectionNode.Target != target)
-                _shipPart.AttatchTo(target);
+            _shipPart.ReadAttachmentData(obj);
         }
         #endregion
     }

@@ -44,8 +44,7 @@ namespace VoidHuntersRevived.Server.Drivers
         private void HandleMaleConnectionNodeAttachedTo(object sender, FemaleConnectionNode e)
         {
             var action = _shipPart.CreateActionMessage("male-connection-node:attach");
-            action.Write(e.Parent.Id);
-            action.Write(e.Id);
+            _shipPart.WriteAttachmentData(action);
         }
         #endregion
 
