@@ -191,7 +191,6 @@ namespace VoidHuntersRevived.Library.Entities
 
             // Dispose of internal objects...
             this.TractorBeam.Dispose();
-            
         }
     }
 }

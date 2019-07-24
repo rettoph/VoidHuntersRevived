@@ -305,6 +305,14 @@ namespace VoidHuntersRevived.Library.Entities
                 om.Write(this.AngularVelocity);
             }
         }
+
+        public void WritePositionData(NetOutgoingMessage om)
+        {
+            om.Write(this.Position);
+            om.Write(this.Rotation);
+            om.Write(this.LinearVelocity);
+            om.Write(this.AngularVelocity);
+        }
         #endregion
 
         public override void Dispose()

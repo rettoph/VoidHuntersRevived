@@ -64,6 +64,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
                 _sensor.OnCollision += this.HandleSensorCollision;
                 _sensor.OnSeparation += this.HandleSensorSeperation;
+                _pointer.OnLocalMovementEnded += this.HandlePointerLocalMovementEnded;
             }
         }
         #endregion
@@ -100,7 +101,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
                     if(_player.Ship.TractorBeam.Selecting)
                     {
                         if (!_pointer.Secondary)
-                            _player.Ship.TractorBeam.TryRelease();
+                            this.TryTractorBeamLocalRelease();
                     }
                     else
                     {
@@ -110,7 +111,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
                                 .FirstOrDefault());
 
                         if (_pointer.Secondary)
-                            _player.Ship.TractorBeam.TrySelect(hovered);
+                            this.TryTractorBeamLocalSelect(hovered);
                     }
                 }
 
@@ -136,6 +137,26 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             var action = _player.CreateActionMessage("set:direction");
             _player.Ship.WriteDirectionData(action, direction);
         }
+
+        private void TryTractorBeamLocalSelect(ShipPart target)
+        {
+            if(_player.Ship.TractorBeam.TrySelect(target))
+            { // If the local select was successfull...
+                var action = _player.CreateActionMessage("tractor-beam:select");
+                _player.Ship.TractorBeam.WriteOffsetData(action);
+                _player.Ship.TractorBeam.WriteSelectedData(action);
+            }
+        }
+
+        private void TryTractorBeamLocalRelease()
+        {
+            if(_player.Ship.TractorBeam.TryRelease())
+            { // If the local release was successfull...
+                var action = _player.CreateActionMessage("tractor-beam:release");
+                _player.Ship.TractorBeam.WriteOffsetData(action);
+            }
+
+        }
         #endregion
 
         #region Event Handlers
@@ -155,6 +176,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers
                 _contacts.Remove(fixtureA.UserData as ShipPart);
             else if (fixtureB.UserData is ShipPart)
                 _contacts.Remove(fixtureB.UserData as ShipPart);
+        }
+
+        private void HandlePointerLocalMovementEnded(object sender, Vector2 e)
+        {
+            var action = _player.CreateActionMessage("tractor-beam:set:offset");
+            _player.Ship.TractorBeam.WriteOffsetData(action);
         }
         #endregion
     }

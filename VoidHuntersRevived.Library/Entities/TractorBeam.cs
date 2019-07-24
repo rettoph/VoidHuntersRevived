@@ -1,5 +1,8 @@
 ﻿using Guppy;
+using Guppy.Collections;
 using Guppy.Configurations;
+using Guppy.Network.Extensions.Lidgren;
+using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -23,6 +26,7 @@ namespace VoidHuntersRevived.Library.Entities
         /// </summary>
         private Single _reach;
         private Guid _targetFocus;
+        private EntityCollection _entities;
         #endregion
 
         #region Public Attributes
@@ -34,14 +38,16 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Events
-        public event EventHandler<ShipPart> OnSelect;
-        public event EventHandler<ShipPart> OnRelease;
+        public event EventHandler<ShipPart> OnSelected;
+        public event EventHandler<ShipPart> OnReleased;
+        public event EventHandler<Vector2> OnOffsetChanged;
         #endregion
 
         #region Constructors
-        public TractorBeam(Ship ship, EntityConfiguration configuration, IServiceProvider provider) : base(configuration, provider)
+        public TractorBeam(Ship ship, EntityCollection entities, EntityConfiguration configuration, IServiceProvider provider) : base(configuration, provider)
         {
             _reach = 20;
+            _entities = entities;
             this.Ship = ship;
         }
         #endregion
@@ -51,12 +57,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.update(gameTime);
 
-            if(this.Selecting)
-            { // If something is selected, update its position
-                this.Selected.SetTransform(
-                    this.Position, 
-                    this.Selected.Rotation);
-            }
+            this.UpdateSelectedPosition();
         }
         #endregion
 
@@ -82,7 +83,7 @@ namespace VoidHuntersRevived.Library.Entities
             this.Selected.SleepingAllowed = false;
             _targetFocus = this.Selected.Focused.Add();
 
-            this.OnSelect?.Invoke(this, this.Selected);
+            this.OnSelected?.Invoke(this, this.Selected);
             return true;
         }
 
@@ -97,7 +98,7 @@ namespace VoidHuntersRevived.Library.Entities
             this.Selected.SleepingAllowed = true;
             this.Selected = null;
 
-            this.OnRelease?.Invoke(this, oldTarget);
+            this.OnReleased?.Invoke(this, oldTarget);
             return true;
         }
         #endregion
@@ -160,6 +161,44 @@ namespace VoidHuntersRevived.Library.Entities
         public void SetOffset(Vector2 offset)
         {
             this.Offset = offset;
+
+            this.UpdateSelectedPosition();
+
+            this.OnOffsetChanged?.Invoke(this, this.Offset);
+        }
+
+        public void UpdateSelectedPosition()
+        {
+            if (this.Selecting)
+            { // If something is selected, update its position
+                this.Selected.SetTransform(
+                    this.Position,
+                    this.Selected.Rotation);
+            }
+        }
+        #endregion
+
+        #region Network Methods
+        public void WriteOffsetData(NetOutgoingMessage om)
+        {
+            om.Write(this.Offset);
+        }
+
+        public void ReadOffsetData(NetIncomingMessage im)
+        {
+            this.SetOffset(
+                im.ReadVector2());
+        }
+
+        public void WriteSelectedData(NetOutgoingMessage om)
+        {
+            om.Write(this.Selected);
+        }
+
+        public void ReadSelectedData(NetIncomingMessage im)
+        {
+            this.TrySelect(
+                im.ReadEntity<ShipPart>(_entities));
         }
         #endregion
     }

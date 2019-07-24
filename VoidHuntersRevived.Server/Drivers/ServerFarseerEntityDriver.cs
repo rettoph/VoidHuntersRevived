@@ -49,10 +49,7 @@ namespace VoidHuntersRevived.Server.Drivers
         private void SendUpdatePositionAction()
         {
             var action = _entity.CreateActionMessage("update:position");
-            action.Write(_entity.Position);
-            action.Write(_entity.Rotation);
-            action.Write(_entity.LinearVelocity);
-            action.Write(_entity.AngularVelocity);
+            _entity.WritePositionData(action);
         }
         #endregion
 

@@ -24,6 +24,9 @@ namespace VoidHuntersRevived.Server.Drivers
             base.Initialize();
 
             _player.AddActionHandler("set:direction", this.HandleSetDirectionAction);
+            _player.AddActionHandler("tractor-beam:select", this.HandleTractorBeamSelectAction);
+            _player.AddActionHandler("tractor-beam:release", this.HandleTractorBeamReleaseAction);
+            _player.AddActionHandler("tractor-beam:set:offset", this.HandleTractorBeamSetOffsetAction);
         }
         #endregion
 
@@ -32,6 +35,28 @@ namespace VoidHuntersRevived.Server.Drivers
         {
             // Read any incoming direction update data
             _player.Ship.ReadDirectionData(obj);
+        }
+
+        private void HandleTractorBeamSelectAction(NetIncomingMessage obj)
+        {
+            // Read any incoming offset data
+            _player.Ship.TractorBeam.ReadOffsetData(obj);
+            // Read any incoming target data
+            _player.Ship.TractorBeam.ReadSelectedData(obj);
+        }
+
+        private void HandleTractorBeamReleaseAction(NetIncomingMessage obj)
+        {
+            // Read any incoming offset data
+            _player.Ship.TractorBeam.ReadOffsetData(obj);
+            // Release the tractor beam
+            _player.Ship.TractorBeam.TryRelease();
+        }
+
+        private void HandleTractorBeamSetOffsetAction(NetIncomingMessage obj)
+        {
+            // Read any incoming offset data
+            _player.Ship.TractorBeam.ReadOffsetData(obj);
         }
         #endregion
     }
