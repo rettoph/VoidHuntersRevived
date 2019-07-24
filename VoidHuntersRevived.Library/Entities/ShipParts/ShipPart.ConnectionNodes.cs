@@ -105,7 +105,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             // Update the current shipparts chain placement
             this.UpdateChainPlacement();
 
-
             // Recursively remap all nodes in the chain, if requested.
             if (deep)
                 foreach (FemaleConnectionNode female in this.FemaleConnectionNodes)
@@ -148,12 +147,12 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #region Network Methods
         private void ConnectionNodes_Read(NetIncomingMessage im)
         {
-            //
+            this.ReadAttachmentData(im);
         }
 
         private void ConnectionNodes_Write(NetOutgoingMessage om)
         {
-            //   
+            this.WriteAttachmentData(om);   
         }
 
         public void ReadAttachmentData(NetIncomingMessage im)
@@ -168,8 +167,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             if (om.WriteIf(this.MaleConnectionNode.Connected))
                 om.Write(this.MaleConnectionNode.Target as FemaleConnectionNode);
         }
-
-
         #endregion
     }
 }

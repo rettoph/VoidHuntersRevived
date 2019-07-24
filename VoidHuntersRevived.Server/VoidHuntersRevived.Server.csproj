@@ -6,6 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ship-part-export.dat" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ship-part-export.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Submodules\Guppy\Guppy.Network\Guppy.Network.csproj" />
     <ProjectReference Include="..\Submodules\Guppy\Guppy\Guppy.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Library\VoidHuntersRevived.Library.csproj" />

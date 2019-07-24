@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using FarseerPhysics.Dynamics;
@@ -14,6 +15,7 @@ using VoidHuntersRevived.Library.Collections;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Factories;
 using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Server.Scenes
@@ -21,12 +23,14 @@ namespace VoidHuntersRevived.Server.Scenes
     class VoidHuntersServerWorldScene : VoidHuntersWorldScene
     {
         private ShipCollection _ships;
+        private ShipPartFactory _factory;
 
         protected ServerPeer server;
 
-        public VoidHuntersServerWorldScene(ShipCollection ships, ServerPeer server, World world, IServiceProvider provider) : base(server, world, provider)
+        public VoidHuntersServerWorldScene(ShipCollection ships, ShipPartFactory factory, ServerPeer server, World world, IServiceProvider provider) : base(server, world, provider)
         {
             _ships = ships;
+            _factory = factory;
 
             this.server = server;
         }
@@ -68,17 +72,22 @@ namespace VoidHuntersRevived.Server.Scenes
         #region Event Handlers
         private void HandleUserAdded(object sender, User user)
         {
-            var bridge = this.entities.Create<ShipPart>("entity:ship-part");
-            var ship = _ships.GetOrCreateAvailableShip();
-            var player = this.entities.Create<Player>("entity:player:user", user);
+            using (FileStream input = File.OpenRead("./ship-part-export.dat"))
+            {
+                var bridge = _factory.Import(input);
 
-            player.TrySetShip(ship);
-            ship.TrySetBridge(bridge);
+                // var bridge = this.entities.Create<ShipPart>("entity:ship-part");
+                var ship = _ships.GetOrCreateAvailableShip();
+                var player = this.entities.Create<Player>("entity:player:user", user);
 
-            var om = this.Group.CreateMessage("chat", NetDeliveryMethod.ReliableOrdered, 2);
+                player.TrySetShip(ship);
+                ship.TrySetBridge(bridge);
 
-            om.Write(false);
-            om.Write($"Welcome, {user.Get("name")}.");
+                var om = this.Group.CreateMessage("chat", NetDeliveryMethod.ReliableOrdered, 2);
+
+                om.Write(false);
+                om.Write($"Welcome, {user.Get("name")}.");
+            }
         }
         #endregion
 

@@ -17,6 +17,7 @@ using VoidHuntersRevived.Library.Drivers;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Factories;
 using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Library
@@ -29,6 +30,7 @@ namespace VoidHuntersRevived.Library
             services.AddDriver<VoidHuntersWorldScene, VoidHuntersWorldSceneDriver>(95);
 
             services.AddScoped<ShipCollection>();
+            services.AddScoped<ShipPartFactory>();
             services.AddScoped<World>(p =>
             {
                 return new World(Vector2.Zero);

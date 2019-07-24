@@ -20,6 +20,8 @@ using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Utilities.ConnectionNodes;
 using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Extensions.Lidgren;
+using VoidHuntersRevived.Library.Factories;
+using System.IO;
 
 namespace VoidHuntersRevived.Client.Library.Drivers
 {
@@ -38,10 +40,18 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private World _world;
         private Body _sensor;
         private HashSet<ShipPart> _contacts;
+        private ShipPartFactory _factory;
         #endregion
 
         #region Constructors
-        public ClientUserPlayerDriver(World world, FarseerCamera2D camera, Pointer pointer, ClientPeer client, UserPlayer parent, IServiceProvider provider) : base(parent, provider)
+        public ClientUserPlayerDriver(
+            World world, 
+            FarseerCamera2D camera,
+            Pointer pointer,
+            ClientPeer client,
+            UserPlayer parent,
+            ShipPartFactory factory,
+            IServiceProvider provider) : base(parent, provider)
         {
             _world = world;
             _camera = camera;
@@ -49,6 +59,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _client = client;
             _player = parent;
             _contacts = new HashSet<ShipPart>();
+            _factory = factory;
         }
         #endregion
 
@@ -69,6 +80,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
                 _sensor.OnSeparation += this.HandleSensorSeperation;
                 _pointer.OnLocalMovementEnded += this.HandlePointerLocalMovementEnded;
                 _pointer.OnSecondaryChanged += this.HandlePointerSecondaryChanged;
+                _pointer.OnPrimaryChanged += this.HandlePointerPrimaryChanged;
             }
         }
         #endregion
@@ -215,6 +227,14 @@ namespace VoidHuntersRevived.Client.Library.Drivers
                         this.TryTractorBeamLocalSelect(hovered);
                 }
             }
+        }
+
+        private void HandlePointerPrimaryChanged(object sender, bool e)
+        {
+            // using (FileStream output = File.OpenWrite("./ship-part-export.dat"))
+            // {
+            //     _factory.Export(_player.Ship.Bridge).WriteTo(output);
+            // } 
         }
         #endregion
     }

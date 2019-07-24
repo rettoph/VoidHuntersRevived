@@ -7,6 +7,7 @@ using FarseerPhysics.Dynamics;
 using Guppy;
 using Guppy.Collections;
 using Guppy.Configurations;
+using Lidgren.Network;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Library.Configurations;
@@ -86,6 +87,22 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// Update the internal ship part's placement in its current chain.
         /// </summary>
         protected abstract void UpdateChainPlacement();
+        #endregion
+
+        #region Network Methods
+        protected override void read(NetIncomingMessage im)
+        {
+            base.read(im);
+
+            this.ConnectionNodes_Read(im);
+        }
+
+        protected override void write(NetOutgoingMessage om)
+        {
+            base.write(om);
+
+            this.ConnectionNodes_Write(om);
+        }
         #endregion
     }
 }
