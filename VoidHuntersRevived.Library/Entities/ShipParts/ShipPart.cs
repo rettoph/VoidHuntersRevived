@@ -36,6 +36,35 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
         public ShipPart Parent { get { return this.MaleConnectionNode.Target?.Parent; } }
 
+        public Vector2 Centeroid { get { return this.config.Centeroid; } }
+
+        public Vector2 WorldCenteroid
+        {
+            get
+            {
+                return this.Position + Vector2.Transform(this.Centeroid, Matrix.CreateRotationZ(this.Rotation));
+            }
+        }
+
+        public new Vector2 WorldCenter
+        {
+            get
+            {
+                return (this.IsRoot ? base.WorldCenter : this.Root.WorldCenter);
+            }
+            set
+            {
+                if (this.IsRoot)
+                {
+                    base.Position = value;
+                }
+                else
+                {
+                    throw new Exception("Unable to set ShipPart world center when not root.");
+                }
+            }
+        }
+
         public new Vector2 Position
         {
             get

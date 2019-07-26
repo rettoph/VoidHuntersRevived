@@ -1,4 +1,5 @@
-﻿using Guppy;
+﻿using FarseerPhysics.Collision.Shapes;
+using Guppy;
 using Guppy.Collections;
 using Guppy.Configurations;
 using Guppy.Network.Extensions.Lidgren;
@@ -192,7 +193,7 @@ namespace VoidHuntersRevived.Library.Entities
                 return false;
 
             // If the part is too far away from the current ship...
-            if (Vector2.Distance(target.Position, this.Ship.Bridge.Position) > _selectionReach)
+            if (Vector2.Distance(target.WorldCenteroid, this.Ship.Bridge.Position) > _selectionReach)
                 return false;
 
             // If the target is attached to another ship...
@@ -287,7 +288,7 @@ namespace VoidHuntersRevived.Library.Entities
             { // If something is selected, update its position
                 // Ensure the tractor beam is rotation to the parts rotation...
                 this.Selected.SetTransform(
-                    this.Position,
+                    this.Position - Vector2.Transform(this.Selected.Centeroid, Matrix.CreateRotationZ(this.Rotation)),
                     this.Rotation);
             }
         }

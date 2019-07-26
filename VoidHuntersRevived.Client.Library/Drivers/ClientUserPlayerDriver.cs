@@ -172,7 +172,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             return _player.Ship.TractorBeam.GetSelectionTarget(
                     _contacts.Where(sp => _player.Ship.TractorBeam.ValidateSelectionTarget(sp))
-                        .OrderBy(sp => Vector2.Distance(_player.Ship.TractorBeam.Position, sp.Position))
+                        .OrderBy(sp => Vector2.Distance(_player.Ship.TractorBeam.Position, sp.WorldCenteroid))
                         .FirstOrDefault());
         }
 
