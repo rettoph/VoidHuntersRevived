@@ -16,6 +16,7 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Factories;
+using VoidHuntersRevived.Library.Loaders;
 using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Server.Scenes
@@ -24,13 +25,15 @@ namespace VoidHuntersRevived.Server.Scenes
     {
         private ShipCollection _ships;
         private ShipBuilder _shipBuilder;
+        private RandomTypeLoader _randomTypeLoader;
 
         protected ServerPeer server;
 
-        public VoidHuntersServerWorldScene(ShipCollection ships, ShipBuilder shipBuilder, ServerPeer server, World world, IServiceProvider provider) : base(server, world, provider)
+        public VoidHuntersServerWorldScene(ShipCollection ships, ShipBuilder shipBuilder, RandomTypeLoader entityTypeLoader, ServerPeer server, World world, IServiceProvider provider) : base(server, world, provider)
         {
             _ships = ships;
             _shipBuilder = shipBuilder;
+            _randomTypeLoader = entityTypeLoader;
 
             this.server = server;
         }
@@ -51,15 +54,11 @@ namespace VoidHuntersRevived.Server.Scenes
 
             for(Int32 i=0; i<100; i++)
             {
-                var e = this.entities.Create<ShipPart>("entity:ship-part:hull:triangle");
+                var e = this.entities.Create<ShipPart>(_randomTypeLoader.GetRandomValue("ship-part:hull", r));
                 e.Position = new Vector2((Single)((r.NextDouble() * 100) - 50), (Single)((r.NextDouble() * 100) - 50));
                 e.Rotation = (Single)((r.NextDouble() * 10) - 5);
 
-                e = this.entities.Create<ShipPart>("entity:ship-part:hull:square");
-                e.Position = new Vector2((Single)((r.NextDouble() * 100) - 50), (Single)((r.NextDouble() * 100) - 50));
-                e.Rotation = (Single)((r.NextDouble() * 10) - 5);
-
-                e = this.entities.Create<ShipPart>("entity:ship-part:hull:hexagon");
+                e = this.entities.Create<ShipPart>(_randomTypeLoader.GetRandomValue("ship-part:thruster", r));
                 e.Position = new Vector2((Single)((r.NextDouble() * 100) - 50), (Single)((r.NextDouble() * 100) - 50));
                 e.Rotation = (Single)((r.NextDouble() * 10) - 5);
             }
@@ -80,11 +79,11 @@ namespace VoidHuntersRevived.Server.Scenes
         #region Event Handlers
         private void HandleUserAdded(object sender, User user)
         {
-            using (FileStream input = File.OpenRead("./ship-part-export.dat"))
+            using (FileStream input = File.OpenRead(_randomTypeLoader.GetRandomValue("ship-part-export", new Random())))
             {
-                // var bridge = _shipBuilder.Import(input);
+                var bridge = _shipBuilder.Import(input);
 
-                var bridge = this.entities.Create<ShipPart>("entity:ship-part:hull:square");
+                // var bridge = this.entities.Create<ShipPart>(_entityTypeLoader.GetRandomValue("ship-part:hull", new Random()));
                 var ship = _ships.GetOrCreateAvailableShip();
                 var player = this.entities.Create<Player>("entity:player:user", user);
 

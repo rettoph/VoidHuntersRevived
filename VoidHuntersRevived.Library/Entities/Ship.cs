@@ -7,10 +7,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Library.CustomEventArgs;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Utilities;
 
@@ -22,6 +24,14 @@ namespace VoidHuntersRevived.Library.Entities
     /// </summary>
     public partial class Ship : NetworkEntity
     {
+        #region Private Fields
+        private List<ShipPart> _children;
+        #endregion
+
+        #region Protected Attributes
+        protected List<ShipPart> children { get { return _children; } }
+        #endregion
+
         #region Public Attributes
         public TractorBeam TractorBeam { get; private set; }
 
@@ -48,6 +58,8 @@ namespace VoidHuntersRevived.Library.Entities
         protected override void Boot()
         {
             base.Boot();
+
+            _children = new List<ShipPart>();
 
             this.SetUpdateOrder(91);
 
@@ -95,6 +107,7 @@ namespace VoidHuntersRevived.Library.Entities
                 {
                     this.Bridge.BridgeFor = null;
 
+                    this.Bridge.OnConnectionNodesRemapped -= this.HandleBridgeConnectionNodesRemapped;
                     this.Bridge.Disposing -= this.HandleBridgeDisposing;
                 }
 
@@ -104,8 +117,12 @@ namespace VoidHuntersRevived.Library.Entities
                     this.Bridge = target;
                     this.Bridge.BridgeFor = this;
 
+                    this.Bridge.OnConnectionNodesRemapped += this.HandleBridgeConnectionNodesRemapped;
                     this.Bridge.Disposing += this.HandleBridgeDisposing;
                 }
+
+                //Remap the bridge
+                this.RemapBridge();
 
                 // Trigger the bridge changed event
                 this.OnBridgeChanged?.Invoke(this, new ChangedEventArgs<ShipPart>(old, target));
@@ -133,6 +150,30 @@ namespace VoidHuntersRevived.Library.Entities
         private void HandleBridgeDisposing(object sender, ITrackedDisposable e)
         {
             this.TrySetBridge(null);
+        }
+
+        /// <summary>
+        /// When the bridge connection nodes are updated, we must remap all thrusters
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void HandleBridgeConnectionNodesRemapped(object sender, ShipPart e)
+        {
+            this.RemapBridge();
+        }
+        #endregion
+
+        #region Helper Methods
+        /// <summary>
+        /// Used to remap the bridge ship parts, thrusters, weapons,
+        /// and other special parts.
+        /// </summary>
+        protected void RemapBridge()
+        {
+            this.children.Clear();
+            this.Bridge?.GetChildren(ref _children);
+
+            this.RemapThrusters();
         }
         #endregion
 

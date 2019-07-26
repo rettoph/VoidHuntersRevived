@@ -17,7 +17,10 @@ using VoidHuntersRevived.Library.Drivers;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
+using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Factories;
+using VoidHuntersRevived.Library.Loaders;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Utilities;
 
@@ -27,6 +30,7 @@ namespace VoidHuntersRevived.Library
     {
         public void ConfigureServiceCollection(IServiceCollection services)
         {
+            services.AddLoader<RandomTypeLoader>();
             services.AddScene<VoidHuntersWorldScene>();
             services.AddDriver<VoidHuntersWorldScene, VoidHuntersWorldSceneDriver>(95);
 
@@ -59,29 +63,35 @@ namespace VoidHuntersRevived.Library
             stringLoader.Register("name:entity:ship-part:hull:square", "Hull Square");
 
             var entityLoader = provider.GetLoader<EntityLoader>();
-            ShipPartRegistrar.RegisterPolygon<RigidShipPart>(
-                entityLoader,
+            entityLoader.Register<Hull>(
                 "entity:ship-part:hull:triangle",
                 "name:entity:ship-part:hull:triangle",
                 "description:entity:ship-part:hull",
-                3,
-                true);
-
-            ShipPartRegistrar.RegisterPolygon<RigidShipPart>(
-                entityLoader,
+                ShipPartConfigurationBuilder.BuildPolygon(3, true));
+            entityLoader.Register<Hull>(
                 "entity:ship-part:hull:square",
                 "name:entity:ship-part:hull:square",
                 "description:entity:ship-part:hull",
-                4,
-                true);
-
-            ShipPartRegistrar.RegisterPolygon<RigidShipPart>(
-                entityLoader,
+                ShipPartConfigurationBuilder.BuildPolygon(4, true));
+            entityLoader.Register<Hull>(
                 "entity:ship-part:hull:hexagon",
                 "name:entity:ship-part:hull:hexagon",
                 "description:entity:ship-part:hull",
-                6,
-                true);
+                ShipPartConfigurationBuilder.BuildPolygon(6, true));
+            entityLoader.Register<Thruster>(
+                "entity:ship-part:thruster:small",
+                "name:entity:ship-part:thruster:small",
+                "description:entity:ship-part:thruster",
+                new ShipPartConfiguration(
+                    vertices: new Vertices(
+                        new Vector2[] {
+                            new Vector2(-0.1f, -0.3f),
+                            new Vector2(-0.1f, 0.3f),
+                            new Vector2(0.4f, 0.1f),
+                            new Vector2(0.4f, -0.1f)
+                        }),
+                    maleConnectionNode: new Vector3(0.3f, 0, 0),
+                    density: 0.1f));
 
             entityLoader.Register<TractorBeam>(
                 "entity:tractor-beam", 
@@ -95,6 +105,13 @@ namespace VoidHuntersRevived.Library
                 "entity:player:user",
                 "name:entity:player:user",
                 "description:entity:player:user");
+
+            var randomTypeLoader = provider.GetLoader<RandomTypeLoader>();
+            randomTypeLoader.Register("ship-part:hull", "entity:ship-part:hull:square");
+            randomTypeLoader.Register("ship-part:hull", "entity:ship-part:hull:triangle");
+            randomTypeLoader.Register("ship-part:hull", "entity:ship-part:hull:hexagon");
+
+            randomTypeLoader.Register("ship-part:thruster", "entity:ship-part:thruster:small");
         }
 
         public void PreInitialize(IServiceProvider provider)

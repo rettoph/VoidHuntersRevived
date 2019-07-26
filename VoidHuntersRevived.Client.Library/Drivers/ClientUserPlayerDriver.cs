@@ -274,10 +274,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
         private void HandlePointerPrimaryChanged(object sender, bool e)
         {
-            // using (FileStream output = File.OpenWrite("./ship-part-export.dat"))
-            // {
-            //     _factory.Export(_player.Ship.Bridge).WriteTo(output);
-            // } 
+            using (FileStream output = File.OpenWrite("./ship-part-export.dat"))
+            {
+                _shipBuilder.Export(_player.Ship.Bridge).WriteTo(output);
+            } 
         }
         #endregion
     }

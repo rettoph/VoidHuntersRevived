@@ -128,7 +128,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             base.Initialize();
 
-            this.Fixture = this.CreateFixture(new PolygonShape(this.config.Vertices, 1f), this);
+            this.Fixture = this.CreateFixture(new PolygonShape(this.config.Vertices, this.config.Density), this);
 
             this.CollisionCategories = Category.Cat2;
             this.CollidesWith = Category.Cat1;
@@ -146,6 +146,26 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             foreach(FemaleConnectionNode female in this.FemaleConnectionNodes)
                 female.Draw(gameTime);
             #endif
+        }
+        #endregion
+
+        #region Helper Methods
+        public List<ShipPart> GetChildren()
+        {
+            var children = new List<ShipPart>();
+
+            this.GetChildren(ref children);
+
+            return children;
+        }
+
+        public void GetChildren(ref List<ShipPart> children)
+        {
+            children.Add(this);
+
+            foreach (FemaleConnectionNode female in this.FemaleConnectionNodes)
+                if (female.Connected)
+                    female.Target.Parent.GetChildren(ref children);
         }
         #endregion
 

@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Library.CustomEventArgs;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Utilities;
 
@@ -150,6 +151,32 @@ namespace VoidHuntersRevived.Library.Entities
                 }
             }
         }
+        public Single AngularDamping
+        {
+            get
+            {
+                return _body.AngularDamping;
+            }
+            set
+            {
+                _body.AngularDamping = value;
+
+                this.OnAngularDampingChanged?.Invoke(this, _body.AngularDamping);
+            }
+        }
+        public Single LinearDamping
+        {
+            get
+            {
+                return _body.LinearDamping;
+            }
+            set
+            {
+                _body.LinearDamping = value;
+
+                this.OnLinearDampingChanged?.Invoke(this, _body.AngularDamping);
+            }
+        }
         public CounterBoolean Focused { get; private set; }
         #endregion
 
@@ -165,6 +192,9 @@ namespace VoidHuntersRevived.Library.Entities
         public event EventHandler<Fixture> OnFixtureDestroyed;
         public event EventHandler<Vector2> OnLinearImpulseApplied;
         public event EventHandler<Single> OnAngularImpulseApplied;
+        public event EventHandler<Single> OnAngularDampingChanged;
+        public event EventHandler<Single> OnLinearDampingChanged;
+        public event EventHandler<ForceEventArgs> OnForceApplied;
         public event EventHandler<Body> OnSetTransform;
         #endregion
 
@@ -261,6 +291,13 @@ namespace VoidHuntersRevived.Library.Entities
             _body.ApplyLinearImpulse(impulse);
 
             this.OnLinearImpulseApplied?.Invoke(this, impulse);
+        }
+
+        public void ApplyForce(Vector2 force, Vector2 point)
+        {
+            _body.ApplyForce(force, point);
+
+            this.OnForceApplied?.Invoke(this, new ForceEventArgs(force, point));
         }
 
         public void ApplyAngularImpulse(Single impulse)

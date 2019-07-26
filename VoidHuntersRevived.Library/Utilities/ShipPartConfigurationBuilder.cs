@@ -16,10 +16,9 @@ namespace VoidHuntersRevived.Library.Utilities
     /// An entity loader, description, name,
     /// and side count must be inserted to use.
     /// </summary>
-    public static class ShipPartRegistrar
+    public static class ShipPartConfigurationBuilder
     {
-        public static void RegisterPolygon<TShipPart>(EntityLoader entitityLoader, String handle, String nameHandle, String descriptionHandle, Int32 sides, Boolean includeFemales = false)
-            where TShipPart : ShipPart
+        public static ShipPartConfiguration BuildPolygon(Int32 sides, Boolean includeFemales = false)
         {
             if (sides < 3)
                 throw new Exception("Unable to create polygon with less than three sides!");
@@ -56,7 +55,10 @@ namespace VoidHuntersRevived.Library.Utilities
             }
 
             // Once everything is generated, register the entity
-            entitityLoader.Register<TShipPart>(handle, nameHandle, descriptionHandle, new ShipPartConfiguration(new Vertices(vertices), maleNode, femaleNodes));
+            return new ShipPartConfiguration(
+                    new Vertices(vertices), 
+                    maleNode, 
+                    femaleNodes);
         }
     }
 }

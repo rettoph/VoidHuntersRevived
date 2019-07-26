@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Library.CustomEventArgs;
+using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Enums;
 
 namespace VoidHuntersRevived.Library.Entities
@@ -17,6 +18,8 @@ namespace VoidHuntersRevived.Library.Entities
     {
         #region Private Fields
         private Dictionary<Direction, Boolean> _directions;
+        private List<Thruster> _thrusters;
+        private Dictionary<Direction, List<Thruster>> _thrusterDirections;
         #endregion
 
         #region Events
@@ -31,6 +34,13 @@ namespace VoidHuntersRevived.Library.Entities
         protected virtual void InitializeMovement()
         {
             _directions = (Enum.GetValues(typeof(Direction)) as Direction[]).ToDictionary(d => d, d => false);
+
+            _thrusters = new List<Thruster>();
+            _thrusterDirections = (Enum.GetValues(typeof(Direction)) as Direction[])
+                .ToDictionary(
+                    keySelector: d => d,
+                    elementSelector: d => new List<Thruster>());
+
         }
         #endregion
 
@@ -44,17 +54,26 @@ namespace VoidHuntersRevived.Library.Entities
         {
             if (this.Bridge != null)
             { // We only need to bother moving the ship if there is a bridge defined...
-                var thrust = new Vector2(0.25f, 0);
+                this.Bridge.AngularDamping = MathHelper.Lerp(this.Bridge.AngularDamping, (_directions[Direction.TurnLeft] || _directions[Direction.TurnRight]) ? 1f : 3f, 0.25f);
 
-                if (_directions[Direction.Forward])
-                    this.Bridge.ApplyLinearImpulse(Vector2.Transform(thrust, Matrix.CreateRotationZ(this.Bridge.Rotation)));
-                if (_directions[Direction.Backward])
-                    this.Bridge.ApplyLinearImpulse(Vector2.Transform(thrust, Matrix.CreateRotationZ(this.Bridge.Rotation + MathHelper.Pi)));
+                foreach (Thruster thruster in _thrusters)
+                    thruster.SetActive(false);
 
-                if (_directions[Direction.TurnLeft])
-                    this.Bridge.ApplyAngularImpulse(-0.03f);
-                if (_directions[Direction.TurnRight])
-                    this.Bridge.ApplyAngularImpulse(0.03f);
+                foreach (KeyValuePair<Direction, Boolean> kvp in _directions)
+                    if (kvp.Value)
+                        foreach (Thruster thruster in _thrusterDirections[kvp.Key])
+                            thruster.SetActive(true);
+                // var thrust = new Vector2(0.25f, 0);
+                // 
+                // if (_directions[Direction.Forward])
+                //     this.Bridge.ApplyLinearImpulse(Vector2.Transform(thrust, Matrix.CreateRotationZ(this.Bridge.Rotation)));
+                // if (_directions[Direction.Backward])
+                //     this.Bridge.ApplyLinearImpulse(Vector2.Transform(thrust, Matrix.CreateRotationZ(this.Bridge.Rotation + MathHelper.Pi)));
+                // 
+                // if (_directions[Direction.TurnLeft])
+                //     this.Bridge.ApplyAngularImpulse(-0.03f);
+                // if (_directions[Direction.TurnRight])
+                //     this.Bridge.ApplyAngularImpulse(0.03f);
             }
 
         }
@@ -75,6 +94,26 @@ namespace VoidHuntersRevived.Library.Entities
                 _directions[direction] = value;
 
                 this.OnDirectionChanged?.Invoke(this, new DirectionChangedEventArgs(direction, !value, value));
+            }
+        }
+
+        /// <summary>
+        /// This is automatically called when the bridge connection nodes
+        /// are remapped, and is used to map the current ships thrusters.
+        /// </summary>
+        private void RemapThrusters()
+        {
+            _thrusters.Clear();
+            _thrusters.AddRange(this.children
+                .Where(c => typeof(Thruster).IsAssignableFrom(c.GetType()))
+                .Select(c => c as Thruster));
+
+            foreach (Direction direction in Enum.GetValues(typeof(Direction)) as Direction[])
+            {
+                _thrusterDirections[direction].Clear();
+                _thrusterDirections[direction].AddRange(_thrusters.Where(t => t.MatchesMovementType(direction)));
+
+                this.logger.LogDebug($"{direction} => {_thrusterDirections[direction].Count()}");
             }
         }
         #endregion

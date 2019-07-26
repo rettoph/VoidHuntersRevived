@@ -9,6 +9,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Loaders;
 using VoidHuntersRevived.Server.Drivers;
 using VoidHuntersRevived.Server.Scenes;
 
@@ -32,6 +33,10 @@ namespace VoidHuntersRevived.Server
         {
             var config = provider.GetService<NetPeerConfiguration>();
             config.Port = 1337;
+
+            var randomTypeLoader = provider.GetLoader<RandomTypeLoader>();
+            randomTypeLoader.Register("ship-part-export", "./ship-part-export-1.dat");
+            randomTypeLoader.Register("ship-part-export", "./ship-part-export-2.dat");
         }
 
         public void PreInitialize(IServiceProvider provider)

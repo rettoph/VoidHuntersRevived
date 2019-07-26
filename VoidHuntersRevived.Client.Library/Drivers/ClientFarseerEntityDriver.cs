@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Scenes;
 using VoidHuntersRevived.Client.Library.Utilities;
+using VoidHuntersRevived.Library.CustomEventArgs;
 using VoidHuntersRevived.Library.Entities;
 
 namespace VoidHuntersRevived.Client.Library.Drivers
@@ -52,7 +53,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _entity.OnFixtureDestroyed += this.HandleFixtureDestroyed;
             _entity.OnLinearImpulseApplied += this.HandleLinearImpulseApplied;
             _entity.OnAngularImpulseApplied += this.HandleAngularImpulseApplied;
+            _entity.OnForceApplied += this.HandleForceApplied;
             _entity.OnSetTransform += this.HandleSetTransform;
+            _entity.OnAngularDampingChanged += this.HandleAngularDampingChanged;
+            _entity.OnLinearDampingChanged += this.HandleLinearDampingChanged;
             _entity.OnRead += this.HandleRead;
         }
 
@@ -192,6 +196,21 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _server.Bodies[_entity].SetTransform(e.Position, e.Rotation);
         }
 
+        private void HandleForceApplied(object sender, ForceEventArgs e)
+        {
+            _server.Bodies[_entity].ApplyForce(e.Force, e.Point);
+        }
+
+        private void HandleAngularDampingChanged(object sender, float e)
+        {
+            _server.Bodies[_entity].LinearDamping = e;
+        }
+
+        private void HandleLinearDampingChanged(object sender, float e)
+        {
+            _server.Bodies[_entity].AngularDamping = e;
+        }
+
         private void HandleRead(object sender, NetworkEntity e)
         {
             _server.Bodies[_entity].Position = _entity.Position;
@@ -223,6 +242,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _entity.OnLinearImpulseApplied -= this.HandleLinearImpulseApplied;
             _entity.OnAngularImpulseApplied -= this.HandleAngularImpulseApplied;
             _entity.OnSetTransform -= this.HandleSetTransform;
+            _entity.OnForceApplied -= this.HandleForceApplied;
+            _entity.OnAngularDampingChanged -= this.HandleAngularDampingChanged;
+            _entity.OnLinearDampingChanged -= this.HandleLinearDampingChanged;
             _entity.OnRead -= this.HandleRead;
         }
     }

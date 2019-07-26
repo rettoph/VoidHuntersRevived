@@ -57,6 +57,7 @@ namespace VoidHuntersRevived.Library.Utilities.ConnectionNodes
                 // Update the old target's new chain
                 this.Target.Target = null;
                 this.Target.Parent.RemapConnectioNodes();
+                this.Target.Parent.Root.RemapConnectioNodes(deep: false);
 
                 // Update the current chain
                 this.Target = null;

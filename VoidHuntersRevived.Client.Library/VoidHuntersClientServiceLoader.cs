@@ -65,6 +65,9 @@ namespace VoidHuntersRevived.Client.Library
             contentLoader.Register("texture:connection-node:male", "Sprites/male-connection-node");
             contentLoader.Register("texture:connection-node:female", "Sprites/female-connection-node");
             contentLoader.Register("texture:com", "Sprites/com");
+            contentLoader.Register("texture:com:ship", "Sprites/ship-com");
+            contentLoader.Register("texture:thrust", "Sprites/thrust");
+            contentLoader.Register("texture:thrust:line", "Sprites/thrust-line");
 
             var styleLoader = provider.GetLoader<StyleLoader>();
             styleLoader.Register(typeof(TextInput).FullName, new Style());

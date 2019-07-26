@@ -9,7 +9,7 @@ using FarseerPhysics.Common;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
-    public class RigidShipPart : ShipPart
+    public abstract class RigidShipPart : ShipPart
     {
         #region Private Fields
         private Matrix _currentChainTranslation;
@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 var vertices = new Vertices(this.config.Vertices.Select(v => new Vector2(v.X, v.Y)));
                 _currentChainTranslation = this.LocalTransformation;
                 vertices.Transform(ref _currentChainTranslation);
-                this.Fixture = this.Root.CreateFixture(new PolygonShape(vertices, 1f), this);
+                this.Fixture = this.Root.CreateFixture(new PolygonShape(vertices, this.config.Density), this);
             }
         }
     }
