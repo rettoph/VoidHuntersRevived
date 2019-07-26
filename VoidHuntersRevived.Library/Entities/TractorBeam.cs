@@ -160,7 +160,8 @@ namespace VoidHuntersRevived.Library.Entities
 
             // Rather than creating the attachment, we just want to move the selection
             // so that a user can preview what it would look like when attached.
-            var previewRotation = target.WorldRotation + this.Selected.MaleConnectionNode.LocalRotation;
+            var previewRotation = target.WorldRotation - this.Selected.MaleConnectionNode.LocalRotation;
+            
             this.Selected.SetTransform(
                 position: target.WorldPosition - Vector2.Transform(this.Selected.MaleConnectionNode.LocalPosition, Matrix.CreateRotationZ(previewRotation)),
                 rotation: previewRotation);

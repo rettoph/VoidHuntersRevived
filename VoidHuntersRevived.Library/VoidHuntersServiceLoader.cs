@@ -19,6 +19,7 @@ using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Factories;
 using VoidHuntersRevived.Library.Scenes;
+using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library
 {
@@ -53,11 +54,31 @@ namespace VoidHuntersRevived.Library
 
         public void Boot(IServiceProvider provider)
         {
+            var stringLoader = provider.GetLoader<StringLoader>();
+            stringLoader.Register("description:entity:ship-part:hull", "A hull piece that can be used increase your ship size.");
+            stringLoader.Register("name:entity:ship-part:hull:square", "Hull Square");
+
             var entityLoader = provider.GetLoader<EntityLoader>();
+            ShipPartRegistrar.RegisterPolygon<RigidShipPart>(
+                entityLoader,
+                "entity:ship-part:hull:triangle",
+                "name:entity:ship-part:hull:triangle",
+                "description:entity:ship-part:hull",
+                3,
+                true);
+
+            ShipPartRegistrar.RegisterPolygon<RigidShipPart>(
+                entityLoader,
+                "entity:ship-part:hull:hexagon",
+                "name:entity:ship-part:hull:hexagon",
+                "description:entity:ship-part:hull",
+                6,
+                true);
+
             entityLoader.Register<RigidShipPart>(
-                "entity:ship-part", 
-                "name:entity:ship-part", 
-                "description:entity:ship-part",
+                "entity:ship-part:hull:square",
+                "name:entity:ship-part:hull:square", 
+                "description:entity:ship-part:hull",
                 new ShipPartConfiguration(
                     vertices: new Vertices(
                         new Vector2[] {

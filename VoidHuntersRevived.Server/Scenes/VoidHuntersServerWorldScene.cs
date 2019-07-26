@@ -49,9 +49,17 @@ namespace VoidHuntersRevived.Server.Scenes
 
             var r = new Random();
 
-            for(Int32 i=0; i<250; i++)
+            for(Int32 i=0; i<100; i++)
             {
-                var e = this.entities.Create<ShipPart>("entity:ship-part");
+                var e = this.entities.Create<ShipPart>("entity:ship-part:hull:triangle");
+                e.Position = new Vector2((Single)((r.NextDouble() * 100) - 50), (Single)((r.NextDouble() * 100) - 50));
+                e.Rotation = (Single)((r.NextDouble() * 10) - 5);
+
+                e = this.entities.Create<ShipPart>("entity:ship-part:hull:square");
+                e.Position = new Vector2((Single)((r.NextDouble() * 100) - 50), (Single)((r.NextDouble() * 100) - 50));
+                e.Rotation = (Single)((r.NextDouble() * 10) - 5);
+
+                e = this.entities.Create<ShipPart>("entity:ship-part:hull:hexagon");
                 e.Position = new Vector2((Single)((r.NextDouble() * 100) - 50), (Single)((r.NextDouble() * 100) - 50));
                 e.Rotation = (Single)((r.NextDouble() * 10) - 5);
             }
@@ -74,9 +82,9 @@ namespace VoidHuntersRevived.Server.Scenes
         {
             using (FileStream input = File.OpenRead("./ship-part-export.dat"))
             {
-                var bridge = _shipBuilder.Import(input);
+                // var bridge = _shipBuilder.Import(input);
 
-                // var bridge = this.entities.Create<ShipPart>("entity:ship-part");
+                var bridge = this.entities.Create<ShipPart>("entity:ship-part:hull:square");
                 var ship = _ships.GetOrCreateAvailableShip();
                 var player = this.entities.Create<Player>("entity:player:user", user);
 

@@ -39,11 +39,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 var female = this.MaleConnectionNode.Target;
                 var male = this.MaleConnectionNode;
 
-                this.LocalRotation = this.Parent.LocalRotation + female.LocalRotation + male.LocalRotation;
+                this.LocalRotation = this.Parent.LocalRotation + female.LocalRotation - male.LocalRotation;
 
-                this.LocalTransformation = male.LocalTransformationMatrix *
-                    female.LocalTransformationMatrix *
-                    this.Parent.LocalTransformation;
+                this.LocalTransformation = Matrix.Invert(male.LocalTransformationMatrix)
+                    * female.LocalTransformationMatrix
+                    * this.Parent.LocalTransformation;
             }
         }
         #endregion
