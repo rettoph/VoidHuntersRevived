@@ -81,7 +81,18 @@ namespace VoidHuntersRevived.Library.Entities
             if (!this.ValidateSelectionTarget(target))
                 return false;
 
-            // Attempt to release the old target (if there is any)
+            // If the target is connected to anything, release it 
+            if (target.MaleConnectionNode.Connected)
+            {
+                // save the ship-parts old rotation, so we can set it again when it is released...
+                var oldRotation = target.Rotation;
+                // Attempt to detatch the target from the ship.
+                target.TryDetatchFrom();
+                // Reset the rotation value now that the target is free floating...
+                target.Rotation = oldRotation;
+            }
+
+            // Attempt to release the old target from the tractor beam (if there is any)
             this.TryRelease();
 
             // Focus the new target
@@ -93,6 +104,14 @@ namespace VoidHuntersRevived.Library.Entities
             return true;
         }
 
+        /// <summary>
+        /// Attempt to release the current help ship part,
+        /// if there is one.
+        /// 
+        /// On a successful release the OnReleased event will
+        /// be triggered.
+        /// </summary>
+        /// <returns></returns>
         public Boolean TryRelease()
         {
             if (this.Selected == null)

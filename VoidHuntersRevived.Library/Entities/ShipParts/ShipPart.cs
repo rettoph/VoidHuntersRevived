@@ -35,6 +35,44 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public Boolean IsBridge { get { return this.BridgeFor != null; } }
 
         public ShipPart Parent { get { return this.MaleConnectionNode.Target?.Parent; } }
+
+        public new Vector2 Position
+        {
+            get
+            {
+                return (this.IsRoot ? base.Position : this.Root.Position + Vector2.Transform(Vector2.Zero, this.LocalTransformation * Matrix.CreateRotationZ(this.Root.Rotation)));
+            }
+            set
+            {
+                if(this.IsRoot)
+                {
+                    base.Position = value;
+                }
+                else
+                {
+                    throw new Exception("Unable to set ShipPart position when not root.");
+                }
+            }
+        }
+
+        public new Single Rotation
+        {
+            get
+            {
+                return (this.IsRoot ? base.Rotation : this.Root.Rotation + this.LocalRotation);
+            }
+            set
+            {
+                if (this.IsRoot)
+                {
+                    base.Rotation = value;
+                }
+                else
+                {
+                    throw new Exception("Unable to set ShipPart rotation when not root.");
+                }
+            }
+        }
         #endregion
 
         #region Constructors

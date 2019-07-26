@@ -22,6 +22,9 @@ using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Factories;
 using System.IO;
+using Microsoft.Xna.Framework.Graphics;
+using Guppy.Extensions.DependencyInjection;
+using Guppy.Loaders;
 
 namespace VoidHuntersRevived.Client.Library.Drivers
 {
@@ -41,6 +44,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private Body _sensor;
         private HashSet<ShipPart> _contacts;
         private ShipPartFactory _factory;
+        private SpriteFont _font;
+        private SpriteBatch _spriteBatch;
         #endregion
 
         #region Constructors
@@ -51,6 +56,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             ClientPeer client,
             UserPlayer parent,
             ShipPartFactory factory,
+            SpriteBatch spriteBatch,
             IServiceProvider provider) : base(parent, provider)
         {
             _world = world;
@@ -60,6 +66,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _player = parent;
             _contacts = new HashSet<ShipPart>();
             _factory = factory;
+            _spriteBatch = spriteBatch;
         }
         #endregion
 
@@ -81,11 +88,30 @@ namespace VoidHuntersRevived.Client.Library.Drivers
                 _pointer.OnLocalMovementEnded += this.HandlePointerLocalMovementEnded;
                 _pointer.OnSecondaryChanged += this.HandlePointerSecondaryChanged;
                 _pointer.OnPrimaryChanged += this.HandlePointerPrimaryChanged;
+
+                _font = this.provider.GetLoader<ContentLoader>().Get<SpriteFont>("font:ui");
             }
         }
         #endregion
 
         #region Frame Methods
+        protected override void draw(GameTime gameTime)
+        {
+            base.draw(gameTime);
+
+            if (_client.CurrentUser == _player.User && _player.Ship != null)
+            {
+                var hovered = _player.Ship.TractorBeam.GetSelectionTarget(
+                    _contacts.Where(sp => _player.Ship.TractorBeam.ValidateSelectionTarget(sp))
+                        .OrderBy(sp => Vector2.Distance(_player.Ship.TractorBeam.Position, sp.Position))
+                        .FirstOrDefault());
+
+                var position = hovered == null ? _player.Ship.Bridge.Position : hovered.Position;
+
+                _spriteBatch.DrawString(_font, $"Over: {_contacts.Count}", position, Color.White, 0, Vector2.Zero, 0.1f, SpriteEffects.None, 0);
+            }
+        }
+
         protected override void update(GameTime gameTime)
         {
             base.update(gameTime);
