@@ -39,12 +39,14 @@ namespace VoidHuntersRevived.Library.Entities
         public ShipPart Selected { get; private set; }
         public Vector2 Offset { get; private set; }
         public Vector2 Position { get { return this.Ship.Bridge.Position + this.Offset; } }
+        public Single Rotation { get; private set; }
         #endregion
 
         #region Events
         public event EventHandler<ShipPart> OnSelected;
         public event EventHandler<ShipPart> OnReleased;
         public event EventHandler<Vector2> OnOffsetChanged;
+        public event EventHandler<Single> OnRotationChanged;
         public event EventHandler<ShipPart> OnAttached;
         #endregion
 
@@ -63,6 +65,10 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.update(gameTime);
 
+            if(this.Selecting)
+            { // Attempt to ajust the tractor beam rotation to the current selection's rotation
+                this.SetRotation(this.Selected.Rotation);
+            }
             this.UpdateSelectedPosition();
         }
         #endregion
@@ -253,20 +259,35 @@ namespace VoidHuntersRevived.Library.Entities
         #region Position Methods
         public void SetOffset(Vector2 offset)
         {
-            this.Offset = offset;
+            if (offset != this.Offset)
+            {
+                this.Offset = offset;
 
-            this.UpdateSelectedPosition();
+                this.UpdateSelectedPosition();
 
-            this.OnOffsetChanged?.Invoke(this, this.Offset);
+                this.OnOffsetChanged?.Invoke(this, this.Offset);
+            }
+        }
+        public void SetRotation(Single rotation)
+        {
+            if (this.Rotation != rotation)
+            {
+                this.Rotation = rotation;
+
+                this.UpdateSelectedPosition();
+
+                this.OnRotationChanged?.Invoke(this, this.Rotation);
+            }
         }
 
         public void UpdateSelectedPosition()
         {
             if (this.Selecting)
             { // If something is selected, update its position
+                // Ensure the tractor beam is rotation to the parts rotation...
                 this.Selected.SetTransform(
                     this.Position,
-                    this.Selected.Rotation);
+                    this.Rotation);
             }
         }
         #endregion
@@ -281,6 +302,17 @@ namespace VoidHuntersRevived.Library.Entities
         {
             this.SetOffset(
                 im.ReadVector2());
+        }
+
+        public void WriteRotationData(NetOutgoingMessage om)
+        {
+            om.Write(this.Rotation);
+        }
+
+        public void ReadRotationData(NetIncomingMessage im)
+        {
+            this.SetRotation(
+                im.ReadSingle());
         }
 
         public void WriteSelectedData(NetOutgoingMessage om)

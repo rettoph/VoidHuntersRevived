@@ -80,6 +80,8 @@ namespace VoidHuntersRevived.Server.Drivers
             {
                 // Read any incoming offset data
                 _player.Ship.TractorBeam.ReadOffsetData(obj);
+                // Read any incoming rotation data
+                _player.Ship.TractorBeam.ReadRotationData(obj);
                 // Release the tractor beam
                 _player.Ship.TractorBeam.TryRelease();
             }

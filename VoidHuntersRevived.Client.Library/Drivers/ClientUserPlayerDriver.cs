@@ -134,7 +134,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
                     _camera.MoveTo(_player.Ship.Bridge.Position);
 
                     // Update the tractor beam target sensor
-                    _sensor.SetTransform(_pointer.Position, 0);
+                    _sensor.SetTransform(_pointer.Position, _player.Ship.TractorBeam.Rotation);
                     _player.Ship.TractorBeam.SetOffset(_pointer.Position - _player.Ship.Bridge.Position);
 
                     // Ask the tractor beam to preview the attachment if it can/should
@@ -205,6 +205,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             { // If the local release was successfull...
                 var action = _player.CreateActionMessage("tractor-beam:release");
                 _player.Ship.TractorBeam.WriteOffsetData(action);
+                _player.Ship.TractorBeam.WriteRotationData(action);
             }
         }
 
