@@ -69,30 +69,20 @@ namespace VoidHuntersRevived.Library
 
             ShipPartRegistrar.RegisterPolygon<RigidShipPart>(
                 entityLoader,
+                "entity:ship-part:hull:square",
+                "name:entity:ship-part:hull:square",
+                "description:entity:ship-part:hull",
+                4,
+                true);
+
+            ShipPartRegistrar.RegisterPolygon<RigidShipPart>(
+                entityLoader,
                 "entity:ship-part:hull:hexagon",
                 "name:entity:ship-part:hull:hexagon",
                 "description:entity:ship-part:hull",
                 6,
                 true);
 
-            entityLoader.Register<RigidShipPart>(
-                "entity:ship-part:hull:square",
-                "name:entity:ship-part:hull:square", 
-                "description:entity:ship-part:hull",
-                new ShipPartConfiguration(
-                    vertices: new Vertices(
-                        new Vector2[] {
-                            new Vector2(-0.5f, -0.5f),
-                            new Vector2(-0.5f, 0.5f),
-                            new Vector2(0.5f, 0.5f),
-                            new Vector2(0.5f, -0.5f)
-                        }),
-                    maleConnectionNode: new Vector3(-0.5f, 0, (Single)Math.PI),
-                    femaleConnectionNodes: new Vector3[] {
-                        new Vector3(0, -0.5f, (Single)Math.PI/2),
-                        new Vector3(0.5f, 0, (Single)Math.PI),
-                        new Vector3(0, 0.5f, -(Single)Math.PI/2)
-                    }));
             entityLoader.Register<TractorBeam>(
                 "entity:tractor-beam", 
                 "name:entity:tractor-beam", 
