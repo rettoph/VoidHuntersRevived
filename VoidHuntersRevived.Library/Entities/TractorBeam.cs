@@ -137,8 +137,6 @@ namespace VoidHuntersRevived.Library.Entities
         /// <returns></returns>
         public Boolean TryAttatch(FemaleConnectionNode target)
         {
-            var oldSelected = this.Selected;
-
             if (!this.ValidateAttachmentTarget(target))
                 return false;
 
@@ -146,8 +144,20 @@ namespace VoidHuntersRevived.Library.Entities
             this.Selected.TryAttatchTo(target);
             this.OnAttached?.Invoke(this, this.Selected);
 
-            // Release the old selected target...
-            this.TryRelease();
+            return true;
+        }
+
+        public Boolean TryPreviewAttach(FemaleConnectionNode target)
+        {
+            if (!this.ValidateAttachmentTarget(target))
+                return false;
+
+            // Rather than creating the attachment, we just want to move the selection
+            // so that a user can preview what it would look like when attached.
+            var previewRotation = target.WorldRotation + this.Selected.MaleConnectionNode.LocalRotation;
+            this.Selected.SetTransform(
+                position: target.WorldPosition - Vector2.Transform(this.Selected.MaleConnectionNode.LocalPosition, Matrix.CreateRotationZ(previewRotation)),
+                rotation: previewRotation);
 
             return true;
         }
@@ -215,6 +225,10 @@ namespace VoidHuntersRevived.Library.Entities
         /// <returns></returns>
         public Boolean ValidateAttachmentTarget(FemaleConnectionNode target)
         {
+            // If the target is null 
+            if (target == null)
+                return false;
+
             // If the tractor beam isnt currently selecting something...
             if (!this.Selecting)
                 return false;
