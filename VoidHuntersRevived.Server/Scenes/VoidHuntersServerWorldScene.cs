@@ -23,14 +23,14 @@ namespace VoidHuntersRevived.Server.Scenes
     class VoidHuntersServerWorldScene : VoidHuntersWorldScene
     {
         private ShipCollection _ships;
-        private ShipPartFactory _factory;
+        private ShipBuilder _shipBuilder;
 
         protected ServerPeer server;
 
-        public VoidHuntersServerWorldScene(ShipCollection ships, ShipPartFactory factory, ServerPeer server, World world, IServiceProvider provider) : base(server, world, provider)
+        public VoidHuntersServerWorldScene(ShipCollection ships, ShipBuilder shipBuilder, ServerPeer server, World world, IServiceProvider provider) : base(server, world, provider)
         {
             _ships = ships;
-            _factory = factory;
+            _shipBuilder = shipBuilder;
 
             this.server = server;
         }
@@ -74,7 +74,7 @@ namespace VoidHuntersRevived.Server.Scenes
         {
             using (FileStream input = File.OpenRead("./ship-part-export.dat"))
             {
-                var bridge = _factory.Import(input);
+                var bridge = _shipBuilder.Import(input);
 
                 // var bridge = this.entities.Create<ShipPart>("entity:ship-part");
                 var ship = _ships.GetOrCreateAvailableShip();

@@ -15,11 +15,11 @@ namespace VoidHuntersRevived.Library.Factories
     /// via server side commands, but exporting can take place on
     /// the client.
     /// </summary>
-    public class ShipPartFactory
+    public class ShipBuilder
     {
         private EntityCollection _entities;
 
-        public ShipPartFactory(EntityCollection entities)
+        public ShipBuilder(EntityCollection entities)
         {
             _entities = entities;
         }

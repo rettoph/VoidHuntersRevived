@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Library
             services.AddDriver<VoidHuntersWorldScene, VoidHuntersWorldSceneDriver>(95);
 
             services.AddScoped<ShipCollection>();
-            services.AddScoped<ShipPartFactory>();
+            services.AddScoped<ShipBuilder>();
             services.AddScoped<World>(p =>
             {
                 return new World(Vector2.Zero);

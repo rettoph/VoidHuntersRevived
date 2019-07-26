@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private World _world;
         private Body _sensor;
         private HashSet<ShipPart> _contacts;
-        private ShipPartFactory _factory;
+        private ShipBuilder _shipBuilder;
         private SpriteFont _font;
         private SpriteBatch _spriteBatch;
         private Vector2 _cameraOffset;
@@ -56,7 +56,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             Pointer pointer,
             ClientPeer client,
             UserPlayer parent,
-            ShipPartFactory factory,
+            ShipBuilder shipBuilder,
             SpriteBatch spriteBatch,
             IServiceProvider provider) : base(parent, provider)
         {
@@ -66,7 +66,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _client = client;
             _player = parent;
             _contacts = new HashSet<ShipPart>();
-            _factory = factory;
+            _shipBuilder = shipBuilder;
             _spriteBatch = spriteBatch;
         }
         #endregion
