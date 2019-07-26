@@ -46,6 +46,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private ShipPartFactory _factory;
         private SpriteFont _font;
         private SpriteBatch _spriteBatch;
+        private Vector2 _cameraOffset;
         #endregion
 
         #region Constructors
@@ -131,7 +132,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers
                         this.SetLocalDirection(Direction.TurnRight, d);
 
                     // Update the camera position
-                    _camera.MoveTo(_player.Ship.Bridge.Position);
+                    _cameraOffset = Vector2.Lerp(_cameraOffset, Vector2.Transform(_player.Ship.Bridge.LocalCenter, Matrix.CreateRotationZ(_player.Ship.Bridge.Rotation)), 0.05f);
+                    _camera.MoveTo(_player.Ship.Bridge.Position + _cameraOffset);
 
                     // Update the tractor beam target sensor
                     _sensor.SetTransform(_pointer.Position, _player.Ship.TractorBeam.Rotation);
