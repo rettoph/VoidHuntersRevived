@@ -50,7 +50,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         {
             base.PreInitialize();
 
-            this.ThrustStrength = new Vector2(20, 0);
+            if(this.ThrustStrength == default(Vector2))
+                this.ThrustStrength = new Vector2(1000, 0);
+
             this.Active = false;
         }
         #endregion
@@ -60,16 +62,16 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         {
             base.draw(gameTime);
 
-            _spriteBatch.Draw(
-                texture: _line,
-                position: this.WorldCenteroid,
-                sourceRectangle: _line.Bounds,
-                color: Color.White,
-                rotation: this.Rotation,
-                origin: _line.Bounds.Center.ToVector2(),
-                scale: 0.01f,
-                effects: SpriteEffects.None,
-                layerDepth: 0);
+            // _spriteBatch.Draw(
+            //     texture: _line,
+            //     position: this.WorldCenteroid,
+            //     sourceRectangle: _line.Bounds,
+            //     color: Color.White,
+            //     rotation: this.Rotation,
+            //     origin: _line.Bounds.Center.ToVector2(),
+            //     scale: 0.01f,
+            //     effects: SpriteEffects.None,
+            //     layerDepth: 0);
 
             if(this.Active)
             {
@@ -95,7 +97,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
                 if (!this.Root.IsBridge)
                     this.SetActive(false);
                 else
-                    this.Root.ApplyForce(this.Thrust, this.WorldCenteroid);
+                    this.Root.ApplyForce(this.Thrust * ((Single)gameTime.ElapsedGameTime.Milliseconds / 1000), this.WorldCenteroid);
             }
         }
         #endregion

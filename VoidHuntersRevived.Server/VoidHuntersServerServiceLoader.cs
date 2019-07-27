@@ -35,8 +35,8 @@ namespace VoidHuntersRevived.Server
             config.Port = 1337;
 
             var randomTypeLoader = provider.GetLoader<RandomTypeLoader>();
-            randomTypeLoader.Register("ship-part-export", "./ship-part-export-1.dat");
-            randomTypeLoader.Register("ship-part-export", "./ship-part-export-2.dat");
+            // randomTypeLoader.Register("ship-part-export", "./ship-part-export-1.dat");
+            // randomTypeLoader.Register("ship-part-export", "./ship-part-export-2.dat");
         }
 
         public void PreInitialize(IServiceProvider provider)

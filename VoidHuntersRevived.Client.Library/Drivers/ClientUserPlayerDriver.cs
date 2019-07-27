@@ -136,6 +136,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
                     _camera.MoveTo(_player.Ship.Bridge.Position + _cameraOffset);
 
                     // Update the tractor beam target sensor
+                    _pointer.UpdatePositions();
                     _sensor.SetTransform(_pointer.Position, _player.Ship.TractorBeam.Rotation);
                     _player.Ship.TractorBeam.SetOffset(_pointer.Position - _player.Ship.Bridge.Position);
 

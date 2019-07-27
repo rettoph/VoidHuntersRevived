@@ -79,22 +79,22 @@ namespace VoidHuntersRevived.Server.Scenes
         #region Event Handlers
         private void HandleUserAdded(object sender, User user)
         {
-            using (FileStream input = File.OpenRead(_randomTypeLoader.GetRandomValue("ship-part-export", new Random())))
-            {
-                var bridge = _shipBuilder.Import(input);
+            // using (FileStream input = File.OpenRead(_randomTypeLoader.GetRandomValue("ship-part-export", new Random())))
+            // {
+            //     var bridge = _shipBuilder.Import(input);
+            // }
 
-                // var bridge = this.entities.Create<ShipPart>(_entityTypeLoader.GetRandomValue("ship-part:hull", new Random()));
-                var ship = _ships.GetOrCreateAvailableShip();
-                var player = this.entities.Create<Player>("entity:player:user", user);
+            var bridge = this.entities.Create<ShipPart>(_randomTypeLoader.GetRandomValue("ship-part:hull", new Random()));
+            var ship = _ships.GetOrCreateAvailableShip();
+            var player = this.entities.Create<Player>("entity:player:user", user);
 
-                player.TrySetShip(ship);
-                ship.TrySetBridge(bridge);
+            player.TrySetShip(ship);
+            ship.TrySetBridge(bridge);
 
-                var om = this.Group.CreateMessage("chat", NetDeliveryMethod.ReliableOrdered, 2);
+            var om = this.Group.CreateMessage("chat", NetDeliveryMethod.ReliableOrdered, 2);
 
-                om.Write(false);
-                om.Write($"Welcome, {user.Get("name")}.");
-            }
+            om.Write(false);
+            om.Write($"Welcome, {user.Get("name")}.");
         }
         #endregion
 

@@ -48,6 +48,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
         private Double _scrollIdle;
         private Boolean _scrollMoving;
 
+        public Vector3 ScreenPosition { get { return _screenPosition; } }
         public Vector2 LocalPosition { get { return _localPosition; } }
         public Vector2 Position { get { return _worldPosition; } }
         public Boolean Primary { get; private set; }
@@ -170,6 +171,18 @@ namespace VoidHuntersRevived.Client.Library.Entities
             _screenPosition.X = x;
             _screenPosition.Y = y;
 
+            this.UpdatePositions();
+        }
+
+        /// <summary>
+        /// Update the saved screen positions to calculate the
+        /// pointers current world & local positions 
+        /// </summary>
+        public void UpdatePositions()
+        {
+            // Ensure the camera is clean
+            _camera.TryCleanMatrices();
+
             // Calculate the local position of the screen coordinates
             var lPos = _graphics.Viewport.Unproject(
                 _screenPosition,
@@ -188,8 +201,8 @@ namespace VoidHuntersRevived.Client.Library.Entities
 
             // Calculate the world position of the screen coordinates
             var wPos = _graphics.Viewport.Unproject(
-                _screenPosition, 
-                _camera.Projection, 
+                _screenPosition,
+                _camera.Projection,
                 _camera.View,
                 _camera.World);
 

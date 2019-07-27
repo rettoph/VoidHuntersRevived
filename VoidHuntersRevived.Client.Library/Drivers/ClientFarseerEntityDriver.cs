@@ -203,12 +203,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
         private void HandleAngularDampingChanged(object sender, float e)
         {
-            _server.Bodies[_entity].LinearDamping = e;
+            _server.Bodies[_entity].AngularDamping = e;
         }
 
         private void HandleLinearDampingChanged(object sender, float e)
         {
-            _server.Bodies[_entity].AngularDamping = e;
+            _server.Bodies[_entity].LinearDamping = e;
         }
 
         private void HandleRead(object sender, NetworkEntity e)

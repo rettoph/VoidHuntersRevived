@@ -133,7 +133,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             this.CollisionCategories = Category.Cat2;
             this.CollidesWith = Category.Cat1;
 
-            this.SetUpdateOrder(100);
+            this.SetUpdateOrder(50);
         }
         #endregion
 

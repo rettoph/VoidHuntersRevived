@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Client.Library
 
             this.GraphicsDevice.PresentationParameters.MultiSampleCount = 32;
             this.InactiveSleepTime = TimeSpan.Zero;
-            this.IsFixedTimeStep = true;
+            this.IsFixedTimeStep = false;
             this.IsMouseVisible = true;
             this.Window.AllowUserResizing = true;
             this.Window.Title = "Void Hunters Revived 0.0.2";

@@ -91,7 +91,7 @@ namespace VoidHuntersRevived.Library
                             new Vector2(0.4f, -0.1f)
                         }),
                     maleConnectionNode: new Vector3(0.3f, 0, 0),
-                    density: 0.1f));
+                    density: 0.05f));
 
             entityLoader.Register<TractorBeam>(
                 "entity:tractor-beam", 

@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             if (this.Bridge != null)
             { // We only need to bother moving the ship if there is a bridge defined...
-                this.Bridge.AngularDamping = MathHelper.Lerp(this.Bridge.AngularDamping, (_directions[Direction.TurnLeft] || _directions[Direction.TurnRight]) ? 1f : 3f, 0.25f);
+                this.Bridge.AngularDamping = MathHelper.Lerp(this.Bridge.AngularDamping, (_directions[Direction.TurnLeft] || _directions[Direction.TurnRight]) ? 1f : 1.5f, 0.25f);
 
                 foreach (Thruster thruster in _thrusters)
                     thruster.SetActive(false);

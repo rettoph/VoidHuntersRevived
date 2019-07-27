@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Library.Configurations
             Vertices vertices,
             Vector3 maleConnectionNode,
             Vector3[] femaleConnectionNodes = null,
-            Single density = 1f)
+            Single density = 0.5f)
         {
             this.Vertices = vertices;
             this.MaleConnectionNode = maleConnectionNode;
