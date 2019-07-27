@@ -6,7 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ship-part-export-1.dat" />
     <None Remove="ship-part-export.dat" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ship-part-export-1.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

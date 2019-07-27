@@ -79,12 +79,12 @@ namespace VoidHuntersRevived.Server.Scenes
         #region Event Handlers
         private void HandleUserAdded(object sender, User user)
         {
-            // using (FileStream input = File.OpenRead(_randomTypeLoader.GetRandomValue("ship-part-export", new Random())))
-            // {
-            //     var bridge = _shipBuilder.Import(input);
-            // }
+            ShipPart bridge;
 
-            var bridge = this.entities.Create<ShipPart>(_randomTypeLoader.GetRandomValue("ship-part:hull", new Random()));
+            using (FileStream input = File.OpenRead(_randomTypeLoader.GetRandomValue("ship-part-export", new Random())))
+                bridge = _shipBuilder.Import(input);
+
+            // bridge = this.entities.Create<ShipPart>(_randomTypeLoader.GetRandomValue("ship-part:hull", new Random()));
             var ship = _ships.GetOrCreateAvailableShip();
             var player = this.entities.Create<Player>("entity:player:user", user);
 

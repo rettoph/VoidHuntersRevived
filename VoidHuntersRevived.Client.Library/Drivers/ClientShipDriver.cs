@@ -34,17 +34,17 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             base.draw(gameTime);
 
-            // if(_ship.Bridge != null)
-            //     _spriteBatch.Draw(
-            //         texture: _com,
-            //         position: _ship.Bridge.WorldCenter,
-            //         sourceRectangle: _com.Bounds,
-            //         color: Color.White,
-            //         rotation: _ship.Bridge.Rotation,
-            //         origin: _com.Bounds.Center.ToVector2(),
-            //         scale: 0.01f,
-            //         effects: SpriteEffects.None,
-            //         layerDepth: 0);
+            if(_ship.Bridge != null)
+                _spriteBatch.Draw(
+                    texture: _com,
+                    position: _ship.Bridge.WorldCenter,
+                    sourceRectangle: _com.Bounds,
+                    color: Color.White,
+                    rotation: _ship.Bridge.Rotation,
+                    origin: _com.Bounds.Center.ToVector2(),
+                    scale: 0.01f,
+                    effects: SpriteEffects.None,
+                    layerDepth: 0);
         }
 
         #region Initialization Methods

@@ -108,13 +108,15 @@ namespace VoidHuntersRevived.Library.Entities
                 .Where(c => typeof(Thruster).IsAssignableFrom(c.GetType()))
                 .Select(c => c as Thruster));
 
+            // Clear the old thruster mapping...
             foreach (Direction direction in Enum.GetValues(typeof(Direction)) as Direction[])
-            {
                 _thrusterDirections[direction].Clear();
-                _thrusterDirections[direction].AddRange(_thrusters.Where(t => t.MatchesMovementType(direction)));
 
-                this.logger.LogDebug($"{direction} => {_thrusterDirections[direction].Count()}");
-            }
+            // Remap the thruster data
+            var directions = new List<Direction>();
+            foreach (Thruster thruster in _thrusters)
+                foreach (Direction direction in thruster.GetDirections(ref directions))
+                    _thrusterDirections[direction].Add(thruster);
         }
         #endregion
     }

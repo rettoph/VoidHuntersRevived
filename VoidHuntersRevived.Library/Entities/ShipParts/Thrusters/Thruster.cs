@@ -110,7 +110,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         #endregion
 
         #region Helper Methods
-        internal Boolean MatchesMovementType(Direction direction)
+        /// <summary>
+        /// Return a list of directions that the curernt thruster
+        /// moves the ship
+        /// </summary>
+        /// <param name="directions"></param>
+        /// <returns></returns>
+        internal List<Direction> GetDirections(ref List<Direction> directions)
         {
             // Each andle of movement has a buffer sone on inclusivity
             var buffer = 0.01f;
@@ -134,26 +140,31 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
             var apatr_lower = apatr - buffer;
             var apatr_upper = apatr + buffer;
 
-            this.logger.LogDebug($"Thruster({this.Id}) => {direction}: {apatr}, {apatr_upper}, {apatr_lower}");
+            directions.Clear();
 
-            switch (direction)
-            {
-                case Direction.Forward:
-                    return (apatr_upper < MathHelper.PiOver2 || apatr_lower > 3 * MathHelper.PiOver2);
-                case Direction.TurnRight:
-                    return ratr > 0 && ratr < MathHelper.Pi;
-                case Direction.Backward:
-                    return apatr_lower > MathHelper.PiOver2 && apatr_upper < 3 * MathHelper.PiOver2;
-                case Direction.TurnLeft:
-                    return ratr > MathHelper.Pi && ratr < MathHelper.TwoPi;
+            // Check if the thruster moves the chain forward...
+            if ((apatr_upper < MathHelper.PiOver2 || apatr_lower > 3 * MathHelper.PiOver2))
+                directions.Add(Direction.Forward);
+
+            // Check if the thruster turns the chain right...
+            if (ratr > 0 && ratr < MathHelper.Pi)
+                directions.Add(Direction.TurnRight);
+
+            // Check if the thruster moves the chain backward...
+            if (apatr_lower > MathHelper.PiOver2 && apatr_upper < 3 * MathHelper.PiOver2)
+                directions.Add(Direction.Backward);
+
+            // Check if the thruster turns the chain left...
+            if (ratr > MathHelper.Pi && ratr < MathHelper.TwoPi)
+                directions.Add(Direction.TurnLeft);
+
 
                 // case Direction.StrafeRight:
                 //     return (apatr_lower > 0 && apatr_upper < RadianHelper.PI);
                 // case Direction.StrafeLeft:
                 //     return (apatr_lower > RadianHelper.PI && apatr_upper < RadianHelper.TWO_PI);
-            }
 
-            return false;
+            return directions;
         }
         #endregion
 
