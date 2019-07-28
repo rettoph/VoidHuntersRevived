@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Client.Library.UI
 
             this.Input.OnEnter += this.HandleInputEnter;
 
-            _group.AddMessageHandler("chat", this.HandleChatMessage);
+            _group.Messages.AddHandler("chat", this.HandleChatMessage);
         }
 
         public override void Update(MouseState mouse)

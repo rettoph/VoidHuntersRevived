@@ -37,8 +37,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             base.Initialize();
 
-            _shipPart.AddActionHandler("male-connection-node:detach", this.HandleMaleConnectionNodeDetachAction);
-            _shipPart.AddActionHandler("male-connection-node:attach", this.HandleMaleConnectionNodeAttachAction);
+            _shipPart.Actions.AddHandler("male-connection-node:detach", this.HandleMaleConnectionNodeDetachAction);
+            _shipPart.Actions.AddHandler("male-connection-node:attach", this.HandleMaleConnectionNodeAttachAction);
         }
         #endregion
 

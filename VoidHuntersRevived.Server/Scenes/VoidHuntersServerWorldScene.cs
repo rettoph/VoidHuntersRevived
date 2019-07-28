@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Server.Scenes
         {
             base.PreInitialize();
 
-            this.Group.AddMessageHandler("chat", this.HandleChatMessage);
+            this.Group.Messages.AddHandler("chat", this.HandleChatMessage);
         }
 
         protected override void Initialize()

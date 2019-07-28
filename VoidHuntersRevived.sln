@@ -8,6 +8,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FarseerPhysics", "FarseerPhysics", "{DFAEC9DF-994B-45BF-8242-E63D3481A52E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Guppy", "Guppy", "{022531CB-D8AF-498D-A22D-AE9D9B53E157}"
+	ProjectSection(SolutionItems) = preProject
+		Submodules\Guppy\README.md = Submodules\Guppy\README.md
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy", "Submodules\Guppy\Guppy\Guppy.csproj", "{88B8F7ED-F2AA-4411-B664-37D43FCEA39D}"
 EndProject
@@ -30,6 +33,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FarseerPhysics.MonoGame", "Submodules\FarseerPhysics\FarseerPhysics.MonoGame\FarseerPhysics.MonoGame.csproj", "{EFA482D2-5848-4F77-B90F-D00B75DE9069}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Client.Windows", "VoidHuntersRevived.Client.Windows\VoidHuntersRevived.Client.Windows.csproj", "{0B809C0C-F76A-4346-BD0B-2DC07124230C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AB5292E1-11AA-42F2-BF62-83E71EB43950}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

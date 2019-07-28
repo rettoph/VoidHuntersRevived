@@ -84,7 +84,7 @@ namespace VoidHuntersRevived.Library.Entities
                 {
                     _collidesWith = value;
                     _body.CollidesWith = _collidesWith;
-                    this.OnCollidesWithChanged?.Invoke(this, _collidesWith);
+                    this.Events.TryInvoke("changed:collides-with", _collidesWith);
                 }
             }
         }
@@ -97,7 +97,7 @@ namespace VoidHuntersRevived.Library.Entities
                 {
                     _collisionCategories = value;
                     _body.CollisionCategories = _collisionCategories;
-                    this.OnCollisionCategoriesChanged?.Invoke(this, _collisionCategories);
+                    this.Events.TryInvoke("changed:collision-categories", _collisionCategories);
                 }
             }
         }
@@ -110,7 +110,7 @@ namespace VoidHuntersRevived.Library.Entities
                 {
                     _collisionGroup = value;
                     _body.CollisionGroup = _collisionGroup;
-                    this.OnCollisionGroupChanged?.Invoke(this, _collisionGroup);
+                    this.Events.TryInvoke("changed:collision-group", _collisionGroup);
                 }
             }
         }
@@ -123,7 +123,7 @@ namespace VoidHuntersRevived.Library.Entities
                 {
                     _isSensor = value;
                     _body.IsSensor = value;
-                    this.OnIsSensorChanged?.Invoke(this, _isSensor);
+                    this.Events.TryInvoke("changed:is-sensor", _isSensor);
                 }
             }
         }
@@ -135,7 +135,7 @@ namespace VoidHuntersRevived.Library.Entities
                 if (value != _body.SleepingAllowed)
                 {
                     _body.SleepingAllowed = value;
-                    this.OnSleepingAllowedChanged?.Invoke(this, _body.SleepingAllowed);
+                    this.Events.TryInvoke("changed:sleeping-allowed", _body.SleepingAllowed);
                 }
             }
         }
@@ -147,7 +147,7 @@ namespace VoidHuntersRevived.Library.Entities
                 if (value != _body.Enabled)
                 {
                     _body.Enabled = value;
-                    this.OnPhysicsEnabledChanged?.Invoke(this, _body.Enabled);
+                    this.Events.TryInvoke("changed:physics-enabled", _body.Enabled);
                 }
             }
         }
@@ -159,9 +159,11 @@ namespace VoidHuntersRevived.Library.Entities
             }
             set
             {
-                _body.AngularDamping = value;
-
-                this.OnAngularDampingChanged?.Invoke(this, _body.AngularDamping);
+                if (value != _body.AngularDamping)
+                {
+                    _body.AngularDamping = value;
+                    this.Events.TryInvoke("changed:angular-damping", _body.AngularDamping);
+                }
             }
         }
         public Single LinearDamping
@@ -172,30 +174,14 @@ namespace VoidHuntersRevived.Library.Entities
             }
             set
             {
-                _body.LinearDamping = value;
-
-                this.OnLinearDampingChanged?.Invoke(this, _body.AngularDamping);
+                if (value != _body.LinearDamping)
+                {
+                    _body.LinearDamping = value;
+                    this.Events.TryInvoke("changed:linear-damping", _body.LinearDamping);
+                }
             }
         }
         public CounterBoolean Focused { get; private set; }
-        #endregion
-
-        #region Events
-        public event EventHandler<Category> OnCollidesWithChanged;
-        public event EventHandler<Category> OnCollisionCategoriesChanged;
-        public event EventHandler<Int16> OnCollisionGroupChanged;
-        public event EventHandler<Boolean> OnIsSensorChanged;
-        public event EventHandler<Boolean> OnSleepingAllowedChanged;
-        public event EventHandler<Boolean> OnPhysicsEnabledChanged;
-        public event EventHandler<Body> OnBodyCreated;
-        public event EventHandler<Fixture> OnFixtureCreated;
-        public event EventHandler<Fixture> OnFixtureDestroyed;
-        public event EventHandler<Vector2> OnLinearImpulseApplied;
-        public event EventHandler<Single> OnAngularImpulseApplied;
-        public event EventHandler<Single> OnAngularDampingChanged;
-        public event EventHandler<Single> OnLinearDampingChanged;
-        public event EventHandler<ForceEventArgs> OnForceApplied;
-        public event EventHandler<Body> OnSetTransform;
         #endregion
 
         #region Constructors
@@ -238,7 +224,7 @@ namespace VoidHuntersRevived.Library.Entities
             float rotation = 0)
         {
             var body = this.BuildBody(world, position, rotation);
-            this.OnBodyCreated?.Invoke(this, body);
+            this.Events.TryInvoke("created:body", body);
             return body;
         }
 
@@ -270,7 +256,7 @@ namespace VoidHuntersRevived.Library.Entities
             fixture.CollisionGroup = this.CollisionGroup;
             fixture.IsSensor = this.IsSensor;
 
-            this.OnFixtureCreated?.Invoke(this, fixture);
+            this.Events.TryInvoke("created:fixture", fixture);
 
             return fixture;
         }
@@ -283,35 +269,35 @@ namespace VoidHuntersRevived.Library.Entities
             _body.DestroyFixture(fixture);
             _fixtureList.Remove(fixture);
 
-            this.OnFixtureDestroyed?.Invoke(this, fixture);
+            this.Events.TryInvoke("destroyed:fixture", fixture);
         }
 
         public void ApplyLinearImpulse(Vector2 impulse)
         {
             _body.ApplyLinearImpulse(impulse);
 
-            this.OnLinearImpulseApplied?.Invoke(this, impulse);
-        }
-
-        public void ApplyForce(Vector2 force, Vector2 point)
-        {
-            _body.ApplyForce(force, point);
-
-            this.OnForceApplied?.Invoke(this, new ForceEventArgs(force, point));
+            this.Events.TryInvoke("applied:linear-impulse", impulse);
         }
 
         public void ApplyAngularImpulse(Single impulse)
         {
             _body.ApplyAngularImpulse(impulse);
 
-            this.OnAngularImpulseApplied?.Invoke(this, impulse);
+            this.Events.TryInvoke("applied:angular-impulse", impulse);
+        }
+
+        public void ApplyForce(Vector2 force, Vector2 point)
+        {
+            _body.ApplyForce(force, point);
+
+            this.Events.TryInvoke("applied:force", new ForceEventArgs(force, point));
         }
 
         public void SetTransform(Vector2 position, Single rotation)
         {
             _body.SetTransform(position, rotation);
 
-            this.OnSetTransform?.Invoke(this, _body);
+            this.Events.TryInvoke("set:transform", _body);
         }
 
         protected internal Body GetBody()

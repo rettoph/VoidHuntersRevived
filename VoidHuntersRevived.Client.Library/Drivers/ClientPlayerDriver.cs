@@ -30,13 +30,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             base.Initialize();
 
-            _player.AddActionHandler("set:ship", this.HandleSetShipAction);
-            _player.AddActionHandler("set:direction", this.HandleSetShipDirection);
-            _player.AddActionHandler("tractor-beam:select", this.HandleTractorBeamSelectAction);
-            _player.AddActionHandler("tractor-beam:release", this.HandleTractorBeamReleaseAction);
-            _player.AddActionHandler("tractor-beam:set:offset", this.HandleTractorBeamSetOffsetAction);
-            _player.AddActionHandler("tractor-beam:decline:select", this.HandleTractorBeamDeclineSelectAction);
-            _player.AddActionHandler("tractor-beam:decline:attach", this.HandleTractorBeamDeclineAttachAction);
+            _player.Actions.AddHandler("set:ship", this.HandleSetShipAction);
+            _player.Actions.AddHandler("set:direction", this.HandleSetShipDirection);
+            _player.Actions.AddHandler("tractor-beam:select", this.HandleTractorBeamSelectAction);
+            _player.Actions.AddHandler("tractor-beam:release", this.HandleTractorBeamReleaseAction);
+            _player.Actions.AddHandler("tractor-beam:set:offset", this.HandleTractorBeamSetOffsetAction);
+            _player.Actions.AddHandler("tractor-beam:decline:select", this.HandleTractorBeamDeclineSelectAction);
+            _player.Actions.AddHandler("tractor-beam:decline:attach", this.HandleTractorBeamDeclineAttachAction);
         }
         #endregion
 

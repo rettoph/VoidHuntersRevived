@@ -30,11 +30,11 @@ namespace VoidHuntersRevived.Server.Drivers
         {
             base.Initialize();
 
-            _player.AddActionHandler("set:direction", this.HandleSetDirectionAction);
-            _player.AddActionHandler("tractor-beam:select", this.HandleTractorBeamSelectAction);
-            _player.AddActionHandler("tractor-beam:release", this.HandleTractorBeamReleaseAction);
-            _player.AddActionHandler("tractor-beam:attach", this.HandleTractorBeamAttachAction);
-            _player.AddActionHandler("tractor-beam:set:offset", this.HandleTractorBeamSetOffsetAction);
+            _player.Actions.AddHandler("set:direction", this.HandleSetDirectionAction);
+            _player.Actions.AddHandler("tractor-beam:select", this.HandleTractorBeamSelectAction);
+            _player.Actions.AddHandler("tractor-beam:release", this.HandleTractorBeamReleaseAction);
+            _player.Actions.AddHandler("tractor-beam:attach", this.HandleTractorBeamAttachAction);
+            _player.Actions.AddHandler("tractor-beam:set:offset", this.HandleTractorBeamSetOffsetAction);
             
         }
         #endregion

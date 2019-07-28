@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             base.Initialize();
 
-            _ship.AddActionHandler("set:bridge", this.HandleSetBridgeAction);
+            _ship.Actions.AddHandler("set:bridge", this.HandleSetBridgeAction);
         }
         #endregion
 

@@ -42,22 +42,22 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _clientServerFixtureTable = new Dictionary<Fixture, Fixture>();
 
             // Bind event handlers
-            _entity.OnCollidesWithChanged += this.HandleCollidesWithChanged;
-            _entity.OnCollisionCategoriesChanged += this.HandleCollisionCategoriesChanged;
-            _entity.OnCollisionGroupChanged += this.HandleCollisionGroupChanged;
-            _entity.OnIsSensorChanged += this.HandleIsSensorChanged;
-            _entity.OnSleepingAllowedChanged += this.HandleSleepingAllowedChanged;
-            _entity.OnPhysicsEnabledChanged += this.HandlePhysicsEnabledChanged;
-            _entity.OnBodyCreated += this.HandleBodyCreated;
-            _entity.OnFixtureCreated += this.HandleFixtureCreated;
-            _entity.OnFixtureDestroyed += this.HandleFixtureDestroyed;
-            _entity.OnLinearImpulseApplied += this.HandleLinearImpulseApplied;
-            _entity.OnAngularImpulseApplied += this.HandleAngularImpulseApplied;
-            _entity.OnForceApplied += this.HandleForceApplied;
-            _entity.OnSetTransform += this.HandleSetTransform;
-            _entity.OnAngularDampingChanged += this.HandleAngularDampingChanged;
-            _entity.OnLinearDampingChanged += this.HandleLinearDampingChanged;
-            _entity.OnRead += this.HandleRead;
+            _entity.Events.AddHandler("changed:collides-with", this.HandleCollidesWithChanged);
+            _entity.Events.AddHandler("changed:collision-categories", this.HandleCollisionCategoriesChanged);
+            _entity.Events.AddHandler("changed:collision-group", this.HandleCollisionGroupChanged);
+            _entity.Events.AddHandler("changed:is-sensor", this.HandleIsSensorChanged);
+            _entity.Events.AddHandler("changed:sleeping-allowed", this.HandleSleepingAllowedChanged);
+            _entity.Events.AddHandler("changed:physics-enabled", this.HandlePhysicsEnabledChanged);
+            _entity.Events.AddHandler("changed:linear-damping", this.HandleAngularDampingChanged);
+            _entity.Events.AddHandler("changed:angular-damping", this.HandleLinearDampingChanged);
+            _entity.Events.AddHandler("applied:linear-impulse", this.HandleLinearImpulseApplied);
+            _entity.Events.AddHandler("applied:angular-impulse", this.HandleAngularImpulseApplied);
+            _entity.Events.AddHandler("applied:force", this.HandleForceApplied);
+            _entity.Events.AddHandler("set:transform", this.HandleSetTransform);
+            _entity.Events.AddHandler("created:body", this.HandleBodyCreated);
+            _entity.Events.AddHandler("created:fixture", this.HandleFixtureCreated);
+            _entity.Events.AddHandler("destroyed:fixture", this.HandleFixtureDestroyed);
+            _entity.Events.AddHandler("on:read", this.HandleRead);
         }
 
         protected override void PreInitialize()
@@ -65,7 +65,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             base.PreInitialize();
 
             // Bind action handlers
-            _entity.AddActionHandler("update:position", this.HandleUpdatePositionAction);
+            _entity.Actions.AddHandler("update:position", this.HandleUpdatePositionAction);
         }
 
         protected override void Initialize()
@@ -121,9 +121,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         #endregion
 
         #region Event Handlers
-        private void HandleBodyCreated(object sender, Body e)
+        private void HandleBodyCreated(Object arg)
         {
-            _server.Bodies.Add(_entity, e.DeepClone(_server.World));
+            _server.Bodies.Add(_entity, (arg as Body).DeepClone(_server.World));
         }
 
         /// <summary>
@@ -132,8 +132,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="shape"></param>
-        private void HandleFixtureCreated(object sender, Fixture fixture)
+        private void HandleFixtureCreated(Object arg)
         {
+            var fixture = arg as Fixture;
             var sFixture = fixture.CloneOnto(_server.Bodies[_entity]);
 
             _clientServerFixtureTable.Add(fixture, sFixture);
@@ -145,73 +146,75 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="shape"></param>
-        private void HandleFixtureDestroyed(object sender, Fixture fixture)
+        private void HandleFixtureDestroyed(Object arg)
         {
+            var fixture = arg as Fixture;
             _server.Bodies[_entity].DestroyFixture(_clientServerFixtureTable[fixture]);
             _clientServerFixtureTable.Remove(fixture);
         }
 
-        private void HandleAngularImpulseApplied(object sender, float impulse)
+        private void HandleAngularImpulseApplied(Object arg)
         {
-            _server.Bodies[_entity].ApplyAngularImpulse(impulse);
+            _server.Bodies[_entity].ApplyAngularImpulse((Single)arg);
         }
 
-        private void HandleLinearImpulseApplied(object sender, Vector2 impulse)
+        private void HandleLinearImpulseApplied(Object arg)
         {
-            _server.Bodies[_entity].ApplyLinearImpulse(impulse);
+            _server.Bodies[_entity].ApplyLinearImpulse((Vector2)arg);
         }
 
-        private void HandleCollisionCategoriesChanged(object sender, Category category)
+        private void HandleCollisionCategoriesChanged(Object arg)
         {
-            _server.Bodies[_entity].CollisionCategories = category;
+            _server.Bodies[_entity].CollisionCategories = (Category)arg;
         }
 
-        private void HandleCollidesWithChanged(object sender, Category category)
+        private void HandleCollidesWithChanged(Object arg)
         {
-            _server.Bodies[_entity].CollidesWith = category;
+            _server.Bodies[_entity].CollidesWith = (Category)arg;
         }
 
-        private void HandleCollisionGroupChanged(object sender, short group)
+        private void HandleCollisionGroupChanged(Object arg)
         {
-            _server.Bodies[_entity].CollisionGroup = group;
+            _server.Bodies[_entity].CollisionGroup = (Int16)arg;
         }
 
-        private void HandleIsSensorChanged(object sender, bool e)
+        private void HandleIsSensorChanged(Object arg)
         {
-            _server.Bodies[_entity].IsSensor = e;
+            _server.Bodies[_entity].IsSensor = (Boolean)arg;
         }
 
-        private void HandleSleepingAllowedChanged(object sender, bool e)
+        private void HandleSleepingAllowedChanged(Object arg)
         {
-            _server.Bodies[_entity].SleepingAllowed = e;
+            _server.Bodies[_entity].SleepingAllowed = (Boolean)arg;
         }
 
-        private void HandlePhysicsEnabledChanged(object sender, bool e)
+        private void HandlePhysicsEnabledChanged(Object arg)
         {
-            _server.Bodies[_entity].Enabled = e;
+            _server.Bodies[_entity].Enabled = (Boolean)arg;
         }
 
-        private void HandleSetTransform(object sender, Body e)
+        private void HandleSetTransform(Object arg)
         {
-            _server.Bodies[_entity].SetTransform(e.Position, e.Rotation);
+            _server.Bodies[_entity].SetTransform(_entity.Position, _entity.Rotation);
         }
 
-        private void HandleForceApplied(object sender, ForceEventArgs e)
+        private void HandleForceApplied(Object arg)
         {
+            var e = arg as ForceEventArgs;
             _server.Bodies[_entity].ApplyForce(e.Force, e.Point);
         }
 
-        private void HandleAngularDampingChanged(object sender, float e)
+        private void HandleAngularDampingChanged(Object arg)
         {
-            _server.Bodies[_entity].AngularDamping = e;
+            _server.Bodies[_entity].AngularDamping = (Single)arg;
         }
 
-        private void HandleLinearDampingChanged(object sender, float e)
+        private void HandleLinearDampingChanged(Object arg)
         {
-            _server.Bodies[_entity].LinearDamping = e;
+            _server.Bodies[_entity].LinearDamping = (Single)arg;
         }
 
-        private void HandleRead(object sender, NetworkEntity e)
+        private void HandleRead(Object e)
         {
             _server.Bodies[_entity].Position = _entity.Position;
             _server.Bodies[_entity].Rotation = _entity.Rotation;
@@ -230,22 +233,22 @@ namespace VoidHuntersRevived.Client.Library.Drivers
                 _server.Bodies.Remove(_entity);
             }
 
-            _entity.OnCollidesWithChanged -= this.HandleCollidesWithChanged;
-            _entity.OnCollisionCategoriesChanged -= this.HandleCollisionCategoriesChanged;
-            _entity.OnCollisionGroupChanged -= this.HandleCollisionGroupChanged;
-            _entity.OnIsSensorChanged -= this.HandleIsSensorChanged;
-            _entity.OnSleepingAllowedChanged -= this.HandleSleepingAllowedChanged;
-            _entity.OnPhysicsEnabledChanged -= this.HandlePhysicsEnabledChanged;
-            _entity.OnBodyCreated -= this.HandleBodyCreated;
-            _entity.OnFixtureCreated -= this.HandleFixtureCreated;
-            _entity.OnFixtureDestroyed -= this.HandleFixtureDestroyed;
-            _entity.OnLinearImpulseApplied -= this.HandleLinearImpulseApplied;
-            _entity.OnAngularImpulseApplied -= this.HandleAngularImpulseApplied;
-            _entity.OnSetTransform -= this.HandleSetTransform;
-            _entity.OnForceApplied -= this.HandleForceApplied;
-            _entity.OnAngularDampingChanged -= this.HandleAngularDampingChanged;
-            _entity.OnLinearDampingChanged -= this.HandleLinearDampingChanged;
-            _entity.OnRead -= this.HandleRead;
+            _entity.Events.RemoveHandler("changed:collides-with", this.HandleCollidesWithChanged);
+            _entity.Events.RemoveHandler("changed:collision-categories", this.HandleCollisionCategoriesChanged);
+            _entity.Events.RemoveHandler("changed:collision-group", this.HandleCollisionGroupChanged);
+            _entity.Events.RemoveHandler("changed:is-sensor", this.HandleIsSensorChanged);
+            _entity.Events.RemoveHandler("changed:sleeping-allowed", this.HandleSleepingAllowedChanged);
+            _entity.Events.RemoveHandler("changed:physics-enabled", this.HandlePhysicsEnabledChanged);
+            _entity.Events.RemoveHandler("changed:linear-damping", this.HandleAngularDampingChanged);
+            _entity.Events.RemoveHandler("changed:angular-damping", this.HandleLinearDampingChanged);
+            _entity.Events.RemoveHandler("applied:linear-impulse", this.HandleLinearImpulseApplied);
+            _entity.Events.RemoveHandler("applied:angular-impulse", this.HandleAngularImpulseApplied);
+            _entity.Events.RemoveHandler("applied:force", this.HandleForceApplied);
+            _entity.Events.RemoveHandler("set:transform", this.HandleSetTransform);
+            _entity.Events.RemoveHandler("created:body", this.HandleBodyCreated);
+            _entity.Events.RemoveHandler("created:fixture", this.HandleFixtureCreated);
+            _entity.Events.RemoveHandler("destroyed:fixture", this.HandleFixtureDestroyed);
+            _entity.Events.RemoveHandler("on:read", this.HandleRead);
         }
     }
 }
