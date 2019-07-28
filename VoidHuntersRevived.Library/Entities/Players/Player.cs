@@ -23,10 +23,6 @@ namespace VoidHuntersRevived.Library.Entities.Players
         public Ship Ship { get; private set; }
         #endregion
 
-        #region Events
-        public event EventHandler<ChangedEventArgs<Ship>> OnShipChanged;
-        #endregion
-
         #region Constructors
         public Player(EntityConfiguration configuration, IServiceProvider provider) : base(configuration, provider)
         {
@@ -52,12 +48,10 @@ namespace VoidHuntersRevived.Library.Entities.Players
             {
                 this.logger.LogDebug($"Setting Player<{this.GetType().Name}>({this.Id}) ship to Ship({target.Id})...");
 
-                var oldShip = this.Ship;
                 this.Ship = target;
                 this.Ship.SetPlayer(this);
 
-                this.OnShipChanged?.Invoke(this, new ChangedEventArgs<Ship>(oldShip, this.Ship));
-
+                this.Events.TryInvoke("changed:ship", this.Ship);
                 return true;
             }
 

@@ -15,6 +15,13 @@ namespace VoidHuntersRevived.Server.Drivers
     {
         private Player _player;
 
+        /// <summary>
+        /// Stores the ship value (if any) that events are bound to currently
+        /// This is stored so that we can properly remove events if the ship is
+        /// changed.
+        /// </summary>
+        private Ship _eventTrackedShip;
+
         #region Constructors
         public ServerPlayerDriver(Player parent, IServiceProvider provider) : base(parent, provider)
         {
@@ -27,37 +34,38 @@ namespace VoidHuntersRevived.Server.Drivers
         {
             base.Initialize();
 
-            _player.OnShipChanged += this.HandleShipChanged;
+            _player.Events.AddHandler("changed:ship", this.HandleShipChanged);
         }
         #endregion
 
         #region Event Handlers
-        private void HandleShipChanged(object sender, ChangedEventArgs<Ship> e)
+        private void HandleShipChanged(Object arg)
         {
             var action = _player.CreateActionMessage("set:ship");
             _player.WriteShipData(action);
 
             // Remove any old ship events, and add any new ones
-            if (e.Old != null)
-                this.RemoveShipEvents(e.Old);
-            if (e.New != null)
-                this.AddShipEvents();
+            if (_eventTrackedShip != null)
+                this.RemoveShipEvents();
+            if (arg != null)
+                this.AddShipEvents(arg as Ship);
         }
 
-        private void AddShipEvents()
+        private void AddShipEvents(Ship ship)
         {
-            _player.Ship.Events.AddHandler("changed:direction", this.HandleDirectionChanged);
-            _player.Ship.TractorBeam.Events.AddHandler("selected", this.HandleTractorBeamSelected);
-            _player.Ship.TractorBeam.Events.AddHandler("released", this.HandleTractorBeamRelease);
-            _player.Ship.TractorBeam.Events.AddHandler("changed:offset", this.HandleTractorBeamOffsetChanged);
+            _eventTrackedShip = ship;
+            _eventTrackedShip.Events.AddHandler("changed:direction", this.HandleDirectionChanged);
+            _eventTrackedShip.TractorBeam.Events.AddHandler("selected", this.HandleTractorBeamSelected);
+            _eventTrackedShip.TractorBeam.Events.AddHandler("released", this.HandleTractorBeamRelease);
+            _eventTrackedShip.TractorBeam.Events.AddHandler("changed:offset", this.HandleTractorBeamOffsetChanged);
         }
 
-        private void RemoveShipEvents(Ship ship)
+        private void RemoveShipEvents()
         {
-            _player.Ship.Events.RemoveHandler("changed:direction", this.HandleDirectionChanged);
-            _player.Ship.TractorBeam.Events.RemoveHandler("selected", this.HandleTractorBeamSelected);
-            _player.Ship.TractorBeam.Events.RemoveHandler("released", this.HandleTractorBeamRelease);
-            _player.Ship.TractorBeam.Events.RemoveHandler("changed:offset", this.HandleTractorBeamOffsetChanged);
+            _eventTrackedShip.Events.RemoveHandler("changed:direction", this.HandleDirectionChanged);
+            _eventTrackedShip.TractorBeam.Events.RemoveHandler("selected", this.HandleTractorBeamSelected);
+            _eventTrackedShip.TractorBeam.Events.RemoveHandler("released", this.HandleTractorBeamRelease);
+            _eventTrackedShip.TractorBeam.Events.RemoveHandler("changed:offset", this.HandleTractorBeamOffsetChanged);
         }
 
         /// <summary>

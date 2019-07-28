@@ -31,3 +31,5 @@ These are events triggered by Guppy but specific to this game. Events can be bou
 | `VoidHuntersRevived.Library` | `TractorBeam` | `attached` | `ShipPart` | Invoked after one of the Ship's directions is changed. |
 | `VoidHuntersRevived.Library` | `TractorBeam` | `changed:offset` | `Vector2` | Invoked after one of the Ship's directions is changed. |
 | `VoidHuntersRevived.Library` | `TractorBeam` | `changed:rotation` | `Single` | Invoked after one of the Ship's directions is changed. |
+| | | | |
+| `VoidHuntersRevived.Library` | `Player` | `changed:ship` | `Ship` | Invoked after the Player's Ship is changed. |
