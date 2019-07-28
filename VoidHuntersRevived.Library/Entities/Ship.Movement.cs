@@ -22,10 +22,6 @@ namespace VoidHuntersRevived.Library.Entities
         private Dictionary<Direction, List<Thruster>> _thrusterDirections;
         #endregion
 
-        #region Events
-        public event EventHandler<DirectionChangedEventArgs> OnDirectionChanged;
-        #endregion
-
         #region Initialization Methods
         /// <summary>
         /// Automatically called within this.Initialize.
@@ -93,7 +89,7 @@ namespace VoidHuntersRevived.Library.Entities
 
                 _directions[direction] = value;
 
-                this.OnDirectionChanged?.Invoke(this, new DirectionChangedEventArgs(direction, !value, value));
+                this.Events.TryInvoke("changed:direction", direction);
             }
         }
 

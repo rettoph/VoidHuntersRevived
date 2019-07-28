@@ -24,3 +24,10 @@ These are events triggered by Guppy but specific to this game. Events can be bou
 | | | | |
 | `VoidHuntersRevived.Library` | `Ship` | `changed:bridge` | `ShipPart` | Invoked after the Ship's Bridge is changed. |
 | `VoidHuntersRevived.Library` | `Ship` | `changed:player` | `Player` | Invoked after the Ship's Player is changed. |
+| `VoidHuntersRevived.Library` | `Ship` | `changed:direction` | `Direction` | Invoked after one of the Ship's directions is changed. |
+| | | | |
+| `VoidHuntersRevived.Library` | `TractorBeam` | `selected` | `ShipPart` | Invoked after the Ship's Bridge is changed. |
+| `VoidHuntersRevived.Library` | `TractorBeam` | `released` | `ShipPart` | Invoked after the Ship's Player is changed. |
+| `VoidHuntersRevived.Library` | `TractorBeam` | `attached` | `ShipPart` | Invoked after one of the Ship's directions is changed. |
+| `VoidHuntersRevived.Library` | `TractorBeam` | `changed:offset` | `Vector2` | Invoked after one of the Ship's directions is changed. |
+| `VoidHuntersRevived.Library` | `TractorBeam` | `changed:rotation` | `Single` | Invoked after one of the Ship's directions is changed. |

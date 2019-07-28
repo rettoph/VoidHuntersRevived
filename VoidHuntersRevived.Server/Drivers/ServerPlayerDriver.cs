@@ -7,6 +7,7 @@ using VoidHuntersRevived.Library.CustomEventArgs;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Enums;
 
 namespace VoidHuntersRevived.Server.Drivers
 {
@@ -45,18 +46,18 @@ namespace VoidHuntersRevived.Server.Drivers
 
         private void AddShipEvents()
         {
-            _player.Ship.OnDirectionChanged += this.HandleDirectionChanged;
-            _player.Ship.TractorBeam.OnSelected += this.HandleTractorBeamSelected;
-            _player.Ship.TractorBeam.OnReleased += this.HandleTractorBeamRelease;
-            _player.Ship.TractorBeam.OnOffsetChanged += this.HandleTractorBeamOffsetChanged;
+            _player.Ship.Events.AddHandler("changed:direction", this.HandleDirectionChanged);
+            _player.Ship.TractorBeam.Events.AddHandler("selected", this.HandleTractorBeamSelected);
+            _player.Ship.TractorBeam.Events.AddHandler("released", this.HandleTractorBeamRelease);
+            _player.Ship.TractorBeam.Events.AddHandler("changed:offset", this.HandleTractorBeamOffsetChanged);
         }
 
         private void RemoveShipEvents(Ship ship)
         {
-            ship.OnDirectionChanged -= this.HandleDirectionChanged;
-            ship.TractorBeam.OnSelected -= this.HandleTractorBeamSelected;
-            ship.TractorBeam.OnReleased -= this.HandleTractorBeamRelease;
-            ship.TractorBeam.OnOffsetChanged -= this.HandleTractorBeamOffsetChanged;
+            _player.Ship.Events.RemoveHandler("changed:direction", this.HandleDirectionChanged);
+            _player.Ship.TractorBeam.Events.RemoveHandler("selected", this.HandleTractorBeamSelected);
+            _player.Ship.TractorBeam.Events.RemoveHandler("released", this.HandleTractorBeamRelease);
+            _player.Ship.TractorBeam.Events.RemoveHandler("changed:offset", this.HandleTractorBeamOffsetChanged);
         }
 
         /// <summary>
@@ -66,10 +67,10 @@ namespace VoidHuntersRevived.Server.Drivers
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HandleDirectionChanged(object sender, DirectionChangedEventArgs e)
+        private void HandleDirectionChanged(Object arg)
         {
             var action = _player.CreateActionMessage("set:direction");
-            _player.Ship.WriteDirectionData(action, e.Direction);
+            _player.Ship.WriteDirectionData(action, (Direction)arg);
         }
 
         /// <summary>
@@ -78,7 +79,7 @@ namespace VoidHuntersRevived.Server.Drivers
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HandleTractorBeamSelected(object sender, ShipPart e)
+        private void HandleTractorBeamSelected(Object arg)
         {
             var action = _player.CreateActionMessage("tractor-beam:select");
             _player.Ship.TractorBeam.WriteOffsetData(action);
@@ -91,7 +92,7 @@ namespace VoidHuntersRevived.Server.Drivers
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HandleTractorBeamRelease(object sender, ShipPart e)
+        private void HandleTractorBeamRelease(Object arg)
         {
             var action = _player.CreateActionMessage("tractor-beam:release");
             _player.Ship.TractorBeam.WriteOffsetData(action);
@@ -103,7 +104,7 @@ namespace VoidHuntersRevived.Server.Drivers
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HandleTractorBeamOffsetChanged(object sender, Vector2 e)
+        private void HandleTractorBeamOffsetChanged(Object arg)
         {
             var action = _player.CreateActionMessage("tractor-beam:set:offset");
             _player.Ship.TractorBeam.WriteOffsetData(action);

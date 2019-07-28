@@ -43,14 +43,6 @@ namespace VoidHuntersRevived.Library.Entities
         public Single Rotation { get; private set; }
         #endregion
 
-        #region Events
-        public event EventHandler<ShipPart> OnSelected;
-        public event EventHandler<ShipPart> OnReleased;
-        public event EventHandler<Vector2> OnOffsetChanged;
-        public event EventHandler<Single> OnRotationChanged;
-        public event EventHandler<ShipPart> OnAttached;
-        #endregion
-
         #region Constructors
         public TractorBeam(Ship ship, EntityCollection entities, EntityConfiguration configuration, IServiceProvider provider) : base(configuration, provider)
         {
@@ -107,7 +99,7 @@ namespace VoidHuntersRevived.Library.Entities
             this.Selected.SleepingAllowed = false;
             _targetFocus = this.Selected.Focused.Add();
 
-            this.OnSelected?.Invoke(this, this.Selected);
+            this.Events.TryInvoke("selected", this.Selected);
             return true;
         }
 
@@ -130,7 +122,7 @@ namespace VoidHuntersRevived.Library.Entities
             this.Selected.SleepingAllowed = true;
             this.Selected = null;
 
-            this.OnReleased?.Invoke(this, oldTarget);
+            this.Events.TryInvoke("released", oldTarget);
             return true;
         }
 
@@ -149,7 +141,7 @@ namespace VoidHuntersRevived.Library.Entities
 
             // Create the attachment...
             this.Selected.TryAttatchTo(target);
-            this.OnAttached?.Invoke(this, this.Selected);
+            this.Events.TryInvoke("attached", this.Selected);
 
             return true;
         }
@@ -267,7 +259,7 @@ namespace VoidHuntersRevived.Library.Entities
 
                 this.UpdateSelectedPosition();
 
-                this.OnOffsetChanged?.Invoke(this, this.Offset);
+                this.Events.TryInvoke("changed:offset", this.Offset);
             }
         }
         public void SetRotation(Single rotation)
@@ -278,7 +270,7 @@ namespace VoidHuntersRevived.Library.Entities
 
                 this.UpdateSelectedPosition();
 
-                this.OnRotationChanged?.Invoke(this, this.Rotation);
+                this.Events.TryInvoke("changed:rotation", this.Rotation);
             }
         }
 
