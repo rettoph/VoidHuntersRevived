@@ -25,6 +25,7 @@ using System.IO;
 using Microsoft.Xna.Framework.Graphics;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Loaders;
+using VoidHuntersRevived.Library.Drivers;
 
 namespace VoidHuntersRevived.Client.Library.Drivers
 {

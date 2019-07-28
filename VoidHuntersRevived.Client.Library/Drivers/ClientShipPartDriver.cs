@@ -47,16 +47,16 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             base.draw(gameTime);
 
-            _spriteBatch.Draw(
-                texture: _com,
-                position: _shipPart.WorldCenteroid,
-                sourceRectangle: _com.Bounds,
-                color: Color.White,
-                rotation: _shipPart.Rotation,
-                origin: _com.Bounds.Center.ToVector2(),
-                scale: 0.01f,
-                effects: SpriteEffects.None,
-                layerDepth: 0);
+            // _spriteBatch.Draw(
+            //     texture: _com,
+            //     position: _shipPart.WorldCenteroid,
+            //     sourceRectangle: _com.Bounds,
+            //     color: Color.White,
+            //     rotation: _shipPart.Rotation,
+            //     origin: _com.Bounds.Center.ToVector2(),
+            //     scale: 0.01f,
+            //     effects: SpriteEffects.None,
+            //     layerDepth: 0);
         }
         #endregion
 

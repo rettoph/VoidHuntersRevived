@@ -80,16 +80,16 @@ namespace VoidHuntersRevived.Library.Utilities.ConnectionNodes
 
         public virtual void Draw(GameTime gameTime)
         {
-            _spriteBatch.Draw(
-                texture: this.texture,
-                position: this.WorldPosition,
-                sourceRectangle: this.texture.Bounds,
-                color: Color.White,
-                rotation: this.WorldRotation,
-                origin: this.texture.Bounds.Center.ToVector2(),
-                scale: 0.01f,
-                effects: SpriteEffects.None,
-                layerDepth: 0);
+            // _spriteBatch.Draw(
+            //     texture: this.texture,
+            //     position: this.WorldPosition,
+            //     sourceRectangle: this.texture.Bounds,
+            //     color: Color.White,
+            //     rotation: this.WorldRotation,
+            //     origin: this.texture.Bounds.Center.ToVector2(),
+            //     scale: 0.01f,
+            //     effects: SpriteEffects.None,
+            //     layerDepth: 0);
         }
     }
 }

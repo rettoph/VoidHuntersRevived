@@ -77,11 +77,14 @@ namespace VoidHuntersRevived.Server.Scenes
         private void HandleUserAdded(object sender, User user)
         {
             ShipPart bridge;
-
-            using (FileStream input = File.OpenRead(_randomTypeLoader.GetRandomValue("ship-part-export", new Random())))
+            var r = new Random();
+            using (FileStream input = File.OpenRead(_randomTypeLoader.GetRandomValue("ship-part-export", r)))
                 bridge = _shipBuilder.Import(input);
 
             // bridge = this.entities.Create<ShipPart>(_randomTypeLoader.GetRandomValue("ship-part:hull", new Random()));
+            bridge.Position = new Vector2((Single)((r.NextDouble() * 200) - 100), (Single)((r.NextDouble() * 200) - 100));
+            bridge.Rotation = (Single)((r.NextDouble() * 10) - 5);
+
             var ship = this.entities.Create<Ship>("entity:ship");
             var player = this.entities.Create<Player>("entity:player:user", user);
 

@@ -32,6 +32,7 @@ namespace VoidHuntersRevived.Library
             services.AddLoader<RandomTypeLoader>();
             services.AddScene<VoidHuntersWorldScene>();
             services.AddDriver<VoidHuntersWorldScene, VoidHuntersWorldSceneDriver>(95);
+            services.AddDriver<Ship, ShipMovementModuleDriver>();
 
             services.AddScoped<ShipBuilder>();
             services.AddScoped<World>(p =>

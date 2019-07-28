@@ -64,19 +64,6 @@ namespace VoidHuntersRevived.Library.Entities
         protected override void Initialize()
         {
             base.Initialize();
-
-            // Initialize any partial components...
-            this.InitializeMovement();
-        }
-        #endregion
-
-        #region Frame Methods
-        protected override void update(GameTime gameTime)
-        {
-            base.update(gameTime);
-
-            // Call component update methods...
-            this.UpdateMovement(gameTime);
         }
         #endregion
 
@@ -111,6 +98,7 @@ namespace VoidHuntersRevived.Library.Entities
                 if (this.Bridge != null)
                 {
                     this.Bridge.BridgeFor = this;
+                    this.Bridge.CollisionCategories = FarseerPhysics.Dynamics.Category.Cat1;
 
                     this.Bridge.OnConnectionNodesRemapped += this.HandleBridgeConnectionNodesRemapped;
                     this.Bridge.Disposing += this.HandleBridgeDisposing;
@@ -168,7 +156,8 @@ namespace VoidHuntersRevived.Library.Entities
             this.children.Clear();
             this.Bridge?.GetChildren(ref _children);
 
-            this.RemapThrusters();
+            // Invoke the children updated event
+            this.Events.TryInvoke("updated:children", this.children);
         }
         #endregion
 
@@ -202,19 +191,6 @@ namespace VoidHuntersRevived.Library.Entities
         public void WriteBridgeData(NetOutgoingMessage om)
         {
             om.Write(this.Bridge);
-        }
-
-        public void ReadDirectionData(NetIncomingMessage im)
-        {
-            this.SetDirection(
-                (Direction)im.ReadByte(),
-                im.ReadBoolean());
-        }
-
-        public void WriteDirectionData(NetOutgoingMessage om, Direction direction)
-        {
-            om.Write((Byte)direction);
-            om.Write(_directions[direction]);
         }
         #endregion
 
