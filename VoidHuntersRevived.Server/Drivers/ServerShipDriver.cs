@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Server.Drivers
         {
             base.Initialize();
 
-            _ship.OnBridgeChanged += this.HandleBridgeChanged;
+            _ship.Events.AddHandler("changed:bridge", this.HandleBridgeChanged);
         }
         #endregion
 
@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Server.Drivers
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HandleBridgeChanged(object sender, ChangedEventArgs<ShipPart> e)
+        private void HandleBridgeChanged(Object arg)
         {
             var action = _ship.CreateActionMessage("set:bridge", true);
             _ship.WriteBridgeData(action);

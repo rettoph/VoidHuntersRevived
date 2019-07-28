@@ -11,7 +11,6 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Library.Collections;
 using VoidHuntersRevived.Library.Configurations;
 using VoidHuntersRevived.Library.Drivers;
 using VoidHuntersRevived.Library.Entities;
@@ -34,7 +33,6 @@ namespace VoidHuntersRevived.Library
             services.AddScene<VoidHuntersWorldScene>();
             services.AddDriver<VoidHuntersWorldScene, VoidHuntersWorldSceneDriver>(95);
 
-            services.AddScoped<ShipCollection>();
             services.AddScoped<ShipBuilder>();
             services.AddScoped<World>(p =>
             {

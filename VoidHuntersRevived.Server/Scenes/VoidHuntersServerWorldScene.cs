@@ -11,7 +11,6 @@ using Guppy.Network.Peers;
 using Guppy.Network.Security;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Library.Collections;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
@@ -23,15 +22,13 @@ namespace VoidHuntersRevived.Server.Scenes
 {
     class VoidHuntersServerWorldScene : VoidHuntersWorldScene
     {
-        private ShipCollection _ships;
         private ShipBuilder _shipBuilder;
         private RandomTypeLoader _randomTypeLoader;
 
         protected ServerPeer server;
 
-        public VoidHuntersServerWorldScene(ShipCollection ships, ShipBuilder shipBuilder, RandomTypeLoader entityTypeLoader, ServerPeer server, World world, IServiceProvider provider) : base(server, world, provider)
+        public VoidHuntersServerWorldScene(ShipBuilder shipBuilder, RandomTypeLoader entityTypeLoader, ServerPeer server, World world, IServiceProvider provider) : base(server, world, provider)
         {
-            _ships = ships;
             _shipBuilder = shipBuilder;
             _randomTypeLoader = entityTypeLoader;
 
@@ -85,7 +82,7 @@ namespace VoidHuntersRevived.Server.Scenes
                 bridge = _shipBuilder.Import(input);
 
             // bridge = this.entities.Create<ShipPart>(_randomTypeLoader.GetRandomValue("ship-part:hull", new Random()));
-            var ship = _ships.GetOrCreateAvailableShip();
+            var ship = this.entities.Create<Ship>("entity:ship");
             var player = this.entities.Create<Player>("entity:player:user", user);
 
             player.TrySetShip(ship);

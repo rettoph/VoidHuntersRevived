@@ -21,3 +21,6 @@ These are events triggered by Guppy but specific to this game. Events can be bou
 | `VoidHuntersRevived.Library` | `FarseerEntity` | `created:body` | `Body` | Invoked after the FarseerEntity's CreateBody method is called. |
 | `VoidHuntersRevived.Library` | `FarseerEntity` | `created:fixture` | `Fixture` | Invoked after the FarseerEntity's CreateFixture method is called. |
 | `VoidHuntersRevived.Library` | `FarseerEntity` | `destroyed:fixture` | `Fixture` | Invoked after the FarseerEntity's DestroyFixture method is called. |
+| | | | |
+| `VoidHuntersRevived.Library` | `Ship` | `changed:bridge` | `ShipPart` | Invoked after the Ship's Bridge is changed. |
+| `VoidHuntersRevived.Library` | `Ship` | `changed:player` | `Player` | Invoked after the Ship's Player is changed. |

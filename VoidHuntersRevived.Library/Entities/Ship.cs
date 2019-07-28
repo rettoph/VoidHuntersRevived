@@ -40,11 +40,6 @@ namespace VoidHuntersRevived.Library.Entities
         public Player Player { get; internal set; }
         #endregion
 
-        #region Events
-        public event EventHandler<ChangedEventArgs<ShipPart>> OnBridgeChanged;
-        public event EventHandler<ChangedEventArgs<Player>> OnPlayerChanged;
-        #endregion
-
         #region Constructors
         public Ship(EntityConfiguration configuration, IServiceProvider provider) : base(configuration, provider)
         {
@@ -112,9 +107,9 @@ namespace VoidHuntersRevived.Library.Entities
                 }
 
                 // Setup the new bridge
-                if (target != null)
+                this.Bridge = target;
+                if (this.Bridge != null)
                 {
-                    this.Bridge = target;
                     this.Bridge.BridgeFor = this;
 
                     this.Bridge.OnConnectionNodesRemapped += this.HandleBridgeConnectionNodesRemapped;
@@ -125,7 +120,7 @@ namespace VoidHuntersRevived.Library.Entities
                 this.RemapBridge();
 
                 // Trigger the bridge changed event
-                this.OnBridgeChanged?.Invoke(this, new ChangedEventArgs<ShipPart>(old, target));
+                this.Events.TryInvoke("changed:bridge", this.Bridge);
             }
 
             return false;
@@ -136,7 +131,7 @@ namespace VoidHuntersRevived.Library.Entities
             var old = this.Player;
             this.Player = player;
 
-            this.OnPlayerChanged?.Invoke(this, new ChangedEventArgs<Player>(old, this.Player));
+            this.Events.TryInvoke("changed:player", this.Player);
         }
         #endregion
 
