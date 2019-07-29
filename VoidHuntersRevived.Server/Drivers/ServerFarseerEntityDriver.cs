@@ -39,10 +39,6 @@ namespace VoidHuntersRevived.Server.Drivers
                 this.SendUpdatePositionAction();
                 _lastUpdatePositionAction = _lastUpdatePositionAction % _updatePositionActionRate;
             }
-            else
-            {
-                _lastUpdatePositionAction = _updatePositionActionRate;
-            }
         }
 
         #region Utility Methods

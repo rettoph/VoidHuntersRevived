@@ -85,7 +85,7 @@ namespace VoidHuntersRevived.Client.Library.UI
             this.Input.Deselect();
         }
 
-        private void HandleChatMessage(NetIncomingMessage obj)
+        private void HandleChatMessage(Object sender, NetIncomingMessage obj)
         {
             if (obj.ReadBoolean())
             {

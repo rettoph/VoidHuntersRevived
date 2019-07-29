@@ -98,6 +98,7 @@ namespace VoidHuntersRevived.Library.Entities
                 if (this.Bridge != null)
                 {
                     this.Bridge.BridgeFor = this;
+                    this.Bridge.Dirty = true;
                     this.Bridge.CollisionCategories = FarseerPhysics.Dynamics.Category.Cat1;
 
                     this.Bridge.OnConnectionNodesRemapped += this.HandleBridgeConnectionNodesRemapped;

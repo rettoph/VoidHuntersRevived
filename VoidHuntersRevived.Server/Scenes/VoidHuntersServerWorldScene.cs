@@ -10,6 +10,7 @@ using Guppy.Network.Groups;
 using Guppy.Network.Peers;
 using Guppy.Network.Security;
 using Lidgren.Network;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
@@ -17,6 +18,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Factories;
 using VoidHuntersRevived.Library.Loaders;
 using VoidHuntersRevived.Library.Scenes;
+using VoidHuntersRevived.Server.Drivers;
 
 namespace VoidHuntersRevived.Server.Scenes
 {
@@ -82,8 +84,9 @@ namespace VoidHuntersRevived.Server.Scenes
                 bridge = _shipBuilder.Import(input);
 
             // bridge = this.entities.Create<ShipPart>(_randomTypeLoader.GetRandomValue("ship-part:hull", new Random()));
-            bridge.Position = new Vector2((Single)((r.NextDouble() * 200) - 100), (Single)((r.NextDouble() * 200) - 100));
-            bridge.Rotation = (Single)((r.NextDouble() * 10) - 5);
+            bridge.SetTransform(
+                new Vector2((Single)((r.NextDouble() * 200) - 100), (Single)((r.NextDouble() * 200) - 100)),
+                (Single)((r.NextDouble() * 10) - 5));
 
             var ship = this.entities.Create<Ship>("entity:ship");
             var player = this.entities.Create<Player>("entity:player:user", user);
@@ -99,7 +102,7 @@ namespace VoidHuntersRevived.Server.Scenes
         #endregion
 
         #region Message Handlers
-        private void HandleChatMessage(NetIncomingMessage obj)
+        private void HandleChatMessage(Object sender, NetIncomingMessage obj)
         {
             // Parse the message then broadcast to all users
             var user = this.Users.GetByNetConnection(obj.SenderConnection);

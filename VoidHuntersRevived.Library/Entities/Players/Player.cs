@@ -50,6 +50,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
                 this.Ship = target;
                 this.Ship.SetPlayer(this);
+                this.Ship.Dirty = true;
 
                 this.Events.TryInvoke("changed:ship", this.Ship);
                 return true;

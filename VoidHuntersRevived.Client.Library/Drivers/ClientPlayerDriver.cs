@@ -42,18 +42,18 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         #endregion
 
         #region Action Handlers
-        private void HandleSetShipAction(NetIncomingMessage obj)
+        private void HandleSetShipAction(Object sender, NetIncomingMessage obj)
         {
             _player.ReadShipData(obj);
         }
 
-        private void HandleSetShipDirection(NetIncomingMessage obj)
+        private void HandleSetShipDirection(Object sender, NetIncomingMessage obj)
         {
             // Read any incoming ship direction data
             _player.Ship.ReadDirectionData(obj);
         }
 
-        private void HandleTractorBeamSelectAction(NetIncomingMessage obj)
+        private void HandleTractorBeamSelectAction(Object sender, NetIncomingMessage obj)
         {
             // Read any incoming offset data
             _player.Ship.TractorBeam.ReadOffsetData(obj);
@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _player.Ship.TractorBeam.ReadSelectedData(obj);
         }
 
-        private void HandleTractorBeamReleaseAction(NetIncomingMessage obj)
+        private void HandleTractorBeamReleaseAction(Object sender, NetIncomingMessage obj)
         {
             // Read any incoming offset data
             _player.Ship.TractorBeam.ReadOffsetData(obj);
@@ -69,13 +69,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _player.Ship.TractorBeam.TryRelease();
         }
 
-        private void HandleTractorBeamSetOffsetAction(NetIncomingMessage obj)
+        private void HandleTractorBeamSetOffsetAction(Object sender, NetIncomingMessage obj)
         {
             // Read any incoming offset data
             _player.Ship.TractorBeam.ReadOffsetData(obj);
         }
 
-        private void HandleTractorBeamDeclineSelectAction(NetIncomingMessage obj)
+        private void HandleTractorBeamDeclineSelectAction(Object sender, NetIncomingMessage obj)
         {
             this.logger.LogWarning($"TractorBeam select request declined...");
 
@@ -83,7 +83,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _player.Ship.TractorBeam.TryRelease();
         }
 
-        private void HandleTractorBeamDeclineAttachAction(NetIncomingMessage obj)
+        private void HandleTractorBeamDeclineAttachAction(Object sender, NetIncomingMessage obj)
         {
             this.logger.LogWarning($"TractorBeam attach request declined...");
 

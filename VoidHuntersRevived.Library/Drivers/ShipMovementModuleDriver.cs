@@ -133,7 +133,7 @@ namespace VoidHuntersRevived.Library.Drivers
         /// the internal thruster settings...
         /// </summary>
         /// <param name="arg"></param>
-        private void HandleShipUpdatedChildren(object arg)
+        private void HandleShipUpdatedChildren(Object sender, Object arg)
         {
             var children = arg as List<ShipPart>;
 

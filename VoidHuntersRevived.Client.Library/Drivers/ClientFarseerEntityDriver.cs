@@ -110,7 +110,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         #endregion
 
         #region Action Handlers
-        private void HandleUpdatePositionAction(NetIncomingMessage obj)
+        private void HandleUpdatePositionAction(Object sender, NetIncomingMessage obj)
         {
             _server.Bodies[_entity].SetTransform(obj.ReadVector2(), obj.ReadSingle());
             _server.Bodies[_entity].LinearVelocity = obj.ReadVector2();
@@ -121,7 +121,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         #endregion
 
         #region Event Handlers
-        private void HandleBodyCreated(Object arg)
+        private void HandleBodyCreated(Object sender, Object arg)
         {
             _server.Bodies.Add(_entity, (arg as Body).DeepClone(_server.World));
         }
@@ -132,7 +132,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="shape"></param>
-        private void HandleFixtureCreated(Object arg)
+        private void HandleFixtureCreated(Object sender, Object arg)
         {
             var fixture = arg as Fixture;
             var sFixture = fixture.CloneOnto(_server.Bodies[_entity]);
@@ -146,75 +146,75 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="shape"></param>
-        private void HandleFixtureDestroyed(Object arg)
+        private void HandleFixtureDestroyed(Object sender, Object arg)
         {
             var fixture = arg as Fixture;
             _server.Bodies[_entity].DestroyFixture(_clientServerFixtureTable[fixture]);
             _clientServerFixtureTable.Remove(fixture);
         }
 
-        private void HandleAngularImpulseApplied(Object arg)
+        private void HandleAngularImpulseApplied(Object sender, Object arg)
         {
             _server.Bodies[_entity].ApplyAngularImpulse((Single)arg);
         }
 
-        private void HandleLinearImpulseApplied(Object arg)
+        private void HandleLinearImpulseApplied(Object sender, Object arg)
         {
             _server.Bodies[_entity].ApplyLinearImpulse((Vector2)arg);
         }
 
-        private void HandleCollisionCategoriesChanged(Object arg)
+        private void HandleCollisionCategoriesChanged(Object sender, Object arg)
         {
             _server.Bodies[_entity].CollisionCategories = (Category)arg;
         }
 
-        private void HandleCollidesWithChanged(Object arg)
+        private void HandleCollidesWithChanged(Object sender, Object arg)
         {
             _server.Bodies[_entity].CollidesWith = (Category)arg;
         }
 
-        private void HandleCollisionGroupChanged(Object arg)
+        private void HandleCollisionGroupChanged(Object sender, Object arg)
         {
             _server.Bodies[_entity].CollisionGroup = (Int16)arg;
         }
 
-        private void HandleIsSensorChanged(Object arg)
+        private void HandleIsSensorChanged(Object sender, Object arg)
         {
             _server.Bodies[_entity].IsSensor = (Boolean)arg;
         }
 
-        private void HandleSleepingAllowedChanged(Object arg)
+        private void HandleSleepingAllowedChanged(Object sender, Object arg)
         {
             _server.Bodies[_entity].SleepingAllowed = (Boolean)arg;
         }
 
-        private void HandlePhysicsEnabledChanged(Object arg)
+        private void HandlePhysicsEnabledChanged(Object sender, Object arg)
         {
             _server.Bodies[_entity].Enabled = (Boolean)arg;
         }
 
-        private void HandleSetTransform(Object arg)
+        private void HandleSetTransform(Object sender, Object arg)
         {
             _server.Bodies[_entity].SetTransform(_entity.Position, _entity.Rotation);
         }
 
-        private void HandleForceApplied(Object arg)
+        private void HandleForceApplied(Object sender, Object arg)
         {
             var e = arg as ForceEventArgs;
             _server.Bodies[_entity].ApplyForce(e.Force, e.Point);
         }
 
-        private void HandleAngularDampingChanged(Object arg)
+        private void HandleAngularDampingChanged(Object sender, Object arg)
         {
             _server.Bodies[_entity].AngularDamping = (Single)arg;
         }
 
-        private void HandleLinearDampingChanged(Object arg)
+        private void HandleLinearDampingChanged(Object sender, Object arg)
         {
             _server.Bodies[_entity].LinearDamping = (Single)arg;
         }
 
-        private void HandleRead(Object e)
+        private void HandleRead(Object sender, Object e)
         {
             _server.Bodies[_entity].Position = _entity.Position;
             _server.Bodies[_entity].Rotation = _entity.Rotation;

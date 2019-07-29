@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Server.Drivers
         #endregion
 
         #region Event Handlers
-        private void HandleShipChanged(Object arg)
+        private void HandleShipChanged(Object sender, Object arg)
         {
             var action = _player.CreateActionMessage("set:ship");
             _player.WriteShipData(action);
@@ -76,7 +76,7 @@ namespace VoidHuntersRevived.Server.Drivers
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HandleDirectionChanged(Object arg)
+        private void HandleDirectionChanged(Object sender, Object arg)
         {
             var action = _player.CreateActionMessage("set:direction");
             _player.Ship.WriteDirectionData(action, (Direction)arg);
@@ -88,7 +88,7 @@ namespace VoidHuntersRevived.Server.Drivers
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HandleTractorBeamSelected(Object arg)
+        private void HandleTractorBeamSelected(Object sender, Object arg)
         {
             var action = _player.CreateActionMessage("tractor-beam:select");
             _player.Ship.TractorBeam.WriteOffsetData(action);
@@ -101,7 +101,7 @@ namespace VoidHuntersRevived.Server.Drivers
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HandleTractorBeamRelease(Object arg)
+        private void HandleTractorBeamRelease(Object sender, Object arg)
         {
             var action = _player.CreateActionMessage("tractor-beam:release");
             _player.Ship.TractorBeam.WriteOffsetData(action);
@@ -113,7 +113,7 @@ namespace VoidHuntersRevived.Server.Drivers
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HandleTractorBeamOffsetChanged(Object arg)
+        private void HandleTractorBeamOffsetChanged(Object sender, Object arg)
         {
             var action = _player.CreateActionMessage("tractor-beam:set:offset");
             _player.Ship.TractorBeam.WriteOffsetData(action);

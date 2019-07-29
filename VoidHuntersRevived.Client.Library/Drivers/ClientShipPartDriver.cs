@@ -61,14 +61,14 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         #endregion
 
         #region Action Handlers
-        private void HandleMaleConnectionNodeDetachAction(NetIncomingMessage obj)
+        private void HandleMaleConnectionNodeDetachAction(Object sender, NetIncomingMessage obj)
         {
             // Only detatch if the ship part is connected to anything
             if (_shipPart.MaleConnectionNode.Target != null)
                 _shipPart.TryDetatchFrom();
         }
 
-        private void HandleMaleConnectionNodeAttachAction(NetIncomingMessage obj)
+        private void HandleMaleConnectionNodeAttachAction(Object sender, NetIncomingMessage obj)
         {
             _shipPart.ReadAttachmentData(obj);
         }

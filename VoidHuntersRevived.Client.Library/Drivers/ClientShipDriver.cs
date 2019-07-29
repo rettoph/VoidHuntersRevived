@@ -63,7 +63,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         /// set the bridge value
         /// </summary>
         /// <param name="obj"></param>
-        private void HandleSetBridgeAction(NetIncomingMessage obj)
+        private void HandleSetBridgeAction(Object sender, NetIncomingMessage obj)
         {
             _ship.ReadBridgeData(obj);
         }

@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Server.Drivers
         #endregion
 
         #region Action Handlers
-        private void HandleSetDirectionAction(NetIncomingMessage obj)
+        private void HandleSetDirectionAction(Object sender, NetIncomingMessage obj)
         {
             if (this.ValidateSender(obj))
             {
@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Server.Drivers
             }
         }
 
-        private void HandleTractorBeamSelectAction(NetIncomingMessage obj)
+        private void HandleTractorBeamSelectAction(Object sender, NetIncomingMessage obj)
         {
             if (this.ValidateSender(obj))
             {
@@ -75,7 +75,7 @@ namespace VoidHuntersRevived.Server.Drivers
             }
         }
 
-        private void HandleTractorBeamReleaseAction(NetIncomingMessage obj)
+        private void HandleTractorBeamReleaseAction(Object sender, NetIncomingMessage obj)
         {
             if (this.ValidateSender(obj))
             {
@@ -88,7 +88,7 @@ namespace VoidHuntersRevived.Server.Drivers
             }
         }
 
-        private void HandleTractorBeamAttachAction(NetIncomingMessage obj)
+        private void HandleTractorBeamAttachAction(Object sender, NetIncomingMessage obj)
         {
             if (this.ValidateSender(obj))
             {
@@ -107,7 +107,7 @@ namespace VoidHuntersRevived.Server.Drivers
             }
         }
 
-        private void HandleTractorBeamSetOffsetAction(NetIncomingMessage obj)
+        private void HandleTractorBeamSetOffsetAction(Object sender, NetIncomingMessage obj)
         {
             if (this.ValidateSender(obj))
             {

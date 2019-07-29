@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Server.Drivers
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HandleBridgeChanged(Object arg)
+        private void HandleBridgeChanged(Object sender, Object arg)
         {
             var action = _ship.CreateActionMessage("set:bridge", true);
             _ship.WriteBridgeData(action);
