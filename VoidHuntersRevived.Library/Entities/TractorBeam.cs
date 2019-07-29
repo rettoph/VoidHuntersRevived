@@ -97,6 +97,7 @@ namespace VoidHuntersRevived.Library.Entities
             // Focus the new target
             this.Selected = target;
             this.Selected.SleepingAllowed = false;
+            this.Selected.Dirty = true;
             _targetFocus = this.Selected.Focused.Add();
 
             this.Events.TryInvoke("selected", this.Selected);
@@ -120,6 +121,7 @@ namespace VoidHuntersRevived.Library.Entities
 
             this.Selected.Focused.Remove(_targetFocus);
             this.Selected.SleepingAllowed = true;
+            this.Selected.Dirty = true;
             this.Selected = null;
 
             this.Events.TryInvoke("released", oldTarget);
