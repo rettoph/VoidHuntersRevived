@@ -54,11 +54,11 @@ namespace VoidHuntersRevived.Server.Scenes
             for(Int32 i=0; i<100; i++)
             {
                 var e = this.entities.Create<ShipPart>(_randomTypeLoader.GetRandomValue("ship-part:hull", r));
-                e.Position = new Vector2((Single)((r.NextDouble() * 100) - 50), (Single)((r.NextDouble() * 100) - 50));
+                e.Position = new Vector2((Single)((r.NextDouble() * 150) - 75), (Single)((r.NextDouble() * 150) - 75));
                 e.Rotation = (Single)((r.NextDouble() * 10) - 5);
 
                 e = this.entities.Create<ShipPart>(_randomTypeLoader.GetRandomValue("ship-part:thruster", r));
-                e.Position = new Vector2((Single)((r.NextDouble() * 100) - 50), (Single)((r.NextDouble() * 100) - 50));
+                e.Position = new Vector2((Single)((r.NextDouble() * 150) - 75), (Single)((r.NextDouble() * 150) - 75));
                 e.Rotation = (Single)((r.NextDouble() * 10) - 5);
             }
 
@@ -83,9 +83,9 @@ namespace VoidHuntersRevived.Server.Scenes
             using (FileStream input = File.OpenRead(_randomTypeLoader.GetRandomValue("ship-part-export", r)))
                 bridge = _shipBuilder.Import(input);
 
-            // bridge = this.entities.Create<ShipPart>(_randomTypeLoader.GetRandomValue("ship-part:hull", new Random()));
+            // bridge = this.entities.Create<ShipPart>(_randomTypeLoader.GetRandomValue("ship-part:bridge", r));
             bridge.SetTransform(
-                new Vector2((Single)((r.NextDouble() * 200) - 100), (Single)((r.NextDouble() * 200) - 100)),
+                new Vector2((Single)((r.NextDouble() * 150) - 75), (Single)((r.NextDouble() * 150) - 75)),
                 (Single)((r.NextDouble() * 10) - 5));
 
             var ship = this.entities.Create<Ship>("entity:ship");

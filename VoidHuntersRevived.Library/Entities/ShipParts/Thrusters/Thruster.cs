@@ -158,11 +158,18 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
             if (ratr > MathHelper.Pi && ratr < MathHelper.TwoPi)
                 directions.Add(Direction.TurnLeft);
 
+            // Check if the thruster moves the chain right...
+            if (apatr_lower > MathHelper.Pi && apatr_upper < MathHelper.TwoPi)
+                directions.Add(Direction.Right);
 
-                // case Direction.StrafeRight:
-                //     return (apatr_lower > 0 && apatr_upper < RadianHelper.PI);
-                // case Direction.StrafeLeft:
-                //     return (apatr_lower > RadianHelper.PI && apatr_upper < RadianHelper.TWO_PI);
+            // Check if the thruster moves the chain left...
+            if (apatr_lower > 0 && apatr_upper < MathHelper.Pi)
+                directions.Add(Direction.Left);
+
+            // case Direction.StrafeRight:
+            //     return (apatr_lower > 0 && apatr_upper < RadianHelper.PI);
+            // case Direction.StrafeLeft:
+            //     return (apatr_lower > RadianHelper.PI && apatr_upper < RadianHelper.TWO_PI);
 
             return directions;
         }

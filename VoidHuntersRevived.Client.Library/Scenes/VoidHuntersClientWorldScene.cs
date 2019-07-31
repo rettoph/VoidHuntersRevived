@@ -68,14 +68,17 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _debug.AppendFlags(DebugViewFlags.ContactPoints);
             _debug.AppendFlags(DebugViewFlags.ContactNormals);
             _debug.AppendFlags(DebugViewFlags.Controllers);
+            _debug.DefaultShapeColor = new Color(0, 0, 255, 100);
+            _debug.SleepingShapeColor = new Color(255, 0, 0, 100);
+            // _debug.AppendFlags(DebugViewFlags.PolygonPoints);
 
             _debugServer = new DebugViewXNA(_server.World);
             _debugServer.LoadContent(_graphics, _content);
             _debugServer.AppendFlags(DebugViewFlags.ContactPoints);
             _debugServer.AppendFlags(DebugViewFlags.ContactNormals);
             _debugServer.AppendFlags(DebugViewFlags.Controllers);
-            _debugServer.DefaultShapeColor = new Color(0, 0, 255, 100);
-            _debugServer.SleepingShapeColor = new Color(255, 0, 0, 100);
+            // _debugServer.DefaultShapeColor = new Color(0, 0, 255, 100);
+            // _debugServer.SleepingShapeColor = new Color(255, 0, 0, 100);
 
             this.DefaultLayerDepth = 1;
 
@@ -101,7 +104,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         {
             _graphics.Clear(Color.Black);
 
-            _debugServer.RenderDebugData(_camera.Projection, _camera.View);
+            //_debugServer.RenderDebugData(_camera.Projection, _camera.View);
             _debug.RenderDebugData(_camera.Projection, _camera.View);
             
             base.draw(gameTime);

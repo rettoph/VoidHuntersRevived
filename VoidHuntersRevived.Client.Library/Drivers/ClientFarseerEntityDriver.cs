@@ -72,7 +72,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             base.Initialize();
 
-            _lerpStrength = 0.05f;
+            _lerpStrength = 0.1f;
         }
         #endregion
 

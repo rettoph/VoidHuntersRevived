@@ -6,6 +6,7 @@ using Guppy.Configurations;
 using Microsoft.Xna.Framework;
 using System.Linq;
 using FarseerPhysics.Common;
+using FarseerPhysics.Dynamics;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -31,16 +32,26 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// </summary>
         protected override void UpdateChainPlacement()
         {
-            if (this.Fixture?.Body.BodyId != this.Root.BodyId || _currentChainTranslation != this.LocalTransformation)
+            if (this.Fixtures.Count == 0 || this.Fixtures.First()?.Body.BodyId != this.Root.BodyId || _currentChainTranslation != this.LocalTransformation)
             { // Only proceed if the ship-parts chain has been changed...
-                if (this.Fixture != null) // Clear the old fixture...
-                    (this.Fixture.Body.UserData as FarseerEntity).DestroyFixture(this.Fixture);
+                foreach(Fixture fixture in this.Fixtures)
+                { // Clear all old fixtures...
+                    if (fixture != null) // Clear the old fixture...
+                        (fixture.Body.UserData as FarseerEntity).DestroyFixture(fixture);
+                }
 
-                // Create the new fixture based on the updated chain translations
-                var vertices = new Vertices(this.config.Vertices.Select(v => new Vector2(v.X, v.Y)));
-                _currentChainTranslation = this.LocalTransformation;
-                vertices.Transform(ref _currentChainTranslation);
-                this.Fixture = this.Root.CreateFixture(new PolygonShape(vertices, this.config.Density), this);
+                // Clear all old fixtures...
+                this.Fixtures.Clear();
+                
+                foreach(List<Vector2> verticeSetup in this.config.Vertices)
+                {
+                    // Create the new fixture based on the updated chain translations
+                    var vertices = new Vertices(verticeSetup);
+                    _currentChainTranslation = this.LocalTransformation;
+                    vertices.Transform(ref _currentChainTranslation);
+                    this.Fixtures.Add(this.Root.CreateFixture(new PolygonShape(vertices, this.config.Density), this));
+                }
+
             }
         }
     }

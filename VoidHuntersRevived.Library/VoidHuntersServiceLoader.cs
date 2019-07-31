@@ -1,4 +1,5 @@
-﻿using FarseerPhysics.Collision.Shapes;
+﻿using FarseerPhysics;
+using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Common;
 using FarseerPhysics.Controllers;
 using FarseerPhysics.Dynamics;
@@ -22,6 +23,7 @@ using VoidHuntersRevived.Library.Factories;
 using VoidHuntersRevived.Library.Loaders;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Utilities;
+using static VoidHuntersRevived.Library.Utilities.ShipPartConfigurationBuilder;
 
 namespace VoidHuntersRevived.Library
 {
@@ -57,11 +59,58 @@ namespace VoidHuntersRevived.Library
 
         public void Boot(IServiceProvider provider)
         {
+            Settings.MaxPolygonVertices = 25;
+            Settings.UseConvexHullPolygons = true;
+
             var stringLoader = provider.GetLoader<StringLoader>();
             stringLoader.Register("description:entity:ship-part:hull", "A hull piece that can be used increase your ship size.");
             stringLoader.Register("name:entity:ship-part:hull:square", "Hull Square");
 
             var entityLoader = provider.GetLoader<EntityLoader>();
+
+            var piThirds = MathHelper.Pi / 3;
+            var twoPiThirds = 2 * (MathHelper.Pi / 3);
+
+            // Build the default hull type...
+            var builder = new ShipPartConfigurationBuilder();
+            builder.SetMale(new Vector3(0, 0, 0));
+            builder.AddSide(RadHelper.FromDeg(60), NodeType.Female);
+            builder.AddSide(RadHelper.FromDeg(60), NodeType.Female);
+            builder.AddSide(RadHelper.FromDeg(60), NodeType.Female);
+            builder.AddSide(0, NodeType.Female);
+            builder.AddSide(RadHelper.FromDeg(60), NodeType.Female);
+            builder.AddSide(RadHelper.FromDeg(60), NodeType.Female);
+            builder.AddSide(RadHelper.FromDeg(60), NodeType.None);
+            builder.AddSide(0, NodeType.None);
+            builder.FlushVertices(new Vector2(-2, 0));
+            builder.AddSide(RadHelper.FromDeg(-90), NodeType.Female);
+            builder.AddSide(RadHelper.FromDeg(30), NodeType.Female);
+            builder.AddSide(RadHelper.FromDeg(60), NodeType.Female);
+            builder.AddSide(RadHelper.FromDeg(60), NodeType.Female);
+            builder.AddSide(RadHelper.FromDeg(30), NodeType.Female);
+            builder.FlushVertices();
+            builder.Rotate(RadHelper.FromDeg(90));
+
+
+            entityLoader.Register<Hull>(
+                "entity:ship-part:bridge:mosquito",
+                "name:entity:ship-part:bridge:mosquito",
+                "description:entity:ship-part:bridge",
+                builder.Build());
+
+            builder = new ShipPartConfigurationBuilder();
+            builder.AddSide(RadHelper.FromDeg(0), NodeType.Male);
+            builder.AddSide(RadHelper.FromDeg(90), NodeType.Female);
+            builder.AddSide(RadHelper.FromDeg(30), NodeType.Female);
+            builder.AddSide(RadHelper.FromDeg(120), NodeType.Female);
+            builder.AddSide(RadHelper.FromDeg(30), NodeType.Female);
+            builder.TrimLast();
+            entityLoader.Register<Hull>(
+                "entity:ship-part:hull:pentagon",
+                "name:entity:ship-part:hull:pentagon",
+                "description:entity:ship-part:hull",
+                builder.Build());
+
             entityLoader.Register<Hull>(
                 "entity:ship-part:hull:triangle",
                 "name:entity:ship-part:hull:triangle",
@@ -106,6 +155,9 @@ namespace VoidHuntersRevived.Library
                 "description:entity:player:user");
 
             var randomTypeLoader = provider.GetLoader<RandomTypeLoader>();
+            randomTypeLoader.Register("ship-part:bridge", "entity:ship-part:bridge:mosquito");
+
+            randomTypeLoader.Register("ship-part:hull", "entity:ship-part:hull:pentagon");
             randomTypeLoader.Register("ship-part:hull", "entity:ship-part:hull:square");
             randomTypeLoader.Register("ship-part:hull", "entity:ship-part:hull:triangle");
             randomTypeLoader.Register("ship-part:hull", "entity:ship-part:hull:hexagon");

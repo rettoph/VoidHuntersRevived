@@ -62,8 +62,6 @@ namespace VoidHuntersRevived.Library.Drivers
 
             if (_ship.Bridge != null)
             { // We only need to bother moving the ship if there is a bridge defined...
-                _ship.Bridge.AngularDamping = MathHelper.Lerp(_ship.Bridge.AngularDamping, (_directions[Direction.TurnLeft] || _directions[Direction.TurnRight]) ? 1f : 1.5f, 0.25f);
-
                 foreach (Thruster thruster in _thrusters)
                     thruster.SetActive(false);
 

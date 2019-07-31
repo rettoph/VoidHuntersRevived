@@ -107,7 +107,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
 
                 var position = hovered == null ? _player.Ship.Bridge.Position : hovered.Position;
 
-                _spriteBatch.DrawString(_font, $"Over: {_contacts.Count}", position, Color.White, 0, Vector2.Zero, 0.1f, SpriteEffects.None, 0);
+                // _spriteBatch.DrawString(_font, $"Over: {_contacts.Count}", position, Color.White, 0, Vector2.Zero, 0.1f, SpriteEffects.None, 0);
             }
         }
 
@@ -131,6 +131,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers
                         this.SetLocalDirection(Direction.Backward, d);
                     if ((d = kState.IsKeyDown(Keys.D)) != _player.Ship.GetDirection(Direction.TurnRight))
                         this.SetLocalDirection(Direction.TurnRight, d);
+                    if ((d = kState.IsKeyDown(Keys.Q)) != _player.Ship.GetDirection(Direction.Left))
+                        this.SetLocalDirection(Direction.Left, d);
+                    if ((d = kState.IsKeyDown(Keys.E)) != _player.Ship.GetDirection(Direction.Right))
+                        this.SetLocalDirection(Direction.Right, d);
 
                     // Update the camera position
                     _cameraOffset = Vector2.Lerp(_cameraOffset, Vector2.Transform(_player.Ship.Bridge.LocalCenter, Matrix.CreateRotationZ(_player.Ship.Bridge.Rotation)), 0.05f);

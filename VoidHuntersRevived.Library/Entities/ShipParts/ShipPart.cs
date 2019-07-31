@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// The current live shape used within the current
         /// parts fixture
         /// </summary>
-        public Fixture Fixture { get; protected set; }
+        public List<Fixture> Fixtures { get; protected set; }
 
         public ShipPart Root { get { return this.Parent == null ? this : this.Parent.Root; } }
         public Boolean IsRoot { get { return this.Parent == null; } }
@@ -128,7 +128,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             base.Initialize();
 
-            this.Fixture = this.CreateFixture(new PolygonShape(this.config.Vertices, this.config.Density), this);
+            // this.Fixture = this.CreateFixture(new PolygonShape(this.config.Vertices, this.config.Density), this);
+            this.Fixtures = new List<Fixture>();
+            this.UpdateChainPlacement();
 
             this.CollisionCategories = Category.Cat2;
             this.CollidesWith = Category.Cat1;
