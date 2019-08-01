@@ -70,14 +70,14 @@ namespace VoidHuntersRevived.Library
 
             var builder = new ShipPartConfigurationBuilder();
             builder.AddNode(Vector2.Zero, 0, NodeType.Male);
-            builder.AddSide(MathHelper.ToRadians(180), NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(180), NodeType.None);
             builder.AddSide(MathHelper.ToRadians(120), NodeType.Female);
             builder.AddSide(MathHelper.ToRadians(120), NodeType.Female);
             builder.AddSide(MathHelper.ToRadians(120), NodeType.Female);
             builder.AddSide(MathHelper.ToRadians(180), NodeType.Female);
             builder.AddSide(MathHelper.ToRadians(120), NodeType.Female);
             builder.AddSide(MathHelper.ToRadians(120), NodeType.Female);
-            builder.AddSide(MathHelper.ToRadians(120), NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(120), NodeType.None);
             builder.Rotate(MathHelper.ToRadians(90));
             builder.Flush();
             builder.AddSide(MathHelper.ToRadians(180), NodeType.Female);
@@ -90,6 +90,18 @@ namespace VoidHuntersRevived.Library
                 "entity:ship-part:chassis:mosquito",
                 "name:entity:ship-part:chassis:mosquito",
                 "description:entity:ship-part:chassis",
+                builder.Build());
+
+            builder.Clear();
+            builder.AddSide(MathHelper.ToRadians(180), NodeType.Male);
+            builder.AddSide(MathHelper.ToRadians(90), NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(150), NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(60), NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(150), NodeType.Female);
+            entityLoader.Register<Hull>(
+                "entity:ship-part:hull:pentagon",
+                "name:entity:ship-part:hull:pentagon",
+                "description:entity:ship-part:hull",
                 builder.Build());
 
             entityLoader.Register<Hull>(
@@ -142,6 +154,7 @@ namespace VoidHuntersRevived.Library
             var randomTypeLoader = provider.GetLoader<RandomTypeLoader>();
             randomTypeLoader.Register("ship-part:bridge", "entity:ship-part:chassis:mosquito");
 
+            randomTypeLoader.Register("ship-part:hull", "entity:ship-part:hull:pentagon");
             randomTypeLoader.Register("ship-part:hull", "entity:ship-part:hull:square");
             randomTypeLoader.Register("ship-part:hull", "entity:ship-part:hull:triangle");
             randomTypeLoader.Register("ship-part:hull", "entity:ship-part:hull:hexagon");

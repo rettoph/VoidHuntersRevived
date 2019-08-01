@@ -130,6 +130,17 @@ namespace VoidHuntersRevived.Library.Utilities
             this.Transform(Matrix.CreateRotationZ(rotation));
         }
 
+        public void Clear()
+        {
+            _verticeBuffer.Clear();
+            _femaleBuffer.Clear();
+            _maleBuffer = null;
+
+            _vertices = new List<Vertices>();
+            _females = new List<ConnectionNodeConfiguration>();
+            _male = null;
+        }
+
         public ShipPartConfiguration Build()
         {
             this.Flush();
