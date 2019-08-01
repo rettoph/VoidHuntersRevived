@@ -68,47 +68,28 @@ namespace VoidHuntersRevived.Library
 
             var entityLoader = provider.GetLoader<EntityLoader>();
 
-            var piThirds = MathHelper.Pi / 3;
-            var twoPiThirds = 2 * (MathHelper.Pi / 3);
-
-            // Build the default hull type...
             var builder = new ShipPartConfigurationBuilder();
-            builder.SetMale(new Vector3(0, 0, 0));
-            builder.AddSide(RadHelper.FromDeg(60), NodeType.Female);
-            builder.AddSide(RadHelper.FromDeg(60), NodeType.Female);
-            builder.AddSide(RadHelper.FromDeg(60), NodeType.Female);
-            builder.AddSide(0, NodeType.Female);
-            builder.AddSide(RadHelper.FromDeg(60), NodeType.Female);
-            builder.AddSide(RadHelper.FromDeg(60), NodeType.Female);
-            builder.AddSide(RadHelper.FromDeg(60), NodeType.None);
-            builder.AddSide(0, NodeType.None);
-            builder.FlushVertices(new Vector2(-2, 0));
-            builder.AddSide(RadHelper.FromDeg(-90), NodeType.Female);
-            builder.AddSide(RadHelper.FromDeg(30), NodeType.Female);
-            builder.AddSide(RadHelper.FromDeg(60), NodeType.Female);
-            builder.AddSide(RadHelper.FromDeg(60), NodeType.Female);
-            builder.AddSide(RadHelper.FromDeg(30), NodeType.Female);
-            builder.FlushVertices();
-            builder.Rotate(RadHelper.FromDeg(90));
-
-
+            builder.AddNode(Vector2.Zero, 0, NodeType.Male);
+            builder.AddSide(MathHelper.ToRadians(180), NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(120), NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(120), NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(120), NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(180), NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(120), NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(120), NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(120), NodeType.Female);
+            builder.Rotate(MathHelper.ToRadians(90));
+            builder.Flush();
+            builder.AddSide(MathHelper.ToRadians(180), NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(150), NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(120), NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(120), NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(150), NodeType.Female);
+            builder.Transform(Matrix.CreateTranslation(0, -1, 0));
             entityLoader.Register<Hull>(
-                "entity:ship-part:bridge:mosquito",
-                "name:entity:ship-part:bridge:mosquito",
-                "description:entity:ship-part:bridge",
-                builder.Build());
-
-            builder = new ShipPartConfigurationBuilder();
-            builder.AddSide(RadHelper.FromDeg(0), NodeType.Male);
-            builder.AddSide(RadHelper.FromDeg(90), NodeType.Female);
-            builder.AddSide(RadHelper.FromDeg(30), NodeType.Female);
-            builder.AddSide(RadHelper.FromDeg(120), NodeType.Female);
-            builder.AddSide(RadHelper.FromDeg(30), NodeType.Female);
-            builder.TrimLast();
-            entityLoader.Register<Hull>(
-                "entity:ship-part:hull:pentagon",
-                "name:entity:ship-part:hull:pentagon",
-                "description:entity:ship-part:hull",
+                "entity:ship-part:chassis:mosquito",
+                "name:entity:ship-part:chassis:mosquito",
+                "description:entity:ship-part:chassis",
                 builder.Build());
 
             entityLoader.Register<Hull>(
@@ -138,7 +119,11 @@ namespace VoidHuntersRevived.Library
                             new Vector2(0.4f, 0.1f),
                             new Vector2(0.4f, -0.1f)
                         }),
-                    maleConnectionNode: new Vector3(0.3f, 0, 0),
+                    maleConnectionNode: new ConnectionNodeConfiguration()
+                    {
+                        Position = new Vector2(0.3f, 0),
+                        Rotation = 0
+                    },
                     density: 0.05f));
 
             entityLoader.Register<TractorBeam>(
@@ -155,9 +140,8 @@ namespace VoidHuntersRevived.Library
                 "description:entity:player:user");
 
             var randomTypeLoader = provider.GetLoader<RandomTypeLoader>();
-            randomTypeLoader.Register("ship-part:bridge", "entity:ship-part:bridge:mosquito");
+            randomTypeLoader.Register("ship-part:bridge", "entity:ship-part:chassis:mosquito");
 
-            randomTypeLoader.Register("ship-part:hull", "entity:ship-part:hull:pentagon");
             randomTypeLoader.Register("ship-part:hull", "entity:ship-part:hull:square");
             randomTypeLoader.Register("ship-part:hull", "entity:ship-part:hull:triangle");
             randomTypeLoader.Register("ship-part:hull", "entity:ship-part:hull:hexagon");

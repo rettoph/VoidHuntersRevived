@@ -80,10 +80,10 @@ namespace VoidHuntersRevived.Server.Scenes
         {
             ShipPart bridge;
             var r = new Random();
-            using (FileStream input = File.OpenRead(_randomTypeLoader.GetRandomValue("ship-part-export", r)))
-                bridge = _shipBuilder.Import(input);
+            // using (FileStream input = File.OpenRead(_randomTypeLoader.GetRandomValue("ship-part-export", r)))
+            //     bridge = _shipBuilder.Import(input);
 
-            // bridge = this.entities.Create<ShipPart>(_randomTypeLoader.GetRandomValue("ship-part:bridge", r));
+            bridge = this.entities.Create<ShipPart>(_randomTypeLoader.GetRandomValue("ship-part:bridge", r));
             bridge.SetTransform(
                 new Vector2((Single)((r.NextDouble() * 150) - 75), (Single)((r.NextDouble() * 150) - 75)),
                 (Single)((r.NextDouble() * 10) - 5));

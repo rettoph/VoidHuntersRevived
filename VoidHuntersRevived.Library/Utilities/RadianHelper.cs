@@ -14,5 +14,10 @@ namespace VoidHuntersRevived.Library.Utilities
             //return normalized <= Math.PI ? normalized : normalized - TWO_PI;
             return normalized;
         }
+
+        public static Single FromDeg(Single deg)
+        {
+            return deg * (MathHelper.Pi / 180);
+        }
     }
 }

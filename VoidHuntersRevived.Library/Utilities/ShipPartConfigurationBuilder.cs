@@ -20,119 +20,176 @@ namespace VoidHuntersRevived.Library.Utilities
     /// </summary>
     public class ShipPartConfigurationBuilder
     {
-        public enum NodeType {
-            None,
-            Male,
-            Female
-        }
-        public static Vector2 Side = new Vector2(1, 0);
-
-        private List<List<Vector2>> _savedVertices;
-        public readonly Vector2 Start;
-        private List<Vector2> _vertices;
-        private List<Vector3> _femaleNodes;
-        private Vector3 _maleNode;
-        private Vector2 _lastPoint;
-        private Single _lastRadians;
-
-        public ShipPartConfigurationBuilder(Vector2 start = default(Vector2))
+        [Flags]
+        public enum NodeType
         {
-            _savedVertices = new List<List<Vector2>>();
-            _vertices = new List<Vector2>();
-            _femaleNodes = new List<Vector3>();
-
-            this.Start = start;
-            _vertices.Add(start);
+            None = 1,
+            Male = 2,
+            Female = 4,
+            Both = Male | Female
         }
 
+        #region Buffers
+        private List<Vector2> _verticeBuffer;
+        private List<ConnectionNodeConfiguration> _femaleBuffer;
+        private ConnectionNodeConfiguration _maleBuffer;
+        #endregion
+
+        #region Values
+        private List<Vertices> _vertices;
+        private List<ConnectionNodeConfiguration> _females;
+        private ConnectionNodeConfiguration _male;
+        #endregion
+
+        #region Helper Fields
+        public Single _rotation;
+        #endregion
+
+        #region Constructor
+        public ShipPartConfigurationBuilder()
+        {
+            _verticeBuffer = new List<Vector2>();
+            _femaleBuffer = new List<ConnectionNodeConfiguration>();
+
+            _vertices = new List<Vertices>();
+            _females = new List<ConnectionNodeConfiguration>();
+            _maleBuffer = new ConnectionNodeConfiguration()
+            {
+                Position = Vector2.Zero,
+                Rotation = 0
+            };
+        }
+        #endregion
+
+        #region Raw Methods
         public void AddVertice(Vector2 vertice)
         {
-            this._vertices.Add(vertice);
+            _verticeBuffer.Add(vertice);
         }
 
-        public void FlushVertices(Vector2 nextStart = default(Vector2))
+        public void AddNode(Vector2 position, Single rotation, NodeType type)
         {
-            _savedVertices.Add(_vertices.Select(v => v).ToList());
-            _vertices.Clear();
-
-            _vertices.Add(nextStart);
-            _lastRadians = 0;
-        }
-
-        public void AddSide(Single radians, NodeType nodeType = NodeType.None)
-        {
-            _lastPoint = _vertices.Last();
-            _lastRadians += radians;
-
-            var rotationMatrix = Matrix.CreateRotationZ(_lastRadians);
-            _vertices.Add(_lastPoint + Vector2.Transform(ShipPartConfigurationBuilder.Side, rotationMatrix));
-
-            if(nodeType == NodeType.Female)
+            if (!type.HasFlag(NodeType.None))
             {
-                var coords = _lastPoint + Vector2.Transform(ShipPartConfigurationBuilder.Side / 2, rotationMatrix);
-                _femaleNodes.Add(new Vector3(coords, _lastRadians + MathHelper.PiOver2));
-            }
-            else if (nodeType == NodeType.Male)
-            {
-                var coords = _lastPoint + Vector2.Transform(ShipPartConfigurationBuilder.Side / 2, rotationMatrix);
-                _maleNode = new Vector3(coords, _lastRadians - MathHelper.PiOver2);
+                var configuration = new ConnectionNodeConfiguration()
+                {
+                    Position = position,
+                    Rotation = rotation
+                };
+
+                if (type.HasFlag(NodeType.Male))
+                    _maleBuffer = configuration;
+                if (type.HasFlag(NodeType.Female))
+                    _femaleBuffer.Add(configuration);
             }
         }
 
-        public void TrimLast()
+        public void Flush()
         {
-            _vertices.RemoveAt(_vertices.Count() - 1);
-        }
-
-        public void Rotate(Single rads)
-        {
-            foreach (List<Vector2> vertices in _savedVertices)
-                for (Int32 i = 0; i < vertices.Count; i++)
-                    vertices[i] = Vector2.Transform(vertices[i], Matrix.CreateRotationZ(rads));
-
-            for (Int32 i = 0; i < _femaleNodes.Count; i++)
-            {
-                _femaleNodes[i] = Vector3.Transform(_femaleNodes[i], Matrix.CreateRotationZ(rads));
-                _femaleNodes[i] = new Vector3(_femaleNodes[i].X, _femaleNodes[i].Y, _femaleNodes[i].Z + rads);
+            if (_verticeBuffer.Count > 0)
+            { // Flush the vertices...
+                Vector2[] rawVertices = new Vector2[_verticeBuffer.Count];
+                _verticeBuffer.CopyTo(rawVertices);
+                _vertices.Add(new Vertices(rawVertices));
+                _verticeBuffer.Clear();
             }
 
-            _maleNode = Vector3.Transform(_maleNode, Matrix.CreateRotationZ(rads));
-            _maleNode = new Vector3(_maleNode.X, _maleNode.Y, _maleNode.Z + rads);
+            if (_femaleBuffer.Count > 0)
+            { // Flush the females
+                _females.AddRange(_femaleBuffer);
+                _femaleBuffer.Clear();
+            }
+
+            if(_maleBuffer != null)
+            { // Flush the male
+                _male = _maleBuffer;
+                _maleBuffer = null;
+            }
+
+            // Reset helper values...
+            _rotation = 0;
+        }
+
+        public void Transform(Matrix tranformation)
+        {
+            // Update the stored vertices...
+            for(Int32 i=0; i<_verticeBuffer.Count; i++)
+                _verticeBuffer[i] = Vector2.Transform(_verticeBuffer[i], tranformation);
+
+            // Update the stored female nodes...
+            for (Int32 i = 0; i < _femaleBuffer.Count; i++)
+                _femaleBuffer[i] = ConnectionNodeConfiguration.Transform(_femaleBuffer[i], tranformation);
+
+            // Update the stored male node if any
+            if (_maleBuffer != null)
+                _maleBuffer = ConnectionNodeConfiguration.Transform(_maleBuffer, tranformation);
+        }
+
+        public void Rotate(Single rotation)
+        {
+            this.Transform(Matrix.CreateRotationZ(rotation));
         }
 
         public ShipPartConfiguration Build()
         {
-            if (_vertices.Count > 1)
-                this.FlushVertices();
+            this.Flush();
 
             return new ShipPartConfiguration(
-                vertices: _savedVertices,
-                maleConnectionNode: _maleNode,
-                femaleConnectionNodes: _femaleNodes.ToArray());
+                vertices: _vertices,
+                maleConnectionNode: _male,
+                femaleConnectionNodes: _females.ToArray());
         }
+        #endregion
 
-        public void SetMale(Vector3 male)
+        #region Helper Methods
+        /// <summary>
+        /// Add a side with a length of 1, rotate relative to
+        /// the last node's rotation.
+        /// </summary>
+        /// <param name="relativeRotation"></param>
+        /// <param name="node"></param>
+        public void AddSide(Single offsetRotation, NodeType node = NodeType.None)
         {
-            _maleNode = male;
-        }
+            // Ensure that at least one vertice is defined...
+            if (_verticeBuffer.Count == 0)
+                this.AddVertice(Vector2.Zero);
 
-        public static ShipPartConfiguration BuildPolygon(Int32 sides, Boolean includeFemales = false)
+            _rotation = (_rotation + MathHelper.Pi) - offsetRotation;
+            var matrix = Matrix.CreateRotationZ(_rotation);
+            var last = _verticeBuffer.Last();
+
+            // Add a new vertice
+            this.AddVertice(last + Vector2.Transform(Vector2.UnitX, matrix));
+
+            // Add the requested node types
+            if (!node.HasFlag(NodeType.None))
+            {
+                var nPoint = last + Vector2.Transform(Vector2.UnitX / 2, matrix);
+                if (node.HasFlag(NodeType.Male))
+                    this.AddNode(nPoint, _rotation - MathHelper.PiOver2, NodeType.Male);
+                if (node.HasFlag(NodeType.Female))
+                    this.AddNode(nPoint, _rotation + MathHelper.PiOver2, NodeType.Female);
+            }
+        }
+        #endregion
+
+        #region Static Methods
+        public static ShipPartConfiguration BuildPolygon(Single sides, Boolean includeFemaleNodes = false)
         {
             if (sides < 3)
-                throw new Exception("Unable to create polygon with less than three sides!");
+                throw new Exception("Unable to generate polygon with less than 3 sides!");
 
             var builder = new ShipPartConfigurationBuilder();
 
-            builder.AddSide(MathHelper.PiOver2, NodeType.Male);
+            var stepAngle = MathHelper.Pi - (MathHelper.TwoPi / sides);
 
-            Single targetAngle = (sides == 3 ? MathHelper.TwoPi : MathHelper.TwoPi);
-            Single stepAngle = targetAngle / sides;
+            builder.AddSide(0, NodeType.Male);
 
             for (Int32 i = 0; i < sides - 1; i++)
-                builder.AddSide(stepAngle, NodeType.Female);
+                builder.AddSide(stepAngle, includeFemaleNodes ? NodeType.Female : NodeType.None);
 
-            builder.TrimLast();
             return builder.Build();
         }
+        #endregion
     }
 }

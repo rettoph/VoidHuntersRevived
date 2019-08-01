@@ -34,16 +34,16 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             MaleConnectionNode = ActivatorUtilities.CreateInstance<MaleConnectionNode>(
                 this.provider,
                 this,
-                this.config.MaleConnectionNode.Z,
-                new Vector2(this.config.MaleConnectionNode.X, this.config.MaleConnectionNode.Y));
+                this.config.MaleConnectionNode.Rotation,
+                this.config.MaleConnectionNode.Position);
 
             Int32 i = 0;
             this.FemaleConnectionNodes = this.config.FemaleConnectionNodes
                 .Select(fcn => ActivatorUtilities.CreateInstance<FemaleConnectionNode>(
                     this.provider,
                     this,
-                    fcn.Z,
-                    new Vector2(fcn.X, fcn.Y),
+                    fcn.Rotation,
+                    fcn.Position,
                     i++
                 ))
                 .ToArray();
