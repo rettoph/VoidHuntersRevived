@@ -20,9 +20,8 @@
     <ProjectReference Include="..\Submodules\FarseerPhysics\FarseerPhysics.MonoGame.DebugView\FarseerPhysics.MonoGame.DebugView.csproj" />
     <ProjectReference Include="..\Submodules\FarseerPhysics\FarseerPhysics.MonoGame\FarseerPhysics.MonoGame.csproj" />
     <ProjectReference Include="..\Submodules\Guppy\Guppy.Network\Guppy.Network.csproj" />
-    <ProjectReference Include="..\Submodules\Guppy\Guppy.UI\Guppy.UI.csproj" />
     <ProjectReference Include="..\Submodules\Guppy\Guppy\Guppy.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Library\VoidHuntersRevived.Library.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Library\GalacticFighters.Library.csproj" />
   </ItemGroup>
 
 </Project>

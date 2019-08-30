@@ -16,23 +16,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy", "Submodules\Guppy\G
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Network", "Submodules\Guppy\Guppy.Network\Guppy.Network.csproj", "{0B1386F9-8A9A-4CA8-B7C5-8FEEABD3F5A0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.UI", "Submodules\Guppy\Guppy.UI\Guppy.UI.csproj", "{FEDE0482-BB09-46D5-8A62-D37AB67CFD80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GalacticFighters.Library", "VoidHuntersRevived.Library\GalacticFighters.Library.csproj", "{CE818BE6-E43B-4E1B-8FA3-1291779E4D5B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Library", "VoidHuntersRevived.Library\VoidHuntersRevived.Library.csproj", "{CE818BE6-E43B-4E1B-8FA3-1291779E4D5B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Client.Library", "VoidHuntersRevived.Client.Library\VoidHuntersRevived.Client.Library.csproj", "{455880B1-F863-446F-B2DB-CDDDADDAA2C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GalacticFighters.Client.Library", "VoidHuntersRevived.Client.Library\GalacticFighters.Client.Library.csproj", "{455880B1-F863-446F-B2DB-CDDDADDAA2C5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{93A4A3A1-1B0E-4739-89E1-755F2BDA1A95}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Client.Core", "VoidHuntersRevived.Client.Core\VoidHuntersRevived.Client.Core.csproj", "{38CA4BFD-2A8F-412D-835F-218F1CFC8616}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GalacticFighters.Client.Core", "VoidHuntersRevived.Client.Core\GalacticFighters.Client.Core.csproj", "{38CA4BFD-2A8F-412D-835F-218F1CFC8616}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Server", "VoidHuntersRevived.Server\VoidHuntersRevived.Server.csproj", "{FE17A076-F253-4504-BF8A-E6F61FCBBE5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GalacticFighters.Server", "VoidHuntersRevived.Server\GalacticFighters.Server.csproj", "{FE17A076-F253-4504-BF8A-E6F61FCBBE5C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FarseerPhysics.MonoGame.DebugView", "Submodules\FarseerPhysics\FarseerPhysics.MonoGame.DebugView\FarseerPhysics.MonoGame.DebugView.csproj", "{2B3BA11A-324C-49C8-B5E5-1B7E9C43E9CA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FarseerPhysics.MonoGame", "Submodules\FarseerPhysics\FarseerPhysics.MonoGame\FarseerPhysics.MonoGame.csproj", "{EFA482D2-5848-4F77-B90F-D00B75DE9069}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Client.Windows", "VoidHuntersRevived.Client.Windows\VoidHuntersRevived.Client.Windows.csproj", "{0B809C0C-F76A-4346-BD0B-2DC07124230C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GalacticFighters.Client.Windows", "VoidHuntersRevived.Client.Windows\GalacticFighters.Client.Windows.csproj", "{0B809C0C-F76A-4346-BD0B-2DC07124230C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AB5292E1-11AA-42F2-BF62-83E71EB43950}"
 	ProjectSection(SolutionItems) = preProject
@@ -73,17 +71,6 @@ Global
 		{0B1386F9-8A9A-4CA8-B7C5-8FEEABD3F5A0}.Release|x64.Build.0 = Release|Any CPU
 		{0B1386F9-8A9A-4CA8-B7C5-8FEEABD3F5A0}.Release|x86.ActiveCfg = Release|Any CPU
 		{0B1386F9-8A9A-4CA8-B7C5-8FEEABD3F5A0}.Release|x86.Build.0 = Release|Any CPU
-		{FEDE0482-BB09-46D5-8A62-D37AB67CFD80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FEDE0482-BB09-46D5-8A62-D37AB67CFD80}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FEDE0482-BB09-46D5-8A62-D37AB67CFD80}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{FEDE0482-BB09-46D5-8A62-D37AB67CFD80}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{FEDE0482-BB09-46D5-8A62-D37AB67CFD80}.Debug|x86.Build.0 = Debug|Any CPU
-		{FEDE0482-BB09-46D5-8A62-D37AB67CFD80}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FEDE0482-BB09-46D5-8A62-D37AB67CFD80}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FEDE0482-BB09-46D5-8A62-D37AB67CFD80}.Release|x64.ActiveCfg = Release|Any CPU
-		{FEDE0482-BB09-46D5-8A62-D37AB67CFD80}.Release|x64.Build.0 = Release|Any CPU
-		{FEDE0482-BB09-46D5-8A62-D37AB67CFD80}.Release|x86.ActiveCfg = Release|Any CPU
-		{FEDE0482-BB09-46D5-8A62-D37AB67CFD80}.Release|x86.Build.0 = Release|Any CPU
 		{CE818BE6-E43B-4E1B-8FA3-1291779E4D5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CE818BE6-E43B-4E1B-8FA3-1291779E4D5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE818BE6-E43B-4E1B-8FA3-1291779E4D5B}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -175,7 +162,6 @@ Global
 		{022531CB-D8AF-498D-A22D-AE9D9B53E157} = {734E0AAC-E1F9-421A-AC04-038873C9C2BB}
 		{88B8F7ED-F2AA-4411-B664-37D43FCEA39D} = {022531CB-D8AF-498D-A22D-AE9D9B53E157}
 		{0B1386F9-8A9A-4CA8-B7C5-8FEEABD3F5A0} = {022531CB-D8AF-498D-A22D-AE9D9B53E157}
-		{FEDE0482-BB09-46D5-8A62-D37AB67CFD80} = {022531CB-D8AF-498D-A22D-AE9D9B53E157}
 		{38CA4BFD-2A8F-412D-835F-218F1CFC8616} = {93A4A3A1-1B0E-4739-89E1-755F2BDA1A95}
 		{2B3BA11A-324C-49C8-B5E5-1B7E9C43E9CA} = {DFAEC9DF-994B-45BF-8242-E63D3481A52E}
 		{EFA482D2-5848-4F77-B90F-D00B75DE9069} = {DFAEC9DF-994B-45BF-8242-E63D3481A52E}

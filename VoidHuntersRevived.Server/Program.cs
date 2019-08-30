@@ -1,27 +1,26 @@
 ﻿using Guppy;
-using Guppy.Loggers;
 using Guppy.Network;
-using Guppy.Network.Extensions.Guppy;
 using Guppy.Network.Peers;
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
-using Guppy.Network.Groups;
-using Guppy.Network.Drivers;
+using Guppy.Utilities.Loggers;
+using Guppy.Network.Extensions;
 
-namespace VoidHuntersRevived.Server
+namespace GalacticFighters.Server
 {
     class Program
     {
         static void Main(string[] args)
         {
-            var guppy = new GuppyLoader(new ConsoleLogger());
-            guppy.ConfigureServer();
-            guppy.Initialize();
+            var game = new GuppyLoader()
+                .ConfigureLogger<ConsoleLogger>()
+                .ConfigureNetwork("vhr")
+                .Initialize()
+                .BuildGame<ServerGalacticFightersGame>();
 
-            var game = guppy.Games.Create<VoidHuntersServerGame>();
-            game.StartAsyc();
+            game.TryStartAsync();
         }
     }
 }

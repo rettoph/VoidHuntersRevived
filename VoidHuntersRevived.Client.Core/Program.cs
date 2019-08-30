@@ -1,5 +1,5 @@
-﻿using System;
-using VoidHuntersRevived.Client.Library;
+﻿using GalacticFighters.Client.Library;
+using System;
 
 namespace VoidHuntersRevived.Client.Core
 {
