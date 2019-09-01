@@ -1,5 +1,6 @@
 ﻿using GalacticFighters.Library;
 using Guppy.Network.Peers;
+using Guppy.Network.Security;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
@@ -16,6 +17,7 @@ namespace GalacticFighters.Server
         public ServerGalacticFightersGame(ServerPeer server) : base(server)
         {
             _server = server;
+            _server.Users.Events.TryAdd<User>("added", this.HandleUserJoined);
         }
 
         protected override void Initialize()
@@ -27,5 +29,12 @@ namespace GalacticFighters.Server
         {
             base.Update(gameTime);
         }
+
+        #region Event Handlers
+        private void HandleUserJoined(object sender, User arg)
+        {
+            _server.Groups.GetOrCreateById(Guid.Empty).Users.Add(arg);
+        }
+        #endregion
     }
 }

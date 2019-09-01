@@ -20,6 +20,7 @@ namespace GalacticFighters.Server.ServiceLoaders
             var configuration = provider.GetRequiredService<NetPeerConfiguration>();
             configuration.Port = 1337;
             configuration.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
+            configuration.ConnectionTimeout = 5;
         }
     }
 }

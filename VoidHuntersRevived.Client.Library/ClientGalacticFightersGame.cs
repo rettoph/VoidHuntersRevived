@@ -22,7 +22,7 @@ namespace GalacticFighters.Client.Library
         {
             base.Initialize();
 
-            _client.Messages.TryAdd(NetIncomingMessageType.StatusChanged, this.HandleStatusChanged);
+            _client.MessagesTypes.TryAdd(NetIncomingMessageType.StatusChanged, this.HandleStatusChanged);
 
             _client.TryConnect("127.0.0.1", 1337, _client.Users.Create("Rettoph"));
         }
