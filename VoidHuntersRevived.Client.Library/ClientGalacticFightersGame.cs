@@ -1,5 +1,8 @@
 ﻿using GalacticFighters.Library;
 using Guppy.Network.Peers;
+using Guppy.Network.Security;
+using Lidgren.Network;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,7 +22,14 @@ namespace GalacticFighters.Client.Library
         {
             base.Initialize();
 
-            _client.TryConnect("127.0.0.1", 1337);
+            _client.Messages.TryAdd(NetIncomingMessageType.StatusChanged, this.HandleStatusChanged);
+
+            _client.TryConnect("127.0.0.1", 1337, _client.Users.Create("Rettoph"));
+        }
+
+        private void HandleStatusChanged(object sender, NetIncomingMessage arg)
+        {
+            this.logger.LogDebug($"Status => {arg.SenderConnection.Status}");
         }
     }
 }

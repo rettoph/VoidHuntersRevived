@@ -21,24 +21,11 @@ namespace GalacticFighters.Server
         protected override void Initialize()
         {
             base.Initialize();
-
-            _server.Messages.TryAdd(NetIncomingMessageType.StatusChanged, this.HandleStatusChanged);
-            _server.Messages.TryAdd(NetIncomingMessageType.ConnectionApproval, this.HandleConnectionApproval);
         }
 
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-        }
-
-        private void HandleStatusChanged(object sender, NetIncomingMessage arg)
-        {
-            this.logger.LogDebug($"Status => {arg.SenderConnection.Status}");
-        }
-
-        private void HandleConnectionApproval(object sender, NetIncomingMessage arg)
-        {
-            throw new NotImplementedException();
         }
     }
 }
