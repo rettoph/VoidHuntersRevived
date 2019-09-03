@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Client.Windows
+namespace GalacticFighters.Client.Windows
 {
     class Program
     {

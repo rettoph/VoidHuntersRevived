@@ -1,4 +1,5 @@
-﻿using Guppy;
+﻿using GalacticFighters.Library.Scenes;
+using Guppy;
 using Guppy.Network.Peers;
 using Microsoft.Xna.Framework;
 using System;
@@ -14,6 +15,13 @@ namespace GalacticFighters.Library
         public GalacticFightersGame(Peer peer)
         {
             _peer = peer;
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            var scene = this.scenes.Create<GalacticFightersWorldScene>();
         }
 
         protected override void Draw(GameTime gameTime)

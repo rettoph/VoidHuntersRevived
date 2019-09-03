@@ -1,0 +1,165 @@
+﻿using GalacticFighters.Library.Enums;
+using GalacticFighters.Library.Utilities;
+using Lidgren.Network;
+using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using Guppy.Network.Extensions.Lidgren;
+
+namespace GalacticFighters.Library.Entities.ShipParts.Thrusters
+{
+    /// <summary>
+    /// Thrusters are basic ship parts
+    /// that can apply thrust to themselves
+    /// (and thus any chain they are currently
+    /// connected to)
+    /// </summary>
+    public class Thruster : RigidShipPart
+    {
+        #region Public Attributes
+        public Vector2 Thrust { get { return Vector2.Transform(this.ThrustStrength, Matrix.CreateRotationZ(this.Rotation)); } }
+        public Vector2 LocalThrust { get { return Vector2.Transform(this.ThrustStrength, Matrix.CreateRotationZ(this.LocalRotation)); } }
+        public Vector2 ThrustStrength { get; protected set; }
+        public Boolean Active { get; private set; }
+        #endregion
+
+        #region Constructors
+
+        #endregion
+
+        #region Initialization Methods
+        protected override void PreInitialize()
+        {
+            base.PreInitialize();
+
+            if (this.ThrustStrength == default(Vector2))
+                this.ThrustStrength = new Vector2(1000, 0);
+
+            this.Active = false;
+        }
+        #endregion
+
+        #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if (this.Active)
+            {
+                if (!this.Root.IsBridge)
+                    this.SetActive(false);
+                else
+                    this.Root.ApplyForce(this.Thrust * ((Single)gameTime.ElapsedGameTime.Milliseconds / 1000), this.WorldCenteroid);
+            }
+        }
+        #endregion
+
+        #region Set Methods
+        internal void SetActive(Boolean value)
+        {
+            this.Active = value;
+        }
+        #endregion
+
+        #region Helper Methods
+        /// <summary>
+        /// Return a list of directions that the curernt thruster
+        /// moves the ship
+        /// </summary>
+        /// <param name="directions"></param>
+        /// <returns></returns>
+        internal List<Direction> GetDirections(ref List<Direction> directions)
+        {
+            // Each andle of movement has a buffer sone on inclusivity
+            var buffer = 0.01f;
+
+            // The chain's center of mass
+            var com = this.Root.LocalCenter;
+            // The point acceleration is applied
+            var ap = Vector2.Transform(this.Centeroid, this.LocalTransformation);
+            // The point acceleration is targeting
+            var at = ap + this.LocalThrust;
+
+            // The angle between the com and the acceleration point
+            var apr = RadianHelper.Normalize((float)Math.Atan2(ap.Y - com.Y, ap.X - com.X));
+            // The angle between the com and the acceleration target
+            var atr = RadianHelper.Normalize((float)Math.Atan2(at.Y - com.Y, at.X - com.X));
+            // The angle between the acceleration point and the acceleration target
+            var apatr = RadianHelper.Normalize((float)Math.Atan2(at.Y - ap.Y, at.X - ap.X));
+            // The relative acceleration target rotation between the acceleration point and center of mass
+            var ratr = RadianHelper.Normalize(apatr - apr);
+
+            var apatr_lower = apatr - buffer;
+            var apatr_upper = apatr + buffer;
+
+            directions.Clear();
+
+            // Check if the thruster moves the chain forward...
+            if ((apatr_upper < MathHelper.PiOver2 || apatr_lower > 3 * MathHelper.PiOver2))
+                directions.Add(Direction.Forward);
+
+            // Check if the thruster turns the chain right...
+            if (ratr > 0 && ratr < MathHelper.Pi)
+                directions.Add(Direction.TurnRight);
+
+            // Check if the thruster moves the chain backward...
+            if (apatr_lower > MathHelper.PiOver2 && apatr_upper < 3 * MathHelper.PiOver2)
+                directions.Add(Direction.Backward);
+
+            // Check if the thruster turns the chain left...
+            if (ratr > MathHelper.Pi && ratr < MathHelper.TwoPi)
+                directions.Add(Direction.TurnLeft);
+
+            // Check if the thruster moves the chain right...
+            if (apatr_lower > MathHelper.Pi && apatr_upper < MathHelper.TwoPi)
+                directions.Add(Direction.Right);
+
+            // Check if the thruster moves the chain left...
+            if (apatr_lower > 0 && apatr_upper < MathHelper.Pi)
+                directions.Add(Direction.Left);
+
+            // case Direction.StrafeRight:
+            //     return (apatr_lower > 0 && apatr_upper < RadianHelper.PI);
+            // case Direction.StrafeLeft:
+            //     return (apatr_lower > RadianHelper.PI && apatr_upper < RadianHelper.TWO_PI);
+
+            return directions;
+        }
+        #endregion
+
+        #region Network Methods
+        protected override void Read(NetIncomingMessage im)
+        {
+            base.Read(im);
+
+            this.ThrustStrength = im.ReadVector2();
+        }
+
+        protected override void Write(NetOutgoingMessage om)
+        {
+            base.Write(om);
+
+            om.Write(this.ThrustStrength);
+        }
+        #endregion
+
+        #region Import & Export Methods
+        protected internal override void Export(BinaryWriter writer)
+        {
+            base.Export(writer);
+
+            writer.Write(this.ThrustStrength.X);
+            writer.Write(this.ThrustStrength.Y);
+        }
+
+        protected internal override void Import(BinaryReader reader)
+        {
+            base.Import(reader);
+
+            this.ThrustStrength = new Vector2(reader.ReadSingle(), reader.ReadSingle());
+        }
+        #endregion
+    }
+}

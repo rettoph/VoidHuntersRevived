@@ -1,7 +1,7 @@
 ﻿using GalacticFighters.Client.Library;
 using System;
 
-namespace VoidHuntersRevived.Client.Core
+namespace GalacticFighters.Client.Core
 {
     class Program
     {
