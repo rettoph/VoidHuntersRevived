@@ -1,5 +1,5 @@
 ﻿using GalacticFighters.Library.Scenes;
-using GalacticFighters.Library.Utilities;
+// using GalacticFighters.Library.Utilities;
 using Guppy;
 using Guppy.Network.Groups;
 using Guppy.Network.Interfaces;
@@ -25,7 +25,7 @@ namespace GalacticFighters.Library.Entities
         #endregion
 
         #region Public Fields
-        public ActionDelegater Actions { get; private set; }
+        // public ActionDelegater Actions { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -34,7 +34,7 @@ namespace GalacticFighters.Library.Entities
             base.PreInitialize();
 
             this.entities = this.provider.GetRequiredService<EntityCollection>();
-            this.Actions = new ActionDelegater(this, this.provider.GetRequiredService<GalacticFightersWorldScene>());
+            // this.Actions = new ActionDelegater(this, this.provider.GetRequiredService<GalacticFightersWorldScene>());
         }
         #endregion
 
