@@ -1,4 +1,5 @@
-﻿using GalacticFighters.Library;
+﻿using GalacticFighters.Client.Library.Scenes;
+using GalacticFighters.Library;
 using Guppy.Network.Peers;
 using Guppy.Network.Security;
 using Lidgren.Network;
@@ -25,6 +26,11 @@ namespace GalacticFighters.Client.Library
             _client.MessagesTypes.TryAdd(NetIncomingMessageType.StatusChanged, this.HandleStatusChanged);
 
             _client.TryConnect("127.0.0.1", 1337, _client.Users.Create("Rettoph"));
+
+            this.scenes.Create<ClientGalacticFightersWorldScene>(s =>
+            {
+                s.Group = _client.Groups.GetOrCreateById(Guid.Empty);
+            });
         }
 
         private void HandleStatusChanged(object sender, NetIncomingMessage arg)

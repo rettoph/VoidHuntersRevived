@@ -17,13 +17,6 @@ namespace GalacticFighters.Library
             _peer = peer;
         }
 
-        protected override void Initialize()
-        {
-            base.Initialize();
-
-            var scene = this.scenes.Create<GalacticFightersWorldScene>();
-        }
-
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);

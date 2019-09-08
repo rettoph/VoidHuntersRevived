@@ -1,4 +1,5 @@
 ﻿using GalacticFighters.Library;
+using GalacticFighters.Server.Scenes;
 using Guppy.Network.Peers;
 using Guppy.Network.Security;
 using Lidgren.Network;
@@ -23,6 +24,11 @@ namespace GalacticFighters.Server
         protected override void Initialize()
         {
             base.Initialize();
+
+            this.scenes.Create<ServerGalacticFightersWorldScene>(s =>
+            {
+                s.Group = _server.Groups.GetOrCreateById(Guid.Empty);
+            });
         }
 
         protected override void Update(GameTime gameTime)

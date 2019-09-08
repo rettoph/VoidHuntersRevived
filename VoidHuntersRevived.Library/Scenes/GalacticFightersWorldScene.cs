@@ -8,12 +8,8 @@ using System.Text;
 
 namespace GalacticFighters.Library.Scenes
 {
-    public class GalacticFightersWorldScene : Scene
+    public class GalacticFightersWorldScene : NetworkScene
     {
-        #region Public Attributes
-        public Group Group { get; private set; }
-        #endregion
-
         #region Lifecycle Methods
         protected override void Initialize()
         {
