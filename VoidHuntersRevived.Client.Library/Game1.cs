@@ -17,6 +17,8 @@ namespace GalacticFighters.Client.Library
         public Game1()
         {
             this.graphics = new GraphicsDeviceManager(this);
+
+            this.Content.RootDirectory = "Content";
         }
 
         protected override void Initialize()

@@ -15,6 +15,8 @@ using System.Text;
 using GalacticFighters.Library.Entities;
 using GalacticFighters.Library.Scenes;
 using Guppy.Attributes;
+using GalacticFighters.Library.Entities.ShipParts;
+using GalacticFighters.Library.Utilities;
 
 namespace GalacticFighters.Library
 {
@@ -48,7 +50,7 @@ namespace GalacticFighters.Library
         {
             var entities = provider.GetRequiredService<EntityLoader>();
 
-            entities.TryRegister<FarseerEntity>("farseer-entity");
+            entities.TryRegister<ShipPart>("farseer-entity", "", "", ShipPartConfigurationBuilder.BuildPolygon(3, true));
         }
     }
 }
