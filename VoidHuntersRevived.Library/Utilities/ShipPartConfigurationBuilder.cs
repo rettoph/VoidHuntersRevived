@@ -113,12 +113,11 @@ namespace GalacticFighters.Library.Utilities
                 _verticeBuffer[i] = Vector2.Transform(_verticeBuffer[i], tranformation);
 
             // Update the stored female nodes...
-            for (Int32 i = 0; i < _femaleBuffer.Count; i++)
-                _femaleBuffer[i] = ConnectionNodeConfiguration.Transform(_femaleBuffer[i], tranformation);
+            _femaleBuffer.ForEach(node => ConnectionNodeConfiguration.Transform(ref node, tranformation));
 
             // Update the stored male node if any
             if (_maleBuffer != null)
-                _maleBuffer = ConnectionNodeConfiguration.Transform(_maleBuffer, tranformation);
+                ConnectionNodeConfiguration.Transform(ref _maleBuffer, tranformation);
         }
 
         public void Rotate(Single rotation)

@@ -17,6 +17,7 @@ using GalacticFighters.Library.Scenes;
 using Guppy.Attributes;
 using GalacticFighters.Library.Entities.ShipParts;
 using GalacticFighters.Library.Utilities;
+using GalacticFighters.Library.Factories;
 
 namespace GalacticFighters.Library
 {
@@ -25,7 +26,8 @@ namespace GalacticFighters.Library
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            // services.AddScoped<ShipBuilder>();
+            services.AddScoped<ConnectionNodeFactory>();
+
             services.AddScoped<World>(p =>
             {
                 return new World(Vector2.Zero);

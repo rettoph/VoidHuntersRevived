@@ -15,12 +15,32 @@ namespace GalacticFighters.Library.Entities.ShipParts
         private ShipPartConfiguration _configuration;
         #endregion
 
+        #region Public Attributes
+        /// <summary>
+        /// The current ShipPart's immediate parent, if any.
+        /// </summary>
+        public ShipPart Parent { get { return this.MaleConnectionNode.Target?.Parent; } }
+
+        /// <summary>
+        /// Wether or not the current ShipPart is 
+        /// </summary>
+        public Boolean IsRoot { get { return !this.MaleConnectionNode.Connected; } }
+
+        /// <summary>
+        /// Return the root most ShipPart in the current ShipPart's chain.
+        /// </summary>
+        public ShipPart Root { get { return this.IsRoot ? this : this.Parent.Root; } }
+        #endregion
+
         #region Lifecycle Methods
         protected override void PreInitialize()
         {
             base.PreInitialize();
 
             _configuration = this.Configuration.Data as ShipPartConfiguration;
+
+            // Call internal pre initialize functions
+            this.ConnectionNode_PreInitialize();
         }
 
         protected override void Initialize()
@@ -37,6 +57,8 @@ namespace GalacticFighters.Library.Entities.ShipParts
         {
             base.Dispose();
 
+            // Call internal dispose functions
+            this.ConnectionNode_Dispose();
             this.Farseer_Dispose();
         }
         #endregion
