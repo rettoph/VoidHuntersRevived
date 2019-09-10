@@ -3,6 +3,8 @@ using GalacticFighters.Library.Entities;
 using GalacticFighters.Library.Entities.ShipParts;
 using GalacticFighters.Library.Scenes;
 using Guppy.Network.Peers;
+using Guppy.Network.Security;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -23,14 +25,23 @@ namespace GalacticFighters.Server.Scenes
         {
             base.Initialize();
 
-            var part1 = this.entities.Create<ShipPart>("farseer-entity");
-            var part2 = this.entities.Create<ShipPart>("farseer-entity");
+            this.Group.Users.Events.TryAdd<User>("added", this.HandleUserJoined);
+        }
+        #endregion
 
-            part1.Dispose();
+        #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
 
-            var part3 = this.entities.Create<ShipPart>("farseer-entity");
+            this.entities.TryUpdate(gameTime);
+        }
+        #endregion
 
-            part3.MaleConnectionNode.Attach(part2.FemaleConnectionNodes[0]);
+        #region Event Handlers
+        private void HandleUserJoined(object sender, User arg)
+        {
+            this.entities.Create("farseer-entity");
         }
         #endregion
     }

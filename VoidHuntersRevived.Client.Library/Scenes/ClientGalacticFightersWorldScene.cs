@@ -1,6 +1,7 @@
 ﻿using FarseerPhysics;
 using FarseerPhysics.DebugView;
 using FarseerPhysics.Dynamics;
+using GalacticFighters.Client.Library.Utilities;
 using GalacticFighters.Client.Library.Utilities.Cameras;
 using GalacticFighters.Library.Scenes;
 using Guppy.Network.Peers;
@@ -21,6 +22,7 @@ namespace GalacticFighters.Client.Library.Scenes
         private ContentManager _content;
         private DebugViewXNA _debugView;
         private DebugViewXNA _serverDebugView;
+        private ServerRender _server;
         #endregion
 
         #region Public Fields
@@ -28,8 +30,9 @@ namespace GalacticFighters.Client.Library.Scenes
         #endregion
 
         #region Constructor
-        public ClientGalacticFightersWorldScene(FarseerCamera2D camera, GraphicsDevice graphics, ContentManager content, World world) : base(world)
+        public ClientGalacticFightersWorldScene(ServerRender server, FarseerCamera2D camera, GraphicsDevice graphics, ContentManager content, World world) : base(world)
         {
+            _server = server;
             _graphics = graphics;
             _content = content;
 
@@ -48,12 +51,12 @@ namespace GalacticFighters.Client.Library.Scenes
             _debugView.AppendFlags(DebugViewFlags.ContactNormals);
             _debugView.AppendFlags(DebugViewFlags.Controllers);
 
-            _serverDebugView = new DebugViewXNA(this.world);
+            _serverDebugView = new DebugViewXNA(_server.World);
             _serverDebugView.LoadContent(_graphics, _content);
             _serverDebugView.AppendFlags(DebugViewFlags.ContactPoints);
             _serverDebugView.AppendFlags(DebugViewFlags.ContactNormals);
             _serverDebugView.AppendFlags(DebugViewFlags.Controllers);
-            _serverDebugView.InactiveShapeColor = Color.Red;
+            _serverDebugView.SleepingShapeColor = Color.Red;
         }
         #endregion
 
@@ -63,6 +66,7 @@ namespace GalacticFighters.Client.Library.Scenes
             base.Update(gameTime);
 
             this.Camera.TryUpdate(gameTime);
+            this.entities.TryUpdate(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)

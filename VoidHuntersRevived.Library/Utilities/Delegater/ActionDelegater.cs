@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Network.Extensions.Lidgren;
+using Microsoft.Extensions.Logging;
 
 namespace GalacticFighters.Library.Utilities.Delegater
 {
@@ -16,11 +17,13 @@ namespace GalacticFighters.Library.Utilities.Delegater
     {
         private NetworkEntity _entity;
         private NetworkScene _scene;
+        private ILogger _logger;
 
-        public ActionDelegater(NetworkEntity networkEntity, NetworkScene scene)
+        public ActionDelegater(NetworkEntity networkEntity, NetworkScene scene, ILogger logger)
         {
             _entity = networkEntity;
             _scene = scene;
+            _logger = logger;
         }
 
         public NetOutgoingMessage Create(String type)
@@ -30,6 +33,22 @@ namespace GalacticFighters.Library.Utilities.Delegater
             om.Write(type);
 
             return om;
+        }
+
+        protected override void Invoke<T>(object sender, string key, T arg)
+        {
+#if DEBUG
+            try
+            {
+                base.Invoke(sender, key, arg);
+            }
+            catch(KeyNotFoundException e)
+            {
+                _logger.LogWarning($"Unhandled action recieved by {_entity.GetType().Name}({_entity.Id}) => '{key}'");
+            }
+#else
+            base.Invoke(sender, key, arg);
+#endif
         }
     }
 }

@@ -1,8 +1,11 @@
 ﻿using FarseerPhysics.Dynamics;
 using GalacticFighters.Client.Library.Utilities;
 using GalacticFighters.Library.Entities;
+using GalacticFighters.Library.Extensions.Farseer;
 using Guppy;
 using Guppy.Attributes;
+using Lidgren.Network;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,9 +15,13 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
     [IsDriver(typeof(FarseerEntity), 90)]
     internal sealed class ClientFarseerEntityDriver : Driver<FarseerEntity>
     {
+        #region Static Attributes
+        public static Single LerpStrength { get; set; } = 0.1f;
+        #endregion
+
         #region Private Fields
         private ServerRender _server;
-        private List<Fixture> _fixtures;
+        private Body _body;
         #endregion
 
         #region Constructor
@@ -34,6 +41,24 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
             this.driven.Events.TryAdd<Body>("body:destroyed", this.HandleBodyDestroyed);
             this.driven.Events.TryAdd<Fixture>("fixture:created", this.HandleFixtureCreated);
             this.driven.Events.TryAdd<Fixture>("fixture:destroyed", this.HandleFixtureDestroyed);
+
+            // Bind required action handlers
+            this.driven.Actions.TryAdd("vitals:update", this.HandleVitalsUpdateMessage);
+        }
+        #endregion
+
+        #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            this.driven.SetPosition(
+                position: Vector2.Lerp(this.driven.Position, _body.Position, ClientFarseerEntityDriver.LerpStrength),
+                rotation: MathHelper.Lerp(this.driven.Rotation, _body.Rotation, ClientFarseerEntityDriver.LerpStrength));
+
+            this.driven.SetVelocity(
+                linear: Vector2.Lerp(this.driven.LinearVelocity, _body.LinearVelocity, ClientFarseerEntityDriver.LerpStrength),
+                angular: MathHelper.Lerp(this.driven.AngularVelocity, _body.AngularVelocity, ClientFarseerEntityDriver.LerpStrength));
         }
         #endregion
 
@@ -46,7 +71,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
         private void HandleBodyCreated(object sender, Body body)
         {
             // Create a clone of the farseer entities body within the server render
-            _server.CloneBody(body);
+            _body = _server.CloneBody(body);
         }
 
         /// <summary>
@@ -78,6 +103,16 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
         private void HandleFixtureDestroyed(object sender, Fixture fixture)
         {
             _server.DestroyFixture(fixture);
+        }
+        #endregion
+
+        #region Action Handlers
+        private void HandleVitalsUpdateMessage(object sender, NetIncomingMessage arg)
+        {
+            _body.ReadPosition(arg);
+            _body.ReadVelocity(arg);
+
+            this.driven.SetEnabled(true);
         }
         #endregion
     }

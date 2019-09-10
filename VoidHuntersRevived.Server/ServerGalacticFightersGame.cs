@@ -28,7 +28,7 @@ namespace GalacticFighters.Server
             this.scenes.Create<ServerGalacticFightersWorldScene>(s =>
             {
                 s.Group = _server.Groups.GetOrCreateById(Guid.Empty);
-            });
+            }).TryStartAsync();
         }
 
         protected override void Update(GameTime gameTime)

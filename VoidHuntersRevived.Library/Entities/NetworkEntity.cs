@@ -37,7 +37,7 @@ namespace GalacticFighters.Library.Entities
             base.Create(provider);
 
             this.entities = provider.GetRequiredService<EntityCollection>();
-            this.Actions = new ActionDelegater(this, provider.GetRequiredService<NetworkScene>());
+            this.Actions = ActivatorUtilities.CreateInstance<ActionDelegater>(provider, this);
         }
 
         public override void Dispose()
