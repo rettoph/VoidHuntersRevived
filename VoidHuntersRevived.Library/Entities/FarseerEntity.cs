@@ -1,4 +1,5 @@
-﻿using FarseerPhysics.Dynamics;
+﻿using FarseerPhysics.Collision.Shapes;
+using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -48,6 +49,31 @@ namespace GalacticFighters.Library.Entities
         /// <param name="world"></param>
         /// <returns></returns>
         protected abstract Body BuildBody(World world);
+        #endregion
+
+        #region Farseer Methods
+        /// <summary>
+        /// Create a new fixture within the farseer entity
+        /// </summary>
+        /// <param name="shape"></param>
+        /// <param name="userData"></param>
+        /// <returns></returns>
+        public virtual Fixture CreateFixture(Shape shape, Object userData = null)
+        {
+            // Create the new fixture...
+            var fixture = this.body.CreateFixture(shape, userData);
+
+            return fixture;
+        }
+
+        /// <summary>
+        /// Destroy a specified fixture.
+        /// </summary>
+        /// <param name="fixture"></param>
+        public virtual void DestroyFixture(Fixture fixture)
+        {
+            fixture.Body.DestroyFixture(fixture);
+        }
         #endregion
     }
 }

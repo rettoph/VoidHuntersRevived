@@ -21,6 +21,12 @@ namespace GalacticFighters.Library.Entities.ShipParts
         #endregion
 
         #region Lifecycle Methods
+        private void Farseer_PreInitialize()
+        {
+            // Setup the chain placement at least once...
+            this.UpdateChainPlacement();
+        }
+
         private void Farseer_Dispose()
         {
             // Remove all fixtures contained within the ship part.
@@ -42,6 +48,11 @@ namespace GalacticFighters.Library.Entities.ShipParts
         #endregion
 
         #region Farseer Methods
+        /// <summary>
+        /// Invoked when the ShipPart must attach update itself to the current
+        /// chain.
+        /// </summary>
+        protected abstract void UpdateChainPlacement();
         #endregion
     }
 }

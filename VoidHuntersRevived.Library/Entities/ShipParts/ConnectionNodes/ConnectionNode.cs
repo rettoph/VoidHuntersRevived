@@ -54,7 +54,18 @@ namespace GalacticFighters.Library.Entities.ShipParts.ConnectionNodes
         /// <summary>
         /// Whether or not the current node is connected to another node.
         /// </summary>
-        public Boolean Connected { get { return this.Target != null; } }
+        public Boolean Attached { get { return this.Target != null; } }
+        #endregion
+
+        #region Lifecycle Methods
+        protected override void Create(IServiceProvider provider)
+        {
+            base.Create(provider);
+
+            // Register some basic events
+            this.Events.Register<ConnectionNode>("attached");
+            this.Events.Register<ConnectionNode>("detached");
+        }
         #endregion
 
         #region Set Methods
@@ -76,6 +87,38 @@ namespace GalacticFighters.Library.Entities.ShipParts.ConnectionNodes
 
             // A onestep transformation, first move to the rotation position then translate by position offset.
             this.LocalTransformationMatrix = this.LocalRotationMatrix * this.LocalPositionMatrix;
+        }
+        #endregion
+
+        #region Connection Methods
+        private void AttachTo(ConnectionNode target)
+        {
+            // First, ensure that there is no pre-existing connection.
+            if (this.Attached)
+                this.Detach();
+
+            // Create the local attachment
+            this.Target = target;
+
+            // Ensure that the target node is attached correctly too...
+            if (target.Target != this)
+                target.AttachTo(this);
+
+            // Invoke the event...
+            this.Events?.TryInvoke<ConnectionNode>(this, "attached", this.Target);
+        }
+
+        private void Detach()
+        {
+            if (this.Attached)
+            { // Only proceed if the current node is connected to something
+                var oldTarget = this.Target;
+                this.Target = null;
+                oldTarget.Detach();
+
+                // Invoke the event...
+                this.Events?.TryInvoke<ConnectionNode>(this, "detached", oldTarget);
+            }
         }
         #endregion
     }

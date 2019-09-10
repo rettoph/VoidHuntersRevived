@@ -52,7 +52,7 @@ namespace GalacticFighters.Library
         {
             var entities = provider.GetRequiredService<EntityLoader>();
 
-            entities.TryRegister<ShipPart>("farseer-entity", "", "", ShipPartConfigurationBuilder.BuildPolygon(3, true));
+            entities.TryRegister<RigidShipPart>("farseer-entity", "", "", ShipPartConfigurationBuilder.BuildPolygon(3, true));
         }
     }
 }
