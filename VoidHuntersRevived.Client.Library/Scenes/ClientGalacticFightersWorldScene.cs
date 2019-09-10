@@ -14,12 +14,13 @@ using System.Text;
 
 namespace GalacticFighters.Client.Library.Scenes
 {
-    internal sealed class ClientGalacticFightersWorldScene : GalacticFightersWorldScene
+    public sealed class ClientGalacticFightersWorldScene : GalacticFightersWorldScene
     {
         #region Private Fields
         private GraphicsDevice _graphics;
         private ContentManager _content;
         private DebugViewXNA _debugView;
+        private DebugViewXNA _serverDebugView;
         #endregion
 
         #region Public Fields
@@ -46,6 +47,13 @@ namespace GalacticFighters.Client.Library.Scenes
             _debugView.AppendFlags(DebugViewFlags.ContactPoints);
             _debugView.AppendFlags(DebugViewFlags.ContactNormals);
             _debugView.AppendFlags(DebugViewFlags.Controllers);
+
+            _serverDebugView = new DebugViewXNA(this.world);
+            _serverDebugView.LoadContent(_graphics, _content);
+            _serverDebugView.AppendFlags(DebugViewFlags.ContactPoints);
+            _serverDebugView.AppendFlags(DebugViewFlags.ContactNormals);
+            _serverDebugView.AppendFlags(DebugViewFlags.Controllers);
+            _serverDebugView.InactiveShapeColor = Color.Red;
         }
         #endregion
 
@@ -63,6 +71,7 @@ namespace GalacticFighters.Client.Library.Scenes
 
             _graphics.Clear(Color.Black);
 
+            _serverDebugView.RenderDebugData(this.Camera.Projection, this.Camera.View);
             _debugView.RenderDebugData(this.Camera.Projection, this.Camera.View);
         }
         #endregion

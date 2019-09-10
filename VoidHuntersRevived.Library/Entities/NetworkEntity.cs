@@ -10,6 +10,9 @@ using System.Text;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Collections;
 using Microsoft.Extensions.DependencyInjection;
+using GalacticFighters.Library.Utilities.Delegater;
+using Microsoft.Extensions.Logging;
+using Guppy.Utilities.Options;
 
 namespace GalacticFighters.Library.Entities
 {
@@ -25,16 +28,23 @@ namespace GalacticFighters.Library.Entities
         #endregion
 
         #region Public Fields
-        // public ActionDelegater Actions { get; private set; }
+        public ActionDelegater Actions { get; private set; }
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize()
+        protected override void Create(IServiceProvider provider)
         {
-            base.PreInitialize();
+            base.Create(provider);
 
-            this.entities = this.provider.GetRequiredService<EntityCollection>();
-            // this.Actions = new ActionDelegater(this, this.provider.GetRequiredService<GalacticFightersWorldScene>());
+            this.entities = provider.GetRequiredService<EntityCollection>();
+            this.Actions = new ActionDelegater(this, provider.GetRequiredService<NetworkScene>());
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.Actions.Dispose();
         }
         #endregion
 

@@ -1,11 +1,14 @@
 ﻿using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
 using GalacticFighters.Library.Factories;
 using Guppy.Extensions.Collection;
+using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Guppy.Network.Extensions.Lidgren;
+using Guppy.Collections;
 
 namespace GalacticFighters.Library.Entities.ShipParts
 {
@@ -14,6 +17,10 @@ namespace GalacticFighters.Library.Entities.ShipParts
     /// </summary>
     public partial class ShipPart
     {
+        #region Private Fields
+        private ConnectionNodeFactory _connectionNodefactory;
+        #endregion
+
         #region Public Attributes
         /// <summary>
         /// The parts main mail connection node. All ShipParts must contain a male node.
@@ -42,19 +49,21 @@ namespace GalacticFighters.Library.Entities.ShipParts
         #endregion
 
         #region Lifecycle Methods
+        private void ConnectionNode_Create(IServiceProvider provider)
+        {
+            _connectionNodefactory = provider.GetRequiredService<ConnectionNodeFactory>();
+        }
+
         /// <summary>
         /// ConnectionNode specific initialization.
         /// Called withing ShipPart.Core.cs
         /// </summary>
         private void ConnectionNode_PreInitialize()
         {
-            // Load the connection node factory
-            var factory = this.provider.GetRequiredService<ConnectionNodeFactory>();
-
             // Build and configure connection node instances
-            this.MaleConnectionNode = factory.Build<MaleConnectionNode>(node => node.Configure(-1, this, this.config.MaleConnectionNode));
+            this.MaleConnectionNode = _connectionNodefactory.Build<MaleConnectionNode>(node => node.Configure(-1, this, this.config.MaleConnectionNode));
             this.FemaleConnectionNodes = this.config.FemaleConnectionNodes
-                .Select((female_config, idx) => factory.Build<FemaleConnectionNode>(node => node.Configure(idx, this, female_config)))
+                .Select((female_config, idx) => _connectionNodefactory.Build<FemaleConnectionNode>(node => node.Configure(idx, this, female_config)))
                 .ToArray();
 
             // Bind event listeners
@@ -100,6 +109,25 @@ namespace GalacticFighters.Library.Entities.ShipParts
         private void HandleMaleConnectionNodeAttached(object sender, ConnectionNode arg)
         {
             this.RemapConnectionNodes();
+        }
+        #endregion
+
+        #region Network Methods
+        private void ConnectionNode_Read(NetIncomingMessage im)
+        {
+            if(im.ReadBoolean())
+            { // Read the attachment data...
+                this.MaleConnectionNode.Attach(this.entities.GetById<ShipPart>(im.ReadGuid()).FemaleConnectionNodes[im.ReadInt32()]);
+            }
+        }
+
+        private void ConnectionNode_Write(NetOutgoingMessage om)
+        {
+            if(om.WriteIf(this.MaleConnectionNode.Attached))
+            { // Write the attachment data if there is a connection
+                om.Write(this.MaleConnectionNode.Target.Parent.Id);
+                om.Write(this.MaleConnectionNode.Target.Id);
+            }
         }
         #endregion
     }

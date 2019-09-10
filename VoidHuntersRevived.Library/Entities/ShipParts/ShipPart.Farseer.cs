@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Dynamics;
 using GalacticFighters.Library.Configurations;
 using Microsoft.Xna.Framework;
@@ -16,22 +17,11 @@ namespace GalacticFighters.Library.Entities.ShipParts
     /// </summary>
     public partial class ShipPart : FarseerEntity
     {
-        #region Events
-
-        #endregion
-
         #region Lifecycle Methods
         private void Farseer_PreInitialize()
         {
             // Setup the chain placement at least once...
             this.UpdateChainPlacement();
-        }
-
-        private void Farseer_Dispose()
-        {
-            // Remove all fixtures contained within the ship part.
-            while (this.body.FixtureList.Any())
-                this.body.DestroyFixture(this.body.FixtureList[0]);
         }
         #endregion
 
@@ -42,7 +32,7 @@ namespace GalacticFighters.Library.Entities.ShipParts
             return new Body(world, Vector2.Zero, 0, BodyType.Dynamic, this)
             {
                 AngularDamping = 1f,
-                LinearDamping = 1f
+                LinearDamping = 1f,
             };
         }
         #endregion

@@ -1,5 +1,6 @@
 ﻿using FarseerPhysics.Dynamics;
 using GalacticFighters.Library.Entities;
+using GalacticFighters.Library.Entities.ShipParts;
 using GalacticFighters.Library.Scenes;
 using Guppy.Network.Peers;
 using System;
@@ -22,7 +23,14 @@ namespace GalacticFighters.Server.Scenes
         {
             base.Initialize();
 
-            this.entities.Create<FarseerEntity>("farseer-entity");
+            var part1 = this.entities.Create<ShipPart>("farseer-entity");
+            var part2 = this.entities.Create<ShipPart>("farseer-entity");
+
+            part1.Dispose();
+
+            var part3 = this.entities.Create<ShipPart>("farseer-entity");
+
+            part3.MaleConnectionNode.Attach(part2.FemaleConnectionNodes[0]);
         }
         #endregion
     }

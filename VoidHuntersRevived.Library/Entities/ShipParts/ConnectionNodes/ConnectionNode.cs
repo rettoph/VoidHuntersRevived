@@ -1,5 +1,6 @@
 ﻿using GalacticFighters.Library.Configurations;
 using Guppy;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -91,8 +92,9 @@ namespace GalacticFighters.Library.Entities.ShipParts.ConnectionNodes
         #endregion
 
         #region Connection Methods
-        private void AttachTo(ConnectionNode target)
+        public void Attach(ConnectionNode target)
         {
+            this.logger.LogInformation("Attaching!:!:!:");
             // First, ensure that there is no pre-existing connection.
             if (this.Attached)
                 this.Detach();
@@ -102,13 +104,13 @@ namespace GalacticFighters.Library.Entities.ShipParts.ConnectionNodes
 
             // Ensure that the target node is attached correctly too...
             if (target.Target != this)
-                target.AttachTo(this);
+                target.Attach(this);
 
             // Invoke the event...
             this.Events?.TryInvoke<ConnectionNode>(this, "attached", this.Target);
         }
 
-        private void Detach()
+        public void Detach()
         {
             if (this.Attached)
             { // Only proceed if the current node is connected to something

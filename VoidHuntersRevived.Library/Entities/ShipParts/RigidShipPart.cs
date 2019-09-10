@@ -15,8 +15,7 @@ namespace GalacticFighters.Library.Entities.ShipParts
     {
         protected override void UpdateChainPlacement()
         {
-            // Remove all pre existing fixtures...
-            this.body.FixtureList.ForEach(fixture => (fixture.Body.UserData as FarseerEntity).DestroyFixture(fixture));
+            this.DestroyAllFixtures();
 
             // Create new fixtures for all vertices contained in the configuration
             this.config.Vertices.ForEach(data =>

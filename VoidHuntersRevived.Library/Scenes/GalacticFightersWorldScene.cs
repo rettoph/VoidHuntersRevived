@@ -23,13 +23,7 @@ namespace GalacticFighters.Library.Scenes
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize()
-        {
-            base.Initialize();
 
-            // Load the default group value
-            this.Group = this.provider.GetRequiredService<Peer>().Groups.GetOrCreateById(Guid.Empty);
-        }
         #endregion
     }
 }

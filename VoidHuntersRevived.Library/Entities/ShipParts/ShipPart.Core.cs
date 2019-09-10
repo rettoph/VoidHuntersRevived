@@ -1,4 +1,5 @@
 ﻿using GalacticFighters.Library.Configurations;
+using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,6 +21,14 @@ namespace GalacticFighters.Library.Entities.ShipParts
         #endregion
 
         #region Lifecycle Methods
+        protected override void Create(IServiceProvider provider)
+        {
+            base.Create(provider);
+
+            // Call internal create functions
+            this.ConnectionNode_Create(provider);
+        }
+
         protected override void PreInitialize()
         {
             base.PreInitialize();
@@ -48,7 +57,22 @@ namespace GalacticFighters.Library.Entities.ShipParts
 
             // Call internal dispose functions
             this.ConnectionNode_Dispose();
-            this.Farseer_Dispose();
+        }
+        #endregion
+
+        #region Network Methods
+        protected override void Read(NetIncomingMessage im)
+        {
+            base.Read(im);
+
+            this.ConnectionNode_Read(im);
+        }
+
+        protected override void Write(NetOutgoingMessage om)
+        {
+            base.Write(om);
+
+            this.ConnectionNode_Write(om);
         }
         #endregion
     }
