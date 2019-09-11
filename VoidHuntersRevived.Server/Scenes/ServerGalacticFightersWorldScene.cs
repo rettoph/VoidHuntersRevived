@@ -1,7 +1,9 @@
 ﻿using FarseerPhysics.Dynamics;
 using GalacticFighters.Library.Entities;
 using GalacticFighters.Library.Entities.ShipParts;
+using GalacticFighters.Library.Players;
 using GalacticFighters.Library.Scenes;
+using Guppy.Collections;
 using Guppy.Network.Peers;
 using Guppy.Network.Security;
 using Microsoft.Xna.Framework;
@@ -14,7 +16,7 @@ namespace GalacticFighters.Server.Scenes
     internal sealed class ServerGalacticFightersWorldScene : GalacticFightersWorldScene
     {
         #region Constructor
-        public ServerGalacticFightersWorldScene(World world) : base(world)
+        public ServerGalacticFightersWorldScene(World world, OrderableCollection<Player> players) : base(world, players)
         {
 
         }
@@ -41,7 +43,11 @@ namespace GalacticFighters.Server.Scenes
         #region Event Handlers
         private void HandleUserJoined(object sender, User arg)
         {
-            this.entities.Create("farseer-entity");
+            // Create a new player instance for the new user
+            var player = this.players.Create<UserPlayer>(p =>
+            {
+                p.User = arg;
+            });
         }
         #endregion
     }

@@ -17,5 +17,9 @@
     <ProjectReference Include="..\Submodules\Guppy\Guppy.Network\Guppy.Network.csproj" />
     <ProjectReference Include="..\Submodules\Guppy\Guppy\Guppy.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Collections\" />
+  </ItemGroup>
 
 </Project>

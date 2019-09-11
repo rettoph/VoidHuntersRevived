@@ -9,7 +9,7 @@ using System.Text;
 
 namespace GalacticFighters.Library.Scenes
 {
-    public class NetworkScene : Scene
+    public abstract class NetworkScene : Scene
     {
         #region Public Attributes
         public Group Group { get; set; }

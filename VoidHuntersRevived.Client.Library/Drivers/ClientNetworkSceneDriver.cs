@@ -56,7 +56,7 @@ namespace GalacticFighters.Client.Library.Drivers
             this.driven.Group.Messages.TryAdd("entity:remove", this.HandleEntityRemoveMessage);
         }
 
-        public override void Dispose()
+        protected override void Dispose()
         {
             base.Dispose();
 
