@@ -10,6 +10,8 @@ using System.Text;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Extensions.Collection;
 using Guppy.Network.Security;
+using Microsoft.Xna.Framework;
+using System.Linq;
 
 namespace GalacticFighters.Server.Drivers
 {
@@ -18,6 +20,7 @@ namespace GalacticFighters.Server.Drivers
     {
         #region Private Fields
         private EntityCollection _entities;
+        private Queue<NetworkEntity> _created;
         #endregion
 
         #region Constructor
@@ -28,6 +31,13 @@ namespace GalacticFighters.Server.Drivers
         #endregion
 
         #region Lifecycle Entities
+        protected override void Create(IServiceProvider provider)
+        {
+            base.Create(provider);
+
+            _created = new Queue<NetworkEntity>();
+        }
+
         protected override void Initialize()
         {
             base.Initialize();
@@ -36,6 +46,16 @@ namespace GalacticFighters.Server.Drivers
             _entities.Events.TryAdd<Entity>("removed", this.HandleEntityRemoved);
 
             this.driven.Group.Users.Events.TryAdd<User>("added", this.HandleUserAdded);
+        }
+        #endregion
+
+        #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            while (_created.Any())
+                this.CreateCreateMessage(_created.Dequeue());
         }
         #endregion
 
@@ -59,8 +79,8 @@ namespace GalacticFighters.Server.Drivers
         #region Event Handlers
         private void HandleEntityAdded(object sender, Entity entity)
         {
-            if (entity is NetworkEntity)
-                this.CreateCreateMessage(entity as NetworkEntity);
+            if (entity is NetworkEntity) // Enqueue the new entity so the create message can be sent next frame
+                _created.Enqueue(entity as NetworkEntity);
         }
 
         private void HandleEntityRemoved(object sender, Entity entity)

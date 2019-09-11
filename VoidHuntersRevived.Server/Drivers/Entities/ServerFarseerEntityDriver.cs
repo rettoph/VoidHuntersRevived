@@ -3,6 +3,7 @@ using GalacticFighters.Library.Entities;
 using GalacticFighters.Library.Extensions.Farseer;
 using Guppy;
 using Guppy.Attributes;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;

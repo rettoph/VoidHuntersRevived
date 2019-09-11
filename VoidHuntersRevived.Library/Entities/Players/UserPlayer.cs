@@ -6,14 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Library.Players
+namespace GalacticFighters.Library.Entities.Players
 {
     public sealed class UserPlayer : Player
     {
-        #region Private Fields
-        private GalacticFightersWorldScene _scene;
-        #endregion
-
         #region Public Attributes
         public User User { get; set; }
 
@@ -21,9 +17,8 @@ namespace GalacticFighters.Library.Players
         #endregion
 
         #region Constructor
-        public UserPlayer(GalacticFightersWorldScene scene)
+        public UserPlayer(GalacticFightersWorldScene scene) : base(scene)
         {
-            _scene = scene;
         }
         #endregion
 
@@ -41,7 +36,7 @@ namespace GalacticFighters.Library.Players
             base.Read(im);
 
             if (im.ReadBoolean())
-                this.User = _scene.Group.Users.GetById(im.ReadGuid());
+                this.User = this.scene.Group.Users.GetById(im.ReadGuid());
         }
         #endregion
     }

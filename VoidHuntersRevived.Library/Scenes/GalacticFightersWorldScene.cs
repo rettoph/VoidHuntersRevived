@@ -1,5 +1,5 @@
 ﻿using FarseerPhysics.Dynamics;
-using GalacticFighters.Library.Players;
+using GalacticFighters.Library.Entities.Players;
 using Guppy;
 using Guppy.Collections;
 using Guppy.Network.Groups;
@@ -15,20 +15,27 @@ namespace GalacticFighters.Library.Scenes
     {
         #region Protected Fields
         protected World world { get; private set; }
+        #endregion
 
-        protected OrderableCollection<Player> players { get; private set; }
+        #region Public Attributes
+        public CreatableCollection<Player> Players { get; private set; }
         #endregion
 
         #region Constructor
-        public GalacticFightersWorldScene(World world, OrderableCollection<Player> players)
+        public GalacticFightersWorldScene(World world)
         {
             this.world = world;
-            this.players = players;
         }
         #endregion
 
         #region Lifecycle Methods
+        protected override void Create(IServiceProvider provider)
+        {
+            base.Create(provider);
 
+            // Create a new player collection...
+            this.Players = new CreatableCollection<Player>(provider);
+        }
         #endregion
     }
 }

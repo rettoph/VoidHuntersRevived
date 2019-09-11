@@ -3,7 +3,6 @@ using FarseerPhysics.DebugView;
 using FarseerPhysics.Dynamics;
 using GalacticFighters.Client.Library.Utilities;
 using GalacticFighters.Client.Library.Utilities.Cameras;
-using GalacticFighters.Library.Players;
 using GalacticFighters.Library.Scenes;
 using Guppy.Collections;
 using Guppy.Network.Peers;
@@ -32,7 +31,7 @@ namespace GalacticFighters.Client.Library.Scenes
         #endregion
 
         #region Constructor
-        public ClientGalacticFightersWorldScene(ServerRender server, FarseerCamera2D camera, GraphicsDevice graphics, ContentManager content, World world, OrderableCollection<Player> players) : base(world, players)
+        public ClientGalacticFightersWorldScene(ServerRender server, FarseerCamera2D camera, GraphicsDevice graphics, ContentManager content, World world) : base(world)
         {
             _server = server;
             _graphics = graphics;

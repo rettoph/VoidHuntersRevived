@@ -19,6 +19,8 @@ namespace GalacticFighters.Client.Library
             this.graphics = new GraphicsDeviceManager(this);
 
             this.Content.RootDirectory = "Content";
+            this.IsMouseVisible = true;
+            this.Window.AllowUserResizing = true;
         }
 
         protected override void Initialize()

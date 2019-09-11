@@ -1,11 +1,12 @@
 ﻿using FarseerPhysics.Dynamics;
 using GalacticFighters.Library.Entities;
+using GalacticFighters.Library.Entities.Players;
 using GalacticFighters.Library.Entities.ShipParts;
-using GalacticFighters.Library.Players;
 using GalacticFighters.Library.Scenes;
 using Guppy.Collections;
 using Guppy.Network.Peers;
 using Guppy.Network.Security;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace GalacticFighters.Server.Scenes
     internal sealed class ServerGalacticFightersWorldScene : GalacticFightersWorldScene
     {
         #region Constructor
-        public ServerGalacticFightersWorldScene(World world, OrderableCollection<Player> players) : base(world, players)
+        public ServerGalacticFightersWorldScene(World world) : base(world)
         {
 
         }
@@ -44,10 +45,13 @@ namespace GalacticFighters.Server.Scenes
         private void HandleUserJoined(object sender, User arg)
         {
             // Create a new player instance for the new user
-            var player = this.players.Create<UserPlayer>(p =>
+            var player = this.entities.Create<UserPlayer>("player:user", p =>
             {
                 p.User = arg;
             });
+
+            // Create a new ship part to be used as the ships main bridge
+            var bridge = this.entities.Create<ShipPart>("ship-part:triangle");
         }
         #endregion
     }

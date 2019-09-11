@@ -18,6 +18,7 @@ using Guppy.Attributes;
 using GalacticFighters.Library.Entities.ShipParts;
 using GalacticFighters.Library.Utilities;
 using GalacticFighters.Library.Factories;
+using GalacticFighters.Library.Entities.Players;
 
 namespace GalacticFighters.Library
 {
@@ -52,6 +53,10 @@ namespace GalacticFighters.Library
         {
             var entities = provider.GetRequiredService<EntityLoader>();
 
+            // Register players
+            entities.TryRegister<UserPlayer>("player:user");
+
+            // Register ShipParts
             entities.TryRegister<RigidShipPart>("ship-part:triangle", "", "", ShipPartConfigurationBuilder.BuildPolygon(3, true));
         }
     }

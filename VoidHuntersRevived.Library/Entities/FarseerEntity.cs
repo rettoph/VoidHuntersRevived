@@ -97,8 +97,8 @@ namespace GalacticFighters.Library.Entities
         {
             base.Update(gameTime);
 
-            if (!this.Awake) // By default, sleeping entities are disabled
-                this.SetEnabled(false);
+            // if (!this.Awake) // By default, sleeping entities are disabled
+            //     this.SetEnabled(false);
         }
         #endregion
 
