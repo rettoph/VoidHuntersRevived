@@ -57,6 +57,12 @@ namespace GalacticFighters.Library.Entities
         /// Gets the angular velocity. Radians/second.
         /// </summary>
         public Single AngularVelocity { get { return _body.AngularVelocity; } }
+
+        /// <summary>
+        /// Get the world position of the center of mass.
+        /// </summary>
+        /// <value>The world position.</value>
+        public Vector2 WorldCenter { get { return _body.WorldCenter; } }
         #endregion
 
         #region Lifecycle Methods

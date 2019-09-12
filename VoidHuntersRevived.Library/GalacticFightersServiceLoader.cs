@@ -56,6 +56,9 @@ namespace GalacticFighters.Library
             // Register players
             entities.TryRegister<UserPlayer>("player:user");
 
+            // Register ships
+            entities.TryRegister<Ship>("ship");
+
             // Register ShipParts
             entities.TryRegister<RigidShipPart>("ship-part:triangle", "", "", ShipPartConfigurationBuilder.BuildPolygon(3, true));
         }

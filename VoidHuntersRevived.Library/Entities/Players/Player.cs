@@ -1,5 +1,7 @@
 ﻿using GalacticFighters.Library.Scenes;
 using Guppy;
+using Guppy.Collections;
+using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Interfaces;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,12 +17,17 @@ namespace GalacticFighters.Library.Entities.Players
     /// </summary>
     public abstract class Player : NetworkEntity
     {
+        #region Private Fields
+
+        #endregion
+
         #region Protected Attributes
         protected GalacticFightersWorldScene scene { get; private set; }
         #endregion
 
         #region Public Attributes
         public abstract String Name { get; }
+        public Ship Ship { get; set; }
         #endregion
 
         #region Constructor
@@ -37,6 +44,42 @@ namespace GalacticFighters.Library.Entities.Players
 
             // Automatically add the current player instance to the scenes player collection.
             this.scene.Players.Add(this);
+        }
+        #endregion
+
+        #region Network Methods
+        protected override void Read(NetIncomingMessage im)
+        {
+            base.Read(im);
+
+            this.ReadShip(im);
+        }
+
+        protected override void Write(NetOutgoingMessage om)
+        {
+            base.Write(om);
+
+            this.WriteShip(om);
+        }
+
+        /// <summary>
+        /// Read & update the current player's ship data
+        /// </summary>
+        /// <param name="im"></param>
+        public void ReadShip(NetIncomingMessage im)
+        {
+            if (im.ReadBoolean())
+                this.Ship = this.entities.GetById<Ship>(im.ReadGuid());
+        }
+
+        /// <summary>
+        /// Write the current player's ship data
+        /// </summary>
+        /// <param name="om"></param>
+        public void WriteShip(NetOutgoingMessage om)
+        {
+            if (om.WriteExists(this.Ship))
+                om.Write(this.Ship.Id);
         }
         #endregion
     }
