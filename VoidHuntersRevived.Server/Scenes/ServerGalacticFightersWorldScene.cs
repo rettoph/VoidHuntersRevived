@@ -2,6 +2,7 @@
 using GalacticFighters.Library.Entities;
 using GalacticFighters.Library.Entities.Players;
 using GalacticFighters.Library.Entities.ShipParts;
+using GalacticFighters.Library.Extensions;
 using GalacticFighters.Library.Scenes;
 using Guppy.Collections;
 using Guppy.Network.Peers;
@@ -52,14 +53,14 @@ namespace GalacticFighters.Server.Scenes
                 { // Build a new ship for the player...
                     if(ship.Bridge == null)
                     { // Build a new bridge for the ship if one is not already set...
-                        ship.SetBridge(this.entities.Create<ShipPart>("ship-part:triangle"));
+                        ship.SetBridge(this.entities.Create<ShipPart>("ship-part:square"));
                     }
-
                 });
             });
 
-            // for(Int32 i=0; i<10; i++)
-            //     this.entities.Create<ShipPart>("ship-part:triangle");
+            var rand = new Random(420);
+            for(Int32 i=0; i<20; i++)
+                this.entities.Create<ShipPart>("ship-part:triangle").SetPosition(rand.NextVector2(-10, 10), rand.NextSingle(0, 3));
         }
         #endregion
     }

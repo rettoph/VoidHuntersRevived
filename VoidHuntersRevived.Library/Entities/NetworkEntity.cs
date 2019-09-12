@@ -38,6 +38,9 @@ namespace GalacticFighters.Library.Entities
 
             this.entities = provider.GetRequiredService<EntityCollection>();
             this.Actions = ActivatorUtilities.CreateInstance<ActionDelegater>(provider, this);
+
+            this.Events.Register<NetIncomingMessage>("on:read");
+            this.Events.Register<NetOutgoingMessage>("on:write");
         }
 
         public override void Dispose()
@@ -62,12 +65,16 @@ namespace GalacticFighters.Library.Entities
         public void TryRead(NetIncomingMessage im)
         {
             this.Read(im);
+
+            this.Events.TryInvoke<NetIncomingMessage>(this, "on:read", im);
         }
 
         public void TryWrite(NetOutgoingMessage om)
         {
             om.Write(this.Id);
             this.Write(om);
+
+            this.Events.TryInvoke<NetOutgoingMessage>(this, "on:write", om);
         }
         #endregion
     }

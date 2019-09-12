@@ -26,43 +26,45 @@ namespace GalacticFighters.Library.Entities
         /// The raw farseer world the entity resides in.
         /// </summary>
         private World _world;
+        #endregion
 
+        #region Protected Fields
         /// <summary>
         /// The raw body managed by this FarseerEntity. It is not recommened that
         /// you interact with the body derectly, but use the interface available to
         /// you within the FarseerEntity.
         /// </summary>
-        private Body _body;
+        protected Body body { get; private set; }
         #endregion
 
         #region Public Attributes
-        public Boolean Awake { get { return _body.Awake; } }
+        public Boolean Awake { get { return this.body.Awake; } }
 
         /// <summary>
         /// Get the world body origin position.
         /// </summary>
-        public Vector2 Position { get { return _body.Position; } }
+        public Vector2 Position { get { return this.body.Position; } }
 
         /// <summary>
         /// Get the angle in radians.
         /// </summary>
-        public Single Rotation { get { return _body.Rotation; } }
+        public Single Rotation { get { return this.body.Rotation; } }
 
         /// <summary>
         /// Get the linear velocity of the center of mass.
         /// </summary>
-        public Vector2 LinearVelocity { get { return _body.LinearVelocity; } }
+        public Vector2 LinearVelocity { get { return this.body.LinearVelocity; } }
 
         /// <summary>
         /// Gets the angular velocity. Radians/second.
         /// </summary>
-        public Single AngularVelocity { get { return _body.AngularVelocity; } }
+        public Single AngularVelocity { get { return this.body.AngularVelocity; } }
 
         /// <summary>
         /// Get the world position of the center of mass.
         /// </summary>
         /// <value>The world position.</value>
-        public Vector2 WorldCenter { get { return _body.WorldCenter; } }
+        public Vector2 WorldCenter { get { return this.body.WorldCenter; } }
         #endregion
 
         #region Lifecycle Methods
@@ -80,6 +82,8 @@ namespace GalacticFighters.Library.Entities
 
             this.Events.Register<Body>("position:changed");
             this.Events.Register<Body>("velocity:changed");
+            this.Events.Register<Vector2>("linear-impulse:applied");
+            this.Events.Register<Single>("angular-impulse:applied");
         }
 
         protected override void PreInitialize()
@@ -122,8 +126,8 @@ namespace GalacticFighters.Library.Entities
         /// <param name="world"></param>
         private void CreateBody()
         {
-            _body = this.BuildBody(_world);
-            this.Events.TryInvoke<Body>(this, "body:created", _body);
+            this.body = this.BuildBody(_world);
+            this.Events.TryInvoke<Body>(this, "body:created", this.body);
         }
 
         /// <summary>
@@ -136,8 +140,8 @@ namespace GalacticFighters.Library.Entities
             // Ensure that all fixtures are destroyed
             this.DestroyAllFixtures();
 
-            _body.Dispose();
-            this.Events.TryInvoke<Body>(this, "body:destroyed", _body);
+            this.body.Dispose();
+            this.Events.TryInvoke<Body>(this, "body:destroyed", this.body);
         }
         #endregion
 
@@ -151,7 +155,7 @@ namespace GalacticFighters.Library.Entities
         public virtual Fixture CreateFixture(Shape shape, Object userData = null)
         {
             // Create the new fixture...
-            var fixture = _body.CreateFixture(shape, userData);
+            var fixture = this.body.CreateFixture(shape, userData);
 
             // Invoke the created event...
             this.Events.TryInvoke<Fixture>(this, "fixture:created", fixture);
@@ -177,8 +181,8 @@ namespace GalacticFighters.Library.Entities
         protected virtual void DestroyAllFixtures()
         {
             // Remove all pre existing fixtures...
-            while (_body.FixtureList.Any())
-                this.DestroyFixture(_body.FixtureList.First());
+            while (this.body.FixtureList.Any())
+                this.DestroyFixture(this.body.FixtureList.First());
         }
 
         /// <summary>
@@ -199,9 +203,9 @@ namespace GalacticFighters.Library.Entities
         /// <param name="rotation"></param>
         public void SetPosition(ref Vector2 position, Single rotation)
         {
-            _body.SetTransform(ref position, rotation);
+            this.body.SetTransform(ref position, rotation);
 
-            this.Events.TryInvoke<Body>(this, "position:changed", _body);
+            this.Events.TryInvoke<Body>(this, "position:changed", this.body);
         }
 
         /// <summary>
@@ -212,10 +216,33 @@ namespace GalacticFighters.Library.Entities
         /// <param name="rotation"></param>
         public void SetVelocity(Vector2 linear, Single angular)
         {
-            _body.LinearVelocity = linear;
-            _body.AngularVelocity = angular;
+            this.body.LinearVelocity = linear;
+            this.body.AngularVelocity = angular;
 
-            this.Events.TryInvoke<Body>(this, "velocity:changed", _body);
+            this.Events.TryInvoke<Body>(this, "velocity:changed", this.body);
+        }
+
+        /// <summary>
+        /// Apply an impulse at a point. This immediately modifies the velocity.
+        /// This wakes up the body.
+        /// </summary>
+        /// <param name="impulse">The world impulse vector, usually in N-seconds or kg-m/s.</param>
+        public void ApplyLinearImpulse(Vector2 impulse)
+        {
+            this.body.ApplyLinearImpulse(impulse);
+
+            this.Events.TryInvoke<Vector2>(this, "linear-impulse:applied", impulse);
+        }
+
+        /// <summary>
+        /// Apply an angular impulse.
+        /// </summary>
+        /// <param name="impulse">The angular impulse in units of kg*m*m/s.</param>
+        public void ApplyAngularImpulse(Single impulse)
+        {
+            this.body.ApplyAngularImpulse(impulse);
+
+            this.Events.TryInvoke<Single>(this, "angular-impulse:applied", impulse);
         }
         #endregion
 
@@ -224,16 +251,16 @@ namespace GalacticFighters.Library.Entities
         {
             base.Read(im);
 
-            _body.ReadPosition(im);
-            _body.ReadVelocity(im);
+            this.body.ReadPosition(im);
+            this.body.ReadVelocity(im);
         }
 
         protected override void Write(NetOutgoingMessage om)
         {
             base.Write(om);
 
-            _body.WritePosition(om);
-            _body.WriteVelocity(om);
+            this.body.WritePosition(om);
+            this.body.WriteVelocity(om);
         }
         #endregion
     }

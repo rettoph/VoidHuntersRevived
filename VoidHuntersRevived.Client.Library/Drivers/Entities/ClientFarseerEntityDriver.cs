@@ -41,6 +41,9 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
             this.driven.Events.TryAdd<Body>("body:destroyed", this.HandleBodyDestroyed);
             this.driven.Events.TryAdd<Fixture>("fixture:created", this.HandleFixtureCreated);
             this.driven.Events.TryAdd<Fixture>("fixture:destroyed", this.HandleFixtureDestroyed);
+            this.driven.Events.TryAdd<Vector2>("linear-impulse:applied", this.HandleLinearImpulseApplied);
+            this.driven.Events.TryAdd<Single>("angular-impulse:applied", this.HandleAngularImpulseApplied);
+            this.driven.Events.TryAdd<NetIncomingMessage>("on:read", this.HandleRead);
 
             // Bind required action handlers
             this.driven.Actions.TryAdd("vitals:update", this.HandleVitalsUpdateMessage);
@@ -103,6 +106,40 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
         private void HandleFixtureDestroyed(object sender, Fixture fixture)
         {
             _server.DestroyFixture(fixture);
+        }
+
+        /// <summary>
+        /// When an angular impulse is applied, we must simulate the very same impulse on
+        /// the server render
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="impulse"></param>
+        private void HandleAngularImpulseApplied(object sender, float impulse)
+        {
+            _body.ApplyAngularImpulse(impulse);
+        }
+
+        /// <summary>
+        /// When a lngular impulse is applied, we must simulate the very same impulse on
+        /// the server render
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="impulse"></param>
+        private void HandleLinearImpulseApplied(object sender, Vector2 impulse)
+        {
+            _body.ApplyLinearImpulse(impulse);
+        }
+
+        /// <summary>
+        /// When the client data is read, we must duplicate all
+        /// of the raw positional data
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="arg"></param>
+        private void HandleRead(object sender, NetIncomingMessage arg)
+        {
+            // Update the positional data...
+            _body.SetTransform(this.driven.Position, this.driven.Rotation);
         }
         #endregion
 

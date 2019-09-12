@@ -38,6 +38,7 @@ namespace GalacticFighters.Client.Library.Scenes
             _content = content;
 
             this.Camera = camera;
+            this.Camera.ZoomTo(0.25f);
         }
         #endregion
 

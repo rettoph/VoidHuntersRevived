@@ -26,9 +26,9 @@ namespace GalacticFighters.Library.Utilities.Delegater
             _logger = logger;
         }
 
-        public NetOutgoingMessage Create(String type)
+        public NetOutgoingMessage Create(String type, NetDeliveryMethod method = NetDeliveryMethod.ReliableUnordered)
         {
-            var om = _scene.Group.CreateMessage("entity:action", NetDeliveryMethod.UnreliableSequenced, 0);
+            var om = _scene.Group.CreateMessage("entity:action", method, 0);
             om.Write(_entity.Id);
             om.Write(type);
 

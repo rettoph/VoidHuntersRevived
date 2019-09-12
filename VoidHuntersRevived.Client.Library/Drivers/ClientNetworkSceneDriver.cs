@@ -5,6 +5,7 @@ using Guppy.Attributes;
 using Guppy.Collections;
 using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -89,10 +90,16 @@ namespace GalacticFighters.Client.Library.Drivers
         #region Message Handlers
         private void HandleEntityCreateMessage(object sender, NetIncomingMessage arg)
         {
-            _entities.Create<NetworkEntity>(arg.ReadString(), e =>
-            { // Create a new entity
-                e.SetId(arg.ReadGuid());
-            });
+            var type = arg.ReadString();
+            var id = arg.ReadGuid();
+
+            if (_entities.GetById(id) == default(Entity))
+                _entities.Create<NetworkEntity>(type, e =>
+                { // Create a new entity
+                    e.SetId(id);
+                });
+            else
+                this.logger.LogWarning($"Recieved duplicate create messages for '{id}' => {id}");
         }
 
         private void HandleEntityUpdateMessage(object sender, NetIncomingMessage arg)

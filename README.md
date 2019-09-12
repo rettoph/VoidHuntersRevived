@@ -6,6 +6,9 @@ These are events triggered by Guppy but specific to this game. Events can be bou
 
 | Project | Class | Event | Arg | Description |
 | ------- | ----- | ----- | --- | ----------- |
+| `GalacicFighters.Library` | `NetworkEntity` | `on:read` | `NetIncomingMessage` | Invoked when the TryRead method is called. |
+| `GalacicFighters.Library` | `NetworkEntity` | `on:write` | `NetIncomingMessage` | Invoked when the TryWrite method is called. |
+| | | | | |
 | `GalacicFighters.Library` | `ConnectionNode` | `attached` | `ConnectionNode` | Invoked after an attachment with another ConnectionNode is created. |
 | `GalacicFighters.Library` | `ConnectionNode` | `detached` | `ConnectionNode` | Invoked after an attachment with another ConnectionNode is destroyed. |
 | | | | | |

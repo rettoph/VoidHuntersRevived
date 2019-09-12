@@ -34,7 +34,7 @@ namespace GalacticFighters.Library.Scenes
         #region Message Handlers
         private void HandleNetworkEntityActionMessage(object sender, NetIncomingMessage arg)
         {
-            this.entities.GetById<NetworkEntity>(arg.ReadGuid()).Actions.TryInvoke(this, arg.ReadString(), arg);
+            this.entities.GetById<NetworkEntity>(arg.ReadGuid())?.Actions.TryInvoke(this, arg.ReadString(), arg);
         }
         #endregion
     }

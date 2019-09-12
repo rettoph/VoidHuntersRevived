@@ -61,6 +61,8 @@ namespace GalacticFighters.Library
 
             // Register ShipParts
             entities.TryRegister<RigidShipPart>("ship-part:triangle", "", "", ShipPartConfigurationBuilder.BuildPolygon(3, true));
+            entities.TryRegister<RigidShipPart>("ship-part:square", "", "", ShipPartConfigurationBuilder.BuildPolygon(4, true));
+            entities.TryRegister<RigidShipPart>("ship-part:hexagon", "", "", ShipPartConfigurationBuilder.BuildPolygon(6, true));
         }
     }
 }
