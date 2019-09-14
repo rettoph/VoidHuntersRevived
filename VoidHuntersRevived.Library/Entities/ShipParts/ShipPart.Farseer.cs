@@ -5,6 +5,7 @@ using System.Text;
 using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Dynamics;
 using GalacticFighters.Library.Configurations;
+using GalacticFighters.Library.Utilities;
 using Microsoft.Xna.Framework;
 
 namespace GalacticFighters.Library.Entities.ShipParts
@@ -32,7 +33,7 @@ namespace GalacticFighters.Library.Entities.ShipParts
             return new Body(world, Vector2.Zero, 0, BodyType.Dynamic, this)
             {
                 AngularDamping = 1f,
-                LinearDamping = 1f,
+                LinearDamping = 1f
             };
         }
         #endregion

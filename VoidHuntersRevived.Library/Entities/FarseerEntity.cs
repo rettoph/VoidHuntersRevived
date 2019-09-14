@@ -84,6 +84,8 @@ namespace GalacticFighters.Library.Entities
             this.Events.Register<Body>("velocity:changed");
             this.Events.Register<Vector2>("linear-impulse:applied");
             this.Events.Register<Single>("angular-impulse:applied");
+            this.Events.Register<Category>("collision-categories:changed");
+            this.Events.Register<Category>("collides-with:changed");
         }
 
         protected override void PreInitialize()
@@ -152,10 +154,11 @@ namespace GalacticFighters.Library.Entities
         /// <param name="shape"></param>
         /// <param name="userData"></param>
         /// <returns></returns>
-        public virtual Fixture CreateFixture(Shape shape, Object userData = null)
+        public virtual Fixture CreateFixture(Shape shape, Object userData = null, Action<Fixture> setup = null)
         {
             // Create the new fixture...
             var fixture = this.body.CreateFixture(shape, userData);
+            setup?.Invoke(fixture);
 
             // Invoke the created event...
             this.Events.TryInvoke<Fixture>(this, "fixture:created", fixture);
@@ -243,6 +246,24 @@ namespace GalacticFighters.Library.Entities
             this.body.ApplyAngularImpulse(impulse);
 
             this.Events.TryInvoke<Single>(this, "angular-impulse:applied", impulse);
+        }
+
+        /// <summary>
+        /// Update the bodies collision category 
+        /// </summary>
+        /// <param name="category"></param>
+        public void SetCollidesWith(Category category)
+        {
+            this.body.CollidesWith = category;
+
+            this.Events.TryInvoke<Category>(this, "collides-with:changed", category);
+        }
+
+        public void SetCollisionCategories(Category category)
+        {
+            this.body.CollisionCategories = category;
+
+            this.Events.TryInvoke<Category>(this, "collision-categories:changed", category);
         }
         #endregion
 

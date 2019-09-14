@@ -1,4 +1,5 @@
 ﻿using GalacticFighters.Library.Entities.ShipParts;
+using GalacticFighters.Library.Utilities;
 using Guppy.Collections;
 using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
@@ -29,7 +30,6 @@ namespace GalacticFighters.Library.Entities
         #endregion
 
         #region Private Fields
-        private Direction _direction;
         private Guid _bridgeReservationId;
         #endregion
 
@@ -77,11 +77,19 @@ namespace GalacticFighters.Library.Entities
         {
             if(this.Bridge != bridge)
             {
-                // Unreserve the old bridge
-                this.Bridge?.Reserved.Remove(_bridgeReservationId);
-
+                if(this.Bridge != null)
+                {// Unreserve the old bridge
+                    this.Bridge.Reserved.Remove(_bridgeReservationId);
+                    this.Bridge.BridgeFor = null;
+                    this.Bridge.SetCollidesWith(CollisionCategories.PassiveCollidesWith);
+                    this.Bridge.SetCollisionCategories(CollisionCategories.PassiveCollisionCategories);
+                }
+                
                 // Save & reserve the new bridge
                 this.Bridge = bridge;
+                this.Bridge.BridgeFor = this;
+                this.Bridge.SetCollidesWith(CollisionCategories.ActiveCollidesWith);
+                this.Bridge.SetCollisionCategories(CollisionCategories.ActiveCollisionCategories);
                 _bridgeReservationId = this.Bridge.Reserved.Add();
 
                 this.Events.TryInvoke<ShipPart>(this, "bridge:changed", this.Bridge);

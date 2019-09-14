@@ -19,6 +19,8 @@ using GalacticFighters.Library.Entities.ShipParts;
 using GalacticFighters.Library.Utilities;
 using GalacticFighters.Library.Factories;
 using GalacticFighters.Library.Entities.Players;
+using Guppy.Utilities.Options;
+using Microsoft.Extensions.Logging;
 
 namespace GalacticFighters.Library
 {
@@ -28,6 +30,7 @@ namespace GalacticFighters.Library
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<ConnectionNodeFactory>();
+            services.AddScoped<Random>();
 
             services.AddScoped<World>(p =>
             {
@@ -51,6 +54,8 @@ namespace GalacticFighters.Library
 
         public void ConfigureProvider(IServiceProvider provider)
         {
+            provider.GetRequiredService<GlobalOptions>().LogLevel = LogLevel.Debug;
+
             var entities = provider.GetRequiredService<EntityLoader>();
 
             // Register players

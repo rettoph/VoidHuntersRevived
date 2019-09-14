@@ -9,7 +9,7 @@ namespace GalacticFighters.Library.Extensions
     {
         public static Single NextSingle(this Random rand, Single min, Single max)
         {
-            return (Single)((rand.NextDouble() * (max - min) - min));
+            return (Single)((rand.NextDouble() * (max - min)) + min);
         }
 
         public static Vector2 NextVector2(this Random rand, Single min, Single max)

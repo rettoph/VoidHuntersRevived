@@ -43,6 +43,8 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
             this.driven.Events.TryAdd<Fixture>("fixture:destroyed", this.HandleFixtureDestroyed);
             this.driven.Events.TryAdd<Vector2>("linear-impulse:applied", this.HandleLinearImpulseApplied);
             this.driven.Events.TryAdd<Single>("angular-impulse:applied", this.HandleAngularImpulseApplied);
+            this.driven.Events.TryAdd<Category>("collides-with:changed", this.HandleCollidesWithChanged);
+            this.driven.Events.TryAdd<Category>("collision-categories:changed", this.HandleCollisionCategoriesChanged);
             this.driven.Events.TryAdd<NetIncomingMessage>("on:read", this.HandleRead);
 
             // Bind required action handlers
@@ -140,6 +142,16 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
         {
             // Update the positional data...
             _body.SetTransform(this.driven.Position, this.driven.Rotation);
+        }
+
+        private void HandleCollidesWithChanged(object sender, Category arg)
+        {
+            _body.CollidesWith = arg;
+        }
+
+        private void HandleCollisionCategoriesChanged(object sender, Category arg)
+        {
+            _body.CollisionCategories = arg;
         }
         #endregion
 

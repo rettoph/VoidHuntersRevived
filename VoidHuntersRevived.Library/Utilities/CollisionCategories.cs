@@ -1,0 +1,23 @@
+﻿using FarseerPhysics.Dynamics;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace GalacticFighters.Library.Utilities
+{
+    /// <summary>
+    /// Default collision categories used within the game
+    /// </summary>
+    public static class CollisionCategories
+    {
+        public static readonly Category BorderCollisionCategory = Category.Cat1;
+        public static readonly Category PassiveCollisionCategories = Category.Cat2;
+        public static readonly Category ActiveCollisionCategories = Category.Cat3;
+
+
+        
+        public static readonly Category PassiveCollidesWith = CollisionCategories.BorderCollisionCategory;
+        public static readonly Category ActiveCollidesWith = CollisionCategories.BorderCollisionCategory | CollisionCategories.ActiveCollisionCategories;
+        public static readonly Category BorderCollidesWith = CollisionCategories.PassiveCollisionCategories | CollisionCategories.ActiveCollisionCategories;
+    }
+}

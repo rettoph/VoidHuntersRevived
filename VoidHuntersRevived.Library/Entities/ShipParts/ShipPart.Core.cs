@@ -16,6 +16,14 @@ namespace GalacticFighters.Library.Entities.ShipParts
     /// </summary>
     public abstract partial class ShipPart
     {
+        #region Enums
+        public enum State
+        {
+            Active,
+            Passive
+        }
+        #endregion
+
         #region Private Fields
         private Boolean _wasAwake;
         #endregion
@@ -32,6 +40,16 @@ namespace GalacticFighters.Library.Entities.ShipParts
         /// has a reservation, however, it will keep itself enabled.
         /// </summary>
         public CounterBoolean Reserved { get; private set; }
+
+        /// <summary>
+        /// The ship the current ship part is a bridge for, if any.
+        /// </summary>
+        public Ship BridgeFor { get; internal set; }
+
+        /// <summary>
+        /// If the current shippart is a bridge
+        /// </summary>
+        public Boolean IsBridge { get { return this.BridgeFor != null; } }
         #endregion
 
         #region Lifecycle Methods
