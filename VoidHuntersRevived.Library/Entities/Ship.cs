@@ -43,6 +43,8 @@ namespace GalacticFighters.Library.Entities
         /// The ships current bridge.
         /// </summary>
         public ShipPart Bridge { get; private set; }
+
+        public TractorBeam TractorBeam { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -52,6 +54,22 @@ namespace GalacticFighters.Library.Entities
 
             this.Events.Register<ShipPart>("bridge:changed");
             this.Events.Register<Direction>("direction:changed");
+        }
+
+        protected override void PreInitialize()
+        {
+            base.PreInitialize();
+
+            // Create the ship's tractor beam
+            this.TractorBeam = this.entities.Create<TractorBeam>("tractor-beam");
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            // Remove the ships old tractor beam
+            this.TractorBeam.Dispose();
         }
         #endregion
 

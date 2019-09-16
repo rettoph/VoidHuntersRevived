@@ -15,7 +15,7 @@ namespace GalacticFighters.Library.Entities.ShipParts.ConnectionNodes
         /// The connection node's id. Ids are not unique, but rather indicate their order
         /// within their parent ship part.
         /// </summary>
-        public Int32 Id { get; private set; }
+        public new Int32 Id { get; private set; }
 
         /// <summary>
         /// The ShipPart containing the current connection node
