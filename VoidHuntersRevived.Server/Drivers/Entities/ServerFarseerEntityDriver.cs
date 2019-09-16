@@ -15,7 +15,7 @@ namespace GalacticFighters.Server.Drivers.Entities
     public sealed class ServerFarseerEntityDriver : Driver<FarseerEntity>
     {
         #region Static Attributes
-        public static Double UpdateVitalsRate { get; set; } = 150;
+        public static Double UpdateVitalsRate { get; set; } = 100;
         #endregion
 
         #region Private Fields
