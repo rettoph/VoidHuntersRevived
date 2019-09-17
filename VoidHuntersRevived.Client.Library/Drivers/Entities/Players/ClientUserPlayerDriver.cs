@@ -1,4 +1,7 @@
-﻿using GalacticFighters.Client.Library.Scenes;
+﻿using FarseerPhysics.Dynamics;
+using FarseerPhysics.Factories;
+using GalacticFighters.Client.Library.Entities;
+using GalacticFighters.Client.Library.Scenes;
 using GalacticFighters.Library.Entities;
 using GalacticFighters.Library.Entities.Players;
 using Guppy;
@@ -16,15 +19,40 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
     public class ClientUserPlayerDriver : Driver<UserPlayer>
     {
         #region Private Fields
+        private Pointer _pointer;
+        private World _world;
         private ClientPeer _client;
         private ClientGalacticFightersWorldScene _scene;
+        private Body _sensor;
         #endregion
 
         #region Constructor
-        public ClientUserPlayerDriver(ClientPeer client, ClientGalacticFightersWorldScene scene, UserPlayer driven) : base(driven)
+        public ClientUserPlayerDriver(Pointer pointer, World world, ClientPeer client, ClientGalacticFightersWorldScene scene, UserPlayer driven) : base(driven)
         {
+            _pointer = pointer;
+            _world = world;
             _client = client;
             _scene = scene;
+        }
+        #endregion
+
+        #region Lifecycle Methods
+        protected override void PreInitialize()
+        {
+            base.PreInitialize();
+
+            if (_client.User == this.driven.User)
+            { // Only bother creating the sensor if the client user is the player user...
+                _sensor = BodyFactory.CreateCircle(_world, 1f, 1f);
+                _sensor.IsSensor = true;
+            }
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            _sensor?.Dispose();
         }
         #endregion
 

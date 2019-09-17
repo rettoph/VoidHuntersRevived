@@ -24,6 +24,7 @@ namespace GalacticFighters.Client.Library.Scenes
         private DebugViewXNA _debugView;
         private DebugViewXNA _serverDebugView;
         private ServerRender _server;
+        private SpriteBatch _spriteBatch;
         #endregion
 
         #region Public Fields
@@ -31,8 +32,9 @@ namespace GalacticFighters.Client.Library.Scenes
         #endregion
 
         #region Constructor
-        public ClientGalacticFightersWorldScene(ServerRender server, FarseerCamera2D camera, GraphicsDevice graphics, ContentManager content, World world) : base(world)
+        public ClientGalacticFightersWorldScene(SpriteBatch spriteBatch, ServerRender server, FarseerCamera2D camera, GraphicsDevice graphics, ContentManager content, World world) : base(world)
         {
+            _spriteBatch = spriteBatch;
             _server = server;
             _graphics = graphics;
             _content = content;
@@ -79,6 +81,10 @@ namespace GalacticFighters.Client.Library.Scenes
 
             // _serverDebugView.RenderDebugData(this.Camera.Projection, this.Camera.View);
             _debugView.RenderDebugData(this.Camera.Projection, this.Camera.View);
+
+            _spriteBatch.Begin();
+            this.entities.TryDraw(gameTime);
+            _spriteBatch.End();
         }
         #endregion
     }

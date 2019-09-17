@@ -1,6 +1,10 @@
-﻿using GalacticFighters.Client.Library.Utilities;
+﻿using GalacticFighters.Client.Library.Drivers;
+using GalacticFighters.Client.Library.Entities;
+using GalacticFighters.Client.Library.Utilities;
 using Guppy.Attributes;
+using Guppy.Collections;
 using Guppy.Interfaces;
+using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -14,11 +18,13 @@ namespace GalacticFighters.Client.Library
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<ServerRender>();
+            services.AddScoped<Pointer>(p => p.GetRequiredService<EntityCollection>().Create<Pointer>("pointer"));
         }
 
         public void ConfigureProvider(IServiceProvider provider)
         {
-            // throw new NotImplementedException();
+            var entities = provider.GetRequiredService<EntityLoader>();
+            entities.TryRegister<Pointer>("pointer");
         }
     }
 }
