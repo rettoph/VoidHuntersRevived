@@ -1,12 +1,12 @@
 ﻿using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
-using GalacticFighters.Client.Library.Entities;
 using GalacticFighters.Client.Library.Scenes;
 using GalacticFighters.Library.Entities;
 using GalacticFighters.Library.Entities.Players;
 using Guppy;
 using Guppy.Attributes;
 using Guppy.Network.Peers;
+using Guppy.UI.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;

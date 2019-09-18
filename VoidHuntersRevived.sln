@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.136
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Submodules", "Submodules", "{734E0AAC-E1F9-421A-AC04-038873C9C2BB}"
 EndProject
@@ -36,6 +36,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.UI", "Submodules\Guppy\Guppy.UI\Guppy.UI.csproj", "{C577D48D-C6C3-4FC8-A526-BCF854A225C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -153,6 +155,18 @@ Global
 		{0B809C0C-F76A-4346-BD0B-2DC07124230C}.Release|x64.Build.0 = Release|Any CPU
 		{0B809C0C-F76A-4346-BD0B-2DC07124230C}.Release|x86.ActiveCfg = Release|Any CPU
 		{0B809C0C-F76A-4346-BD0B-2DC07124230C}.Release|x86.Build.0 = Release|Any CPU
+		{C577D48D-C6C3-4FC8-A526-BCF854A225C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C577D48D-C6C3-4FC8-A526-BCF854A225C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C577D48D-C6C3-4FC8-A526-BCF854A225C4}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C577D48D-C6C3-4FC8-A526-BCF854A225C4}.Debug|x64.Build.0 = Debug|Any CPU
+		{C577D48D-C6C3-4FC8-A526-BCF854A225C4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C577D48D-C6C3-4FC8-A526-BCF854A225C4}.Debug|x86.Build.0 = Debug|Any CPU
+		{C577D48D-C6C3-4FC8-A526-BCF854A225C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C577D48D-C6C3-4FC8-A526-BCF854A225C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C577D48D-C6C3-4FC8-A526-BCF854A225C4}.Release|x64.ActiveCfg = Release|Any CPU
+		{C577D48D-C6C3-4FC8-A526-BCF854A225C4}.Release|x64.Build.0 = Release|Any CPU
+		{C577D48D-C6C3-4FC8-A526-BCF854A225C4}.Release|x86.ActiveCfg = Release|Any CPU
+		{C577D48D-C6C3-4FC8-A526-BCF854A225C4}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -166,6 +180,7 @@ Global
 		{2B3BA11A-324C-49C8-B5E5-1B7E9C43E9CA} = {DFAEC9DF-994B-45BF-8242-E63D3481A52E}
 		{EFA482D2-5848-4F77-B90F-D00B75DE9069} = {DFAEC9DF-994B-45BF-8242-E63D3481A52E}
 		{0B809C0C-F76A-4346-BD0B-2DC07124230C} = {93A4A3A1-1B0E-4739-89E1-755F2BDA1A95}
+		{C577D48D-C6C3-4FC8-A526-BCF854A225C4} = {022531CB-D8AF-498D-A22D-AE9D9B53E157}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FCB1CA3-2B6C-469F-B569-084FC0B57488}
