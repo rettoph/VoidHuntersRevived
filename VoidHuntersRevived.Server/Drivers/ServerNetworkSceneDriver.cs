@@ -65,6 +65,7 @@ namespace GalacticFighters.Server.Drivers
             var message = this.driven.Group.CreateMessage("entity:create", recipient, NetDeliveryMethod.ReliableUnordered);
             message.Write(entity.Configuration.Handle);
             message.Write(entity.Id);
+            entity.TryWriteSetup(message);
 
             this.CreateUpdateMessage(entity, recipient);
         }

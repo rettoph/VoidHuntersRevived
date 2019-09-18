@@ -1,5 +1,6 @@
 ﻿using GalacticFighters.Library.Entities.ShipParts;
 using Guppy;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,6 +21,16 @@ namespace GalacticFighters.Library.Entities
         public ShipPart Selected { get; private set; }
         #endregion
 
+        #region Lifecycle Methods
+        protected override void Create(IServiceProvider provider)
+        {
+            base.Create(provider);
+
+            this.Events.Register<ShipPart>("selected");
+            this.Events.Register<ShipPart>("released");
+        }
+        #endregion
+
         #region Utility Methods
         /// <summary>
         /// Check if a given ship part can be selected by the current tractorbeam.
@@ -28,7 +39,9 @@ namespace GalacticFighters.Library.Entities
         /// <returns></returns>
         public Boolean ValidateTarget(ShipPart target)
         {
-            if (target.IsBridge)
+            if (target == default(ShipPart))
+                return false;
+            else if (target.IsBridge)
                 return false;
             else if (target.Root.IsBridge && target.Root.BridgeFor?.TractorBeam != this)
                 return false;
@@ -53,7 +66,7 @@ namespace GalacticFighters.Library.Entities
         {
             if (this.ValidateTarget(component))
                 return component;
-            else if (this.ValidateTarget(component.Root))
+            else if (this.ValidateTarget(component?.Root))
                 return component.Root;
             else
                 return default(ShipPart);
@@ -65,10 +78,30 @@ namespace GalacticFighters.Library.Entities
         /// <param name="target"></param>
         public void TrySelect(ShipPart target)
         {
+            this.TryRelease();
+
             if ((target = this.FindTarget(target)) != default(ShipPart))
             { // Only attempt anything if the recieved ship part is a valid target
                 _selectionId = target.Reserved.Add();
                 this.Selected = target;
+
+                this.Events.TryInvoke<ShipPart>(this, "selected", this.Selected);
+            }
+        }
+
+        /// <summary>
+        /// Attempt to release the current selected ship part, if there is any
+        /// </summary>
+        public void TryRelease()
+        {
+            if (this.Selected != default(ShipPart))
+            {
+                var oldSelected = this.Selected;
+
+                this.Selected.Reserved.Remove(_selectionId);
+                this.Selected = null;
+
+                this.Events.TryInvoke<ShipPart>(this, "released", oldSelected);
             }
         }
         #endregion

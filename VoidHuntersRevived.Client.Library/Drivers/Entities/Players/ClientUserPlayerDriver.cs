@@ -1,5 +1,6 @@
 ﻿using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
+using GalacticFighters.Client.Library.Entities;
 using GalacticFighters.Client.Library.Scenes;
 using GalacticFighters.Library.Entities;
 using GalacticFighters.Library.Entities.Players;
@@ -7,11 +8,14 @@ using Guppy;
 using Guppy.Attributes;
 using Guppy.Network.Peers;
 using Guppy.UI.Entities;
+using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using static Guppy.UI.Entities.Pointer;
 
 namespace GalacticFighters.Client.Library.Drivers.Entities.Players
 {
@@ -23,7 +27,6 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
         private World _world;
         private ClientPeer _client;
         private ClientGalacticFightersWorldScene _scene;
-        private Body _sensor;
         #endregion
 
         #region Constructor
@@ -37,22 +40,16 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize()
+        protected override void Initialize()
         {
-            base.PreInitialize();
+            base.Initialize();
 
-            if (_client.User == this.driven.User)
-            { // Only bother creating the sensor if the client user is the player user...
-                _sensor = BodyFactory.CreateCircle(_world, 1f, 1f);
-                _sensor.IsSensor = true;
+            if(this.driven.User == _client.User)
+            {
+                _pointer.Events.TryAdd<Button>("pressed", this.HandlePointerButtonPressed);
+                _pointer.Events.TryAdd<Button>("released", this.HandlePointerButtonReleased);
+                _pointer.Events.TryAdd<Int32>("scrolled", this.HandlePointerScrolled);
             }
-        }
-
-        protected override void Dispose()
-        {
-            base.Dispose();
-
-            _sensor?.Dispose();
         }
         #endregion
 
@@ -89,6 +86,28 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
                 action.Write((Byte)direction);
                 action.Write(value);
             }
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandlePointerButtonPressed(object sender, Button button)
+        {
+            // throw new NotImplementedException();
+            this.driven.Ship.TractorBeam.TrySelect(
+                _scene.Sensor.Contacts
+                    .OrderBy(sp => Vector2.Distance(sp.WorldCenter, _scene.Sensor.WorldCenter))
+                    .FirstOrDefault());
+        }
+
+        private void HandlePointerButtonReleased(object sender, Button button)
+        {
+            // throw new NotImplementedException();
+            this.driven.Ship.TractorBeam.TryRelease();
+        }
+
+        private void HandlePointerScrolled(object sender, Int32 arg)
+        { // Zoom in the camera
+            _scene.Camera.ZoomTo((Single)Math.Pow(1.5, (Single)arg / 120));
         }
         #endregion
     }

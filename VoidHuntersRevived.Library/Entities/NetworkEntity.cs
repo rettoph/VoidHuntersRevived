@@ -39,8 +39,8 @@ namespace GalacticFighters.Library.Entities
             this.entities = provider.GetRequiredService<EntityCollection>();
             this.Actions = ActivatorUtilities.CreateInstance<ActionDelegater>(provider, this);
 
-            this.Events.Register<NetIncomingMessage>("on:read");
-            this.Events.Register<NetOutgoingMessage>("on:write");
+            this.Events.Register<NetIncomingMessage>("read");
+            this.Events.Register<NetOutgoingMessage>("write");
         }
 
         public override void Dispose()
@@ -66,7 +66,7 @@ namespace GalacticFighters.Library.Entities
         {
             this.Read(im);
 
-            this.Events.TryInvoke<NetIncomingMessage>(this, "on:read", im);
+            this.Events.TryInvoke<NetIncomingMessage>(this, "read", im);
         }
 
         public void TryWrite(NetOutgoingMessage om)
@@ -74,7 +74,36 @@ namespace GalacticFighters.Library.Entities
             om.Write(this.Id);
             this.Write(om);
 
-            this.Events.TryInvoke<NetOutgoingMessage>(this, "on:write", om);
+            this.Events.TryInvoke<NetOutgoingMessage>(this, "write", om);
+        }
+
+        /// <summary>
+        /// Write setup data. This is written only on creation. 
+        /// </summary>
+        /// <param name="om"></param>
+        protected virtual void WriteSetup(NetOutgoingMessage om)
+        {
+            //
+        }
+
+        /// <summary>
+        /// Read setup data. This is only invoked on the
+        /// factory setup method.
+        /// </summary>
+        /// <param name="im"></param>
+        protected virtual void ReadSetup(NetIncomingMessage im)
+        {
+            //
+        }
+
+        public void TryWriteSetup(NetOutgoingMessage om)
+        {
+            this.WriteSetup(om);
+        }
+
+        public void TryReadSetup(NetIncomingMessage im)
+        {
+            this.ReadSetup(im);
         }
         #endregion
     }

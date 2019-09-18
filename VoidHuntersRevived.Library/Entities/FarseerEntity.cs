@@ -3,6 +3,7 @@ using FarseerPhysics.Common;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
 using GalacticFighters.Library.Extensions.Farseer;
+using GalacticFighters.Library.Utilities;
 using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,6 +39,18 @@ namespace GalacticFighters.Library.Entities
         #endregion
 
         #region Public Attributes
+        /// <summary>
+        /// Reservations can be made onto ShipParts.
+        /// A shipPart with no reservations will automatically
+        /// disable itself when the body falls asleep. If the ShipPart
+        /// has a reservation, however, it will keep itself enabled.
+        /// </summary>
+        public CounterBoolean Reserved { get; private set; }
+
+        /// <summary>
+        /// Get the sleep state of the body. A sleeping body has very
+        /// low CPU cost.
+        /// </summary>
         public Boolean Awake { get { return this.body.Awake; } }
 
         /// <summary>
@@ -73,6 +86,9 @@ namespace GalacticFighters.Library.Entities
             base.Create(provider);
 
             _world = provider.GetRequiredService<World>();
+
+            // Automatically enable the ShipPart when a reservation is made.
+            this.Reserved = new CounterBoolean(value => this.SetEnabled(true));
 
             // Initialize basic events
             this.Events.Register<Body>("body:created");

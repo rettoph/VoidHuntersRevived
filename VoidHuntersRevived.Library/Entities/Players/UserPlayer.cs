@@ -23,17 +23,17 @@ namespace GalacticFighters.Library.Entities.Players
         #endregion
 
         #region Network Methods
-        protected override void Write(NetOutgoingMessage om)
+        protected override void WriteSetup(NetOutgoingMessage om)
         {
-            base.Write(om);
+            base.WriteSetup(om);
 
             if (om.WriteExists(this.User))
                 om.Write(this.User.Id);
         }
 
-        protected override void Read(NetIncomingMessage im)
+        protected override void ReadSetup(NetIncomingMessage im)
         {
-            base.Read(im);
+            base.ReadSetup(im);
 
             if (im.ReadBoolean())
                 this.User = this.scene.Group.Users.GetById(im.ReadGuid());

@@ -20,6 +20,7 @@ namespace GalacticFighters.Client.Library.Drivers
         #region Private Fields
         private EntityCollection _entities;
 
+        private Queue<NetIncomingMessage> _creates;
         private Queue<NetIncomingMessage> _updates;
         private Queue<NetIncomingMessage> _removes;
 
@@ -40,6 +41,7 @@ namespace GalacticFighters.Client.Library.Drivers
         {
             base.Create(provider);
 
+            _creates = new Queue<NetIncomingMessage>();
             _updates = new Queue<NetIncomingMessage>();
             _removes = new Queue<NetIncomingMessage>();
         }
@@ -97,6 +99,7 @@ namespace GalacticFighters.Client.Library.Drivers
                 _entities.Create<NetworkEntity>(type, e =>
                 { // Create a new entity
                     e.SetId(id);
+                    e.TryReadSetup(arg);
                 });
             else
                 this.logger.LogWarning($"Recieved duplicate create messages for '{id}' => {id}");

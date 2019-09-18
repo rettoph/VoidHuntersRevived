@@ -1,4 +1,5 @@
 ﻿using GalacticFighters.Client.Library.Drivers;
+using GalacticFighters.Client.Library.Entities;
 using GalacticFighters.Client.Library.Utilities;
 using Guppy.Attributes;
 using Guppy.Collections;
@@ -22,6 +23,8 @@ namespace GalacticFighters.Client.Library
         public void ConfigureProvider(IServiceProvider provider)
         {
             var entities = provider.GetRequiredService<EntityLoader>();
+
+            entities.TryRegister<Sensor>("sensor");
         }
     }
 }

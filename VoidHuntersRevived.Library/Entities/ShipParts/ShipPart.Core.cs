@@ -24,23 +24,11 @@ namespace GalacticFighters.Library.Entities.ShipParts
         }
         #endregion
 
-        #region Private Fields
-        private Boolean _wasAwake;
-        #endregion
-
         #region Protected Fields
         protected ShipPartConfiguration config;
         #endregion
 
         #region Public Attributes
-        /// <summary>
-        /// Reservations can be made onto ShipParts.
-        /// A shipPart with no reservations will automatically
-        /// disable itself when the body falls asleep. If the ShipPart
-        /// has a reservation, however, it will keep itself enabled.
-        /// </summary>
-        public CounterBoolean Reserved { get; private set; }
-
         /// <summary>
         /// The ship the current ship part is a bridge for, if any.
         /// </summary>
@@ -56,9 +44,6 @@ namespace GalacticFighters.Library.Entities.ShipParts
         protected override void Create(IServiceProvider provider)
         {
             base.Create(provider);
-
-            // Automatically enable the ShipPart when a reservation is made.
-            this.Reserved = new CounterBoolean(value => this.SetEnabled(true));
 
             // Call internal create functions
             this.ConnectionNode_Create(provider);
@@ -107,10 +92,8 @@ namespace GalacticFighters.Library.Entities.ShipParts
         {
             base.Update(gameTime);
 
-            if (!this.Reserved.Value && !this.Awake && _wasAwake)
+            if (!this.Reserved.Value && !this.Awake)
                 this.SetEnabled(false);
-
-            _wasAwake = this.Awake;
         }
         #endregion
 

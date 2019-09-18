@@ -1,6 +1,7 @@
 ﻿using FarseerPhysics;
 using FarseerPhysics.DebugView;
 using FarseerPhysics.Dynamics;
+using GalacticFighters.Client.Library.Entities;
 using GalacticFighters.Client.Library.Utilities;
 using GalacticFighters.Client.Library.Utilities.Cameras;
 using GalacticFighters.Library.Scenes;
@@ -12,6 +13,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace GalacticFighters.Client.Library.Scenes
@@ -25,10 +27,12 @@ namespace GalacticFighters.Client.Library.Scenes
         private DebugViewXNA _serverDebugView;
         private ServerRender _server;
         private SpriteBatch _spriteBatch;
+        private SpriteFont _font;
         #endregion
 
         #region Public Fields
         public FarseerCamera2D Camera { get; private set; }
+        public Sensor Sensor { get; private set; }
         #endregion
 
         #region Constructor
@@ -38,9 +42,9 @@ namespace GalacticFighters.Client.Library.Scenes
             _server = server;
             _graphics = graphics;
             _content = content;
+            _font = content.Load<SpriteFont>("font");
 
             this.Camera = camera;
-            this.Camera.ZoomTo(0.25f);
         }
         #endregion
 
@@ -48,6 +52,8 @@ namespace GalacticFighters.Client.Library.Scenes
         protected override void Initialize()
         {
             base.Initialize();
+
+            this.Sensor = this.entities.Create<Sensor>("sensor");
 
             _debugView = new DebugViewXNA(this.world);
             _debugView.LoadContent(_graphics, _content);
@@ -83,6 +89,7 @@ namespace GalacticFighters.Client.Library.Scenes
             _debugView.RenderDebugData(this.Camera.Projection, this.Camera.View);
 
             _spriteBatch.Begin();
+            _spriteBatch.DrawString(_font, $"Entities: {this.entities.Updates.Count()}", new Vector2(15, 115), Color.White);
             this.entities.TryDraw(gameTime);
             _spriteBatch.End();
         }

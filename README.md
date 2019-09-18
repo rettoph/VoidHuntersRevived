@@ -6,8 +6,8 @@ These are events triggered by Guppy but specific to this game. Events can be bou
 
 | Project | Class | Event | Arg | Description |
 | ------- | ----- | ----- | --- | ----------- |
-| `GalacicFighters.Library` | `NetworkEntity` | `on:read` | `NetIncomingMessage` | Invoked when the TryRead method is called. |
-| `GalacicFighters.Library` | `NetworkEntity` | `on:write` | `NetIncomingMessage` | Invoked when the TryWrite method is called. |
+| `GalacicFighters.Library` | `NetworkEntity` | `read` | `NetIncomingMessage` | Invoked when the TryRead method is called. |
+| `GalacicFighters.Library` | `NetworkEntity` | `write` | `NetIncomingMessage` | Invoked when the TryWrite method is called. |
 | | | | | |
 | `GalacicFighters.Library` | `ConnectionNode` | `attached` | `ConnectionNode` | Invoked after an attachment with another ConnectionNode is created. |
 | `GalacicFighters.Library` | `ConnectionNode` | `detached` | `ConnectionNode` | Invoked after an attachment with another ConnectionNode is destroyed. |
@@ -20,3 +20,6 @@ These are events triggered by Guppy but specific to this game. Events can be bou
 | `GalacicFighters.Library` | `FarseerEntity` | `velocity:changed` | `Body` | Invoked when the UpdateVelocity method is called. |
 | | | | | |
 | `GalacicFighters.Library` | `Ship` | `bridge:changed` | `ShipPart` | Invoked when the SetBridge method is called. |
+| | | | | |
+| `GalacicFighters.Library` | `TractorBeam` | `selected` | `ShipPart` | Invoked when the TrySelect method is called. |
+| `GalacicFighters.Library` | `TractorBeam` | `released` | `ShipPart` | Invoked when the TryRelease method is called. |
