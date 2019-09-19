@@ -61,7 +61,10 @@ namespace GalacticFighters.Library.Entities
             base.PreInitialize();
 
             // Create the ship's tractor beam
-            this.TractorBeam = this.entities.Create<TractorBeam>("tractor-beam");
+            this.TractorBeam = this.entities.Create<TractorBeam>("tractor-beam", tb =>
+            {
+                tb.Ship = this;
+            });
         }
 
         public override void Dispose()

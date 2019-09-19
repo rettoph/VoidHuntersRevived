@@ -19,6 +19,19 @@ namespace GalacticFighters.Library.Entities
 
         #region Public Attributes
         public ShipPart Selected { get; private set; }
+
+        /// <summary>
+        /// The beams current offset relative to its
+        /// containing Ship
+        /// </summary>
+        public Vector2 Offset { get; set; }
+
+        /// <summary>
+        /// The beams parent ship
+        /// </summary>
+        public Ship Ship { get; internal set; }
+
+        public Vector2 Position { get => this.Ship.Bridge.WorldCenter + this.Offset;  }
         #endregion
 
         #region Lifecycle Methods
@@ -28,6 +41,17 @@ namespace GalacticFighters.Library.Entities
 
             this.Events.Register<ShipPart>("selected");
             this.Events.Register<ShipPart>("released");
+        }
+        #endregion
+
+        #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if(this.Selected != default(ShipPart))
+            {
+            }
         }
         #endregion
 
