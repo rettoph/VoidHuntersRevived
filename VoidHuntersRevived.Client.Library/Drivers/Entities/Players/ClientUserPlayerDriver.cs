@@ -15,7 +15,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using static Guppy.UI.Entities.Pointer;
+using Guppy.Network.Extensions.Lidgren;
+using GalacticFighters.Library.Entities.ShipParts;
 
 namespace GalacticFighters.Client.Library.Drivers.Entities.Players
 {
@@ -46,8 +47,8 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
 
             if(this.driven.User == _client.User)
             {
-                _pointer.Events.TryAdd<Button>("pressed", this.HandlePointerButtonPressed);
-                _pointer.Events.TryAdd<Button>("released", this.HandlePointerButtonReleased);
+                _pointer.Events.TryAdd<Pointer.Button>("pressed", this.HandlePointerButtonPressed);
+                _pointer.Events.TryAdd<Pointer.Button>("released", this.HandlePointerButtonReleased);
                 _pointer.Events.TryAdd<Int32>("scrolled", this.HandlePointerScrolled);
             }
         }
@@ -90,19 +91,27 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
         #endregion
 
         #region Event Handlers
-        private void HandlePointerButtonPressed(object sender, Button button)
+        private void HandlePointerButtonPressed(object sender, Pointer.Button button)
         {
-            // throw new NotImplementedException();
-            this.driven.Ship.TractorBeam.TrySelect(
-                _scene.Sensor.Contacts
+            // Immediately attempt to select the local tractorbeam
+            var target = _scene.Sensor.Contacts
                     .OrderBy(sp => Vector2.Distance(sp.WorldCenter, _scene.Sensor.WorldCenter))
-                    .FirstOrDefault());
+                    .FirstOrDefault();
+
+            if (this.driven.Ship.TractorBeam.TrySelect(target))
+            { // Write an action to the server...
+                var action = this.driven.Actions.Create("tractor-beam:selected:request");
+                action.Write(this.driven.Ship.TractorBeam.Selected.Id);
+            }
         }
 
-        private void HandlePointerButtonReleased(object sender, Button button)
+        private void HandlePointerButtonReleased(object sender, Pointer.Button button)
         {
             // throw new NotImplementedException();
-            this.driven.Ship.TractorBeam.TryRelease();
+            if(this.driven.Ship.TractorBeam.TryRelease())
+            { // Write an action to the server
+                this.driven.Actions.Create("tractor-beam:released:request");
+            }
         }
 
         private void HandlePointerScrolled(object sender, Int32 arg)

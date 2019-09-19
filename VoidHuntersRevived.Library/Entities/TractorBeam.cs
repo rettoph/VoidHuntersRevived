@@ -76,23 +76,29 @@ namespace GalacticFighters.Library.Entities
         /// Attempt to select a recieved shippart targe.
         /// </summary>
         /// <param name="target"></param>
-        public void TrySelect(ShipPart target)
+        public Boolean TrySelect(ShipPart target)
         {
-            this.TryRelease();
+            if (target != this.Selected)
+            {
+                this.TryRelease();
 
-            if ((target = this.FindTarget(target)) != default(ShipPart))
-            { // Only attempt anything if the recieved ship part is a valid target
-                _selectionId = target.Reserved.Add();
-                this.Selected = target;
+                if ((target = this.FindTarget(target)) != default(ShipPart))
+                { // Only attempt anything if the recieved ship part is a valid target
+                    _selectionId = target.Reserved.Add();
+                    this.Selected = target;
 
-                this.Events.TryInvoke<ShipPart>(this, "selected", this.Selected);
+                    this.Events.TryInvoke<ShipPart>(this, "selected", this.Selected);
+                    return true;
+                }
             }
+
+            return false;
         }
 
         /// <summary>
         /// Attempt to release the current selected ship part, if there is any
         /// </summary>
-        public void TryRelease()
+        public Boolean TryRelease()
         {
             if (this.Selected != default(ShipPart))
             {
@@ -102,7 +108,11 @@ namespace GalacticFighters.Library.Entities
                 this.Selected = null;
 
                 this.Events.TryInvoke<ShipPart>(this, "released", oldSelected);
+
+                return true;
             }
+
+            return false;
         }
         #endregion
     }

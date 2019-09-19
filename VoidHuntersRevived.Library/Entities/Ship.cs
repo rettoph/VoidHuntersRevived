@@ -121,10 +121,16 @@ namespace GalacticFighters.Library.Entities
         /// <param name="value"></param>
         public void SetDirection(Direction direction, Boolean value)
         {
-            if (value)
+            if (value && !this.ActiveDirections.HasFlag(direction))
+            {
                 this.ActiveDirections |= direction;
-            else
+                this.Events.TryInvoke<Direction>(this, "direction:changed", direction);
+            }
+            else if (!value && this.ActiveDirections.HasFlag(direction))
+            {
                 this.ActiveDirections &= ~direction;
+                this.Events.TryInvoke<Direction>(this, "direction:changed", direction);
+            }
         }
         #endregion
 
@@ -161,6 +167,26 @@ namespace GalacticFighters.Library.Entities
         {
             if (im.ReadBoolean())
                 this.SetBridge(this.entities.GetById<ShipPart>(im.ReadGuid()));
+        }
+
+        /// <summary>
+        /// Write a ship's specific direction data
+        /// </summary>
+        /// <param name="om"></param>
+        /// <param name="direction"></param>
+        public void WriteDirection(NetOutgoingMessage om, Direction direction)
+        {
+            om.Write((Byte)direction);
+            om.Write(this.ActiveDirections.HasFlag(direction));
+        }
+
+        /// <summary>
+        /// Read a ships specific direction data
+        /// </summary>
+        /// <param name="im"></param>
+        public void ReadDirection(NetIncomingMessage im)
+        {
+            this.SetDirection((Direction)im.ReadByte(), im.ReadBoolean());
         }
         #endregion
     }
