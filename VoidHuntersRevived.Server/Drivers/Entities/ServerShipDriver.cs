@@ -44,12 +44,14 @@ namespace GalacticFighters.Server.Drivers.Entities
         private void HandleTractorBeamSelected(object sender, ShipPart arg)
         {
             var action = this.driven.Actions.Create("tractor-beam:selected");
+            action.Write(this.driven.TractorBeam.Offset);
             action.Write(this.driven.TractorBeam.Selected.Id);
         }
 
         private void HandleTractorBeamReleased(object sender, ShipPart arg)
         {
-            this.driven.Actions.Create("tractor-beam:released");
+            var action = this.driven.Actions.Create("tractor-beam:released");
+            action.Write(this.driven.TractorBeam.Offset);
         }
         #endregion
     }

@@ -21,6 +21,7 @@ namespace GalacticFighters.Server.Drivers.Entities
         #region Private Fields
         private Double _lastUpdateVitals;
         private Body _body;
+        private Boolean _dirtyVitals;
         #endregion
 
         #region Constructor
@@ -38,6 +39,7 @@ namespace GalacticFighters.Server.Drivers.Entities
 
             // Register an event to store the driven's body when created.
             this.driven.Events.TryAdd<Body>("body:created", (s, b) => _body = b);
+            this.driven.Events.TryAdd<Boolean>("enabled:changed", (s, arg) => _dirtyVitals = true);
         }
         #endregion
 
@@ -48,7 +50,7 @@ namespace GalacticFighters.Server.Drivers.Entities
 
             _lastUpdateVitals += gameTime.ElapsedGameTime.TotalMilliseconds;
 
-            if(_lastUpdateVitals >= ServerFarseerEntityDriver.UpdateVitalsRate)
+            if(_lastUpdateVitals >= ServerFarseerEntityDriver.UpdateVitalsRate || _dirtyVitals)
             { // Send the vitals data to all connected clients
                 var om = this.driven.Actions.Create("vitals:update");
                 // Write the vitals data
@@ -56,6 +58,11 @@ namespace GalacticFighters.Server.Drivers.Entities
                 _body.WriteVelocity(om);
 
                 _lastUpdateVitals = _lastUpdateVitals % ServerFarseerEntityDriver.UpdateVitalsRate;
+                if (_dirtyVitals)
+                {
+                    this.logger.LogInformation($"Dirty Vitals");
+                    _dirtyVitals = false;
+                }
             }
         }
         #endregion

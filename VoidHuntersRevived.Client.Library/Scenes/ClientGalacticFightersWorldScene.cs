@@ -85,7 +85,7 @@ namespace GalacticFighters.Client.Library.Scenes
 
             _graphics.Clear(Color.Black);
 
-            // _serverDebugView.RenderDebugData(this.Camera.Projection, this.Camera.View);
+            _serverDebugView.RenderDebugData(this.Camera.Projection, this.Camera.View);
             _debugView.RenderDebugData(this.Camera.Projection, this.Camera.View);
 
             _spriteBatch.Begin();

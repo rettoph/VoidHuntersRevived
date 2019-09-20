@@ -40,6 +40,11 @@ namespace GalacticFighters.Library.Entities
 
         #region Public Attributes
         /// <summary>
+        /// The internal Farseer Boyy's Id.
+        /// </summary>
+        public Int32 BodyId { get => this.body.BodyId; }
+
+        /// <summary>
         /// Reservations can be made onto ShipParts.
         /// A shipPart with no reservations will automatically
         /// disable itself when the body falls asleep. If the ShipPart
@@ -88,7 +93,10 @@ namespace GalacticFighters.Library.Entities
             _world = provider.GetRequiredService<World>();
 
             // Automatically enable the ShipPart when a reservation is made.
-            this.Reserved = new CounterBoolean(value => this.SetEnabled(true));
+            this.Reserved = new CounterBoolean(value => {
+                this.SetEnabled(true);
+                this.body.SleepingAllowed = !value;
+            });
 
             // Initialize basic events
             this.Events.Register<Body>("body:created");

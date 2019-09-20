@@ -48,14 +48,20 @@ namespace GalacticFighters.Server.Drivers.Entities.Players
 
         private void HandleTractorBeamSelectedRequest(object sender, NetIncomingMessage arg)
         {
-            if(this.ValidateSender(arg))
+            if (this.ValidateSender(arg))
+            {
+                this.driven.Ship.TractorBeam.SetOffset(arg.ReadVector2());
                 this.driven.Ship.TractorBeam.TrySelect(_entities.GetById<ShipPart>(arg.ReadGuid()));
+            }
         }
 
         private void HandleTractorBeamReleasedRequest(object sender, NetIncomingMessage arg)
         {
             if (this.ValidateSender(arg))
+            {
+                this.driven.Ship.TractorBeam.SetOffset(arg.ReadVector2());
                 this.driven.Ship.TractorBeam.TryRelease();
+            }
         }
         #endregion
 

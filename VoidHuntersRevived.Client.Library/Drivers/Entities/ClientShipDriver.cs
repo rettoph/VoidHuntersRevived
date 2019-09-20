@@ -50,11 +50,13 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
 
         private void HandleTractorBeamSelected(object sender, NetIncomingMessage arg)
         {
+            this.driven.TractorBeam.SetOffset(arg.ReadVector2());
             this.driven.TractorBeam.TrySelect(_entities.GetById<ShipPart>(arg.ReadGuid()));
         }
 
         private void HandleTractorBeamReleased(object sender, NetIncomingMessage arg)
         {
+            this.driven.TractorBeam.SetOffset(arg.ReadVector2());
             this.driven.TractorBeam.TryRelease();
         }
         #endregion

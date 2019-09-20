@@ -24,7 +24,7 @@ namespace GalacticFighters.Library.Entities
         /// The beams current offset relative to its
         /// containing Ship
         /// </summary>
-        public Vector2 Offset { get; set; }
+        public Vector2 Offset { get; private set; }
 
         /// <summary>
         /// The beams parent ship
@@ -41,6 +41,9 @@ namespace GalacticFighters.Library.Entities
 
             this.Events.Register<ShipPart>("selected");
             this.Events.Register<ShipPart>("released");
+            this.Events.Register<Vector2>("selected:position:changed");
+
+            // this.SetUpdateOrder(200);
         }
         #endregion
 
@@ -49,9 +52,7 @@ namespace GalacticFighters.Library.Entities
         {
             base.Update(gameTime);
 
-            if(this.Selected != default(ShipPart))
-            {
-            }
+            this.TryUpdateSelectedPosition();
         }
         #endregion
 
@@ -128,6 +129,7 @@ namespace GalacticFighters.Library.Entities
             {
                 var oldSelected = this.Selected;
 
+                this.TryUpdateSelectedPosition();
                 this.Selected.Reserved.Remove(_selectionId);
                 this.Selected = null;
 
@@ -137,6 +139,22 @@ namespace GalacticFighters.Library.Entities
             }
 
             return false;
+        }
+
+        public void SetOffset(Vector2 value)
+        {
+            this.Offset = value;
+            this.TryUpdateSelectedPosition();
+        }
+
+        private void TryUpdateSelectedPosition()
+        {
+            if (this.Selected != default(ShipPart))
+            {
+                this.Selected.SetPosition(this.Position, this.Selected.Rotation);
+
+                this.Events.TryInvoke<Vector2>(this, "selected:position:changed", this.Position);
+            }
         }
         #endregion
     }

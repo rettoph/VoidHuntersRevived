@@ -70,6 +70,9 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
 
                 // Update the camera position
                 _scene.Camera.MoveTo(this.driven.Ship.Bridge.WorldCenter);
+
+                // Update the tractor beam position
+                this.driven.Ship.TractorBeam.SetOffset(_scene.Sensor.WorldCenter - this.driven.Ship.Bridge.WorldCenter);
             }
         }
         #endregion
@@ -101,6 +104,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
             if (this.driven.Ship.TractorBeam.TrySelect(target))
             { // Write an action to the server...
                 var action = this.driven.Actions.Create("tractor-beam:selected:request");
+                action.Write(this.driven.Ship.TractorBeam.Offset);
                 action.Write(this.driven.Ship.TractorBeam.Selected.Id);
             }
         }
@@ -110,7 +114,8 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
             // throw new NotImplementedException();
             if(this.driven.Ship.TractorBeam.TryRelease())
             { // Write an action to the server
-                this.driven.Actions.Create("tractor-beam:released:request");
+                var action = this.driven.Actions.Create("tractor-beam:released:request");
+                action.Write(this.driven.Ship.TractorBeam.Offset);
             }
         }
 
