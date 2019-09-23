@@ -94,8 +94,9 @@ namespace GalacticFighters.Library.Entities
 
             // Automatically enable the ShipPart when a reservation is made.
             this.Reserved = new CounterBoolean(value => {
-                this.SetEnabled(true);
                 this.body.SleepingAllowed = !value;
+
+                this.Events.TryInvoke<Boolean>(this, "reserved:changed", value);
             });
 
             // Initialize basic events
@@ -110,6 +111,7 @@ namespace GalacticFighters.Library.Entities
             this.Events.Register<Single>("angular-impulse:applied");
             this.Events.Register<Category>("collision-categories:changed");
             this.Events.Register<Category>("collides-with:changed");
+            this.Events.Register<Boolean>("reserved:changed");
         }
 
         protected override void PreInitialize()

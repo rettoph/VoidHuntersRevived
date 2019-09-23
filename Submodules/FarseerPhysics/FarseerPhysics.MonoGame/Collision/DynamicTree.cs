@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using FarseerPhysics.Common;
 using Microsoft.Xna.Framework;
 
@@ -298,7 +299,7 @@ namespace FarseerPhysics.Collision
             _queryStack.Clear();
             _queryStack.Push(_root);
 
-            while (_queryStack.Count > 0)
+            while (_queryStack.Any())
             {
                 int nodeId = _queryStack.Pop();
                 if (nodeId == NullNode)

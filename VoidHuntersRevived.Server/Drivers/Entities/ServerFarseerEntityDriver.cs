@@ -39,7 +39,7 @@ namespace GalacticFighters.Server.Drivers.Entities
 
             // Register an event to store the driven's body when created.
             this.driven.Events.TryAdd<Body>("body:created", (s, b) => _body = b);
-            this.driven.Events.TryAdd<Boolean>("enabled:changed", (s, arg) => _dirtyVitals = true);
+            this.driven.Events.TryAdd<Boolean>("reserved:changed", (s, arg) => _dirtyVitals = true);
         }
         #endregion
 
