@@ -32,7 +32,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
             base.Initialize();
 
             this.driven.Events.TryAdd<ShipPart>("selected", this.HandleSelected);
-            this.driven.Events.TryAdd<Vector2>("selected:position:changed", this.HandleSelectedPositionUpdated);
+            this.driven.Events.TryAdd<ShipPart>("selected:position:changed", this.HandleSelectedPositionUpdated);
         }
         #endregion
 
@@ -42,9 +42,9 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
             _body = _server.GetBodyById(arg.BodyId);
         }
 
-        private void HandleSelectedPositionUpdated(object sender, Vector2 arg)
+        private void HandleSelectedPositionUpdated(object sender, ShipPart arg)
         {
-            _body.SetTransform(arg, _body.Rotation);
+            _body.SetTransform(arg.Position, arg.Rotation);
         }
         #endregion
     }

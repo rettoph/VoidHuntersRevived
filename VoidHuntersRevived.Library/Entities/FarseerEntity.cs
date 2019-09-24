@@ -83,6 +83,12 @@ namespace GalacticFighters.Library.Entities
         /// </summary>
         /// <value>The world position.</value>
         public Vector2 WorldCenter { get { return this.body.WorldCenter; } }
+
+        /// <summary>
+        /// Get the local position of the center of mass.
+        /// </summary>
+        /// <value>The local position.</value>
+        public Vector2 LocalCenter { get { return this.body.LocalCenter; } }
         #endregion
 
         #region Lifecycle Methods

@@ -296,8 +296,8 @@ namespace FarseerPhysics.Collision
         /// <param name="aabb">The aabb.</param>
         public void Query(Func<int, bool> callback, ref AABB aabb)
         {
-            // lock (_queryStack)
-            // {
+            lock (_queryStack)
+            {
                 _queryStack.Clear();
                 _queryStack.Push(_root);
 
@@ -328,7 +328,7 @@ namespace FarseerPhysics.Collision
                         }
                     }
                 }
-            // }
+            }
         }
 
         /// <summary>

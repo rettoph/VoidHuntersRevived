@@ -24,4 +24,4 @@ These are events triggered by Guppy but specific to this game. Events can be bou
 | | | | | |
 | `GalacicFighters.Library` | `TractorBeam` | `selected` | `ShipPart` | Invoked when the TrySelect method is called. |
 | `GalacicFighters.Library` | `TractorBeam` | `released` | `ShipPart` | Invoked when the TryRelease method is called. |
-| `GalacicFighters.Library` | `TractorBeam` | `selected:position:changed` | `Vector2` | Invoked when the TractorBeam's Selection's position is updated. |
+| `GalacicFighters.Library` | `TractorBeam` | `selected:position:changed` | `ShipPart` | Invoked when the TractorBeam's Selection's position is updated. |

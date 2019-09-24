@@ -1,4 +1,5 @@
-﻿using GalacticFighters.Library.Entities.ShipParts;
+﻿using FarseerPhysics.Dynamics;
+using GalacticFighters.Library.Entities.ShipParts;
 using Guppy;
 using Microsoft.Xna.Framework;
 using System;
@@ -41,7 +42,7 @@ namespace GalacticFighters.Library.Entities
 
             this.Events.Register<ShipPart>("selected");
             this.Events.Register<ShipPart>("released");
-            this.Events.Register<Vector2>("selected:position:changed");
+            this.Events.Register<ShipPart>("selected:position:changed");
 
             // this.SetUpdateOrder(200);
         }
@@ -151,9 +152,9 @@ namespace GalacticFighters.Library.Entities
         {
             if (this.Selected != default(ShipPart))
             {
-                this.Selected.SetPosition(this.Position, this.Selected.Rotation);
+                this.Selected.SetPosition(this.Position - Vector2.Transform(this.Selected.LocalCenter, Matrix.CreateRotationZ(this.Selected.Rotation)), this.Selected.Rotation);
 
-                this.Events.TryInvoke<Vector2>(this, "selected:position:changed", this.Position);
+                this.Events.TryInvoke<ShipPart>(this, "selected:position:changed", this.Selected);
             }
         }
         #endregion
