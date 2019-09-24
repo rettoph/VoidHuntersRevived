@@ -299,30 +299,33 @@ namespace FarseerPhysics.Collision
             _queryStack.Clear();
             _queryStack.Push(_root);
 
-            while (_queryStack.Any())
+            lock (_queryStack)
             {
-                int nodeId = _queryStack.Pop();
-                if (nodeId == NullNode)
+                while (_queryStack.Any())
                 {
-                    continue;
-                }
-
-                TreeNode<T> node = _nodes[nodeId];
-
-                if (AABB.TestOverlap(ref node.AABB, ref aabb))
-                {
-                    if (node.IsLeaf())
+                    int nodeId = _queryStack.Pop();
+                    if (nodeId == NullNode)
                     {
-                        bool proceed = callback(nodeId);
-                        if (proceed == false)
-                        {
-                            return;
-                        }
+                        continue;
                     }
-                    else
+
+                    TreeNode<T> node = _nodes[nodeId];
+
+                    if (AABB.TestOverlap(ref node.AABB, ref aabb))
                     {
-                        _queryStack.Push(node.Child1);
-                        _queryStack.Push(node.Child2);
+                        if (node.IsLeaf())
+                        {
+                            bool proceed = callback(nodeId);
+                            if (proceed == false)
+                            {
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            _queryStack.Push(node.Child1);
+                            _queryStack.Push(node.Child2);
+                        }
                     }
                 }
             }
