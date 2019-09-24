@@ -97,6 +97,7 @@ namespace GalacticFighters.Server.Drivers
         {
             this.driven.Group.CreateMessage("setup:start", user, NetDeliveryMethod.ReliableOrdered);
 
+            _entities.Flush();
             _entities.ForEach(e =>
             { // Send all existing network entities to the new user
                 if (e is NetworkEntity)

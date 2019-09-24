@@ -45,7 +45,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
             this.driven.Events.TryAdd<Single>("angular-impulse:applied", this.HandleAngularImpulseApplied);
             this.driven.Events.TryAdd<Category>("collides-with:changed", this.HandleCollidesWithChanged);
             this.driven.Events.TryAdd<Category>("collision-categories:changed", this.HandleCollisionCategoriesChanged);
-            this.driven.Events.TryAdd<NetIncomingMessage>("on:read", this.HandleRead);
+            this.driven.Events.TryAdd<NetIncomingMessage>("read", this.HandleRead);
 
             // Bind required action handlers
             this.driven.Actions.TryAdd("vitals:update", this.HandleVitalsUpdateMessage);
@@ -161,7 +161,18 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
             _body.ReadPosition(arg);
             _body.ReadVelocity(arg);
 
-            this.driven.SetEnabled(true);
+            if (!this.driven.Enabled)
+            {
+                this.driven.SetPosition(
+                    position: _body.Position,
+                    rotation: _body.Rotation);
+
+                this.driven.SetVelocity(
+                    linear: _body.LinearVelocity,
+                    angular: _body.AngularVelocity);
+
+                this.driven.SetEnabled(true);
+            }
         }
         #endregion
     }

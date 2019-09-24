@@ -58,11 +58,9 @@ namespace GalacticFighters.Server.Drivers.Entities
                 _body.WriteVelocity(om);
 
                 _lastUpdateVitals = _lastUpdateVitals % ServerFarseerEntityDriver.UpdateVitalsRate;
-                if (_dirtyVitals)
-                {
-                    this.logger.LogInformation($"Dirty Vitals");
+
+                if (_dirtyVitals) // If the entity has dirty vitals, mark them as clean
                     _dirtyVitals = false;
-                }
             }
         }
         #endregion

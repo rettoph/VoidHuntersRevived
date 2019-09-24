@@ -65,6 +65,8 @@ namespace GalacticFighters.Library.Entities.ShipParts
         protected override void Initialize()
         {
             base.Initialize();
+
+            this.SetEnabled(false);
         }
 
         protected override void PostInitialize()
@@ -92,7 +94,7 @@ namespace GalacticFighters.Library.Entities.ShipParts
         {
             base.Update(gameTime);
 
-            if (!this.Reserved.Value && !this.Awake)
+            if (this.Enabled && !this.Reserved.Value && !this.Awake)
                 this.SetEnabled(false);
         }
         #endregion
