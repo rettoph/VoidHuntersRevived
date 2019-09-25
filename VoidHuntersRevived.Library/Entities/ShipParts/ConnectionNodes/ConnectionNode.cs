@@ -104,7 +104,6 @@ namespace GalacticFighters.Library.Entities.ShipParts.ConnectionNodes
         #region Connection Methods
         public void Attach(ConnectionNode target)
         {
-            this.logger.LogInformation("Attaching!:!:!:");
             // First, ensure that there is no pre-existing connection.
             if (this.Attached)
                 this.Detach();

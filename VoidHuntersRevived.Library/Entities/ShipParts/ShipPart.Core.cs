@@ -38,6 +38,9 @@ namespace GalacticFighters.Library.Entities.ShipParts
         /// If the current shippart is a bridge
         /// </summary>
         public Boolean IsBridge { get { return this.BridgeFor != null; } }
+
+        public Vector2 LocalCenteroid { get => this.config.Centeroid; }
+        public Vector2 WorldCenteroid { get => this.Position + Vector2.Transform(this.LocalCenteroid, Matrix.CreateRotationZ(this.Rotation)); }
         #endregion
 
         #region Lifecycle Methods

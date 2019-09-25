@@ -184,7 +184,7 @@ namespace GalacticFighters.Library.Entities
         {
             if (this.Selected != default(ShipPart))
             {
-                this.Selected.SetPosition(this.Position - Vector2.Transform(this.Selected.LocalCenter, Matrix.CreateRotationZ(this.Selected.Rotation)), this.Selected.Rotation);
+                this.Selected.SetPosition(this.Position - Vector2.Transform(this.Selected.LocalCenteroid, Matrix.CreateRotationZ(this.Selected.Rotation)), this.Selected.Rotation);
 
                 this.Events.TryInvoke<ShipPart>(this, "selected:position:changed", this.Selected);
             }

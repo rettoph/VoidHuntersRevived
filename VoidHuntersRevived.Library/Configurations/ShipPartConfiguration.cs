@@ -12,6 +12,7 @@ namespace GalacticFighters.Library.Configurations
         public readonly List<Vertices> Vertices;
         public readonly ConnectionNodeConfiguration MaleConnectionNode;
         public readonly ConnectionNodeConfiguration[] FemaleConnectionNodes;
+        public readonly Vector2 Centeroid;
 
         public ShipPartConfiguration(
             Vertices vertices,
@@ -22,6 +23,7 @@ namespace GalacticFighters.Library.Configurations
             this.Vertices.Add(vertices);
             this.MaleConnectionNode = maleConnectionNode;
             this.FemaleConnectionNodes = femaleConnectionNodes == null ? new ConnectionNodeConfiguration[0] : femaleConnectionNodes;
+            this.Centeroid = vertices.GetCentroid();
         }
 
         public ShipPartConfiguration(
@@ -32,6 +34,7 @@ namespace GalacticFighters.Library.Configurations
             this.Vertices = vertices;
             this.MaleConnectionNode = maleConnectionNode;
             this.FemaleConnectionNodes = femaleConnectionNodes == null ? new ConnectionNodeConfiguration[0] : femaleConnectionNodes;
+            this.Centeroid = vertices.SelectMany(v => v).Aggregate(Vector2.Zero, (s, v) => s + v) / vertices.SelectMany(v => v).Count();
         }
     }
 }

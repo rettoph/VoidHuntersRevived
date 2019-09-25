@@ -77,6 +77,7 @@ namespace GalacticFighters.Server.Scenes
                 this.entities.Create<ShipPart>("ship-part:triangle").SetPosition(this.random.NextVector2(-10, 10), this.random.NextSingle(-3, 3));
                 this.entities.Create<ShipPart>("ship-part:square").SetPosition(this.random.NextVector2(-10, 10), this.random.NextSingle(-3, 3));
                 this.entities.Create<ShipPart>("ship-part:hexagon").SetPosition(this.random.NextVector2(-10, 10), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:pentagon").SetPosition(this.random.NextVector2(-10, 10), this.random.NextSingle(-3, 3));
             }
                 
         }

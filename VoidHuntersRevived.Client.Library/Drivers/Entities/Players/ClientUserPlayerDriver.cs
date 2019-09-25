@@ -120,7 +120,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
             // Immediately attempt to select the local tractorbeam
             var target = _scene.Sensor.Contacts
                     .Where(sp => this.driven.Ship.TractorBeam.ValidateTarget(sp))
-                    .OrderBy(sp => Vector2.Distance(sp.MaleConnectionNode.WorldPosition, _scene.Sensor.WorldCenter))
+                    .OrderBy(sp => MathHelper.Min(Vector2.Distance(sp.MaleConnectionNode.WorldPosition, _scene.Sensor.WorldCenter), Vector2.Distance(sp.WorldCenteroid, _scene.Sensor.WorldCenter)))
                     .FirstOrDefault();
 
             if (this.driven.Ship.TractorBeam.TrySelect(target))

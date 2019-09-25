@@ -49,7 +49,7 @@ namespace GalacticFighters.Library.Entities.ShipParts
         /// Get the local position of the center of mass.
         /// </summary>
         /// <value>The local position.</value>
-        public new Vector2 LocalCenter { get { return this.IsRoot ? base.LocalCenter : base.LocalCenter; } }
+        public new Vector2 LocalCenter { get { return this.IsRoot ? base.LocalCenter : this.config.Centeroid; } }
         #endregion
 
         #region Lifecycle Methods

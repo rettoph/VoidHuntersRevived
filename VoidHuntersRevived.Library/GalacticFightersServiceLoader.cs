@@ -54,9 +54,12 @@ namespace GalacticFighters.Library
 
         public void ConfigureProvider(IServiceProvider provider)
         {
+            Settings.MaxPolygonVertices = 16;
+
             provider.GetRequiredService<GlobalOptions>().LogLevel = LogLevel.Debug;
 
             var entities = provider.GetRequiredService<EntityLoader>();
+            var builder = new ShipPartConfigurationBuilder();
 
             // Register players
             entities.TryRegister<UserPlayer>("player:user");
@@ -69,6 +72,14 @@ namespace GalacticFighters.Library
             entities.TryRegister<RigidShipPart>("ship-part:triangle", "", "", ShipPartConfigurationBuilder.BuildPolygon(3, true));
             entities.TryRegister<RigidShipPart>("ship-part:square", "", "", ShipPartConfigurationBuilder.BuildPolygon(4, true));
             entities.TryRegister<RigidShipPart>("ship-part:hexagon", "", "", ShipPartConfigurationBuilder.BuildPolygon(6, true));
+
+            // Create the pentagon
+            builder.AddSide(0, ShipPartConfigurationBuilder.NodeType.Male);
+            builder.AddSide(MathHelper.PiOver2, ShipPartConfigurationBuilder.NodeType.Female);
+            builder.AddSide((MathHelper.Pi / 3) + MathHelper.PiOver2, ShipPartConfigurationBuilder.NodeType.Female);
+            builder.AddSide(MathHelper.Pi / 3, ShipPartConfigurationBuilder.NodeType.Female);
+            builder.AddSide((MathHelper.Pi / 3) + MathHelper.PiOver2, ShipPartConfigurationBuilder.NodeType.Female);
+            entities.TryRegister<RigidShipPart>("ship-part:pentagon", "", "", builder.Build());
         }
     }
 }
