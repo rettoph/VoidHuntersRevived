@@ -1,4 +1,5 @@
 ﻿using GalacticFighters.Library.Entities.ShipParts;
+using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
 using GalacticFighters.Library.Utilities;
 using Guppy.Collections;
 using Guppy.Network.Extensions.Lidgren;
@@ -6,6 +7,7 @@ using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace GalacticFighters.Library.Entities
@@ -31,6 +33,7 @@ namespace GalacticFighters.Library.Entities
 
         #region Private Fields
         private Guid _bridgeReservationId;
+        private List<FemaleConnectionNode> _openFemaleNodes;
         #endregion
 
         #region Public Attributes
@@ -44,7 +47,16 @@ namespace GalacticFighters.Library.Entities
         /// </summary>
         public ShipPart Bridge { get; private set; }
 
+        /// <summary>
+        /// The ship's internal tractor beam
+        /// </summary>
         public TractorBeam TractorBeam { get; private set; }
+
+        /// <summary>
+        /// A maintained enumerable of open female connection nodes within
+        /// the entire ship.
+        /// </summary>
+        public IEnumerable<FemaleConnectionNode> OpenFemaleNodes { get => _openFemaleNodes.AsReadOnly(); }
         #endregion
 
         #region Lifecycle Methods
@@ -52,8 +64,13 @@ namespace GalacticFighters.Library.Entities
         {
             base.Create(provider);
 
+            _openFemaleNodes = new List<FemaleConnectionNode>();
+
             this.Events.Register<ShipPart>("bridge:changed");
+            this.Events.Register<ShipPart>("bridge:chain:updated");
             this.Events.Register<Direction>("direction:changed");
+
+            this.SetUpdateOrder(200);
         }
 
         protected override void PreInitialize()
@@ -65,6 +82,13 @@ namespace GalacticFighters.Library.Entities
             {
                 tb.Ship = this;
             });
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            this.Events.TryAdd<ShipPart>("bridge:chain:updated", this.HandleBridgeChainUpdated);
         }
 
         public override void Dispose()
@@ -104,6 +128,9 @@ namespace GalacticFighters.Library.Entities
                     this.Bridge.BridgeFor = null;
                     this.Bridge.SetCollidesWith(CollisionCategories.PassiveCollidesWith);
                     this.Bridge.SetCollisionCategories(CollisionCategories.PassiveCollisionCategories);
+
+                    // Remove bound events
+                    this.Bridge.Events.TryRemove<ConnectionNode>("chain:updated", this.HandleChildNodeChanged);
                 }
                 
                 // Save & reserve the new bridge
@@ -113,7 +140,11 @@ namespace GalacticFighters.Library.Entities
                 this.Bridge.SetCollisionCategories(CollisionCategories.ActiveCollisionCategories);
                 _bridgeReservationId = this.Bridge.Reserved.Add();
 
+                // Add events
+                this.Bridge.Events.TryAdd<ConnectionNode>("chain:updated", this.HandleChildNodeChanged);
+
                 this.Events.TryInvoke<ShipPart>(this, "bridge:changed", this.Bridge);
+                this.Events.TryInvoke<ShipPart>(this, "bridge:chain:updated", this.Bridge);
             }
         }
 
@@ -134,6 +165,49 @@ namespace GalacticFighters.Library.Entities
                 this.ActiveDirections &= ~direction;
                 this.Events.TryInvoke<Direction>(this, "direction:changed", direction);
             }
+        }
+        #endregion
+
+        #region Helper Methods
+        /// <summary>
+        /// Get the closest open female connection node to a specified
+        /// world position.
+        /// </summary>
+        /// <param name="worldPosition"></param>
+        /// <param name="range">The furthest away the female node can be to be considered valid</param>
+        /// <returns></returns>
+        public FemaleConnectionNode GetClosestOpenFemaleNode(Vector2 worldPosition, Single range = 0.75f)
+        {
+            return this.OpenFemaleNodes
+                .Where(f => Vector2.Distance(f.WorldPosition, worldPosition) <= range)
+                .OrderBy(f => Vector2.Distance(f.WorldPosition, worldPosition))
+                .FirstOrDefault();
+        }
+        #endregion
+
+        #region Event Handlers
+        /// <summary>
+        /// When a child node within the bridge is updated, we must remap
+        /// open female nodes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="arg"></param>
+        private void HandleChildNodeChanged(object sender, ConnectionNode arg)
+        {
+            this.Events.TryInvoke<ShipPart>(this, "bridge:chain:updated", this.Bridge);
+        }
+
+        /// <summary>
+        /// When the ShipPart's chain is updated, we must remap open female nodes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="arg"></param>
+        private void HandleBridgeChainUpdated(object sender, ShipPart arg)
+        {
+            // Clear the connection node
+            _openFemaleNodes.Clear();
+            // Get all open female connection nodes within the bridge
+            this.Bridge?.GetOpenFemaleConnectionNodes(ref _openFemaleNodes);
         }
         #endregion
 

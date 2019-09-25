@@ -17,6 +17,7 @@ using System.Linq;
 using System.Text;
 using Guppy.Network.Extensions.Lidgren;
 using GalacticFighters.Library.Entities.ShipParts;
+using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
 
 namespace GalacticFighters.Client.Library.Drivers.Entities.Players
 {
@@ -73,8 +74,28 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
 
                 // Update the tractor beam position
                 this.driven.Ship.TractorBeam.SetOffset(_scene.Sensor.WorldCenter - this.driven.Ship.Bridge.WorldCenter);
+
+                if(this.driven.Ship.TractorBeam.Selected != default(ShipPart))
+                { // Ghost snap the selected ship part, giving the user a placement preview
+                    var node = this.driven.Ship.GetClosestOpenFemaleNode(this.driven.Ship.TractorBeam.Position);
+
+                    if(node != default(FemaleConnectionNode))
+                    { // Only proceed if there is a valid female node...
+                        // Rather than creating the attachment, we just want to move the selection
+                        // so that a user can preview what it would look like when attached.
+                        var previewRotation = node.WorldRotation - this.driven.Ship.TractorBeam.Selected.MaleConnectionNode.LocalRotation;
+                        // Update the preview position
+                        this.driven.Ship.TractorBeam.Selected.SetPosition(
+                            position: node.WorldPosition - Vector2.Transform(this.driven.Ship.TractorBeam.Selected.MaleConnectionNode.LocalPosition, Matrix.CreateRotationZ(previewRotation)),
+                            rotation: previewRotation);
+                    }
+                }
             }
         }
+        #endregion
+
+        #region Helper Methods
+
         #endregion
 
         #region Input Handlers
@@ -98,6 +119,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
         {
             // Immediately attempt to select the local tractorbeam
             var target = _scene.Sensor.Contacts
+                    .Where(sp => this.driven.Ship.TractorBeam.ValidateTarget(sp))
                     .OrderBy(sp => Vector2.Distance(sp.WorldCenter, _scene.Sensor.WorldCenter))
                     .FirstOrDefault();
 
@@ -111,12 +133,26 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
 
         private void HandlePointerButtonReleased(object sender, Pointer.Button button)
         {
-            // throw new NotImplementedException();
-            if(this.driven.Ship.TractorBeam.TryRelease())
-            { // Write an action to the server
-                var action = this.driven.Actions.Create("tractor-beam:released:request");
-                action.Write(this.driven.Ship.TractorBeam.Offset);
+            var target = this.driven.Ship.GetClosestOpenFemaleNode(this.driven.Ship.TractorBeam.Position);
+
+            if(target == default(FemaleConnectionNode))
+            { // If there is no valid open female node...
+                if (this.driven.Ship.TractorBeam.TryRelease())
+                { // Write a release action to the server
+                    var action = this.driven.Actions.Create("tractor-beam:released:request");
+                    action.Write(this.driven.Ship.TractorBeam.Offset);
+                }
             }
+            else
+            { // If there is a valid open female node...
+                if (this.driven.Ship.TractorBeam.TryAttach(target))
+                { // Write an attach action to the server
+                    var action = this.driven.Actions.Create("tractor-beam:attached:request");
+                    action.Write(target.Parent);
+                    action.Write(target.Id);
+                }
+            }
+
         }
 
         private void HandlePointerScrolled(object sender, Int32 arg)

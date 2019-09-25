@@ -20,8 +20,13 @@ These are events triggered by Guppy but specific to this game. Events can be bou
 | `GalacicFighters.Library` | `FarseerEntity` | `position:changed` | `Body` | Invoked when the UpdatePosition method is called. |
 | `GalacicFighters.Library` | `FarseerEntity` | `velocity:changed` | `Body` | Invoked when the UpdateVelocity method is called. |
 | | | | | |
+| `GalacicFighters.Library` | `ShipPart` | `chain:updated` | `ConnectionNode` | Invoked when any node within the ShipPart's chain attached or detached. |
+| | | | | |
 | `GalacicFighters.Library` | `Ship` | `bridge:changed` | `ShipPart` | Invoked when the SetBridge method is called. |
+| `GalacicFighters.Library` | `Ship` | `bridge:chain:updated` | `ShipPart` | Invoked when the Bridge's chain is updated or when the Bridge is changed. |
+| `GalacicFighters.Library` | `Ship` | `direcftion:changed` | `Direction` | Invoked when the Bridge's SetDirection method is called. |
 | | | | | |
 | `GalacicFighters.Library` | `TractorBeam` | `selected` | `ShipPart` | Invoked when the TrySelect method is called. |
 | `GalacicFighters.Library` | `TractorBeam` | `released` | `ShipPart` | Invoked when the TryRelease method is called. |
 | `GalacicFighters.Library` | `TractorBeam` | `selected:position:changed` | `ShipPart` | Invoked when the TractorBeam's Selection's position is updated. |
+| `GalacicFighters.Library` | `TractorBeam` | `attached` | `FemaleConnectionNode` | Invoked when the TractorBeam's Selection is attached to a FemaleConnectionNode. |

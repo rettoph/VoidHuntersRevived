@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Network.Extensions.Lidgren;
 using Microsoft.Extensions.Logging;
+using Guppy.Network.Security;
 
 namespace GalacticFighters.Library.Utilities.Delegater
 {
@@ -24,6 +25,24 @@ namespace GalacticFighters.Library.Utilities.Delegater
             _entity = networkEntity;
             _scene = scene;
             _logger = logger;
+        }
+
+        public NetOutgoingMessage Create(String type, NetConnection recipient, NetDeliveryMethod method = NetDeliveryMethod.ReliableUnordered)
+        {
+            var om = _scene.Group.CreateMessage("entity:action", recipient, method, 0);
+            om.Write(_entity.Id);
+            om.Write(type);
+
+            return om;
+        }
+
+        public NetOutgoingMessage Create(String type, User recipient, NetDeliveryMethod method = NetDeliveryMethod.ReliableUnordered)
+        {
+            var om = _scene.Group.CreateMessage("entity:action", recipient, method, 0);
+            om.Write(_entity.Id);
+            om.Write(type);
+
+            return om;
         }
 
         public NetOutgoingMessage Create(String type, NetDeliveryMethod method = NetDeliveryMethod.ReliableUnordered)

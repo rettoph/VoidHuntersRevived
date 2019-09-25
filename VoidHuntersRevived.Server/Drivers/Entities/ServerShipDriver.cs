@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Network.Extensions.Lidgren;
+using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
 
 namespace GalacticFighters.Server.Drivers.Entities
 {
@@ -27,6 +28,7 @@ namespace GalacticFighters.Server.Drivers.Entities
             this.driven.Events.TryAdd<Ship.Direction>("direction:changed", this.HandleDirectionChanged);
             this.driven.TractorBeam.Events.TryAdd<ShipPart>("selected", this.HandleTractorBeamSelected);
             this.driven.TractorBeam.Events.TryAdd<ShipPart>("released", this.HandleTractorBeamReleased);
+            this.driven.TractorBeam.Events.TryAdd<FemaleConnectionNode>("attached", this.HandleTractorBeamAttached);
         }
         #endregion
 
@@ -45,13 +47,20 @@ namespace GalacticFighters.Server.Drivers.Entities
         {
             var action = this.driven.Actions.Create("tractor-beam:selected");
             action.Write(this.driven.TractorBeam.Offset);
-            action.Write(this.driven.TractorBeam.Selected.Id);
+            action.Write(this.driven.TractorBeam.Selected);
         }
 
         private void HandleTractorBeamReleased(object sender, ShipPart arg)
         {
             var action = this.driven.Actions.Create("tractor-beam:released");
             action.Write(this.driven.TractorBeam.Offset);
+        }
+
+        private void HandleTractorBeamAttached(object sender, FemaleConnectionNode arg)
+        {
+            var action = this.driven.Actions.Create("tractor-beam:attached");
+            action.Write(arg.Parent);
+            action.Write(arg.Id);
         }
         #endregion
     }

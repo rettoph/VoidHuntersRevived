@@ -52,6 +52,8 @@ namespace GalacticFighters.Library.Entities.ShipParts
         private void ConnectionNode_Create(IServiceProvider provider)
         {
             _connectionNodefactory = provider.GetRequiredService<ConnectionNodeFactory>();
+
+            this.Events.Register<ConnectionNode>("chain:updated");
         }
 
         /// <summary>
@@ -128,6 +130,16 @@ namespace GalacticFighters.Library.Entities.ShipParts
                 om.Write(this.MaleConnectionNode.Target.Parent.Id);
                 om.Write(this.MaleConnectionNode.Target.Id);
             }
+        }
+
+
+        internal void GetOpenFemaleConnectionNodes(ref List<FemaleConnectionNode> list)
+        {
+            foreach (FemaleConnectionNode female in this.FemaleConnectionNodes)
+                if (female.Attached)
+                    female.Target.Parent.GetOpenFemaleConnectionNodes(ref list);
+                else
+                    list.Add(female);
         }
         #endregion
     }

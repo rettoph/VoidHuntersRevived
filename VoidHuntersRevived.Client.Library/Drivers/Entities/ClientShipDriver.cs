@@ -5,6 +5,7 @@ using Guppy.Attributes;
 using Guppy.Collections;
 using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -34,6 +35,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
             this.driven.Actions.TryAdd("direction:changed", this.HandleDirectionChanged);
             this.driven.Actions.TryAdd("tractor-beam:selected", this.HandleTractorBeamSelected);
             this.driven.Actions.TryAdd("tractor-beam:released", this.HandleTractorBeamReleased);
+            this.driven.Actions.TryAdd("tractor-beam:attached", this.HandleTractorBeamAttached);
         }
         #endregion
 
@@ -51,13 +53,19 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
         private void HandleTractorBeamSelected(object sender, NetIncomingMessage arg)
         {
             this.driven.TractorBeam.SetOffset(arg.ReadVector2());
-            this.driven.TractorBeam.TrySelect(_entities.GetById<ShipPart>(arg.ReadGuid()));
+            this.driven.TractorBeam.TrySelect(arg.ReadEntity<ShipPart>(_entities));
         }
 
         private void HandleTractorBeamReleased(object sender, NetIncomingMessage arg)
         {
             this.driven.TractorBeam.SetOffset(arg.ReadVector2());
             this.driven.TractorBeam.TryRelease();
+        }
+
+        private void HandleTractorBeamAttached(object sender, NetIncomingMessage arg)
+        {
+            this.driven.TractorBeam.TryAttach(
+                arg.ReadEntity<ShipPart>(_entities).FemaleConnectionNodes[arg.ReadInt32()]);
         }
         #endregion
     }

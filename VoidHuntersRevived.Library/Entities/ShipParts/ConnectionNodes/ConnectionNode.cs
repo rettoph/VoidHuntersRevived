@@ -56,6 +56,16 @@ namespace GalacticFighters.Library.Entities.ShipParts.ConnectionNodes
         /// Whether or not the current node is connected to another node.
         /// </summary>
         public Boolean Attached { get { return this.Target != null; } }
+
+        /// <summary>
+        /// The Node's current posotion relative to the world.
+        /// </summary>
+        public Vector2 WorldPosition { get { return this.Parent.Root.Position + Vector2.Transform(this.LocalPosition, this.Parent.LocalTransformation * Matrix.CreateRotationZ(this.Parent.Root.Rotation)); } }
+        
+        /// <summary>
+        /// The node's current rotation relative to the world.
+        /// </summary>
+        public Single WorldRotation { get { return this.Parent.Root.Rotation + this.Parent.LocalRotation + this.LocalRotation; } }
         #endregion
 
         #region Lifecycle Methods
@@ -108,6 +118,7 @@ namespace GalacticFighters.Library.Entities.ShipParts.ConnectionNodes
 
             // Invoke the event...
             this.Events?.TryInvoke<ConnectionNode>(this, "attached", this.Target);
+            this.Parent.Root.Events.TryInvoke<ConnectionNode>(this, "chain:updated", this);
         }
 
         public void Detach()
@@ -120,6 +131,7 @@ namespace GalacticFighters.Library.Entities.ShipParts.ConnectionNodes
 
                 // Invoke the event...
                 this.Events?.TryInvoke<ConnectionNode>(this, "detached", oldTarget);
+                this.Parent.Root.Events.TryInvoke<ConnectionNode>(this, "chain:updated", this);
             }
         }
         #endregion

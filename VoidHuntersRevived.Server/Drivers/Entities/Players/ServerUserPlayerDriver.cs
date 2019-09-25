@@ -34,6 +34,7 @@ namespace GalacticFighters.Server.Drivers.Entities.Players
             this.driven.Actions.TryAdd("direction:changed:request", this.HandleDirectionChangedRequest);
             this.driven.Actions.TryAdd("tractor-beam:selected:request", this.HandleTractorBeamSelectedRequest);
             this.driven.Actions.TryAdd("tractor-beam:released:request", this.HandleTractorBeamReleasedRequest);
+            this.driven.Actions.TryAdd("tractor-beam:attached:request", this.HandleTractorBeamAttachedRequest);
         }
         #endregion
 
@@ -51,7 +52,10 @@ namespace GalacticFighters.Server.Drivers.Entities.Players
             if (this.ValidateSender(arg))
             {
                 this.driven.Ship.TractorBeam.SetOffset(arg.ReadVector2());
-                this.driven.Ship.TractorBeam.TrySelect(_entities.GetById<ShipPart>(arg.ReadGuid()));
+                if(!this.driven.Ship.TractorBeam.TrySelect(_entities.GetById<ShipPart>(arg.ReadGuid())))
+                { // Create a denied message & send to the client
+                    this.driven.Actions.Create("tractor-beam:selected:denied", arg.SenderConnection);
+                }
             }
         }
 
@@ -60,7 +64,22 @@ namespace GalacticFighters.Server.Drivers.Entities.Players
             if (this.ValidateSender(arg))
             {
                 this.driven.Ship.TractorBeam.SetOffset(arg.ReadVector2());
-                this.driven.Ship.TractorBeam.TryRelease();
+                if (!this.driven.Ship.TractorBeam.TryRelease())
+                { // Create a denied message & send to the client
+                    this.driven.Actions.Create("tractor-beam:released:denied", arg.SenderConnection);
+                }
+            }
+        }
+
+        private void HandleTractorBeamAttachedRequest(object sender, NetIncomingMessage arg)
+        {
+            if (this.ValidateSender(arg))
+            {
+                // Attempt to attach the the object recieved by the client...
+                if (!this.driven.Ship.TractorBeam.TryAttach(arg.ReadEntity<ShipPart>(_entities).FemaleConnectionNodes[arg.ReadInt32()]))
+                { // Create a denied message & send to the client
+                    this.driven.Actions.Create("tractor-beam:attached:denied", arg.SenderConnection);
+                }
             }
         }
         #endregion

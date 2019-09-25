@@ -1,5 +1,6 @@
 ﻿using FarseerPhysics.Dynamics;
 using GalacticFighters.Library.Entities.ShipParts;
+using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
 using Guppy;
 using Microsoft.Xna.Framework;
 using System;
@@ -32,7 +33,7 @@ namespace GalacticFighters.Library.Entities
         /// </summary>
         public Ship Ship { get; internal set; }
 
-        public Vector2 Position { get => this.Ship.Bridge.WorldCenter + this.Offset;  }
+        public Vector2 Position { get => this.Ship.Bridge.WorldCenter + this.Offset; }
         #endregion
 
         #region Lifecycle Methods
@@ -43,8 +44,7 @@ namespace GalacticFighters.Library.Entities
             this.Events.Register<ShipPart>("selected");
             this.Events.Register<ShipPart>("released");
             this.Events.Register<ShipPart>("selected:position:changed");
-
-            // this.SetUpdateOrder(200);
+            this.Events.Register<FemaleConnectionNode>("attached");
         }
         #endregion
 
@@ -140,6 +140,34 @@ namespace GalacticFighters.Library.Entities
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Attempt to attach the current selected ship part to a given
+        /// female connection node.
+        /// 
+        /// This will automatically release the node as well.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public Boolean TryAttach(FemaleConnectionNode target)
+        {
+            var selected = this.Selected;
+
+            if (target == default(FemaleConnectionNode))
+                return false;
+            else if (target.Parent.Root != this.Ship.Bridge)
+                return false;
+            else if (target.Attached)
+                return false;
+            else if (this.Selected == default(ShipPart))
+                return false;
+
+            selected.MaleConnectionNode.Attach(target);
+            this.Events.TryInvoke<FemaleConnectionNode>(this, "attached", target);
+            this.TryRelease();
+
+            return true;
         }
 
         public void SetOffset(Vector2 value)
