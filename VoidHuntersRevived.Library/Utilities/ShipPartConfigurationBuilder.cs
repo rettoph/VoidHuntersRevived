@@ -84,6 +84,8 @@ namespace GalacticFighters.Library.Utilities
         {
             if (_verticeBuffer.Count > 0)
             { // Flush the vertices...
+                _verticeBuffer.RemoveAt(_verticeBuffer.Count - 1);
+
                 Vector2[] rawVertices = new Vector2[_verticeBuffer.Count];
                 _verticeBuffer.CopyTo(rawVertices);
                 _vertices.Add(new Vertices(rawVertices));

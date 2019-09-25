@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Collections;
+using Microsoft.Extensions.Logging;
 
 namespace GalacticFighters.Library.Entities.ShipParts
 {
@@ -68,8 +69,9 @@ namespace GalacticFighters.Library.Entities.ShipParts
                 .Select((female_config, idx) => _connectionNodefactory.Build<FemaleConnectionNode>(node => node.Configure(idx, this, female_config)))
                 .ToArray();
 
-            // Bind event listeners
-            this.MaleConnectionNode.Events.TryAdd<ConnectionNode>("attached", this.HandleMaleConnectionNodeAttached);
+            // Bind event listeners tto automatically remap connection node data on a male attachment or female detachment
+            this.MaleConnectionNode.Events.TryAdd<ConnectionNode>("attached", (s, n) => this.RemapConnectionNodes());
+            this.MaleConnectionNode.Events.TryAdd<ConnectionNode>("detached", (s, n) => this.RemapConnectionNodes());
         }
 
         /// <summary>
@@ -89,7 +91,7 @@ namespace GalacticFighters.Library.Entities.ShipParts
         /// part. This is recursively called on all children belonging to a specific
         /// ShipPart
         /// </summary>
-        private void RemapConnectionNodes()
+        internal void RemapConnectionNodes()
         {
             // Update the current parts translation...
             this.UpdateLocalTranslation();
@@ -99,18 +101,6 @@ namespace GalacticFighters.Library.Entities.ShipParts
 
             // Recursively call is for all internal female nodes
             this.FemaleConnectionNodes.ForEach(female => female.Target?.Parent.RemapConnectionNodes());
-        }
-        #endregion
-
-        #region Event Handlers
-        /// <summary>
-        /// When the male connection node is attached, we must remape the connection nodes.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="arg"></param>
-        private void HandleMaleConnectionNodeAttached(object sender, ConnectionNode arg)
-        {
-            this.RemapConnectionNodes();
         }
         #endregion
 

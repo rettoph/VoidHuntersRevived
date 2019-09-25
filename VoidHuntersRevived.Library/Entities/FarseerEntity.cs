@@ -61,34 +61,34 @@ namespace GalacticFighters.Library.Entities
         /// <summary>
         /// Get the world body origin position.
         /// </summary>
-        public Vector2 Position { get { return this.body.Position; } }
+        public virtual Vector2 Position { get { return this.body.Position; } }
 
         /// <summary>
         /// Get the angle in radians.
         /// </summary>
-        public Single Rotation { get { return this.body.Rotation; } }
+        public virtual Single Rotation { get { return this.body.Rotation; } }
 
         /// <summary>
         /// Get the linear velocity of the center of mass.
         /// </summary>
-        public Vector2 LinearVelocity { get { return this.body.LinearVelocity; } }
+        public virtual Vector2 LinearVelocity { get { return this.body.LinearVelocity; } }
 
         /// <summary>
         /// Gets the angular velocity. Radians/second.
         /// </summary>
-        public Single AngularVelocity { get { return this.body.AngularVelocity; } }
+        public virtual Single AngularVelocity { get { return this.body.AngularVelocity; } }
 
         /// <summary>
         /// Get the world position of the center of mass.
         /// </summary>
         /// <value>The world position.</value>
-        public Vector2 WorldCenter { get { return this.body.WorldCenter; } }
+        public virtual Vector2 WorldCenter { get { return this.body.WorldCenter; } }
 
         /// <summary>
         /// Get the local position of the center of mass.
         /// </summary>
         /// <value>The local position.</value>
-        public Vector2 LocalCenter { get { return this.body.LocalCenter; } }
+        public virtual Vector2 LocalCenter { get { return this.body.LocalCenter; } }
         #endregion
 
         #region Lifecycle Methods
@@ -192,6 +192,9 @@ namespace GalacticFighters.Library.Entities
             var fixture = this.body.CreateFixture(shape, userData);
             setup?.Invoke(fixture);
 
+            if (!this.body.Enabled) // Enable the body, if it is not already done
+                this.body.Enabled = true;
+
             // Invoke the created event...
             this.Events.TryInvoke<Fixture>(this, "fixture:created", fixture);
 
@@ -205,6 +208,9 @@ namespace GalacticFighters.Library.Entities
         public virtual void DestroyFixture(Fixture fixture)
         {
             fixture.Body.DestroyFixture(fixture);
+
+            if (!this.body.FixtureList.Any()) // Auto disable the body if there are no fixtures within
+                this.body.Enabled = false;
 
             // Invoke the destroyed event...
             this.Events.TryInvoke<Fixture>(this, "fixture:destroyed", fixture);

@@ -110,6 +110,10 @@ namespace GalacticFighters.Library.Entities
 
                 if ((target = this.FindTarget(target)) != default(ShipPart))
                 { // Only attempt anything if the recieved ship part is a valid target
+                    // Detach the recieved target, if it is connected to anything
+                    if (target.MaleConnectionNode.Attached)
+                        target.MaleConnectionNode.Detach();
+
                     _selectionId = target.Reserved.Add();
                     this.Selected = target;
 

@@ -5,6 +5,7 @@ using GalacticFighters.Library.Utilities;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace GalacticFighters.Library.Entities.ShipParts
@@ -15,13 +16,20 @@ namespace GalacticFighters.Library.Entities.ShipParts
     /// </summary>
     public class RigidShipPart : ShipPart
     {
+        #region Private Fields
+        private Queue<Fixture> _fixtures = new Queue<Fixture>();
+        #endregion
+
         /// <summary>
         /// Destroy all old fixtures and re-create them transplaneted onto
         /// the root piece
         /// </summary>
         protected override void UpdateChainPlacement()
         {
-            this.DestroyAllFixtures();
+            Fixture target;
+
+            while (_fixtures.Any()) // Destroy all self contained fixtures
+                ((target = _fixtures.Dequeue()).Body.UserData as ShipPart).DestroyFixture(target);
 
             // Create new fixtures for all vertices contained in the configuration
             this.config.Vertices.ForEach(data =>
@@ -29,7 +37,7 @@ namespace GalacticFighters.Library.Entities.ShipParts
                 Vertices vertices = new Vertices(data);
                 Matrix _currentChainTranslation = this.LocalTransformation;
                 vertices.Transform(ref _currentChainTranslation);
-                this.Root.CreateFixture(new PolygonShape(vertices, 0.5f), this);
+                _fixtures.Enqueue(this.Root.CreateFixture(new PolygonShape(vertices, 0.5f), this));
             });
         }
 
