@@ -1,5 +1,6 @@
 ﻿using FarseerPhysics.Common;
 using GalacticFighters.Library.Configurations;
+using Guppy.Extensions.Collection;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -63,6 +64,20 @@ namespace GalacticFighters.Library.Utilities
             _verticeBuffer.Add(vertice);
         }
 
+        /// <summary>
+        /// Remove the most recent vertice, and optionally the most recent 
+        /// female node too
+        /// </summary>
+        /// <param name="includeNode"></param>
+        public void Remove(Boolean includeNode = false)
+        {
+            if(_verticeBuffer.Any())
+                _verticeBuffer.RemoveAt(_verticeBuffer.Count() - 1);
+
+            if (includeNode && _femaleBuffer.Any())
+                _femaleBuffer.RemoveAt(_femaleBuffer.Count - 1);
+        }
+
         public void AddNode(Vector2 position, Single rotation, NodeType type)
         {
             if (!type.HasFlag(NodeType.None))
@@ -82,17 +97,13 @@ namespace GalacticFighters.Library.Utilities
 
         public void Flush()
         {
-            if (_verticeBuffer.Count > 0)
+            if (_verticeBuffer.Any())
             { // Flush the vertices...
-                _verticeBuffer.RemoveAt(_verticeBuffer.Count - 1);
-
-                Vector2[] rawVertices = new Vector2[_verticeBuffer.Count];
-                _verticeBuffer.CopyTo(rawVertices);
-                _vertices.Add(new Vertices(rawVertices));
+                _vertices.Add(new Vertices(_verticeBuffer.ToArray()));
                 _verticeBuffer.Clear();
             }
 
-            if (_femaleBuffer.Count > 0)
+            if (_femaleBuffer.Any())
             { // Flush the females
                 _females.AddRange(_femaleBuffer);
                 _femaleBuffer.Clear();
@@ -111,8 +122,7 @@ namespace GalacticFighters.Library.Utilities
         public void Transform(Matrix tranformation)
         {
             // Update the stored vertices...
-            for (Int32 i = 0; i < _verticeBuffer.Count; i++)
-                _verticeBuffer[i] = Vector2.Transform(_verticeBuffer[i], tranformation);
+            _verticeBuffer = _verticeBuffer.Select(v => Vector2.Transform(v, tranformation)).ToList();
 
             // Update the stored female nodes...
             _femaleBuffer.ForEach(node => ConnectionNodeConfiguration.Transform(ref node, tranformation));
@@ -142,10 +152,14 @@ namespace GalacticFighters.Library.Utilities
         {
             this.Flush();
 
-            return new ShipPartConfiguration(
+            var config = new ShipPartConfiguration(
                 vertices: _vertices,
                 maleConnectionNode: _male,
                 femaleConnectionNodes: _females.ToArray());
+
+            this.Clear();
+
+            return config;
         }
         #endregion
 
@@ -195,6 +209,9 @@ namespace GalacticFighters.Library.Utilities
 
             for (Int32 i = 0; i < sides - 1; i++)
                 builder.AddSide(stepAngle, includeFemaleNodes ? NodeType.Female : NodeType.None);
+
+            // Remove the last vertice
+            builder.Remove();
 
             return builder.Build();
         }

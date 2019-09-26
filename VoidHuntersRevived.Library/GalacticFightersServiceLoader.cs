@@ -80,6 +80,30 @@ namespace GalacticFighters.Library
             builder.AddSide(MathHelper.Pi / 3, ShipPartConfigurationBuilder.NodeType.Female);
             builder.AddSide((MathHelper.Pi / 3) + MathHelper.PiOver2, ShipPartConfigurationBuilder.NodeType.Female);
             entities.TryRegister<RigidShipPart>("ship-part:pentagon", "", "", builder.Build());
+
+            /* CHASSIS GENERATION */
+            builder.AddNode(Vector2.Zero, 0, ShipPartConfigurationBuilder.NodeType.Male);
+            builder.AddSide(MathHelper.ToRadians(180), ShipPartConfigurationBuilder.NodeType.None);
+            builder.AddSide(MathHelper.ToRadians(120), ShipPartConfigurationBuilder.NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(120), ShipPartConfigurationBuilder.NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(120), ShipPartConfigurationBuilder.NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(180), ShipPartConfigurationBuilder.NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(120), ShipPartConfigurationBuilder.NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(120), ShipPartConfigurationBuilder.NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(120), ShipPartConfigurationBuilder.NodeType.None);
+            builder.Rotate(MathHelper.ToRadians(90));
+            builder.Flush();
+            builder.AddSide(MathHelper.ToRadians(180), ShipPartConfigurationBuilder.NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(150), ShipPartConfigurationBuilder.NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(120), ShipPartConfigurationBuilder.NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(120), ShipPartConfigurationBuilder.NodeType.Female);
+            builder.AddSide(MathHelper.ToRadians(150), ShipPartConfigurationBuilder.NodeType.Female);
+            builder.Transform(Matrix.CreateTranslation(0, -1, 0));
+            entities.TryRegister<RigidShipPart>(
+                "ship-part:chassis:mosquito",
+                "name:entity:ship-part:chassis:mosquito",
+                "description:entity:ship-part:chassis",
+                builder.Build());
         }
     }
 }

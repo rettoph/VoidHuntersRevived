@@ -65,7 +65,7 @@ namespace GalacticFighters.Server.Scenes
                 { // Build a new ship for the player...
                     if(ship.Bridge == null)
                     { // Build a new bridge for the ship if one is not already set...
-                        ship.SetBridge(this.entities.Create<ShipPart>("ship-part:square"));
+                        ship.SetBridge(this.entities.Create<ShipPart>("ship-part:chassis:mosquito"));
                         ship.Bridge.SetPosition(this.random.NextVector2(-10, 10), this.random.NextSingle(-3, 3));
                     }
                 });
