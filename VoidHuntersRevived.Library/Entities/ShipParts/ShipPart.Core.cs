@@ -97,7 +97,7 @@ namespace GalacticFighters.Library.Entities.ShipParts
         {
             base.Update(gameTime);
 
-            if (this.Enabled && !this.Reserved.Value && !this.Awake)
+            if (this.Enabled && !this.Reserved.Value && (!this.Awake || !this.body.Enabled))
                 this.SetEnabled(false);
         }
         #endregion

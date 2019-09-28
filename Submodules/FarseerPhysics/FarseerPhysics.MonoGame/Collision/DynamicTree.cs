@@ -296,36 +296,33 @@ namespace FarseerPhysics.Collision
         /// <param name="aabb">The aabb.</param>
         public void Query(Func<int, bool> callback, ref AABB aabb)
         {
-            lock (_queryStack)
+            _queryStack.Clear();
+            _queryStack.Push(_root);
+
+            while (_queryStack.Any())
             {
-                _queryStack.Clear();
-                _queryStack.Push(_root);
-
-                while (_queryStack.Any())
+                int nodeId = _queryStack.Pop();
+                if (nodeId == NullNode)
                 {
-                    int nodeId = _queryStack.Pop();
-                    if (nodeId == NullNode)
+                    continue;
+                }
+
+                TreeNode<T> node = _nodes[nodeId];
+
+                if (AABB.TestOverlap(ref node.AABB, ref aabb))
+                {
+                    if (node.IsLeaf())
                     {
-                        continue;
+                        bool proceed = callback(nodeId);
+                        if (proceed == false)
+                        {
+                            return;
+                        }
                     }
-
-                    TreeNode<T> node = _nodes[nodeId];
-
-                    if (AABB.TestOverlap(ref node.AABB, ref aabb))
+                    else
                     {
-                        if (node.IsLeaf())
-                        {
-                            bool proceed = callback(nodeId);
-                            if (proceed == false)
-                            {
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            _queryStack.Push(node.Child1);
-                            _queryStack.Push(node.Child2);
-                        }
+                        _queryStack.Push(node.Child1);
+                        _queryStack.Push(node.Child2);
                     }
                 }
             }

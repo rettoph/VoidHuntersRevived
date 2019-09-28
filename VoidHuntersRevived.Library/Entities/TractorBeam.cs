@@ -130,20 +130,23 @@ namespace GalacticFighters.Library.Entities
         /// </summary>
         public Boolean TryRelease()
         {
-            if (this.Selected != default(ShipPart))
+            lock (this)
             {
-                var oldSelected = this.Selected;
+                if (this.Selected != default(ShipPart))
+                {
+                    var oldSelected = this.Selected;
 
-                this.TryUpdateSelectedPosition();
-                this.Selected.Reserved.Remove(_selectionId);
-                this.Selected = null;
+                    this.TryUpdateSelectedPosition();
+                    this.Selected.Reserved.Remove(_selectionId);
+                    this.Selected = null;
 
-                this.Events.TryInvoke<ShipPart>(this, "released", oldSelected);
+                    this.Events.TryInvoke<ShipPart>(this, "released", oldSelected);
 
-                return true;
+                    return true;
+                }
+
+                return false;
             }
-
-            return false;
         }
 
         /// <summary>
@@ -156,22 +159,25 @@ namespace GalacticFighters.Library.Entities
         /// <returns></returns>
         public Boolean TryAttach(FemaleConnectionNode target)
         {
-            var selected = this.Selected;
+            lock (this)
+            {
+                var selected = this.Selected;
 
-            if (target == default(FemaleConnectionNode))
-                return false;
-            else if (target.Parent.Root != this.Ship.Bridge)
-                return false;
-            else if (target.Attached)
-                return false;
-            else if (this.Selected == default(ShipPart))
-                return false;
+                if (target == default(FemaleConnectionNode))
+                    return false;
+                else if (target.Parent.Root != this.Ship.Bridge)
+                    return false;
+                else if (target.Attached)
+                    return false;
+                else if (this.Selected == default(ShipPart))
+                    return false;
 
-            selected.MaleConnectionNode.Attach(target);
-            this.Events.TryInvoke<FemaleConnectionNode>(this, "attached", target);
-            this.TryRelease();
+                selected.MaleConnectionNode.Attach(target);
+                this.Events.TryInvoke<FemaleConnectionNode>(this, "attached", target);
+                this.TryRelease();
 
-            return true;
+                return true;
+            }
         }
 
         public void SetOffset(Vector2 value)
@@ -182,11 +188,14 @@ namespace GalacticFighters.Library.Entities
 
         private void TryUpdateSelectedPosition()
         {
-            if (this.Selected != default(ShipPart))
+            lock (this)
             {
-                this.Selected.SetPosition(this.Position - Vector2.Transform(this.Selected.LocalCenteroid, Matrix.CreateRotationZ(this.Selected.Rotation)), this.Selected.Rotation);
+                if (this.Selected != default(ShipPart))
+                {
+                    this.Selected.SetPosition(this.Position - Vector2.Transform(this.Selected.LocalCenteroid, Matrix.CreateRotationZ(this.Selected.Rotation)), this.Selected.Rotation);
 
-                this.Events.TryInvoke<ShipPart>(this, "selected:position:changed", this.Selected);
+                    this.Events.TryInvoke<ShipPart>(this, "selected:position:changed", this.Selected);
+                }
             }
         }
         #endregion

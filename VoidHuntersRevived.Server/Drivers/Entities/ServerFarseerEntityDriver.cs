@@ -50,7 +50,7 @@ namespace GalacticFighters.Server.Drivers.Entities
 
             _lastUpdateVitals += gameTime.ElapsedGameTime.TotalMilliseconds;
 
-            if(_lastUpdateVitals >= ServerFarseerEntityDriver.UpdateVitalsRate || _dirtyVitals)
+            if (_lastUpdateVitals >= ServerFarseerEntityDriver.UpdateVitalsRate || _dirtyVitals)
             { // Send the vitals data to all connected clients
                 var om = this.driven.Actions.Create("vitals:update");
                 // Write the vitals data

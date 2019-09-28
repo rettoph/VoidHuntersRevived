@@ -44,6 +44,8 @@ namespace GalacticFighters.Library.Entities.Players
 
             // Automatically add the current player instance to the scenes player collection.
             this.scene.Players.Add(this);
+
+            this.SetUpdateOrder(200);
         }
         #endregion
 
