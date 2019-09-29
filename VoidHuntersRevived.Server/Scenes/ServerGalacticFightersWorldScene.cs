@@ -19,6 +19,10 @@ namespace GalacticFighters.Server.Scenes
 {
     internal sealed class ServerGalacticFightersWorldScene : GalacticFightersWorldScene
     {
+        #region Private Fields
+        private Queue<User> _newUsers;
+        #endregion
+
         #region Protected Fields
         protected Random random { get; private set; }
         #endregion
@@ -35,6 +39,8 @@ namespace GalacticFighters.Server.Scenes
         {
             base.Create(provider);
 
+            _newUsers = new Queue<User>();
+
             this.random = provider.GetRequiredService<Random>();
         }
 
@@ -44,6 +50,13 @@ namespace GalacticFighters.Server.Scenes
 
             this.Group.Users.Events.TryAdd<User>("added", this.HandleUserJoined);
         }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            _newUsers.Clear();
+        }
         #endregion
 
         #region Frame Methods
@@ -51,20 +64,27 @@ namespace GalacticFighters.Server.Scenes
         {
             base.Update(gameTime);
 
+            lock (_newUsers)
+                while (_newUsers.Any())
+                    this.AddUser(_newUsers.Dequeue());
+
             this.entities.TryUpdate(gameTime);
         }
         #endregion
 
-        #region Event Handlers
-        private void HandleUserJoined(object sender, User arg)
+        /// <summary>
+        /// Take a user object & create assign a ship to them
+        /// </summary>
+        /// <param name="user"></param>
+        private void AddUser(User user)
         {
             // Create a new player instance for the new user
             this.entities.Create<UserPlayer>("player:user", player =>
             {
-                player.User = arg;
+                player.User = user;
                 player.Ship = this.entities.Create<Ship>("ship", ship =>
                 { // Build a new ship for the player...
-                    if(ship.Bridge == null)
+                    if (ship.Bridge == null)
                     { // Build a new bridge for the ship if one is not already set...
                         ship.SetBridge(this.entities.Create<ShipPart>("ship-part:chassis:mosquito"));
                         ship.Bridge.SetPosition(this.random.NextVector2(-10, 10), this.random.NextSingle(-3, 3));
@@ -80,7 +100,14 @@ namespace GalacticFighters.Server.Scenes
                 this.entities.Create<ShipPart>("ship-part:hexagon").SetPosition(this.random.NextVector2(-10, 10), this.random.NextSingle(-3, 3));
                 this.entities.Create<ShipPart>("ship-part:pentagon").SetPosition(this.random.NextVector2(-10, 10), this.random.NextSingle(-3, 3));
             }
-                
+        }
+
+        #region Event Handlers
+        private void HandleUserJoined(object sender, User arg)
+        {
+            // Enqueue the new incoming user
+            lock(_newUsers)
+                _newUsers.Enqueue(arg); 
         }
         #endregion
     }

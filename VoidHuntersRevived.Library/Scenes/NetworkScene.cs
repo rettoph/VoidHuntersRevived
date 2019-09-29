@@ -39,6 +39,8 @@ namespace GalacticFighters.Library.Scenes
         #region Frame Methods
         protected override void Update(GameTime gameTime)
         {
+            this.Group.TryUpdate(gameTime);
+
             base.Update(gameTime);
 
             this.Frames++;

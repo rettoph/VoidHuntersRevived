@@ -90,7 +90,7 @@ namespace GalacticFighters.Client.Library.Scenes
 
             _spriteBatch.Begin();
             _spriteBatch.DrawString(_font, $"Entities: {this.entities.Updates.Count()}", new Vector2(15, 115), Color.White);
-            _spriteBatch.DrawString(_font, $"Actions: {this.ActionsRecieved}, Action Rate: {((Single)this.ActionsRecieved / gameTime.TotalGameTime.TotalSeconds).ToString("#.##")}/s", new Vector2(15, 135), Color.White);
+            _spriteBatch.DrawString(_font, $"Actions: {this.ActionsRecieved.ToString("#,##0")}\nAction Rate: {((Single)this.ActionsRecieved / gameTime.TotalGameTime.TotalSeconds).ToString("#.##0")}/s", new Vector2(15, 135), Color.White);
             this.entities.TryDraw(gameTime);
             _spriteBatch.End();
         }

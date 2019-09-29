@@ -60,7 +60,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
         {
             base.Update(gameTime);
 
-            if (this.driven.Ship.Bridge != null && this.driven.User == _client.User)
+            if (this.driven.Ship != null && this.driven.Ship.Bridge != null && this.driven.User == _client.User)
             { // If the current UserPlayer instance is owned by the local user...
                 var kState = Keyboard.GetState();
 
