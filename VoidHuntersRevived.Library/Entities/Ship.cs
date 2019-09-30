@@ -1,14 +1,12 @@
 ﻿using GalacticFighters.Library.Entities.ShipParts;
 using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
 using GalacticFighters.Library.Utilities;
-using Guppy.Collections;
 using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace GalacticFighters.Library.Entities
 {
@@ -34,6 +32,7 @@ namespace GalacticFighters.Library.Entities
         #region Private Fields
         private Guid _bridgeReservationId;
         private List<FemaleConnectionNode> _openFemaleNodes;
+        private List<ShipPart> _liveComponents;
         #endregion
 
         #region Public Attributes
@@ -65,6 +64,7 @@ namespace GalacticFighters.Library.Entities
             base.Create(provider);
 
             _openFemaleNodes = new List<FemaleConnectionNode>();
+            _liveComponents = new List<ShipPart>();
 
             this.Events.Register<ShipPart>("bridge:changed");
             this.Events.Register<ShipPart>("bridge:chain:updated");
@@ -89,6 +89,8 @@ namespace GalacticFighters.Library.Entities
             base.Initialize();
 
             this.Events.TryAdd<ShipPart>("bridge:chain:updated", this.HandleBridgeChainUpdated);
+
+            this.RemapBridgeChain();
         }
 
         public override void Dispose()
@@ -114,6 +116,9 @@ namespace GalacticFighters.Library.Entities
                 this.Bridge.ApplyLinearImpulse(Vector2.UnitX * -0.1f);
             if (this.ActiveDirections.HasFlag(Direction.Right))
                 this.Bridge.ApplyLinearImpulse(Vector2.UnitX * 0.1f);
+
+            // Update all internal live components within the ship
+            _liveComponents.ForEach(sp => sp.TryUpdate(gameTime));
         }
         #endregion
 
@@ -124,7 +129,7 @@ namespace GalacticFighters.Library.Entities
             {
                 if(this.Bridge != null)
                 {// Unreserve the old bridge
-                    this.Bridge.Reserved.Remove(_bridgeReservationId);
+                    // this.Bridge.Reserved.Remove(_bridgeReservationId);
                     this.Bridge.BridgeFor = null;
                     this.Bridge.SetCollidesWith(CollisionCategories.PassiveCollidesWith);
                     this.Bridge.SetCollisionCategories(CollisionCategories.PassiveCollisionCategories);
@@ -138,7 +143,7 @@ namespace GalacticFighters.Library.Entities
                 this.Bridge.BridgeFor = this;
                 this.Bridge.SetCollidesWith(CollisionCategories.ActiveCollidesWith);
                 this.Bridge.SetCollisionCategories(CollisionCategories.ActiveCollisionCategories);
-                _bridgeReservationId = this.Bridge.Reserved.Add();
+                // _bridgeReservationId = this.Bridge.Reserved.Add();
 
                 // Add events
                 this.Bridge.Events.TryAdd<ConnectionNode>("chain:updated", this.HandleChildNodeChanged);
@@ -183,6 +188,26 @@ namespace GalacticFighters.Library.Entities
                 .OrderBy(f => Vector2.Distance(f.WorldPosition, worldPosition))
                 .FirstOrDefault();
         }
+
+        /// <summary>
+        /// Remap all required internal bridge chain data.
+        /// 
+        /// Such as open female node, life components, and more.
+        /// </summary>
+        private void RemapBridgeChain()
+        {
+            // Clear the connection node
+            _openFemaleNodes.Clear();
+            // Get all open female connection nodes within the bridge
+            this.Bridge?.GetOpenFemaleConnectionNodes(ref _openFemaleNodes);
+
+            // Clear all old components within the Ship's chain
+            _liveComponents.Clear();
+            // Reload all live components within the ship's chain
+            if(this.Bridge != null)
+                _liveComponents.Add(this.Bridge);
+            // this.Bridge?.GetAllChildren(ref _liveComponents);
+        }
         #endregion
 
         #region Event Handlers
@@ -204,10 +229,7 @@ namespace GalacticFighters.Library.Entities
         /// <param name="arg"></param>
         private void HandleBridgeChainUpdated(object sender, ShipPart arg)
         {
-            // Clear the connection node
-            _openFemaleNodes.Clear();
-            // Get all open female connection nodes within the bridge
-            this.Bridge?.GetOpenFemaleConnectionNodes(ref _openFemaleNodes);
+            this.RemapBridgeChain();
         }
         #endregion
 

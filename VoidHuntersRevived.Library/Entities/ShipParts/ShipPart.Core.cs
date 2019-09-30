@@ -1,4 +1,5 @@
 ﻿using GalacticFighters.Library.Configurations;
+using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
 using GalacticFighters.Library.Extensions.Farseer;
 using GalacticFighters.Library.Utilities;
 using Lidgren.Network;
@@ -75,12 +76,6 @@ namespace GalacticFighters.Library.Entities.ShipParts
         protected override void PostInitialize()
         {
             base.PostInitialize();
-
-            this.body.OnCollision += (fa, fb, c) =>
-            { // Automatically re-enable the current ship-part when there is a collision
-                this.SetEnabled(true);
-                return true;
-            };
         }
 
         public override void Dispose()
@@ -96,9 +91,22 @@ namespace GalacticFighters.Library.Entities.ShipParts
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+        }
+        #endregion
 
-            if (this.Enabled && !this.Reserved.Value && (!this.Awake || !this.body.Enabled))
-                this.SetEnabled(false);
+        #region Utility Methods
+        /// <summary>
+        /// Recursively populate the recieved list with all
+        /// children of the current ShipPart's chain.
+        /// </summary>
+        /// <param name="list"></param>
+        public void GetAllChildren(ref List<ShipPart> list)
+        {
+            list.Add(this);
+
+            foreach (FemaleConnectionNode female in this.FemaleConnectionNodes)
+                if (female.Attached)
+                    female.Target.Parent.GetAllChildren(ref list);
         }
         #endregion
 

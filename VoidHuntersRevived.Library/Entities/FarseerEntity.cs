@@ -101,7 +101,6 @@ namespace GalacticFighters.Library.Entities
             // Automatically enable the ShipPart when a reservation is made.
             this.Reserved = new CounterBoolean(value => {
                 this.body.SleepingAllowed = !value;
-                this.SetEnabled(true);
 
                 this.Events.TryInvoke<Boolean>(this, "reserved:changed", value);
             });

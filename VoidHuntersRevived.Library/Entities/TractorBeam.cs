@@ -54,6 +54,9 @@ namespace GalacticFighters.Library.Entities
             base.Update(gameTime);
 
             this.TryUpdateSelectedPosition();
+
+            if (this.Selected != default(ShipPart))
+                this.Selected.TryUpdate(gameTime);
         }
         #endregion
 
