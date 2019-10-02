@@ -89,8 +89,6 @@ namespace GalacticFighters.Client.Library.Entities
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
-
-            _spriteBatch.DrawString(_font, $"Sensor Contacts: {_contacts.Count}", new Vector2(15, 95), Color.White);
         }
         #endregion
 

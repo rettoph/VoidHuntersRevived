@@ -93,12 +93,17 @@ namespace GalacticFighters.Server.Scenes
             });
 
 
-            for (Int32 i = 0; i < 7; i++)
+            for (Int32 i = 0; i < 100; i++)
             {
-                this.entities.Create<ShipPart>("ship-part:triangle").SetPosition(this.random.NextVector2(-10, 10), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:square").SetPosition(this.random.NextVector2(-10, 10), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:hexagon").SetPosition(this.random.NextVector2(-10, 10), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:pentagon").SetPosition(this.random.NextVector2(-10, 10), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:triangle").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:square").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:hexagon").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:pentagon").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
             }
         }
 

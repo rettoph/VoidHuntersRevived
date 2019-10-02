@@ -19,6 +19,12 @@ These are events triggered by Guppy but specific to this game. Events can be bou
 | `GalacicFighters.Library` | `FarseerEntity` | `fixture:destroyed` | `Fixture` | Invoked when a fixture on the entity is destroyed. |
 | `GalacicFighters.Library` | `FarseerEntity` | `position:changed` | `Body` | Invoked when the UpdatePosition method is called. |
 | `GalacicFighters.Library` | `FarseerEntity` | `velocity:changed` | `Body` | Invoked when the UpdateVelocity method is called. |
+| `GalacicFighters.Library` | `FarseerEntity` | `linear-impulse:applied` | `Vector2` | Invoked when the ApplyLinearVelocity method is called. |
+| `GalacicFighters.Library` | `FarseerEntity` | `angular-impulse:applied` | `Single` | Invoked when the ApplyAngularVelocity method is called. |
+| `GalacicFighters.Library` | `FarseerEntity` | `force:applied` | `AppliedForce` | Invoked when the ApplyForce method is called. |
+| `GalacicFighters.Library` | `FarseerEntity` | `collision-categories:changed` | `Category` | Invoked when the CollisionCategories attribute is changed. |
+| `GalacicFighters.Library` | `FarseerEntity` | `collides-with:changed` | `Category` | Invoked when the CollidesWith attribute is changed. |
+| `GalacicFighters.Library` | `FarseerEntity` | `reserved:changed` | `Boolean` | Invoked when the Reserved attribute value is changed. |
 | | | | | |
 | `GalacicFighters.Library` | `ShipPart` | `chain:updated` | `ConnectionNode` | Invoked when any node within the ShipPart's chain attached or detached. |
 | | | | | |

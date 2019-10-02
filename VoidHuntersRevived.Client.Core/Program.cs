@@ -1,5 +1,6 @@
 ﻿using GalacticFighters.Client.Library;
 using System;
+using System.Threading;
 
 namespace GalacticFighters.Client.Core
 {

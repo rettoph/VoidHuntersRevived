@@ -22,6 +22,7 @@ namespace GalacticFighters.Server.Drivers.Entities
         private Double _lastUpdateVitals;
         private Body _body;
         private Boolean _dirtyVitals;
+        private Boolean _wasAwake;
         #endregion
 
         #region Constructor
@@ -50,7 +51,7 @@ namespace GalacticFighters.Server.Drivers.Entities
 
             _lastUpdateVitals += gameTime.ElapsedGameTime.TotalMilliseconds;
 
-            if (_lastUpdateVitals >= ServerFarseerEntityDriver.UpdateVitalsRate || _dirtyVitals)
+            if (this.CanSendVitals())
             { // Send the vitals data to all connected clients
                 var om = this.driven.Actions.Create("vitals:update");
                 // Write the vitals data
@@ -62,6 +63,29 @@ namespace GalacticFighters.Server.Drivers.Entities
                 if (_dirtyVitals) // If the entity has dirty vitals, mark them as clean
                     _dirtyVitals = false;
             }
+
+            // Update the internal was awake value
+            _wasAwake = this.driven.Awake;
+        }
+        #endregion
+
+        #region Methods
+        private Boolean CanSendVitals()
+        {
+            // Instant no
+            if (this.driven.Reserverd.Value)
+                return false;
+            if (!this.driven.BodyEnabled)
+                return false;
+
+            // Instant yes
+            if (_lastUpdateVitals > ServerFarseerEntityDriver.UpdateVitalsRate || _dirtyVitals)
+                return true;
+            if (!this.driven.Awake && _wasAwake)
+                return true;
+
+            // Default to no
+            return false;
         }
         #endregion
     }

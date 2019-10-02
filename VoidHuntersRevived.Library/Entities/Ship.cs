@@ -1,9 +1,11 @@
 ﻿using GalacticFighters.Library.Entities.ShipParts;
 using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
 using GalacticFighters.Library.Utilities;
+using Guppy.Loaders;
 using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,6 +58,11 @@ namespace GalacticFighters.Library.Entities
         /// the entire ship.
         /// </summary>
         public IEnumerable<FemaleConnectionNode> OpenFemaleNodes { get => _openFemaleNodes.AsReadOnly(); }
+
+        /// <summary>
+        /// A maintained enumerable of all internal live components
+        /// </summary>
+        public IEnumerable<ShipPart> LiveComponents { get => _liveComponents.AsReadOnly(); }
         #endregion
 
         #region Lifecycle Methods
@@ -106,16 +113,6 @@ namespace GalacticFighters.Library.Entities
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            if (this.ActiveDirections.HasFlag(Direction.Forward))
-                this.Bridge.ApplyLinearImpulse(Vector2.UnitY * -0.1f);
-            if (this.ActiveDirections.HasFlag(Direction.Backward))
-                this.Bridge.ApplyLinearImpulse(Vector2.UnitY * 0.1f);
-
-            if (this.ActiveDirections.HasFlag(Direction.Left))
-                this.Bridge.ApplyLinearImpulse(Vector2.UnitX * -0.1f);
-            if (this.ActiveDirections.HasFlag(Direction.Right))
-                this.Bridge.ApplyLinearImpulse(Vector2.UnitX * 0.1f);
 
             // Update all internal live components within the ship
             _liveComponents.ForEach(sp => sp.TryUpdate(gameTime));
@@ -204,9 +201,7 @@ namespace GalacticFighters.Library.Entities
             // Clear all old components within the Ship's chain
             _liveComponents.Clear();
             // Reload all live components within the ship's chain
-            if(this.Bridge != null)
-                _liveComponents.Add(this.Bridge);
-            // this.Bridge?.GetAllChildren(ref _liveComponents);
+            this.Bridge?.GetAllChildren(ref _liveComponents, sp => sp == this.Bridge || sp.IsLive);
         }
         #endregion
 

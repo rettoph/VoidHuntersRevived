@@ -67,6 +67,7 @@ namespace GalacticFighters.Client.Library.Scenes
             _serverDebugView.AppendFlags(DebugViewFlags.ContactNormals);
             _serverDebugView.AppendFlags(DebugViewFlags.Controllers);
             _serverDebugView.SleepingShapeColor = Color.Red;
+            _serverDebugView.DefaultShapeColor = Color.Blue;
         }
         #endregion
 
@@ -85,12 +86,17 @@ namespace GalacticFighters.Client.Library.Scenes
 
             _graphics.Clear(Color.Black);
 
-            _serverDebugView.RenderDebugData(this.Camera.Projection, this.Camera.View);
+            // _serverDebugView.RenderDebugData(this.Camera.Projection, this.Camera.View);
             _debugView.RenderDebugData(this.Camera.Projection, this.Camera.View);
 
-            _spriteBatch.Begin();
-            _spriteBatch.DrawString(_font, $"Entities: {this.entities.Updates.Count()}", new Vector2(15, 115), Color.White);
-            _spriteBatch.DrawString(_font, $"Actions: {this.ActionsRecieved.ToString("#,##0")}\nAction Rate: {((Single)this.ActionsRecieved / gameTime.TotalGameTime.TotalSeconds).ToString("#.##0")}/s", new Vector2(15, 135), Color.White);
+            var effect = new BasicEffect(_graphics)
+            {
+                Projection = this.Camera.Projection,
+                View = this.Camera.View,
+                TextureEnabled = true
+            };
+
+            _spriteBatch.Begin(effect: effect);
             this.entities.TryDraw(gameTime);
             _spriteBatch.End();
         }

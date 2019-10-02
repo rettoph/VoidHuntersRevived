@@ -65,9 +65,9 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
                 var kState = Keyboard.GetState();
 
                 this.UpdateDirection(Ship.Direction.Forward, kState.IsKeyDown(Keys.W));
-                this.UpdateDirection(Ship.Direction.Right, kState.IsKeyDown(Keys.D));
+                this.UpdateDirection(Ship.Direction.TurnRight, kState.IsKeyDown(Keys.D));
                 this.UpdateDirection(Ship.Direction.Backward, kState.IsKeyDown(Keys.S));
-                this.UpdateDirection(Ship.Direction.Left, kState.IsKeyDown(Keys.A));
+                this.UpdateDirection(Ship.Direction.TurnLeft, kState.IsKeyDown(Keys.A));
 
                 // Update the camera position
                 _scene.Camera.MoveTo(this.driven.Ship.Bridge.WorldCenter);

@@ -2,6 +2,7 @@
 using GalacticFighters.Client.Library.Utilities;
 using GalacticFighters.Library.Entities;
 using GalacticFighters.Library.Extensions.Farseer;
+using GalacticFighters.Library.Structs;
 using Guppy;
 using Guppy.Attributes;
 using Lidgren.Network;
@@ -43,6 +44,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
             this.driven.Events.TryAdd<Fixture>("fixture:destroyed", this.HandleFixtureDestroyed);
             this.driven.Events.TryAdd<Vector2>("linear-impulse:applied", this.HandleLinearImpulseApplied);
             this.driven.Events.TryAdd<Single>("angular-impulse:applied", this.HandleAngularImpulseApplied);
+            this.driven.Events.TryAdd<AppliedForce>("force:applied", this.HandleForceApplied);
             this.driven.Events.TryAdd<Category>("collides-with:changed", this.HandleCollidesWithChanged);
             this.driven.Events.TryAdd<Category>("collision-categories:changed", this.HandleCollisionCategoriesChanged);
             this.driven.Events.TryAdd<NetIncomingMessage>("read", this.HandleRead);
@@ -122,7 +124,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
         }
 
         /// <summary>
-        /// When a lngular impulse is applied, we must simulate the very same impulse on
+        /// When a linear impulse is applied, we must simulate the very same impulse on
         /// the server render
         /// </summary>
         /// <param name="sender"></param>
@@ -130,6 +132,16 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
         private void HandleLinearImpulseApplied(object sender, Vector2 impulse)
         {
             _body.ApplyLinearImpulse(impulse);
+        }
+
+        /// <summary>
+        /// When a force is applied at a point, we must similate the same force on the client render
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="arg"></param>
+        private void HandleForceApplied(object sender, AppliedForce arg)
+        {
+            _body.ApplyForce(arg.Force, arg.Point);
         }
 
         /// <summary>
@@ -161,7 +173,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
             _body.ReadPosition(arg);
             _body.ReadVelocity(arg);
 
-            if (!this.driven.Enabled)
+            if (!this.driven.BodyEnabled)
             {
                 this.driven.SetPosition(
                     position: _body.Position,
@@ -170,8 +182,6 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
                 this.driven.SetVelocity(
                     linear: _body.LinearVelocity,
                     angular: _body.AngularVelocity);
-
-                this.driven.SetEnabled(true);
             }
         }
         #endregion

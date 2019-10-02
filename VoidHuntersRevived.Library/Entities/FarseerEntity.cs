@@ -3,8 +3,10 @@ using FarseerPhysics.Common;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
 using GalacticFighters.Library.Extensions.Farseer;
+using GalacticFighters.Library.Structs;
 using GalacticFighters.Library.Utilities;
 using Guppy.Network.Extensions.Lidgren;
+using Guppy.Pooling.Interfaces;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -27,6 +29,8 @@ namespace GalacticFighters.Library.Entities
         /// The raw farseer world the entity resides in.
         /// </summary>
         private World _world;
+
+        private IPool<AppliedForce> _forcePool;
         #endregion
 
         #region Protected Fields
@@ -50,7 +54,7 @@ namespace GalacticFighters.Library.Entities
         /// disable itself when the body falls asleep. If the ShipPart
         /// has a reservation, however, it will keep itself enabled.
         /// </summary>
-        public CounterBoolean Reserved { get; private set; }
+        public CounterBoolean Reserverd { get; private set; }
 
         /// <summary>
         /// Get the sleep state of the body. A sleeping body has very
@@ -89,6 +93,24 @@ namespace GalacticFighters.Library.Entities
         /// </summary>
         /// <value>The local position.</value>
         public virtual Vector2 LocalCenter { get { return this.body.LocalCenter; } }
+
+        /// <summary>
+        /// Tthe active state of the body. An inactive body is not
+        /// simulated and cannot be collided with or woken up.
+        /// If you pass a flag of true, all fixtures will be added to the
+        /// broad-phase.
+        /// If you pass a flag of false, all fixtures will be removed from
+        /// the broad-phase and all contacts will be destroyed.
+        /// Fixtures and joints are otherwise unaffected. You may continue
+        /// to create/destroy fixtures and joints on inactive bodies.
+        /// Fixtures on an inactive body are implicitly inactive and will
+        /// not participate in collisions, ray-casts, or queries.
+        /// Joints connected to an inactive body are implicitly inactive.
+        /// An inactive body is still owned by a b2World object and remains
+        /// in the body list.
+        /// </summary>
+        /// <value><c>true</c> if active; otherwise, <c>false</c>.</value>
+        public Boolean BodyEnabled { get { return this.body.Enabled; } }
         #endregion
 
         #region Lifecycle Methods
@@ -97,9 +119,10 @@ namespace GalacticFighters.Library.Entities
             base.Create(provider);
 
             _world = provider.GetRequiredService<World>();
+            _forcePool = provider.GetRequiredService<IPool<AppliedForce>>();
 
             // Automatically enable the ShipPart when a reservation is made.
-            this.Reserved = new CounterBoolean(value => {
+            this.Reserverd = new CounterBoolean(value => {
                 this.body.SleepingAllowed = !value;
 
                 this.Events.TryInvoke<Boolean>(this, "reserved:changed", value);
@@ -115,6 +138,7 @@ namespace GalacticFighters.Library.Entities
             this.Events.Register<Body>("velocity:changed");
             this.Events.Register<Vector2>("linear-impulse:applied");
             this.Events.Register<Single>("angular-impulse:applied");
+            this.Events.Register<AppliedForce>("force:applied");
             this.Events.Register<Category>("collision-categories:changed");
             this.Events.Register<Category>("collides-with:changed");
             this.Events.Register<Boolean>("reserved:changed");
@@ -284,6 +308,24 @@ namespace GalacticFighters.Library.Entities
             this.body.ApplyAngularImpulse(impulse);
 
             this.Events.TryInvoke<Single>(this, "angular-impulse:applied", impulse);
+        }
+
+        /// <summary>
+        /// Apply a force at a world point. If the force is not
+        /// applied at the center of mass, it will generate a torque and
+        /// affect the angular velocity. This wakes up the body.
+        /// </summary>
+        /// <param name="force">The world force vector, usually in Newtons (N).</param>
+        /// <param name="point">The world position of the point of application.</param>
+        public void ApplyForce(Vector2 force, Vector2 point)
+        {
+            this.body.ApplyForce(force, point);
+
+            var appliedForce = _forcePool.Pull(t => new AppliedForce());
+            appliedForce.Force = force;
+            appliedForce.Point = point;
+            this.Events.TryInvoke<AppliedForce>(this, "force:applied", appliedForce);
+            _forcePool.Put(appliedForce);
         }
 
         /// <summary>

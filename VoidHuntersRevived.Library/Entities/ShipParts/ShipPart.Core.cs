@@ -40,8 +40,19 @@ namespace GalacticFighters.Library.Entities.ShipParts
         /// </summary>
         public Boolean IsBridge { get { return this.BridgeFor != null; } }
 
-        public Vector2 LocalCenteroid { get => this.config.Centeroid; }
-        public Vector2 WorldCenteroid { get => this.Position + Vector2.Transform(this.LocalCenteroid, Matrix.CreateRotationZ(this.Rotation)); }
+        public Vector2 Centeroid { get => this.config.Centeroid; }
+        public Vector2 LocalCenteroid { get=> Vector2.Transform(Vector2.Zero, this.LocalTransformation) + Vector2.Transform(this.Centeroid, Matrix.CreateRotationZ(this.LocalRotation)); }
+        public Vector2 WorldCenteroid { get => this.Position + Vector2.Transform(this.Centeroid, Matrix.CreateRotationZ(this.Rotation)); }
+
+        /// <summary>
+        /// Live ShipPart's are shipparts that can self updated when connected to a ship.
+        /// 
+        /// Byt default, all children within a ship are disabled and will not be updated,
+        /// but any ShipPart marked as live will be updated each frame.
+        /// 
+        /// These include weapons, thrusters, and more.
+        /// </summary>
+        public virtual Boolean IsLive { get; protected set; }
         #endregion
 
         #region Lifecycle Methods
@@ -100,13 +111,14 @@ namespace GalacticFighters.Library.Entities.ShipParts
         /// children of the current ShipPart's chain.
         /// </summary>
         /// <param name="list"></param>
-        public void GetAllChildren(ref List<ShipPart> list)
+        public void GetAllChildren(ref List<ShipPart> list,Func<ShipPart, Boolean> filter = null)
         {
-            list.Add(this);
+            if(filter == null || filter(this))
+                list.Add(this);
 
             foreach (FemaleConnectionNode female in this.FemaleConnectionNodes)
                 if (female.Attached)
-                    female.Target.Parent.GetAllChildren(ref list);
+                    female.Target.Parent.GetAllChildren(ref list, filter);
         }
         #endregion
 

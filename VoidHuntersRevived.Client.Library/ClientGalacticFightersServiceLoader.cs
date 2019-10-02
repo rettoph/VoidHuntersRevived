@@ -22,6 +22,11 @@ namespace GalacticFighters.Client.Library
 
         public void ConfigureProvider(IServiceProvider provider)
         {
+            var content = provider.GetRequiredService<ContentLoader>();
+            content.TryRegister("font", "font");
+            content.TryRegister("thrust", "Sprites/thrust");
+            content.TryRegister("com", "Sprites/com");
+
             var entities = provider.GetRequiredService<EntityLoader>();
 
             entities.TryRegister<Sensor>("sensor");

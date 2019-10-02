@@ -21,6 +21,8 @@ using GalacticFighters.Library.Factories;
 using GalacticFighters.Library.Entities.Players;
 using Guppy.Utilities.Options;
 using Microsoft.Extensions.Logging;
+using GalacticFighters.Library.Configurations;
+using GalacticFighters.Library.Entities.ShipParts.Thrusters;
 
 namespace GalacticFighters.Library
 {
@@ -56,7 +58,7 @@ namespace GalacticFighters.Library
         {
             Settings.MaxPolygonVertices = 16;
 
-            provider.GetRequiredService<GlobalOptions>().LogLevel = LogLevel.Debug;
+            provider.GetRequiredService<GlobalOptions>().LogLevel = LogLevel.Information;
 
             var entities = provider.GetRequiredService<EntityLoader>();
             var builder = new ShipPartConfigurationBuilder();
@@ -68,6 +70,7 @@ namespace GalacticFighters.Library
             entities.TryRegister<Ship>("ship");
             entities.TryRegister<TractorBeam>("tractor-beam");
 
+            #region Register Hull Pieces
             // Register ShipParts
             entities.TryRegister<RigidShipPart>("ship-part:triangle", "", "", ShipPartConfigurationBuilder.BuildPolygon(3, true));
             entities.TryRegister<RigidShipPart>("ship-part:square", "", "", ShipPartConfigurationBuilder.BuildPolygon(4, true));
@@ -80,8 +83,10 @@ namespace GalacticFighters.Library
             builder.AddSide(MathHelper.Pi / 3, ShipPartConfigurationBuilder.NodeType.Female);
             builder.AddSide((MathHelper.Pi / 3) + MathHelper.PiOver2, ShipPartConfigurationBuilder.NodeType.Female);
             entities.TryRegister<RigidShipPart>("ship-part:pentagon", "", "", builder.Build());
+            #endregion
 
-            /* CHASSIS GENERATION */
+            #region Register Chassis
+            // Create mosquito chassis
             builder.AddNode(Vector2.Zero, 0, ShipPartConfigurationBuilder.NodeType.Male);
             builder.AddSide(MathHelper.ToRadians(180), ShipPartConfigurationBuilder.NodeType.None);
             builder.AddSide(MathHelper.ToRadians(120), ShipPartConfigurationBuilder.NodeType.Female);
@@ -104,6 +109,27 @@ namespace GalacticFighters.Library
                 "name:entity:ship-part:chassis:mosquito",
                 "description:entity:ship-part:chassis",
                 builder.Build());
+            #endregion
+
+            #region Register Thrusters
+            entities.TryRegister<Thruster>(
+                "ship-part:thruster:small",
+                "name:entity:ship-part:thruster:small",
+                "description:entity:ship-part:thruster",
+                new ShipPartConfiguration(
+                    vertices: new Vertices(
+                        new Vector2[] {
+                                        new Vector2(-0.1f, -0.3f),
+                                        new Vector2(-0.1f, 0.3f),
+                                        new Vector2(0.4f, 0.1f),
+                                        new Vector2(0.4f, -0.1f)
+                        }),
+                    maleConnectionNode: new ConnectionNodeConfiguration()
+                    {
+                        Position = new Vector2(0.3f, 0),
+                        Rotation = 0
+                    }));
+            #endregion
         }
     }
 }

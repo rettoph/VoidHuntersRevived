@@ -74,7 +74,7 @@ namespace GalacticFighters.Library.Entities
                 return false;
             else if (target.Root.IsBridge && target.Root.BridgeFor?.TractorBeam != this)
                 return false;
-            else if (target.Reserved.Value)
+            else if (target.Reserverd.Value)
                 return false;
             else if (!target.IsRoot && !target.Root.IsBridge)
                 return false;
@@ -117,7 +117,7 @@ namespace GalacticFighters.Library.Entities
                     if (target.MaleConnectionNode.Attached)
                         target.MaleConnectionNode.Detach();
 
-                    _selectionId = target.Reserved.Add();
+                    _selectionId = target.Reserverd.Add();
                     this.Selected = target;
 
                     this.Events.TryInvoke<ShipPart>(this, "selected", this.Selected);
@@ -140,7 +140,7 @@ namespace GalacticFighters.Library.Entities
                     var oldSelected = this.Selected;
 
                     this.TryUpdateSelectedPosition();
-                    this.Selected.Reserved.Remove(_selectionId);
+                    this.Selected.Reserverd.Remove(_selectionId);
                     this.Selected = null;
 
                     this.Events.TryInvoke<ShipPart>(this, "released", oldSelected);
