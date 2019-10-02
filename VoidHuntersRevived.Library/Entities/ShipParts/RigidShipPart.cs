@@ -2,6 +2,7 @@
 using FarseerPhysics.Common;
 using FarseerPhysics.Dynamics;
 using GalacticFighters.Library.Utilities;
+using Guppy.Extensions.Collection;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -52,7 +53,7 @@ namespace GalacticFighters.Library.Entities.ShipParts
         {
             return base.CreateFixture(shape, userData, f =>
             {
-                if (this.IsBridge)
+                if (this.Root.IsBridge)
                 {
                     f.CollidesWith = CollisionCategories.ActiveCollidesWith;
                     f.CollisionCategories = CollisionCategories.ActiveCollisionCategories;

@@ -23,6 +23,7 @@ using Guppy.Utilities.Options;
 using Microsoft.Extensions.Logging;
 using GalacticFighters.Library.Configurations;
 using GalacticFighters.Library.Entities.ShipParts.Thrusters;
+using GalacticFighters.Library.Entities.ShipParts.Weapons;
 
 namespace GalacticFighters.Library
 {
@@ -61,7 +62,6 @@ namespace GalacticFighters.Library
             provider.GetRequiredService<GlobalOptions>().LogLevel = LogLevel.Information;
 
             var entities = provider.GetRequiredService<EntityLoader>();
-            var builder = new ShipPartConfigurationBuilder();
 
             // Register players
             entities.TryRegister<UserPlayer>("player:user");
@@ -72,43 +72,45 @@ namespace GalacticFighters.Library
 
             #region Register Hull Pieces
             // Register ShipParts
-            entities.TryRegister<RigidShipPart>("ship-part:triangle", "", "", ShipPartConfigurationBuilder.BuildPolygon(3, true));
-            entities.TryRegister<RigidShipPart>("ship-part:square", "", "", ShipPartConfigurationBuilder.BuildPolygon(4, true));
-            entities.TryRegister<RigidShipPart>("ship-part:hexagon", "", "", ShipPartConfigurationBuilder.BuildPolygon(6, true));
+            entities.TryRegister<RigidShipPart>("ship-part:triangle", "", "", ShipPartConfiguration.BuildPolygon(3, true));
+            entities.TryRegister<RigidShipPart>("ship-part:square", "", "", ShipPartConfiguration.BuildPolygon(4, true));
+            entities.TryRegister<RigidShipPart>("ship-part:hexagon", "", "", ShipPartConfiguration.BuildPolygon(6, true));
 
             // Create the pentagon
-            builder.AddSide(0, ShipPartConfigurationBuilder.NodeType.Male);
-            builder.AddSide(MathHelper.PiOver2, ShipPartConfigurationBuilder.NodeType.Female);
-            builder.AddSide((MathHelper.Pi / 3) + MathHelper.PiOver2, ShipPartConfigurationBuilder.NodeType.Female);
-            builder.AddSide(MathHelper.Pi / 3, ShipPartConfigurationBuilder.NodeType.Female);
-            builder.AddSide((MathHelper.Pi / 3) + MathHelper.PiOver2, ShipPartConfigurationBuilder.NodeType.Female);
-            entities.TryRegister<RigidShipPart>("ship-part:pentagon", "", "", builder.Build());
+            var config = new ShipPartConfiguration();
+            config.AddSide(0, ShipPartConfiguration.NodeType.Male);
+            config.AddSide(MathHelper.PiOver2, ShipPartConfiguration.NodeType.Female);
+            config.AddSide((MathHelper.Pi / 3) + MathHelper.PiOver2, ShipPartConfiguration.NodeType.Female);
+            config.AddSide(MathHelper.Pi / 3, ShipPartConfiguration.NodeType.Female);
+            config.AddSide((MathHelper.Pi / 3) + MathHelper.PiOver2, ShipPartConfiguration.NodeType.Female);
+            entities.TryRegister<RigidShipPart>("ship-part:pentagon", "", "", config.Flush());
             #endregion
 
             #region Register Chassis
             // Create mosquito chassis
-            builder.AddNode(Vector2.Zero, 0, ShipPartConfigurationBuilder.NodeType.Male);
-            builder.AddSide(MathHelper.ToRadians(180), ShipPartConfigurationBuilder.NodeType.None);
-            builder.AddSide(MathHelper.ToRadians(120), ShipPartConfigurationBuilder.NodeType.Female);
-            builder.AddSide(MathHelper.ToRadians(120), ShipPartConfigurationBuilder.NodeType.Female);
-            builder.AddSide(MathHelper.ToRadians(120), ShipPartConfigurationBuilder.NodeType.Female);
-            builder.AddSide(MathHelper.ToRadians(180), ShipPartConfigurationBuilder.NodeType.Female);
-            builder.AddSide(MathHelper.ToRadians(120), ShipPartConfigurationBuilder.NodeType.Female);
-            builder.AddSide(MathHelper.ToRadians(120), ShipPartConfigurationBuilder.NodeType.Female);
-            builder.AddSide(MathHelper.ToRadians(120), ShipPartConfigurationBuilder.NodeType.None);
-            builder.Rotate(MathHelper.ToRadians(90));
-            builder.Flush();
-            builder.AddSide(MathHelper.ToRadians(180), ShipPartConfigurationBuilder.NodeType.Female);
-            builder.AddSide(MathHelper.ToRadians(150), ShipPartConfigurationBuilder.NodeType.Female);
-            builder.AddSide(MathHelper.ToRadians(120), ShipPartConfigurationBuilder.NodeType.Female);
-            builder.AddSide(MathHelper.ToRadians(120), ShipPartConfigurationBuilder.NodeType.Female);
-            builder.AddSide(MathHelper.ToRadians(150), ShipPartConfigurationBuilder.NodeType.Female);
-            builder.Transform(Matrix.CreateTranslation(0, -1, 0));
+            config = new ShipPartConfiguration();
+            config.AddNode(Vector2.Zero, 0, ShipPartConfiguration.NodeType.Male);
+            config.AddSide(MathHelper.ToRadians(180), ShipPartConfiguration.NodeType.None);
+            config.AddSide(MathHelper.ToRadians(120), ShipPartConfiguration.NodeType.Female);
+            config.AddSide(MathHelper.ToRadians(120), ShipPartConfiguration.NodeType.Female);
+            config.AddSide(MathHelper.ToRadians(120), ShipPartConfiguration.NodeType.Female);
+            config.AddSide(MathHelper.ToRadians(180), ShipPartConfiguration.NodeType.Female);
+            config.AddSide(MathHelper.ToRadians(120), ShipPartConfiguration.NodeType.Female);
+            config.AddSide(MathHelper.ToRadians(120), ShipPartConfiguration.NodeType.Female);
+            config.AddSide(MathHelper.ToRadians(120), ShipPartConfiguration.NodeType.None);
+            config.Rotate(MathHelper.ToRadians(90));
+            config.Flush();
+            config.AddSide(MathHelper.ToRadians(180), ShipPartConfiguration.NodeType.Female);
+            config.AddSide(MathHelper.ToRadians(150), ShipPartConfiguration.NodeType.Female);
+            config.AddSide(MathHelper.ToRadians(120), ShipPartConfiguration.NodeType.Female);
+            config.AddSide(MathHelper.ToRadians(120), ShipPartConfiguration.NodeType.Female);
+            config.AddSide(MathHelper.ToRadians(150), ShipPartConfiguration.NodeType.Female);
+            config.Transform(Matrix.CreateTranslation(0, -1, 0));
             entities.TryRegister<RigidShipPart>(
                 "ship-part:chassis:mosquito",
                 "name:entity:ship-part:chassis:mosquito",
                 "description:entity:ship-part:chassis",
-                builder.Build());
+                config.Flush());
             #endregion
 
             #region Register Thrusters
@@ -119,16 +121,46 @@ namespace GalacticFighters.Library
                 new ShipPartConfiguration(
                     vertices: new Vertices(
                         new Vector2[] {
-                                        new Vector2(-0.1f, -0.3f),
-                                        new Vector2(-0.1f, 0.3f),
-                                        new Vector2(0.4f, 0.1f),
-                                        new Vector2(0.4f, -0.1f)
+                            new Vector2(-0.1f, -0.3f),
+                            new Vector2(-0.1f, 0.3f),
+                            new Vector2(0.4f, 0.1f),
+                            new Vector2(0.4f, -0.1f)
                         }),
                     maleConnectionNode: new ConnectionNodeConfiguration()
                     {
                         Position = new Vector2(0.3f, 0),
                         Rotation = 0
                     }));
+            #endregion
+
+            #region Register Weapons
+            var weaponConfig = new WeaponConfiguration(
+                vertices: new Vertices(
+                    new Vector2[] {
+                        new Vector2(-0.2f, -0.2f),
+                        new Vector2(-0.2f, 0.2f),
+                        new Vector2(0.2f, 0.2f),
+                        new Vector2(0.2f, -0.2f)
+                    }),
+                maleConnectionNode: new ConnectionNodeConfiguration()
+                {
+                    Position = Vector2.Zero,
+                    Rotation = 0
+                });
+
+            weaponConfig.AddBarrel(new Vertices(new Vector2[]
+            {
+                new Vector2(0f, -0.1f),
+                new Vector2(0f, 0.1f),
+                new Vector2(0.5f, 0.1f),
+                new Vector2(0.5f, -0.1f)
+            }), new Vector2(-0.2f, 0));
+
+            entities.TryRegister<Weapon>(
+                "ship-part:weapon:mass-driver",
+                "name:entity:ship-part:weapon:mass-driver",
+                "description:entity:ship-part:weapon:mass-driver",
+                weaponConfig.Flush());
             #endregion
         }
     }

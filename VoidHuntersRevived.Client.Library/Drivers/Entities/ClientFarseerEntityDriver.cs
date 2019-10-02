@@ -59,13 +59,16 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
         {
             base.Update(gameTime);
 
-            this.driven.SetPosition(
-                position: Vector2.Lerp(this.driven.Position, _body.Position, ClientFarseerEntityDriver.LerpStrength),
-                rotation: MathHelper.Lerp(this.driven.Rotation, _body.Rotation, ClientFarseerEntityDriver.LerpStrength));
+            if (this.driven.BodyEnabled)
+            {
+                this.driven.SetPosition(
+                    position: Vector2.Lerp(this.driven.Position, _body.Position, ClientFarseerEntityDriver.LerpStrength),
+                    rotation: MathHelper.Lerp(this.driven.Rotation, _body.Rotation, ClientFarseerEntityDriver.LerpStrength));
 
-            this.driven.SetVelocity(
-                linear: Vector2.Lerp(this.driven.LinearVelocity, _body.LinearVelocity, ClientFarseerEntityDriver.LerpStrength),
-                angular: MathHelper.Lerp(this.driven.AngularVelocity, _body.AngularVelocity, ClientFarseerEntityDriver.LerpStrength));
+                this.driven.SetVelocity(
+                    linear: Vector2.Lerp(this.driven.LinearVelocity, _body.LinearVelocity, ClientFarseerEntityDriver.LerpStrength),
+                    angular: MathHelper.Lerp(this.driven.AngularVelocity, _body.AngularVelocity, ClientFarseerEntityDriver.LerpStrength));
+            }
         }
         #endregion
 

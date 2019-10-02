@@ -32,7 +32,6 @@ namespace GalacticFighters.Library.Entities
         #endregion
 
         #region Private Fields
-        private Guid _bridgeReservationId;
         private List<FemaleConnectionNode> _openFemaleNodes;
         private List<ShipPart> _liveComponents;
         #endregion
@@ -126,7 +125,6 @@ namespace GalacticFighters.Library.Entities
             {
                 if(this.Bridge != null)
                 {// Unreserve the old bridge
-                    // this.Bridge.Reserved.Remove(_bridgeReservationId);
                     this.Bridge.BridgeFor = null;
                     this.Bridge.SetCollidesWith(CollisionCategories.PassiveCollidesWith);
                     this.Bridge.SetCollisionCategories(CollisionCategories.PassiveCollisionCategories);
@@ -140,7 +138,6 @@ namespace GalacticFighters.Library.Entities
                 this.Bridge.BridgeFor = this;
                 this.Bridge.SetCollidesWith(CollisionCategories.ActiveCollidesWith);
                 this.Bridge.SetCollisionCategories(CollisionCategories.ActiveCollisionCategories);
-                // _bridgeReservationId = this.Bridge.Reserved.Add();
 
                 // Add events
                 this.Bridge.Events.TryAdd<ConnectionNode>("chain:updated", this.HandleChildNodeChanged);

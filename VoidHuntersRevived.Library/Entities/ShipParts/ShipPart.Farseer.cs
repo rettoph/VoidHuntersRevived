@@ -53,7 +53,7 @@ namespace GalacticFighters.Library.Entities.ShipParts
         #endregion
 
         #region Lifecycle Methods
-        private void Farseer_PreInitialize()
+        private void Farseer_PostInitialize()
         {
             // Setup the chain placement at least once...
             this.UpdateChainPlacement();
@@ -78,6 +78,11 @@ namespace GalacticFighters.Library.Entities.ShipParts
         /// chain.
         /// </summary>
         protected abstract void UpdateChainPlacement();
+
+        public Body GetBody()
+        {
+            return this.body;
+        }
         #endregion
     }
 }
