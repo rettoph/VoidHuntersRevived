@@ -53,10 +53,9 @@ namespace GalacticFighters.Library.Entities.ShipParts
         #endregion
 
         #region Lifecycle Methods
-        private void Farseer_PostInitialize()
+        private void Farseer_PreInitialize()
         {
-            // Setup the chain placement at least once...
-            this.UpdateChainPlacement();
+            this.Events.TryAdd<ChainUpdate>("chain:updated", this.Farseer_HandleChainUpdated);
         }
         #endregion
 
@@ -74,14 +73,38 @@ namespace GalacticFighters.Library.Entities.ShipParts
 
         #region Farseer Methods
         /// <summary>
-        /// Invoked when the ShipPart must attach update itself to the current
+        /// Invoked when the ShipPart must attach/update itself within the current chain
         /// chain.
         /// </summary>
-        protected abstract void UpdateChainPlacement();
+        protected virtual void UpdateChainPlacement()
+        {
+            this.SetCollidesWith(this.GenerateCollidesWith());
+            this.SetCollisionCategories(this.GenerateCollisionCategories());
+        }
 
         public Body GetBody()
         {
             return this.body;
+        }
+        #endregion
+
+        #region Category Methods
+        protected internal Category GenerateCollidesWith()
+        {
+            return (this.IsBridge ? Categories.ActiveCollidesWith : Categories.PassiveCollidesWith);
+        }
+
+        protected internal Category GenerateCollisionCategories()
+        {
+            return (this.IsBridge ? Categories.ActiveCollisionCategories : Categories.PassiveCollisionCategories);
+        }
+        #endregion
+
+        #region Event Handlers
+        private void Farseer_HandleChainUpdated(object sender, ChainUpdate arg)
+        {
+            if (arg.HasFlag(ChainUpdate.Down))
+                this.UpdateChainPlacement();
         }
         #endregion
     }

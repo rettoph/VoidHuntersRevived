@@ -8,7 +8,7 @@ namespace GalacticFighters.Library.Utilities
     /// <summary>
     /// Default collision categories used within the game
     /// </summary>
-    public static class CollisionCategories
+    public static class Categories
     {
         public static readonly Category BorderCollisionCategory = Category.Cat1;
         public static readonly Category PassiveCollisionCategories = Category.Cat2;
@@ -16,8 +16,8 @@ namespace GalacticFighters.Library.Utilities
 
 
         
-        public static readonly Category PassiveCollidesWith = CollisionCategories.BorderCollisionCategory;
-        public static readonly Category ActiveCollidesWith = CollisionCategories.BorderCollisionCategory | CollisionCategories.ActiveCollisionCategories;
-        public static readonly Category BorderCollidesWith = CollisionCategories.PassiveCollisionCategories | CollisionCategories.ActiveCollisionCategories;
+        public static readonly Category PassiveCollidesWith = Categories.BorderCollisionCategory;
+        public static readonly Category ActiveCollidesWith = Categories.BorderCollisionCategory | Categories.ActiveCollisionCategories;
+        public static readonly Category BorderCollidesWith = Categories.PassiveCollisionCategories | Categories.ActiveCollisionCategories;
     }
 }

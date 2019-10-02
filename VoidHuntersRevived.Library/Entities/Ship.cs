@@ -126,21 +126,21 @@ namespace GalacticFighters.Library.Entities
                 if(this.Bridge != null)
                 {// Unreserve the old bridge
                     this.Bridge.BridgeFor = null;
-                    this.Bridge.SetCollidesWith(CollisionCategories.PassiveCollidesWith);
-                    this.Bridge.SetCollisionCategories(CollisionCategories.PassiveCollisionCategories);
+                    this.Bridge.SetCollidesWith(Categories.PassiveCollidesWith);
+                    this.Bridge.SetCollisionCategories(Categories.PassiveCollisionCategories);
 
                     // Remove bound events
-                    this.Bridge.Events.TryRemove<ConnectionNode>("chain:updated", this.HandleChildNodeChanged);
+                    this.Bridge.Events.TryRemove<ShipPart.ChainUpdate>("chain:updated", this.HandleBridgeChainUpdated);
                 }
                 
                 // Save & reserve the new bridge
                 this.Bridge = bridge;
                 this.Bridge.BridgeFor = this;
-                this.Bridge.SetCollidesWith(CollisionCategories.ActiveCollidesWith);
-                this.Bridge.SetCollisionCategories(CollisionCategories.ActiveCollisionCategories);
+                this.Bridge.SetCollidesWith(Categories.ActiveCollidesWith);
+                this.Bridge.SetCollisionCategories(Categories.ActiveCollisionCategories);
 
                 // Add events
-                this.Bridge.Events.TryAdd<ConnectionNode>("chain:updated", this.HandleChildNodeChanged);
+                this.Bridge.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleBridgeChainUpdated);
 
                 this.Events.TryInvoke<ShipPart>(this, "bridge:changed", this.Bridge);
                 this.Events.TryInvoke<ShipPart>(this, "bridge:chain:updated", this.Bridge);
@@ -209,7 +209,7 @@ namespace GalacticFighters.Library.Entities
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="arg"></param>
-        private void HandleChildNodeChanged(object sender, ConnectionNode arg)
+        private void HandleBridgeChainUpdated(object sender, ShipPart.ChainUpdate arg)
         {
             this.Events.TryInvoke<ShipPart>(this, "bridge:chain:updated", this.Bridge);
         }

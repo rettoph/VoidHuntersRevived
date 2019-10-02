@@ -27,6 +27,8 @@ namespace GalacticFighters.Library.Entities.ShipParts
         /// </summary>
         protected override void UpdateChainPlacement()
         {
+            base.UpdateChainPlacement();
+
             Fixture target;
 
             while (_fixtures.Any()) // Destroy all self contained fixtures
@@ -53,16 +55,8 @@ namespace GalacticFighters.Library.Entities.ShipParts
         {
             return base.CreateFixture(shape, userData, f =>
             {
-                if (this.Root.IsBridge)
-                {
-                    f.CollidesWith = CollisionCategories.ActiveCollidesWith;
-                    f.CollisionCategories = CollisionCategories.ActiveCollisionCategories;
-                }
-                else
-                {
-                    f.CollidesWith = CollisionCategories.PassiveCollidesWith;
-                    f.CollisionCategories = CollisionCategories.PassiveCollisionCategories;
-                }
+                f.CollidesWith = this.Root.CollidesWith;
+                f.CollisionCategories = this.Root.CollisionCategories;
 
                 setup?.Invoke(f);
             });

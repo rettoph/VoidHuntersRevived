@@ -74,6 +74,7 @@ namespace GalacticFighters.Library.Entities.ShipParts
             // Call internal pre initialize functions
             this.ConnectionNode_PreInitialize();
             this.Transformations_PreInitialize();
+            this.Farseer_PreInitialize();
         }
 
         protected override void Initialize()
@@ -87,7 +88,7 @@ namespace GalacticFighters.Library.Entities.ShipParts
         {
             base.PostInitialize();
 
-            this.Farseer_PostInitialize();
+            this.UpdateChain(ChainUpdate.Both);
         }
 
         public override void Dispose()

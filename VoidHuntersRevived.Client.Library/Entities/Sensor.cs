@@ -61,8 +61,8 @@ namespace GalacticFighters.Client.Library.Entities
             _body.IsSensor = true;
             _body.SleepingAllowed = false;
             _body.BodyType = BodyType.Dynamic;
-            _body.CollisionCategories = CollisionCategories.BorderCollisionCategory;
-            _body.CollidesWith = CollisionCategories.BorderCollidesWith;
+            _body.CollisionCategories = Categories.BorderCollisionCategory;
+            _body.CollidesWith = Categories.BorderCollidesWith;
 
             _body.OnCollision += this.HandleSensorCollision;
             _body.OnSeparation += this.HandleSensorSeparation;

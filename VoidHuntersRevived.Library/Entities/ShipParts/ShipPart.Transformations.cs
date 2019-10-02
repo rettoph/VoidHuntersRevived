@@ -37,7 +37,7 @@ namespace GalacticFighters.Library.Entities.ShipParts
         #region Lifecycle Methods
         private void Transformations_PreInitialize()
         {
-            this.UpdateLocalTranslation();
+            this.Events.TryAdd<ChainUpdate>("chain:updated", this.Transformations_HandleChainUpdated);
         }
         #endregion
 
@@ -63,6 +63,14 @@ namespace GalacticFighters.Library.Entities.ShipParts
                     * female.LocalTransformationMatrix
                     * this.Parent.LocalTransformation;
             }
+        }
+        #endregion
+
+        #region Event Handlers
+        private void Transformations_HandleChainUpdated(object sender, ChainUpdate arg)
+        {
+            if(arg.HasFlag(ChainUpdate.Down))
+                this.UpdateLocalTranslation();
         }
         #endregion
     }

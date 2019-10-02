@@ -18,6 +18,16 @@ namespace GalacticFighters.Library.Entities.ShipParts
     /// </summary>
     public partial class ShipPart
     {
+        #region Enums
+        [Flags]
+        public enum ChainUpdate
+        {
+            Up = 1,
+            Down = 2,
+            Both = Up | Down
+        }
+        #endregion
+
         #region Private Fields
         private ConnectionNodeFactory _connectionNodefactory;
         #endregion
@@ -54,7 +64,7 @@ namespace GalacticFighters.Library.Entities.ShipParts
         {
             _connectionNodefactory = provider.GetRequiredService<ConnectionNodeFactory>();
 
-            this.Events.Register<ConnectionNode>("chain:updated");
+            this.Events.Register<ChainUpdate>("chain:updated");
         }
 
         /// <summary>
@@ -70,8 +80,8 @@ namespace GalacticFighters.Library.Entities.ShipParts
                 .ToArray();
 
             // Bind event listeners tto automatically remap connection node data on a male attachment or female detachment
-            this.MaleConnectionNode.Events.TryAdd<ConnectionNode>("attached", (s, n) => this.RemapConnectionNodes());
-            this.MaleConnectionNode.Events.TryAdd<ConnectionNode>("detached", (s, n) => this.RemapConnectionNodes());
+            this.MaleConnectionNode.Events.TryAdd<ConnectionNode>("attached", (s, n) => this.UpdateChain(ChainUpdate.Both));
+            this.MaleConnectionNode.Events.TryAdd<ConnectionNode>("detached", (s, n) => this.UpdateChain(ChainUpdate.Both));
         }
 
         /// <summary>
@@ -87,20 +97,21 @@ namespace GalacticFighters.Library.Entities.ShipParts
 
         #region Helper Methods
         /// <summary>
-        /// Used to update the connection nodes and chain placement of a specific
-        /// part. This is recursively called on all children belonging to a specific
-        /// ShipPart
+        /// Recersively trigger the UpdateChain event and recersively call
+        /// the same method on all children/parents as defined in the ChainUpdate
+        /// parameter
         /// </summary>
-        internal void RemapConnectionNodes()
+        /// <param name="directions"></param>
+        internal void UpdateChain(ChainUpdate directions)
         {
-            // Update the current parts translation...
-            this.UpdateLocalTranslation();
+            this.Events.TryInvoke<ChainUpdate>(this, "chain:updated", directions);
 
-            // Update the current ShipPart's chain placement...
-            this.UpdateChainPlacement();
-
-            // Recursively call is for all internal female nodes
-            this.FemaleConnectionNodes.ForEach(female => female.Target?.Parent.RemapConnectionNodes());
+            // Recusively update all elements up the chain
+            if (directions.HasFlag(ChainUpdate.Up) && !this.IsRoot)
+                this.Parent.UpdateChain(ChainUpdate.Up);
+            // Recursively update all elements down the chain
+            if(directions.HasFlag(ChainUpdate.Down))
+                this.FemaleConnectionNodes.ForEach(female => female.Target?.Parent.UpdateChain(ChainUpdate.Down));
         }
         #endregion
 

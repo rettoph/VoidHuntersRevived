@@ -27,6 +27,13 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
         protected new WeaponConfiguration config { get; private set; }
         #endregion
 
+        #region Public Attributes
+        /// <summary>
+        /// The weapons current live barrel, if any
+        /// </summary>
+        public Body Barrel { get => _barrel; }
+        #endregion
+
         #region Constructors
         public Weapon(World world)
         {
@@ -49,6 +56,12 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
             // Save the configuration
             this.config = this.Configuration.Data as WeaponConfiguration;
 
+            // Create a new Barrel for the weapon
+            _barrel = BodyFactory.CreatePolygon(_world, this.config.Barrel, 0.1f);
+            _barrel.BodyType = BodyType.Dynamic;
+
+            this.Events.TryAdd<Body>("position:changed", this.HandlePositionChanged);
+
             this.IsLive = true;
         }
 
@@ -56,10 +69,14 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
         {
             base.Initialize();
 
-            _barrel = BodyFactory.CreatePolygon(_world, this.config.Barrel, 0.1f);
-            _barrel.BodyType = BodyType.Dynamic;
 
-            this.Events.TryAdd<Body>("position:changed", this.HandlePositionChanged);
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            _barrel.Dispose();
         }
         #endregion
 
@@ -88,16 +105,8 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
             _barrel.IgnoreCollisionWith(_owner);
 
             // Update the barrel's collision info
-            if (this.Root.IsBridge)
-            {
-                _barrel.CollidesWith = CollisionCategories.ActiveCollidesWith;
-                _barrel.CollisionCategories = CollisionCategories.ActiveCollisionCategories;
-            }
-            else
-            {
-                _barrel.CollidesWith = CollisionCategories.PassiveCollidesWith;
-                _barrel.CollisionCategories = CollisionCategories.PassiveCollisionCategories;
-            }
+            _barrel.CollidesWith = this.Root.CollidesWith;
+            _barrel.CollisionCategories = this.Root.CollisionCategories;
         }
 
         #region Frame Methods
@@ -106,14 +115,13 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
             base.Update(gameTime);
 
             // When reserved, instantly update barrel position so the joint doesnt have to
-            if (this.Reserverd.Value)
+            if (this.Root.Reserverd.Value)
                 this.UpdateBarrelPosition();
         }
         #endregion
 
         private void UpdateBarrelPosition()
         {
-            Console.WriteLine("Updating!");
             // Calculate the barrelts proper position based on the defined anchor points.
             var position = this.Root.Position + Vector2.Transform(this.config.BodyAnchor + this.config.BarrelAnchor, this.LocalTransformation * Matrix.CreateRotationZ(this.Root.Rotation));
             // Update the barrels position

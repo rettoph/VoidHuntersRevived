@@ -117,7 +117,6 @@ namespace GalacticFighters.Library.Entities.ShipParts.ConnectionNodes
 
             // Invoke the event...
             this.Events?.TryInvoke<ConnectionNode>(this, "attached", this.Target);
-            this.Parent.Root.Events.TryInvoke<ConnectionNode>(this, "chain:updated", this);
         }
 
         public void Detach()
@@ -130,7 +129,6 @@ namespace GalacticFighters.Library.Entities.ShipParts.ConnectionNodes
 
                 // Invoke the event...
                 this.Events?.TryInvoke<ConnectionNode>(this, "detached", oldTarget);
-                this.Parent.Root.Events.TryInvoke<ConnectionNode>(this, "chain:updated", this);
             }
         }
         #endregion

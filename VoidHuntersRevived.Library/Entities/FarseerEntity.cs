@@ -111,6 +111,9 @@ namespace GalacticFighters.Library.Entities
         /// </summary>
         /// <value><c>true</c> if active; otherwise, <c>false</c>.</value>
         public Boolean BodyEnabled { get { return this.body.Enabled; } }
+
+        public Category CollidesWith { get;  private set; }
+        public Category CollisionCategories { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -335,15 +338,17 @@ namespace GalacticFighters.Library.Entities
         public void SetCollidesWith(Category category)
         {
             this.body.CollidesWith = category;
+            this.CollidesWith = category;
 
-            this.Events.TryInvoke<Category>(this, "collides-with:changed", category);
+            this.Events.TryInvoke<Category>(this, "collides-with:changed", this.CollidesWith);
         }
 
         public void SetCollisionCategories(Category category)
         {
             this.body.CollisionCategories = category;
+            this.CollisionCategories = category;
 
-            this.Events.TryInvoke<Category>(this, "collision-categories:changed", category);
+            this.Events.TryInvoke<Category>(this, "collision-categories:changed", this.CollisionCategories);
         }
         #endregion
 
