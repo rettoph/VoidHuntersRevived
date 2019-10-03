@@ -62,6 +62,18 @@ namespace GalacticFighters.Library.Entities
         /// A maintained enumerable of all internal live components
         /// </summary>
         public IEnumerable<ShipPart> LiveComponents { get => _liveComponents.AsReadOnly(); }
+
+        /// <summary>
+        /// The current weapon lock offset relative to the ship's bridge's
+        /// position.
+        /// </summary>
+        public Vector2 LocalTarget { get; set; }
+
+        /// <summary>
+        /// The world position of the local target lock,
+        /// if possible.
+        /// </summary>
+        public Vector2 WorldTarget { get => this.Bridge.WorldCenter + this.LocalTarget; }
         #endregion
 
         #region Lifecycle Methods

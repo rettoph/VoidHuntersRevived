@@ -7,12 +7,17 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Network.Extensions.Lidgren;
 using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
+using Microsoft.Xna.Framework;
 
 namespace GalacticFighters.Server.Drivers.Entities
 {
     [IsDriver(typeof(Ship))]
     public class ServerShipDriver : Driver<Ship>
     {
+        #region private Fields
+        private Vector2 _oldTarget;
+        #endregion
+
         #region Constructor
         public ServerShipDriver(Ship driven) : base(driven)
         {
@@ -29,6 +34,21 @@ namespace GalacticFighters.Server.Drivers.Entities
             this.driven.TractorBeam.Events.TryAdd<ShipPart>("selected", this.HandleTractorBeamSelected);
             this.driven.TractorBeam.Events.TryAdd<ShipPart>("released", this.HandleTractorBeamReleased);
             this.driven.TractorBeam.Events.TryAdd<FemaleConnectionNode>("attached", this.HandleTractorBeamAttached);
+        }
+        #endregion
+
+        #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if(_oldTarget != this.driven.LocalTarget)
+            {
+                var action = this.driven.Actions.Create("target:changed");
+                action.Write(this.driven.LocalTarget);
+
+                _oldTarget = this.driven.LocalTarget;
+            }
         }
         #endregion
 

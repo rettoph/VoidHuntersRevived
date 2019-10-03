@@ -42,6 +42,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
         {
             base.Initialize();
 
+            this.driven.Actions.TryAdd("target:changed", this.HandleTargetChanged);
             this.driven.Actions.TryAdd("bridge:changed", this.HandleBridgeChanged);
             this.driven.Actions.TryAdd("direction:changed", this.HandleDirectionChanged);
             this.driven.Actions.TryAdd("tractor-beam:selected", this.HandleTractorBeamSelected);
@@ -72,6 +73,11 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
         #endregion
 
         #region Action Handlers
+        private void HandleTargetChanged(object sender, NetIncomingMessage arg)
+        {
+            this.driven.LocalTarget = arg.ReadVector2();
+        }
+
         private void HandleBridgeChanged(object sender, NetIncomingMessage im)
         {
             this.driven.ReadBridge(im);

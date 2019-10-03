@@ -7,6 +7,7 @@ using GalacticFighters.Library.Extensions;
 using GalacticFighters.Library.Utilities;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
         private Body _barrel;
         private World _world;
         private Body _owner;
-        private WeldJoint _joint;
+        private RevoluteJoint _joint;
         #endregion
 
         #region Protected Attributes
@@ -84,29 +85,7 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
         {
             base.UpdateChainPlacement();
 
-            if (_joint != null) // Delete the old joint, if there was one
-                _world.RemoveJoint(_joint);
-            if (_owner != null) // Restore barrel colission with its parent
-                _barrel.RestoreCollisionWith(_owner);
-
-            // Update the barrel's position
-            this.UpdateBarrelPosition();
-
-            // Create a new weld join between the barrelt and its root body
-            _joint = JointFactory.CreateWeldJoint(
-                _world, 
-                this.Root.GetBody(), 
-                _barrel, 
-                Vector2.Transform(this.config.BodyAnchor, this.LocalTransformation), 
-                this.config.BarrelAnchor, 
-                false);
-            // Save the barrels root, so we can restore colission in the future
-            _owner = this.Root.GetBody();
-            _barrel.IgnoreCollisionWith(_owner);
-
-            // Update the barrel's collision info
-            _barrel.CollidesWith = this.Root.CollidesWith;
-            _barrel.CollisionCategories = this.Root.CollisionCategories;
+            this.UpdateJoint(ref _joint, this.Root.GetBody(), _barrel, _world);
         }
 
         #region Frame Methods
@@ -117,21 +96,87 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
             // When reserved, instantly update barrel position so the joint doesnt have to
             if (this.Root.Reserverd.Value)
                 this.UpdateBarrelPosition();
+
+            this.UpdateBarrelAngle();
         }
         #endregion
 
-        private void UpdateBarrelPosition()
+        #region Helper Methods
+        public void UpdateBarrelAngle()
         {
-            // Calculate the barrelts proper position based on the defined anchor points.
-            var position = this.Root.Position + Vector2.Transform(this.config.BodyAnchor + this.config.BarrelAnchor, this.LocalTransformation * Matrix.CreateRotationZ(this.Root.Rotation));
-            // Update the barrels position
-            _barrel.SetTransform(position, this.Rotation + MathHelper.Pi);
+            this.UpdateBarrelAngle(_joint, this.Root.GetBody());
         }
+        public void UpdateBarrelAngle(RevoluteJoint joint, Body root)
+        {
+            if (this.Root.IsBridge)
+            { // Only update the angle if the ship is root
+                var target = this.Root.BridgeFor.WorldTarget;
+                var position = root.Position + Vector2.Transform(this.config.BodyAnchor, this.LocalTransformation * Matrix.CreateRotationZ(root.Rotation));
+                var offset = target - position;
+
+                var angle = Math.Atan2(offset.Y, offset.X) - root.Rotation - this.LocalRotation - this.MaleConnectionNode.LocalRotation - MathHelper.Pi;
+                // The difference between the barrels current orientation and the mouse
+                var diff = MathHelper.WrapAngle((Single)(angle - joint.JointAngle));
+
+                joint.MotorSpeed = diff * (Single)(1000 / 32);
+            }
+        }
+
+        /// <summary>
+        /// Automatically update the current weapons barrel position
+        /// </summary>
+        public void UpdateBarrelPosition()
+        {
+            this.UpdateBarrelPosition(this.Root.GetBody(), _barrel);
+        }
+        /// <summary>
+        /// Update a farseer bodies position assuming that the given body
+        /// is the current weapons barrel.
+        /// </summary>
+        /// <param name="root">Containing root body</param>
+        /// <param name="barrel">The assumed barrel</param>
+        public void UpdateBarrelPosition(Body root, Body barrel)
+        {
+            // Calculate the barrels proper position based on the defined anchor points.
+            var position = root.Position + Vector2.Transform(this.config.BodyAnchor + this.config.BarrelAnchor, this.LocalTransformation * Matrix.CreateRotationZ(root.Rotation));
+            // Update the barrels position
+            barrel.SetTransform(position, this.Rotation + MathHelper.Pi);
+        } 
+
+        public void UpdateJoint(ref RevoluteJoint joint, Body root, Body barrel, World world)
+        {
+            if (joint != null) // Destroy the old joint, if it exists
+                world.RemoveJoint(joint);
+
+            // Update the recieved barrel's position
+            this.UpdateBarrelPosition(root, barrel);
+
+            joint = JointFactory.CreateRevoluteJoint(
+                world,
+                root,
+                barrel,
+                Vector2.Transform(this.config.BodyAnchor, this.LocalTransformation),
+                this.config.BarrelAnchor,
+                false);
+
+            joint.CollideConnected = false;
+            joint.MotorEnabled = true;
+            joint.MaxMotorTorque = 20f;
+            joint.LowerLimit = -this.config.Range / 2;
+            joint.UpperLimit = this.config.Range / 2;
+            joint.LimitEnabled = true;
+
+            // Update the barrel's collision info
+            barrel.CollidesWith = this.Root.CollidesWith;
+            barrel.CollisionCategories = this.Root.CollisionCategories;
+        }
+        #endregion
 
         #region Event Handlers
         private void HandlePositionChanged(object sender, Body arg)
         {
             this.UpdateBarrelPosition();
+            this.UpdateBarrelAngle();
         }
         #endregion
     }

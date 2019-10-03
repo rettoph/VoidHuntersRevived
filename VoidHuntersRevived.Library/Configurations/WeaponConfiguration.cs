@@ -12,6 +12,8 @@ namespace GalacticFighters.Library.Configurations
         public Vector2 BodyAnchor { get; private set; }
         public Vector2 BarrelAnchor { get; private set; }
 
+        public Single Range { get; private set; }
+
         public WeaponConfiguration()
         {
         }
@@ -29,6 +31,7 @@ namespace GalacticFighters.Library.Configurations
             this.Barrel = barrel;
             this.BodyAnchor = bodyAnchor;
             this.BarrelAnchor = barrelAnchor;
+            this.Range = range;
         }
     }
 }

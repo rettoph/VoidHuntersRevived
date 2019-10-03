@@ -26,6 +26,10 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
     [IsDriver(typeof(UserPlayer))]
     public class ClientUserPlayerDriver : Driver<UserPlayer>
     {
+        #region Static Attributes
+        public static Double UpdateTargetRate { get; set; } = 50;
+        #endregion
+
         #region Private Fields
         private Pointer _pointer;
         private World _world;
@@ -33,6 +37,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
         private ClientGalacticFightersWorldScene _scene;
         private SpriteFont _font;
         private SpriteBatch _spriteBatch;
+        private Double _lastUpdateTarget;
         #endregion
 
         #region Constructor
@@ -67,7 +72,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
             base.Draw(gameTime);
 
             if (this.driven.Ship.Bridge != default(ShipPart))
-                _spriteBatch.DrawString(_font, $"Incels: {this.driven.Ship.OpenFemaleNodes.Count()}", this.driven.Ship.Bridge.Position, Color.White, 0, Vector2.Zero, 0.01f, SpriteEffects.None, 0);
+                _spriteBatch.DrawString(_font, $"Incels: {this.driven.Ship.OpenFemaleNodes.Count()}", this.driven.Ship.Bridge.Position, Color.White, 0, Vector2.Zero, 0.05f, SpriteEffects.None, 0);
         }
 
         protected override void Update(GameTime gameTime)
@@ -106,6 +111,20 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
                             position: node.WorldPosition - Vector2.Transform(this.driven.Ship.TractorBeam.Selected.MaleConnectionNode.LocalPosition, Matrix.CreateRotationZ(previewRotation)),
                             rotation: previewRotation);
                     }
+                }
+
+                // Update the weapon lock position
+                this.driven.Ship.LocalTarget = _scene.Sensor.WorldCenter - this.driven.Ship.Bridge.WorldCenter;
+
+                _lastUpdateTarget += gameTime.ElapsedGameTime.TotalMilliseconds;
+
+                if (_lastUpdateTarget >= ClientUserPlayerDriver.UpdateTargetRate)
+                { // Send the vitals data to all connected clients
+                    var om = this.driven.Actions.Create("target:changed:request");
+                    // Write the vitals data
+                    om.Write(this.driven.Ship.LocalTarget);
+
+                    _lastUpdateTarget = _lastUpdateTarget % ClientUserPlayerDriver.UpdateTargetRate;
                 }
             }
         }

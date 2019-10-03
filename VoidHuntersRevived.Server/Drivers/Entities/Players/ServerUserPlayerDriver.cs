@@ -35,10 +35,19 @@ namespace GalacticFighters.Server.Drivers.Entities.Players
             this.driven.Actions.TryAdd("tractor-beam:selected:request", this.HandleTractorBeamSelectedRequest);
             this.driven.Actions.TryAdd("tractor-beam:released:request", this.HandleTractorBeamReleasedRequest);
             this.driven.Actions.TryAdd("tractor-beam:attached:request", this.HandleTractorBeamAttachedRequest);
+            this.driven.Actions.TryAdd("target:changed:request", this.HandleTargetChangedRequest);
         }
         #endregion
 
         #region Action Handlers
+        private void HandleTargetChangedRequest(object sender, NetIncomingMessage im)
+        {
+            if (this.ValidateSender(im))
+            { // If the message checks out... update the ships direction.
+                this.driven.Ship.LocalTarget = im.ReadVector2();
+            }
+        }
+
         private void HandleDirectionChangedRequest(object sender, NetIncomingMessage im)
         {
             if (this.ValidateSender(im))

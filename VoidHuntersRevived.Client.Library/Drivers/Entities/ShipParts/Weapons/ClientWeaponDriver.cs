@@ -1,10 +1,12 @@
 ﻿using FarseerPhysics.Dynamics;
+using FarseerPhysics.Dynamics.Joints;
 using GalacticFighters.Client.Library.Utilities;
 using GalacticFighters.Library.Entities.ShipParts;
 using GalacticFighters.Library.Entities.ShipParts.Weapons;
 using Guppy;
 using Guppy.Attributes;
 using Microsoft.Extensions.Logging;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,6 +19,8 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.ShipParts.Weapons
         #region Private Fields
         private Body _serverBarrel;
         private ServerRender _server;
+        private RevoluteJoint _joint;
+        private Body _serverRoot;
         #endregion
 
         #region Constructor
@@ -44,6 +48,19 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.ShipParts.Weapons
         }
         #endregion
 
+        #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            // When reserved, instantly update server barrel position so the joint doesnt have to
+            if (this.driven.Root.Reserverd.Value)
+                this.driven.UpdateBarrelPosition(_serverRoot, _serverBarrel);
+
+            this.driven.UpdateBarrelAngle(_joint, _serverRoot);
+        }
+        #endregion
+
         #region Event Handlers
         /// <summary>
         /// When the client side chain recieves a chain update,
@@ -56,6 +73,10 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.ShipParts.Weapons
         {
             _serverBarrel.CollidesWith = this.driven.Root.CollidesWith;
             _serverBarrel.CollisionCategories = this.driven.Root.CollisionCategories;
+
+            // Update the server render weld joint
+            _serverRoot = _server.GetBodyById(this.driven.Root.BodyId);
+            this.driven.UpdateJoint(ref _joint, _serverRoot, _serverBarrel, _server.World);
         }
         #endregion
     }

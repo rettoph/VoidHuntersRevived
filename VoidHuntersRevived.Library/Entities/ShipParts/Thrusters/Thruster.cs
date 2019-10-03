@@ -19,7 +19,7 @@ namespace GalacticFighters.Library.Entities.ShipParts.Thrusters
         #endregion
 
         #region Public Attributes
-        public Vector2 Thrust { get => Vector2.UnitX * 15; }
+        public Vector2 Thrust { get => Vector2.UnitX * 20; }
         public Vector2 LocalThrust { get => Vector2.Transform(this.Thrust, Matrix.CreateRotationZ(this.LocalRotation)); }
         public Vector2 WorldThrust { get => Vector2.Transform(this.Thrust, Matrix.CreateRotationZ(this.Rotation)); }
         #endregion
