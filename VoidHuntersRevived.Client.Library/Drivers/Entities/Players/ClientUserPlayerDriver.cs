@@ -18,6 +18,8 @@ using System.Text;
 using Guppy.Network.Extensions.Lidgren;
 using GalacticFighters.Library.Entities.ShipParts;
 using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
+using Microsoft.Xna.Framework.Graphics;
+using Guppy.Loaders;
 
 namespace GalacticFighters.Client.Library.Drivers.Entities.Players
 {
@@ -29,11 +31,15 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
         private World _world;
         private ClientPeer _client;
         private ClientGalacticFightersWorldScene _scene;
+        private SpriteFont _font;
+        private SpriteBatch _spriteBatch;
         #endregion
 
         #region Constructor
-        public ClientUserPlayerDriver(Pointer pointer, World world, ClientPeer client, ClientGalacticFightersWorldScene scene, UserPlayer driven) : base(driven)
+        public ClientUserPlayerDriver(ContentLoader content, SpriteBatch spriteBatch, Pointer pointer, World world, ClientPeer client, ClientGalacticFightersWorldScene scene, UserPlayer driven) : base(driven)
         {
+            _font = content.TryGet<SpriteFont>("font");
+            _spriteBatch = spriteBatch;
             _pointer = pointer;
             _world = world;
             _client = client;
@@ -56,6 +62,14 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
         #endregion
 
         #region Frame Methods
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            if (this.driven.Ship.Bridge != default(ShipPart))
+                _spriteBatch.DrawString(_font, $"Incels: {this.driven.Ship.OpenFemaleNodes.Count()}", this.driven.Ship.Bridge.Position, Color.White, 0, Vector2.Zero, 0.01f, SpriteEffects.None, 0);
+        }
+
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);

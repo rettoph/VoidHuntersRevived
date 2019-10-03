@@ -81,7 +81,11 @@ namespace GalacticFighters.Library.Entities.ShipParts
 
             // Bind event listeners tto automatically remap connection node data on a male attachment or female detachment
             this.MaleConnectionNode.Events.TryAdd<ConnectionNode>("attached", (s, n) => this.UpdateChain(ChainUpdate.Both));
-            this.MaleConnectionNode.Events.TryAdd<ConnectionNode>("detached", (s, n) => this.UpdateChain(ChainUpdate.Both));
+            this.MaleConnectionNode.Events.TryAdd<ConnectionNode>("detached", (s, n) =>
+            {
+                this.UpdateChain(ChainUpdate.Down); // Update down the current chain
+                n.Parent.UpdateChain(ChainUpdate.Up); // Update up the old chain
+            });
         }
 
         /// <summary>
