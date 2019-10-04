@@ -129,7 +129,8 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
                 // The difference between the barrels current orientation and the mouse
                 var diff = MathHelper.WrapAngle((Single)(angle - joint.JointAngle));
 
-                joint.MotorSpeed = diff * (Single)(1000 / 32);
+                if(joint.LowerLimit < joint.JointAngle + diff && joint.JointAngle + diff < joint.UpperLimit)
+                    joint.MotorSpeed = diff * (Single)(1000 / 32);
             }
         }
 
