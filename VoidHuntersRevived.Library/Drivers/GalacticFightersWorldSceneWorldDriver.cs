@@ -12,7 +12,7 @@ namespace GalacticFighters.Library.Drivers
     /// <summary>
     /// Driver that will automatically step the world forward every frame
     /// </summary>
-    [IsDriver(typeof(GalacticFightersWorldScene))]
+    [IsDriver(typeof(GalacticFightersWorldScene), 150)]
     public class GalacticFightersWorldSceneWorldDriver : Driver<GalacticFightersWorldScene>
     {
         private World _world;

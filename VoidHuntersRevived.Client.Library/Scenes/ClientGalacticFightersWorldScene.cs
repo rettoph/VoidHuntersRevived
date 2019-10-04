@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,9 @@ namespace GalacticFighters.Client.Library.Scenes
         private ServerRender _server;
         private SpriteBatch _spriteBatch;
         private SpriteFont _font;
+
+        private Boolean _wasDebugDown;
+        private Boolean _debug;
         #endregion
 
         #region Public Fields
@@ -78,6 +82,13 @@ namespace GalacticFighters.Client.Library.Scenes
 
             this.Camera.TryUpdate(gameTime);
             this.entities.TryUpdate(gameTime);
+
+            var debug = Keyboard.GetState().IsKeyDown(Keys.F1);
+
+            if(debug && !_wasDebugDown)
+                _debug = !_debug;
+
+            _wasDebugDown = debug;
         }
 
         protected override void Draw(GameTime gameTime)
@@ -86,7 +97,8 @@ namespace GalacticFighters.Client.Library.Scenes
 
             _graphics.Clear(Color.Black);
 
-            // _serverDebugView.RenderDebugData(this.Camera.Projection, this.Camera.View);
+            if(_debug)
+                _serverDebugView.RenderDebugData(this.Camera.Projection, this.Camera.View);
             _debugView.RenderDebugData(this.Camera.Projection, this.Camera.View);
 
             var effect = new BasicEffect(_graphics)

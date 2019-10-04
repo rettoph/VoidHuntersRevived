@@ -6,6 +6,7 @@ using GalacticFighters.Library.Structs;
 using Guppy;
 using Guppy.Attributes;
 using Lidgren.Network;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
     internal sealed class ClientFarseerEntityDriver : Driver<FarseerEntity>
     {
         #region Static Attributes
-        public static Single LerpStrength { get; set; } = 0.1f;
+        public static Single LerpStrength { get; set; } = 0.075f;
         #endregion
 
         #region Private Fields

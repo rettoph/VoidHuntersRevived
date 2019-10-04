@@ -26,7 +26,7 @@ namespace GalacticFighters.Library.Configurations
         {
         }
 
-        public void AddBarrel(Vertices barrel, Vector2 bodyAnchor, Vector2 barrelAnchor = default(Vector2), Single range = 1.5f)
+        public void AddBarrel(Vertices barrel, Vector2 bodyAnchor, Vector2 barrelAnchor = default(Vector2), Single range = 2f)
         {
             this.Barrel = barrel;
             this.BodyAnchor = bodyAnchor;

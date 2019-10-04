@@ -9,7 +9,7 @@ using System.Text;
 
 namespace GalacticFighters.Client.Library.Drivers
 {
-    [IsDriver(typeof(ClientGalacticFightersWorldScene))]
+    [IsDriver(typeof(ClientGalacticFightersWorldScene), 150)]
     public sealed class ClientGalacticFightersWorldSceneWorldDriver : Driver<ClientGalacticFightersWorldScene>
     {
         private ServerRender _server;

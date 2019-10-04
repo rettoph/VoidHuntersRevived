@@ -20,7 +20,12 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
         #region Private Fields
         private Body _barrel;
         private World _world;
-        private Body _owner;
+        /// <summary>
+        /// The root object saved internally
+        /// the last time the current
+        /// weapons chain placement was updated.
+        /// </summary>
+        private ShipPart _root;
         private RevoluteJoint _joint;
         #endregion
 
@@ -85,6 +90,12 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
         {
             base.UpdateChainPlacement();
 
+            if (_root != default(ShipPart))
+                _root.Events.TryRemove<Body>("position:changed", this.HandlePositionChanged);
+
+            _root = this.Root;
+            _root.Events.TryAdd<Body>("position:changed", this.HandlePositionChanged);
+
             this.UpdateJoint(ref _joint, this.Root.GetBody(), _barrel, _world);
         }
 
@@ -140,13 +151,16 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
             // Calculate the barrels proper position based on the defined anchor points.
             var position = root.Position + Vector2.Transform(this.config.BodyAnchor + this.config.BarrelAnchor, this.LocalTransformation * Matrix.CreateRotationZ(root.Rotation));
             // Update the barrels position
-            barrel.SetTransform(position, this.Rotation + MathHelper.Pi);
+            barrel.SetTransform(position, this.IsRoot ? root.Rotation + this.LocalRotation + MathHelper.Pi : barrel.Rotation);
         } 
 
         public void UpdateJoint(ref RevoluteJoint joint, Body root, Body barrel, World world)
         {
             if (joint != null) // Destroy the old joint, if it exists
                 world.RemoveJoint(joint);
+
+            // By default, reset the barrel rotation relative to the given root body
+            barrel.Rotation = root.Rotation + this.LocalRotation + MathHelper.Pi;
 
             // Update the recieved barrel's position
             this.UpdateBarrelPosition(root, barrel);
@@ -162,6 +176,7 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
             joint.CollideConnected = false;
             joint.MotorEnabled = true;
             joint.MaxMotorTorque = 20f;
+            joint.MotorSpeed = 0f;
             joint.LowerLimit = -this.config.Range / 2;
             joint.UpperLimit = this.config.Range / 2;
             joint.LimitEnabled = true;

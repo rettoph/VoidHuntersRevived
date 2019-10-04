@@ -70,9 +70,6 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
-
-            if (this.driven.Ship.Bridge != default(ShipPart))
-                _spriteBatch.DrawString(_font, $"Incels: {this.driven.Ship.OpenFemaleNodes.Count()}", this.driven.Ship.Bridge.Position, Color.White, 0, Vector2.Zero, 0.05f, SpriteEffects.None, 0);
         }
 
         protected override void Update(GameTime gameTime)
