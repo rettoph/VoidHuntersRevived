@@ -24,6 +24,7 @@ using Microsoft.Extensions.Logging;
 using GalacticFighters.Library.Configurations;
 using GalacticFighters.Library.Entities.ShipParts.Thrusters;
 using GalacticFighters.Library.Entities.ShipParts.Weapons;
+using GalacticFighters.Library.Entities.ShipParts.Hulls;
 
 namespace GalacticFighters.Library
 {
@@ -72,9 +73,9 @@ namespace GalacticFighters.Library
 
             #region Register Hull Pieces
             // Register ShipParts
-            entities.TryRegister<RigidShipPart>("ship-part:triangle", "", "", ShipPartConfiguration.BuildPolygon(3, true));
-            entities.TryRegister<RigidShipPart>("ship-part:square", "", "", ShipPartConfiguration.BuildPolygon(4, true));
-            entities.TryRegister<RigidShipPart>("ship-part:hexagon", "", "", ShipPartConfiguration.BuildPolygon(6, true));
+            entities.TryRegister<Hull>("ship-part:triangle", "", "", ShipPartConfiguration.BuildPolygon(3, true));
+            entities.TryRegister<Hull>("ship-part:square", "", "", ShipPartConfiguration.BuildPolygon(4, true));
+            entities.TryRegister<Hull>("ship-part:hexagon", "", "", ShipPartConfiguration.BuildPolygon(6, true));
 
             // Create the pentagon
             var config = new ShipPartConfiguration();
@@ -83,7 +84,7 @@ namespace GalacticFighters.Library
             config.AddSide((MathHelper.Pi / 3) + MathHelper.PiOver2, ShipPartConfiguration.NodeType.Female);
             config.AddSide(MathHelper.Pi / 3, ShipPartConfiguration.NodeType.Female);
             config.AddSide((MathHelper.Pi / 3) + MathHelper.PiOver2, ShipPartConfiguration.NodeType.Female);
-            entities.TryRegister<RigidShipPart>("ship-part:pentagon", "", "", config.Flush());
+            entities.TryRegister<Hull>("ship-part:pentagon", "", "", config.Flush());
             #endregion
 
             #region Register Chassis
@@ -106,7 +107,7 @@ namespace GalacticFighters.Library
             config.AddSide(MathHelper.ToRadians(120), ShipPartConfiguration.NodeType.Female);
             config.AddSide(MathHelper.ToRadians(150), ShipPartConfiguration.NodeType.Female);
             config.Transform(Matrix.CreateTranslation(0, -1, 0));
-            entities.TryRegister<RigidShipPart>(
+            entities.TryRegister<Hull>(
                 "ship-part:chassis:mosquito",
                 "name:entity:ship-part:chassis:mosquito",
                 "description:entity:ship-part:chassis",

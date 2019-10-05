@@ -67,6 +67,7 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
             _barrel.BodyType = BodyType.Dynamic;
 
             this.Events.TryAdd<Body>("position:changed", this.HandlePositionChanged);
+            this.Events.TryAdd<NetIncomingMessage>("read", this.HandleRead);
 
             this.IsLive = true;
         }
@@ -91,10 +92,14 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
             base.UpdateChainPlacement();
 
             if (_root != default(ShipPart))
+            {
                 _root.Events.TryRemove<Body>("position:changed", this.HandlePositionChanged);
+                _root.Events.TryRemove<NetIncomingMessage>("read", this.HandleRead);
+            }
 
             _root = this.Root;
             _root.Events.TryAdd<Body>("position:changed", this.HandlePositionChanged);
+            _root.Events.TryAdd<NetIncomingMessage>("read", this.HandleRead);
 
             this.UpdateJoint(ref _joint, this.Root.GetBody(), _barrel, _world);
         }
@@ -124,13 +129,16 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
                 var target = this.Root.BridgeFor.WorldTarget;
                 var position = root.Position + Vector2.Transform(this.config.BodyAnchor, this.LocalTransformation * Matrix.CreateRotationZ(root.Rotation));
                 var offset = target - position;
+            
+                // Calculate the target angle we wish to aim towards
+                var angle = MathHelper.WrapAngle((Single)Math.Atan2(offset.Y, offset.X) - root.Rotation - this.LocalRotation - this.MaleConnectionNode.LocalRotation - MathHelper.Pi);
+                // Sanatize angle, ensuring it is between upper and lower  joint limits
+                angle = Math.Max(joint.LowerLimit, Math.Min(joint.UpperLimit, angle));
 
-                var angle = Math.Atan2(offset.Y, offset.X) - root.Rotation - this.LocalRotation - this.MaleConnectionNode.LocalRotation - MathHelper.Pi;
                 // The difference between the barrels current orientation and the mouse
-                var diff = MathHelper.WrapAngle((Single)(angle - joint.JointAngle));
+                var diff = angle - joint.JointAngle;
 
-                if(joint.LowerLimit < joint.JointAngle + diff && joint.JointAngle + diff < joint.UpperLimit)
-                    joint.MotorSpeed = diff * (Single)(1000 / 32);
+                joint.MotorSpeed = diff * (Single)(1000 / 32);
             }
         }
 
@@ -152,7 +160,7 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
             // Calculate the barrels proper position based on the defined anchor points.
             var position = root.Position + Vector2.Transform(this.config.BodyAnchor + this.config.BarrelAnchor, this.LocalTransformation * Matrix.CreateRotationZ(root.Rotation));
             // Update the barrels position
-            barrel.SetTransform(position, this.IsRoot ? root.Rotation + this.LocalRotation + MathHelper.Pi : barrel.Rotation);
+            barrel.SetTransform(position, this.Root.IsBridge ? barrel.Rotation : root.Rotation + this.LocalRotation + MathHelper.Pi);
         } 
 
         public void UpdateJoint(ref RevoluteJoint joint, Body root, Body barrel, World world)
@@ -190,6 +198,12 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
 
         #region Event Handlers
         private void HandlePositionChanged(object sender, Body arg)
+        {
+            this.UpdateBarrelPosition();
+            this.UpdateBarrelAngle();
+        }
+
+        private void HandleRead(object sender, NetIncomingMessage im)
         {
             this.UpdateBarrelPosition();
             this.UpdateBarrelAngle();

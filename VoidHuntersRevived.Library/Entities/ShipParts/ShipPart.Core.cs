@@ -2,6 +2,7 @@
 using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
 using GalacticFighters.Library.Extensions.Farseer;
 using GalacticFighters.Library.Utilities;
+using Guppy.Extensions.Collection;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
@@ -104,6 +105,11 @@ namespace GalacticFighters.Library.Entities.ShipParts
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            this.FemaleConnectionNodes.ForEach(f =>
+            {
+                f.Target?.Parent.Update(gameTime);
+            });
         }
         #endregion
 
