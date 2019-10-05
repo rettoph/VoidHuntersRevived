@@ -2,6 +2,7 @@
 using GalacticFighters.Client.Library.Utilities;
 using GalacticFighters.Library.Entities;
 using GalacticFighters.Library.Entities.ShipParts;
+using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
 using Guppy;
 using Guppy.Attributes;
 using Microsoft.Xna.Framework;
@@ -26,7 +27,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
         }
         #endregion
 
-        #region Frame Methods
+        #region Lifecycle Methods
         protected override void Initialize()
         {
             base.Initialize();

@@ -105,22 +105,6 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
 
                     _lastUpdateTarget = _lastUpdateTarget % ClientUserPlayerDriver.UpdateTargetRate;
                 }
-
-                if (this.driven.Ship.TractorBeam.Selected != default(ShipPart))
-                { // Ghost snap the selected ship part, giving the user a placement preview
-                    var node = this.driven.Ship.GetClosestOpenFemaleNode(this.driven.Ship.Target);
-
-                    if (node != default(FemaleConnectionNode))
-                    { // Only proceed if there is a valid female node...
-                        // Rather than creating the attachment, we just want to move the selection
-                        // so that a user can preview what it would look like when attached.
-                        var previewRotation = node.WorldRotation - this.driven.Ship.TractorBeam.Selected.MaleConnectionNode.LocalRotation;
-                        // Update the preview position
-                        this.driven.Ship.TractorBeam.Selected.SetPosition(
-                            position: node.WorldPosition - Vector2.Transform(this.driven.Ship.TractorBeam.Selected.MaleConnectionNode.LocalPosition, Matrix.CreateRotationZ(previewRotation)),
-                            rotation: previewRotation);
-                    }
-                }
             }
         }
         #endregion
