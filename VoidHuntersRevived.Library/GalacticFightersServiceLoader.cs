@@ -60,7 +60,7 @@ namespace GalacticFighters.Library
         {
             Settings.MaxPolygonVertices = 16;
 
-            provider.GetRequiredService<GlobalOptions>().LogLevel = LogLevel.Information;
+            provider.GetRequiredService<GlobalOptions>().LogLevel = LogLevel.Trace;
 
             var entities = provider.GetRequiredService<EntityLoader>();
 

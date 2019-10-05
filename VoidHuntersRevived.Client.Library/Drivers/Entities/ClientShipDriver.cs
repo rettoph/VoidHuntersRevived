@@ -75,7 +75,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
         #region Action Handlers
         private void HandleTargetChanged(object sender, NetIncomingMessage arg)
         {
-            this.driven.LocalTarget = arg.ReadVector2();
+            this.driven.ReadTargetOffset(arg);
         }
 
         private void HandleBridgeChanged(object sender, NetIncomingMessage im)
@@ -90,13 +90,13 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
 
         private void HandleTractorBeamSelected(object sender, NetIncomingMessage arg)
         {
-            this.driven.TractorBeam.SetOffset(arg.ReadVector2());
+            this.driven.ReadTargetOffset(arg);
             this.driven.TractorBeam.TrySelect(arg.ReadEntity<ShipPart>(_entities));
         }
 
         private void HandleTractorBeamReleased(object sender, NetIncomingMessage arg)
         {
-            this.driven.TractorBeam.SetOffset(arg.ReadVector2());
+            this.driven.ReadTargetOffset(arg);
             this.driven.TractorBeam.TryRelease();
         }
 

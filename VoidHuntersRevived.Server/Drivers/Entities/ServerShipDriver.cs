@@ -42,12 +42,12 @@ namespace GalacticFighters.Server.Drivers.Entities
         {
             base.Update(gameTime);
 
-            if(_oldTarget != this.driven.LocalTarget)
+            if(_oldTarget != this.driven.TargetOffset)
             {
                 var action = this.driven.Actions.Create("target:changed");
-                action.Write(this.driven.LocalTarget);
+                action.Write(this.driven.TargetOffset);
 
-                _oldTarget = this.driven.LocalTarget;
+                _oldTarget = this.driven.TargetOffset;
             }
         }
         #endregion
@@ -66,14 +66,14 @@ namespace GalacticFighters.Server.Drivers.Entities
         private void HandleTractorBeamSelected(object sender, ShipPart arg)
         {
             var action = this.driven.Actions.Create("tractor-beam:selected");
-            action.Write(this.driven.TractorBeam.Offset);
+            this.driven.WriteTargetOffset(action);
             action.Write(this.driven.TractorBeam.Selected);
         }
 
         private void HandleTractorBeamReleased(object sender, ShipPart arg)
         {
             var action = this.driven.Actions.Create("tractor-beam:released");
-            action.Write(this.driven.TractorBeam.Offset);
+            this.driven.WriteTargetOffset(action);
         }
 
         private void HandleTractorBeamAttached(object sender, FemaleConnectionNode arg)

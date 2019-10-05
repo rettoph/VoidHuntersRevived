@@ -44,7 +44,7 @@ namespace GalacticFighters.Server.Drivers.Entities.Players
         {
             if (this.ValidateSender(im))
             { // If the message checks out... update the ships direction.
-                this.driven.Ship.LocalTarget = im.ReadVector2();
+                this.driven.Ship.ReadTargetOffset(im);
             }
         }
 
@@ -60,7 +60,7 @@ namespace GalacticFighters.Server.Drivers.Entities.Players
         {
             if (this.ValidateSender(arg))
             {
-                this.driven.Ship.TractorBeam.SetOffset(arg.ReadVector2());
+                this.driven.Ship.ReadTargetOffset(arg);
                 if(!this.driven.Ship.TractorBeam.TrySelect(_entities.GetById<ShipPart>(arg.ReadGuid())))
                 { // Create a denied message & send to the client
                     this.driven.Actions.Create("tractor-beam:selected:denied", arg.SenderConnection);
@@ -72,7 +72,7 @@ namespace GalacticFighters.Server.Drivers.Entities.Players
         {
             if (this.ValidateSender(arg))
             {
-                this.driven.Ship.TractorBeam.SetOffset(arg.ReadVector2());
+                this.driven.Ship.ReadTargetOffset(arg);
                 if (!this.driven.Ship.TractorBeam.TryRelease())
                 { // Create a denied message & send to the client
                     this.driven.Actions.Create("tractor-beam:released:denied", arg.SenderConnection);

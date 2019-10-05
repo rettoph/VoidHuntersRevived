@@ -126,7 +126,7 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
         {
             if (this.Root.IsBridge)
             { // Only update the angle if the ship is root
-                var target = this.Root.BridgeFor.WorldTarget;
+                var target = this.Root.BridgeFor.Target;
                 var position = root.Position + Vector2.Transform(this.config.BodyAnchor, this.LocalTransformation * Matrix.CreateRotationZ(root.Rotation));
                 var offset = target - position;
             

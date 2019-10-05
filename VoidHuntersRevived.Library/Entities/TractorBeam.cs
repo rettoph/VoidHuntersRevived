@@ -23,17 +23,9 @@ namespace GalacticFighters.Library.Entities
         public ShipPart Selected { get; private set; }
 
         /// <summary>
-        /// The beams current offset relative to its
-        /// containing Ship
-        /// </summary>
-        public Vector2 Offset { get; private set; }
-
-        /// <summary>
         /// The beams parent ship
         /// </summary>
         public Ship Ship { get; internal set; }
-
-        public Vector2 Position { get => this.Ship.Bridge.WorldCenter + this.Offset; }
         #endregion
 
         #region Lifecycle Methods
@@ -45,6 +37,13 @@ namespace GalacticFighters.Library.Entities
             this.Events.Register<ShipPart>("released");
             this.Events.Register<ShipPart>("selected:position:changed");
             this.Events.Register<FemaleConnectionNode>("attached");
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            this.Ship.Events.TryAdd<Vector2>("target:offset:changed", this.HandleShipTargetOffsetChanged);
         }
         #endregion
 
@@ -183,23 +182,24 @@ namespace GalacticFighters.Library.Entities
             }
         }
 
-        public void SetOffset(Vector2 value)
-        {
-            this.Offset = value;
-            this.TryUpdateSelectedPosition();
-        }
-
         private void TryUpdateSelectedPosition()
         {
             lock (this)
             {
                 if (this.Selected != default(ShipPart))
                 {
-                    this.Selected.SetPosition(this.Position - Vector2.Transform(this.Selected.LocalCenteroid, Matrix.CreateRotationZ(this.Selected.Rotation)), this.Selected.Rotation);
+                    this.Selected.SetPosition(this.Ship.Target - Vector2.Transform(this.Selected.LocalCenteroid, Matrix.CreateRotationZ(this.Selected.Rotation)), this.Selected.Rotation);
 
                     this.Events.TryInvoke<ShipPart>(this, "selected:position:changed", this.Selected);
                 }
             }
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandleShipTargetOffsetChanged(object sender, Vector2 arg)
+        {
+            this.TryUpdateSelectedPosition();
         }
         #endregion
     }

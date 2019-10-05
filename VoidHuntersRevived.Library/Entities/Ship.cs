@@ -58,16 +58,16 @@ namespace GalacticFighters.Library.Entities
         public IEnumerable<FemaleConnectionNode> OpenFemaleNodes { get => _openFemaleNodes.AsReadOnly(); }
 
         /// <summary>
-        /// The current weapon lock offset relative to the ship's bridge's
+        /// The current target offset relative to the ship's bridge's
         /// position.
         /// </summary>
-        public Vector2 LocalTarget { get; set; }
+        public Vector2 TargetOffset { get; private set; }
 
         /// <summary>
-        /// The world position of the local target lock,
+        /// The world position of the target lock,
         /// if possible.
         /// </summary>
-        public Vector2 WorldTarget { get => this.Bridge.WorldCenter + this.LocalTarget; }
+        public Vector2 Target { get => this.Bridge.WorldCenter + this.TargetOffset; }
         #endregion
 
         #region Lifecycle Methods
@@ -80,6 +80,7 @@ namespace GalacticFighters.Library.Entities
             this.Events.Register<ShipPart>("bridge:changed");
             this.Events.Register<ShipPart>("bridge:chain:updated");
             this.Events.Register<Direction>("direction:changed");
+            this.Events.Register<Vector2>("target:offet:changed");
 
             this.SetUpdateOrder(200);
         }
@@ -172,6 +173,18 @@ namespace GalacticFighters.Library.Entities
         }
         #endregion
 
+        #region Set Methods
+        public void SetTargetOffset(Vector2 offset)
+        {
+            if(offset != this.TargetOffset)
+            {
+                this.TargetOffset = offset;
+
+                this.Events.TryInvoke<Vector2>(this, "target:offset:changed", this.TargetOffset);
+            }
+        }
+        #endregion
+
         #region Helper Methods
         /// <summary>
         /// Get the closest open female connection node to a specified
@@ -231,6 +244,7 @@ namespace GalacticFighters.Library.Entities
             base.Write(om);
 
             this.WriteBridge(om);
+            this.WriteTargetOffset(om);
         }
 
         protected override void Read(NetIncomingMessage im)
@@ -238,6 +252,7 @@ namespace GalacticFighters.Library.Entities
             base.Read(im);
 
             this.ReadBridge(im);
+            this.ReadTargetOffset(im);
         }
 
         /// <summary>
@@ -278,6 +293,16 @@ namespace GalacticFighters.Library.Entities
         public void ReadDirection(NetIncomingMessage im)
         {
             this.SetDirection((Direction)im.ReadByte(), im.ReadBoolean());
+        }
+
+        public void WriteTargetOffset(NetOutgoingMessage om)
+        {
+            om.Write(this.TargetOffset);
+        }
+
+        public void ReadTargetOffset(NetIncomingMessage im)
+        {
+            this.SetTargetOffset(im.ReadVector2());
         }
         #endregion
     }

@@ -20,6 +20,7 @@ using GalacticFighters.Library.Entities.ShipParts;
 using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
 using Microsoft.Xna.Framework.Graphics;
 using Guppy.Loaders;
+using Microsoft.Extensions.Logging;
 
 namespace GalacticFighters.Client.Library.Drivers.Entities.Players
 {
@@ -91,14 +92,25 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
                 // Update the camera position
                 _scene.Camera.MoveTo(this.driven.Ship.Bridge.WorldCenter);
 
-                // Update the tractor beam position
-                this.driven.Ship.TractorBeam.SetOffset(_scene.Sensor.WorldCenter - this.driven.Ship.Bridge.WorldCenter);
+                // Update the Ship's target offset
+                this.driven.Ship.SetTargetOffset(_scene.Sensor.WorldCenter - this.driven.Ship.Bridge.WorldCenter);
 
-                if(this.driven.Ship.TractorBeam.Selected != default(ShipPart))
+                _lastUpdateTarget += gameTime.ElapsedGameTime.TotalMilliseconds;
+
+                if (_lastUpdateTarget >= ClientUserPlayerDriver.UpdateTargetRate)
+                { // Send the vitals data to all connected clients
+                    var om = this.driven.Actions.Create("target:changed:request");
+                    // Write the vitals data
+                    om.Write(this.driven.Ship.TargetOffset);
+
+                    _lastUpdateTarget = _lastUpdateTarget % ClientUserPlayerDriver.UpdateTargetRate;
+                }
+
+                if (this.driven.Ship.TractorBeam.Selected != default(ShipPart))
                 { // Ghost snap the selected ship part, giving the user a placement preview
-                    var node = this.driven.Ship.GetClosestOpenFemaleNode(this.driven.Ship.TractorBeam.Position);
+                    var node = this.driven.Ship.GetClosestOpenFemaleNode(this.driven.Ship.Target);
 
-                    if(node != default(FemaleConnectionNode))
+                    if (node != default(FemaleConnectionNode))
                     { // Only proceed if there is a valid female node...
                         // Rather than creating the attachment, we just want to move the selection
                         // so that a user can preview what it would look like when attached.
@@ -108,20 +120,6 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
                             position: node.WorldPosition - Vector2.Transform(this.driven.Ship.TractorBeam.Selected.MaleConnectionNode.LocalPosition, Matrix.CreateRotationZ(previewRotation)),
                             rotation: previewRotation);
                     }
-                }
-
-                // Update the weapon lock position
-                this.driven.Ship.LocalTarget = _scene.Sensor.WorldCenter - this.driven.Ship.Bridge.WorldCenter;
-
-                _lastUpdateTarget += gameTime.ElapsedGameTime.TotalMilliseconds;
-
-                if (_lastUpdateTarget >= ClientUserPlayerDriver.UpdateTargetRate)
-                { // Send the vitals data to all connected clients
-                    var om = this.driven.Actions.Create("target:changed:request");
-                    // Write the vitals data
-                    om.Write(this.driven.Ship.LocalTarget);
-
-                    _lastUpdateTarget = _lastUpdateTarget % ClientUserPlayerDriver.UpdateTargetRate;
                 }
             }
         }
@@ -159,21 +157,21 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
             if (this.driven.Ship.TractorBeam.TrySelect(target))
             { // Write an action to the server...
                 var action = this.driven.Actions.Create("tractor-beam:selected:request");
-                action.Write(this.driven.Ship.TractorBeam.Offset);
+                this.driven.Ship.WriteTargetOffset(action);
                 action.Write(this.driven.Ship.TractorBeam.Selected.Id);
             }
         }
 
         private void HandlePointerButtonReleased(object sender, Pointer.Button button)
         {
-            var target = this.driven.Ship.GetClosestOpenFemaleNode(this.driven.Ship.TractorBeam.Position);
+            var target = this.driven.Ship.GetClosestOpenFemaleNode(this.driven.Ship.Target);
 
             if(target == default(FemaleConnectionNode))
             { // If there is no valid open female node...
                 if (this.driven.Ship.TractorBeam.TryRelease())
                 { // Write a release action to the server
                     var action = this.driven.Actions.Create("tractor-beam:released:request");
-                    action.Write(this.driven.Ship.TractorBeam.Offset);
+                    this.driven.Ship.WriteTargetOffset(action);
                 }
             }
             else
