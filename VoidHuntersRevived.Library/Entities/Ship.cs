@@ -132,8 +132,7 @@ namespace GalacticFighters.Library.Entities
                 if(this.Bridge != null)
                 {// Unreserve the old bridge
                     this.Bridge.BridgeFor = null;
-                    this.Bridge.SetCollidesWith(Categories.PassiveCollidesWith);
-                    this.Bridge.SetCollisionCategories(Categories.PassiveCollisionCategories);
+                    this.Bridge.UpdateChain(ShipPart.ChainUpdate.Down);
 
                     // Remove bound events
                     this.Bridge.Events.TryRemove<ShipPart.ChainUpdate>("chain:updated", this.HandleBridgeChainUpdated);
@@ -142,8 +141,7 @@ namespace GalacticFighters.Library.Entities
                 // Save & reserve the new bridge
                 this.Bridge = bridge;
                 this.Bridge.BridgeFor = this;
-                this.Bridge.SetCollidesWith(Categories.ActiveCollidesWith);
-                this.Bridge.SetCollisionCategories(Categories.ActiveCollisionCategories);
+                this.Bridge.UpdateChain(ShipPart.ChainUpdate.Down);
 
                 // Add events
                 this.Bridge.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleBridgeChainUpdated);

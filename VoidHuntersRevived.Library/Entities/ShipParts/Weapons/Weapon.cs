@@ -95,6 +95,7 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
             {
                 _root.Events.TryRemove<Body>("position:changed", this.HandlePositionChanged);
                 _root.Events.TryRemove<NetIncomingMessage>("read", this.HandleRead);
+                _root.Events.TryRemove<Category>("collision-categories:changed", this.HandleCollisionCategoriesChanged);
             }
 
             _root = this.Root;
@@ -102,6 +103,11 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
             _root.Events.TryAdd<NetIncomingMessage>("read", this.HandleRead);
 
             this.UpdateJoint(ref _joint, this.Root.GetBody(), _barrel, _world);
+        }
+
+        private void HandleCollisionCategoriesChanged(object sender, Category arg)
+        {
+            throw new NotImplementedException();
         }
 
         #region Frame Methods
@@ -184,7 +190,7 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
 
             joint.CollideConnected = false;
             joint.MotorEnabled = true;
-            joint.MaxMotorTorque = 20f;
+            joint.MaxMotorTorque = 0.5f;
             joint.MotorSpeed = 0f;
             joint.LowerLimit = -this.config.Range / 2;
             joint.UpperLimit = this.config.Range / 2;
