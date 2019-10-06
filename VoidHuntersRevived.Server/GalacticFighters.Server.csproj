@@ -7,12 +7,25 @@
 
   <ItemGroup>
     <None Remove="ship-part-export.dat" />
+    <None Remove="ship.vh" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ship.vh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Submodules\Guppy\Guppy.Network\Guppy.Network.csproj" />
     <ProjectReference Include="..\Submodules\Guppy\Guppy\Guppy.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Library\GalacticFighters.Library.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Scenes\ServerGalacticFightersWorldScene.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
   </ItemGroup>
 
 </Project>

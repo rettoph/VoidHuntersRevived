@@ -21,6 +21,8 @@ using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
 using Microsoft.Xna.Framework.Graphics;
 using Guppy.Loaders;
 using Microsoft.Extensions.Logging;
+using GalacticFighters.Library.Utilities;
+using System.IO;
 
 namespace GalacticFighters.Client.Library.Drivers.Entities.Players
 {
@@ -39,11 +41,13 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
         private SpriteFont _font;
         private SpriteBatch _spriteBatch;
         private Double _lastUpdateTarget;
+        private ShipBuilder _builder;
         #endregion
 
         #region Constructor
-        public ClientUserPlayerDriver(ContentLoader content, SpriteBatch spriteBatch, Pointer pointer, World world, ClientPeer client, ClientGalacticFightersWorldScene scene, UserPlayer driven) : base(driven)
+        public ClientUserPlayerDriver(ShipBuilder builder, ContentLoader content, SpriteBatch spriteBatch, Pointer pointer, World world, ClientPeer client, ClientGalacticFightersWorldScene scene, UserPlayer driven) : base(driven)
         {
+            _builder = builder;
             _font = content.TryGet<SpriteFont>("font");
             _spriteBatch = spriteBatch;
             _pointer = pointer;
@@ -165,6 +169,12 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
                     var action = this.driven.Actions.Create("tractor-beam:attached:request");
                     action.Write(target.Parent);
                     action.Write(target.Id);
+
+                    // Small patch, export the ship in its current state
+                    using (FileStream output = File.OpenWrite("ship.vh"))
+                    {
+                        _builder.Export(this.driven.Ship.Bridge).WriteTo(output);
+                    }
                 }
             }
 

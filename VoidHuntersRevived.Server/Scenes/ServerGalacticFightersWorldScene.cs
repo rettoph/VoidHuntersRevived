@@ -4,6 +4,7 @@ using GalacticFighters.Library.Entities.Players;
 using GalacticFighters.Library.Entities.ShipParts;
 using GalacticFighters.Library.Extensions;
 using GalacticFighters.Library.Scenes;
+using GalacticFighters.Library.Utilities;
 using Guppy.Collections;
 using Guppy.Network.Peers;
 using Guppy.Network.Security;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -21,6 +23,7 @@ namespace GalacticFighters.Server.Scenes
     {
         #region Private Fields
         private Queue<User> _newUsers;
+        private ShipBuilder _builder;
         #endregion
 
         #region Protected Fields
@@ -28,9 +31,9 @@ namespace GalacticFighters.Server.Scenes
         #endregion
 
         #region Constructor
-        public ServerGalacticFightersWorldScene(World world) : base(world)
+        public ServerGalacticFightersWorldScene(ShipBuilder builder, World world) : base(world)
         {
-
+            _builder = builder;
         }
         #endregion
 
@@ -84,11 +87,10 @@ namespace GalacticFighters.Server.Scenes
                 player.User = user;
                 player.Ship = this.entities.Create<Ship>("ship", ship =>
                 { // Build a new ship for the player...
-                    if (ship.Bridge == null)
-                    { // Build a new bridge for the ship if one is not already set...
-                        ship.SetBridge(this.entities.Create<ShipPart>("ship-part:chassis:mosquito"));
-                        ship.Bridge.SetPosition(this.random.NextVector2(-10, 10), this.random.NextSingle(-3, 3));
-                    }
+                    using(FileStream import = File.OpenRead("ship.vh"))
+                        ship.SetBridge(_builder.Import(import));
+
+                    ship.Bridge.SetPosition(this.random.NextVector2(-10, 10), this.random.NextSingle(-3, 3));
                 });
             });
 

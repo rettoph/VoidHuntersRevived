@@ -35,6 +35,7 @@ namespace GalacticFighters.Library
         {
             services.AddScoped<ConnectionNodeFactory>();
             services.AddScoped<Random>();
+            services.AddScoped<ShipBuilder>();
 
             services.AddScoped<World>(p =>
             {
