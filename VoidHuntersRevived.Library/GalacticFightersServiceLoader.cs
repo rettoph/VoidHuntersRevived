@@ -163,34 +163,6 @@ namespace GalacticFighters.Library
                 "name:entity:ship-part:weapon:mass-driver",
                 "description:entity:ship-part:weapon:mass-driver",
                 weaponConfig.Flush());
-
-            var weaponConfig2 = new WeaponConfiguration(
-                vertices: new Vertices(
-                    new Vector2[] {
-                                    new Vector2(-0.2f, -0.2f),
-                                    new Vector2(-0.2f, 0.2f),
-                                    new Vector2(0.2f, 0.2f),
-                                    new Vector2(0.2f, -0.2f)
-                    }),
-                maleConnectionNode: new ConnectionNodeConfiguration()
-                {
-                    Position = Vector2.Zero,
-                    Rotation = 0
-                });
-
-            weaponConfig2.AddBarrel(new Vertices(new Vector2[]
-            {
-                new Vector2(0f, -0.2f),
-                new Vector2(0f, 0.2f),
-                new Vector2(0.75f, 0.1f),
-                new Vector2(0.75f, -0.1f)
-            }), new Vector2(-0.2f, 0), Vector2.Zero, 0f);
-
-            entities.TryRegister<Weapon>(
-                "ship-part:weapon:mass-driver-2",
-                "name:entity:ship-part:weapon:mass-driver",
-                "description:entity:ship-part:weapon:mass-driver",
-                weaponConfig2.Flush());
             #endregion
         }
     }

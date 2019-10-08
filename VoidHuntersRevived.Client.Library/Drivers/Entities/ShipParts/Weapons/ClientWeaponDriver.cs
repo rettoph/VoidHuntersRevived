@@ -5,6 +5,7 @@ using GalacticFighters.Library.Entities.ShipParts;
 using GalacticFighters.Library.Entities.ShipParts.Weapons;
 using Guppy;
 using Guppy.Attributes;
+using Lidgren.Network;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
@@ -38,6 +39,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.ShipParts.Weapons
             _serverBarrel = this.driven.Barrel.DeepClone(_server.World);
 
             this.driven.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleChainUpdated);
+            this.driven.Events.TryAdd<NetIncomingMessage>("read", this.HandleRead);
         }
 
         protected override void Dispose()
@@ -77,6 +79,13 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.ShipParts.Weapons
             // Update the server render weld joint
             _serverRoot = _server.GetBodyById(this.driven.Root.BodyId);
             this.driven.UpdateJoint(ref _joint, _serverRoot, _serverBarrel, _server.World);
+        }
+
+        private void HandleRead(object sender, NetIncomingMessage arg)
+        {
+            this.driven.UpdateBarrelPosition(_serverRoot, _serverBarrel);
+
+            this.driven.UpdateBarrelAngle(_joint, _serverRoot);
         }
         #endregion
     }

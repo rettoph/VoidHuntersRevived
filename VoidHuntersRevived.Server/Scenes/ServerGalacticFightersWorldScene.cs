@@ -108,7 +108,6 @@ namespace GalacticFighters.Server.Scenes
                 this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
 
                 this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:weapon:mass-driver-2").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
             }
         }
 
