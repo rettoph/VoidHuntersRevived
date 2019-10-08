@@ -2,6 +2,7 @@
 using FarseerPhysics.DebugView;
 using FarseerPhysics.Dynamics;
 using GalacticFighters.Client.Library.Entities;
+using GalacticFighters.Client.Library.Layers;
 using GalacticFighters.Client.Library.Utilities;
 using GalacticFighters.Client.Library.Utilities.Cameras;
 using GalacticFighters.Library.Scenes;
@@ -53,6 +54,13 @@ namespace GalacticFighters.Client.Library.Scenes
         #endregion
 
         #region Lifecycle Methods
+        protected override void PreInitialize()
+        {
+            base.PreInitialize();
+
+            this.layers.Create<DebugLayer>();
+        }
+
         protected override void Initialize()
         {
             base.Initialize();
