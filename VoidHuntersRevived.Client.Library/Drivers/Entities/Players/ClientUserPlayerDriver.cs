@@ -70,9 +70,8 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
                 _pointer.Events.TryAdd<Pointer.Button>("released", this.HandlePointerButtonReleased);
                 _pointer.Events.TryAdd<Int32>("scrolled", this.HandlePointerScrolled);
 
-                _debugOverlay.AddLine(() => $"Position: {this.driven.Ship.Bridge?.Position}");
-                _debugOverlay.AddLine(() => $"Rotation: {this.driven.Ship.Bridge?.Rotation}");
-                _debugOverlay.AddLine(() => $"Velocity: {this.driven.Ship.Bridge?.LinearVelocity.Length()}");
+                _debugOverlay.AddLine(() => $"Position: {this.driven.Ship.Bridge?.Position.X.ToString("#0.##0")}, {this.driven.Ship.Bridge?.Position.Y.ToString("#0.##0")}");
+                _debugOverlay.AddLine(() => $"Velocity: {this.driven.Ship.Bridge?.LinearVelocity.Length().ToString("#0.##0")}");
             }
         }
         #endregion
