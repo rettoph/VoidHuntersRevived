@@ -25,6 +25,7 @@ using GalacticFighters.Library.Configurations;
 using GalacticFighters.Library.Entities.ShipParts.Thrusters;
 using GalacticFighters.Library.Entities.ShipParts.Weapons;
 using GalacticFighters.Library.Entities.ShipParts.Hulls;
+using GalacticFighters.Library.Entities.Ammo;
 
 namespace GalacticFighters.Library
 {
@@ -137,6 +138,7 @@ namespace GalacticFighters.Library
 
             #region Register Weapons
             var weaponConfig = new WeaponConfiguration(
+                fireRate: 250f,
                 vertices: new Vertices(
                     new Vector2[] {
                         new Vector2(-0.2f, -0.2f),
@@ -158,11 +160,15 @@ namespace GalacticFighters.Library
                 new Vector2(0.5f, -0.1f)
             }), new Vector2(-0.2f, 0));
 
-            entities.TryRegister<Weapon>(
+            entities.TryRegister<Gun>(
                 "ship-part:weapon:mass-driver",
                 "name:entity:ship-part:weapon:mass-driver",
                 "description:entity:ship-part:weapon:mass-driver",
                 weaponConfig.Flush());
+            #endregion
+
+            #region Register Ammo
+            entities.TryRegister<Projectile>("bullet");
             #endregion
         }
     }

@@ -1,11 +1,15 @@
-﻿using GalacticFighters.Client.Library.Scenes;
+﻿using GalacticFighters.Client.Library.Entities;
+using GalacticFighters.Client.Library.Scenes;
 using GalacticFighters.Client.Library.Utilities.Cameras;
+using GalacticFighters.Library.Entities.Ammo;
 using Guppy;
 using Guppy.Extensions.Collection;
+using Guppy.Pooling.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace GalacticFighters.Client.Library.Layers
@@ -17,11 +21,15 @@ namespace GalacticFighters.Client.Library.Layers
         private BasicEffect _effect;
         private SpriteBatch _spriteBatch;
         private GraphicsDevice _graphics;
+        private DebugOverlay _debug;
+        private IPool<Projectile> _projectiles;
         #endregion
 
         #region Constructor
-        public WorldLayer(GraphicsDevice graphics, SpriteBatch spriteBatch, ClientGalacticFightersWorldScene scene)
+        public WorldLayer(IPool<Projectile> projectiles, DebugOverlay debug, GraphicsDevice graphics, SpriteBatch spriteBatch, ClientGalacticFightersWorldScene scene)
         {
+            _projectiles = projectiles;
+            _debug = debug;
             _graphics = graphics;
             _spriteBatch = spriteBatch;
             _camera = scene.Camera;
@@ -32,6 +40,9 @@ namespace GalacticFighters.Client.Library.Layers
         protected override void Initialize()
         {
             base.Initialize();
+
+            _debug.AddLine(() => $"Entities: {this.entities.Count()}");
+            _debug.AddLine(() => $"Pooled Projectiles: {_projectiles.Count()}");
 
             _effect = new BasicEffect(_graphics)
             {

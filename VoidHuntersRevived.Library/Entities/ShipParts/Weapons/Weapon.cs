@@ -15,18 +15,36 @@ using System.Text;
 
 namespace GalacticFighters.Library.Entities.ShipParts.Weapons
 {
-    public class Weapon : RigidShipPart
+    public abstract class Weapon : RigidShipPart
     {
         #region Private Fields
-        private Body _barrel;
+        /// <summary>
+        /// The world the weapon resides in.
+        /// </summary>
         private World _world;
+
+        /// <summary>
+        /// The weapons barrel.
+        /// </summary>
+        private Body _barrel;
+        
         /// <summary>
         /// The root object saved internally
         /// the last time the current
         /// weapons chain placement was updated.
         /// </summary>
         private ShipPart _root;
+
+        /// <summary>
+        /// The live joint connecting the base of the gun to the barrel
+        /// </summary>
         private RevoluteJoint _joint;
+
+        /// <summary>
+        /// The milliseconds since the last
+        /// weapon fire.
+        /// </summary>
+        private Double _lastFire;
         #endregion
 
         #region Protected Attributes
@@ -38,6 +56,10 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
         /// The weapons current live barrel, if any
         /// </summary>
         public Body Barrel { get => _barrel; }
+
+        public Single JointAngle { get => _joint.JointAngle; }
+
+        public Vector2 WorldBodyAnchor { get => _joint.WorldAnchorA; }
         #endregion
 
         #region Constructors
@@ -87,6 +109,7 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
         }
         #endregion
 
+        #region Utility Methods
         protected override void UpdateChainPlacement()
         {
             base.UpdateChainPlacement();
@@ -95,7 +118,6 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
             {
                 _root.Events.TryRemove<Body>("position:changed", this.HandlePositionChanged);
                 _root.Events.TryRemove<NetIncomingMessage>("read", this.HandleRead);
-                _root.Events.TryRemove<Category>("collision-categories:changed", this.HandleCollisionCategoriesChanged);
             }
 
             _root = this.Root;
@@ -104,11 +126,7 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
 
             this.UpdateJoint(ref _joint, this.Root.GetBody(), _barrel, _world);
         }
-
-        private void HandleCollisionCategoriesChanged(object sender, Category arg)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
 
         #region Frame Methods
         protected override void Update(GameTime gameTime)
@@ -120,6 +138,9 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
                 this.UpdateBarrelPosition();
 
             this.UpdateBarrelAngle();
+
+            _lastFire += gameTime.ElapsedGameTime.TotalMilliseconds;
+            this.TryFire();
         }
         #endregion
 
@@ -200,6 +221,19 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
             barrel.CollidesWith = this.Root.CollidesWith;
             barrel.CollisionCategories = this.Root.CollisionCategories;
         }
+
+        public void TryFire()
+        {
+            if (this.Root.IsBridge && _lastFire >= this.config.FireRate)
+            {
+                this.Fire();
+
+                // Reset the fire trigger...
+                _lastFire %= this.config.FireRate;
+            }
+        }
+
+        protected abstract void Fire();
         #endregion
 
         #region Event Handlers

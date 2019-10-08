@@ -68,6 +68,11 @@ namespace GalacticFighters.Library.Entities
         /// if possible.
         /// </summary>
         public Vector2 Target { get => this.Bridge.WorldCenter + this.TargetOffset; }
+
+        /// <summary>
+        /// The current Ship's total size
+        /// </summary>
+        public Int32 Size { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -233,6 +238,9 @@ namespace GalacticFighters.Library.Entities
         private void HandleBridgeChainUpdated(object sender, ShipPart arg)
         {
             this.RemapBridgeChain();
+
+            // Cache the chains current size
+            this.Size = this.Bridge == default(ShipPart) ? 0 : this.Bridge.GetSize();
         }
         #endregion
 

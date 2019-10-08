@@ -62,16 +62,17 @@ namespace GalacticFighters.Client.Library.Scenes
         {
             base.PreInitialize();
 
-            this.layers.Create<WorldLayer>(0);
             this.layers.Create<DebugLayer>(1);
+
+            this.Sensor = this.entities.Create<Sensor>("sensor");
+            this.debugOverlay = this.entities.Create<DebugOverlay>("debug-overlay");
+
+            this.layers.Create<WorldLayer>(0);
         }
 
         protected override void Initialize()
         {
             base.Initialize();
-
-            this.Sensor = this.entities.Create<Sensor>("sensor");
-            this.debugOverlay = this.entities.Create<DebugOverlay>("debug-overlay");
 
             _debugView = new DebugViewXNA(this.world);
             _debugView.LoadContent(_graphics, _content);

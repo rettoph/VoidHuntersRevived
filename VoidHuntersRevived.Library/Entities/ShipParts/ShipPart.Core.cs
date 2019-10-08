@@ -128,6 +128,22 @@ namespace GalacticFighters.Library.Entities.ShipParts
                 if (female.Attached)
                     female.Target.Parent.GetAllChildren(ref list, filter);
         }
+
+        public Int32 GetSize()
+        {
+            var count = 0;
+            this.GetSize(ref count);
+
+            return count;
+        }
+        public void GetSize(ref Int32 count)
+        {
+            count++;
+
+            foreach (FemaleConnectionNode female in this.FemaleConnectionNodes)
+                if (female.Attached)
+                    female.Target.Parent.GetSize(ref count);
+        }
         #endregion
 
         #region Network Methods
