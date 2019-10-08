@@ -194,7 +194,7 @@ namespace GalacticFighters.Library.Entities
                     var selectedPositionTarget = this.Ship.Target - Vector2.Transform(this.Selected.LocalCenteroid, Matrix.CreateRotationZ(this.Selected.Rotation));
 
                     this.Selected.SetPosition(
-                        Vector2.Lerp(this.Selected.Position, selectedPositionTarget, 0.1f), this.Selected.Rotation);
+                        Vector2.Lerp(this.Selected.Position, selectedPositionTarget, 0.25f), this.Selected.Rotation);
                 }
                 else
                 { // Only proceed if there is a valid female node...

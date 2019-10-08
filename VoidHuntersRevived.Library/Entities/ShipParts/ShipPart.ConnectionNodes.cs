@@ -10,6 +10,7 @@ using System.Text;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Collections;
 using Microsoft.Extensions.Logging;
+using Microsoft.Xna.Framework;
 
 namespace GalacticFighters.Library.Entities.ShipParts
 {
@@ -83,6 +84,9 @@ namespace GalacticFighters.Library.Entities.ShipParts
             this.MaleConnectionNode.Events.TryAdd<ConnectionNode>("attached", (s, n) => this.UpdateChain(ChainUpdate.Both));
             this.MaleConnectionNode.Events.TryAdd<ConnectionNode>("detached", (s, n) =>
             {
+                // Rigid snap the part's body to where the fixture used to be
+                this.body.Position = n.Parent.Root.Position + Vector2.Transform(Vector2.Zero, this.LocalTransformation * Matrix.CreateRotationZ(n.Parent.Root.Rotation));
+
                 this.UpdateChain(ChainUpdate.Down); // Update down the current chain
                 n.Parent.UpdateChain(ChainUpdate.Up); // Update up the old chain
             });
