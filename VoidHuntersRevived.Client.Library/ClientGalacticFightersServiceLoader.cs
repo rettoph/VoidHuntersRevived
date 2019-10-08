@@ -1,5 +1,6 @@
 ﻿using GalacticFighters.Client.Library.Drivers;
 using GalacticFighters.Client.Library.Entities;
+using GalacticFighters.Client.Library.Scenes;
 using GalacticFighters.Client.Library.Utilities;
 using Guppy.Attributes;
 using Guppy.Collections;
@@ -18,6 +19,7 @@ namespace GalacticFighters.Client.Library
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<ServerRender>();
+            services.AddTransient<DebugOverlay>(p => p.GetRequiredService<ClientGalacticFightersWorldScene>().debugOverlay);
         }
 
         public void ConfigureProvider(IServiceProvider provider)
@@ -30,6 +32,7 @@ namespace GalacticFighters.Client.Library
             var entities = provider.GetRequiredService<EntityLoader>();
 
             entities.TryRegister<Sensor>("sensor");
+            entities.TryRegister<DebugOverlay>("debug-overlay");
         }
     }
 }

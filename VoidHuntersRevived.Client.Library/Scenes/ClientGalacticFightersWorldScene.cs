@@ -22,6 +22,10 @@ namespace GalacticFighters.Client.Library.Scenes
 {
     public sealed class ClientGalacticFightersWorldScene : GalacticFightersWorldScene
     {
+        #region Internal Fields
+        internal DebugOverlay debugOverlay;
+        #endregion
+
         #region Private Fields
         private GraphicsDevice _graphics;
         private ContentManager _content;
@@ -58,7 +62,8 @@ namespace GalacticFighters.Client.Library.Scenes
         {
             base.PreInitialize();
 
-            this.layers.Create<DebugLayer>();
+            this.layers.Create<WorldLayer>(0);
+            this.layers.Create<DebugLayer>(1);
         }
 
         protected override void Initialize()
@@ -66,6 +71,7 @@ namespace GalacticFighters.Client.Library.Scenes
             base.Initialize();
 
             this.Sensor = this.entities.Create<Sensor>("sensor");
+            this.debugOverlay = this.entities.Create<DebugOverlay>("debug-overlay");
 
             _debugView = new DebugViewXNA(this.world);
             _debugView.LoadContent(_graphics, _content);
@@ -90,6 +96,7 @@ namespace GalacticFighters.Client.Library.Scenes
 
             this.Camera.TryUpdate(gameTime);
             this.entities.TryUpdate(gameTime);
+            this.layers.TryUpdate(gameTime);
 
             var debug = Keyboard.GetState().IsKeyDown(Keys.F1);
 
@@ -109,16 +116,7 @@ namespace GalacticFighters.Client.Library.Scenes
                 _serverDebugView.RenderDebugData(this.Camera.Projection, this.Camera.View);
             _debugView.RenderDebugData(this.Camera.Projection, this.Camera.View);
 
-            var effect = new BasicEffect(_graphics)
-            {
-                Projection = this.Camera.Projection,
-                View = this.Camera.View,
-                TextureEnabled = true
-            };
-
-            _spriteBatch.Begin(effect: effect);
-            this.entities.TryDraw(gameTime);
-            _spriteBatch.End();
+            this.layers.TryDraw(gameTime);
         }
         #endregion
     }

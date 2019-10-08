@@ -42,11 +42,13 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
         private SpriteBatch _spriteBatch;
         private Double _lastUpdateTarget;
         private ShipBuilder _builder;
+        private DebugOverlay _debugOverlay;
         #endregion
 
         #region Constructor
-        public ClientUserPlayerDriver(ShipBuilder builder, ContentLoader content, SpriteBatch spriteBatch, Pointer pointer, World world, ClientPeer client, ClientGalacticFightersWorldScene scene, UserPlayer driven) : base(driven)
+        public ClientUserPlayerDriver(DebugOverlay debugOverlay, ShipBuilder builder, ContentLoader content, SpriteBatch spriteBatch, Pointer pointer, World world, ClientPeer client, ClientGalacticFightersWorldScene scene, UserPlayer driven) : base(driven)
         {
+            _debugOverlay = debugOverlay;
             _builder = builder;
             _font = content.TryGet<SpriteFont>("font");
             _spriteBatch = spriteBatch;
@@ -67,6 +69,10 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
                 _pointer.Events.TryAdd<Pointer.Button>("pressed", this.HandlePointerButtonPressed);
                 _pointer.Events.TryAdd<Pointer.Button>("released", this.HandlePointerButtonReleased);
                 _pointer.Events.TryAdd<Int32>("scrolled", this.HandlePointerScrolled);
+
+                _debugOverlay.AddLine(() => $"Position: {this.driven.Ship.Bridge?.Position}");
+                _debugOverlay.AddLine(() => $"Rotation: {this.driven.Ship.Bridge?.Rotation}");
+                _debugOverlay.AddLine(() => $"Velocity: {this.driven.Ship.Bridge?.LinearVelocity.Length()}");
             }
         }
         #endregion
