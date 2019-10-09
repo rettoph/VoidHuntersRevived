@@ -45,9 +45,9 @@ namespace GalacticFighters.Library.Utilities.Delegater
             return om;
         }
 
-        public NetOutgoingMessage Create(String type, NetDeliveryMethod method = NetDeliveryMethod.ReliableUnordered)
+        public NetOutgoingMessage Create(String type, NetDeliveryMethod method = NetDeliveryMethod.ReliableUnordered, Int32 sequenceChannel = 0)
         {
-            var om = _scene.Group.CreateMessage("entity:action", method, 0);
+            var om = _scene.Group.CreateMessage("entity:action", method, sequenceChannel);
             om.Write(_entity.Id);
             om.Write(type);
 

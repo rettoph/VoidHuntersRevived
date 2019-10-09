@@ -87,6 +87,10 @@ namespace GalacticFighters.Client.Library.Scenes
             _serverDebugView.AppendFlags(DebugViewFlags.Controllers);
             _serverDebugView.SleepingShapeColor = Color.Red;
             _serverDebugView.DefaultShapeColor = Color.Blue;
+
+            this.debugOverlay.AddLine(() => $"Actions: {this.ActionsRecieved.ToString("#,##0")}");
+            this.debugOverlay.AddLine(() => $"Actions Per Second: {this.ActionsPerSecond.ToString("#0.##0")}");
+            this.debugOverlay.AddLine(() => $"FPS: {this.FramesPerSecond.ToString("#,##0")}");
         }
         #endregion
 

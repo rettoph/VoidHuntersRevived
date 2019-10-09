@@ -15,9 +15,12 @@ namespace GalacticFighters.Library.Scenes
         #region Public Attributes
         public Group Group { get; set; }
 
-        public UInt64 ActionsRecieved { get; private set; }
-        public UInt64 Frames { get; private set; }
-        public Single ActionsPerFrame { get => (Single)this.ActionsRecieved / (Single)this.Frames; }
+        public Single ActionsRecieved { get; private set; }
+        public Single Frames { get; private set; }
+        public Double Seconds { get; private set; }
+        public Single ActionsPerFrame { get => this.ActionsRecieved / this.Frames; }
+        public Double ActionsPerSecond { get => this.ActionsRecieved / this.Seconds; }
+        public Double FramesPerSecond { get => this.Frames / this.Seconds; }
         #endregion
 
         #region Lifecycle Methods
@@ -44,6 +47,7 @@ namespace GalacticFighters.Library.Scenes
             base.Update(gameTime);
 
             this.Frames++;
+            this.Seconds = gameTime.TotalGameTime.TotalSeconds;
         }
         #endregion
 

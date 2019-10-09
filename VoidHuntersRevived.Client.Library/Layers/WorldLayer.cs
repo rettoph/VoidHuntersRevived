@@ -4,6 +4,7 @@ using GalacticFighters.Client.Library.Utilities.Cameras;
 using GalacticFighters.Library.Entities.Ammo;
 using Guppy;
 using Guppy.Extensions.Collection;
+using Guppy.Network.Peers;
 using Guppy.Pooling.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

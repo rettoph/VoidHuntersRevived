@@ -234,7 +234,7 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
             }
         }
 
-        protected abstract void Fire();
+        public abstract void Fire();
         #endregion
 
         #region Event Handlers

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System.Linq;
 using Guppy.Extensions.Collection;
+using Lidgren.Network;
 
 namespace GalacticFighters.Server.Drivers.Entities.Weapons
 {
@@ -47,7 +48,8 @@ namespace GalacticFighters.Server.Drivers.Entities.Weapons
             if(this.driven.Projectiles.Any() && _lastBulletUpdate >= ServerGunDriver.BulletUpdateRate)
             {
                 // Send a message containing all bullet data for the current gun...
-                var action = this.driven.Actions.Create("projectiles");
+                var action = this.driven.Actions.Create("projectiles", NetDeliveryMethod.Unreliable, 10);
+                action.Write(this.driven.FireCount);
                 action.Write(this.driven.Projectiles.Count());
                 this.driven.Projectiles.ForEach(b =>
                 {

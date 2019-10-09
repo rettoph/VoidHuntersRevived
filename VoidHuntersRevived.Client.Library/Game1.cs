@@ -21,6 +21,7 @@ namespace GalacticFighters.Client.Library
             this.Content.RootDirectory = "Content";
             this.IsMouseVisible = true;
             this.Window.AllowUserResizing = true;
+            this.IsFixedTimeStep = false;
         }
 
         protected override void Initialize()

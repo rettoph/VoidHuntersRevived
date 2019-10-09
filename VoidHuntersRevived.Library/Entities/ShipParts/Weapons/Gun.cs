@@ -24,6 +24,8 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
 
         #region Public Attributes
         public IReadOnlyCollection<Projectile> Projectiles { get => _projectiles; }
+
+        public UInt32 FireCount { get; private set; }
         #endregion
 
         #region Constructors
@@ -75,7 +77,7 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
         /// <summary>
         /// Create a new projectile
         /// </summary>
-        protected override void Fire()
+        public override void Fire()
         {
             var bullet = this.entities.Create<Projectile>("bullet", p =>
             {
@@ -88,6 +90,8 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
                 p.Events.TryAdd<Creatable>("disposing", (s, c) => _disposedBullets.Enqueue(c as Projectile));
             });
             _projectiles.Add(bullet);
+
+            this.FireCount++;
 
             this.Events.TryInvoke<Projectile>(this, "fired", bullet);
         }

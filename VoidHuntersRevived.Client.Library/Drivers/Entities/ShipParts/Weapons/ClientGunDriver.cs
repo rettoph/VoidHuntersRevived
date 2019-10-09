@@ -37,6 +37,10 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.ShipParts.Weapons
         #region Event Handlers
         private void HandleProjectilesAction(object sender, NetIncomingMessage arg)
         {
+            var fireCount = arg.ReadUInt32();
+            while (this.driven.FireCount < fireCount)
+                this.driven.Fire(); // Force fire the gun, ensuring that is will catch up with the server
+
             var total = arg.ReadInt32();
             Projectile target;
 
