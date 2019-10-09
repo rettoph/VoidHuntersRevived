@@ -45,6 +45,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
             this.driven.Actions.TryAdd("target:changed", this.HandleTargetChanged);
             this.driven.Actions.TryAdd("bridge:changed", this.HandleBridgeChanged);
             this.driven.Actions.TryAdd("direction:changed", this.HandleDirectionChanged);
+            this.driven.Actions.TryAdd("firing:changed", this.HandleFiringChanged);
             this.driven.Actions.TryAdd("tractor-beam:selected", this.HandleTractorBeamSelected);
             this.driven.Actions.TryAdd("tractor-beam:released", this.HandleTractorBeamReleased);
             this.driven.Actions.TryAdd("tractor-beam:attached", this.HandleTractorBeamAttached);
@@ -86,6 +87,12 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
         private void HandleDirectionChanged(object sender, NetIncomingMessage im)
         {
             this.driven.ReadDirection(im);
+        }
+
+        private void HandleFiringChanged(object sender, NetIncomingMessage arg)
+        {
+            this.driven.SetFiring(arg.ReadBoolean());
+            this.driven.ReadTargetOffset(arg);
         }
 
         private void HandleTractorBeamSelected(object sender, NetIncomingMessage arg)

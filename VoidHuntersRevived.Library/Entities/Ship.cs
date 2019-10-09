@@ -42,6 +42,11 @@ namespace GalacticFighters.Library.Entities
         public Direction ActiveDirections { get; private set; }
 
         /// <summary>
+        /// THe ship's current fire state
+        /// </summary>
+        public Boolean Firing { get; private set; }
+
+        /// <summary>
         /// The ships current bridge.
         /// </summary>
         public ShipPart Bridge { get; private set; }
@@ -86,6 +91,7 @@ namespace GalacticFighters.Library.Entities
             this.Events.Register<ShipPart>("bridge:chain:updated");
             this.Events.Register<Direction>("direction:changed");
             this.Events.Register<Vector2>("target:offet:changed");
+            this.Events.Register<Boolean>("firing:changed");
 
             this.SetUpdateOrder(200);
         }
@@ -172,6 +178,20 @@ namespace GalacticFighters.Library.Entities
             {
                 this.ActiveDirections &= ~direction;
                 this.Events.TryInvoke<Direction>(this, "direction:changed", direction);
+            }
+        }
+
+        /// <summary>
+        /// Set the ship's current firing state.
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetFiring(Boolean value)
+        {
+            if(this.Firing != value)
+            {
+                this.Firing = value;
+
+                this.Events.TryInvoke<Boolean>(this, "firing:changed", this.Firing);
             }
         }
         #endregion

@@ -31,6 +31,7 @@ namespace GalacticFighters.Server.Drivers.Entities
 
             this.driven.Events.TryAdd<ShipPart>("bridge:changed", this.HandleBridgeChanged);
             this.driven.Events.TryAdd<Ship.Direction>("direction:changed", this.HandleDirectionChanged);
+            this.driven.Events.TryAdd<Boolean>("firing:changed", this.HandleFiringChanged);
             this.driven.TractorBeam.Events.TryAdd<ShipPart>("selected", this.HandleTractorBeamSelected);
             this.driven.TractorBeam.Events.TryAdd<ShipPart>("released", this.HandleTractorBeamReleased);
             this.driven.TractorBeam.Events.TryAdd<FemaleConnectionNode>("attached", this.HandleTractorBeamAttached);
@@ -81,6 +82,13 @@ namespace GalacticFighters.Server.Drivers.Entities
             var action = this.driven.Actions.Create("tractor-beam:attached");
             action.Write(arg.Parent);
             action.Write(arg.Id);
+        }
+
+        private void HandleFiringChanged(object sender, bool arg)
+        {
+            var action = this.driven.Actions.Create("firing:changed");
+            action.Write(this.driven.Firing);
+            this.driven.WriteTargetOffset(action);
         }
         #endregion
     }

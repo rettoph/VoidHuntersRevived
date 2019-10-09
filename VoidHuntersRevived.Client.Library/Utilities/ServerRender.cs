@@ -41,9 +41,13 @@ namespace GalacticFighters.Client.Library.Utilities
         /// Clone a recieved body and add it to the clone world
         /// </summary>
         /// <param name="source"></param>
-        public Body CloneBody(Body source)
+        public Body CloneBody(Body source, Boolean deep = false)
         {
-            _bodies.Add(source.BodyId, source.Clone(this.World));
+            if(deep)
+                _bodies.Add(source.BodyId, source.DeepClone(this.World));
+            else
+                _bodies.Add(source.BodyId, source.Clone(this.World));
+
             return _bodies[source.BodyId];
         }
 
@@ -65,7 +69,7 @@ namespace GalacticFighters.Client.Library.Utilities
         /// <param name="source"></param>
         public void DestroyBody(Body source)
         {
-            _bodies[source.BodyId].Dispose();
+            _bodies[source.BodyId]?.Dispose();
             _bodies.Remove(source.BodyId);
         }
 

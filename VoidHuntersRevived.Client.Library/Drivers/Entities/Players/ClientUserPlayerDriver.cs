@@ -121,27 +121,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
         #endregion
 
         #region Helper Methods
-
-        #endregion
-
-        #region Input Handlers
-        private void UpdateDirection(Ship.Direction direction, Boolean value)
-        {
-            if(this.driven.Ship.ActiveDirections.HasFlag(direction) != value)
-            { // If the flag has not already been updated...
-                // Update the local ship, so the local user feels immediate response...
-                this.driven.Ship.SetDirection(direction, value);
-
-                // Create an action to relay back to the server
-                var action = this.driven.Actions.Create("direction:changed:request");
-                action.Write((Byte)direction);
-                action.Write(value);
-            }
-        }
-        #endregion
-
-        #region Event Handlers
-        private void HandlePointerButtonPressed(object sender, Pointer.Button button)
+        private void TrySelectTractorBeam()
         {
             // Immediately attempt to select the local tractorbeam
             var target = _scene.Sensor.Contacts
@@ -157,11 +137,11 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
             }
         }
 
-        private void HandlePointerButtonReleased(object sender, Pointer.Button button)
+        private void TryReleaseTractorBeam()
         {
             var target = this.driven.Ship.GetClosestOpenFemaleNode(this.driven.Ship.Target);
 
-            if(target == default(FemaleConnectionNode))
+            if (target == default(FemaleConnectionNode))
             { // If there is no valid open female node...
                 if (this.driven.Ship.TractorBeam.TryRelease())
                 { // Write a release action to the server
@@ -184,7 +164,63 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
                     }
                 }
             }
+        }
 
+        private void TrySetFiring(Boolean value)
+        {
+            this.driven.Ship.SetFiring(value);
+
+            var action = this.driven.Actions.Create("firing:changed:request");
+            action.Write(this.driven.Ship.Firing);
+            this.driven.Ship.WriteTargetOffset(action);
+        }
+        #endregion
+
+        #region Input Handlers
+        private void UpdateDirection(Ship.Direction direction, Boolean value)
+        {
+            if(this.driven.Ship.ActiveDirections.HasFlag(direction) != value)
+            { // If the flag has not already been updated...
+                // Update the local ship, so the local user feels immediate response...
+                this.driven.Ship.SetDirection(direction, value);
+
+                // Create an action to relay back to the server
+                var action = this.driven.Actions.Create("direction:changed:request");
+                action.Write((Byte)direction);
+                action.Write(value);
+            }
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandlePointerButtonPressed(object sender, Pointer.Button button)
+        {
+            switch (button)
+            {
+                case Pointer.Button.Left:
+                    this.TrySetFiring(true);
+                    break;
+                case Pointer.Button.Middle:
+                    break;
+                case Pointer.Button.Right:
+                    this.TrySelectTractorBeam();
+                    break;
+            }
+        }
+
+        private void HandlePointerButtonReleased(object sender, Pointer.Button button)
+        {
+            switch (button)
+            {
+                case Pointer.Button.Left:
+                    this.TrySetFiring(false);
+                    break;
+                case Pointer.Button.Middle:
+                    break;
+                case Pointer.Button.Right:
+                    this.TryReleaseTractorBeam();
+                    break;
+            }
         }
 
         private void HandlePointerScrolled(object sender, Int32 arg)

@@ -3,6 +3,7 @@ using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Joints;
 using FarseerPhysics.Factories;
 using GalacticFighters.Library.Configurations;
+using GalacticFighters.Library.Entities.Ammo;
 using GalacticFighters.Library.Extensions;
 using GalacticFighters.Library.Utilities;
 using Lidgren.Network;
@@ -224,7 +225,7 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
 
         public void TryFire()
         {
-            if (this.Root.IsBridge && _lastFire >= this.config.FireRate)
+            if (this.Root.IsBridge && this.Root.BridgeFor.Firing && _lastFire >= this.config.FireRate)
             {
                 this.Fire();
 

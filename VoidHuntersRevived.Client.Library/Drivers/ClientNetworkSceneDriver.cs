@@ -84,7 +84,7 @@ namespace GalacticFighters.Client.Library.Drivers
 
                 // Parse all remove messages
                 while(_removes.Any())
-                    _entities.GetById(_removes.Dequeue().ReadGuid()).Dispose();
+                    _entities.GetById(_removes.Dequeue().ReadGuid())?.Dispose();
             }
         }
         #endregion

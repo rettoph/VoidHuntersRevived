@@ -36,6 +36,7 @@ namespace GalacticFighters.Server.Drivers.Entities.Players
             this.driven.Actions.TryAdd("tractor-beam:released:request", this.HandleTractorBeamReleasedRequest);
             this.driven.Actions.TryAdd("tractor-beam:attached:request", this.HandleTractorBeamAttachedRequest);
             this.driven.Actions.TryAdd("target:changed:request", this.HandleTargetChangedRequest);
+            this.driven.Actions.TryAdd("firing:changed:request", this.HandleFiringChangedRequest);
         }
         #endregion
 
@@ -89,6 +90,15 @@ namespace GalacticFighters.Server.Drivers.Entities.Players
                 { // Create a denied message & send to the client
                     this.driven.Actions.Create("tractor-beam:attached:denied", arg.SenderConnection);
                 }
+            }
+        }
+
+        private void HandleFiringChangedRequest(object sender, NetIncomingMessage arg)
+        {
+            if (this.ValidateSender(arg))
+            {
+                this.driven.Ship.SetFiring(arg.ReadBoolean());
+                this.driven.Ship.ReadTargetOffset(arg);
             }
         }
         #endregion
