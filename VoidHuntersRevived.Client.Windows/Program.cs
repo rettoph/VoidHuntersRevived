@@ -12,7 +12,7 @@ namespace GalacticFighters.Client.Windows
     {
         static void Main(string[] args)
         {
-            var game = new Game1();
+            var game = new Game1("127.0.0.1");
             game.Run();
         }
     }

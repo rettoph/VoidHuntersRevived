@@ -17,6 +17,8 @@ namespace GalacticFighters.Client.Library
         private ClientPeer _client;
         private Scene _scene;
 
+        public String host { get; set; }
+
         public ClientGalacticFightersGame(ClientPeer client) : base(client)
         {
             _client = client;
@@ -28,7 +30,7 @@ namespace GalacticFighters.Client.Library
 
             _client.MessagesTypes.TryAdd(NetIncomingMessageType.StatusChanged, this.HandleStatusChanged);
 
-            _client.TryConnect("127.0.0.1", 1337, _client.Users.Create("Rettoph"));
+            _client.TryConnect(this.host, 1337, _client.Users.Create("Rettoph"));
 
             _scene = this.scenes.Create<ClientGalacticFightersWorldScene>(s =>
             {

@@ -1,9 +1,9 @@
-﻿using FarseerPhysics.Dynamics;
-using GalacticFighters.Client.Library.Utilities;
-using GalacticFighters.Library.Entities.Ammo;
+﻿using GalacticFighters.Library.Entities.Ammunitions;
 using Guppy;
 using Guppy.Attributes;
+using Guppy.Loaders;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,44 +11,36 @@ using System.Text;
 namespace GalacticFighters.Client.Library.Drivers.Entities.Ammunitions
 {
     [IsDriver(typeof(Projectile))]
-    internal sealed class ClientProjectileDriver : Driver<Projectile>
+    public class ClientProjectileDriver : Driver<Projectile>
     {
-        private Body _serverBody;
-        private ServerRender _server;
-
-        #region Constructor
-        public ClientProjectileDriver(ServerRender server, Projectile driven) : base(driven)
-        {
-            _server = server;
-        }
+        #region Private Fields
+        private Texture2D _bullet;
+        private SpriteBatch _spriteBatch;
         #endregion
 
-        #region Lifecycle Methods
-        protected override void Initialize()
+        #region Constructor
+        public ClientProjectileDriver(SpriteBatch spriteBatch, ContentLoader content, Projectile driven) : base(driven)
         {
-            base.Initialize();
-
-            // Clone the server body
-            _serverBody = _server.CloneBody(this.driven.Body, true);
-            this.driven.SetReadBody(_serverBody);
-        }
-
-        protected override void Dispose()
-        {
-            base.Dispose();
-
-            _server.DestroyBody(this.driven.Body);
+            _spriteBatch = spriteBatch;
+            _bullet = content.TryGet<Texture2D>("bullet");
         }
         #endregion
 
         #region Frame Methods
-        protected override void Update(GameTime gameTime)
+        protected override void Draw(GameTime gameTime)
         {
-            base.Update(gameTime);
+            base.Draw(gameTime);
 
-            // Lerp the client projectile towards the server data
-            this.driven.Position = Vector2.Lerp(this.driven.Position, _serverBody.Position, 0.1f);
-            this.driven.LinearVelocity = Vector2.Lerp(this.driven.LinearVelocity, _serverBody.LinearVelocity, 0.1f);
+            _spriteBatch.Draw(
+                texture: _bullet,
+                position: this.driven.Position,
+                sourceRectangle: _bullet.Bounds,
+                color: Color.White,
+                rotation: this.driven.Rotation + MathHelper.PiOver2,
+                origin: _bullet.Bounds.Center.ToVector2(),
+                scale: 0.01f,
+                effects: SpriteEffects.None,
+                layerDepth: 0);
         }
         #endregion
     }

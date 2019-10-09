@@ -13,9 +13,11 @@ namespace GalacticFighters.Client.Library
     {
         GraphicsDeviceManager graphics;
         ClientGalacticFightersGame game;
+        String host;
 
-        public Game1()
+        public Game1(String host = "localhost")
         {
+            this.host = host;
             this.graphics = new GraphicsDeviceManager(this);
 
             this.Content.RootDirectory = "Content";
@@ -33,7 +35,10 @@ namespace GalacticFighters.Client.Library
                 .ConfigureNetwork("vhr")
                 .ConfigureMonoGame(this.graphics, this.Content, this.Window)
                 .Initialize()
-                .BuildGame<ClientGalacticFightersGame>();
+                .BuildGame<ClientGalacticFightersGame>(g =>
+                {
+                    g.host = this.host;
+                });
         }
 
         protected override void Draw(GameTime gameTime)

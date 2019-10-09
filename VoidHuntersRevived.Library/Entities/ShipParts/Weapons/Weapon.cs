@@ -3,7 +3,7 @@ using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Joints;
 using FarseerPhysics.Factories;
 using GalacticFighters.Library.Configurations;
-using GalacticFighters.Library.Entities.Ammo;
+using GalacticFighters.Library.Entities.Ammunitions;
 using GalacticFighters.Library.Extensions;
 using GalacticFighters.Library.Utilities;
 using Lidgren.Network;
@@ -86,8 +86,7 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
             this.config = this.Configuration.Data as WeaponConfiguration;
 
             // Create a new Barrel for the weapon
-            _barrel = BodyFactory.CreatePolygon(_world, this.config.Barrel, 0.1f);
-            _barrel.BodyType = BodyType.Dynamic;
+            _barrel = BodyFactory.CreatePolygon(_world, this.config.Barrel, 0.1f, Vector2.Zero, 0, BodyType.Dynamic, this);
 
             this.Events.TryAdd<Body>("position:changed", this.HandlePositionChanged);
             this.Events.TryAdd<NetIncomingMessage>("read", this.HandleRead);

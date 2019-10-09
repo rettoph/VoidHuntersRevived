@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using FarseerPhysics.Dynamics;
-using GalacticFighters.Library.Entities.Ammo;
+using GalacticFighters.Library.Entities.Ammunitions;
 using Guppy;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
@@ -72,6 +72,12 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
             while (_disposedBullets.Any())
                 _projectiles.Remove(_disposedBullets.Dequeue());
         }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            // Draw all internal bullets
+            _projectiles.ForEach(b => b.TryDraw(gameTime));
+        }
         #endregion
 
         /// <summary>
@@ -85,7 +91,7 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
                 _rand.NextBytes(_noise);
                 p.SetId(new Guid(_noise));
 
-                p.Gun = this;
+                p.Weapon = this;
                 
                 p.Events.TryAdd<Creatable>("disposing", (s, c) => _disposedBullets.Enqueue(c as Projectile));
             });

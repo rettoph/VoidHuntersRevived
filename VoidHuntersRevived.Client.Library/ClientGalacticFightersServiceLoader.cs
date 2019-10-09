@@ -28,6 +28,7 @@ namespace GalacticFighters.Client.Library
             content.TryRegister("font", "font");
             content.TryRegister("thrust", "Sprites/thrust");
             content.TryRegister("com", "Sprites/com");
+            content.TryRegister("bullet", "Sprites/bullet");
 
             var entities = provider.GetRequiredService<EntityLoader>();
 

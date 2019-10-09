@@ -1,7 +1,7 @@
 ﻿using GalacticFighters.Client.Library.Entities;
 using GalacticFighters.Client.Library.Scenes;
 using GalacticFighters.Client.Library.Utilities.Cameras;
-using GalacticFighters.Library.Entities.Ammo;
+using GalacticFighters.Library.Entities.Ammunitions;
 using Guppy;
 using Guppy.Extensions.Collection;
 using Guppy.Network.Peers;
@@ -62,7 +62,7 @@ namespace GalacticFighters.Client.Library.Layers
             _effect.View = _camera.View;
 
             // Draw all entities
-            _spriteBatch.Begin(effect: _effect);
+            _spriteBatch.Begin(blendState: BlendState.AlphaBlend, effect: _effect);
             this.entities.TryDraw(gameTime);
             _spriteBatch.End();
         }

@@ -25,7 +25,7 @@ using GalacticFighters.Library.Configurations;
 using GalacticFighters.Library.Entities.ShipParts.Thrusters;
 using GalacticFighters.Library.Entities.ShipParts.Weapons;
 using GalacticFighters.Library.Entities.ShipParts.Hulls;
-using GalacticFighters.Library.Entities.Ammo;
+using GalacticFighters.Library.Entities.Ammunitions;
 
 namespace GalacticFighters.Library
 {
