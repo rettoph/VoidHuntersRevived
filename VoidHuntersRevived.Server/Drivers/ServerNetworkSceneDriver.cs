@@ -12,6 +12,7 @@ using Guppy.Extensions.Collection;
 using Guppy.Network.Security;
 using Microsoft.Xna.Framework;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace GalacticFighters.Server.Drivers
 {
@@ -21,6 +22,7 @@ namespace GalacticFighters.Server.Drivers
         #region Private Fields
         private EntityCollection _entities;
         private Queue<NetworkEntity> _created;
+        private Queue<User> _newUsers;
         #endregion
 
         #region Constructor
@@ -35,6 +37,7 @@ namespace GalacticFighters.Server.Drivers
         {
             base.Create(provider);
 
+            _newUsers = new Queue<User>();
             _created = new Queue<NetworkEntity>();
         }
 
@@ -47,6 +50,14 @@ namespace GalacticFighters.Server.Drivers
 
             this.driven.Group.Users.Events.TryAdd<User>("added", this.HandleUserAdded);
         }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            _created.Clear();
+            _newUsers.Clear();
+        }
         #endregion
 
         #region Frame Methods
@@ -54,15 +65,33 @@ namespace GalacticFighters.Server.Drivers
         {
             base.Update(gameTime);
 
+            while (_newUsers.Any())
+                this.SetupNewUser(_newUsers.Dequeue());
+
             while (_created.Any())
                 this.CreateCreateMessage(_created.Dequeue());
+        }
+        #endregion
+
+        #region Helper Methods
+        private void SetupNewUser(User user)
+        {
+            this.driven.Group.CreateMessage("setup:start", user, NetDeliveryMethod.ReliableOrdered);
+
+            _entities.ForEach(e =>
+            { // Send all existing network entities to the new user
+                if (e is NetworkEntity)
+                    this.CreateCreateMessage(e as NetworkEntity, user);
+            });
+
+            this.driven.Group.CreateMessage("setup:end", user, NetDeliveryMethod.ReliableOrdered);
         }
         #endregion
 
         #region Message Methods
         private void CreateCreateMessage(NetworkEntity entity, User recipient = null)
         {
-            var message = this.driven.Group.CreateMessage("entity:create", recipient, NetDeliveryMethod.ReliableUnordered);
+            var message = this.driven.Group.CreateMessage("entity:create", recipient, NetDeliveryMethod.ReliableOrdered);
             message.Write(entity.Configuration.Handle);
             message.Write(entity.Id);
             entity.TryWriteSetup(message);
@@ -72,7 +101,7 @@ namespace GalacticFighters.Server.Drivers
 
         private void CreateUpdateMessage(NetworkEntity entity, User recipient = null)
         {
-            var message = this.driven.Group.CreateMessage("entity:update", recipient, NetDeliveryMethod.ReliableUnordered);
+            var message = this.driven.Group.CreateMessage("entity:update", recipient, NetDeliveryMethod.ReliableOrdered);
             entity.TryWrite(message);
         }
         #endregion
@@ -95,15 +124,7 @@ namespace GalacticFighters.Server.Drivers
 
         private void HandleUserAdded(object sender, User user)
         {
-            this.driven.Group.CreateMessage("setup:start", user, NetDeliveryMethod.ReliableOrdered);
-
-            _entities.ForEach(e =>
-            { // Send all existing network entities to the new user
-                if (e is NetworkEntity)
-                    this.CreateCreateMessage(e as NetworkEntity, user);
-            });
-
-            this.driven.Group.CreateMessage("setup:end", user, NetDeliveryMethod.ReliableOrdered);
+            _newUsers.Enqueue(user);
         }
         #endregion
     }

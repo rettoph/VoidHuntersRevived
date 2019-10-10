@@ -79,14 +79,18 @@ namespace GalacticFighters.Library.Entities.Ammunitions
         /// <param name="delta"></param>
         private void Step(Vector2 delta)
         {
+            // this.Position += delta;
             _world.RayCast(this.HandleRayCastCollision, this.Position, this.Position += delta);
         }
 
         private float HandleRayCastCollision(Fixture arg1, Vector2 arg2, Vector2 arg3, float arg4)
         {
             // this.logger.LogInformation((arg1.UserData as ShipPart)?.Root.Id.ToString());
-            // if((arg1.UserData as ShipPart)?.Root != this.Weapon.Root)
-            //     this.logger.LogInformation("collision!");
+            if (arg1.UserData is ShipPart && (arg1.UserData as ShipPart)?.Root.Id != this.Weapon.Root.Id)
+            {
+                this.Dispose();
+                return 0;
+            }
 
             return -1;
         }

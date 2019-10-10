@@ -8,7 +8,7 @@ namespace GalacticFighters.Client.Core
     {
         static void Main(string[] args)
         {
-            var game = new Game1(Console.ReadLine());
+            var game = new Game1("localhost");
             game.Run();
         }
     }

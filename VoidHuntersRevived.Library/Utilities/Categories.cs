@@ -19,5 +19,9 @@ namespace GalacticFighters.Library.Utilities
         public static readonly Category PassiveCollidesWith = Categories.BorderCollisionCategory;
         public static readonly Category ActiveCollidesWith = Categories.BorderCollisionCategory | Categories.ActiveCollisionCategories;
         public static readonly Category BorderCollidesWith = Categories.PassiveCollisionCategories | Categories.ActiveCollisionCategories;
+
+        public static readonly Category BorderIgnoreCCDWith = Category.None;
+        public static readonly Category PassiveIgnoreCCDWith = Category.Cat2 | Category.Cat3;
+        public static readonly Category ActiveIgnoreCCDWith = Category.Cat2;
     }
 }

@@ -114,6 +114,7 @@ namespace GalacticFighters.Library.Entities
 
         public Category CollidesWith { get;  private set; }
         public Category CollisionCategories { get; private set; }
+        public Category IgnoreCCDWith { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -126,8 +127,6 @@ namespace GalacticFighters.Library.Entities
 
             // Automatically enable the ShipPart when a reservation is made.
             this.Reserverd = new CounterBoolean(value => {
-                this.body.SleepingAllowed = !value;
-
                 this.Events.TryInvoke<Boolean>(this, "reserved:changed", value);
             });
 
@@ -137,6 +136,7 @@ namespace GalacticFighters.Library.Entities
             this.Events.Register<Fixture>("fixture:created");
             this.Events.Register<Fixture>("fixture:destroyed");
 
+            this.Events.Register<Boolean>("body-enabled:changed");
             this.Events.Register<Body>("position:changed");
             this.Events.Register<Body>("velocity:changed");
             this.Events.Register<Vector2>("linear-impulse:applied");
@@ -144,6 +144,7 @@ namespace GalacticFighters.Library.Entities
             this.Events.Register<AppliedForce>("force:applied");
             this.Events.Register<Category>("collision-categories:changed");
             this.Events.Register<Category>("collides-with:changed");
+            this.Events.Register<Category>("ignore-ccd-with:changed");
             this.Events.Register<Boolean>("reserved:changed");
         }
 
@@ -259,9 +260,9 @@ namespace GalacticFighters.Library.Entities
         /// </summary>
         /// <param name="position"></param>
         /// <param name="rotation"></param>
-        public void SetPosition(Vector2 position, Single rotation)
+        public void SetPosition(Vector2 position, Single rotation, Boolean ignoreContacts = false)
         {
-            this.SetPosition(ref position, rotation);
+            this.SetPosition(ref position, rotation, ignoreContacts);
         }
         /// <summary>
         /// Update the bodies position via SetTransform and invoke
@@ -269,9 +270,12 @@ namespace GalacticFighters.Library.Entities
         /// </summary>
         /// <param name="position"></param>
         /// <param name="rotation"></param>
-        public void SetPosition(ref Vector2 position, Single rotation)
+        public void SetPosition(ref Vector2 position, Single rotation, Boolean ignoreContacts = false)
         {
-            this.body.SetTransform(ref position, rotation);
+            if(ignoreContacts)
+                this.body.SetTransformIgnoreContacts(ref position, rotation);
+            else
+                this.body.SetTransform(ref position, rotation);
 
             this.Events.TryInvoke<Body>(this, "position:changed", this.body);
         }
@@ -349,6 +353,24 @@ namespace GalacticFighters.Library.Entities
             this.CollisionCategories = category;
 
             this.Events.TryInvoke<Category>(this, "collision-categories:changed", this.CollisionCategories);
+        }
+
+        public void SetIgnoresCCDWith(Category category)
+        {
+            this.body.IgnoreCCDWith = category;
+            this.IgnoreCCDWith = category;
+
+            this.Events.TryInvoke<Category>(this, "ignore-ccd-with:changed", this.IgnoreCCDWith);
+        }
+
+        public void SetBodyEnabled(Boolean value)
+        {
+            if(value != this.body.Enabled)
+            {
+                this.body.Enabled = value;
+
+                this.Events.TryInvoke<Boolean>(this, "body-enabled:changed", this.BodyEnabled);
+            }
         }
         #endregion
 

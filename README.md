@@ -12,6 +12,7 @@ These are events triggered by Guppy but specific to this game. Events can be bou
 | `GalacicFighters.Library` | `ConnectionNode` | `attached` | `ConnectionNode` | Invoked after an attachment with another ConnectionNode is created. |
 | `GalacicFighters.Library` | `ConnectionNode` | `detached` | `ConnectionNode` | Invoked after an attachment with another ConnectionNode is destroyed. |
 | | | | | |
+| `GalacicFighters.Library` | `FarseerEntity` | `body-enabled:changed` | `Boolean` | Invoked when the entities BodyEnabled value changes |
 | `GalacicFighters.Library` | `FarseerEntity` | `reserved:changed` | `Boolean` | Invoked when the entities reserved value changes |
 | `GalacicFighters.Library` | `FarseerEntity` | `body:created` | `Body` | Invoked when the entities main body is created. |
 | `GalacicFighters.Library` | `FarseerEntity` | `body:destroyed` | `Body` | Invoked when the entities main body is destroyed. |
@@ -24,6 +25,7 @@ These are events triggered by Guppy but specific to this game. Events can be bou
 | `GalacicFighters.Library` | `FarseerEntity` | `force:applied` | `AppliedForce` | Invoked when the ApplyForce method is called. |
 | `GalacicFighters.Library` | `FarseerEntity` | `collision-categories:changed` | `Category` | Invoked when the CollisionCategories attribute is changed. |
 | `GalacicFighters.Library` | `FarseerEntity` | `collides-with:changed` | `Category` | Invoked when the CollidesWith attribute is changed. |
+| `GalacicFighters.Library` | `FarseerEntity` | `ignore-ccd-with:changed` | `Category` | Invoked when the IgnoreCCDWith attribute is changed. |
 | `GalacicFighters.Library` | `FarseerEntity` | `reserved:changed` | `Boolean` | Invoked when the Reserved attribute value is changed. |
 | | | | | |
 | `GalacicFighters.Library` | `ShipPart` | `chain:updated` | `ConnectionNode` | Invoked when any node within the ShipPart's chain attached or detached. |

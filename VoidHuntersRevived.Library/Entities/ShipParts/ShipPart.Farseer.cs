@@ -66,7 +66,8 @@ namespace GalacticFighters.Library.Entities.ShipParts
             return new Body(world, Vector2.Zero, 0, BodyType.Dynamic, this)
             {
                 AngularDamping = 1f,
-                LinearDamping = 1f
+                LinearDamping = 1f,
+                IgnoreCCDWith = Category.All
             };
         }
         #endregion
@@ -80,6 +81,7 @@ namespace GalacticFighters.Library.Entities.ShipParts
         {
             this.SetCollidesWith(this.GenerateCollidesWith());
             this.SetCollisionCategories(this.GenerateCollisionCategories());
+            this.SetIgnoresCCDWith(this.GenerateIgnoreCCDWith());
         }
 
         public Body GetBody()
@@ -97,6 +99,11 @@ namespace GalacticFighters.Library.Entities.ShipParts
         protected internal Category GenerateCollisionCategories()
         {
             return (this.IsBridge ? Categories.ActiveCollisionCategories : Categories.PassiveCollisionCategories);
+        }
+
+        protected internal Category GenerateIgnoreCCDWith()
+        {
+            return (this.IsBridge ? Categories.ActiveIgnoreCCDWith : Categories.PassiveIgnoreCCDWith);
         }
         #endregion
 

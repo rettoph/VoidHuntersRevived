@@ -76,9 +76,7 @@ namespace GalacticFighters.Client.Library.Scenes
 
             _debugView = new DebugViewXNA(this.world);
             _debugView.LoadContent(_graphics, _content);
-            _debugView.AppendFlags(DebugViewFlags.ContactPoints);
-            _debugView.AppendFlags(DebugViewFlags.ContactNormals);
-            _debugView.AppendFlags(DebugViewFlags.Controllers);
+            _debugView.RemoveFlags(DebugViewFlags.Joint);
 
             _serverDebugView = new DebugViewXNA(_server.World);
             _serverDebugView.LoadContent(_graphics, _content);
@@ -89,7 +87,7 @@ namespace GalacticFighters.Client.Library.Scenes
             _serverDebugView.DefaultShapeColor = Color.Blue;
 
             this.debugOverlay.AddLine(() => $"Actions: {this.ActionsRecieved.ToString("#,##0")}");
-            this.debugOverlay.AddLine(() => $"Actions Per Second: {this.ActionsPerSecond.ToString("#0.##0")}");
+            this.debugOverlay.AddLine(() => $"APS: {this.AverageActionsPerSecond.ToString("#0.##0")}");
             this.debugOverlay.AddLine(() => $"FPS: {this.FramesPerSecond.ToString("#,##0")}");
         }
         #endregion

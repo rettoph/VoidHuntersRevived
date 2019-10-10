@@ -61,6 +61,8 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
         public Single JointAngle { get => _joint.JointAngle; }
 
         public Vector2 WorldBodyAnchor { get => _joint.WorldAnchorA; }
+
+        public Boolean OnTarget { get; private set; }
         #endregion
 
         #region Constructors
@@ -114,17 +116,28 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
         {
             base.UpdateChainPlacement();
 
+            // Update joint data
+            this.UpdateJoint(ref _joint, this.Root.GetBody(), _barrel, _world);
+
+            // Update barrel information
+            _barrel.CollidesWith = this.Root.CollidesWith;
+            _barrel.CollisionCategories = this.Root.CollisionCategories;
+            _barrel.IgnoreCCDWith = this.Root.IgnoreCCDWith;
+            _barrel.Enabled = this.Root.BodyEnabled;
+            _joint.Enabled = this.Root.BodyEnabled;
+
             if (_root != default(ShipPart))
-            {
+            { // Remove old events
+                _root.Events.TryRemove<Boolean>("body-enabled:changed", this.HandleFarseerEnabledChanged);
                 _root.Events.TryRemove<Body>("position:changed", this.HandlePositionChanged);
                 _root.Events.TryRemove<NetIncomingMessage>("read", this.HandleRead);
             }
 
+            // Save new events
             _root = this.Root;
+            _root.Events.TryAdd<Boolean>("body-enabled:changed", this.HandleFarseerEnabledChanged);
             _root.Events.TryAdd<Body>("position:changed", this.HandlePositionChanged);
             _root.Events.TryAdd<NetIncomingMessage>("read", this.HandleRead);
-
-            this.UpdateJoint(ref _joint, this.Root.GetBody(), _barrel, _world);
         }
         #endregion
 
@@ -137,10 +150,13 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
             if (this.Root.Reserverd.Value)
                 this.UpdateBarrelPosition();
 
-            this.UpdateBarrelAngle();
+            if(this.Root.IsBridge)
+            {
+                this.UpdateBarrelAngle();
 
-            _lastFire += gameTime.ElapsedGameTime.TotalMilliseconds;
-            this.TryFire();
+                _lastFire += gameTime.ElapsedGameTime.TotalMilliseconds;
+                this.TryFire();
+            }
         }
         #endregion
 
@@ -159,8 +175,17 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
             
                 // Calculate the target angle we wish to aim towards
                 var angle = MathHelper.WrapAngle((Single)Math.Atan2(offset.Y, offset.X) - root.Rotation - this.LocalRotation - this.MaleConnectionNode.LocalRotation - MathHelper.Pi);
-                // Sanatize angle, ensuring it is between upper and lower  joint limits
-                angle = Math.Max(joint.LowerLimit, Math.Min(joint.UpperLimit, angle));
+                
+                if(joint.LowerLimit < angle && angle < joint.UpperLimit)
+                {
+                    this.OnTarget = true;
+                }
+                else
+                {
+                    this.OnTarget = false;
+                    // Sanatize angle, ensuring it is between upper and lower  joint limits
+                    angle = Math.Max(joint.LowerLimit, Math.Min(joint.UpperLimit, angle));
+                }
 
                 // The difference between the barrels current orientation and the mouse
                 var diff = angle - joint.JointAngle;
@@ -224,7 +249,7 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
 
         public void TryFire()
         {
-            if (this.Root.IsBridge && this.Root.BridgeFor.Firing && _lastFire >= this.config.FireRate)
+            if (this.Root.IsBridge && this.OnTarget && this.Root.BridgeFor.Firing && _lastFire >= this.config.FireRate)
             {
                 this.Fire();
 
@@ -247,6 +272,12 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
         {
             this.UpdateBarrelPosition();
             this.UpdateBarrelAngle();
+        }
+
+        private void HandleFarseerEnabledChanged(object sender, bool arg)
+        {
+            _barrel.Enabled = arg;
+            _joint.Enabled = arg;
         }
         #endregion
     }

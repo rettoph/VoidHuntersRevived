@@ -90,7 +90,7 @@ namespace GalacticFighters.Server.Scenes
                     using(FileStream import = File.OpenRead("ship.vh"))
                         ship.SetBridge(_builder.Import(import));
 
-                    ship.Bridge.SetPosition(this.random.NextVector2(-10, 10), this.random.NextSingle(-3, 3));
+                    ship.Bridge.SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
                 });
             });
 

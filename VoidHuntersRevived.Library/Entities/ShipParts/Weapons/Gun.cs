@@ -16,15 +16,11 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
     public class Gun : Weapon
     {
         #region Private Attributes
-        private List<Projectile> _projectiles;
-        private Queue<Projectile> _disposedBullets;
         private Random _rand;
         private Byte[] _noise;
         #endregion
 
         #region Public Attributes
-        public IReadOnlyCollection<Projectile> Projectiles { get => _projectiles; }
-
         public UInt32 FireCount { get; private set; }
         #endregion
 
@@ -39,9 +35,6 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
         {
             base.Create(provider);
 
-            _projectiles = new List<Projectile>();
-            _disposedBullets = new Queue<Projectile>();
-
             this.Events.Register<Projectile>("fired");
         }
 
@@ -55,8 +48,6 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
         public override void Dispose()
         {
             base.Dispose();
-
-            _projectiles.Clear();
         }
         #endregion
 
@@ -64,19 +55,10 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            // Update all internal bullets
-            _projectiles.ForEach(b => b.TryUpdate(gameTime));
-
-            // Clear all disposed bullets...
-            while (_disposedBullets.Any())
-                _projectiles.Remove(_disposedBullets.Dequeue());
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            // Draw all internal bullets
-            _projectiles.ForEach(b => b.TryDraw(gameTime));
         }
         #endregion
 
@@ -92,10 +74,7 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
                 p.SetId(new Guid(_noise));
 
                 p.Weapon = this;
-                
-                p.Events.TryAdd<Creatable>("disposing", (s, c) => _disposedBullets.Enqueue(c as Projectile));
             });
-            _projectiles.Add(bullet);
 
             this.FireCount++;
 

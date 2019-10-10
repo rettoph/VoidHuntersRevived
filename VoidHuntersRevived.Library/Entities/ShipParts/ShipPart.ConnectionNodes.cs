@@ -118,8 +118,10 @@ namespace GalacticFighters.Library.Entities.ShipParts
             if (directions.HasFlag(ChainUpdate.Up) && !this.IsRoot)
                 this.Parent.UpdateChain(ChainUpdate.Up);
             // Recursively update all elements down the chain
-            if(directions.HasFlag(ChainUpdate.Down))
-                this.FemaleConnectionNodes.ForEach(female => female.Target?.Parent.UpdateChain(ChainUpdate.Down));
+            if (directions.HasFlag(ChainUpdate.Down))
+                for (Int32 i = 0; i < this.FemaleConnectionNodes.Length; i++)
+                    this.FemaleConnectionNodes[i].Target?.Parent.UpdateChain(ChainUpdate.Down);
+
         }
         #endregion
 

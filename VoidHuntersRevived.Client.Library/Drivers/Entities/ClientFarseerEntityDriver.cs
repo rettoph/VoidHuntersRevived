@@ -43,6 +43,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
             this.driven.Events.TryAdd<Body>("body:destroyed", this.HandleBodyDestroyed);
             this.driven.Events.TryAdd<Fixture>("fixture:created", this.HandleFixtureCreated);
             this.driven.Events.TryAdd<Fixture>("fixture:destroyed", this.HandleFixtureDestroyed);
+            this.driven.Events.TryAdd<Boolean>("farseer-enabled:changed", this.HandleFarseerEnabledChanged);
             this.driven.Events.TryAdd<Vector2>("linear-impulse:applied", this.HandleLinearImpulseApplied);
             this.driven.Events.TryAdd<Single>("angular-impulse:applied", this.HandleAngularImpulseApplied);
             this.driven.Events.TryAdd<AppliedForce>("force:applied", this.HandleForceApplied);
@@ -168,6 +169,10 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
         private void HandleCollisionCategoriesChanged(object sender, Category arg)
         {
             _body.CollisionCategories = arg;
+        }
+        private void HandleFarseerEnabledChanged(object sender, bool arg)
+        {
+            _body.Enabled = arg;
         }
         #endregion
 

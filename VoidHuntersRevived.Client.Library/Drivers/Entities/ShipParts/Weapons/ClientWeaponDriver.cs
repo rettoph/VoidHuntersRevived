@@ -20,8 +20,15 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.ShipParts.Weapons
         #region Private Fields
         private Body _serverBarrel;
         private ServerRender _server;
-        private RevoluteJoint _joint;
+        private RevoluteJoint _serverJoint;
         private Body _serverRoot;
+        /// <summary>
+        /// The stored root when the chain is updated.
+        /// There are certain events that must be bound and unbound to
+        /// each time a chain updates. This allows us to easily access
+        /// the old root
+        /// </summary>
+        private ShipPart _root;
         #endregion
 
         #region Constructor
@@ -59,7 +66,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.ShipParts.Weapons
             if (this.driven.Root.Reserverd.Value)
                 this.driven.UpdateBarrelPosition(_serverRoot, _serverBarrel);
 
-            this.driven.UpdateBarrelAngle(_joint, _serverRoot);
+            this.driven.UpdateBarrelAngle(_serverJoint, _serverRoot);
         }
         #endregion
 
@@ -73,19 +80,49 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.ShipParts.Weapons
         /// <param name="arg"></param>
         private void HandleChainUpdated(object sender, ShipPart.ChainUpdate arg)
         {
-            _serverBarrel.CollidesWith = this.driven.Root.CollidesWith;
-            _serverBarrel.CollisionCategories = this.driven.Root.CollisionCategories;
-
             // Update the server render weld joint
             _serverRoot = _server.GetBodyById(this.driven.Root.BodyId);
-            this.driven.UpdateJoint(ref _joint, _serverRoot, _serverBarrel, _server.World);
+            // Update joint data
+            this.driven.UpdateJoint(ref _serverJoint, _serverRoot, _serverBarrel, _server.World);
+
+            // Update barrel info
+            _serverBarrel.CollidesWith = this.driven.Root.CollidesWith;
+            _serverBarrel.CollisionCategories = this.driven.Root.CollisionCategories;
+            _serverBarrel.IgnoreCCDWith = this.driven.Root.IgnoreCCDWith;
+            _serverBarrel.Enabled = this.driven.Root.BodyEnabled;
+            _serverJoint.Enabled = this.driven.Root.BodyEnabled;
+
+            if (_root != default(ShipPart))
+            { // Remove old events
+                _root.Events.TryRemove<Boolean>("body-enabled:changed", this.HandleFarseerEnabledChanged);
+                _root.Events.TryRemove<Body>("position:changed", this.HandlePositionChanged);
+                _root.Events.TryRemove<NetIncomingMessage>("read", this.HandleRead);
+            }
+
+            // Save new events
+            _root = this.driven.Root;
+            _root.Events.TryAdd<Boolean>("body-enabled:changed", this.HandleFarseerEnabledChanged);
+            _root.Events.TryAdd<Body>("position:changed", this.HandlePositionChanged);
+            _root.Events.TryAdd<NetIncomingMessage>("read", this.HandleRead);
+        }
+
+        private void HandlePositionChanged(object sender, Body arg)
+        {
+            this.driven.UpdateBarrelPosition(_serverRoot, _serverBarrel);
+            this.driven.UpdateBarrelAngle(_serverJoint, _serverRoot);
+        }
+
+        private void HandleFarseerEnabledChanged(object sender, bool arg)
+        {
+            _serverBarrel.Enabled = arg;
+            _serverJoint.Enabled = arg;
         }
 
         private void HandleRead(object sender, NetIncomingMessage arg)
         {
             this.driven.UpdateBarrelPosition(_serverRoot, _serverBarrel);
 
-            this.driven.UpdateBarrelAngle(_joint, _serverRoot);
+            this.driven.UpdateBarrelAngle(_serverJoint, _serverRoot);
         }
         #endregion
     }

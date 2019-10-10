@@ -3,6 +3,7 @@ using FarseerPhysics.Common;
 using FarseerPhysics.Dynamics;
 using GalacticFighters.Library.Utilities;
 using Guppy.Extensions.Collection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -57,6 +58,7 @@ namespace GalacticFighters.Library.Entities.ShipParts
             {
                 f.CollidesWith = this.Root.CollidesWith;
                 f.CollisionCategories = this.Root.CollisionCategories;
+                f.IgnoreCCDWith = this.Root.IgnoreCCDWith;
 
                 setup?.Invoke(f);
             });

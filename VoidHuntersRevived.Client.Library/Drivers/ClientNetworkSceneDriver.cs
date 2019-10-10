@@ -118,11 +118,13 @@ namespace GalacticFighters.Client.Library.Drivers
         private void HandleSetupStartMessage(object sender, NetIncomingMessage arg)
         {
             //
+            this.logger.LogInformation($"Setup Start.");
         }
 
         private void HandleSetupEndMessage(object sender, NetIncomingMessage arg)
         {
             _setup = true;
+            this.logger.LogInformation($"Setup End.");
         }
         #endregion
     }

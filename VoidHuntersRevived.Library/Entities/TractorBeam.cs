@@ -118,6 +118,7 @@ namespace GalacticFighters.Library.Entities
 
                     _selectionId = target.Reserverd.Add();
                     this.Selected = target;
+                    this.Selected.SetBodyEnabled(false);
 
                     this.Events.TryInvoke<ShipPart>(this, "selected", this.Selected);
                     return true;
@@ -139,6 +140,7 @@ namespace GalacticFighters.Library.Entities
                     var oldSelected = this.Selected;
 
                     this.TryUpdateSelectedPosition();
+                    this.Selected.SetBodyEnabled(true);
                     this.Selected.Reserverd.Remove(_selectionId);
                     this.Selected = null;
 
@@ -194,7 +196,7 @@ namespace GalacticFighters.Library.Entities
                     var selectedPositionTarget = this.Ship.Target - Vector2.Transform(this.Selected.LocalCenteroid, Matrix.CreateRotationZ(this.Selected.Rotation));
 
                     this.Selected.SetPosition(
-                        Vector2.Lerp(this.Selected.Position, selectedPositionTarget, 0.25f), this.Selected.Rotation);
+                        Vector2.Lerp(this.Selected.Position, selectedPositionTarget, 0.25f), this.Selected.Rotation, true);
                 }
                 else
                 { // Only proceed if there is a valid female node...

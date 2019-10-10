@@ -106,10 +106,8 @@ namespace GalacticFighters.Library.Entities.ShipParts
         {
             base.Update(gameTime);
 
-            this.FemaleConnectionNodes.ForEach(f =>
-            {
-                f.Target?.Parent.Update(gameTime);
-            });
+            for(Int32 i=0; i<this.FemaleConnectionNodes.Length; i++)
+                this.FemaleConnectionNodes[i].Target?.Parent.Update(gameTime);
         }
         #endregion
 
