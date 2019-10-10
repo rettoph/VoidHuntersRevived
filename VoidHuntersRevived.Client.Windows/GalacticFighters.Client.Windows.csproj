@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>VoidHuntersRevived.Client.Windows</RootNamespace>
     <AssemblyName>VoidHuntersRevived.Client.Windows</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>

@@ -19,6 +19,7 @@ namespace GalacticFighters.Client.Library
         {
             this.host = host;
             this.graphics = new GraphicsDeviceManager(this);
+            this.graphics.SynchronizeWithVerticalRetrace = false;
 
             this.Content.RootDirectory = "Content";
             this.IsMouseVisible = true;
