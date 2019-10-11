@@ -154,9 +154,10 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
             {
                 this.UpdateBarrelAngle();
 
-                _lastFire += gameTime.ElapsedGameTime.TotalMilliseconds;
                 this.TryFire();
             }
+
+            _lastFire += gameTime.ElapsedGameTime.TotalMilliseconds;
         }
         #endregion
 

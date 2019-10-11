@@ -77,6 +77,8 @@ namespace GalacticFighters.Server.Drivers.Entities
                 return false;
             if (!this.driven.BodyEnabled)
                 return false;
+            if (this.driven.FixtureCount == 0)
+                return false;
 
             // Instant yes
             if (_lastUpdateVitals > ServerFarseerEntityDriver.UpdateVitalsRate || _dirtyVitals)

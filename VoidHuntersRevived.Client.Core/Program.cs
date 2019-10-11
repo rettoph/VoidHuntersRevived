@@ -8,6 +8,7 @@ namespace GalacticFighters.Client.Core
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Host:");
             var game = new Game1(Console.ReadLine());
             game.Run();
         }

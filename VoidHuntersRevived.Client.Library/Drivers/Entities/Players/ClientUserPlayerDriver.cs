@@ -102,6 +102,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
 
                 // Update the camera position
                 _scene.Camera.MoveTo(this.driven.Ship.Bridge.WorldCenter);
+                _scene.Camera.TryCleanMatrices();
 
                 // Update the Ship's target offset
                 this.driven.Ship.SetTargetOffset(_scene.Sensor.WorldCenter - this.driven.Ship.Bridge.WorldCenter);

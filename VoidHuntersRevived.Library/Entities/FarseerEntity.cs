@@ -115,6 +115,8 @@ namespace GalacticFighters.Library.Entities
         public Category CollidesWith { get;  private set; }
         public Category CollisionCategories { get; private set; }
         public Category IgnoreCCDWith { get; private set; }
+
+        public Int32 FixtureCount { get => this.body.FixtureList.Count; }
         #endregion
 
         #region Lifecycle Methods

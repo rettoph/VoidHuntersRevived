@@ -17,11 +17,23 @@ namespace GalacticFighters.Server.Drivers.Entities.ShipParts
         {
         }
 
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            this.TrySendHealth();
+        }
+
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            if(this.driven.Health != _flushedHealth)
+            this.TrySendHealth();
+        }
+
+        private void TrySendHealth()
+        {
+            if (this.driven.Health != _flushedHealth)
             {
                 var action = this.driven.Actions.Create("health");
                 action.Write(this.driven.Health);
