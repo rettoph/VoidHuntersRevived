@@ -40,14 +40,16 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
         private ClientGalacticFightersWorldScene _scene;
         private SpriteFont _font;
         private SpriteBatch _spriteBatch;
-        private Double _lastUpdateTarget;
         private ShipBuilder _builder;
         private DebugOverlay _debugOverlay;
+        private Interval _interval;
+        private Vector2 _flushedOffsetTarget;
         #endregion
 
         #region Constructor
-        public ClientUserPlayerDriver(DebugOverlay debugOverlay, ShipBuilder builder, ContentLoader content, SpriteBatch spriteBatch, Pointer pointer, World world, ClientPeer client, ClientGalacticFightersWorldScene scene, UserPlayer driven) : base(driven)
+        public ClientUserPlayerDriver(Interval interval, DebugOverlay debugOverlay, ShipBuilder builder, ContentLoader content, SpriteBatch spriteBatch, Pointer pointer, World world, ClientPeer client, ClientGalacticFightersWorldScene scene, UserPlayer driven) : base(driven)
         {
+            _interval = interval;
             _debugOverlay = debugOverlay;
             _builder = builder;
             _font = content.TryGet<SpriteFont>("font");
@@ -107,15 +109,13 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
                 // Update the Ship's target offset
                 this.driven.Ship.SetTargetOffset(_scene.Sensor.WorldCenter - this.driven.Ship.Bridge.WorldCenter);
 
-                _lastUpdateTarget += gameTime.ElapsedGameTime.TotalMilliseconds;
-
-                if (_lastUpdateTarget >= ClientUserPlayerDriver.UpdateTargetRate)
+                if (_interval.Is(ClientUserPlayerDriver.UpdateTargetRate) && Vector2.Distance(this.driven.Ship.TargetOffset, _flushedOffsetTarget) > 0.1f)
                 { // Send the vitals data to all connected clients
-                    var om = this.driven.Actions.Create("target:changed:request");
+                    var om = this.driven.Actions.Create("target:changed:request", NetDeliveryMethod.Unreliable, 2);
                     // Write the vitals data
                     om.Write(this.driven.Ship.TargetOffset);
 
-                    _lastUpdateTarget = _lastUpdateTarget % ClientUserPlayerDriver.UpdateTargetRate;
+                    _flushedOffsetTarget = this.driven.Ship.TargetOffset;
                 }
             }
         }

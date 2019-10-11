@@ -50,8 +50,9 @@ namespace GalacticFighters.Client.Library.Entities
 
             if (_lines.Any())
             {
+                var t = _lines.Select(f => f()).Aggregate((s1, s2) => s1 += "\n" + s2);
                 _spriteBatch.Begin();
-                _spriteBatch.DrawString(_font, _lines.Select(f => f()).Aggregate((s1, s2) => s1 += "\n" + s2), Vector2.One * 15, Color.White);
+                _spriteBatch.DrawString(_font, t, Vector2.One * 15, Color.White);
                 _spriteBatch.End();
             }
         }

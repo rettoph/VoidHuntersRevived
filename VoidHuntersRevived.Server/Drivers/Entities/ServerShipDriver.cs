@@ -19,14 +19,20 @@ namespace GalacticFighters.Server.Drivers.Entities
     [IsDriver(typeof(Ship))]
     public class ServerShipDriver : Driver<Ship>
     {
-        #region private Fields
+        #region Static Fields
+        public static Double UpdateTargetRate { get; set; } = 120;
+        #endregion
+
+        #region Private Fields
         private Vector2 _oldTarget;
         private ShipBuilder _builder;
+        private Interval _interval;
         #endregion
 
         #region Constructor
-        public ServerShipDriver(ShipBuilder builder, Ship driven) : base(driven)
+        public ServerShipDriver(Interval interval, ShipBuilder builder, Ship driven) : base(driven)
         {
+            _interval = interval;
             _builder = builder;
         }
         #endregion
@@ -50,9 +56,9 @@ namespace GalacticFighters.Server.Drivers.Entities
         {
             base.Update(gameTime);
 
-            if(_oldTarget != this.driven.TargetOffset)
+            if(_interval.Is(ServerShipDriver.UpdateTargetRate) && _oldTarget != this.driven.TargetOffset)
             {
-                var action = this.driven.Actions.Create("target:changed");
+                var action = this.driven.Actions.Create("target:changed", NetDeliveryMethod.Unreliable, 2);
                 action.Write(this.driven.TargetOffset);
 
                 _oldTarget = this.driven.TargetOffset;
@@ -70,9 +76,7 @@ namespace GalacticFighters.Server.Drivers.Entities
 
         #region Event Handlers
         private void HandleBridgeChanged(object sender, ShipPart bridge)
-        {
-            this.logger.LogInformation($"Writing Bridge data...");
-
+        { 
             this.driven.WriteBridge(this.driven.Actions.Create("bridge:changed", NetDeliveryMethod.ReliableOrdered));
         }
 

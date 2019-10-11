@@ -26,6 +26,7 @@ using GalacticFighters.Library.Entities.ShipParts.Thrusters;
 using GalacticFighters.Library.Entities.ShipParts.Weapons;
 using GalacticFighters.Library.Entities.ShipParts.Hulls;
 using GalacticFighters.Library.Entities.Ammunitions;
+using GalacticFighters.Library.Utilities.Delegater;
 
 namespace GalacticFighters.Library
 {
@@ -34,6 +35,7 @@ namespace GalacticFighters.Library
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<Interval>();
             services.AddScoped<ConnectionNodeFactory>();
             services.AddScoped<Random>();
             services.AddScoped<ShipBuilder>();
@@ -62,7 +64,7 @@ namespace GalacticFighters.Library
         {
             Settings.MaxPolygonVertices = 16;
 
-            provider.GetRequiredService<GlobalOptions>().LogLevel = LogLevel.Trace;
+            provider.GetRequiredService<GlobalOptions>().LogLevel = LogLevel.Debug;
 
             var entities = provider.GetRequiredService<EntityLoader>();
 

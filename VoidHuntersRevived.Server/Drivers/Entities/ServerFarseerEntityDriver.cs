@@ -1,8 +1,11 @@
 ﻿using FarseerPhysics.Dynamics;
 using GalacticFighters.Library.Entities;
 using GalacticFighters.Library.Extensions.Farseer;
+using GalacticFighters.Library.Utilities;
+using GalacticFighters.Library.Utilities.Delegater;
 using Guppy;
 using Guppy.Attributes;
+using Lidgren.Network;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
@@ -15,19 +18,20 @@ namespace GalacticFighters.Server.Drivers.Entities
     public sealed class ServerFarseerEntityDriver : Driver<FarseerEntity>
     {
         #region Static Attributes
-        public static Double UpdateVitalsRate { get; set; } = 100;
+        public static Double UpdateVitalsRate { get; set; } = 120;
         #endregion
 
         #region Private Fields
-        private Double _lastUpdateVitals;
         private Body _body;
         private Boolean _dirtyVitals;
-        private Boolean _wasAwake;
+        private Vector2 _flushedPosition;
+        private Interval _interval;
         #endregion
 
         #region Constructor
-        public ServerFarseerEntityDriver(FarseerEntity driven) : base(driven)
+        public ServerFarseerEntityDriver(Interval intervals, FarseerEntity driven) : base(driven)
         {
+            _interval = intervals;
         }
         #endregion
 
@@ -35,8 +39,6 @@ namespace GalacticFighters.Server.Drivers.Entities
         protected override void PreInitialize()
         {
             base.PreInitialize();
-
-            _lastUpdateVitals = 0;
 
             // Register an event to store the driven's body when created.
             this.driven.Events.TryAdd<Body>("body:created", (s, b) => _body = b);
@@ -49,23 +51,8 @@ namespace GalacticFighters.Server.Drivers.Entities
         {
             base.Update(gameTime);
 
-            _lastUpdateVitals += gameTime.ElapsedGameTime.TotalMilliseconds;
-
             if (this.CanSendVitals())
-            { // Send the vitals data to all connected clients
-                var om = this.driven.Actions.Create("vitals:update");
-                // Write the vitals data
-                _body.WritePosition(om);
-                _body.WriteVelocity(om);
-
-                _lastUpdateVitals = _lastUpdateVitals % ServerFarseerEntityDriver.UpdateVitalsRate;
-
-                if (_dirtyVitals) // If the entity has dirty vitals, mark them as clean
-                    _dirtyVitals = false;
-            }
-
-            // Update the internal was awake value
-            _wasAwake = this.driven.Awake;
+                this.SendVitals();
         }
         #endregion
 
@@ -81,13 +68,27 @@ namespace GalacticFighters.Server.Drivers.Entities
                 return false;
 
             // Instant yes
-            if (_lastUpdateVitals > ServerFarseerEntityDriver.UpdateVitalsRate || _dirtyVitals)
-                return true;
-            if (!this.driven.Awake && _wasAwake)
+            if ((_interval.Is(ServerFarseerEntityDriver.UpdateVitalsRate) && Vector2.Distance(_body.Position, _flushedPosition) > 0.1f) || _dirtyVitals)
                 return true;
 
             // Default to no
             return false;
+        }
+
+        private void SendVitals()
+        {
+            if (this.CanSendVitals())
+            { // Send the vitals data to all connected clients
+                var om = this.driven.Actions.Create("vitals:update", NetDeliveryMethod.Unreliable, 3);
+                // Write the vitals data
+                _body.WritePosition(om);
+                _body.WriteVelocity(om);
+
+                if (_dirtyVitals) // If the entity has dirty vitals, mark them as clean
+                    _dirtyVitals = false;
+
+                _flushedPosition = _body.Position;
+            }
         }
         #endregion
     }

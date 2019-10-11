@@ -87,7 +87,7 @@ namespace GalacticFighters.Client.Library.Scenes
             _serverDebugView.DefaultShapeColor = Color.Blue;
 
             this.debugOverlay.AddLine(() => $"Actions: {this.ActionsRecieved.ToString("#,##0")}");
-            this.debugOverlay.AddLine(() => $"APS: {this.AverageActionsPerSecond.ToString("#0.##0")}");
+            this.debugOverlay.AddLine(() => $"APS: {this.ActionsPerSecond.ToString("#0.##0")}");
             this.debugOverlay.AddLine(() => $"FPS: {this.FramesPerSecond.ToString("#,##0")}");
         }
         #endregion

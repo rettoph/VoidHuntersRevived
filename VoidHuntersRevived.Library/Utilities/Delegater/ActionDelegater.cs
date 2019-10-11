@@ -59,6 +59,7 @@ namespace GalacticFighters.Library.Utilities.Delegater
 #if DEBUG
             try
             {
+                _logger.LogTrace($"Action recieved: {key}");
                 base.Invoke(sender, key, arg);
             }
             catch(KeyNotFoundException e)

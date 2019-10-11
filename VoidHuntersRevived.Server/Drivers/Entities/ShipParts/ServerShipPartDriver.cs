@@ -1,6 +1,8 @@
 ﻿using GalacticFighters.Library.Entities.ShipParts;
+using GalacticFighters.Library.Utilities;
 using Guppy;
 using Guppy.Attributes;
+using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -12,9 +14,11 @@ namespace GalacticFighters.Server.Drivers.Entities.ShipParts
     internal sealed class ServerShipPartDriver : Driver<ShipPart>
     {
         private Single _flushedHealth;
+        private Interval _interval;
 
-        public ServerShipPartDriver(ShipPart driven) : base(driven)
+        public ServerShipPartDriver(Interval interval, ShipPart driven) : base(driven)
         {
+            _interval = interval;
         }
 
         protected override void Initialize()
@@ -33,9 +37,9 @@ namespace GalacticFighters.Server.Drivers.Entities.ShipParts
 
         private void TrySendHealth()
         {
-            if (this.driven.Health != _flushedHealth)
+            if (_interval.Is(250) && this.driven.Health != _flushedHealth)
             {
-                var action = this.driven.Actions.Create("health");
+                var action = this.driven.Actions.Create("health", NetDeliveryMethod.ReliableOrdered, 2);
                 action.Write(this.driven.Health);
 
                 _flushedHealth = this.driven.Health;

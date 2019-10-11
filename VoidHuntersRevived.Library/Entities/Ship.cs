@@ -140,8 +140,6 @@ namespace GalacticFighters.Library.Entities
         #region Set Methods
         public void SetBridge(ShipPart bridge)
         {
-            this.logger.LogInformation($"Ship({this.Id}) => Setting bridge to ShipPart({bridge?.Id})");
-
             if(this.Bridge != bridge)
             {
                 if(this.Bridge != null)
