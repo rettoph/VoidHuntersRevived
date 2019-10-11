@@ -1,0 +1,151 @@
+<body style="background: black">
+	<div id="shapes" ></div>
+	<script>
+		class Shape
+		{
+			constructor(innerColor, outerColor, sideLength, borderWidth)
+			{
+				this.r = 0;
+				this.vertices = [new Point(0, 0)];
+				
+				this.innerColor = innerColor;
+				this.outerColor = outerColor;
+				this.sideLength = sideLength - borderWidth;
+				this.borderWidth = borderWidth;
+			}
+			
+			add(r)
+			{
+				this.r = (this.r + Math.PI) - r;
+
+				var last = this.vertices[this.vertices.length - 1];
+				
+				this.vertices.push(new Point(last.x + (Math.cos(this.r) * this.sideLength), last.y + (Math.sin(this.r) * this.sideLength)));
+			}
+			
+			build()
+			{
+				// First calculate the min and max coords, so we know how big to make the canvas
+				var min = new Point(this.vertices[0].x, this.vertices[0].y);
+				var max = new Point(this.vertices[0].x, this.vertices[0].y);
+				
+				for(var i=0; i<this.vertices.length; i++)
+				{
+					min.x = Math.round(Math.min(min.x, this.vertices[i].x));
+					max.x = Math.round(Math.max(max.x, this.vertices[i].x));
+					min.y = Math.round(Math.min(min.y, this.vertices[i].y));
+					max.y = Math.round(Math.max(max.y, this.vertices[i].y));
+				}
+				
+				min.x -= this.borderWidth/2;
+				min.y -= this.borderWidth/2;
+				max.x += this.borderWidth/2;
+				max.y += this.borderWidth/2;
+
+				console.log(min, max);
+				
+				var canvas = document.createElement('canvas');
+				canvas.width = max.x - min.x;
+				canvas.height = max.y - min.y;
+				
+				var ctx = canvas.getContext('2d');
+				
+				
+				this.draw(ctx, this.innerColor, this.vertices, min, max, true);
+				this.draw(ctx, this.outerColor, this.vertices, min, max, false);
+				
+				// Add the canvas to the document
+				document.querySelector('#shapes').append(canvas);
+			}
+			
+			draw(ctx, color, vertices, min, max, fill)
+			{
+				ctx.fillStyle = color;
+				ctx.strokeStyle = color;
+				ctx.lineCap = "round";
+				ctx.lineWidth = this.borderWidth;
+				
+				if(fill)
+				{
+					ctx.beginPath();
+					ctx.moveTo(vertices[0].x - min.x, vertices[0].y - min.y);
+					
+					for(var i=1; i<vertices.length; i++)
+						ctx.lineTo(vertices[i].x - min.x, vertices[i].y - min.y);
+					ctx.fill();
+				}
+				else
+				{
+					for(var i=1; i<vertices.length; i++) {
+						ctx.beginPath();
+						ctx.moveTo(vertices[i-1].x - min.x, vertices[i-1].y - min.y);
+						ctx.lineTo(vertices[i].x - min.x, vertices[i].y - min.y);
+						ctx.stroke();
+					}
+				}
+			}
+		}
+		
+		class Point
+		{
+			constructor(x, y)
+			{
+				this.x = x;
+				this.y = y;
+			}
+		}
+		
+		function toRad(deg) {
+			return Math.PI * deg / 180;
+		}
+		
+		var side = 106;
+		var border = 6;
+		var innerColor = '#ffffff';
+		var outerColor = '#dedede';
+		
+		var triangle = new Shape(innerColor, outerColor, side, border);
+		triangle.add(Math.PI + (2 * Math.PI / 3));
+		triangle.add(Math.PI + (2 * Math.PI / 3));
+		triangle.add(Math.PI + (2 * Math.PI / 3));
+		triangle.build();
+		
+		var square = new Shape(innerColor, outerColor, side, border);
+		square.add(Math.PI - (2 * Math.PI / 4));
+		square.add(Math.PI - (2 * Math.PI / 4));
+		square.add(Math.PI - (2 * Math.PI / 4));
+		square.add(Math.PI - (2 * Math.PI / 4));
+		square.build();
+		
+		var hexagon = new Shape(innerColor, outerColor, side, border);
+		hexagon.add(Math.PI - (2 * Math.PI / 6));
+		hexagon.add(Math.PI - (2 * Math.PI / 6));
+		hexagon.add(Math.PI - (2 * Math.PI / 6));
+		hexagon.add(Math.PI - (2 * Math.PI / 6));
+		hexagon.add(Math.PI - (2 * Math.PI / 6));
+		hexagon.add(Math.PI - (2 * Math.PI / 6));
+		hexagon.build();
+
+		var pentagon = new Shape(innerColor, outerColor, side, border);
+		pentagon.add(0);
+		pentagon.add(Math.PI / 2);
+		pentagon.add(Math.PI / 3 + Math.PI / 2);
+		pentagon.add(Math.PI / 3);
+		pentagon.add(Math.PI / 3 + Math.PI / 2);
+		pentagon.build();
+
+		var mosquito = new Shape(innerColor, outerColor, side, border);
+		mosquito.add(Math.PI / 2);
+		mosquito.add(toRad(120));
+		mosquito.add(toRad(150));
+		mosquito.add(toRad(210));
+		mosquito.add(toRad(120));
+		mosquito.add(toRad(120));
+		mosquito.add(toRad(180));
+		mosquito.add(toRad(120));
+		mosquito.add(toRad(120));
+		mosquito.add(toRad(210));
+		mosquito.add(toRad(150));
+		mosquito.build();
+	</script>
+</body>
