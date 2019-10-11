@@ -69,11 +69,14 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.ShipParts
 
             if (_textureLoaded && _camera.Frustum.Contains(_position).HasFlag(ContainmentType.Contains))
             {
+                var fullColor = Color.Lerp(this.driven.Root.IsBridge ? Color.Blue : Color.Orange, Color.White, 0.1f);
+                var deadColor = Color.Lerp(Color.DarkRed, fullColor, 0.2f);
+
                 _spriteBatch.Draw(
                     texture: _texture,
                     position: this.driven.Position,
                     sourceRectangle: _texture.Bounds,
-                    color: Color.Lerp(Color.Red, Color.Blue, this.driven.Health / 100),
+                    color: Color.Lerp(deadColor, fullColor, this.driven.Health / 100),
                     rotation: this.driven.Rotation,
                     origin: _origin,
                     scale: 0.01f,

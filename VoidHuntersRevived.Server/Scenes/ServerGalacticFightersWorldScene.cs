@@ -95,7 +95,7 @@ namespace GalacticFighters.Server.Scenes
             });
 
 
-            for (Int32 i = 0; i < 1; i++)
+            for (Int32 i = 0; i < 10; i++)
             {
                 this.entities.Create<ShipPart>("ship-part:triangle").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
                 this.entities.Create<ShipPart>("ship-part:square").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
