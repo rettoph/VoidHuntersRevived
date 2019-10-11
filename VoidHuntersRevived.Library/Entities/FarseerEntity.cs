@@ -250,8 +250,9 @@ namespace GalacticFighters.Library.Entities
         protected virtual void DestroyAllFixtures()
         {
             // Remove all pre existing fixtures...
-            while (this.body.FixtureList.Any())
-                this.DestroyFixture(this.body.FixtureList.First());
+            if(this.body.FixtureList != null)
+                while (this.body.FixtureList.Any())
+                    this.DestroyFixture(this.body.FixtureList.First());
         }
 
         /// <summary>

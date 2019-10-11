@@ -8,6 +8,11 @@ using System.Text;
 using Guppy.Network.Extensions.Lidgren;
 using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
 using Microsoft.Xna.Framework;
+using Guppy.Collections;
+using System.IO;
+using GalacticFighters.Library.Utilities;
+using Lidgren.Network;
+using Microsoft.Extensions.Logging;
 
 namespace GalacticFighters.Server.Drivers.Entities
 {
@@ -16,11 +21,13 @@ namespace GalacticFighters.Server.Drivers.Entities
     {
         #region private Fields
         private Vector2 _oldTarget;
+        private ShipBuilder _builder;
         #endregion
 
         #region Constructor
-        public ServerShipDriver(Ship driven) : base(driven)
+        public ServerShipDriver(ShipBuilder builder, Ship driven) : base(driven)
         {
+            _builder = builder;
         }
         #endregion
 
@@ -50,18 +57,28 @@ namespace GalacticFighters.Server.Drivers.Entities
 
                 _oldTarget = this.driven.TargetOffset;
             }
+
+            if(this.driven.Bridge != null && this.driven.Bridge.Health <= 0)
+            {
+                this.driven.Bridge.Dispose();
+
+                using (FileStream import = File.OpenRead("ship.vh"))
+                    this.driven.SetBridge(_builder.Import(import));
+            }
         }
         #endregion
 
         #region Event Handlers
         private void HandleBridgeChanged(object sender, ShipPart bridge)
         {
-            this.driven.WriteBridge(this.driven.Actions.Create("bridge:changed"));
+            this.logger.LogInformation($"Writing Bridge data...");
+
+            this.driven.WriteBridge(this.driven.Actions.Create("bridge:changed", NetDeliveryMethod.ReliableOrdered));
         }
 
         private void HandleDirectionChanged(object sender, Ship.Direction direction)
         {
-            this.driven.WriteDirection(this.driven.Actions.Create("direction:changed"), direction);
+            this.driven.WriteDirection(this.driven.Actions.Create("direction:changed", NetDeliveryMethod.ReliableUnordered), direction);
         }
 
         private void HandleTractorBeamSelected(object sender, ShipPart arg)

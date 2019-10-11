@@ -47,7 +47,8 @@ namespace GalacticFighters.Client.Library.Layers
 
             _effect = new BasicEffect(_graphics)
             {
-                TextureEnabled = true
+                TextureEnabled = true,
+                VertexColorEnabled = true
             };
         }
         #endregion
@@ -62,7 +63,7 @@ namespace GalacticFighters.Client.Library.Layers
             _effect.View = _camera.View;
 
             // Draw all entities
-            _spriteBatch.Begin(blendState: BlendState.AlphaBlend, effect: _effect);
+            _spriteBatch.Begin(blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp, effect: _effect);
             this.entities.TryDraw(gameTime);
             _spriteBatch.End();
         }

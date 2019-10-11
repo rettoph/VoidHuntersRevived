@@ -62,7 +62,7 @@ namespace GalacticFighters.Library
         {
             Settings.MaxPolygonVertices = 16;
 
-            provider.GetRequiredService<GlobalOptions>().LogLevel = LogLevel.Information;
+            provider.GetRequiredService<GlobalOptions>().LogLevel = LogLevel.Trace;
 
             var entities = provider.GetRequiredService<EntityLoader>();
 
@@ -75,12 +75,13 @@ namespace GalacticFighters.Library
 
             #region Register Hull Pieces
             // Register ShipParts
-            entities.TryRegister<Hull>("ship-part:triangle", "", "", ShipPartConfiguration.BuildPolygon(3, true));
-            entities.TryRegister<Hull>("ship-part:square", "", "", ShipPartConfiguration.BuildPolygon(4, true));
-            entities.TryRegister<Hull>("ship-part:hexagon", "", "", ShipPartConfiguration.BuildPolygon(6, true));
+            entities.TryRegister<Hull>("ship-part:triangle", "", "", ShipPartConfiguration.BuildPolygon("sprite:ship-part:hull:triangle", 3, true));
+            entities.TryRegister<Hull>("ship-part:square", "", "", ShipPartConfiguration.BuildPolygon("sprite:ship-part:hull:square", 4, true));
+            entities.TryRegister<Hull>("ship-part:hexagon", "", "", ShipPartConfiguration.BuildPolygon("sprite:ship-part:hull:hexagon", 6, true));
 
             // Create the pentagon
             var config = new ShipPartConfiguration();
+            config.Texture = "sprite:ship-part:hull:pentagon";
             config.AddSide(0, ShipPartConfiguration.NodeType.Male);
             config.AddSide(MathHelper.PiOver2, ShipPartConfiguration.NodeType.Female);
             config.AddSide((MathHelper.Pi / 3) + MathHelper.PiOver2, ShipPartConfiguration.NodeType.Female);
@@ -92,6 +93,7 @@ namespace GalacticFighters.Library
             #region Register Chassis
             // Create mosquito chassis
             config = new ShipPartConfiguration();
+            config.Texture = "sprite:ship-part:chassis:mosquito";
             config.AddNode(Vector2.Zero, 0, ShipPartConfiguration.NodeType.Male);
             config.AddSide(MathHelper.ToRadians(180), ShipPartConfiguration.NodeType.None);
             config.AddSide(MathHelper.ToRadians(120), ShipPartConfiguration.NodeType.Female);

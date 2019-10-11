@@ -32,7 +32,10 @@ namespace GalacticFighters.Library.Utilities
         }
         private ShipPart Import(BinaryReader input)
         {
-            var output = _entities.Create<ShipPart>(input.ReadString());
+            var output = _entities.Create<ShipPart>(input.ReadString(), sp =>
+            {
+                sp.SetId(Guid.NewGuid());
+            });
 
             foreach (FemaleConnectionNode female in output.FemaleConnectionNodes)
             { // Iterate through each connection node...

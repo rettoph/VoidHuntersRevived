@@ -1,9 +1,11 @@
 ﻿using GalacticFighters.Library.Entities.ShipParts;
 using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
 using GalacticFighters.Library.Utilities;
+using Guppy;
 using Guppy.Loaders;
 using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -138,25 +140,34 @@ namespace GalacticFighters.Library.Entities
         #region Set Methods
         public void SetBridge(ShipPart bridge)
         {
+            this.logger.LogInformation($"Ship({this.Id}) => Setting bridge to ShipPart({bridge?.Id})");
+
             if(this.Bridge != bridge)
             {
                 if(this.Bridge != null)
-                {// Unreserve the old bridge
+                { // Unreserve the old bridge
                     this.Bridge.BridgeFor = null;
                     this.Bridge.UpdateChain(ShipPart.ChainUpdate.Down);
 
                     // Remove bound events
                     this.Bridge.Events.TryRemove<ShipPart.ChainUpdate>("chain:updated", this.HandleBridgeChainUpdated);
+                    this.Bridge.Events.TryRemove<Creatable>("disposing", this.HandleBridgeDisposing);
                 }
-                
-                // Save & reserve the new bridge
+
                 this.Bridge = bridge;
-                this.Bridge.BridgeFor = this;
-                this.Bridge.UpdateChain(ShipPart.ChainUpdate.Down);
+                if (this.Bridge != null)
+                { // If the new bridge is not null...
+                    // Save & reserve the new bridge
+                    
+                    this.Bridge.BridgeFor = this;
+                    this.Bridge.UpdateChain(ShipPart.ChainUpdate.Down);
 
-                // Add events
-                this.Bridge.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleBridgeChainUpdated);
+                    // Add events
+                    this.Bridge.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleBridgeChainUpdated);
+                    this.Bridge.Events.TryAdd<Creatable>("disposing", this.HandleBridgeDisposing);
+                }
 
+                // Invoke required events
                 this.Events.TryInvoke<ShipPart>(this, "bridge:changed", this.Bridge);
                 this.Events.TryInvoke<ShipPart>(this, "bridge:chain:updated", this.Bridge);
             }
@@ -262,6 +273,11 @@ namespace GalacticFighters.Library.Entities
             // Cache the chains current size
             this.Size = this.Bridge == default(ShipPart) ? 0 : this.Bridge.GetSize();
         }
+
+        private void HandleBridgeDisposing(object sender, Creatable arg)
+        {
+            this.SetBridge(null);
+        }
         #endregion
 
         #region Network Methods
@@ -287,8 +303,7 @@ namespace GalacticFighters.Library.Entities
         /// <param name="om"></param>
         public void WriteBridge(NetOutgoingMessage om)
         {
-            if (om.WriteExists(this.Bridge))
-                om.Write(this.Bridge.Id);
+            om.Write(this.Bridge);
         }
 
         /// <summary>
@@ -297,8 +312,7 @@ namespace GalacticFighters.Library.Entities
         /// <param name="im"></param>
         public void ReadBridge(NetIncomingMessage im)
         {
-            if (im.ReadBoolean())
-                this.SetBridge(this.entities.GetById<ShipPart>(im.ReadGuid()));
+                this.SetBridge(im.ReadEntity<ShipPart>(this.entities));
         }
 
         /// <summary>

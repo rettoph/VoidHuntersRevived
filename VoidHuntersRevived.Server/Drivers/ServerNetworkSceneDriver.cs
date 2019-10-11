@@ -21,8 +21,8 @@ namespace GalacticFighters.Server.Drivers
     {
         #region Private Fields
         private EntityCollection _entities;
-        private Queue<NetworkEntity> _created;
         private Queue<User> _newUsers;
+        private Queue<NetworkEntity> _dirty;
         #endregion
 
         #region Constructor
@@ -37,8 +37,8 @@ namespace GalacticFighters.Server.Drivers
         {
             base.Create(provider);
 
+            _dirty = new Queue<NetworkEntity>();
             _newUsers = new Queue<User>();
-            _created = new Queue<NetworkEntity>();
         }
 
         protected override void Initialize()
@@ -55,7 +55,7 @@ namespace GalacticFighters.Server.Drivers
         {
             base.Dispose();
 
-            _created.Clear();
+            _dirty.Clear();
             _newUsers.Clear();
         }
         #endregion
@@ -68,8 +68,8 @@ namespace GalacticFighters.Server.Drivers
             while (_newUsers.Any())
                 this.SetupNewUser(_newUsers.Dequeue());
 
-            while (_created.Any())
-                this.CreateCreateMessage(_created.Dequeue());
+            while (_dirty.Any())
+                this.CreateUpdateMessage(_dirty.Dequeue());
         }
         #endregion
 
@@ -96,7 +96,10 @@ namespace GalacticFighters.Server.Drivers
             message.Write(entity.Id);
             entity.TryWriteSetup(message);
 
-            this.CreateUpdateMessage(entity, recipient);
+            if (recipient == null)
+                _dirty.Enqueue(entity);
+            else
+                this.CreateUpdateMessage(entity, recipient);
         }
 
         private void CreateUpdateMessage(NetworkEntity entity, User recipient = null)
@@ -110,7 +113,7 @@ namespace GalacticFighters.Server.Drivers
         private void HandleEntityAdded(object sender, Entity entity)
         {
             if (entity is NetworkEntity) // Enqueue the new entity so the create message can be sent next frame
-                _created.Enqueue(entity as NetworkEntity);
+                this.CreateCreateMessage(entity as NetworkEntity);
         }
 
         private void HandleEntityRemoved(object sender, Entity entity)

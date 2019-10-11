@@ -54,6 +54,8 @@ namespace GalacticFighters.Library.Entities.ShipParts
         /// These include weapons, thrusters, and more.
         /// </summary>
         public virtual Boolean IsLive { get; protected set; }
+
+        public Single Health { get; set; }
         #endregion
 
         #region Lifecycle Methods
@@ -76,6 +78,8 @@ namespace GalacticFighters.Library.Entities.ShipParts
             this.ConnectionNode_PreInitialize();
             this.Transformations_PreInitialize();
             this.Farseer_PreInitialize();
+
+            this.Health = 100;
         }
 
         protected override void Initialize()
@@ -108,6 +112,9 @@ namespace GalacticFighters.Library.Entities.ShipParts
 
             for(Int32 i=0; i<this.FemaleConnectionNodes.Length; i++)
                 this.FemaleConnectionNodes[i].Target?.Parent.Update(gameTime);
+
+            if (this.Health < 100)
+                this.Health += 0.01f * (Single)gameTime.ElapsedGameTime.TotalMilliseconds;
         }
         #endregion
 

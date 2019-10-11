@@ -33,7 +33,7 @@ namespace GalacticFighters.Library.Entities.ShipParts
             Fixture target;
 
             while (_fixtures.Any()) // Destroy all self contained fixtures
-                ((target = _fixtures.Dequeue()).Body.UserData as ShipPart).DestroyFixture(target);
+                ((target = _fixtures.Dequeue()).Body?.UserData as ShipPart)?.DestroyFixture(target);
 
             // Create new fixtures for all vertices contained in the configuration
             this.config.Vertices.ForEach(data =>

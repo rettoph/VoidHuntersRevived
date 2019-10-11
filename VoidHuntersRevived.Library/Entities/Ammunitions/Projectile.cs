@@ -86,8 +86,9 @@ namespace GalacticFighters.Library.Entities.Ammunitions
         private float HandleRayCastCollision(Fixture arg1, Vector2 arg2, Vector2 arg3, float arg4)
         {
             // this.logger.LogInformation((arg1.UserData as ShipPart)?.Root.Id.ToString());
-            if (arg1.UserData is ShipPart && (arg1.UserData as ShipPart)?.Root.Id != this.Weapon.Root.Id)
+            if (arg1.UserData is ShipPart && (arg1.UserData as ShipPart)?.Root.Id != this.Weapon.Root.Id && (arg1.UserData as ShipPart).Health > 0 && (arg1.UserData as ShipPart).Root.IsBridge)
             {
+                (arg1.UserData as ShipPart).Health -= 10;
                 this.Dispose();
                 return 0;
             }

@@ -35,6 +35,7 @@ namespace GalacticFighters.Library.Configurations
         public ConnectionNodeConfiguration MaleConnectionNode { get => _male; }
         public IReadOnlyCollection<ConnectionNodeConfiguration> FemaleConnectionNodes { get => _females.AsReadOnly(); }
         public Vector2 Centeroid { get; private set; }
+        public String Texture { get; set; }
         #endregion
 
         #region Helper Fields
@@ -219,12 +220,13 @@ namespace GalacticFighters.Library.Configurations
         #endregion
 
         #region Static Methods
-        public static ShipPartConfiguration BuildPolygon(Single sides, Boolean includeFemaleNodes = false)
+        public static ShipPartConfiguration BuildPolygon(String texture, Single sides, Boolean includeFemaleNodes = false)
         {
             if (sides < 3)
                 throw new Exception("Unable to generate polygon with less than 3 sides!");
 
             var builder = new ShipPartConfiguration();
+            builder.Texture = texture;
 
             var stepAngle = MathHelper.Pi - (MathHelper.TwoPi / sides);
 

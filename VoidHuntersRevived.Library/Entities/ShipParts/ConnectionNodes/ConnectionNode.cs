@@ -77,6 +77,11 @@ namespace GalacticFighters.Library.Entities.ShipParts.ConnectionNodes
             this.Events.Register<ConnectionNode>("attached");
             this.Events.Register<ConnectionNode>("detached");
         }
+
+        public override void Dispose()
+        {
+            this.Detach();
+        }
         #endregion
 
         #region Set Methods

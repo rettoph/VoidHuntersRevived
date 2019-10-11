@@ -54,6 +54,13 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
             // Bind required action handlers
             this.driven.Actions.TryAdd("vitals:update", this.HandleVitalsUpdateMessage);
         }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            _server.DestroyBody(_body.UserData as Body);
+        }
         #endregion
 
         #region Frame Methods
@@ -84,6 +91,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
         {
             // Create a clone of the farseer entities body within the server render
             _body = _server.CloneBody(body);
+            _body.UserData = body;
         }
 
         /// <summary>
