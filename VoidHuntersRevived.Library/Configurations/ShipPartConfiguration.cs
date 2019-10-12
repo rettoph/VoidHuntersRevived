@@ -230,7 +230,7 @@ namespace GalacticFighters.Library.Configurations
 
             var stepAngle = MathHelper.Pi - (MathHelper.TwoPi / sides);
 
-            builder.AddSide(0, NodeType.Male);
+            builder.AddSide(0, NodeType.Both);
 
             for (Int32 i = 0; i < sides - 1; i++)
                 builder.AddSide(stepAngle, includeFemaleNodes ? NodeType.Female : NodeType.None);

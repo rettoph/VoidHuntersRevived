@@ -54,6 +54,27 @@ namespace GalacticFighters.Server.Scenes
             this.Group.Users.Events.TryAdd<User>("added", this.HandleUserJoined);
         }
 
+        protected override void PostInitialize()
+        {
+            base.PostInitialize();
+
+            for (Int32 i = 0; i < 10; i++)
+            {
+                // Create a simple turret player 
+                this.entities.Create<ComputerPlayer>("player:computer", player =>
+                {
+                    player.Ship = this.entities.Create<Ship>("ship", ship =>
+                    { // Build a new ship for the player...
+                    using (FileStream import = File.OpenRead("Ships/turret.vh"))
+                            ship.SetBridge(_builder.Import(import));
+
+                    // ship.SetBridge(this.entities.Create<ShipPart>("ship-part:square"));
+                    ship.Bridge.SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
+                    });
+                });
+            }
+        }
+
         public override void Dispose()
         {
             base.Dispose();
@@ -87,9 +108,11 @@ namespace GalacticFighters.Server.Scenes
                 player.User = user;
                 player.Ship = this.entities.Create<Ship>("ship", ship =>
                 { // Build a new ship for the player...
-                    using(FileStream import = File.OpenRead("ship.vh"))
+                    using(FileStream import = File.OpenRead("Ships/mosquito.vh"))
                         ship.SetBridge(_builder.Import(import));
 
+                    // ship.SetBridge(this.entities.Create<ShipPart>("ship-part:chassis:mosquito"));
+                    // ship.SetBridge(this.entities.Create<ShipPart>("ship-part:square"));
                     ship.Bridge.SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
                 });
             });
@@ -101,12 +124,12 @@ namespace GalacticFighters.Server.Scenes
                 this.entities.Create<ShipPart>("ship-part:square").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
                 this.entities.Create<ShipPart>("ship-part:hexagon").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
                 this.entities.Create<ShipPart>("ship-part:pentagon").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:beam:horizontal").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
                 this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
                 this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
                 this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
                 this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
                 this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
-
                 this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
             }
         }

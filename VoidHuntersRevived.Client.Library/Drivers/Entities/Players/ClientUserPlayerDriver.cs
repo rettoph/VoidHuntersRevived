@@ -76,6 +76,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
                 _debugOverlay.AddLine(() => $"Velocity: {this.driven.Ship?.Bridge?.LinearVelocity.Length().ToString("#0.##0")}");
                 _debugOverlay.AddLine(() => $"Size: {this.driven.Ship?.Size}");
                 _debugOverlay.AddLine(() => $"Open Nodes: {this.driven.Ship?.OpenFemaleNodes.Count()}");
+                _debugOverlay.AddLine(() => $"Health: {this.driven.Ship?.Bridge?.Health.ToString("#,##0")}");
             }
         }
         #endregion

@@ -74,7 +74,7 @@ namespace GalacticFighters.Library.Entities
         /// The world position of the target lock,
         /// if possible.
         /// </summary>
-        public Vector2 Target { get => this.Bridge.WorldCenter + this.TargetOffset; }
+        public Vector2 Target { get => this.Bridge == default(ShipPart) ? Vector2.Zero : this.Bridge.WorldCenter + this.TargetOffset; }
 
         /// <summary>
         /// The current Ship's total size
@@ -142,6 +142,9 @@ namespace GalacticFighters.Library.Entities
         {
             if(this.Bridge != bridge)
             {
+                // Ensure the tractor beam releases any targets on change
+                this.TractorBeam?.TryRelease();
+
                 if(this.Bridge != null)
                 { // Unreserve the old bridge
                     this.Bridge.BridgeFor = null;

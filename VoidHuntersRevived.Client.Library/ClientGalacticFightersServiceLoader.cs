@@ -34,6 +34,8 @@ namespace GalacticFighters.Client.Library
             content.TryRegister("sprite:ship-part:hull:square", "Sprites/ship-part_hull_square");
             content.TryRegister("sprite:ship-part:hull:hexagon", "Sprites/ship-part_hull_hexagon");
             content.TryRegister("sprite:ship-part:hull:pentagon", "Sprites/ship-part_hull_pentagon");
+            content.TryRegister("sprite:ship-part:hull:beam:horizontal", "Sprites/ship-part_hull_beam_horizontal");
+            content.TryRegister("sprite:ship-part:hull:beam:vertical", "Sprites/ship-part_hull_beam_vertical");
             content.TryRegister("sprite:ship-part:chassis:mosquito", "Sprites/ship-part_chassis_mosquito");
 
             var entities = provider.GetRequiredService<EntityLoader>();

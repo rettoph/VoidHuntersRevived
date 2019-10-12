@@ -114,7 +114,7 @@ namespace GalacticFighters.Library.Entities.ShipParts
                 this.FemaleConnectionNodes[i].Target?.Parent.Update(gameTime);
 
             if (this.Health < 100)
-                this.Health += 0.01f * (Single)gameTime.ElapsedGameTime.TotalMilliseconds;
+                this.Health += 0.001f * (Single)gameTime.ElapsedGameTime.TotalMilliseconds;
         }
         #endregion
 

@@ -65,10 +65,10 @@ namespace GalacticFighters.Server.Drivers.Entities
             }
 
             if(this.driven.Bridge != null && this.driven.Bridge.Health <= 0)
-            {
+            { // When the bridge is low health, blow up the ship
                 this.driven.Bridge.Dispose();
 
-                using (FileStream import = File.OpenRead("ship.vh"))
+                using (FileStream import = File.OpenRead("Ships/mosquito.vh"))
                     this.driven.SetBridge(_builder.Import(import));
             }
         }

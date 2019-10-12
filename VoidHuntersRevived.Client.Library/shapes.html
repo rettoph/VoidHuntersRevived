@@ -133,6 +133,28 @@
 		pentagon.add(Math.PI / 3);
 		pentagon.add(Math.PI / 3 + Math.PI / 2);
 		pentagon.build();
+		
+		var beamHorizontal = new Shape(innerColor, outerColor, side, border);
+		beamHorizontal.add(0);
+		beamHorizontal.add(Math.PI);
+		beamHorizontal.add(Math.PI);
+		beamHorizontal.add(Math.PI / 2);
+		beamHorizontal.add(Math.PI / 2);
+		beamHorizontal.add(Math.PI);
+		beamHorizontal.add(Math.PI);
+		beamHorizontal.add(Math.PI / 2);
+		beamHorizontal.build();
+		
+		var beamVertical = new Shape(innerColor, outerColor, side, border);
+		beamVertical.add(Math.PI/2);
+		beamVertical.add(Math.PI);
+		beamVertical.add(Math.PI);
+		beamVertical.add(Math.PI / 2);
+		beamVertical.add(Math.PI / 2);
+		beamVertical.add(Math.PI);
+		beamVertical.add(Math.PI);
+		beamVertical.add(Math.PI / 2);
+		beamVertical.build();
 
 		var mosquito = new Shape(innerColor, outerColor, side, border);
 		mosquito.add(Math.PI / 2);

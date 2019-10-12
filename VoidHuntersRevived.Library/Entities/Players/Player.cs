@@ -47,6 +47,13 @@ namespace GalacticFighters.Library.Entities.Players
 
             this.SetUpdateOrder(200);
         }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.scene.Players.Remove(this);
+        }
         #endregion
 
         #region Network Methods

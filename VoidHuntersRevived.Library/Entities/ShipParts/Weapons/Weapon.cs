@@ -250,7 +250,7 @@ namespace GalacticFighters.Library.Entities.ShipParts.Weapons
 
         public void TryFire()
         {
-            if (this.Root.IsBridge && this.OnTarget && this.Root.BridgeFor.Firing && _lastFire >= this.config.FireRate)
+            if (this.Health > 10 && this.Root.IsBridge && this.OnTarget && this.Root.BridgeFor.Firing && _lastFire >= this.config.FireRate)
             {
                 this.Fire();
 

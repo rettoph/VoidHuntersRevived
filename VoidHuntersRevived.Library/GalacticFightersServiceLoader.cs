@@ -70,6 +70,7 @@ namespace GalacticFighters.Library
 
             // Register players
             entities.TryRegister<UserPlayer>("player:user");
+            entities.TryRegister<ComputerPlayer>("player:computer");
 
             // Register misc entities
             entities.TryRegister<Ship>("ship");
@@ -84,12 +85,25 @@ namespace GalacticFighters.Library
             // Create the pentagon
             var config = new ShipPartConfiguration();
             config.Texture = "sprite:ship-part:hull:pentagon";
-            config.AddSide(0, ShipPartConfiguration.NodeType.Male);
+            config.AddSide(0, ShipPartConfiguration.NodeType.Both);
             config.AddSide(MathHelper.PiOver2, ShipPartConfiguration.NodeType.Female);
             config.AddSide((MathHelper.Pi / 3) + MathHelper.PiOver2, ShipPartConfiguration.NodeType.Female);
             config.AddSide(MathHelper.Pi / 3, ShipPartConfiguration.NodeType.Female);
             config.AddSide((MathHelper.Pi / 3) + MathHelper.PiOver2, ShipPartConfiguration.NodeType.Female);
             entities.TryRegister<Hull>("ship-part:pentagon", "", "", config.Flush());
+
+            // Create the horizontal beam
+            config = new ShipPartConfiguration();
+            config.Texture = "sprite:ship-part:hull:beam:horizontal";
+            config.AddSide(0, ShipPartConfiguration.NodeType.Female);
+            config.AddSide(MathHelper.Pi, ShipPartConfiguration.NodeType.Both);
+            config.AddSide(MathHelper.Pi, ShipPartConfiguration.NodeType.Female);
+            config.AddSide(MathHelper.Pi / 2, ShipPartConfiguration.NodeType.Female);
+            config.AddSide(MathHelper.Pi / 2, ShipPartConfiguration.NodeType.Female);
+            config.AddSide(MathHelper.Pi, ShipPartConfiguration.NodeType.Female);
+            config.AddSide(MathHelper.Pi, ShipPartConfiguration.NodeType.Female);
+            config.AddSide(MathHelper.Pi / 2, ShipPartConfiguration.NodeType.Female);
+            entities.TryRegister<Hull>("ship-part:beam:horizontal", "", "", config.Flush());
             #endregion
 
             #region Register Chassis
