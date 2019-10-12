@@ -21,7 +21,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
         /// <summary>
         /// Lerp strength per millisecond
         /// </summary>
-        public static Single LerpStrength { get; set; } = 0.01f;
+        public static Single LerpStrength { get; set; } = 0.001f;
         #endregion
 
         #region Private Fields
