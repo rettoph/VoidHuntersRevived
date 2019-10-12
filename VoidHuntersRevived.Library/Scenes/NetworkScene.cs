@@ -34,6 +34,13 @@ namespace GalacticFighters.Library.Scenes
         public Double AverageFramesPerSecond { get => this.Frames / this.Seconds; }
         public Double FramesPerSecond { get => 1 / (_frames.Sum() / _frames.Count); }
         public Double ActionsPerSecond { get => (_actionsPerFrame.Sum() / _actionsPerFrame.Count) * this.FramesPerSecond; }
+
+        /// <summary>
+        /// Simple reserved value. By default, this does nothing.
+        /// It is up to custom scene's and their drivers to implement
+        /// desired functionality
+        /// </summary>
+        public CounterBoolean Reserved { get; private set; }
         #endregion
 
 
@@ -43,6 +50,8 @@ namespace GalacticFighters.Library.Scenes
             base.Create(provider);
 
             _intervals = provider.GetRequiredService<Interval>();
+
+            this.Reserved = new CounterBoolean();
         }
 
         protected override void PreInitialize()

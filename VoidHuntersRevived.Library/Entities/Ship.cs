@@ -148,7 +148,8 @@ namespace GalacticFighters.Library.Entities
                 if(this.Bridge != null)
                 { // Unreserve the old bridge
                     this.Bridge.BridgeFor = null;
-                    this.Bridge.UpdateChain(ShipPart.ChainUpdate.Down);
+                    this.Bridge.DirtyChain(ShipPart.ChainUpdate.Down);
+                    this.Bridge.CleanChain();
 
                     // Remove bound events
                     this.Bridge.Events.TryRemove<ShipPart.ChainUpdate>("chain:updated", this.HandleBridgeChainUpdated);
@@ -161,7 +162,7 @@ namespace GalacticFighters.Library.Entities
                     // Save & reserve the new bridge
                     
                     this.Bridge.BridgeFor = this;
-                    this.Bridge.UpdateChain(ShipPart.ChainUpdate.Down);
+                    this.Bridge.DirtyChain(ShipPart.ChainUpdate.Down);
 
                     // Add events
                     this.Bridge.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleBridgeChainUpdated);
@@ -313,7 +314,7 @@ namespace GalacticFighters.Library.Entities
         /// <param name="im"></param>
         public void ReadBridge(NetIncomingMessage im)
         {
-                this.SetBridge(im.ReadEntity<ShipPart>(this.entities));
+            this.SetBridge(im.ReadEntity<ShipPart>(this.entities));
         }
 
         /// <summary>

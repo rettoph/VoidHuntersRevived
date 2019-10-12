@@ -1,4 +1,5 @@
 ﻿using FarseerPhysics.Dynamics;
+using FarseerPhysics.Factories;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -58,6 +59,7 @@ namespace GalacticFighters.Client.Library.Utilities
         public Fixture CloneFixture(Fixture source)
         {
             _fixtures.Add(source.FixtureId, source.CloneOnto(_bodies[source.Body.BodyId]));
+
             return _fixtures[source.FixtureId];
         }
         #endregion

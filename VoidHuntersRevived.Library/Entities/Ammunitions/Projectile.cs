@@ -22,11 +22,12 @@ namespace GalacticFighters.Library.Entities.Ammunitions
     {
         #region Private Fields
         private World _world;
-        private Double _life;
         #endregion
 
         #region Public Attributes
         public Vector2 LinearVelocity { get; private set; }
+        public Vector2 StartPosition { get; private set; }
+        public Single MaxDistance { get; private set; }
         #endregion
 
         #region Constructors
@@ -41,18 +42,14 @@ namespace GalacticFighters.Library.Entities.Ammunitions
         {
             base.Initialize();
 
-            _life = 0;
 
-            // The target radian the gun will shoot towards
-            // The difference between the current velocity and the guns target radian
-            var offset = (Single)Math.Atan2(this.Weapon.Root.LinearVelocity.Y, this.Weapon.Root.LinearVelocity.X) - this.Rotation;
-            // The amount of forward thrust the bullet should be given, as a multiplier of the gun's current velocity
-            var boost = (Single)Math.Cos(offset + MathHelper.Pi);
-            // An inverse 0 through 1, used for the true modifier
-            var modifier = 0.5f * (Single)Math.Cos(2 * offset + MathHelper.Pi) + 0.5f;
+            // Save the projectiles initial starting positio n
+            this.StartPosition = this.Position;
 
-            // Set the bullets brand new velocity.. complete with the velocity multiplier
-            this.LinearVelocity = (this.Weapon.Root.LinearVelocity * modifier) + Vector2.Transform(Vector2.UnitX * (-10 - (this.Weapon.Root.LinearVelocity.Length() * boost)), Matrix.CreateRotationZ(this.Rotation));
+            this.MaxDistance = 50f;
+            
+            // Calculate an initial velcotity for the projectile
+            this.LinearVelocity = this.Weapon.Root.LinearVelocity + Vector2.Transform(Vector2.UnitX * -15, Matrix.CreateRotationZ(this.Rotation));
         }
         #endregion
 
@@ -63,9 +60,7 @@ namespace GalacticFighters.Library.Entities.Ammunitions
 
             this.Step(this.LinearVelocity * ((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000));
 
-            _life += gameTime.ElapsedGameTime.TotalMilliseconds;
-
-            if (_life > 5000)
+            if (this.MaxDistance <= Vector2.Distance(this.StartPosition, this.Position))
                 this.Dispose();
         }
         #endregion

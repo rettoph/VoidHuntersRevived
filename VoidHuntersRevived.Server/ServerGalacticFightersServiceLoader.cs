@@ -20,6 +20,7 @@ namespace GalacticFighters.Server
         {
             var config = provider.GetService<NetPeerConfiguration>();
             config.Port = 1337;
+            config.AutoFlushSendQueue = false;
         }
     }
 }

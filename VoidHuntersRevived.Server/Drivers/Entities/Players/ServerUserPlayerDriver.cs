@@ -1,12 +1,16 @@
 ﻿using GalacticFighters.Library.Entities.Players;
 using GalacticFighters.Library.Entities.ShipParts;
+using GalacticFighters.Library.Extensions;
+using GalacticFighters.Library.Utilities;
 using Guppy;
 using Guppy.Attributes;
 using Guppy.Collections;
 using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using static GalacticFighters.Library.Entities.Ship;
 
@@ -17,11 +21,13 @@ namespace GalacticFighters.Server.Drivers.Entities.Players
     {
         #region Private FIelds
         private EntityCollection _entities;
+        private ShipBuilder _builder;
         #endregion
 
         #region Constructor
-        public ServerUserPlayerDrivers(EntityCollection entities, UserPlayer driven) : base(driven)
+        public ServerUserPlayerDrivers(ShipBuilder builder, EntityCollection entities, UserPlayer driven) : base(driven)
         {
+            _builder = builder;
             _entities = entities;
         }
         #endregion
@@ -37,6 +43,22 @@ namespace GalacticFighters.Server.Drivers.Entities.Players
             this.driven.Actions.TryAdd("tractor-beam:attached:request", this.HandleTractorBeamAttachedRequest);
             this.driven.Actions.TryAdd("target:changed:request", this.HandleTargetChangedRequest);
             this.driven.Actions.TryAdd("firing:changed:request", this.HandleFiringChangedRequest);
+        }
+        #endregion
+
+        #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if(this.driven.Ship.Bridge == null)
+            {
+                using (FileStream import = File.OpenRead("Ships/mosquito.vh"))
+                    this.driven.Ship.SetBridge(_builder.Import(import));
+                
+                var rand = new Random();
+                this.driven.Ship.Bridge.SetPosition(new Vector2(rand.NextSingle(-100, 100), rand.NextSingle(-100, 100)), rand.NextSingle(-3, 3));
+            }
         }
         #endregion
 

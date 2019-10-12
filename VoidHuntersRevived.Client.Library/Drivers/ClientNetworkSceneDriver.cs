@@ -8,6 +8,7 @@ using Lidgren.Network;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,13 +21,15 @@ namespace GalacticFighters.Client.Library.Drivers
         #region Private Fields
         private EntityCollection _entities;
 
-        private Queue<NetIncomingMessage> _creates;
-        private Queue<NetIncomingMessage> _updates;
-        private Queue<NetIncomingMessage> _removes;
+        private ConcurrentQueue<NetIncomingMessage> _creates;
+        private ConcurrentQueue<NetIncomingMessage> _updates;
+        private ConcurrentQueue<NetIncomingMessage> _removes;
 
         private Boolean _setup;
 
         private NetIncomingMessage _im;
+
+        private Guid _reservation;
         #endregion
 
         #region Constructor
@@ -41,9 +44,9 @@ namespace GalacticFighters.Client.Library.Drivers
         {
             base.Create(provider);
 
-            _creates = new Queue<NetIncomingMessage>();
-            _updates = new Queue<NetIncomingMessage>();
-            _removes = new Queue<NetIncomingMessage>();
+            _creates = new ConcurrentQueue<NetIncomingMessage>();
+            _updates = new ConcurrentQueue<NetIncomingMessage>();
+            _removes = new ConcurrentQueue<NetIncomingMessage>();
         }
 
         protected override void Initialize()
@@ -57,6 +60,8 @@ namespace GalacticFighters.Client.Library.Drivers
             this.driven.Group.Messages.TryAdd("entity:create", this.HandleEntityCreateMessage);
             this.driven.Group.Messages.TryAdd("entity:update", this.HandleEntityUpdateMessage);
             this.driven.Group.Messages.TryAdd("entity:remove", this.HandleEntityRemoveMessage);
+
+            _reservation = this.driven.Reserved.Add();
         }
 
         protected override void Dispose()
@@ -79,12 +84,14 @@ namespace GalacticFighters.Client.Library.Drivers
             if(_setup)
             {
                 // Parse all update messages
-                while (_updates.Any())
-                    _entities.GetById<NetworkEntity>((_im = _updates.Dequeue()).ReadGuid()).TryRead(_im);
+                while(_updates.Any())
+                    if(_updates.TryDequeue(out _im))
+                        _entities.GetById<NetworkEntity>(_im.ReadGuid()).TryRead(_im);
 
                 // Parse all remove messages
                 while(_removes.Any())
-                    _entities.GetById(_removes.Dequeue().ReadGuid())?.Dispose();
+                    if(_removes.TryDequeue(out _im))
+                        _entities.GetById(_im.ReadGuid())?.Dispose();
             }
         }
         #endregion
@@ -124,6 +131,7 @@ namespace GalacticFighters.Client.Library.Drivers
         private void HandleSetupEndMessage(object sender, NetIncomingMessage arg)
         {
             _setup = true;
+            this.driven.Reserved.Remove(_reservation);
             this.logger.LogInformation($"Setup End.");
         }
         #endregion

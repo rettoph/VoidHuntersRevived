@@ -65,27 +65,30 @@ namespace GalacticFighters.Server.Scenes
                 {
                     player.Ship = this.entities.Create<Ship>("ship", ship =>
                     { // Build a new ship for the player...
-                    using (FileStream import = File.OpenRead("Ships/turret-01.vh"))
-                            ship.SetBridge(_builder.Import(import));
+                        using (FileStream import = File.OpenRead("Ships/turret-01.vh"))
+                                ship.SetBridge(_builder.Import(import));
 
-                    // ship.SetBridge(this.entities.Create<ShipPart>("ship-part:square"));
-                    ship.Bridge.SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
+                        // ship.SetBridge(this.entities.Create<ShipPart>("ship-part:square"));
+                        ship.Bridge.SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
                     });
                 });
             }
 
-            // Create a simple turret player 
-            this.entities.Create<ComputerPlayer>("player:computer", player =>
+            for (Int32 i = 0; i < 1; i++)
             {
-                player.Ship = this.entities.Create<Ship>("ship", ship =>
-                { // Build a new ship for the player...
-                    using (FileStream import = File.OpenRead("Ships/turret-02.vh"))
-                        ship.SetBridge(_builder.Import(import));
+                // Create a simple turret player 
+                this.entities.Create<ComputerPlayer>("player:computer", player =>
+                {
+                    player.Ship = this.entities.Create<Ship>("ship", ship =>
+                    { // Build a new ship for the player...
+                        using (FileStream import = File.OpenRead("Ships/turret-02.vh"))
+                            ship.SetBridge(_builder.Import(import));
 
-                    // ship.SetBridge(this.entities.Create<ShipPart>("ship-part:square"));
-                    ship.Bridge.SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
+                        // ship.SetBridge(this.entities.Create<ShipPart>("ship-part:square"));
+                        ship.Bridge.SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
+                    });
                 });
-            });
+            }
         }
 
         public override void Dispose()

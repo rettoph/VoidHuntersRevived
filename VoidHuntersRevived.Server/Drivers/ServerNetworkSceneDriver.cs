@@ -13,6 +13,7 @@ using Guppy.Network.Security;
 using Microsoft.Xna.Framework;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using GalacticFighters.Library.Utilities;
 
 namespace GalacticFighters.Server.Drivers
 {
@@ -23,11 +24,15 @@ namespace GalacticFighters.Server.Drivers
         private EntityCollection _entities;
         private Queue<User> _newUsers;
         private Queue<NetworkEntity> _dirty;
+        private Interval _interval;
+        private NetPeer _peer;
         #endregion
 
         #region Constructor
-        public ServerNetworkSceneDriver(EntityCollection entities, NetworkScene driven) : base(driven)
+        public ServerNetworkSceneDriver(Interval interval, NetPeer peer, EntityCollection entities, NetworkScene driven) : base(driven)
         {
+            _interval = interval;
+            _peer = peer;
             _entities = entities;
         }
         #endregion
@@ -70,6 +75,9 @@ namespace GalacticFighters.Server.Drivers
 
             while (_dirty.Any())
                 this.CreateUpdateMessage(_dirty.Dequeue());
+
+            if (_interval.Is(100))
+                _peer.FlushSendQueue();
         }
         #endregion
 

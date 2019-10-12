@@ -2,6 +2,7 @@
 using GalacticFighters.Client.Library.Utilities;
 using Guppy;
 using Guppy.Attributes;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,8 @@ namespace GalacticFighters.Client.Library.Drivers
         {
             base.Update(gameTime);
 
-            _server.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
+            if(!this.driven.Reserved.Value)
+                _server.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
         }
     }
 }

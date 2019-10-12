@@ -23,6 +23,7 @@ namespace GalacticFighters.Library.Entities.ShipParts
         [Flags]
         public enum ChainUpdate
         {
+            None = 0,
             Up = 1,
             Down = 2,
             Both = Up | Down
@@ -31,6 +32,12 @@ namespace GalacticFighters.Library.Entities.ShipParts
 
         #region Private Fields
         private ConnectionNodeFactory _connectionNodefactory;
+
+        /// <summary>
+        /// Mark the chain as dirty, prmpting a UpdateChain call
+        /// the next time this ship part is updated
+        /// </summary>
+        private ChainUpdate _dirtyChain;
         #endregion
 
         #region Public Attributes
@@ -81,15 +88,24 @@ namespace GalacticFighters.Library.Entities.ShipParts
                 .ToArray();
 
             // Bind event listeners tto automatically remap connection node data on a male attachment or female detachment
-            this.MaleConnectionNode.Events.TryAdd<ConnectionNode>("attached", (s, n) => this.UpdateChain(ChainUpdate.Both));
+            this.MaleConnectionNode.Events.TryAdd<ConnectionNode>("attached", (s, n) => this.DirtyChain(ChainUpdate.Both));
             this.MaleConnectionNode.Events.TryAdd<ConnectionNode>("detached", (s, n) =>
             {
                 // Rigid snap the part's body to where the fixture used to be
-                this.body.Position = n.Parent.Root.Position + Vector2.Transform(Vector2.Zero, this.LocalTransformation * Matrix.CreateRotationZ(n.Parent.Root.Rotation));
+                var p = n.Parent.Root.Position + Vector2.Transform(Vector2.Zero, this.LocalTransformation * Matrix.CreateRotationZ(n.Parent.Root.Rotation));
+                var r = n.Parent.Root.Rotation + this.LocalRotation;
+                this.body.SetTransform(p, r);
 
-                this.UpdateChain(ChainUpdate.Down); // Update down the current chain
-                n.Parent.UpdateChain(ChainUpdate.Up); // Update up the old chain
+                this.DirtyChain(ChainUpdate.Down); // Update down the current chain
+                this.CleanChain();
+                n.Parent.DirtyChain(ChainUpdate.Up); // Update up the old chain
             });
+        }
+
+        private void ConnectionNode_Initialize()
+        {
+            this.DirtyChain(ChainUpdate.Both);
+            this.CleanChain();
         }
 
         /// <summary>
@@ -103,25 +119,55 @@ namespace GalacticFighters.Library.Entities.ShipParts
         }
         #endregion
 
+        #region Frame Methods
+        private void ConnectionNode_Update(GameTime gameTime)
+        {
+            this.CleanChain();
+        }
+        #endregion
+
         #region Helper Methods
+        /// <summary>
+        /// Mark a particulat chain drection dirty.
+        /// This will be updated next time the current
+        /// ship part is updated
+        /// </summary>
+        /// <param name="direction"></param>
+        public void DirtyChain(ChainUpdate direction)
+        {
+            _dirtyChain |= direction;
+        }
+
         /// <summary>
         /// Recersively trigger the UpdateChain event and recersively call
         /// the same method on all children/parents as defined in the ChainUpdate
         /// parameter
         /// </summary>
         /// <param name="directions"></param>
-        internal void UpdateChain(ChainUpdate directions)
+        private void CleanChain(ChainUpdate directions)
         {
             this.Events.TryInvoke<ChainUpdate>(this, "chain:updated", directions);
 
             // Recusively update all elements up the chain
             if (directions.HasFlag(ChainUpdate.Up) && !this.IsRoot)
-                this.Parent.UpdateChain(ChainUpdate.Up);
+                this.Parent.CleanChain(ChainUpdate.Up);
             // Recursively update all elements down the chain
             if (directions.HasFlag(ChainUpdate.Down))
                 for (Int32 i = 0; i < this.FemaleConnectionNodes.Length; i++)
-                    this.FemaleConnectionNodes[i].Target?.Parent.UpdateChain(ChainUpdate.Down);
+                    this.FemaleConnectionNodes[i].Target?.Parent.CleanChain(ChainUpdate.Down);
 
+            _dirtyChain = ChainUpdate.None;
+        }
+
+        /// <summary>
+        /// Instantly clean the chain
+        /// </summary>
+        public void CleanChain()
+        {
+            if(_dirtyChain != ChainUpdate.None)
+            {
+                this.CleanChain(_dirtyChain);
+            }
         }
         #endregion
 

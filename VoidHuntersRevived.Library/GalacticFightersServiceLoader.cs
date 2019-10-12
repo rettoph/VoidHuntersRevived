@@ -54,7 +54,8 @@ namespace GalacticFighters.Library
 
                 // Enable required message types...
                 config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
-                
+                config.UseMessageRecycling = true;
+
 
                 return config;
             });
@@ -64,7 +65,7 @@ namespace GalacticFighters.Library
         {
             Settings.MaxPolygonVertices = 16;
 
-            provider.GetRequiredService<GlobalOptions>().LogLevel = LogLevel.Debug;
+            provider.GetRequiredService<GlobalOptions>().LogLevel = LogLevel.Information;
 
             var entities = provider.GetRequiredService<EntityLoader>();
 

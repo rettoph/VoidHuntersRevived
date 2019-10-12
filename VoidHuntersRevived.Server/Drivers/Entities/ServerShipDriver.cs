@@ -69,11 +69,11 @@ namespace GalacticFighters.Server.Drivers.Entities
             { // When the bridge is low health, blow up the ship
                 this.driven.Bridge.Dispose();
 
-                using (FileStream import = File.OpenRead("Ships/mosquito.vh"))
-                    this.driven.SetBridge(_builder.Import(import));
-
-                var rand = new Random();
-                this.driven.Bridge.SetPosition(new Vector2(rand.NextSingle(-100, 100), rand.NextSingle(-100, 100)), rand.NextSingle(-3, 3));
+                // using (FileStream import = File.OpenRead("Ships/mosquito.vh"))
+                //     this.driven.SetBridge(_builder.Import(import));
+                // 
+                // var rand = new Random();
+                // this.driven.Bridge.SetPosition(new Vector2(rand.NextSingle(-100, 100), rand.NextSingle(-100, 100)), rand.NextSingle(-3, 3));
             }
         }
         #endregion

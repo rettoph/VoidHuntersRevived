@@ -96,10 +96,13 @@ namespace GalacticFighters.Client.Library.Scenes
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            this.entities.TryUpdate(gameTime);
-            this.layers.TryUpdate(gameTime);
-            this.Camera.TryUpdate(gameTime);
+            
+            if (!this.Reserved.Value)
+            {
+                this.entities.TryUpdate(gameTime);
+                this.layers.TryUpdate(gameTime);
+                this.Camera.TryUpdate(gameTime);
+            }
 
             var debug = Keyboard.GetState().IsKeyDown(Keys.F1);
 

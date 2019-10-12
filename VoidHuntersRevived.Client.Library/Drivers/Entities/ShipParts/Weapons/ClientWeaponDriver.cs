@@ -14,7 +14,7 @@ using System.Text;
 
 namespace GalacticFighters.Client.Library.Drivers.Entities.ShipParts.Weapons
 {
-    [IsDriver(typeof(Weapon))]
+    [IsDriver(typeof(Weapon), 200)]
     internal sealed class ClientWeaponDriver : Driver<Weapon>
     {
         #region Private Fields

@@ -87,13 +87,13 @@ namespace GalacticFighters.Library.Entities.ShipParts
             base.Initialize();
 
             this.SetEnabled(false);
+
+            this.ConnectionNode_Initialize();
         }
 
         protected override void PostInitialize()
         {
             base.PostInitialize();
-
-            this.UpdateChain(ChainUpdate.Both);
         }
 
         public override void Dispose()
@@ -109,6 +109,8 @@ namespace GalacticFighters.Library.Entities.ShipParts
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            this.ConnectionNode_Update(gameTime);
 
             for(Int32 i=0; i<this.FemaleConnectionNodes.Length; i++)
                 this.FemaleConnectionNodes[i].Target?.Parent.Update(gameTime);
