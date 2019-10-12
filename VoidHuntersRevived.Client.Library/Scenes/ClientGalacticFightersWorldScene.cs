@@ -97,9 +97,9 @@ namespace GalacticFighters.Client.Library.Scenes
         {
             base.Update(gameTime);
 
-            this.Camera.TryUpdate(gameTime);
             this.entities.TryUpdate(gameTime);
             this.layers.TryUpdate(gameTime);
+            this.Camera.TryUpdate(gameTime);
 
             var debug = Keyboard.GetState().IsKeyDown(Keys.F1);
 

@@ -13,6 +13,7 @@ using System.IO;
 using GalacticFighters.Library.Utilities;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
+using GalacticFighters.Library.Extensions;
 
 namespace GalacticFighters.Server.Drivers.Entities
 {
@@ -70,6 +71,9 @@ namespace GalacticFighters.Server.Drivers.Entities
 
                 using (FileStream import = File.OpenRead("Ships/mosquito.vh"))
                     this.driven.SetBridge(_builder.Import(import));
+
+                var rand = new Random();
+                this.driven.Bridge.SetPosition(new Vector2(rand.NextSingle(-100, 100), rand.NextSingle(-100, 100)), rand.NextSingle(-3, 3));
             }
         }
         #endregion

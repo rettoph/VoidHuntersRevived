@@ -46,6 +46,7 @@ namespace GalacticFighters.Library.Entities.Players
             this.scene.Players.Add(this);
 
             this.SetUpdateOrder(200);
+            this.SetDrawOrder(200);
         }
 
         public override void Dispose()

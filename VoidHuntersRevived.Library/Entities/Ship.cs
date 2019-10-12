@@ -95,7 +95,7 @@ namespace GalacticFighters.Library.Entities
             this.Events.Register<Vector2>("target:offet:changed");
             this.Events.Register<Boolean>("firing:changed");
 
-            this.SetUpdateOrder(200);
+            this.SetUpdateOrder(100);
         }
 
         protected override void PreInitialize()

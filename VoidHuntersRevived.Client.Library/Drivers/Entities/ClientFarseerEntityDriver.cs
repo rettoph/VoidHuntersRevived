@@ -18,7 +18,10 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
     internal sealed class ClientFarseerEntityDriver : Driver<FarseerEntity>
     {
         #region Static Attributes
-        public static Single LerpStrength { get; set; } = 0.075f;
+        /// <summary>
+        /// Lerp strength per millisecond
+        /// </summary>
+        public static Single LerpStrength { get; set; } = 0.01f;
         #endregion
 
         #region Private Fields
@@ -70,13 +73,14 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
 
             if (this.driven.BodyEnabled)
             {
+                var lerp = ClientFarseerEntityDriver.LerpStrength * (Single)gameTime.ElapsedGameTime.TotalMilliseconds;
                 this.driven.SetPosition(
-                    position: Vector2.Lerp(this.driven.Position, _body.Position, ClientFarseerEntityDriver.LerpStrength),
-                    rotation: MathHelper.Lerp(this.driven.Rotation, _body.Rotation, ClientFarseerEntityDriver.LerpStrength));
+                    position: Vector2.Lerp(this.driven.Position, _body.Position, lerp),
+                    rotation: MathHelper.Lerp(this.driven.Rotation, _body.Rotation, lerp));
 
                 this.driven.SetVelocity(
-                    linear: Vector2.Lerp(this.driven.LinearVelocity, _body.LinearVelocity, ClientFarseerEntityDriver.LerpStrength),
-                    angular: MathHelper.Lerp(this.driven.AngularVelocity, _body.AngularVelocity, ClientFarseerEntityDriver.LerpStrength));
+                    linear: Vector2.Lerp(this.driven.LinearVelocity, _body.LinearVelocity, lerp),
+                    angular: MathHelper.Lerp(this.driven.AngularVelocity, _body.AngularVelocity, lerp));
             }
         }
         #endregion
