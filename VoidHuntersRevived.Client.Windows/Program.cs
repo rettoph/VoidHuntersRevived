@@ -12,7 +12,8 @@ namespace GalacticFighters.Client.Windows
     {
         static void Main(string[] args)
         {
-            var game = new Game1("127.0.0.1");
+            Console.WriteLine("Host:");
+            var game = new Game1(Console.ReadLine());
             game.Run();
         }
     }

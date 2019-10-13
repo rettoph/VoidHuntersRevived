@@ -393,6 +393,22 @@ namespace GalacticFighters.Library.Entities
             this.body.WritePosition(om);
             this.body.WriteVelocity(om);
         }
+
+        protected override void ReadPostInitialize(NetIncomingMessage im)
+        {
+            base.ReadPostInitialize(im);
+
+            this.body.ReadPosition(im);
+            this.body.ReadVelocity(im);
+        }
+
+        protected override void WritePostInitialize(NetOutgoingMessage om)
+        {
+            base.WritePostInitialize(om);
+
+            this.body.WritePosition(om);
+            this.body.WriteVelocity(om);
+        }
         #endregion
     }
 }

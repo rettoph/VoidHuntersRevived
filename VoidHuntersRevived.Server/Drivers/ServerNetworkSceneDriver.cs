@@ -102,7 +102,8 @@ namespace GalacticFighters.Server.Drivers
             var message = this.driven.Group.CreateMessage("entity:create", recipient, NetDeliveryMethod.ReliableOrdered);
             message.Write(entity.Configuration.Handle);
             message.Write(entity.Id);
-            entity.TryWriteSetup(message);
+            entity.TryWritePreInitialize(message);
+            entity.TryWritePostInitialize(message);
 
             if (recipient == null)
                 _dirty.Enqueue(entity);

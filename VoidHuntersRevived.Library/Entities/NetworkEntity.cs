@@ -81,7 +81,7 @@ namespace GalacticFighters.Library.Entities
         /// Write setup data. This is written only on creation. 
         /// </summary>
         /// <param name="om"></param>
-        protected virtual void WriteSetup(NetOutgoingMessage om)
+        protected virtual void WritePreInitialize(NetOutgoingMessage om)
         {
             //
         }
@@ -91,19 +91,48 @@ namespace GalacticFighters.Library.Entities
         /// factory setup method.
         /// </summary>
         /// <param name="im"></param>
-        protected virtual void ReadSetup(NetIncomingMessage im)
+        protected virtual void ReadPreInitialize(NetIncomingMessage im)
         {
             //
         }
 
-        public void TryWriteSetup(NetOutgoingMessage om)
+        public void TryWritePreInitialize(NetOutgoingMessage om)
         {
-            this.WriteSetup(om);
+            this.WritePreInitialize(om);
         }
 
-        public void TryReadSetup(NetIncomingMessage im)
+        public void TryReadPreInitialize(NetIncomingMessage im)
         {
-            this.ReadSetup(im);
+            this.ReadPreInitialize(im);
+        }
+
+        /// <summary>
+        /// Write post-initialize data. This is written only on creation. 
+        /// </summary>
+        /// <param name="om"></param>
+        protected virtual void WritePostInitialize(NetOutgoingMessage om)
+        {
+            //
+        }
+
+        /// <summary>
+        /// Read post-initialize data. This is only invoked on creation via
+        /// the ClientNetworkSceneDriver
+        /// </summary>
+        /// <param name="im"></param>
+        protected virtual void ReadPostInitialize(NetIncomingMessage im)
+        {
+            //
+        }
+
+        public void TryWritePostInitialize(NetOutgoingMessage om)
+        {
+            this.WritePostInitialize(om);
+        }
+
+        public void TryReadPostInitialize(NetIncomingMessage im)
+        {
+            this.ReadPostInitialize(im);
         }
         #endregion
     }

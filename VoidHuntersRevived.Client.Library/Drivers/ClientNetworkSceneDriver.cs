@@ -89,11 +89,13 @@ namespace GalacticFighters.Client.Library.Drivers
                         var id = _im.ReadGuid();
 
                         if (_entities.GetById(id) == default(Entity))
+                        {
                             _entities.Create<NetworkEntity>(type, e =>
                             { // Create a new entity
                                 e.SetId(id);
-                                e.TryReadSetup(_im);
-                            });
+                                e.TryReadPreInitialize(_im);
+                            }).TryReadPostInitialize(_im);
+                        }
                         else
                             this.logger.LogWarning($"Recieved duplicate create messages for '{id}' => {id}");
                     }

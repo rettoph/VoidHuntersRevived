@@ -28,6 +28,7 @@ namespace GalacticFighters.Server.Drivers.Entities
         private Vector2 _oldTarget;
         private ShipBuilder _builder;
         private Interval _interval;
+        private Int32 _lives = 0;
         #endregion
 
         #region Constructor
@@ -69,13 +70,18 @@ namespace GalacticFighters.Server.Drivers.Entities
             { // When the bridge is low health, blow up the ship
                 this.driven.Bridge.Dispose();
 
-                var ships = new String[] { "mosquito", "turret-01", "turret-02" };
-                var rand = new Random();
-                using (FileStream import = File.OpenRead($"Ships/{ships[rand.Next(0, 2)]}.vh"))
-                    this.driven.SetBridge(_builder.Import(import));
-                
-                
-                this.driven.Bridge.SetPosition(new Vector2(rand.NextSingle(-100, 100), rand.NextSingle(-100, 100)), rand.NextSingle(-3, 3));
+                if (_lives < 15)
+                {
+                    var ships = new String[] { "mosquito", "turret-01", "turret-02" };
+                    var rand = new Random();
+                    using (FileStream import = File.OpenRead($"Ships/{ships[rand.Next(0, 1)]}.vh"))
+                        this.driven.SetBridge(_builder.Import(import));
+
+
+                    this.driven.Bridge.SetPosition(new Vector2(rand.NextSingle(-100, 100), rand.NextSingle(-100, 100)), rand.NextSingle(-3, 3));
+
+                    _lives++;
+                }
             }
         }
         #endregion
