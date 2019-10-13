@@ -8,6 +8,7 @@ using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,11 +22,12 @@ namespace GalacticFighters.Library.Scenes
         private List<Single> _actionsPerFrame;
         private Single _actionsThisFrame;
         private Interval _intervals;
+        private ConcurrentQueue<NetIncomingMessage> _actions;
+        private NetIncomingMessage _im;
         #endregion
 
         #region Public Attributes
         public Group Group { get; set; }
-
         public Single ActionsRecieved { get; private set; }
         public Single Frames { get; private set; }
         public Double Seconds { get; private set; }
@@ -34,13 +36,6 @@ namespace GalacticFighters.Library.Scenes
         public Double AverageFramesPerSecond { get => this.Frames / this.Seconds; }
         public Double FramesPerSecond { get => 1 / (_frames.Sum() / _frames.Count); }
         public Double ActionsPerSecond { get => (_actionsPerFrame.Sum() / _actionsPerFrame.Count) * this.FramesPerSecond; }
-
-        /// <summary>
-        /// Simple reserved value. By default, this does nothing.
-        /// It is up to custom scene's and their drivers to implement
-        /// desired functionality
-        /// </summary>
-        public CounterBoolean Reserved { get; private set; }
         #endregion
 
 
@@ -50,8 +45,7 @@ namespace GalacticFighters.Library.Scenes
             base.Create(provider);
 
             _intervals = provider.GetRequiredService<Interval>();
-
-            this.Reserved = new CounterBoolean();
+            _actions = new ConcurrentQueue<NetIncomingMessage>();
         }
 
         protected override void PreInitialize()
@@ -80,6 +74,10 @@ namespace GalacticFighters.Library.Scenes
 
             base.Update(gameTime);
 
+            while (_actions.Any())
+                if (_actions.TryDequeue(out _im))
+                    this.entities.GetById<NetworkEntity>(_im.ReadGuid())?.Actions.TryInvoke(this, _im.ReadString(), _im);
+
             this.Frames++;
             this.Seconds = gameTime.TotalGameTime.TotalSeconds;
             _frames.Add(gameTime.ElapsedGameTime.TotalSeconds);
@@ -100,7 +98,8 @@ namespace GalacticFighters.Library.Scenes
         {
             _actionsThisFrame++;
             this.ActionsRecieved++;
-            this.entities.GetById<NetworkEntity>(arg.ReadGuid())?.Actions.TryInvoke(this, arg.ReadString(), arg);
+            _actions.Enqueue(arg);
+            
         }
         #endregion
     }

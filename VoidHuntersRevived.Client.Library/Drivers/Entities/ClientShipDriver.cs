@@ -81,8 +81,6 @@ namespace GalacticFighters.Client.Library.Drivers.Entities
 
         private void HandleBridgeChanged(object sender, NetIncomingMessage im)
         {
-            this.logger.LogInformation($"Reading Bridge data...");
-
             this.driven.ReadBridge(im);
         }
 

@@ -69,11 +69,13 @@ namespace GalacticFighters.Server.Drivers.Entities
             { // When the bridge is low health, blow up the ship
                 this.driven.Bridge.Dispose();
 
-                // using (FileStream import = File.OpenRead("Ships/mosquito.vh"))
-                //     this.driven.SetBridge(_builder.Import(import));
-                // 
-                // var rand = new Random();
-                // this.driven.Bridge.SetPosition(new Vector2(rand.NextSingle(-100, 100), rand.NextSingle(-100, 100)), rand.NextSingle(-3, 3));
+                var ships = new String[] { "mosquito", "turret-01", "turret-02" };
+                var rand = new Random();
+                using (FileStream import = File.OpenRead($"Ships/{ships[rand.Next(0, 2)]}.vh"))
+                    this.driven.SetBridge(_builder.Import(import));
+                
+                
+                this.driven.Bridge.SetPosition(new Vector2(rand.NextSingle(-100, 100), rand.NextSingle(-100, 100)), rand.NextSingle(-3, 3));
             }
         }
         #endregion
@@ -86,7 +88,7 @@ namespace GalacticFighters.Server.Drivers.Entities
 
         private void HandleDirectionChanged(object sender, Ship.Direction direction)
         {
-            this.driven.WriteDirection(this.driven.Actions.Create("direction:changed", NetDeliveryMethod.ReliableUnordered), direction);
+            this.driven.WriteDirection(this.driven.Actions.Create("direction:changed", NetDeliveryMethod.ReliableOrdered), direction);
         }
 
         private void HandleTractorBeamSelected(object sender, ShipPart arg)

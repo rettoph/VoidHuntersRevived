@@ -58,7 +58,7 @@ namespace GalacticFighters.Server.Scenes
         {
             base.PostInitialize();
 
-            for (Int32 i = 0; i < 10; i++)
+            for (Int32 i = 0; i < 3; i++)
             {
                 // Create a simple turret player 
                 this.entities.Create<ComputerPlayer>("player:computer", player =>
@@ -82,6 +82,22 @@ namespace GalacticFighters.Server.Scenes
                     player.Ship = this.entities.Create<Ship>("ship", ship =>
                     { // Build a new ship for the player...
                         using (FileStream import = File.OpenRead("Ships/turret-02.vh"))
+                            ship.SetBridge(_builder.Import(import));
+
+                        // ship.SetBridge(this.entities.Create<ShipPart>("ship-part:square"));
+                        ship.Bridge.SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
+                    });
+                });
+            }
+
+            for (Int32 i = 0; i < 3; i++)
+            {
+                // Create a simple turret player 
+                this.entities.Create<ComputerPlayer>("player:computer", player =>
+                {
+                    player.Ship = this.entities.Create<Ship>("ship", ship =>
+                    { // Build a new ship for the player...
+                        using (FileStream import = File.OpenRead("Ships/mosquito.vh"))
                             ship.SetBridge(_builder.Import(import));
 
                         // ship.SetBridge(this.entities.Create<ShipPart>("ship-part:square"));

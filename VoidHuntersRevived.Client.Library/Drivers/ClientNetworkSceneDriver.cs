@@ -60,8 +60,6 @@ namespace GalacticFighters.Client.Library.Drivers
             this.driven.Group.Messages.TryAdd("entity:create", this.HandleEntityCreateMessage);
             this.driven.Group.Messages.TryAdd("entity:update", this.HandleEntityUpdateMessage);
             this.driven.Group.Messages.TryAdd("entity:remove", this.HandleEntityRemoveMessage);
-
-            _reservation = this.driven.Reserved.Add();
         }
 
         protected override void Dispose()
@@ -83,6 +81,23 @@ namespace GalacticFighters.Client.Library.Drivers
 
             if(_setup)
             {
+                // Parse all create messages
+                while(_creates.Any())
+                    if(_creates.TryDequeue(out _im))
+                    {
+                        var type = _im.ReadString();
+                        var id = _im.ReadGuid();
+
+                        if (_entities.GetById(id) == default(Entity))
+                            _entities.Create<NetworkEntity>(type, e =>
+                            { // Create a new entity
+                                e.SetId(id);
+                                e.TryReadSetup(_im);
+                            });
+                        else
+                            this.logger.LogWarning($"Recieved duplicate create messages for '{id}' => {id}");
+                    }
+
                 // Parse all update messages
                 while(_updates.Any())
                     if(_updates.TryDequeue(out _im))
@@ -99,17 +114,7 @@ namespace GalacticFighters.Client.Library.Drivers
         #region Message Handlers
         private void HandleEntityCreateMessage(object sender, NetIncomingMessage arg)
         {
-            var type = arg.ReadString();
-            var id = arg.ReadGuid();
-
-            if (_entities.GetById(id) == default(Entity))
-                _entities.Create<NetworkEntity>(type, e =>
-                { // Create a new entity
-                    e.SetId(id);
-                    e.TryReadSetup(arg);
-                });
-            else
-                this.logger.LogWarning($"Recieved duplicate create messages for '{id}' => {id}");
+            _creates.Enqueue(arg);
         }
 
         private void HandleEntityUpdateMessage(object sender, NetIncomingMessage arg)
@@ -131,7 +136,6 @@ namespace GalacticFighters.Client.Library.Drivers
         private void HandleSetupEndMessage(object sender, NetIncomingMessage arg)
         {
             _setup = true;
-            this.driven.Reserved.Remove(_reservation);
             this.logger.LogInformation($"Setup End.");
         }
         #endregion

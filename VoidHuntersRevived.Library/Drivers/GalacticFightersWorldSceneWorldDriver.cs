@@ -27,8 +27,7 @@ namespace GalacticFighters.Library.Drivers
         {
             base.Update(gameTime);
 
-            if(!this.driven.Reserved.Value)
-                _world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
+            _world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
         }
     }
 }
