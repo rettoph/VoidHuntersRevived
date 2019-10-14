@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Library.Extensions.Farseer;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities
 {
@@ -45,7 +46,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
 
         private void HandleSelectedPositionUpdated(object sender, ShipPart arg)
         {
-            _body.SetTransform(arg.Position, arg.Rotation);
+            _body.SetTransformIgnoreContacts(arg.Position, arg.Rotation);
         }
         #endregion
     }

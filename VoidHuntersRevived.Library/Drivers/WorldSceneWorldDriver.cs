@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Diagnostics;
 
 namespace VoidHuntersRevived.Library.Drivers
 {
@@ -26,6 +27,9 @@ namespace VoidHuntersRevived.Library.Drivers
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            var sw = new Stopwatch();
+            sw.Start();
 
             _world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
         }

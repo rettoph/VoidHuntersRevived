@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Library.Extensions.Farseer;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 {
@@ -128,14 +129,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
             if (_root != default(ShipPart))
             { // Remove old events
-                _root.Events.TryRemove<Boolean>("body-enabled:changed", this.HandleFarseerEnabledChanged);
+                _root.Events.TryRemove<Boolean>("body-enabled:changed", this.HandleBodyEnabledChanged);
                 _root.Events.TryRemove<Body>("position:changed", this.HandlePositionChanged);
                 _root.Events.TryRemove<NetIncomingMessage>("read", this.HandleRead);
             }
 
             // Save new events
             _root = this.Root;
-            _root.Events.TryAdd<Boolean>("body-enabled:changed", this.HandleFarseerEnabledChanged);
+            _root.Events.TryAdd<Boolean>("body-enabled:changed", this.HandleBodyEnabledChanged);
             _root.Events.TryAdd<Body>("position:changed", this.HandlePositionChanged);
             _root.Events.TryAdd<NetIncomingMessage>("read", this.HandleRead);
         }
@@ -213,7 +214,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             // Calculate the barrels proper position based on the defined anchor points.
             var position = root.Position + Vector2.Transform(this.config.BodyAnchor + this.config.BarrelAnchor, this.LocalTransformation * Matrix.CreateRotationZ(root.Rotation));
             // Update the barrels position
-            barrel.SetTransform(position, this.Root.IsBridge ? barrel.Rotation : root.Rotation + this.LocalRotation + MathHelper.Pi);
+            barrel.SetTransformIgnoreContacts(ref position, this.Root.IsBridge ? barrel.Rotation : root.Rotation + this.LocalRotation + MathHelper.Pi);
         } 
 
         public void UpdateJoint(ref RevoluteJoint joint, Body root, Body barrel, World world)
@@ -222,7 +223,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                 world.RemoveJoint(joint);
 
             // By default, reset the barrel rotation relative to the given root body
-            barrel.Rotation = root.Rotation + this.LocalRotation + MathHelper.Pi;
+            barrel.SetTransformIgnoreContacts(barrel.Position, root.Rotation + this.LocalRotation + MathHelper.Pi);
 
             // Update the recieved barrel's position
             this.UpdateBarrelPosition(root, barrel);
@@ -275,7 +276,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             this.UpdateBarrelAngle();
         }
 
-        private void HandleFarseerEnabledChanged(object sender, bool arg)
+        private void HandleBodyEnabledChanged(object sender, bool arg)
         {
             _barrel.Enabled = arg;
             _joint.Enabled = arg;

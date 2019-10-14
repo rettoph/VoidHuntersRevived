@@ -170,9 +170,6 @@ namespace VoidHuntersRevived.Library.Entities
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            // if (!this.Awake) // By default, sleeping entities are disabled
-            //     this.SetEnabled(false);
         }
         #endregion
 
@@ -222,9 +219,6 @@ namespace VoidHuntersRevived.Library.Entities
             var fixture = this.body.CreateFixture(shape, userData);
             setup?.Invoke(fixture);
 
-            if (!this.body.Enabled) // Enable the body, if it is not already done
-                this.body.Enabled = true;
-
             // Invoke the created event...
             this.Events.TryInvoke<Fixture>(this, "fixture:created", fixture);
 
@@ -238,9 +232,6 @@ namespace VoidHuntersRevived.Library.Entities
         public virtual void DestroyFixture(Fixture fixture)
         {
             fixture.Body.DestroyFixture(fixture);
-
-            if (!this.body.FixtureList.Any()) // Auto disable the body if there are no fixtures within
-                this.body.Enabled = false;
 
             // Invoke the destroyed event...
             this.Events.TryInvoke<Fixture>(this, "fixture:destroyed", fixture);

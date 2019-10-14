@@ -94,7 +94,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 // Rigid snap the part's body to where the fixture used to be
                 var p = n.Parent.Root.Position + Vector2.Transform(Vector2.Zero, this.LocalTransformation * Matrix.CreateRotationZ(n.Parent.Root.Rotation));
                 var r = n.Parent.Root.Rotation + this.LocalRotation;
-                this.body.SetTransform(p, r);
+                this.body.SetTransformIgnoreContacts(ref p, r);
 
                 this.DirtyChain(ChainUpdate.Down); // Update down the current chain
                 this.CleanChain();

@@ -206,7 +206,8 @@ namespace VoidHuntersRevived.Library.Entities
                     // Update the preview position
                     this.Selected.SetPosition(
                         position: node.WorldPosition - Vector2.Transform(this.Selected.MaleConnectionNode.LocalPosition, Matrix.CreateRotationZ(previewRotation)),
-                        rotation: previewRotation);
+                        rotation: previewRotation,
+                        ignoreContacts: true);
                 }
 
                 this.Events.TryInvoke<ShipPart>(this, "selected:position:changed", this.Selected);

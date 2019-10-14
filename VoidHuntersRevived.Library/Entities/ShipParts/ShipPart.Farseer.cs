@@ -66,8 +66,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             return new Body(world, Vector2.Zero, 0, BodyType.Dynamic, this)
             {
                 AngularDamping = 1f,
-                LinearDamping = 1f,
-                IgnoreCCDWith = Category.All
+                LinearDamping = 1f
             };
         }
         #endregion

@@ -1,6 +1,7 @@
 ﻿using FarseerPhysics.Dynamics;
 using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,7 +23,7 @@ namespace VoidHuntersRevived.Library.Extensions.Farseer
 
         public static void ReadPosition(this Body body, NetIncomingMessage im)
         {
-            body.SetTransform(im.ReadVector2(), im.ReadSingle());
+            body.SetTransformIgnoreContacts(im.ReadVector2(), im.ReadSingle());
         }
         #endregion
 
@@ -37,6 +38,13 @@ namespace VoidHuntersRevived.Library.Extensions.Farseer
         {
             body.LinearVelocity = im.ReadVector2();
             body.AngularVelocity = im.ReadSingle();
+        }
+        #endregion
+
+        #region Transform Methods
+        public static void SetTransformIgnoreContacts(this Body body, Vector2 position, Single rotation)
+        {
+            body.SetTransformIgnoreContacts(ref position, rotation);
         }
         #endregion
     }

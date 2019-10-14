@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
             this.driven.Events.TryAdd<Body>("body:destroyed", this.HandleBodyDestroyed);
             this.driven.Events.TryAdd<Fixture>("fixture:created", this.HandleFixtureCreated);
             this.driven.Events.TryAdd<Fixture>("fixture:destroyed", this.HandleFixtureDestroyed);
-            this.driven.Events.TryAdd<Boolean>("farseer-enabled:changed", this.HandleFarseerEnabledChanged);
+            this.driven.Events.TryAdd<Boolean>("body-enabled:changed", this.HandleBodyEnabledChanged);
             this.driven.Events.TryAdd<Vector2>("linear-impulse:applied", this.HandleLinearImpulseApplied);
             this.driven.Events.TryAdd<Single>("angular-impulse:applied", this.HandleAngularImpulseApplied);
             this.driven.Events.TryAdd<AppliedForce>("force:applied", this.HandleForceApplied);
@@ -56,6 +56,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
 
             // Bind required action handlers
             this.driven.Actions.TryAdd("vitals:update", this.HandleVitalsUpdateMessage);
+        }
+
+        protected override void PostInitialize()
+        {
+            base.PostInitialize();
         }
 
         protected override void Dispose()
@@ -76,7 +81,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
                 var lerp = ClientFarseerEntityDriver.LerpStrength * (Single)gameTime.ElapsedGameTime.TotalMilliseconds;
                 this.driven.SetPosition(
                     position: Vector2.Lerp(this.driven.Position, _body.Position, lerp),
-                    rotation: MathHelper.Lerp(this.driven.Rotation, _body.Rotation, lerp));
+                    rotation: MathHelper.Lerp(this.driven.Rotation, _body.Rotation, lerp),
+                    ignoreContacts: true);
 
                 this.driven.SetVelocity(
                     linear: Vector2.Lerp(this.driven.LinearVelocity, _body.LinearVelocity, lerp),
@@ -96,6 +102,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
             // Create a clone of the farseer entities body within the server render
             _body = _server.CloneBody(body);
             _body.UserData = body;
+
+            this.driven.SetBodyEnabled(false);
         }
 
         /// <summary>
@@ -170,7 +178,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
         private void HandleRead(object sender, NetIncomingMessage arg)
         {
             // Update the positional data...
-            _body.SetTransform(this.driven.Position, this.driven.Rotation);
+            _body.SetTransformIgnoreContacts(this.driven.Position, this.driven.Rotation);
         }
 
         private void HandleCollidesWithChanged(object sender, Category arg)
@@ -182,9 +190,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
         {
             _body.CollisionCategories = arg;
         }
-        private void HandleFarseerEnabledChanged(object sender, bool arg)
+        private void HandleBodyEnabledChanged(object sender, bool arg)
         {
             _body.Enabled = arg;
+
+            this.driven.SetBodyEnabled(true);
         }
         #endregion
 
@@ -198,7 +208,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
             {
                 this.driven.SetPosition(
                     position: _body.Position,
-                    rotation: _body.Rotation);
+                    rotation: _body.Rotation,
+                    ignoreContacts: true);
 
                 this.driven.SetVelocity(
                     linear: _body.LinearVelocity,
