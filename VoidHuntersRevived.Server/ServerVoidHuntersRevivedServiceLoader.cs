@@ -6,10 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Server
+namespace VoidHuntersRevived.Server
 {
     [IsServiceLoader]
-    public class ServerGalacticFightersServiceLoader : IServiceLoader
+    public class ServerVoidHuntersRevivedServiceLoader : IServiceLoader
     {
         public void ConfigureServices(IServiceCollection services)
         {

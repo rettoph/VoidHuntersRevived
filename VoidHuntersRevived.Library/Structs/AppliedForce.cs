@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Library.Structs
+namespace VoidHuntersRevived.Library.Structs
 {
     public struct AppliedForce
     {

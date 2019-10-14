@@ -7,12 +7,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Client.Library
+namespace VoidHuntersRevived.Client.Library
 {
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
-        ClientGalacticFightersGame game;
+        ClientVoidHuntersRevivedsGame game;
         String host;
 
         public Game1(String host = "localhost")
@@ -36,7 +36,7 @@ namespace GalacticFighters.Client.Library
                 .ConfigureNetwork("vhr")
                 .ConfigureMonoGame(this.graphics, this.Content, this.Window)
                 .Initialize()
-                .BuildGame<ClientGalacticFightersGame>(g =>
+                .BuildGame<ClientVoidHuntersRevivedsGame>(g =>
                 {
                     g.host = this.host;
                 });

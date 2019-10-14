@@ -1,7 +1,7 @@
-﻿using GalacticFighters.Library.Configurations;
-using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
-using GalacticFighters.Library.Extensions.Farseer;
-using GalacticFighters.Library.Utilities;
+﻿using VoidHuntersRevived.Library.Configurations;
+using VoidHuntersRevived.Library.Entities.ShipParts.ConnectionNodes;
+using VoidHuntersRevived.Library.Extensions.Farseer;
+using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.Collection;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Library.Entities.ShipParts
+namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
     /// <summary>
     /// Contains miscellaneous code not specific to any other

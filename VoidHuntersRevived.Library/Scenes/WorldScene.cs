@@ -1,5 +1,5 @@
 ﻿using FarseerPhysics.Dynamics;
-using GalacticFighters.Library.Entities.Players;
+using VoidHuntersRevived.Library.Entities.Players;
 using Guppy;
 using Guppy.Collections;
 using Guppy.Network.Groups;
@@ -9,9 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Library.Scenes
+namespace VoidHuntersRevived.Library.Scenes
 {
-    public abstract class GalacticFightersWorldScene : NetworkScene
+    public abstract class WorldScene : NetworkScene
     {
         #region Protected Fields
         protected World world { get; private set; }
@@ -22,7 +22,7 @@ namespace GalacticFighters.Library.Scenes
         #endregion
 
         #region Constructor
-        public GalacticFightersWorldScene(World world)
+        public WorldScene(World world)
         {
             this.world = world;
         }

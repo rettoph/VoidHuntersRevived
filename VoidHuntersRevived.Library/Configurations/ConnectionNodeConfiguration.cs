@@ -1,10 +1,10 @@
-﻿using GalacticFighters.Library.Utilities;
+﻿using VoidHuntersRevived.Library.Utilities;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Library.Configurations
+namespace VoidHuntersRevived.Library.Configurations
 {
     public class ConnectionNodeConfiguration
     {

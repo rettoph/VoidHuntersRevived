@@ -1,4 +1,4 @@
-﻿using GalacticFighters.Library.Scenes;
+﻿using VoidHuntersRevived.Library.Scenes;
 using Guppy;
 using Guppy.Network.Peers;
 using Microsoft.Xna.Framework;
@@ -6,13 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Library
+namespace VoidHuntersRevived.Library
 {
-    public class GalacticFightersGame : Guppy.Game
+    public class VoidHuntersRevivedGame : Guppy.Game
     {
         private Peer _peer;
 
-        public GalacticFightersGame(Peer peer)
+        public VoidHuntersRevivedGame(Peer peer)
         {
             _peer = peer;
         }

@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Library.Utilities
+namespace VoidHuntersRevived.Library.Utilities
 {
     /// <summary>
     /// Utility automatically updated each frame

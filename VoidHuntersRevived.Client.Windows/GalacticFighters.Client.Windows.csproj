@@ -67,9 +67,9 @@
       <Project>{efa482d2-5848-4f77-b90f-d00b75de9069}</Project>
       <Name>FarseerPhysics.MonoGame</Name>
     </ProjectReference>
-    <ProjectReference Include="..\VoidHuntersRevived.Client.Library\GalacticFighters.Client.Library.csproj">
+    <ProjectReference Include="..\VoidHuntersRevived.Client.Library\VoidHuntersRevived.Client.Library.csproj">
       <Project>{455880B1-F863-446F-B2DB-CDDDADDAA2C5}</Project>
-      <Name>GalacticFighters.Client.Library</Name>
+      <Name>VoidHuntersRevived.Client.Library</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

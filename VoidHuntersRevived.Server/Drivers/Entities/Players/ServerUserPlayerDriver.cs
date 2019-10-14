@@ -1,7 +1,7 @@
-﻿using GalacticFighters.Library.Entities.Players;
-using GalacticFighters.Library.Entities.ShipParts;
-using GalacticFighters.Library.Extensions;
-using GalacticFighters.Library.Utilities;
+﻿using VoidHuntersRevived.Library.Entities.Players;
+using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Extensions;
+using VoidHuntersRevived.Library.Utilities;
 using Guppy;
 using Guppy.Attributes;
 using Guppy.Collections;
@@ -12,9 +12,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using static GalacticFighters.Library.Entities.Ship;
+using static VoidHuntersRevived.Library.Entities.Ship;
 
-namespace GalacticFighters.Server.Drivers.Entities.Players
+namespace VoidHuntersRevived.Server.Drivers.Entities.Players
 {
     [IsDriver(typeof(UserPlayer))]
     public class ServerUserPlayerDrivers : Driver<UserPlayer>

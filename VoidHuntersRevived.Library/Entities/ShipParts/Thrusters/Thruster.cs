@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
-using GalacticFighters.Library.Utilities;
+using VoidHuntersRevived.Library.Entities.ShipParts.ConnectionNodes;
+using VoidHuntersRevived.Library.Utilities;
 using Microsoft.Xna.Framework;
 
-namespace GalacticFighters.Library.Entities.ShipParts.Thrusters
+namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
 {
     /// <summary>
     /// The basic thruster objects,

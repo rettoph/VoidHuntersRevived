@@ -1,7 +1,7 @@
 ﻿using FarseerPhysics;
-using GalacticFighters.Client.Library.Scenes;
-using GalacticFighters.Library.Configurations;
-using GalacticFighters.Library.Entities.ShipParts;
+using VoidHuntersRevived.Client.Library.Scenes;
+using VoidHuntersRevived.Library.Configurations;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 using Guppy;
 using Guppy.Attributes;
 using Guppy.Loaders;
@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GalacticFighters.Client.Library.Drivers.Entities.ShipParts
+namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
 {
     [IsDriver(typeof(ShipPart))]
     internal sealed class ClientShipPartDriver : Driver<ShipPart>
@@ -27,7 +27,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.ShipParts
         private Vector2 _origin;
         private Boolean _textureLoaded;
 
-        public ClientShipPartDriver(SpriteBatch spriteBatch, ClientGalacticFightersWorldScene scene, ContentLoader content, ShipPart driven) : base(driven)
+        public ClientShipPartDriver(SpriteBatch spriteBatch, ClientWorldScene scene, ContentLoader content, ShipPart driven) : base(driven)
         {
             _spriteBatch = spriteBatch;
             _camera = scene.Camera;

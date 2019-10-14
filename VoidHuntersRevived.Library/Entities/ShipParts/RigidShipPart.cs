@@ -1,7 +1,7 @@
 ﻿using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Common;
 using FarseerPhysics.Dynamics;
-using GalacticFighters.Library.Utilities;
+using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.Collection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GalacticFighters.Library.Entities.ShipParts
+namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
     /// <summary>
     /// Implementation of the ShipPart class that creates a rigig attachment

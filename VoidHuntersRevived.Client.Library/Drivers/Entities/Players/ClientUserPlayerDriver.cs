@@ -1,9 +1,9 @@
 ﻿using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
-using GalacticFighters.Client.Library.Entities;
-using GalacticFighters.Client.Library.Scenes;
-using GalacticFighters.Library.Entities;
-using GalacticFighters.Library.Entities.Players;
+using VoidHuntersRevived.Client.Library.Entities;
+using VoidHuntersRevived.Client.Library.Scenes;
+using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Entities.Players;
 using Guppy;
 using Guppy.Attributes;
 using Guppy.Network.Peers;
@@ -16,15 +16,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Guppy.Network.Extensions.Lidgren;
-using GalacticFighters.Library.Entities.ShipParts;
-using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
+using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Entities.ShipParts.ConnectionNodes;
 using Microsoft.Xna.Framework.Graphics;
 using Guppy.Loaders;
 using Microsoft.Extensions.Logging;
-using GalacticFighters.Library.Utilities;
+using VoidHuntersRevived.Library.Utilities;
 using System.IO;
 
-namespace GalacticFighters.Client.Library.Drivers.Entities.Players
+namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 {
     [IsDriver(typeof(UserPlayer))]
     public class ClientUserPlayerDriver : Driver<UserPlayer>
@@ -37,7 +37,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
         private Pointer _pointer;
         private World _world;
         private ClientPeer _client;
-        private ClientGalacticFightersWorldScene _scene;
+        private ClientWorldScene _scene;
         private SpriteFont _font;
         private SpriteBatch _spriteBatch;
         private ShipBuilder _builder;
@@ -47,7 +47,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Players
         #endregion
 
         #region Constructor
-        public ClientUserPlayerDriver(Interval interval, DebugOverlay debugOverlay, ShipBuilder builder, ContentLoader content, SpriteBatch spriteBatch, Pointer pointer, World world, ClientPeer client, ClientGalacticFightersWorldScene scene, UserPlayer driven) : base(driven)
+        public ClientUserPlayerDriver(Interval interval, DebugOverlay debugOverlay, ShipBuilder builder, ContentLoader content, SpriteBatch spriteBatch, Pointer pointer, World world, ClientPeer client, ClientWorldScene scene, UserPlayer driven) : base(driven)
         {
             _interval = interval;
             _debugOverlay = debugOverlay;

@@ -1,4 +1,4 @@
-﻿using GalacticFighters.Library.Scenes;
+﻿using VoidHuntersRevived.Library.Scenes;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Security;
 using Lidgren.Network;
@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Library.Entities.Players
+namespace VoidHuntersRevived.Library.Entities.Players
 {
     public sealed class UserPlayer : Player
     {
@@ -17,7 +17,7 @@ namespace GalacticFighters.Library.Entities.Players
         #endregion
 
         #region Constructor
-        public UserPlayer(GalacticFightersWorldScene scene) : base(scene)
+        public UserPlayer(WorldScene scene) : base(scene)
         {
         }
         #endregion

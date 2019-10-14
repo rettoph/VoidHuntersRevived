@@ -1,4 +1,4 @@
-﻿using GalacticFighters.Library.Entities.ShipParts.Thrusters;
+﻿using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using Guppy;
 using Guppy.Attributes;
 using Guppy.Loaders;
@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Client.Library.Drivers.Entities.ShipParts
+namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
 {
     [IsDriver(typeof(Thruster))]
     class ClientThrusterDriver : Driver<Thruster>

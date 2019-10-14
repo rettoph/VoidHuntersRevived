@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GalacticFighters.Library.Utilities
+namespace VoidHuntersRevived.Library.Utilities
 {
     /// <summary>
     /// Experimental class used to "reserve" a state.

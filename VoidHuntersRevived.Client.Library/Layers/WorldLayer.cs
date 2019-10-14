@@ -1,7 +1,7 @@
-﻿using GalacticFighters.Client.Library.Entities;
-using GalacticFighters.Client.Library.Scenes;
-using GalacticFighters.Client.Library.Utilities.Cameras;
-using GalacticFighters.Library.Entities.Ammunitions;
+﻿using VoidHuntersRevived.Client.Library.Entities;
+using VoidHuntersRevived.Client.Library.Scenes;
+using VoidHuntersRevived.Client.Library.Utilities.Cameras;
+using VoidHuntersRevived.Library.Entities.Ammunitions;
 using Guppy;
 using Guppy.Extensions.Collection;
 using Guppy.Network.Peers;
@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GalacticFighters.Client.Library.Layers
+namespace VoidHuntersRevived.Client.Library.Layers
 {
     public class WorldLayer : Layer
     {
@@ -27,7 +27,7 @@ namespace GalacticFighters.Client.Library.Layers
         #endregion
 
         #region Constructor
-        public WorldLayer(IPool<Projectile> projectiles, DebugOverlay debug, GraphicsDevice graphics, SpriteBatch spriteBatch, ClientGalacticFightersWorldScene scene)
+        public WorldLayer(IPool<Projectile> projectiles, DebugOverlay debug, GraphicsDevice graphics, SpriteBatch spriteBatch, ClientWorldScene scene)
         {
             _projectiles = projectiles;
             _debug = debug;

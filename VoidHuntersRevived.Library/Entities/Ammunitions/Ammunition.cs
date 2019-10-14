@@ -1,11 +1,11 @@
-﻿using GalacticFighters.Library.Entities.ShipParts.Weapons;
+﻿using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
 using Guppy;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Library.Entities.Ammunitions
+namespace VoidHuntersRevived.Library.Entities.Ammunitions
 {
     /// <summary>
     /// Ammunition represents the base 

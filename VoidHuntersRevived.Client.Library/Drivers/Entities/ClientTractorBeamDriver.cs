@@ -1,8 +1,8 @@
 ﻿using FarseerPhysics.Dynamics;
-using GalacticFighters.Client.Library.Utilities;
-using GalacticFighters.Library.Entities;
-using GalacticFighters.Library.Entities.ShipParts;
-using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
+using VoidHuntersRevived.Client.Library.Utilities;
+using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Entities.ShipParts.ConnectionNodes;
 using Guppy;
 using Guppy.Attributes;
 using Microsoft.Xna.Framework;
@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Client.Library.Drivers.Entities
+namespace VoidHuntersRevived.Client.Library.Drivers.Entities
 {
     [IsDriver(typeof(TractorBeam))]
     public sealed class ClientTractorBeamDriver : Driver<TractorBeam>

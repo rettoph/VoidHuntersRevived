@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Library.Utilities
+namespace VoidHuntersRevived.Library.Utilities
 {
     /// <summary>
     /// Default collision categories used within the game

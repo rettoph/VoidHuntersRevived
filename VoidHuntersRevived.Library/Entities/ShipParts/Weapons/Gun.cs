@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using FarseerPhysics.Dynamics;
-using GalacticFighters.Library.Entities.Ammunitions;
+using VoidHuntersRevived.Library.Entities.Ammunitions;
 using Guppy;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 
-namespace GalacticFighters.Library.Entities.ShipParts.Weapons
+namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 {
     /// <summary>
     /// Weapon primarily used to fire multiple projectiles

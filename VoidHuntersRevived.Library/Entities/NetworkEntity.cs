@@ -1,4 +1,4 @@
-﻿using GalacticFighters.Library.Scenes;
+﻿using VoidHuntersRevived.Library.Scenes;
 // using GalacticFighters.Library.Utilities;
 using Guppy;
 using Guppy.Network.Groups;
@@ -10,11 +10,11 @@ using System.Text;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Collections;
 using Microsoft.Extensions.DependencyInjection;
-using GalacticFighters.Library.Utilities.Delegater;
+using VoidHuntersRevived.Library.Utilities.Delegater;
 using Microsoft.Extensions.Logging;
 using Guppy.Utilities.Options;
 
-namespace GalacticFighters.Library.Entities
+namespace VoidHuntersRevived.Library.Entities
 {
     /// <summary>
     /// Represents an entity that exists

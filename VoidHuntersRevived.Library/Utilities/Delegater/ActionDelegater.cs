@@ -1,5 +1,5 @@
-﻿using GalacticFighters.Library.Entities;
-using GalacticFighters.Library.Scenes;
+﻿using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Scenes;
 using Guppy.Utilities.Delegaters;
 using Lidgren.Network;
 using System;
@@ -9,7 +9,7 @@ using Guppy.Network.Extensions.Lidgren;
 using Microsoft.Extensions.Logging;
 using Guppy.Network.Security;
 
-namespace GalacticFighters.Library.Utilities.Delegater
+namespace VoidHuntersRevived.Library.Utilities.Delegater
 {
     /// <summary>
     /// Represents a new action message created by a NetworkEntity instance.

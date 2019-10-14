@@ -1,8 +1,8 @@
-﻿using GalacticFighters.Client.Library;
+﻿using VoidHuntersRevived.Client.Library;
 using System;
 using System.Threading;
 
-namespace GalacticFighters.Client.Core
+namespace VoidHuntersRevived.Client.Core
 {
     class Program
     {

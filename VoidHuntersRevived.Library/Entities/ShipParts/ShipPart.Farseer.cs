@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Dynamics;
-using GalacticFighters.Library.Configurations;
-using GalacticFighters.Library.Utilities;
+using VoidHuntersRevived.Library.Configurations;
+using VoidHuntersRevived.Library.Utilities;
 using Microsoft.Xna.Framework;
 
-namespace GalacticFighters.Library.Entities.ShipParts
+namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
     /// <summary>
     /// The farseer components within a GalacticFighter's 

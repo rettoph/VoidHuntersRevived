@@ -1,11 +1,11 @@
 ﻿using FarseerPhysics;
 using FarseerPhysics.DebugView;
 using FarseerPhysics.Dynamics;
-using GalacticFighters.Client.Library.Entities;
-using GalacticFighters.Client.Library.Layers;
-using GalacticFighters.Client.Library.Utilities;
-using GalacticFighters.Client.Library.Utilities.Cameras;
-using GalacticFighters.Library.Scenes;
+using VoidHuntersRevived.Client.Library.Entities;
+using VoidHuntersRevived.Client.Library.Layers;
+using VoidHuntersRevived.Client.Library.Utilities;
+using VoidHuntersRevived.Client.Library.Utilities.Cameras;
+using VoidHuntersRevived.Library.Scenes;
 using Guppy.Collections;
 using Guppy.Network.Peers;
 using Microsoft.Extensions.Logging;
@@ -18,9 +18,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GalacticFighters.Client.Library.Scenes
+namespace VoidHuntersRevived.Client.Library.Scenes
 {
-    public sealed class ClientGalacticFightersWorldScene : GalacticFightersWorldScene
+    public sealed class ClientWorldScene : WorldScene
     {
         #region Internal Fields
         internal DebugOverlay debugOverlay;
@@ -45,7 +45,7 @@ namespace GalacticFighters.Client.Library.Scenes
         #endregion
 
         #region Constructor
-        public ClientGalacticFightersWorldScene(SpriteBatch spriteBatch, ServerRender server, FarseerCamera2D camera, GraphicsDevice graphics, ContentManager content, World world) : base(world)
+        public ClientWorldScene(SpriteBatch spriteBatch, ServerRender server, FarseerCamera2D camera, GraphicsDevice graphics, ContentManager content, World world) : base(world)
         {
             _spriteBatch = spriteBatch;
             _server = server;

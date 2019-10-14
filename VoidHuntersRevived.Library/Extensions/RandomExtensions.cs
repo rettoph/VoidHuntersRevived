@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Library.Extensions
+namespace VoidHuntersRevived.Library.Extensions
 {
     public static class RandomExtensions
     {

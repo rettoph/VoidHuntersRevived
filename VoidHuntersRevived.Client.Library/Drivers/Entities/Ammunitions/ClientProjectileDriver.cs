@@ -1,6 +1,6 @@
-﻿using GalacticFighters.Client.Library.Scenes;
-using GalacticFighters.Client.Library.Utilities.Cameras;
-using GalacticFighters.Library.Entities.Ammunitions;
+﻿using VoidHuntersRevived.Client.Library.Scenes;
+using VoidHuntersRevived.Client.Library.Utilities.Cameras;
+using VoidHuntersRevived.Library.Entities.Ammunitions;
 using Guppy;
 using Guppy.Attributes;
 using Guppy.Loaders;
@@ -11,7 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Client.Library.Drivers.Entities.Ammunitions
+namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Ammunitions
 {
     [IsDriver(typeof(Projectile))]
     public class ClientProjectileDriver : Driver<Projectile>
@@ -25,7 +25,7 @@ namespace GalacticFighters.Client.Library.Drivers.Entities.Ammunitions
         #endregion
 
         #region Constructor
-        public ClientProjectileDriver(ClientGalacticFightersWorldScene scene, SpriteBatch spriteBatch, ContentLoader content, Projectile driven) : base(driven)
+        public ClientProjectileDriver(ClientWorldScene scene, SpriteBatch spriteBatch, ContentLoader content, Projectile driven) : base(driven)
         {
             _camera = scene.Camera;
             _spriteBatch = spriteBatch;

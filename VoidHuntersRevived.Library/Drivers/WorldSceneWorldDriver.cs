@@ -1,5 +1,5 @@
 ﻿using FarseerPhysics.Dynamics;
-using GalacticFighters.Library.Scenes;
+using VoidHuntersRevived.Library.Scenes;
 using Guppy;
 using Guppy.Attributes;
 using Microsoft.Extensions.Logging;
@@ -8,17 +8,17 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Library.Drivers
+namespace VoidHuntersRevived.Library.Drivers
 {
     /// <summary>
     /// Driver that will automatically step the world forward every frame
     /// </summary>
-    [IsDriver(typeof(GalacticFightersWorldScene), 150)]
-    public class GalacticFightersWorldSceneWorldDriver : Driver<GalacticFightersWorldScene>
+    [IsDriver(typeof(WorldScene), 150)]
+    public class WorldSceneWorldDriver : Driver<WorldScene>
     {
         private World _world;
 
-        public GalacticFightersWorldSceneWorldDriver(World world, GalacticFightersWorldScene driven) : base(driven)
+        public WorldSceneWorldDriver(World world, WorldScene driven) : base(driven)
         {
             _world = world;
         }

@@ -1,5 +1,5 @@
-﻿using GalacticFighters.Library.Entities;
-using GalacticFighters.Library.Scenes;
+﻿using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Scenes;
 using Guppy;
 using Guppy.Attributes;
 using Guppy.Collections;
@@ -13,9 +13,9 @@ using Guppy.Network.Security;
 using Microsoft.Xna.Framework;
 using System.Linq;
 using Microsoft.Extensions.Logging;
-using GalacticFighters.Library.Utilities;
+using VoidHuntersRevived.Library.Utilities;
 
-namespace GalacticFighters.Server.Drivers
+namespace VoidHuntersRevived.Server.Drivers
 {
     [IsDriver(typeof(NetworkScene))]
     internal class ServerNetworkSceneDriver : Driver<NetworkScene>

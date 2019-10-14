@@ -1,11 +1,11 @@
-﻿using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
+﻿using VoidHuntersRevived.Library.Entities.ShipParts.ConnectionNodes;
 using Guppy.Factories;
 using Guppy.Pooling.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Library.Factories
+namespace VoidHuntersRevived.Library.Factories
 {
     public class ConnectionNodeFactory : CreatableFactory<ConnectionNode>
     {

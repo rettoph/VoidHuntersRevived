@@ -2,9 +2,9 @@
 using FarseerPhysics.Common;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
-using GalacticFighters.Library.Extensions.Farseer;
-using GalacticFighters.Library.Structs;
-using GalacticFighters.Library.Utilities;
+using VoidHuntersRevived.Library.Extensions.Farseer;
+using VoidHuntersRevived.Library.Structs;
+using VoidHuntersRevived.Library.Utilities;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Pooling.Interfaces;
 using Lidgren.Network;
@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GalacticFighters.Library.Entities
+namespace VoidHuntersRevived.Library.Entities
 {
     /// <summary>
     /// An Entity that contains a body

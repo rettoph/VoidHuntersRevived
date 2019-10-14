@@ -1,7 +1,7 @@
 ﻿using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
-using GalacticFighters.Library.Entities.ShipParts;
-using GalacticFighters.Library.Entities.ShipParts.Weapons;
+using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
 using Guppy;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Library.Entities.Ammunitions
+namespace VoidHuntersRevived.Library.Entities.Ammunitions
 {
     /// <summary>
     /// Projectile's represent ammo that moves

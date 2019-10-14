@@ -1,6 +1,6 @@
-﻿using GalacticFighters.Library.Entities.ShipParts;
-using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
-using GalacticFighters.Library.Utilities;
+﻿using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Entities.ShipParts.ConnectionNodes;
+using VoidHuntersRevived.Library.Utilities;
 using Guppy;
 using Guppy.Loaders;
 using Guppy.Network.Extensions.Lidgren;
@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GalacticFighters.Library.Entities
+namespace VoidHuntersRevived.Library.Entities
 {
     /// <summary>
     /// A ship represents a specific chain of pieces

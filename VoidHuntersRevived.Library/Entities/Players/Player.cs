@@ -1,4 +1,4 @@
-﻿using GalacticFighters.Library.Scenes;
+﻿using VoidHuntersRevived.Library.Scenes;
 using Guppy;
 using Guppy.Collections;
 using Guppy.Network.Extensions.Lidgren;
@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Library.Entities.Players
+namespace VoidHuntersRevived.Library.Entities.Players
 {
     /// <summary>
     /// Players represent objects that can preform actions within ships.
@@ -22,7 +22,7 @@ namespace GalacticFighters.Library.Entities.Players
         #endregion
 
         #region Protected Attributes
-        protected GalacticFightersWorldScene scene { get; private set; }
+        protected WorldScene scene { get; private set; }
         #endregion
 
         #region Public Attributes
@@ -31,7 +31,7 @@ namespace GalacticFighters.Library.Entities.Players
         #endregion
 
         #region Constructor
-        public Player(GalacticFightersWorldScene scene)
+        public Player(WorldScene scene)
         {
             this.scene = scene;
         }

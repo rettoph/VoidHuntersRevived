@@ -2,10 +2,10 @@
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Joints;
 using FarseerPhysics.Factories;
-using GalacticFighters.Library.Configurations;
-using GalacticFighters.Library.Entities.Ammunitions;
-using GalacticFighters.Library.Extensions;
-using GalacticFighters.Library.Utilities;
+using VoidHuntersRevived.Library.Configurations;
+using VoidHuntersRevived.Library.Entities.Ammunitions;
+using VoidHuntersRevived.Library.Extensions;
+using VoidHuntersRevived.Library.Utilities;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -14,7 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Library.Entities.ShipParts.Weapons
+namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 {
     public abstract class Weapon : RigidShipPart
     {

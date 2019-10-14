@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using Guppy.Utilities.Loggers;
 using Guppy.Network.Extensions;
 
-namespace GalacticFighters.Server
+namespace VoidHuntersRevived.Server
 {
     class Program
     {
@@ -18,7 +18,7 @@ namespace GalacticFighters.Server
                 .ConfigureLogger<ConsoleLogger>()
                 .ConfigureNetwork("vhr")
                 .Initialize()
-                .BuildGame<ServerGalacticFightersGame>();
+                .BuildGame<ServerVoidHuntersRevivedGame>();
 
             game.TryStartAsync();
         }

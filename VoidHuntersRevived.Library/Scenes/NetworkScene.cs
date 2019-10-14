@@ -1,6 +1,6 @@
-﻿using GalacticFighters.Library.Entities;
-using GalacticFighters.Library.Utilities;
-using GalacticFighters.Library.Utilities.Delegater;
+﻿using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Utilities;
+using VoidHuntersRevived.Library.Utilities.Delegater;
 using Guppy;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Groups;
@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GalacticFighters.Library.Scenes
+namespace VoidHuntersRevived.Library.Scenes
 {
     public abstract class NetworkScene : Scene
     {

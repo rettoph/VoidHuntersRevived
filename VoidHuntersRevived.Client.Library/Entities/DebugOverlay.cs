@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GalacticFighters.Client.Library.Entities
+namespace VoidHuntersRevived.Client.Library.Entities
 {
     public class DebugOverlay : Entity
     {

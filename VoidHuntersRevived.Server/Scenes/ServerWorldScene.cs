@@ -1,10 +1,10 @@
 ﻿using FarseerPhysics.Dynamics;
-using GalacticFighters.Library.Entities;
-using GalacticFighters.Library.Entities.Players;
-using GalacticFighters.Library.Entities.ShipParts;
-using GalacticFighters.Library.Extensions;
-using GalacticFighters.Library.Scenes;
-using GalacticFighters.Library.Utilities;
+using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Entities.Players;
+using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Extensions;
+using VoidHuntersRevived.Library.Scenes;
+using VoidHuntersRevived.Library.Utilities;
 using Guppy.Collections;
 using Guppy.Network.Peers;
 using Guppy.Network.Security;
@@ -17,9 +17,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace GalacticFighters.Server.Scenes
+namespace VoidHuntersRevived.Server.Scenes
 {
-    internal sealed class ServerGalacticFightersWorldScene : GalacticFightersWorldScene
+    internal sealed class ServerWorldScene : WorldScene
     {
         #region Private Fields
         private Queue<User> _newUsers;
@@ -31,7 +31,7 @@ namespace GalacticFighters.Server.Scenes
         #endregion
 
         #region Constructor
-        public ServerGalacticFightersWorldScene(ShipBuilder builder, World world) : base(world)
+        public ServerWorldScene(ShipBuilder builder, World world) : base(world)
         {
             _builder = builder;
         }

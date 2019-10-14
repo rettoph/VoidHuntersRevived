@@ -1,7 +1,7 @@
-﻿using GalacticFighters.Client.Library.Drivers;
-using GalacticFighters.Client.Library.Entities;
-using GalacticFighters.Client.Library.Scenes;
-using GalacticFighters.Client.Library.Utilities;
+﻿using VoidHuntersRevived.Client.Library.Drivers;
+using VoidHuntersRevived.Client.Library.Entities;
+using VoidHuntersRevived.Client.Library.Scenes;
+using VoidHuntersRevived.Client.Library.Utilities;
 using Guppy.Attributes;
 using Guppy.Collections;
 using Guppy.Interfaces;
@@ -11,15 +11,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Client.Library
+namespace VoidHuntersRevived.Client.Library
 {
     [IsServiceLoader]
-    public class ClientGalacticFightersServiceLoader : IServiceLoader
+    public class ClientVoidHuntersRevivedServiceLoader : IServiceLoader
     {
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<ServerRender>();
-            services.AddTransient<DebugOverlay>(p => p.GetRequiredService<ClientGalacticFightersWorldScene>().debugOverlay);
+            services.AddTransient<DebugOverlay>(p => p.GetRequiredService<ClientWorldScene>().debugOverlay);
         }
 
         public void ConfigureProvider(IServiceProvider provider)

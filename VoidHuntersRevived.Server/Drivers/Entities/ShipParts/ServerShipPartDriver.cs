@@ -1,5 +1,5 @@
-﻿using GalacticFighters.Library.Entities.ShipParts;
-using GalacticFighters.Library.Utilities;
+﻿using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Utilities;
 using Guppy;
 using Guppy.Attributes;
 using Lidgren.Network;
@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Server.Drivers.Entities.ShipParts
+namespace VoidHuntersRevived.Server.Drivers.Entities.ShipParts
 {
     [IsDriver(typeof(ShipPart))]
     internal sealed class ServerShipPartDriver : Driver<ShipPart>

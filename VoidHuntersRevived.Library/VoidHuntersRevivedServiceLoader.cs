@@ -12,26 +12,26 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using GalacticFighters.Library.Entities;
-using GalacticFighters.Library.Scenes;
+using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Scenes;
 using Guppy.Attributes;
-using GalacticFighters.Library.Entities.ShipParts;
-using GalacticFighters.Library.Utilities;
-using GalacticFighters.Library.Factories;
-using GalacticFighters.Library.Entities.Players;
+using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Utilities;
+using VoidHuntersRevived.Library.Factories;
+using VoidHuntersRevived.Library.Entities.Players;
 using Guppy.Utilities.Options;
 using Microsoft.Extensions.Logging;
-using GalacticFighters.Library.Configurations;
-using GalacticFighters.Library.Entities.ShipParts.Thrusters;
-using GalacticFighters.Library.Entities.ShipParts.Weapons;
-using GalacticFighters.Library.Entities.ShipParts.Hulls;
-using GalacticFighters.Library.Entities.Ammunitions;
-using GalacticFighters.Library.Utilities.Delegater;
+using VoidHuntersRevived.Library.Configurations;
+using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
+using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
+using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
+using VoidHuntersRevived.Library.Entities.Ammunitions;
+using VoidHuntersRevived.Library.Utilities.Delegater;
 
-namespace GalacticFighters.Library
+namespace VoidHuntersRevived.Library
 {
     [IsServiceLoader]
-    internal sealed class GalacticFightersServiceLoader : IServiceLoader
+    internal sealed class VoidHuntersRevivedServiceLoader : IServiceLoader
     {
         public void ConfigureServices(IServiceCollection services)
         {

@@ -1,7 +1,7 @@
 ﻿using FarseerPhysics;
-using GalacticFighters.Client.Library.Scenes;
-using GalacticFighters.Library.Entities;
-using GalacticFighters.Library.Entities.ShipParts;
+using VoidHuntersRevived.Client.Library.Scenes;
+using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 using Guppy;
 using Guppy.Attributes;
 using Guppy.Collections;
@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GalacticFighters.Client.Library.Drivers.Entities
+namespace VoidHuntersRevived.Client.Library.Drivers.Entities
 {
     [IsDriver(typeof(Ship))]
     public class ClientShipDriver : Driver<Ship>

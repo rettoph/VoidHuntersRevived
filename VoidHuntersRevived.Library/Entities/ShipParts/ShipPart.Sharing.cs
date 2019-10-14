@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace GalacticFighters.Library.Entities.ShipParts
+namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
     /// <summary>
     /// Contains import export funxtions,

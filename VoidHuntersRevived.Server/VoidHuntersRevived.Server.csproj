@@ -28,11 +28,11 @@
   <ItemGroup>
     <ProjectReference Include="..\Submodules\Guppy\Guppy.Network\Guppy.Network.csproj" />
     <ProjectReference Include="..\Submodules\Guppy\Guppy\Guppy.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Library\GalacticFighters.Library.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Library\VoidHuntersRevived.Library.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Scenes\ServerGalacticFightersWorldScene.cs">
+    <Compile Update="Scenes\ServerWorldScene.cs">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Compile>
   </ItemGroup>

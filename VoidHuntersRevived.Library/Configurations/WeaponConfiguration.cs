@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Library.Configurations
+namespace VoidHuntersRevived.Library.Configurations
 {
     public class WeaponConfiguration : ShipPartConfiguration
     {

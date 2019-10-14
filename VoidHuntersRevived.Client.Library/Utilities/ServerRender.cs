@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Client.Library.Utilities
+namespace VoidHuntersRevived.Client.Library.Utilities
 {
     /// <summary>
     /// Manages server side farseer clones.

@@ -1,5 +1,5 @@
-﻿using GalacticFighters.Client.Library.Scenes;
-using GalacticFighters.Library;
+﻿using VoidHuntersRevived.Client.Library.Scenes;
+using VoidHuntersRevived.Library;
 using Guppy;
 using Guppy.Network.Peers;
 using Guppy.Network.Security;
@@ -10,16 +10,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Client.Library
+namespace VoidHuntersRevived.Client.Library
 {
-    public class ClientGalacticFightersGame : GalacticFightersGame
+    public class ClientVoidHuntersRevivedsGame : VoidHuntersRevivedGame
     {
         private ClientPeer _client;
         private Scene _scene;
 
         public String host { get; set; }
 
-        public ClientGalacticFightersGame(ClientPeer client) : base(client)
+        public ClientVoidHuntersRevivedsGame(ClientPeer client) : base(client)
         {
             _client = client;
         }
@@ -32,7 +32,7 @@ namespace GalacticFighters.Client.Library
 
             _client.TryConnect(this.host, 1337, _client.Users.Create("Rettoph"));
 
-            _scene = this.scenes.Create<ClientGalacticFightersWorldScene>(s =>
+            _scene = this.scenes.Create<ClientWorldScene>(s =>
             {
                 s.Group = _client.Groups.GetOrCreateById(Guid.Empty);
             });

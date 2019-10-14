@@ -1,8 +1,8 @@
 ﻿using FarseerPhysics.Dynamics;
-using GalacticFighters.Library.Entities;
-using GalacticFighters.Library.Extensions.Farseer;
-using GalacticFighters.Library.Utilities;
-using GalacticFighters.Library.Utilities.Delegater;
+using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Extensions.Farseer;
+using VoidHuntersRevived.Library.Utilities;
+using VoidHuntersRevived.Library.Utilities.Delegater;
 using Guppy;
 using Guppy.Attributes;
 using Lidgren.Network;
@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Server.Drivers.Entities
+namespace VoidHuntersRevived.Server.Drivers.Entities
 {
     [IsDriver(typeof(FarseerEntity))]
     public sealed class ServerFarseerEntityDriver : Driver<FarseerEntity>

@@ -1,4 +1,4 @@
-﻿using GalacticFighters.Library.Configurations;
+﻿using VoidHuntersRevived.Library.Configurations;
 using Guppy;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Library.Entities.ShipParts.ConnectionNodes
+namespace VoidHuntersRevived.Library.Entities.ShipParts.ConnectionNodes
 {
     public abstract class ConnectionNode : Creatable
     {

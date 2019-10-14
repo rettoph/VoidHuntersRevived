@@ -1,5 +1,5 @@
-﻿using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
-using GalacticFighters.Library.Factories;
+﻿using VoidHuntersRevived.Library.Entities.ShipParts.ConnectionNodes;
+using VoidHuntersRevived.Library.Factories;
 using Guppy.Extensions.Collection;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +12,7 @@ using Guppy.Collections;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 
-namespace GalacticFighters.Library.Entities.ShipParts
+namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
     /// <summary>
     /// Contains connection node specific code.

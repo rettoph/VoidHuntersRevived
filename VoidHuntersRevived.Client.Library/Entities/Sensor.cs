@@ -1,9 +1,9 @@
 ﻿using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Factories;
-using GalacticFighters.Client.Library.Scenes;
-using GalacticFighters.Library.Entities.ShipParts;
-using GalacticFighters.Library.Utilities;
+using VoidHuntersRevived.Client.Library.Scenes;
+using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Utilities;
 using Guppy;
 using Guppy.UI.Entities;
 using Microsoft.Extensions.Logging;
@@ -14,7 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Client.Library.Entities
+namespace VoidHuntersRevived.Client.Library.Entities
 {
     /// <summary>
     /// The sensor represents a circle area of selectable
@@ -23,7 +23,7 @@ namespace GalacticFighters.Client.Library.Entities
     public class Sensor : Entity
     {
         #region Private Fields
-        private ClientGalacticFightersWorldScene _scene;
+        private ClientWorldScene _scene;
         private Pointer _pointer;
         private World _world;
         private Body _body;
@@ -41,7 +41,7 @@ namespace GalacticFighters.Client.Library.Entities
         #endregion
 
         #region Constructor
-        public Sensor(SpriteBatch spriteBatch, ContentManager content, ClientGalacticFightersWorldScene scene, Pointer pointer, World world)
+        public Sensor(SpriteBatch spriteBatch, ContentManager content, ClientWorldScene scene, Pointer pointer, World world)
         {
             _spriteBatch = spriteBatch;
             _font = content.Load<SpriteFont>("font");

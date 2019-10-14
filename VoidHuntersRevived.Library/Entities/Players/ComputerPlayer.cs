@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using GalacticFighters.Library.Entities.ShipParts;
-using GalacticFighters.Library.Scenes;
+using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Scenes;
 using Microsoft.Xna.Framework;
 
-namespace GalacticFighters.Library.Entities.Players
+namespace VoidHuntersRevived.Library.Entities.Players
 {
     public class ComputerPlayer : Player
     {
         public override string Name { get => "Computer"; }
 
-        public ComputerPlayer(GalacticFightersWorldScene scene) : base(scene)
+        public ComputerPlayer(WorldScene scene) : base(scene)
         {
         }
 

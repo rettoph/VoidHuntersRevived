@@ -1,8 +1,8 @@
 ﻿using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Joints;
-using GalacticFighters.Client.Library.Utilities;
-using GalacticFighters.Library.Entities.ShipParts;
-using GalacticFighters.Library.Entities.ShipParts.Weapons;
+using VoidHuntersRevived.Client.Library.Utilities;
+using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
 using Guppy;
 using Guppy.Attributes;
 using Lidgren.Network;
@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Client.Library.Drivers.Entities.ShipParts.Weapons
+namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
 {
     [IsDriver(typeof(Weapon), 200)]
     internal sealed class ClientWeaponDriver : Driver<Weapon>

@@ -1,21 +1,21 @@
-﻿using GalacticFighters.Library.Entities;
-using GalacticFighters.Library.Entities.ShipParts;
+﻿using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 using Guppy;
 using Guppy.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Network.Extensions.Lidgren;
-using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
+using VoidHuntersRevived.Library.Entities.ShipParts.ConnectionNodes;
 using Microsoft.Xna.Framework;
 using Guppy.Collections;
 using System.IO;
-using GalacticFighters.Library.Utilities;
+using VoidHuntersRevived.Library.Utilities;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
-using GalacticFighters.Library.Extensions;
+using VoidHuntersRevived.Library.Extensions;
 
-namespace GalacticFighters.Server.Drivers.Entities
+namespace VoidHuntersRevived.Server.Drivers.Entities
 {
     [IsDriver(typeof(Ship))]
     public class ServerShipDriver : Driver<Ship>

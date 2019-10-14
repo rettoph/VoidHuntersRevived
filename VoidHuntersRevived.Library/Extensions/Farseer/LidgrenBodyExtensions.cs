@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Library.Extensions.Farseer
+namespace VoidHuntersRevived.Library.Extensions.Farseer
 {
     /// <summary>
     /// Contains farseer Body methods specific to ligren

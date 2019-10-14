@@ -1,12 +1,12 @@
-﻿using GalacticFighters.Library.Entities.ShipParts;
-using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
+﻿using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Entities.ShipParts.ConnectionNodes;
 using Guppy.Collections;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace GalacticFighters.Library.Utilities
+namespace VoidHuntersRevived.Library.Utilities
 {
     /// <summary>
     /// Simple class used to recursively import or export

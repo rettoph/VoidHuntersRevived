@@ -1,13 +1,13 @@
 ﻿using FarseerPhysics.Dynamics;
-using GalacticFighters.Library.Entities.ShipParts;
-using GalacticFighters.Library.Entities.ShipParts.ConnectionNodes;
+using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Entities.ShipParts.ConnectionNodes;
 using Guppy;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Library.Entities
+namespace VoidHuntersRevived.Library.Entities
 {
     /// <summary>
     /// Simple object used to pick up and interact with

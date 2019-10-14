@@ -1,5 +1,5 @@
-﻿using GalacticFighters.Library;
-using GalacticFighters.Server.Scenes;
+﻿using VoidHuntersRevived.Library;
+using VoidHuntersRevived.Server.Scenes;
 using Guppy.Network.Peers;
 using Guppy.Network.Security;
 using Lidgren.Network;
@@ -9,13 +9,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GalacticFighters.Server
+namespace VoidHuntersRevived.Server
 {
-    public class ServerGalacticFightersGame : GalacticFightersGame
+    public class ServerVoidHuntersRevivedGame : VoidHuntersRevivedGame
     {
         private ServerPeer _server;
 
-        public ServerGalacticFightersGame(ServerPeer server) : base(server)
+        public ServerVoidHuntersRevivedGame(ServerPeer server) : base(server)
         {
             _server = server;
             _server.Users.Events.TryAdd<User>("added", this.HandleUserJoined);
@@ -25,7 +25,7 @@ namespace GalacticFighters.Server
         {
             base.Initialize();
 
-            this.scenes.Create<ServerGalacticFightersWorldScene>(s =>
+            this.scenes.Create<ServerWorldScene>(s =>
             {
                 s.Group = _server.Groups.GetOrCreateById(Guid.Empty);
             }).TryStartAsync();
