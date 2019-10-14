@@ -79,9 +79,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            var sw = new Stopwatch();
-            sw.Start();
-            this.logger.LogInformation("Starting NetworkSceneUpdate...");
+
             if(_setup)
             {
                 // Parse all create messages
@@ -119,9 +117,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers
                     if(_removes.TryDequeue(out _im))
                         _entities.GetById(_im.ReadGuid())?.Dispose();
             }
-
-            sw.Stop();
-            this.logger.LogInformation($"Done.");
         }
         #endregion
 

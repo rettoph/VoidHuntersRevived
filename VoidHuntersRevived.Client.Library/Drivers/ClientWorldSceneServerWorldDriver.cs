@@ -25,14 +25,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             base.Update(gameTime);
 
-            var sw = new Stopwatch();
-            sw.Start();
-
-            this.logger.LogInformation($"ClientWorldSceneServerWorldDriver Starting...");
             _server.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
-
-            sw.Stop();
-            this.logger.LogInformation($"Done. {sw.ElapsedMilliseconds}");
         }
     }
 }

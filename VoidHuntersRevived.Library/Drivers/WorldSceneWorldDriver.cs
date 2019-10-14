@@ -28,9 +28,6 @@ namespace VoidHuntersRevived.Library.Drivers
         {
             base.Update(gameTime);
 
-            var sw = new Stopwatch();
-            sw.Start();
-
             _world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000);
         }
     }
