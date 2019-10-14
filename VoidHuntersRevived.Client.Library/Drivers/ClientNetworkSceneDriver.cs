@@ -83,8 +83,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             if(_setup)
             {
                 // Parse all create messages
-                this.logger.LogInformation(_creates.Count().ToString());
-
                 while(_creates.Any())
                     if(_creates.TryDequeue(out _im))
                     {
@@ -104,15 +102,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers
                     }
 
                 // Parse all update messages
-                this.logger.LogInformation(_updates.Count().ToString());
-
                 while (_updates.Any())
                     if(_updates.TryDequeue(out _im))
                         _entities.GetById<NetworkEntity>(_im.ReadGuid()).TryRead(_im);
 
                 // Parse all remove messages
-                this.logger.LogInformation(_removes.Count().ToString());
-
                 while (_removes.Any())
                     if(_removes.TryDequeue(out _im))
                         _entities.GetById(_im.ReadGuid())?.Dispose();
