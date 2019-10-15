@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Server.Scenes
         {
             base.PostInitialize();
 
-            for (Int32 i = 0; i < 2; i++)
+            for (Int32 i = 0; i < 3; i++)
             {
                 // Create a simple turret player 
                 this.entities.Create<ComputerPlayer>("player:computer", player =>
@@ -90,7 +90,7 @@ namespace VoidHuntersRevived.Server.Scenes
                 });
             }
 
-            for (Int32 i = 0; i < 2; i++)
+            for (Int32 i = 0; i < 5; i++)
             {
                 // Create a simple turret player 
                 this.entities.Create<ComputerPlayer>("player:computer", player =>

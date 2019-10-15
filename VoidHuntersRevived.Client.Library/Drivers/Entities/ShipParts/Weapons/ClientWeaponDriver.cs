@@ -46,7 +46,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
             _serverBarrel = this.driven.Barrel.DeepClone(_server.World);
 
             this.driven.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleChainUpdated);
-            this.driven.Events.TryAdd<NetIncomingMessage>("read", this.HandleRead);
         }
 
         protected override void Dispose()
@@ -82,6 +81,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
         {
             // Update the server render weld joint
             _serverRoot = _server.GetBodyById(this.driven.Root.BodyId);
+
             // Update joint data
             this.driven.UpdateJoint(ref _serverJoint, _serverRoot, _serverBarrel, _server.World);
 
@@ -89,8 +89,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
             _serverBarrel.CollidesWith = this.driven.Root.CollidesWith;
             _serverBarrel.CollisionCategories = this.driven.Root.CollisionCategories;
             _serverBarrel.IgnoreCCDWith = this.driven.Root.IgnoreCCDWith;
-            _serverBarrel.Enabled = this.driven.Root.BodyEnabled;
-            _serverJoint.Enabled = this.driven.Root.BodyEnabled;
 
             if (_root != default(ShipPart))
             { // Remove old events
@@ -104,6 +102,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
             _root.Events.TryAdd<Boolean>("body-enabled:changed", this.HandleFarseerEnabledChanged);
             _root.Events.TryAdd<Body>("position:changed", this.HandlePositionChanged);
             _root.Events.TryAdd<NetIncomingMessage>("read", this.HandleRead);
+
+            // Update barrel positioning
+            this.driven.UpdateBarrelPosition(_serverRoot, _serverBarrel);
+            this.driven.UpdateBarrelAngle(_serverJoint, _serverRoot);
         }
 
         private void HandlePositionChanged(object sender, Body arg)
@@ -115,13 +117,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
         private void HandleFarseerEnabledChanged(object sender, bool arg)
         {
             _serverBarrel.Enabled = arg;
-            _serverJoint.Enabled = arg;
         }
 
         private void HandleRead(object sender, NetIncomingMessage arg)
         {
             this.driven.UpdateBarrelPosition(_serverRoot, _serverBarrel);
-
             this.driven.UpdateBarrelAngle(_serverJoint, _serverRoot);
         }
         #endregion

@@ -43,6 +43,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
             this.driven.Actions.TryAdd("tractor-beam:attached:request", this.HandleTractorBeamAttachedRequest);
             this.driven.Actions.TryAdd("target:changed:request", this.HandleTargetChangedRequest);
             this.driven.Actions.TryAdd("firing:changed:request", this.HandleFiringChangedRequest);
+            this.driven.Actions.TryAdd("self-destruct:request", this.HandleSelfDestructRequest);
         }
         #endregion
 
@@ -121,6 +122,14 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
             {
                 this.driven.Ship.SetFiring(arg.ReadBoolean());
                 this.driven.Ship.ReadTargetOffset(arg);
+            }
+        }
+
+        private void HandleSelfDestructRequest(object sender, NetIncomingMessage arg)
+        {
+            if (this.ValidateSender(arg))
+            {
+                this.driven.Ship.Bridge.Dispose();
             }
         }
         #endregion

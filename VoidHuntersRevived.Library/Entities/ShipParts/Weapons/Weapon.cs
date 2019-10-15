@@ -124,8 +124,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             _barrel.CollidesWith = this.Root.CollidesWith;
             _barrel.CollisionCategories = this.Root.CollisionCategories;
             _barrel.IgnoreCCDWith = this.Root.IgnoreCCDWith;
-            _barrel.Enabled = this.Root.BodyEnabled;
-            _joint.Enabled = this.Root.BodyEnabled;
 
             if (_root != default(ShipPart))
             { // Remove old events
@@ -223,6 +221,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                 world.RemoveJoint(joint);
 
             // By default, reset the barrel rotation relative to the given root body
+            this.UpdateBarrelPosition(root, barrel);
             barrel.SetTransformIgnoreContacts(barrel.Position, root.Rotation + this.LocalRotation + MathHelper.Pi);
 
             // Update the recieved barrel's position
@@ -247,6 +246,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             // Update the barrel's collision info
             barrel.CollidesWith = this.Root.CollidesWith;
             barrel.CollisionCategories = this.Root.CollisionCategories;
+            barrel.Enabled = this.Root.BodyEnabled;
         }
 
         public void TryFire()
@@ -278,8 +278,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
         private void HandleBodyEnabledChanged(object sender, bool arg)
         {
-            _barrel.Enabled = arg;
-            _joint.Enabled = arg;
+            _barrel.Enabled = this.Root.Enabled;
         }
         #endregion
     }

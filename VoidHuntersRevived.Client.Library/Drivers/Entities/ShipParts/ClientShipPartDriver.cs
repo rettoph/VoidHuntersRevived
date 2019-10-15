@@ -13,12 +13,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VoidHuntersRevived.Library.Entities.ShipParts.ConnectionNodes;
+using FarseerPhysics.Dynamics;
+using VoidHuntersRevived.Client.Library.Utilities;
+using VoidHuntersRevived.Library.Extensions.Farseer;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
 {
     [IsDriver(typeof(ShipPart))]
     internal sealed class ClientShipPartDriver : Driver<ShipPart>
     {
+        #region Private Fields
         private ContentLoader _content;
         private Texture2D _texture;
         private Camera2D _camera;
@@ -26,17 +31,26 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
         private Vector3 _position;
         private Vector2 _origin;
         private Boolean _textureLoaded;
+        private ServerRender _server;
+        #endregion
 
-        public ClientShipPartDriver(SpriteBatch spriteBatch, ClientWorldScene scene, ContentLoader content, ShipPart driven) : base(driven)
+        #region Constructor
+        public ClientShipPartDriver(SpriteBatch spriteBatch, ClientWorldScene scene, ContentLoader content, ServerRender server, ShipPart driven) : base(driven)
         {
             _spriteBatch = spriteBatch;
             _camera = scene.Camera;
             _content = content;
+            _server = server;
         }
+        #endregion
 
+        #region Initialization Methods
         protected override void Initialize()
         {
             base.Initialize();
+
+            this.driven.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleChainUpdated);
+            this.driven.MaleConnectionNode.Events.TryAdd<ConnectionNode>("detached", this.HandleMaleConnectionNodeDetached);
 
             this.driven.Actions.TryAdd("health", this.HandleHealthAction);
 
@@ -59,7 +73,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
                 _origin = (new Vector2(_texture.Width, _texture.Height)/2) - center;
             }
         }
+        #endregion
 
+        #region Frame Methods
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
@@ -84,10 +100,27 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
                     layerDepth: 0);
             }
         }
+        #endregion
 
+        #region Action Handlers
         private void HandleHealthAction(object sender, NetIncomingMessage arg)
         {
             this.driven.Health = arg.ReadSingle();
         }
+        #endregion
+
+        #region Event Handlers
+        private void HandleChainUpdated(object sender, ShipPart.ChainUpdate arg)
+        {
+            if(this.driven.IsRoot) // Update the server render when the chain gets updated
+                _server.GetBodyById(this.driven.BodyId).SetTransformIgnoreContacts(this.driven.Position, this.driven.Rotation);
+        }
+
+        private void HandleMaleConnectionNodeDetached(object sender, ConnectionNode arg)
+        {
+            if (this.driven.IsRoot) // Update the server render when the chain gets updated
+                _server.GetBodyById(this.driven.BodyId).SetTransformIgnoreContacts(this.driven.Position, this.driven.Rotation);
+        }
+        #endregion
     }
 }
