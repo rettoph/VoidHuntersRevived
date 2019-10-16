@@ -38,7 +38,7 @@ namespace FarseerPhysics.Common.ConvexHull
             int m = 0;
             int ih = i0;
 
-            for (; ; )
+            for (;m<hull.Length; )
             {
                 hull[m] = ih;
 
