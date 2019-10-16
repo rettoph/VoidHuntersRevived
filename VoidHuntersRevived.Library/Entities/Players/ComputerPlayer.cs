@@ -30,8 +30,8 @@ namespace VoidHuntersRevived.Library.Entities.Players
                 if (nearest != default(Player))
                 { // If there is a valid target in range...
                     // Re-position the current ship towars the target player
-                    var targetRotation = Math.Atan2(nearest.Ship.Bridge.WorldCenter.Y - this.Ship.Bridge.Position.Y, nearest.Ship.Bridge.WorldCenter.X - this.Ship.Bridge.Position.X);
-                    var targetRotationDifference = this.Ship.Bridge.Rotation - targetRotation;
+                    var targetRotation = (Single)Math.Atan2(nearest.Ship.Bridge.WorldCenter.Y - this.Ship.Bridge.Position.Y, nearest.Ship.Bridge.WorldCenter.X - this.Ship.Bridge.Position.X);
+                    var targetRotationDifference = MathHelper.WrapAngle(this.Ship.Bridge.Rotation - targetRotation);
 
                     // Change rotation
                     if (targetRotationDifference < -0.1f)
@@ -72,11 +72,19 @@ namespace VoidHuntersRevived.Library.Entities.Players
                     this.Ship.SetTargetOffset(nearest.Ship.Bridge.WorldCenter - this.Ship.Bridge.WorldCenter);
 
                     // Set the fire status
-                    if (distance < 50f)
+                    if (distance < 40f)
                         this.Ship.SetFiring(true);
+                    else
+                        this.Ship.SetFiring(false);
                 }
                 else
                 {
+                    this.Ship.SetDirection(Ship.Direction.Forward, false);
+                    this.Ship.SetDirection(Ship.Direction.Backward, false);
+                    this.Ship.SetDirection(Ship.Direction.TurnLeft, false);
+                    this.Ship.SetDirection(Ship.Direction.TurnRight, false);
+
+
                     this.Ship.SetFiring(false);
                 }
             }

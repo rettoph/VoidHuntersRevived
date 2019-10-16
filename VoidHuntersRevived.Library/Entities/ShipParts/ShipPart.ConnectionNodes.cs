@@ -88,7 +88,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 .ToArray();
 
             // Bind event listeners tto automatically remap connection node data on a male attachment or female detachment
-            this.MaleConnectionNode.Events.TryAdd<ConnectionNode>("attached", (s, n) => this.DirtyChain(ChainUpdate.Both));
+            this.MaleConnectionNode.Events.TryAdd<ConnectionNode>("attached", (s, n) => this.CleanChain(ChainUpdate.Both));
             this.MaleConnectionNode.Events.TryAdd<ConnectionNode>("detached", (s, n) =>
             {
                 // Rigid snap the part's body to where the fixture used to be
