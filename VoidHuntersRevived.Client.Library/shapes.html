@@ -6,7 +6,7 @@
 			constructor(innerColor, outerColor, sideLength, borderWidth)
 			{
 				this.r = 0;
-				this.vertices = [new Point(0, 0)];
+				this.vertices = [];
 				
 				this.innerColor = innerColor;
 				this.outerColor = outerColor;
@@ -16,11 +16,22 @@
 			
 			add(r)
 			{
+				if(this.vertices.length == 0)
+					this.addVertice(0, 0);
+				
 				this.r = (this.r + Math.PI) - r;
 
 				var last = this.vertices[this.vertices.length - 1];
 				
-				this.vertices.push(new Point(last.x + (Math.cos(this.r) * this.sideLength), last.y + (Math.sin(this.r) * this.sideLength)));
+				this.addVertice(last.x + (Math.cos(this.r) * this.sideLength), last.y + (Math.sin(this.r) * this.sideLength))
+			}
+			
+			addVertice(x, y) {
+				this.vertices.push(new Point(x, y, ));
+			}
+			
+			addVerticeScale(x, y, s) {
+				this.addVertice(x * s, y * s);
 			}
 			
 			build()
@@ -42,8 +53,6 @@
 				max.x += this.borderWidth/2;
 				max.y += this.borderWidth/2;
 
-				console.log(min, max);
-				
 				var canvas = document.createElement('canvas');
 				canvas.width = max.x - min.x;
 				canvas.height = max.y - min.y;
@@ -99,8 +108,8 @@
 			return Math.PI * deg / 180;
 		}
 		
-		var side = 106;
-		var border = 6;
+		var side = 103;
+		var border = 3;
 		var innerColor = '#ffffff';
 		var outerColor = '#dedede';
 		
@@ -169,5 +178,21 @@
 		mosquito.add(toRad(210));
 		mosquito.add(toRad(150));
 		mosquito.build();
+		
+		var massDriverBase = new Shape(innerColor, outerColor, side, border);
+		massDriverBase.addVerticeScale(-0.2, -0.2, 100);
+		massDriverBase.addVerticeScale(-0.2, 0.2, 100);
+		massDriverBase.addVerticeScale(0.2, 0.2, 100);
+		massDriverBase.addVerticeScale(0.2, -0.2, 100);
+		massDriverBase.addVerticeScale(-0.2, -0.2, 100);
+		massDriverBase.build();
+		
+		var massDriverBarrel = new Shape(innerColor, outerColor, side, border);
+		massDriverBarrel.addVerticeScale(0, -0.1, 100);
+		massDriverBarrel.addVerticeScale(0, 0.1, 100);
+		massDriverBarrel.addVerticeScale(0.5, 0.1, 100);
+		massDriverBarrel.addVerticeScale(0.5, -0.1, 100);
+		massDriverBarrel.addVerticeScale(0, -0.1, 100);
+		massDriverBarrel.build();
 	</script>
 </body>
