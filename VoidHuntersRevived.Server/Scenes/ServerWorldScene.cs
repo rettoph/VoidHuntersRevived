@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Server.Scenes
         {
             base.PostInitialize();
 
-            for (Int32 i = 0; i < 3; i++)
+            for (Int32 i = 0; i < 2; i++)
             {
                 // Create a simple turret player 
                 this.entities.Create<ComputerPlayer>("player:computer", player =>
@@ -90,7 +90,7 @@ namespace VoidHuntersRevived.Server.Scenes
                 });
             }
 
-            for (Int32 i = 0; i < 5; i++)
+            for (Int32 i = 0; i < 0; i++)
             {
                 // Create a simple turret player 
                 this.entities.Create<ComputerPlayer>("player:computer", player =>
@@ -150,7 +150,7 @@ namespace VoidHuntersRevived.Server.Scenes
             });
 
 
-            for (Int32 i = 0; i < 1; i++)
+            for (Int32 i = 0; i < 10; i++)
             {
                 this.entities.Create<ShipPart>("ship-part:triangle").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
                 this.entities.Create<ShipPart>("ship-part:square").SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
