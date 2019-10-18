@@ -4,6 +4,7 @@
 */
 
 using Microsoft.Xna.Framework;
+using System;
 
 namespace FarseerPhysics
 {
@@ -14,6 +15,9 @@ namespace FarseerPhysics
     {
         private static float _displayUnitsToSimUnitsRatio = 100f;
         private static float _simUnitsToDisplayUnitsRatio = 1 / _displayUnitsToSimUnitsRatio;
+
+        public static Single DisplayUnitsToSimUnitsRatio { get => _displayUnitsToSimUnitsRatio; }
+        public static Single SimUnitsToDisplayUnitsRatio { get => _simUnitsToDisplayUnitsRatio; }
 
         public static void SetDisplayUnitToSimUnitRatio(float displayUnitsPerSimUnit)
         {

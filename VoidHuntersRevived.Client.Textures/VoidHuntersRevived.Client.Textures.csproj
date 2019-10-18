@@ -62,6 +62,7 @@
     <Compile Include="Attributes\IsBuilderAttribute.cs" />
     <Compile Include="Builders\Builder.cs" />
     <Compile Include="Builders\ShipPartBuilder.cs" />
+    <Compile Include="Extensions\Farseer\VerticeExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
