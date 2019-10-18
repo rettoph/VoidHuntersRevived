@@ -96,6 +96,7 @@ namespace VoidHuntersRevived.Library.Entities
             this.Events.Register<Boolean>("firing:changed");
 
             this.SetUpdateOrder(100);
+            this.SetDrawOrder(200);
         }
 
         protected override void PreInitialize()

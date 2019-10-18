@@ -62,12 +62,13 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         {
             base.PreInitialize();
 
-            this.layers.Create<DebugLayer>(1);
+            this.layers.Create<DebugLayer>(100);
 
             this.Sensor = this.entities.Create<Sensor>("sensor");
             this.debugOverlay = this.entities.Create<DebugOverlay>("debug-overlay");
 
-            this.layers.Create<WorldLayer>(0);
+            this.layers.Create<BackgroundLayer>(0);
+            this.layers.Create<WorldLayer>(1);
         }
 
         protected override void Initialize()

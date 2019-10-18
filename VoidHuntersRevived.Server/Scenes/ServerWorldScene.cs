@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Server.Scenes
         {
             base.PostInitialize();
 
-            for(Int32 i=0; i<0; i++)
+            for(Int32 i=0; i<5; i++)
             {
                 this.entities.Create<ComputerPlayer>("player:computer", player =>
                 {
@@ -67,7 +67,7 @@ namespace VoidHuntersRevived.Server.Scenes
                         using(FileStream import = File.OpenRead("Ships/mosquito.vh"))
                             ship.SetBridge(_builder.Import(import));
 
-                        ship.Bridge.SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
+                        ship.Bridge.SetPosition(this.random.NextVector2(-100, 100), this.random.NextSingle(-3, 3));
                     });
                 });
             }
@@ -106,17 +106,17 @@ namespace VoidHuntersRevived.Server.Scenes
                 player.User = user;
                 player.Ship = this.entities.Create<Ship>("ship", ship =>
                 { // Build a new ship for the player...
-                    using(FileStream import = File.OpenRead("Ships/mosquito.vh"))
+                    using(FileStream import = File.OpenRead("Ships/big-boy.vh"))
                         ship.SetBridge(_builder.Import(import));
 
-                    // ship.SetBridge(this.entities.Create<ShipPart>("ship-part:hexagon"));
+                    // ship.SetBridge(this.entities.Create<ShipPart>("ship-part:hull:hexagon"));
                     // ship.SetBridge(this.entities.Create<ShipPart>("ship-part:chassis:mosquito"));
-                    ship.Bridge.SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
+                    ship.Bridge.SetPosition(this.random.NextVector2(-5, 5), this.random.NextSingle(-3, 3));
                 });
             });
 
 
-            for (Int32 i = 0; i < 10; i++)
+            for (Int32 i = 0; i < 30; i++)
             {
                 this.entities.Create<ShipPart>("ship-part:hull:triangle").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
                 this.entities.Create<ShipPart>("ship-part:hull:square").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));

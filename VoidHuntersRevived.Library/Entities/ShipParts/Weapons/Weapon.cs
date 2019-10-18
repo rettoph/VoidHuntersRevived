@@ -43,6 +43,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         private RevoluteJoint _joint;
 
         private Interval _interval;
+
+        private Double _lastFire;
         #endregion
 
         #region Protected Attributes
@@ -142,6 +144,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         {
             base.Update(gameTime);
 
+            _lastFire += gameTime.ElapsedGameTime.TotalMilliseconds;
+
             // When reserved, instantly update barrel position so the joint doesnt have to
             if (this.Root.Reserverd.Value)
                 this.UpdateBarrelPosition();
@@ -150,8 +154,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             {
                 this.UpdateBarrelAngle();
 
-                if(_interval.Is(250))
+                if(_lastFire >= 200)
+                {
                     this.TryFire();
+
+                    _lastFire %= 200;
+                }
+                
             }
         }
         #endregion

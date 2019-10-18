@@ -83,6 +83,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
         {
             if(this.driven.IsRoot) // Update the server render when the chain gets updated
                 _server.GetBodyById(this.driven.BodyId).SetTransformIgnoreContacts(this.driven.Position, this.driven.Rotation);
+
+            this.driven.SetLayerDepth(this.driven.Root.IsBridge ? 1 : 0);
         }
 
         private void HandleMaleConnectionNodeDetached(object sender, ConnectionNode arg)

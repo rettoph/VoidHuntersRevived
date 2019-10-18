@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
 
             _lines = new List<Func<String>>();
 
-            this.SetLayerDepth(1);
+            this.SetLayerDepth(100);
         }
 
         public override void Dispose()

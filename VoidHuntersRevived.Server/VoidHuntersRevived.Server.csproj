@@ -8,12 +8,16 @@
   <ItemGroup>
     <None Remove="ship-part-export.dat" />
     <None Remove="ship.vh" />
+    <None Remove="Ships\big-boy.vh" />
     <None Remove="Ships\turret-01.vh" />
     <None Remove="Ships\turret-02.vh" />
     <None Remove="Ships\turret.vh" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Ships\big-boy.vh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Ships\mosquito.vh">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
