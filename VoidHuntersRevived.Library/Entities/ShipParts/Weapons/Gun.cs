@@ -60,6 +60,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
         protected override void Draw(GameTime gameTime)
         {
+            base.Draw(gameTime);
         }
         #endregion
 

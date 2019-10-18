@@ -11,6 +11,11 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Xna.Framework.Graphics;
+using VoidHuntersRevived.Client.Library.Scenes;
+using Guppy.Loaders;
+using Guppy.Utilities.Cameras;
+using VoidHuntersRevived.Library.Configurations;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
 {
@@ -29,12 +34,17 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
         /// the old root
         /// </summary>
         private ShipPart _root;
+
+        private Camera _camera;
+        private SpriteManager _sprite;
         #endregion
 
         #region Constructor
-        public ClientWeaponDriver(ServerRender server, Weapon driven) : base(driven)
+        public ClientWeaponDriver(SpriteManager sprite, ClientWorldScene scene, ServerRender server, Weapon driven) : base(driven)
         {
             _server = server;
+            _sprite = sprite;
+            _camera = scene.Camera;
         }
         #endregion
 
@@ -46,6 +56,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
             _serverBarrel = this.driven.Barrel.DeepClone(_server.World);
 
             this.driven.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleChainUpdated);
+
+            var config = (driven.Configuration.Data as WeaponConfiguration);
+            _sprite.Load(config.BarrelTexture, config.Barrel);
         }
 
         protected override void Dispose()
@@ -66,6 +79,20 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
                 this.driven.UpdateBarrelPosition(_serverRoot, _serverBarrel);
 
             this.driven.UpdateBarrelAngle(_serverJoint, _serverRoot);
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            var fullColor = Color.Lerp(this.driven.Root.IsBridge ? Color.Blue : (this.driven.Root.Configuration.Data as ShipPartConfiguration).DefaultColor, Color.White, 0.1f);
+            var deadColor = Color.Lerp(Color.DarkRed, fullColor, 0.2f);
+
+            _sprite.Draw(
+                this.driven.WorldBodyAnchor, 
+                this.driven.Rotation + this.driven.JointAngle + MathHelper.Pi,
+                Color.Lerp(deadColor, fullColor, this.driven.Health / 100), 
+                _camera);
         }
         #endregion
 

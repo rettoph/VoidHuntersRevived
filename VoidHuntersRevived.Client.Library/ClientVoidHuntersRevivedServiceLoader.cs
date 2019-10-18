@@ -18,6 +18,7 @@ namespace VoidHuntersRevived.Client.Library
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<SpriteManager>();
             services.AddScoped<ServerRender>();
             services.AddTransient<DebugOverlay>(p => p.GetRequiredService<ClientWorldScene>().debugOverlay);
         }
@@ -37,6 +38,9 @@ namespace VoidHuntersRevived.Client.Library
             content.TryRegister("sprite:ship-part:hull:beam:horizontal", "Sprites/ship-part_hull_beam_horizontal");
             content.TryRegister("sprite:ship-part:hull:beam:vertical", "Sprites/ship-part_hull_beam_vertical");
             content.TryRegister("sprite:ship-part:chassis:mosquito", "Sprites/ship-part_chassis_mosquito");
+            content.TryRegister("sprite:ship-part:weapon:mass-driver", "Sprites/ship-part_weapon_mass-driver");
+            content.TryRegister("sprite:ship-part:weapon:mass-driver:barrel", "Sprites/ship-part_weapon_mass-driver_barrel");
+            content.TryRegister("sprite:ship-part:thruster:small", "Sprites/ship-part_thruster_small");
 
             var entities = provider.GetRequiredService<EntityLoader>();
 

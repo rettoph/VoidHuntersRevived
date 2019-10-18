@@ -17,29 +17,25 @@ using VoidHuntersRevived.Library.Entities.ShipParts.ConnectionNodes;
 using FarseerPhysics.Dynamics;
 using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Library.Extensions.Farseer;
+using Microsoft.Extensions.Logging;
+using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
 {
     [IsDriver(typeof(ShipPart))]
     internal sealed class ClientShipPartDriver : Driver<ShipPart>
     {
-        #region Private Fields
-        private ContentLoader _content;
-        private Texture2D _texture;
+        #region Private Fields;
         private Camera2D _camera;
-        private SpriteBatch _spriteBatch;
-        private Vector3 _position;
-        private Vector2 _origin;
-        private Boolean _textureLoaded;
         private ServerRender _server;
+        private SpriteManager _sprite;
         #endregion
 
         #region Constructor
-        public ClientShipPartDriver(SpriteBatch spriteBatch, ClientWorldScene scene, ContentLoader content, ServerRender server, ShipPart driven) : base(driven)
+        public ClientShipPartDriver(SpriteManager sprite, ClientWorldScene scene, ServerRender server, ShipPart driven) : base(driven)
         {
-            _spriteBatch = spriteBatch;
             _camera = scene.Camera;
-            _content = content;
+            _sprite = sprite;
             _server = server;
         }
         #endregion
@@ -55,23 +51,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
             this.driven.Actions.TryAdd("health", this.HandleHealthAction);
 
             var config = (driven.Configuration.Data as ShipPartConfiguration);
-            _texture = _content.TryGet<Texture2D>(config.Texture);
-
-            if(_texture == default(Texture2D))
-            {
-                _textureLoaded = false;
-            }
-            else
-            {
-                _textureLoaded = true;
-                _origin = Vector2.Zero;
-                var verticies = config.Vertices.SelectMany(v => v);
-                Vector2 min = ConvertUnits.ToDisplayUnits(new Vector2(verticies.Min(v => v.X), verticies.Min(v => v.Y)));
-                Vector2 max = ConvertUnits.ToDisplayUnits(new Vector2(verticies.Max(v => v.X), verticies.Max(v => v.Y)));
-                Vector2 center = (min + max) / 2;
-
-                _origin = (new Vector2(_texture.Width, _texture.Height)/2) - center;
-            }
+            _sprite.Load(config.Texture, config.Vertices);
         }
         #endregion
 
@@ -80,25 +60,14 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
         {
             base.Draw(gameTime);
 
-            // Update the internal Vector3 data
-            this.driven.Position.Deconstruct(out _position.X, out _position.Y);
+            var fullColor = Color.Lerp(this.driven.Root.IsBridge ? Color.Blue : (this.driven.Root.Configuration.Data as ShipPartConfiguration).DefaultColor, Color.White, 0.1f);
+            var deadColor = Color.Lerp(Color.DarkRed, fullColor, 0.2f);
 
-            if (_textureLoaded && _camera.Frustum.Contains(_position).HasFlag(ContainmentType.Contains))
-            {
-                var fullColor = Color.Lerp(this.driven.Root.IsBridge ? Color.Blue : Color.Orange, Color.White, 0.1f);
-                var deadColor = Color.Lerp(Color.DarkRed, fullColor, 0.2f);
-
-                _spriteBatch.Draw(
-                    texture: _texture,
-                    position: this.driven.Position,
-                    sourceRectangle: _texture.Bounds,
-                    color: Color.Lerp(deadColor, fullColor, this.driven.Health / 100),
-                    rotation: this.driven.Rotation,
-                    origin: _origin,
-                    scale: 0.01f,
-                    effects: SpriteEffects.None,
-                    layerDepth: 0);
-            }
+            _sprite.Draw(
+                this.driven.Position,
+                this.driven.Rotation,
+                Color.Lerp(deadColor, fullColor, this.driven.Health / 100),
+                _camera);
         }
         #endregion
 

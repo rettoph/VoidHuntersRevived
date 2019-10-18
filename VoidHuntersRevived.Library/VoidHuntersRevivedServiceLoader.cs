@@ -79,9 +79,9 @@ namespace VoidHuntersRevived.Library
 
             #region Register Hull Pieces
             // Register ShipParts
-            entities.TryRegister<Hull>("ship-part:triangle", "", "", ShipPartConfiguration.BuildPolygon("sprite:ship-part:hull:triangle", 3, true));
-            entities.TryRegister<Hull>("ship-part:square", "", "", ShipPartConfiguration.BuildPolygon("sprite:ship-part:hull:square", 4, true));
-            entities.TryRegister<Hull>("ship-part:hexagon", "", "", ShipPartConfiguration.BuildPolygon("sprite:ship-part:hull:hexagon", 6, true));
+            entities.TryRegister<Hull>("ship-part:hull:triangle", "", "", ShipPartConfiguration.BuildPolygon("sprite:ship-part:hull:triangle", 3, true));
+            entities.TryRegister<Hull>("ship-part:hull:square", "", "", ShipPartConfiguration.BuildPolygon("sprite:ship-part:hull:square", 4, true));
+            entities.TryRegister<Hull>("ship-part:hull:hexagon", "", "", ShipPartConfiguration.BuildPolygon("sprite:ship-part:hull:hexagon", 6, true));
 
             // Create the pentagon
             var config = new ShipPartConfiguration();
@@ -91,7 +91,7 @@ namespace VoidHuntersRevived.Library
             config.AddSide((MathHelper.Pi / 3) + MathHelper.PiOver2, ShipPartConfiguration.NodeType.Female);
             config.AddSide(MathHelper.Pi / 3, ShipPartConfiguration.NodeType.Female);
             config.AddSide((MathHelper.Pi / 3) + MathHelper.PiOver2, ShipPartConfiguration.NodeType.Female);
-            entities.TryRegister<Hull>("ship-part:pentagon", "", "", config.Flush());
+            entities.TryRegister<Hull>("ship-part:hull:pentagon", "", "", config.Flush());
 
             // Create the horizontal beam
             config = new ShipPartConfiguration();
@@ -104,7 +104,7 @@ namespace VoidHuntersRevived.Library
             config.AddSide(MathHelper.Pi, ShipPartConfiguration.NodeType.Female);
             config.AddSide(MathHelper.Pi, ShipPartConfiguration.NodeType.Female);
             config.AddSide(MathHelper.Pi / 2, ShipPartConfiguration.NodeType.Female);
-            entities.TryRegister<Hull>("ship-part:beam:horizontal", "", "", config.Flush());
+            entities.TryRegister<Hull>("ship-part:hull:beam:horizontal", "", "", config.Flush());
             #endregion
 
             #region Register Chassis
@@ -136,28 +136,33 @@ namespace VoidHuntersRevived.Library
             #endregion
 
             #region Register Thrusters
+            var thrusterConfig = new ShipPartConfiguration(
+                texture: "sprite:ship-part:thruster:small",
+                vertices: new Vertices(
+                    new Vector2[] {
+                        new Vector2(-0.1f, -0.3f),
+                        new Vector2(-0.1f, 0.3f),
+                        new Vector2(0.4f, 0.1f),
+                        new Vector2(0.4f, -0.1f)
+                    }),
+                maleConnectionNode: new ConnectionNodeConfiguration()
+                {
+                    Position = new Vector2(0.3f, 0),
+                    Rotation = 0
+                });
+            thrusterConfig.DefaultColor = Color.Green;
+
             entities.TryRegister<Thruster>(
                 "ship-part:thruster:small",
                 "name:entity:ship-part:thruster:small",
                 "description:entity:ship-part:thruster",
-                new ShipPartConfiguration(
-                    vertices: new Vertices(
-                        new Vector2[] {
-                            new Vector2(-0.1f, -0.3f),
-                            new Vector2(-0.1f, 0.3f),
-                            new Vector2(0.4f, 0.1f),
-                            new Vector2(0.4f, -0.1f)
-                        }),
-                    maleConnectionNode: new ConnectionNodeConfiguration()
-                    {
-                        Position = new Vector2(0.3f, 0),
-                        Rotation = 0
-                    }));
+                thrusterConfig.Flush());
             #endregion
 
             #region Register Weapons
             var weaponConfig = new WeaponConfiguration(
                 fireRate: 250f,
+                texture: "sprite:ship-part:weapon:mass-driver",
                 vertices: new Vertices(
                     new Vector2[] {
                         new Vector2(-0.2f, -0.2f),
@@ -171,13 +176,17 @@ namespace VoidHuntersRevived.Library
                     Rotation = 0
                 });
 
-            weaponConfig.AddBarrel(new Vertices(new Vector2[]
-            {
-                new Vector2(0f, -0.1f),
-                new Vector2(0f, 0.1f),
-                new Vector2(0.5f, 0.1f),
-                new Vector2(0.5f, -0.1f)
-            }), new Vector2(-0.2f, 0));
+            weaponConfig.AddBarrel(
+                texture: "sprite:ship-part:weapon:mass-driver:barrel",
+                vertices: new Vertices(new Vector2[]
+                {
+                    new Vector2(0f, -0.1f),
+                    new Vector2(0f, 0.1f),
+                    new Vector2(0.5f, 0.1f),
+                    new Vector2(0.5f, -0.1f)
+                }), 
+                bodyAnchor: new Vector2(-0.1f, 0));
+            weaponConfig.DefaultColor = Color.OrangeRed;
 
             entities.TryRegister<Gun>(
                 "ship-part:weapon:mass-driver",

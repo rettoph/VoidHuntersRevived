@@ -150,7 +150,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             {
                 this.UpdateBarrelAngle();
 
-                if(_interval.Is(300))
+                if(_interval.Is(250))
                     this.TryFire();
             }
         }

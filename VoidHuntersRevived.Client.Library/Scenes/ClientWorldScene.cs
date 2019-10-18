@@ -115,11 +115,13 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             _graphics.Clear(Color.Black);
 
-            if(_debug)
-                _serverDebugView.RenderDebugData(this.Camera.Projection, this.Camera.View);
-            _debugView.RenderDebugData(this.Camera.Projection, this.Camera.View);
-
             this.layers.TryDraw(gameTime);
+
+            if (_debug)
+            {
+                _serverDebugView.RenderDebugData(this.Camera.Projection, this.Camera.View);
+                _debugView.RenderDebugData(this.Camera.Projection, this.Camera.View);
+            }
         }
         #endregion
     }

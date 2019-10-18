@@ -36,6 +36,8 @@ namespace VoidHuntersRevived.Library.Configurations
         public IReadOnlyCollection<ConnectionNodeConfiguration> FemaleConnectionNodes { get => _females.AsReadOnly(); }
         public Vector2 Centeroid { get; private set; }
         public String Texture { get; set; }
+
+        public Color DefaultColor { get; set; } = Color.Orange;
         #endregion
 
         #region Helper Fields
@@ -58,6 +60,7 @@ namespace VoidHuntersRevived.Library.Configurations
         }
 
         public ShipPartConfiguration(
+            String texture,
             List<Vertices> vertices,
             ConnectionNodeConfiguration maleConnectionNode,
             ConnectionNodeConfiguration[] femaleConnectionNodes = null)
@@ -69,10 +72,13 @@ namespace VoidHuntersRevived.Library.Configurations
             _females = new List<ConnectionNodeConfiguration>(femaleConnectionNodes);
             _male = maleConnectionNode;
 
+            this.Texture = texture;
+
             this.Flush();
         }
 
         public ShipPartConfiguration(
+            String texture,
             Vertices vertices,
             ConnectionNodeConfiguration maleConnectionNode,
             ConnectionNodeConfiguration[] femaleConnectionNodes = null)
@@ -86,6 +92,8 @@ namespace VoidHuntersRevived.Library.Configurations
             if(femaleConnectionNodes != null)
                 _females.AddRange(femaleConnectionNodes);
             _male = maleConnectionNode;
+
+            this.Texture = texture;
 
             this.Flush();
         }

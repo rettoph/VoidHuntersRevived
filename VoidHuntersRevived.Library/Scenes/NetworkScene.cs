@@ -38,7 +38,6 @@ namespace VoidHuntersRevived.Library.Scenes
         public Double ActionsPerSecond { get => (_actionsPerFrame.Sum() / _actionsPerFrame.Count) * this.FramesPerSecond; }
         #endregion
 
-
         #region Lifecycle Methods
         protected override void Create(IServiceProvider provider)
         {
@@ -88,7 +87,7 @@ namespace VoidHuntersRevived.Library.Scenes
             while (_frames.Count() > 5)
                 _frames.RemoveAt(0);
 
-            while (_actionsPerFrame.Count() > 5000)
+            while (_actionsPerFrame.Count() > 100)
                 _actionsPerFrame.RemoveAt(0);
         }
         #endregion
