@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Library.Utilities
                 _interval = _intervals[milliseconds];
             }
 
-            return _interval > milliseconds;
+            return _interval >= milliseconds;
         }
     }
 }

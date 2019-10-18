@@ -42,11 +42,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         /// </summary>
         private RevoluteJoint _joint;
 
-        /// <summary>
-        /// The milliseconds since the last
-        /// weapon fire.
-        /// </summary>
-        private Double _lastFire;
+        private Interval _interval;
         #endregion
 
         #region Protected Attributes
@@ -67,9 +63,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         #endregion
 
         #region Constructors
-        public Weapon(World world)
+        public Weapon(Interval interval, World world)
         {
             _world = world;
+            _interval = interval;
         }
         #endregion
 
@@ -153,10 +150,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             {
                 this.UpdateBarrelAngle();
 
-                this.TryFire();
+                if(_interval.Is(300))
+                    this.TryFire();
             }
-
-            _lastFire += gameTime.ElapsedGameTime.TotalMilliseconds;
         }
         #endregion
 
@@ -251,12 +247,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
         public void TryFire()
         {
-            if (this.Root.IsBridge && this.OnTarget && this.Root.BridgeFor.Firing && _lastFire >= this.config.FireRate)
+            if (this.Root.IsBridge && this.OnTarget && this.Root.BridgeFor.Firing)
             {
                 this.Fire();
-
-                // Reset the fire trigger...
-                _lastFire %= this.config.FireRate;
             }
         }
 

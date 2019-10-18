@@ -7,6 +7,7 @@ using VoidHuntersRevived.Library.Entities.Ammunitions;
 using Guppy;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
+using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 {
@@ -25,7 +26,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         #endregion
 
         #region Constructors
-        public Gun(World world) : base(world)
+        public Gun(Interval interval, World world) : base(interval, world)
         {
         }
         #endregion
