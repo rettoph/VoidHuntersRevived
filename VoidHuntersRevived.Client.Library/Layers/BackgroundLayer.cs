@@ -18,5 +18,21 @@ namespace VoidHuntersRevived.Client.Library.Layers
         {
         }
         #endregion
+
+        #region Life Cycle Methods
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            this.SetDrawOrder(0);
+        }
+        #endregion
+
+        #region Frame Methods
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+        }
+        #endregion
     }
 }

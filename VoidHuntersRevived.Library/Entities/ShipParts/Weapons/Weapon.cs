@@ -154,11 +154,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             {
                 this.UpdateBarrelAngle();
 
-                if(_lastFire >= 200)
+                _lastFire = Math.Min(_lastFire, 700);
+
+                if (_lastFire >= 350)
                 {
                     this.TryFire();
 
-                    _lastFire %= 200;
+                    _lastFire %= 350;
                 }
                 
             }

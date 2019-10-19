@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using VoidHuntersRevived.Library.Utilities;
+using System.Collections.Concurrent;
 
 namespace VoidHuntersRevived.Server.Drivers
 {
@@ -22,10 +23,16 @@ namespace VoidHuntersRevived.Server.Drivers
     {
         #region Private Fields
         private EntityCollection _entities;
-        private Queue<User> _newUsers;
-        private Queue<NetworkEntity> _dirty;
+        private ConcurrentQueue<User> _newUsers;
+        private ConcurrentQueue<NetworkEntity> _updates;
+        private ConcurrentQueue<NetworkEntity> _creates;
+        private ConcurrentQueue<Guid> _removes;
         private Interval _interval;
         private NetPeer _peer;
+
+        private User _user;
+        private NetworkEntity _entity;
+        private Guid _id;
         #endregion
 
         #region Constructor
@@ -42,8 +49,10 @@ namespace VoidHuntersRevived.Server.Drivers
         {
             base.Create(provider);
 
-            _dirty = new Queue<NetworkEntity>();
-            _newUsers = new Queue<User>();
+            _newUsers = new ConcurrentQueue<User>();
+            _creates = new ConcurrentQueue<NetworkEntity>();
+            _updates = new ConcurrentQueue<NetworkEntity>();
+            _removes = new ConcurrentQueue<Guid>();
         }
 
         protected override void Initialize()
@@ -60,7 +69,7 @@ namespace VoidHuntersRevived.Server.Drivers
         {
             base.Dispose();
 
-            _dirty.Clear();
+            _updates.Clear();
             _newUsers.Clear();
         }
         #endregion
@@ -71,10 +80,20 @@ namespace VoidHuntersRevived.Server.Drivers
             base.Update(gameTime);
 
             while (_newUsers.Any())
-                this.SetupNewUser(_newUsers.Dequeue());
+                if(_newUsers.TryDequeue(out _user))
+                    this.SetupNewUser(_user);
 
-            while (_dirty.Any())
-                this.CreateUpdateMessage(_dirty.Dequeue());
+            while (_creates.Any())
+                if (_creates.TryDequeue(out _entity))
+                    this.CreateCreateMessage(_entity);
+
+            while (_updates.Any())
+                if(_updates.TryDequeue(out _entity))
+                this.CreateUpdateMessage(_entity);
+
+            while (_removes.Any())
+                if (_removes.TryDequeue(out _id))
+                    this.CreateRemoveMessage(_id);
 
             if (_interval.Is(100))
                 _peer.FlushSendQueue();
@@ -106,7 +125,7 @@ namespace VoidHuntersRevived.Server.Drivers
             entity.TryWritePostInitialize(message);
 
             if (recipient == null)
-                _dirty.Enqueue(entity);
+                _updates.Enqueue(entity);
             else
                 this.CreateUpdateMessage(entity, recipient);
         }
@@ -116,22 +135,25 @@ namespace VoidHuntersRevived.Server.Drivers
             var message = this.driven.Group.CreateMessage("entity:update", recipient, NetDeliveryMethod.ReliableOrdered);
             entity.TryWrite(message);
         }
+
+        private void CreateRemoveMessage(Guid id)
+        {
+            var message = this.driven.Group.CreateMessage("entity:remove", NetDeliveryMethod.ReliableOrdered);
+            message.Write(id);
+        }
         #endregion
 
         #region Event Handlers
         private void HandleEntityAdded(object sender, Entity entity)
         {
             if (entity is NetworkEntity) // Enqueue the new entity so the create message can be sent next frame
-                this.CreateCreateMessage(entity as NetworkEntity);
+                _creates.Enqueue(entity as NetworkEntity);
         }
 
         private void HandleEntityRemoved(object sender, Entity entity)
         {
-            if(entity is NetworkEntity)
-            { // Broadcast the entity removal  to all clients
-                var message = this.driven.Group.CreateMessage("entity:remove", NetDeliveryMethod.ReliableUnordered);
-                message.Write(entity.Id);
-            }
+            if (entity is NetworkEntity)
+                _removes.Enqueue(entity.Id);
         }
 
         private void HandleUserAdded(object sender, User user)

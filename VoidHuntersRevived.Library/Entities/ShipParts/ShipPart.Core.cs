@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Network.Extensions.Lidgren;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -174,6 +175,21 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             this.body.WriteVelocity(om);
 
             this.ConnectionNode_Write(om);
+        }
+
+        protected override void ReadPostInitialize(NetIncomingMessage im)
+        {
+            base.ReadPostInitialize(im);
+
+            this.SetPosition(im.ReadVector2(), im.ReadSingle());
+        }
+
+        protected override void WritePostInitialize(NetOutgoingMessage om)
+        {
+            base.WritePostInitialize(om);
+
+            om.Write(this.Position);
+            om.Write(this.Rotation);
         }
         #endregion
     }

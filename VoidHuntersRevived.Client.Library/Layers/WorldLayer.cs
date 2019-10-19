@@ -50,6 +50,8 @@ namespace VoidHuntersRevived.Client.Library.Layers
                 TextureEnabled = true,
                 VertexColorEnabled = true
             };
+
+            this.SetDrawOrder(100);
         }
         #endregion
 
