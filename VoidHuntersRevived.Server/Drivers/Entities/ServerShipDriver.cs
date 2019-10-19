@@ -70,7 +70,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
             { // When the bridge is low health, blow up the ship
                 this.driven.Bridge.Dispose();
 
-                if (_lives < 15)
+                if (_lives < 3)
                 {
                     var ships = new String[] { "mosquito", "turret-01", "turret-02" };
                     var rand = new Random();
@@ -89,37 +89,37 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
         #region Event Handlers
         private void HandleBridgeChanged(object sender, ShipPart bridge)
         { 
-            this.driven.WriteBridge(this.driven.Actions.Create("bridge:changed", NetDeliveryMethod.ReliableOrdered));
+            this.driven.WriteBridge(this.driven.Actions.Create("bridge:changed", NetDeliveryMethod.ReliableOrdered, 0));
         }
 
         private void HandleDirectionChanged(object sender, Ship.Direction direction)
         {
-            this.driven.WriteDirection(this.driven.Actions.Create("direction:changed", NetDeliveryMethod.ReliableOrdered), direction);
+            this.driven.WriteDirection(this.driven.Actions.Create("direction:changed", NetDeliveryMethod.ReliableOrdered, 1), direction);
         }
 
         private void HandleTractorBeamSelected(object sender, ShipPart arg)
         {
-            var action = this.driven.Actions.Create("tractor-beam:selected");
+            var action = this.driven.Actions.Create("tractor-beam:selected", NetDeliveryMethod.ReliableOrdered, 1);
             this.driven.WriteTargetOffset(action);
             action.Write(this.driven.TractorBeam.Selected);
         }
 
         private void HandleTractorBeamReleased(object sender, ShipPart arg)
         {
-            var action = this.driven.Actions.Create("tractor-beam:released");
+            var action = this.driven.Actions.Create("tractor-beam:released", NetDeliveryMethod.ReliableOrdered, 1);
             this.driven.WriteTargetOffset(action);
         }
 
         private void HandleTractorBeamAttached(object sender, FemaleConnectionNode arg)
         {
-            var action = this.driven.Actions.Create("tractor-beam:attached");
+            var action = this.driven.Actions.Create("tractor-beam:attached", NetDeliveryMethod.ReliableOrdered, 1);
             action.Write(arg.Parent);
             action.Write(arg.Id);
         }
 
         private void HandleFiringChanged(object sender, bool arg)
         {
-            var action = this.driven.Actions.Create("firing:changed");
+            var action = this.driven.Actions.Create("firing:changed", NetDeliveryMethod.ReliableOrdered, 1);
             action.Write(this.driven.Firing);
             this.driven.WriteTargetOffset(action);
         }

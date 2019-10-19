@@ -300,6 +300,22 @@ namespace VoidHuntersRevived.Library.Entities
             this.ReadTargetOffset(im);
         }
 
+        protected override void WritePostInitialize(NetOutgoingMessage om)
+        {
+            base.WritePostInitialize(om);
+
+            this.WriteBridge(om);
+            this.WriteTargetOffset(om);
+        }
+
+        protected override void ReadPostInitialize(NetIncomingMessage im)
+        {
+            base.ReadPostInitialize(im);
+
+            this.ReadBridge(im);
+            this.ReadTargetOffset(im);
+        }
+
         /// <summary>
         /// Write the Ship's current bridge data
         /// </summary>

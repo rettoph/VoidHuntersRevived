@@ -151,18 +151,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                 this.UpdateBarrelPosition();
 
             if(this.Root.IsBridge)
-            {
                 this.UpdateBarrelAngle();
 
-                _lastFire = Math.Min(_lastFire, 700);
+            if (_lastFire >= 350)
+            {
+                this.TryFire();
 
-                if (_lastFire >= 350)
-                {
-                    this.TryFire();
-
-                    _lastFire %= 350;
-                }
-                
+                _lastFire = 0;
             }
         }
         #endregion

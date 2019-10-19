@@ -14,45 +14,34 @@ namespace VoidHuntersRevived.Library.Utilities.Delegater
     /// <summary>
     /// Represents a new action message created by a NetworkEntity instance.
     /// </summary>
-    public sealed class ActionDelegater : CustomDelegater<String, NetIncomingMessage>
+    public sealed class ActionMessageDelegater : CustomDelegater<String, NetIncomingMessage>
     {
         private NetworkEntity _entity;
         private NetworkScene _scene;
         private ILogger _logger;
 
-        public ActionDelegater(NetworkEntity networkEntity, NetworkScene scene, ILogger logger)
+        public ActionMessageDelegater(NetworkEntity networkEntity, NetworkScene scene, ILogger logger)
         {
             _entity = networkEntity;
             _scene = scene;
             _logger = logger;
         }
 
-        public NetOutgoingMessage Create(String type, NetConnection recipient, NetDeliveryMethod method = NetDeliveryMethod.ReliableUnordered)
+        #region Create Methods
+        public NetOutgoingMessage Create(String type, NetDeliveryMethod method, Int32 sequenceChannel, NetConnection recipient = null)
         {
-            var om = _scene.Group.CreateMessage("entity:action", recipient, method, 0);
+            var om = _scene.actions.Create("entity:action", method, sequenceChannel, recipient);
             om.Write(_entity.Id);
             om.Write(type);
 
             return om;
         }
 
-        public NetOutgoingMessage Create(String type, User recipient, NetDeliveryMethod method = NetDeliveryMethod.ReliableUnordered)
+        public NetOutgoingMessage Create(String type, NetDeliveryMethod method, Int32 sequenceChannel, User recipient)
         {
-            var om = _scene.Group.CreateMessage("entity:action", recipient, method, 0);
-            om.Write(_entity.Id);
-            om.Write(type);
-
-            return om;
+            return this.Create(type, method, sequenceChannel, recipient.Connection);
         }
-
-        public NetOutgoingMessage Create(String type, NetDeliveryMethod method = NetDeliveryMethod.ReliableUnordered, Int32 sequenceChannel = 0)
-        {
-            var om = _scene.Group.CreateMessage("entity:action", method, sequenceChannel);
-            om.Write(_entity.Id);
-            om.Write(type);
-
-            return om;
-        }
+        #endregion
 
         protected override void Invoke<T>(object sender, string key, T arg)
         {

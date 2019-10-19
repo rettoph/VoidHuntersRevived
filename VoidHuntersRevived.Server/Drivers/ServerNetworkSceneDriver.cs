@@ -103,7 +103,7 @@ namespace VoidHuntersRevived.Server.Drivers
         #region Helper Methods
         private void SetupNewUser(User user)
         {
-            this.driven.Group.CreateMessage("setup:start", user, NetDeliveryMethod.ReliableOrdered);
+            this.driven.Group.Messages.Create("setup:start", NetDeliveryMethod.ReliableOrdered, 0, user);
 
             _entities.ForEach(e =>
             { // Send all existing network entities to the new user
@@ -111,14 +111,14 @@ namespace VoidHuntersRevived.Server.Drivers
                     this.CreateCreateMessage(e as NetworkEntity, user);
             });
 
-            this.driven.Group.CreateMessage("setup:end", user, NetDeliveryMethod.ReliableOrdered);
+            this.driven.Group.Messages.Create("setup:end", NetDeliveryMethod.ReliableOrdered, 0, user);
         }
         #endregion
 
         #region Message Methods
         private void CreateCreateMessage(NetworkEntity entity, User recipient = null)
         {
-            var message = this.driven.Group.CreateMessage("entity:create", recipient, NetDeliveryMethod.ReliableOrdered);
+            var message = this.driven.Group.Messages.Create("entity:create", NetDeliveryMethod.ReliableOrdered, 0, recipient);
             message.Write(entity.Configuration.Handle);
             message.Write(entity.Id);
             entity.TryWritePreInitialize(message);
@@ -132,13 +132,13 @@ namespace VoidHuntersRevived.Server.Drivers
 
         private void CreateUpdateMessage(NetworkEntity entity, User recipient = null)
         {
-            var message = this.driven.Group.CreateMessage("entity:update", recipient, NetDeliveryMethod.ReliableOrdered);
+            var message = this.driven.Group.Messages.Create("entity:update", NetDeliveryMethod.ReliableOrdered, 0, recipient);
             entity.TryWrite(message);
         }
 
         private void CreateRemoveMessage(Guid id)
         {
-            var message = this.driven.Group.CreateMessage("entity:remove", NetDeliveryMethod.ReliableOrdered);
+            var message = this.driven.Group.Messages.Create("entity:remove", NetDeliveryMethod.ReliableOrdered, 0);
             message.Write(id);
         }
         #endregion

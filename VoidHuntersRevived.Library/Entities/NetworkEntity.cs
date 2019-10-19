@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Public Fields
-        public ActionDelegater Actions { get; private set; }
+        public ActionMessageDelegater Actions { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Library.Entities
             base.Create(provider);
 
             this.entities = provider.GetRequiredService<EntityCollection>();
-            this.Actions = ActivatorUtilities.CreateInstance<ActionDelegater>(provider, this);
+            this.Actions = ActivatorUtilities.CreateInstance<ActionMessageDelegater>(provider, this);
 
             this.Events.Register<NetIncomingMessage>("read");
             this.Events.Register<NetOutgoingMessage>("write");

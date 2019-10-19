@@ -12,6 +12,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Guppy.Network.Utilitites.Delegaters;
 
 namespace VoidHuntersRevived.Library.Scenes
 {
@@ -24,6 +25,10 @@ namespace VoidHuntersRevived.Library.Scenes
         private Interval _intervals;
         private ConcurrentQueue<NetIncomingMessage> _actions;
         private NetIncomingMessage _im;
+        #endregion
+
+        #region Internal Attributes
+        internal GroupMessageDelegater actions;
         #endregion
 
         #region Public Attributes
@@ -45,6 +50,8 @@ namespace VoidHuntersRevived.Library.Scenes
 
             _intervals = provider.GetRequiredService<Interval>();
             _actions = new ConcurrentQueue<NetIncomingMessage>();
+
+            this.actions = provider.GetRequiredService<GroupMessageDelegater>();
         }
 
         protected override void PreInitialize()
@@ -53,6 +60,8 @@ namespace VoidHuntersRevived.Library.Scenes
 
             _frames = new List<Double>();
             _actionsPerFrame = new List<Single>();
+
+            this.actions.Group = this.Group;
 
             this.Group.Messages.TryAdd("entity:action", this.HandleNetworkEntityActionMessage);
         }
@@ -69,9 +78,12 @@ namespace VoidHuntersRevived.Library.Scenes
         protected override void Update(GameTime gameTime)
         {
             _intervals.Update(gameTime);
-            this.Group.TryUpdate(gameTime);
+            this.Group.Messages.ReadAll();
 
             base.Update(gameTime);
+
+            this.Group.Messages.SendAll();
+            this.actions.SendAll();
 
             while (_actions.Any())
                 if (_actions.TryDequeue(out _im))
