@@ -4,6 +4,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Entities.ShipParts.ConnectionNodes;
 using VoidHuntersRevived.Library.Utilities;
 using Microsoft.Xna.Framework;
+using Microsoft.Extensions.Logging;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
 {

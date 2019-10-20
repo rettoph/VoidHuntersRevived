@@ -65,7 +65,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
                 return false;
 
             // Instant yes
-            if ((_interval.Is(ServerFarseerEntityDriver.UpdateVitalsRate) || _dirtyVitals))
+            if ((_interval.Is(ServerFarseerEntityDriver.UpdateVitalsRate) && Vector2.Distance(_flushedPosition, this.driven.Position) > 0.1f) || _dirtyVitals)
                 return true;
 
             // Default to no

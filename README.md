@@ -23,7 +23,7 @@ These are events triggered by Guppy but specific to this game. Events can be bou
 | `GalacicFighters.Library` | `FarseerEntity` | `linear-impulse:applied` | `Vector2` | Invoked when the ApplyLinearVelocity method is called. |
 | `GalacicFighters.Library` | `FarseerEntity` | `angular-impulse:applied` | `Single` | Invoked when the ApplyAngularVelocity method is called. |
 | `GalacicFighters.Library` | `FarseerEntity` | `force:applied` | `AppliedForce` | Invoked when the ApplyForce method is called. |
-| `GalacicFighters.Library` | `FarseerEntity` | `controller:chained` | `IController` | Invoked when the SetController method is called. |
+| `GalacicFighters.Library` | `FarseerEntity` | `controller:chainged` | `IController` | Invoked when the SetController method is called. |
 | | | | | |
 | `GalacicFighters.Library` | `ShipPart` | `chain:updated` | `ConnectionNode` | Invoked when any node within the ShipPart's chain attached or detached. |
 | | | | | |

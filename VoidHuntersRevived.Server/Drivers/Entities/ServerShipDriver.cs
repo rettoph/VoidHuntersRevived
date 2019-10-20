@@ -17,7 +17,7 @@ using VoidHuntersRevived.Library.Extensions;
 
 namespace VoidHuntersRevived.Server.Drivers.Entities
 {
-    [IsDriver(typeof(Ship))]
+    [IsDriver(typeof(Ship), 200)]
     public class ServerShipDriver : Driver<Ship>
     {
         #region Static Fields

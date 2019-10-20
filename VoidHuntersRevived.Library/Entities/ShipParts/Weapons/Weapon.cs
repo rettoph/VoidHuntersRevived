@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Extensions.Farseer;
+using VoidHuntersRevived.Library.Utilities.Controllers;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 {
@@ -92,6 +93,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
             this.Events.TryAdd<Body>("position:changed", this.HandlePositionChanged);
             this.Events.TryAdd<NetIncomingMessage>("read", this.HandleRead);
+            this.Events.TryAdd<IController>("controller:changed", this.HandleControllerChanged);
         }
 
         protected override void Initialize()
@@ -264,6 +266,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         private void HandleBodyEnabledChanged(object sender, bool arg)
         {
             _barrel.Enabled = this.Root.Enabled;
+        }
+
+        private void HandleControllerChanged(object sender, IController arg)
+        {
+            _barrel.CollidesWith = this.CollidesWith;
+            _barrel.CollisionCategories = this.CollisionCategories;
+            _barrel.IgnoreCCDWith = this.IgnoreCCDWith;
         }
         #endregion
     }

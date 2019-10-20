@@ -69,7 +69,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
                     }
 
                     // Update the current player's target
-                    this.Ship.SetTargetOffset(nearest.Ship.Bridge.WorldCenter - this.Ship.Bridge.WorldCenter);
+                    this.Ship.SetTargetOffset(nearest.Ship.Bridge.WorldCenteroid - this.Ship.Bridge.WorldCenter);
 
                     // Set the fire status
                     if (distance < 40f)

@@ -16,6 +16,7 @@ using VoidHuntersRevived.Client.Library.Scenes;
 using Guppy.Loaders;
 using Guppy.Utilities.Cameras;
 using VoidHuntersRevived.Library.Configurations;
+using VoidHuntersRevived.Library.Utilities.Controllers;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
 {
@@ -57,6 +58,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
 
             this.driven.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleChainUpdated);
             this.driven.Events.TryAdd<Vector2>("target:updated", this.HandleTargetUpdated);
+            this.driven.Events.TryAdd<IController>("controller:changed", this.HandleControllerChanged);
 
             var config = (driven.Configuration.Data as WeaponConfiguration);
             _sprite.Load(config.BarrelTexture, config.Barrel);
@@ -148,6 +150,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
         private void HandleTargetUpdated(object sender, Vector2 target)
         {
             this.driven.UpdateBarrelTarget(target, _serverJoint, _serverRoot);
+        }
+
+        private void HandleControllerChanged(object sender, IController arg)
+        {
+            _serverBarrel.CollidesWith = this.driven.CollidesWith;
+            _serverBarrel.CollisionCategories = this.driven.CollisionCategories;
+            _serverBarrel.IgnoreCCDWith = this.driven.IgnoreCCDWith;
         }
         #endregion
     }

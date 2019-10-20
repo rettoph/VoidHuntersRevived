@@ -28,7 +28,6 @@ namespace VoidHuntersRevived.Library.Utilities.Controllers
         }
         #endregion
 
-
         #region Frame Methods
         protected override void Update(GameTime gameTime)
         {
@@ -75,6 +74,8 @@ namespace VoidHuntersRevived.Library.Utilities.Controllers
             {
                 while (this.Components.Any())
                     this.Remove(this.Components.First());
+
+                this.logger.LogDebug($"Synced ShipPartController => Clear");
             }
             else
             {
