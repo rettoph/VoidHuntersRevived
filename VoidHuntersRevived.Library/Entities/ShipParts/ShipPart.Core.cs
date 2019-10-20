@@ -32,30 +32,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #endregion
 
         #region Public Attributes
-        /// <summary>
-        /// The ship the current ship part is a bridge for, if any.
-        /// </summary>
-        public Ship BridgeFor { get; internal set; }
-
-        /// <summary>
-        /// If the current shippart is a bridge
-        /// </summary>
-        public Boolean IsBridge { get { return this.BridgeFor != null; } }
-
+        public Ship Ship { get; internal set; }
+        public Boolean IsBridge { get => this.Ship != default(Ship); }
         public Vector2 Centeroid { get => this.config.Centeroid; }
         public Vector2 LocalCenteroid { get=> Vector2.Transform(Vector2.Zero, this.LocalTransformation) + Vector2.Transform(this.Centeroid, Matrix.CreateRotationZ(this.LocalRotation)); }
         public Vector2 WorldCenteroid { get => this.Position + Vector2.Transform(this.Centeroid, Matrix.CreateRotationZ(this.Rotation)); }
-
-        /// <summary>
-        /// Live ShipPart's are shipparts that can self updated when connected to a ship.
-        /// 
-        /// Byt default, all children within a ship are disabled and will not be updated,
-        /// but any ShipPart marked as live will be updated each frame.
-        /// 
-        /// These include weapons, thrusters, and more.
-        /// </summary>
-        public virtual Boolean IsLive { get; protected set; }
-
         public Single Health { get; set; }
         #endregion
 
@@ -87,8 +68,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             base.Initialize();
 
-            this.SetEnabled(false);
-
             this.ConnectionNode_Initialize();
         }
 
@@ -110,11 +89,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            this.ConnectionNode_Update(gameTime);
-
-            for(Int32 i=0; i<this.FemaleConnectionNodes.Length; i++)
-                this.FemaleConnectionNodes[i].Target?.Parent.Update(gameTime);
 
             if (this.Health < 100)
                 this.Health += 0.001f * (Single)gameTime.ElapsedGameTime.TotalMilliseconds;

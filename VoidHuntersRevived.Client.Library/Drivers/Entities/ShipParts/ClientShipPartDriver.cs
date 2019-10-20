@@ -60,7 +60,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
         {
             base.Draw(gameTime);
 
-            var fullColor = Color.Lerp(this.driven.Root.IsBridge ? Color.Blue : (this.driven.Root.Configuration.Data as ShipPartConfiguration).DefaultColor, Color.White, 0.1f);
+            var fullColor = Color.Lerp(this.driven.Root.IsControlled ? Color.Blue : (this.driven.Root.Configuration.Data as ShipPartConfiguration).DefaultColor, Color.White, 0.1f);
             var deadColor = Color.Lerp(Color.DarkRed, fullColor, 0.2f);
 
             _sprite.Draw(
@@ -81,10 +81,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
         #region Event Handlers
         private void HandleChainUpdated(object sender, ShipPart.ChainUpdate arg)
         {
-            if(this.driven.IsRoot) // Update the server render when the chain gets updated
-                _server.GetBodyById(this.driven.BodyId).SetTransformIgnoreContacts(this.driven.Position, this.driven.Rotation);
+            var body = _server.GetBodyById(this.driven.BodyId);
 
-            this.driven.SetLayerDepth(this.driven.Root.IsBridge ? 1 : 0);
+            body.SetTransformIgnoreContacts(this.driven.Position, this.driven.Rotation);
+            body.CollidesWith = this.driven.Root.CollidesWith;
+            body.CollisionCategories = this.driven.Root.CollisionCategories;
+            body.IgnoreCCDWith = this.driven.Root.IgnoreCCDWith;
         }
 
         private void HandleMaleConnectionNodeDetached(object sender, ConnectionNode arg)

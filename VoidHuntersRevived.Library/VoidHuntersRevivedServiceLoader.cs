@@ -27,6 +27,8 @@ using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
 using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using VoidHuntersRevived.Library.Entities.Ammunitions;
 using VoidHuntersRevived.Library.Utilities.Delegater;
+using Guppy.Factories;
+using VoidHuntersRevived.Library.Utilities.Controllers;
 
 namespace VoidHuntersRevived.Library
 {
@@ -39,6 +41,7 @@ namespace VoidHuntersRevived.Library
             services.AddScoped<ConnectionNodeFactory>();
             services.AddScoped<Random>();
             services.AddScoped<ShipBuilder>();
+            services.AddTransient<ShipPartController>(p => p.GetRequiredService<DrivenFactory<ShipPartController>>().Build<ShipPartController>());
 
             services.AddScoped<World>(p =>
             {
@@ -65,7 +68,7 @@ namespace VoidHuntersRevived.Library
         {
             Settings.MaxPolygonVertices = 16;
 
-            provider.GetRequiredService<GlobalOptions>().LogLevel = LogLevel.Information;
+            provider.GetRequiredService<GlobalOptions>().LogLevel = LogLevel.Debug;
 
             var entities = provider.GetRequiredService<EntityLoader>();
 

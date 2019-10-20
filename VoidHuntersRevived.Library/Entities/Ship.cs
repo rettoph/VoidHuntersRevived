@@ -11,6 +11,8 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VoidHuntersRevived.Library.Utilities.Controllers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -34,10 +36,16 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Private Fields
+        private ShipPartController _controller;
         private List<FemaleConnectionNode> _openFemaleNodes;
         #endregion
 
         #region Public Attributes
+        /// <summary>
+        /// All synced ship parts within the ships current bridge chain
+        /// </summary>
+        public IReadOnlyCollection<ShipPart> Components { get => _controller.Components; }
+
         /// <summary>
         /// The current active Direction flags.
         /// </summary>
@@ -88,6 +96,7 @@ namespace VoidHuntersRevived.Library.Entities
             base.Create(provider);
 
             _openFemaleNodes = new List<FemaleConnectionNode>();
+            _controller = provider.GetRequiredService<ShipPartController>();
 
             this.Events.Register<ShipPart>("bridge:changed");
             this.Events.Register<ShipPart>("bridge:chain:updated");
@@ -129,12 +138,22 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Frame Methods
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            this.TractorBeam.TryDraw(gameTime);
+            _controller.TryDraw(gameTime);
+        }
+
         protected override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
+            // First update internal components...
+            this.TractorBeam.TryUpdate(gameTime);
+            _controller.TryUpdate(gameTime);
 
-            // Update all internal live components within the ship
-            this.Bridge?.TryUpdate(gameTime);
+            // Update the ship itself
+            base.Update(gameTime);
         }
         #endregion
 
@@ -146,26 +165,22 @@ namespace VoidHuntersRevived.Library.Entities
                 // Ensure the tractor beam releases any targets on change
                 this.TractorBeam?.TryRelease();
 
-                if(this.Bridge != null)
-                { // Unreserve the old bridge
-                    this.Bridge.BridgeFor = null;
-                    this.Bridge.DirtyChain(ShipPart.ChainUpdate.Down);
-                    this.Bridge.CleanChain();
+                if (this.Bridge != null)
+                {
+                    this.Bridge.Ship = null;
 
-                    // Remove bound events
+                    // Remove old events
                     this.Bridge.Events.TryRemove<ShipPart.ChainUpdate>("chain:updated", this.HandleBridgeChainUpdated);
                     this.Bridge.Events.TryRemove<Creatable>("disposing", this.HandleBridgeDisposing);
                 }
 
                 this.Bridge = bridge;
                 if (this.Bridge != null)
-                { // If the new bridge is not null...
-                    // Save & reserve the new bridge
-                    
-                    this.Bridge.BridgeFor = this;
-                    this.Bridge.DirtyChain(ShipPart.ChainUpdate.Down);
+                {
+                    // Update the internal bridge value
+                    this.Bridge.Ship = this;
 
-                    // Add events
+                    // Add new events
                     this.Bridge.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleBridgeChainUpdated);
                     this.Bridge.Events.TryAdd<Creatable>("disposing", this.HandleBridgeDisposing);
                 }
@@ -208,9 +223,7 @@ namespace VoidHuntersRevived.Library.Entities
                 this.Events.TryInvoke<Boolean>(this, "firing:changed", this.Firing);
             }
         }
-        #endregion
 
-        #region Set Methods
         public void SetTargetOffset(Vector2 offset)
         {
             if(offset != this.TargetOffset)
@@ -249,6 +262,8 @@ namespace VoidHuntersRevived.Library.Entities
             _openFemaleNodes.Clear();
             // Get all open female connection nodes within the bridge
             this.Bridge?.GetOpenFemaleConnectionNodes(ref _openFemaleNodes);
+            // Mark the internal chain dirty, preparing for claning next update
+            _controller.DirtyChain(this.Bridge);
         }
         #endregion
 

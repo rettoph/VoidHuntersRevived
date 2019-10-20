@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
 
         protected override void Draw(GameTime gameTime)
         {
-            if (this.driven.Root.IsBridge && this.driven.GetActive(this.driven.Root.BridgeFor.ActiveDirections))
+            if (this.driven.Active)
                 _spriteBatch.Draw(
                     texture: _thrust,
                     position: this.driven.WorldCenteroid,

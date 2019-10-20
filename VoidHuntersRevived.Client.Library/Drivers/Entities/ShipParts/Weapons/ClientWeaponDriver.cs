@@ -56,6 +56,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
             _serverBarrel = this.driven.Barrel.DeepClone(_server.World);
 
             this.driven.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleChainUpdated);
+            this.driven.Events.TryAdd<Vector2>("target:updated", this.HandleTargetUpdated);
 
             var config = (driven.Configuration.Data as WeaponConfiguration);
             _sprite.Load(config.BarrelTexture, config.Barrel);
@@ -75,17 +76,14 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
             base.Update(gameTime);
 
             // When reserved, instantly update server barrel position so the joint doesnt have to
-            if (this.driven.Root.Reserverd.Value)
-                this.driven.UpdateBarrelPosition(_serverRoot, _serverBarrel);
-
-            this.driven.UpdateBarrelAngle(_serverJoint, _serverRoot);
+            this.driven.UpdateBarrelPosition(_serverRoot, _serverBarrel);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
 
-            var fullColor = Color.Lerp(this.driven.Root.IsBridge ? Color.Blue : (this.driven.Root.Configuration.Data as ShipPartConfiguration).DefaultColor, Color.White, 0.1f);
+            var fullColor = Color.Lerp(this.driven.Root.IsControlled ? Color.Blue : (this.driven.Root.Configuration.Data as ShipPartConfiguration).DefaultColor, Color.White, 0.1f);
             var deadColor = Color.Lerp(Color.DarkRed, fullColor, 0.2f);
 
             _sprite.Draw(
@@ -129,16 +127,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
             _root.Events.TryAdd<Boolean>("body-enabled:changed", this.HandleFarseerEnabledChanged);
             _root.Events.TryAdd<Body>("position:changed", this.HandlePositionChanged);
             _root.Events.TryAdd<NetIncomingMessage>("read", this.HandleRead);
-
-            // Update barrel positioning
-            this.driven.UpdateBarrelPosition(_serverRoot, _serverBarrel);
-            this.driven.UpdateBarrelAngle(_serverJoint, _serverRoot);
         }
 
         private void HandlePositionChanged(object sender, Body arg)
         {
             this.driven.UpdateBarrelPosition(_serverRoot, _serverBarrel);
-            this.driven.UpdateBarrelAngle(_serverJoint, _serverRoot);
         }
 
         private void HandleFarseerEnabledChanged(object sender, bool arg)
@@ -149,7 +142,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
         private void HandleRead(object sender, NetIncomingMessage arg)
         {
             this.driven.UpdateBarrelPosition(_serverRoot, _serverBarrel);
-            this.driven.UpdateBarrelAngle(_serverJoint, _serverRoot);
+            this.driven.UpdateBarrelTarget(this.driven.WorldBodyAnchor, _serverJoint, _serverRoot);
+        }
+
+        private void HandleTargetUpdated(object sender, Vector2 target)
+        {
+            this.driven.UpdateBarrelTarget(target, _serverJoint, _serverRoot);
         }
         #endregion
     }

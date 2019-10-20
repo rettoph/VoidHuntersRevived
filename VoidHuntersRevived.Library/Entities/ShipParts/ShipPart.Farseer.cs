@@ -78,31 +78,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// </summary>
         protected virtual void UpdateChainPlacement()
         {
-            this.SetCollidesWith(this.GenerateCollidesWith());
-            this.SetCollisionCategories(this.GenerateCollisionCategories());
-            this.SetIgnoresCCDWith(this.GenerateIgnoreCCDWith());
+            this.body.CollidesWith = this.Root.CollidesWith;
+            this.body.CollisionCategories = this.Root.CollisionCategories;
+            this.body.IgnoreCCDWith = this.Root.IgnoreCCDWith;
         }
 
         public Body GetBody()
         {
             return this.body;
-        }
-        #endregion
-
-        #region Category Methods
-        protected internal Category GenerateCollidesWith()
-        {
-            return (this.IsBridge ? Categories.ActiveCollidesWith : Categories.PassiveCollidesWith);
-        }
-
-        protected internal Category GenerateCollisionCategories()
-        {
-            return (this.IsBridge ? Categories.ActiveCollisionCategories : Categories.PassiveCollisionCategories);
-        }
-
-        protected internal Category GenerateIgnoreCCDWith()
-        {
-            return (this.IsBridge ? Categories.ActiveIgnoreCCDWith : Categories.PassiveIgnoreCCDWith);
         }
         #endregion
 

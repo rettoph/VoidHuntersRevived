@@ -6,6 +6,10 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
+using VoidHuntersRevived.Library.Utilities.Controllers;
+using Microsoft.Extensions.DependencyInjection;
+using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -16,7 +20,7 @@ namespace VoidHuntersRevived.Library.Entities
     public sealed class TractorBeam : Entity
     {
         #region Private Attributes
-        private Guid _selectionId;
+        private ShipPartController _controller;
         #endregion
 
         #region Public Attributes
@@ -33,6 +37,11 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Create(provider);
 
+            _controller = provider.GetRequiredService<ShipPartController>();
+            _controller.CollidesWith = Categories.PassiveCollidesWith;
+            _controller.CollisionCategories = Categories.PassiveCollisionCategories;
+            _controller.IgnoreCCDWith = Categories.PassiveIgnoreCCDWith;
+
             this.Events.Register<ShipPart>("selected");
             this.Events.Register<ShipPart>("released");
             this.Events.Register<ShipPart>("selected:position:changed");
@@ -44,18 +53,27 @@ namespace VoidHuntersRevived.Library.Entities
             base.Initialize();
 
             this.Ship.Events.TryAdd<Vector2>("target:offset:changed", this.HandleShipTargetOffsetChanged);
+
+            this.SetEnabled(false);
+            this.SetVisible(false);
         }
         #endregion
 
         #region Frame Methods
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            _controller.TryDraw(gameTime);
+        }
+
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
             this.TryUpdateSelectedPosition();
 
-            if (this.Selected != default(ShipPart))
-                this.Selected.TryUpdate(gameTime);
+            _controller.TryUpdate(gameTime);
         }
         #endregion
 
@@ -69,13 +87,9 @@ namespace VoidHuntersRevived.Library.Entities
         {
             if (target == default(ShipPart))
                 return false;
-            else if (target.IsBridge)
+            else if (target.Root.IsControlled && !this.Ship.Components.Contains(target))
                 return false;
-            else if (target.Root.IsBridge && target.Root.BridgeFor?.TractorBeam != this)
-                return false;
-            else if (target.Reserverd.Value)
-                return false;
-            else if (!target.IsRoot && !target.Root.IsBridge)
+            else if (!target.IsRoot && !target.Root.IsControlled)
                 return false;
 
             return true;
@@ -116,9 +130,10 @@ namespace VoidHuntersRevived.Library.Entities
                     if (target.MaleConnectionNode.Attached)
                         target.MaleConnectionNode.Detach();
 
-                    _selectionId = target.Reserverd.Add();
                     this.Selected = target;
                     this.Selected.SetBodyEnabled(false);
+
+                    _controller.SyncChain(this.Selected);
 
                     this.Events.TryInvoke<ShipPart>(this, "selected", this.Selected);
                     return true;
@@ -141,8 +156,9 @@ namespace VoidHuntersRevived.Library.Entities
 
                     this.TryUpdateSelectedPosition();
                     this.Selected.SetBodyEnabled(true);
-                    this.Selected.Reserverd.Remove(_selectionId);
                     this.Selected = null;
+
+                    _controller.SyncChain(this.Selected);
 
                     this.Events.TryInvoke<ShipPart>(this, "released", oldSelected);
 

@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Library.Utilities.Controllers;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities
 {
@@ -50,9 +51,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
             this.driven.Events.TryAdd<Vector2>("linear-impulse:applied", this.HandleLinearImpulseApplied);
             this.driven.Events.TryAdd<Single>("angular-impulse:applied", this.HandleAngularImpulseApplied);
             this.driven.Events.TryAdd<AppliedForce>("force:applied", this.HandleForceApplied);
-            this.driven.Events.TryAdd<Category>("collides-with:changed", this.HandleCollidesWithChanged);
-            this.driven.Events.TryAdd<Category>("collision-categories:changed", this.HandleCollisionCategoriesChanged);
             this.driven.Events.TryAdd<NetIncomingMessage>("read", this.HandleRead);
+            this.driven.Events.TryAdd<IController>("controller:changed", this.HandleControllerChanged);
 
             // Bind required action handlers
             this.driven.Actions.TryAdd("vitals:update", this.HandleVitalsUpdateMessage);
@@ -92,6 +92,18 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
         #endregion
 
         #region Event Handlers
+        /// <summary>
+        /// When a controller is updated, refresh the internal collision categories
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="arg"></param>
+        private void HandleControllerChanged(object sender, IController arg)
+        {
+            _body.CollidesWith = this.driven.CollidesWith;
+            _body.CollisionCategories = this.driven.CollisionCategories;
+            _body.IgnoreCCDWith = this.driven.IgnoreCCDWith;
+        }
+
         /// <summary>
         /// When the entities main body is created, we must clone a duplicate on the server
         /// </summary>
@@ -181,15 +193,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
             _body.SetTransformIgnoreContacts(this.driven.Position, this.driven.Rotation);
         }
 
-        private void HandleCollidesWithChanged(object sender, Category arg)
-        {
-            _body.CollidesWith = arg;
-        }
-
-        private void HandleCollisionCategoriesChanged(object sender, Category arg)
-        {
-            _body.CollisionCategories = arg;
-        }
         private void HandleBodyEnabledChanged(object sender, bool arg)
         {
             _body.Enabled = arg;

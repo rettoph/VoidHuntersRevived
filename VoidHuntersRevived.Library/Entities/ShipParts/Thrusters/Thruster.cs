@@ -19,6 +19,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         #endregion
 
         #region Public Attributes
+        public Boolean Active { get; private set; }
         public Vector2 Thrust { get => Vector2.UnitX * 20; }
         public Vector2 LocalThrust { get => Vector2.Transform(this.Thrust, Matrix.CreateRotationZ(this.LocalRotation)); }
         public Vector2 WorldThrust { get => Vector2.Transform(this.Thrust, Matrix.CreateRotationZ(this.Rotation)); }
@@ -30,8 +31,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
             base.Create(provider);
 
             _directions = new List<Ship.Direction>();
-
-            this.IsLive = true;
         }
 
         protected override void Initialize()
@@ -45,11 +44,21 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         {
             base.Update(gameTime);
 
-            if (this.Root.IsBridge)
+            this.Active = false;
+        }
+        #endregion
+
+        #region Action Methods
+        /// <summary>
+        /// Attempt to move the current thruster by the supplied thdirectionrust value
+        /// </summary>
+        /// <param name="direction"></param>
+        public void TryThrust(Ship.Direction direction)
+        {
+            if (this.GetActive(direction))
             {
-                // Load the directions the current thruster move the ship
-                if(this.Root.IsBridge && this.GetActive(this.Root.BridgeFor.ActiveDirections))
-                    this.Root.ApplyForce(this.WorldThrust, this.WorldCenteroid);
+                this.Active = true;
+                this.Root.ApplyForce(this.WorldThrust, this.WorldCenteroid);
             }
         }
         #endregion

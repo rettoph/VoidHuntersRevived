@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Server.Scenes
         {
             base.PostInitialize();
 
-            for(Int32 i=0; i<5; i++)
+            for(Int32 i=0; i<0; i++)
             {
                 this.entities.Create<ComputerPlayer>("player:computer", player =>
                 {
@@ -106,7 +106,7 @@ namespace VoidHuntersRevived.Server.Scenes
                 player.User = user;
                 player.Ship = this.entities.Create<Ship>("ship", ship =>
                 { // Build a new ship for the player...
-                    using(FileStream import = File.OpenRead("Ships/big-boy.vh"))
+                    using(FileStream import = File.OpenRead("Ships/mosquito.vh"))
                         ship.SetBridge(_builder.Import(import));
 
                     // ship.SetBridge(this.entities.Create<ShipPart>("ship-part:hull:hexagon"));

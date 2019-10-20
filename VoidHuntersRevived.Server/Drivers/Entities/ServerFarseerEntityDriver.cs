@@ -42,7 +42,6 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
 
             // Register an event to store the driven's body when created.
             this.driven.Events.TryAdd<Body>("body:created", (s, b) => _body = b);
-            this.driven.Events.TryAdd<Boolean>("reserved:changed", (s, arg) => _dirtyVitals = true);
         }
         #endregion
 
@@ -60,15 +59,13 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
         private Boolean CanSendVitals()
         {
             // Instant no
-            if (this.driven.Reserverd.Value)
-                return false;
             if (!this.driven.BodyEnabled)
                 return false;
             if (this.driven.FixtureCount == 0)
                 return false;
 
             // Instant yes
-            if ((_interval.Is(ServerFarseerEntityDriver.UpdateVitalsRate) && Vector2.Distance(_body.Position, _flushedPosition) > 0.1f) || _dirtyVitals)
+            if ((_interval.Is(ServerFarseerEntityDriver.UpdateVitalsRate) || _dirtyVitals))
                 return true;
 
             // Default to no

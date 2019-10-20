@@ -80,14 +80,14 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
 
         private float HandleRayCastCollision(Fixture arg1, Vector2 arg2, Vector2 arg3, float arg4)
         {
-            // this.logger.LogInformation((arg1.UserData as ShipPart)?.Root.Id.ToString());
-            if (arg1.UserData is ShipPart && (arg1.UserData as ShipPart)?.Root.Id != this.Weapon.Root.Id && (arg1.UserData as ShipPart).Health > 0 && (arg1.UserData as ShipPart).Root.IsBridge)
+            var target = arg1.UserData as ShipPart;
+            if (arg1.UserData is ShipPart && target.Root.Id != this.Weapon.Root.Id && target.Health > 0 && target.Root.IsBridge)
             {
                 (arg1.UserData as ShipPart).Health -= 10;
                 this.Dispose();
                 return 0;
             }
-
+            
             return -1;
         }
         #endregion

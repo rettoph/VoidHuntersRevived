@@ -67,20 +67,27 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         /// <summary>
         /// Create a new projectile
         /// </summary>
-        public override void Fire()
+        public override Boolean TryFire()
         {
-            var bullet = this.entities.Create<Projectile>("bullet", p =>
+            if (base.TryFire())
             {
-                _noise = new Byte[16];
-                _rand.NextBytes(_noise);
-                p.SetId(new Guid(_noise));
+                var bullet = this.entities.Create<Projectile>("bullet", p =>
+                {
+                    _noise = new Byte[16];
+                    _rand.NextBytes(_noise);
+                    p.SetId(new Guid(_noise));
 
-                p.Weapon = this;
-            });
+                    p.Weapon = this;
+                });
 
-            this.FireCount++;
+                this.FireCount++;
 
-            this.Events.TryInvoke<Projectile>(this, "fired", bullet);
+                this.Events.TryInvoke<Projectile>(this, "fired", bullet);
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

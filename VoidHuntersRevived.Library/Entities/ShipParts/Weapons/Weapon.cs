@@ -77,7 +77,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         {
             base.Create(provider);
 
-            this.SetUpdateOrder(300);
+            this.Events.Register<Vector2>("target:updated");
         }
 
         protected override void PreInitialize()
@@ -92,15 +92,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
             this.Events.TryAdd<Body>("position:changed", this.HandlePositionChanged);
             this.Events.TryAdd<NetIncomingMessage>("read", this.HandleRead);
-
-            this.IsLive = true;
         }
 
         protected override void Initialize()
         {
             base.Initialize();
-
-
         }
 
         public override void Dispose()
@@ -144,41 +140,30 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         {
             base.Update(gameTime);
 
+            this.UpdateBarrelPosition();
+
             _lastFire += gameTime.ElapsedGameTime.TotalMilliseconds;
-
-            // When reserved, instantly update barrel position so the joint doesnt have to
-            if (this.Root.Reserverd.Value)
-                this.UpdateBarrelPosition();
-
-            if(this.Root.IsBridge)
-                this.UpdateBarrelAngle();
-
-            if (_lastFire >= 350)
-            {
-                this.TryFire();
-
-                _lastFire = 0;
-            }
         }
         #endregion
 
         #region Helper Methods
-        public void UpdateBarrelAngle()
+        public void UpdateBarrelTarget(Vector2 target)
         {
-            this.UpdateBarrelAngle(_joint, this.Root.GetBody());
+            this.UpdateBarrelTarget(target, _joint, this.Root.GetBody());
+
+            this.Events.TryInvoke<Vector2>(this, "target:updated", target);
         }
-        public void UpdateBarrelAngle(RevoluteJoint joint, Body root)
+        public void UpdateBarrelTarget(Vector2 target, RevoluteJoint joint, Body root)
         {
-            if (this.Root.IsBridge)
-            { // Only update the angle if the ship is root
-                var target = this.Root.BridgeFor.Target;
+            if (this.IsControlled)
+            {
                 var position = root.Position + Vector2.Transform(this.config.BodyAnchor, this.LocalTransformation * Matrix.CreateRotationZ(root.Rotation));
                 var offset = target - position;
-            
+
                 // Calculate the target angle we wish to aim towards
                 var angle = MathHelper.WrapAngle((Single)Math.Atan2(offset.Y, offset.X) - root.Rotation - this.LocalRotation - this.MaleConnectionNode.LocalRotation - MathHelper.Pi);
-                
-                if(joint.LowerLimit < angle && angle < joint.UpperLimit)
+
+                if (joint.LowerLimit < angle && angle < joint.UpperLimit)
                 {
                     this.OnTarget = true;
                 }
@@ -214,7 +199,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             // Calculate the barrels proper position based on the defined anchor points.
             var position = root.Position + Vector2.Transform(this.config.BodyAnchor + this.config.BarrelAnchor, this.LocalTransformation * Matrix.CreateRotationZ(root.Rotation));
             // Update the barrels position
-            barrel.SetTransformIgnoreContacts(ref position, this.Root.IsBridge ? barrel.Rotation : root.Rotation + this.LocalRotation + MathHelper.Pi);
+            barrel.SetTransformIgnoreContacts(ref position, this.Root.IsControlled ? barrel.Rotation : root.Rotation + this.LocalRotation + MathHelper.Pi);
         } 
 
         public void UpdateJoint(ref RevoluteJoint joint, Body root, Body barrel, World world)
@@ -251,28 +236,29 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             barrel.Enabled = this.Root.BodyEnabled;
         }
 
-        public void TryFire()
+        public virtual Boolean TryFire()
         {
-            if (this.Root.IsBridge && this.OnTarget && this.Root.BridgeFor.Firing)
+            if(_lastFire > 300)
             {
-                this.Fire();
-            }
-        }
+                _lastFire = 0;
 
-        public abstract void Fire();
+                return true;
+            }
+
+            return false;
+        }
         #endregion
 
         #region Event Handlers
         private void HandlePositionChanged(object sender, Body arg)
         {
             this.UpdateBarrelPosition();
-            this.UpdateBarrelAngle();
         }
 
         private void HandleRead(object sender, NetIncomingMessage im)
         {
             this.UpdateBarrelPosition();
-            this.UpdateBarrelAngle();
+            this.UpdateBarrelTarget(this.WorldBodyAnchor);
         }
 
         private void HandleBodyEnabledChanged(object sender, bool arg)

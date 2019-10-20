@@ -96,16 +96,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 var r = n.Parent.Root.Rotation + this.LocalRotation;
                 this.SetPosition(ref p, r, true);
 
-                this.DirtyChain(ChainUpdate.Down); // Update down the current chain
-                this.CleanChain();
-                n.Parent.DirtyChain(ChainUpdate.Up); // Update up the old chain                
+                this.CleanChain(ChainUpdate.Down);
+                n.Parent.CleanChain(ChainUpdate.Up); // Update up the old chain                
             });
         }
 
         private void ConnectionNode_Initialize()
         {
-            this.DirtyChain(ChainUpdate.Both);
-            this.CleanChain();
+            this.CleanChain(ChainUpdate.Both);
         }
 
         /// <summary>
@@ -119,32 +117,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         }
         #endregion
 
-        #region Frame Methods
-        private void ConnectionNode_Update(GameTime gameTime)
-        {
-            this.CleanChain();
-        }
-        #endregion
-
         #region Helper Methods
-        /// <summary>
-        /// Mark a particulat chain drection dirty.
-        /// This will be updated next time the current
-        /// ship part is updated
-        /// </summary>
-        /// <param name="direction"></param>
-        public void DirtyChain(ChainUpdate direction)
-        {
-            _dirtyChain |= direction;
-        }
-
         /// <summary>
         /// Recersively trigger the UpdateChain event and recersively call
         /// the same method on all children/parents as defined in the ChainUpdate
         /// parameter
         /// </summary>
         /// <param name="directions"></param>
-        private void CleanChain(ChainUpdate directions)
+        public void CleanChain(ChainUpdate directions)
         {
             this.Events.TryInvoke<ChainUpdate>(this, "chain:updated", directions);
 
@@ -157,17 +137,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                     this.FemaleConnectionNodes[i].Target?.Parent.CleanChain(ChainUpdate.Down);
 
             _dirtyChain = ChainUpdate.None;
-        }
-
-        /// <summary>
-        /// Instantly clean the chain
-        /// </summary>
-        public void CleanChain()
-        {
-            if(_dirtyChain != ChainUpdate.None)
-            {
-                this.CleanChain(_dirtyChain);
-            }
         }
         #endregion
 

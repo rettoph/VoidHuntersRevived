@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VoidHuntersRevived.Library.Utilities.Controllers;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -44,17 +45,16 @@ namespace VoidHuntersRevived.Library.Entities
 
         #region Public Attributes
         /// <summary>
+        /// The farseer entities current controller. This is required for the entity
+        /// to be updated in any way
+        /// </summary>
+        public IController Controller { get; private set; }
+        public Boolean IsControlled { get => this.Controller != default(IController); }
+
+        /// <summary>
         /// The internal Farseer Boyy's Id.
         /// </summary>
         public Int32 BodyId { get => this.body.BodyId; }
-
-        /// <summary>
-        /// Reservations can be made onto ShipParts.
-        /// A shipPart with no reservations will automatically
-        /// disable itself when the body falls asleep. If the ShipPart
-        /// has a reservation, however, it will keep itself enabled.
-        /// </summary>
-        public CounterBoolean Reserverd { get; private set; }
 
         /// <summary>
         /// Get the sleep state of the body. A sleeping body has very
@@ -112,9 +112,9 @@ namespace VoidHuntersRevived.Library.Entities
         /// <value><c>true</c> if active; otherwise, <c>false</c>.</value>
         public Boolean BodyEnabled { get { return this.body.Enabled; } }
 
-        public Category CollidesWith { get;  private set; }
-        public Category CollisionCategories { get; private set; }
-        public Category IgnoreCCDWith { get; private set; }
+        public Category CollidesWith { get => this.IsControlled ? this.Controller.CollidesWith : Categories.PassiveCollidesWith; }
+        public Category CollisionCategories { get => this.IsControlled ? this.Controller.CollisionCategories : Categories.PassiveCollisionCategories; }
+        public Category IgnoreCCDWith { get => this.IsControlled ? this.Controller.IgnoreCCDWith : Categories.PassiveIgnoreCCDWith; }
 
         public Int32 FixtureCount { get => this.body.FixtureList.Count; }
         #endregion
@@ -126,11 +126,6 @@ namespace VoidHuntersRevived.Library.Entities
 
             _world = provider.GetRequiredService<World>();
             _forcePool = provider.GetRequiredService<IPool<AppliedForce>>();
-
-            // Automatically enable the ShipPart when a reservation is made.
-            this.Reserverd = new CounterBoolean(value => {
-                this.Events.TryInvoke<Boolean>(this, "reserved:changed", value);
-            });
 
             // Initialize basic events
             this.Events.Register<Body>("body:created");
@@ -144,10 +139,7 @@ namespace VoidHuntersRevived.Library.Entities
             this.Events.Register<Vector2>("linear-impulse:applied");
             this.Events.Register<Single>("angular-impulse:applied");
             this.Events.Register<AppliedForce>("force:applied");
-            this.Events.Register<Category>("collision-categories:changed");
-            this.Events.Register<Category>("collides-with:changed");
-            this.Events.Register<Category>("ignore-ccd-with:changed");
-            this.Events.Register<Boolean>("reserved:changed");
+            this.Events.Register<IController>("controller:changed");
         }
 
         protected override void PreInitialize()
@@ -156,6 +148,9 @@ namespace VoidHuntersRevived.Library.Entities
 
             // Build a new body for the entity.
             this.CreateBody();
+
+            this.SetEnabled(false);
+            this.SetVisible(false);
         }
 
         public override void Dispose()
@@ -203,6 +198,23 @@ namespace VoidHuntersRevived.Library.Entities
 
             this.body.Dispose();
             this.Events.TryInvoke<Body>(this, "body:destroyed", this.body);
+        }
+        #endregion
+
+        #region Set Methods
+        internal void SetController(IController controller)
+        {
+            if(this.Controller != controller)
+            {
+                this.Controller = controller;
+
+                // Update internal body collision info
+                this.body.CollidesWith = this.CollidesWith;
+                this.body.CollisionCategories = this.CollisionCategories;
+                this.body.IgnoreCCDWith = this.IgnoreCCDWith;
+
+                this.Events.TryInvoke<IController>(this, "controller:changed", this.Controller);
+            }
         }
         #endregion
 
@@ -327,34 +339,6 @@ namespace VoidHuntersRevived.Library.Entities
             appliedForce.Point = point;
             this.Events.TryInvoke<AppliedForce>(this, "force:applied", appliedForce);
             _forcePool.Put(appliedForce);
-        }
-
-        /// <summary>
-        /// Update the bodies collision category 
-        /// </summary>
-        /// <param name="category"></param>
-        public void SetCollidesWith(Category category)
-        {
-            this.body.CollidesWith = category;
-            this.CollidesWith = category;
-
-            this.Events.TryInvoke<Category>(this, "collides-with:changed", this.CollidesWith);
-        }
-
-        public void SetCollisionCategories(Category category)
-        {
-            this.body.CollisionCategories = category;
-            this.CollisionCategories = category;
-
-            this.Events.TryInvoke<Category>(this, "collision-categories:changed", this.CollisionCategories);
-        }
-
-        public void SetIgnoresCCDWith(Category category)
-        {
-            this.body.IgnoreCCDWith = category;
-            this.IgnoreCCDWith = category;
-
-            this.Events.TryInvoke<Category>(this, "ignore-ccd-with:changed", this.IgnoreCCDWith);
         }
 
         public void SetBodyEnabled(Boolean value)
