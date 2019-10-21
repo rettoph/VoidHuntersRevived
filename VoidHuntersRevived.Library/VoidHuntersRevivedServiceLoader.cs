@@ -156,7 +156,7 @@ namespace VoidHuntersRevived.Library
                     Position = new Vector2(0.3f, 0),
                     Rotation = 0
                 });
-            thrusterConfig.DefaultColor = Color.Green;
+            thrusterConfig.DefaultColor = Color.LawnGreen;
 
             entities.TryRegister<Thruster>(
                 "ship-part:thruster:small",
@@ -192,7 +192,7 @@ namespace VoidHuntersRevived.Library
                     new Vector2(0.5f, -0.1f)
                 }), 
                 bodyAnchor: new Vector2(-0.1f, 0));
-            weaponConfig.DefaultColor = Color.OrangeRed;
+            weaponConfig.DefaultColor = Color.IndianRed;
 
             entities.TryRegister<Gun>(
                 "ship-part:weapon:mass-driver",

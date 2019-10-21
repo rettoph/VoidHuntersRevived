@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Library.Utilities
     public class Chunk : Controller<FarseerEntity>
     {
         #region Static Attributes
-        public static Single Size { get; private set; } = 16;
+        public static Single Size { get; private set; } = 32;
         #endregion
 
         #region Private Attributes
@@ -59,13 +59,13 @@ namespace VoidHuntersRevived.Library.Utilities
         #region Frame Methods
         protected override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-
-            if(this.Dirty)
+            if (this.Dirty)
             {
                 this.Events.TryInvoke<GameTime>(this, "cleaned", gameTime);
                 this.Dirty = false;
             }
+
+            base.Update(gameTime);
         }
         #endregion
 
@@ -102,6 +102,7 @@ namespace VoidHuntersRevived.Library.Utilities
         #region Helper Methods
         private void MarkDirty()
         {
+            this.Dirty = true;
             this.GetSurrounding().ForEach(c => {
                 c.Dirty = true;
             });
@@ -109,10 +110,11 @@ namespace VoidHuntersRevived.Library.Utilities
 
         /// <summary>
         /// Get all chunks surrounding the current chunk.
-        /// This includes the current chunk.
+        /// This will create the chunks if they do not exist
+        /// This does not include the current chunk
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Chunk> GetSurrounding()
+        public IEnumerable<Chunk> GetOrCreateSurrounding()
         {
             if (_surrounding == default(IEnumerable<Chunk>))
             {
@@ -122,7 +124,6 @@ namespace VoidHuntersRevived.Library.Utilities
                 list.Add(_chunks.GetOrCreate(this.Position.X - Chunk.Size, this.Position.Y + Chunk.Size));
 
                 list.Add(_chunks.GetOrCreate(this.Position.X - Chunk.Size, this.Position.Y + 0));
-                list.Add(this);
                 list.Add(_chunks.GetOrCreate(this.Position.X + Chunk.Size, this.Position.Y + 0));
 
                 list.Add(_chunks.GetOrCreate(this.Position.X + Chunk.Size, this.Position.Y - Chunk.Size));
@@ -130,6 +131,47 @@ namespace VoidHuntersRevived.Library.Utilities
                 list.Add(_chunks.GetOrCreate(this.Position.X - Chunk.Size, this.Position.Y - Chunk.Size));
 
                 _surrounding = list;
+            }
+
+            return _surrounding;
+        }
+
+        /// <summary>
+        /// Get all chunks surrounding the current chunk.
+        /// This does not include the current chunk
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Chunk> GetSurrounding()
+        {
+            if (_surrounding == default(IEnumerable<Chunk>))
+            {
+                var list = new List<Chunk>();
+                Chunk item;
+
+                if ((item = _chunks.Get(this.Position.X + Chunk.Size, this.Position.Y + Chunk.Size)) != default(Chunk))
+                    list.Add(item);
+                if ((item = _chunks.Get(this.Position.X + 0, this.Position.Y + Chunk.Size)) != default(Chunk))
+                    list.Add(item);
+                if ((item = _chunks.Get(this.Position.X - Chunk.Size, this.Position.Y + Chunk.Size)) != default(Chunk))
+                    list.Add(item);
+
+                if ((item = _chunks.Get(this.Position.X - Chunk.Size, this.Position.Y + 0)) != default(Chunk))
+                    list.Add(item);
+                if ((item = _chunks.Get(this.Position.X + Chunk.Size, this.Position.Y + 0)) != default(Chunk))
+                    list.Add(item);
+
+                if ((item = _chunks.Get(this.Position.X + Chunk.Size, this.Position.Y - Chunk.Size)) != default(Chunk))
+                    list.Add(item);
+                if ((item = _chunks.Get(this.Position.X + 0, this.Position.Y - Chunk.Size)) != default(Chunk))
+                    list.Add(item);
+                if ((item = _chunks.Get(this.Position.X - Chunk.Size, this.Position.Y - Chunk.Size)) != default(Chunk))
+                    list.Add(item);
+
+                // Update the surrounding value, assuming that all chunks exist
+                if (list.Count == 8)
+                    _surrounding = list;
+                else
+                    return list;
             }
 
             return _surrounding;

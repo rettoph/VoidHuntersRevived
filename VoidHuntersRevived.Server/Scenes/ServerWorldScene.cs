@@ -72,21 +72,21 @@ namespace VoidHuntersRevived.Server.Scenes
                 });
             }
 
-            for (Int32 i = 0; i < 20; i++)
+            for (Int32 i = 0; i < 250; i++)
             {
-                this.entities.Create<ShipPart>("ship-part:hull:triangle").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:hull:square").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:hull:hexagon").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:hull:pentagon").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:hull:beam:horizontal").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:hull:triangle").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:hull:square").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:hull:hexagon").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:hull:pentagon").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:hull:beam:horizontal").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
             }
 
             // for (Int32 x = -5; x < 5; x++)
@@ -143,19 +143,19 @@ namespace VoidHuntersRevived.Server.Scenes
 
             for (Int32 i = 0; i < 0; i++)
             {
-                this.entities.Create<ShipPart>("ship-part:hull:triangle").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:hull:square").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:hull:hexagon").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:hull:pentagon").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:hull:beam:horizontal").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:hull:triangle").SetPosition(this.random.NextVector2(-300, 300), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:hull:square").SetPosition(this.random.NextVector2(-300, 300), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:hull:hexagon").SetPosition(this.random.NextVector2(-300, 300), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:hull:pentagon").SetPosition(this.random.NextVector2(-300, 300), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:hull:beam:horizontal").SetPosition(this.random.NextVector2(-300, 300), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-300, 300), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-300, 300), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-300, 300), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-300, 300), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-300, 300), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(this.random.NextVector2(-300, 300), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(this.random.NextVector2(-300, 300), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(this.random.NextVector2(-300, 300), this.random.NextSingle(-3, 3));
             }
         }
 

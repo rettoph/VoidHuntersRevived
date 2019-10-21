@@ -43,6 +43,10 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         #region Public Fields
         public FarseerCamera2D Camera { get; private set; }
         public Sensor Sensor { get; private set; }
+        /// <summary>
+        /// The scale value used internally by chunks
+        /// </summary>
+        public Single ChunkScale { get; private set; }
         #endregion
 
         #region Constructor
@@ -103,6 +107,10 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         #region Frame Methods
         protected override void Update(GameTime gameTime)
         {
+            // Update the internal chunk scale value, used locally by client chunks for rendering
+            var inverse = Math.Ceiling(1 / this.Camera.ZoomTarget);
+            this.ChunkScale = MathHelper.Clamp((Single)Math.Round((1 / (inverse + (inverse % 2)) * 2), 3), 0.125f, 1);
+
             base.Update(gameTime);
 
             this.entities.TryUpdate(gameTime);
@@ -128,7 +136,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _effect.View = this.Camera.View;
 
             // Draw all entities
-            _spriteBatch.Begin(blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp, effect: _effect);
+            _spriteBatch.Begin(blendState: BlendState.AlphaBlend, samplerState: SamplerState.LinearClamp, effect: _effect);
             this.chunks.TryDraw(gameTime);
             _spriteBatch.End();
 

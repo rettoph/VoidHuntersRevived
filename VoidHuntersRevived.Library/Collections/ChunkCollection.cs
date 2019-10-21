@@ -49,6 +49,17 @@ namespace VoidHuntersRevived.Library.Collections
 
             return _chunk;
         }
+
+        public Chunk Get(Single x, Single y)
+        {
+            var position = new Position()
+            {
+                X = (Single)Math.Floor(x / Chunk.Size) * Chunk.Size,
+                Y = (Single)Math.Floor(y / Chunk.Size) * Chunk.Size
+            };
+
+            return _chunk = this.GetById(position.Id);
+        }
         #endregion
 
         #region Helper Methods
@@ -59,7 +70,6 @@ namespace VoidHuntersRevived.Library.Collections
         public void AddMany(IEnumerable<FarseerEntity> list)
         {
             list.ForEach(f => {
-                Console.WriteLine(f.Position);
                 this.GetOrCreate(f.Position.X, f.Position.Y).Add(f);
             });
         }

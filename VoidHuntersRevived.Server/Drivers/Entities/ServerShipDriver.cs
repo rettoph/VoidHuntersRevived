@@ -78,7 +78,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
                         this.driven.SetBridge(_builder.Import(import));
 
 
-                    this.driven.Bridge.SetPosition(new Vector2(rand.NextSingle(-100, 100), rand.NextSingle(-100, 100)), rand.NextSingle(-3, 3));
+                    this.driven.Bridge.SetPosition(rand.NextVector2(100, 300, 100, 300), rand.NextSingle(-3, 3));
 
                     _lives++;
                 }
