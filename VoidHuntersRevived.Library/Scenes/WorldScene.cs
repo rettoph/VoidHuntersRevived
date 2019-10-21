@@ -8,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Library.Collections;
+using Microsoft.Xna.Framework;
 
 namespace VoidHuntersRevived.Library.Scenes
 {
@@ -15,6 +17,7 @@ namespace VoidHuntersRevived.Library.Scenes
     {
         #region Protected Fields
         protected World world { get; private set; }
+        protected ChunkCollection chunks { get; private set; }
         #endregion
 
         #region Public Attributes
@@ -35,6 +38,22 @@ namespace VoidHuntersRevived.Library.Scenes
 
             // Create a new player collection...
             this.Players = new CreatableCollection<Player>(provider);
+
+            this.chunks = provider.GetRequiredService<ChunkCollection>();
+        }
+        #endregion
+
+        #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            this.chunks.TryUpdate(gameTime);
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
         }
         #endregion
     }

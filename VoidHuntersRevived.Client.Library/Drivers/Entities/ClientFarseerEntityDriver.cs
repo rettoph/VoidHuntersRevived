@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
             this.driven.Events.TryAdd<Single>("angular-impulse:applied", this.HandleAngularImpulseApplied);
             this.driven.Events.TryAdd<AppliedForce>("force:applied", this.HandleForceApplied);
             this.driven.Events.TryAdd<NetIncomingMessage>("read", this.HandleRead);
-            this.driven.Events.TryAdd<IController>("controller:changed", this.HandleControllerChanged);
+            this.driven.Events.TryAdd<Controller>("controller:changed", this.HandleControllerChanged);
 
             // Bind required action handlers
             this.driven.Actions.TryAdd("vitals:update", this.HandleVitalsUpdateMessage);
@@ -97,7 +97,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="arg"></param>
-        private void HandleControllerChanged(object sender, IController arg)
+        private void HandleControllerChanged(object sender, Controller arg)
         {
             _body.CollidesWith = this.driven.CollidesWith;
             _body.CollisionCategories = this.driven.CollisionCategories;

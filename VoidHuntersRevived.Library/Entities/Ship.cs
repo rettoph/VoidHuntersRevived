@@ -36,15 +36,19 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Private Fields
-        private ShipPartController _controller;
         private List<FemaleConnectionNode> _openFemaleNodes;
+        private Boolean _dirtyBridgeChain;
+        #endregion
+
+        #region Internal Attributes
+        internal ShipPartController controller { get; private set; }
         #endregion
 
         #region Public Attributes
         /// <summary>
         /// All synced ship parts within the ships current bridge chain
         /// </summary>
-        public IReadOnlyCollection<ShipPart> Components { get => _controller.Components; }
+        public IReadOnlyCollection<ShipPart> Components { get => this.controller.Components; }
 
         /// <summary>
         /// The current active Direction flags.
@@ -96,7 +100,7 @@ namespace VoidHuntersRevived.Library.Entities
             base.Create(provider);
 
             _openFemaleNodes = new List<FemaleConnectionNode>();
-            _controller = provider.GetRequiredService<ShipPartController>();
+            controller = provider.GetRequiredService<ShipPartController>();
 
             this.Events.Register<ShipPart>("bridge:changed");
             this.Events.Register<ShipPart>("bridge:chain:updated");
@@ -138,22 +142,16 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Frame Methods
-        protected override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-
-            this.TractorBeam.TryDraw(gameTime);
-            _controller.TryDraw(gameTime);
-        }
-
         protected override void Update(GameTime gameTime)
         {
-            // First update internal components...
-            this.TractorBeam.TryUpdate(gameTime);
-            _controller.TryUpdate(gameTime);
-
             // Update the ship itself
             base.Update(gameTime);
+
+            if(_dirtyBridgeChain)
+            {
+                this.Events.TryInvoke<ShipPart>(this, "bridge:chain:updated", this.Bridge);
+                _dirtyBridgeChain = false;
+            }
         }
         #endregion
 
@@ -170,7 +168,7 @@ namespace VoidHuntersRevived.Library.Entities
                     this.Bridge.Ship = null;
 
                     // Remove old events
-                    this.Bridge.Events.TryRemove<ShipPart.ChainUpdate>("chain:updated", this.HandleBridgeChainUpdated);
+                    this.Bridge.Events.TryRemove<ShipPart.ChainUpdate>("chain:updated", this.HandleBridgeShipPartChainUpdated);
                     this.Bridge.Events.TryRemove<Creatable>("disposing", this.HandleBridgeDisposing);
                 }
 
@@ -181,13 +179,14 @@ namespace VoidHuntersRevived.Library.Entities
                     this.Bridge.Ship = this;
 
                     // Add new events
-                    this.Bridge.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleBridgeChainUpdated);
+                    this.Bridge.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleBridgeShipPartChainUpdated);
                     this.Bridge.Events.TryAdd<Creatable>("disposing", this.HandleBridgeDisposing);
                 }
 
                 // Invoke required events
                 this.Events.TryInvoke<ShipPart>(this, "bridge:changed", this.Bridge);
-                this.Events.TryInvoke<ShipPart>(this, "bridge:chain:updated", this.Bridge);
+                // this.Events.TryInvoke<ShipPart>(this, "bridge:chain:updated", this.Bridge);
+                _dirtyBridgeChain = true;
             }
         }
 
@@ -263,7 +262,7 @@ namespace VoidHuntersRevived.Library.Entities
             // Get all open female connection nodes within the bridge
             this.Bridge?.GetOpenFemaleConnectionNodes(ref _openFemaleNodes);
             // Mark the internal chain dirty, preparing for claning next update
-            _controller.DirtyChain(this.Bridge);
+            this.controller.DirtyChain(this.Bridge);
         }
         #endregion
 
@@ -274,9 +273,10 @@ namespace VoidHuntersRevived.Library.Entities
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="arg"></param>
-        private void HandleBridgeChainUpdated(object sender, ShipPart.ChainUpdate arg)
+        private void HandleBridgeShipPartChainUpdated(object sender, ShipPart.ChainUpdate arg)
         {
-            this.Events.TryInvoke<ShipPart>(this, "bridge:chain:updated", this.Bridge);
+            _dirtyBridgeChain = true;
+            // this.Events.TryInvoke<ShipPart>(this, "bridge:chain:updated", this.Bridge);
         }
 
         /// <summary>

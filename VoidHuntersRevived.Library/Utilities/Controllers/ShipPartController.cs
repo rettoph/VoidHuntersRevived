@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VoidHuntersRevived.Library.Collections;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.ShipParts.ConnectionNodes;
 
@@ -17,6 +18,16 @@ namespace VoidHuntersRevived.Library.Utilities.Controllers
         private List<ShipPart> _list;
         private ShipPart _root;
         private Boolean _dirty;
+        private ChunkCollection _chunks;
+        private Annex _annex;
+        #endregion
+
+        #region Constructor
+        public ShipPartController(Annex annex, ChunkCollection chunks) : base(chunks)
+        {
+            _chunks = chunks;
+            _annex = annex;
+        }
         #endregion
 
         #region Lifecycle Methods
@@ -51,7 +62,7 @@ namespace VoidHuntersRevived.Library.Utilities.Controllers
             return false;
         }
 
-        public override bool Remove(ShipPart entity)
+        protected override bool Remove(ShipPart entity)
         {
             if (base.Remove(entity))
             {
@@ -80,7 +91,7 @@ namespace VoidHuntersRevived.Library.Utilities.Controllers
             else
             {
                 _list.Clear();
-                root.GetAllChildren(ref _list);
+                root.GetAllChildren(_list);
 
                 var removed = this.Components.Except(_list).ToList();
                 var added = _list.Except(this.Components).ToList();
@@ -88,7 +99,7 @@ namespace VoidHuntersRevived.Library.Utilities.Controllers
                 this.logger.LogDebug($"Synced ShipPartController => Components: {this.Components.Count()}, Children: {_list.Count()}, Added: {added.Count()}, Removed: {removed.Count()}");
 
                 // Add & remove children as needed
-                removed.ForEach(sp => this.Remove(sp));
+                _chunks.AddMany(removed);
                 added.ForEach(sp => this.Add(sp));
             }
 
@@ -109,7 +120,8 @@ namespace VoidHuntersRevived.Library.Utilities.Controllers
         /// <param name="arg"></param>
         private void HandleComponentDisposing(object sender, Creatable arg)
         {
-            this.Remove(arg as ShipPart);
+            _chunks.AddMany((arg as ShipPart).GetAllChildren());
+            _annex.Add(arg as ShipPart);
         }
     }
 }

@@ -10,6 +10,7 @@ using System.Linq;
 using VoidHuntersRevived.Library.Utilities.Controllers;
 using Microsoft.Extensions.DependencyInjection;
 using VoidHuntersRevived.Library.Utilities;
+using VoidHuntersRevived.Library.Collections;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -21,6 +22,7 @@ namespace VoidHuntersRevived.Library.Entities
     {
         #region Private Attributes
         private ShipPartController _controller;
+        private ChunkCollection _chunks;
         #endregion
 
         #region Public Attributes
@@ -41,6 +43,8 @@ namespace VoidHuntersRevived.Library.Entities
             _controller.CollidesWith = Categories.PassiveCollidesWith;
             _controller.CollisionCategories = Categories.PassiveCollisionCategories;
             _controller.IgnoreCCDWith = Categories.PassiveIgnoreCCDWith;
+
+            _chunks = provider.GetRequiredService<ChunkCollection>();
 
             this.Events.Register<ShipPart>("selected");
             this.Events.Register<ShipPart>("released");
@@ -86,13 +90,13 @@ namespace VoidHuntersRevived.Library.Entities
         public Boolean ValidateTarget(ShipPart target)
         {
             if (target == default(ShipPart))
-                return false;
-            else if (target.Root.IsControlled && !this.Ship.Components.Contains(target))
-                return false;
-            else if (!target.IsRoot && !target.Root.IsControlled)
-                return false;
+                return true;
+            if (target.Controller is Chunk && target.IsRoot)
+                return true;
+            if (!target.IsRoot && this.Ship.Components.Contains(target))
+                return true;
 
-            return true;
+            return false;
         }
 
         /// <summary>
@@ -158,7 +162,7 @@ namespace VoidHuntersRevived.Library.Entities
                     this.Selected.SetBodyEnabled(true);
                     this.Selected = null;
 
-                    _controller.SyncChain(this.Selected);
+                    _chunks.AddMany(oldSelected.GetAllChildren());
 
                     this.Events.TryInvoke<ShipPart>(this, "released", oldSelected);
 

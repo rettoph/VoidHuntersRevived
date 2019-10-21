@@ -101,14 +101,23 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// children of the current ShipPart's chain.
         /// </summary>
         /// <param name="list"></param>
-        public void GetAllChildren(ref List<ShipPart> list,Func<ShipPart, Boolean> filter = null)
+        public void GetAllChildren(IList<ShipPart> list, Func<ShipPart, Boolean> filter = null)
         {
             if(filter == null || filter(this))
                 list.Add(this);
 
             foreach (FemaleConnectionNode female in this.FemaleConnectionNodes)
                 if (female.Attached)
-                    female.Target.Parent.GetAllChildren(ref list, filter);
+                    female.Target.Parent.GetAllChildren(list, filter);
+        }
+
+        public IList<ShipPart> GetAllChildren(Func<ShipPart, Boolean> filter = null)
+        {
+            var list = new List<ShipPart>();
+
+            this.GetAllChildren(list, filter);
+
+            return list;
         }
 
         public Int32 GetSize()

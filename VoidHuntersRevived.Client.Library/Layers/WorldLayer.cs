@@ -12,10 +12,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Guppy.Loaders;
 
 namespace VoidHuntersRevived.Client.Library.Layers
 {
-    public class WorldLayer : Layer
+    public class WorldLayer : BloomLayer
     {
         #region Private Fields
         private FarseerCamera2D _camera;
@@ -24,16 +25,18 @@ namespace VoidHuntersRevived.Client.Library.Layers
         private GraphicsDevice _graphics;
         private DebugOverlay _debug;
         private IPool<Projectile> _projectiles;
+        private ContentLoader _content;
         #endregion
 
         #region Constructor
-        public WorldLayer(IPool<Projectile> projectiles, DebugOverlay debug, GraphicsDevice graphics, SpriteBatch spriteBatch, ClientWorldScene scene)
+        public WorldLayer(ContentLoader content, SpriteBatch spriteBatch, GraphicsDevice graphics, GameWindow window, IPool<Projectile> projectiles, DebugOverlay debug, ClientWorldScene scene) : base(content, spriteBatch, graphics, window)
         {
             _projectiles = projectiles;
             _debug = debug;
             _graphics = graphics;
             _spriteBatch = spriteBatch;
             _camera = scene.Camera;
+            _content = content;
         }
         #endregion
 
@@ -58,6 +61,11 @@ namespace VoidHuntersRevived.Client.Library.Layers
         #region Frame Methods 
         protected override void Draw(GameTime gameTime)
         {
+            this.bloom.BloomThreshold = 0.1f;
+            this.bloom.BloomStrengthMultiplier = 0.9f;
+            this.bloom.BloomUseLuminance = false;
+            this.bloom.BloomPreset = Effects.BloomFilter.BloomPresets.SuperWide;
+
             base.Draw(gameTime);
 
             // Update the internal effect

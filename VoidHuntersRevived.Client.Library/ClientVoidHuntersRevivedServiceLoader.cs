@@ -26,6 +26,11 @@ namespace VoidHuntersRevived.Client.Library
         public void ConfigureProvider(IServiceProvider provider)
         {
             var content = provider.GetRequiredService<ContentLoader>();
+            content.TryRegister("effect:bloom", "Effects/BloomCrossPlatform");
+
+            content.TryRegister("sprite:background:1", "Sprites/background-1");
+            content.TryRegister("sprite:background:2", "Sprites/background-2");
+            content.TryRegister("sprite:background:3", "Sprites/background-3");
             content.TryRegister("font", "font");
             content.TryRegister("thrust", "Sprites/thrust");
             content.TryRegister("com", "Sprites/com");

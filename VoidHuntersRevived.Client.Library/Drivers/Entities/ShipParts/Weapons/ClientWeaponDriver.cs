@@ -17,6 +17,7 @@ using Guppy.Loaders;
 using Guppy.Utilities.Cameras;
 using VoidHuntersRevived.Library.Configurations;
 using VoidHuntersRevived.Library.Utilities.Controllers;
+using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
 {
@@ -58,7 +59,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
 
             this.driven.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleChainUpdated);
             this.driven.Events.TryAdd<Vector2>("target:updated", this.HandleTargetUpdated);
-            this.driven.Events.TryAdd<IController>("controller:changed", this.HandleControllerChanged);
+            this.driven.Events.TryAdd<Controller>("controller:changed", this.HandleControllerChanged);
 
             var config = (driven.Configuration.Data as WeaponConfiguration);
             _sprite.Load(config.BarrelTexture, config.Barrel);
@@ -85,14 +86,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
         {
             base.Draw(gameTime);
 
-            var fullColor = Color.Lerp(this.driven.Root.IsControlled ? Color.Blue : (this.driven.Root.Configuration.Data as ShipPartConfiguration).DefaultColor, Color.White, 0.1f);
-            var deadColor = Color.Lerp(Color.DarkRed, fullColor, 0.2f);
+            var fullColor = !(this.driven.Controller is Chunk) ? ColorScheme.Blue : (this.driven.Root.Configuration.Data as ShipPartConfiguration).DefaultColor;
+            var deadColor = Color.Lerp(ColorScheme.Red, fullColor, 0.2f);
 
             _sprite.Draw(
                 this.driven.WorldBodyAnchor, 
                 this.driven.Rotation + this.driven.JointAngle + MathHelper.Pi,
-                Color.Lerp(deadColor, fullColor, this.driven.Health / 100), 
-                _camera);
+                Color.Lerp(deadColor, fullColor, this.driven.Health / 100));
         }
         #endregion
 
@@ -152,7 +152,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
             this.driven.UpdateBarrelTarget(target, _serverJoint, _serverRoot);
         }
 
-        private void HandleControllerChanged(object sender, IController arg)
+        private void HandleControllerChanged(object sender, Controller arg)
         {
             _serverBarrel.CollidesWith = this.driven.CollidesWith;
             _serverBarrel.CollisionCategories = this.driven.CollisionCategories;

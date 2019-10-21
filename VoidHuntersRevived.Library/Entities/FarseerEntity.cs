@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Library.Utilities.Controllers;
+using VoidHuntersRevived.Library.Collections;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -32,6 +33,9 @@ namespace VoidHuntersRevived.Library.Entities
         private World _world;
 
         private IPool<AppliedForce> _forcePool;
+
+        private Annex _annex;
+        private ChunkCollection _chunks;
         #endregion
 
         #region Protected Fields
@@ -48,8 +52,7 @@ namespace VoidHuntersRevived.Library.Entities
         /// The farseer entities current controller. This is required for the entity
         /// to be updated in any way
         /// </summary>
-        public IController Controller { get; private set; }
-        public Boolean IsControlled { get => this.Controller != default(IController); }
+        public Controller Controller { get; private set; }
 
         /// <summary>
         /// The internal Farseer Boyy's Id.
@@ -112,9 +115,9 @@ namespace VoidHuntersRevived.Library.Entities
         /// <value><c>true</c> if active; otherwise, <c>false</c>.</value>
         public Boolean BodyEnabled { get { return this.body.Enabled; } }
 
-        public Category CollidesWith { get => this.IsControlled ? this.Controller.CollidesWith : Categories.PassiveCollidesWith; }
-        public Category CollisionCategories { get => this.IsControlled ? this.Controller.CollisionCategories : Categories.PassiveCollisionCategories; }
-        public Category IgnoreCCDWith { get => this.IsControlled ? this.Controller.IgnoreCCDWith : Categories.PassiveIgnoreCCDWith; }
+        public Category CollidesWith { get => this.Controller.CollidesWith; }
+        public Category CollisionCategories { get => this.Controller.CollisionCategories; }
+        public Category IgnoreCCDWith { get => this.Controller.IgnoreCCDWith; }
 
         public Int32 FixtureCount { get => this.body.FixtureList.Count; }
         #endregion
@@ -126,6 +129,8 @@ namespace VoidHuntersRevived.Library.Entities
 
             _world = provider.GetRequiredService<World>();
             _forcePool = provider.GetRequiredService<IPool<AppliedForce>>();
+            _annex = provider.GetRequiredService<Annex>();
+            _chunks = provider.GetRequiredService<ChunkCollection>();
 
             // Initialize basic events
             this.Events.Register<Body>("body:created");
@@ -139,18 +144,29 @@ namespace VoidHuntersRevived.Library.Entities
             this.Events.Register<Vector2>("linear-impulse:applied");
             this.Events.Register<Single>("angular-impulse:applied");
             this.Events.Register<AppliedForce>("force:applied");
-            this.Events.Register<IController>("controller:changed");
+            this.Events.Register<Controller>("controller:changed");
         }
 
         protected override void PreInitialize()
         {
             base.PreInitialize();
 
+            // By default, add the current chunk to the entity 
+            _annex.Add(this);
+
             // Build a new body for the entity.
             this.CreateBody();
 
             this.SetEnabled(false);
             this.SetVisible(false);
+        }
+
+        protected override void PostInitialize()
+        {
+            base.PostInitialize();
+
+            // Add the entity to its chunk
+            _chunks.GetOrCreate(this.Position.X, this.Position.Y).Add(this);
         }
 
         public override void Dispose()
@@ -202,18 +218,22 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Set Methods
-        internal void SetController(IController controller)
+        internal void SetController(Controller controller)
         {
             if(this.Controller != controller)
             {
                 this.Controller = controller;
 
-                // Update internal body collision info
-                this.body.CollidesWith = this.CollidesWith;
-                this.body.CollisionCategories = this.CollisionCategories;
-                this.body.IgnoreCCDWith = this.IgnoreCCDWith;
+                if (this.Status == Guppy.InitializationStatus.Ready)
+                { // This particular function can run before the body is ready. This makes sure everything is loaded
+                    // Update internal body collision info
+                    this.body.CollidesWith = this.CollidesWith;
+                    this.body.CollisionCategories = this.CollisionCategories;
+                    this.body.IgnoreCCDWith = this.IgnoreCCDWith;
+                    this.SetVelocity(Vector2.Zero, 0);
 
-                this.Events.TryInvoke<IController>(this, "controller:changed", this.Controller);
+                    this.Events.TryInvoke<Controller>(this, "controller:changed", this.Controller);
+                }
             }
         }
         #endregion
@@ -375,6 +395,8 @@ namespace VoidHuntersRevived.Library.Entities
 
             this.body.ReadPosition(im);
             this.body.ReadVelocity(im);
+
+            _chunks.GetOrCreate(this.Position.X, this.Position.Y).Add(this);
         }
 
         protected override void WritePostInitialize(NetOutgoingMessage om)

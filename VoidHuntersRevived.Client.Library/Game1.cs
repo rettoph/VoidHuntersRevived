@@ -3,6 +3,7 @@ using Guppy.Extensions;
 using Guppy.Network.Extensions;
 using Guppy.Utilities.Loggers;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -25,6 +26,8 @@ namespace VoidHuntersRevived.Client.Library
             this.IsMouseVisible = true;
             this.Window.AllowUserResizing = true;
             this.IsFixedTimeStep = false;
+            this.graphics.PreferMultiSampling = true;
+            this.graphics.PreparingDeviceSettings += this.HandlePreparingDeviceSettings;
         }
 
         protected override void Initialize()
@@ -54,6 +57,11 @@ namespace VoidHuntersRevived.Client.Library
             base.Update(gameTime);
 
             this.game?.TryUpdate(gameTime);
+        }
+
+        private void HandlePreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
+        {
+            e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
         }
     }
 }

@@ -93,7 +93,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
             this.Events.TryAdd<Body>("position:changed", this.HandlePositionChanged);
             this.Events.TryAdd<NetIncomingMessage>("read", this.HandleRead);
-            this.Events.TryAdd<IController>("controller:changed", this.HandleControllerChanged);
+            this.Events.TryAdd<Controller>("controller:changed", this.HandleControllerChanged);
         }
 
         protected override void Initialize()
@@ -157,7 +157,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         }
         public void UpdateBarrelTarget(Vector2 target, RevoluteJoint joint, Body root)
         {
-            if (this.IsControlled)
+            if (!(this.Controller is Chunk))
             {
                 var position = root.Position + Vector2.Transform(this.config.BodyAnchor, this.LocalTransformation * Matrix.CreateRotationZ(root.Rotation));
                 var offset = target - position;
@@ -201,7 +201,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             // Calculate the barrels proper position based on the defined anchor points.
             var position = root.Position + Vector2.Transform(this.config.BodyAnchor + this.config.BarrelAnchor, this.LocalTransformation * Matrix.CreateRotationZ(root.Rotation));
             // Update the barrels position
-            barrel.SetTransformIgnoreContacts(ref position, this.Root.IsControlled ? barrel.Rotation : root.Rotation + this.LocalRotation + MathHelper.Pi);
+            barrel.SetTransformIgnoreContacts(ref position, this.Root.Controller is Chunk ? root.Rotation + this.LocalRotation + MathHelper.Pi : barrel.Rotation);
         } 
 
         public void UpdateJoint(ref RevoluteJoint joint, Body root, Body barrel, World world)
@@ -268,7 +268,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             _barrel.Enabled = this.Root.Enabled;
         }
 
-        private void HandleControllerChanged(object sender, IController arg)
+        private void HandleControllerChanged(object sender, Controller arg)
         {
             _barrel.CollidesWith = this.CollidesWith;
             _barrel.CollisionCategories = this.CollisionCategories;

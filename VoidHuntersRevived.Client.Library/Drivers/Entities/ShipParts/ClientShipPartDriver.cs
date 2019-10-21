@@ -19,6 +19,7 @@ using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Library.Extensions.Farseer;
 using Microsoft.Extensions.Logging;
 using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
+using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
 {
@@ -60,14 +61,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
         {
             base.Draw(gameTime);
 
-            var fullColor = Color.Lerp(this.driven.Root.IsControlled ? Color.Blue : (this.driven.Root.Configuration.Data as ShipPartConfiguration).DefaultColor, Color.White, 0.1f);
-            var deadColor = Color.Lerp(Color.DarkRed, fullColor, 0.2f);
+            var fullColor = !(this.driven.Controller is Chunk) ? ColorScheme.Blue : (this.driven.Root.Configuration.Data as ShipPartConfiguration).DefaultColor;
+            var deadColor = Color.Lerp(ColorScheme.Red, fullColor, 0.2f);
 
             _sprite.Draw(
                 this.driven.Position,
                 this.driven.Rotation,
-                Color.Lerp(deadColor, fullColor, this.driven.Health / 100),
-                _camera);
+                Color.Lerp(deadColor, fullColor, this.driven.Health / 100));
         }
         #endregion
 

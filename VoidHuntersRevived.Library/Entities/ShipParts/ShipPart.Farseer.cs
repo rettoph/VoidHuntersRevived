@@ -22,34 +22,34 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// <summary>
         /// Get the world body origin position.
         /// </summary>
-        public new Vector2 Position { get { return this.IsRoot ? base.Position : this.Root.Position + Vector2.Transform(Vector2.Zero, this.LocalTransformation * Matrix.CreateRotationZ(this.Root.Rotation)); } }
+        public override Vector2 Position { get { return this.IsRoot ? base.Position : this.Root.Position + Vector2.Transform(Vector2.Zero, this.LocalTransformation * Matrix.CreateRotationZ(this.Root.Rotation)); } }
 
         /// <summary>
         /// Get the angle in radians.
         /// </summary>
-        public new Single Rotation { get { return this.IsRoot ? base.Rotation : this.Root.Rotation + this.LocalRotation; } }
+        public override Single Rotation { get { return this.IsRoot ? base.Rotation : this.Root.Rotation + this.LocalRotation; } }
 
         /// <summary>
         /// Get the linear velocity of the center of mass.
         /// </summary>
-        public new Vector2 LinearVelocity { get { return this.IsRoot ? base.LinearVelocity : this.Root.LinearVelocity; } }
+        public override Vector2 LinearVelocity { get { return this.IsRoot ? base.LinearVelocity : this.Root.LinearVelocity; } }
 
         /// <summary>
         /// Gets the angular velocity. Radians/second.
         /// </summary>
-        public new Single AngularVelocity { get { return this.IsRoot ? base.AngularVelocity : this.Root.AngularVelocity; } }
+        public override Single AngularVelocity { get { return this.IsRoot ? base.AngularVelocity : this.Root.AngularVelocity; } }
 
         /// <summary>
         /// Get the world position of the center of mass.
         /// </summary>
         /// <value>The world position.</value>
-        public new Vector2 WorldCenter { get { return this.IsRoot ? base.WorldCenter : this.Position + Vector2.Transform(this.LocalCenter, Matrix.CreateRotationZ(this.Rotation)); } }
+        public override Vector2 WorldCenter { get { return this.IsRoot ? base.WorldCenter : this.Position + Vector2.Transform(this.LocalCenter, Matrix.CreateRotationZ(this.Rotation)); } }
 
         /// <summary>
         /// Get the local position of the center of mass.
         /// </summary>
         /// <value>The local position.</value>
-        public new Vector2 LocalCenter { get { return this.IsRoot ? base.LocalCenter : this.config.Centeroid; } }
+        public override Vector2 LocalCenter { get { return this.IsRoot ? base.LocalCenter : this.config.Centeroid; } }
         #endregion
 
         #region Lifecycle Methods

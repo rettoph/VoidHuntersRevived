@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Server.Scenes
         {
             base.PostInitialize();
 
-            for(Int32 i=0; i<2; i++)
+            for(Int32 i=0; i<0; i++)
             {
                 this.entities.Create<ComputerPlayer>("player:computer", player =>
                 {
@@ -71,6 +71,31 @@ namespace VoidHuntersRevived.Server.Scenes
                     });
                 });
             }
+
+            for (Int32 i = 0; i < 20; i++)
+            {
+                this.entities.Create<ShipPart>("ship-part:hull:triangle").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:hull:square").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:hull:hexagon").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:hull:pentagon").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:hull:beam:horizontal").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(this.random.NextVector2(-200, 200), this.random.NextSingle(-3, 3));
+            }
+
+            // for (Int32 x = -5; x < 5; x++)
+            // {
+            //     for (Int32 y = -5; y < 5; y++)
+            //     {
+            //         this.entities.Create<ShipPart>("ship-part:hull:triangle").SetPosition(new Vector2(Chunk.Size * x, Chunk.Size * y), this.random.NextSingle(-3, 3));
+            //     }
+            // }
         }
 
         public override void Dispose()

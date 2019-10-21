@@ -34,6 +34,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private ServerRender _server;
         private SpriteBatch _spriteBatch;
         private SpriteFont _font;
+        private BasicEffect _effect;
 
         private Boolean _wasDebugDown;
         private Boolean _debug;
@@ -62,13 +63,19 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         {
             base.PreInitialize();
 
+            _effect = new BasicEffect(_graphics)
+            {
+                TextureEnabled = true,
+                VertexColorEnabled = true
+            };
+
             this.layers.Create<DebugLayer>(100);
 
             this.Sensor = this.entities.Create<Sensor>("sensor");
             this.debugOverlay = this.entities.Create<DebugOverlay>("debug-overlay");
 
-            this.layers.Create<BackgroundLayer>(0);
-            this.layers.Create<WorldLayer>(1);
+            this.layers.Create<BackgroundLayer>(99);
+            this.layers.Create<WorldLayer>(0);
         }
 
         protected override void Initialize()
@@ -115,6 +122,15 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             base.Draw(gameTime);
 
             _graphics.Clear(Color.Black);
+
+            // Update the internal effect
+            _effect.Projection = this.Camera.Projection;
+            _effect.View = this.Camera.View;
+
+            // Draw all entities
+            _spriteBatch.Begin(blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp, effect: _effect);
+            this.chunks.TryDraw(gameTime);
+            _spriteBatch.End();
 
             this.layers.TryDraw(gameTime);
 

@@ -29,6 +29,7 @@ using VoidHuntersRevived.Library.Entities.Ammunitions;
 using VoidHuntersRevived.Library.Utilities.Delegater;
 using Guppy.Factories;
 using VoidHuntersRevived.Library.Utilities.Controllers;
+using VoidHuntersRevived.Library.Collections;
 
 namespace VoidHuntersRevived.Library
 {
@@ -41,6 +42,8 @@ namespace VoidHuntersRevived.Library
             services.AddScoped<ConnectionNodeFactory>();
             services.AddScoped<Random>();
             services.AddScoped<ShipBuilder>();
+            services.AddScoped<ChunkCollection>();
+            services.AddScoped<Annex>(p => p.GetRequiredService<DrivenFactory<Annex>>().Build<Annex>());
             services.AddTransient<ShipPartController>(p => p.GetRequiredService<DrivenFactory<ShipPartController>>().Build<ShipPartController>());
 
             services.AddScoped<World>(p =>
