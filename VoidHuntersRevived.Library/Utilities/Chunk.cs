@@ -33,6 +33,7 @@ namespace VoidHuntersRevived.Library.Utilities
         #region Private Attributes
         private ChunkCollection _chunks;
         private IEnumerable<Chunk> _surrounding;
+        private GameTime _addedTime;
         #endregion
 
         #region Public Attributes
@@ -51,6 +52,8 @@ namespace VoidHuntersRevived.Library.Utilities
         protected override void Create(IServiceProvider provider)
         {
             base.Create(provider);
+
+            _addedTime = new GameTime();
 
             this.Events.Register<GameTime>("cleaned");
         }
@@ -75,6 +78,9 @@ namespace VoidHuntersRevived.Library.Utilities
             if(base.Add(entity))
             {
                 entity.Events.TryAdd<Creatable>("disposing", this.HandleEntityDisposing);
+
+                // Update the entity once
+                entity.TryUpdate(_addedTime);
 
                 this.MarkDirty();
 

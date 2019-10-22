@@ -38,6 +38,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
         private Boolean _wasDebugDown;
         private Boolean _debug;
+        private GameTime _gt;
         #endregion
 
         #region Public Fields
@@ -98,9 +99,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _serverDebugView.SleepingShapeColor = Color.Red;
             _serverDebugView.DefaultShapeColor = Color.Blue;
 
-            this.debugOverlay.AddLine(() => $"Actions: {this.ActionsRecieved.ToString("#,##0")}");
-            this.debugOverlay.AddLine(() => $"APS: {this.ActionsPerSecond.ToString("#0.##0")}");
-            this.debugOverlay.AddLine(() => $"FPS: {this.FramesPerSecond.ToString("#,##0")}");
+            this.debugOverlay.AddLine(() => $"FPS: {(1000 / _gt.ElapsedGameTime.TotalMilliseconds).ToString("#,##0")}");
         }
         #endregion
 
@@ -123,6 +122,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                 _debug = !_debug;
 
             _wasDebugDown = debug;
+            _gt = gameTime;
         }
 
         protected override void Draw(GameTime gameTime)

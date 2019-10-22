@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
     [IsDriver(typeof(Chunk))]
     internal sealed class ClientChunkDriver : Driver<Chunk>
     {
-        public static Single SnapThreshold = 0.5f;
+        public static Single SnapThreshold = 0.25f;
 
         #region Private Fields
         private GraphicsDevice _graphics;
@@ -57,8 +57,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             _textures = new Dictionary<Single, RenderTarget2D>();
             _dirtyTextures = new Dictionary<Single, Boolean>();
 
-            _p = new Vector3(_position, 0);
-
             _effect = new BasicEffect(_graphics)
             {
                 TextureEnabled = true,
@@ -87,11 +85,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             base.Draw(gameTime);
 
-            if (_render)
+            if (_render && _scene.Camera.Frustum.Contains(_box) != ContainmentType.Disjoint)
             {
                 if (_scene.ChunkScale <= ClientChunkDriver.SnapThreshold)
                 { // Draw the cached texture when zoomed out
-                    if (!_dirtyTextures[_scene.ChunkScale] && _scene.Camera.Frustum.Contains(_box) != ContainmentType.Disjoint)
+                    if (!_dirtyTextures[_scene.ChunkScale])
                         _spriteBatch.Draw(
                             _textures[_scene.ChunkScale],
                             _bounds,
@@ -99,7 +97,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers
                 }
                 else
                 { // Just draw internal components directly when zoomed in
-                    this.driven.Components.TryDrawAll(gameTime);
+                    this.driven.Components.ForEach(e =>
+                    {
+                        // e.Position.Deconstruct(out _p.X, out _p.Y);
+                        // Only draw an entity if it would be in the screen
+                        // if (_scene.Camera.Frustum.Contains(_p).HasFlag(ContainmentType.Contains))
+                            e.TryDraw(gameTime);
+                    });
                 }
             }
         }
@@ -137,12 +141,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             if (!down)
             { // Cannot scale down, must redraw all components
                 _spriteBatch.Begin(effect: _effect);
-                this.driven.Components.TryUpdateAll(gameTime);
                 this.driven.Components.TryDrawAll(gameTime);
 
                 this.driven.GetSurrounding().ForEach(c =>
                 {
-                    c.Components.TryUpdateAll(gameTime);
                     c.Components.TryDrawAll(gameTime);
                 });
                 _spriteBatch.End();
@@ -160,7 +162,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             if (this.driven.Components.Any())
                 return true;
 
-            foreach (Chunk chunk in this.driven.GetSurrounding())
+            foreach (Chunk chunk in this.driven.GetOrCreateSurrounding())
                 if (chunk.Components.Any())
                     return true;
 
@@ -214,7 +216,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             // Mark all internal textures as dirty
             _dirtyTextures.Keys.ToList().ForEach(k => _dirtyTextures[k] = true);
-            _render = false;
+            _render = this.CanRender();
         }
         #endregion
     }
