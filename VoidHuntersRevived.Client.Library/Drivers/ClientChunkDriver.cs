@@ -87,17 +87,20 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             base.Draw(gameTime);
 
-            if(_scene.ChunkScale <= ClientChunkDriver.SnapThreshold)
-            { // Draw the cached texture when zoomed out
-                if (_render && !_dirtyTextures[_scene.ChunkScale] && _scene.Camera.Frustum.Contains(_box) != ContainmentType.Disjoint)
-                    _spriteBatch.Draw(
-                        _textures[_scene.ChunkScale],
-                        _bounds,
-                        Color.White);
-            }
-            else
-            { // Just draw internal components directly when zoomed in
-                this.driven.Components.TryDrawAll(gameTime);
+            if (_render)
+            {
+                if (_scene.ChunkScale <= ClientChunkDriver.SnapThreshold)
+                { // Draw the cached texture when zoomed out
+                    if (!_dirtyTextures[_scene.ChunkScale] && _scene.Camera.Frustum.Contains(_box) != ContainmentType.Disjoint)
+                        _spriteBatch.Draw(
+                            _textures[_scene.ChunkScale],
+                            _bounds,
+                            Color.White);
+                }
+                else
+                { // Just draw internal components directly when zoomed in
+                    this.driven.Components.TryDrawAll(gameTime);
+                }
             }
         }
         #endregion
@@ -112,22 +115,38 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             this.TryCreateTexture();
 
             _graphics.SetRenderTarget(_textures[_scene.ChunkScale]);
-            // _graphics.Clear(new Color(_position.X / Chunk.Size % 2 == 0 ? 100 : 255, 0, _position.Y / Chunk.Size % 2 == 0 ? 100 : 255, 100));
+            // _graphics.Clear(new Color(_position.X / Chunk.Size % 2 == 0 ? 100 : 255, 0, _position.Y / Chunk.Size % 2 == 0 ? 100 : 255, 220));
             _graphics.Clear(Color.Transparent);
 
-            _spriteBatch.Begin(effect: _effect);
+            // Used to detect if we can simply redraw a larger chunk and sclae it down, rather than redrawing everything
+            var down = false;
 
+            foreach(Single scale in _dirtyTextures.Keys)
+                if(scale > _scene.ChunkScale && !_dirtyTextures[scale])
+                { // Can scale down! just redraw the larger frame
+                    _spriteBatch.Begin();
+                    _spriteBatch.Draw(
+                        _textures[scale],
+                        _textures[_scene.ChunkScale].Bounds,
+                        Color.White);
+                    _spriteBatch.End();
+                    down = true;
+                    break;
+                }
 
-            this.driven.Components.TryUpdateAll(gameTime);
-            this.driven.Components.TryDrawAll(gameTime);
+            if (!down)
+            { // Cannot scale down, must redraw all components
+                _spriteBatch.Begin(effect: _effect);
+                this.driven.Components.TryUpdateAll(gameTime);
+                this.driven.Components.TryDrawAll(gameTime);
 
-            this.driven.GetOrCreateSurrounding().ForEach(c =>
-            {
-                c.Components.TryUpdateAll(gameTime);
-                c.Components.TryDrawAll(gameTime);
-            });
-            _spriteBatch.End();
-
+                this.driven.GetSurrounding().ForEach(c =>
+                {
+                    c.Components.TryUpdateAll(gameTime);
+                    c.Components.TryDrawAll(gameTime);
+                });
+                _spriteBatch.End();
+            }
 
             // Reset graphics device
             _graphics.SetRenderTarget(null);
