@@ -29,9 +29,12 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
             this.parts.ForEach(w =>
             {
-                w.UpdateBarrelTarget(this.driven.Target);
-                if (this.driven.Firing)
-                    w.TryFire();
+                if (w.Health > 10)
+                {
+                    w.UpdateBarrelTarget(this.driven.Target);
+                    if (this.driven.Firing)
+                        w.TryFire();
+                }
             });
         }
         #endregion

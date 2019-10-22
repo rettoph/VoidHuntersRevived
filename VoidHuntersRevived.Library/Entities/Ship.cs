@@ -99,7 +99,10 @@ namespace VoidHuntersRevived.Library.Entities
             base.Create(provider);
 
             _openFemaleNodes = new List<FemaleConnectionNode>();
-            controller = provider.GetRequiredService<ShipPartController>();
+            this.controller = provider.GetRequiredService<ShipPartController>();
+            this.controller.CollidesWith = Categories.ActiveCollidesWith;
+            this.controller.CollisionCategories = Categories.ActiveCollisionCategories;
+            this.controller.IgnoreCCDWith = Categories.ActiveIgnoreCCDWith;
 
             this.Events.Register<ShipPart>("bridge:changed");
             this.Events.Register<ShipPart>("bridge:chain:updated");

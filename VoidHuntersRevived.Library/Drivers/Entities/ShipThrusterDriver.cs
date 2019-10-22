@@ -26,7 +26,11 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             base.Update(gameTime);
 
-            this.parts.ForEach(t => t.TryThrust(this.driven.ActiveDirections));
+            this.parts.ForEach(t =>
+            {
+                if (t.Health > 10)
+                    t.TryThrust(this.driven.ActiveDirections);
+            });
         }
         #endregion
     }
