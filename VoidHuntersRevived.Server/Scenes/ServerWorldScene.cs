@@ -58,7 +58,63 @@ namespace VoidHuntersRevived.Server.Scenes
         {
             base.PostInitialize();
 
-            for(Int32 i=0; i<0; i++)
+            this.entities.Create<ComputerPlayer>("player:computer", player =>
+            {
+                player.Ship = this.entities.Create<Ship>("ship", ship =>
+                { // Build a new ship for the player...
+                    using (FileStream import = File.OpenRead("Ships/turret-01.vh"))
+                        ship.SetBridge(_builder.Import(import));
+
+                    ship.Bridge.SetPosition(Vector2.Zero, 0);
+                });
+            });
+
+            this.entities.Create<ComputerPlayer>("player:computer", player =>
+            {
+                player.Ship = this.entities.Create<Ship>("ship", ship =>
+                { // Build a new ship for the player...
+                    using (FileStream import = File.OpenRead("Ships/turret-02.vh"))
+                        ship.SetBridge(_builder.Import(import));
+
+                    ship.Bridge.SetPosition(new Vector2(50, 50), 0);
+                });
+            });
+
+            this.entities.Create<ComputerPlayer>("player:computer", player =>
+            {
+                player.Ship = this.entities.Create<Ship>("ship", ship =>
+                { // Build a new ship for the player...
+                    using (FileStream import = File.OpenRead("Ships/turret-02.vh"))
+                        ship.SetBridge(_builder.Import(import));
+
+                    ship.Bridge.SetPosition(new Vector2(-50, 50), 0);
+                });
+            });
+
+            this.entities.Create<ComputerPlayer>("player:computer", player =>
+            {
+                player.Ship = this.entities.Create<Ship>("ship", ship =>
+                { // Build a new ship for the player...
+                    using (FileStream import = File.OpenRead("Ships/turret-02.vh"))
+                        ship.SetBridge(_builder.Import(import));
+
+                    ship.Bridge.SetPosition(new Vector2(-50, -50), 0);
+                });
+            });
+
+            this.entities.Create<ComputerPlayer>("player:computer", player =>
+            {
+                player.Ship = this.entities.Create<Ship>("ship", ship =>
+                { // Build a new ship for the player...
+                    using (FileStream import = File.OpenRead("Ships/turret-02.vh"))
+                        ship.SetBridge(_builder.Import(import));
+
+                    ship.Bridge.SetPosition(new Vector2(50, -50), 0);
+                });
+            });
+
+
+            for (Int32 i=0; i<0; i++)
             {
                 this.entities.Create<ComputerPlayer>("player:computer", player =>
                 {
@@ -72,21 +128,21 @@ namespace VoidHuntersRevived.Server.Scenes
                 });
             }
 
-            for (Int32 i = 0; i < 0; i++)
+            for (Int32 i = 0; i < 100; i++)
             {
-                this.entities.Create<ShipPart>("ship-part:hull:triangle").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:hull:square").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:hull:hexagon").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:hull:pentagon").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:hull:beam:horizontal").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
-                this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:hull:triangle").SetPosition(Vector2.Transform(this.random.NextVector2(10, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:hull:square").SetPosition(Vector2.Transform(this.random.NextVector2(10, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:hull:hexagon").SetPosition(Vector2.Transform(this.random.NextVector2(10, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:hull:pentagon").SetPosition(Vector2.Transform(this.random.NextVector2(10, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:hull:beam:horizontal").SetPosition(Vector2.Transform(this.random.NextVector2(10, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(Vector2.Transform(this.random.NextVector2(10, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(Vector2.Transform(this.random.NextVector2(10, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(Vector2.Transform(this.random.NextVector2(10, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(Vector2.Transform(this.random.NextVector2(10, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:thruster:small").SetPosition(Vector2.Transform(this.random.NextVector2(10, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(Vector2.Transform(this.random.NextVector2(10, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(Vector2.Transform(this.random.NextVector2(10, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
+                this.entities.Create<ShipPart>("ship-part:weapon:mass-driver").SetPosition(Vector2.Transform(this.random.NextVector2(10, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
             }
 
             // for (Int32 x = -5; x < 5; x++)
@@ -134,9 +190,9 @@ namespace VoidHuntersRevived.Server.Scenes
                     using(FileStream import = File.OpenRead("Ships/mosquito.vh"))
                         ship.SetBridge(_builder.Import(import));
 
-                    // ship.SetBridge(this.entities.Create<ShipPart>("ship-part:hull:hexagon"));
+                    // ship.SetBridge(this.entities.Create<ShipPart>("ship-part:hull:square"));
                     // ship.SetBridge(this.entities.Create<ShipPart>("ship-part:chassis:mosquito"));
-                    ship.Bridge.SetPosition(this.random.NextVector2(-5, 5), this.random.NextSingle(-3, 3));
+                    ship.Bridge.SetPosition(this.random.NextVector2(-300, 300), this.random.NextSingle(-3, 3));
                 });
             });
 

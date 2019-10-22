@@ -413,7 +413,8 @@ namespace VoidHuntersRevived.Library.Entities
             this.body.ReadPosition(im);
             this.body.ReadVelocity(im);
 
-            _chunks.GetOrCreate(this.Position.X, this.Position.Y).Add(this);
+            if(this.Controller is Chunk)
+                _chunks.GetOrCreate(this.Position.X, this.Position.Y).Add(this);
         }
 
         protected override void WritePostInitialize(NetOutgoingMessage om)

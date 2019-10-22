@@ -70,18 +70,18 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
             { // When the bridge is low health, blow up the ship
                 this.driven.Bridge.Dispose();
 
-                // if (_lives < 3)
-                // {
-                //     var ships = new String[] { "mosquito", "turret-01", "turret-02" };
-                //     var rand = new Random();
-                //     using (FileStream import = File.OpenRead($"Ships/{ships[rand.Next(0, 1)]}.vh"))
-                //         this.driven.SetBridge(_builder.Import(import));
-                // 
-                // 
-                //     this.driven.Bridge.SetPosition(rand.NextVector2(100, 300, 100, 300), rand.NextSingle(-3, 3));
-                // 
-                //     _lives++;
-                // }
+                if (_lives < 5)
+                {
+                    var ships = new String[] { "mosquito", "turret-01", "turret-02" };
+                    var rand = new Random();
+                    using (FileStream import = File.OpenRead($"Ships/{ships[rand.Next(0, 1)]}.vh"))
+                        this.driven.SetBridge(_builder.Import(import));
+                
+                
+                    this.driven.Bridge.SetPosition(Vector2.Transform(rand.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(rand.NextSingle(0, MathHelper.TwoPi))), rand.NextSingle(-3, 3));
+                
+                    _lives++;
+                }
             }
         }
         #endregion

@@ -73,8 +73,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            if (this.IsDirty() && _scene.Camera.Frustum.Contains(_box) != ContainmentType.Disjoint)
+            if (this.IsDirty() && _scene.Camera.Frustum.Contains(_box).HasFlag(ContainmentType.Intersects))
             {
                 if((_render = this.CanRender()))
                     this.CleanTexture(gameTime);
@@ -85,7 +84,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         {
             base.Draw(gameTime);
 
-            if (_render && _scene.Camera.Frustum.Contains(_box) != ContainmentType.Disjoint)
+            if (_render && _scene.Camera.Frustum.Contains(_box).HasFlag(ContainmentType.Intersects))
             {
                 if (_scene.ChunkScale <= ClientChunkDriver.SnapThreshold)
                 { // Draw the cached texture when zoomed out
@@ -119,8 +118,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             this.TryCreateTexture();
 
             _graphics.SetRenderTarget(_textures[_scene.ChunkScale]);
-            _graphics.Clear(new Color(_position.X / Chunk.Size % 2 == 0 ? 100 : 255, 0, _position.Y / Chunk.Size % 2 == 0 ? 100 : 255, 220));
-            // _graphics.Clear(Color.Transparent);
+            // _graphics.Clear(new Color(_position.X / Chunk.Size % 2 == 0 ? 100 : 255, 0, _position.Y / Chunk.Size % 2 == 0 ? 100 : 255, 220));
+            _graphics.Clear(Color.Transparent);
 
             // Used to detect if we can simply redraw a larger chunk and sclae it down, rather than redrawing everything
             var down = false;

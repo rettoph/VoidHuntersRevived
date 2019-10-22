@@ -240,7 +240,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
         public virtual Boolean TryFire()
         {
-            if(_lastFire > 300)
+            if (_lastFire > 300 && this.OnTarget)
             {
                 _lastFire = 0;
 

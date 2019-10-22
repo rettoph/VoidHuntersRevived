@@ -105,7 +105,7 @@ namespace VoidHuntersRevived.Library.Utilities.Controllers
                 added.ForEach(sp => this.Add(sp));
             }
 
-            this.Events.TryInvoke<IEnumerable<ShipPart>>(this, "cleaned", _list);
+            this.Events.TryInvoke<IEnumerable<ShipPart>>(this, "cleaned", this.Components);
             _dirty = false;
         }
 

@@ -79,10 +79,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
             if (this.driven.BodyEnabled)
             {
                 var lerp = ClientFarseerEntityDriver.LerpStrength * (Single)gameTime.ElapsedGameTime.TotalMilliseconds;
-                this.driven.SetPosition(
-                    position: Vector2.Lerp(this.driven.Position, _body.Position, lerp),
-                    rotation: MathHelper.Lerp(this.driven.Rotation, _body.Rotation, lerp),
-                    ignoreContacts: true);
+                if (Vector2.Distance(this.driven.Position, _body.Position) > 5f) // Snap to the correct position if needed
+                    this.driven.SetPosition(_body.Position, _body.Rotation, true);
+                else
+                    this.driven.SetPosition(
+                        position: Vector2.Lerp(this.driven.Position, _body.Position, lerp),
+                        rotation: MathHelper.Lerp(this.driven.Rotation, _body.Rotation, lerp),
+                        ignoreContacts: true);
 
                 this.driven.SetVelocity(
                     linear: Vector2.Lerp(this.driven.LinearVelocity, _body.LinearVelocity, lerp),
