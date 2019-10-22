@@ -55,6 +55,10 @@ namespace VoidHuntersRevived.Library.Utilities
 
             _addedTime = new GameTime();
 
+            this.CollidesWith = Categories.PassiveCollidesWith;
+            this.CollisionCategories = Categories.PassiveCollisionCategories;
+            this.IgnoreCCDWith = Categories.PassiveIgnoreCCDWith;
+
             this.Events.Register<GameTime>("cleaned");
         }
         #endregion

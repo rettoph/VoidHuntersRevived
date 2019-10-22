@@ -36,6 +36,8 @@ namespace VoidHuntersRevived.Library.Utilities.Controllers
             base.Create(provider);
 
             _list = new List<ShipPart>();
+
+            this.Events.Register<IEnumerable<ShipPart>>("cleaned");
         }
         #endregion
 
@@ -81,7 +83,7 @@ namespace VoidHuntersRevived.Library.Utilities.Controllers
         /// <param name="root"></param>
         public void SyncChain(ShipPart root)
         {
-            if(root == null)
+            if(root == null || root.Status != InitializationStatus.Ready)
             {
                 while (this.Components.Any())
                     this.Remove(this.Components.First());
@@ -103,6 +105,7 @@ namespace VoidHuntersRevived.Library.Utilities.Controllers
                 added.ForEach(sp => this.Add(sp));
             }
 
+            this.Events.TryInvoke<IEnumerable<ShipPart>>(this, "cleaned", _list);
             _dirty = false;
         }
 

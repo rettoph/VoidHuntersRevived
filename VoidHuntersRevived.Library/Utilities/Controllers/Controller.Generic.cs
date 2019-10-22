@@ -34,13 +34,23 @@ namespace VoidHuntersRevived.Library.Utilities.Controllers
             base.Create(provider);
 
             _components = new HashSet<TControlled>();
+
+            this.Events.Register<TControlled>("added");
+            this.Events.Register<TControlled>("removed");
         }
         #endregion
 
         #region Helper Methods
         protected virtual Boolean Remove(TControlled entity)
         {
-            return entity.Controller == this && _components.Remove(entity);
+            if(entity.Controller == this && _components.Remove(entity))
+            {
+                this.Events.TryInvoke<TControlled>(this, "removed", entity);
+
+                return true;
+            }
+
+            return false;
         }
 
         public virtual Boolean Add(TControlled entity)
@@ -52,6 +62,8 @@ namespace VoidHuntersRevived.Library.Utilities.Controllers
                 if (_components.Add(entity))
                 {
                     entity.SetController(this);
+
+                    this.Events.TryInvoke<TControlled>(this, "added", entity);
 
                     return true;
                 }

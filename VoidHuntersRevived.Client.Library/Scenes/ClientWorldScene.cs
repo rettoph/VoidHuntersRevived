@@ -100,6 +100,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _serverDebugView.DefaultShapeColor = Color.Blue;
 
             this.debugOverlay.AddLine(() => $"FPS: {(1000 / _gt.ElapsedGameTime.TotalMilliseconds).ToString("#,##0")}");
+            this.debugOverlay.AddLine(() => $"Chunks: {this.chunks.Count.ToString("#,##0")}");
+            this.debugOverlay.AddLine(() => $"Scale: {this.ChunkScale.ToString("#,##0.###0")}");
         }
         #endregion
 

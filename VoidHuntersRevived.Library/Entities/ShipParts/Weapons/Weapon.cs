@@ -273,6 +273,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             _barrel.CollidesWith = this.CollidesWith;
             _barrel.CollisionCategories = this.CollisionCategories;
             _barrel.IgnoreCCDWith = this.IgnoreCCDWith;
+            _barrel.LinearVelocity = Vector2.Zero;
+            _barrel.AngularVelocity = 0;
+
+            this.UpdateBarrelPosition();
         }
         #endregion
     }

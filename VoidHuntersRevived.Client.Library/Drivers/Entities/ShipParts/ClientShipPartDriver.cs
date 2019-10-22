@@ -83,10 +83,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
         {
             var body = _server.GetBodyById(this.driven.BodyId);
 
+            body.CollidesWith = this.driven.CollidesWith;
+            body.CollisionCategories = this.driven.CollisionCategories;
+            body.IgnoreCCDWith = this.driven.IgnoreCCDWith;
             body.SetTransformIgnoreContacts(this.driven.Position, this.driven.Rotation);
-            body.CollidesWith = this.driven.Root.CollidesWith;
-            body.CollisionCategories = this.driven.Root.CollisionCategories;
-            body.IgnoreCCDWith = this.driven.Root.IgnoreCCDWith;
+            body.LinearVelocity = Vector2.Zero;
+            body.AngularVelocity = 0f;
         }
 
         private void HandleMaleConnectionNodeDetached(object sender, ConnectionNode arg)

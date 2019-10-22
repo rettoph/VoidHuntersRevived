@@ -37,7 +37,6 @@ namespace VoidHuntersRevived.Library.Entities
 
         #region Private Fields
         private List<FemaleConnectionNode> _openFemaleNodes;
-        private Boolean _dirtyBridgeChain;
         #endregion
 
         #region Internal Attributes
@@ -146,12 +145,6 @@ namespace VoidHuntersRevived.Library.Entities
         {
             // Update the ship itself
             base.Update(gameTime);
-
-            if(_dirtyBridgeChain)
-            {
-                this.Events.TryInvoke<ShipPart>(this, "bridge:chain:updated", this.Bridge);
-                _dirtyBridgeChain = false;
-            }
         }
         #endregion
 
@@ -185,8 +178,7 @@ namespace VoidHuntersRevived.Library.Entities
 
                 // Invoke required events
                 this.Events.TryInvoke<ShipPart>(this, "bridge:changed", this.Bridge);
-                // this.Events.TryInvoke<ShipPart>(this, "bridge:chain:updated", this.Bridge);
-                _dirtyBridgeChain = true;
+                this.Events.TryInvoke<ShipPart>(this, "bridge:chain:updated", this.Bridge);
             }
         }
 
@@ -275,8 +267,7 @@ namespace VoidHuntersRevived.Library.Entities
         /// <param name="arg"></param>
         private void HandleBridgeShipPartChainUpdated(object sender, ShipPart.ChainUpdate arg)
         {
-            _dirtyBridgeChain = true;
-            // this.Events.TryInvoke<ShipPart>(this, "bridge:chain:updated", this.Bridge);
+            this.Events.TryInvoke<ShipPart>(this, "bridge:chain:updated", this.Bridge);
         }
 
         /// <summary>

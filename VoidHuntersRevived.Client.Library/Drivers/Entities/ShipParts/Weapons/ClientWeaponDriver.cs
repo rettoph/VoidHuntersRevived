@@ -157,6 +157,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
             _serverBarrel.CollidesWith = this.driven.CollidesWith;
             _serverBarrel.CollisionCategories = this.driven.CollisionCategories;
             _serverBarrel.IgnoreCCDWith = this.driven.IgnoreCCDWith;
+            _serverBarrel.LinearVelocity = Vector2.Zero;
+            _serverBarrel.AngularVelocity = 0;
+
+            // Update the barrel position now
+            this.driven.UpdateBarrelPosition(_serverRoot, _serverBarrel);
         }
         #endregion
     }

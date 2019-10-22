@@ -119,8 +119,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers
             this.TryCreateTexture();
 
             _graphics.SetRenderTarget(_textures[_scene.ChunkScale]);
-            // _graphics.Clear(new Color(_position.X / Chunk.Size % 2 == 0 ? 100 : 255, 0, _position.Y / Chunk.Size % 2 == 0 ? 100 : 255, 220));
-            _graphics.Clear(Color.Transparent);
+            _graphics.Clear(new Color(_position.X / Chunk.Size % 2 == 0 ? 100 : 255, 0, _position.Y / Chunk.Size % 2 == 0 ? 100 : 255, 220));
+            // _graphics.Clear(Color.Transparent);
 
             // Used to detect if we can simply redraw a larger chunk and sclae it down, rather than redrawing everything
             var down = false;
@@ -160,9 +160,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private Boolean CanRender()
         {
             if (this.driven.Components.Any())
+            {
+                this.driven.GetOrCreateSurrounding();
                 return true;
+            }
+                
 
-            foreach (Chunk chunk in this.driven.GetOrCreateSurrounding())
+            foreach (Chunk chunk in this.driven.GetSurrounding())
                 if (chunk.Components.Any())
                     return true;
 

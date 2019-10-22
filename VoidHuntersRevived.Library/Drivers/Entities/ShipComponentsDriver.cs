@@ -34,5 +34,5 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             this.driven.controller.TryUpdate(gameTime);
         }
             #endregion
-        }
+    }
 }

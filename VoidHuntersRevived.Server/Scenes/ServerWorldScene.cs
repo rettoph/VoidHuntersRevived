@@ -72,7 +72,7 @@ namespace VoidHuntersRevived.Server.Scenes
                 });
             }
 
-            for (Int32 i = 0; i < 50; i++)
+            for (Int32 i = 0; i < 0; i++)
             {
                 this.entities.Create<ShipPart>("ship-part:hull:triangle").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
                 this.entities.Create<ShipPart>("ship-part:hull:square").SetPosition(Vector2.Transform(this.random.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(this.random.NextSingle(0, MathHelper.TwoPi))), this.random.NextSingle(-3, 3));
@@ -141,7 +141,7 @@ namespace VoidHuntersRevived.Server.Scenes
             });
 
 
-            for (Int32 i = 0; i < 5; i++)
+            for (Int32 i = 0; i < 0; i++)
             {
                 this.entities.Create<ShipPart>("ship-part:hull:triangle").SetPosition(this.random.NextVector2(-300, 300), this.random.NextSingle(-3, 3));
                 this.entities.Create<ShipPart>("ship-part:hull:square").SetPosition(this.random.NextVector2(-300, 300), this.random.NextSingle(-3, 3));

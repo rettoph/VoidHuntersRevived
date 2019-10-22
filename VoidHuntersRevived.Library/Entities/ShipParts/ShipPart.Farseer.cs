@@ -81,6 +81,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             this.body.CollidesWith = this.Root.CollidesWith;
             this.body.CollisionCategories = this.Root.CollisionCategories;
             this.body.IgnoreCCDWith = this.Root.IgnoreCCDWith;
+            this.SetVelocity(Vector2.Zero, 0);
         }
 
         public Body GetBody()

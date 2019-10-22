@@ -102,6 +102,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
             _body.CollidesWith = this.driven.CollidesWith;
             _body.CollisionCategories = this.driven.CollisionCategories;
             _body.IgnoreCCDWith = this.driven.IgnoreCCDWith;
+            _body.LinearVelocity = Vector2.Zero;
+            _body.AngularVelocity = 0;
         }
 
         /// <summary>

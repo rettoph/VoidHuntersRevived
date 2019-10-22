@@ -40,3 +40,9 @@ These are events triggered by Guppy but specific to this game. Events can be bou
 | `VoidHuntersRevived.Library` | `TractorBeam` | `attached` | `FemaleConnectionNode` | Invoked when the TractorBeam's Selection is attached to a FemaleConnectionNode. |
 | | | | | |
 | `VoidHuntersRevived.Library` | `Gun` | `attached` | `Projectile` | Invoked when the Guns's Fire() method is called. |
+| | | | | |
+| `VoidHuntersRevived.Library` | `Controller<TControlled>` | `added` | `TControlled` | Invoked when an item is added to the controller. |
+| `VoidHuntersRevived.Library` | `Controller<TControlled>` | `removed` | `TControlled` | Invoked when an item is removed from the controller. |
+| | | | | |
+| `VoidHuntersRevived.Library` | `ShipPartController` | `cleaned` | `IEnumerable<ShipPart>` | Invoked when the ship part controller is cleaned. |
+

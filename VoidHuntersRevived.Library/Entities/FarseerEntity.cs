@@ -161,6 +161,13 @@ namespace VoidHuntersRevived.Library.Entities
             this.SetVisible(false);
         }
 
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            this.Events.TryAdd<Controller>("controller:changed", this.HandleControllerChanged);
+        }
+
         protected override void PostInitialize()
         {
             base.PostInitialize();
@@ -226,12 +233,6 @@ namespace VoidHuntersRevived.Library.Entities
 
                 if (this.Status == Guppy.InitializationStatus.Ready)
                 { // This particular function can run before the body is ready. This makes sure everything is loaded
-                    // Update internal body collision info
-                    this.body.CollidesWith = this.CollidesWith;
-                    this.body.CollisionCategories = this.CollisionCategories;
-                    this.body.IgnoreCCDWith = this.IgnoreCCDWith;
-                    this.SetVelocity(Vector2.Zero, 0);
-
                     this.Events.TryInvoke<Controller>(this, "controller:changed", this.Controller);
                 }
             }
@@ -369,6 +370,22 @@ namespace VoidHuntersRevived.Library.Entities
 
                 this.Events.TryInvoke<Boolean>(this, "body-enabled:changed", this.BodyEnabled);
             }
+        }
+        #endregion
+
+        #region Event Handlers
+        /// <summary>
+        /// When the entity changes hands, we must reset the collision and velocity data 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="arg"></param>
+        private void HandleControllerChanged(object sender, Controller arg)
+        {
+            // Update internal body collision info
+            this.body.CollidesWith = this.CollidesWith;
+            this.body.CollisionCategories = this.CollisionCategories;
+            this.body.IgnoreCCDWith = this.IgnoreCCDWith;
+            this.SetVelocity(Vector2.Zero, 0);
         }
         #endregion
 
