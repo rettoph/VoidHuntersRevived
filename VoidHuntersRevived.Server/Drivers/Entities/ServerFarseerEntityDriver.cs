@@ -65,7 +65,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
                 return false;
 
             // Instant yes
-            if ((_interval.Is(ServerFarseerEntityDriver.UpdateVitalsRate) && Vector2.Distance(_flushedPosition, this.driven.Position) > 0.1f) || _dirtyVitals)
+            if (_dirtyVitals || (_interval.Is(ServerFarseerEntityDriver.UpdateVitalsRate) && Vector2.Distance(_flushedPosition, this.driven.Position) > 0.1f))
                 return true;
 
             // Default to no
@@ -76,7 +76,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
         {
             if (this.CanSendVitals())
             { // Send the vitals data to all connected clients
-                var om = this.driven.Actions.Create("vitals:update", NetDeliveryMethod.Unreliable, 3);
+                var om = this.driven.Actions.Create("vitals:update", NetDeliveryMethod.Unreliable, 6);
                 // Write the vitals data
                 _body.WritePosition(om);
                 _body.WriteVelocity(om);

@@ -161,6 +161,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
             _serverBarrel.AngularVelocity = 0;
 
             // Update the barrel position now
+            if (_serverRoot.IsDisposed || _serverBarrel.IsDisposed)
+                throw new Exception("Controller changed after disposal");
+
             this.driven.UpdateBarrelPosition(_serverRoot, _serverBarrel);
         }
         #endregion

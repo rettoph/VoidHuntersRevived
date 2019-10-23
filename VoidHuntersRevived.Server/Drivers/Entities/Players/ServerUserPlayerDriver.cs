@@ -98,7 +98,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
                 this.driven.Ship.ReadTargetOffset(arg);
                 if(!this.driven.Ship.TractorBeam.TrySelect(_entities.GetById<ShipPart>(arg.ReadGuid())))
                 { // Create a denied message & send to the client
-                    this.driven.Actions.Create("tractor-beam:selected:denied", NetDeliveryMethod.ReliableOrdered, 1, arg.SenderConnection);
+                    this.driven.Actions.Create("tractor-beam:selected:denied", NetDeliveryMethod.ReliableOrdered, 2, arg.SenderConnection);
                 }
             }
         }
@@ -110,7 +110,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
                 this.driven.Ship.ReadTargetOffset(arg);
                 if (!this.driven.Ship.TractorBeam.TryRelease())
                 { // Create a denied message & send to the client
-                    this.driven.Actions.Create("tractor-beam:released:denied", NetDeliveryMethod.ReliableOrdered, 1, arg.SenderConnection);
+                    this.driven.Actions.Create("tractor-beam:released:denied", NetDeliveryMethod.ReliableOrdered, 2, arg.SenderConnection);
                 }
             }
         }
@@ -122,7 +122,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
                 // Attempt to attach the the object recieved by the client...
                 if (!this.driven.Ship.TractorBeam.TryAttach(arg.ReadEntity<ShipPart>(_entities).FemaleConnectionNodes[arg.ReadInt32()]))
                 { // Create a denied message & send to the client
-                    this.driven.Actions.Create("tractor-beam:attached:denied", NetDeliveryMethod.ReliableOrdered, 1, arg.SenderConnection);
+                    this.driven.Actions.Create("tractor-beam:attached:denied", NetDeliveryMethod.ReliableOrdered, 2, arg.SenderConnection);
                 }
             }
         }

@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
     public class ServerShipDriver : Driver<Ship>
     {
         #region Static Fields
-        public static Double UpdateTargetRate { get; set; } = 120;
+        public static Double UpdateTargetRate { get; set; } = 250;
         #endregion
 
         #region Private Fields
@@ -59,9 +59,9 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
         {
             base.Update(gameTime);
 
-            if(_interval.Is(ServerShipDriver.UpdateTargetRate) && _oldTarget != this.driven.TargetOffset)
+            if(_interval.Is(ServerShipDriver.UpdateTargetRate) && Vector2.Distance(_oldTarget,this.driven.TargetOffset) > 0.25f)
             {
-                var action = this.driven.Actions.Create("target:changed", NetDeliveryMethod.Unreliable, 2);
+                var action = this.driven.Actions.Create("target:changed", NetDeliveryMethod.Unreliable, 5);
                 action.Write(this.driven.TargetOffset);
 
                 _oldTarget = this.driven.TargetOffset;
@@ -81,37 +81,37 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
         #region Event Handlers
         private void HandleBridgeChanged(object sender, ShipPart bridge)
         { 
-            this.driven.WriteBridge(this.driven.Actions.Create("bridge:changed", NetDeliveryMethod.ReliableOrdered, 0));
+            this.driven.WriteBridge(this.driven.Actions.Create("bridge:changed", NetDeliveryMethod.ReliableOrdered, 3));
         }
 
         private void HandleDirectionChanged(object sender, Ship.Direction direction)
         {
-            this.driven.WriteDirection(this.driven.Actions.Create("direction:changed", NetDeliveryMethod.ReliableOrdered, 1), direction);
+            this.driven.WriteDirection(this.driven.Actions.Create("direction:changed", NetDeliveryMethod.UnreliableSequenced, 3), direction);
         }
 
         private void HandleTractorBeamSelected(object sender, ShipPart arg)
         {
-            var action = this.driven.Actions.Create("tractor-beam:selected", NetDeliveryMethod.ReliableOrdered, 1);
+            var action = this.driven.Actions.Create("tractor-beam:selected", NetDeliveryMethod.ReliableOrdered, 3);
             this.driven.WriteTargetOffset(action);
             action.Write(this.driven.TractorBeam.Selected);
         }
 
         private void HandleTractorBeamReleased(object sender, ShipPart arg)
         {
-            var action = this.driven.Actions.Create("tractor-beam:released", NetDeliveryMethod.ReliableOrdered, 1);
+            var action = this.driven.Actions.Create("tractor-beam:released", NetDeliveryMethod.ReliableOrdered, 3);
             this.driven.WriteTargetOffset(action);
         }
 
         private void HandleTractorBeamAttached(object sender, FemaleConnectionNode arg)
         {
-            var action = this.driven.Actions.Create("tractor-beam:attached", NetDeliveryMethod.ReliableOrdered, 1);
+            var action = this.driven.Actions.Create("tractor-beam:attached", NetDeliveryMethod.ReliableOrdered, 3);
             action.Write(arg.Parent);
             action.Write(arg.Id);
         }
 
         private void HandleFiringChanged(object sender, bool arg)
         {
-            var action = this.driven.Actions.Create("firing:changed", NetDeliveryMethod.ReliableOrdered, 1);
+            var action = this.driven.Actions.Create("firing:changed", NetDeliveryMethod.ReliableOrdered, 3);
             action.Write(this.driven.Firing);
             this.driven.WriteTargetOffset(action);
         }

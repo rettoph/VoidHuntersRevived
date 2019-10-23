@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.ShipParts
         {
             if (_interval.Is(250) && this.driven.Health != _flushedHealth)
             {
-                var action = this.driven.Actions.Create("health", NetDeliveryMethod.ReliableOrdered, 2);
+                var action = this.driven.Actions.Create("health", NetDeliveryMethod.ReliableOrdered, 4);
                 action.Write(this.driven.Health);
 
                 _flushedHealth = this.driven.Health;

@@ -34,6 +34,7 @@ namespace VoidHuntersRevived.Library.Utilities
         private ChunkCollection _chunks;
         private IEnumerable<Chunk> _surrounding;
         private GameTime _addedTime;
+        private Annex _annex;
         #endregion
 
         #region Public Attributes
@@ -42,9 +43,10 @@ namespace VoidHuntersRevived.Library.Utilities
         #endregion
 
         #region Constructor
-        public Chunk(ChunkCollection chunks)
+        public Chunk(Annex annex, ChunkCollection chunks)
         {
             _chunks = chunks;
+            _annex = annex;
         }
         #endregion
 
@@ -190,8 +192,8 @@ namespace VoidHuntersRevived.Library.Utilities
 
         private void HandleEntityDisposing(object sender, Creatable arg)
         {
-            // auto remove any disposed entities
-            this.Remove(arg as FarseerEntity);
+            // auto add the component to the annex
+            _annex.Add(arg as FarseerEntity);
         }
     }
 }

@@ -113,7 +113,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 
                 if (_interval.Is(ClientUserPlayerDriver.UpdateTargetRate) && Vector2.Distance(this.driven.Ship.TargetOffset, _flushedOffsetTarget) > 0.1f)
                 { // Send the vitals data to all connected clients
-                    var om = this.driven.Actions.Create("target:changed:request", NetDeliveryMethod.Unreliable, 1);
+                    var om = this.driven.Actions.Create("target:changed:request", NetDeliveryMethod.UnreliableSequenced, 3);
                     // Write the vitals data
                     om.Write(this.driven.Ship.TargetOffset);
 
@@ -121,12 +121,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
                 }
 
                 if (_wasSelfDestructDown && !(_wasSelfDestructDown = kState.IsKeyDown(Keys.Space)))
-                    this.driven.Actions.Create("self-destruct:request", NetDeliveryMethod.ReliableOrdered, 1);
+                    this.driven.Actions.Create("self-destruct:request", NetDeliveryMethod.ReliableUnordered, 2);
                 else
                     _wasSelfDestructDown = kState.IsKeyDown(Keys.Space);
 
                 if (_wasSpawnDown && !(_wasSpawnDown = kState.IsKeyDown(Keys.H)))
-                    this.driven.Actions.Create("spawn:request", NetDeliveryMethod.ReliableOrdered, 1).Write(this.driven.Ship.Target);
+                    this.driven.Actions.Create("spawn:request", NetDeliveryMethod.ReliableOrdered, 2).Write(this.driven.Ship.Target);
                 else
                     _wasSpawnDown = kState.IsKeyDown(Keys.H);
             }
@@ -144,7 +144,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 
             if (this.driven.Ship.TractorBeam.TrySelect(target))
             { // Write an action to the server...
-                var action = this.driven.Actions.Create("tractor-beam:selected:request", NetDeliveryMethod.ReliableOrdered, 1);
+                var action = this.driven.Actions.Create("tractor-beam:selected:request", NetDeliveryMethod.ReliableOrdered, 2);
                 this.driven.Ship.WriteTargetOffset(action);
                 action.Write(this.driven.Ship.TractorBeam.Selected.Id);
             }
@@ -158,7 +158,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             { // If there is no valid open female node...
                 if (this.driven.Ship.TractorBeam.TryRelease())
                 { // Write a release action to the server
-                    var action = this.driven.Actions.Create("tractor-beam:released:request", NetDeliveryMethod.ReliableOrdered, 1);
+                    var action = this.driven.Actions.Create("tractor-beam:released:request", NetDeliveryMethod.ReliableOrdered, 2);
                     this.driven.Ship.WriteTargetOffset(action);
                 }
             }
@@ -166,7 +166,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             { // If there is a valid open female node...
                 if (this.driven.Ship.TractorBeam.TryAttach(target))
                 { // Write an attach action to the server
-                    var action = this.driven.Actions.Create("tractor-beam:attached:request", NetDeliveryMethod.ReliableOrdered, 1);
+                    var action = this.driven.Actions.Create("tractor-beam:attached:request", NetDeliveryMethod.ReliableOrdered, 2);
                     action.Write(target.Parent);
                     action.Write(target.Id);
 
@@ -183,7 +183,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         {
             this.driven.Ship.SetFiring(value);
 
-            var action = this.driven.Actions.Create("firing:changed:request", NetDeliveryMethod.ReliableOrdered, 1);
+            var action = this.driven.Actions.Create("firing:changed:request", NetDeliveryMethod.ReliableUnordered, 2);
             action.Write(this.driven.Ship.Firing);
             this.driven.Ship.WriteTargetOffset(action);
         }
@@ -198,7 +198,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
                 this.driven.Ship.SetDirection(direction, value);
 
                 // Create an action to relay back to the server
-                var action = this.driven.Actions.Create("direction:changed:request", NetDeliveryMethod.ReliableOrdered, 1);
+                var action = this.driven.Actions.Create("direction:changed:request", NetDeliveryMethod.ReliableOrdered, 2);
                 action.Write((Byte)direction);
                 action.Write(value);
             }

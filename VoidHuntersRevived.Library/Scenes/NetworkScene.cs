@@ -22,6 +22,9 @@ namespace VoidHuntersRevived.Library.Scenes
         private Interval _intervals;
         private ConcurrentQueue<NetIncomingMessage> _actions;
         private NetIncomingMessage _im;
+
+        private List<Single> _actionsPerFrame;
+        private Single _actionsThisFrame;
         #endregion
 
         #region Internal Attributes
@@ -30,6 +33,8 @@ namespace VoidHuntersRevived.Library.Scenes
 
         #region Public Attributes
         public Group Group { get; set; }
+
+        public Single ActionsPerFrame { get => _actionsPerFrame.Sum() / _actionsPerFrame.Count(); }
         #endregion
 
         #region Lifecycle Methods
@@ -39,6 +44,7 @@ namespace VoidHuntersRevived.Library.Scenes
 
             _intervals = provider.GetRequiredService<Interval>();
             _actions = new ConcurrentQueue<NetIncomingMessage>();
+            _actionsPerFrame = new List<Single>();
 
             this.actions = provider.GetRequiredService<GroupMessageDelegater>();
         }
@@ -74,6 +80,12 @@ namespace VoidHuntersRevived.Library.Scenes
             while (_actions.Any())
                 if (_actions.TryDequeue(out _im))
                     this.entities.GetById<NetworkEntity>(_im.ReadGuid())?.Actions.TryInvoke(this, _im.ReadString(), _im);
+
+            _actionsPerFrame.Add(_actionsThisFrame);
+            _actionsThisFrame = 0;
+
+            while (_actionsPerFrame.Count > 100)
+                _actionsPerFrame.RemoveAt(0);
         }
         #endregion
 
@@ -81,7 +93,7 @@ namespace VoidHuntersRevived.Library.Scenes
         private void HandleNetworkEntityActionMessage(object sender, NetIncomingMessage arg)
         {
             _actions.Enqueue(arg);
-            
+            _actionsThisFrame++;   
         }
         #endregion
     }
