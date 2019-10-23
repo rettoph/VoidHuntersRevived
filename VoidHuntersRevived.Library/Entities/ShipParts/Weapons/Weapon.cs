@@ -198,10 +198,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         /// <param name="barrel">The assumed barrel</param>
         public void UpdateBarrelPosition(Body root, Body barrel)
         {
-            // Calculate the barrels proper position based on the defined anchor points.
-            var position = root.Position + Vector2.Transform(this.config.BodyAnchor + this.config.BarrelAnchor, this.LocalTransformation * Matrix.CreateRotationZ(root.Rotation));
-            // Update the barrels position
-            barrel.SetTransformIgnoreContacts(ref position, this.Root.Controller is Chunk ? root.Rotation + this.LocalRotation + MathHelper.Pi : barrel.Rotation);
+            if (!root.IsDisposed && !barrel.IsDisposed)
+            {
+                // Calculate the barrels proper position based on the defined anchor points.
+                var position = root.Position + Vector2.Transform(this.config.BodyAnchor + this.config.BarrelAnchor, this.LocalTransformation * Matrix.CreateRotationZ(root.Rotation));
+                // Update the barrels position
+                barrel.SetTransformIgnoreContacts(ref position, this.Root.Controller is Chunk ? root.Rotation + this.LocalRotation + MathHelper.Pi : barrel.Rotation);
+            }
         } 
 
         public void UpdateJoint(ref RevoluteJoint joint, Body root, Body barrel, World world)
