@@ -103,6 +103,7 @@ namespace VoidHuntersRevived.Library.Entities
             this.controller.CollidesWith = Categories.ActiveCollidesWith;
             this.controller.CollisionCategories = Categories.ActiveCollisionCategories;
             this.controller.IgnoreCCDWith = Categories.ActiveIgnoreCCDWith;
+            this.controller.Color = new Color(9, 0, 255);
 
             this.Events.Register<ShipPart>("bridge:changed");
             this.Events.Register<ShipPart>("bridge:chain:updated");

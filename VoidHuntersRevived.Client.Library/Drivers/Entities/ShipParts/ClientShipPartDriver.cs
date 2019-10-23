@@ -30,6 +30,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
         private Camera2D _camera;
         private ServerRender _server;
         private SpriteManager _sprite;
+        private Body _serverBody;
         #endregion
 
         #region Constructor
@@ -46,13 +47,19 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
         {
             base.Initialize();
 
-            this.driven.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleChainUpdated);
             this.driven.MaleConnectionNode.Events.TryAdd<ConnectionNode>("detached", this.HandleMaleConnectionNodeDetached);
 
             this.driven.Actions.TryAdd("health", this.HandleHealthAction);
 
             var config = (driven.Configuration.Data as ShipPartConfiguration);
             _sprite.Load(config.Texture, config.Vertices);
+        }
+
+        protected override void PostInitialize()
+        {
+            base.PostInitialize();
+
+            _serverBody = _server.GetBodyById(this.driven.BodyId);
         }
         #endregion
 
@@ -61,7 +68,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
         {
             base.Draw(gameTime);
 
-            var fullColor = !(this.driven.Controller is Chunk) ? ColorScheme.Blue : (this.driven.Root.Configuration.Data as ShipPartConfiguration).DefaultColor;
+            var fullColor = this.driven.Controller.Color == null ? (this.driven.Root.Configuration.Data as ShipPartConfiguration).DefaultColor : this.driven.Controller.Color.Value;
             var deadColor = Color.Lerp(ColorScheme.Red, fullColor, 0.2f);
 
             _sprite.Draw(
@@ -79,22 +86,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
         #endregion
 
         #region Event Handlers
-        private void HandleChainUpdated(object sender, ShipPart.ChainUpdate arg)
-        {
-            var body = _server.GetBodyById(this.driven.BodyId);
-
-            body.CollidesWith = this.driven.CollidesWith;
-            body.CollisionCategories = this.driven.CollisionCategories;
-            body.IgnoreCCDWith = this.driven.IgnoreCCDWith;
-            body.SetTransformIgnoreContacts(this.driven.Position, this.driven.Rotation);
-            body.LinearVelocity = Vector2.Zero;
-            body.AngularVelocity = 0f;
-        }
 
         private void HandleMaleConnectionNodeDetached(object sender, ConnectionNode arg)
         {
             if (this.driven.IsRoot) // Update the server render when the chain gets updated
-                _server.GetBodyById(this.driven.BodyId).SetTransformIgnoreContacts(this.driven.Position, this.driven.Rotation);
+                _serverBody.SetTransformIgnoreContacts(this.driven.Position, this.driven.Rotation);
         }
         #endregion
     }

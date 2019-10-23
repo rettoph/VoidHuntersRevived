@@ -123,7 +123,6 @@ namespace VoidHuntersRevived.Library.Utilities.Controllers
         /// <param name="arg"></param>
         private void HandleComponentDisposing(object sender, Creatable arg)
         {
-            _chunks.AddMany((arg as ShipPart).GetAllChildren());
             _annex.Add(arg as ShipPart);
         }
     }

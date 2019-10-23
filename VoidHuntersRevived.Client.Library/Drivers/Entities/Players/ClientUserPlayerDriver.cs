@@ -45,6 +45,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         private Interval _interval;
         private Vector2 _flushedOffsetTarget;
         private Boolean _wasSelfDestructDown;
+        private Boolean _wasSpawnDown;
         #endregion
 
         #region Constructor
@@ -123,6 +124,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
                     this.driven.Actions.Create("self-destruct:request", NetDeliveryMethod.ReliableOrdered, 1);
                 else
                     _wasSelfDestructDown = kState.IsKeyDown(Keys.Space);
+
+                if (_wasSpawnDown && !(_wasSpawnDown = kState.IsKeyDown(Keys.H)))
+                    this.driven.Actions.Create("spawn:request", NetDeliveryMethod.ReliableOrdered, 1).Write(this.driven.Ship.Target);
+                else
+                    _wasSpawnDown = kState.IsKeyDown(Keys.H);
             }
         }
         #endregion

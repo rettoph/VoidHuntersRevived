@@ -28,14 +28,15 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
         private Vector2 _oldTarget;
         private ShipBuilder _builder;
         private Interval _interval;
-        private Int32 _lives = 0;
+        private EntityCollection _entities;
         #endregion
 
         #region Constructor
-        public ServerShipDriver(Interval interval, ShipBuilder builder, Ship driven) : base(driven)
+        public ServerShipDriver(EntityCollection entities, Interval interval, ShipBuilder builder, Ship driven) : base(driven)
         {
             _interval = interval;
             _builder = builder;
+            _entities = entities;
         }
         #endregion
 
@@ -67,21 +68,12 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
             }
 
             if(this.driven.Bridge != null && this.driven.Bridge.Health <= 0)
-            { // When the bridge is low health, blow up the ship
-                this.driven.Bridge.Dispose();
-
-                if (_lives < 5)
+            { // When the bridge is low health, copy the ship over to an explosion
+                _entities.Create<Explosion>("explosion", e =>
                 {
-                    var ships = new String[] { "mosquito", "turret-01", "turret-02" };
-                    var rand = new Random();
-                    using (FileStream import = File.OpenRead($"Ships/{ships[rand.Next(0, 1)]}.vh"))
-                        this.driven.SetBridge(_builder.Import(import));
-                
-                
-                    this.driven.Bridge.SetPosition(Vector2.Transform(rand.NextVector2(100, 300, 1, 2), Matrix.CreateRotationZ(rand.NextSingle(0, MathHelper.TwoPi))), rand.NextSingle(-3, 3));
-                
-                    _lives++;
-                }
+                    e.SetSource(this.driven.Bridge);
+                    this.driven.SetBridge(null);
+                });
             }
         }
         #endregion

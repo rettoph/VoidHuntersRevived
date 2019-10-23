@@ -75,6 +75,9 @@ namespace VoidHuntersRevived.Library
 
             var entities = provider.GetRequiredService<EntityLoader>();
 
+            // Register misc
+            entities.TryRegister<Explosion>("explosion");
+
             // Register players
             entities.TryRegister<UserPlayer>("player:user");
             entities.TryRegister<ComputerPlayer>("player:computer");

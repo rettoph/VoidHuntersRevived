@@ -80,6 +80,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.ConnectionNodes
 
         public override void Dispose()
         {
+            base.Dispose();
+
             this.Detach();
         }
         #endregion

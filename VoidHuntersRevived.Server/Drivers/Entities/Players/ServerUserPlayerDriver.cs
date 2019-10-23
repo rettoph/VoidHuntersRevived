@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using static VoidHuntersRevived.Library.Entities.Ship;
+using VoidHuntersRevived.Library.Entities;
 
 namespace VoidHuntersRevived.Server.Drivers.Entities.Players
 {
@@ -22,6 +23,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
         #region Private FIelds
         private EntityCollection _entities;
         private ShipBuilder _builder;
+        private Double _deadTime;
         #endregion
 
         #region Constructor
@@ -44,6 +46,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
             this.driven.Actions.TryAdd("target:changed:request", this.HandleTargetChangedRequest);
             this.driven.Actions.TryAdd("firing:changed:request", this.HandleFiringChangedRequest);
             this.driven.Actions.TryAdd("self-destruct:request", this.HandleSelfDestructRequest);
+            this.driven.Actions.TryAdd("spawn:request", this.HandleSpawnRequest);
         }
         #endregion
 
@@ -54,11 +57,19 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
 
             if(this.driven.Ship.Bridge == null)
             {
-                using (FileStream import = File.OpenRead("Ships/mosquito.vh"))
-                    this.driven.Ship.SetBridge(_builder.Import(import));
-                
-                var rand = new Random();
-                this.driven.Ship.Bridge.SetPosition(new Vector2(rand.NextSingle(-100, 100), rand.NextSingle(-100, 100)), rand.NextSingle(-3, 3));
+                _deadTime += gameTime.ElapsedGameTime.TotalMilliseconds;
+
+                if(_deadTime >= 5000)
+                {
+                    using (FileStream import = File.OpenRead("Ships/mosquito.vh"))
+                        this.driven.Ship.SetBridge(_builder.Import(import));
+
+                    var rand = new Random();
+                    this.driven.Ship.Bridge.SetPosition(new Vector2(rand.NextSingle(-100, 100), rand.NextSingle(-100, 100)), rand.NextSingle(-3, 3));
+
+                    _deadTime = 0;
+                }
+
             }
         }
         #endregion
@@ -129,7 +140,24 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
         {
             if (this.ValidateSender(arg))
             {
-                this.driven.Ship.Bridge.Dispose();
+                this.driven.Ship.Bridge.Health = -100;
+            }
+        }
+
+        private void HandleSpawnRequest(object sender, NetIncomingMessage arg)
+        {
+            if (this.ValidateSender(arg))
+            {
+                _entities.Create<ComputerPlayer>("player:computer", player =>
+                {
+                    player.Ship = _entities.Create<Ship>("ship", ship =>
+                    { // Build a new ship for the player...
+                        using (FileStream import = File.OpenRead("Ships/mosquito.vh"))
+                            ship.SetBridge(_builder.Import(import));
+
+                        ship.Bridge.SetPosition(arg.ReadVector2(), 0);
+                    });
+                });
             }
         }
         #endregion

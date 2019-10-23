@@ -42,11 +42,16 @@ namespace VoidHuntersRevived.Library.Entities.Players
         {
             base.Create(provider);
 
-            // Automatically add the current player instance to the scenes player collection.
-            this.scene.Players.Add(this);
-
             this.SetUpdateOrder(200);
             this.SetDrawOrder(200);
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            // Automatically add the current player instance to the scenes player collection.
+            this.scene.Players.Add(this);
         }
 
         public override void Dispose()

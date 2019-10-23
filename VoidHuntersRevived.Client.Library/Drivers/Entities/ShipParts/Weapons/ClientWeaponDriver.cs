@@ -86,7 +86,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
         {
             base.Draw(gameTime);
 
-            var fullColor = !(this.driven.Controller is Chunk) ? ColorScheme.Blue : (this.driven.Root.Configuration.Data as ShipPartConfiguration).DefaultColor;
+            var fullColor = this.driven.Controller.Color == null ? (this.driven.Root.Configuration.Data as ShipPartConfiguration).DefaultColor : this.driven.Controller.Color.Value;
             var deadColor = Color.Lerp(ColorScheme.Red, fullColor, 0.2f);
 
             _sprite.Draw(
