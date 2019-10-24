@@ -12,21 +12,17 @@ using VoidHuntersRevived.Library.Entities.ShipParts.ConnectionNodes;
 
 namespace VoidHuntersRevived.Library.Utilities.Controllers
 {
-    public class ShipPartController : FarseerEntityController<ShipPart>
+    public class ShipPartController : BasicController<ShipPart>
     {
         #region Private Attributes
         private List<ShipPart> _list;
-        private ShipPart _root;
-        private Boolean _dirty;
         private ChunkCollection _chunks;
-        private Annex _annex;
         #endregion
 
         #region Constructor
-        public ShipPartController(Annex annex, ChunkCollection chunks) : base(chunks)
+        public ShipPartController(Annex annex, ChunkCollection chunks) : base(annex, chunks)
         {
             _chunks = chunks;
-            _annex = annex;
         }
         #endregion
 
@@ -44,86 +40,39 @@ namespace VoidHuntersRevived.Library.Utilities.Controllers
         #region Frame Methods
         protected override void Update(GameTime gameTime)
         {
-            if(_dirty)
-                this.SyncChain(_root);
-
             base.Update(gameTime);
         }
         #endregion
 
         #region Helper Methods
-        public override bool Add(ShipPart entity)
-        {
-            if (base.Add(entity))
-            {
-                entity.Events.TryAdd<Creatable>("disposing", this.HandleComponentDisposing);
-
-                return true;
-            }
-
-            return false;
-        }
-
-        protected override bool Remove(ShipPart entity)
-        {
-            if (base.Remove(entity))
-            {
-                entity.Events.TryRemove<Creatable>("disposing", this.HandleComponentDisposing);
-
-                return true;
-            }
-
-            return false;
-        }
-
         /// <summary>
         /// Automatically add new elements within the chain
-        /// and remove any old elements no longer within
+        /// and remove any old elements not within
         /// </summary>
         /// <param name="root"></param>
         public void SyncChain(ShipPart root)
         {
-            if(root == null || root.Status != InitializationStatus.Ready)
+            _list.Clear();
+            if (root == null || root.Status != InitializationStatus.Ready)
             {
-                while (this.Components.Any())
-                    this.Remove(this.Components.First());
-
-                this.logger.LogDebug($"Synced ShipPartController => Clear");
+                if(this.Components.Any()) // Return all internal components to the chunk
+                    _chunks.AddMany(this.Components.ToList());
             }
             else
             {
-                _list.Clear();
                 root.GetAllChildren(_list);
 
                 var removed = this.Components.Except(_list).ToList();
                 var added = _list.Except(this.Components).ToList();
 
-                this.logger.LogDebug($"Synced ShipPartController => Components: {this.Components.Count()}, Children: {_list.Count()}, Added: {added.Count()}, Removed: {removed.Count()}");
-
                 // Add & remove children as needed
                 _chunks.AddMany(removed);
                 added.ForEach(sp => this.Add(sp));
             }
+            _list.Clear();
 
             this.Events.TryInvoke<IEnumerable<ShipPart>>(this, "cleaned", this.Components);
-            _dirty = false;
-        }
-
-        public void DirtyChain(ShipPart root)
-        {
-            _root = root;
-            _dirty = true;
         }
         #endregion
-
-        /// <summary>
-        /// If an internal object is disposed, automatically remove it
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="arg"></param>
-        private void HandleComponentDisposing(object sender, Creatable arg)
-        {
-            _annex.Add(arg as ShipPart);
-        }
     }
 }

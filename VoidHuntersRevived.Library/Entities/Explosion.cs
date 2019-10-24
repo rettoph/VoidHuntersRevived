@@ -3,6 +3,7 @@ using Guppy.Extensions.Collection;
 using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -57,6 +58,14 @@ namespace VoidHuntersRevived.Library.Entities
 
             _life = 0;
         }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            // Ensure the controller is cleared
+            this.controller.SyncChain(null);
+        }
         #endregion
 
         #region Helper Methods
@@ -90,7 +99,6 @@ namespace VoidHuntersRevived.Library.Entities
                             _sourcePosition);
                     }
                 }
-                        
             }
             else
             {
@@ -111,17 +119,19 @@ namespace VoidHuntersRevived.Library.Entities
             { // Each explosion must last at least 5 seconds
                 this.Components.ForEach(c =>
                 {
-                // If a component of the explosion is no longer moving, we can queue it up
-                // So it will be added back into the chunk
-                if (c.AngularVelocity == 0 && c.LinearVelocity.Length() == 0)
+                    // If a component of the explosion is no longer moving, we can queue it up
+                    // So it will be added back into the chunk
+                    if (c.AngularVelocity == 0 && c.LinearVelocity.Length() == 0)
+                    {
                         _still.Enqueue(c);
+                    }  
                 });
 
+                // Add all entities into their respective chunks
                 while (_still.Any())
                 {
                     _target = _still.Dequeue();
-
-                    _chunks.GetOrCreate(_target.Position.X, _target.Position.Y).Add(_target);
+                    _chunks.GetOrCreate(_target.Position.X, _target.Position.Y).TryAdd(_target);
                 }
 
 

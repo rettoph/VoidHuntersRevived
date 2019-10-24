@@ -148,16 +148,25 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
         {
             if (this.ValidateSender(arg))
             {
-                _entities.Create<ComputerPlayer>("player:computer", player =>
+                if (this.driven.Ship.TractorBeam.Selected == default(ShipPart))
                 {
-                    player.Ship = _entities.Create<Ship>("ship", ship =>
-                    { // Build a new ship for the player...
-                        using (FileStream import = File.OpenRead("Ships/mosquito.vh"))
-                            ship.SetBridge(_builder.Import(import));
+                    _entities.Create<ComputerPlayer>("player:computer", player =>
+                    {
+                        player.Ship = _entities.Create<Ship>("ship", ship =>
+                        { // Build a new ship for the player...
+                            using (FileStream import = File.OpenRead("Ships/mosquito.vh"))
+                                ship.SetBridge(_builder.Import(import));
 
-                        ship.Bridge.SetPosition(arg.ReadVector2(), 0);
+                            ship.Bridge.SetPosition(arg.ReadVector2(), 0);
+                        });
                     });
-                });
+                }
+                else
+                {
+                    var target = this.driven.Ship.TractorBeam.Selected;
+                    this.driven.Ship.TractorBeam.TryRelease();
+                    target.Dispose();
+                }
             }
         }
         #endregion

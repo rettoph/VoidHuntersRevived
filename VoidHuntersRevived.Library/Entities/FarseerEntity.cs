@@ -152,7 +152,7 @@ namespace VoidHuntersRevived.Library.Entities
             base.PreInitialize();
 
             // By default, add the current chunk to the entity 
-            _annex.Add(this);
+            _annex.TryAdd(this);
 
             // Build a new body for the entity.
             this.CreateBody();
@@ -173,7 +173,7 @@ namespace VoidHuntersRevived.Library.Entities
             base.PostInitialize();
 
             // Add the entity to its chunk
-            _chunks.GetOrCreate(this.Position.X, this.Position.Y).Add(this);
+            _chunks.GetOrCreate(this.Position.X, this.Position.Y).TryAdd(this);
         }
 
         public override void Dispose()
@@ -414,7 +414,7 @@ namespace VoidHuntersRevived.Library.Entities
             this.body.ReadVelocity(im);
 
             if(this.Controller is Chunk)
-                _chunks.GetOrCreate(this.Position.X, this.Position.Y).Add(this);
+                _chunks.GetOrCreate(this.Position.X, this.Position.Y).TryAdd(this);
         }
 
         protected override void WritePostInitialize(NetOutgoingMessage om)

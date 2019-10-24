@@ -158,11 +158,11 @@ namespace VoidHuntersRevived.Library.Entities
                 {
                     var oldSelected = this.Selected;
 
-                    this.TryUpdateSelectedPosition();
+                    if(this.Selected.Status == InitializationStatus.Ready)
+                        this.TryUpdateSelectedPosition(); // Update the objects position if its real
                     this.Selected.SetBodyEnabled(true);
                     this.Selected = null;
-
-                    _chunks.AddMany(oldSelected.GetAllChildren());
+                    _controller.SyncChain(null);
 
                     this.Events.TryInvoke<ShipPart>(this, "released", oldSelected);
 
@@ -206,31 +206,38 @@ namespace VoidHuntersRevived.Library.Entities
 
         private void TryUpdateSelectedPosition()
         {
+
+
             if (this.Selected != default(ShipPart))
             { // Update the selected ship part, giving the user a placement preview
-                var node = this.Ship.GetClosestOpenFemaleNode(this.Ship.Target);
-
-                if (node == default(FemaleConnectionNode))
-                {
-                    // Calculate the absolute path to lerp towards
-                    var selectedPositionTarget = this.Ship.Target - Vector2.Transform(this.Selected.LocalCenteroid, Matrix.CreateRotationZ(this.Selected.Rotation));
-
-                    this.Selected.SetPosition(
-                        Vector2.Lerp(this.Selected.Position, selectedPositionTarget, 0.25f), this.Selected.Rotation, true);
-                }
+                if (this.Selected.Status != InitializationStatus.Ready)
+                    this.TryRelease(); // Ensure that the tractor beam is only interacting with real objects
                 else
-                { // Only proceed if there is a valid female node...
-                  // Rather than creating the attachment, we just want to move the selection
-                  // so that a user can preview what it would look like when attached.
-                    var previewRotation = node.WorldRotation - this.Selected.MaleConnectionNode.LocalRotation;
-                    // Update the preview position
-                    this.Selected.SetPosition(
-                        position: node.WorldPosition - Vector2.Transform(this.Selected.MaleConnectionNode.LocalPosition, Matrix.CreateRotationZ(previewRotation)),
-                        rotation: previewRotation,
-                        ignoreContacts: true);
-                }
+                {
+                    var node = this.Ship.GetClosestOpenFemaleNode(this.Ship.Target);
 
-                this.Events.TryInvoke<ShipPart>(this, "selected:position:changed", this.Selected);
+                    if (node == default(FemaleConnectionNode))
+                    {
+                        // Calculate the absolute path to lerp towards
+                        var selectedPositionTarget = this.Ship.Target - Vector2.Transform(this.Selected.LocalCenteroid, Matrix.CreateRotationZ(this.Selected.Rotation));
+
+                        this.Selected.SetPosition(
+                            Vector2.Lerp(this.Selected.Position, selectedPositionTarget, 0.25f), this.Selected.Rotation, true);
+                    }
+                    else
+                    { // Only proceed if there is a valid female node...
+                      // Rather than creating the attachment, we just want to move the selection
+                      // so that a user can preview what it would look like when attached.
+                        var previewRotation = node.WorldRotation - this.Selected.MaleConnectionNode.LocalRotation;
+                        // Update the preview position
+                        this.Selected.SetPosition(
+                            position: node.WorldPosition - Vector2.Transform(this.Selected.MaleConnectionNode.LocalPosition, Matrix.CreateRotationZ(previewRotation)),
+                            rotation: previewRotation,
+                            ignoreContacts: true);
+                    }
+
+                    this.Events.TryInvoke<ShipPart>(this, "selected:position:changed", this.Selected);
+                }
             }
         }
         #endregion

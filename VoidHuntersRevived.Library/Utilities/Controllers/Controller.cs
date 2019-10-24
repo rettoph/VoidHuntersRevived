@@ -15,6 +15,8 @@ namespace VoidHuntersRevived.Library.Utilities.Controllers
         public Category CollisionCategories { get; set; } = Categories.ActiveCollisionCategories;
         public Category IgnoreCCDWith { get; set; } = Categories.ActiveIgnoreCCDWith;
 
-        protected internal abstract void Remove(Object entity);
+
+        public abstract void TryAdd(FarseerEntity entity);
+        protected internal abstract void TryRemove(FarseerEntity entity);
     }
 }

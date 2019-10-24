@@ -258,7 +258,7 @@ namespace VoidHuntersRevived.Library.Entities
             // Get all open female connection nodes within the bridge
             this.Bridge?.GetOpenFemaleConnectionNodes(ref _openFemaleNodes);
             // Mark the internal chain dirty, preparing for claning next update
-            this.controller.DirtyChain(this.Bridge);
+            this.controller.SyncChain(this.Bridge);
         }
         #endregion
 

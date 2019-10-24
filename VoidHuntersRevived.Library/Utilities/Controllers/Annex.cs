@@ -13,9 +13,5 @@ namespace VoidHuntersRevived.Library.Utilities.Controllers
     /// </summary>
     public class Annex : Controller<FarseerEntity>
     {
-        protected internal override void Remove(object entity)
-        {
-            // throw new NotImplementedException();
-        }
     }
 }

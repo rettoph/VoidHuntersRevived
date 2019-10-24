@@ -37,9 +37,9 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.ShipParts
 
         private void TrySendHealth()
         {
-            if (_interval.Is(250) && this.driven.Health != _flushedHealth)
+            if (_interval.Is(5000) && this.driven.Health != _flushedHealth)
             {
-                var action = this.driven.Actions.Create("health", NetDeliveryMethod.ReliableOrdered, 4);
+                var action = this.driven.Actions.Create("health", NetDeliveryMethod.ReliableSequenced, 4);
                 action.Write(this.driven.Health);
 
                 _flushedHealth = this.driven.Health;

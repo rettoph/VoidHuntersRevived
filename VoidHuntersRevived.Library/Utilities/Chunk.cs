@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Library.Utilities
         public Guid Id { get => _id; }
     }
 
-    public class Chunk : Controller<FarseerEntity>
+    public class Chunk : BasicController<FarseerEntity>
     {
         #region Static Attributes
         public static Single Size { get; private set; } = 32;
@@ -34,7 +34,6 @@ namespace VoidHuntersRevived.Library.Utilities
         private ChunkCollection _chunks;
         private IEnumerable<Chunk> _surrounding;
         private GameTime _addedTime;
-        private Annex _annex;
         #endregion
 
         #region Public Attributes
@@ -43,10 +42,9 @@ namespace VoidHuntersRevived.Library.Utilities
         #endregion
 
         #region Constructor
-        public Chunk(Annex annex, ChunkCollection chunks)
+        public Chunk(Annex annex, ChunkCollection chunks) : base(annex, chunks)
         {
             _chunks = chunks;
-            _annex = annex;
         }
         #endregion
 
@@ -79,12 +77,10 @@ namespace VoidHuntersRevived.Library.Utilities
         #endregion
 
         #region Controller Overrides
-        public override bool Add(FarseerEntity entity)
+        protected override bool Add(FarseerEntity entity)
         {
             if(base.Add(entity))
             {
-                entity.Events.TryAdd<Creatable>("disposing", this.HandleEntityDisposing);
-
                 // Update the entity once
                 entity.TryUpdate(_addedTime);
 
@@ -98,14 +94,12 @@ namespace VoidHuntersRevived.Library.Utilities
 
         protected override bool Remove(FarseerEntity entity)
         {
-            if (base.Remove(entity))
+            if(base.Remove(entity))
             {
-                entity.Events.TryRemove<Creatable>("disposing", this.HandleEntityDisposing);
-
                 this.MarkDirty();
-
                 return true;
             }
+
 
             return false;
         }
@@ -190,10 +184,13 @@ namespace VoidHuntersRevived.Library.Utilities
         }
         #endregion
 
-        private void HandleEntityDisposing(object sender, Creatable arg)
+        #region Event Handlers
+        protected override void HandleComponentDisposing(object sender, Creatable arg)
         {
-            // auto add the component to the annex
-            _annex.Add(arg as FarseerEntity);
+            base.HandleComponentDisposing(sender, arg);
+
+            this.MarkDirty();
         }
+        #endregion
     }
 }

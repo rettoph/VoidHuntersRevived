@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Utilities;
+using VoidHuntersRevived.Library.Utilities.Controllers;
 
 namespace VoidHuntersRevived.Library.Collections
 {
@@ -18,12 +19,14 @@ namespace VoidHuntersRevived.Library.Collections
         /// </summary>
         private DrivenFactory<Chunk> _factory;
         private Chunk _chunk;
+        private Annex _annex;
         #endregion
 
         #region Constructor
-        public ChunkCollection(DrivenFactory<Chunk> factory, IServiceProvider provider) : base(provider)
+        public ChunkCollection(Annex annex, DrivenFactory<Chunk> factory, IServiceProvider provider) : base(provider)
         {
             _factory = factory;
+            _annex = annex;
         }
         #endregion
 
@@ -70,7 +73,10 @@ namespace VoidHuntersRevived.Library.Collections
         public void AddMany(IEnumerable<FarseerEntity> list)
         {
             list.ForEach(f => {
-                this.GetOrCreate(f.Position.X, f.Position.Y).Add(f);
+                if (f.Status == Guppy.InitializationStatus.Ready)
+                    this.GetOrCreate(f.Position.X, f.Position.Y).TryAdd(f);
+                else
+                    _annex.TryAdd(f);
             });
         }
         #endregion

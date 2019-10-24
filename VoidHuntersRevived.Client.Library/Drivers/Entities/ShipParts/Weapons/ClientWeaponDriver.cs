@@ -133,6 +133,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
 
         private void HandlePositionChanged(object sender, Body arg)
         {
+            // Update the barrel position now
+            if (_serverRoot.IsDisposed || _serverBarrel.IsDisposed)
+                throw new Exception("Position changed after disposal");
             this.driven.UpdateBarrelPosition(_serverRoot, _serverBarrel);
         }
 

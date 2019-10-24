@@ -112,7 +112,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// </summary>
         private void ConnectionNode_Dispose()
         {
-            this.logger.LogInformation($"Disposing of {this.Id}");
             this.MaleConnectionNode.Dispose();
             this.FemaleConnectionNodes.ForEach(female => female.Dispose());
         }

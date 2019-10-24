@@ -53,11 +53,11 @@ namespace VoidHuntersRevived.Library.Utilities.Controllers
             return false;
         }
 
-        public virtual Boolean Add(TControlled entity)
+        protected virtual Boolean Add(TControlled entity)
         {
             if (entity.Controller != this)
             {
-                entity.Controller?.Remove(entity);
+                entity.Controller?.TryRemove(entity);
 
                 if (_components.Add(entity))
                 {
@@ -72,10 +72,20 @@ namespace VoidHuntersRevived.Library.Utilities.Controllers
             return false;
         }
 
-        protected internal override void Remove(Object entity)
+        public override void TryAdd(FarseerEntity entity)
+        {
+            if (entity is TControlled)
+                this.Add(entity as TControlled);
+            else
+                throw new Exception($"Unable to add type {entity.GetType().Name} to controller. {typeof(TControlled)} expected.");
+        }
+
+        protected internal override void TryRemove(FarseerEntity entity)
         {
             if (entity is TControlled)
                 this.Remove(entity as TControlled);
+            else
+                throw new Exception($"Unable to remove type {entity.GetType().Name} to controller. {typeof(TControlled)} expected.");
         }
         #endregion
     }
