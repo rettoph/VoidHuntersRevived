@@ -71,38 +71,31 @@ namespace VoidHuntersRevived.Library.Entities
         #region Helper Methods
         public void SetSource(ShipPart target)
         {
-            if (this.Status == InitializationStatus.NotInitialized)
+            _sourceId = target.Id;
+            _sourceVelocity = target.LinearVelocity;
+            _sourcePosition = target.WorldCenteroid;
+
+            // Add all components to the explosion
+            this.controller.SyncChain(target);
+
+            // Dispose of all components that have less than 10 health
+            foreach (ShipPart component in this.Components.ToList())
             {
-                _sourceId = target.Id;
-                _sourceVelocity = target.LinearVelocity;
-                _sourcePosition = target.WorldCenteroid;
+                component.Health -= 5;
 
-                // Add all components to the explosion
-                this.controller.SyncChain(target);
-
-                // Dispose of all components that have less than 10 health
-                foreach (ShipPart component in this.Components.ToList())
+                if (component.Health <= 10)
+                    component.Dispose();
+                else if (component.IsRoot)
                 {
-                    component.Health -= 5;
-
-                    if (component.Health <= 10)
-                        component.Dispose();
-                    else if (component.IsRoot)
-                    {
-                        component.SetVelocity(_sourceVelocity * 1.5f, 0);
-                        component.ApplyForce(
-                            Vector2.Transform(Vector2.UnitX * _strength,
-                            Matrix.CreateRotationZ(
-                                (Single)Math.Atan2(
-                                    component.Position.Y - _sourcePosition.Y,
-                                    component.Position.X - _sourcePosition.X))),
-                            _sourcePosition);
-                    }
+                    component.SetVelocity(_sourceVelocity * 1.5f, 0);
+                    component.ApplyForce(
+                        Vector2.Transform(Vector2.UnitX * _strength,
+                        Matrix.CreateRotationZ(
+                            (Single)Math.Atan2(
+                                component.Position.Y - _sourcePosition.Y,
+                                component.Position.X - _sourcePosition.X))),
+                        _sourcePosition);
                 }
-            }
-            else
-            {
-                throw new Exception("Unable to set explosion source after initialization has begun!");
             }
         }
         #endregion
@@ -150,20 +143,23 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Network Methods
-        protected override void WritePreInitialize(NetOutgoingMessage om)
+        protected override void Write(NetOutgoingMessage om)
         {
-            base.WritePreInitialize(om);
+            base.Write(om);
 
             // Write the explosion source
-            om.Write(_sourceId);
+            om.Write(this.Components.Count());
+            this.Components.ForEach(c => om.Write(c.Id));
         }
 
-        protected override void ReadPreInitialize(NetIncomingMessage im)
+        protected override void Read(NetIncomingMessage im)
         {
-            base.ReadPreInitialize(im);
+            base.Read(im);
 
             // Read the explosion source
-            this.SetSource(this.entities.GetById<ShipPart>(im.ReadGuid()));
+            var components = im.ReadInt32();
+            for (var i = 0; i < components; i++)
+                this.controller.TryAdd(this.entities.GetById<ShipPart>(im.ReadGuid()));
         }
         #endregion
     }

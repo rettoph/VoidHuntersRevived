@@ -157,7 +157,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
                             using (FileStream import = File.OpenRead("Ships/mosquito.vh"))
                                 ship.SetBridge(_builder.Import(import));
 
-                            ship.Bridge.SetPosition(arg.ReadVector2(), 0);
+                            ship.Bridge.SetPosition(arg.ReadVector2(), (new Random()).NextSingle(-MathHelper.Pi, MathHelper.Pi));
                         });
                     });
                 }

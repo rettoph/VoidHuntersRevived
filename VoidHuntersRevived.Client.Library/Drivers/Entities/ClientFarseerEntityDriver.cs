@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Utilities.Controllers;
+using System.Linq;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities
 {
@@ -76,7 +77,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
         {
             base.Update(gameTime);
 
-            if (this.driven.BodyEnabled)
+            if (this.driven.BodyEnabled && _body.FixtureList.Any())
             {
                 var lerp = ClientFarseerEntityDriver.LerpStrength * (Single)gameTime.ElapsedGameTime.TotalMilliseconds;
                 if (Vector2.Distance(this.driven.Position, _body.Position) > 5f) // Snap to the correct position if needed
@@ -102,11 +103,14 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
         /// <param name="arg"></param>
         private void HandleControllerChanged(object sender, Controller arg)
         {
-            _body.CollidesWith = this.driven.CollidesWith;
-            _body.CollisionCategories = this.driven.CollisionCategories;
-            _body.IgnoreCCDWith = this.driven.IgnoreCCDWith;
-            _body.LinearVelocity = Vector2.Zero;
-            _body.AngularVelocity = 0;
+            if (_body != null && !_body.IsDisposed)
+            {
+                _body.CollidesWith = this.driven.CollidesWith;
+                _body.CollisionCategories = this.driven.CollisionCategories;
+                _body.IgnoreCCDWith = this.driven.IgnoreCCDWith;
+                _body.LinearVelocity = Vector2.Zero;
+                _body.AngularVelocity = 0;
+            }
         }
 
         /// <summary>
@@ -116,7 +120,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
         /// <param name="body"></param>
         private void HandleBodyCreated(object sender, Body body)
         {
-            // Create a clone of the farseer entities body within the server render
+            // Create a clone of the farseer entities body within the server render\
             _body = _server.CloneBody(body);
             _body.UserData = body;
 
@@ -141,7 +145,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
         /// <param name="fixture"></param>
         private void HandleFixtureCreated(object sender, Fixture fixture)
         {
-            _server.CloneFixture(fixture);
+            var fixtre = _server.CloneFixture(fixture);
         }
 
         /// <summary>

@@ -38,10 +38,21 @@ namespace VoidHuntersRevived.Library.Utilities.Controllers
         #endregion
 
         #region Frame Methods
+        #region Frame Methods
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            this.Components.ForEach(e => e.TryDraw(gameTime));
+        }
+
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            this.Components.ForEach(e => e.TryUpdate(gameTime));
         }
+        #endregion
         #endregion
 
         #region Helper Methods

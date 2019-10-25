@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
             if (this.Ship?.Bridge != default(ShipPart))
             {
                 var nearest = this.scene.Players
-                    .Where(p => p.Id != this.Id && !(p is UserPlayer) && p.Ship?.Bridge != default(ShipPart) && Vector2.Distance(this.Ship.Bridge.WorldCenter, p.Ship.Bridge.WorldCenter) <= 500)
+                    .Where(p => p.Id != this.Id && p.Ship?.Bridge != default(ShipPart) && Vector2.Distance(this.Ship.Bridge.WorldCenter, p.Ship.Bridge.WorldCenter) <= 500)
                     .OrderBy(p => Vector2.Distance(this.Ship.Bridge.WorldCenter, p.Ship.Bridge.WorldCenter))
                     .FirstOrDefault();
 

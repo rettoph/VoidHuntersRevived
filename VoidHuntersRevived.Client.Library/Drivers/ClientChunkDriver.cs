@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Scenes;
+using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Client.Library.Drivers
@@ -34,14 +35,16 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         private Boolean _dirty;
         private Dictionary<Single, RenderTarget2D> _textures;
         private Dictionary<Single, Boolean> _dirtyTextures;
+        private ServerRender _server;
         #endregion
 
         #region Constructor
-        public ClientChunkDriver(ClientWorldScene scene, GraphicsDevice graphics, SpriteBatch spriteBatch, Chunk driven) : base(driven)
+        public ClientChunkDriver(ServerRender server, ClientWorldScene scene, GraphicsDevice graphics, SpriteBatch spriteBatch, Chunk driven) : base(driven)
         {
             _graphics = graphics;
             _spriteBatch = spriteBatch;
             _scene = scene;
+            _server = server;
         }
         #endregion
 
@@ -73,6 +76,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
             if (this.IsDirty() && _scene.Camera.Frustum.Contains(_box).HasFlag(ContainmentType.Intersects))
             {
                 if((_render = this.CanRender()))

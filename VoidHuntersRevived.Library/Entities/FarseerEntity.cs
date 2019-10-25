@@ -231,10 +231,7 @@ namespace VoidHuntersRevived.Library.Entities
             {
                 this.Controller = controller;
 
-                if (this.Status == Guppy.InitializationStatus.Ready)
-                { // This particular function can run before the body is ready. This makes sure everything is loaded
-                    this.Events.TryInvoke<Controller>(this, "controller:changed", this.Controller);
-                }
+                this.Events.TryInvoke<Controller>(this, "controller:changed", this.Controller);
             }
         }
         #endregion
@@ -413,8 +410,7 @@ namespace VoidHuntersRevived.Library.Entities
             this.body.ReadPosition(im);
             this.body.ReadVelocity(im);
 
-            if(this.Controller is Chunk)
-                _chunks.GetOrCreate(this.Position.X, this.Position.Y).TryAdd(this);
+            _chunks.GetOrCreate(this.Position.X, this.Position.Y).TryAdd(this);
         }
 
         protected override void WritePostInitialize(NetOutgoingMessage om)
