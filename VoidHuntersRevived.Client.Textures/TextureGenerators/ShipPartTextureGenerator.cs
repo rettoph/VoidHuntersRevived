@@ -21,8 +21,8 @@ namespace VoidHuntersRevived.Client.Textures.TextureGenerators
     [IsTextureGenerator(typeof(ShipPart))]
     class ShipPartTextureGenerator : TextureGenerator
     {
-        public static Pen Pen { get; set; } = new Pen(Color.FromArgb(200, 150, 150, 150), 4);
-        public static Brush Brush { get; set; } = new SolidBrush(Color.FromArgb(200, 255, 255, 255));
+        public static Pen Pen { get; set; } = new Pen(Color.FromArgb(255, 255, 255, 255), 2);
+        public static Brush Brush { get; set; } = new SolidBrush(Color.FromArgb(200, 200, 200, 200));
 
         protected override Image Generate(EntityConfiguration entity)
         {

@@ -62,7 +62,7 @@ namespace VoidHuntersRevived.Client.Library.Layers
         protected override void Draw(GameTime gameTime)
         {
             this.bloom.BloomThreshold = 0.1f;
-            this.bloom.BloomStrengthMultiplier = 0.9f;
+            this.bloom.BloomStrengthMultiplier = 0.75f;
             this.bloom.BloomUseLuminance = false;
             this.bloom.BloomPreset = Effects.BloomFilter.BloomPresets.SuperWide;
 
