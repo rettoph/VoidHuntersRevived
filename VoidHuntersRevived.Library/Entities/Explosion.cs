@@ -20,7 +20,8 @@ namespace VoidHuntersRevived.Library.Entities
     {
         #region Private Fields
         private Guid _sourceId;
-        private Vector2 _sourceVelocity;
+        private Vector2 _sourceLinearVelocity;
+        private Single _sourceAngularVelocity;
         private Vector2 _sourcePosition;
         private Single _strength;
         private Queue<ShipPart> _still;
@@ -72,7 +73,8 @@ namespace VoidHuntersRevived.Library.Entities
         public void SetSource(ShipPart target)
         {
             _sourceId = target.Id;
-            _sourceVelocity = target.LinearVelocity;
+            _sourceLinearVelocity = target.LinearVelocity;
+            _sourceAngularVelocity = target.AngularVelocity;
             _sourcePosition = target.WorldCenteroid;
 
             // Add all components to the explosion
@@ -87,14 +89,14 @@ namespace VoidHuntersRevived.Library.Entities
                     component.Dispose();
                 else if (component.IsRoot)
                 {
-                    component.SetVelocity(_sourceVelocity * 1.5f, 0);
+                    component.SetVelocity(_sourceLinearVelocity, _sourceAngularVelocity);
                     component.ApplyForce(
                         Vector2.Transform(Vector2.UnitX * _strength,
                         Matrix.CreateRotationZ(
                             (Single)Math.Atan2(
                                 component.Position.Y - _sourcePosition.Y,
                                 component.Position.X - _sourcePosition.X))),
-                        _sourcePosition);
+                        component.WorldCenteroid);
                 }
             }
         }
