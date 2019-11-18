@@ -1,4 +1,5 @@
 ﻿using Guppy;
+using Guppy.Collections;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -14,6 +15,10 @@ namespace VoidHuntersRevived.Library.Entities
         public ActionMessageDelegater Actions { get; private set; }
         #endregion
 
+        #region Protected Fields
+        protected EntityCollection entities { get; private set; }
+        #endregion
+
         #region Lifecycle Methods
         protected override void Create(IServiceProvider provider)
         {
@@ -21,6 +26,8 @@ namespace VoidHuntersRevived.Library.Entities
 
             // Create a new action delegater
             this.Actions = ActivatorUtilities.CreateInstance<ActionMessageDelegater>(provider, this);
+
+            this.entities = provider.GetRequiredService<EntityCollection>();
         }
 
         public override void Dispose()

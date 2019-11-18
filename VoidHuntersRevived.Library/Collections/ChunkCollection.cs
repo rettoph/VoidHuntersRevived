@@ -67,6 +67,16 @@ namespace VoidHuntersRevived.Library.Collections
         {
             return this.Get(entity.Position.X, entity.Position.Y);
         }
+
+        /// <summary>
+        /// Automatically add a farseer entity into its
+        /// appropriate chunk.
+        /// </summary>
+        /// <param name="entity"></param>
+        public void AddToChunk(FarseerEntity entity)
+        {
+            this.Get(entity).Add(entity);
+        }
         #endregion
     }
 }

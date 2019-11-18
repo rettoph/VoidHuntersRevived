@@ -79,7 +79,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             else
             { // If the entity does not reside in the current chunk...
                 // Add the entity into its correct chunk...
-                _chunks.Get(entity).Add(entity);
+                _chunks.AddToChunk(entity);
             }
 
             return false;

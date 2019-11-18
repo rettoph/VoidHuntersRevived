@@ -62,7 +62,7 @@ namespace VoidHuntersRevived.Library.Entities
 
             // Add the current farseer entity into its respective chunk
             if(this.Controller == null)
-                this.chunks.Get(this).Add(this);
+                this.chunks.AddToChunk(this);
         }
 
         public override void Dispose()

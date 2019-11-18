@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Collections;
+using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Utilities.Delegaters;
@@ -44,6 +45,9 @@ namespace VoidHuntersRevived.Library
             var entities = provider.GetRequiredService<EntityLoader>();
 
             entities.TryRegister<Chunk>("entity:chunk", "name:entity:chunk", "description:entity:chunk");
+            entities.TryRegister<CustomController>("entity:custom-controller", "name:entity:custom-controller", "description:entity:custom-controller");
+
+            entities.TryRegister<Ship>("entity:ship", "name:entity:ship", "description:entity:ship");
 
             entities.TryRegister<ShipPart>("entity:ship-part", "name:entity:ship-part", "description:entity:ship-part");
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Guppy;
 using Guppy.Extensions.Collection;
 using Guppy.Network.Peers;
 using Microsoft.Xna.Framework;
@@ -18,6 +19,7 @@ namespace VoidHuntersRevived.Client.Library
     {
         #region Private Fields
         private ClientPeer _client;
+        private Scene _scene;
         #endregion
 
         #region Constructor
@@ -34,7 +36,7 @@ namespace VoidHuntersRevived.Client.Library
 
             _client.TryConnect("localhost", 1337, _client.Users.Create("Tony"));
 
-            this.scenes.Create<ClientWorldScene>(s =>
+            _scene = this.scenes.Create<ClientWorldScene>(s =>
             {
                 s.Group = _client.Groups.GetOrCreateById(Guid.Empty);
             });
@@ -46,14 +48,14 @@ namespace VoidHuntersRevived.Client.Library
         {
             base.Draw(gameTime);
 
-            this.scenes.TryDraw(gameTime);
+            _scene.TryDraw(gameTime);
         }
 
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            this.scenes.TryUpdate(gameTime);
+            _scene.TryUpdate(gameTime);
         }
         #endregion
     }
