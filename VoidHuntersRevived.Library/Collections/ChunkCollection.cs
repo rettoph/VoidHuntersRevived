@@ -1,83 +1,71 @@
 ﻿using Guppy.Collections;
-using Guppy.Extensions.Collection;
-using Guppy.Factories;
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Text;
 using VoidHuntersRevived.Library.Entities;
-using VoidHuntersRevived.Library.Utilities;
-using VoidHuntersRevived.Library.Utilities.Controllers;
+using VoidHuntersRevived.Library.Entities.Controllers;
+using VoidHuntersRevived.Library.Structs;
 
 namespace VoidHuntersRevived.Library.Collections
 {
-    public class ChunkCollection : FrameableCollection<Chunk>
+    /// <summary>
+    /// The primary source of chunk management.
+    /// 
+    /// This allows for the selection of a chunk based
+    /// on recieved x/y coordinates.
+    /// </summary>
+    public sealed class ChunkCollection : FrameableCollection<Chunk>
     {
         #region Private Fields
-        /// <summary>
-        /// The main chunk factory.
-        /// </summary>
-        private DrivenFactory<Chunk> _factory;
-        private Chunk _chunk;
-        private Annex _annex;
+        private EntityCollection _entities;
         #endregion
 
-        #region Constructor
-        public ChunkCollection(Annex annex, DrivenFactory<Chunk> factory, IServiceProvider provider) : base(provider)
+        #region Contructors
+        public ChunkCollection(EntityCollection entities, IServiceProvider provider) : base(provider)
         {
-            _factory = factory;
-            _annex = annex;
-        }
-        #endregion
-
-        #region GetOrCreate Methods
-        public Chunk GetOrCreate(Single x, Single y)
-        {
-            var position = new Position()
-            {
-                X = (Single)Math.Floor(x / Chunk.Size) * Chunk.Size,
-                Y = (Single)Math.Floor(y / Chunk.Size) * Chunk.Size
-            };
-
-            if((_chunk = this.GetById(position.Id)) == default(Chunk))
-            { // If the chunk doesnt exist yet
-                _chunk = _factory.Build<Chunk>(c =>
-                {
-                    c.SetId(position.Id);
-                    c.Position = position;
-                });
-
-                this.Add(_chunk);
-            }
-
-            return _chunk;
-        }
-
-        public Chunk Get(Single x, Single y)
-        {
-            var position = new Position()
-            {
-                X = (Single)Math.Floor(x / Chunk.Size) * Chunk.Size,
-                Y = (Single)Math.Floor(y / Chunk.Size) * Chunk.Size
-            };
-
-            return _chunk = this.GetById(position.Id);
+            _entities = entities;
         }
         #endregion
 
         #region Helper Methods
         /// <summary>
-        /// Automatically add several entities to their respective chunks
+        /// Return the chunk that contains the given x and y position.
+        /// 
+        /// This will create a new chunk if one does not already exist.
         /// </summary>
-        /// <param name="list"></param>
-        public void AddMany(IEnumerable<FarseerEntity> list)
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public Chunk Get(Single x, Single y)
         {
-            list.ForEach(f => {
-                if (f.Status == Guppy.InitializationStatus.Ready)
-                    this.GetOrCreate(f.Position.X, f.Position.Y).TryAdd(f);
-                else
-                    _annex.TryAdd(f);
-            });
+            Chunk output;
+            ChunkPosition position = new ChunkPosition(x, y);
+
+            if((output = this.GetById(position.Id)) == default(Chunk))
+            { // Create a brand new chunk
+                output = _entities.Create<Chunk>("entity:chunk", c =>
+                {
+                    c.SetId(position.Id);
+                    c.Position = position;
+
+                    // Add the new chunk to the internal collection
+                    this.Add(c);
+                }); 
+            }
+
+            return output;
+        }
+
+        /// <summary>
+        /// Return the chunk contains the given entities position.
+        /// 
+        /// This will create a new chunk if one does not already exist.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public Chunk Get(FarseerEntity entity)
+        {
+            return this.Get(entity.Position.X, entity.Position.Y);
         }
         #endregion
     }

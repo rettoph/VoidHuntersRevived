@@ -1,5 +1,7 @@
 ﻿using FarseerPhysics;
+using Guppy.Attributes;
 using Guppy.Utilities.Cameras;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -9,6 +11,7 @@ using System.Text;
 
 namespace VoidHuntersRevived.Client.Library.Utilities.Cameras
 {
+    [IsCamera(ServiceLifetime.Scoped)]
     public sealed class FarseerCamera2D : Camera2D
     {
         private GraphicsDevice _graphics;

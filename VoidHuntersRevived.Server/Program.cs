@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Server
                 .ConfigureLogger<ConsoleLogger>()
                 .ConfigureNetwork("vhr")
                 .Initialize()
-                .BuildGame<ServerVoidHuntersRevivedGame>();
+                .BuildGame<ServerGame>();
 
             game.TryStartAsync();
         }

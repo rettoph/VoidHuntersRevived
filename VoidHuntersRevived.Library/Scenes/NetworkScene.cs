@@ -1,59 +1,47 @@
-﻿using VoidHuntersRevived.Library.Entities;
-using VoidHuntersRevived.Library.Utilities;
-using VoidHuntersRevived.Library.Utilities.Delegater;
-using Guppy;
+﻿using Guppy;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Groups;
 using Lidgren.Network;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Guppy.Network.Utilitites.Delegaters;
+using VoidHuntersRevived.Library.Entities;
 
 namespace VoidHuntersRevived.Library.Scenes
 {
-    public abstract class NetworkScene : Scene
+    /// <summary>
+    /// NetworkScene's are scenes that will
+    /// automatically track NetworkEntity instances
+    /// and send server Create, Update, & Remove
+    /// messages when neccessary. These actions
+    /// are implemented via custom drivers found
+    /// within the Client and Server projects
+    /// respectively.
+    /// </summary>
+    public class NetworkScene : Scene
     {
         #region Private Fields
-        private Interval _intervals;
+        /// <summary>
+        /// A queue of all unhandled recieved actions.
+        /// </summary>
         private ConcurrentQueue<NetIncomingMessage> _actions;
         private NetIncomingMessage _im;
-
-        private List<Single> _actionsPerFrame;
-        private Single _actionsThisFrame;
         #endregion
 
-        #region Internal Attributes
-        internal GroupMessageDelegater actions;
+        #region Internal Properties
         #endregion
 
-        #region Public Attributes
+        #region Public Properties
         public Group Group { get; set; }
-
-        public Single ActionsPerFrame { get => _actionsPerFrame.Sum() / _actionsPerFrame.Count(); }
         #endregion
 
         #region Lifecycle Methods
-        protected override void Create(IServiceProvider provider)
-        {
-            base.Create(provider);
-
-            _intervals = provider.GetRequiredService<Interval>();
-            _actions = new ConcurrentQueue<NetIncomingMessage>();
-            _actionsPerFrame = new List<Single>();
-
-            this.actions = provider.GetRequiredService<GroupMessageDelegater>();
-        }
-
         protected override void PreInitialize()
         {
             base.PreInitialize();
-
-            this.actions.Group = this.Group;
 
             this.Group.Messages.TryAdd("entity:action", this.HandleNetworkEntityActionMessage);
         }
@@ -69,23 +57,18 @@ namespace VoidHuntersRevived.Library.Scenes
         #region Frame Methods
         protected override void Update(GameTime gameTime)
         {
-            _intervals.Update(gameTime);
+            // Read all new group messages at this time.
             this.Group.Messages.ReadAll();
 
             base.Update(gameTime);
 
-            this.Group.Messages.SendAll();
-            this.actions.SendAll();
-
+            // Parse any new messages
             while (_actions.Any())
                 if (_actions.TryDequeue(out _im))
                     this.entities.GetById<NetworkEntity>(_im.ReadGuid())?.Actions.TryInvoke(this, _im.ReadString(), _im);
 
-            _actionsPerFrame.Add(_actionsThisFrame);
-            _actionsThisFrame = 0;
-
-            while (_actionsPerFrame.Count > 100)
-                _actionsPerFrame.RemoveAt(0);
+            // Send all group messages at this time.
+            this.Group.Messages.SendAll();
         }
         #endregion
 
@@ -93,7 +76,6 @@ namespace VoidHuntersRevived.Library.Scenes
         private void HandleNetworkEntityActionMessage(object sender, NetIncomingMessage arg)
         {
             _actions.Enqueue(arg);
-            _actionsThisFrame++;   
         }
         #endregion
     }

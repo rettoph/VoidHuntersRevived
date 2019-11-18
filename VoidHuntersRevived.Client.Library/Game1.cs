@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Client.Library
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
-        ClientVoidHuntersRevivedsGame game;
+        ClientGame game;
         String host;
 
         public Game1(String host = "localhost")
@@ -39,10 +39,7 @@ namespace VoidHuntersRevived.Client.Library
                 .ConfigureNetwork("vhr")
                 .ConfigureMonoGame(this.graphics, this.Content, this.Window)
                 .Initialize()
-                .BuildGame<ClientVoidHuntersRevivedsGame>(g =>
-                {
-                    g.host = this.host;
-                });
+                .BuildGame<ClientGame>();
         }
 
         protected override void Draw(GameTime gameTime)
