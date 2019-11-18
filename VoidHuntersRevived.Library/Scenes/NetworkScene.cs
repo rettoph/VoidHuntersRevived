@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Extensions.Collections.Concurrent;
 
 namespace VoidHuntersRevived.Library.Scenes
 {
@@ -39,6 +40,13 @@ namespace VoidHuntersRevived.Library.Scenes
         #endregion
 
         #region Lifecycle Methods
+        protected override void Create(IServiceProvider provider)
+        {
+            base.Create(provider);
+
+            _actions = new ConcurrentQueue<NetIncomingMessage>();
+        }
+
         protected override void PreInitialize()
         {
             base.PreInitialize();
@@ -49,6 +57,8 @@ namespace VoidHuntersRevived.Library.Scenes
         public override void Dispose()
         {
             base.Dispose();
+
+            _actions.Clear();
 
             this.Group.Messages.TryRemove("entity:action", this.HandleNetworkEntityActionMessage);
         }

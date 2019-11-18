@@ -3,6 +3,7 @@ using Guppy.Attributes;
 using Guppy.Collections;
 using Guppy.Interfaces;
 using Guppy.Loaders;
+using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using System;
@@ -20,9 +21,22 @@ namespace VoidHuntersRevived.Library
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ActionMessageDelegater>();
             services.AddScoped<World>(p => new World(Vector2.Zero));
             services.AddScoped<ChunkCollection>();
+
+            services.AddSingleton<NetPeerConfiguration>(p =>
+            {
+                var config = new NetPeerConfiguration("vhr")
+                {
+                    ConnectionTimeout = 5
+                };
+
+                // Enable required message types...
+                config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
+                config.UseMessageRecycling = true;
+
+                return config;
+            });
         }
 
         public void ConfigureProvider(IServiceProvider provider)

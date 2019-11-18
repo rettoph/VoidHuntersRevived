@@ -13,6 +13,7 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Scenes;
 using Guppy.Network.Extensions.Lidgren;
 using System.Linq;
+using VoidHuntersRevived.Library.Extensions.Collections.Concurrent;
 
 namespace VoidHuntersRevived.Server.Drivers.Scenes
 {
@@ -49,6 +50,7 @@ namespace VoidHuntersRevived.Server.Drivers.Scenes
         {
             base.Create(provider);
 
+            _newUsers = new ConcurrentQueue<User>();
             _creates = new ConcurrentQueue<NetworkEntity>();
             _updates = new ConcurrentQueue<NetworkEntity>();
             _removes = new ConcurrentQueue<Guid>();
@@ -71,6 +73,7 @@ namespace VoidHuntersRevived.Server.Drivers.Scenes
             _entities.Events.TryRemove<Entity>("removed", this.HandleEntityRemoved);
             this.driven.Group.Users.Events.TryRemove<User>("added", this.HandleUserAdded);
 
+            _newUsers.Clear();
             _creates.Clear();
             _updates.Clear();
             _removes.Clear();
@@ -132,6 +135,7 @@ namespace VoidHuntersRevived.Server.Drivers.Scenes
         private void CreateUpdateMessage(NetworkEntity entity, User recipient = null)
         {
             var message = this.driven.Group.Messages.Create("entity:update", NetDeliveryMethod.ReliableOrdered, 0, recipient);
+            message.Write(entity);
             entity.TryWrite(message);
         }
 

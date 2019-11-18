@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Library.Entities
             base.Create(provider);
 
             // Create a new action delegater
-            this.Actions = provider.GetRequiredService<ActionMessageDelegater>();
+            this.Actions = ActivatorUtilities.CreateInstance<ActionMessageDelegater>(provider, this);
         }
 
         public override void Dispose()

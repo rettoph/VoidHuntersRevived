@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Interfaces;
+using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,9 @@ namespace VoidHuntersRevived.Server
 
         public void ConfigureProvider(IServiceProvider provider)
         {
-            // throw new NotImplementedException();
+            var config = provider.GetService<NetPeerConfiguration>();
+            config.Port = 1337;
+            // config.AutoFlushSendQueue = false;
         }
     }
 }
