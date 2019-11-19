@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Scenes;
 
@@ -25,15 +26,18 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
         private ContentManager _content;
         private World _world;
         private DebugViewXNA _debug;
+        private ServerShadow _shadow;
+        private DebugViewXNA _debugShadow;
         #endregion
 
         #region Constructor
-        public WorldSceneRenderDriver(FarseerCamera2D camera, GraphicsDevice graphics, ContentManager content, World world, WorldScene driven) : base(driven)
+        public WorldSceneRenderDriver(FarseerCamera2D camera, GraphicsDevice graphics, ContentManager content, World world, ServerShadow shadow, WorldScene driven) : base(driven)
         {
             _camera = camera;
             _graphics = graphics;
             _content = content;
             _world = world;
+            _shadow = shadow;
         }
         #endregion
 
@@ -44,6 +48,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
 
             _debug = new DebugViewXNA(_world);
             _debug.LoadContent(_graphics, _content);
+
+            _debugShadow = new DebugViewXNA(_shadow.World);
+            _debugShadow.LoadContent(_graphics, _content);
+
+            _debugShadow.DefaultShapeColor = Color.Red;
         }
         #endregion
 
@@ -55,6 +64,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
             // Clear the graphics device
             _graphics.Clear(Color.Black);
 
+            _debugShadow.RenderDebugData(_camera.Projection, _camera.View);
             _debug.RenderDebugData(_camera.Projection, _camera.View);
         }
         #endregion

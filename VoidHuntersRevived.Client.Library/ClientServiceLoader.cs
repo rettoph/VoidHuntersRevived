@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 
 namespace VoidHuntersRevived.Client.Library
@@ -13,6 +14,7 @@ namespace VoidHuntersRevived.Client.Library
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<ServerShadow>();
         }
 
         public void ConfigureProvider(IServiceProvider provider)

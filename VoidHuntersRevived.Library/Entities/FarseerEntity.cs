@@ -1,6 +1,7 @@
 ﻿using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
 using Guppy;
+using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using System;
@@ -15,13 +16,13 @@ namespace VoidHuntersRevived.Library.Entities
     {
         #region Protected Properties
         protected World world { get; private set; }
-        protected Body body { get; private set; }
         protected ChunkCollection chunks { get; private set; }
         #endregion
 
         #region Public Properties
-        public virtual Vector2 Position { get => this.body.Position; }
-        public virtual Single Rotation { get => this.body.Rotation; }
+        public Body Body { get; private set; }
+        public virtual Vector2 Position { get => this.Body.Position; }
+        public virtual Single Rotation { get => this.Body.Rotation; }
         public Controller Controller { get; private set; }
         #endregion
 
@@ -43,7 +44,7 @@ namespace VoidHuntersRevived.Library.Entities
             base.PreInitialize();
 
             // Create a new body for this instance
-            this.body = this.CreateBody(this.world);
+            this.Body = this.CreateBody(this.world);
         }
 
         protected override void Initialize()
@@ -69,7 +70,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Dispose();
 
-            this.body.Dispose();
+            this.Body.Dispose();
         }
         #endregion
 
@@ -79,14 +80,14 @@ namespace VoidHuntersRevived.Library.Entities
             base.Update(gameTime);
 
             // Allow the controller to manipulate the internal body if needed
-            this.Controller.UpdateBody(this, this.body);
+            this.Controller.UpdateBody(this, this.Body);
         }
         #endregion
 
         #region Farseer Methods
         public virtual Body CreateBody(World world)
         {
-            return BodyFactory.CreateBody(world);
+            return BodyFactory.CreateBody(world, default, 0, BodyType.Static, this);
         }
         #endregion
 
@@ -100,7 +101,7 @@ namespace VoidHuntersRevived.Library.Entities
                     this.Controller.Remove(this);
 
                 this.Controller = controller;
-                this.Controller?.SetupBody(this, this.body);
+                this.Controller?.SetupBody(this, this.Body);
 
                 this.Events.TryInvoke<Controller>(this, "controller:changed", this.Controller);
             }

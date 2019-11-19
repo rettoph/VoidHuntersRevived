@@ -2,6 +2,7 @@
 using FarseerPhysics.Factories;
 using Guppy;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -28,6 +29,15 @@ namespace VoidHuntersRevived.Library.Scenes
         protected override void PostInitialize()
         {
             base.PostInitialize();
+        }
+        #endregion
+
+        #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            this.entities.TryUpdate(gameTime);
         }
         #endregion
     }

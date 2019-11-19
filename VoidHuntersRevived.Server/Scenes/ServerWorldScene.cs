@@ -15,8 +15,8 @@ namespace VoidHuntersRevived.Server.Scenes
         {
             base.Initialize();
 
-            // Create a new ship part
-            var sp = this.entities.Create<Ship>("entity:ship", s =>
+            // Create a new ship
+            this.entities.Create<Ship>("entity:ship", s =>
             {
                 s.SetBridge(this.entities.Create<ShipPart>("entity:ship-part"));
             });
