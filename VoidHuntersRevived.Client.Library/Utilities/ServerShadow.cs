@@ -25,6 +25,14 @@ namespace VoidHuntersRevived.Client.Library.Utilities
 
         #region Public Properties
         public World World { get; private set; }
+
+        public Body this[FarseerEntity key] {
+            get
+            {
+                this.World.ProcessChanges();
+                return _bodies[key];
+            }
+        }
         #endregion
 
         #region Constructor
@@ -42,12 +50,12 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         #region Event Handlers
         private void HandleBodyRemoved(Body body)
         {
-            _bodies.Add(body.UserData as FarseerEntity, body);
+            _bodies.Remove(body.UserData as FarseerEntity);
         }
 
         private void HandleBodyAdded(Body body)
         {
-            _bodies.Remove(body.UserData as FarseerEntity);
+            _bodies.Add(body.UserData as FarseerEntity, body);
         }
         #endregion
     }

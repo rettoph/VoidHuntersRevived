@@ -78,19 +78,6 @@ namespace VoidHuntersRevived.Library.Entities
 
             // Update the controller
             _controller.TryUpdate(gameTime);
-
-            
-            if(this.Bridge != default(ShipPart))
-            { // Move the bridge
-                if(this.ActiveDirections.HasFlag(Direction.Right))
-                    this.Bridge.Body.ApplyForce(Vector2.UnitX * 10f, this.Bridge.Body.Position);
-                if (this.ActiveDirections.HasFlag(Direction.Left))
-                    this.Bridge.Body.ApplyForce(Vector2.UnitX * -10f, this.Bridge.Body.Position);
-                if (this.ActiveDirections.HasFlag(Direction.Forward))
-                    this.Bridge.Body.ApplyForce(Vector2.UnitY * -10f, this.Bridge.Body.Position);
-                if (this.ActiveDirections.HasFlag(Direction.Backward))
-                    this.Bridge.Body.ApplyForce(Vector2.UnitY * 10f, this.Bridge.Body.Position);
-            }
         }
 
         protected override void Draw(GameTime gameTime)
@@ -134,6 +121,7 @@ namespace VoidHuntersRevived.Library.Entities
                 _controller.Add(target);
                 // Update the stored bridge value
                 this.Bridge = target;
+                this.Bridge.Ship = this;
             }
         }
         #endregion
@@ -150,14 +138,65 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Read(im);
 
-            this.SetBridge(im.ReadEntity<ShipPart>(this.entities));
+            this.ReadBridge(im);
+            this.ReadDirection(im);
+            this.ReadDirection(im);
+            this.ReadDirection(im);
+            this.ReadDirection(im);
+            this.ReadDirection(im);
+            this.ReadDirection(im);
         }
 
         protected override void Write(NetOutgoingMessage om)
         {
             base.Write(om);
 
-            om.Write(_controller.Components.First());
+            this.WriteBridge(om);
+            this.WriteDirection(om, Direction.Forward);
+            this.WriteDirection(om, Direction.Right);
+            this.WriteDirection(om, Direction.Backward);
+            this.WriteDirection(om, Direction.Left);
+            this.WriteDirection(om, Direction.TurnLeft);
+            this.WriteDirection(om, Direction.TurnRight);
+        }
+
+        /// <summary>
+        /// Write the Ship's current bridge data
+        /// </summary>
+        /// <param name="om"></param>
+        public void WriteBridge(NetOutgoingMessage om)
+        {
+            om.Write(this.Bridge);
+        }
+
+        /// <summary>
+        /// Read & update the current bridge data
+        /// </summary>
+        /// <param name="im"></param>
+        public void ReadBridge(NetIncomingMessage im)
+        {
+            this.SetBridge(im.ReadEntity<ShipPart>(this.entities));
+        }
+
+
+        /// <summary>
+        /// Write a ship's specific direction data
+        /// </summary>
+        /// <param name="om"></param>
+        /// <param name="direction"></param>
+        public void WriteDirection(NetOutgoingMessage om, Direction direction)
+        {
+            om.Write((Byte)direction);
+            om.Write(this.ActiveDirections.HasFlag(direction));
+        }
+
+        /// <summary>
+        /// Read a ships specific direction data
+        /// </summary>
+        /// <param name="im"></param>
+        public void ReadDirection(NetIncomingMessage im)
+        {
+            this.SetDirection((Direction)im.ReadByte(), im.ReadBoolean());
         }
         #endregion
     }

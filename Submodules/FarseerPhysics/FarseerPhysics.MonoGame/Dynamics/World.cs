@@ -28,6 +28,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using FarseerPhysics.Collision;
 using FarseerPhysics.Common;
 using FarseerPhysics.Controllers;
@@ -136,7 +137,7 @@ namespace FarseerPhysics.Dynamics
 
         private void ProcessRemovedJoints()
         {
-            if (_jointRemoveList.Count > 0)
+            if (_jointRemoveList.Any())
             {
                 foreach (Joint joint in _jointRemoveList)
                 {
@@ -233,7 +234,7 @@ namespace FarseerPhysics.Dynamics
 
         private void ProcessAddedJoints()
         {
-            if (_jointAddList.Count > 0)
+            if (_jointAddList.Any())
             {
                 foreach (Joint joint in _jointAddList)
                 {
@@ -297,7 +298,7 @@ namespace FarseerPhysics.Dynamics
 
         private void ProcessAddedBodies()
         {
-            if (_bodyAddList.Count > 0)
+            if (_bodyAddList.Any())
             {
                 foreach (Body body in _bodyAddList)
                 {
@@ -327,7 +328,7 @@ namespace FarseerPhysics.Dynamics
 
         private void ProcessRemovedBodies()
         {
-            if (_bodyRemoveList.Count > 0)
+            if (_bodyRemoveList.Any())
             {
                 foreach (Body body in _bodyRemoveList)
                 {
