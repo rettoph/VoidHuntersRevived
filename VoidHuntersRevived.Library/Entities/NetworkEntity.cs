@@ -1,10 +1,12 @@
 ﻿using Guppy;
 using Guppy.Collections;
+using Guppy.Network.Groups;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Utilities.Delegaters;
 
 namespace VoidHuntersRevived.Library.Entities
@@ -17,6 +19,7 @@ namespace VoidHuntersRevived.Library.Entities
 
         #region Protected Fields
         protected EntityCollection entities { get; private set; }
+        protected Group group { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -28,6 +31,7 @@ namespace VoidHuntersRevived.Library.Entities
             this.Actions = ActivatorUtilities.CreateInstance<ActionMessageDelegater>(provider, this);
 
             this.entities = provider.GetRequiredService<EntityCollection>();
+            this.group = provider.GetRequiredService<NetworkScene>().Group;
         }
 
         public override void Dispose()

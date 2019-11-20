@@ -9,6 +9,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Collections;
 using Microsoft.Xna.Framework;
+using Microsoft.Extensions.Logging;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -20,13 +21,33 @@ namespace VoidHuntersRevived.Library.Entities
     /// </summary>
     public class Ship : NetworkEntity
     {
+        #region Enums
+        [Flags]
+        public enum Direction
+        {
+            Forward = 1,
+            Right = 2,
+            Backward = 4,
+            Left = 8,
+            TurnLeft = 16,
+            TurnRight = 32
+        }
+        #endregion
+
         #region Private Fields
         private CustomController _controller;
         private ChunkCollection _chunks;
         #endregion
 
         #region Public Properties
+        /// <summary>
+        /// The ships current bridge.
+        /// </summary>
         public ShipPart Bridge { get; private set; }
+        /// <summary>
+        /// The current active Direction flags.
+        /// </summary>
+        public Direction ActiveDirections { get; private set; }
         #endregion
 
         #region Contructor
@@ -45,6 +66,8 @@ namespace VoidHuntersRevived.Library.Entities
             {
                 dc.OnSetupBody += this.CustomBodySetup;
             });
+
+            this.Events.Register<Direction>("direction:changed");
         }
         #endregion
 
@@ -55,6 +78,19 @@ namespace VoidHuntersRevived.Library.Entities
 
             // Update the controller
             _controller.TryUpdate(gameTime);
+
+            
+            if(this.Bridge != default(ShipPart))
+            { // Move the bridge
+                if(this.ActiveDirections.HasFlag(Direction.Right))
+                    this.Bridge.Body.ApplyForce(Vector2.UnitX * 10f, this.Bridge.Body.Position);
+                if (this.ActiveDirections.HasFlag(Direction.Left))
+                    this.Bridge.Body.ApplyForce(Vector2.UnitX * -10f, this.Bridge.Body.Position);
+                if (this.ActiveDirections.HasFlag(Direction.Forward))
+                    this.Bridge.Body.ApplyForce(Vector2.UnitY * -10f, this.Bridge.Body.Position);
+                if (this.ActiveDirections.HasFlag(Direction.Backward))
+                    this.Bridge.Body.ApplyForce(Vector2.UnitY * 10f, this.Bridge.Body.Position);
+            }
         }
 
         protected override void Draw(GameTime gameTime)
@@ -67,6 +103,25 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Setters
+        /// <summary>
+        /// Set a specified directional flag.
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <param name="value"></param>
+        public void SetDirection(Direction direction, Boolean value)
+        {
+            if (value && !this.ActiveDirections.HasFlag(direction))
+            {
+                this.ActiveDirections |= direction;
+                this.Events.TryInvoke<Direction>(this, "direction:changed", direction);
+            }
+            else if (!value && this.ActiveDirections.HasFlag(direction))
+            {
+                this.ActiveDirections &= ~direction;
+                this.Events.TryInvoke<Direction>(this, "direction:changed", direction);
+            }
+        }
+
         public void SetBridge(ShipPart target)
         {
             if(target != this.Bridge)
@@ -87,7 +142,6 @@ namespace VoidHuntersRevived.Library.Entities
         private void CustomBodySetup(FarseerEntity component, Body body)
         {
             body.BodyType = BodyType.Dynamic;
-            body.AngularVelocity = 1f;
         }
         #endregion
 
