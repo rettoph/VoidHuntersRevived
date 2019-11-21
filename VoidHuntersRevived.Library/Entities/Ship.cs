@@ -85,6 +85,7 @@ namespace VoidHuntersRevived.Library.Entities
             });
 
             this.Events.Register<Direction>("direction:changed");
+            this.Events.Register<Vector2>("target:changed");
         }
 
         protected override void Initialize()
@@ -161,6 +162,20 @@ namespace VoidHuntersRevived.Library.Entities
                 // Update the stored bridge value
                 this.Bridge = target;
                 this.Bridge.Ship = this;
+            }
+        }
+
+        /// <summary>
+        ///  Update the current target value
+        /// </summary>
+        /// <param name="target"></param>
+        public void SetTarget(Vector2 target)
+        {
+            if (target != this.Target)
+            {
+                this.Target = target;
+
+                this.Events.TryInvoke<Vector2>(this, "target:changed", this.Target);
             }
         }
         #endregion

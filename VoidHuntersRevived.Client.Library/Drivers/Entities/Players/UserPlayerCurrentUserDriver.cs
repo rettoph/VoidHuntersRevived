@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
@@ -26,11 +27,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         private Action<GameTime> _update;
         private FarseerCamera2D _camera;
         private Pointer _pointer;
+        private Sensor _sensor;
         #endregion
 
         #region Constructor
-        public UserPlayerCurrentUserDriver(Pointer pointer, FarseerCamera2D camera, ClientPeer client, UserPlayer driven) : base(driven)
+        public UserPlayerCurrentUserDriver(Sensor sensor, Pointer pointer, FarseerCamera2D camera, ClientPeer client, UserPlayer driven) : base(driven)
         {
+            _sensor = sensor;
             _camera = camera;
             _client = client;
             _pointer = pointer;
@@ -84,7 +87,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 
                 // Update camera position
                 _camera.MoveTo(this.driven.Ship.Bridge.Position);
-
+                // Update the ship's target position
+                this.driven.Ship.SetTarget(_sensor.WorldCenter - this.driven.Ship.Bridge.Body.WorldCenter);
             }
         }
         #endregion
