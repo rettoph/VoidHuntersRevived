@@ -47,9 +47,9 @@ namespace VoidHuntersRevived.Library.Scenes
             _actions = new ConcurrentQueue<NetIncomingMessage>();
         }
 
-        protected override void PreInitialize()
+        protected override void Initialize()
         {
-            base.PreInitialize();
+            base.Initialize();
 
             this.Group.Messages.TryAdd("entity:action", this.HandleNetworkEntityActionMessage);
         }

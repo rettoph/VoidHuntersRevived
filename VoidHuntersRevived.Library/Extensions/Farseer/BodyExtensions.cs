@@ -4,6 +4,7 @@ using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace VoidHuntersRevived.Library.Extensions.Farseer
@@ -14,6 +15,13 @@ namespace VoidHuntersRevived.Library.Extensions.Farseer
         public static void SetTransformIgnoreContacts(this Body body, Vector2 position, Single rotation)
         {
             body.SetTransformIgnoreContacts(ref position, rotation);
+        }
+        #endregion
+
+        #region EnabledSolid Methods
+        public static Boolean IsSolidEnabled(this Body body)
+        {
+            return body.Enabled && body.FixtureList.Any();
         }
         #endregion
 

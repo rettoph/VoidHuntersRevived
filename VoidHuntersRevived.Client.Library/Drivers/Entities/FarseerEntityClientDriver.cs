@@ -53,8 +53,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
         {
             base.Update(gameTime);
 
-            if (this.driven.Body.Enabled && this.driven.Body.FixtureList.Any())
+            if (this.driven.Body.IsSolidEnabled())
             { // If there are any fixtures within the body, attempt to lerp towards the server shadow
+                this.driven.Controller.UpdateBody(this.driven, _shadow);
+
                 var lerp = FarseerEntityClientDriver.VitalsLerpStrength * (Single)gameTime.ElapsedGameTime.TotalMilliseconds;
 
                 if (MathHelper.Distance(this.driven.Body.Rotation, _shadow.Rotation) > FarseerEntityClientDriver.RotationSnapThreshold || Vector2.Distance(this.driven.Body.Position, _shadow.Position) > FarseerEntityClientDriver.PositionSnapThreshold)

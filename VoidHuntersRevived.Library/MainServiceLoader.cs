@@ -51,6 +51,7 @@ namespace VoidHuntersRevived.Library
             entities.TryRegister<CustomController>("entity:custom-controller", "name:entity:custom-controller", "description:entity:custom-controller");
 
             entities.TryRegister<Ship>("entity:ship", "name:entity:ship", "description:entity:ship");
+            entities.TryRegister<TractorBeam>("entity:tractor-beam", "name:entity:tractor-beam", "description:entity:tractor-beam");
 
             entities.TryRegister<ShipPart>("entity:ship-part", "name:entity:ship-part", "description:entity:ship-part");
         }

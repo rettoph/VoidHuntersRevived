@@ -52,9 +52,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
             _removes = new ConcurrentQueue<Guid>();
         }
 
-        protected override void PreInitialize()
+        protected override void Initialize()
         {
-            base.PreInitialize();
+            base.Initialize();
 
             this.driven.Group.Messages.TryAdd("setup:start", (s, im) => _setup = false);
             this.driven.Group.Messages.TryAdd("setup:end", (s, im) => _setup = true);

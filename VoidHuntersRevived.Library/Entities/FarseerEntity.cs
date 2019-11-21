@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Collections;
 using VoidHuntersRevived.Library.Entities.Controllers;
+using VoidHuntersRevived.Library.Extensions.Farseer;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -80,7 +81,8 @@ namespace VoidHuntersRevived.Library.Entities
             base.Update(gameTime);
 
             // Allow the controller to manipulate the internal body if needed
-            this.Controller.UpdateBody(this, this.Body);
+            if(this.Body.IsSolidEnabled())
+                this.Controller.UpdateBody(this, this.Body);
         }
         #endregion
 
@@ -105,6 +107,22 @@ namespace VoidHuntersRevived.Library.Entities
 
                 this.Events.TryInvoke<Controller>(this, "controller:changed", this.Controller);
             }
+        }
+        #endregion
+
+        #region Network Methods
+        protected override void WriteSetup(NetOutgoingMessage om)
+        {
+            base.WriteSetup(om);
+
+            this.Body.WriteVitals(om);
+        }
+
+        protected override void ReadSetup(NetIncomingMessage im)
+        {
+            base.ReadSetup(im);
+
+            this.Body.ReadVitals(im);
         }
         #endregion
     }

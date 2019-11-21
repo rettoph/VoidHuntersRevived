@@ -48,6 +48,23 @@ namespace VoidHuntersRevived.Library.Entities
         /// The current active Direction flags.
         /// </summary>
         public Direction ActiveDirections { get; private set; }
+
+        /// <summary>
+        /// The Ship's current target. This is a position relative 
+        /// to the ship's current bridge's position.
+        /// </summary>
+        public Vector2 Target { get; private set; }
+
+        /// <summary>
+        /// The calculated world position of the ship's current
+        /// target.
+        /// </summary>
+        public Vector2 WorldTarget { get => this.Bridge.Position + this.Target; }
+
+        /// <summary>
+        /// The current ship's tractor beam.
+        /// </summary>
+        public TractorBeam TractorBeam { get; private set; }
         #endregion
 
         #region Contructor
@@ -69,6 +86,23 @@ namespace VoidHuntersRevived.Library.Entities
 
             this.Events.Register<Direction>("direction:changed");
         }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            this.TractorBeam = this.entities.Create<TractorBeam>("entity:tractor-beam", tb =>
+            {
+                tb.Ship = this;
+            });
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.TractorBeam.Dispose();
+        }
         #endregion
 
         #region Frame Methods
@@ -76,6 +110,8 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Update(gameTime);
 
+            // Update the tractor beam
+            this.TractorBeam.TryUpdate(gameTime);
             // Update the controller
             _controller.TryUpdate(gameTime);
         }
@@ -83,6 +119,9 @@ namespace VoidHuntersRevived.Library.Entities
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
+
+            // Draw the tractor beam
+            this.TractorBeam.TryDraw(gameTime);
 
             // Draw the controller
             _controller.TryDraw(gameTime);

@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Extensions.System;
+using VoidHuntersRevived.Library.Extensions.Farseer;
 using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Server.Scenes
@@ -18,6 +20,12 @@ namespace VoidHuntersRevived.Server.Scenes
             base.Initialize();
 
             this.Group.Users.Events.TryAdd<User>("added", this.HandleUserJoined);
+
+            var rand = new Random();
+            for(Int32 i=0; i<10; i++)
+            {
+                this.entities.Create<ShipPart>("entity:ship-part").Body.SetTransformIgnoreContacts(rand.NextVector2(-20, 20), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
+            }
         }
         #endregion
 
