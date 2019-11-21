@@ -24,6 +24,9 @@ namespace VoidHuntersRevived.Library.Entities
         public Body Body { get; private set; }
         public virtual Vector2 Position { get => this.Body.Position; }
         public virtual Single Rotation { get => this.Body.Rotation; }
+        public virtual Vector2 LinearVelocity { get => this.Body.LinearVelocity; }
+        public virtual Single AngularVelocity { get => this.Body.AngularVelocity; }
+        public virtual Vector2 WorldCenter { get => this.Body.WorldCenter; }
         public Controller Controller { get; private set; }
         #endregion
 
@@ -96,7 +99,7 @@ namespace VoidHuntersRevived.Library.Entities
         #region Helper Methods
         internal void SetController(Controller controller)
         {
-            if(controller != this.Controller)
+            if (controller != this.Controller)
             {
                 // Auto remove the component from its old controller
                 if (this.Controller != default(Controller))

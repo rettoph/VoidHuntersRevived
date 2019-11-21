@@ -59,17 +59,18 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
 
                 var lerp = FarseerEntityClientDriver.VitalsLerpStrength * (Single)gameTime.ElapsedGameTime.TotalMilliseconds;
 
-                if (MathHelper.Distance(this.driven.Body.Rotation, _shadow.Rotation) > FarseerEntityClientDriver.RotationSnapThreshold || Vector2.Distance(this.driven.Body.Position, _shadow.Position) > FarseerEntityClientDriver.PositionSnapThreshold)
+                if (MathHelper.Distance(this.driven.Rotation, _shadow.Rotation) > FarseerEntityClientDriver.RotationSnapThreshold || Vector2.Distance(this.driven.Position, _shadow.Position) > FarseerEntityClientDriver.PositionSnapThreshold)
                     this.driven.Body.SetTransformIgnoreContacts(
                         position: _shadow.Position, 
                         rotation: _shadow.Rotation);
                 else
                     this.driven.Body.SetTransformIgnoreContacts(
-                        position: Vector2.Lerp(this.driven.Body.Position, _shadow.Position, lerp),
-                        rotation: MathHelper.Lerp(this.driven.Body.Rotation, _shadow.Rotation, lerp));
+                        position: Vector2.Lerp(this.driven.Position, _shadow.Position, lerp),
+                        rotation: MathHelper.Lerp(this.driven.Rotation, _shadow.Rotation, lerp));
 
-                this.driven.Body.LinearVelocity = Vector2.Lerp(this.driven.Body.LinearVelocity, _shadow.LinearVelocity, lerp);
-                this.driven.Body.AngularVelocity = MathHelper.Lerp(this.driven.Body.AngularVelocity, _shadow.AngularVelocity, lerp);
+                // Update the velocity
+                this.driven.Body.LinearVelocity = Vector2.Lerp(this.driven.LinearVelocity, _shadow.LinearVelocity, lerp);
+                this.driven.Body.AngularVelocity = MathHelper.Lerp(this.driven.AngularVelocity, _shadow.AngularVelocity, lerp);
             }
         }
         #endregion

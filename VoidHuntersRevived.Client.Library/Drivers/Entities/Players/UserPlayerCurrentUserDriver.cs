@@ -88,7 +88,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
                 // Update camera position
                 _camera.MoveTo(this.driven.Ship.Bridge.Position);
                 // Update the ship's target position
-                this.driven.Ship.SetTarget(_sensor.WorldCenter - this.driven.Ship.Bridge.Body.WorldCenter);
+                this.driven.Ship.SetTarget(_sensor.WorldCenter - this.driven.Ship.Bridge.WorldCenter);
             }
         }
         #endregion
