@@ -1,12 +1,14 @@
 ﻿using Guppy;
 using Guppy.Attributes;
 using Guppy.Network.Peers;
+using Guppy.UI.Entities;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
 
@@ -22,12 +24,16 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         #region Private Fields
         private ClientPeer _client;
         private Action<GameTime> _update;
+        private FarseerCamera2D _camera;
+        private Pointer _pointer;
         #endregion
 
         #region Constructor
-        public UserPlayerCurrentUserDriver(ClientPeer client, UserPlayer driven) : base(driven)
+        public UserPlayerCurrentUserDriver(Pointer pointer, FarseerCamera2D camera, ClientPeer client, UserPlayer driven) : base(driven)
         {
+            _camera = camera;
             _client = client;
+            _pointer = pointer;
         }
         #endregion
 
@@ -39,6 +45,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             if(_client.User == this.driven.User)
             {
                 _update = this.LocalUpdate;
+                // _camera.ZoomLerp = 0.005f;
+
+                // Setup local user events
+                _pointer.Events.TryAdd<Int32>("scrolled", this.HandlePointerScrolled);
             }
             else
             {
@@ -71,6 +81,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 
                 this.UpdateDirection(Ship.Direction.Left, kState.IsKeyDown(Keys.Q));
                 this.UpdateDirection(Ship.Direction.Right, kState.IsKeyDown(Keys.E));
+
+                // Update camera position
+                _camera.MoveTo(this.driven.Ship.Bridge.Position);
+
             }
         }
         #endregion
@@ -88,6 +102,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
                 action.Write((Byte)direction);
                 action.Write(value);
             }
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandlePointerScrolled(object sender, Int32 arg)
+        { // Zoom in the camera
+            _camera.ZoomTo((Single)Math.Pow(1.5, (Single)arg / 120));
         }
         #endregion
     }
