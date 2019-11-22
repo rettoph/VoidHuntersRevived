@@ -55,6 +55,7 @@ namespace VoidHuntersRevived.Library.Entities
 
             _controller = provider.GetRequiredService<EntityCollection>().Create<CustomController>("entity:custom-controller", dc =>
             {
+                dc.OnSetupBody += this.HandleBodySetup;
                 dc.OnUpdateBody += this.HandleBodyUpdate;
             });
 
@@ -64,6 +65,22 @@ namespace VoidHuntersRevived.Library.Entities
             this.Events.Register<ShipPart>("selected");
             this.Events.Register<ShipPart>("released");
             // this.Events.Register<FemaleConnectionNode>("attached");
+        }
+        #endregion
+
+        #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            _controller.TryUpdate(gameTime);
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            _controller.TryDraw(gameTime);
         }
         #endregion
 
@@ -112,7 +129,7 @@ namespace VoidHuntersRevived.Library.Entities
         /// Attempt to select a ShipPart instance
         /// </summary>
         /// <param name="target"></param>
-        public void TrySelect(ShipPart target)
+        public Boolean TrySelect(ShipPart target)
         {
             if(target != this.Selected)
             {
@@ -126,8 +143,12 @@ namespace VoidHuntersRevived.Library.Entities
                     _controller.Add(target);
                     // Trigger the selected event
                     this.Events.TryInvoke<ShipPart>(this, "selected", this.Selected);
+
+                    return true;
                 }
             }
+
+            return false;
         }
 
         /// <summary>
@@ -137,7 +158,7 @@ namespace VoidHuntersRevived.Library.Entities
         /// chunk.
         /// </summary>
         /// <param name="controller"></param>
-        public void TryRelease(Controller controller = default(Controller))
+        public Boolean TryRelease(Controller controller = default(Controller))
         {
             if(this.Selected != default(ShipPart))
             { // Only proceed if anything is selected
@@ -147,11 +168,25 @@ namespace VoidHuntersRevived.Library.Entities
                 this.Events.TryInvoke<ShipPart>(this, "released", this.Selected);
                 // Reset the contained selected item
                 this.Selected = default(ShipPart);
+
+                return true;
             }
+
+            return false;
         }
         #endregion
 
         #region Event Handlers
+        /// <summary>
+        /// Automatically setup the body configuration
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="body"></param>
+        private void HandleBodySetup(FarseerEntity component, Body body)
+        {
+            body.BodyType = BodyType.Dynamic;
+        }
+
         /// <summary>
         /// Automatically update a bodies position every frame
         /// </summary>

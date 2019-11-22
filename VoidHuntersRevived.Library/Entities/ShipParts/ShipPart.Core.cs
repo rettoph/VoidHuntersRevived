@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             var body = base.CreateBody(world);
             body.LinearDamping = 1f;
             body.AngularDamping = 1f;
-            FixtureFactory.AttachCircle(1f, 1f, body);
+            FixtureFactory.AttachCircle(1f, 1f, body, this);
 
             return body;
         }
