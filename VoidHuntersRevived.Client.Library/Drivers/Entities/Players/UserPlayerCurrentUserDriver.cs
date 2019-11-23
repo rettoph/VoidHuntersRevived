@@ -107,7 +107,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
                 this.driven.Ship.SetDirection(direction, value);
 
                 // Create an action to relay back to the server
-                var action = this.driven.Actions.Create("direction:changed:request", NetDeliveryMethod.ReliableOrdered, 3);
+                var action = this.driven.Actions.Create("direction:change:request", NetDeliveryMethod.ReliableOrdered, 3);
                 action.Write((Byte)direction);
                 action.Write(value);
             }
@@ -123,9 +123,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 
             if (this.driven.Ship.TractorBeam.TrySelect(target))
             { // Write an action to the server...
-                var action = this.driven.Actions.Create("tractor-beam:selected:request", NetDeliveryMethod.ReliableOrdered, 3);
+                var action = this.driven.Actions.Create("tractor-beam:select:request", NetDeliveryMethod.ReliableOrdered, 3);
                 action.Write(this.driven.Ship.Target);
-                action.Write(this.driven.Ship.TractorBeam.Selected.Id);
+                action.Write(this.driven.Ship.TractorBeam.Selected);
             }
         }
 
@@ -133,7 +133,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         {
             if (this.driven.Ship.TractorBeam.TryRelease())
             { // Write a release action to the server
-                var action = this.driven.Actions.Create("tractor-beam:released:request", NetDeliveryMethod.ReliableOrdered, 3);
+                var action = this.driven.Actions.Create("tractor-beam:release:request", NetDeliveryMethod.ReliableOrdered, 3);
                 action.Write(this.driven.Ship.Target);
             }
         }

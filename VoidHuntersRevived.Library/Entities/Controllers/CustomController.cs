@@ -23,6 +23,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
         public BodyDelegate OnSetupBody { get; set; }
         public BodyDelegate OnUpdateBody { get; set; }
+        public BodyDelegate OnSetdownBody { get; set; }
         #endregion
 
         #region Lifecycle Methods

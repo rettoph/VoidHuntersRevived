@@ -92,8 +92,13 @@ namespace VoidHuntersRevived.Library.Entities
         /// <returns></returns>
         public Boolean ValidateTarget(ShipPart target)
         {
-            // if (target == default(ShipPart))
-            //     return true;
+            // Instant no...
+            if (target == default(ShipPart))
+                 return false;
+            if (target.Ship != default(Ship))
+                return false;
+
+            // Instant yes...
             // if (target.Controller is Chunk && target.IsRoot)
             //     return true;
             // if (!target.IsRoot && this.Ship.Components.Contains(target))
@@ -101,6 +106,7 @@ namespace VoidHuntersRevived.Library.Entities
             // 
             // return false;
 
+            // Default to yes
             return true;
         }
 
@@ -158,14 +164,15 @@ namespace VoidHuntersRevived.Library.Entities
         /// chunk.
         /// </summary>
         /// <param name="controller"></param>
-        public Boolean TryRelease(Controller controller = default(Controller))
+        public Boolean TryRelease()
         {
             if(this.Selected != default(ShipPart))
             { // Only proceed if anything is selected
-                // Add the selected object into the recieved controller or default to its current positional chunk
-                (controller == default(Controller) ? _chunks.Get(this.Selected) : controller).Add(this.Selected);
+                var oldSelected = this.Selected;
+                // Add the selected object into the current positional chunk
+                _chunks.AddToChunk(oldSelected);
                 // Invoke the released event
-                this.Events.TryInvoke<ShipPart>(this, "released", this.Selected);
+                this.Events.TryInvoke<ShipPart>(this, "released", oldSelected);
                 // Reset the contained selected item
                 this.Selected = default(ShipPart);
 

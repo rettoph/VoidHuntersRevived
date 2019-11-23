@@ -103,7 +103,10 @@ namespace VoidHuntersRevived.Library.Entities
             {
                 // Auto remove the component from its old controller
                 if (this.Controller != default(Controller))
+                {
                     this.Controller.Remove(this);
+                    this.Controller?.UpdateBody(this, this.Body);
+                }
 
                 this.Controller = controller;
                 this.Controller?.SetupBody(this, this.Body);

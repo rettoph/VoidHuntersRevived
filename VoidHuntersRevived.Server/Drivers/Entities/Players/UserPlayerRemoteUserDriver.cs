@@ -1,11 +1,14 @@
 ﻿using Guppy;
 using Guppy.Attributes;
+using Guppy.Collections;
+using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Server.Drivers.Entities.Players
 {
@@ -16,9 +19,14 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
     [IsDriver(typeof(UserPlayer))]
     internal sealed class UserPlayerRemoteUserDriver : Driver<UserPlayer>
     {
+        #region Private Fields
+        private EntityCollection _entities;
+        #endregion
+
         #region Constructor
-        public UserPlayerRemoteUserDriver(UserPlayer driven) : base(driven)
+        public UserPlayerRemoteUserDriver(EntityCollection entities, UserPlayer driven) : base(driven)
         {
+            _entities = entities;
         }
         #endregion
 
@@ -27,16 +35,36 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
         {
             base.Initialize();
 
-            this.driven.Actions.TryAdd("direction:changed:request", this.HandleDirectionChangedRequest);
+            this.driven.Actions.TryAdd("direction:change:request", this.HandleDirectionChangeRequest);
+            this.driven.Actions.TryAdd("tractor-beam:select:request", this.HandleTractorBeamSelectRequest);
+            this.driven.Actions.TryAdd("tractor-beam:release:request", this.HandleTractorBeamReleaseRequest);
         }
         #endregion
 
         #region Action Handlers
-        private void HandleDirectionChangedRequest(object sender, NetIncomingMessage im)
+        private void HandleDirectionChangeRequest(object sender, NetIncomingMessage im)
         {
             if (this.ValidateSender(im))
             { // If the message checks out... update the ships direction.
                 this.driven.Ship.SetDirection((Ship.Direction)im.ReadByte(), im.ReadBoolean());
+            }
+        }
+
+        private void HandleTractorBeamSelectRequest(object sender, NetIncomingMessage im)
+        {
+            if (this.ValidateSender(im))
+            { // If the message checks out...
+                this.driven.Ship.SetTarget(im.ReadVector2());
+                this.driven.Ship.TractorBeam.TrySelect(im.ReadEntity<ShipPart>(_entities));
+            }
+        }
+
+        private void HandleTractorBeamReleaseRequest(object sender, NetIncomingMessage im)
+        {
+            if (this.ValidateSender(im))
+            { // If the message checks out...
+                this.driven.Ship.SetTarget(im.ReadVector2());
+                this.driven.Ship.TractorBeam.TryRelease();
             }
         }
         #endregion

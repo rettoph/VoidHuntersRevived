@@ -27,6 +27,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
         #region Private Fields
         private ServerShadow _server;
         private Body _shadow;
+        private Controller _controller;
         #endregion
 
         #region Constructor
@@ -78,6 +79,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
         #region Event Handler
         private void HandleControllerChanged(object sender, Controller arg)
         {
+            if(_controller != default(Controller))
+            { // Invoke the entities setdown method
+                _controller.UpdateBody(this.driven, _shadow);
+                _controller = arg;
+            }
             // Auto setup the shadow body
             arg.SetupBody(this.driven, _shadow);
         }
