@@ -8,10 +8,12 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Scenes;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Security;
+using Guppy.Network.Utilitites.Delegaters;
+using xxHashSharp;
 
 namespace VoidHuntersRevived.Library.Utilities.Delegaters
 {
-    public class ActionMessageDelegater : CustomDelegater<String, NetIncomingMessage>
+    public class ActionMessageDelegater : HashedDelegater<NetIncomingMessage>
     {
         #region Private Fields
         private NetworkEntity _entity;
@@ -33,7 +35,7 @@ namespace VoidHuntersRevived.Library.Utilities.Delegaters
         {
             var om = _scene.Group.Messages.Create("entity:action", method, sequenceChannel, recipient);
             om.Write(_entity.Id);
-            om.Write(type);
+            om.Write(xxHash.CalculateHash(Encoding.UTF8.GetBytes(type)));
 
             return om;
         }
@@ -44,12 +46,11 @@ namespace VoidHuntersRevived.Library.Utilities.Delegaters
         }
         #endregion
 
-        protected override void Invoke<T>(object sender, string key, T arg)
+        protected override void Invoke<T>(object sender, UInt32 key, T arg)
         {
 #if DEBUG
             try
             {
-                _logger.LogTrace($"Action recieved: {key}");
                 base.Invoke(sender, key, arg);
             }
             catch (KeyNotFoundException e)

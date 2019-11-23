@@ -75,7 +75,7 @@ namespace VoidHuntersRevived.Library.Scenes
             // Parse any new messages
             while (_actions.Any())
                 if (_actions.TryDequeue(out _im))
-                    this.entities.GetById<NetworkEntity>(_im.ReadGuid())?.Actions.TryInvoke(this, _im.ReadString(), _im);
+                    this.entities.GetById<NetworkEntity>(_im.ReadGuid())?.Actions.TryInvoke(this, _im.ReadUInt32(), _im);
 
             // Send all group messages at this time.
             this.Group.Messages.SendAll();
