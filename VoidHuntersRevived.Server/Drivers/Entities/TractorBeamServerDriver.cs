@@ -7,6 +7,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using Guppy.Network.Extensions.Lidgren;
+using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Server.Drivers.Entities
 {
@@ -26,6 +27,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
 
             this.driven.Events.TryAdd<ShipPart>("selected", this.HandleSelected);
             this.driven.Events.TryAdd<ShipPart>("released", this.HandleReleased);
+            this.driven.Events.TryAdd<ConnectionNode>("attached", this.HandleAttached);
         }
         #endregion
 
@@ -40,6 +42,14 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
         {
             var action = this.driven.Ship.Actions.Create("tractor-beam:released", NetDeliveryMethod.ReliableUnordered, 4);
             action.Write(this.driven.Ship.Target);
+        }
+
+        private void HandleAttached(object sender, ConnectionNode arg)
+        {
+            var action = this.driven.Ship.Actions.Create("tractor-beam:attached", NetDeliveryMethod.ReliableUnordered, 4);
+            action.Write(this.driven.Ship.Target);
+            action.Write(arg.Parent);
+            action.Write(arg.Id);
         }
         #endregion
     }

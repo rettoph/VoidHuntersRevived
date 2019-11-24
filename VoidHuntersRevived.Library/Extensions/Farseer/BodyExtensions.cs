@@ -12,9 +12,9 @@ namespace VoidHuntersRevived.Library.Extensions.Farseer
     public static class BodyExtensions
     {
         #region Transform Methods
-        public static void SetTransformIgnoreContacts(this Body body, Vector2 position, Single rotation)
+        public static void SetTransformIgnoreContacts(this Body body, Vector2 position, Single angle)
         {
-            body.SetTransformIgnoreContacts(ref position, rotation);
+            body.SetTransformIgnoreContacts(ref position, angle);
         }
         #endregion
 

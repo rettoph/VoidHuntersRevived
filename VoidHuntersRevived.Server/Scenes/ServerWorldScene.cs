@@ -24,7 +24,9 @@ namespace VoidHuntersRevived.Server.Scenes
             var rand = new Random();
             for(Int32 i=0; i<10; i++)
             {
-                this.entities.Create<ShipPart>("entity:ship-part").Body.SetTransformIgnoreContacts(rand.NextVector2(-20, 20), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
+                this.entities.Create<ShipPart>("entity:ship-part:hull:triangle").Body.SetTransformIgnoreContacts(rand.NextVector2(-30, 30), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
+                this.entities.Create<ShipPart>("entity:ship-part:hull:square").Body.SetTransformIgnoreContacts(rand.NextVector2(-30, 30), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
+                this.entities.Create<ShipPart>("entity:ship-part:hull:hexagon").Body.SetTransformIgnoreContacts(rand.NextVector2(-30, 30), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
             }
         }
         #endregion
@@ -36,7 +38,7 @@ namespace VoidHuntersRevived.Server.Scenes
                 p.User = arg;
                 p.SetShip(this.entities.Create<Ship>("entity:ship", s =>
                 {
-                    s.SetBridge(this.entities.Create<ShipPart>("entity:ship-part"));
+                    s.SetBridge(this.entities.Create<ShipPart>("entity:ship-part:hull:square"));
                 }));
             });
         }

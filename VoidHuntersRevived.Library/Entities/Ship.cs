@@ -10,6 +10,8 @@ using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Collections;
 using Microsoft.Xna.Framework;
 using Microsoft.Extensions.Logging;
+using VoidHuntersRevived.Library.Utilities;
+using Guppy;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -37,6 +39,7 @@ namespace VoidHuntersRevived.Library.Entities
         #region Private Fields
         private CustomController _controller;
         private ChunkCollection _chunks;
+        private List<ConnectionNode> _openFemaleNodes;
         #endregion
 
         #region Public Properties
@@ -59,12 +62,23 @@ namespace VoidHuntersRevived.Library.Entities
         /// The calculated world position of the ship's current
         /// target.
         /// </summary>
-        public Vector2 WorldTarget { get => this.Bridge.Position + this.Target; }
+        public Vector2 WorldTarget { get => this.Bridge.WorldCenter + this.Target; }
 
         /// <summary>
         /// The current ship's tractor beam.
         /// </summary>
         public TractorBeam TractorBeam { get; private set; }
+
+        /// <summary>
+        /// A maintained enumerable of open female connection nodes within
+        /// the entire ship.
+        /// </summary>
+        public IEnumerable<ConnectionNode> OpenFemaleNodes { get => _openFemaleNodes.AsReadOnly(); }
+
+        /// <summary>
+        /// The current Ship's total size
+        /// </summary>
+        public Int32 Size { get; private set; }
         #endregion
 
         #region Contructor
@@ -79,11 +93,14 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Create(provider);
 
+            _openFemaleNodes = new List<ConnectionNode>();
             _controller = this.entities.Create<CustomController>("entity:custom-controller", dc =>
             {
                 dc.OnSetupBody += this.CustomBodySetup;
             });
 
+            this.Events.Register<ShipPart>("bridge:changed");
+            this.Events.Register<ShipPart>("bridge:chain:updated");
             this.Events.Register<Direction>("direction:changed");
             this.Events.Register<Vector2>("target:changed");
         }
@@ -96,6 +113,10 @@ namespace VoidHuntersRevived.Library.Entities
             {
                 tb.Ship = this;
             });
+
+            this.Events.TryAdd<ShipPart>("bridge:chain:updated", this.HandleBridgeChainUpdated);
+
+            this.RemapBridgeChain();
         }
 
         public override void Dispose()
@@ -153,15 +174,41 @@ namespace VoidHuntersRevived.Library.Entities
         {
             if(target != this.Bridge)
             { // Only proceed if the target is not already the current bridge...
-                // Return all internal components back into their chunks
-                while (_controller.Components.Any())
-                    _chunks.AddToChunk(_controller.Components.First());
+                // Auto release the tractor beam if possible
+                this.TractorBeam?.TryRelease();
 
-                // Add the new target into the internal controller
-                _controller.Add(target);
+                
+
+                if (this.Bridge != default(ShipPart))
+                { // If the old bridge was not null...
+                    this.Bridge.Ship = null;
+
+                    // Remove old events
+                    this.Bridge.Events.TryRemove<ShipPart.ChainUpdate>("chain:updated", this.HandleBridgeShipPartChainUpdated);
+                    this.Bridge.Events.TryRemove<Creatable>("disposing", this.HandleBridgeDisposing);
+                }
+
                 // Update the stored bridge value
                 this.Bridge = target;
-                this.Bridge.Ship = this;
+                if (this.Bridge != default(ShipPart))
+                { // If the new bridge is not null...
+                    // Return all internal components back into their chunks
+                    while (_controller.Components.Any())
+                        _chunks.AddToChunk(_controller.Components.First());
+                    // Add the new target into the internal controller
+                    _controller.Add(target);
+                    
+                    // Update the new Bridge's Ship value
+                    this.Bridge.Ship = this;
+
+                    // Add new events
+                    this.Bridge.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleBridgeShipPartChainUpdated);
+                    this.Bridge.Events.TryAdd<Creatable>("disposing", this.HandleBridgeDisposing);
+                }
+
+                // Invoke required events
+                this.Events.TryInvoke<ShipPart>(this, "bridge:changed", this.Bridge);
+                this.Events.TryInvoke<ShipPart>(this, "bridge:chain:updated", this.Bridge);
             }
         }
 
@@ -183,7 +230,65 @@ namespace VoidHuntersRevived.Library.Entities
         #region Custom Controller Handlers
         private void CustomBodySetup(FarseerEntity component, Body body)
         {
+            body.CollisionCategories = Categories.ActiveCollisionCategories;
+            body.CollidesWith = Categories.ActiveCollidesWith;
+            body.IgnoreCCDWith = Categories.ActiveIgnoreCCDWith;
             body.BodyType = BodyType.Dynamic;
+        }
+        #endregion
+
+        #region Helper Methods
+        /// <summary>
+        /// Get the closest open female connection node to a specified
+        /// world position.
+        /// </summary>
+        /// <param name="worldPosition"></param>
+        /// <param name="range">The furthest away the female node can be to be considered valid</param>
+        /// <returns></returns>
+        public ConnectionNode GetClosestOpenFemaleNode(Vector2 worldPosition, Single range = 0.75f)
+        {
+            return this.OpenFemaleNodes
+                .Where(f => Vector2.Distance(f.WorldPosition, worldPosition) <= range)
+                .OrderBy(f => Vector2.Distance(f.WorldPosition, worldPosition))
+                .FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Remap all required internal bridge chain data.
+        /// 
+        /// Such as open female node, life components, and more.
+        /// </summary>
+        private void RemapBridgeChain()
+        {
+            // Clear the connection node
+            _openFemaleNodes.Clear();
+            // Get all open female connection nodes within the bridge
+            this.Bridge?.GetOpenFemaleConnectionNodes(ref _openFemaleNodes);
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandleBridgeShipPartChainUpdated(object sender, ShipPart.ChainUpdate arg)
+        {
+            this.Events.TryInvoke<ShipPart>(this, "bridge:chain:updated", this.Bridge);
+        }
+
+        /// <summary>
+        /// When the ShipPart's chain is updated, we must remap open female nodes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="arg"></param>
+        private void HandleBridgeChainUpdated(object sender, ShipPart arg)
+        {
+            this.RemapBridgeChain();
+
+            // Cache the chains current size
+            this.Size = this.Bridge == default(ShipPart) ? 0 : this.Bridge.GetSize();
+        }
+
+        private void HandleBridgeDisposing(object sender, Creatable arg)
+        {
+            this.SetBridge(null);
         }
         #endregion
 

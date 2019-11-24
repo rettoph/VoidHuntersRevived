@@ -60,14 +60,14 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
 
                 var lerp = FarseerEntityClientDriver.VitalsLerpStrength * (Single)gameTime.ElapsedGameTime.TotalMilliseconds;
 
-                if (MathHelper.Distance(this.driven.Rotation, _shadow.Rotation) > FarseerEntityClientDriver.RotationSnapThreshold || Vector2.Distance(this.driven.Position, _shadow.Position) > FarseerEntityClientDriver.PositionSnapThreshold)
+                if (this.driven.Controller is Chunk || MathHelper.Distance(this.driven.Rotation, _shadow.Rotation) > FarseerEntityClientDriver.RotationSnapThreshold || Vector2.Distance(this.driven.Position, _shadow.Position) > FarseerEntityClientDriver.PositionSnapThreshold)
                     this.driven.Body.SetTransformIgnoreContacts(
                         position: _shadow.Position, 
-                        rotation: _shadow.Rotation);
+                        angle: _shadow.Rotation);
                 else
                     this.driven.Body.SetTransformIgnoreContacts(
                         position: Vector2.Lerp(this.driven.Position, _shadow.Position, lerp),
-                        rotation: MathHelper.Lerp(this.driven.Rotation, _shadow.Rotation, lerp));
+                        angle: MathHelper.Lerp(this.driven.Rotation, _shadow.Rotation, lerp));
 
                 // Update the velocity
                 this.driven.Body.LinearVelocity = Vector2.Lerp(this.driven.LinearVelocity, _shadow.LinearVelocity, lerp);

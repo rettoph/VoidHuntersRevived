@@ -52,7 +52,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
             _debugShadow = new DebugViewXNA(_shadow.World);
             _debugShadow.LoadContent(_graphics, _content);
 
-            _debugShadow.DefaultShapeColor = Color.Red;
+            _debugShadow.DefaultShapeColor = Color.Lerp(_debugShadow.DefaultShapeColor, Color.Red, 0.5f);
+            _debugShadow.InactiveShapeColor = Color.Lerp(_debugShadow.InactiveShapeColor, Color.Red, 0.5f);
+            _debugShadow.KinematicShapeColor = Color.Lerp(_debugShadow.KinematicShapeColor, Color.Red, 0.5f);
+            _debugShadow.SleepingShapeColor = Color.Lerp(_debugShadow.SleepingShapeColor, Color.Red, 0.5f);
+            _debugShadow.StaticShapeColor = Color.Lerp(_debugShadow.StaticShapeColor, Color.Red, 0.5f);
+            _debugShadow.TextColor = Color.Lerp(_debugShadow.TextColor, Color.Red, 0.05f);
         }
         #endregion
 

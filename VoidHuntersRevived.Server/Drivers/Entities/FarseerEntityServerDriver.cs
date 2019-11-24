@@ -9,6 +9,8 @@ using System.Text;
 using VoidHuntersRevived.Library.Entities;
 using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Extensions.Farseer;
+using VoidHuntersRevived.Library.Entities.Controllers;
+using Microsoft.Extensions.Logging;
 
 namespace VoidHuntersRevived.Server.Drivers.Entities
 {
@@ -48,9 +50,9 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
             base.Update(gameTime);
 
             // Increase the ping tracker
-            _lastVitalPing += gameTime.ElapsedGameTime.TotalMilliseconds;
+            _lastVitalPing += gameTime.ElapsedGameTime.TotalMilliseconds; 
 
-            if(this.driven.Body.IsSolidEnabled() && this.driven.Body.Awake && _lastVitalPing >= FarseerEntityServerDriver.VitalsPingRate)
+            if(this.driven.Body.IsSolidEnabled() && ((this.driven.Body.Awake && _lastVitalPing >= FarseerEntityServerDriver.VitalsPingRate) || this.driven.Controller is Chunk))
             { // Only bother sending vital pings if the body is awake & there are any fixtures...
                 var action = this.driven.Actions.Create("update:vitals", NetDeliveryMethod.UnreliableSequenced, 2);
                 this.driven.Body.WriteVitals(action);

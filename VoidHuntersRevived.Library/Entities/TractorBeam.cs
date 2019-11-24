@@ -10,6 +10,7 @@ using VoidHuntersRevived.Library.Collections;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Extensions.Farseer;
+using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -64,7 +65,7 @@ namespace VoidHuntersRevived.Library.Entities
 
             this.Events.Register<ShipPart>("selected");
             this.Events.Register<ShipPart>("released");
-            // this.Events.Register<FemaleConnectionNode>("attached");
+            this.Events.Register<ConnectionNode>("attached");
         }
         #endregion
 
@@ -92,22 +93,14 @@ namespace VoidHuntersRevived.Library.Entities
         /// <returns></returns>
         public Boolean ValidateTarget(ShipPart target)
         {
-            // Instant no...
-            if (target == default(ShipPart))
-                 return false;
-            if (target.Ship != default(Ship))
-                return false;
-
             // Instant yes...
-            // if (target.Controller is Chunk && target.IsRoot)
-            //     return true;
-            // if (!target.IsRoot && this.Ship.Components.Contains(target))
-            //     return true;
-            // 
-            // return false;
+            if (target.Controller is Chunk && target.IsRoot)
+                return true;
+            if (!target.IsRoot && target.Root.Ship?.Id == this.Ship.Id)
+                return true;
 
-            // Default to yes
-            return true;
+            // Default to no
+            return false;
         }
 
         /// <summary>
@@ -121,14 +114,12 @@ namespace VoidHuntersRevived.Library.Entities
         /// <returns></returns>
         public ShipPart FindTarget(ShipPart component)
         {
-            // if (this.ValidateTarget(component))
-            //     return component;
-            // else if (this.ValidateTarget(component?.Root))
-            //     return component.Root;
-            // else
-            //     return default(ShipPart);
-
-            return component;
+            if (this.ValidateTarget(component))
+                return component;
+            else if (this.ValidateTarget(component?.Root))
+                return component.Root;
+            else
+                return default(ShipPart);
         }
 
         /// <summary>
@@ -140,9 +131,10 @@ namespace VoidHuntersRevived.Library.Entities
             if(target != this.Selected)
             {
                 this.TryRelease();
-
+                
                 if ((target = this.FindTarget(target)) != default(ShipPart))
                 { // Only attempt anything if the recieved ship part is a valid target
+                    target.MaleConnectionNode.Detach();
                     // Detach the recieved target, if it is connected to anything
                     this.Selected = target;
                     // Add the target to the controller
@@ -169,12 +161,34 @@ namespace VoidHuntersRevived.Library.Entities
             if(this.Selected != default(ShipPart))
             { // Only proceed if anything is selected
                 var oldSelected = this.Selected;
+                // Reset the contained selected item
+                this.Selected = default(ShipPart);
                 // Add the selected object into the current positional chunk
                 _chunks.AddToChunk(oldSelected);
                 // Invoke the released event
                 this.Events.TryInvoke<ShipPart>(this, "released", oldSelected);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Attempt to attach the selected ShipPart
+        /// to the given connection node
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public Boolean TryAttach(ConnectionNode node)
+        {
+            if (this.Selected != default(ShipPart))
+            { // Only proceed if anything is selected
+                node.Attach(this.Selected.MaleConnectionNode);
                 // Reset the contained selected item
                 this.Selected = default(ShipPart);
+                // Invoke the released event
+                this.Events.TryInvoke<ConnectionNode>(this, "attached", node);
 
                 return true;
             }
@@ -191,6 +205,9 @@ namespace VoidHuntersRevived.Library.Entities
         /// <param name="body"></param>
         private void HandleBodySetup(FarseerEntity component, Body body)
         {
+            body.CollisionCategories = Categories.PassiveCollisionCategories;
+            body.CollidesWith = Categories.PassiveCollidesWith;
+            body.IgnoreCCDWith = Categories.PassiveIgnoreCCDWith;
             body.BodyType = BodyType.Dynamic;
         }
 
@@ -201,7 +218,29 @@ namespace VoidHuntersRevived.Library.Entities
         /// <param name="body"></param>
         private void HandleBodyUpdate(FarseerEntity component, Body body)
         {
-            body.SetTransformIgnoreContacts(this.Position, body.Rotation);
+            // Only update the position if its the root most piece
+            if((component as ShipPart).IsRoot)
+            {
+                var node = this.Ship.GetClosestOpenFemaleNode(this.Position);
+
+                if (node == default(ConnectionNode) || this.Selected == default(ShipPart))
+                { // If there is no valid female node...
+                    // Just move to where the target is...
+                    body.SetTransformIgnoreContacts(
+                        position: this.Position - Vector2.Transform(body.LocalCenter, Matrix.CreateRotationZ(body.Rotation)),
+                        angle: body.Rotation);
+                }
+                else
+                { // If there is a valid female node...
+                    // Rather than creating the attachment, we just want to move the selection
+                    // so that a user can preview what it would look like when attached.
+                    var previewRotation = node.WorldRotation - this.Selected.MaleConnectionNode.LocalRotation;
+                    // Update the preview position
+                    body.SetTransformIgnoreContacts(
+                        position: node.WorldPosition - Vector2.Transform(this.Selected.MaleConnectionNode.LocalPosition, Matrix.CreateRotationZ(previewRotation)),
+                        angle: previewRotation);
+                }
+            }
         }
         #endregion
     }

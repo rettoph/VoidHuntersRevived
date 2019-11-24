@@ -27,6 +27,7 @@ namespace VoidHuntersRevived.Library.Entities
         public virtual Vector2 LinearVelocity { get => this.Body.LinearVelocity; }
         public virtual Single AngularVelocity { get => this.Body.AngularVelocity; }
         public virtual Vector2 WorldCenter { get => this.Body.WorldCenter; }
+        public virtual Vector2 LocalCenter { get => this.Body.LocalCenter; }
         public Controller Controller { get; private set; }
         #endregion
 
@@ -75,6 +76,7 @@ namespace VoidHuntersRevived.Library.Entities
             base.Dispose();
 
             this.Body.Dispose();
+            this.SetController(null);
         }
         #endregion
 

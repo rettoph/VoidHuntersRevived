@@ -7,6 +7,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Collections;
 using VoidHuntersRevived.Library.Structs;
 using VoidHuntersRevived.Library.Extensions.Farseer;
+using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.Entities.Controllers
 {
@@ -60,6 +61,9 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             body.SetTransformIgnoreContacts(component.Position, component.Rotation);
             body.LinearVelocity = Vector2.Zero;
             body.AngularVelocity = 0;
+            body.CollisionCategories = Categories.PassiveCollisionCategories;
+            body.CollidesWith = Categories.PassiveCollidesWith;
+            body.IgnoreCCDWith = Categories.PassiveIgnoreCCDWith;
             body.BodyType = BodyType.Static;
         }
         #endregion

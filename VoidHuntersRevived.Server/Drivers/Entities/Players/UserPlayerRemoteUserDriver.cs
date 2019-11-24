@@ -38,6 +38,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
             this.driven.Actions.TryAdd("direction:change:request", this.HandleDirectionChangeRequest);
             this.driven.Actions.TryAdd("tractor-beam:select:request", this.HandleTractorBeamSelectRequest);
             this.driven.Actions.TryAdd("tractor-beam:release:request", this.HandleTractorBeamReleaseRequest);
+            this.driven.Actions.TryAdd("tractor-beam:attach:request", this.HandleTractorBeamAttachRequest);
         }
         #endregion
 
@@ -65,6 +66,16 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
             { // If the message checks out...
                 this.driven.Ship.SetTarget(im.ReadVector2());
                 this.driven.Ship.TractorBeam.TryRelease();
+            }
+        }
+
+        private void HandleTractorBeamAttachRequest(object sender, NetIncomingMessage im)
+        {
+            if (this.ValidateSender(im))
+            { // If the message checks out...
+                this.driven.Ship.SetTarget(im.ReadVector2());
+                this.driven.Ship.TractorBeam.TryAttach(
+                    node: im.ReadEntity<ShipPart>(_entities).FemaleConnectionNodes[im.ReadInt32()]);
             }
         }
         #endregion

@@ -36,6 +36,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
 
             this.driven.Ship.Actions.TryAdd("tractor-beam:selected", this.HandleSelectedAction);
             this.driven.Ship.Actions.TryAdd("tractor-beam:released", this.HandleReleasedAction);
+            this.driven.Ship.Actions.TryAdd("tractor-beam:attached", this.HandleAttachedAction);
         }
         #endregion
 
@@ -43,12 +44,19 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
         private void HandleSelectedAction(object sender, NetIncomingMessage im)
         {
             this.driven.Ship.SetTarget(im.ReadVector2());
-            this.driven.Ship.TractorBeam.TrySelect(im.ReadEntity<ShipPart>(_entities));
+            this.driven.TrySelect(im.ReadEntity<ShipPart>(_entities));
         }
         private void HandleReleasedAction(object sender, NetIncomingMessage im)
         {
             this.driven.Ship.SetTarget(im.ReadVector2());
-            this.driven.Ship.TractorBeam.TryRelease();
+            this.driven.TryRelease();
+        }
+
+        private void HandleAttachedAction(object sender, NetIncomingMessage im)
+        {
+            this.driven.Ship.SetTarget(im.ReadVector2());
+            this.driven.TryAttach(
+                node: im.ReadEntity<ShipPart>(_entities).FemaleConnectionNodes[im.ReadInt32()]);
         }
         #endregion
     }

@@ -15,6 +15,7 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using Guppy.Network.Extensions.Lidgren;
+using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 {
@@ -91,7 +92,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
                 this.TryUpdateDirection(Ship.Direction.Right, kState.IsKeyDown(Keys.E));
 
                 // Update camera position
-                _camera.MoveTo(this.driven.Ship.Bridge.Position);
+                _camera.MoveTo(this.driven.Ship.Bridge.WorldCenter);
                 // Update the ship's target position
                 this.driven.Ship.SetTarget(_sensor.WorldCenter - this.driven.Ship.Bridge.WorldCenter);
             }
@@ -131,11 +132,27 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 
         private void TryReleaseTractorBeam()
         {
-            if (this.driven.Ship.TractorBeam.TryRelease())
-            { // Write a release action to the server
-                var action = this.driven.Actions.Create("tractor-beam:release:request", NetDeliveryMethod.ReliableOrdered, 3);
-                action.Write(this.driven.Ship.Target);
+            var node = this.driven.Ship.GetClosestOpenFemaleNode(this.driven.Ship.TractorBeam.Position);
+
+            if(node == default(ConnectionNode))
+            { // If there is no valid connection node in range...
+                if (this.driven.Ship.TractorBeam.TryRelease())
+                { // Write a release action to the server
+                    var action = this.driven.Actions.Create("tractor-beam:release:request", NetDeliveryMethod.ReliableOrdered, 3);
+                    action.Write(this.driven.Ship.Target);
+                }
             }
+            else
+            { // If there is a valid connection node in range...
+                if (this.driven.Ship.TractorBeam.TryAttach(node))
+                { // Write a release action to the server
+                    var action = this.driven.Actions.Create("tractor-beam:attach:request", NetDeliveryMethod.ReliableOrdered, 3);
+                    action.Write(this.driven.Ship.Target);
+                    action.Write(node.Parent);
+                    action.Write(node.Id);
+                }
+            }
+
         }
         #endregion
 
