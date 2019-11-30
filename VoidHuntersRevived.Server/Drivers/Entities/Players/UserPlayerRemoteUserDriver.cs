@@ -56,7 +56,10 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
             if (this.ValidateSender(im))
             { // If the message checks out...
                 this.driven.Ship.SetTarget(im.ReadVector2());
-                this.driven.Ship.TractorBeam.TrySelect(im.ReadEntity<ShipPart>(_entities));
+                if(!this.driven.Ship.TractorBeam.TrySelect(im.ReadEntity<ShipPart>(_entities)))
+                { // If the tractor beam is unable to select...
+                    this.driven.Ship.Actions.Create("tractor-beam:select:request:denied", NetDeliveryMethod.ReliableOrdered, 4, im.SenderConnection); ;
+                }
             }
         }
 
@@ -65,7 +68,10 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
             if (this.ValidateSender(im))
             { // If the message checks out...
                 this.driven.Ship.SetTarget(im.ReadVector2());
-                this.driven.Ship.TractorBeam.TryRelease();
+                if(!this.driven.Ship.TractorBeam.TryRelease())
+                { // If the tractor beam is unable to release...
+                    this.driven.Ship.Actions.Create("tractor-beam:release:request:denied", NetDeliveryMethod.ReliableOrdered, 4, im.SenderConnection); ;
+                }
             }
         }
 
@@ -74,8 +80,10 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
             if (this.ValidateSender(im))
             { // If the message checks out...
                 this.driven.Ship.SetTarget(im.ReadVector2());
-                this.driven.Ship.TractorBeam.TryAttach(
-                    node: im.ReadEntity<ShipPart>(_entities).FemaleConnectionNodes[im.ReadInt32()]);
+                if(!this.driven.Ship.TractorBeam.TryAttach(im.ReadEntity<ShipPart>(_entities).FemaleConnectionNodes[im.ReadInt32()]))
+                { // If the tractor beam is unable to attach
+                    this.driven.Ship.Actions.Create("tractor-beam:select:attach:denied", NetDeliveryMethod.ReliableOrdered, 4, im.SenderConnection); ;
+                }
             }
         }
         #endregion
