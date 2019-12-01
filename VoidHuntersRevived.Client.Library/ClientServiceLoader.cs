@@ -17,12 +17,21 @@ namespace VoidHuntersRevived.Client.Library
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<SpriteManager>();
             services.AddScoped<ServerShadow>();
             services.AddScoped<Sensor>(p => p.GetRequiredService<EntityCollection>().Create<Sensor>("entity:sensor"));
         }
 
         public void ConfigureProvider(IServiceProvider provider)
         {
+            var content = provider.GetRequiredService<ContentLoader>();
+
+            #region Register ShipPart Textures
+            content.TryRegister("texture:entity:ship-part:hull:triangle", "Sprites/entity_ship-part_hull_triangle");
+            content.TryRegister("texture:entity:ship-part:hull:square", "Sprites/entity_ship-part_hull_square");
+            content.TryRegister("texture:entity:ship-part:hull:hexagon", "Sprites/entity_ship-part_hull_hexagon");
+            #endregion
+
             var entities = provider.GetRequiredService<EntityLoader>();
 
             entities.TryRegister<Sensor>("entity:sensor", "name:entity:sensor", "description:entity:sensor");

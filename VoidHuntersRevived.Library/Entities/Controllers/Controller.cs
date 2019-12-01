@@ -1,5 +1,6 @@
 ﻿using FarseerPhysics.Dynamics;
 using Guppy;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +18,12 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
     {
         #region Private Fields
         private HashSet<FarseerEntity> _components;
+        private Queue<FarseerEntity> _added;
         #endregion
 
-        #region Publid Properties
+        #region Public Properties
         public IReadOnlyCollection<FarseerEntity> Components { get => _components; }
+        public Boolean Dirty { get; protected set; }
         #endregion
 
         #region Lifecycle Methods
@@ -29,6 +32,9 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             base.Create(provider);
 
             _components = new HashSet<FarseerEntity>();
+            _added = new Queue<FarseerEntity>();
+
+            this.Events.Register<GameTime>("cleaned");
         }
 
         public override void Dispose()
@@ -38,6 +44,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             // Auto remove any remaining components
             while (_components.Any())
                 this.Remove(_components.First());
+
+            _added.Clear();
         }
         #endregion
 
@@ -67,15 +75,40 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             //
         }
+
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            this.TryClean(gameTime);
+        }
         #endregion
 
         #region Helper Methods
+        /// <summary>
+        /// Clean the current chunk
+        /// </summary>
+        private void TryClean(GameTime gameTime)
+        {
+            if (this.Dirty)
+            { // Clean the chunk if dirty
+                while (_added.Any()) // Auto update new components once
+                    _added.Dequeue().TryUpdate(gameTime);
+
+                this.Events.TryInvoke<GameTime>(this, "cleaned", gameTime);
+
+                this.Dirty = false;
+            }
+        }
+
         public virtual Boolean Add(FarseerEntity entity)
         {
             if(_components.Add(entity))
             {
+                _added.Enqueue(entity);
                 entity.SetController(this);
                 entity.Events.TryAdd<Creatable>("disposing", this.HandleComponentDisposing);
+                this.Dirty = true;
 
                 return true;
             }
@@ -88,6 +121,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             if(_components.Remove(entity))
             {
                 entity.Events.TryRemove<Creatable>("disposing", this.HandleComponentDisposing);
+                this.Dirty = true;
 
                 return true;
             }

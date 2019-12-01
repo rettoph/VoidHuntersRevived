@@ -30,8 +30,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public override Vector2 Position { get => this.IsRoot ? base.Position : this.Root.Position + Vector2.Transform(Vector2.Zero, this.LocalTransformation * Matrix.CreateRotationZ(this.Root.Rotation)); }
         public override Single Rotation { get => this.IsRoot ? base.Rotation : this.Root.Rotation + this.LocalRotation; }
 
-        public override Vector2 WorldCenter { get => this.IsRoot ? base.WorldCenter : this.Root.Position + Vector2.Transform(this.LocalCenter, this.LocalTransformation * Matrix.CreateRotationZ(this.Root.Rotation)); }
-        public override Vector2 LocalCenter { get => this.IsRoot ? base.LocalCenter : this.Configuration.GetData<ShipPartConfiguration>().Centeroid; }
+        public override Vector2 WorldCenter { get => this.Root.Position + Vector2.Transform(this.LocalCenter, this.LocalTransformation * Matrix.CreateRotationZ(this.Root.Rotation)); }
+        public override Vector2 LocalCenter { get => this.Configuration.GetData<ShipPartConfiguration>().Centeroid; }
         #endregion
 
         #region Lifecycle Methods

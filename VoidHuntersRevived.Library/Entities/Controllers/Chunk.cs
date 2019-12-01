@@ -8,6 +8,7 @@ using VoidHuntersRevived.Library.Collections;
 using VoidHuntersRevived.Library.Structs;
 using VoidHuntersRevived.Library.Extensions.Farseer;
 using VoidHuntersRevived.Library.Utilities;
+using Guppy.Extensions.Collection;
 
 namespace VoidHuntersRevived.Library.Entities.Controllers
 {
@@ -22,12 +23,13 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
     public sealed class Chunk : Controller
     {
         #region Static Properties
-        internal static Single Size { get; private set; } = 16;
-        private static GameTime EmptyGameTime { get; set; } = new GameTime();
+        public static Single Size { get; private set; } = 16;
+        public static GameTime EmptyGameTime { get; private set; } = new GameTime();
         #endregion
 
         #region Private Fields
         private ChunkCollection _chunks;
+        private IEnumerable<Chunk> _surrounding;
         #endregion
 
         #region Public Properties
@@ -45,9 +47,9 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #region Lifecycle Methods
         protected override void Initialize()
         {
-            base.Initialize();
-
             this.Bounds = new RectangleF(this.Position.X, this.Position.Y, Chunk.Size, Chunk.Size);
+
+            base.Initialize();
         }
         #endregion
 
@@ -73,10 +75,9 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             if(this.Bounds.Contains(entity.Position.X, entity.Position.Y))
             { // If the entity resides within the current chunk...
-                if (base.Add(entity))
+                if(base.Add(entity))
                 {
-                    // Auto update the entity one last time
-                    entity.TryUpdate(Chunk.EmptyGameTime);
+                    this.GetSurrounding().ForEach(c => c.Dirty = true);
                     return true;
                 }
             }
@@ -87,6 +88,44 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             }
 
             return false;
+        }
+
+        public override bool Remove(FarseerEntity entity)
+        {
+            if(base.Remove(entity))
+            {
+                this.GetSurrounding().ForEach(c => c.Dirty = true);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Get all chunks surrounding the current chunk.
+        /// This does not include the current chunk
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Chunk> GetSurrounding()
+        {
+            if (_surrounding == default(IEnumerable<Chunk>))
+            {
+                var list = new List<Chunk>();
+                list.Add(_chunks.Get(this.Position.X + Chunk.Size, this.Position.Y + Chunk.Size));
+                list.Add(_chunks.Get(this.Position.X + 0, this.Position.Y + Chunk.Size));
+                list.Add(_chunks.Get(this.Position.X - Chunk.Size, this.Position.Y + Chunk.Size));
+
+                list.Add(_chunks.Get(this.Position.X - Chunk.Size, this.Position.Y + 0));
+                list.Add(_chunks.Get(this.Position.X + Chunk.Size, this.Position.Y + 0));
+
+                list.Add(_chunks.Get(this.Position.X + Chunk.Size, this.Position.Y - Chunk.Size));
+                list.Add(_chunks.Get(this.Position.X + 0, this.Position.Y - Chunk.Size));
+                list.Add(_chunks.Get(this.Position.X - Chunk.Size, this.Position.Y - Chunk.Size));
+
+                _surrounding = list;
+            }
+
+            return _surrounding;
         }
         #endregion
     }

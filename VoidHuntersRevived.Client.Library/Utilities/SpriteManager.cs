@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VoidHuntersRevived.Library.Utilities
+namespace VoidHuntersRevived.Client.Library.Utilities
 {
     /// <summary>
     /// Simple class used to render sprites within the farseer
@@ -22,6 +22,7 @@ namespace VoidHuntersRevived.Library.Utilities
         private Boolean _textureLoaded;
         private Vector2 _origin;
         private Vector3 _position;
+        private Vector2 _scale;
 
         public SpriteManager(SpriteBatch spriteBatch, ContentLoader content)
         {
@@ -47,10 +48,15 @@ namespace VoidHuntersRevived.Library.Utilities
                 _textureLoaded = true;
                 _origin = Vector2.Zero;
 
-                Vector2 min = ConvertUnits.ToDisplayUnits(new Vector2(vertices.Min(v => v.X), vertices.Min(v => v.Y)));
-                Vector2 max = ConvertUnits.ToDisplayUnits(new Vector2(vertices.Max(v => v.X), vertices.Max(v => v.Y)));
-                Vector2 center = (min + max) / 2;
+                Vector2 min = new Vector2(vertices.Min(v => v.X), vertices.Min(v => v.Y));
+                Vector2 max = new Vector2(vertices.Max(v => v.X), vertices.Max(v => v.Y));
+                
+                // Calculate the relative scale
+                _scale = new Vector2(
+                    x: MathHelper.Distance(max.X, min.X) / (_texture.Width - 1),
+                    y: MathHelper.Distance(max.Y, min.Y) / (_texture.Height - 1));
 
+                Vector2 center = (min + max) * (Vector2.One / _scale) / 2;
                 _origin = (new Vector2(_texture.Width, _texture.Height) / 2) - center;
             }
         }
@@ -75,7 +81,7 @@ namespace VoidHuntersRevived.Library.Utilities
                     color: color,
                     rotation: rotation,
                     origin: _origin,
-                    scale: 0.01f,
+                    scale: _scale,
                     effects: SpriteEffects.None,
                     layerDepth: 0);
         }

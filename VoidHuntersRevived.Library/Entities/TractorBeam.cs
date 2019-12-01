@@ -227,7 +227,7 @@ namespace VoidHuntersRevived.Library.Entities
                 { // If there is no valid female node...
                     // Just move to where the target is...
                     body.SetTransformIgnoreContacts(
-                        position: this.Position - Vector2.Transform(body.LocalCenter, Matrix.CreateRotationZ(body.Rotation)),
+                        position: this.Position - Vector2.Transform(component.LocalCenter, Matrix.CreateRotationZ(body.Rotation)),
                         angle: body.Rotation);
                 }
                 else

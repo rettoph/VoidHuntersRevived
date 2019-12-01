@@ -61,18 +61,16 @@
   <ItemGroup>
     <Compile Include="Attributes\IsTextureGeneratorAttribute.cs" />
     <Compile Include="Extensions\Drawing\GraphicsExtensions.cs" />
-    <Compile Include="TextureGenerators\TextureGenerator.cs" />
-    <Compile Include="TextureGenerators\ShipPartTextureGenerator.cs" />
     <Compile Include="Extensions\Farseer\VerticesExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TextureGenerators\WeaponBarrelTextureGenerator.cs" />
+    <Compile Include="TextureGenerators\ShipPartTextureGenerator.cs" />
+    <Compile Include="TextureGenerators\TextureGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Submodules\FarseerPhysics\FarseerPhysics.MonoGame.DebugView\FarseerPhysics.MonoGame.DebugView.csproj">

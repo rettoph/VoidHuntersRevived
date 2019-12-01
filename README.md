@@ -8,4 +8,3 @@ These are events triggered by Guppy but specific to this game. Events can be bou
 | ------- | ----- | ----- | --- | ----------- |
 | | | | | |
 | `VoidHuntersRevived.Library` | `FarseerEntity` | `controller:chainged` | `IController` | Invoked when the SetController method is called. |
-
