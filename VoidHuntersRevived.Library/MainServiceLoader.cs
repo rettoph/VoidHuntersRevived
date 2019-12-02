@@ -1,4 +1,5 @@
-﻿using FarseerPhysics.Dynamics;
+﻿using FarseerPhysics;
+using FarseerPhysics.Dynamics;
 using Guppy.Attributes;
 using Guppy.Collections;
 using Guppy.Factories;
@@ -27,6 +28,8 @@ namespace VoidHuntersRevived.Library
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            Settings.MaxPolygonVertices = 16;
+
             services.AddScoped<World>(p => new World(Vector2.Zero));
             services.AddScoped<ChunkCollection>();
 
@@ -94,6 +97,38 @@ namespace VoidHuntersRevived.Library
                 nameHandle: "name:entity:ship-part:hull:hexagon",
                 descriptionHandle: "description:entity:ship-part:hull:hexagon",
                 data: hexagon);
+            #endregion
+
+            #endregion
+
+            #region Chassis
+
+            #region Mosquito
+            // Create mosquito chassis
+            var mosquito = new ShipPartConfiguration();
+            mosquito.AddNode(Vector2.Zero, 0, ShipPartConfiguration.NodeType.Male);
+            mosquito.AddSide(MathHelper.ToRadians(180), ShipPartConfiguration.NodeType.None);
+            mosquito.AddSide(MathHelper.ToRadians(120), ShipPartConfiguration.NodeType.Female);
+            mosquito.AddSide(MathHelper.ToRadians(120), ShipPartConfiguration.NodeType.Female);
+            mosquito.AddSide(MathHelper.ToRadians(120), ShipPartConfiguration.NodeType.Female);
+            mosquito.AddSide(MathHelper.ToRadians(180), ShipPartConfiguration.NodeType.Female);
+            mosquito.AddSide(MathHelper.ToRadians(120), ShipPartConfiguration.NodeType.Female);
+            mosquito.AddSide(MathHelper.ToRadians(120), ShipPartConfiguration.NodeType.Female);
+            mosquito.AddSide(MathHelper.ToRadians(120), ShipPartConfiguration.NodeType.None);
+            mosquito.Rotate(MathHelper.ToRadians(90));
+            mosquito.Flush();
+            mosquito.AddSide(MathHelper.ToRadians(180), ShipPartConfiguration.NodeType.Female);
+            mosquito.AddSide(MathHelper.ToRadians(150), ShipPartConfiguration.NodeType.Female);
+            mosquito.AddSide(MathHelper.ToRadians(120), ShipPartConfiguration.NodeType.Female);
+            mosquito.AddSide(MathHelper.ToRadians(120), ShipPartConfiguration.NodeType.Female);
+            mosquito.AddSide(MathHelper.ToRadians(150), ShipPartConfiguration.NodeType.Female);
+            mosquito.Transform(Matrix.CreateTranslation(0, -1, 0));
+            mosquito.Flush();
+            entities.TryRegister<RigidShipPart>(
+                "entity:ship-part:chassis:mosquito",
+                "name:entity:ship-part:chassis:mosquito",
+                "description:entity:ship-part:chassis",
+                mosquito);
             #endregion
 
             #endregion

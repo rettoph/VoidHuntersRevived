@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Server.Scenes
                 p.User = arg;
                 p.SetShip(this.entities.Create<Ship>("entity:ship", s =>
                 {
-                    s.SetBridge(this.entities.Create<ShipPart>("entity:ship-part:hull:square"));
+                    s.SetBridge(this.entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
                 }));
             });
         }
