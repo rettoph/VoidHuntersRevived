@@ -27,6 +27,7 @@ namespace VoidHuntersRevived.Server.Scenes
                 this.entities.Create<ShipPart>("entity:ship-part:hull:triangle").Body.SetTransformIgnoreContacts(rand.NextVector2(-30, 30), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
                 this.entities.Create<ShipPart>("entity:ship-part:hull:square").Body.SetTransformIgnoreContacts(rand.NextVector2(-30, 30), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
                 this.entities.Create<ShipPart>("entity:ship-part:hull:hexagon").Body.SetTransformIgnoreContacts(rand.NextVector2(-30, 30), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
+                this.entities.Create<ShipPart>("entity:ship-part:thruster:small").Body.SetTransformIgnoreContacts(rand.NextVector2(-30, 30), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
             }
         }
         #endregion

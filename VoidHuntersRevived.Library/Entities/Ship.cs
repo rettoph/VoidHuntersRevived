@@ -27,6 +27,7 @@ namespace VoidHuntersRevived.Library.Entities
         [Flags]
         public enum Direction
         {
+            None = 0,
             Forward = 1,
             Right = 2,
             Backward = 4,

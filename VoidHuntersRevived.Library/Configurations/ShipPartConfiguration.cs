@@ -71,6 +71,10 @@ namespace VoidHuntersRevived.Library.Configurations
         {
             _verticeBuffer.Add(vertice);
         }
+        public void AddVertice(Single x, Single y)
+        {
+            this.AddVertice(new Vector2(x, y));
+        }
 
         /// <summary>
         /// Remove the most recent vertice, and optionally the most recent 
@@ -101,6 +105,10 @@ namespace VoidHuntersRevived.Library.Configurations
                 if (type.HasFlag(NodeType.Female))
                     _femaleBuffer.Add(configuration);
             }
+        }
+        public void AddNode(Single x, Single y, Single rotation, NodeType type)
+        {
+            this.AddNode(new Vector2(x, y), rotation, type);
         }
 
         public ShipPartConfiguration Flush()

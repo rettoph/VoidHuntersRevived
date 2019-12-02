@@ -16,6 +16,7 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Utilities.Delegaters;
 
@@ -95,6 +96,22 @@ namespace VoidHuntersRevived.Library
                 data: hexagon);
             #endregion
 
+            #endregion
+
+            #region Thrusters
+            var thruster = new ShipPartConfiguration();
+            thruster.AddVertice(-0.1f, -0.3f);
+            thruster.AddVertice(-0.1f, 0.3f);
+            thruster.AddVertice(0.4f, 0.1f);
+            thruster.AddVertice(0.4f, -0.1f);
+            thruster.AddNode(0.3f, 0, 0, ShipPartConfiguration.NodeType.Male);
+            thruster.Flush();
+
+            entities.TryRegister<Thruster>(
+                handle: "entity:ship-part:thruster:small",
+                nameHandle: "name:entity:ship-part:thruster:small",
+                descriptionHandle: "description:entity:ship-part:thruster:small",
+                data: thruster);
             #endregion
             #endregion
         }

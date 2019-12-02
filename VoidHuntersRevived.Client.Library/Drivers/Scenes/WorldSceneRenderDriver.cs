@@ -69,7 +69,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
             // Clear the graphics device
             _graphics.Clear(Color.Black);
 
-            // _debugShadow.RenderDebugData(_camera.Projection, _camera.View);
+            _debugShadow.RenderDebugData(_camera.Projection, _camera.View);
             // _debug.RenderDebugData(_camera.Projection, _camera.View);
         }
         #endregion

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Collections;
+using VoidHuntersRevived.Library.Configurations;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Extensions.Farseer;
@@ -227,7 +228,7 @@ namespace VoidHuntersRevived.Library.Entities
                 { // If there is no valid female node...
                     // Just move to where the target is...
                     body.SetTransformIgnoreContacts(
-                        position: this.Position - Vector2.Transform(component.LocalCenter, Matrix.CreateRotationZ(body.Rotation)),
+                        position: this.Position - Vector2.Transform(component.Configuration.GetData<ShipPartConfiguration>().Centeroid, Matrix.CreateRotationZ(body.Rotation)),
                         angle: body.Rotation);
                 }
                 else

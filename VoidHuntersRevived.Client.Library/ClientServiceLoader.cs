@@ -30,6 +30,8 @@ namespace VoidHuntersRevived.Client.Library
             content.TryRegister("texture:entity:ship-part:hull:triangle", "Sprites/entity_ship-part_hull_triangle");
             content.TryRegister("texture:entity:ship-part:hull:square", "Sprites/entity_ship-part_hull_square");
             content.TryRegister("texture:entity:ship-part:hull:hexagon", "Sprites/entity_ship-part_hull_hexagon");
+
+            content.TryRegister("texture:entity:ship-part:thruster:small", "Sprites/entity_ship-part_thruster_small");
             #endregion
 
             var entities = provider.GetRequiredService<EntityLoader>();
