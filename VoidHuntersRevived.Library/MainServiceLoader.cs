@@ -17,6 +17,7 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Utilities.Delegaters;
@@ -68,7 +69,7 @@ namespace VoidHuntersRevived.Library
             triangle.AddPolygon(3);
             triangle.Flush();
 
-            entities.TryRegister<RigidShipPart>(
+            entities.TryRegister<Hull>(
                 handle: "entity:ship-part:hull:triangle",
                 nameHandle: "name:entity:ship-part:hull:triangle", 
                 descriptionHandle: "description:entity:ship-part:hull:triangle", 
@@ -80,7 +81,7 @@ namespace VoidHuntersRevived.Library
             square.AddPolygon(4);
             square.Flush();
 
-            entities.TryRegister<RigidShipPart>(
+            entities.TryRegister<Hull>(
                 handle: "entity:ship-part:hull:square",
                 nameHandle: "name:entity:ship-part:hull:square",
                 descriptionHandle: "description:entity:ship-part:hull:square",
@@ -92,7 +93,7 @@ namespace VoidHuntersRevived.Library
             hexagon.AddPolygon(6);
             hexagon.Flush();
 
-            entities.TryRegister<RigidShipPart>(
+            entities.TryRegister<Hull>(
                 handle: "entity:ship-part:hull:hexagon",
                 nameHandle: "name:entity:ship-part:hull:hexagon",
                 descriptionHandle: "description:entity:ship-part:hull:hexagon",
@@ -124,7 +125,7 @@ namespace VoidHuntersRevived.Library
             mosquito.AddSide(MathHelper.ToRadians(150), ShipPartConfiguration.NodeType.Female);
             mosquito.Transform(Matrix.CreateTranslation(0, -1, 0));
             mosquito.Flush();
-            entities.TryRegister<RigidShipPart>(
+            entities.TryRegister<Hull>(
                 "entity:ship-part:chassis:mosquito",
                 "name:entity:ship-part:chassis:mosquito",
                 "description:entity:ship-part:chassis",

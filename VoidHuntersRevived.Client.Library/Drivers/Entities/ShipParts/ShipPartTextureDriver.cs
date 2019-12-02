@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Library.Configurations;
+using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
@@ -44,7 +45,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
         {
             base.Draw(gameTime);
 
-            _sprite.Draw(this.driven.Position, this.driven.Rotation, new Color(1, 142, 238, 100));
+            _sprite.Draw(
+                position: this.driven.Position, 
+                rotation: this.driven.Rotation, 
+                color: new Color(this.driven.Color, 200));
         }
         #endregion
     }

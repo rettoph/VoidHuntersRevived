@@ -24,5 +24,9 @@
     <ProjectReference Include="..\Submodules\Guppy\Guppy\Guppy.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Library\VoidHuntersRevived.Library.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Layers\" />
+  </ItemGroup>
 
 </Project>

@@ -28,6 +28,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         {
             base.Initialize();
 
+            this.DefaultColor = Color.ForestGreen;
+
             this.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleChainUpdated);
         }
         #endregion

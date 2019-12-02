@@ -21,6 +21,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
     /// </summary>
     public partial class ShipPart : FarseerEntity
     {
+        #region Protected Properties
+        protected Color DefaultColor { get; set; } = Color.Orange;
+        #endregion
+
         #region Public Propterties
         public Ship Ship { get; set; }
         public ShipPart Root { get => this.IsRoot ? this : this.Parent.Root; }
@@ -32,6 +36,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
         public override Vector2 WorldCenter { get => this.Root.Position + Vector2.Transform(this.LocalCenter, Matrix.CreateRotationZ(this.Root.Rotation)); }
         public override Vector2 LocalCenter { get => this.IsRoot ? this.Body.LocalCenter : Vector2.Transform(this.Configuration.GetData<ShipPartConfiguration>().Centeroid, this.LocalTransformation); }
+        
+        public Color Color { get => this.Root.Ship == default(Ship) ? this.Root.DefaultColor : new Color(1, 142, 238); }
         #endregion
 
         #region Lifecycle Methods

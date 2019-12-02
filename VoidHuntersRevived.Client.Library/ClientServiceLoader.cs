@@ -26,6 +26,10 @@ namespace VoidHuntersRevived.Client.Library
         {
             var content = provider.GetRequiredService<ContentLoader>();
 
+            content.TryRegister("sprite:background:1", "Sprites/background-1");
+            content.TryRegister("sprite:background:2", "Sprites/background-2");
+            content.TryRegister("sprite:background:3", "Sprites/background-3");
+
             #region Register ShipPart Textures
             content.TryRegister("texture:entity:ship-part:hull:triangle", "Sprites/entity_ship-part_hull_triangle");
             content.TryRegister("texture:entity:ship-part:hull:square", "Sprites/entity_ship-part_hull_square");

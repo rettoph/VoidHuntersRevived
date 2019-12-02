@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
     /// Represents a ShipPart that transplants it's fixtures
     /// directly onto the root most ShipPart.
     /// </summary>
-    public class RigidShipPart : ShipPart
+    public abstract class RigidShipPart : ShipPart
     {
         #region Private Fields
         private Queue<Fixture> _fixtures;
