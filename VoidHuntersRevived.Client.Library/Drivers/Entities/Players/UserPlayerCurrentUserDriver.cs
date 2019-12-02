@@ -118,7 +118,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         {
             // Immediately attempt to select the local tractorbeam
             var target = _sensor.Contacts
-                .Where(sp => sp is ShipPart && this.driven.Ship.TractorBeam.ValidateTarget(sp as ShipPart))
+                .Where(sp => sp is ShipPart && this.driven.Ship.TractorBeam.FindTarget(sp as ShipPart) != default(ShipPart))
                 .OrderBy(sp => Vector2.Distance(sp.WorldCenter, _sensor.WorldCenter))
                 .FirstOrDefault() as ShipPart;
 
