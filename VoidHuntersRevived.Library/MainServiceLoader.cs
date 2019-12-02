@@ -5,6 +5,7 @@ using Guppy.Collections;
 using Guppy.Factories;
 using Guppy.Interfaces;
 using Guppy.Loaders;
+using Guppy.Utilities.Options;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
@@ -51,6 +52,8 @@ namespace VoidHuntersRevived.Library
 
         public void ConfigureProvider(IServiceProvider provider)
         {
+            provider.GetRequiredService<GlobalOptions>().LogLevel = Microsoft.Extensions.Logging.LogLevel.Debug;
+
             var entities = provider.GetRequiredService<EntityLoader>();
 
             entities.TryRegister<UserPlayer>("entity:player:user", "name:entity:player:user", "description:entity:player:user");
