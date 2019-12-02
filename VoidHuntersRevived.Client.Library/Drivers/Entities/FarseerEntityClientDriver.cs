@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
     internal sealed class FarseerEntityClientDriver : Driver<FarseerEntity>
     {
         #region Static Properties
-        private static Single VitalsLerpStrength { get; set; } = 0.000625f;
+        private static Single VitalsLerpStrength { get; set; } = 0.001625f;
         private static Single PositionSnapThreshold { get; set; } = 5f;
         private static Single RotationSnapThreshold { get; set; } = MathHelper.PiOver2;
         #endregion

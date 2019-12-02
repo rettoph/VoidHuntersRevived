@@ -15,6 +15,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         /// update its chain.
         /// </summary>
         public Ship.Direction Directions { get; private set; }
+        /// <summary>
+        /// Indicates if the thruster was activeted this frame.
+        /// </summary>
+        public Boolean Active { get; internal set; }
         public Vector2 Thrust { get => Vector2.UnitX * 20; }
         public Vector2 LocalThrust { get => Vector2.Transform(this.Thrust, Matrix.CreateRotationZ(this.LocalRotation)); }
         #endregion
@@ -23,8 +27,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         protected override void Initialize()
         {
             base.Initialize();
-
-            
 
             this.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleChainUpdated);
         }
@@ -35,14 +37,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         {
             base.Update(gameTime);
 
-            if (this.Root.Ship != default(Ship))
-            { // If the thruster is attached to a ship...
-                if((this.Root.Ship.ActiveDirections & this.Directions) != 0)
-                { // If the thruster should be thrusting...
-                    // Apply thrust to the internal fixture...
-                    this.ApplyThrust(this.Root.Body);
-                }
-            }
+            // Apply thrust to the internal fixture...
+            this.ApplyThrust(this.Root.Body);
         }
         #endregion
 
@@ -114,13 +110,16 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         /// <param name="body"></param>
         public void ApplyThrust(Body body)
         {
-            // Calculate the thrusters position on the recieved body...
-            var point = body.Position + Vector2.Transform(Vector2.Zero, this.LocalTransformation * Matrix.CreateRotationZ(body.Rotation));
-            // Calculate the thrust's world force relative to the recieved body...
-            var force = Vector2.Transform(this.Thrust, Matrix.CreateRotationZ(body.Rotation + this.LocalRotation));
+            if (this.Active)
+            { // Only apply any thrust if the current thruster is active...
+                // Calculate the thrusters position on the recieved body...
+                var point = body.Position + Vector2.Transform(Vector2.Zero, this.LocalTransformation * Matrix.CreateRotationZ(body.Rotation));
+                // Calculate the thrust's world force relative to the recieved body...
+                var force = Vector2.Transform(this.Thrust, Matrix.CreateRotationZ(body.Rotation + this.LocalRotation));
 
-            // Apply thr thrust...
-            body.ApplyForce(ref force, ref point);
+                // Apply thr thrust...
+                body.ApplyForce(ref force, ref point);
+            }
         }
         #endregion
 
