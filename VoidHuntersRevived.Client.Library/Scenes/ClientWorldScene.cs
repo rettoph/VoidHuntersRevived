@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Client.Library.Layers;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Scenes;
 
@@ -10,21 +11,23 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 {
     public class ClientWorldScene : WorldScene
     {
-        #region Private Fields
-        private SpriteBatch _spriteBatch;
-        private FarseerCamera2D _camera;
-        private BasicEffect _effect;
-        #endregion
-
-        #region Constructor
-        public ClientWorldScene(BasicEffect effect, FarseerCamera2D camera, SpriteBatch spriteBatch)
+        #region Lifecycle Methods
+        protected override void Initialize()
         {
-            _camera = camera;
-            _spriteBatch = spriteBatch;
-            _effect = effect;
+            base.Initialize();
 
-            _effect.TextureEnabled = true;
-            _effect.VertexColorEnabled = true;
+            // Layer 0: Default
+            this.layers.Create<CameraLayer>(0, l =>
+            {
+                l.SetUpdateOrder(10);
+                l.SetDrawOrder(20);
+            });
+            // Layer 1: Chunk
+            this.layers.Create<CameraLayer>(1, l =>
+            {
+                l.SetUpdateOrder(20);
+                l.SetDrawOrder(10);
+            });
         }
         #endregion
 
@@ -33,12 +36,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         {
             base.Draw(gameTime);
 
-            _effect.Projection = _camera.Projection;
-            _effect.View = _camera.View;
-
-            _spriteBatch.Begin(effect: _effect);
-            this.entities.TryDraw(gameTime);
-            _spriteBatch.End();
+            this.layers.TryDraw(gameTime);
         }
         #endregion
     }

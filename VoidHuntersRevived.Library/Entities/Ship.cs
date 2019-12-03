@@ -104,6 +104,8 @@ namespace VoidHuntersRevived.Library.Entities
             this.Events.Register<ShipPart>("bridge:chain:updated");
             this.Events.Register<Direction>("direction:changed");
             this.Events.Register<Vector2>("target:changed");
+
+            this.SetUpdateOrder(100);
         }
 
         protected override void Initialize()

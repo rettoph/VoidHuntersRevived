@@ -9,6 +9,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Extensions.System;
 using VoidHuntersRevived.Library.Extensions.Farseer;
 using VoidHuntersRevived.Library.Scenes;
+using VoidHuntersRevived.Library.Layers;
 
 namespace VoidHuntersRevived.Server.Scenes
 {
@@ -19,11 +20,24 @@ namespace VoidHuntersRevived.Server.Scenes
         {
             base.Initialize();
 
+            // Layer 0: Default
+            this.layers.Create<BasicLayer>(0, l =>
+            {
+                l.SetUpdateOrder(10);
+                l.SetDrawOrder(20);
+            });
+            // Layer 1: Chunk
+            this.layers.Create<BasicLayer>(1, l =>
+            {
+                l.SetUpdateOrder(20);
+                l.SetDrawOrder(10);
+            });
+
             this.Group.Users.Events.TryAdd<User>("added", this.HandleUserJoined);
 
             var rand = new Random();
-            var size = 200;
-            for(Int32 i=0; i<500; i++)
+            var size = 20;
+            for(Int32 i=0; i<10; i++)
             {
                 this.entities.Create<ShipPart>("entity:ship-part:hull:triangle").Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
                 this.entities.Create<ShipPart>("entity:ship-part:hull:square").Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));

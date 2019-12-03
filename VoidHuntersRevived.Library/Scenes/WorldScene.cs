@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Library.Scenes
         {
             base.Update(gameTime);
 
-            this.entities.TryUpdate(gameTime);
+            this.layers.TryUpdate(gameTime);
         }
         #endregion
     }

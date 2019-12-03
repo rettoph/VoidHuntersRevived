@@ -50,6 +50,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             this.Bounds = new RectangleF(this.Position.X, this.Position.Y, Chunk.Size, Chunk.Size);
 
             base.Initialize();
+
+            this.SetLayerDepth(1);
         }
         #endregion
 
