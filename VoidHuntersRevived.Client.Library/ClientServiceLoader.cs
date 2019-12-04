@@ -20,6 +20,7 @@ namespace VoidHuntersRevived.Client.Library
             services.AddTransient<SpriteManager>();
             services.AddScoped<ServerShadow>();
             services.AddScoped<Sensor>(p => p.GetRequiredService<EntityCollection>().Create<Sensor>("entity:sensor"));
+            services.AddScoped<TrailManager>(p => p.GetRequiredService<EntityCollection>().Create<TrailManager>("entity:trail-manager"));
         }
 
         public void ConfigureProvider(IServiceProvider provider)
@@ -43,6 +44,7 @@ namespace VoidHuntersRevived.Client.Library
             var entities = provider.GetRequiredService<EntityLoader>();
 
             entities.TryRegister<Sensor>("entity:sensor", "name:entity:sensor", "description:entity:sensor");
+            entities.TryRegister<TrailManager>("entity:trail-manager", "name:entity:trail-manager", "description:entity:trail-manager");
         }
     }
 }

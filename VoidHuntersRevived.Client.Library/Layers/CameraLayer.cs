@@ -17,17 +17,21 @@ namespace VoidHuntersRevived.Client.Library.Layers
     public class CameraLayer : BasicLayer
     {
         #region Private Fields
-        private SpriteBatch _spriteBatch;
-        private BasicEffect _effect;
-        private FarseerCamera2D _camera;
+
+        #endregion
+
+        #region Protected Fields
+        protected SpriteBatch spriteBatch;
+        protected BasicEffect effect;
+        protected FarseerCamera2D camera;
         #endregion
 
         #region Constructor
         public CameraLayer(SpriteBatch spriteBatch, BasicEffect effect, FarseerCamera2D camera)
         {
-            _spriteBatch = spriteBatch;
-            _effect = effect;
-            _camera = camera;
+            this.spriteBatch = spriteBatch;
+            this.effect = effect;
+            this.camera = camera;
         }
         #endregion
 
@@ -36,8 +40,8 @@ namespace VoidHuntersRevived.Client.Library.Layers
         {
             base.Initialize();
 
-            _effect.TextureEnabled = true;
-            _effect.VertexColorEnabled = true;
+            this.effect.TextureEnabled = true;
+            this.effect.VertexColorEnabled = true;
         }
         #endregion
 
@@ -46,12 +50,12 @@ namespace VoidHuntersRevived.Client.Library.Layers
         {
             base.Draw(gameTime);
 
-            _effect.View = _camera.View;
-            _effect.Projection = _camera.Projection;
+            this.effect.View = this.camera.View;
+            this.effect.Projection = this.camera.Projection;
 
-            _spriteBatch.Begin(effect: _effect);
+            this.spriteBatch.Begin(effect: this.effect);
             this.entities.TryDraw(gameTime);
-            _spriteBatch.End();
+            this.spriteBatch.End();
         }
         #endregion
     }
