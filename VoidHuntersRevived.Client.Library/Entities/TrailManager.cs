@@ -16,16 +16,45 @@ namespace VoidHuntersRevived.Client.Library.Entities
     /// </summary>
     public sealed class TrailManager : Entity
     {
-        #region Internal Structs & Classes
+        #region Internal Classes
+        /// <summary>
+        /// A single set of vertices within a trail.
+        /// </summary>
         private class TrailSegment
         {
-            private static Vector3 Speed { get; set; } = Vector3.UnitX * 0.0025f;
+            private static Vector3 Speed = Vector3.UnitX * 0.005f;
 
-            public Double Age { get; private set; }
+            private readonly Vector3 _portDelta;
+            private readonly Vector3 _starboardDelta;
+
             public Vector3 Port;
             public Vector3 Starboard;
-            public Single Direction;
-            public Single Strength;
+            public Double Age { get; private set; }
+            public readonly Single Direction;
+            public readonly Single Strength;
+
+            public VertexPositionColor[] Vertices;
+
+            public TrailSegment(Single direction, Single strength)
+            {
+                this.Direction = direction;
+                this.Strength = strength;
+                this.Age = 1;
+                this.Port = Vector3.Zero;
+                this.Starboard = Vector3.Zero;
+                this.Vertices = new VertexPositionColor[6] { 
+                    new VertexPositionColor(),
+                    new VertexPositionColor(),
+                    new VertexPositionColor(),
+                    new VertexPositionColor(),
+                    new VertexPositionColor(),
+                    new VertexPositionColor()
+                };
+
+
+                _portDelta = Vector3.Transform(TrailSegment.Speed, Matrix.CreateRotationZ(this.Direction + MathHelper.Pi - (MathHelper.Pi / 3)));
+                _starboardDelta = Vector3.Transform(TrailSegment.Speed, Matrix.CreateRotationZ(this.Direction + MathHelper.Pi + (MathHelper.Pi / 3)));
+            }
 
             /// <summary>
             /// Step the trail's reference points forward
@@ -33,31 +62,49 @@ namespace VoidHuntersRevived.Client.Library.Entities
             /// <param name="gameTime"></param>
             public void Step(GameTime gameTime)
             {
-                this.Age += gameTime.ElapsedGameTime.TotalMilliseconds;
+                this.Age = this.Age + gameTime.ElapsedGameTime.TotalMilliseconds;
 
-                this.Port += Vector3.Transform(TrailSegment.Speed, Matrix.CreateRotationZ(this.Direction - MathHelper.PiOver4 + MathHelper.Pi));
-                this.Starboard += Vector3.Transform(TrailSegment.Speed, Matrix.CreateRotationZ(this.Direction + MathHelper.PiOver4 + MathHelper.Pi));
+                this.Port += _portDelta;
+                this.Starboard += _starboardDelta;
             }
         }
 
-        private class Trail
+        /// <summary>
+        /// Represents a collection of trail segments
+        /// </summary>
+        public class Trail
         {
-            public Guid ThrusterId { get; set; }
-            private List<TrailSegment> _segments = new List<TrailSegment>();
+            public static Double Interval = 96;
+
+            private List<TrailSegment> _segments;
+            private Double _interval;
+            private Thruster _thruster;
+
+            public Trail(Thruster thruster)
+            {
+                _thruster = thruster;
+                _segments = new List<TrailSegment>();
+                _interval = Trail.Interval;
+            }
 
             /// <summary>
             /// Automatically add a new segment to the trail
             /// </summary>
             /// <param name="thruster"></param>
-            public void AddSegment(Thruster thruster, Single strength)
+            public void AddSegment(Thruster thruster, Single strength, GameTime gameTime)
             {
-                _segments.Add(new TrailSegment()
+                _interval += gameTime.ElapsedGameTime.TotalMilliseconds;
+
+                if(_interval >= Trail.Interval)
                 {
-                    Direction = thruster.Rotation,
-                    Port = new Vector3(thruster.Position, 0) + Vector3.Transform(Vector3.UnitX * 0.25f, Matrix.CreateRotationZ(thruster.Rotation + MathHelper.PiOver2)),
-                    Starboard = new Vector3(thruster.Position, 0) + Vector3.Transform(Vector3.UnitX * 0.25f, Matrix.CreateRotationZ(thruster.Rotation - MathHelper.PiOver2)),
-                    Strength = strength
-                });
+                    _segments.Add(new TrailSegment(thruster.Rotation, strength)
+                    {
+                        Port = new Vector3(thruster.Position, 0) + Vector3.Transform(Vector3.UnitX * 0.25f, Matrix.CreateRotationZ(thruster.Rotation + MathHelper.PiOver2)),
+                        Starboard = new Vector3(thruster.Position, 0) + Vector3.Transform(Vector3.UnitX * 0.25f, Matrix.CreateRotationZ(thruster.Rotation - MathHelper.PiOver2)),
+                    });
+
+                    _interval %= Trail.Interval;
+                }
             }
 
             /// <summary>
@@ -66,53 +113,74 @@ namespace VoidHuntersRevived.Client.Library.Entities
             /// forward by one
             /// </summary>
             /// <param name="vertices"></param>
-            public void AddVertices(List<VertexPositionColor> vertices, GameTime gameTime)
+            public Boolean AddVertices(List<VertexPositionColor> vertices, FarseerCamera2D camera, GameTime gameTime)
             {
                 if (_segments.Any())
                 {
-                    _segments[0].Step(gameTime);
                     var count = _segments.Count;
 
-                    while(count > 5000 || (_segments.Any() && _segments[0].Age > 2000))
+                    while (count > 5000 || (_segments.Any() && _segments[0].Age > 2000))
                     {
                         _segments.RemoveAt(0);
                         count--;
                     }
 
-                    if (count > 1)
+                    if (count > 0)
                     { // Only proceed if there are more than one pair of segments in the trail...
-                        var baseColor = new Color(1, 142, 238, 255);
+                        TrailSegment cur;
+                        TrailSegment last = new TrailSegment(_thruster.Rotation, _segments.Last().Strength)
+                        {
+                            Port = new Vector3(_thruster.Position, 0) + Vector3.Transform(Vector3.UnitX * 0.25f, Matrix.CreateRotationZ(_thruster.Rotation + MathHelper.PiOver2)),
+                            Starboard = new Vector3(_thruster.Position, 0) + Vector3.Transform(Vector3.UnitX * 0.25f, Matrix.CreateRotationZ(_thruster.Rotation - MathHelper.PiOver2)),
+                        };
+                        Color curColor;
+                        Color lastColor = Color.Lerp(Color.Transparent, _thruster.Color, last.Strength * (1 - ((Single)last.Age / 2000f)));
 
-                        for (Int32 i = 1; i < count; i++)
+                        for (Int32 i = count - 1; i >= 0; i--)
                         { // Starting from the second segment...
+                            cur = _segments[i];
+
                             // Step segment
-                            _segments[i].Step(gameTime);
+                            cur.Step(gameTime);
 
-                            var nC = Color.Lerp(Color.Transparent, baseColor, _segments[i].Strength * (1 - ((Single)_segments[i].Age / 2000f)));
-                            var oC = Color.Lerp(Color.Transparent, baseColor, _segments[i - 1].Strength * (1 - ((Single)_segments[i - 1].Age / 2000f)));
+                            curColor = Color.Lerp(Color.Transparent, _thruster.Color, cur.Strength * (1 - ((Single)cur.Age / 2000f)));
 
-                            // Add First triangle...
-                            vertices.Add(new VertexPositionColor(_segments[i].Port, nC));
-                            vertices.Add(new VertexPositionColor(_segments[i].Starboard, nC));
-                            vertices.Add(new VertexPositionColor(_segments[i - 1].Starboard, oC));
+                            // Update First triangle...
+                            cur.Vertices[0].Position = cur.Port;
+                            cur.Vertices[0].Color    = curColor;
+                            cur.Vertices[1].Position = cur.Starboard;
+                            cur.Vertices[1].Color    = curColor;
+                            cur.Vertices[2].Position = last.Starboard;
+                            cur.Vertices[2].Color    = lastColor;
 
-                            // Add Second triagle...
-                            vertices.Add(new VertexPositionColor(_segments[i - 1].Starboard, oC));
-                            vertices.Add(new VertexPositionColor(_segments[i - 1].Port, oC));
-                            vertices.Add(new VertexPositionColor(_segments[i].Port, nC));
+
+                            // Update Second triagle...
+                            cur.Vertices[3].Position = last.Starboard;
+                            cur.Vertices[3].Color    = lastColor;
+                            cur.Vertices[4].Position = last.Port;
+                            cur.Vertices[4].Color    = lastColor;
+                            cur.Vertices[5].Position = cur.Port;
+                            cur.Vertices[5].Color    = curColor;
+
+                            vertices.AddRange(cur.Vertices);
+
+                            // Update the last segment item
+                            last = cur;
+                            lastColor = curColor;
                         }
                     }
+
+                    return true;
                 }
+
+                return false;
             }
         }
         #endregion
 
         #region Private Fields
-        /// <summary>
-        /// Dictionary containing all trail segments for specific
-        /// thrusters.
-        /// </summary>
-        private Dictionary<Guid, Trail> _trails;
+        private HashSet<Trail> _trails;
+        private Queue<Trail> _emptyTrails;
 
         private GraphicsDevice _graphics;
         private FarseerCamera2D _camera;
@@ -133,12 +201,23 @@ namespace VoidHuntersRevived.Client.Library.Entities
         {
             base.Initialize();
 
-            _trails = new Dictionary<Guid, Trail>();
+            _trails = new HashSet<Trail>();
+            _emptyTrails = new Queue<Trail>();
 
             _effect.VertexColorEnabled = true;
 
             this.SetDrawOrder(0);
             this.SetLayerDepth(1);
+        }
+        #endregion
+
+        #region Helper Methods
+        public Trail CreateTrail(Thruster thruster)
+        {
+            var trail = new Trail(thruster);
+            _trails.Add(trail);
+
+            return trail;
         }
         #endregion
 
@@ -149,49 +228,34 @@ namespace VoidHuntersRevived.Client.Library.Entities
 
             // Create a new buffer for all trail primitives
             var vertices = new List<VertexPositionColor>();
-            
+
             // Populate all the trail primitives
-            _trails.Values.ForEach(trail => trail.AddVertices(vertices, gameTime));
+            _trails.ForEach(trail =>
+            {
+                if (!trail.AddVertices(vertices, _camera, gameTime))
+                    _emptyTrails.Enqueue(trail);
+            });
+
+            while (_emptyTrails.Any()) // Auto remove empty trails...
+                _trails.Remove(_emptyTrails.Dequeue());
 
             if (vertices.Any())
             {
                 var vertexBuffer = new VertexBuffer(_graphics, typeof(VertexPositionColor), vertices.Count, BufferUsage.WriteOnly);
                 vertexBuffer.SetData<VertexPositionColor>(vertices.ToArray());
-            
+
                 _graphics.SetVertexBuffer(vertexBuffer);
-            
-                RasterizerState rasterizerState = new RasterizerState();
-                rasterizerState.CullMode = CullMode.None;
-                _graphics.RasterizerState = rasterizerState;
+
                 _effect.Projection = _camera.Projection;
                 _effect.View = _camera.View;
                 _effect.World = _camera.World;
-            
+
                 foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
                     _graphics.DrawPrimitives(PrimitiveType.TriangleList, 0, vertices.Count / 3);
                 }
             }
-        }
-        #endregion
-
-        #region Helper Methods
-        /// <summary>
-        /// Add the submited thruster's current position
-        /// into the trail list.
-        /// </summary>
-        /// <param name="thruster"></param>
-        public void AddSegment(Thruster thruster, Single strength)
-        {
-            // Add new trails
-            if (!_trails.ContainsKey(thruster.Id))
-                _trails[thruster.Id] = new Trail() {
-                    ThrusterId = thruster.Id
-                };
-
-
-            _trails[thruster.Id].AddSegment(thruster, strength);
         }
         #endregion
     }
