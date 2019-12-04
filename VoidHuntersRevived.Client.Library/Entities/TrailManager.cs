@@ -25,6 +25,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
             public Vector3 Port;
             public Vector3 Starboard;
             public Single Direction;
+            public Single Strength;
 
             /// <summary>
             /// Step the trail's reference points forward
@@ -34,8 +35,8 @@ namespace VoidHuntersRevived.Client.Library.Entities
             {
                 this.Age += gameTime.ElapsedGameTime.TotalMilliseconds;
 
-                this.Port += Vector3.Transform(TrailSegment.Speed, Matrix.CreateRotationZ(this.Direction + MathHelper.PiOver2));
-                this.Starboard += Vector3.Transform(TrailSegment.Speed, Matrix.CreateRotationZ(this.Direction - MathHelper.PiOver2));
+                this.Port += Vector3.Transform(TrailSegment.Speed, Matrix.CreateRotationZ(this.Direction - MathHelper.PiOver4 + MathHelper.Pi));
+                this.Starboard += Vector3.Transform(TrailSegment.Speed, Matrix.CreateRotationZ(this.Direction + MathHelper.PiOver4 + MathHelper.Pi));
             }
         }
 
@@ -48,13 +49,14 @@ namespace VoidHuntersRevived.Client.Library.Entities
             /// Automatically add a new segment to the trail
             /// </summary>
             /// <param name="thruster"></param>
-            public void AddSegment(Thruster thruster)
+            public void AddSegment(Thruster thruster, Single strength)
             {
                 _segments.Add(new TrailSegment()
                 {
                     Direction = thruster.Rotation,
-                    Port = new Vector3(thruster.Position, 0),
-                    Starboard = new Vector3(thruster.Position, 0)
+                    Port = new Vector3(thruster.Position, 0) + Vector3.Transform(Vector3.UnitX * 0.25f, Matrix.CreateRotationZ(thruster.Rotation + MathHelper.PiOver2)),
+                    Starboard = new Vector3(thruster.Position, 0) + Vector3.Transform(Vector3.UnitX * 0.25f, Matrix.CreateRotationZ(thruster.Rotation - MathHelper.PiOver2)),
+                    Strength = strength
                 });
             }
 
@@ -71,7 +73,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
                     _segments[0].Step(gameTime);
                     var count = _segments.Count;
 
-                    while(count > 500 || (_segments.Any() && _segments[0].Age > 2000))
+                    while(count > 5000 || (_segments.Any() && _segments[0].Age > 2000))
                     {
                         _segments.RemoveAt(0);
                         count--;
@@ -86,8 +88,8 @@ namespace VoidHuntersRevived.Client.Library.Entities
                             // Step segment
                             _segments[i].Step(gameTime);
 
-                            var nC = Color.Lerp(baseColor, Color.Transparent, ((Single)_segments[i].Age / 2000f));
-                            var oC = Color.Lerp(baseColor, Color.Transparent, ((Single)_segments[i - 1].Age / 2000f));
+                            var nC = Color.Lerp(Color.Transparent, baseColor, _segments[i].Strength * (1 - ((Single)_segments[i].Age / 2000f)));
+                            var oC = Color.Lerp(Color.Transparent, baseColor, _segments[i - 1].Strength * (1 - ((Single)_segments[i - 1].Age / 2000f)));
 
                             // Add First triangle...
                             vertices.Add(new VertexPositionColor(_segments[i].Port, nC));
@@ -180,7 +182,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
         /// into the trail list.
         /// </summary>
         /// <param name="thruster"></param>
-        public void AddSegment(Thruster thruster)
+        public void AddSegment(Thruster thruster, Single strength)
         {
             // Add new trails
             if (!_trails.ContainsKey(thruster.Id))
@@ -189,7 +191,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
                 };
 
 
-            _trails[thruster.Id].AddSegment(thruster);
+            _trails[thruster.Id].AddSegment(thruster, strength);
         }
         #endregion
     }
