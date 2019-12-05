@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
+using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 
 namespace VoidHuntersRevived.Client.Library.Entities
@@ -22,7 +23,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
         /// </summary>
         private class TrailSegment
         {
-            private static Vector3 Speed = Vector3.UnitX * 0.005f;
+            private static Vector3 Speed = Vector3.UnitX * 0.001f;
 
             private readonly Vector3 _portDelta;
             private readonly Vector3 _starboardDelta;
@@ -115,8 +116,8 @@ namespace VoidHuntersRevived.Client.Library.Entities
             /// <param name="vertices"></param>
             public Boolean AddVertices(List<VertexPositionColor> vertices, FarseerCamera2D camera, GameTime gameTime)
             {
-                if (_segments.Any())
-                {
+                if (_segments.Any() && _thruster.Root.Ship != default(Ship))
+                { // Only render the trail if the thruster is attached to a ship
                     var count = _segments.Count;
 
                     while (count > 5000 || (_segments.Any() && _segments[0].Age > 2000))
@@ -136,12 +137,10 @@ namespace VoidHuntersRevived.Client.Library.Entities
                         Color curColor;
                         Color lastColor = Color.Lerp(Color.Transparent, _thruster.Color, last.Strength * (1 - ((Single)last.Age / 2000f)));
 
+
                         for (Int32 i = count - 1; i >= 0; i--)
                         { // Starting from the second segment...
                             cur = _segments[i];
-
-                            // Step segment
-                            cur.Step(gameTime);
 
                             curColor = Color.Lerp(Color.Transparent, _thruster.Color, cur.Strength * (1 - ((Single)cur.Age / 2000f)));
 
@@ -174,6 +173,11 @@ namespace VoidHuntersRevived.Client.Library.Entities
                 }
 
                 return false;
+            }
+
+            public void Update(GameTime gameTime)
+            {
+                _segments.ForEach(s => s.Step(gameTime));
             }
         }
         #endregion
@@ -222,6 +226,13 @@ namespace VoidHuntersRevived.Client.Library.Entities
         #endregion
 
         #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            _trails.ForEach(t => t.Update(gameTime));
+        }
+
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);

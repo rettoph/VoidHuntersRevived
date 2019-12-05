@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Client.Library.Utilities;
+using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters
@@ -52,8 +53,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters
             }
                 
 
-            if(_trailStrength >= 0.01f)
-            {
+            if(_trailStrength >= 0.01f && this.driven.Root.Ship != default(Ship))
+            { // Only apply a trail if the thruster is attached to a ship
                 if (_trail == null)
                     _trail = _trails.CreateTrail(this.driven);
 
