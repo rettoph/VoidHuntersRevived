@@ -53,8 +53,8 @@ namespace VoidHuntersRevived.Client.Library.Entities
                 };
 
 
-                _portDelta = Vector3.Transform(TrailSegment.Speed, Matrix.CreateRotationZ(this.Direction + MathHelper.Pi - (MathHelper.Pi / 3)));
-                _starboardDelta = Vector3.Transform(TrailSegment.Speed, Matrix.CreateRotationZ(this.Direction + MathHelper.Pi + (MathHelper.Pi / 3)));
+                _portDelta = Vector3.Transform(TrailSegment.Speed, Matrix.CreateRotationZ(this.Direction + MathHelper.Pi - (MathHelper.Pi / 2)));
+                _starboardDelta = Vector3.Transform(TrailSegment.Speed, Matrix.CreateRotationZ(this.Direction + MathHelper.Pi + (MathHelper.Pi / 2)));
             }
 
             /// <summary>
@@ -75,7 +75,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
         /// </summary>
         public class Trail
         {
-            public static Double Interval = 96;
+            public static Double Interval = 64;
 
             private List<TrailSegment> _segments;
             private Double _interval;

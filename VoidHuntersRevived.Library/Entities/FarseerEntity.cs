@@ -29,6 +29,12 @@ namespace VoidHuntersRevived.Library.Entities
         public virtual Vector2 WorldCenter { get => this.Body.WorldCenter; }
         public virtual Vector2 LocalCenter { get => this.Body.LocalCenter; }
         public Controller Controller { get; private set; }
+        /// <summary>
+        /// Simple property that defines the current FarseerEntity's active
+        /// state. Farseer entities that are no longe rin control of themselves
+        /// should set this value to false.
+        /// </summary>
+        public virtual Boolean IsActive { get => true; }
         #endregion
 
         #region Lifecycle Methods

@@ -20,6 +20,7 @@ using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
+using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
 using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Utilities.Delegaters;
 
@@ -151,6 +152,22 @@ namespace VoidHuntersRevived.Library
                 nameHandle: "name:entity:ship-part:thruster:small",
                 descriptionHandle: "description:entity:ship-part:thruster:small",
                 data: thruster);
+            #endregion
+
+            #region Weapons
+            var massDriver = new ShipPartConfiguration();
+            massDriver.AddVertice(0f, -0.05f);
+            massDriver.AddVertice(0f, 0.05f);
+            massDriver.AddVertice(0.5f, 0.05f);
+            massDriver.AddVertice(0.5f, -0.05f);
+            massDriver.AddNode(0, 0, MathHelper.Pi, ShipPartConfiguration.NodeType.Male);
+            massDriver.Flush();
+
+            entities.TryRegister<Weapon>(
+                handle: "entity:ship-part:weapon:mass-driver",
+                nameHandle: "name:entity:ship-part:weapon:mass-driver",
+                descriptionHandle: "description:entity:ship-part:weapon:mass-driver",
+                data: massDriver);
             #endregion
             #endregion
         }

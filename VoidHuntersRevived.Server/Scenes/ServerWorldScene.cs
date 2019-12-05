@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Server.Scenes
                 this.entities.Create<ShipPart>("entity:ship-part:thruster:small").Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
                 this.entities.Create<ShipPart>("entity:ship-part:thruster:small").Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
                 this.entities.Create<ShipPart>("entity:ship-part:thruster:small").Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
-                this.entities.Create<ShipPart>("entity:ship-part:thruster:small").Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
+                this.entities.Create<ShipPart>("entity:ship-part:weapon:mass-driver").Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
             }
         }
         #endregion

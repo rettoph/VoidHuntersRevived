@@ -30,13 +30,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public ShipPart Root { get => this.IsRoot ? this : this.Parent.Root; }
         public ShipPart Parent { get => this.MaleConnectionNode.Target?.Parent; }
         public Boolean IsRoot { get => !this.MaleConnectionNode.Attached; }
-
-        public override Vector2 Position { get => this.IsRoot ? base.Position : this.Root.Position + Vector2.Transform(Vector2.Zero, this.LocalTransformation * Matrix.CreateRotationZ(this.Root.Rotation)); }
-        public override Single Rotation { get => this.IsRoot ? base.Rotation : this.Root.Rotation + this.LocalRotation; }
-
-        public override Vector2 WorldCenter { get => this.Root.Position + Vector2.Transform(this.LocalCenter, Matrix.CreateRotationZ(this.Root.Rotation)); }
-        public override Vector2 LocalCenter { get => this.IsRoot ? this.Body.LocalCenter : Vector2.Transform(this.Configuration.GetData<ShipPartConfiguration>().Centeroid, this.LocalTransformation); }
-        
+        public override Boolean IsActive { get => this.IsRoot; }
         public Color Color { get => this.Root.Ship == default(Ship) ? this.Root.DefaultColor : new Color(1, 142, 238); }
         #endregion
 

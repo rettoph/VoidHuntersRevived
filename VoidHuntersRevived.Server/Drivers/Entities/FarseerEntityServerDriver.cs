@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
             // Increase the ping tracker
             _lastVitalPing += gameTime.ElapsedGameTime.TotalMilliseconds; 
 
-            if(this.driven.Body.IsSolidEnabled() && ((this.driven.Body.Awake && _lastVitalPing >= FarseerEntityServerDriver.VitalsPingRate) || this.driven.Controller is Chunk))
+            if(this.driven.IsActive && this.driven.Body.IsSolidEnabled() && ((this.driven.Body.Awake && _lastVitalPing >= FarseerEntityServerDriver.VitalsPingRate) || this.driven.Controller is Chunk))
             { // Only bother sending vital pings if the body is awake & there are any fixtures...
                 var action = this.driven.Actions.Create("update:vitals", NetDeliveryMethod.UnreliableSequenced, 2);
                 this.driven.Body.WriteVitals(action);
