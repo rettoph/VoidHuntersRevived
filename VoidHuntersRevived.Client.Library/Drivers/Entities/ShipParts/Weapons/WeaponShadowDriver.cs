@@ -61,7 +61,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
             base.Update(gameTime);
 
             this.driven.Update(_server[this.driven.Root], _shadow, _joint);
-            this.logger.LogInformation($"{_joint?.JointAngle}");
         }
         #endregion
 

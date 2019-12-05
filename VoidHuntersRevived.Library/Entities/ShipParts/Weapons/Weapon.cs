@@ -10,6 +10,7 @@ using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Factories;
 using VoidHuntersRevived.Library.Extensions.Farseer;
 using VoidHuntersRevived.Library.Entities.Controllers;
+using Microsoft.Extensions.Logging;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 {
@@ -51,7 +52,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         public void Update(Body root, Body weapon, RevoluteJoint joint)
         {
             if (this.Root.Ship != default(Ship))
-                this.UpdateTarget(this.Root.Ship.WorldTarget, this.Joint, this.Root.Body);
+                this.UpdateTarget(this.Root.Ship.WorldTarget, joint, weapon);
             else
                 this.UpdatePosition(root, weapon);
         }
@@ -142,8 +143,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
                 // Calculate the different between the required angle and the current angle
                 var diff = angle - joint.JointAngle;
-
-                
 
                 // Set the joints speed
                 joint.MotorSpeed = diff * (1000f / 32f);
