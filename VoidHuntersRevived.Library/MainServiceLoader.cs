@@ -156,11 +156,11 @@ namespace VoidHuntersRevived.Library
 
             #region Weapons
             var massDriver = new ShipPartConfiguration();
-            massDriver.AddVertice(0f, -0.05f);
-            massDriver.AddVertice(0f, 0.05f);
-            massDriver.AddVertice(0.5f, 0.05f);
-            massDriver.AddVertice(0.5f, -0.05f);
-            massDriver.AddNode(0, 0, MathHelper.Pi, ShipPartConfiguration.NodeType.Male);
+            massDriver.AddVertice(0f, -0.15f);
+            massDriver.AddVertice(0f, 0.15f);
+            massDriver.AddVertice(0.6f, 0.075f);
+            massDriver.AddVertice(0.6f, -0.075f);
+            massDriver.AddNode(0.15f, 0, MathHelper.Pi, ShipPartConfiguration.NodeType.Male);
             massDriver.Flush();
 
             entities.TryRegister<Weapon>(

@@ -37,6 +37,11 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
             if (im.ReadBoolean())
                 this.User = this.group.Users.GetById(im.ReadGuid());
+
+            if (this.User == null)
+            {
+
+            }
         }
         #endregion
     }

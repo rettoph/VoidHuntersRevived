@@ -2,6 +2,7 @@
 using FarseerPhysics.Dynamics.Joints;
 using Guppy;
 using Guppy.Attributes;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -60,6 +61,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
             base.Update(gameTime);
 
             this.driven.Update(_server[this.driven.Root], _shadow, _joint);
+            this.logger.LogInformation($"{_joint?.JointAngle}");
         }
         #endregion
 
