@@ -2,6 +2,7 @@
 using Guppy;
 using Guppy.Attributes;
 using Guppy.Extensions.Collection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -23,24 +24,25 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
         #region Static Properties
         private static Single SnapThreshold { get; set; } = 0.25f;
         private static Single TextureScale { get => ConvertUnits.ToSimUnits(1 / ChunkTextureDriver.SnapThreshold); }
+
+        private static BasicEffect Effect { get; set; }
         #endregion
 
         #region Private Fields
         private RenderTarget2D _target;
         private FarseerCamera2D _camera;
-        private BasicEffect _effect;
         private SpriteBatch _spriteBatch;
         private GraphicsDevice _graphics;
         private Vector2 _position;
         private BoundingBox _box;
+        private Matrix _projection;
         #endregion
 
         #region Constructor
-        public ChunkTextureDriver(GraphicsDevice graphics, SpriteBatch spriteBatch, BasicEffect effect, FarseerCamera2D camera, Chunk driven) : base(driven)
+        public ChunkTextureDriver(GraphicsDevice graphics, SpriteBatch spriteBatch, FarseerCamera2D camera, Chunk driven) : base(driven)
         {
             _graphics = graphics;
             _spriteBatch = spriteBatch;
-            _effect = effect;
             _camera = camera;
         }
         #endregion
@@ -57,10 +59,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
                 width: (Int32)(ConvertUnits.ToDisplayUnits(Chunk.Size) * ChunkTextureDriver.SnapThreshold),
                 height: (Int32)(ConvertUnits.ToDisplayUnits(Chunk.Size) * ChunkTextureDriver.SnapThreshold));
 
-            _effect.TextureEnabled = true;
-            _effect.VertexColorEnabled = true;
-            _effect.View = Matrix.Identity;
-            _effect.Projection = Matrix.CreateOrthographicOffCenter(
+            _projection = Matrix.CreateOrthographicOffCenter(
                     this.driven.Bounds.Left,
                     this.driven.Bounds.Right,
                     this.driven.Bounds.Bottom,
@@ -113,12 +112,27 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
             _graphics.Clear(Color.Transparent);
             // _graphics.Clear(new Color(100, this.driven.Position.X / 16 % 2 == 0 ? 255 : 0, this.driven.Position.Y / 16 % 2 == 0 ? 255 : 0, 10));
 
-            _spriteBatch.Begin(effect: _effect);
+
+            ChunkTextureDriver.Effect.Projection = _projection;
+
+            _spriteBatch.Begin(effect: ChunkTextureDriver.Effect);
             this.driven.Components.TryDrawAll(Chunk.EmptyGameTime);
-            this.driven.GetSurrounding().ForEach(c => c.Components.TryDrawAll(Chunk.EmptyGameTime));
+            this.driven.GetSurrounding(false).ForEach(c => c?.Components.TryDrawAll(Chunk.EmptyGameTime));
             _spriteBatch.End();
 
             _graphics.SetRenderTargets(targets);
+        }
+        #endregion
+
+        #region Static Methods
+        public static void Setup(IServiceProvider provider)
+        {
+            // Create the chared chunk effect
+
+            ChunkTextureDriver.Effect = provider.GetRequiredService<BasicEffect>();
+            ChunkTextureDriver.Effect.TextureEnabled = true;
+            ChunkTextureDriver.Effect.VertexColorEnabled = true;
+            ChunkTextureDriver.Effect.View = Matrix.Identity;
         }
         #endregion
     }

@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers;
 using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
@@ -25,6 +26,9 @@ namespace VoidHuntersRevived.Client.Library
 
         public void ConfigureProvider(IServiceProvider provider)
         {
+            // Run custom global setup methods
+            ChunkTextureDriver.Setup(provider);
+
             var content = provider.GetRequiredService<ContentLoader>();
 
             content.TryRegister("sprite:background:1", "Sprites/background-1");

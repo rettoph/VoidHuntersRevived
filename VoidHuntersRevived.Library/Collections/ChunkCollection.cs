@@ -36,13 +36,14 @@ namespace VoidHuntersRevived.Library.Collections
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
+        /// <param name="create">If the chunk should be created if it doesnt already exist</param>
         /// <returns></returns>
-        public Chunk Get(Single x, Single y)
+        public Chunk Get(Single x, Single y, Boolean create = true)
         {
             Chunk output;
             ChunkPosition position = new ChunkPosition(x, y);
 
-            if((output = this.GetById(position.Id)) == default(Chunk))
+            if((output = this.GetById(position.Id)) == default(Chunk) && create)
             { // Create a brand new chunk
                 output = _entities.Create<Chunk>("entity:chunk", c =>
                 {

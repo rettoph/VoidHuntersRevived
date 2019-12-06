@@ -9,6 +9,7 @@ using VoidHuntersRevived.Library.Structs;
 using VoidHuntersRevived.Library.Extensions.Farseer;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.Collection;
+using Microsoft.Extensions.Logging;
 
 namespace VoidHuntersRevived.Library.Entities.Controllers
 {
@@ -108,21 +109,21 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         /// This does not include the current chunk
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Chunk> GetSurrounding()
+        public IEnumerable<Chunk> GetSurrounding(Boolean create = true)
         {
             if (_surrounding == default(IEnumerable<Chunk>))
             {
                 var list = new List<Chunk>();
-                list.Add(_chunks.Get(this.Position.X + Chunk.Size, this.Position.Y + Chunk.Size));
-                list.Add(_chunks.Get(this.Position.X + 0, this.Position.Y + Chunk.Size));
-                list.Add(_chunks.Get(this.Position.X - Chunk.Size, this.Position.Y + Chunk.Size));
+                list.Add(_chunks.Get(this.Position.X + Chunk.Size, this.Position.Y + Chunk.Size, create));
+                list.Add(_chunks.Get(this.Position.X + 0, this.Position.Y + Chunk.Size, create));
+                list.Add(_chunks.Get(this.Position.X - Chunk.Size, this.Position.Y + Chunk.Size, create));
 
-                list.Add(_chunks.Get(this.Position.X - Chunk.Size, this.Position.Y + 0));
-                list.Add(_chunks.Get(this.Position.X + Chunk.Size, this.Position.Y + 0));
+                list.Add(_chunks.Get(this.Position.X - Chunk.Size, this.Position.Y + 0, create));
+                list.Add(_chunks.Get(this.Position.X + Chunk.Size, this.Position.Y + 0, create));
 
-                list.Add(_chunks.Get(this.Position.X + Chunk.Size, this.Position.Y - Chunk.Size));
-                list.Add(_chunks.Get(this.Position.X + 0, this.Position.Y - Chunk.Size));
-                list.Add(_chunks.Get(this.Position.X - Chunk.Size, this.Position.Y - Chunk.Size));
+                list.Add(_chunks.Get(this.Position.X + Chunk.Size, this.Position.Y - Chunk.Size, create));
+                list.Add(_chunks.Get(this.Position.X + 0, this.Position.Y - Chunk.Size, create));
+                list.Add(_chunks.Get(this.Position.X - Chunk.Size, this.Position.Y - Chunk.Size, create));
 
                 _surrounding = list;
             }
