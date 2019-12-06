@@ -129,7 +129,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         /// <param name="target">The world position the weapon should target</param>
         /// <param name="joint"></param>
         /// <param name="root"></param>
-        public void UpdateTarget(Vector2 target, RevoluteJoint joint, Body root)
+        /// <returns>Whether or not the weapon is able to reach the requested target.</returns>
+        public Boolean UpdateTarget(Vector2 target, RevoluteJoint joint, Body root)
         {
             if(joint != default(RevoluteJoint) && !(this.Controller is Chunk))
             { // Only update the target if the weapon is not in a controller...
@@ -137,7 +138,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                 var offset = target - joint.WorldAnchorB;
                 // Calculate the joint should approach relative to the weapon body
                 var angle = MathHelper.Clamp(
-                    value: MathHelper.WrapAngle((Single)Math.Atan2(offset.Y, offset.X) - root.Rotation - this.LocalRotation - this.MaleConnectionNode.LocalRotation - MathHelper.Pi),
+                    value: MathHelper.WrapAngle(
+                        angle: (Single)Math.Atan2(offset.Y, offset.X) - root.Rotation),
                     min: this.Joint.LowerLimit,
                     max: this.Joint.UpperLimit);
 
@@ -146,7 +148,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
                 // Set the joints speed
                 joint.MotorSpeed = diff * (1000f / 32f);
+
+                return angle == this.Joint.LowerLimit || angle == this.Joint.UpperLimit;
             }
+
+            return false;
         }
         #endregion
 
