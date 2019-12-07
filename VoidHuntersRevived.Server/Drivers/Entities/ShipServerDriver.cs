@@ -18,6 +18,10 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
     [IsDriver(typeof(Ship))]
     internal sealed class ShipServerDriver : Driver<Ship>
     {
+        #region Static Properties
+        private static Double TargetPingRate { get; set; } = 75;
+        #endregion
+
         #region Private Fields
         private ActionTimer _targetPingTimer;
         private Vector2 _oldTarget;
@@ -34,7 +38,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
         {
             base.Initialize();
 
-            _targetPingTimer = new ActionTimer(100);
+            _targetPingTimer = new ActionTimer(ShipServerDriver.TargetPingRate);
 
             this.driven.Events.TryAdd<Ship.Direction>("direction:changed", this.HandleDirectionChanged);
             this.driven.Events.TryAdd<Boolean>("firing:changed", this.HandleFiringChanged);

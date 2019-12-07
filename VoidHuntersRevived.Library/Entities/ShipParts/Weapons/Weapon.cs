@@ -11,6 +11,7 @@ using FarseerPhysics.Factories;
 using VoidHuntersRevived.Library.Extensions.Farseer;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using Microsoft.Extensions.Logging;
+using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 {
@@ -21,8 +22,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
     {
         #region Private Fields
         private RevoluteJoint _joint;
-        private Double _lastFire;
-        private Double _fireRate;
+        private ActionTimer _fireTimer;
         #endregion
 
         #region Public Properties
@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         {
             base.Initialize();
 
-            _fireRate = this.Configuration.GetData<WeaponConfiguration>().FireRate;
+            _fireTimer = new ActionTimer(this.Configuration.GetData<WeaponConfiguration>().FireRate);
 
             this.DefaultColor = Color.Red;
 
@@ -171,14 +171,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         #region Fire Methods
         public void TryFire(GameTime gameTime)
         {
-            _lastFire += gameTime.ElapsedGameTime.TotalMilliseconds;
-
-            if(this.OnTarget && this.Root.Ship != default(Ship) && this.Root.Ship.Firing && _lastFire >= _fireRate)
-            {
-                this.Fire();
-                _lastFire = 0;
-            }
-                
+            _fireTimer.Update(
+                gameTime: gameTime,
+                action: () => this.Fire(),
+                filter: () => this.OnTarget && this.Root.Ship != default(Ship) && this.Root.Ship.Firing); 
         }
 
         protected abstract void Fire();

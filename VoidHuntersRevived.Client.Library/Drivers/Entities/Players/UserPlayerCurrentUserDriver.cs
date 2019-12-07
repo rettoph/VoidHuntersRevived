@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
     internal sealed class UserPlayerCurrentUserDriver : Driver<UserPlayer>
     {
         #region Static Attributes
-        private static Double TargetPingRate { get; set; } = 150;
+        private static Double TargetPingRate { get; set; } = 75;
         #endregion
 
         #region Private Fields
@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 
             if(_client.User == this.driven.User)
             {
-                _targetPingTimer = new ActionTimer(150);
+                _targetPingTimer = new ActionTimer(UserPlayerCurrentUserDriver.TargetPingRate);
                 _update = this.LocalUpdate;
                 // _camera.ZoomLerp = 0.005f;
 

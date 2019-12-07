@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Library.Utilities
         {
             _lastTrigger += gameTime.ElapsedGameTime.TotalMilliseconds;
 
-            if (filter.Invoke() && _lastTrigger >= _interval)
+            if (_lastTrigger >= _interval && filter.Invoke())
             {
                 action.Invoke();
                 _lastTrigger = 0;
