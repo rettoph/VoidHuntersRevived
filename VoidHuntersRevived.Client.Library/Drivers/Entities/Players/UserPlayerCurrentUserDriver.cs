@@ -16,6 +16,7 @@ using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Utilities;
+using Microsoft.Extensions.Logging;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 {
@@ -26,12 +27,17 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
     [IsDriver(typeof(UserPlayer))]
     internal sealed class UserPlayerCurrentUserDriver : Driver<UserPlayer>
     {
+        #region Static Attributes
+        private static Double TargetPingRate { get; set; } = 150;
+        #endregion
+
         #region Private Fields
         private ClientPeer _client;
         private Action<GameTime> _update;
         private FarseerCamera2D _camera;
         private Pointer _pointer;
         private Sensor _sensor;
+        private ActionTimer _targetPingTimer;
         #endregion
 
         #region Constructor
@@ -51,6 +57,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 
             if(_client.User == this.driven.User)
             {
+                _targetPingTimer = new ActionTimer(150);
                 _update = this.LocalUpdate;
                 // _camera.ZoomLerp = 0.005f;
 
@@ -94,12 +101,37 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
                 // Update camera position
                 _camera.MoveTo(this.driven.Ship.Bridge.WorldCenter);
                 // Update the ship's target position
-                this.driven.Ship.SetTarget(_sensor.WorldCenter - this.driven.Ship.Bridge.WorldCenter);
+                this.TrySetTarget(_sensor.WorldCenter - this.driven.Ship.Bridge.WorldCenter, gameTime);
             }
         }
         #endregion
 
         #region Input Handlers
+        private void TrySetTarget(Vector2 target, GameTime gameTime)
+        {
+            this.driven.Ship.SetTarget(target);
+
+            _targetPingTimer.Update(gameTime, () =>
+            { // On the interval...
+                // Create an action to relay back to the server with the clients most up to date target
+                var action = this.driven.Actions.Create("target:change:request", NetDeliveryMethod.ReliableOrdered, 3);
+                action.Write(this.driven.Ship.Target);
+            });
+        }
+        private void TrySetFiring(Boolean value)
+        {
+            if (this.driven.Ship.Firing != value)
+            { // If the flag has not already been updated...
+                // Update the local ship, so the local user feels immediate response...
+                this.driven.Ship.SetFiring(value);
+
+                // Create an action to relay back to the server
+                var action = this.driven.Actions.Create("firing:change:request", NetDeliveryMethod.ReliableOrdered, 3);
+                action.Write(this.driven.Ship.Target);
+                action.Write(value);
+            }
+        }
+
         private void TryUpdateDirection(Ship.Direction direction, Boolean value)
         {
             if (this.driven.Ship.ActiveDirections.HasFlag(direction) != value)
@@ -168,7 +200,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             switch (button)
             {
                 case Pointer.Button.Left:
-                    // this.TrySetFiring(true);
+                    this.TrySetFiring(true);
                     break;
                 case Pointer.Button.Middle:
                     break;
@@ -183,7 +215,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             switch (button)
             {
                 case Pointer.Button.Left:
-                    // this.TrySetFiring(false);
+                    this.TrySetFiring(false);
                     break;
                 case Pointer.Button.Middle:
                     break;

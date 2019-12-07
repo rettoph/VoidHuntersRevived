@@ -35,6 +35,8 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
         {
             base.Initialize();
 
+            this.driven.Actions.TryAdd("target:change:request", this.HandleTargetChangeRequest);
+            this.driven.Actions.TryAdd("firing:change:request", this.HandleFiringChangeRequest);
             this.driven.Actions.TryAdd("direction:change:request", this.HandleDirectionChangeRequest);
             this.driven.Actions.TryAdd("tractor-beam:select:request", this.HandleTractorBeamSelectRequest);
             this.driven.Actions.TryAdd("tractor-beam:release:request", this.HandleTractorBeamReleaseRequest);
@@ -43,6 +45,23 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
         #endregion
 
         #region Action Handlers
+        private void HandleTargetChangeRequest(object sender, NetIncomingMessage im)
+        {
+            if (this.ValidateSender(im))
+            { // If the message checks out... update the ships target.
+                this.driven.Ship.SetTarget(im.ReadVector2());
+            }
+        }
+
+        private void HandleFiringChangeRequest(object sender, NetIncomingMessage im)
+        {
+            if (this.ValidateSender(im))
+            { // If the message checks out... update the ships target.
+                this.driven.Ship.SetTarget(im.ReadVector2());
+                this.driven.Ship.SetFiring(im.ReadBoolean());
+            }
+        }
+
         private void HandleDirectionChangeRequest(object sender, NetIncomingMessage im)
         {
             if (this.ValidateSender(im))

@@ -17,20 +17,29 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
     /// <summary>
     /// The base weapon class.
     /// </summary>
-    public class Weapon : ShipPart
+    public abstract class Weapon : ShipPart
     {
         #region Private Fields
         private RevoluteJoint _joint;
+        private Double _lastFire;
+        private Double _fireRate;
         #endregion
 
         #region Public Properties
         public RevoluteJoint Joint { get => _joint; }
+        /// <summary>
+        /// indicates that the weapon was succesfully able
+        /// to reach the desired target last update.
+        /// </summary>
+        public Boolean OnTarget { get; private set; }
         #endregion
 
         #region Lifecycle Methods
         protected override void Initialize()
         {
             base.Initialize();
+
+            _fireRate = this.Configuration.GetData<WeaponConfiguration>().FireRate;
 
             this.DefaultColor = Color.Red;
 
@@ -46,15 +55,18 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         {
             base.Update(gameTime);
 
-            this.Update(this.Root.Body, this.Body, this.Joint);
+            this.OnTarget = this.Update(this.Root.Body, this.Body, this.Joint);
+            this.TryFire(gameTime);
         }
 
-        public void Update(Body root, Body weapon, RevoluteJoint joint)
+        public Boolean Update(Body root, Body weapon, RevoluteJoint joint)
         {
             if (this.Root.Ship != default(Ship))
-                this.UpdateTarget(this.Root.Ship.WorldTarget, joint, weapon);
+                return this.UpdateTarget(this.Root.Ship.WorldTarget, joint, weapon);
             else
                 this.UpdatePosition(root, weapon);
+
+            return false;
         }
         #endregion
 
@@ -105,8 +117,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                 joint.MaxMotorTorque = 0.5f;
                 joint.MotorSpeed = 0.0f;
                 joint.LimitEnabled = true;
-                joint.LowerLimit = -MathHelper.PiOver2 / 2;
-                joint.UpperLimit = MathHelper.PiOver2 / 2;
+                joint.LowerLimit = -this.Configuration.GetData<WeaponConfiguration>().SwivelRange / 2;
+                joint.UpperLimit = this.Configuration.GetData<WeaponConfiguration>().SwivelRange / 2;
             }
         }
 
@@ -149,11 +161,27 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                 // Set the joints speed
                 joint.MotorSpeed = diff * (1000f / 32f);
 
-                return angle == this.Joint.LowerLimit || angle == this.Joint.UpperLimit;
+                return !(angle == this.Joint.LowerLimit || angle == this.Joint.UpperLimit);
             }
 
             return false;
         }
+        #endregion
+
+        #region Fire Methods
+        public void TryFire(GameTime gameTime)
+        {
+            _lastFire += gameTime.ElapsedGameTime.TotalMilliseconds;
+
+            if(this.OnTarget && this.Root.Ship != default(Ship) && this.Root.Ship.Firing && _lastFire >= _fireRate)
+            {
+                this.Fire();
+                _lastFire = 0;
+            }
+                
+        }
+
+        protected abstract void Fire();
         #endregion
 
         #region Event Handlers

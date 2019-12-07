@@ -15,6 +15,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Collections;
 using VoidHuntersRevived.Library.Configurations;
 using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Entities.Ammunitions;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
@@ -155,7 +156,11 @@ namespace VoidHuntersRevived.Library
             #endregion
 
             #region Weapons
-            var massDriver = new ShipPartConfiguration();
+            var massDriver = new GunConfiguration();
+            massDriver.SetSwivelRange(MathHelper.PiOver2);
+            massDriver.SetFireRate(250);
+            massDriver.SetFireStrength(10f);
+            massDriver.SetProjectileHandle("entity:ammunition:projectile:mass-driver");
             massDriver.AddVertice(0f, -0.15f);
             massDriver.AddVertice(0f, 0.15f);
             massDriver.AddVertice(0.6f, 0.075f);
@@ -163,12 +168,23 @@ namespace VoidHuntersRevived.Library
             massDriver.AddNode(0.15f, 0, MathHelper.Pi, ShipPartConfiguration.NodeType.Male);
             massDriver.Flush();
 
-            entities.TryRegister<Weapon>(
+            entities.TryRegister<Gun>(
                 handle: "entity:ship-part:weapon:mass-driver",
                 nameHandle: "name:entity:ship-part:weapon:mass-driver",
                 descriptionHandle: "description:entity:ship-part:weapon:mass-driver",
                 data: massDriver);
             #endregion
+            #endregion
+
+            #region Register Ammunitions
+            entities.TryRegister<Projectile>(
+                handle: "entity:ammunition:projectile:mass-driver",
+                nameHandle: "name:entity:ammunition:projectile:mass-driver", 
+                descriptionHandle: "description:entity:ammunition:projectile:mass-driver",
+                data: new ProjectileConfiguration()
+                {
+                    MaxAge = 5000
+                });
             #endregion
         }
     }

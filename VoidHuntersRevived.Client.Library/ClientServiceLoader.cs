@@ -45,6 +45,7 @@ namespace VoidHuntersRevived.Client.Library
             content.TryRegister("texture:entity:ship-part:thruster:small", "Sprites/entity_ship-part_thruster_small");
 
             content.TryRegister("texture:entity:ship-part:weapon:mass-driver", "Sprites/entity_ship-part_weapon_mass-driver");
+            content.TryRegister("texture:entity:ammunition:projectile:mass-driver", "Sprites/entity_ammunition_projectile_mass-driver");
             #endregion
 
             var entities = provider.GetRequiredService<EntityLoader>();

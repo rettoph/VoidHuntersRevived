@@ -80,6 +80,11 @@ namespace VoidHuntersRevived.Library.Entities
         /// The current Ship's total size
         /// </summary>
         public Int32 Size { get; private set; }
+
+        /// <summary>
+        /// Indicates that the ship is currently firing where possible.
+        /// </summary>
+        public Boolean Firing { get; private set; }
         #endregion
 
         #region Contructor
@@ -103,6 +108,7 @@ namespace VoidHuntersRevived.Library.Entities
             this.Events.Register<ShipPart>("bridge:changed");
             this.Events.Register<ShipPart>("bridge:chain:updated");
             this.Events.Register<Direction>("direction:changed");
+            this.Events.Register<Boolean>("firing:changed");
             this.Events.Register<Vector2>("target:changed");
 
             this.SetUpdateOrder(100);
@@ -170,6 +176,19 @@ namespace VoidHuntersRevived.Library.Entities
             {
                 this.ActiveDirections &= ~direction;
                 this.Events.TryInvoke<Direction>(this, "direction:changed", direction);
+            }
+        }
+
+        /// <summary>
+        /// Update the ship's current firing status.
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetFiring(Boolean value)
+        {
+            if(this.Firing != value)
+            {
+                this.Firing = value;
+                this.Events.TryInvoke<Boolean>(this, "firing:changed", this.Firing);
             }
         }
 
