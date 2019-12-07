@@ -53,8 +53,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         {
             if (this.Root.Ship != default(Ship))
                 this.UpdateTarget(this.Root.Ship.WorldTarget, joint, weapon);
-            // else
-            //     this.UpdatePosition(root, weapon);
+            else
+                this.UpdatePosition(root, weapon);
         }
         #endregion
 
@@ -119,7 +119,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         public void UpdatePosition(Body root, Body weapon)
         {
             weapon.SetTransformIgnoreContacts(
-                position: root.Position + Vector2.Transform(this.MaleConnectionNode.LocalPosition, this.LocalTransformation * Matrix.CreateRotationZ(root.Rotation)),
+                position: root.Position + Vector2.Transform(Vector2.Zero, this.LocalTransformation * Matrix.CreateRotationZ(root.Rotation)),
                 angle: root.Rotation + this.LocalRotation);
         }
 
@@ -139,7 +139,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                 // Calculate the joint should approach relative to the weapon body
                 var angle = MathHelper.Clamp(
                     value: MathHelper.WrapAngle(
-                        angle: (Single)Math.Atan2(offset.Y, offset.X) - root.Rotation),
+                        angle: (Single)Math.Atan2(offset.Y, offset.X) - this.MaleConnectionNode.LocalRotation - this.MaleConnectionNode.Target.WorldRotation),
                     min: this.Joint.LowerLimit,
                     max: this.Joint.UpperLimit);
 
