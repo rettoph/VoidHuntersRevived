@@ -11,6 +11,7 @@ using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Extensions.Farseer;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using Microsoft.Extensions.Logging;
+using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Server.Drivers.Entities
 {
@@ -28,7 +29,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
         #endregion
 
         #region Private Fields
-        private Double _lastVitalPing;
+        private ActionTimer _vitalPintTimer;
         #endregion
 
         #region Constructor
@@ -41,6 +42,8 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
         protected override void PreInitialize()
         {
             base.PreInitialize();
+
+            _vitalPintTimer = new ActionTimer(FarseerEntityServerDriver.VitalsPingRate);
         }
         #endregion
 
@@ -49,17 +52,15 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
         {
             base.Update(gameTime);
 
-            // Increase the ping tracker
-            _lastVitalPing += gameTime.ElapsedGameTime.TotalMilliseconds; 
-
-            if(this.driven.IsActive && this.driven.Body.IsSolidEnabled() && ((this.driven.Body.Awake && _lastVitalPing >= FarseerEntityServerDriver.VitalsPingRate) || this.driven.Controller is Chunk))
-            { // Only bother sending vital pings if the body is awake & there are any fixtures...
-                var action = this.driven.Actions.Create("update:vitals", NetDeliveryMethod.UnreliableSequenced, 2);
-                this.driven.Body.WriteVitals(action);
-
-                // Reset the ping tracker
-                _lastVitalPing %= FarseerEntityServerDriver.VitalsPingRate;
-            }
+            _vitalPintTimer.Update(
+                gameTime: gameTime,
+                action: () =>
+                {
+                    // Create a vital action & send the data...
+                    var action = this.driven.Actions.Create("update:vitals", NetDeliveryMethod.UnreliableSequenced, 2);
+                    this.driven.Body.WriteVitals(action);
+                },
+                filter: triggered => this.driven.IsActive && this.driven.Body.IsSolidEnabled() && ((this.driven.Body.Awake && triggered) || this.driven.Controller is Chunk));
         }
         #endregion
     }

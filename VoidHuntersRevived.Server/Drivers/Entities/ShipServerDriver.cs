@@ -57,10 +57,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
                     var action = this.driven.Actions.Create("target:changed", NetDeliveryMethod.UnreliableSequenced, 4);
                     action.Write(_oldTarget = this.driven.Target);
                 }, 
-                filter: () => 
-                { // Only boradcast a message if the target has changed...
-                    return _oldTarget != this.driven.Target;
-                });
+                filter: (triggered) => triggered && _oldTarget != this.driven.Target);
         }
         #endregion
 

@@ -174,7 +174,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             _fireTimer.Update(
                 gameTime: gameTime,
                 action: () => this.Fire(),
-                filter: () => this.OnTarget && this.Root.Ship != default(Ship) && this.Root.Ship.Firing); 
+                filter: (triggered) => triggered && this.OnTarget && this.Root.Ship != default(Ship) && this.Root.Ship.Firing); 
         }
 
         protected abstract void Fire();

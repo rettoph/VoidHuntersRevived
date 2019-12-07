@@ -19,12 +19,17 @@ namespace VoidHuntersRevived.Library.Utilities
             _interval = interval;
         }
 
-
-        public void Update(GameTime gameTime, Action action, Func<Boolean> filter)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="action"></param>
+        /// <param name="filter">Filter Action containing the current triggered state. True indicates that the last trigger has met or surpassed the interval rate.</param>
+        public void Update(GameTime gameTime, Action action, Func<Boolean, Boolean> filter)
         {
             _lastTrigger += gameTime.ElapsedGameTime.TotalMilliseconds;
 
-            if (_lastTrigger >= _interval && filter.Invoke())
+            if (filter.Invoke(_lastTrigger >= _interval))
             {
                 action.Invoke();
                 _lastTrigger = 0;
