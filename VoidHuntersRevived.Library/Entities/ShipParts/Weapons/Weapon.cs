@@ -53,8 +53,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         {
             if (this.Root.Ship != default(Ship))
                 this.UpdateTarget(this.Root.Ship.WorldTarget, joint, weapon);
-            else
-                this.UpdatePosition(root, weapon);
+            // else
+            //     this.UpdatePosition(root, weapon);
         }
         #endregion
 

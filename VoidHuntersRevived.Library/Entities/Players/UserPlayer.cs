@@ -35,8 +35,10 @@ namespace VoidHuntersRevived.Library.Entities.Players
         {
             base.ReadSetup(im);
 
-            if (im.ReadBoolean())
-                this.User = this.group.Users.GetById(im.ReadGuid());
+            Boolean test;
+            Guid id;
+            if (test = im.ReadBoolean())
+                this.User = this.group.Users.GetById(id = im.ReadGuid());
 
             if (this.User == null)
             {

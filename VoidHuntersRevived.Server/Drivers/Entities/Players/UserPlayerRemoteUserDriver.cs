@@ -68,7 +68,8 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
             if (this.ValidateSender(im))
             { // If the message checks out...
                 this.driven.Ship.SetTarget(im.ReadVector2());
-                if(!this.driven.Ship.TractorBeam.TryRelease())
+                this.driven.Ship.TractorBeam.Rotation = im.ReadSingle();
+                if(this.driven.Ship.TractorBeam.TryRelease() == default(ShipPart))
                 { // If the tractor beam is unable to release...
                     this.driven.Ship.Actions.Create("tractor-beam:release:request:denied", NetDeliveryMethod.ReliableOrdered, 4, im.SenderConnection); ;
                 }

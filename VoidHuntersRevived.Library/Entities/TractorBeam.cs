@@ -41,6 +41,12 @@ namespace VoidHuntersRevived.Library.Entities
         /// The currently selected target, if any
         /// </summary>
         public ShipPart Selected { get; private set; }
+        /// <summary>
+        /// The rigid rotation th tractor beam is setting all selections
+        /// to. This calus should auto update on select based on the 
+        /// targets current rotation.
+        /// </summary>
+        public Single Rotation { get; set; }
         #endregion
 
         #region Constructor
@@ -138,6 +144,8 @@ namespace VoidHuntersRevived.Library.Entities
                     target.MaleConnectionNode.Detach();
                     // Detach the recieved target, if it is connected to anything
                     this.Selected = target;
+                    this.Rotation = this.Selected.Rotation;
+
                     // Add the target to the controller
                     _controller.Add(target);
                     // Trigger the selected event
@@ -157,7 +165,8 @@ namespace VoidHuntersRevived.Library.Entities
         /// chunk.
         /// </summary>
         /// <param name="controller"></param>
-        public Boolean TryRelease()
+        /// <returns>The released ShipPart, if any.</returns>
+        public ShipPart TryRelease()
         {
             if(this.Selected != default(ShipPart))
             { // Only proceed if anything is selected
@@ -169,10 +178,10 @@ namespace VoidHuntersRevived.Library.Entities
                 // Invoke the released event
                 this.Events.TryInvoke<ShipPart>(this, "released", oldSelected);
 
-                return true;
+                return oldSelected;
             }
 
-            return false;
+            return default(ShipPart);
         }
 
         /// <summary>
@@ -210,6 +219,8 @@ namespace VoidHuntersRevived.Library.Entities
             body.CollidesWith = Categories.PassiveCollidesWith;
             body.IgnoreCCDWith = Categories.PassiveIgnoreCCDWith;
             body.BodyType = BodyType.Dynamic;
+            body.AngularVelocity = 0f;
+            body.LinearVelocity = Vector2.Zero;
         }
 
         /// <summary>
@@ -229,17 +240,17 @@ namespace VoidHuntersRevived.Library.Entities
                     // Just move to where the target is...
                     body.SetTransformIgnoreContacts(
                         position: this.Position - Vector2.Transform(component.Configuration.GetData<ShipPartConfiguration>().Centeroid, Matrix.CreateRotationZ(body.Rotation)),
-                        angle: body.Rotation);
+                        angle: this.Rotation);
                 }
                 else
                 { // If there is a valid female node...
                     // Rather than creating the attachment, we just want to move the selection
                     // so that a user can preview what it would look like when attached.
-                    var previewRotation = node.WorldRotation - this.Selected.MaleConnectionNode.LocalRotation;
+                    this.Rotation = node.WorldRotation - this.Selected.MaleConnectionNode.LocalRotation;
                     // Update the preview position
                     body.SetTransformIgnoreContacts(
-                        position: node.WorldPosition - Vector2.Transform(this.Selected.MaleConnectionNode.LocalPosition, Matrix.CreateRotationZ(previewRotation)),
-                        angle: previewRotation);
+                        position: node.WorldPosition - Vector2.Transform(this.Selected.MaleConnectionNode.LocalPosition, Matrix.CreateRotationZ(this.Rotation)),
+                        angle: this.Rotation);
                 }
             }
         }

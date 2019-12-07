@@ -136,10 +136,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 
             if(node == default(ConnectionNode))
             { // If there is no valid connection node in range...
-                if (this.driven.Ship.TractorBeam.TryRelease())
+                if (this.driven.Ship.TractorBeam.TryRelease() != default(ShipPart))
                 { // Write a release action to the server
                     var action = this.driven.Actions.Create("tractor-beam:release:request", NetDeliveryMethod.ReliableOrdered, 3);
                     action.Write(this.driven.Ship.Target);
+                    action.Write(this.driven.Ship.TractorBeam.Rotation);
                 }
             }
             else
