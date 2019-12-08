@@ -74,13 +74,21 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #endregion
 
         #region Helper Methods
+        protected override void TryClean(GameTime gameTime)
+        {
+            // Update all internal components
+            this.Components.TryUpdateAll(Chunk.EmptyGameTime);
+
+            // Continue the cleaning process...
+            base.TryClean(gameTime);
+        }
+
         public override bool Add(FarseerEntity entity)
         {
             if(this.Bounds.Contains(entity.Position.X, entity.Position.Y))
             { // If the entity resides within the current chunk...
                 if(base.Add(entity))
                 {
-                    entity.TryUpdate(Chunk.EmptyGameTime);
                     this.GetSurrounding().ForEach(c => c.Dirty = true);
                     return true;
                 }

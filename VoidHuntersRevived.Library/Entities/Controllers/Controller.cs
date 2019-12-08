@@ -97,7 +97,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         /// <summary>
         /// Clean the current chunk
         /// </summary>
-        private void TryClean(GameTime gameTime)
+        protected virtual void TryClean(GameTime gameTime)
         {
             if (this.Dirty)
             { // Clean the chunk if dirty
