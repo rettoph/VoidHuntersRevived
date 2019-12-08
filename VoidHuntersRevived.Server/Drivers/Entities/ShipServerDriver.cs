@@ -11,6 +11,7 @@ using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using Guppy.Collections;
 using VoidHuntersRevived.Library.Entities.Controllers;
+using System.IO;
 
 namespace VoidHuntersRevived.Server.Drivers.Entities
 {
@@ -29,12 +30,14 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
         private ActionTimer _targetPingTimer;
         private Vector2 _oldTarget;
         private EntityCollection _entities;
+        private ShipBuilder _shipBuilder;
         #endregion
 
         #region Contructor
-        public ShipServerDriver(EntityCollection entities, Ship driven) : base(driven)
+        public ShipServerDriver(ShipBuilder shipBuilder, EntityCollection entities, Ship driven) : base(driven)
         {
             _entities = entities;
+            _shipBuilder = shipBuilder;
         }
         #endregion
 
@@ -47,6 +50,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
 
             this.driven.Events.TryAdd<Ship.Direction>("direction:changed", this.HandleDirectionChanged);
             this.driven.Events.TryAdd<Boolean>("firing:changed", this.HandleFiringChanged);
+            this.driven.Events.TryAdd<ShipPart>("bridge:changed", this.HandleBridgeChanged);
         }
         #endregion
 
@@ -60,6 +64,9 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
             { // If the ship's bridge has no health...
                 // Destroy the old bridge...
                 this.driven.Bridge.Dispose();
+
+                using (FileStream input = File.OpenRead("Ships/mosquito.vh"))
+                    this.driven.SetBridge(_shipBuilder.Import(input));
             }
 
             _targetPingTimer.Update(
@@ -98,6 +105,18 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
             var action = this.driven.Actions.Create("firing:changed", NetDeliveryMethod.ReliableOrdered, 4);
             action.Write(this.driven.Target);
             action.Write(value);
+        }
+
+        /// <summary>
+        /// When a server's ship's bridge is changed we need
+        /// to broadcast the change to all connected clients.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="arg"></param>
+        private void HandleBridgeChanged(object sender, ShipPart arg)
+        {
+            var action = this.driven.Actions.Create("bridge:changed", NetDeliveryMethod.ReliableOrdered, 0);
+            action.Write(this.driven.Bridge);
         }
         #endregion
     }

@@ -90,6 +90,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                 if(base.Add(entity))
                 {
                     this.GetSurrounding().ForEach(c => c.Dirty = true);
+                    entity.Events.TryAdd<Boolean>("dirty:changed", this.HandleComponentDirtyChanged);
                     return true;
                 }
             }
@@ -107,6 +108,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             if(base.Remove(entity))
             {
                 this.GetSurrounding().ForEach(c => c.Dirty = true);
+                entity.Events.TryRemove<Boolean>("dirty:changed", this.HandleComponentDirtyChanged);
+
                 return true;
             }
 
@@ -138,6 +141,17 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             }
 
             return _surrounding;
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandleComponentDirtyChanged(object sender, bool arg)
+        {
+            if(arg)
+            {
+                this.Dirty = true;
+                this.GetSurrounding().ForEach(c => c.Dirty = true);
+            }
         }
         #endregion
     }

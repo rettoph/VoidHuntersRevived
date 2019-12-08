@@ -1,11 +1,13 @@
 ﻿using Guppy;
 using Guppy.Attributes;
+using Guppy.Collections;
 using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities
 {
@@ -15,9 +17,14 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
     [IsDriver(typeof(Ship))]
     internal sealed class ShipClientDriver : Driver<Ship>
     {
+        #region Private Fields
+        private EntityCollection _entities;
+        #endregion
+
         #region Constructor
-        public ShipClientDriver(Ship driven) : base(driven)
+        public ShipClientDriver(EntityCollection entities, Ship driven) : base(driven)
         {
+            _entities = entities;
         }
         #endregion
 
@@ -29,6 +36,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
             this.driven.Actions.TryAdd("target:changed", this.HandleTargetChangedAction);
             this.driven.Actions.TryAdd("firing:changed", this.HandleFiringChangedAction);
             this.driven.Actions.TryAdd("direction:changed", this.HandleDirectionChangedAction);
+            this.driven.Actions.TryAdd("bridge:changed", this.HandleBridgeChangedAction);
         }
         #endregion
 
@@ -47,6 +55,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
         private void HandleDirectionChangedAction(object sender, NetIncomingMessage arg)
         {
             this.driven.ReadDirection(arg);
+        }
+
+        private void HandleBridgeChangedAction(object sender, NetIncomingMessage arg)
+        {
+            this.driven.SetBridge(
+                target: arg.ReadEntity<ShipPart>(_entities));
         }
         #endregion
     }

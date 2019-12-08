@@ -130,7 +130,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                     this.FemaleConnectionNodes[i].Target?.Parent.CleanChain(ChainUpdate.Down);
 
             // Mark the internal chain as clean
-            this.dirty = ChainUpdate.None;
+            this.dirty &= ~directions;
         }
 
         public void GetOpenFemaleConnectionNodes(ref List<ConnectionNode> list)

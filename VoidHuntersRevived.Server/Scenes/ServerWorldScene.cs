@@ -52,14 +52,14 @@ namespace VoidHuntersRevived.Server.Scenes
             var size = 200;
             for(Int32 i=0; i<250; i++)
             {
-                this.entities.Create<ShipPart>("entity:ship-part:hull:triangle").Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
-                this.entities.Create<ShipPart>("entity:ship-part:hull:square").Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
-                this.entities.Create<ShipPart>("entity:ship-part:hull:hexagon").Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
-                this.entities.Create<ShipPart>("entity:ship-part:thruster:small").Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
-                this.entities.Create<ShipPart>("entity:ship-part:thruster:small").Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
-                this.entities.Create<ShipPart>("entity:ship-part:thruster:small").Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
-                this.entities.Create<ShipPart>("entity:ship-part:thruster:small").Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
-                this.entities.Create<ShipPart>("entity:ship-part:weapon:mass-driver").Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
+                this.entities.Create<ShipPart>("entity:ship-part:hull:triangle", e => e.Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi)));
+                this.entities.Create<ShipPart>("entity:ship-part:hull:square", e => e.Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi)));
+                this.entities.Create<ShipPart>("entity:ship-part:hull:hexagon", e => e.Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi)));
+                this.entities.Create<ShipPart>("entity:ship-part:thruster:small", e => e.Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi)));
+                this.entities.Create<ShipPart>("entity:ship-part:thruster:small", e => e.Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi)));
+                this.entities.Create<ShipPart>("entity:ship-part:thruster:small", e => e.Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi)));
+                this.entities.Create<ShipPart>("entity:ship-part:thruster:small", e => e.Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi)));
+                this.entities.Create<ShipPart>("entity:ship-part:weapon:mass-driver", e => e.Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi)));
             }
 
             this.entities.Create<ComputerPlayer>("entity:player:computer", p => {
