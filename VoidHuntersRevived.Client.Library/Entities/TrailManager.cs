@@ -134,15 +134,16 @@ namespace VoidHuntersRevived.Client.Library.Entities
                             Port = new Vector3(_thruster.Position, 0) + Vector3.Transform(Vector3.UnitX * 0.25f, Matrix.CreateRotationZ(_thruster.Rotation + MathHelper.PiOver2)),
                             Starboard = new Vector3(_thruster.Position, 0) + Vector3.Transform(Vector3.UnitX * 0.25f, Matrix.CreateRotationZ(_thruster.Rotation - MathHelper.PiOver2)),
                         };
+                        Color baseColor = Color.Lerp(Color.Red, _thruster.Color, _thruster.Health / 100);
                         Color curColor;
-                        Color lastColor = Color.Lerp(Color.Transparent, _thruster.Color, last.Strength * (1 - ((Single)last.Age / 2000f)));
+                        Color lastColor = Color.Lerp(Color.Transparent, baseColor, last.Strength * (1 - ((Single)last.Age / 2000f)));
 
 
                         for (Int32 i = count - 1; i >= 0; i--)
                         { // Starting from the second segment...
                             cur = _segments[i];
 
-                            curColor = Color.Lerp(Color.Transparent, _thruster.Color, cur.Strength * (1 - ((Single)cur.Age / 2000f)));
+                            curColor = Color.Lerp(Color.Transparent, baseColor, cur.Strength * (1 - ((Single)cur.Age / 2000f)));
 
                             // Update First triangle...
                             cur.Vertices[0].Position = cur.Port;
