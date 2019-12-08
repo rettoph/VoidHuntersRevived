@@ -8,6 +8,9 @@ using System.Text;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Network.Extensions.Lidgren;
+using VoidHuntersRevived.Library.Entities.ShipParts;
+using Guppy.Collections;
+using VoidHuntersRevived.Library.Entities.Controllers;
 
 namespace VoidHuntersRevived.Server.Drivers.Entities
 {
@@ -25,11 +28,13 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
         #region Private Fields
         private ActionTimer _targetPingTimer;
         private Vector2 _oldTarget;
+        private EntityCollection _entities;
         #endregion
 
         #region Contructor
-        public ShipServerDriver(Ship driven) : base(driven)
+        public ShipServerDriver(EntityCollection entities, Ship driven) : base(driven)
         {
+            _entities = entities;
         }
         #endregion
 
@@ -49,6 +54,13 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            // Check bridge health
+            if(this.driven.Bridge != default(ShipPart) && this.driven.Bridge.Health == 0)
+            { // If the ship's bridge has no health...
+                // Destroy the old bridge...
+                this.driven.Bridge.Dispose();
+            }
 
             _targetPingTimer.Update(
                 gameTime:gameTime, 

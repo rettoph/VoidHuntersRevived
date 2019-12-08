@@ -65,6 +65,7 @@ namespace VoidHuntersRevived.Library.Entities
             {
                 dc.OnSetupBody += this.HandleBodySetup;
                 dc.OnUpdateBody += this.HandleBodyUpdate;
+                dc.SetLocked(true);
             });
 
             this.SetEnabled(false);
@@ -101,7 +102,7 @@ namespace VoidHuntersRevived.Library.Entities
         public Boolean ValidateTarget(ShipPart target)
         {
             // Instant yes...
-            if (target.Controller is Chunk && target.IsRoot)
+            if (!target.Controller.Locked && target.IsRoot)
                 return true;
             if (!target.IsRoot && target.Root.Ship?.Id == this.Ship.Id)
                 return true;

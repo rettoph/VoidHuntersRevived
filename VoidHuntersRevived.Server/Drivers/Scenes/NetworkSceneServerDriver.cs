@@ -14,6 +14,7 @@ using VoidHuntersRevived.Library.Scenes;
 using Guppy.Network.Extensions.Lidgren;
 using System.Linq;
 using VoidHuntersRevived.Library.Extensions.Collections.Concurrent;
+using Microsoft.Extensions.Logging;
 
 namespace VoidHuntersRevived.Server.Drivers.Scenes
 {
@@ -141,6 +142,7 @@ namespace VoidHuntersRevived.Server.Drivers.Scenes
 
         private void CreateRemoveMessage(Guid id)
         {
+            this.logger.LogInformation($"Removing => {id}");
             var message = this.driven.Group.Messages.Create("entity:remove", NetDeliveryMethod.ReliableOrdered, 0);
             message.Write(id);
         }

@@ -120,7 +120,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
 
         private void HandleRemoveMessage(Guid id)
         {
-            _entities.GetById(_im.ReadGuid())?.Dispose();
+            this.logger.LogInformation($"Removing => {id}");
+            _entities.GetById(id)?.Dispose();
         }
         #endregion
     }

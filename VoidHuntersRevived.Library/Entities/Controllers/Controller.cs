@@ -16,14 +16,28 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
     /// </summary>
     public abstract class Controller : Entity
     {
+        #region Static Properties
+        private static GameTime EmptyGameTime { get; set; } = new GameTime();
+        #endregion
+
         #region Private Fields
         private HashSet<FarseerEntity> _components;
-        private Queue<FarseerEntity> _added;
         #endregion
 
         #region Public Properties
         public IReadOnlyCollection<FarseerEntity> Components { get => _components; }
         public Boolean Dirty { get; protected set; }
+        /// <summary>
+        /// Indicates that the components withing this controller
+        /// should be controlled soley by this controller.
+        /// 
+        /// That is, only the current controller should be
+        /// manipulating the entity.
+        /// 
+        /// Used primarily to mark what controllers the TractorBeam
+        /// is allowed to select from.
+        /// </summary>
+        public Boolean Locked { get; protected set; }
         #endregion
 
         #region Lifecycle Methods
@@ -32,7 +46,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             base.Create(provider);
 
             _components = new HashSet<FarseerEntity>();
-            _added = new Queue<FarseerEntity>();
+
+            this.Locked = false;
 
             this.Events.Register<GameTime>("cleaned");
         }
@@ -44,8 +59,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             // Auto remove any remaining components
             while (_components.Any())
                 this.Remove(_components.First());
-
-            _added.Clear();
         }
         #endregion
 
@@ -92,9 +105,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             if (this.Dirty)
             { // Clean the chunk if dirty
-                while (_added.Any()) // Auto update new components once
-                    _added.Dequeue().TryUpdate(gameTime);
-
                 this.Events.TryInvoke<GameTime>(this, "cleaned", gameTime);
 
                 this.Dirty = false;
@@ -105,9 +115,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             if(_components.Add(entity))
             {
-                _added.Enqueue(entity);
                 entity.SetController(this);
-                entity.Events.TryAdd<Creatable>("disposing", this.HandleComponentDisposing);
+                entity.TryUpdate(Controller.EmptyGameTime);
                 this.Dirty = true;
 
                 return true;
@@ -120,23 +129,12 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             if(_components.Remove(entity))
             {
-                entity.Events.TryRemove<Creatable>("disposing", this.HandleComponentDisposing);
                 this.Dirty = true;
 
                 return true;
             }
 
             return false;
-        }
-        #endregion
-
-        #region Event Handlers
-        protected virtual void HandleComponentDisposing(object sender, Creatable arg)
-        {
-            var entity = arg as FarseerEntity;
-            // Auto remove the item from the current controller
-            this.Remove(entity);
-            entity.SetController(null);
         }
         #endregion
     }

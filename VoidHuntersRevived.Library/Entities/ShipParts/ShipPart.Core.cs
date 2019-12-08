@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
+using Guppy;
 using Guppy.Extensions.Collection;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
@@ -32,6 +33,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public Boolean IsRoot { get => !this.MaleConnectionNode.Attached; }
         public override Boolean IsActive { get => this.IsRoot; }
         public Color Color { get => this.Root.Ship == default(Ship) ? this.Root.DefaultColor : new Color(1, 203, 226); }
+        public Single Health { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -55,12 +57,27 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             base.Initialize();
 
+            this.Health = 100;
+
             this.ConnectionNode_Initialize();
         }
 
         public override void Dispose()
         {
+            // By default, ShipParts will automatically create an explosion & add themselves to
+            // it when disposed, if their health is currently 0 & its not already in an explosion
+            if (this.Health == 0 && !(this.Controller is Explosion))
+            {
+                this.entities.Create<Explosion>("entity:explosion", e =>
+                {
+                    e.Add(this);
+                });
+            }
+
+            // Continue the normal disposal process...
             base.Dispose();
+
+            this.ConnectionNode_Dispose();
         }
         #endregion
 
@@ -97,6 +114,16 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             body.SetTransformIgnoreContacts(
                 position: root.Position + Vector2.Transform(Vector2.Zero, this.LocalTransformation * Matrix.CreateRotationZ(root.Rotation)),
                 angle: root.Rotation + this.LocalRotation);
+        }
+
+        /// <summary>
+        /// Damage the current ShipPart by a specific
+        /// amount.
+        /// </summary>
+        /// <param name="amount"></param>
+        public void Damage(Single amount)
+        {
+            this.Health -= amount;
         }
         #endregion
 
@@ -152,11 +179,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// <param name="arg"></param>
         private void HandleControllerChanged(object sender, Controller arg)
         {
-            this.FemaleConnectionNodes.ForEach(f =>
-            {
-                if (f.Attached)
-                    arg.Add(f.Target.Parent);
-            });
+            if (this.Status == InitializationStatus.Ready)
+            { // Children should only inherit if the current controller is Ready
+                this.FemaleConnectionNodes.ForEach(f =>
+                {
+                    if (f.Attached)
+                        arg.Add(f.Target.Parent);
+                });
+            }
         }
         #endregion
 

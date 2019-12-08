@@ -61,9 +61,9 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         #region Event Handlers
         private float HandleRayCastCollision(Fixture arg1, Vector2 arg2, Vector2 arg3, float arg4)
         {
-            if(arg1.UserData is ShipPart && (_target = arg1.UserData as ShipPart).Root != this.Weapon.Root && _target.Root.Ship != default(Ship))
+            if(arg1.UserData is ShipPart && (_target = arg1.UserData as ShipPart).Root != this.Weapon.Root && _target.Root.Ship != default(Ship) && _target.Health > 0)
             { // If the projectile collides with a ship part from another chain that is not the origin chain...
-
+                _target.Damage(10);
                 this.Dispose();
                 return 0;
             }

@@ -80,7 +80,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             // Create new fixtures for all vertices contained in the configuration
             this.Configuration.GetData<ShipPartConfiguration>().Vertices.ForEach(vertices =>
             {
-                body.CreateFixture(new PolygonShape(vertices, 0.01f), this);
+                body.CreateFixture(new PolygonShape(vertices, 0.5f), this);
             });
         }
 

@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                 p.Weapon = this;
                 p.Position = this.Joint.WorldAnchorB;
                 p.Rotation = rotation;
-                p.Velocity = this.Root.LinearVelocity + Vector2.Transform(Vector2.UnitX * this.Configuration.GetData<GunConfiguration>().FireStrength, Matrix.CreateRotationZ(rotation));
+                p.Velocity = this.LinearVelocity + Vector2.Transform(Vector2.UnitX * this.Configuration.GetData<GunConfiguration>().FireStrength, Matrix.CreateRotationZ(rotation));
             });
         }
         #endregion

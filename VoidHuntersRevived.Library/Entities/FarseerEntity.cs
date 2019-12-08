@@ -3,6 +3,7 @@ using FarseerPhysics.Factories;
 using Guppy;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,10 @@ namespace VoidHuntersRevived.Library.Entities
 {
     public class FarseerEntity : NetworkEntity 
     {
+        #region Private Fields
+        private Annex _annex;
+        #endregion
+
         #region Protected Properties
         protected World world { get; private set; }
         protected ChunkCollection chunks { get; private set; }
@@ -42,7 +47,8 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Create(provider);
 
-            // load the current world instance
+            _annex = provider.GetRequiredService<Annex>();
+
             this.world = provider.GetRequiredService<World>();
             this.chunks = provider.GetRequiredService<ChunkCollection>();
 
@@ -81,8 +87,9 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Dispose();
 
-            this.Body.Dispose();
-            this.SetController(null);
+            this.Controller?.Remove(this);
+            this.SetController(_annex);
+            this.Body.Dispose(withFixtures: true);
         }
         #endregion
 
@@ -92,7 +99,7 @@ namespace VoidHuntersRevived.Library.Entities
             base.Update(gameTime);
 
             // Allow the controller to manipulate the internal body if needed
-            if(this.Body.IsSolidEnabled())
+            if (this.Body.IsSolidEnabled())
                 this.Controller.UpdateBody(this, this.Body);
         }
         #endregion
@@ -107,6 +114,9 @@ namespace VoidHuntersRevived.Library.Entities
         #region Helper Methods
         internal void SetController(Controller controller)
         {
+            if (controller == default(Controller))
+                throw new Exception("Unable to use null Controller. Please use the Annex instead.");
+
             if (controller != this.Controller)
             {
                 // Auto remove the component from its old controller

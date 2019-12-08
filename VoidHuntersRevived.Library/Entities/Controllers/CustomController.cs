@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
     /// It is expected that a managing entity will manually call
     /// the TryUpdate & TryDraw methods.
     /// </summary>
-    public class CustomController : Controller
+    public class CustomController : SimpleController
     {
         #region Public Properties
         public delegate void BodyDelegate(FarseerEntity component, Body body);
@@ -51,6 +51,13 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
             // Invoke all custom update methods
             this.OnUpdateBody?.Invoke(component, body);
+        }
+        #endregion
+
+        #region Set Methods
+        public void SetLocked(Boolean value)
+        {
+            this.Locked = value;
         }
         #endregion
 

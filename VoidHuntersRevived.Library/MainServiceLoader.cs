@@ -34,6 +34,7 @@ namespace VoidHuntersRevived.Library
         {
             Settings.MaxPolygonVertices = 16;
 
+            services.AddScoped<Annex>(p => p.GetRequiredService<EntityCollection>().Create<Annex>("entity:annex"));
             services.AddScoped<World>(p => new World(Vector2.Zero));
             services.AddScoped<ChunkCollection>();
 
@@ -60,6 +61,8 @@ namespace VoidHuntersRevived.Library
 
             entities.TryRegister<UserPlayer>("entity:player:user", "name:entity:player:user", "description:entity:player:user");
 
+            entities.TryRegister<Annex>("entity:annex", "name:entity:annex", "description:entity:annex");
+            entities.TryRegister<Explosion>("entity:explosion", "name:entity:explosion", "description:entity:explosion");
             entities.TryRegister<Chunk>("entity:chunk", "name:entity:chunk", "description:entity:chunk");
             entities.TryRegister<CustomController>("entity:custom-controller", "name:entity:custom-controller", "description:entity:custom-controller");
 

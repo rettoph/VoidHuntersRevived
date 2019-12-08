@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
     /// for cheap FarseerEntitys when they are sitting 
     /// in the background.
     /// </summary>
-    public sealed class Chunk : Controller
+    public sealed class Chunk : SimpleController
     {
         #region Static Properties
         public static Single Size { get; private set; } = 16;

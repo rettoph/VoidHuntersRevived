@@ -103,6 +103,7 @@ namespace VoidHuntersRevived.Library.Entities
             _controller = this.entities.Create<CustomController>("entity:custom-controller", dc =>
             {
                 dc.OnSetupBody += this.CustomBodySetup;
+                dc.SetLocked(true);
             });
 
             this.Events.Register<ShipPart>("bridge:changed");
@@ -198,8 +199,6 @@ namespace VoidHuntersRevived.Library.Entities
             { // Only proceed if the target is not already the current bridge...
                 // Auto release the tractor beam if possible
                 this.TractorBeam?.TryRelease();
-
-                
 
                 if (this.Bridge != default(ShipPart))
                 { // If the old bridge was not null...

@@ -47,6 +47,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
             this.driven.Actions.TryAdd("update:vitals", this.HandleUpdateVitalsAction);
             this.driven.Events.TryAdd<Controller>("controller:changed", this.HandleControllerChanged);
         }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            _shadow.Dispose(withFixtures: true);
+        }
         #endregion
 
         #region Frame Methods
@@ -85,7 +92,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
                 _controller = arg;
             }
             // Auto setup the shadow body
-            arg.SetupBody(this.driven, _shadow);
+            arg?.SetupBody(this.driven, _shadow);
         }
         #endregion
 
