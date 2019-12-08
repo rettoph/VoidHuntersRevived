@@ -38,6 +38,7 @@ namespace VoidHuntersRevived.Library
             services.AddScoped<World>(p => new World(Vector2.Zero));
             services.AddScoped<ShipBuilder>();
             services.AddScoped<ChunkCollection>();
+            services.AddScoped<List<Player>>();
 
             services.AddSingleton<NetPeerConfiguration>(p =>
             {
@@ -61,6 +62,7 @@ namespace VoidHuntersRevived.Library
             var entities = provider.GetRequiredService<EntityLoader>();
 
             entities.TryRegister<UserPlayer>("entity:player:user", "name:entity:player:user", "description:entity:player:user");
+            entities.TryRegister<ComputerPlayer>("entity:player:computer", "name:entity:player:computer", "description:entity:player:computer");
 
             entities.TryRegister<Annex>("entity:annex", "name:entity:annex", "description:entity:annex");
             entities.TryRegister<Explosion>("entity:explosion", "name:entity:explosion", "description:entity:explosion");

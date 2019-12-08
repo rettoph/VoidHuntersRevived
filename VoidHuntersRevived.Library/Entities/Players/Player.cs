@@ -1,5 +1,6 @@
 ﻿using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,9 +9,36 @@ namespace VoidHuntersRevived.Library.Entities.Players
 {
     public abstract class Player : NetworkEntity
     {
+        #region Protected Properties
+        protected List<Player> players { get; private set; }
+        #endregion
+
         #region Public Properties
         public abstract String Name { get; }
         public Ship Ship { get; private set; }
+        #endregion
+
+        #region Lifecycle Methods
+        protected override void Create(IServiceProvider provider)
+        {
+            base.Create(provider);
+
+            this.players = provider.GetRequiredService<List<Player>>();
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            this.players.Add(this);
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.players.Remove(this);
+        }
         #endregion
 
         #region Setter Methods
