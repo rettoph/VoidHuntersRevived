@@ -40,6 +40,11 @@ namespace VoidHuntersRevived.Library.Entities
         /// should set this value to false.
         /// </summary>
         public virtual Boolean IsActive { get => true; }
+        /// <summary>
+        /// Indicates that the current ShipPart is dirty 
+        /// and should be cleaned next frame.
+        /// </summary>
+        public Boolean Dirty { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -54,6 +59,8 @@ namespace VoidHuntersRevived.Library.Entities
 
             // Create internal events
             this.Events.Register<Controller>("controller:changed");
+            this.Events.Register<Boolean>("dirty:changed");
+            this.Events.Register<GameTime>("clean");
         }
 
         protected override void PreInitialize()
@@ -62,6 +69,8 @@ namespace VoidHuntersRevived.Library.Entities
 
             // Create a new body for this instance
             this.Body = this.CreateBody(this.world);
+
+            this.Dirty = true;
         }
 
         protected override void Initialize()
@@ -98,6 +107,12 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Update(gameTime);
 
+            if(this.Dirty)
+            { // If the curent entity is dirty...
+                this.Events.TryInvoke<GameTime>(this, "clean", gameTime);
+                this.SetDirty(false);
+            }
+
             // Allow the controller to manipulate the internal body if needed
             if (this.Body.IsSolidEnabled())
                 this.Controller.UpdateBody(this, this.Body);
@@ -130,6 +145,16 @@ namespace VoidHuntersRevived.Library.Entities
                 this.Controller?.SetupBody(this, this.Body);
 
                 this.Events.TryInvoke<Controller>(this, "controller:changed", this.Controller);
+            }
+        }
+        
+        public void SetDirty(Boolean value)
+        {
+            if(this.Dirty != value)
+            {
+                this.Dirty = value;
+
+                this.Events.TryInvoke<Boolean>(this, "dirty:changed", this.Dirty);
             }
         }
         #endregion

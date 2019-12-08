@@ -76,6 +76,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 .Select((female_config, idx) => _connectionNodefactory.Build<ConnectionNode>(node => node.Configure(idx, this, female_config)))
                 .ToArray();
 
+            this.Events.TryAdd<GameTime>("clean", this.ConnectionNode_HandleClean);
+
             // Bind event listeners tto automatically remap connection node data on a male attachment or female detachment
             this.MaleConnectionNode.Events.TryAdd<ConnectionNode>("attached", (s, n) =>
             {
@@ -84,6 +86,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                     this.Root.Controller.Add(this);
 
                 this.dirty |= ChainUpdate.Both;
+                this.SetDirty(true);
             });
             this.MaleConnectionNode.Events.TryAdd<ConnectionNode>("detached", (s, n) =>
             {
@@ -92,7 +95,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
                 // Mark the current & old parent chain dirty
                 this.dirty |= ChainUpdate.Down;
-                n.Parent.dirty |= ChainUpdate.Up;            
+                n.Parent.dirty |= ChainUpdate.Up;
+                this.SetDirty(true);
+                n.Parent.SetDirty(true);
             });
 
             // Mark the current ShipPart as dirty by default
@@ -103,14 +108,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             this.MaleConnectionNode.Dispose();
             this.FemaleConnectionNodes.ForEach(f => f.Dispose());
-        }
-        #endregion
-
-        #region Frame Methods
-        protected void Update_ConnectionNode(GameTime gameTime)
-        {
-            if(this.dirty != ChainUpdate.None)
-                this.CleanChain(this.dirty);
         }
         #endregion
 
@@ -143,6 +140,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                     female.Target.Parent.GetOpenFemaleConnectionNodes(ref list);
                 else
                     list.Add(female);
+        }
+        #endregion
+
+        #region Event Handler
+        private void ConnectionNode_HandleClean(object sender, GameTime arg)
+        {
+            if (this.dirty != ChainUpdate.None)
+                this.CleanChain(this.dirty);
         }
         #endregion
 

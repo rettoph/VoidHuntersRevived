@@ -81,15 +81,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         }
         #endregion
 
-        #region Frame Methods
-        protected override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-
-            this.Update_ConnectionNode(gameTime);
-        }
-        #endregion
-
         #region Farseer Methods
         public override Body CreateBody(World world)
         {
