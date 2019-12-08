@@ -16,10 +16,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
     /// </summary>
     public abstract class Controller : Entity
     {
-        #region Static Properties
-        private static GameTime EmptyGameTime { get; set; } = new GameTime();
-        #endregion
-
         #region Private Fields
         private HashSet<FarseerEntity> _components;
         #endregion
@@ -116,7 +112,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             if(_components.Add(entity))
             {
                 entity.SetController(this);
-                entity.TryUpdate(Controller.EmptyGameTime);
                 this.Dirty = true;
 
                 return true;

@@ -36,6 +36,7 @@ namespace VoidHuntersRevived.Library
 
             services.AddScoped<Annex>(p => p.GetRequiredService<EntityCollection>().Create<Annex>("entity:annex"));
             services.AddScoped<World>(p => new World(Vector2.Zero));
+            services.AddScoped<ShipBuilder>();
             services.AddScoped<ChunkCollection>();
 
             services.AddSingleton<NetPeerConfiguration>(p =>

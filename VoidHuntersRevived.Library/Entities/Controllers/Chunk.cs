@@ -80,6 +80,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             { // If the entity resides within the current chunk...
                 if(base.Add(entity))
                 {
+                    entity.TryUpdate(Chunk.EmptyGameTime);
                     this.GetSurrounding().ForEach(c => c.Dirty = true);
                     return true;
                 }

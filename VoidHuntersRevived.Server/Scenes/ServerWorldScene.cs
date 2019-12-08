@@ -10,11 +10,24 @@ using VoidHuntersRevived.Library.Extensions.System;
 using VoidHuntersRevived.Library.Extensions.Farseer;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Layers;
+using System.IO;
+using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Server.Scenes
 {
     public class ServerWorldScene : WorldScene
     {
+        #region Private Fields
+        private ShipBuilder _shipBuilder;
+        #endregion
+
+        #region Constructor
+        public ServerWorldScene(ShipBuilder shipBuilder)
+        {
+            _shipBuilder = shipBuilder;
+        }
+        #endregion
+
         #region Lifecycle Methods
         protected override void Initialize()
         {
@@ -58,7 +71,12 @@ namespace VoidHuntersRevived.Server.Scenes
                 p.User = arg;
                 p.SetShip(this.entities.Create<Ship>("entity:ship", s =>
                 {
-                    s.SetBridge(this.entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
+                    using (FileStream input = File.OpenRead("Ships/mosquito.vh"))
+                       s.SetBridge(_shipBuilder.Import(input));
+                    // s.SetBridge(this.entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
+
+                    var rand = new Random();
+                    s.Bridge.Body.SetTransformIgnoreContacts(rand.NextVector2(-15, 15), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
                 }));
             });
         }

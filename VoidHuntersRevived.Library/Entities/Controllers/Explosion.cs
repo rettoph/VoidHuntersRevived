@@ -85,9 +85,9 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             base.SetupBody(component, body);
 
-            body.CollisionCategories = Categories.ActiveCollisionCategories;
-            body.CollidesWith = Categories.ActiveCollidesWith;
-            body.IgnoreCCDWith = Categories.ActiveIgnoreCCDWith;
+            body.CollisionCategories = Categories.PassiveCollisionCategories;
+            body.CollidesWith = Categories.PassiveCollidesWith;
+            body.IgnoreCCDWith = Categories.PassiveIgnoreCCDWith;
             body.BodyType = BodyType.Dynamic;
 
             var offset = body.Position - _sourcePosition;
