@@ -142,7 +142,6 @@ namespace VoidHuntersRevived.Server.Drivers.Scenes
 
         private void CreateRemoveMessage(Guid id)
         {
-            this.logger.LogInformation($"Removing => {id}");
             var message = this.driven.Group.Messages.Create("entity:remove", NetDeliveryMethod.ReliableOrdered, 0);
             message.Write(id);
         }
@@ -151,14 +150,25 @@ namespace VoidHuntersRevived.Server.Drivers.Scenes
         #region Event Handlers
         private void HandleEntityAdded(object sender, Entity arg)
         {
-            if(arg is NetworkEntity)
+            if (arg is NetworkEntity)
+            {
                 _creates.Enqueue(arg as NetworkEntity);
+                arg.Events.TryAdd<GameTime>("clean", this.HandleEntityUpdated);
+            }
+        }
+
+        private void HandleEntityUpdated(object sender, GameTime arg)
+        {
+            _updates.Enqueue(sender as NetworkEntity);
         }
 
         private void HandleEntityRemoved(object sender, Entity arg)
         {
             if (arg is NetworkEntity)
+            {
                 _removes.Enqueue((arg as NetworkEntity).Id);
+                arg.Events.TryRemove<GameTime>("clean", this.HandleEntityUpdated);
+            }
         }
 
         private void HandleUserAdded(object sender, User arg)

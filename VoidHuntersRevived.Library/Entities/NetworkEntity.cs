@@ -3,6 +3,7 @@ using Guppy.Collections;
 using Guppy.Network.Groups;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,6 +16,11 @@ namespace VoidHuntersRevived.Library.Entities
     {
         #region Public Properties
         public ActionMessageDelegater Actions { get; private set; }
+        /// <summary>
+        /// Indicates that the current ShipPart is dirty 
+        /// and should be cleaned next frame.
+        /// </summary>
+        public Boolean Dirty { get; private set; }
         #endregion
 
         #region Protected Fields
@@ -32,6 +38,16 @@ namespace VoidHuntersRevived.Library.Entities
 
             this.entities = provider.GetRequiredService<EntityCollection>();
             this.group = provider.GetRequiredService<NetworkScene>().Group;
+
+            this.Events.Register<Boolean>("dirty:changed");
+            this.Events.Register<GameTime>("clean");
+        }
+
+        protected override void PreInitialize()
+        {
+            base.PreInitialize();
+
+            this.Dirty = true;
         }
 
         public override void Dispose()
@@ -40,6 +56,31 @@ namespace VoidHuntersRevived.Library.Entities
 
             // Dispose of the earlier delegater
             this.Actions.Dispose();
+        }
+        #endregion
+
+        #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if (this.Dirty)
+            { // If the curent entity is dirty...
+                this.Events.TryInvoke<GameTime>(this, "clean", gameTime);
+                this.SetDirty(false);
+            }
+        }
+        #endregion
+
+        #region Helper Methods
+        public void SetDirty(Boolean value)
+        {
+            if (this.Dirty != value)
+            {
+                this.Dirty = value;
+
+                this.Events.TryInvoke<Boolean>(this, "dirty:changed", this.Dirty);
+            }
         }
         #endregion
 

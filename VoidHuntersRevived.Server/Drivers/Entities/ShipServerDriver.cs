@@ -12,6 +12,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using Guppy.Collections;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using System.IO;
+using Microsoft.Extensions.Logging;
 
 namespace VoidHuntersRevived.Server.Drivers.Entities
 {
@@ -115,7 +116,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
         /// <param name="arg"></param>
         private void HandleBridgeChanged(object sender, ShipPart arg)
         {
-            var action = this.driven.Actions.Create("bridge:changed", NetDeliveryMethod.ReliableOrdered, 0);
+            var action = this.driven.Actions.Create("bridge:changed", NetDeliveryMethod.ReliableOrdered, 4);
             action.Write(this.driven.Bridge);
         }
         #endregion

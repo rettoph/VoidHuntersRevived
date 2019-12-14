@@ -195,7 +195,7 @@ namespace VoidHuntersRevived.Library.Entities
 
         public void SetBridge(ShipPart target)
         {
-            if(target != this.Bridge)
+            if (target != this.Bridge)
             { // Only proceed if the target is not already the current bridge...
                 // Auto release the tractor beam if possible
                 this.TractorBeam?.TryRelease();
@@ -225,6 +225,7 @@ namespace VoidHuntersRevived.Library.Entities
                     // Add new events
                     this.Bridge.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleBridgeShipPartChainUpdated);
                     this.Bridge.Events.TryAdd<Creatable>("disposing", this.HandleBridgeDisposing);
+                    this.SetDirty(true);
                 }
 
                 // Invoke required events

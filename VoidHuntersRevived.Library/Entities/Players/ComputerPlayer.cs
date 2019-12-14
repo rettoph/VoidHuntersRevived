@@ -52,12 +52,12 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
                     // Change the velocity
                     var distace = Vector2.Distance(this.Ship.Bridge.WorldCenter, nearest.Ship.Bridge.WorldCenter);
-                    if (distace > 20)
+                    if (distace > 30)
                     {
                         this.Ship.SetDirection(Ship.Direction.Forward, true);
                         this.Ship.SetDirection(Ship.Direction.Backward, false);
                     }
-                    else if (distace < 10)
+                    else if (distace < 25)
                     {
                         this.Ship.SetDirection(Ship.Direction.Forward, false);
                         this.Ship.SetDirection(Ship.Direction.Backward, true);
