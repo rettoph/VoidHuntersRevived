@@ -13,6 +13,8 @@ using Guppy.Collections;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using System.IO;
 using Microsoft.Extensions.Logging;
+using VoidHuntersRevived.Library.Extensions.System;
+using VoidHuntersRevived.Library.Extensions.Farseer;
 
 namespace VoidHuntersRevived.Server.Drivers.Entities
 {
@@ -68,6 +70,11 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
 
                 using (FileStream input = File.OpenRead("Ships/mosquito.vh"))
                     this.driven.SetBridge(_shipBuilder.Import(input));
+
+                var rand = new Random();
+                this.driven.Bridge.Body.SetTransformIgnoreContacts(
+                    rand.NextVector2(-100, 100),
+                    rand.NextSingle(MathHelper.Pi, MathHelper.Pi));
             }
 
             _targetPingTimer.Update(

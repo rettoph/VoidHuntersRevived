@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Library.Collections
 
             if((output = this.GetById(position.Id)) == default(Chunk) && create)
             { // Create a brand new chunk
-                output = _entities.Create<Chunk>("entity:chunk", c =>
+                return _entities.Create<Chunk>("entity:chunk", c =>
                 {
                     c.SetId(position.Id);
                     c.Position = position;

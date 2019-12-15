@@ -10,6 +10,7 @@ using VoidHuntersRevived.Library.Extensions.Farseer;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.Collection;
 using Microsoft.Extensions.Logging;
+using VoidHuntersRevived.Library.Extensions.System.Collections;
 
 namespace VoidHuntersRevived.Library.Entities.Controllers
 {
@@ -89,7 +90,14 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             { // If the entity resides within the current chunk...
                 if(base.Add(entity))
                 {
-                    this.GetSurrounding().ForEach(c => c.Dirty = true);
+                    this.GetSurrounding().ForEach(c =>
+                    {
+                        if(c == null)
+                        {
+                            var test = this;
+                        }
+                        c.Dirty = true;
+                    });
                     entity.Events.TryAdd<Boolean>("dirty:changed", this.HandleComponentDirtyChanged);
                     return true;
                 }
@@ -126,18 +134,21 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             if (_surrounding == default(IEnumerable<Chunk>))
             {
                 var list = new List<Chunk>();
-                list.Add(_chunks.Get(this.Position.X + Chunk.Size, this.Position.Y + Chunk.Size, create));
-                list.Add(_chunks.Get(this.Position.X + 0, this.Position.Y + Chunk.Size, create));
-                list.Add(_chunks.Get(this.Position.X - Chunk.Size, this.Position.Y + Chunk.Size, create));
+                list.AddIfNotNull(_chunks.Get(this.Position.X + Chunk.Size, this.Position.Y + Chunk.Size, create));
+                list.AddIfNotNull(_chunks.Get(this.Position.X + 0, this.Position.Y + Chunk.Size, create));
+                list.AddIfNotNull(_chunks.Get(this.Position.X - Chunk.Size, this.Position.Y + Chunk.Size, create));
 
-                list.Add(_chunks.Get(this.Position.X - Chunk.Size, this.Position.Y + 0, create));
-                list.Add(_chunks.Get(this.Position.X + Chunk.Size, this.Position.Y + 0, create));
+                list.AddIfNotNull(_chunks.Get(this.Position.X - Chunk.Size, this.Position.Y + 0, create));
+                list.AddIfNotNull(_chunks.Get(this.Position.X + Chunk.Size, this.Position.Y + 0, create));
 
-                list.Add(_chunks.Get(this.Position.X + Chunk.Size, this.Position.Y - Chunk.Size, create));
-                list.Add(_chunks.Get(this.Position.X + 0, this.Position.Y - Chunk.Size, create));
-                list.Add(_chunks.Get(this.Position.X - Chunk.Size, this.Position.Y - Chunk.Size, create));
+                list.AddIfNotNull(_chunks.Get(this.Position.X + Chunk.Size, this.Position.Y - Chunk.Size, create));
+                list.AddIfNotNull(_chunks.Get(this.Position.X + 0, this.Position.Y - Chunk.Size, create));
+                list.AddIfNotNull(_chunks.Get(this.Position.X - Chunk.Size, this.Position.Y - Chunk.Size, create));
 
-                _surrounding = list;
+                if (create || list.Count == 8)
+                    _surrounding = list;
+                else
+                    return list;
             }
 
             return _surrounding;

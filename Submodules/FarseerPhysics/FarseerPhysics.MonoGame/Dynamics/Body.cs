@@ -73,6 +73,7 @@ namespace FarseerPhysics.Dynamics
         internal Vector2 _linearVelocity;
         internal Vector2 _force;
         internal float _invI;
+
         internal float _invMass;
         internal float _sleepTime;
         internal Sweep _sweep; // the swept motion for CCD

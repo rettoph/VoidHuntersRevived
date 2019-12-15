@@ -12,6 +12,7 @@ using VoidHuntersRevived.Library.Extensions.Farseer;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using Microsoft.Extensions.Logging;
 using VoidHuntersRevived.Library.Utilities;
+using VoidHuntersRevived.Library.Extensions.System;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 {
@@ -62,7 +63,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         public Boolean Update(Body root, Body weapon, RevoluteJoint joint)
         {
             if (this.Root.Ship != default(Ship))
-                return this.UpdateTarget(this.Root.Ship.WorldTarget, joint, weapon);
+                return this.UpdateTarget(this.Root.Ship.WorldTarget, joint, root, weapon);
             else
                 this.UpdatePosition(root, weapon);
 
@@ -130,9 +131,28 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         /// <param name="weapon"></param>
         public void UpdatePosition(Body root, Body weapon)
         {
+            this.UpdatePosition(root, weapon, root.Rotation + this.LocalRotation);
+        }
+        /// <summary>
+        /// Update the weapon's current position relative to the
+        /// recieved root body with a custom angle.
+        /// </summary>
+        /// <param name="root"></param>
+        /// <param name="weapon"></param>
+        /// <param name="rotation"></param>
+        public void UpdatePosition(Body root, Body weapon, Single rotation)
+        {
+            var offset = Vector2.Transform(this.MaleConnectionNode.LocalPosition, Matrix.CreateRotationZ(rotation) * this.MaleConnectionNode.LocalRotationMatrix);
+            var translation = Matrix.CreateTranslation(offset.X, offset.Y, 0);
+
             weapon.SetTransformIgnoreContacts(
-                position: root.Position + Vector2.Transform(Vector2.Zero, this.LocalTransformation * Matrix.CreateRotationZ(root.Rotation)),
-                angle: root.Rotation + this.LocalRotation);
+                position: root.Position + Vector2.Transform(
+                    position: this.MaleConnectionNode.LocalPosition, 
+                    matrix:
+                    this.LocalTransformation *
+                    Matrix.CreateRotationZ(root.Rotation) *
+                    translation),
+                angle: rotation);
         }
 
         /// <summary>
@@ -142,7 +162,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         /// <param name="joint"></param>
         /// <param name="root"></param>
         /// <returns>Whether or not the weapon is able to reach the requested target.</returns>
-        public Boolean UpdateTarget(Vector2 target, RevoluteJoint joint, Body root)
+        public Boolean UpdateTarget(Vector2 target, RevoluteJoint joint, Body root, Body weapon)
         {
             if(joint != default(RevoluteJoint) && !(this.Controller is Chunk))
             { // Only update the target if the weapon is not in a controller...
@@ -160,6 +180,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
                 // Set the joints speed
                 joint.MotorSpeed = diff * (1000f / 32f);
+
+                this.UpdatePosition(root, weapon, weapon.Rotation);
 
                 return !(angle == this.Joint.LowerLimit || angle == this.Joint.UpperLimit);
             }
