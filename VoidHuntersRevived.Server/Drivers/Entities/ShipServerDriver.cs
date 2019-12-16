@@ -33,14 +33,12 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
         private ActionTimer _targetPingTimer;
         private Vector2 _oldTarget;
         private EntityCollection _entities;
-        private ShipBuilder _shipBuilder;
         #endregion
 
         #region Contructor
-        public ShipServerDriver(ShipBuilder shipBuilder, EntityCollection entities, Ship driven) : base(driven)
+        public ShipServerDriver(EntityCollection entities, Ship driven) : base(driven)
         {
             _entities = entities;
-            _shipBuilder = shipBuilder;
         }
         #endregion
 
@@ -67,14 +65,6 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
             { // If the ship's bridge has no health...
                 // Destroy the old bridge...
                 this.driven.Bridge.Dispose();
-
-                using (FileStream input = File.OpenRead("Ships/mosquito.vh"))
-                    this.driven.SetBridge(_shipBuilder.Import(input));
-
-                var rand = new Random();
-                this.driven.Bridge.Body.SetTransformIgnoreContacts(
-                    rand.NextVector2(-100, 100),
-                    rand.NextSingle(MathHelper.Pi, MathHelper.Pi));
             }
 
             _targetPingTimer.Update(

@@ -3,12 +3,15 @@ using Guppy.Attributes;
 using Guppy.Collections;
 using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
+using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.IO;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Extensions.System;
+using VoidHuntersRevived.Library.Utilities;
+using VoidHuntersRevived.Library.Extensions.Farseer;
 
 namespace VoidHuntersRevived.Server.Drivers.Entities.Players
 {
@@ -21,12 +24,14 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
     {
         #region Private Fields
         private EntityCollection _entities;
+        private ShipBuilder _shipBuilder;
         #endregion
 
         #region Constructor
-        public UserPlayerRemoteUserDriver(EntityCollection entities, UserPlayer driven) : base(driven)
+        public UserPlayerRemoteUserDriver(ShipBuilder shipBuilder, EntityCollection entities, UserPlayer driven) : base(driven)
         {
             _entities = entities;
+            _shipBuilder = shipBuilder;
         }
         #endregion
 
@@ -41,6 +46,24 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
             this.driven.Actions.TryAdd("tractor-beam:select:request", this.HandleTractorBeamSelectRequest);
             this.driven.Actions.TryAdd("tractor-beam:release:request", this.HandleTractorBeamReleaseRequest);
             this.driven.Actions.TryAdd("tractor-beam:attach:request", this.HandleTractorBeamAttachRequest);
+        }
+        #endregion
+
+        #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if(this.driven.Ship.Bridge == default(ShipPart))
+            {
+                using (FileStream input = File.OpenRead("Ships/mosquito.vh"))
+                    this.driven.Ship.SetBridge(_shipBuilder.Import(input));
+
+                var rand = new Random();
+                this.driven.Ship.Bridge.Body.SetTransformIgnoreContacts(
+                    rand.NextVector2(-100, 100),
+                    rand.NextSingle(MathHelper.Pi, MathHelper.Pi));
+            }
         }
         #endregion
 

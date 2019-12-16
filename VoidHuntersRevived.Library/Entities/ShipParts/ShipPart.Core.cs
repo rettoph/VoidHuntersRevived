@@ -6,6 +6,7 @@ using FarseerPhysics.Factories;
 using Guppy;
 using Guppy.Extensions.Collection;
 using Lidgren.Network;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Library.Configurations;
 using VoidHuntersRevived.Library.Entities.Controllers;
@@ -66,7 +67,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             // By default, ShipParts will automatically create an explosion & add themselves to
             // it when disposed, if their health is currently 0 & its not already in an explosion
-            if (this.Health == 0 && !(this.Controller is Explosion))
+            if (!(this.Controller is Explosion))
             {
                 this.entities.Create<Explosion>("entity:explosion", e =>
                 {

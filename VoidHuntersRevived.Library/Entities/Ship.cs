@@ -63,7 +63,7 @@ namespace VoidHuntersRevived.Library.Entities
         /// The calculated world position of the ship's current
         /// target.
         /// </summary>
-        public Vector2 WorldTarget { get => this.Bridge.WorldCenter + this.Target; }
+        public Vector2 WorldTarget { get => this.Bridge == default(ShipPart) ? Vector2.Zero : this.Bridge.WorldCenter + this.Target; }
 
         /// <summary>
         /// The current ship's tractor beam.
@@ -133,6 +133,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Dispose();
 
+            this.SetBridge(null);
             this.TractorBeam.Dispose();
         }
         #endregion
@@ -200,6 +201,10 @@ namespace VoidHuntersRevived.Library.Entities
                 // Auto release the tractor beam if possible
                 this.TractorBeam?.TryRelease();
 
+                // Return all internal components back into their chunks
+                while (_controller.Components.Any())
+                    _chunks.AddToChunk(_controller.Components.First());
+
                 if (this.Bridge != default(ShipPart))
                 { // If the old bridge was not null...
                     this.Bridge.Ship = null;
@@ -211,11 +216,9 @@ namespace VoidHuntersRevived.Library.Entities
 
                 // Update the stored bridge value
                 this.Bridge = target;
+
                 if (this.Bridge != default(ShipPart))
                 { // If the new bridge is not null...
-                    // Return all internal components back into their chunks
-                    while (_controller.Components.Any())
-                        _chunks.AddToChunk(_controller.Components.First());
                     // Add the new target into the internal controller
                     _controller.Add(target);
                     
