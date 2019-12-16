@@ -40,6 +40,11 @@ namespace VoidHuntersRevived.Library.Entities
         /// should set this value to false.
         /// </summary>
         public virtual Boolean IsActive { get => true; }
+        /// <summary>
+        /// Indicates whether or not the current entity is currently
+        /// moving.
+        /// </summary>
+        public virtual Boolean IsMoving { get => this.Body.LinearVelocity.Length() > Single.Epsilon && Math.Abs(this.Body.AngularVelocity) > Single.Epsilon; }
         #endregion
 
         #region Lifecycle Methods

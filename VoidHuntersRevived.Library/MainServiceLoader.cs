@@ -34,6 +34,7 @@ namespace VoidHuntersRevived.Library
         {
             Settings.MaxPolygonVertices = 16;
 
+            services.AddScoped<Quarantine>(p => p.GetRequiredService<EntityCollection>().Create<Quarantine>("entity:quarantine"));
             services.AddScoped<Annex>(p => p.GetRequiredService<EntityCollection>().Create<Annex>("entity:annex"));
             services.AddScoped<World>(p => new World(Vector2.Zero));
             services.AddScoped<ShipBuilder>();
@@ -64,6 +65,7 @@ namespace VoidHuntersRevived.Library
             entities.TryRegister<UserPlayer>("entity:player:user", "name:entity:player:user", "description:entity:player:user");
             entities.TryRegister<ComputerPlayer>("entity:player:computer", "name:entity:player:computer", "description:entity:player:computer");
 
+            entities.TryRegister<Quarantine>("entity:quarantine", "name:entity:quarantine", "description:entity:quarantine");
             entities.TryRegister<Annex>("entity:annex", "name:entity:annex", "description:entity:annex");
             entities.TryRegister<Explosion>("entity:explosion", "name:entity:explosion", "description:entity:explosion");
             entities.TryRegister<Chunk>("entity:chunk", "name:entity:chunk", "description:entity:chunk");

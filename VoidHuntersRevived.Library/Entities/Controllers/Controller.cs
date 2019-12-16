@@ -97,14 +97,21 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         /// <summary>
         /// Clean the current chunk
         /// </summary>
-        protected virtual void TryClean(GameTime gameTime)
+        protected void TryClean(GameTime gameTime)
         {
             if (this.Dirty)
             { // Clean the chunk if dirty
+                this.Clean(gameTime);
+
                 this.Events.TryInvoke<GameTime>(this, "cleaned", gameTime);
 
                 this.Dirty = false;
             }
+        }
+
+        protected virtual void Clean(GameTime gameTime)
+        {
+
         }
 
         public virtual Boolean Add(FarseerEntity entity)

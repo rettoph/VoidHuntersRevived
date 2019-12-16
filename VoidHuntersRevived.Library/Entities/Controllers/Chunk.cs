@@ -11,6 +11,7 @@ using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.Collection;
 using Microsoft.Extensions.Logging;
 using VoidHuntersRevived.Library.Extensions.System.Collections;
+using System.Linq;
 
 namespace VoidHuntersRevived.Library.Entities.Controllers
 {
@@ -32,6 +33,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #region Private Fields
         private ChunkCollection _chunks;
         private IEnumerable<Chunk> _surrounding;
+        private Queue<FarseerEntity> _added;
         #endregion
 
         #region Public Properties
@@ -49,6 +51,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #region Lifecycle Methods
         protected override void Initialize()
         {
+            _added = new Queue<FarseerEntity>();
+
             this.Bounds = new RectangleF(this.Position.X, this.Position.Y, Chunk.Size, Chunk.Size);
 
             base.Initialize();
@@ -75,29 +79,24 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #endregion
 
         #region Helper Methods
-        protected override void TryClean(GameTime gameTime)
+        protected override void Clean(GameTime gameTime)
         {
-            // Update all internal components
-            this.Components.TryUpdateAll(Chunk.EmptyGameTime);
-
             // Continue the cleaning process...
-            base.TryClean(gameTime);
+            base.Clean(gameTime);
+
+            // Update all added internal components
+            while (_added.Any())
+                _added.Dequeue().TryUpdate(gameTime);
         }
 
         public override bool Add(FarseerEntity entity)
         {
-            if(this.Bounds.Contains(entity.Position.X, entity.Position.Y))
+            if(!entity.IsMoving && this.Bounds.Contains(entity.Position.X, entity.Position.Y))
             { // If the entity resides within the current chunk...
                 if(base.Add(entity))
                 {
-                    this.GetSurrounding().ForEach(c =>
-                    {
-                        if(c == null)
-                        {
-                            var test = this;
-                        }
-                        c.Dirty = true;
-                    });
+                    _added.Enqueue(entity);
+                    this.GetSurrounding().ForEach(c => c.Dirty = true);
                     entity.Events.TryAdd<Boolean>("dirty:changed", this.HandleComponentDirtyChanged);
                     return true;
                 }

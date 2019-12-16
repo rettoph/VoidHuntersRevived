@@ -62,7 +62,7 @@ namespace VoidHuntersRevived.Server.Scenes
                 this.entities.Create<ShipPart>("entity:ship-part:weapon:mass-driver", e => e.Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi)));
             }
 
-            for (Int32 i = 0; i < 2; i++)
+            for (Int32 i = 0; i < 20; i++)
             {
                 this.entities.Create<ComputerPlayer>("entity:player:computer", p =>
                 {
@@ -70,9 +70,8 @@ namespace VoidHuntersRevived.Server.Scenes
                     {
                         using (FileStream input = File.OpenRead("Ships/mosquito.vh"))
                             s.SetBridge(_shipBuilder.Import(input));
-                    // s.SetBridge(this.entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
 
-                    s.Bridge.Body.SetTransformIgnoreContacts(rand.NextVector2(-150, 150), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
+                        s.Bridge.Body.SetTransformIgnoreContacts(rand.NextVector2(-100, 100), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
                     }));
                 });
             }

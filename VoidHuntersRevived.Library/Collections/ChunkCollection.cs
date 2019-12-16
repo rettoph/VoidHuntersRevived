@@ -19,12 +19,15 @@ namespace VoidHuntersRevived.Library.Collections
     {
         #region Private Fields
         private EntityCollection _entities;
+        private Quarantine _quarantine;
         #endregion
 
         #region Contructors
-        public ChunkCollection(EntityCollection entities, IServiceProvider provider) : base(provider)
+        public ChunkCollection(Quarantine  quarantine, EntityCollection entities, IServiceProvider provider) : base(provider)
         {
             _entities = entities;
+            _quarantine = quarantine;
+            _quarantine.chunks = this;
         }
         #endregion
 
@@ -77,7 +80,10 @@ namespace VoidHuntersRevived.Library.Collections
         /// <param name="entity"></param>
         public void AddToChunk(FarseerEntity entity)
         {
-            this.Get(entity).Add(entity);
+            // Add the component into quarantine first
+            _quarantine.Add(entity);
+
+            // this.Get(entity).Add(entity);
         }
         #endregion
     }
