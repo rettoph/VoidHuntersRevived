@@ -46,6 +46,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
             this.driven.Actions.TryAdd("tractor-beam:select:request", this.HandleTractorBeamSelectRequest);
             this.driven.Actions.TryAdd("tractor-beam:release:request", this.HandleTractorBeamReleaseRequest);
             this.driven.Actions.TryAdd("tractor-beam:attach:request", this.HandleTractorBeamAttachRequest);
+            this.driven.Actions.TryAdd("spawn:request", this.HandleSpawnRequest);
         }
         #endregion
 
@@ -128,6 +129,36 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
                     this.driven.Ship.Actions.Create("tractor-beam:select:attach:denied", NetDeliveryMethod.ReliableOrdered, 4, im.SenderConnection); ;
                 }
             }
+        }
+
+        private void HandleSpawnRequest(object sender, NetIncomingMessage arg)
+        {
+            _entities.Create<ComputerPlayer>("entity:player:computer", p =>
+            {
+                if(arg.ReadBoolean())
+                { // Spawn a clone...
+                    p.SetShip(_entities.Create<Ship>("entity:ship", s =>
+                    {
+                        var length = arg.ReadInt32();
+                        var bytes = arg.ReadBytes(length);
+                        s.SetBridge(_shipBuilder.Import(new MemoryStream(bytes)));
+
+                        var rand = new Random();
+                        s.Bridge.Body.SetTransformIgnoreContacts(arg.ReadVector2(), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
+                    }));
+                }
+                else
+                { // Spawn a default ship...
+                    p.SetShip(_entities.Create<Ship>("entity:ship", s =>
+                    {
+                        using (FileStream input = File.OpenRead("Ships/mosquito.vh"))
+                            s.SetBridge(_shipBuilder.Import(input));
+
+                        var rand = new Random();
+                        s.Bridge.Body.SetTransformIgnoreContacts(arg.ReadVector2(), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
+                    }));
+                }
+            });
         }
         #endregion
 

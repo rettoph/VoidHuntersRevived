@@ -42,6 +42,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         private ActionTimer _targetPingTimer;
         private ShipBuilder _shipBuilder;
         private DebugOverlay _debug;
+        private Boolean _wasDown;
         #endregion
 
         #region Constructor
@@ -113,6 +114,27 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
                 _camera.MoveTo(this.driven.Ship.Bridge.WorldCenter);
                 // Update the ship's target position
                 this.TrySetTarget(_sensor.WorldCenter - this.driven.Ship.Bridge.WorldCenter, gameTime);
+
+                if(!_wasDown)
+                {
+                    if(kState.IsKeyDown(Keys.F))
+                    {
+                        var action = this.driven.Actions.Create("spawn:request", NetDeliveryMethod.ReliableOrdered, 0);
+                        action.Write(false);
+                        action.Write(this.driven.Ship.WorldTarget);
+                    }
+                    else if(kState.IsKeyDown(Keys.G))
+                    {
+                        var action = this.driven.Actions.Create("spawn:request", NetDeliveryMethod.ReliableOrdered, 0);
+                        action.Write(true);
+                        var output = _shipBuilder.Export(this.driven.Ship.Bridge).ToArray();
+                        action.Write(output.Length);
+                        action.Write(output);
+                        action.Write(this.driven.Ship.WorldTarget);
+                    }
+                }
+
+                _wasDown = kState.IsKeyDown(Keys.F) || kState.IsKeyDown(Keys.G);
             }
         }
         #endregion
