@@ -48,6 +48,17 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
             this.driven.Events.TryAdd<Controller>("controller:changed", this.HandleControllerChanged);
         }
 
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            _shadow.LinearVelocity = this.driven.Body.LinearVelocity;
+            _shadow.AngularVelocity = this.driven.Body.AngularVelocity;
+            _shadow.SetTransformIgnoreContacts(
+                position: this.driven.Body.Position,
+                angle: this.driven.Body.Rotation);
+        }
+
         protected override void Dispose()
         {
             base.Dispose();

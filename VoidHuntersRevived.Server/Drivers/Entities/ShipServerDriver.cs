@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
     internal sealed class ShipServerDriver : Driver<Ship>
     {
         #region Static Properties
-        private static Double TargetPingRate { get; set; } = 75;
+        private static Double TargetPingRate { get; set; } = 120;
         #endregion
 
         #region Private Fields
@@ -68,10 +68,10 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
             }
 
             _targetPingTimer.Update(
-                gameTime:gameTime, 
+                gameTime: gameTime, 
                 action: () =>
                 { // on the interval...
-                    var action = this.driven.Actions.Create("target:changed", NetDeliveryMethod.UnreliableSequenced, 4);
+                    var action = this.driven.Actions.Create("target:changed", NetDeliveryMethod.Unreliable, 4);
                     action.Write(_oldTarget = this.driven.Target);
                 }, 
                 filter: (triggered) => triggered && _oldTarget != this.driven.Target);
