@@ -49,8 +49,8 @@ namespace VoidHuntersRevived.Server.Scenes
             this.Group.Users.Events.TryAdd<User>("added", this.HandleUserJoined);
 
             var rand = new Random();
-            var size = 200;
-            for(Int32 i=0; i<0; i++)
+            var size = 100;
+            for(Int32 i=0; i<20; i++)
             {
                 this.entities.Create<ShipPart>("entity:ship-part:hull:triangle", e => e.Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi)));
                 this.entities.Create<ShipPart>("entity:ship-part:hull:square", e => e.Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi)));
@@ -62,7 +62,7 @@ namespace VoidHuntersRevived.Server.Scenes
                 this.entities.Create<ShipPart>("entity:ship-part:weapon:mass-driver", e => e.Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi)));
             }
 
-            for (Int32 i = 0; i < 20; i++)
+            for (Int32 i = 0; i < 0; i++)
             {
                 this.entities.Create<ComputerPlayer>("entity:player:computer", p =>
                 {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 
@@ -36,28 +37,28 @@ namespace VoidHuntersRevived.Library.Entities.Players
                     // Change the rotation
                     if (targetRotationDifference < -0.1)
                     { // Turn right...
-                        this.Ship.SetDirection(Ship.Direction.Left, false);
-                        this.Ship.SetDirection(Ship.Direction.Right, true);
+                        this.Ship.SetDirection(Ship.Direction.TurnLeft, false);
+                        this.Ship.SetDirection(Ship.Direction.TurnRight, true);
                     }
                     else if (targetRotationDifference > 0.1)
                     { // Turn left...
-                        this.Ship.SetDirection(Ship.Direction.Left, true);
-                        this.Ship.SetDirection(Ship.Direction.Right, false);
+                        this.Ship.SetDirection(Ship.Direction.TurnLeft, true);
+                        this.Ship.SetDirection(Ship.Direction.TurnRight, false);
                     }
                     else
                     { // Not turn at all...
-                        this.Ship.SetDirection(Ship.Direction.Left, false);
-                        this.Ship.SetDirection(Ship.Direction.Right, false);
+                        this.Ship.SetDirection(Ship.Direction.TurnLeft, false);
+                        this.Ship.SetDirection(Ship.Direction.TurnRight, false);
                     }
 
                     // Change the velocity
                     var distace = Vector2.Distance(this.Ship.Bridge.WorldCenter, nearest.Ship.Bridge.WorldCenter);
-                    if (distace > 30)
+                    if (distace > 30 && Math.Abs(targetRotationDifference) < MathHelper.PiOver4)
                     {
                         this.Ship.SetDirection(Ship.Direction.Forward, true);
                         this.Ship.SetDirection(Ship.Direction.Backward, false);
                     }
-                    else if (distace < 25)
+                    else if (distace < 25 && Math.Abs(targetRotationDifference) < MathHelper.PiOver4)
                     {
                         this.Ship.SetDirection(Ship.Direction.Forward, false);
                         this.Ship.SetDirection(Ship.Direction.Backward, true);
