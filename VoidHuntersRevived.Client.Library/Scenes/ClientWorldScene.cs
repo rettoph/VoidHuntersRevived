@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Layers;
+using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Scenes;
 
@@ -11,10 +12,23 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 {
     public class ClientWorldScene : WorldScene
     {
+        #region Private Fields
+        private DebugOverlay _debug;
+        #endregion
+
+        #region Constructor
+        public ClientWorldScene(DebugOverlay debug)
+        {
+            _debug = debug;
+        }
+        #endregion
+
         #region Lifecycle Methods
         protected override void Initialize()
         {
             base.Initialize();
+
+            _debug.AddLine(gt => $" Action => T: {this.actionCount.ToString("#,##0")}, M/S: {(this.actionCount / gt.TotalGameTime.TotalSeconds).ToString("#,##0.000")}");
 
             // Layer 0: Default
             this.layers.Create<CameraLayer>(0, l =>
@@ -37,6 +51,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             base.Draw(gameTime);
 
             this.layers.TryDraw(gameTime);
+
+            _debug.TryDraw(gameTime);
         }
         #endregion
     }

@@ -32,6 +32,10 @@ namespace VoidHuntersRevived.Library.Scenes
         private NetIncomingMessage _im;
         #endregion
 
+        #region Pritected Properties
+        protected Double actionCount { get; private set; }
+        #endregion
+
         #region Internal Properties
         #endregion
 
@@ -50,6 +54,8 @@ namespace VoidHuntersRevived.Library.Scenes
         protected override void Initialize()
         {
             base.Initialize();
+
+            this.actionCount = 0;
 
             this.Group.Messages.TryAdd("entity:action", this.HandleNetworkEntityActionMessage);
         }
@@ -85,6 +91,7 @@ namespace VoidHuntersRevived.Library.Scenes
         #region Message Handlers
         private void HandleNetworkEntityActionMessage(object sender, NetIncomingMessage arg)
         {
+            this.actionCount++;
             _actions.Enqueue(arg);
         }
         #endregion

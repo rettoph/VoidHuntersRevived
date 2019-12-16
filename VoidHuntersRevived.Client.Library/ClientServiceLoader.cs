@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Collections;
+using Guppy.Factories;
 using Guppy.Interfaces;
 using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +21,7 @@ namespace VoidHuntersRevived.Client.Library
         {
             services.AddTransient<SpriteManager>();
             services.AddScoped<ServerShadow>();
+            services.AddScoped<DebugOverlay>(p => p.GetRequiredService<InitializableFactory<DebugOverlay>>().Build<DebugOverlay>());
             services.AddScoped<Sensor>(p => p.GetRequiredService<EntityCollection>().Create<Sensor>("entity:sensor"));
             services.AddScoped<TrailManager>(p => p.GetRequiredService<EntityCollection>().Create<TrailManager>("entity:trail-manager"));
         }
@@ -30,6 +32,8 @@ namespace VoidHuntersRevived.Client.Library
             ChunkTextureDriver.Setup(provider);
 
             var content = provider.GetRequiredService<ContentLoader>();
+
+            content.TryRegister("font", "Font");
 
             content.TryRegister("sprite:background:1", "Sprites/background-1");
             content.TryRegister("sprite:background:2", "Sprites/background-2");

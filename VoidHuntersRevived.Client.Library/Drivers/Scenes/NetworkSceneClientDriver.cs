@@ -13,6 +13,7 @@ using System.Linq;
 using Guppy.Collections;
 using VoidHuntersRevived.Library.Entities;
 using Microsoft.Extensions.Logging;
+using VoidHuntersRevived.Client.Library.Utilities;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
 {
@@ -28,6 +29,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
         private ConcurrentQueue<NetIncomingMessage> _creates;
         private ConcurrentQueue<NetIncomingMessage> _updates;
         private ConcurrentQueue<Guid> _removes;
+        private DebugOverlay _debug;
+        private Double _createCount;
+        private Double _updateCount;
+        private Double _removeCount;
 
         private NetIncomingMessage _im;
         private Guid _id;
@@ -36,9 +41,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
         #endregion
 
         #region Constructor
-        public NetworkSceneClientDriver(EntityCollection entities, NetworkScene driven) : base(driven)
+        public NetworkSceneClientDriver(DebugOverlay debug, EntityCollection entities, NetworkScene driven) : base(driven)
         {
             _entities = entities;
+            _debug = debug;
         }
         #endregion
 
@@ -61,6 +67,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
             this.driven.Group.Messages.TryAdd("entity:create", (s, im) => _creates.Enqueue(im));
             this.driven.Group.Messages.TryAdd("entity:update", (s, im) => _updates.Enqueue(im));
             this.driven.Group.Messages.TryAdd("entity:remove", (s, im) => _removes.Enqueue(im.ReadGuid()));
+
+            _debug.AddLine(gt => "Network Scene");
+            _debug.AddLine(gt => $" Create => T: {_createCount.ToString("#,##0")}, M/S: {(_createCount/gt.TotalGameTime.TotalSeconds).ToString("#,##0.000")}");
+            _debug.AddLine(gt => $" Update => T: {_updateCount.ToString("#,##0")}, M/S: {(_updateCount / gt.TotalGameTime.TotalSeconds).ToString("#,##0.000")}");
+            _debug.AddLine(gt => $" Remove => T: {_removeCount.ToString("#,##0")}, M/S: {(_removeCount / gt.TotalGameTime.TotalSeconds).ToString("#,##0.000")}");
         }
 
         protected override void Dispose()
@@ -98,6 +109,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
         #region Helper Methods
         private void HandleCreateMessage(NetIncomingMessage im)
         {
+            _createCount++;
             var type = _im.ReadString();
             var id = _im.ReadGuid();
 
@@ -115,11 +127,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
 
         private void HandleUpdateMessage(NetIncomingMessage im)
         {
+            _updateCount++;
             im.ReadEntity<NetworkEntity>(_entities)?.TryRead(_im);
         }
 
         private void HandleRemoveMessage(Guid id)
         {
+            _removeCount++;
             _entities.GetById(id)?.Dispose();
         }
         #endregion

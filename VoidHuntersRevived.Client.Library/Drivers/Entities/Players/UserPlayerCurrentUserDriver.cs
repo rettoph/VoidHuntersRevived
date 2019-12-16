@@ -18,6 +18,7 @@ using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Utilities;
 using Microsoft.Extensions.Logging;
 using System.IO;
+using VoidHuntersRevived.Client.Library.Utilities;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 {
@@ -40,16 +41,18 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         private Sensor _sensor;
         private ActionTimer _targetPingTimer;
         private ShipBuilder _shipBuilder;
+        private DebugOverlay _debug;
         #endregion
 
         #region Constructor
-        public UserPlayerCurrentUserDriver(ShipBuilder shipBuilder, Sensor sensor, Pointer pointer, FarseerCamera2D camera, ClientPeer client, UserPlayer driven) : base(driven)
+        public UserPlayerCurrentUserDriver(DebugOverlay debug, ShipBuilder shipBuilder, Sensor sensor, Pointer pointer, FarseerCamera2D camera, ClientPeer client, UserPlayer driven) : base(driven)
         {
             _sensor = sensor;
             _camera = camera;
             _client = client;
             _pointer = pointer;
             _shipBuilder = shipBuilder;
+            _debug = debug;
         }
         #endregion
 
@@ -68,6 +71,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
                 _pointer.Events.TryAdd<Int32>("scrolled", this.HandlePointerScrolled);
                 _pointer.Events.TryAdd<Pointer.Button>("pressed", this.HandlePointerButtonPressed);
                 _pointer.Events.TryAdd<Pointer.Button>("released", this.HandlePointerButtonReleased);
+
+                _debug.AddLine(gt => "\nCurrent Player");
+                _debug.AddLine(gt => $"  Position => X: {this.driven?.Ship?.Bridge?.Position.X.ToString("#,##0.000")} Y: {this.driven?.Ship?.Bridge?.Position.Y.ToString("#,##00.000")}, R: {this.driven?.Ship?.Bridge?.Rotation.ToString("#,##00.000")}");
+                _debug.AddLine(gt => $"  Target => X: {this.driven?.Ship?.WorldTarget.X.ToString("#,##00.000")} Y: {this.driven?.Ship?.WorldTarget.X.ToString("#,##00.000")}");
+
             }
             else
             {
