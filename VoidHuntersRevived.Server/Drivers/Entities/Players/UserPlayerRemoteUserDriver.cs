@@ -151,10 +151,12 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
                 { // Spawn a default ship...
                     p.SetShip(_entities.Create<Ship>("entity:ship", s =>
                     {
-                        using (FileStream input = File.OpenRead("Ships/mosquito.vh"))
+                        var rand = new Random();
+                        var files = Directory.GetFiles("Ships", "*.vh");
+
+                        using (FileStream input = File.OpenRead(files[rand.Next(files.Length)]))
                             s.SetBridge(_shipBuilder.Import(input));
 
-                        var rand = new Random();
                         s.Bridge.Body.SetTransformIgnoreContacts(arg.ReadVector2(), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
                     }));
                 }

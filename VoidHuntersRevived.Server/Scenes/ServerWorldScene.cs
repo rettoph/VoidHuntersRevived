@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Server.Scenes
 
             var rand = new Random();
             var size = 100;
-            for(Int32 i=0; i<20; i++)
+            for(Int32 i=0; i<200; i++)
             {
                 this.entities.Create<ShipPart>("entity:ship-part:hull:triangle", e => e.Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi)));
                 this.entities.Create<ShipPart>("entity:ship-part:hull:square", e => e.Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi)));
@@ -87,7 +87,7 @@ namespace VoidHuntersRevived.Server.Scenes
                 {
                     using (FileStream input = File.OpenRead("Ships/mosquito.vh"))
                        s.SetBridge(_shipBuilder.Import(input));
-                    // s.SetBridge(this.entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
+                    //s.SetBridge(this.entities.Create<ShipPart>("entity:ship-part:hull:square"));
 
                     var rand = new Random();
                     s.Bridge.Body.SetTransformIgnoreContacts(rand.NextVector2(-15, 15), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
