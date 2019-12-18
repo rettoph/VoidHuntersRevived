@@ -199,6 +199,53 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             this.ConnectionNode_Write(om);
         }
+
+        protected override void ReadVitals(NetIncomingMessage im)
+        {
+            base.ReadVitals(im);
+
+            this.ReadHealth(im);
+        }
+
+        protected override void WriteVitals(NetOutgoingMessage om)
+        {
+            base.WriteVitals(om);
+
+            this.WriteHealth(om);
+        }
+
+        /// <summary>
+        /// Recursively read health from an incoming message
+        /// </summary>
+        /// <param name="im"></param>
+        public void ReadHealth(NetIncomingMessage im)
+        {
+            this.Health = im.ReadSingle();
+
+            while (im.ReadBoolean())
+                this.FemaleConnectionNodes[im.ReadInt32()].Target.Parent.ReadHealth(im);
+        }
+
+        /// <summary>
+        /// Recurively write health to an outbound message
+        /// </summary>
+        /// <param name="om"></param>
+        public void WriteHealth(NetOutgoingMessage om)
+        {
+            om.Write(this.Health);
+
+            this.FemaleConnectionNodes.ForEach(f =>
+            {
+                if(f.Attached)
+                {
+                    om.Write(true);
+                    om.Write(f.Id);
+                    f.Target.Parent.WriteHealth(om);
+                }
+            });
+
+            om.Write(false);
+        }
         #endregion
     }
 }
