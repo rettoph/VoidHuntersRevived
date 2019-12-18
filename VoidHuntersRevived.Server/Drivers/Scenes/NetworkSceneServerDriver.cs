@@ -61,18 +61,18 @@ namespace VoidHuntersRevived.Server.Drivers.Scenes
         {
             base.Initialize();
 
-            _entities.Events.TryAdd<Entity>("added", this.HandleEntityAdded);
-            _entities.Events.TryAdd<Entity>("removed", this.HandleEntityRemoved);
-            this.driven.Group.Users.Events.TryAdd<User>("added", this.HandleUserAdded);
+            _entities.OnAdded += this.HandleEntityAdded;
+            _entities.OnRemoved += this.HandleEntityRemoved;
+            this.driven.Group.Users.OnAdded += this.HandleUserAdded;
         }
 
         protected override void Dispose()
         {
             base.Dispose();
 
-            _entities.Events.TryRemove<Entity>("added", this.HandleEntityAdded);
-            _entities.Events.TryRemove<Entity>("removed", this.HandleEntityRemoved);
-            this.driven.Group.Users.Events.TryRemove<User>("added", this.HandleUserAdded);
+            _entities.OnAdded -= this.HandleEntityAdded;
+            _entities.OnRemoved -= this.HandleEntityRemoved;
+            this.driven.Group.Users.OnAdded -= this.HandleUserAdded;
 
             _newUsers.Clear();
             _creates.Clear();
@@ -153,11 +153,11 @@ namespace VoidHuntersRevived.Server.Drivers.Scenes
             if (arg is NetworkEntity)
             {
                 _creates.Enqueue(arg as NetworkEntity);
-                arg.Events.TryAdd<GameTime>("clean", this.HandleEntityUpdated);
+                (arg as NetworkEntity).OnCleaned += this.HandleEntityCleaned;
             }
         }
 
-        private void HandleEntityUpdated(object sender, GameTime arg)
+        private void HandleEntityCleaned(object sender, GameTime arg)
         {
             _updates.Enqueue(sender as NetworkEntity);
         }
@@ -167,7 +167,7 @@ namespace VoidHuntersRevived.Server.Drivers.Scenes
             if (arg is NetworkEntity)
             {
                 _removes.Enqueue((arg as NetworkEntity).Id);
-                arg.Events.TryRemove<GameTime>("clean", this.HandleEntityUpdated);
+                (arg as NetworkEntity).OnCleaned -= this.HandleEntityCleaned;
             }
         }
 

@@ -51,6 +51,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public ConnectionNode[] FemaleConnectionNodes { get; private set; }
         #endregion
 
+        #region Events
+        public event EventHandler<ChainUpdate> OnChainUpdated;
+        #endregion
+
         #region Lifecycle Methods
         /// <summary>
         /// ConnectionNode specific creation.
@@ -59,8 +63,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         private void ConnectionNode_Create(IServiceProvider provider)
         {
             _connectionNodefactory = provider.GetRequiredService<CreatableFactory<ConnectionNode>>();
-
-            this.Events.Register<ChainUpdate>("chain:updated");
         }
 
         /// <summary>
@@ -76,10 +78,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 .Select((female_config, idx) => _connectionNodefactory.Build<ConnectionNode>(node => node.Configure(idx, this, female_config)))
                 .ToArray();
 
-            this.Events.TryAdd<GameTime>("clean", this.ConnectionNode_HandleClean);
+            this.OnCleaned += this.ConnectionNode_HandleClean;
 
+            // TODO Update event registration? No deregistration?
             // Bind event listeners tto automatically remap connection node data on a male attachment or female detachment
-            this.MaleConnectionNode.Events.TryAdd<ConnectionNode>("attached", (s, n) =>
+            this.MaleConnectionNode.OnAttached += (s, n) =>
             {
                 // Auto update the controller if it is not already defined...
                 if (this.Controller != this.Root.Controller)
@@ -87,8 +90,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
                 this.dirty |= ChainUpdate.Both;
                 this.SetDirty(true);
-            });
-            this.MaleConnectionNode.Events.TryAdd<ConnectionNode>("detached", (s, n) =>
+            };
+            this.MaleConnectionNode.OnDetached += (s, n) =>
             {
                 // Update the Body's world position
                 this.SetWorldTransform(n.Parent.Root, this.Body);
@@ -98,7 +101,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 n.Parent.dirty |= ChainUpdate.Up;
                 this.SetDirty(true);
                 n.Parent.SetDirty(true);
-            });
+            };
 
             // Mark the current ShipPart as dirty by default
             this.dirty = ChainUpdate.Down;
@@ -119,7 +122,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// <param name="direction"></param>
         private void CleanChain(ChainUpdate directions)
         {
-            this.Events.TryInvoke<ChainUpdate>(this, "chain:updated", directions);
+            this.OnChainUpdated?.Invoke(this, directions);
 
             // Recusively update all elements up the chain
             if (directions.HasFlag(ChainUpdate.Up) && !this.IsRoot)

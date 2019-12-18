@@ -97,7 +97,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                 {
                     _added.Enqueue(entity);
                     this.GetSurrounding().ForEach(c => c.Dirty = true);
-                    entity.Events.TryAdd<Boolean>("dirty:changed", this.HandleComponentDirtyChanged);
+                    entity.OnDirtyChanged += this.HandleComponentDirtyChanged;
+
                     return true;
                 }
             }
@@ -115,7 +116,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             if(base.Remove(entity))
             {
                 this.GetSurrounding().ForEach(c => c.Dirty = true);
-                entity.Events.TryRemove<Boolean>("dirty:changed", this.HandleComponentDirtyChanged);
+                entity.OnDirtyChanged -= this.HandleComponentDirtyChanged;
 
                 return true;
             }

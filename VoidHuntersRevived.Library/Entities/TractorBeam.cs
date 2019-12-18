@@ -49,6 +49,12 @@ namespace VoidHuntersRevived.Library.Entities
         public Single Rotation { get; set; }
         #endregion
 
+        #region Events
+        public event EventHandler<ShipPart> OnSelected;
+        public event EventHandler<ShipPart> OnReleased;
+        public event EventHandler<ConnectionNode> OnAttached;
+        #endregion
+
         #region Constructor
         public TractorBeam(ChunkCollection chunks)
         {
@@ -70,10 +76,6 @@ namespace VoidHuntersRevived.Library.Entities
 
             this.SetEnabled(false);
             this.SetVisible(false);
-
-            this.Events.Register<ShipPart>("selected");
-            this.Events.Register<ShipPart>("released");
-            this.Events.Register<ConnectionNode>("attached");
         }
         #endregion
 
@@ -150,7 +152,7 @@ namespace VoidHuntersRevived.Library.Entities
                     // Add the target to the controller
                     _controller.Add(target);
                     // Trigger the selected event
-                    this.Events.TryInvoke<ShipPart>(this, "selected", this.Selected);
+                    this.OnSelected?.Invoke(this, this.Selected);
 
                     return true;
                 }
@@ -177,7 +179,7 @@ namespace VoidHuntersRevived.Library.Entities
                 // Add the selected object into the current positional chunk
                 _chunks.AddToChunk(oldSelected);
                 // Invoke the released event
-                this.Events.TryInvoke<ShipPart>(this, "released", oldSelected);
+                this.OnReleased?.Invoke(this, oldSelected);
 
                 return oldSelected;
             }
@@ -199,7 +201,7 @@ namespace VoidHuntersRevived.Library.Entities
                 // Reset the contained selected item
                 this.Selected = default(ShipPart);
                 // Invoke the released event
-                this.Events.TryInvoke<ConnectionNode>(this, "attached", node);
+                this.OnAttached?.Invoke(this, node);
 
                 return true;
             }

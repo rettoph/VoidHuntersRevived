@@ -30,7 +30,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
 
             this.DefaultColor = Color.ForestGreen;
 
-            this.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleChainUpdated);
+            this.OnChainUpdated += this.HandleChainUpdated;
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.OnChainUpdated -= this.HandleChainUpdated;
         }
         #endregion
 

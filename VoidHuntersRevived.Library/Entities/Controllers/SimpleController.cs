@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             if (base.Add(entity))
             {
-                entity.Events.TryAdd<Creatable>("disposing", this.HandleComponentDisposing);
+                entity.OnDisposing += this.HandleComponentDisposing;
 
                 return true;
             }
@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             if (base.Remove(entity))
             {
-                entity.Events.TryRemove<Creatable>("disposing", this.HandleComponentDisposing);
+                entity.OnDisposing -= this.HandleComponentDisposing;
 
                 return true;
             }
@@ -48,9 +48,9 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #endregion
 
         #region Event Handlers
-        protected virtual void HandleComponentDisposing(object sender, Creatable arg)
+        protected virtual void HandleComponentDisposing(object sender, EventArgs arg)
         {
-            var entity = arg as FarseerEntity;
+            var entity = sender as FarseerEntity;
             // Auto remove the item from the current controller
             this.Remove(entity);
             entity.SetController(_annex);

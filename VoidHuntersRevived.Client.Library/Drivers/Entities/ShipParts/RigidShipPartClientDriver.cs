@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
         {
             base.Initialize();
 
-            this.driven.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleChainUpdated);
+            this.driven.OnChainUpdated += this.HandleChainUpdated;
         }
 
         protected override void Dispose()
@@ -44,6 +44,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
             base.Dispose();
 
             _fixtures.Clear();
+
+            this.driven.OnChainUpdated -= this.HandleChainUpdated;
         }
         #endregion
 

@@ -24,6 +24,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
 using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Utilities.Delegaters;
+using Guppy.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Library
 {
@@ -34,8 +35,8 @@ namespace VoidHuntersRevived.Library
         {
             Settings.MaxPolygonVertices = 16;
 
-            services.AddScoped<Quarantine>(p => p.GetRequiredService<EntityCollection>().Create<Quarantine>("entity:quarantine"));
-            services.AddScoped<Annex>(p => p.GetRequiredService<EntityCollection>().Create<Annex>("entity:annex"));
+            services.AddScoped<Quarantine>("entity:quarantine");
+            services.AddScoped<Annex>("entity:annex");
             services.AddScoped<World>(p => new World(Vector2.Zero));
             services.AddScoped<ShipBuilder>();
             services.AddScoped<ChunkCollection>();

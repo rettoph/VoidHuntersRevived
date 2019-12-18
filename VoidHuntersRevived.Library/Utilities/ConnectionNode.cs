@@ -68,14 +68,15 @@ namespace VoidHuntersRevived.Library.Utilities
         public Single WorldRotation { get => this.Parent.Root.Rotation + this.Parent.LocalRotation + this.LocalRotation; }
         #endregion
 
+        #region Events
+        public EventHandler<ConnectionNode> OnAttached;
+        public EventHandler<ConnectionNode> OnDetached;
+        #endregion
+
         #region Lifecycle Methods
         protected override void Create(IServiceProvider provider)
         {
             base.Create(provider);
-
-            // Register some basic events
-            this.Events.Register<ConnectionNode>("attached");
-            this.Events.Register<ConnectionNode>("detached");
         }
 
         public override void Dispose()
@@ -123,7 +124,7 @@ namespace VoidHuntersRevived.Library.Utilities
                 target.Attach(this);
 
             // Invoke the event...
-            this.Events?.TryInvoke<ConnectionNode>(this, "attached", this.Target);
+            this.OnAttached?.Invoke(this, this.Target);
         }
 
         public void Detach()
@@ -135,7 +136,7 @@ namespace VoidHuntersRevived.Library.Utilities
                 oldTarget.Detach();
 
                 // Invoke the event...
-                this.Events?.TryInvoke<ConnectionNode>(this, "detached", oldTarget);
+                this.OnDetached?.Invoke(this, oldTarget);
             }
         }
         #endregion

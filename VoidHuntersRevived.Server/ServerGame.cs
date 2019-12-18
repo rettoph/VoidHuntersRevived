@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Server
             }).TryStartAsync();
 
             // Add event handlers
-            _server.Users.Events.TryAdd<User>("added", this.HandleUserJoined);
+            _server.Users.OnAdded += this.HandleUserJoined;
         }
         #endregion
 

@@ -87,6 +87,14 @@ namespace VoidHuntersRevived.Library.Entities
         public Boolean Firing { get; private set; }
         #endregion
 
+        #region Events
+        public event EventHandler<ShipPart> OnBridgeChanged;
+        public event EventHandler<ShipPart> OnBridgeChainUpdated;
+        public event EventHandler<Direction> OnDirectionChanged;
+        public event EventHandler<Boolean> OnFiringChanged;
+        public event EventHandler<Vector2> OnTargetChanged;
+        #endregion
+
         #region Contructor
         public Ship(ChunkCollection chunks)
         {
@@ -106,12 +114,6 @@ namespace VoidHuntersRevived.Library.Entities
                 dc.SetLocked(true);
             });
 
-            this.Events.Register<ShipPart>("bridge:changed");
-            this.Events.Register<ShipPart>("bridge:chain:updated");
-            this.Events.Register<Direction>("direction:changed");
-            this.Events.Register<Boolean>("firing:changed");
-            this.Events.Register<Vector2>("target:changed");
-
             this.SetUpdateOrder(100);
         }
 
@@ -124,7 +126,7 @@ namespace VoidHuntersRevived.Library.Entities
                 tb.Ship = this;
             });
 
-            this.Events.TryAdd<ShipPart>("bridge:chain:updated", this.HandleBridgeChainUpdated);
+            this.OnBridgeChainUpdated += this.HandleBridgeChainUpdated;
 
             this.RemapBridgeChain();
         }
@@ -135,6 +137,8 @@ namespace VoidHuntersRevived.Library.Entities
 
             this.SetBridge(null);
             this.TractorBeam.Dispose();
+
+            this.OnBridgeChainUpdated -= this.HandleBridgeChainUpdated;
         }
         #endregion
 
@@ -172,12 +176,12 @@ namespace VoidHuntersRevived.Library.Entities
             if (value && !this.ActiveDirections.HasFlag(direction))
             {
                 this.ActiveDirections |= direction;
-                this.Events.TryInvoke<Direction>(this, "direction:changed", direction);
+                this.OnDirectionChanged?.Invoke(this, direction);
             }
             else if (!value && this.ActiveDirections.HasFlag(direction))
             {
                 this.ActiveDirections &= ~direction;
-                this.Events.TryInvoke<Direction>(this, "direction:changed", direction);
+                this.OnDirectionChanged?.Invoke(this, direction);
             }
         }
 
@@ -190,7 +194,7 @@ namespace VoidHuntersRevived.Library.Entities
             if(this.Firing != value)
             {
                 this.Firing = value;
-                this.Events.TryInvoke<Boolean>(this, "firing:changed", this.Firing);
+                this.OnFiringChanged?.Invoke(this, this.Firing);
             }
         }
 
@@ -210,8 +214,8 @@ namespace VoidHuntersRevived.Library.Entities
                     this.Bridge.Ship = null;
 
                     // Remove old events
-                    this.Bridge.Events.TryRemove<ShipPart.ChainUpdate>("chain:updated", this.HandleBridgeShipPartChainUpdated);
-                    this.Bridge.Events.TryRemove<Creatable>("disposing", this.HandleBridgeDisposing);
+                    this.Bridge.OnChainUpdated -= this.HandleBridgeShipPartChainUpdated;
+                    this.Bridge.OnDisposing -= this.HandleBridgeDisposing;
                 }
 
                 // Update the stored bridge value
@@ -226,14 +230,14 @@ namespace VoidHuntersRevived.Library.Entities
                     this.Bridge.Ship = this;
 
                     // Add new events
-                    this.Bridge.Events.TryAdd<ShipPart.ChainUpdate>("chain:updated", this.HandleBridgeShipPartChainUpdated);
-                    this.Bridge.Events.TryAdd<Creatable>("disposing", this.HandleBridgeDisposing);
+                    this.Bridge.OnChainUpdated += this.HandleBridgeShipPartChainUpdated;
+                    this.Bridge.OnDisposing += this.HandleBridgeDisposing;
                     this.SetDirty(true);
                 }
 
                 // Invoke required events
-                this.Events.TryInvoke<ShipPart>(this, "bridge:changed", this.Bridge);
-                this.Events.TryInvoke<ShipPart>(this, "bridge:chain:updated", this.Bridge);
+                this.OnBridgeChanged?.Invoke(this, this.Bridge);
+                this.OnBridgeChainUpdated?.Invoke(this, this.Bridge);
             }
         }
 
@@ -247,7 +251,7 @@ namespace VoidHuntersRevived.Library.Entities
             {
                 this.Target = target;
 
-                this.Events.TryInvoke<Vector2>(this, "target:changed", this.Target);
+                this.OnTargetChanged?.Invoke(this, this.Target);
             }
         }
         #endregion
@@ -295,7 +299,7 @@ namespace VoidHuntersRevived.Library.Entities
         #region Event Handlers
         private void HandleBridgeShipPartChainUpdated(object sender, ShipPart.ChainUpdate arg)
         {
-            this.Events.TryInvoke<ShipPart>(this, "bridge:chain:updated", this.Bridge);
+            this.OnBridgeChainUpdated?.Invoke(this, this.Bridge);
         }
 
         /// <summary>
@@ -311,7 +315,7 @@ namespace VoidHuntersRevived.Library.Entities
             this.Size = this.Bridge == default(ShipPart) ? 0 : this.Bridge.GetSize();
         }
 
-        private void HandleBridgeDisposing(object sender, Creatable arg)
+        private void HandleBridgeDisposing(object sender, EventArgs arg)
         {
             this.SetBridge(null);
         }

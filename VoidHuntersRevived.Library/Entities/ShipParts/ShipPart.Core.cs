@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             this.Transformations_PreInitialize();
 
-            this.Events.TryAdd<Controller>("controller:changed", this.HandleControllerChanged);
+            this.OnControllerChanged += this.HandleControllerChanged;
         }
 
         protected override void Initialize()
@@ -79,6 +79,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             base.Dispose();
 
             this.ConnectionNode_Dispose();
+            this.Transformations_Dispose();
+
+            this.OnControllerChanged -= this.HandleControllerChanged;
         }
         #endregion
 

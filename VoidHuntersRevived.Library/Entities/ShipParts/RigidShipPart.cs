@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             base.Initialize();
 
-            this.Events.TryAdd<ChainUpdate>("chain:updated", this.HandleChainUpdated);
+            this.OnChainUpdated += this.HandleChainUpdated;
         }
 
         public override void Dispose()
@@ -50,6 +50,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             base.Dispose();
 
             _fixtures.Clear();
+
+            this.OnChainUpdated -= this.HandleChainUpdated;
         }
         #endregion
 

@@ -51,7 +51,14 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
         {
             base.PostInitialize();
 
-            this.driven.Events.TryAdd<ChainUpdate>("chain:updated", this.HandleChainUpdated);
+            this.driven.OnChainUpdated += this.HandleChainUpdated;
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.driven.OnChainUpdated -= this.HandleChainUpdated;
         }
         #endregion
 

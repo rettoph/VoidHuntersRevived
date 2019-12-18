@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Collections;
+using Guppy.Extensions.DependencyInjection;
 using Guppy.Factories;
 using Guppy.Interfaces;
 using Guppy.Loaders;
@@ -21,9 +22,9 @@ namespace VoidHuntersRevived.Client.Library
         {
             services.AddTransient<SpriteManager>();
             services.AddScoped<ServerShadow>();
-            services.AddScoped<DebugOverlay>(p => p.GetRequiredService<InitializableFactory<DebugOverlay>>().Build<DebugOverlay>());
-            services.AddScoped<Sensor>(p => p.GetRequiredService<EntityCollection>().Create<Sensor>("entity:sensor"));
-            services.AddScoped<TrailManager>(p => p.GetRequiredService<EntityCollection>().Create<TrailManager>("entity:trail-manager"));
+            services.AddScoped<DebugOverlay, InitializableFactory<DebugOverlay>>();
+            services.AddScoped<Sensor>("entity:sensor");
+            services.AddScoped<TrailManager>("entity:trail-manager");
         }
 
         public void ConfigureProvider(IServiceProvider provider)

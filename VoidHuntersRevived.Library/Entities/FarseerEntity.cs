@@ -47,6 +47,10 @@ namespace VoidHuntersRevived.Library.Entities
         public virtual Boolean IsMoving { get => this.Body.LinearVelocity.Length() > Single.Epsilon && Math.Abs(this.Body.AngularVelocity) > Single.Epsilon; }
         #endregion
 
+        #region Events
+        public event EventHandler<Controller> OnControllerChanged;
+        #endregion
+
         #region Lifecycle Methods
         protected override void Create(IServiceProvider provider)
         {
@@ -56,9 +60,6 @@ namespace VoidHuntersRevived.Library.Entities
 
             this.world = provider.GetRequiredService<World>();
             this.chunks = provider.GetRequiredService<ChunkCollection>();
-
-            // Create internal events
-            this.Events.Register<Controller>("controller:changed");
         }
 
         protected override void PreInitialize()
@@ -134,7 +135,7 @@ namespace VoidHuntersRevived.Library.Entities
                 this.Controller = controller;
                 this.Controller?.SetupBody(this, this.Body);
 
-                this.Events.TryInvoke<Controller>(this, "controller:changed", this.Controller);
+                this.OnControllerChanged?.Invoke(this, this.Controller);
             }
         }
         #endregion

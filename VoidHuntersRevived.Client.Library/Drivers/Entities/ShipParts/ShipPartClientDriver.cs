@@ -27,11 +27,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
 
             _shadow = _server[this.driven];
 
-            this.driven.MaleConnectionNode.Events.TryAdd<ConnectionNode>("detached", (s, n) =>
+            // TODO: deregister event handler somewhere
+            this.driven.MaleConnectionNode.OnDetached += (s, n) =>
             {
                 // Update the server shadow's Body's world position
                 this.driven.SetWorldTransform(n.Parent.Root, _shadow);
-            });
+            };
         }
     }
 }

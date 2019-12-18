@@ -47,7 +47,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             // Automatically add the weapons fixtures...
             this.AddFixtures(this.Body);
 
-            this.Events.TryAdd<ChainUpdate>("chain:updated", this.HandleChainUpdated);
+            this.OnChainUpdated += this.HandleChainUpdated;
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.OnChainUpdated -= this.HandleChainUpdated;
         }
         #endregion
 

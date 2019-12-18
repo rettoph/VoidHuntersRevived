@@ -37,7 +37,12 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #region Lifecycle Methods
         private void Transformations_PreInitialize()
         {
-            this.Events.TryAdd<ChainUpdate>("chain:updated", this.Transformations_HandleChainUpdated);
+            this.OnChainUpdated += this.Transformations_HandleChainUpdated;
+        }
+
+        private void Transformations_Dispose()
+        {
+            this.OnChainUpdated -= this.Transformations_HandleChainUpdated;
         }
         #endregion
 

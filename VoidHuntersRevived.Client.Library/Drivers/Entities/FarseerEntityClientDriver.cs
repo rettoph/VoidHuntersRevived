@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
             _shadow = this.driven.CreateBody(_server.World);
 
             this.driven.Actions.TryAdd("update:vitals", this.HandleUpdateVitalsAction);
-            this.driven.Events.TryAdd<Controller>("controller:changed", this.HandleControllerChanged);
+            this.driven.OnControllerChanged += this.HandleControllerChanged;
         }
 
         protected override void Initialize()
@@ -64,6 +64,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
             base.Dispose();
 
             _shadow.Dispose(withFixtures: true);
+
+            this.driven.OnControllerChanged -= this.HandleControllerChanged;
         }
         #endregion
 

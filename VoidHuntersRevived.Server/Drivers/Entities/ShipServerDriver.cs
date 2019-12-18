@@ -49,9 +49,18 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
 
             _targetPingTimer = new ActionTimer(ShipServerDriver.TargetPingRate);
 
-            this.driven.Events.TryAdd<Ship.Direction>("direction:changed", this.HandleDirectionChanged);
-            this.driven.Events.TryAdd<Boolean>("firing:changed", this.HandleFiringChanged);
-            this.driven.Events.TryAdd<ShipPart>("bridge:changed", this.HandleBridgeChanged);
+            this.driven.OnDirectionChanged += this.HandleDirectionChanged;
+            this.driven.OnFiringChanged += this.HandleFiringChanged;
+            this.driven.OnBridgeChanged += this.HandleBridgeChanged;
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.driven.OnDirectionChanged -= this.HandleDirectionChanged;
+            this.driven.OnFiringChanged -= this.HandleFiringChanged;
+            this.driven.OnBridgeChanged -= this.HandleBridgeChanged;
         }
         #endregion
 

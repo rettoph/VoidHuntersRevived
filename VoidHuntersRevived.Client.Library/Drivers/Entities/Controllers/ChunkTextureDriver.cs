@@ -69,7 +69,14 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
 
             _box = new BoundingBox(new Vector3(this.driven.Bounds.Left, this.driven.Bounds.Top, 0), new Vector3(this.driven.Bounds.Right, this.driven.Bounds.Bottom, 0));
 
-            this.driven.Events.TryAdd<GameTime>("cleaned", this.HandleChunkCleaned);
+            this.driven.OnCleaned += this.HandleChunkCleaned;
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.driven.OnCleaned -= this.HandleChunkCleaned;
         }
         #endregion
 

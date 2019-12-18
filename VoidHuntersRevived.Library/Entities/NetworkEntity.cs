@@ -28,6 +28,11 @@ namespace VoidHuntersRevived.Library.Entities
         protected Group group { get; private set; }
         #endregion
 
+        #region Events
+        public event EventHandler<Boolean> OnDirtyChanged;
+        public event EventHandler<GameTime> OnCleaned;
+        #endregion
+
         #region Lifecycle Methods
         protected override void Create(IServiceProvider provider)
         {
@@ -38,9 +43,6 @@ namespace VoidHuntersRevived.Library.Entities
 
             this.entities = provider.GetRequiredService<EntityCollection>();
             this.group = provider.GetRequiredService<NetworkScene>().Group;
-
-            this.Events.Register<Boolean>("dirty:changed");
-            this.Events.Register<GameTime>("clean");
         }
 
         protected override void PreInitialize()
@@ -66,8 +68,9 @@ namespace VoidHuntersRevived.Library.Entities
 
             if (this.Dirty)
             { // If the curent entity is dirty...
-                this.Events.TryInvoke<GameTime>(this, "clean", gameTime);
+                this.Clean(gameTime);
                 this.SetDirty(false);
+                this.OnCleaned?.Invoke(this, gameTime);
             }
         }
         #endregion
@@ -79,8 +82,13 @@ namespace VoidHuntersRevived.Library.Entities
             {
                 this.Dirty = value;
 
-                this.Events.TryInvoke<Boolean>(this, "dirty:changed", this.Dirty);
+                this.OnDirtyChanged?.Invoke(this, this.Dirty);
             }
+        }
+
+        protected virtual void Clean(GameTime gameTime)
+        {
+
         }
         #endregion
 

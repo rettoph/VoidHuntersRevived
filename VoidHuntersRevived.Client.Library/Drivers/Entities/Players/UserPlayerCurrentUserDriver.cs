@@ -69,9 +69,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
                 // _camera.ZoomLerp = 0.005f;
 
                 // Setup local user events
-                _pointer.Events.TryAdd<Int32>("scrolled", this.HandlePointerScrolled);
-                _pointer.Events.TryAdd<Pointer.Button>("pressed", this.HandlePointerButtonPressed);
-                _pointer.Events.TryAdd<Pointer.Button>("released", this.HandlePointerButtonReleased);
+                _pointer.OnScrolled += this.HandlePointerScrolled;
+                _pointer.OnPressed += this.HandlePointerButtonPressed;
+                _pointer.OnReleased += this.HandlePointerButtonReleased;
+
 
                 _debug.AddLine(gt => "\nCurrent Player");
                 _debug.AddLine(gt => $"  Position => X: {this.driven?.Ship?.Bridge?.Position.X.ToString("#,##0.000")} Y: {this.driven?.Ship?.Bridge?.Position.Y.ToString("#,##00.000")}, R: {this.driven?.Ship?.Bridge?.Rotation.ToString("#,##00.000")}");
@@ -85,6 +86,15 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
                     // Empty method...
                 };
             }
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            _pointer.OnScrolled -= this.HandlePointerScrolled;
+            _pointer.OnPressed -= this.HandlePointerButtonPressed;
+            _pointer.OnReleased -= this.HandlePointerButtonReleased;
         }
         #endregion
 
@@ -223,7 +233,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         #endregion
 
         #region Event Handlers
-        private void HandlePointerScrolled(object sender, Int32 arg)
+        private void HandlePointerScrolled(object sender, Single arg)
         { // Zoom in the camera
             _camera.ZoomTo((Single)Math.Pow(1.5, (Single)arg / 120));
         }

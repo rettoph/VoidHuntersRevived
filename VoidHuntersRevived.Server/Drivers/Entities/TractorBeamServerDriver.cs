@@ -25,9 +25,18 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
         {
             base.Initialize();
 
-            this.driven.Events.TryAdd<ShipPart>("selected", this.HandleSelected);
-            this.driven.Events.TryAdd<ShipPart>("released", this.HandleReleased);
-            this.driven.Events.TryAdd<ConnectionNode>("attached", this.HandleAttached);
+            this.driven.OnSelected += this.HandleSelected;
+            this.driven.OnReleased += this.HandleReleased;
+            this.driven.OnAttached += this.HandleAttached;
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.driven.OnSelected -= this.HandleSelected;
+            this.driven.OnReleased -= this.HandleReleased;
+            this.driven.OnAttached -= this.HandleAttached;
         }
         #endregion
 

@@ -46,11 +46,11 @@ namespace VoidHuntersRevived.Server.Scenes
                 l.SetDrawOrder(10);
             });
 
-            this.Group.Users.Events.TryAdd<User>("added", this.HandleUserJoined);
+            this.Group.Users.OnAdded += this.HandleUserJoined;
 
             var rand = new Random();
             var size = 100;
-            for(Int32 i=0; i<200; i++)
+            for(Int32 i=0; i<20; i++)
             {
                 this.entities.Create<ShipPart>("entity:ship-part:hull:triangle", e => e.Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi)));
                 this.entities.Create<ShipPart>("entity:ship-part:hull:square", e => e.Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi)));

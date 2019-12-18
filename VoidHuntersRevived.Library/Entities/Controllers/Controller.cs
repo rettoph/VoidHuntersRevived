@@ -36,6 +36,10 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         public Boolean Locked { get; protected set; }
         #endregion
 
+        #region Events
+        public event EventHandler<GameTime> OnCleaned;
+        #endregion
+
         #region Lifecycle Methods
         protected override void Create(IServiceProvider provider)
         {
@@ -44,8 +48,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             _components = new HashSet<FarseerEntity>();
 
             this.Locked = false;
-
-            this.Events.Register<GameTime>("cleaned");
         }
 
         public override void Dispose()
@@ -103,7 +105,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             { // Clean the chunk if dirty
                 this.Clean(gameTime);
 
-                this.Events.TryInvoke<GameTime>(this, "cleaned", gameTime);
+                this.OnCleaned?.Invoke(this, gameTime);
 
                 this.Dirty = false;
             }
