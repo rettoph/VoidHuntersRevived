@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
 
             _shadow = this.driven.CreateBody(_server.World);
 
-            this.driven.Actions.TryAdd("update:vitals", this.HandleUpdateVitalsAction);
+            this.driven.ReadBodyVitals += this.ReadBodyVitals;
             this.driven.OnControllerChanged += this.HandleControllerChanged;
         }
 
@@ -110,9 +110,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
         #endregion
 
         #region Action Handlers
-        private void HandleUpdateVitalsAction(object sender, NetIncomingMessage arg)
+        private void ReadBodyVitals(object sender, NetIncomingMessage im)
         {
-            _shadow.ReadVitals(arg);
+            _shadow.ReadVitals(im);
         }
         #endregion
     }

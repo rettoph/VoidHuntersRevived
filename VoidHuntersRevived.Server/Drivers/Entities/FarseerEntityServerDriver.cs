@@ -24,13 +24,6 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
     [IsDriver(typeof(FarseerEntity))]
     internal sealed class FarseerEntityServerDriver : Driver<FarseerEntity>
     {
-        #region Static Properties
-        private static Double VitalsPingRate { get; set; } = 150;
-        #endregion
-
-        #region Private Fields
-        private ActionTimer _vitalPintTimer;
-        #endregion
 
         #region Constructor
         public FarseerEntityServerDriver(FarseerEntity driven) : base(driven)
@@ -39,28 +32,18 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize()
+        protected override void Initialize()
         {
-            base.PreInitialize();
+            base.Initialize();
 
-            _vitalPintTimer = new ActionTimer(FarseerEntityServerDriver.VitalsPingRate);
+            this.driven.WriteBodyVitals += this.WriteBodyVitals;
         }
         #endregion
 
-        #region Frame Methods
-        protected override void Update(GameTime gameTime)
+        #region Event Handlers
+        private void WriteBodyVitals(object sender, NetOutgoingMessage om)
         {
-            base.Update(gameTime);
-
-            _vitalPintTimer.Update(
-                gameTime: gameTime,
-                action: () =>
-                {
-                    // Create a vital action & send the data...
-                    var action = this.driven.Actions.Create("update:vitals", NetDeliveryMethod.UnreliableSequenced, 2);
-                    this.driven.Body.WriteVitals(action);
-                },
-                filter: triggered => this.driven.IsActive && this.driven.Body.IsSolidEnabled() && ((this.driven.Body.Awake && triggered) || this.driven.Controller is Chunk));
+            this.driven.Body.WriteVitals(om);
         }
         #endregion
     }

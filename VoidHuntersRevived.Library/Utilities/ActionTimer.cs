@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Library.Utilities
         /// <param name="gameTime"></param>
         /// <param name="action"></param>
         /// <param name="filter">Filter Action containing the current triggered state. True indicates that the last trigger has met or surpassed the interval rate.</param>
-        public void Update(GameTime gameTime, Action action, Func<Boolean, Boolean> filter)
+        public void Update(GameTime gameTime, Func<Boolean, Boolean> filter, Action action)
         {
             _lastTrigger += gameTime.ElapsedGameTime.TotalMilliseconds;
 

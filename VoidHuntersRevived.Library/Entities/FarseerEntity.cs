@@ -48,6 +48,8 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Events
+        public NetIncomingMessageDelegate ReadBodyVitals;
+        public NetOutgoingMessageDelegate WriteBodyVitals;
         public event EventHandler<Controller> OnControllerChanged;
         #endregion
 
@@ -154,6 +156,31 @@ namespace VoidHuntersRevived.Library.Entities
 
             this.Body.ReadVitals(im);
         }
+
+        #region Vitals Pings
+        public override bool CanSendVitals(bool interval)
+        {
+            return this.IsActive && this.Body.IsSolidEnabled() && ((this.Body.Awake && interval) || this.Controller is Chunk);
+        }
+
+        protected override void ReadVitals(NetIncomingMessage im)
+        {
+            base.ReadVitals(im);
+
+            // Trigger the read delegate & assume that its being taken care of
+            // This probably takes place in the FarseerEntityClientDriver
+            this.ReadBodyVitals?.Invoke(this, im);
+        }
+
+        protected override void WriteVitals(NetOutgoingMessage om)
+        {
+            base.WriteVitals(om);
+
+            // Trigger the write delegate & assume that its being taken care of
+            // This probably takes place in the FarseerEntityServerDriver
+            this.WriteBodyVitals?.Invoke(this, om);
+        }
+        #endregion
         #endregion
     }
 }

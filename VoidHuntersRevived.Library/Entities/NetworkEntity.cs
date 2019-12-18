@@ -29,6 +29,9 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Events
+        public delegate void NetIncomingMessageDelegate(Object sender, NetIncomingMessage im);
+        public delegate void NetOutgoingMessageDelegate(Object sender, NetOutgoingMessage om);
+
         public event EventHandler<Boolean> OnDirtyChanged;
         public event EventHandler<GameTime> OnCleaned;
         #endregion
@@ -164,6 +167,39 @@ namespace VoidHuntersRevived.Library.Entities
         {
             //
         }
+
+        #region Vitals
+        /// <summary>
+        /// Indicates whether or not the current network entity
+        /// is capable of sending vitals data.
+        /// </summary>
+        /// <param name="interval">Whether the standard interval value between pings has passed.</param>
+        /// <returns></returns>
+        public virtual Boolean CanSendVitals(Boolean interval)
+        {
+            return false;
+        }
+
+        public void TryReadVitals(NetIncomingMessage im)
+        {
+            this.ReadVitals(im);
+        }
+
+        protected virtual void ReadVitals(NetIncomingMessage im)
+        {
+            //
+        }
+
+        public void TryWiteVitals(NetOutgoingMessage om)
+        {
+            this.WriteVitals(om);
+        }
+
+        protected virtual void WriteVitals(NetOutgoingMessage om)
+        {
+            //
+        }
+        #endregion
         #endregion
     }
 }

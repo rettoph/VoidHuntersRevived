@@ -50,6 +50,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         }
 
         private Dictionary<Guid, Quarantined> _quarantinees;
+        private Queue<FarseerEntity> _added;
         private Queue<FarseerEntity> _cleans;
         private FarseerEntity _entity;
 
@@ -60,6 +61,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             _quarantinees = new Dictionary<Guid, Quarantined>();
             _cleans = new Queue<FarseerEntity>();
+            _added = new Queue<FarseerEntity>();
         }
         #endregion
 
@@ -68,8 +70,9 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             base.Update(gameTime);
 
+            // TODO: dont use ToList here...
             // Update each quarantinee...
-            _quarantinees.Values.ForEach(q =>
+            _quarantinees.Values.ToList().ForEach(q =>
             {
                 // Update the quarentinee
                 q.Update(gameTime);

@@ -69,9 +69,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
             this.driven.Group.Messages.TryAdd("entity:remove", (s, im) => _removes.Enqueue(im.ReadGuid()));
 
             _debug.AddLine(gt => "Network Scene");
-            _debug.AddLine(gt => $" Create => T: {_createCount.ToString("#,##0")}, M/S: {(_createCount/gt.TotalGameTime.TotalSeconds).ToString("#,##0.000")}");
-            _debug.AddLine(gt => $" Update => T: {_updateCount.ToString("#,##0")}, M/S: {(_updateCount / gt.TotalGameTime.TotalSeconds).ToString("#,##0.000")}");
-            _debug.AddLine(gt => $" Remove => T: {_removeCount.ToString("#,##0")}, M/S: {(_removeCount / gt.TotalGameTime.TotalSeconds).ToString("#,##0.000")}");
+            _debug.AddLine(gt => $" Create => T: {_createCount.ToString("#,##0")}, CPS: {(_createCount/gt.TotalGameTime.TotalSeconds).ToString("#,##0.000")}");
+            _debug.AddLine(gt => $" Update => T: {_updateCount.ToString("#,##0")}, UPS: {(_updateCount / gt.TotalGameTime.TotalSeconds).ToString("#,##0.000")}");
+            _debug.AddLine(gt => $" Remove => T: {_removeCount.ToString("#,##0")}, RPS: {(_removeCount / gt.TotalGameTime.TotalSeconds).ToString("#,##0.000")}");
         }
 
         protected override void Dispose()

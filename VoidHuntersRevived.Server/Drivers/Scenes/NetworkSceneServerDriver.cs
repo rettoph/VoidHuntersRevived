@@ -15,6 +15,9 @@ using Guppy.Network.Extensions.Lidgren;
 using System.Linq;
 using VoidHuntersRevived.Library.Extensions.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
+using VoidHuntersRevived.Server.Utilities;
+using VoidHuntersRevived.Library.Utilities;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Server.Drivers.Scenes
 {
@@ -25,6 +28,10 @@ namespace VoidHuntersRevived.Server.Drivers.Scenes
     [IsDriver(typeof(NetworkScene))]
     public class NetworkSceneServerDriver : Driver<NetworkScene>
     {
+        #region Static Properties
+        private static Double VitalsPingRate { get; set; } = 75;
+        #endregion
+
         #region Private Fields
         private NetPeer _peer;
         private EntityCollection _entities;
@@ -36,13 +43,17 @@ namespace VoidHuntersRevived.Server.Drivers.Scenes
         private User _user;
         private NetworkEntity _entity;
         private Guid _id;
+
+        private VitalsManager _vitals;
+        private ActionTimer _vitalPingTimer;
         #endregion
 
         #region Constructor
-        public NetworkSceneServerDriver(NetworkScene driven, NetPeer peer, EntityCollection entities) : base(driven)
+        public NetworkSceneServerDriver(VitalsManager vitals, NetworkScene driven, NetPeer peer, EntityCollection entities) : base(driven)
         {
             _peer = peer;
             _entities = entities;
+            _vitals = vitals;
         }
         #endregion
 
@@ -60,6 +71,8 @@ namespace VoidHuntersRevived.Server.Drivers.Scenes
         protected override void Initialize()
         {
             base.Initialize();
+
+            _vitalPingTimer = new ActionTimer(NetworkSceneServerDriver.VitalsPingRate);
 
             _entities.OnAdded += this.HandleEntityAdded;
             _entities.OnRemoved += this.HandleEntityRemoved;
@@ -101,6 +114,11 @@ namespace VoidHuntersRevived.Server.Drivers.Scenes
             while (_removes.Any())
                 if (_removes.TryDequeue(out _id))
                     this.CreateRemoveMessage(_id);
+
+            // Automatically flush the vitals on the defined interval
+            _vitalPingTimer.Update(
+                gameTime: gameTime,
+                action: _vitals.Flush);
 
             _peer.FlushSendQueue();
         }

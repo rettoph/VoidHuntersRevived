@@ -7,6 +7,7 @@ using VoidHuntersRevived.Client.Library.Layers;
 using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Scenes;
+using VoidHuntersRevived.Server.Utilities;
 
 namespace VoidHuntersRevived.Client.Library.Scenes
 {
@@ -28,7 +29,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         {
             base.Initialize();
 
-            _debug.AddLine(gt => $" Action => T: {this.actionCount.ToString("#,##0")}, M/S: {(this.actionCount / gt.TotalGameTime.TotalSeconds).ToString("#,##0.000")}");
+            _debug.AddLine(gt => $" Action => T: {this.actionCount.ToString("#,##0")}, APS: {(this.actionCount / gt.TotalGameTime.TotalSeconds).ToString("#,##0.000")}");
+            _debug.AddLine(gt => $" Vital => T: {VitalsManager.MessagesRecieved.ToString("#,##0")}, VPS: {(VitalsManager.MessagesRecieved / gt.TotalGameTime.TotalSeconds).ToString("#,##0.000")}");
 
             // Layer 0: Default
             this.layers.Create<CameraLayer>(0, l =>

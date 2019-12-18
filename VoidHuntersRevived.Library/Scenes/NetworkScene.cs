@@ -2,6 +2,7 @@
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Groups;
 using Lidgren.Network;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Concurrent;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Extensions.Collections.Concurrent;
+using VoidHuntersRevived.Server.Utilities;
 
 namespace VoidHuntersRevived.Library.Scenes
 {
@@ -30,9 +32,10 @@ namespace VoidHuntersRevived.Library.Scenes
         /// </summary>
         private ConcurrentQueue<NetIncomingMessage> _actions;
         private NetIncomingMessage _im;
+        private VitalsManager _vitals;
         #endregion
 
-        #region Pritected Properties
+        #region Protected Properties
         protected Double actionCount { get; private set; }
         #endregion
 
@@ -48,12 +51,16 @@ namespace VoidHuntersRevived.Library.Scenes
         {
             base.Create(provider);
 
+            _vitals = provider.GetRequiredService<VitalsManager>();
             _actions = new ConcurrentQueue<NetIncomingMessage>();
         }
 
         protected override void Initialize()
         {
             base.Initialize();
+
+            // Update the group utalized by the scopes vitals manager
+            _vitals.SetGroup(this.Group);
 
             this.actionCount = 0;
 
@@ -64,6 +71,7 @@ namespace VoidHuntersRevived.Library.Scenes
         {
             base.Dispose();
 
+            _vitals.SetGroup(null);
             _actions.Clear();
 
             this.Group.Messages.TryRemove("entity:action", this.HandleNetworkEntityActionMessage);

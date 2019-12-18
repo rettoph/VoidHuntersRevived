@@ -25,6 +25,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
 using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Utilities.Delegaters;
 using Guppy.Extensions.DependencyInjection;
+using VoidHuntersRevived.Server.Utilities;
 
 namespace VoidHuntersRevived.Library
 {
@@ -40,6 +41,7 @@ namespace VoidHuntersRevived.Library
             services.AddScoped<World>(p => new World(Vector2.Zero));
             services.AddScoped<ShipBuilder>();
             services.AddScoped<ChunkCollection>();
+            services.AddScoped<VitalsManager>();
             services.AddScoped<List<Player>>();
 
             services.AddSingleton<NetPeerConfiguration>(p =>
