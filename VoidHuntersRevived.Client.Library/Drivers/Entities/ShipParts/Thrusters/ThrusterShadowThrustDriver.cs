@@ -24,10 +24,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters
         #endregion
 
         #region Constructor
-        public ThrusterShadowThrustDriver(ServerShadow server, Thruster driven) : base(driven)
+        public ThrusterShadowThrustDriver(TrailManager trails, ServerShadow server, Thruster driven) : base(driven)
         {
             _server = server;
-            // _trails = trail;
+            _trails = trails;
         }
         #endregion
 
@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters
             base.Update(gameTime);
 
             // Attempt to add a segment to the trai manager
-            // _trails.TryAddTrail(this.driven);
+            _trails.TryAddTrail(this.driven);
 
             // Apply thrust to the current thruster's root's shadow...
             this.driven.ApplyThrust(_server[this.driven.Root]);

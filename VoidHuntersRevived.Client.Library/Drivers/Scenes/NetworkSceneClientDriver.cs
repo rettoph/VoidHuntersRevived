@@ -33,6 +33,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
         private Double _createCount;
         private Double _updateCount;
         private Double _removeCount;
+        private NetPeer _peer;
 
         private NetIncomingMessage _im;
         private Guid _id;
@@ -41,10 +42,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
         #endregion
 
         #region Constructor
-        public NetworkSceneClientDriver(DebugOverlay debug, EntityCollection entities, NetworkScene driven) : base(driven)
+        public NetworkSceneClientDriver(DebugOverlay debug, EntityCollection entities, NetworkScene driven, NetPeer peer) : base(driven)
         {
             _entities = entities;
             _debug = debug;
+            _peer = peer;
         }
         #endregion
 
@@ -103,6 +105,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
                     if (_removes.TryDequeue(out _id))
                         this.HandleRemoveMessage(_id);
             }
+
+            _peer.FlushSendQueue();
         }
         #endregion
 

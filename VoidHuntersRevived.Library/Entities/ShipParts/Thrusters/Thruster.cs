@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
     public class Thruster : RigidShipPart
     {
         #region Static Properties
-        public static Single StrengthAcceleration;
+        public static Single StrengthAcceleration = 0.00625f;
         #endregion
 
         #region Public Properties
