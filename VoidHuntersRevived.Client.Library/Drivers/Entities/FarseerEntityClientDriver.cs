@@ -65,6 +65,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
 
             _shadow.Dispose(withFixtures: true);
 
+            this.driven.ReadBodyVitals -= this.ReadBodyVitals;
             this.driven.OnControllerChanged -= this.HandleControllerChanged;
         }
         #endregion

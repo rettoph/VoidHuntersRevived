@@ -222,8 +222,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             this.Health = im.ReadSingle();
 
-            while (im.ReadBoolean())
-                this.FemaleConnectionNodes[im.ReadInt32()].Target.Parent.ReadHealth(im);
+            // while (im.ReadBoolean())
+            //     this.FemaleConnectionNodes[im.ReadInt32()].Target.Parent.ReadHealth(im);
         }
 
         /// <summary>

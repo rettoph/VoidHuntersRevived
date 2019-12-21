@@ -21,18 +21,30 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
             _server = server;
         }
 
+        #region LIfecycle Methods
         protected override void PostInitialize()
         {
             base.PostInitialize();
 
             _shadow = _server[this.driven];
 
-            // TODO: deregister event handler somewhere
-            this.driven.MaleConnectionNode.OnDetached += (s, n) =>
-            {
-                // Update the server shadow's Body's world position
-                this.driven.SetWorldTransform(n.Parent.Root, _shadow);
-            };
+            this.driven.MaleConnectionNode.OnDetached += this.OnMaleConnectionNodeDetached;
         }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.driven.MaleConnectionNode.OnDetached -= this.OnMaleConnectionNodeDetached;
+        }
+        #endregion
+
+        #region Event Handlers
+        private void OnMaleConnectionNodeDetached(Object Sender, ConnectionNode node)
+        {
+            // Update the server shadow's Body's world position
+            this.driven.SetWorldTransform(node.Parent.Root, _shadow);
+        }
+        #endregion
     }
 }

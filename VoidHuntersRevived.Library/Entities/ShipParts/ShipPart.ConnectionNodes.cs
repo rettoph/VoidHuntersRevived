@@ -78,37 +78,20 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 .Select((female_config, idx) => _connectionNodefactory.Build<ConnectionNode>(node => node.Configure(idx, this, female_config)))
                 .ToArray();
 
-            this.OnCleaned += this.ConnectionNode_HandleClean;
-
-            // TODO Update event registration? No deregistration?
-            // Bind event listeners tto automatically remap connection node data on a male attachment or female detachment
-            this.MaleConnectionNode.OnAttached += (s, n) =>
-            {
-                // Auto update the controller if it is not already defined...
-                if (this.Controller != this.Root.Controller)
-                    this.Root.Controller.Add(this);
-
-                this.dirty |= ChainUpdate.Both;
-                this.SetDirty(true);
-            };
-            this.MaleConnectionNode.OnDetached += (s, n) =>
-            {
-                // Update the Body's world position
-                this.SetWorldTransform(n.Parent.Root, this.Body);
-
-                // Mark the current & old parent chain dirty
-                this.dirty |= ChainUpdate.Down;
-                n.Parent.dirty |= ChainUpdate.Up;
-                this.SetDirty(true);
-                n.Parent.SetDirty(true);
-            };
-
             // Mark the current ShipPart as dirty by default
             this.dirty = ChainUpdate.Down;
+
+            this.OnCleaned += this.ConnectionNode_HandleClean;
+            this.MaleConnectionNode.OnAttached += this.ConnectionNode_HandleMaleConnectionNodeAttached;
+            this.MaleConnectionNode.OnDetached += this.ConnectionNode_HandleMaleConnectionNodeDetached;
         }
 
         private void ConnectionNode_Dispose()
         {
+            this.OnCleaned -= this.ConnectionNode_HandleClean;
+            this.MaleConnectionNode.OnAttached -= this.ConnectionNode_HandleMaleConnectionNodeAttached;
+            this.MaleConnectionNode.OnDetached -= this.ConnectionNode_HandleMaleConnectionNodeDetached;
+
             this.MaleConnectionNode.Dispose();
             this.FemaleConnectionNodes.ForEach(f => f.Dispose());
         }
@@ -151,6 +134,28 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             if (this.dirty != ChainUpdate.None)
                 this.CleanChain(this.dirty);
+        }
+
+        private void ConnectionNode_HandleMaleConnectionNodeAttached(Object sender, ConnectionNode arg)
+        {
+            // Auto update the controller if it is not already defined...
+            if (this.Controller != this.Root.Controller)
+                this.Root.Controller.Add(this);
+
+            this.dirty |= ChainUpdate.Both;
+            this.SetDirty(true);
+        }
+
+        private void ConnectionNode_HandleMaleConnectionNodeDetached(Object sender, ConnectionNode arg)
+        {
+            // Update the Body's world position
+            this.SetWorldTransform(arg.Parent.Root, this.Body);
+
+            // Mark the current & old parent chain dirty
+            this.dirty |= ChainUpdate.Down;
+            arg.Parent.dirty |= ChainUpdate.Up;
+            this.SetDirty(true);
+            arg.Parent.SetDirty(true);
         }
         #endregion
 

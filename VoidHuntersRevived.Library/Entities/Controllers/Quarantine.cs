@@ -49,10 +49,17 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             }
         }
 
+        private struct BufferAction
+        {
+            public Boolean Add;
+            public FarseerEntity Entity;
+        }
+
         private Dictionary<Guid, Quarantined> _quarantinees;
-        private Queue<FarseerEntity> _added;
-        private Queue<FarseerEntity> _cleans;
+        private Queue<FarseerEntity> _clean;
+        private Queue<BufferAction> _actions;
         private FarseerEntity _entity;
+        private BufferAction _action;
 
         internal ChunkCollection chunks { get; set; }
 
@@ -60,8 +67,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         public Quarantine()
         {
             _quarantinees = new Dictionary<Guid, Quarantined>();
-            _cleans = new Queue<FarseerEntity>();
-            _added = new Queue<FarseerEntity>();
+            _clean = new Queue<FarseerEntity>();
+            _actions = new Queue<BufferAction>();
         }
         #endregion
 
@@ -70,20 +77,25 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             base.Update(gameTime);
 
-            // TODO: dont use ToList here...
+            while (_actions.Any())
+                if ((_action = _actions.Dequeue()).Add)
+                    _quarantinees.Add(_action.Entity.Id, new Quarantined(_action.Entity));
+                else
+                    _quarantinees.Remove(_action.Entity.Id);
+
             // Update each quarantinee...
-            _quarantinees.Values.ToList().ForEach(q =>
+            _quarantinees.Values.ForEach(q =>
             {
                 // Update the quarentinee
                 q.Update(gameTime);
 
                 if (q.Clean)
-                    _cleans.Enqueue(q.Component);
+                    _clean.Enqueue(q.Component);
             });
 
             // Remove all clean entitys & add them directly into their chunk...
-            while (_cleans.Any())
-                this.chunks.Get((_entity = _cleans.Dequeue())).Add(_entity);
+            while (_clean.Any())
+                this.chunks.Get((_entity = _clean.Dequeue())).Add(_entity);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -116,7 +128,12 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             if (base.Add(entity))
             {
-                _quarantinees.Add(entity.Id, new Quarantined(entity));
+                // _quarantinees.Add(entity.Id, new Quarantined(entity));
+                _actions.Enqueue(new BufferAction()
+                {
+                    Add = true,
+                    Entity = entity
+                });
 
                 return true;
             }
@@ -128,7 +145,12 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             if (base.Remove(entity))
             {
-                _quarantinees.Remove(entity.Id);
+                // _quarantinees.Remove(entity.Id);
+                _actions.Enqueue(new BufferAction()
+                {
+                    Add = false,
+                    Entity = entity
+                });
 
                 return true;
             }

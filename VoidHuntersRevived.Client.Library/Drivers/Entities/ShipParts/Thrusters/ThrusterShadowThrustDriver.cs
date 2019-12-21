@@ -21,15 +21,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters
         #region Private Fields
         private ServerShadow _server;
         private TrailManager _trails;
-        private Single _trailStrength;
-        private TrailManager.Trail _trail;
         #endregion
 
         #region Constructor
-        public ThrusterShadowThrustDriver(TrailManager trail, ServerShadow server, Thruster driven) : base(driven)
+        public ThrusterShadowThrustDriver(ServerShadow server, Thruster driven) : base(driven)
         {
             _server = server;
-            _trails = trail;
+            // _trails = trail;
         }
         #endregion
 
@@ -41,30 +39,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters
         {
             base.Update(gameTime);
 
-            // Add a trail segment based on the thrusters current position 
-            if (this.driven.Active)
-            {
-                
-                _trailStrength = MathHelper.Lerp(_trailStrength, 0.5f, 0.01f);
-            }
-            else
-            {
-                _trailStrength = MathHelper.Lerp(_trailStrength, 0, 0.01f);
-            }
-                
-
-            if(_trailStrength >= 0.01f && this.driven.Root.Ship != default(Ship))
-            { // Only apply a trail if the thruster is attached to a ship
-                if (_trail == null)
-                    _trail = _trails.CreateTrail(this.driven);
-
-                _trail.AddSegment(this.driven, _trailStrength, gameTime);
-            }
-            else
-            {
-                _trail = null;
-            }
-                
+            // Attempt to add a segment to the trai manager
+            // _trails.TryAddTrail(this.driven);
 
             // Apply thrust to the current thruster's root's shadow...
             this.driven.ApplyThrust(_server[this.driven.Root]);

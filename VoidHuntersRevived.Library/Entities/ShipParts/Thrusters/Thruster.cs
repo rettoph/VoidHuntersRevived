@@ -9,6 +9,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
 {
     public class Thruster : RigidShipPart
     {
+        #region Static Properties
+        public static Single StrengthAcceleration;
+        #endregion
+
         #region Public Properties
         /// <summary>
         /// The directions the current thruster will
@@ -20,6 +24,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         /// </summary>
         public Boolean Active { get; internal set; }
         public Vector2 Thrust { get => Vector2.UnitX * 20; }
+        public Single Strength { get; private set; }
         public Vector2 LocalThrust { get => Vector2.Transform(this.Thrust, Matrix.CreateRotationZ(this.LocalRotation)); }
         #endregion
 
@@ -47,7 +52,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
             base.Update(gameTime);
 
             // Apply thrust to the internal fixture...
-            this.ApplyThrust(this.Root.Body);
+            this.Strength = MathHelper.Lerp(
+                value1: this.Strength,
+                value2: this.ApplyThrust(this.Root.Body) ? 1 : 0,
+                amount: Thruster.StrengthAcceleration * (Single)gameTime.ElapsedGameTime.TotalMilliseconds);
         }
         #endregion
 
@@ -117,7 +125,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         /// Thruster's chain.
         /// </summary>
         /// <param name="body"></param>
-        public void ApplyThrust(Body body)
+        public Boolean ApplyThrust(Body body)
         {
             if (this.Active)
             { // Only apply any thrust if the current thruster is active...
@@ -128,7 +136,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
 
                 // Apply thr thrust...
                 body.ApplyForce(ref force, ref point);
+
+                return true;
             }
+
+            return false;
         }
         #endregion
 
