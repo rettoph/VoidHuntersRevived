@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Extensions.Logging;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy;
+using VoidHuntersRevived.Library.Extensions.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -416,13 +417,10 @@ namespace VoidHuntersRevived.Library.Entities
             ShipPart dirtyChild;
             while (_dirtyHealthChildren.Any())
             { // Write the health of all ship parts with updated health values...
-                if ((dirtyChild = _dirtyHealthChildren.Dequeue()).Health > 0)
-                {
-
-                    om.Write(true);
-                    om.Write(dirtyChild);
-                    dirtyChild.WriteHealth(om);
-                }
+                dirtyChild = _dirtyHealthChildren.Dequeue();
+                om.Write(true);
+                om.Write(dirtyChild);
+                dirtyChild.WriteHealth(om);
             }
 
             om.Write(false);

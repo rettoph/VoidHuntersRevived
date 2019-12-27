@@ -13,6 +13,7 @@ using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Extensions.Farseer;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Network.Extensions.Lidgren;
+using VoidHuntersRevived.Library.Extensions.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -35,7 +36,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public Boolean IsRoot { get => !this.MaleConnectionNode.Attached; }
         public override Boolean IsActive { get => this.IsRoot; }
         public Color Color { get => this.Root.Ship == default(Ship) ? this.Root.DefaultColor : new Color(1, 203, 226); }
-        public Byte Health { get; private set; }
+        public Byte Health { get; internal set; }
         public Single HealthRate { get => (Single)this.Health / 100; }
         #endregion
 
@@ -239,24 +240,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             base.WriteVitals(om);
 
             this.WriteHealth(om);
-        }
-
-        /// <summary>
-        /// Recursively read health from an incoming message
-        /// </summary>
-        /// <param name="im"></param>
-        public void ReadHealth(NetIncomingMessage im)
-        {
-            this.Health = im.ReadByte();
-        }
-
-        /// <summary>
-        /// Recurively write health to an outbound message
-        /// </summary>
-        /// <param name="om"></param>
-        public void WriteHealth(NetOutgoingMessage om)
-        {
-            om.Write(this.Health);
         }
         #endregion
     }
