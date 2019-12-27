@@ -1,4 +1,5 @@
-﻿using Guppy;
+﻿using FarseerPhysics.Common;
+using Guppy;
 using Guppy.Extensions.Collection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
@@ -132,7 +133,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
         /// <param name="thruster"></param>
         public void TryAddTrail(Thruster thruster)
         {
-            if(!_trails.ContainsKey(thruster))
+            if(!_trails.ContainsKey(thruster) && thruster.Strength > 0.001f)
             { // Create a new trail for the thruster...
                 var trail = Trail.Build(this, thruster);
                 _trails.Add(thruster, trail);
@@ -153,13 +154,13 @@ namespace VoidHuntersRevived.Client.Library.Entities
         {
             if(_verticeCount == _vertices.Length || (_verticeCount > 0 && force))
             { // Attempt to render the vertices as is...
-                _vertexBuffer.SetData<VertexPositionColor>(_vertices);
+                _vertexBuffer.SetData<VertexPositionColor>(_vertices, 0, _verticeCount);
                 _graphics.SetVertexBuffer(_vertexBuffer);
 
                 foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
-                    _graphics.DrawPrimitives(PrimitiveType.TriangleList, 0, _verticeCount);
+                    _graphics.DrawPrimitives(PrimitiveType.TriangleList, 0, _verticeCount / 3);
                 }
 
                 // Reset the vertices count...
@@ -347,7 +348,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
         #region Frame Methods
         public void Update(GameTime gameTime)
         {
-            this.Age = this.Age + gameTime.ElapsedGameTime.TotalMilliseconds;
+            this.Age += gameTime.ElapsedGameTime.TotalMilliseconds;
             this.Port += _tangentDelta;
             this.Starboard -= _tangentDelta;
             this.Color = Color.Lerp(Color.Transparent, _trail.BaseColor, this.Strength * (1 - ((Single)this.Age / 2000f)));
