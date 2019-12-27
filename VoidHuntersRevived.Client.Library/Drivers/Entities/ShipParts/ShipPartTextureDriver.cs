@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
             _sprite.Draw(
                 position: this.driven.Position, 
                 rotation: this.driven.Rotation, 
-                color: new Color(Color.Lerp(Color.Red, this.driven.Color, this.driven.Health / 100), 200));
+                color: new Color(Color.Lerp(Color.Red, this.driven.Color, this.driven.HealthRate), 200));
         }
         #endregion
     }

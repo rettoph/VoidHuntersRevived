@@ -12,6 +12,7 @@ using VoidHuntersRevived.Library.Configurations;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Extensions.Farseer;
 using VoidHuntersRevived.Library.Utilities;
+using Guppy.Network.Extensions.Lidgren;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -34,7 +35,20 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public Boolean IsRoot { get => !this.MaleConnectionNode.Attached; }
         public override Boolean IsActive { get => this.IsRoot; }
         public Color Color { get => this.Root.Ship == default(Ship) ? this.Root.DefaultColor : new Color(1, 203, 226); }
-        public Single Health { get; private set; }
+        public Byte Health { get; private set; }
+        public Single HealthRate { get => (Single)this.Health / 100; }
+        #endregion
+
+        #region Events
+        /// <summary>
+        /// Invoked when the current ShipPart's health is updated...
+        /// </summary>
+        public event EventHandler<Byte> OnHealthChanged;
+        /// <summary>
+        /// Invoked when any ShipPart within the current ShipPart's chain's
+        /// health is updated, including the current ShipPart.
+        /// </summary>
+        public event EventHandler<ShipPart> OnChildHealthChanged;
         #endregion
 
         #region Lifecycle Methods
@@ -116,9 +130,12 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// amount.
         /// </summary>
         /// <param name="amount"></param>
-        public void Damage(Single amount)
+        public void Damage(Byte amount)
         {
             this.Health -= amount;
+
+            this.OnHealthChanged?.Invoke(this, this.Health);
+            this.Root.OnChildHealthChanged?.Invoke(this, this);
         }
         #endregion
 
@@ -191,6 +208,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             base.Read(im);
 
             this.ConnectionNode_Read(im);
+
+            this.ReadHealth(im);
         }
 
         protected override void Write(NetOutgoingMessage om)
@@ -198,6 +217,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             base.Write(om);
 
             this.ConnectionNode_Write(om);
+
+            this.WriteHealth(om);
+        }
+
+
+        public override bool CanSendVitals(bool interval)
+        {
+            return this.IsRoot && base.CanSendVitals(interval);
         }
 
         protected override void ReadVitals(NetIncomingMessage im)
@@ -220,10 +247,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// <param name="im"></param>
         public void ReadHealth(NetIncomingMessage im)
         {
-            this.Health = im.ReadSingle();
-
-            // while (im.ReadBoolean())
-            //     this.FemaleConnectionNodes[im.ReadInt32()].Target.Parent.ReadHealth(im);
+            this.Health = im.ReadByte();
         }
 
         /// <summary>
@@ -233,18 +257,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public void WriteHealth(NetOutgoingMessage om)
         {
             om.Write(this.Health);
-
-            this.FemaleConnectionNodes.ForEach(f =>
-            {
-                if(f.Attached)
-                {
-                    om.Write(true);
-                    om.Write(f.Id);
-                    f.Target.Parent.WriteHealth(om);
-                }
-            });
-
-            om.Write(false);
         }
         #endregion
     }

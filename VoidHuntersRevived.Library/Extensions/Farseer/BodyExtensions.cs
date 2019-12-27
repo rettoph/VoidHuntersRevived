@@ -28,17 +28,23 @@ namespace VoidHuntersRevived.Library.Extensions.Farseer
         #region Network Methods
         public static void WriteVitals(this Body body, NetOutgoingMessage om)
         {
-            om.Write(body.Position);
-            om.Write(body.Rotation);
-            om.Write(body.LinearVelocity);
-            om.Write(body.AngularVelocity);
+            if (om.WriteIf(!body.IsDisposed))
+            {
+                om.Write(body.Position);
+                om.Write(body.Rotation);
+                om.Write(body.LinearVelocity);
+                om.Write(body.AngularVelocity);
+            }
         }
 
         public static void ReadVitals(this Body body, NetIncomingMessage im)
         {
-            body.SetTransformIgnoreContacts(im.ReadVector2(), im.ReadSingle());
-            body.LinearVelocity = im.ReadVector2();
-            body.AngularVelocity = im.ReadSingle();
+            if (im.ReadBoolean())
+            {
+                body.SetTransformIgnoreContacts(im.ReadVector2(), im.ReadSingle());
+                body.LinearVelocity = im.ReadVector2();
+                body.AngularVelocity = im.ReadSingle();
+            }
         }
         #endregion
 

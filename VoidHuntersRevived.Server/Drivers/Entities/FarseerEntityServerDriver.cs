@@ -38,6 +38,13 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
 
             this.driven.WriteBodyVitals += this.WriteBodyVitals;
         }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.driven.WriteBodyVitals -= this.WriteBodyVitals;
+        }
         #endregion
 
         #region Event Handlers

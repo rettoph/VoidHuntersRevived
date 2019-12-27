@@ -41,6 +41,7 @@ namespace VoidHuntersRevived.Library.Entities
         private CustomController _controller;
         private ChunkCollection _chunks;
         private List<ConnectionNode> _openFemaleNodes;
+        private Queue<ShipPart> _dirtyHealthChildren;
         #endregion
 
         #region Public Properties
@@ -107,6 +108,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Create(provider);
 
+            _dirtyHealthChildren = new Queue<ShipPart>();
             _openFemaleNodes = new List<ConnectionNode>();
             _controller = this.entities.Create<CustomController>("entity:custom-controller", dc =>
             {
@@ -216,6 +218,7 @@ namespace VoidHuntersRevived.Library.Entities
                     // Remove old events
                     this.Bridge.OnChainUpdated -= this.HandleBridgeShipPartChainUpdated;
                     this.Bridge.OnDisposing -= this.HandleBridgeDisposing;
+                    this.Bridge.OnChildHealthChanged -= this.HandleChildHealthChanged;
                 }
 
                 // Update the stored bridge value
@@ -232,6 +235,7 @@ namespace VoidHuntersRevived.Library.Entities
                     // Add new events
                     this.Bridge.OnChainUpdated += this.HandleBridgeShipPartChainUpdated;
                     this.Bridge.OnDisposing += this.HandleBridgeDisposing;
+                    this.Bridge.OnChildHealthChanged += this.HandleChildHealthChanged;
                     this.SetDirty(true);
                 }
 
@@ -319,6 +323,11 @@ namespace VoidHuntersRevived.Library.Entities
         {
             this.SetBridge(null);
         }
+
+        private void HandleChildHealthChanged(object sender, ShipPart e)
+        {
+            _dirtyHealthChildren.Enqueue(e);
+        }
         #endregion
 
         #region Network Methods
@@ -385,6 +394,38 @@ namespace VoidHuntersRevived.Library.Entities
         public void ReadDirection(NetIncomingMessage im)
         {
             this.SetDirection((Direction)im.ReadByte(), im.ReadBoolean());
+        }
+
+        public override bool CanSendVitals(bool interval)
+        {
+            return _dirtyHealthChildren.Any() && interval;
+        }
+
+        protected override void ReadVitals(NetIncomingMessage im)
+        {
+            base.ReadVitals(im);
+
+            while(im.ReadBoolean())
+                im.ReadEntity<ShipPart>(this.entities).ReadHealth(im);
+        }
+
+        protected override void WriteVitals(NetOutgoingMessage om)
+        {
+            base.WriteVitals(om);
+
+            ShipPart dirtyChild;
+            while (_dirtyHealthChildren.Any())
+            { // Write the health of all ship parts with updated health values...
+                if ((dirtyChild = _dirtyHealthChildren.Dequeue()).Health > 0)
+                {
+
+                    om.Write(true);
+                    om.Write(dirtyChild);
+                    dirtyChild.WriteHealth(om);
+                }
+            }
+
+            om.Write(false);
         }
         #endregion
     }

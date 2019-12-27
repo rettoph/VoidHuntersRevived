@@ -240,7 +240,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
         public void Update(GameTime gameTime)
         {
             // Update the internal base color value
-            this.BaseColor = new Color(Color.Lerp(Color.Red, this.Color, this.Thruster.Health / 100), 100);
+            this.BaseColor = new Color(Color.Lerp(Color.Red, this.Color, this.Thruster.HealthRate), 100);
 
             _segmentTimer.Update(
                 gameTime: gameTime,
