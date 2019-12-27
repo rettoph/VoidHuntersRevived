@@ -83,8 +83,8 @@ namespace VoidHuntersRevived.Library.Entities.Players
                     this.Ship.SetFiring(false);
                     this.Ship.SetDirection(Ship.Direction.Forward, false);
                     this.Ship.SetDirection(Ship.Direction.Backward, false);
-                    this.Ship.SetDirection(Ship.Direction.Left, false);
-                    this.Ship.SetDirection(Ship.Direction.Right, false);
+                    this.Ship.SetDirection(Ship.Direction.TurnLeft, false);
+                    this.Ship.SetDirection(Ship.Direction.TurnRight, false);
                 }
             }
         }
