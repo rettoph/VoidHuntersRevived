@@ -156,6 +156,8 @@ namespace VoidHuntersRevived.Client.Library.Entities
             { // Attempt to render the vertices as is...
                 _vertexBuffer.SetData<VertexPositionColor>(_vertices, 0, _verticeCount);
                 _graphics.SetVertexBuffer(_vertexBuffer);
+                _graphics.DepthStencilState = DepthStencilState.Default;
+                _graphics.BlendState = BlendState.Additive;
 
                 foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
                 {
@@ -240,7 +242,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
         public void Update(GameTime gameTime)
         {
             // Update the internal base color value
-            this.BaseColor = new Color(Color.Lerp(Color.Red, this.Color, this.Thruster.HealthRate), 100);
+            this.BaseColor = new Color(Color.Lerp(Color.Red, this.Color, this.Thruster.HealthRate), 150);
 
             _segmentTimer.Update(
                 gameTime: gameTime,
@@ -335,7 +337,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
             this.Strength = _trail.Thruster.Strength;
             this.Port = new Vector3(_trail.Thruster.Position, 0) + Vector3.Transform(TrailSegment.Spread, Matrix.CreateRotationZ(this.Direction + MathHelper.PiOver2));
             this.Starboard = Starboard = new Vector3(_trail.Thruster.Position, 0) + Vector3.Transform(TrailSegment.Spread, Matrix.CreateRotationZ(this.Direction - MathHelper.PiOver2));
-            this.Color = Color.Lerp(Color.Transparent, _trail.BaseColor, this.Strength * (1 - ((Single)this.Age / 2000f)));
+            this.Color = Color.Lerp(Color.Transparent, _trail.BaseColor, this.Strength * (1 - ((Single)(this.Age / TrailSegment.MaxAge))));
             _tangentDelta = Vector3.Transform(TrailSegment.Speed, Matrix.CreateRotationZ(this.Direction + MathHelper.Pi - (MathHelper.Pi / 2)));
         }
     
@@ -351,7 +353,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
             this.Age += gameTime.ElapsedGameTime.TotalMilliseconds;
             this.Port += _tangentDelta;
             this.Starboard -= _tangentDelta;
-            this.Color = Color.Lerp(Color.Transparent, _trail.BaseColor, this.Strength * (1 - ((Single)this.Age / 2000f)));
+            this.Color = Color.Lerp(Color.Transparent, _trail.BaseColor, this.Strength * (1 - ((Single)(this.Age / TrailSegment.MaxAge))));
         }
         #endregion
     
