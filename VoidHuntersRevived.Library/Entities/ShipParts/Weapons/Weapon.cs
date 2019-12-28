@@ -173,24 +173,26 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         {
             if(joint != default(RevoluteJoint) && !(this.Controller is Chunk))
             { // Only update the target if the weapon is not in a controller...
-                // Calculate the offset beteen the joints position and the requested target.
-                var offset = target - joint.WorldAnchorB;
-                // Calculate the joint should approach relative to the weapon body
-                var angle = MathHelper.Clamp(
-                    value: MathHelper.WrapAngle(
-                        angle: (Single)Math.Atan2(offset.Y, offset.X) - this.MaleConnectionNode.LocalRotation - this.MaleConnectionNode.Target.WorldRotation),
-                    min: this.Joint.LowerLimit,
-                    max: this.Joint.UpperLimit);
-
-                // Calculate the different between the required angle and the current angle
-                var diff = angle - joint.JointAngle;
-
-                // Set the joints speed
-                joint.MotorSpeed = diff * (1000f / 32f);
-
                 this.UpdatePosition(root, weapon, weapon.Rotation);
+                if (this.Health > 0)
+                {
+                    // Calculate the offset beteen the joints position and the requested target.
+                    var offset = target - joint.WorldAnchorB;
+                    // Calculate the joint should approach relative to the weapon body
+                    var angle = MathHelper.Clamp(
+                        value: MathHelper.WrapAngle(
+                            angle: (Single)Math.Atan2(offset.Y, offset.X) - this.MaleConnectionNode.LocalRotation - this.MaleConnectionNode.Target.WorldRotation),
+                        min: this.Joint.LowerLimit,
+                        max: this.Joint.UpperLimit);
 
-                return !(angle == this.Joint.LowerLimit || angle == this.Joint.UpperLimit);
+                    // Calculate the different between the required angle and the current angle
+                    var diff = angle - joint.JointAngle;
+
+                    // Set the joints speed
+                    joint.MotorSpeed = diff * (1000f / 32f);
+
+                    return !(angle == this.Joint.LowerLimit || angle == this.Joint.UpperLimit);
+                }
             }
 
             return false;
@@ -203,7 +205,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             _fireTimer.Update(
                 gameTime: gameTime,
                 action: () => this.Fire(),
-                filter: (triggered) => triggered && this.OnTarget && this.Root.Ship != default(Ship) && this.Root.Ship.Firing); 
+                filter: (triggered) => triggered && this.OnTarget && this.Health > 0 && this.Root.Ship != default(Ship) && this.Root.Ship.Firing); 
         }
 
         protected abstract void Fire();

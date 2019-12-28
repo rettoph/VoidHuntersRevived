@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts.Thrusters
 
             this.driven.Active = false;
 
-            if (this.driven.Root.Ship != default(Ship))
+            if (this.driven.Health > 0 && this.driven.Root.Ship != default(Ship))
             { // If the thruster is attached to a ship...
                 if ((this.driven.Root.Ship.ActiveDirections & this.driven.Directions) != 0)
                 { // If the thruster should be thrusting...
