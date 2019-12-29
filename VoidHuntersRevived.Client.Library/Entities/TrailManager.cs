@@ -1,6 +1,7 @@
 ﻿using FarseerPhysics.Common;
 using Guppy;
 using Guppy.Extensions.Collection;
+using Guppy.UI.Utilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -21,27 +22,20 @@ namespace VoidHuntersRevived.Client.Library.Entities
     /// </summary>
     public sealed class TrailManager : Entity
     {
-        #region Static Fields
-        public static Int32 BufferSize { get; private set; } = 500;
-        #endregion
-    
         #region Private Fields
-        private VertexPositionColor[] _vertices;
-        private Int32 _verticeCount;
-        private GraphicsDevice _graphics;
         private BasicEffect _effect;
         private FarseerCamera2D _camera;
         private Dictionary<Thruster, Trail> _trails;
         private Queue<Trail> _empty;
-        private VertexBuffer _vertexBuffer;
+        private PrimitiveBatch _primitives;
         #endregion
 
         #region Constructor
-        public TrailManager(GraphicsDevice graphics, BasicEffect effect, FarseerCamera2D camera)
+        public TrailManager(BasicEffect effect, PrimitiveBatch primitives, FarseerCamera2D camera)
         {
-            _graphics = graphics;
             _effect = effect;
             _camera = camera;
+            _primitives = primitives;
         }
         #endregion
     
@@ -50,12 +44,11 @@ namespace VoidHuntersRevived.Client.Library.Entities
         {
             base.Create(provider);
 
-            _verticeCount = 0;
             _trails = new Dictionary<Thruster, Trail>();
             _empty = new Queue<Trail>();
-            _vertices = new VertexPositionColor[TrailManager.BufferSize * 6];
-            _vertexBuffer = new VertexBuffer(_graphics, typeof(VertexPositionColor), _vertices.Length, BufferUsage.WriteOnly);
             _effect.VertexColorEnabled = true;
+
+            this.SetLayerDepth(2);
         }
         #endregion
     
@@ -87,8 +80,6 @@ namespace VoidHuntersRevived.Client.Library.Entities
 
             // Draw all internal trails..
             _trails.Values.ForEach(t => t.Draw(gameTime));
-
-            this.TryFlushVertices(true);
         }
         #endregion
     
@@ -103,26 +94,8 @@ namespace VoidHuntersRevived.Client.Library.Entities
         /// <param name="s2"></param>
         internal void EnqueueSegmentVertices(TrailSegment s1, TrailSegment s2)
         {
-            // Map triangle 1
-            _vertices[_verticeCount + 0].Color = s1.Color;
-            _vertices[_verticeCount + 0].Position = s1.Port;
-            _vertices[_verticeCount + 1].Color = s1.Color;
-            _vertices[_verticeCount + 1].Position = s1.Starboard;
-            _vertices[_verticeCount + 2].Color = s2.Color;
-            _vertices[_verticeCount + 2].Position = s2.Starboard;
-
-            // Map triangle 2
-            _vertices[_verticeCount + 3].Color = s2.Color;
-            _vertices[_verticeCount + 3].Position = s2.Starboard;
-            _vertices[_verticeCount + 4].Color = s2.Color;
-            _vertices[_verticeCount + 4].Position = s2.Port;
-            _vertices[_verticeCount + 5].Color = s1.Color;
-            _vertices[_verticeCount + 5].Position = s1.Port;
-
-            // Increase the vertices count...
-            _verticeCount += 6;
-
-            this.TryFlushVertices();
+            _primitives.DrawTriangle(s1.Port, s1.Color, s1.Starboard, s1.Color, s2.Starboard, s2.Color);
+            _primitives.DrawTriangle(s2.Starboard, s2.Color, s2.Port, s2.Color, s1.Port, s1.Color);
         }
     
         /// <summary>
@@ -144,34 +117,6 @@ namespace VoidHuntersRevived.Client.Library.Entities
         {
             _trails.Remove(trail.Thruster);
             trail.Dispose();
-        }
-
-        /// <summary>
-        /// Attempt to draw the vertices..
-        /// </summary>
-        /// <param name="force"></param>
-        private Boolean TryFlushVertices(Boolean force = false)
-        {
-            if(_verticeCount == _vertices.Length || (_verticeCount > 0 && force))
-            { // Attempt to render the vertices as is...
-                _vertexBuffer.SetData<VertexPositionColor>(_vertices, 0, _verticeCount);
-                _graphics.SetVertexBuffer(_vertexBuffer);
-                _graphics.DepthStencilState = DepthStencilState.Default;
-                _graphics.BlendState = BlendState.Additive;
-
-                foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
-                {
-                    pass.Apply();
-                    _graphics.DrawPrimitives(PrimitiveType.TriangleList, 0, _verticeCount / 3);
-                }
-
-                // Reset the vertices count...
-                _verticeCount = 0;
-
-                return true;
-            }
-
-            return false;
         }
         #endregion
     }

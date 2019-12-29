@@ -8,7 +8,6 @@ namespace VoidHuntersRevived.Library.Layers
 {
     public class BasicLayer : Layer
     {
-
         #region Frame Methods
         protected override void Update(GameTime gameTime)
         {

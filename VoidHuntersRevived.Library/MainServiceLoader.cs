@@ -63,7 +63,22 @@ namespace VoidHuntersRevived.Library
         {
             provider.GetRequiredService<GlobalOptions>().LogLevel = Microsoft.Extensions.Logging.LogLevel.Debug;
 
-            var entities = provider.GetRequiredService<EntityLoader>();
+            var strings = provider.GetRequiredService<StringLoader>();
+            strings.TryRegister("name:entity:ship-part:hull:triangle", "Triangle");
+            strings.TryRegister("description:entity:ship-part:hull:triangle", "Simple triangle hull piece.");
+            strings.TryRegister("name:entity:ship-part:hull:square", "Square");
+            strings.TryRegister("description:entity:ship-part:hull:square", "Simple square hull piece.");
+            strings.TryRegister("name:entity:ship-part:hull:hexagon", "Hexagon");
+            strings.TryRegister("description:entity:ship-part:hull:hexagon", "Simple hexagon hull piece.");
+            strings.TryRegister("name:entity:ship-part:chassis:mosquito", "Mosquito Chassis");
+            strings.TryRegister("description:entity:ship-part:chassis:mosquito", "A Ship's mosquito chassis.");
+            strings.TryRegister("name:entity:ship-part:thruster:small", "Thruster");
+            strings.TryRegister("description:entity:ship-part:thruster:small", "Main thruster unit.");
+            strings.TryRegister("name:entity:ship-part:weapon:mass-driver", "Mass Driver");
+            strings.TryRegister("description:entity:ship-part:weapon:mass-driver", "A basic projectile firing weapon.");
+        
+
+             var entities = provider.GetRequiredService<EntityLoader>();
 
             entities.TryRegister<UserPlayer>("entity:player:user", "name:entity:player:user", "description:entity:player:user");
             entities.TryRegister<ComputerPlayer>("entity:player:computer", "name:entity:player:computer", "description:entity:player:computer");

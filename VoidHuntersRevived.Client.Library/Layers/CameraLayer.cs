@@ -1,4 +1,5 @@
 ﻿using Guppy;
+using Guppy.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -23,7 +24,7 @@ namespace VoidHuntersRevived.Client.Library.Layers
         #region Protected Fields
         protected SpriteBatch spriteBatch;
         protected BasicEffect effect;
-        protected FarseerCamera2D camera;
+        protected Camera2D camera;
         #endregion
 
         #region Constructor
@@ -46,16 +47,35 @@ namespace VoidHuntersRevived.Client.Library.Layers
         #endregion
 
         #region Frame Methods
-        protected override void Draw(GameTime gameTime)
+        protected override void PreDraw(GameTime gameTIme)
         {
-            base.Draw(gameTime);
+            base.PreDraw(gameTIme);
 
             this.effect.View = this.camera.View;
             this.effect.Projection = this.camera.Projection;
 
             this.spriteBatch.Begin(effect: this.effect);
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
             this.entities.TryDraw(gameTime);
+        }
+
+        protected override void PostDraw(GameTime gameTIme)
+        {
+            base.PostDraw(gameTIme);
+
             this.spriteBatch.End();
+        }
+        #endregion
+
+        #region Setters
+        public void SetCamera(Camera2D camera)
+        {
+            this.camera = camera;
         }
         #endregion
     }

@@ -74,7 +74,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             body.CollisionCategories = Categories.PassiveCollisionCategories;
             body.CollidesWith = Categories.PassiveCollidesWith;
             body.IgnoreCCDWith = Categories.PassiveIgnoreCCDWith;
-            body.BodyType = BodyType.Static;
+            body.BodyType = BodyType.Dynamic;
         }
         #endregion
 

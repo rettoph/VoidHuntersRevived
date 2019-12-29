@@ -180,6 +180,23 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 if (female.Attached)
                     female.Target.Parent.GetSize(ref count);
         }
+
+        public void GetInfo(out String title, out String description, out String advanced)
+        {
+            if (this.IsRoot)
+            {
+                title = this.Ship == default(Ship) ? this.Configuration.Name : "Ship";
+                description = $"{this.Configuration.Description}";
+                advanced = $"Health: {this.Health}/100";
+
+                if (this.GetSize() > 1)
+                    advanced += $"\nChain Size: {this.GetSize()}";
+            }
+            else
+            {
+                this.Root.GetInfo(out title, out description, out advanced);
+            }
+        }
         #endregion
 
         #region Event Handlers

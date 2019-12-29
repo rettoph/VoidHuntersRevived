@@ -25,6 +25,7 @@ namespace VoidHuntersRevived.Client.Library
             services.AddScoped<DebugOverlay, InitializableFactory<DebugOverlay>>();
             services.AddScoped<Sensor>("entity:sensor");
             services.AddScoped<TrailManager>("entity:trail-manager");
+            services.AddScoped<PopupManager>("entity:popup-manager");
         }
 
         public void ConfigureProvider(IServiceProvider provider)
@@ -57,6 +58,7 @@ namespace VoidHuntersRevived.Client.Library
 
             entities.TryRegister<Sensor>("entity:sensor", "name:entity:sensor", "description:entity:sensor");
             entities.TryRegister<TrailManager>("entity:trail-manager", "name:entity:trail-manager", "description:entity:trail-manager");
+            entities.TryRegister<PopupManager>("entity:popup-manager", "name:entity:popup-manager", "description:entity:popup-manager");
         }
     }
 }
