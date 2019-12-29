@@ -64,18 +64,18 @@ namespace VoidHuntersRevived.Library
             provider.GetRequiredService<GlobalOptions>().LogLevel = Microsoft.Extensions.Logging.LogLevel.Debug;
 
             var strings = provider.GetRequiredService<StringLoader>();
-            strings.TryRegister("name:entity:ship-part:hull:triangle", "Triangle");
-            strings.TryRegister("description:entity:ship-part:hull:triangle", "Simple triangle hull piece.");
-            strings.TryRegister("name:entity:ship-part:hull:square", "Square");
-            strings.TryRegister("description:entity:ship-part:hull:square", "Simple square hull piece.");
-            strings.TryRegister("name:entity:ship-part:hull:hexagon", "Hexagon");
-            strings.TryRegister("description:entity:ship-part:hull:hexagon", "Simple hexagon hull piece.");
+            strings.TryRegister("name:entity:ship-part:hull:triangle", "Triangle Hull");
+            strings.TryRegister("description:entity:ship-part:hull:triangle", "Useful for extending the size of your ship.");
+            strings.TryRegister("name:entity:ship-part:hull:square", "Square Hull");
+            strings.TryRegister("description:entity:ship-part:hull:square", "Useful for extending the size of your ship.");
+            strings.TryRegister("name:entity:ship-part:hull:hexagon", "Hexagon Hull");
+            strings.TryRegister("description:entity:ship-part:hull:hexagon", "Useful for extending the size of your ship.");
             strings.TryRegister("name:entity:ship-part:chassis:mosquito", "Mosquito Chassis");
             strings.TryRegister("description:entity:ship-part:chassis:mosquito", "A Ship's mosquito chassis.");
             strings.TryRegister("name:entity:ship-part:thruster:small", "Thruster");
-            strings.TryRegister("description:entity:ship-part:thruster:small", "Main thruster unit.");
+            strings.TryRegister("description:entity:ship-part:thruster:small", "Applies thrust to control your ship.");
             strings.TryRegister("name:entity:ship-part:weapon:mass-driver", "Mass Driver");
-            strings.TryRegister("description:entity:ship-part:weapon:mass-driver", "A basic projectile firing weapon.");
+            strings.TryRegister("description:entity:ship-part:weapon:mass-driver", "Basic projectile firing weapon.");
         
 
              var entities = provider.GetRequiredService<EntityLoader>();

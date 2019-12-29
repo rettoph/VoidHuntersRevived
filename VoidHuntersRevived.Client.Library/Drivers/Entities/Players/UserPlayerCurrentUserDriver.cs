@@ -156,13 +156,15 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             base.Draw(gameTime);
 
             // Detect the current hovered ShipPart if any
-            var target = _sensor.Contacts
-                .Where(sp => sp is ShipPart && this.driven.Ship.TractorBeam.FindTarget(sp as ShipPart) != default(ShipPart))
-                .OrderBy(sp => Vector2.Distance(sp.WorldCenter, _sensor.WorldCenter))
-                .FirstOrDefault() as ShipPart;
+            
 
-            if (target != default(ShipPart) && !this.driven.Ship.Firing && this.driven.Ship.TractorBeam.Selected == default(ShipPart))
+            if (!this.driven.Ship.Firing && this.driven.Ship.TractorBeam.Selected == default(ShipPart))
             {
+                var target = _sensor.Contacts
+                    .Where(sp => sp is ShipPart && (sp as ShipPart).Root.Ship != this.driven.Ship && this.driven.Ship.TractorBeam.FindTarget(sp as ShipPart) != default(ShipPart))
+                    .OrderBy(sp => Vector2.Distance(sp.WorldCenter, _sensor.WorldCenter))
+                    .FirstOrDefault() as ShipPart;
+
                 _popupManager.SetHovered(target);
             }
         }
