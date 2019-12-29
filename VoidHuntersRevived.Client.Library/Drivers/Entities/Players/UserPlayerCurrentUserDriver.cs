@@ -167,6 +167,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 
                 _popupManager.SetHovered(target);
             }
+            else
+                _popupManager.SetHovered(default(ShipPart));
         }
         #endregion
 
