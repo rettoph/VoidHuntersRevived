@@ -12,6 +12,8 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Extensions.System;
 using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Extensions.Farseer;
+using System.Collections.Generic;
+using VoidHuntersRevived.Library.Extensions.Collections;
 
 namespace VoidHuntersRevived.Server.Drivers.Entities.Players
 {
@@ -25,13 +27,15 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
         #region Private Fields
         private EntityCollection _entities;
         private ShipBuilder _shipBuilder;
+        private List<Team> _teams;
         #endregion
 
         #region Constructor
-        public UserPlayerRemoteUserDriver(ShipBuilder shipBuilder, EntityCollection entities, UserPlayer driven) : base(driven)
+        public UserPlayerRemoteUserDriver(List<Team> teams, ShipBuilder shipBuilder, EntityCollection entities, UserPlayer driven) : base(driven)
         {
             _entities = entities;
             _shipBuilder = shipBuilder;
+            _teams = teams;
         }
         #endregion
 
@@ -145,6 +149,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
 
                         var rand = new Random();
                         s.Bridge.Body.SetTransformIgnoreContacts(arg.ReadVector2(), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
+                        rand.Next(_teams).AddPlayer(p);
                     }));
                 }
                 else
@@ -158,6 +163,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
                             s.SetBridge(_shipBuilder.Import(input));
 
                         s.Bridge.Body.SetTransformIgnoreContacts(arg.ReadVector2(), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
+                        rand.Next(_teams).AddPlayer(p);
                     }));
                 }
             });

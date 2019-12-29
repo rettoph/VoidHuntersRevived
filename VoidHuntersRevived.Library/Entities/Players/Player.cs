@@ -16,6 +16,12 @@ namespace VoidHuntersRevived.Library.Entities.Players
         #region Public Properties
         public abstract String Name { get; }
         public Ship Ship { get; private set; }
+        public Team Team { get; private set; }
+        #endregion
+
+        #region Events
+        public event EventHandler<Team> OnTeamChanged;
+        public event EventHandler<Ship> OnShipChanged;
         #endregion
 
         #region Lifecycle Methods
@@ -37,6 +43,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
         {
             base.Dispose();
 
+            this.SetShip(null);
             this.players.Remove(this);
         }
         #endregion
@@ -46,7 +53,21 @@ namespace VoidHuntersRevived.Library.Entities.Players
         {
             if(ship != this.Ship)
             { // Only update if the ship is different.
+                this.Ship?.SetPlayer(null);
                 this.Ship = ship;
+                this.Ship?.SetPlayer(this);
+
+                this.OnShipChanged?.Invoke(this, this.Ship);
+            }
+        }
+
+        internal void SetTeam(Team team)
+        {
+            if (this.Team != team)
+            {
+                this.Team = team;
+
+                this.OnTeamChanged?.Invoke(this, this.Team);
             }
         }
         #endregion
@@ -57,6 +78,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
             base.Read(im);
 
             this.ReadShip(im);
+            this.ReadTeam(im);
         }
 
         protected override void Write(NetOutgoingMessage om)
@@ -64,6 +86,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
             base.Write(om);
 
             this.WriteShip(om);
+            this.WriteTeam(om);
         }
 
         /// <summary>
@@ -84,6 +107,16 @@ namespace VoidHuntersRevived.Library.Entities.Players
         {
             if (om.WriteExists(this.Ship))
                 om.Write(this.Ship.Id);
+        }
+
+        public void ReadTeam(NetIncomingMessage im)
+        {
+            im.ReadEntity<Team>(this.entities)?.AddPlayer(this);
+        }
+
+        public void WriteTeam(NetOutgoingMessage om)
+        {
+            om.Write(this.Team);
         }
         #endregion
     }

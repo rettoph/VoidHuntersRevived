@@ -43,6 +43,7 @@ namespace VoidHuntersRevived.Library
             services.AddScoped<ChunkCollection>();
             services.AddScoped<VitalsManager>();
             services.AddScoped<List<Player>>();
+            services.AddScoped<List<Team>>();
 
             services.AddSingleton<NetPeerConfiguration>(p =>
             {
@@ -78,7 +79,9 @@ namespace VoidHuntersRevived.Library
             strings.TryRegister("description:entity:ship-part:weapon:mass-driver", "Basic projectile firing weapon.");
         
 
-             var entities = provider.GetRequiredService<EntityLoader>();
+            var entities = provider.GetRequiredService<EntityLoader>();
+
+            entities.TryRegister<Team>("entity:team", "name:entity:team", "description:entity:team");
 
             entities.TryRegister<UserPlayer>("entity:player:user", "name:entity:player:user", "description:entity:player:user");
             entities.TryRegister<ComputerPlayer>("entity:player:computer", "name:entity:player:computer", "description:entity:player:computer");

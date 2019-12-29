@@ -217,7 +217,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
 
         public void Update(GameTime gameTime)
         {
-            this.State = MathHelper.Lerp(this.State, this.Hovered ? 1 : 0, this.Hovered ? 0.01f : 0.02f);
+            this.State = MathHelper.Lerp(this.State, this.Hovered ? 1 : 0, (this.Hovered ? 0.00625f : 0.0125f) * (Single)gameTime.ElapsedGameTime.TotalMilliseconds);
         }
         #endregion
 

@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy;
 using VoidHuntersRevived.Library.Extensions.Entities.ShipParts;
+using VoidHuntersRevived.Library.Entities.Players;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -87,6 +88,11 @@ namespace VoidHuntersRevived.Library.Entities
         /// Indicates that the ship is currently firing where possible.
         /// </summary>
         public Boolean Firing { get; private set; }
+
+        /// <summary>
+        /// The SHip's current player (if any)
+        /// </summary>
+        public Player Player { get; private set; }
         #endregion
 
         #region Events
@@ -95,6 +101,7 @@ namespace VoidHuntersRevived.Library.Entities
         public event EventHandler<Direction> OnDirectionChanged;
         public event EventHandler<Boolean> OnFiringChanged;
         public event EventHandler<Vector2> OnTargetChanged;
+        public event EventHandler<Player> OnPlayerChanged;
         #endregion
 
         #region Contructor
@@ -257,6 +264,16 @@ namespace VoidHuntersRevived.Library.Entities
                 this.Target = target;
 
                 this.OnTargetChanged?.Invoke(this, this.Target);
+            }
+        }
+
+        internal void SetPlayer(Player player)
+        {
+            if(this.Player != player)
+            {
+                this.Player = player;
+
+                this.OnPlayerChanged?.Invoke(this, this.Player);
             }
         }
         #endregion

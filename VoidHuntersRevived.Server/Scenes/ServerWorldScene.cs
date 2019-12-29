@@ -12,6 +12,8 @@ using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Layers;
 using System.IO;
 using VoidHuntersRevived.Library.Utilities;
+using System.Linq;
+using VoidHuntersRevived.Library.Extensions.Collections;
 
 namespace VoidHuntersRevived.Server.Scenes
 {
@@ -19,11 +21,13 @@ namespace VoidHuntersRevived.Server.Scenes
     {
         #region Private Fields
         private ShipBuilder _shipBuilder;
+        private List<Team> _teams;
         #endregion
 
         #region Constructor
-        public ServerWorldScene(ShipBuilder shipBuilder)
+        public ServerWorldScene(List<Team> teams, ShipBuilder shipBuilder)
         {
+            _teams = teams;
             _shipBuilder = shipBuilder;
         }
         #endregion
@@ -50,7 +54,29 @@ namespace VoidHuntersRevived.Server.Scenes
 
             var rand = new Random();
             var size = 100;
-            for(Int32 i=0; i<20; i++)
+
+            this.entities.Create<Team>("entity:team", t =>
+            {
+                t.Color = new Color(1, 203, 226);
+            });
+            this.entities.Create<Team>("entity:team", t =>
+            {
+                t.Color = new Color(195, 199, 43);
+            });
+            this.entities.Create<Team>("entity:team", t =>
+            {
+                t.Color = new Color(2, 224, 73);
+            });
+            this.entities.Create<Team>("entity:team", t =>
+            {
+                t.Color = new Color(224, 2, 187);
+            });
+            this.entities.Create<Team>("entity:team", t =>
+            {
+                t.Color = new Color(245, 245, 245);
+            });
+
+            for (Int32 i=0; i<20; i++)
             {
                 this.entities.Create<ShipPart>("entity:ship-part:hull:triangle", e => e.Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi)));
                 this.entities.Create<ShipPart>("entity:ship-part:hull:square", e => e.Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi)));
@@ -82,6 +108,7 @@ namespace VoidHuntersRevived.Server.Scenes
         private void HandleUserJoined(object sender, User arg)
         {
             this.entities.Create<UserPlayer>("entity:player:user", p => {
+                (new Random()).Next(_teams).AddPlayer(p);
                 p.User = arg;
                 p.SetShip(this.entities.Create<Ship>("entity:ship", s =>
                 {

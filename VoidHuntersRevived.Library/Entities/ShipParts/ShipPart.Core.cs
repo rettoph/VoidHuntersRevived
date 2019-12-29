@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public ShipPart Parent { get => this.MaleConnectionNode.Target?.Parent; }
         public Boolean IsRoot { get => !this.MaleConnectionNode.Attached; }
         public override Boolean IsActive { get => this.IsRoot; }
-        public Color Color { get => this.Root.Ship == default(Ship) ? this.Root.DefaultColor : new Color(1, 203, 226); }
+        public Color Color { get => this.Root.Ship == default(Ship) ? this.Root.DefaultColor : this.Root.Ship.Player.Team.Color; }
         public Byte Health { get; internal set; }
         public Single HealthRate { get => (Single)this.Health / 100; }
         #endregion
