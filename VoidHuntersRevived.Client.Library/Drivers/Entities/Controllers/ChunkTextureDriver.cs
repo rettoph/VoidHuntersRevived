@@ -36,6 +36,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
         private Vector2 _position;
         private BoundingBox _box;
         private Matrix _projection;
+        private Boolean _dirtyTexture;
         #endregion
 
         #region Constructor
@@ -81,6 +82,30 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
         #endregion
 
         #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if(_dirtyTexture && _camera.Frustum.Contains(_box).HasFlag(ContainmentType.Intersects))
+            { // If the chunk texture is dirty & in view...
+                var targets = _graphics.GetRenderTargets();
+                _graphics.SetRenderTarget(_target);
+                _graphics.Clear(Color.Transparent);
+                // _graphics.Clear(new Color(100, this.driven.Position.X / 16 % 2 == 0 ? 255 : 0, this.driven.Position.Y / 16 % 2 == 0 ? 255 : 0, 10));
+
+
+                ChunkTextureDriver.Effect.Projection = _projection;
+
+                _spriteBatch.Begin(effect: ChunkTextureDriver.Effect);
+                this.driven.Components.TryDrawAll(Chunk.EmptyGameTime);
+                this.driven.GetSurrounding(false).ForEach(c => c?.Components.TryDrawAll(Chunk.EmptyGameTime));
+                _spriteBatch.End();
+
+                _graphics.SetRenderTargets(targets);
+                _dirtyTexture = false;
+            }
+        }
+
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
@@ -114,20 +139,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
         #region Event Handlers
         private void HandleChunkCleaned(object sender, GameTime arg)
         {
-            var targets = _graphics.GetRenderTargets();
-            _graphics.SetRenderTarget(_target);
-            _graphics.Clear(Color.Transparent);
-            // _graphics.Clear(new Color(100, this.driven.Position.X / 16 % 2 == 0 ? 255 : 0, this.driven.Position.Y / 16 % 2 == 0 ? 255 : 0, 10));
-
-
-            ChunkTextureDriver.Effect.Projection = _projection;
-
-            _spriteBatch.Begin(effect: ChunkTextureDriver.Effect);
-            this.driven.Components.TryDrawAll(Chunk.EmptyGameTime);
-            this.driven.GetSurrounding(false).ForEach(c => c?.Components.TryDrawAll(Chunk.EmptyGameTime));
-            _spriteBatch.End();
-
-            _graphics.SetRenderTargets(targets);
+            _dirtyTexture = true;
         }
         #endregion
 

@@ -60,6 +60,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         private Queue<BufferAction> _actions;
         private FarseerEntity _entity;
         private BufferAction _action;
+        private ActionTimer _cleanTimer;
 
         internal ChunkCollection chunks { get; set; }
 
@@ -69,6 +70,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             _quarantinees = new Dictionary<Guid, Quarantined>();
             _clean = new Queue<FarseerEntity>();
             _actions = new Queue<BufferAction>();
+            _cleanTimer = new ActionTimer(1000);
         }
         #endregion
 
@@ -94,8 +96,15 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             });
 
             // Remove all clean entitys & add them directly into their chunk...
-            while (_clean.Any())
-                this.chunks.Get((_entity = _clean.Dequeue())).Add(_entity);
+            _cleanTimer.Update(
+                gameTime: gameTime,
+                filter: triggered => triggered && _clean.Any(),
+                action: () =>
+                {
+                    while (_clean.Any())
+                        this.chunks.Get((_entity = _clean.Dequeue())).Add(_entity);
+                });
+            
         }
 
         protected override void Draw(GameTime gameTime)

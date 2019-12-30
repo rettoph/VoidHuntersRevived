@@ -52,10 +52,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
             base.Update(gameTime);
 
             // Apply thrust to the internal fixture...
-            this.Strength = MathHelper.Lerp(
-                value1: this.Strength,
-                value2: this.ApplyThrust(this.Root.Body) ? 1 : 0,
-                amount: Thruster.StrengthAcceleration * (Single)gameTime.ElapsedGameTime.TotalMilliseconds);
+            if((this.Strength > 0 && !this.Active) || (this.Strength < 1 && this.Active))
+                this.Strength = MathHelper.Lerp(
+                    value1: this.Strength,
+                    value2: this.ApplyThrust(this.Root.Body) ? 1 : 0,
+                    amount: Thruster.StrengthAcceleration * (Single)gameTime.ElapsedGameTime.TotalMilliseconds);
         }
         #endregion
 
