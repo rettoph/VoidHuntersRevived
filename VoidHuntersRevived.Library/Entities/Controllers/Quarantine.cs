@@ -49,17 +49,9 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             }
         }
 
-        private struct BufferAction
-        {
-            public Boolean Add;
-            public FarseerEntity Entity;
-        }
-
         private Dictionary<Guid, Quarantined> _quarantinees;
         private Queue<FarseerEntity> _clean;
-        private Queue<BufferAction> _actions;
         private FarseerEntity _entity;
-        private BufferAction _action;
         private ActionTimer _cleanTimer;
 
         internal ChunkCollection chunks { get; set; }
@@ -69,8 +61,25 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             _quarantinees = new Dictionary<Guid, Quarantined>();
             _clean = new Queue<FarseerEntity>();
-            _actions = new Queue<BufferAction>();
             _cleanTimer = new ActionTimer(1000);
+        }
+        #endregion
+
+        #region Lifecycle Methods
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            this.OnAdded += this.HandleEntityAdded;
+            this.OnRemoved += this.HandleEntityRemoved;
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.OnAdded -= this.HandleEntityAdded;
+            this.OnRemoved -= this.HandleEntityRemoved;
         }
         #endregion
 
@@ -78,12 +87,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            while (_actions.Any())
-                if ((_action = _actions.Dequeue()).Add)
-                    _quarantinees.Add(_action.Entity.Id, new Quarantined(_action.Entity));
-                else
-                    _quarantinees.Remove(_action.Entity.Id);
 
             // Update each quarantinee...
             _quarantinees.Values.ForEach(q =>
@@ -132,41 +135,16 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         }
         #endregion
 
-        #region Helper Methods
-        public override bool Add(FarseerEntity entity)
+        #region Event Handlers
+        private void HandleEntityAdded(Object sender, FarseerEntity entity)
         {
-            if (base.Add(entity))
-            {
-                // _quarantinees.Add(entity.Id, new Quarantined(entity));
-                _actions.Enqueue(new BufferAction()
-                {
-                    Add = true,
-                    Entity = entity
-                });
-
-                return true;
-            }
-
-            return false;
+            _quarantinees.Add(entity.Id, new Quarantined(entity));
         }
 
-        public override bool Remove(FarseerEntity entity)
+        private void HandleEntityRemoved(Object sender, FarseerEntity entity)
         {
-            if (base.Remove(entity))
-            {
-                // _quarantinees.Remove(entity.Id);
-                _actions.Enqueue(new BufferAction()
-                {
-                    Add = false,
-                    Entity = entity
-                });
-
-                return true;
-            }
-
-            return false;
+            _quarantinees.Remove(entity.Id);
         }
         #endregion
-
     }
 }

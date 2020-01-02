@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                 l.SetUpdateOrder(20);
                 l.SetDrawOrder(15);
             });
-            // Layer 3: Trails
+            // Layer 3: Popups
             this.layers.Create<PrimitiveLayer>(3, l =>
             {
                 l.SetUpdateOrder(20);

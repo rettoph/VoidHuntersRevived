@@ -95,8 +95,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Dispose();
 
-            this.Controller?.Remove(this);
-            this.SetController(_annex);
+            _annex.Add(this);
             this.Body.Dispose(withFixtures: true);
         }
         #endregion
@@ -123,19 +122,12 @@ namespace VoidHuntersRevived.Library.Entities
         internal void SetController(Controller controller)
         {
             if (controller == default(Controller))
-                throw new Exception("Unable to use null Controller. Please use the Annex instead.");
+                throw new Exception("Unable to set null Controller. Please use the Annex instead.");
 
             if (controller != this.Controller)
             {
-                // Auto remove the component from its old controller
-                if (this.Controller != default(Controller))
-                {
-                    this.Controller.Remove(this);
-                    this.Controller?.UpdateBody(this, this.Body);
-                }
-
                 this.Controller = controller;
-                this.Controller?.SetupBody(this, this.Body);
+                this.Controller.SetupBody(this, this.Body);
 
                 this.OnControllerChanged?.Invoke(this, this.Controller);
             }

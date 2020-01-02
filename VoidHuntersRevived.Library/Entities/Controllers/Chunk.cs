@@ -23,17 +23,15 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
     /// for cheap FarseerEntitys when they are sitting 
     /// in the background.
     /// </summary>
-    public sealed class Chunk : SimpleController
+    public sealed class Chunk : Controller
     {
         #region Static Properties
         public static Single Size { get; private set; } = 16;
-        public static GameTime EmptyGameTime { get; private set; } = new GameTime();
         #endregion
 
         #region Private Fields
         private ChunkCollection _chunks;
         private IEnumerable<Chunk> _surrounding;
-        private Queue<FarseerEntity> _added;
         #endregion
 
         #region Public Properties
@@ -51,13 +49,22 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #region Lifecycle Methods
         protected override void Initialize()
         {
-            _added = new Queue<FarseerEntity>();
-
             this.Bounds = new RectangleF(this.Position.X, this.Position.Y, Chunk.Size, Chunk.Size);
 
             base.Initialize();
 
             this.SetLayerDepth(1);
+
+            this.OnAdded += this.HandleEntityAdded;
+            this.OnRemoved += this.HandleEntityRemoved;
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.OnAdded -= this.HandleEntityAdded;
+            this.OnRemoved -= this.HandleEntityRemoved;
         }
         #endregion
 
@@ -79,51 +86,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #endregion
 
         #region Helper Methods
-        protected override void Clean(GameTime gameTime)
-        {
-            // Continue the cleaning process...
-            base.Clean(gameTime);
-
-            // Update all added internal components
-            while (_added.Any())
-                _added.Dequeue().TryUpdate(gameTime);
-        }
-
-        public override bool Add(FarseerEntity entity)
-        {
-            if(!entity.IsMoving && this.Bounds.Contains(entity.Position.X, entity.Position.Y))
-            { // If the entity resides within the current chunk...
-                if(base.Add(entity))
-                {
-                    _added.Enqueue(entity);
-                    this.GetSurrounding().ForEach(c => c.Dirty = true);
-                    entity.OnDirtyChanged += this.HandleComponentDirtyChanged;
-
-                    return true;
-                }
-            }
-            else
-            { // If the entity does not reside in the current chunk...
-                // Add the entity into its correct chunk...
-                _chunks.AddToChunk(entity);
-            }
-
-            return false;
-        }
-
-        public override bool Remove(FarseerEntity entity)
-        {
-            if(base.Remove(entity))
-            {
-                this.GetSurrounding().ForEach(c => c.Dirty = true);
-                entity.OnDirtyChanged -= this.HandleComponentDirtyChanged;
-
-                return true;
-            }
-
-            return false;
-        }
-
         /// <summary>
         /// Get all chunks surrounding the current chunk.
         /// This does not include the current chunk
@@ -163,6 +125,18 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                 this.Dirty = true;
                 this.GetSurrounding().ForEach(c => c.Dirty = true);
             }
+        }
+
+        private void HandleEntityAdded(Object sender, FarseerEntity entity)
+        {
+            this.GetSurrounding().ForEach(c => c.Dirty = true);
+            entity.OnDirtyChanged += this.HandleComponentDirtyChanged;
+        }
+
+        private void HandleEntityRemoved(Object sender, FarseerEntity entity)
+        {
+            this.GetSurrounding().ForEach(c => c.Dirty = true);
+            entity.OnDirtyChanged -= this.HandleComponentDirtyChanged;
         }
         #endregion
     }

@@ -22,6 +22,7 @@ namespace VoidHuntersRevived.Server.Scenes
         #region Private Fields
         private ShipBuilder _shipBuilder;
         private List<Team> _teams;
+        private Queue<User> _newUsers = new Queue<User>();
         #endregion
 
         #region Constructor
@@ -104,22 +105,35 @@ namespace VoidHuntersRevived.Server.Scenes
         }
         #endregion
 
-        #region Event Handlers
-        private void HandleUserJoined(object sender, User arg)
+        #region Frame Methods 
+        protected override void Update(GameTime gameTime)
         {
-            this.entities.Create<UserPlayer>("entity:player:user", p => {
-                (new Random()).Next(_teams).AddPlayer(p);
-                p.User = arg;
-                p.SetShip(this.entities.Create<Ship>("entity:ship", s =>
+            base.Update(gameTime);
+
+            if (_newUsers.Any())
+            {
+                this.entities.Create<UserPlayer>("entity:player:user", p =>
                 {
-                    using (FileStream input = File.OpenRead("Ships/mosquito.vh"))
-                       s.SetBridge(_shipBuilder.Import(input));
+                    (new Random()).Next(_teams).AddPlayer(p);
+                    p.User = _newUsers.Dequeue();
+                    p.SetShip(this.entities.Create<Ship>("entity:ship", s =>
+                    {
+                        using (FileStream input = File.OpenRead("Ships/mosquito.vh"))
+                            s.SetBridge(_shipBuilder.Import(input));
                     //s.SetBridge(this.entities.Create<ShipPart>("entity:ship-part:hull:square"));
 
                     var rand = new Random();
-                    s.Bridge.Body.SetTransformIgnoreContacts(rand.NextVector2(-15, 15), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
-                }));
-            });
+                        s.Bridge.Body.SetTransformIgnoreContacts(rand.NextVector2(-15, 15), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
+                    }));
+                });
+            }
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandleUserJoined(object sender, User arg)
+        {
+            _newUsers.Enqueue(arg);
         }
         #endregion
     }

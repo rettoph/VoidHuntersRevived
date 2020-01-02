@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
     /// and smoothly handle the transfer of remaining
     /// ShipParts back into the chunk.
     /// </summary>
-    public class Explosion : SimpleController
+    public class Explosion : Controller
     {
         #region Private Fields
         private ShipPart _component;
@@ -46,11 +46,20 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             _asleep = new Queue<FarseerEntity>();
         }
 
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            this.OnAdded += this.HandleEntityAdded;
+        }
+
         public override void Dispose()
         {
             base.Dispose();
 
             _asleep.Clear();
+
+            this.OnAdded -= this.HandleEntityAdded;
         }
         #endregion
 
@@ -102,28 +111,20 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         }
         #endregion
 
-        #region Helper Methods
-        public override bool Add(FarseerEntity entity)
+
+        #region Event Handlers
+        private void HandleEntityAdded(Object sender, FarseerEntity entity)
         {
-            if(entity is ShipPart && base.Add(entity))
+            if (entity is ShipPart)
             {
                 _component = entity as ShipPart;
 
-                if(_component.IsRoot)
+                if (_component.IsRoot)
                 { // If this is the root component, set the explosion source values....
                     _sourcePosition = _component.Position;
                     _sourceVelocity = _component.LinearVelocity;
                 }
-
-                return true;
             }
-
-            return false;
-        }
-
-        public override bool Remove(FarseerEntity entity)
-        {
-            return base.Remove(entity);
         }
         #endregion
     }

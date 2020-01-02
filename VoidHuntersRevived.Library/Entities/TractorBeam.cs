@@ -222,8 +222,7 @@ namespace VoidHuntersRevived.Library.Entities
             body.CollidesWith = Categories.PassiveCollidesWith;
             body.IgnoreCCDWith = Categories.PassiveIgnoreCCDWith;
             body.BodyType = BodyType.Dynamic;
-            body.AngularVelocity = 0f;
-            body.LinearVelocity = Vector2.Zero;
+            body.ResetDynamics();
         }
 
         /// <summary>

@@ -16,6 +16,10 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
     /// </summary>
     public abstract class Controller : Entity
     {
+        #region Static Fields
+        public static GameTime EmptyGameTime { get; private set; } = new GameTime();
+        #endregion
+
         #region Private Fields
         private HashSet<FarseerEntity> _components;
         #endregion
@@ -38,6 +42,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
         #region Events
         public event EventHandler<GameTime> OnCleaned;
+        public event EventHandler<FarseerEntity> OnAdded;
+        public event EventHandler<FarseerEntity> OnRemoved;
         #endregion
 
         #region Lifecycle Methods
@@ -87,9 +93,9 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             //
         }
 
-        protected override void Update(GameTime gameTime)
+        protected override void PreUpdate(GameTime gameTime)
         {
-            base.Update(gameTime);
+            base.PreUpdate(gameTime);
 
             this.TryClean(gameTime);
         }
@@ -113,32 +119,28 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
         protected virtual void Clean(GameTime gameTime)
         {
-
+            //
         }
 
-        public virtual Boolean Add(FarseerEntity entity)
+        public void Add(FarseerEntity entity)
         {
-            if(_components.Add(entity))
+            if (_components.Add(entity))
             {
+                entity.Controller?.Remove(entity);
                 entity.SetController(this);
+                entity.TryUpdate(Controller.EmptyGameTime);
+                this.OnAdded?.Invoke(this, entity);
                 this.Dirty = true;
-
-                return true;
             }
-
-            return false;
         }
 
-        public virtual Boolean Remove(FarseerEntity entity)
+        private void Remove(FarseerEntity entity)
         {
             if(_components.Remove(entity))
             {
+                this.OnRemoved?.Invoke(this, entity);
                 this.Dirty = true;
-
-                return true;
             }
-
-            return false;
         }
         #endregion
     }
