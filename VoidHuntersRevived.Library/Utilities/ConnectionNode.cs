@@ -112,19 +112,22 @@ namespace VoidHuntersRevived.Library.Utilities
         #region Connection Methods
         public void Attach(ConnectionNode target)
         {
-            // First, ensure that there is no pre-existing connection.
-            if (this.Attached)
-                this.Detach();
+            if (target != this.Target)
+            { // Only do anything if we arent trying to connect to something we are already conencted to...
+                // First, ensure that there is no pre-existing connection.
+                if (this.Attached)
+                    this.Detach();
 
-            // Create the local attachment
-            this.Target = target;
+                // Create the local attachment
+                this.Target = target;
 
-            // Ensure that the target node is attached correctly too...
-            if (target.Target != this)
-                target.Attach(this);
+                // Ensure that the target node is attached correctly too...
+                if (target.Target != this)
+                    target.Attach(this);
 
-            // Invoke the event...
-            this.OnAttached?.Invoke(this, this.Target);
+                // Invoke the event...
+                this.OnAttached?.Invoke(this, this.Target);
+            }
         }
 
         public void Detach()

@@ -66,6 +66,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             base.Update(gameTime);
 
+            // Update all internal components
             this.Components.ForEach(fe => fe.TryUpdate(gameTime));
         }
 

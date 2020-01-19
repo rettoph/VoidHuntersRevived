@@ -14,6 +14,8 @@ using VoidHuntersRevived.Library.Utilities;
 using Guppy;
 using VoidHuntersRevived.Library.Extensions.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.Players;
+using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
+using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -137,8 +139,7 @@ namespace VoidHuntersRevived.Library.Entities
             });
 
             this.OnBridgeChainUpdated += this.HandleBridgeChainUpdated;
-
-            this.RemapBridgeChain();
+            this.OnCleaned += this.CleanBridgeChain;
         }
 
         public override void Dispose()
@@ -149,6 +150,7 @@ namespace VoidHuntersRevived.Library.Entities
             this.TractorBeam.Dispose();
 
             this.OnBridgeChainUpdated -= this.HandleBridgeChainUpdated;
+            this.OnCleaned -= this.CleanBridgeChain;
         }
         #endregion
 
@@ -159,7 +161,7 @@ namespace VoidHuntersRevived.Library.Entities
 
             // Update the tractor beam
             this.TractorBeam.TryUpdate(gameTime);
-            // Update the controller
+            // Update the internal updatable ship parts
             _controller.TryUpdate(gameTime);
         }
 
@@ -309,8 +311,10 @@ namespace VoidHuntersRevived.Library.Entities
         /// 
         /// Such as open female node, life components, and more.
         /// </summary>
-        private void RemapBridgeChain()
+        private void CleanBridgeChain(Object sender, GameTime gameTime)
         {
+            this.Size = this.Bridge == default(ShipPart) ? 0 : this.Bridge.GetSize();
+
             // Clear the connection node
             _openFemaleNodes.Clear();
             // Get all open female connection nodes within the bridge
@@ -331,10 +335,7 @@ namespace VoidHuntersRevived.Library.Entities
         /// <param name="arg"></param>
         private void HandleBridgeChainUpdated(object sender, ShipPart arg)
         {
-            this.RemapBridgeChain();
-
-            // Cache the chains current size
-            this.Size = this.Bridge == default(ShipPart) ? 0 : this.Bridge.GetSize();
+            this.SetDirty(true);
         }
 
         private void HandleBridgeDisposing(object sender, EventArgs arg)

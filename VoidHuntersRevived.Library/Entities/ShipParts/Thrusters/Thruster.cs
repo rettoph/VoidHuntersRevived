@@ -4,6 +4,7 @@ using System.Text;
 using FarseerPhysics.Dynamics;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
+using VoidHuntersRevived.Library.Extensions.Farseer;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
 {
@@ -52,7 +53,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
             base.Update(gameTime);
 
             // Apply thrust to the internal fixture...
-            if((this.Strength > 0 && !this.Active) || (this.Strength < 1 && this.Active))
+            if((!this.Active || this.Strength > 0) || (this.Active || this.Strength < 1))
                 this.Strength = MathHelper.Lerp(
                     value1: this.Strength,
                     value2: this.ApplyThrust(this.Root.Body) ? 1 : 0,
@@ -133,7 +134,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
                 // Calculate the thrusters position on the recieved body...
                 var point = body.Position + Vector2.Transform(Vector2.Zero, this.LocalTransformation * Matrix.CreateRotationZ(body.Rotation));
                 // Calculate the thrust's world force relative to the recieved body...
-                var force = Vector2.Transform(this.Thrust, Matrix.CreateRotationZ(body.Rotation + this.LocalRotation));
+                var force = this.Thrust.Target(body.Rotation + this.LocalRotation);
 
                 // Apply thr thrust...
                 body.ApplyForce(ref force, ref point);

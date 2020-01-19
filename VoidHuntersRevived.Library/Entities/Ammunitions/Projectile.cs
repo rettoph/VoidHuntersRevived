@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         {
             base.Update(gameTime);
 
-            this.Step(this.Velocity * ((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000));
+            this.Step(this.Velocity * ((float)gameTime.ElapsedGameTime.TotalSeconds));
         }
         #endregion
 

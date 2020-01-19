@@ -20,14 +20,15 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
     {
         #region Private Fields
         private Queue<Fixture> _fixtures;
+        private Vector2 _localCenter;
         #endregion
 
         #region Public Fields
         public override Vector2 Position { get => this.IsRoot ? base.Position : this.Root.Position + Vector2.Transform(Vector2.Zero, this.LocalTransformation * Matrix.CreateRotationZ(this.Root.Rotation)); }
         public override Single Rotation { get => this.IsRoot ? base.Rotation : this.Root.Rotation + this.LocalRotation; }
 
-        public override Vector2 WorldCenter { get => this.IsRoot ? this.Body.WorldCenter : this.Root.Position + Vector2.Transform(this.LocalCenter, Matrix.CreateRotationZ(this.Root.Rotation)); }
-        public override Vector2 LocalCenter { get => this.IsRoot ? this.Body.LocalCenter : Vector2.Transform(this.Configuration.GetData<ShipPartConfiguration>().Centeroid, this.LocalTransformation); }
+        public override Vector2 WorldCenter { get => this.IsRoot ? this.Body.WorldCenter : this.Root.Position + this.LocalCenter.Rotate(this.Root.Rotation); }
+        public override Vector2 LocalCenter { get => _localCenter; }
         #endregion
 
         #region Lifecycle Methods
@@ -88,6 +89,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             // If the chain update event is moving downwards, we should recreate the internal fixtures
             if (arg.HasFlag(ChainUpdate.Down))
                 this.AddFixturesToRoot(this.Root.Body, _fixtures);
+
+            _localCenter = this.IsRoot ? this.Body.LocalCenter : Vector2.Transform(this.Configuration.GetData<ShipPartConfiguration>().Centeroid, this.LocalTransformation);
         }
         #endregion
     }

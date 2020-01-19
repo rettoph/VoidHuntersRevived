@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
             _server = server;
         }
 
-        #region LIfecycle Methods
+        #region Lifecycle Methods
         protected override void PostInitialize()
         {
             base.PostInitialize();

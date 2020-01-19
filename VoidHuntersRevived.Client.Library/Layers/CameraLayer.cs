@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Client.Library.Layers
             this.effect.View = this.camera.View;
             this.effect.Projection = this.camera.Projection;
 
-            this.spriteBatch.Begin(effect: this.effect);
+            this.spriteBatch.Begin(sortMode: SpriteSortMode.Texture, effect: this.effect);
         }
 
         protected override void Draw(GameTime gameTime)

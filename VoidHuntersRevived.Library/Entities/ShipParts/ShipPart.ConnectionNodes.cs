@@ -129,7 +129,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         }
         #endregion
 
-        #region Event Handler
+        #region Event Handlers
         private void ConnectionNode_HandleClean(object sender, GameTime arg)
         {
             if (this.dirty != ChainUpdate.None)
@@ -138,12 +138,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
         private void ConnectionNode_HandleMaleConnectionNodeAttached(Object sender, ConnectionNode arg)
         {
+            // Mark the current chain as dirty
+            this.dirty |= ChainUpdate.Both;
+            this.SetDirty(true);
+
             // Auto update the controller if it is not already defined...
             if (this.Controller != this.Root.Controller)
                 this.Root.Controller.Add(this);
-
-            this.dirty |= ChainUpdate.Both;
-            this.SetDirty(true);
         }
 
         private void ConnectionNode_HandleMaleConnectionNodeDetached(Object sender, ConnectionNode arg)

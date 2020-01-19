@@ -24,6 +24,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         #region Private Fields
         private RevoluteJoint _joint;
         private ActionTimer _fireTimer;
+        private Vector2 _localMaleOffset;
         #endregion
 
         #region Public Properties
@@ -125,6 +126,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                 joint.MaxMotorTorque = 0.5f;
                 joint.MotorSpeed = 0.0f;
                 joint.LimitEnabled = true;
+                joint.Enabled = true;
                 joint.LowerLimit = -this.Configuration.GetData<WeaponConfiguration>().SwivelRange / 2;
                 joint.UpperLimit = this.Configuration.GetData<WeaponConfiguration>().SwivelRange / 2;
             }
@@ -149,16 +151,15 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         /// <param name="rotation"></param>
         public void UpdatePosition(Body root, Body weapon, Single rotation)
         {
-            var offset = Vector2.Transform(this.MaleConnectionNode.LocalPosition, Matrix.CreateRotationZ(rotation) * this.MaleConnectionNode.LocalRotationMatrix);
-            var translation = Matrix.CreateTranslation(offset.X, offset.Y, 0);
+            // var offset = Vector2.Transform(this.MaleConnectionNode.LocalPosition, Matrix.CreateRotationZ(rotation) * this.MaleConnectionNode.LocalRotationMatrix);
+            var offset = this.MaleConnectionNode.LocalPosition.Target(rotation + this.MaleConnectionNode.LocalRotation);
 
             weapon.SetTransformIgnoreContacts(
-                position: root.Position + Vector2.Transform(
+                position: root.Position + offset + Vector2.Transform(
                     position: this.MaleConnectionNode.LocalPosition, 
                     matrix:
-                    this.LocalTransformation *
-                    Matrix.CreateRotationZ(root.Rotation) *
-                    translation),
+                        this.LocalTransformation *
+                        Matrix.CreateRotationZ(root.Rotation)),
                 angle: rotation);
         }
 
@@ -173,7 +174,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         {
             if(joint != default(RevoluteJoint) && !(this.Controller is Chunk))
             { // Only update the target if the weapon is not in a controller...
-                this.UpdatePosition(root, weapon, weapon.Rotation);
+                if(Vector2.Distance(joint.WorldAnchorA, joint.WorldAnchorB) > 0.5f || joint.ReferenceAngle < 1f)
+                    this.UpdatePosition(root, weapon, weapon.Rotation);
+
                 if (this.Health > 0)
                 {
                     // Calculate the offset beteen the joints position and the requested target.
@@ -214,6 +217,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         #region Event Handlers
         private void HandleChainUpdated(object sender, ChainUpdate arg)
         {
+            _localMaleOffset = Vector2.Transform(this.MaleConnectionNode.LocalPosition, this.LocalTransformation);
             this.UpdateJoint(this.Root.Body, this.Body, this.world, ref _joint);
         }
         #endregion

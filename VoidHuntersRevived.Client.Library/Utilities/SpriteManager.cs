@@ -19,7 +19,6 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         private SpriteBatch _spriteBatch;
         private Texture2D _texture;
         private ContentLoader _content;
-        private Boolean _textureLoaded;
         private Vector2 _origin;
         private Vector3 _position;
         private Vector2 _scale;
@@ -39,13 +38,8 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         {
             _texture = _content.TryGet<Texture2D>(texture);
 
-            if (_texture == default(Texture2D))
+            if (_texture != default(Texture2D))
             {
-                _textureLoaded = false;
-            }
-            else
-            {
-                _textureLoaded = true;
                 _origin = Vector2.Zero;
 
                 Vector2 min = new Vector2(vertices.Min(v => v.X), vertices.Min(v => v.Y));
@@ -73,17 +67,16 @@ namespace VoidHuntersRevived.Client.Library.Utilities
 
         public void Draw(Vector2 position, Single rotation, Color color)
         {
-            if (_textureLoaded)
-                _spriteBatch.Draw(
-                    texture: _texture,
-                    position: position,
-                    sourceRectangle: _texture.Bounds,
-                    color: color,
-                    rotation: rotation,
-                    origin: _origin,
-                    scale: _scale,
-                    effects: SpriteEffects.None,
-                    layerDepth: 0);
+            _spriteBatch.Draw(
+                texture: _texture,
+                position: position,
+                sourceRectangle: _texture.Bounds,
+                color: color,
+                rotation: rotation,
+                origin: _origin,
+                scale: _scale,
+                effects: SpriteEffects.None,
+                layerDepth: 0);
         }
         #endregion
     }
