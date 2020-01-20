@@ -118,9 +118,9 @@ namespace VoidHuntersRevived.Server.Scenes
                     p.User = _newUsers.Dequeue();
                     p.SetShip(this.entities.Create<Ship>("entity:ship", s =>
                     {
-                        // using (FileStream input = File.OpenRead("Ships/mosquito.vh"))
-                        //     s.SetBridge(_shipBuilder.Import(input));
-                        s.SetBridge(this.entities.Create<ShipPart>("entity:ship-part:hull:square"));
+                        using (FileStream input = File.OpenRead("Ships/mosquito.vh"))
+                            s.SetBridge(_shipBuilder.Import(input));
+                        // s.SetBridge(this.entities.Create<ShipPart>("entity:ship-part:hull:square"));
 
                     var rand = new Random();
                         s.Bridge.Body.SetTransformIgnoreContacts(rand.NextVector2(-15, 15), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));

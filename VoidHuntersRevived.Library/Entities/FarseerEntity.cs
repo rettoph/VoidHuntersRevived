@@ -114,7 +114,7 @@ namespace VoidHuntersRevived.Library.Entities
         #region Farseer Methods
         public virtual Body CreateBody(World world)
         {
-            return BodyFactory.CreateBody(world, default, 0, BodyType.Static, this);
+            return BodyFactory.CreateBody(world, Vector2.Zero, 0, BodyType.Static, this);
         }
         #endregion
 

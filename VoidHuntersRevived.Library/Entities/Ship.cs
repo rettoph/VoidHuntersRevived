@@ -16,6 +16,7 @@ using VoidHuntersRevived.Library.Extensions.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
+using Guppy.Extensions.Collection;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -162,7 +163,13 @@ namespace VoidHuntersRevived.Library.Entities
             // Update the tractor beam
             this.TractorBeam.TryUpdate(gameTime);
             // Update the internal updatable ship parts
-            _controller.TryUpdate(gameTime);
+            _controller.Components.ForEach(fe =>
+            {
+                if(fe.Dirty || fe is Thruster || fe is Weapon || (fe is ShipPart && (fe as ShipPart).IsRoot))
+                {
+                    fe.TryUpdate(gameTime);
+                }
+            });
         }
 
         protected override void Draw(GameTime gameTime)

@@ -118,7 +118,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                     bodyB: weapon,
                     anchorA: Vector2.Transform(this.MaleConnectionNode.LocalPosition, this.LocalTransformation),
                     anchorB: this.MaleConnectionNode.LocalPosition,
-                    false);
+                    useWorldCoordinates: false);
 
                 // Setup the joint
                 joint.MotorEnabled = true;
