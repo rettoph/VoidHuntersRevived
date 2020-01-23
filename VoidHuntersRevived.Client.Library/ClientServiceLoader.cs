@@ -53,12 +53,6 @@ namespace VoidHuntersRevived.Client.Library
             content.TryRegister("texture:entity:ship-part:weapon:mass-driver", "Sprites/entity_ship-part_weapon_mass-driver");
             content.TryRegister("texture:entity:ammunition:projectile:mass-driver", "Sprites/entity_ammunition_projectile_mass-driver");
             #endregion
-
-            var entities = provider.GetRequiredService<EntityLoader>();
-
-            entities.TryRegister<Sensor>("entity:sensor", "name:entity:sensor", "description:entity:sensor");
-            entities.TryRegister<TrailManager>("entity:trail-manager", "name:entity:trail-manager", "description:entity:trail-manager");
-            entities.TryRegister<PopupManager>("entity:popup-manager", "name:entity:popup-manager", "description:entity:popup-manager");
         }
     }
 }

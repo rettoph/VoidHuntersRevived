@@ -14,6 +14,7 @@ using VoidHuntersRevived.Library.Extensions.Farseer;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Extensions.Entities.ShipParts;
+using FarseerPhysics.Common;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -38,6 +39,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public Color Color { get => this.Root.Ship == default(Ship) ? this.Root.DefaultColor : this.Root.Ship.Player.Team.Color; }
         public Byte Health { get; internal set; }
         public Single HealthRate { get => (Single)this.Health / 100; }
+        public ShipPartConfiguration Configuration { get; set; }
         #endregion
 
         #region Events
@@ -185,8 +187,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             if (this.IsRoot)
             {
-                title = this.Ship == default(Ship) ? this.Configuration.Name : "Ship";
-                description = $"{this.Configuration.Description}";
+                title = $"{this.Name}";
+                description = $"{this.Description}";
                 advanced = $"Health: {this.Health}/100";
 
                 if (this.GetSize() > 1)

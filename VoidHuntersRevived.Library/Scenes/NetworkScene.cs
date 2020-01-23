@@ -1,6 +1,7 @@
 ﻿using Guppy;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Groups;
+using Guppy.Utilities;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
@@ -12,6 +13,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Extensions.Collections.Concurrent;
 using VoidHuntersRevived.Server.Utilities;
+using xxHashSharp;
 
 namespace VoidHuntersRevived.Library.Scenes
 {
@@ -33,6 +35,8 @@ namespace VoidHuntersRevived.Library.Scenes
         private ConcurrentQueue<NetIncomingMessage> _actions;
         private NetIncomingMessage _im;
         private VitalsManager _vitals;
+        private Dictionary<UInt32, Type> _hashedTypes;
+        private Dictionary<Type, UInt32> _typedHashes;
         #endregion
 
         #region Protected Properties
@@ -53,6 +57,12 @@ namespace VoidHuntersRevived.Library.Scenes
 
             _vitals = provider.GetRequiredService<VitalsManager>();
             _actions = new ConcurrentQueue<NetIncomingMessage>();
+
+            _hashedTypes = AssemblyHelper.GetTypesAssignableFrom<NetworkEntity>().ToDictionary(
+                keySelector: t => xxHash.CalculateHash(Encoding.UTF8.GetBytes(t.AssemblyQualifiedName)));
+            _typedHashes = _hashedTypes.ToDictionary(
+                keySelector: kvp => kvp.Value,
+                elementSelector: kvp => kvp.Key);
         }
 
         protected override void Initialize()
@@ -93,6 +103,31 @@ namespace VoidHuntersRevived.Library.Scenes
 
             // Send all group messages at this time.
             this.Group.Messages.SendAll();
+        }
+        #endregion
+
+        #region Helper Methods
+        /// <summary>
+        /// Return the hashed value of a network entity type.
+        /// Useful for passing that info to the connected peer.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public UInt32 GetHashFromType(Type type)
+        {
+            return _typedHashes[type];
+        }
+
+        /// <summary>
+        /// Convert a hash back into a type instance.
+        /// Useful for reading a NetworkEntity type value
+        /// sent from the peer.
+        /// </summary>
+        /// <param name="hash"></param>
+        /// <returns></returns>
+        public Type GetTypeFromHash(UInt32 hash)
+        {
+            return _hashedTypes[hash];
         }
         #endregion
 

@@ -71,7 +71,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 fixtures.Dequeue().Dispose();
 
             // Create new fixtures for all vertices contained in the configuration
-            this.Configuration.GetData<ShipPartConfiguration>().Vertices.ForEach(data =>
+            this.Configuration.Vertices.ForEach(data =>
             {
                 Vertices vertices = new Vertices(data);
                 vertices.Transform(this.LocalTransformation);
@@ -90,7 +90,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             if (arg.HasFlag(ChainUpdate.Down))
                 this.AddFixturesToRoot(this.Root.Body, _fixtures);
 
-            _localCenter = this.IsRoot ? this.Body.LocalCenter : Vector2.Transform(this.Configuration.GetData<ShipPartConfiguration>().Centeroid, this.LocalTransformation);
+            _localCenter = this.IsRoot ? this.Body.LocalCenter : Vector2.Transform(this.Configuration.Centeroid, this.LocalTransformation);
         }
         #endregion
     }

@@ -72,9 +72,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         private void ConnectionNode_Initialize()
         {
             // Build and configure connection node instances
-            var data = this.Configuration.GetData<ShipPartConfiguration>();
-            this.MaleConnectionNode = _connectionNodefactory.Build<ConnectionNode>(node => node.Configure(-1, this, data.MaleConnectionNode));
-            this.FemaleConnectionNodes = data.FemaleConnectionNodes
+            this.MaleConnectionNode = _connectionNodefactory.Build<ConnectionNode>(node => node.Configure(-1, this, this.Configuration.MaleConnectionNode));
+            this.FemaleConnectionNodes = this.Configuration.FemaleConnectionNodes
                 .Select((female_config, idx) => _connectionNodefactory.Build<ConnectionNode>(node => node.Configure(idx, this, female_config)))
                 .ToArray();
 

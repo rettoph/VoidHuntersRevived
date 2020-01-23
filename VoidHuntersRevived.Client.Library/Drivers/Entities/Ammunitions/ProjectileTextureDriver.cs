@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Ammunitions
             base.Initialize();
 
             // Load the projectiles texture, if any.
-            _texture = _content.TryGet<Texture2D>($"texture:{this.driven.Configuration.Handle}");
+            _texture = _content.TryGet<Texture2D>($"texture:{this.driven.Handle}");
             _origin = _texture.Bounds.Center.ToVector2();
         }
         #endregion

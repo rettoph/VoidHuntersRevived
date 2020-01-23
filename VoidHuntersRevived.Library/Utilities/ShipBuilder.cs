@@ -69,7 +69,7 @@ namespace VoidHuntersRevived.Library.Utilities
         }
         public void Export(ShipPart input, BinaryWriter output)
         {
-            output.Write(input.Configuration.Handle);
+            output.Write(input.Handle);
 
             foreach(ConnectionNode female in input.FemaleConnectionNodes)
             { // Iterate through all females in the input...

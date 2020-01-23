@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         /// The maximum allowed age before the ammunition
         /// self disposes.
         /// </summary>
-        public Double MaxAge { get; private set; }
+        public Double MaxAge { get; set; }
 
         /// <summary>
         /// The current age of the ammunition.
@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
             base.Initialize();
 
             this.Age = 0;
-            this.MaxAge = this.Configuration.GetData<AmmunitionConfiguration>().MaxAge;
+            this.MaxAge = this.MaxAge;
         }
         #endregion
 

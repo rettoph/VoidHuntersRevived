@@ -81,20 +81,6 @@ namespace VoidHuntersRevived.Library
 
             var entities = provider.GetRequiredService<EntityLoader>();
 
-            entities.TryRegister<Team>("entity:team", "name:entity:team", "description:entity:team");
-
-            entities.TryRegister<UserPlayer>("entity:player:user", "name:entity:player:user", "description:entity:player:user");
-            entities.TryRegister<ComputerPlayer>("entity:player:computer", "name:entity:player:computer", "description:entity:player:computer");
-
-            entities.TryRegister<Quarantine>("entity:quarantine", "name:entity:quarantine", "description:entity:quarantine");
-            entities.TryRegister<Annex>("entity:annex", "name:entity:annex", "description:entity:annex");
-            entities.TryRegister<Explosion>("entity:explosion", "name:entity:explosion", "description:entity:explosion");
-            entities.TryRegister<Chunk>("entity:chunk", "name:entity:chunk", "description:entity:chunk");
-            entities.TryRegister<CustomController>("entity:custom-controller", "name:entity:custom-controller", "description:entity:custom-controller");
-
-            entities.TryRegister<Ship>("entity:ship", "name:entity:ship", "description:entity:ship");
-            entities.TryRegister<TractorBeam>("entity:tractor-beam", "name:entity:tractor-beam", "description:entity:tractor-beam");
-
             #region Register ShipParts
             #region Register Hulls
 
@@ -105,9 +91,10 @@ namespace VoidHuntersRevived.Library
 
             entities.TryRegister<Hull>(
                 handle: "entity:ship-part:hull:triangle",
-                nameHandle: "name:entity:ship-part:hull:triangle", 
-                descriptionHandle: "description:entity:ship-part:hull:triangle", 
-                data: triangle);
+                setup: h =>
+                {
+                    h.Configuration = triangle;
+                });
             #endregion
 
             #region Square
@@ -117,9 +104,10 @@ namespace VoidHuntersRevived.Library
 
             entities.TryRegister<Hull>(
                 handle: "entity:ship-part:hull:square",
-                nameHandle: "name:entity:ship-part:hull:square",
-                descriptionHandle: "description:entity:ship-part:hull:square",
-                data: square);
+                setup: h =>
+                {
+                    h.Configuration = square;
+                });
             #endregion
 
             #region Hexagon
@@ -129,9 +117,10 @@ namespace VoidHuntersRevived.Library
 
             entities.TryRegister<Hull>(
                 handle: "entity:ship-part:hull:hexagon",
-                nameHandle: "name:entity:ship-part:hull:hexagon",
-                descriptionHandle: "description:entity:ship-part:hull:hexagon",
-                data: hexagon);
+                setup: h =>
+                {
+                    h.Configuration = hexagon;
+                });
             #endregion
 
             #endregion
@@ -161,9 +150,10 @@ namespace VoidHuntersRevived.Library
             mosquito.Flush();
             entities.TryRegister<Hull>(
                 "entity:ship-part:chassis:mosquito",
-                "name:entity:ship-part:chassis:mosquito",
-                "description:entity:ship-part:chassis",
-                mosquito);
+                setup: c =>
+                {
+                    c.Configuration = mosquito;
+                });
             #endregion
 
             #endregion
@@ -179,17 +169,14 @@ namespace VoidHuntersRevived.Library
 
             entities.TryRegister<Thruster>(
                 handle: "entity:ship-part:thruster:small",
-                nameHandle: "name:entity:ship-part:thruster:small",
-                descriptionHandle: "description:entity:ship-part:thruster:small",
-                data: thruster);
+                setup: t =>
+                {
+                    t.Configuration = thruster;
+                });
             #endregion
 
             #region Weapons
-            var massDriver = new GunConfiguration();
-            massDriver.SetSwivelRange(MathHelper.PiOver2);
-            massDriver.SetFireRate(250);
-            massDriver.SetFireStrength(10f);
-            massDriver.SetProjectileHandle("entity:ammunition:projectile:mass-driver");
+            var massDriver = new ShipPartConfiguration();
             massDriver.AddVertice(0f, -0.15f);
             massDriver.AddVertice(0f, 0.15f);
             massDriver.AddVertice(0.6f, 0.075f);
@@ -199,20 +186,24 @@ namespace VoidHuntersRevived.Library
 
             entities.TryRegister<Gun>(
                 handle: "entity:ship-part:weapon:mass-driver",
-                nameHandle: "name:entity:ship-part:weapon:mass-driver",
-                descriptionHandle: "description:entity:ship-part:weapon:mass-driver",
-                data: massDriver);
+                setup: g =>
+                {
+                    g.Configuration = massDriver;
+                    g.SwivelRange = MathHelper.PiOver2;
+                    g.FireInterval = 250;
+                    g.FireStrength = 10f;
+                    g.FireEnergyCost = 1f;
+                    g.ProjectileHandle = "entity:ammunition:projectile:mass-driver";
+                });
             #endregion
             #endregion
 
             #region Register Ammunitions
             entities.TryRegister<Projectile>(
                 handle: "entity:ammunition:projectile:mass-driver",
-                nameHandle: "name:entity:ammunition:projectile:mass-driver", 
-                descriptionHandle: "description:entity:ammunition:projectile:mass-driver",
-                data: new ProjectileConfiguration()
+                setup: p =>
                 {
-                    MaxAge = 5000
+                    p.MaxAge = 5000;
                 });
             #endregion
         }

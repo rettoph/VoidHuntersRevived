@@ -18,6 +18,8 @@ using Microsoft.Extensions.Logging;
 using VoidHuntersRevived.Server.Utilities;
 using VoidHuntersRevived.Library.Utilities;
 using Microsoft.Extensions.DependencyInjection;
+using Guppy.Utilities;
+using xxHashSharp;
 
 namespace VoidHuntersRevived.Server.Drivers.Scenes
 {
@@ -143,7 +145,8 @@ namespace VoidHuntersRevived.Server.Drivers.Scenes
         private void CreateCreateMessage(NetworkEntity entity, User recipient = null)
         {
             var message = this.driven.Group.Messages.Create("entity:create", NetDeliveryMethod.ReliableOrdered, 0, recipient);
-            message.Write(entity.Configuration.Handle);
+            message.Write(this.driven.GetHashFromType(entity.GetType()));
+            message.Write(entity.Handle);
             message.Write(entity.Id);
             entity.TryWriteSetup(message);
 

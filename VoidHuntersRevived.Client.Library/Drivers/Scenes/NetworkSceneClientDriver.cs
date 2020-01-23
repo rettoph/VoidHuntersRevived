@@ -14,6 +14,7 @@ using Guppy.Collections;
 using VoidHuntersRevived.Library.Entities;
 using Microsoft.Extensions.Logging;
 using VoidHuntersRevived.Client.Library.Utilities;
+using Guppy.Utilities;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
 {
@@ -114,12 +115,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
         private void HandleCreateMessage(NetIncomingMessage im)
         {
             _createCount++;
-            var type = _im.ReadString();
+            var type = this.driven.GetTypeFromHash(im.ReadUInt32());
+            var handle = _im.ReadString();
             var id = _im.ReadGuid();
 
             if (_entities.GetById(id) == default(Entity))
             {
-                _entities.Create<NetworkEntity>(type, e =>
+                _entities.Create<NetworkEntity>(type, handle, e =>
                 { // Create a new entity
                     e.SetId(id);
                     e.TryReadSetup(_im);

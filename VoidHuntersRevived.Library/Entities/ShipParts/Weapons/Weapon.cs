@@ -34,6 +34,19 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         /// to reach the desired target last update.
         /// </summary>
         public Boolean OnTarget { get; private set; }
+
+        /// <summary>
+        /// The weaons fire interval
+        /// </summary>
+        public Single FireInterval { get; set; }
+        /// <summary>
+        /// The weapons swivel range in radians
+        /// </summary>
+        public Single SwivelRange { get; set; }
+        /// <summary>
+        /// The weapons fire cost in energy units
+        /// </summary>
+        public Single FireEnergyCost { get; set; }
         #endregion
 
         #region Lifecycle Methods
@@ -41,7 +54,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         {
             base.Initialize();
 
-            _fireTimer = new ActionTimer(this.Configuration.GetData<WeaponConfiguration>().FireRate);
+            _fireTimer = new ActionTimer(this.FireInterval);
 
             this.DefaultColor = Color.Red;
 
@@ -87,7 +100,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         public void AddFixtures(Body body)
         {
             // Create new fixtures for all vertices contained in the configuration
-            this.Configuration.GetData<ShipPartConfiguration>().Vertices.ForEach(vertices =>
+            this.Configuration.Vertices.ForEach(vertices =>
             {
                 body.CreateFixture(new PolygonShape(vertices, 0.5f), this);
             });
@@ -127,8 +140,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                 joint.MotorSpeed = 0.0f;
                 joint.LimitEnabled = true;
                 joint.Enabled = true;
-                joint.LowerLimit = -this.Configuration.GetData<WeaponConfiguration>().SwivelRange / 2;
-                joint.UpperLimit = this.Configuration.GetData<WeaponConfiguration>().SwivelRange / 2;
+                joint.LowerLimit = -this.SwivelRange / 2;
+                joint.UpperLimit = this.SwivelRange / 2;
             }
         }
 
@@ -225,7 +238,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                 return false;
             if (!this.Root.Ship.Firing)
                 return false;
-            if (!this.Root.Ship.TryUseEnergy(this.Configuration.GetData<WeaponConfiguration>().EnergyCost))
+            if (!this.Root.Ship.TryUseEnergy(this.FireEnergyCost))
                 return false;
 
             return true;

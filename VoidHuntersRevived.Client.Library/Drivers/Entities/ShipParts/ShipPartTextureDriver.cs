@@ -35,8 +35,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
 
             // Load the sprite manager content...
             _sprite.Load(
-                texture: $"texture:{this.driven.Configuration.Handle}", 
-                vertices: this.driven.Configuration.GetData<ShipPartConfiguration>().Vertices);
+                texture: $"texture:{this.driven.Handle}", 
+                vertices: this.driven.Configuration.Vertices);
         }
         #endregion
 
