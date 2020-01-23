@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                 l.SetUpdateOrder(20);
                 l.SetDrawOrder(15);
             });
-            // Layer 3: Popups
+            // Layer 3: Static Elements (Popups, Energy Bar, UI, ect..)
             this.layers.Create<PrimitiveLayer>(3, l =>
             {
                 l.SetUpdateOrder(20);

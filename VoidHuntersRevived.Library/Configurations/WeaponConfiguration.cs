@@ -20,6 +20,10 @@ namespace VoidHuntersRevived.Library.Configurations
         /// The weapons fire rate in milliseconds
         /// </summary>
         public Double FireRate { get; private set; } = 150;
+        /// <summary>
+        /// The amount of energy required to fire the weapon.
+        /// </summary>
+        public Single EnergyCost { get; private set; } = 1f;
 
         /// <summary>
         /// Update the weapons swivel range.
@@ -34,6 +38,11 @@ namespace VoidHuntersRevived.Library.Configurations
         public void SetFireRate(Double fireRate)
         {
             this.FireRate = fireRate;
+        }
+
+        public void SetEnergyCost(Single energyCost)
+        {
+            this.EnergyCost = energyCost;
         }
     }
 }

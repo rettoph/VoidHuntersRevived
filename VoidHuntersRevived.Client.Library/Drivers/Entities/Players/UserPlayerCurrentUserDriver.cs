@@ -80,7 +80,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
                 _debug.AddLine(gt => "\nCurrent Player");
                 _debug.AddLine(gt => $"  Position => X: {this.driven?.Ship?.Bridge?.Position.X.ToString("#,##0.000")} Y: {this.driven?.Ship?.Bridge?.Position.Y.ToString("#,##00.000")}, R: {this.driven?.Ship?.Bridge?.Rotation.ToString("#,##00.000")}");
                 _debug.AddLine(gt => $"  Target => X: {this.driven?.Ship?.WorldTarget.X.ToString("#,##00.000")} Y: {this.driven?.Ship?.WorldTarget.X.ToString("#,##00.000")}");
-
+                _debug.AddLine(gt => $"  Energy => {this.driven?.Ship?.Energy.ToString("#,##00.000")}");
             }
             else
             {

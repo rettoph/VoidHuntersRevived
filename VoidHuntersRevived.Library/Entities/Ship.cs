@@ -96,6 +96,19 @@ namespace VoidHuntersRevived.Library.Entities
         /// The SHip's current player (if any)
         /// </summary>
         public Player Player { get; private set; }
+
+        /// <summary>
+        /// The current amount of enery within the ship.
+        /// </summary>
+        public Single Energy { get; private set; }
+        /// <summary>
+        /// The maximum amount of energy the ship can contain.
+        /// </summary>
+        public Single MaxEnergy { get; private set; }
+        /// <summary>
+        /// The speed at which energy recharges (per second)
+        /// </summary>
+        public Single EnergyRefreshRate { get; private set; } = 10f;
         #endregion
 
         #region Events
@@ -134,6 +147,9 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Initialize();
 
+            this.Energy = 10;
+            this.MaxEnergy = 100;
+
             this.TractorBeam = this.entities.Create<TractorBeam>("entity:tractor-beam", tb =>
             {
                 tb.Ship = this;
@@ -160,6 +176,8 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Update(gameTime);
 
+            if (this.Energy < this.MaxEnergy)
+                this.Energy = Math.Min(this.MaxEnergy, this.Energy + ((Single)gameTime.ElapsedGameTime.TotalSeconds * this.EnergyRefreshRate));
             // Update the tractor beam
             this.TractorBeam.TryUpdate(gameTime);
             // Update the internal updatable ship parts
@@ -326,6 +344,24 @@ namespace VoidHuntersRevived.Library.Entities
             _openFemaleNodes.Clear();
             // Get all open female connection nodes within the bridge
             this.Bridge?.GetOpenFemaleConnectionNodes(ref _openFemaleNodes);
+        }
+
+        /// <summary>
+        /// Attempt to use a requested amount of energy.
+        /// 
+        /// Returns false if the ship does not have the required energy levels.
+        /// </summary>
+        /// <param name="amount"></param>
+        /// <returns></returns>
+        public Boolean TryUseEnergy(Single amount)
+        {
+            if(this.Energy >= amount)
+            {
+                this.Energy -= amount;
+                return true;
+            }
+
+            return false;
         }
         #endregion
 

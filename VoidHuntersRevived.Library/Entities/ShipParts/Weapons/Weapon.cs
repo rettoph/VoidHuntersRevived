@@ -207,11 +207,29 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         {
             _fireTimer.Update(
                 gameTime: gameTime,
-                action: () => this.Fire(),
-                filter: (triggered) => triggered && this.OnTarget && this.Health > 0 && this.Root.Ship != default(Ship) && this.Root.Ship.Firing); 
+                action: this.Fire,
+                filter: this.CanFire); 
         }
 
         protected abstract void Fire();
+
+        protected virtual Boolean CanFire(Boolean triggered)
+        {
+            if (!triggered)
+                return false;
+            if (this.Root.Ship == default(Ship))
+                return false;
+            if (this.Health == 0)
+                return false;
+            if (!this.OnTarget)
+                return false;
+            if (!this.Root.Ship.Firing)
+                return false;
+            if (!this.Root.Ship.TryUseEnergy(this.Configuration.GetData<WeaponConfiguration>().EnergyCost))
+                return false;
+
+            return true;
+        }
         #endregion
 
         #region Event Handlers
