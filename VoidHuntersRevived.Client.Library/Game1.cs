@@ -43,6 +43,14 @@ namespace VoidHuntersRevived.Client.Library
                 .BuildGame<ClientGame>();
         }
 
+        protected override void OnExiting(object sender, EventArgs args)
+        {
+            base.OnExiting(sender, args);
+
+            // Force exit monogame
+            Environment.Exit(0);
+        }
+
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
