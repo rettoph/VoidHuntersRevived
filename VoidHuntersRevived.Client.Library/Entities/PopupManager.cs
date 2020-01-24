@@ -86,10 +86,9 @@ namespace VoidHuntersRevived.Client.Library.Entities
         {
             base.Draw(gameTime);
 
-            var origin = new Vector2(this.graphics.Viewport.Width / 2, this.graphics.Viewport.Height / 2);
             _popups.Values.ForEach(p =>
             {
-                p.Draw(origin, gameTime);
+                p.Draw(gameTime);
                 if(p.State < 0.001f)
                 { // If popup is gone...
                     _closed.Enqueue(p);
@@ -158,14 +157,14 @@ namespace VoidHuntersRevived.Client.Library.Entities
         #endregion
 
         #region Frame Methods
-        public void Draw(Vector2 origin, GameTime gameTime)
+        public void Draw(GameTime gameTime)
         {
             String title;
             String description;
             String advanced;
 
             this.Target.GetInfo(out title, out description, out advanced);
-            Vector2 targetPixelPos = (_manager.camera.Project(this.Target.Root.WorldCenter.ToVector3(0)).ToVector2() - origin).Round() + new Vector2(0.5f, 0f);
+            Vector2 targetPixelPos = (_manager.camera.Project(this.Target.Root.WorldCenter.ToVector3(0)).ToVector2()).Round() + new Vector2(0.5f, 0f);
             Vector2 pixelPos = targetPixelPos + Popup.Offset;
             Vector2 offset = pixelPos - targetPixelPos; 
             Vector2 bounds = _manager.font.MeasureString($"{title}\n{description}\n{advanced}") + Popup.Padding + Popup.Padding;

@@ -35,6 +35,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             base.Initialize();
 
             _camera = _provider.GetRequiredService<Camera2D>();
+            _camera.Center = false;
 
             _debug.AddLine(gt => $" Action => T: {this.actionCount.ToString("#,##0")}, APS: {(this.actionCount / gt.TotalGameTime.TotalSeconds).ToString("#,##0.000")}");
             _debug.AddLine(gt => $" Vital => T: {VitalsManager.MessagesRecieved.ToString("#,##0")}, VPS: {(VitalsManager.MessagesRecieved / gt.TotalGameTime.TotalSeconds).ToString("#,##0.000")}");
