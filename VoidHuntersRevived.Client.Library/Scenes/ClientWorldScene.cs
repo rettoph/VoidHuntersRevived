@@ -1,4 +1,5 @@
-﻿using Guppy.Utilities.Cameras;
+﻿using Guppy.UI.Entities.UI;
+using Guppy.Utilities.Cameras;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -65,6 +66,19 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                 l.SetUpdateOrder(20);
                 l.SetDrawOrder(30);
                 l.SetCamera(_camera);
+            });
+
+            // Create a brand new stage
+            this.entities.Create<Stage>(s =>
+            {
+                s.SetLayerDepth(3);
+                s.Add<Element>(e =>
+                {
+                    e.Bounds.Left = 0.25f;
+                    e.Bounds.Width = 0.5f;
+                    e.Bounds.Top = 0.25f;
+                    e.Bounds.Height = 0.5f;
+                });
             });
         }
         #endregion
