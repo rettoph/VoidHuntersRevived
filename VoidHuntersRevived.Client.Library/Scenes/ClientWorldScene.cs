@@ -37,6 +37,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             _camera = _provider.GetRequiredService<Camera2D>();
             _camera.Center = false;
+            _camera.MoveBy(new Vector2(0.5f, 0.5f));
 
             _debug.AddLine(gt => $" Action => T: {this.actionCount.ToString("#,##0")}, APS: {(this.actionCount / gt.TotalGameTime.TotalSeconds).ToString("#,##0.000")}");
             _debug.AddLine(gt => $" Vital => T: {VitalsManager.MessagesRecieved.ToString("#,##0")}, VPS: {(VitalsManager.MessagesRecieved / gt.TotalGameTime.TotalSeconds).ToString("#,##0.000")}");
@@ -66,19 +67,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                 l.SetUpdateOrder(20);
                 l.SetDrawOrder(30);
                 l.SetCamera(_camera);
-            });
-
-            // Create a brand new stage
-            this.entities.Create<Stage>(s =>
-            {
-                s.SetLayerDepth(3);
-                s.Add<Element>(e =>
-                {
-                    e.Bounds.Left = 0.25f;
-                    e.Bounds.Width = 0.5f;
-                    e.Bounds.Top = 0.25f;
-                    e.Bounds.Height = 0.5f;
-                });
             });
         }
         #endregion

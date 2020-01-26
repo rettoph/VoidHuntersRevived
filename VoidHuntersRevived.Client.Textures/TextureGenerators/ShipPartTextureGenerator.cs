@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Guppy.Configurations;
+using Guppy;
 using Guppy.Extensions.Collection;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Client.Textures.Attributes;
@@ -24,10 +24,9 @@ namespace VoidHuntersRevived.Client.Textures.TextureGenerators
         public static Pen Pen { get; set; } = new Pen(Color.FromArgb(255, 255, 255, 255), 0);
         public static Brush Brush { get; set; } = new SolidBrush(Color.FromArgb(255, 255, 255, 255));
 
-        protected override Image Generate(EntityConfiguration entity)
+        protected override Image Generate(ShipPart entity)
         {
-            var config = entity.Data as ShipPartConfiguration;
-            return config.Vertices.ToImageDimensions().DrawShape(ShipPartTextureGenerator.Pen, ShipPartTextureGenerator.Brush);
+            return entity.Configuration.Vertices.ToImageDimensions().DrawShape(ShipPartTextureGenerator.Pen, ShipPartTextureGenerator.Brush);
         }
     }
 }

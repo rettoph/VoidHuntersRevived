@@ -175,7 +175,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
             _manager.spriteBatch.DrawString(
                 spriteFont: _manager.font, 
                 text: title, 
-                position: new Vector2(pixelPos.X, pixelPos.Y) + Popup.Padding, 
+                position: new Vector2(pixelPos.X, pixelPos.Y).Round() + Popup.Padding, 
                 color: fcolor2,
                 rotation: 0,
                 origin: Vector2.Zero,
@@ -186,7 +186,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
             _manager.spriteBatch.DrawString(
                 spriteFont: _manager.font,
                 text: description,
-                position: new Vector2(pixelPos.X, pixelPos.Y + _manager.font.LineSpacing) + Popup.Padding,
+                position: new Vector2(pixelPos.X, pixelPos.Y + _manager.font.LineSpacing).Round() + Popup.Padding,
                 color: fcolor,
                 rotation: 0,
                 origin: Vector2.Zero,
@@ -197,7 +197,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
             _manager.spriteBatch.DrawString(
                 spriteFont: _manager.font,
                 text: $"{advanced}",
-                position: new Vector2(pixelPos.X, pixelPos.Y + _manager.font.LineSpacing + _manager.font.LineSpacing) + Popup.Padding,
+                position: new Vector2(pixelPos.X, pixelPos.Y + _manager.font.LineSpacing + _manager.font.LineSpacing).Round() + Popup.Padding,
                 color: fcolor,
                 rotation: 0,
                 origin: Vector2.Zero,

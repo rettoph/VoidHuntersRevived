@@ -34,12 +34,14 @@ namespace VoidHuntersRevived.Client.Library
         {
             base.Initialize();
 
-            _client.TryConnect("localhost", 1337, _client.Users.Create("Tony"));
+            // _client.TryConnect("localhost", 1337, _client.Users.Create("Tony"));
 
-            _scene = this.scenes.Create<ClientWorldScene>(s =>
-            {
-                s.Group = _client.Groups.GetOrCreateById(Guid.Empty);
-            });
+            // Create a main menu scene
+            this.scenes.Create<MainMenuScene>();
+            // this.scenes.Create<ClientWorldScene>(s =>
+            // {
+            //     s.Group = _client.Groups.GetOrCreateById(Guid.Empty);
+            // });
         }
         #endregion
 
@@ -48,14 +50,14 @@ namespace VoidHuntersRevived.Client.Library
         {
             base.Draw(gameTime);
 
-            _scene.TryDraw(gameTime);
+            this.scenes.TryDrawAll(gameTime);
         }
 
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            _scene.TryUpdate(gameTime);
+            this.scenes.TryUpdateAll(gameTime);
         }
         #endregion
     }
