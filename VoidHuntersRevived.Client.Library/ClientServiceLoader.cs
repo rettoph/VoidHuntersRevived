@@ -36,10 +36,15 @@ namespace VoidHuntersRevived.Client.Library
             var content = provider.GetRequiredService<ContentLoader>();
 
             content.TryRegister("font", "Font");
+            content.TryRegister("font:ui:title", "Fonts/BiomeBold");
+            content.TryRegister("font:ui:label", "Fonts/Biome");
+            content.TryRegister("font:ui:input", "Fonts/BiomeLight");
 
             content.TryRegister("sprite:background:1", "Sprites/background-1");
             content.TryRegister("sprite:background:2", "Sprites/background-2");
             content.TryRegister("sprite:background:3", "Sprites/background-3");
+
+            content.TryRegister("sprite:logo", "Sprites/icon2alpha");
 
             #region Register ShipPart Textures
             content.TryRegister("texture:entity:ship-part:hull:triangle", "Sprites/entity_ship-part_hull_triangle");

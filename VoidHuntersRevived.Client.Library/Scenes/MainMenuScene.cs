@@ -25,10 +25,12 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private SpriteBatch _spriteBatch;
         private Vector2 _backgroundPosition;
         private ClientPeer _client;
+        private ContentLoader _content;
 
         private Texture2D _background01;
         private Texture2D _background02;
         private Texture2D _background03;
+        private Texture2D _logo;
 
         private FormComponent _name;
         private FormComponent _host;
@@ -44,11 +46,13 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _graphics = provider.GetRequiredService<GraphicsDevice>();
             _client = provider.GetRequiredService<ClientPeer>();
             _spriteBatch = provider.GetRequiredService<SpriteBatch>();
+            _content = provider.GetRequiredService<ContentLoader>();
 
             var content = provider.GetRequiredService<ContentLoader>();
             _background01 = content.TryGet<Texture2D>("sprite:background:1");
             _background02 = content.TryGet<Texture2D>("sprite:background:2");
             _background03 = content.TryGet<Texture2D>("sprite:background:3");
+            _logo = content.TryGet<Texture2D>("sprite:logo");
 
             _spriteBatch = provider.GetRequiredService<SpriteBatch>();
         }
@@ -68,25 +72,46 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             this.entities.Create<Stage>(s =>
             {
+                s.Add<InlineTextContainer>(c =>
+                {
+                    c.Bounds.Set(new Unit[] {
+                        0.5f,
+                        new CustomUnit((p) => -c.Bounds.Width.ToPixel(p) / 2)
+                    }, 75, 1f, 45);
+
+                    c.Add<TextElement>(t =>
+                    {
+                        t.Text = "Void Hunters";
+                        t.Font = _content.TryGet<SpriteFont>("font:ui:title");
+                    });
+
+                    c.Add<TextElement>(t =>
+                    {
+                        t.Text = " Revived";
+                        t.Font = _content.TryGet<SpriteFont>("font:ui:title");
+                        t.TextColor = new Color(23, 140, 182, 200);
+                    });
+                });
+
                 s.Add<Container>(c =>
                 {
-                    c.Bounds.Set(new Unit[] { 0.5f, -250 }, 100, 500, 290);
+                    c.Bounds.Set(new Unit[] { 0.5f, -250 }, 125, 500, 290);
                     c.BorderSize = 0;
                     c.BackgroundColor = new Color(23, 140, 182, 200);
 
-                    c.Add<FormComponent>(fc =>
+                    _name = c.Add<FormComponent>(fc =>
                     {
                         fc.Label = "Name:";
                         fc.Bounds.Top = 0;
                     });
 
-                    c.Add<FormComponent>(fc =>
+                    _host = c.Add<FormComponent>(fc =>
                     {
                         fc.Label = "Host:";
                         fc.Bounds.Top = 70;
                     });
 
-                    c.Add<FormComponent>(fc =>
+                    _port = c.Add<FormComponent>(fc =>
                     {
                         fc.Label = "Port:";
                         fc.Bounds.Top = 140;
@@ -98,20 +123,10 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                         b.BackgroundColor = new Color(13, 31, 45);
                         b.BorderSize = 0;
                         b.Text = "Connect";
-                        b.OnHoveredChanged += (o, h) =>
-                        {
-                            b.BackgroundColor = h ? new Color(29, 70, 102) : b.BackgroundColor = new Color(13, 31, 45);
-                        };
-                        b.OnButtonPressed += (o, a) =>
-                        {
-                            if(a == Pointer.Button.Left)
-                                b.BackgroundColor = new Color(10, 24, 35);
-                        };
-                        b.OnButtonReleased += (o, a) =>
-                        {
-                            if(a == Pointer.Button.Left)
-                                b.BackgroundColor = new Color(29, 70, 102);
-                        };
+                        b.Font = _content.TryGet<SpriteFont>("font:ui:label");
+                        b.OnHoveredChanged += this.HandleButtonHoveredChanged;
+                        b.OnButtonPressed += this.HandleButtonPressed;
+                        b.OnButtonReleased += this.HandleButtonReleased;
                     });
                 });
             });
@@ -145,11 +160,33 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _spriteBatch.Draw(_background02, new Vector2(-_graphics.Viewport.Width, -_graphics.Viewport.Height) + new Vector2(-_backgroundPosition.X * 2 % _background02.Width, -_backgroundPosition.Y * 2 % _background02.Height), bounds, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
             _spriteBatch.Draw(_background03, new Vector2(-_graphics.Viewport.Width, -_graphics.Viewport.Height) + new Vector2(-_backgroundPosition.X * 3 % _background03.Width, -_backgroundPosition.Y * 3 % _background03.Height), bounds, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
 
+            _spriteBatch.Draw(_logo, Vector2.Zero, Color.White);
+
             _spriteBatch.End();
 
             _camera.TryDraw(gameTime);
 
             this.layers.TryDraw(gameTime);
+
+            
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandleButtonHoveredChanged(object sender, bool e)
+        {
+            (sender as TextButton).BackgroundColor = e ? new Color(29, 70, 102) : new Color(13, 31, 45);
+        }
+        private void HandleButtonReleased(object sender, Pointer.Button e)
+        {
+            if (e == Pointer.Button.Left)
+                (sender as TextButton).BackgroundColor = (sender as TextButton).Hovered ? new Color(29, 70, 102) : new Color(13, 31, 45);
+        }
+
+        private void HandleButtonPressed(object sender, Pointer.Button e)
+        {
+            if(e == Pointer.Button.Left)
+                (sender as TextButton).BackgroundColor = new Color(13, 31, 45);
         }
         #endregion
     }
