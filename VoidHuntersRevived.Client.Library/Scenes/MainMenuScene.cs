@@ -3,6 +3,7 @@ using Guppy.Loaders;
 using Guppy.Network.Peers;
 using Guppy.UI.Entities;
 using Guppy.UI.Entities.UI;
+using Guppy.UI.Enums;
 using Guppy.UI.Utilities.Units;
 using Guppy.Utilities.Cameras;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +30,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private Texture2D _background01;
         private Texture2D _background02;
         private Texture2D _background03;
-        private Texture2D _logo;
         #endregion
 
         #region Lifecycle Methods
@@ -47,7 +47,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _background01 = content.TryGet<Texture2D>("sprite:background:1");
             _background02 = content.TryGet<Texture2D>("sprite:background:2");
             _background03 = content.TryGet<Texture2D>("sprite:background:3");
-            _logo = content.TryGet<Texture2D>("sprite:logo");
 
             _spriteBatch = provider.GetRequiredService<SpriteBatch>();
         }
@@ -67,11 +66,37 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             this.entities.Create<Stage>(s =>
             {
-                s.Add<TextInput>(t =>
+                s.Add<Container>(c =>
                 {
-                    t.Value = "Hello World";
-                    t.Color = Color.Red;
-                    t.Bounds.Set(100, 100, 100, 30);
+                    c.Bounds.Height = 100;
+                    c.Bounds.Y = 100;
+                    c.Bounds.Width = 1f;
+
+                    c.Add<FancyElement>(l =>
+                    {
+                        l.Bounds.Set(0, 0, 100, 100);
+                        l.BackgroundImage = _content.TryGet<Texture2D>("sprite:logo");
+                        l.BackgroundStyle = BackgroundStyle.Fill;
+                    });
+
+                    c.Add<FancyTextElement>(t =>
+                    {
+                        t.Bounds.Set(100, 0, Unit.Get(1f, -100), 100);
+                        t.Alignment = Alignment.CenterLeft;
+
+                        t.Add<TextElement>(t1 =>
+                        {
+                            t1.Text = "Void Hunters";
+                            t1.Font = _content.TryGet<SpriteFont>("font:ui:title");
+                        });
+
+                        t.Add<TextElement>(t2 =>
+                        {
+                            t2.Text = " Revived";
+                            t2.Font = _content.TryGet<SpriteFont>("font:ui:title");
+                            t2.Color = new Color(0, 143, 241);
+                        });
+                    });
                 });
             });
         }
@@ -103,8 +128,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _spriteBatch.Draw(_background01, new Vector2(-_graphics.Viewport.Width, -_graphics.Viewport.Height) + new Vector2(-_backgroundPosition.X * 1 % _background01.Width, -_backgroundPosition.Y * 1 % _background01.Height), bounds, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
             _spriteBatch.Draw(_background02, new Vector2(-_graphics.Viewport.Width, -_graphics.Viewport.Height) + new Vector2(-_backgroundPosition.X * 2 % _background02.Width, -_backgroundPosition.Y * 2 % _background02.Height), bounds, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
             _spriteBatch.Draw(_background03, new Vector2(-_graphics.Viewport.Width, -_graphics.Viewport.Height) + new Vector2(-_backgroundPosition.X * 3 % _background03.Width, -_backgroundPosition.Y * 3 % _background03.Height), bounds, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
-
-            _spriteBatch.Draw(_logo, Vector2.Zero, Color.White);
 
             _spriteBatch.End();
 
