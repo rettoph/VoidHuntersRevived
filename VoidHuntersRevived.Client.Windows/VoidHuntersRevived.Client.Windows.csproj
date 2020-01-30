@@ -67,6 +67,10 @@
       <Project>{efa482d2-5848-4f77-b90f-d00b75de9069}</Project>
       <Name>FarseerPhysics.MonoGame</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Submodules\Guppy\Guppy.UI\Guppy.UI.csproj">
+      <Project>{c577d48d-c6c3-4fc8-a526-bcf854a225c4}</Project>
+      <Name>Guppy.UI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VoidHuntersRevived.Client.Library\VoidHuntersRevived.Client.Library.csproj">
       <Project>{455880B1-F863-446F-B2DB-CDDDADDAA2C5}</Project>
       <Name>VoidHuntersRevived.Client.Library</Name>

@@ -67,9 +67,11 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             this.entities.Create<Stage>(s =>
             {
-                s.Add<Container<Element>>(c =>
+                s.Add<TextInput>(t =>
                 {
-                    c.Bounds.Set(100, 100, 100, 100);
+                    t.Value = "Hello World";
+                    t.Color = Color.Red;
+                    t.Bounds.Set(100, 100, 100, 30);
                 });
             });
         }
