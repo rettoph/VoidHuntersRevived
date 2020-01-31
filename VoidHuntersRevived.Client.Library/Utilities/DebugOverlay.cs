@@ -31,6 +31,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         {
             base.Draw(gameTime);
 
+#if DEBUG
             if(_lines.Any())
             {
                 _spriteBatch.Begin();
@@ -41,6 +42,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
                     color: Color.White);
                 _spriteBatch.End();
             }
+#endif
         }
         #endregion
 
