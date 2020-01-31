@@ -40,6 +40,7 @@ namespace VoidHuntersRevived.Client.Library
             content.TryRegister("font:ui:title-light", "Fonts/BiomeLight-Big");
             content.TryRegister("font:ui:label", "Fonts/Biome-Normal");
             content.TryRegister("font:ui:input", "Fonts/BiomeLight-Normal");
+            content.TryRegister("font:small", "Fonts/BiomeLight-Small");
 
             content.TryRegister("sprite:background:1", "Sprites/background-1");
             content.TryRegister("sprite:background:2", "Sprites/background-2");

@@ -147,7 +147,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Initialize();
 
-            this.Energy = 10;
+            this.Energy = 100;
             this.MaxEnergy = 100;
 
             this.TractorBeam = this.entities.Create<TractorBeam>("entity:tractor-beam", tb =>

@@ -181,6 +181,10 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             base.Initialize();
 
             _client.MessagesTypes.TryAdd(NetIncomingMessageType.StatusChanged, this.HandleConnectionStatusChanged);
+
+            #if DEBUG
+            this.Connect("localhost", 1337, "Rettoph");
+            #endif
         }
 
         public override void Dispose()

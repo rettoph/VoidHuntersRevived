@@ -197,3 +197,10 @@
 /processorParam:TextureFormat=Color
 /build:Sprites/entity_ship-part_hull_pentagon.png
 
+#begin Fonts/BiomeLight-Small.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/BiomeLight-Small.spritefont
+
