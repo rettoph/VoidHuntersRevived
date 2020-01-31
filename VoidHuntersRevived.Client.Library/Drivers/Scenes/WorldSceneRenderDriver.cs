@@ -86,7 +86,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
             base.Draw(gameTime);
             
             // Clear the graphics device
-            _graphics.Clear(Color.Black);
+            _graphics.Clear(new Color(0, 0, 10));
 
 
             var bounds = new Rectangle(_graphics.Viewport.Width, -_graphics.Viewport.Height, _graphics.Viewport.Width * 3, _graphics.Viewport.Height * 3);

@@ -1,17 +1,24 @@
 ﻿using Guppy;
+using Guppy.Collections;
 using Guppy.Loaders;
 using Guppy.Network.Peers;
+using Guppy.Network.Security;
 using Guppy.UI.Entities;
 using Guppy.UI.Entities.UI;
 using Guppy.UI.Enums;
 using Guppy.UI.Utilities.Units;
 using Guppy.Utilities.Cameras;
+using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading;
+using VoidHuntersRevived.Client.Library.Entities.UI;
 using VoidHuntersRevived.Client.Library.Layers;
 
 namespace VoidHuntersRevived.Client.Library.Scenes
@@ -30,6 +37,12 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private Texture2D _background01;
         private Texture2D _background02;
         private Texture2D _background03;
+
+        private TextElement _message;
+
+        private NetConnectionStatus _status = NetConnectionStatus.Disconnected;
+
+        private SceneCollection _scenes;
         #endregion
 
         #region Lifecycle Methods
@@ -49,6 +62,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _background03 = content.TryGet<Texture2D>("sprite:background:3");
 
             _spriteBatch = provider.GetRequiredService<SpriteBatch>();
+
+            _scenes = provider.GetRequiredService<SceneCollection>();
         }
 
         protected override void PreInitialize()
@@ -66,39 +81,105 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             this.entities.Create<Stage>(s =>
             {
+                s.Add<Header>(h =>
+                {
+                    h.Bounds.Set(0, 0.1f, 1f, 75);
+                });
+
+                _message = s.Add<TextElement>(m =>
+                {
+                    m.Bounds.Y = Unit.Get(0.1f, 85);
+                    m.Bounds.Height = 25;
+                    m.Inline = false;
+                    m.Alignment = Alignment.Center;
+                    m.Font = _content.TryGet<SpriteFont>("font:ui:input");
+                });
+
                 s.Add<Container>(c =>
                 {
-                    c.Bounds.Height = 100;
-                    c.Bounds.Y = 100;
-                    c.Bounds.Width = 1f;
+                    // c.BorderColor = Color.White;
+                    // c.BorderSize = 1;
 
-                    c.Add<FancyElement>(l =>
+                    c.Bounds.Set(
+                        x: new CustomUnit(p => (p - c.Bounds.Width.ToPixel(p)) / 2),
+                        y: Unit.Get(0.1f, 100),
+                        width: 593,
+                        height: 300);
+
+                    var name = c.Add<FormComponent>(fc =>
                     {
-                        l.Bounds.Set(0, 0, 100, 100);
-                        l.BackgroundImage = _content.TryGet<Texture2D>("sprite:logo");
-                        l.BackgroundStyle = BackgroundStyle.Fill;
+                        fc.Bounds.Set(25, 25, 543, 60);
+                        fc.Label = "Name";
                     });
 
-                    c.Add<FancyTextElement>(t =>
+                    var host = c.Add<FormComponent>(fc =>
                     {
-                        t.Bounds.Set(100, 0, Unit.Get(1f, -100), 100);
-                        t.Alignment = Alignment.CenterLeft;
+                        fc.Bounds.Set(25, 110, 393, 60);
+                        fc.Label = "Host";
+                        fc.Value = "localhost";
+                    });
 
-                        t.Add<TextElement>(t1 =>
+                    var port = c.Add<FormComponent>(fc =>
+                    {
+                        fc.Bounds.Set(443, 110, 125, 60);
+                        fc.Label = "Port";
+                        fc.Value = "1337";
+                    });
+
+                    c.Add<Container>(c2 =>
+                    {
+                        c2.Bounds.Set(25, 210, 543, 45);
+                        c2.BorderColor = new Color(0, 143, 241);
+                        c2.BackgroundColor = new Color(50, 140, 200, 100);
+                        c2.BorderSize = 1;
+
+                        c2.Add<TextElement>(t =>
                         {
-                            t1.Text = "Void Hunters";
-                            t1.Font = _content.TryGet<SpriteFont>("font:ui:title");
+                            t.Alignment = Alignment.Center;
+                            t.Inline = false;
+                            t.Text = "Connect";
+                            t.Font = _content.TryGet<SpriteFont>("font:ui:label");
                         });
 
-                        t.Add<TextElement>(t2 =>
+                        c2.OnHoveredChanged += (sender, h) =>
                         {
-                            t2.Text = " Revived";
-                            t2.Font = _content.TryGet<SpriteFont>("font:ui:title");
-                            t2.Color = new Color(0, 143, 241);
-                        });
+                            if ((c2.Buttons & Pointer.Button.Left) == 0)
+                                c2.BackgroundColor = h ? new Color(44, 123, 175, 100) : new Color(50, 140, 200, 100);
+                        };
+
+                        c2.OnButtonPressed += (sender, b) =>
+                        {
+                            if (b == Pointer.Button.Left)
+                                c2.BackgroundColor = new Color(71, 154, 209, 100);
+                        };
+
+                        c2.OnButtonReleased += (sender, b) =>
+                        {
+                            if (b == Pointer.Button.Left)
+                            {
+                                c2.BackgroundColor = c2.Hovered ? new Color(44, 123, 175, 100) : new Color(50, 140, 200, 100);
+                                if (c2.Hovered)
+                                    this.Connect(host.Value, Int32.Parse(port.Value), name.Value);
+                            }
+
+                        };
                     });
                 });
             });
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            _client.MessagesTypes.TryAdd(NetIncomingMessageType.StatusChanged, this.HandleConnectionStatusChanged);
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            _client.MessagesTypes.TryRemove(NetIncomingMessageType.StatusChanged, this.HandleConnectionStatusChanged);
         }
         #endregion
 
@@ -134,8 +215,59 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _camera.TryDraw(gameTime);
 
             this.layers.TryDraw(gameTime);
+        }
+        #endregion
 
-            
+        #region Methods
+        /// <summary>
+        /// Attempt to connect to the requested server
+        /// </summary>
+        private void Connect(String host, Int32 port, String name)
+        {
+            if(_client.ConnectionStatus == NetConnectionStatus.Disconnected)
+            {
+                var t = new Thread(new ThreadStart(() =>
+                {
+                    try
+                    {
+                        _client.TryConnect(host, port, _client.Users.Create(name));
+                    }
+                    catch (Exception e)
+                    {
+                        _message.Text = $"Error: {e.Message}";
+                        _message.Color = Color.Red;
+                    }
+                }));
+                t.Start();
+            }
+        }
+        #endregion
+
+        #region Message Handlers
+        private void HandleConnectionStatusChanged(object sender, NetIncomingMessage arg)
+        {
+            _status = (NetConnectionStatus)arg.ReadByte();
+
+            switch(_status) {
+                case NetConnectionStatus.InitiatedConnect:
+                    _message.Text = "Connecting to server...";
+                    _message.Color = Color.Yellow;
+                    break;
+                case NetConnectionStatus.Connected:
+                    _message.Text = $"Connected!";
+                    _message.Color = Color.Green;
+
+                    _scenes.Create<ClientWorldScene>(s =>
+                    {
+                        s.Group = _client.Groups.GetOrCreateById(Guid.Empty);
+                    });
+                    this.Dispose();
+                    break;
+                default:
+                    _message.Text = $"Error: Unable to reach host... Please try again.";
+                    _message.Color = Color.Red;
+                    break;
+            }
         }
         #endregion
     }

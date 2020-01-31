@@ -36,9 +36,10 @@ namespace VoidHuntersRevived.Client.Library
             var content = provider.GetRequiredService<ContentLoader>();
 
             content.TryRegister("font", "Font");
-            content.TryRegister("font:ui:title", "Fonts/BiomeBold");
-            content.TryRegister("font:ui:label", "Fonts/Biome");
-            content.TryRegister("font:ui:input", "Fonts/BiomeLight");
+            content.TryRegister("font:ui:title", "Fonts/BiomeBold-Big");
+            content.TryRegister("font:ui:title-light", "Fonts/BiomeLight-Big");
+            content.TryRegister("font:ui:label", "Fonts/Biome-Normal");
+            content.TryRegister("font:ui:input", "Fonts/BiomeLight-Normal");
 
             content.TryRegister("sprite:background:1", "Sprites/background-1");
             content.TryRegister("sprite:background:2", "Sprites/background-2");

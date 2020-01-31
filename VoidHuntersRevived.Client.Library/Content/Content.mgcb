@@ -145,27 +145,6 @@
 /processorParam:TextureFormat=Color
 /build:Sprites/entity_ammunition_projectile_mass-driver.png
 
-#begin Fonts/Biome.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:Fonts/Biome.spritefont
-
-#begin Fonts/BiomeLight.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:Fonts/BiomeLight.spritefont
-
-#begin Fonts/BiomeBold.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:Fonts/BiomeBold.spritefont
-
 #begin Sprites/icon2alpha.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -177,4 +156,32 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Sprites/icon2alpha.png
+
+#begin Fonts/Biome-Normal.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Biome-Normal.spritefont
+
+#begin Fonts/BiomeLight-Normal.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/BiomeLight-Normal.spritefont
+
+#begin Fonts/BiomeBold-Big.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/BiomeBold-Big.spritefont
+
+#begin Fonts/BiomeLight-Big.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/BiomeLight-Big.spritefont
 
