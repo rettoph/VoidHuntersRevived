@@ -50,6 +50,7 @@ namespace VoidHuntersRevived.Client.Library
             #region Register ShipPart Textures
             content.TryRegister("texture:entity:ship-part:hull:triangle", "Sprites/entity_ship-part_hull_triangle");
             content.TryRegister("texture:entity:ship-part:hull:square", "Sprites/entity_ship-part_hull_square");
+            content.TryRegister("texture:entity:ship-part:hull:pentagon", "Sprites/entity_ship-part_hull_pentagon");
             content.TryRegister("texture:entity:ship-part:hull:hexagon", "Sprites/entity_ship-part_hull_hexagon");
 
             content.TryRegister("texture:entity:ship-part:chassis:mosquito", "Sprites/entity_ship-part_chassis_mosquito");

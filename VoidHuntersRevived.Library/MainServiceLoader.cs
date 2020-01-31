@@ -70,6 +70,8 @@ namespace VoidHuntersRevived.Library
             strings.TryRegister("name:entity:ship-part:hull:square", "Square Hull");
             strings.TryRegister("description:entity:ship-part:hull:square", "Useful for extending the size of your ship.");
             strings.TryRegister("name:entity:ship-part:hull:hexagon", "Hexagon Hull");
+            strings.TryRegister("description:entity:ship-part:hull:pentagon", "Useful for extending the size of your ship.");
+            strings.TryRegister("name:entity:ship-part:hull:pentagon", "Pentagon Hull");
             strings.TryRegister("description:entity:ship-part:hull:hexagon", "Useful for extending the size of your ship.");
             strings.TryRegister("name:entity:ship-part:chassis:mosquito", "Mosquito Chassis");
             strings.TryRegister("description:entity:ship-part:chassis:mosquito", "A Ship's mosquito chassis.");
@@ -120,6 +122,23 @@ namespace VoidHuntersRevived.Library
                 setup: h =>
                 {
                     h.Configuration = hexagon;
+                });
+            #endregion
+
+            #region Pentagon
+            var pentagon = new ShipPartConfiguration();
+            pentagon.AddSide(MathHelper.ToRadians(0), ShipPartConfiguration.NodeType.Male);
+            pentagon.AddSide(MathHelper.ToRadians(90), ShipPartConfiguration.NodeType.Female);
+            pentagon.AddSide(MathHelper.ToRadians(150), ShipPartConfiguration.NodeType.Female);
+            pentagon.AddSide(MathHelper.ToRadians(60), ShipPartConfiguration.NodeType.Female);
+            pentagon.AddSide(MathHelper.ToRadians(150), ShipPartConfiguration.NodeType.Female);
+            pentagon.Flush();
+
+            entities.TryRegister<Hull>(
+                handle: "entity:ship-part:hull:pentagon",
+                setup: h =>
+                {
+                    h.Configuration = pentagon;
                 });
             #endregion
 

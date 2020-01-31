@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Client.Textures.Attributes;
 using VoidHuntersRevived.Client.Textures.TextureGenerators;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Client.Textures
 {

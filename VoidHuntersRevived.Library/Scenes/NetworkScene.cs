@@ -74,7 +74,8 @@ namespace VoidHuntersRevived.Library.Scenes
 
             this.actionCount = 0;
 
-            this.Group.Messages.TryAdd("entity:action", this.HandleNetworkEntityActionMessage);
+            // TODO: Fix this. Shouldnt use ? but needs to for texture generator to work right now.
+            this.Group?.Messages.TryAdd("entity:action", this.HandleNetworkEntityActionMessage);
         }
 
         public override void Dispose()
