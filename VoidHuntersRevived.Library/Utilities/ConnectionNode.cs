@@ -112,7 +112,7 @@ namespace VoidHuntersRevived.Library.Utilities
         #region Connection Methods
         public void Attach(ConnectionNode target)
         {
-            if (target != this.Target)
+            if (target != this.Target && target != this)
             { // Only do anything if we arent trying to connect to something we are already conencted to...
                 // First, ensure that there is no pre-existing connection.
                 if (this.Attached)

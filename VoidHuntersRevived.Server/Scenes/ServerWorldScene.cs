@@ -14,6 +14,7 @@ using System.IO;
 using VoidHuntersRevived.Library.Utilities;
 using System.Linq;
 using VoidHuntersRevived.Library.Extensions.Collections;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Server.Scenes
 {
@@ -23,6 +24,7 @@ namespace VoidHuntersRevived.Server.Scenes
         private ShipBuilder _shipBuilder;
         private List<Team> _teams;
         private Queue<User> _newUsers = new Queue<User>();
+        private List<Player> _players;
         #endregion
 
         #region Constructor
@@ -34,6 +36,13 @@ namespace VoidHuntersRevived.Server.Scenes
         #endregion
 
         #region Lifecycle Methods
+        protected override void Create(IServiceProvider provider)
+        {
+            base.Create(provider);
+
+            _players = provider.GetRequiredService<List<Player>>();
+        }
+
         protected override void Initialize()
         {
             base.Initialize();
@@ -50,8 +59,6 @@ namespace VoidHuntersRevived.Server.Scenes
                 l.SetUpdateOrder(20);
                 l.SetDrawOrder(10);
             });
-
-            this.Group.Users.OnAdded += this.HandleUserJoined;
 
             var rand = new Random();
             var size = 250;
@@ -104,6 +111,22 @@ namespace VoidHuntersRevived.Server.Scenes
                 });
             }
         }
+
+        protected override void PostInitialize()
+        {
+            base.PostInitialize();
+
+            this.Group.Users.OnAdded += this.HandleUserJoined;
+            this.Group.Users.OnRemoved += this.HandleUserLeft;
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.Group.Users.OnAdded -= this.HandleUserJoined;
+            this.Group.Users.OnAdded -= this.HandleUserLeft;
+        }
         #endregion
 
         #region Frame Methods 
@@ -134,7 +157,15 @@ namespace VoidHuntersRevived.Server.Scenes
         #region Event Handlers
         private void HandleUserJoined(object sender, User arg)
         {
-            _newUsers.Enqueue(arg);
+            if(_players.FirstOrDefault(p => p is UserPlayer && (p as UserPlayer).User == arg) == default(Player))
+                _newUsers.Enqueue(arg);
+        }
+
+        private void HandleUserLeft(object sender, User e)
+        {
+            foreach(UserPlayer player in _players.Where(p => p is UserPlayer && (p as UserPlayer).User == e).Select(p => p as UserPlayer)) {
+                player.Dispose();
+            }
         }
         #endregion
     }
