@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
     internal sealed class ChunkTextureDriver : Driver<Chunk>
     {
         #region Static Properties
-        private static Single SnapThreshold { get; set; } = 0.25f;
+        private static Single SnapThreshold { get; set; } = 0.025f;
         private static Single TextureScale { get => ConvertUnits.ToSimUnits(1 / ChunkTextureDriver.SnapThreshold); }
 
         private static BasicEffect Effect { get; set; }

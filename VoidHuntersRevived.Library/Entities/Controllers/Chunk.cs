@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
     public sealed class Chunk : Controller
     {
         #region Static Properties
-        public static Single Size { get; private set; } = 16;
+        public static Single Size { get; private set; } = 256;
         #endregion
 
         #region Private Fields

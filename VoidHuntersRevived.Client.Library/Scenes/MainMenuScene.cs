@@ -159,7 +159,15 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                             {
                                 c2.BackgroundColor = c2.Hovered ? new Color(44, 123, 175, 100) : new Color(50, 140, 200, 100);
                                 if (c2.Hovered)
-                                    this.Connect(host.Value, Int32.Parse(port.Value), name.Value);
+                                    try
+                                    {
+                                        this.Connect(host.Value, Int32.Parse(port.Value), name.Value);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        _message.Text = $"Error: {e.Message}";
+                                        _message.Color = Color.Red;
+                                    }
                             }
 
                         };

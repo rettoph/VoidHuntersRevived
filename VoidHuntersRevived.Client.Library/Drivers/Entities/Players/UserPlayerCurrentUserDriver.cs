@@ -45,6 +45,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         private DebugOverlay _debug;
         private Boolean _wasDown;
         private PopupManager _popupManager;
+        private Single _oldScroll;
         #endregion
 
         #region Constructor
@@ -258,7 +259,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         #region Event Handlers
         private void HandlePointerScrolled(object sender, Single arg)
         { // Zoom in the camera
-            _camera.ZoomTo((Single)Math.Pow(1.5, (Single)arg / 120));
+            _camera.ZoomTo(MathHelper.Clamp(_camera.Zoom * (Single)Math.Pow(1.5, (arg - _oldScroll) / 120), 0.0225f, 0.5f));
+            _oldScroll = arg;
         }
 
         private void HandlePointerButtonPressed(object sender, Pointer.Button button)

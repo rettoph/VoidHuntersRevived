@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Server.Scenes
             this.Group.Users.OnAdded += this.HandleUserJoined;
 
             var rand = new Random();
-            var size = 100;
+            var size = 250;
 
             this.entities.Create<Team>("entity:team", t =>
             {
@@ -77,7 +77,7 @@ namespace VoidHuntersRevived.Server.Scenes
                 t.Color = new Color(245, 245, 245);
             });
 
-            for (Int32 i=0; i<20; i++)
+            for (Int32 i=0; i<200; i++)
             {
                 this.entities.Create<ShipPart>("entity:ship-part:hull:triangle", e => e.Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi)));
                 this.entities.Create<ShipPart>("entity:ship-part:hull:square", e => e.Body.SetTransformIgnoreContacts(rand.NextVector2(-size, size), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi)));
