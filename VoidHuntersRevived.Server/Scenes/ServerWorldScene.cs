@@ -110,7 +110,7 @@ namespace VoidHuntersRevived.Server.Scenes
         {
             base.Update(gameTime);
 
-            if (_newUsers.Any())
+            while (_newUsers.Any())
             {
                 this.entities.Create<UserPlayer>("entity:player:user", p =>
                 {
