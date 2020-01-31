@@ -15,11 +15,9 @@ namespace VoidHuntersRevived.Client.Library
     {
         GraphicsDeviceManager graphics;
         ClientGame game;
-        String host;
 
-        public Game1(String host = "localhost")
+        public Game1()
         {
-            this.host = host;
             this.graphics = new GraphicsDeviceManager(this);
             this.graphics.SynchronizeWithVerticalRetrace = false;
 
@@ -29,11 +27,15 @@ namespace VoidHuntersRevived.Client.Library
             this.IsFixedTimeStep = false;
             this.graphics.PreferMultiSampling = true;
             this.graphics.PreparingDeviceSettings += this.HandlePreparingDeviceSettings;
+
+           
         }
 
         protected override void Initialize()
         {
             base.Initialize();
+
+            this.Window.Title = "Void Hunters Revived - Alpha v0.0.1";
 
             this.game = new GuppyLoader()
                 .ConfigureLogger<ConsoleLogger>()

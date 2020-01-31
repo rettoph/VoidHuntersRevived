@@ -12,8 +12,7 @@ namespace VoidHuntersRevived.Client.Windows
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Host:");
-            var game = new Game1("localhost");
+            var game = new Game1();
             game.Run();
         }
     }
