@@ -39,7 +39,6 @@ namespace VoidHuntersRevived.Library
             services.AddScoped<Quarantine>("entity:quarantine");
             services.AddScoped<Annex>("entity:annex");
             services.AddScoped<World>(p => new World(Vector2.Zero));
-            services.AddScoped<ShipBuilder>();
             services.AddScoped<ChunkCollection>();
             services.AddScoped<VitalsManager>();
             services.AddScoped<List<Player>>();

@@ -22,17 +22,15 @@ namespace VoidHuntersRevived.Server.Scenes
     public class ServerWorldScene : WorldScene
     {
         #region Private Fields
-        private ShipBuilder _shipBuilder;
         private List<Team> _teams;
         private Queue<User> _newUsers = new Queue<User>();
         private List<Player> _players;
         #endregion
 
         #region Constructor
-        public ServerWorldScene(List<Team> teams, ShipBuilder shipBuilder)
+        public ServerWorldScene(List<Team> teams)
         {
             _teams = teams;
-            _shipBuilder = shipBuilder;
         }
         #endregion
 
@@ -105,7 +103,7 @@ namespace VoidHuntersRevived.Server.Scenes
                     p.SetShip(this.entities.Create<Ship>("entity:ship", s =>
                     {
                         using (FileStream input = File.OpenRead("Ships/mosquito.vh"))
-                            s.SetBridge(_shipBuilder.Import(input));
+                            s.Import(input);
 
                         s.Bridge.Body.SetTransformIgnoreContacts(rand.NextVector2(-100, 100), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
                     }));
@@ -144,8 +142,8 @@ namespace VoidHuntersRevived.Server.Scenes
                     p.SetShip(this.entities.Create<Ship>("entity:ship", s =>
                     {
                         using (FileStream input = File.OpenRead("Ships/mosquito.vh"))
-                            s.SetBridge(_shipBuilder.Import(input));
-                        // s.SetBridge(this.entities.Create<ShipPart>("entity:ship-part:hull:square"));
+                            s.Import(input);
+                        // s.SetBridge(this.entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
 
                     var rand = new Random();
                         s.Bridge.Body.SetTransformIgnoreContacts(rand.NextVector2(-15, 15), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));

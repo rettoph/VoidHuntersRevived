@@ -41,7 +41,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         private Pointer _pointer;
         private Sensor _sensor;
         private ActionTimer _targetPingTimer;
-        private ShipBuilder _shipBuilder;
         private DebugOverlay _debug;
         private Boolean _wasDown;
         private PopupManager _popupManager;
@@ -49,13 +48,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         #endregion
 
         #region Constructor
-        public UserPlayerCurrentUserDriver(PopupManager popupManager, DebugOverlay debug, ShipBuilder shipBuilder, Sensor sensor, Pointer pointer, FarseerCamera2D camera, ClientPeer client, UserPlayer driven) : base(driven)
+        public UserPlayerCurrentUserDriver(PopupManager popupManager, DebugOverlay debug, Sensor sensor, Pointer pointer, FarseerCamera2D camera, ClientPeer client, UserPlayer driven) : base(driven)
         {
             _sensor = sensor;
             _camera = camera;
             _client = client;
             _pointer = pointer;
-            _shipBuilder = shipBuilder;
             _debug = debug;
             _popupManager = popupManager;
         }
@@ -141,7 +139,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
                     {
                         var action = this.driven.Actions.Create("spawn:request", NetDeliveryMethod.ReliableOrdered, 0);
                         action.Write(true);
-                        var output = _shipBuilder.Export(this.driven.Ship.Bridge).ToArray();
+                        var output = this.driven.Ship.Export().ToArray();
                         action.Write(output.Length);
                         action.Write(output);
                         action.Write(this.driven.Ship.WorldTarget);
@@ -267,7 +265,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         {
             // Export & save the ship in its current state...
             using (FileStream output = File.OpenWrite("ship.vh"))
-                _shipBuilder.Export(this.driven.Ship.Bridge).WriteTo(output);
+            {
+                output.Position = 0;
+                output.SetLength(0);
+                this.driven.Ship.Export().WriteTo(output);
+            }
 
             switch (button)
             {

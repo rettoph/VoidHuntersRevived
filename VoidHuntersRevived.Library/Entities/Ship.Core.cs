@@ -17,6 +17,7 @@ using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using Guppy.Extensions.Collection;
+using Guppy.Collections;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -26,7 +27,7 @@ namespace VoidHuntersRevived.Library.Entities
     /// Each ship has a single bridge (ShipPart)
     /// that acts as the main control point.
     /// </summary>
-    public class Ship : NetworkEntity
+    public partial class Ship : NetworkEntity
     {
         #region Enums
         [Flags]
@@ -43,6 +44,7 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Private Fields
+        private EntityCollection _entities;
         private CustomController _controller;
         private ChunkCollection _chunks;
         private List<ConnectionNode> _openFemaleNodes;
@@ -109,6 +111,10 @@ namespace VoidHuntersRevived.Library.Entities
         /// The speed at which energy recharges (per second)
         /// </summary>
         public Single EnergyRefreshRate { get; private set; } = 10f;
+        /// <summary>
+        /// The name of your ship
+        /// </summary>
+        public String Title { get; set; } = "Untitled Ship";
         #endregion
 
         #region Events
@@ -121,8 +127,9 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Contructor
-        public Ship(ChunkCollection chunks)
+        public Ship(EntityCollection entities, ChunkCollection chunks)
         {
+            _entities = entities;
             _chunks = chunks;
         }
         #endregion

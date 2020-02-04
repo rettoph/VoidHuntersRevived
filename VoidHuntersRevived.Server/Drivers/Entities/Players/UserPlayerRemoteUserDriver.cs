@@ -14,6 +14,7 @@ using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Extensions.Farseer;
 using System.Collections.Generic;
 using VoidHuntersRevived.Library.Extensions.Collections;
+using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 
 namespace VoidHuntersRevived.Server.Drivers.Entities.Players
 {
@@ -26,15 +27,13 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
     {
         #region Private Fields
         private EntityCollection _entities;
-        private ShipBuilder _shipBuilder;
         private List<Team> _teams;
         #endregion
 
         #region Constructor
-        public UserPlayerRemoteUserDriver(List<Team> teams, ShipBuilder shipBuilder, EntityCollection entities, UserPlayer driven) : base(driven)
+        public UserPlayerRemoteUserDriver(List<Team> teams, EntityCollection entities, UserPlayer driven) : base(driven)
         {
             _entities = entities;
-            _shipBuilder = shipBuilder;
             _teams = teams;
         }
         #endregion
@@ -62,7 +61,8 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
             if(this.driven.Ship.Bridge == default(ShipPart))
             {
                 using (FileStream input = File.OpenRead("Ships/mosquito.vh"))
-                    this.driven.Ship.SetBridge(_shipBuilder.Import(input));
+                    this.driven.Ship.Import(input);
+                // this.driven.Ship.SetBridge(_entities.Create<Hull>("entity:ship-part:hull:square"));
 
                 var rand = new Random();
                 this.driven.Ship.Bridge.Body.SetTransformIgnoreContacts(
@@ -145,7 +145,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
                     {
                         var length = arg.ReadInt32();
                         var bytes = arg.ReadBytes(length);
-                        s.SetBridge(_shipBuilder.Import(new MemoryStream(bytes)));
+                        s.Import(bytes);
 
                         var rand = new Random();
                         s.Bridge.Body.SetTransformIgnoreContacts(arg.ReadVector2(), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
@@ -160,7 +160,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities.Players
                         var files = Directory.GetFiles("Ships", "*.vh");
 
                         using (FileStream input = File.OpenRead(files[rand.Next(files.Length)]))
-                            s.SetBridge(_shipBuilder.Import(input));
+                            s.Import(input);
 
                         s.Bridge.Body.SetTransformIgnoreContacts(arg.ReadVector2(), rand.NextSingle(-MathHelper.Pi, MathHelper.Pi));
                         rand.Next(_teams).AddPlayer(p);

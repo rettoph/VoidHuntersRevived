@@ -9,6 +9,7 @@
     <None Remove="ship-part-export.dat" />
     <None Remove="ship.vh" />
     <None Remove="Ships\mosquito.vh" />
+    <None Remove="Ships\ship.vh" />
   </ItemGroup>
 
   <ItemGroup>
