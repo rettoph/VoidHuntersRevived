@@ -86,7 +86,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
         {
             base.Update(gameTime);
 
-            if(_dirtyTexture && _camera.Frustum.Contains(_box).HasFlag(ContainmentType.Intersects))
+            if(_dirtyTexture && _camera.Zoom <= ChunkTextureDriver.SnapThreshold && _camera.Frustum.Contains(_box).HasFlag(ContainmentType.Intersects))
             { // If the chunk texture is dirty & in view...
                 var targets = _graphics.GetRenderTargets();
                 _graphics.SetRenderTarget(_target);
@@ -98,7 +98,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
 
                 _spriteBatch.Begin(effect: ChunkTextureDriver.Effect);
                 this.driven.Components.TryDrawAll(Chunk.EmptyGameTime);
-                this.driven.GetSurrounding(false).ForEach(c => c?.Components.TryDrawAll(Chunk.EmptyGameTime));
+                this.driven.GetSurrounding(create: false).ForEach(c => c?.Components.TryDrawAll(Chunk.EmptyGameTime));
                 _spriteBatch.End();
 
                 _graphics.SetRenderTargets(targets);

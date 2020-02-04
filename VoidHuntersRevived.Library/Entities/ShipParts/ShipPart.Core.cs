@@ -15,6 +15,7 @@ using VoidHuntersRevived.Library.Utilities;
 using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Extensions.Entities.ShipParts;
 using FarseerPhysics.Common;
+using VoidHuntersRevived.Library.Entities.Players;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -36,7 +37,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public ShipPart Parent { get => this.MaleConnectionNode.Target?.Parent; }
         public Boolean IsRoot { get => !this.MaleConnectionNode.Attached; }
         public override Boolean IsActive { get => this.IsRoot; }
-        public Color Color { get => this.Root.Ship == default(Ship) ? this.Root.DefaultColor : this.Root.Ship.Player.Team.Color; }
+        public Color Color { get => this.Root.Ship == default(Ship) || this.Root.Ship.Player == default(Player) ? this.Root.DefaultColor : this.Root.Ship.Player.Team.Color; }
         public Byte Health { get; internal set; }
         public Single HealthRate { get => (Single)this.Health / 100; }
         public ShipPartConfiguration Configuration { get; set; }
@@ -67,8 +68,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             base.PreInitialize();
 
             this.Transformations_PreInitialize();
-
-            this.OnControllerChanged += this.HandleControllerChanged;
         }
 
         protected override void Initialize()
@@ -92,13 +91,27 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 });
             }
 
-            // Continue the normal disposal process...
-            base.Dispose();
-
             this.ConnectionNode_Dispose();
             this.Transformations_Dispose();
 
-            this.OnControllerChanged -= this.HandleControllerChanged;
+            // Continue the normal disposal process...
+            base.Dispose();
+        }
+        #endregion
+
+        #region Frame Methods
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            this.Children.TryDrawAll(gameTime);
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            this.Children.TryUpdateAll(gameTime);
         }
         #endregion
 
@@ -197,27 +210,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             else
             {
                 this.Root.GetInfo(out title, out description, out advanced);
-            }
-        }
-        #endregion
-
-        #region Event Handlers
-        /// <summary>
-        /// When a ShipPart's controller is changed, we should
-        /// automatically update the ShipPart's children's
-        /// Controller as well
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="arg"></param>
-        private void HandleControllerChanged(object sender, Controller arg)
-        {
-            if (this.Status == InitializationStatus.Ready)
-            { // Children should only inherit if the current controller is Ready
-                this.FemaleConnectionNodes.ForEach(f =>
-                {
-                    if (f.Attached)
-                        arg.Add(f.Target.Parent);
-                });
             }
         }
         #endregion

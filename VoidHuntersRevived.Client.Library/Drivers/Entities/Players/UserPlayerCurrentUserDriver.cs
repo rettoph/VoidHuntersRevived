@@ -159,7 +159,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             // Detect the current hovered ShipPart if any
             
 
-            if (!this.driven.Ship.Firing && this.driven.Ship?.TractorBeam.Selected == default(ShipPart))
+            if (this.driven.Ship != default(Ship) && !this.driven.Ship.Firing && this.driven.Ship?.TractorBeam.Selected == default(ShipPart))
             {
                 var target = _sensor.Contacts
                     .Where(sp => sp is ShipPart && (sp as ShipPart).Root.Ship != this.driven.Ship && this.driven.Ship.TractorBeam.FindTarget(sp as ShipPart) != default(ShipPart))

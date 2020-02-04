@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Library.Configurations;
+using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
@@ -49,6 +50,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// A list of the ShipPart's female nodes. This may be empty if there are no female nodes.
         /// </summary>
         public ConnectionNode[] FemaleConnectionNodes { get; private set; }
+
+        /// <inheritdoc />
+        public override Controller Controller { get => this.IsRoot ? base.Controller : this.Root.Controller; }
+
+        public IEnumerable<ShipPart> Children { get => this.FemaleConnectionNodes.Where(fe => fe.Target != null).Select(fe => fe.Target.Parent); }
         #endregion
 
         #region Events
@@ -92,7 +98,16 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             this.MaleConnectionNode.OnDetached -= this.ConnectionNode_HandleMaleConnectionNodeDetached;
 
             this.MaleConnectionNode.Dispose();
-            this.FemaleConnectionNodes.ForEach(f => f.Dispose());
+            this.FemaleConnectionNodes.ForEach(f => {
+                if (f.Attached)
+                {
+                    // Add any children into the current controller...
+                    this.Controller.Add(f.Target.Parent);
+                    f.Detach();
+                }
+
+                f.Dispose();
+            });
         }
         #endregion
 
@@ -137,13 +152,15 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
         private void ConnectionNode_HandleMaleConnectionNodeAttached(Object sender, ConnectionNode arg)
         {
-            // Mark the current chain as dirty
-            this.dirty |= ChainUpdate.Both;
+            // Instantly clean the current chain
+            this.dirty = ChainUpdate.Both;
             this.SetDirty(true);
 
-            // Auto update the controller if it is not already defined...
-            if (this.Controller != this.Root.Controller)
-                this.Root.Controller.Add(this);
+            // Setup the controler body..
+            this.Root.Controller.SetupBody(this, this.Body);
+
+            // Auto add the ship part into the annex
+            this.annex.Add(this);
         }
 
         private void ConnectionNode_HandleMaleConnectionNodeDetached(Object sender, ConnectionNode arg)
@@ -152,9 +169,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             this.SetWorldTransform(arg.Parent.Root, this.Body);
 
             // Mark the current & old parent chain dirty
-            this.dirty |= ChainUpdate.Down;
-            arg.Parent.dirty |= ChainUpdate.Up;
+            this.dirty = ChainUpdate.Down;
             this.SetDirty(true);
+            arg.Parent.dirty = ChainUpdate.Up;
             arg.Parent.SetDirty(true);
         }
         #endregion

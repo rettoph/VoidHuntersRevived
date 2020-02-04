@@ -17,10 +17,11 @@ namespace VoidHuntersRevived.Library.Entities
     public class FarseerEntity : NetworkEntity 
     {
         #region Private Fields
-        private Annex _annex;
+        private Controller _controller;
         #endregion
 
         #region Protected Properties
+        protected Annex annex { get; private set; }
         protected World world { get; private set; }
         protected ChunkCollection chunks { get; private set; }
         #endregion
@@ -33,7 +34,7 @@ namespace VoidHuntersRevived.Library.Entities
         public virtual Single AngularVelocity { get => this.Body.AngularVelocity; }
         public virtual Vector2 WorldCenter { get => this.Body.WorldCenter; }
         public virtual Vector2 LocalCenter { get => this.Body.LocalCenter; }
-        public Controller Controller { get; private set; }
+        public virtual Controller Controller { get => _controller; }
         /// <summary>
         /// Simple property that defines the current FarseerEntity's active
         /// state. Farseer entities that are no longe rin control of themselves
@@ -58,8 +59,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Create(provider);
 
-            _annex = provider.GetRequiredService<Annex>();
-
+            this.annex = provider.GetRequiredService<Annex>();
             this.world = provider.GetRequiredService<World>();
             this.chunks = provider.GetRequiredService<ChunkCollection>();
         }
@@ -95,7 +95,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Dispose();
 
-            _annex.Add(this);
+            this.annex.Add(this);
             this.Body.Dispose(withFixtures: true);
         }
         #endregion
@@ -124,12 +124,13 @@ namespace VoidHuntersRevived.Library.Entities
             if (controller == default(Controller))
                 throw new Exception("Unable to set null Controller. Please use the Annex instead.");
 
-            if (controller != this.Controller)
+            if (controller != _controller)
             {
-                this.Controller = controller;
-                this.Controller.SetupBody(this, this.Body);
+                _controller?.Remove(this);
+                _controller = controller;
+                _controller.SetupBody(this, this.Body);
 
-                this.OnControllerChanged?.Invoke(this, this.Controller);
+                this.OnControllerChanged?.Invoke(this, _controller);
             }
         }
         #endregion

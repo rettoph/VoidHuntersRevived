@@ -46,9 +46,9 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             _asleep = new Queue<FarseerEntity>();
         }
 
-        protected override void Initialize()
+        protected override void PreInitialize()
         {
-            base.Initialize();
+            base.PreInitialize();
 
             this.OnAdded += this.HandleEntityAdded;
         }
@@ -79,7 +79,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             while (_asleep.Any()) // Add any sleeping entites back into the chunks
                 _chunks.AddToChunk(_asleep.Dequeue());
         }
-        
+
 
         protected override void Draw(GameTime gameTime)
         {
@@ -98,7 +98,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             body.CollidesWith = Categories.PassiveCollidesWith;
             body.IgnoreCCDWith = Categories.PassiveIgnoreCCDWith;
             body.BodyType = BodyType.Dynamic;
-
+            
             var offset = body.Position - _sourcePosition;
             body.ApplyForce(
                 force: _sourceVelocity + Vector2.Transform(Vector2.UnitX * this.Strength, Matrix.CreateRotationZ((Single)Math.Atan2(offset.Y, offset.X))),
@@ -110,7 +110,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             base.UpdateBody(component, body);
         }
         #endregion
-
 
         #region Event Handlers
         private void HandleEntityAdded(Object sender, FarseerEntity entity)

@@ -15,6 +15,7 @@ using VoidHuntersRevived.Library.Utilities;
 using System.Linq;
 using VoidHuntersRevived.Library.Extensions.Collections;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace VoidHuntersRevived.Server.Scenes
 {
@@ -157,13 +158,16 @@ namespace VoidHuntersRevived.Server.Scenes
         #region Event Handlers
         private void HandleUserJoined(object sender, User arg)
         {
-            if(_players.FirstOrDefault(p => p is UserPlayer && (p as UserPlayer).User == arg) == default(Player))
+            this.logger.LogInformation($"{arg.Name} has connected.");
+
+            if (_players.FirstOrDefault(p => p is UserPlayer && (p as UserPlayer).User == arg) == default(Player))
                 _newUsers.Enqueue(arg);
         }
 
-        private void HandleUserLeft(object sender, User e)
+        private void HandleUserLeft(object sender, User arg)
         {
-            foreach(UserPlayer player in _players.Where(p => p is UserPlayer && (p as UserPlayer).User == e).Select(p => p as UserPlayer)) {
+            this.logger.LogInformation($"{arg.Name} has disconnected.");
+            foreach(UserPlayer player in _players.Where(p => p is UserPlayer && (p as UserPlayer).User == arg).Select(p => p as UserPlayer).ToList()) {
                 player.Dispose();
             }
         }

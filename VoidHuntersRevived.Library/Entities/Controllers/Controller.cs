@@ -126,15 +126,18 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             if (_components.Add(entity))
             {
-                entity.Controller?.Remove(entity);
                 entity.SetController(this);
-                entity.TryUpdate(Controller.EmptyGameTime);
+
+                // Auto update the entity if it is initialized...
+                if(entity.Status == InitializationStatus.Ready)
+                    entity.TryUpdate(Controller.EmptyGameTime);
+
                 this.OnAdded?.Invoke(this, entity);
                 this.Dirty = true;
             }
         }
 
-        private void Remove(FarseerEntity entity)
+        internal void Remove(FarseerEntity entity)
         {
             if(_components.Remove(entity))
             {

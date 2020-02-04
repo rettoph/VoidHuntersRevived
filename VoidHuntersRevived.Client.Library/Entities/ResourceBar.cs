@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
 
 namespace VoidHuntersRevived.Client.Library.Entities
@@ -93,12 +94,15 @@ namespace VoidHuntersRevived.Client.Library.Entities
                 _primitiveBatch.DrawLine(new Vector2(eRect.Left, eRect.Top + 4), new Color(240, 152, 0), new Vector2(eRect.Left + eL, eRect.Top + 4), eC);
                 // _primitiveBatch.DrawRectangle(eRect, Color.White);
 
-                // Draw player name
-                var size = _font.MeasureString(this.Ship.Player.Name).ToPoint() + new Point(10, 0);
-                var position = new Point(hRect.Left + ((hRect.Width - size.X) / 2), hRect.Top - size.Y - 1);
-                var rect = new Rectangle(position, size);
-                _primitiveBatch.FillRectangle(rect, new Color(0, 0, 0, 100));
-                _spriteBatch.DrawString(_font, this.Ship.Player.Name, position.ToVector2() + new Vector2(5, 0), Color.White);
+                // Draw player name if one is defined
+                if (this.Ship.Player != default(Player))
+                {
+                    var size = _font.MeasureString(this.Ship.Player.Name).ToPoint() + new Point(10, 0);
+                    var position = new Point(hRect.Left + ((hRect.Width - size.X) / 2), hRect.Top - size.Y - 1);
+                    var rect = new Rectangle(position, size);
+                    _primitiveBatch.FillRectangle(rect, new Color(0, 0, 0, 100));
+                    _spriteBatch.DrawString(_font, this.Ship.Player.Name, position.ToVector2() + new Vector2(5, 0), Color.White);
+                }
             }
         }
         #endregion
