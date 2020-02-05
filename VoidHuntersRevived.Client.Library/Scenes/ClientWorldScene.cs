@@ -61,11 +61,18 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                 l.SetUpdateOrder(20);
                 l.SetDrawOrder(15);
             });
-            // Layer 3: Static Elements (Popups, Energy Bar, UI, ect..)
+            // Layer 3: Static Elements (Popups, Energy Bar ect..)
             this.layers.Create<PrimitiveLayer>(3, l =>
             {
                 l.SetUpdateOrder(20);
                 l.SetDrawOrder(30);
+                l.SetCamera(_camera);
+            });
+            // Layer 4: UI
+            this.layers.Create<PrimitiveLayer>(4, l =>
+            {
+                l.SetUpdateOrder(20);
+                l.SetDrawOrder(40);
                 l.SetCamera(_camera);
             });
         }

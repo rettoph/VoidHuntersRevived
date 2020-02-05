@@ -20,6 +20,7 @@ using Microsoft.Extensions.Logging;
 using System.IO;
 using VoidHuntersRevived.Client.Library.Utilities;
 using Guppy.UI.Utilities;
+using VoidHuntersRevived.Client.Library.Entities.UI;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 {
@@ -45,11 +46,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         private Boolean _wasDown;
         private PopupManager _popupManager;
         private Single _oldScroll;
+        private Hud _hud;
         #endregion
 
         #region Constructor
-        public UserPlayerCurrentUserDriver(PopupManager popupManager, DebugOverlay debug, Sensor sensor, Pointer pointer, FarseerCamera2D camera, ClientPeer client, UserPlayer driven) : base(driven)
+        public UserPlayerCurrentUserDriver(Hud hud, PopupManager popupManager, DebugOverlay debug, Sensor sensor, Pointer pointer, FarseerCamera2D camera, ClientPeer client, UserPlayer driven) : base(driven)
         {
+            _hud = hud;
             _sensor = sensor;
             _camera = camera;
             _client = client;
@@ -66,6 +69,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 
             if(_client.User == this.driven.User)
             {
+                _hud.Client = this.driven;
+
                 _targetPingTimer = new ActionTimer(UserPlayerCurrentUserDriver.TargetPingRate);
                 _update = this.LocalUpdate;
                 // _camera.ZoomLerp = 0.005f;
@@ -112,41 +117,57 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         {
             if (this.driven.Ship != null && this.driven.Ship.Bridge != null)
             {
-                var kState = Keyboard.GetState();
-
-                this.TryUpdateDirection(Ship.Direction.Forward, kState.IsKeyDown(Keys.W));
-                this.TryUpdateDirection(Ship.Direction.TurnRight, kState.IsKeyDown(Keys.D));
-                this.TryUpdateDirection(Ship.Direction.Backward, kState.IsKeyDown(Keys.S));
-                this.TryUpdateDirection(Ship.Direction.TurnLeft, kState.IsKeyDown(Keys.A));
-
-                this.TryUpdateDirection(Ship.Direction.Left, kState.IsKeyDown(Keys.Q));
-                this.TryUpdateDirection(Ship.Direction.Right, kState.IsKeyDown(Keys.E));
-
                 // Update camera position
                 _camera.MoveTo(this.driven.Ship.Bridge.WorldCenter);
-                // Update the ship's target position
-                this.TrySetTarget(_sensor.WorldCenter - this.driven.Ship.Bridge.WorldCenter, gameTime);
 
-                if(!_wasDown)
+                if (_hud.Focused)
+                { // Stop moving by default
+                    this.TryUpdateDirection(Ship.Direction.Forward, false);
+                    this.TryUpdateDirection(Ship.Direction.TurnRight, false);
+                    this.TryUpdateDirection(Ship.Direction.Backward, false);
+                    this.TryUpdateDirection(Ship.Direction.TurnLeft, false);
+                    this.TryUpdateDirection(Ship.Direction.Left, false);
+                    this.TryUpdateDirection(Ship.Direction.Right, false);
+
+                    this.TryReleaseTractorBeam();
+                }
+                else
                 {
-                    if(kState.IsKeyDown(Keys.F))
+                    var kState = Keyboard.GetState();
+
+                    this.TryUpdateDirection(Ship.Direction.Forward, kState.IsKeyDown(Keys.W));
+                    this.TryUpdateDirection(Ship.Direction.TurnRight, kState.IsKeyDown(Keys.D));
+                    this.TryUpdateDirection(Ship.Direction.Backward, kState.IsKeyDown(Keys.S));
+                    this.TryUpdateDirection(Ship.Direction.TurnLeft, kState.IsKeyDown(Keys.A));
+                    this.TryUpdateDirection(Ship.Direction.Left, kState.IsKeyDown(Keys.Q));
+                    this.TryUpdateDirection(Ship.Direction.Right, kState.IsKeyDown(Keys.E));
+
+                    // Update the ship's target position
+                    this.TrySetTarget(_sensor.WorldCenter - this.driven.Ship.Bridge.WorldCenter, gameTime);
+
+                    if (!_wasDown)
                     {
-                        var action = this.driven.Actions.Create("spawn:request", NetDeliveryMethod.ReliableOrdered, 0);
-                        action.Write(false);
-                        action.Write(this.driven.Ship.WorldTarget);
+                        if (kState.IsKeyDown(Keys.F))
+                        {
+                            var action = this.driven.Actions.Create("spawn:request", NetDeliveryMethod.ReliableOrdered, 0);
+                            action.Write(false);
+                            action.Write(this.driven.Ship.WorldTarget);
+                        }
+                        else if (kState.IsKeyDown(Keys.G))
+                        {
+                            var action = this.driven.Actions.Create("spawn:request", NetDeliveryMethod.ReliableOrdered, 0);
+                            action.Write(true);
+                            var output = this.driven.Ship.Export().ToArray();
+                            action.Write(output.Length);
+                            action.Write(output);
+                            action.Write(this.driven.Ship.WorldTarget);
+                        }
                     }
-                    else if(kState.IsKeyDown(Keys.G))
-                    {
-                        var action = this.driven.Actions.Create("spawn:request", NetDeliveryMethod.ReliableOrdered, 0);
-                        action.Write(true);
-                        var output = this.driven.Ship.Export().ToArray();
-                        action.Write(output.Length);
-                        action.Write(output);
-                        action.Write(this.driven.Ship.WorldTarget);
-                    }
+
+                    _wasDown = kState.IsKeyDown(Keys.F) || kState.IsKeyDown(Keys.G);
                 }
 
-                _wasDown = kState.IsKeyDown(Keys.F) || kState.IsKeyDown(Keys.G);
+                
             }
         }
 
@@ -257,46 +278,42 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         #region Event Handlers
         private void HandlePointerScrolled(object sender, Single arg)
         { // Zoom in the camera
-            _camera.ZoomTo(MathHelper.Clamp(_camera.Zoom * (Single)Math.Pow(1.5, (arg - _oldScroll) / 120), 0.0225f, 0.5f));
+            if(!_hud.Focused)
+                _camera.ZoomTo(MathHelper.Clamp(_camera.Zoom * (Single)Math.Pow(1.5, (arg - _oldScroll) / 120), 0.0225f, 0.5f));
+
             _oldScroll = arg;
         }
 
         private void HandlePointerButtonPressed(object sender, Pointer.Button button)
         {
-            // Export & save the ship in its current state...
-            using (FileStream output = File.OpenWrite("ship.vh"))
-            {
-                output.Position = 0;
-                output.SetLength(0);
-                this.driven.Ship.Export().WriteTo(output);
-            }
-
-            switch (button)
-            {
-                case Pointer.Button.Left:
-                    this.TrySetFiring(true);
-                    break;
-                case Pointer.Button.Middle:
-                    break;
-                case Pointer.Button.Right:
-                    this.TrySelectTractorBeam();
-                    break;
-            }
+            if(!_hud.Focused)
+                switch (button)
+                {
+                    case Pointer.Button.Left:
+                        this.TrySetFiring(true);
+                        break;
+                    case Pointer.Button.Middle:
+                        break;
+                    case Pointer.Button.Right:
+                        this.TrySelectTractorBeam();
+                        break;
+                }
         }
 
         private void HandlePointerButtonReleased(object sender, Pointer.Button button)
         {
-            switch (button)
-            {
-                case Pointer.Button.Left:
-                    this.TrySetFiring(false);
-                    break;
-                case Pointer.Button.Middle:
-                    break;
-                case Pointer.Button.Right:
-                    this.TryReleaseTractorBeam();
-                    break;
-            }
+            if (!_hud.Focused)
+                switch (button)
+                {
+                    case Pointer.Button.Left:
+                        this.TrySetFiring(false);
+                        break;
+                    case Pointer.Button.Middle:
+                        break;
+                    case Pointer.Button.Right:
+                        this.TryReleaseTractorBeam();
+                        break;
+                }
         }
         #endregion
     }

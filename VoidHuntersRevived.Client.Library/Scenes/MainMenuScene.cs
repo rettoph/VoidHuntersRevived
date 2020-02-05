@@ -169,7 +169,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                                         _message.Color = Color.Red;
                                     }
                             }
-
                         };
                     });
                 });
