@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
             this.driven.WriteBodyVitals += this.WriteBodyVitals;
         }
 
-        protected override void Dispose()
+        public override void Dispose()
         {
             base.Dispose();
 

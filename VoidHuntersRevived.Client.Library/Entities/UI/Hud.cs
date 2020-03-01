@@ -1,5 +1,5 @@
 ﻿using Guppy.Loaders;
-using Guppy.UI.Entities.UI;
+using Guppy.UI.Components;
 using Guppy.UI.Utilities.Units;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Library.Entities.Players;
 using System.IO;
 using System.Linq;
+using Guppy.UI.Entities;
 
 namespace VoidHuntersRevived.Client.Library.Entities.UI
 {
@@ -46,15 +47,15 @@ namespace VoidHuntersRevived.Client.Library.Entities.UI
         {
             base.PreInitialize();
 
-            this.SetLayerDepth(4);
-            this.SetDrawOrder(10000);
+            this.LayerDepth = 4;
+            this.DrawOrder = 10000;
         }
 
         protected override void Initialize()
         {
             base.Initialize();
 
-            _saveTrigger = this.Add<Button>("hud:button", b =>
+            _saveTrigger = this.Children.Create<Button>("hud:button", b =>
             {
                 b.Bounds.Set(Unit.Get(1f, -75), 25, 50, 50);
                 b.BackgroundImage = _content.TryGet<Texture2D>("icon:save");
@@ -62,7 +63,7 @@ namespace VoidHuntersRevived.Client.Library.Entities.UI
                 b.OnClicked += this.HandleSaveTriggerClicked;
             });
 
-            _saveButton = this.Add<Button>("hud:button", b =>
+            _saveButton = this.Children.Create<Button>("hud:button", b =>
             {
                 b.Bounds.Set(Unit.Get(0.5f, -200), Unit.Get(0.25f, 80), 400, 30);
                 b.OnClicked += this.HandleSaveClicked;
@@ -70,7 +71,7 @@ namespace VoidHuntersRevived.Client.Library.Entities.UI
                 b.Hidden = true;
             });
 
-            _saveInput = this.Add<FormComponent>(fc =>
+            _saveInput = this.Children.Create<FormComponent>(fc =>
             {
                 fc.Label = "Ship Title";
                 fc.Hidden = true;

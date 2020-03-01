@@ -147,7 +147,7 @@ namespace VoidHuntersRevived.Library.Entities
                 dc.SetLocked(true);
             });
 
-            this.SetUpdateOrder(100);
+            this.UpdateOrder = 100;
         }
 
         protected override void Initialize()

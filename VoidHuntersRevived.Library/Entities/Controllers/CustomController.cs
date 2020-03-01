@@ -31,8 +31,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             base.Initialize();
 
-            this.SetEnabled(false);
-            this.SetVisible(false);
+            this.Enabled = false;
+            this.Visible = false;
         }
         #endregion
 

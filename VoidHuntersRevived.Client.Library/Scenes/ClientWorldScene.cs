@@ -1,4 +1,4 @@
-﻿using Guppy.UI.Entities.UI;
+﻿using Guppy.UI.Components;
 using Guppy.Utilities.Cameras;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
@@ -46,33 +46,33 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             // Layer 0: Default
             this.layers.Create<CameraLayer>(0, l =>
             {
-                l.SetUpdateOrder(10);
-                l.SetDrawOrder(20);
+                l.UpdateOrder = 10;
+                l.DrawOrder = 20;
             });
             // Layer 1: Chunk
             this.layers.Create<CameraLayer>(1, l =>
             {
-                l.SetUpdateOrder(20);
-                l.SetDrawOrder(10);
+                l.UpdateOrder = 20;
+                l.DrawOrder = 10;
             });
             // Layer 2: Trails
             this.layers.Create<PrimitiveLayer>(2, l =>
             {
-                l.SetUpdateOrder(20);
-                l.SetDrawOrder(15);
+                l.UpdateOrder = 20;
+                l.DrawOrder = 15;
             });
             // Layer 3: Static Elements (Popups, Energy Bar ect..)
             this.layers.Create<PrimitiveLayer>(3, l =>
             {
-                l.SetUpdateOrder(20);
-                l.SetDrawOrder(30);
+                l.UpdateOrder = 20;
+                l.DrawOrder = 30;
                 l.SetCamera(_camera);
             });
             // Layer 4: UI
             this.layers.Create<PrimitiveLayer>(4, l =>
             {
-                l.SetUpdateOrder(20);
-                l.SetDrawOrder(40);
+                l.UpdateOrder = 20;
+                l.DrawOrder = 40;
                 l.SetCamera(_camera);
             });
         }

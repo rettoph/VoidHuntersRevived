@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Library.Layers
         {
             base.Update(gameTime);
 
-            this.entities.TryUpdate(gameTime);
+            this.Entities.TryUpdate(gameTime);
         }
         #endregion
     }

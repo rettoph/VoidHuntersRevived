@@ -20,6 +20,7 @@ using VoidHuntersRevived.Library.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Guppy.Utilities;
 using xxHashSharp;
+using Guppy.Interfaces;
 
 namespace VoidHuntersRevived.Server.Drivers.Scenes
 {
@@ -81,7 +82,7 @@ namespace VoidHuntersRevived.Server.Drivers.Scenes
             this.driven.Group.Users.OnAdded += this.HandleUserAdded;
         }
 
-        protected override void Dispose()
+        public override void Dispose()
         {
             base.Dispose();
 
@@ -169,7 +170,7 @@ namespace VoidHuntersRevived.Server.Drivers.Scenes
         #endregion
 
         #region Event Handlers
-        private void HandleEntityAdded(object sender, Entity arg)
+        private void HandleEntityAdded(object sender, IEntity arg)
         {
             if (arg is NetworkEntity)
             {
@@ -183,7 +184,7 @@ namespace VoidHuntersRevived.Server.Drivers.Scenes
             _updates.Enqueue(sender as NetworkEntity);
         }
 
-        private void HandleEntityRemoved(object sender, Entity arg)
+        private void HandleEntityRemoved(object sender, IEntity arg)
         {
             if (arg is NetworkEntity)
             {

@@ -5,7 +5,7 @@ using Guppy.Factories;
 using Guppy.Interfaces;
 using Guppy.Loaders;
 using Guppy.UI.Entities;
-using Guppy.UI.Entities.UI;
+using Guppy.UI.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -71,9 +71,9 @@ namespace VoidHuntersRevived.Client.Library
             #endregion
 
             #region Register UI Elements
-            var entities = provider.GetRequiredService<EntityLoader>();
+            var configurations = provider.GetRequiredService<ConfigurationLoader>();
 
-            entities.TryRegister<Button>("hud:button", b =>
+            configurations.TryRegister<Button>("hud:button", b =>
             {
                 b.BorderColor = new Color(0, 143, 241);
                 b.BorderSize = 1;

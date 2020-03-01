@@ -4,7 +4,7 @@ using Guppy.Loaders;
 using Guppy.Network.Peers;
 using Guppy.Network.Security;
 using Guppy.UI.Entities;
-using Guppy.UI.Entities.UI;
+using Guppy.UI.Components;
 using Guppy.UI.Enums;
 using Guppy.UI.Utilities.Units;
 using Guppy.Utilities.Cameras;
@@ -81,12 +81,12 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             this.entities.Create<Stage>(s =>
             {
-                s.Add<Header>(h =>
+                s.Children.Create<Header>(h =>
                 {
                     h.Bounds.Set(0, 0.1f, 1f, 75);
                 });
 
-                _message = s.Add<TextElement>(m =>
+                _message = s.Children.Create<TextElement>(m =>
                 {
                     m.Bounds.Y = Unit.Get(0.1f, 85);
                     m.Bounds.Height = 25;
@@ -95,7 +95,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                     m.Font = _content.TryGet<SpriteFont>("font:ui:input");
                 });
 
-                s.Add<Container>(c =>
+                s.Children.Create<Container>(c =>
                 {
                     // c.BorderColor = Color.White;
                     // c.BorderSize = 1;
@@ -106,34 +106,34 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                         width: 593,
                         height: 300);
 
-                    var name = c.Add<FormComponent>(fc =>
+                    var name = c.Children.Create<FormComponent>(fc =>
                     {
                         fc.Bounds.Set(25, 25, 543, 60);
                         fc.Label = "Name";
                     });
 
-                    var host = c.Add<FormComponent>(fc =>
+                    var host = c.Children.Create<FormComponent>(fc =>
                     {
                         fc.Bounds.Set(25, 110, 393, 60);
                         fc.Label = "Host";
                         fc.Value = "localhost";
                     });
 
-                    var port = c.Add<FormComponent>(fc =>
+                    var port = c.Children.Create<FormComponent>(fc =>
                     {
                         fc.Bounds.Set(443, 110, 125, 60);
                         fc.Label = "Port";
                         fc.Value = "1337";
                     });
 
-                    c.Add<Container>(c2 =>
+                    c.Children.Create<Container>(c2 =>
                     {
                         c2.Bounds.Set(25, 210, 543, 45);
                         c2.BorderColor = new Color(0, 143, 241);
                         c2.BackgroundColor = new Color(50, 140, 200, 100);
                         c2.BorderSize = 1;
 
-                        c2.Add<TextElement>(t =>
+                        c2.Children.Create<TextElement>(t =>
                         {
                             t.Alignment = Alignment.Center;
                             t.Inline = false;
@@ -181,9 +181,9 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             _client.MessagesTypes.TryAdd(NetIncomingMessageType.StatusChanged, this.HandleConnectionStatusChanged);
 
-            #if DEBUG
-            this.Connect("localhost", 1337, "Rettoph");
-            #endif
+            // #if DEBUG
+            // this.Connect("localhost", 1337, "Rettoph");
+            // #endif
         }
 
         public override void Dispose()

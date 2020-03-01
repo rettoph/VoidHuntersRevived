@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
             _resourceBar = _entities.Create<ResourceBar>(r => r.Ship = this.driven);
         }
 
-        protected override void Dispose()
+        public override void Dispose()
         {
             base.Dispose();
 

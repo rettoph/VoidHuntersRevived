@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Client.Library.Layers
         {
             base.Draw(gameTime);
 
-            this.entities.TryDraw(gameTime);
+            this.Entities.TryDraw(gameTime);
         }
 
         protected override void PostDraw(GameTime gameTIme)

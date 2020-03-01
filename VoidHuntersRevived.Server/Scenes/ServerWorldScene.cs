@@ -49,14 +49,14 @@ namespace VoidHuntersRevived.Server.Scenes
             // Layer 0: Default
             this.layers.Create<BasicLayer>(0, l =>
             {
-                l.SetUpdateOrder(10);
-                l.SetDrawOrder(20);
+                l.UpdateOrder = 10;
+                l.DrawOrder = 20;
             });
             // Layer 1: Chunk
             this.layers.Create<BasicLayer>(1, l =>
             {
-                l.SetUpdateOrder(20);
-                l.SetDrawOrder(10);
+                l.UpdateOrder = 20;
+                l.DrawOrder = 10;
             });
 
             var rand = new Random();

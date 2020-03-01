@@ -77,7 +77,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
             _debug.AddLine(gt => $" Remove => T: {_removeCount.ToString("#,##0")}, RPS: {(_removeCount / gt.TotalGameTime.TotalSeconds).ToString("#,##0.000")}");
         }
 
-        protected override void Dispose()
+        public override void Dispose()
         {
             base.Dispose();
 

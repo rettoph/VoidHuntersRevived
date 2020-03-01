@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Client.Textures
             var provider = guppy.ConfigureLogger<ConsoleLogger>()
                 .Initialize()
                 .BuildServiceProvider();
-            var entities = provider.GetRequiredService<EntityLoader>();
+            var configurations = provider.GetRequiredService<ConfigurationLoader>();
             var collection = provider.GetRequiredService<EntityCollection>();
             var builders = AssemblyHelper.GetTypesWithAttribute<TextureGenerator, IsTextureGeneratorAttribute>().ToDictionary(
                 keySelector: t => t.GetCustomAttributes(true).Where(attr => attr is IsTextureGeneratorAttribute).Select(attr => attr as IsTextureGeneratorAttribute).OrderBy(attr => attr.Priority).First().Type,
@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Client.Textures
             if (!Directory.Exists("Sprites")) // Create a new directory 
                 Directory.CreateDirectory("Sprites");
 
-            foreach (KeyValuePair<String, (Type type, Action<Object> setup)> entity in entities)
+            foreach (KeyValuePair<String, (Type type, Action<Object> setup)> entity in configurations)
                 foreach (KeyValuePair<Type, TextureGenerators.TextureGenerator> builder in builders)
                     if (builder.Key.IsAssignableFrom(entity.Value.type))
                         builder.Value.TryGenerate(entity.Key, collection.Create<ShipPart>(entity.Key));

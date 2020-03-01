@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Weapons
             this.driven.OnChainUpdated += this.HandleChainUpdated;
         }
 
-        protected override void Dispose()
+        public override void Dispose()
         {
             base.Dispose();
 

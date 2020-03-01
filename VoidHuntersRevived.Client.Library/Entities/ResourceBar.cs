@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
             _camera = provider.GetRequiredService<FarseerCamera2D>();
             _font = provider.GetRequiredService<ContentLoader>().TryGet<SpriteFont>("font");
 
-            this.SetLayerDepth(3);
+            this.LayerDepth = 3;
         }
 
         protected override void Initialize()

@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
             this.driven.OnBridgeChanged += this.HandleBridgeChanged;
         }
 
-        protected override void Dispose()
+        public override void Dispose()
         {
             base.Dispose();
 

@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
             this.driven.MaleConnectionNode.OnDetached += this.OnMaleConnectionNodeDetached;
         }
 
-        protected override void Dispose()
+        public override void Dispose()
         {
             base.Dispose();
 

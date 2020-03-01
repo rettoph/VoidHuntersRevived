@@ -53,7 +53,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
             base.Initialize();
 
-            this.SetLayerDepth(1);
+            this.LayerDepth = 1;
 
             this.OnAdded += this.HandleEntityAdded;
             this.OnRemoved += this.HandleEntityRemoved;

@@ -73,7 +73,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
             this.driven.OnCleaned += this.HandleChunkCleaned;
         }
 
-        protected override void Dispose()
+        public override void Dispose()
         {
             base.Dispose();
 

@@ -1,5 +1,5 @@
 ﻿using Guppy.Loaders;
-using Guppy.UI.Entities.UI;
+using Guppy.UI.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -36,14 +36,14 @@ namespace VoidHuntersRevived.Client.Library.Entities.UI
 
             this.Bounds.Height = 55;
 
-            _label = this.add<TextElement>(l =>
+            _label = this.children.Create<TextElement>(l =>
             {
                 l.Inline = false;
                 l.Font = _content.TryGet<SpriteFont>("font:ui:label");
                 l.Color = Color.White;
             });
 
-            _input = this.add<TextInput>(i =>
+            _input = this.children.Create<TextInput>(i =>
             {
                 i.Font = _content.TryGet<SpriteFont>("font:ui:input");
                 i.Bounds.Set(0, 30, 1f, 30);

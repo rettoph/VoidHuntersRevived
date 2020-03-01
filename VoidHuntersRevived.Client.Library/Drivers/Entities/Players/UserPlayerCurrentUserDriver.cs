@@ -95,7 +95,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             }
         }
 
-        protected override void Dispose()
+        public override void Dispose()
         {
             base.Dispose();
 

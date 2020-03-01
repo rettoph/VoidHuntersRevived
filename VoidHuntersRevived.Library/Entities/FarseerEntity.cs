@@ -78,8 +78,8 @@ namespace VoidHuntersRevived.Library.Entities
 
             // By default Farseer entities are not independently managed.
             // They must be added to a controller instance (chunks, ships, annex, ect)
-            this.SetEnabled(false);
-            this.SetVisible(false);
+            this.Enabled = false;
+            this.Visible = false;
         }
 
         protected override void PostInitialize()

@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Server.Drivers.Entities
             this.driven.OnAttached += this.HandleAttached;
         }
 
-        protected override void Dispose()
+        public override void Dispose()
         {
             base.Dispose();
 

@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
                 angle: this.driven.Body.Rotation);
         }
 
-        protected override void Dispose()
+        public override void Dispose()
         {
             base.Dispose();
 

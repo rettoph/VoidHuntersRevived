@@ -74,8 +74,8 @@ namespace VoidHuntersRevived.Library.Entities
                 dc.SetLocked(true);
             });
 
-            this.SetEnabled(false);
-            this.SetVisible(false);
+            this.Enabled = true;
+            this.Visible = false;
         }
         #endregion
 

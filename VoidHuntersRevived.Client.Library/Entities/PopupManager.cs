@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
         {
             base.Create(provider);
 
-            this.SetLayerDepth(3);
+            this.LayerDepth = 3;
         }
         #endregion
 

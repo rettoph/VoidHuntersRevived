@@ -1,5 +1,5 @@
 ﻿using Guppy.Loaders;
-using Guppy.UI.Entities.UI;
+using Guppy.UI.Components;
 using Guppy.UI.Enums;
 using Guppy.UI.Utilities.Units;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,34 +26,34 @@ namespace VoidHuntersRevived.Client.Library.Entities.UI
         {
             base.PreInitialize();
 
-            this.add<StackContainer>(c1 =>
+            this.children.Create<StackContainer>(c1 =>
             {
                 c1.Method = StackMethod.Horizontal;
                 c1.Alignment = Alignment.Center;
 
                 // Add the logo...
-                c1.Add<FancyElement>(l =>
+                c1.Children.Create<FancyElement>(l =>
                 {
                     l.Bounds.Set(0, 0, 81, 81);
                     l.BackgroundImage = _content.TryGet<Texture2D>("sprite:logo");
                     l.BackgroundStyle = BackgroundStyle.Fill;
                 });
 
-                c1.Add<StackContainer>(c2 =>
+                c1.Children.Create<StackContainer>(c2 =>
                 {
                     c2.Alignment = Alignment.CenterRight;
 
-                    c2.Add<StackContainer>(c3 =>
+                    c2.Children.Create<StackContainer>(c3 =>
                     {
                         c3.Method = StackMethod.Horizontal;
 
-                        c3.Add<TextElement>(t1 =>
+                        c3.Children.Create<TextElement>(t1 =>
                         {
                             t1.Text = "Void Hunters";
                             t1.Font = _content.TryGet<SpriteFont>("font:ui:title");
                         });
 
-                        c3.Add<TextElement>(t2 =>
+                        c3.Children.Create<TextElement>(t2 =>
                         {
                             t2.Text = " Revived";
                             t2.Font = _content.TryGet<SpriteFont>("font:ui:title-light");
@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Client.Library.Entities.UI
                         });
                     });
 
-                    c2.Add<TextElement>(t3 =>
+                    c2.Children.Create<TextElement>(t3 =>
                     {
                         t3.Text = "Alpha 0.0.1";
                         t3.Font = _content.TryGet<SpriteFont>("font:ui:input");

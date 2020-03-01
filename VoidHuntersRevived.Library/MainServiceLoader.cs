@@ -80,7 +80,7 @@ namespace VoidHuntersRevived.Library
             strings.TryRegister("description:entity:ship-part:weapon:mass-driver", "Basic projectile firing weapon.");
         
 
-            var entities = provider.GetRequiredService<EntityLoader>();
+            var configurations = provider.GetRequiredService<ConfigurationLoader>();
 
             #region Register ShipParts
             #region Register Hulls
@@ -90,7 +90,7 @@ namespace VoidHuntersRevived.Library
             triangle.AddPolygon(3);
             triangle.Flush();
 
-            entities.TryRegister<Hull>(
+            configurations.TryRegister<Hull>(
                 handle: "entity:ship-part:hull:triangle",
                 setup: h =>
                 {
@@ -103,7 +103,7 @@ namespace VoidHuntersRevived.Library
             square.AddPolygon(4);
             square.Flush();
 
-            entities.TryRegister<Hull>(
+            configurations.TryRegister<Hull>(
                 handle: "entity:ship-part:hull:square",
                 setup: h =>
                 {
@@ -116,7 +116,7 @@ namespace VoidHuntersRevived.Library
             hexagon.AddPolygon(6);
             hexagon.Flush();
 
-            entities.TryRegister<Hull>(
+            configurations.TryRegister<Hull>(
                 handle: "entity:ship-part:hull:hexagon",
                 setup: h =>
                 {
@@ -133,7 +133,7 @@ namespace VoidHuntersRevived.Library
             pentagon.AddSide(MathHelper.ToRadians(150), ShipPartConfiguration.NodeType.Female);
             pentagon.Flush();
 
-            entities.TryRegister<Hull>(
+            configurations.TryRegister<Hull>(
                 handle: "entity:ship-part:hull:pentagon",
                 setup: h =>
                 {
@@ -166,7 +166,7 @@ namespace VoidHuntersRevived.Library
             mosquito.AddSide(MathHelper.ToRadians(150), ShipPartConfiguration.NodeType.Female);
             mosquito.Transform(Matrix.CreateTranslation(0, -1, 0));
             mosquito.Flush();
-            entities.TryRegister<Hull>(
+            configurations.TryRegister<Hull>(
                 "entity:ship-part:chassis:mosquito",
                 setup: c =>
                 {
@@ -185,7 +185,7 @@ namespace VoidHuntersRevived.Library
             thruster.AddNode(0.3f, 0, 0, ShipPartConfiguration.NodeType.Male);
             thruster.Flush();
 
-            entities.TryRegister<Thruster>(
+            configurations.TryRegister<Thruster>(
                 handle: "entity:ship-part:thruster:small",
                 setup: t =>
                 {
@@ -202,7 +202,7 @@ namespace VoidHuntersRevived.Library
             massDriver.AddNode(0.15f, 0, MathHelper.Pi, ShipPartConfiguration.NodeType.Male);
             massDriver.Flush();
 
-            entities.TryRegister<Gun>(
+            configurations.TryRegister<Gun>(
                 handle: "entity:ship-part:weapon:mass-driver",
                 setup: g =>
                 {
@@ -217,7 +217,7 @@ namespace VoidHuntersRevived.Library
             #endregion
 
             #region Register Ammunitions
-            entities.TryRegister<Projectile>(
+            configurations.TryRegister<Projectile>(
                 handle: "entity:ammunition:projectile:mass-driver",
                 setup: p =>
                 {

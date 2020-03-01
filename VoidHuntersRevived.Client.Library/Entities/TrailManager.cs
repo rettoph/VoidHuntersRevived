@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
             _empty = new Queue<Trail>();
             _effect.VertexColorEnabled = true;
 
-            this.SetLayerDepth(2);
+            this.LayerDepth = 2;
         }
         #endregion
     
