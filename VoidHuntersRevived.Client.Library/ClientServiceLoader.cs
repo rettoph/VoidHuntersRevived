@@ -31,7 +31,6 @@ namespace VoidHuntersRevived.Client.Library
             services.AddScoped<Sensor>("entity:sensor");
             services.AddScoped<TrailManager>("entity:trail-manager");
             services.AddScoped<PopupManager>("entity:popup-manager");
-            services.AddScoped<Hud>(p => p.GetRequiredService<EntityCollection>().Create<Hud>());
         }
 
         public void ConfigureProvider(IServiceProvider provider)

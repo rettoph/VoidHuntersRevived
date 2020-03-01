@@ -11,8 +11,6 @@ namespace VoidHuntersRevived.Client.Library.Entities.UI
         protected override void Initialize()
         {
             base.Initialize();
-
-            this.Hidden = true;
         }
         #endregion
     }
