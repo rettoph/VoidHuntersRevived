@@ -1,0 +1,3 @@
+[submodule "libraries/Guppy"]
+	path = libraries/Guppy
+	url = https://github.com/rettoph/Guppy
