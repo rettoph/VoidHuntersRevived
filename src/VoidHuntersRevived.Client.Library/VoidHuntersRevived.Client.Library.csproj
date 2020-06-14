@@ -3,10 +3,6 @@
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Content\Content.mgcb" />
-  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="MonoGame.Content.Builder" Version="3.7.0.9" />
@@ -31,10 +27,6 @@
   
   <ItemGroup>
     <Folder Include="Layers\" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
 
 </Project>

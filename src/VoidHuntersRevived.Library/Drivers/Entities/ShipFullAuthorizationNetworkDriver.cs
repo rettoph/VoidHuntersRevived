@@ -1,0 +1,128 @@
+﻿using Guppy;
+using Guppy.DependencyInjection;
+using Guppy.Extensions.Collections;
+using Guppy.Network.Extensions.Lidgren;
+using Lidgren.Network;
+using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Entities.Controllers;
+using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Utilities;
+
+namespace VoidHuntersRevived.Library.Drivers.Entities
+{
+    internal sealed class ShipFullAuthorizationNetworkDriver : BaseAuthorizationDriver<Ship>
+    {
+        #region Private Fields
+        private Boolean _dirtyTarget;
+        private ActionTimer _targetSender;
+        #endregion
+
+        #region Lifecycle Methods
+        protected override void ConfigureFull(ServiceProvider provider)
+        {
+            base.ConfigureFull(provider);
+
+            // Update the target a maximum of 4 times a second.
+            _targetSender = new ActionTimer(100);
+
+            this.driven.OnUpdate += this.Update;
+
+            this.driven.OnWrite += this.WriteUpdateBridge;
+            this.driven.OnWrite += this.WriteDirections;
+            this.driven.OnWrite += this.WriteUpdateTarget;
+            this.driven.OnBridgeChanged += this.HandleBridgeChanged;
+            this.driven.OnDirectionChanged += this.HandleDirectionChanged;
+            this.driven.OnTargetChanged += this.HandleTargetChanged;
+            this.driven.TractorBeam.OnSelected += this.HandleTractorBeamSelected;
+            this.driven.TractorBeam.OnDeselected += this.HandleTractorBeamDeselected;
+        }
+
+        protected override void DisposeFull()
+        {
+            base.DisposeFull();
+
+            this.driven.OnUpdate -= this.Update;
+
+            this.driven.OnWrite -= this.WriteUpdateBridge;
+            this.driven.OnWrite -= this.WriteDirections;
+            this.driven.OnWrite -= this.WriteUpdateTarget;
+            this.driven.OnBridgeChanged -= this.HandleBridgeChanged;
+            this.driven.OnDirectionChanged -= this.HandleDirectionChanged;
+            this.driven.OnTargetChanged -= this.HandleTargetChanged;
+            this.driven.TractorBeam.OnSelected -= this.HandleTractorBeamSelected;
+            this.driven.TractorBeam.OnDeselected -= this.HandleTractorBeamDeselected;
+        }
+        #endregion
+
+        #region Frame Methods
+        private void Update(GameTime gameTime)
+        {
+            _targetSender.Update(gameTime, t => t && _dirtyTarget, () =>
+            {
+                this.WriteUpdateTarget(this.driven.Actions.Create(NetDeliveryMethod.Unreliable, 4));
+            });
+        }
+        #endregion
+
+        #region Network Methods
+        private void WriteUpdateBridge(NetOutgoingMessage om)
+            => om.Write("update:bridge", m =>
+            {
+                om.Write(this.driven.Bridge);
+            });
+
+        private void WriteUpdateDirection(NetOutgoingMessage om, Ship.Direction direction, Boolean value)
+            => om.Write("update:direction", m =>
+            {
+                om.Write((Byte)direction);
+                om.Write(value);
+            });
+
+        private void WriteDirections(NetOutgoingMessage om)
+        {
+            // Write all current directions and their values...
+            ((Ship.Direction[])Enum.GetValues(typeof(Ship.Direction))).ForEach(d =>
+            {
+                this.WriteUpdateDirection(om, d, this.driven.ActiveDirections.HasFlag(d));
+            });
+        }
+
+        private void WriteUpdateTarget(NetOutgoingMessage om)
+            => om.Write("update:target", m =>
+            {
+                om.Write(this.driven.Target);
+            });
+
+        private void WriteTractorBeamAction(NetOutgoingMessage om, TractorBeam.Action action)
+        {
+            this.WriteUpdateTarget(om);
+            om.Write("tractor-beam:action", m =>
+            {
+                m.Write((Byte)action.Type);
+                m.Write(action.Target);
+            });
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandleBridgeChanged(Ship sender, ShipPart old, ShipPart value)
+            => this.WriteUpdateBridge(this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 4));
+
+        private void HandleDirectionChanged(Ship sender, Ship.Direction direction, bool value)
+            => this.WriteUpdateDirection(this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 4), direction, value);
+
+        private void HandleTargetChanged(Ship sender, Vector2 arg)
+            => _dirtyTarget = true;
+
+        private void HandleTractorBeamSelected(TractorBeam sender, TractorBeam.Action action)
+            => this.WriteTractorBeamAction(this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 5), action);
+
+        private void HandleTractorBeamDeselected(TractorBeam sender, TractorBeam.Action action)
+            => this.WriteTractorBeamAction(this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 5), action);
+        #endregion
+    }
+}

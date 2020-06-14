@@ -1,5 +1,8 @@
-﻿using Guppy;
+﻿using FarseerPhysics;
+using Guppy;
 using Guppy.Extensions;
+using Guppy.Network.Extensions;
+using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -23,6 +26,7 @@ namespace VoidHuntersRevived.Client.Library
 
             this.IsMouseVisible = true;
             this.Window.AllowUserResizing = true;
+            this.IsFixedTimeStep = false;
         }
 
         /// <summary>
@@ -37,7 +41,11 @@ namespace VoidHuntersRevived.Client.Library
 
             base.Initialize();
 
+            // Settings.ContinuousPhysics = false;
+            // Settings.EnableDiagnostics = false;
+
             game = guppy.ConfigureMonoGame(graphics, this.Content, this.Window)
+                .ConfigureClient(new NetPeerConfiguration("vhr"))
                 .Initialize()
                 .BuildGame<ClientVoidHuntersRevivedGame>();
         }
