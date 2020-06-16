@@ -14,6 +14,7 @@ using System.Text;
 using VoidHuntersRevived.Client.Library.Drivers.Entities;
 using VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers;
 using VoidHuntersRevived.Client.Library.Drivers.Entities.Players;
+using VoidHuntersRevived.Client.Library.Drivers.Entities.Thrusters;
 using VoidHuntersRevived.Client.Library.Drivers.Scenes;
 using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Client.Library.Pages;
@@ -23,6 +24,7 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Extensions.Utilities;
 using VoidHuntersRevived.Library.Scenes;
@@ -43,6 +45,9 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddScoped<FarseerCamera2D>(p => new FarseerCamera2D());
             services.AddScoped<ShipPartRenderer>(p => new ShipPartRenderer());
             services.AddScoped<Sensor>(p => new Sensor());
+            services.AddScoped<TrailManager>(p => new TrailManager());
+            services.AddTransient<Trail>(p => new Trail());
+            services.AddTransient<TrailSegment>(p => new TrailSegment(p));
 
             services.AddTransient<TitlePage>(p => new TitlePage());
 
@@ -55,6 +60,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddAndBindDriver<UserPlayer, UserPlayerLocalControllerDriver>(p => new UserPlayerLocalControllerDriver());
             services.AddAndBindDriver<ChunkManager, ChunkManagerGraphicsDriver>(p => new ChunkManagerGraphicsDriver());
             services.AddAndBindDriver<TractorBeam, TractorBeamGraphicsDriver>(p => new TractorBeamGraphicsDriver());
+            services.AddAndBindDriver<Thruster, ThrusterTrailDriver>(p => new ThrusterTrailDriver());
 
             // Configure UI elements
             services.AddConfiguration<StageLayer>((l, p, c) =>
@@ -82,20 +88,15 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                 c.Bounds.Set(0, 0, 75, 75);
                 c.Background = p.GetContent<Texture2D>("ui:texture:logo");
             });
-
-            // Register Content
-            services.AddConfiguration<ContentLoader>((content, p, c) =>
-            {
-                content.TryRegister("ui:font:header:1", "Fonts/BiomeLight-Big");
-                content.TryRegister("ui:font:header:2", "Fonts/BiomeLight-Small");
-                content.TryRegister("ui:texture:logo", "Sprites/icon2alpha");
-            });
         }
 
         public void ConfigureProvider(ServiceProvider provider)
         {
             // Configure the console logging component...
             provider.GetService<Logger>().ConfigureConsoleLogging();
+
+            // Increate pool size for trail segments...
+            provider.GetServiceTypeDescriptor<TrailSegment>().MaxPoolSize = 5000;
         }
     }
 }

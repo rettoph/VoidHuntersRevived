@@ -7,8 +7,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\FarseerPhysics\FarseerPhysics.MonoGame.DebugView\FarseerPhysics.MonoGame.DebugView.csproj" />
+    <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.UI\Guppy.UI.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy\Guppy.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Client.Library\VoidHuntersRevived.Client.Library.csproj" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="echo D|xcopy /E /Y /R &quot;$(SolutionDir)src\VoidHuntersRevived.Client.Library\Content\bin\DesktopGL&quot; &quot;Content\&quot;" />
+  </Target>
 
 </Project>

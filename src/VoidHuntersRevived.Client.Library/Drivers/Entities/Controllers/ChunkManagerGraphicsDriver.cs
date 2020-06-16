@@ -1,9 +1,11 @@
 ﻿using Guppy;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
+using Guppy.Extensions.DependencyInjection;
 using Guppy.Extensions.Utilities;
 using Guppy.Utilities;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -18,6 +20,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
 {
     internal sealed class ChunkManagerGraphicsDriver : Driver<ChunkManager>
     {
+        #region Static Attributes
+        public static Microsoft.Xna.Framework.Color ChunkColor { get; set; } = new Microsoft.Xna.Framework.Color(Microsoft.Xna.Framework.Color.DarkSlateBlue, 40);
+        #endregion
+
         #region Private Fields
         private FarseerCamera2D _camera;
         private WorldEntity _world;
@@ -64,7 +70,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
             // Draw all visible chunks...
             this.driven.GetChunks(bounds).ForEach(c =>
             {
-                _primitiveBatch.DrawRectangle(new Microsoft.Xna.Framework.Rectangle((Int32)c.X, (Int32)c.Y, Chunk.Size, Chunk.Size), Microsoft.Xna.Framework.Color.DarkGray);
+                // _primitiveBatch.DrawRectangle(c.Bounds, ChunkManagerGraphicsDriver.ChunkColor);
                 c.TryDraw(gameTime);
             });
         }

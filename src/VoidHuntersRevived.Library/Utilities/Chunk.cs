@@ -66,8 +66,10 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             }
         }
 
-        public Single X => (Single)_position.X * Chunk.Size;
-        public Single Y => (Single)_position.Y * Chunk.Size;
+        public Single X { get; private set; }
+        public Single Y { get; private set; }
+
+        public Rectangle Bounds { get; private set; }
         #endregion
 
         #region Lifecycle Methids
@@ -93,7 +95,13 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
         #region Helper Methods
         internal virtual void SetPosition(Position position)
-            => _position = position;
+        {
+            _position = position;
+
+            this.X = (Single)_position.X * Chunk.Size;
+            this.Y = (Single)_position.Y * Chunk.Size;
+            this.Bounds = new Rectangle((Int32)this.X, (Int32)this.Y, Chunk.Size, Chunk.Size);
+        }
 
         internal void Add(ShipPart shipPart)
             => _parts.Add(shipPart);

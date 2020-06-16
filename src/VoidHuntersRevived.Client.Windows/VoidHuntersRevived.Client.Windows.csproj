@@ -60,6 +60,10 @@
       <Project>{eb33ace4-d5b1-42b1-a4ed-070829c4b56c}</Project>
       <Name>FarseerPhysics.MonoGame.DebugView</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.UI\Guppy.UI.csproj">
+      <Project>{bb6a4922-4cba-4067-906f-399a2ea96f7e}</Project>
+      <Name>Guppy.UI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy\Guppy.csproj">
       <Project>{6a9b07b3-c523-4de3-a727-3dd712ef3ecf}</Project>
       <Name>Guppy</Name>
@@ -77,4 +81,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\..\packages\MonoGame.Framework.DesktopGL.3.7.1.189\build\MonoGame.Framework.DesktopGL.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MonoGame.Framework.DesktopGL.3.7.1.189\build\MonoGame.Framework.DesktopGL.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>echo D|xcopy /E /Y /R "$(SolutionDir)src\VoidHuntersRevived.Client.Library\Content\bin\DesktopGL" "Content\"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

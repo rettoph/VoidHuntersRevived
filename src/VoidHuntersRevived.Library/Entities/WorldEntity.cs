@@ -95,17 +95,20 @@ namespace VoidHuntersRevived.Library.Entities
                 _walls.Dequeue().Dispose();
 
             // Create brand new walls...
-            // this.Do(w => _walls.Enqueue(BodyFactory.CreateRectangle(w, WorldEntity.WallWidth, this.Size.Y + (WorldEntity.WallWidth * 2), 0f, new Vector2(-WorldEntity.WallWidth / 2, this.Size.Y / 2), 0, BodyType.Static)));
-            // this.Do(w => _walls.Enqueue(BodyFactory.CreateRectangle(w, WorldEntity.WallWidth, this.Size.Y + (WorldEntity.WallWidth * 2), 0f, new Vector2(this.Size.X + (WorldEntity.WallWidth / 2), this.Size.Y / 2), 0, BodyType.Static)));
-            // this.Do(w => _walls.Enqueue(BodyFactory.CreateRectangle(w, this.Size.X, WorldEntity.WallWidth, 0f, new Vector2(this.Size.X / 2, -WorldEntity.WallWidth / 2), 0, BodyType.Static)));
-            // this.Do(w => _walls.Enqueue(BodyFactory.CreateRectangle(w, this.Size.X, WorldEntity.WallWidth, 0f, new Vector2(this.Size.X / 2, this.Size.Y + (WorldEntity.WallWidth / 2)), 0, BodyType.Static)));
-            // 
-            // _walls.ForEach(b =>
-            // { // Setup wall collisions
-            //     b.CollisionCategories = Categories.BorderCollisionCategories;
-            //     b.CollidesWith = Categories.BorderCollidesWith;
-            //     b.IgnoreCCDWith = Categories.BorderIgnoreCCDWith;
-            // });
+            this.Do(w => _walls.Enqueue(BodyFactory.CreateRectangle(w, WorldEntity.WallWidth, this.Size.Y + (WorldEntity.WallWidth * 2), 0f, new Vector2(-WorldEntity.WallWidth / 2, this.Size.Y / 2), 0, BodyType.Static)));
+            this.Do(w => _walls.Enqueue(BodyFactory.CreateRectangle(w, WorldEntity.WallWidth, this.Size.Y + (WorldEntity.WallWidth * 2), 0f, new Vector2(this.Size.X + (WorldEntity.WallWidth / 2), this.Size.Y / 2), 0, BodyType.Static)));
+            this.Do(w => _walls.Enqueue(BodyFactory.CreateRectangle(w, this.Size.X, WorldEntity.WallWidth, 0f, new Vector2(this.Size.X / 2, -WorldEntity.WallWidth / 2), 0, BodyType.Static)));
+            this.Do(w => _walls.Enqueue(BodyFactory.CreateRectangle(w, this.Size.X, WorldEntity.WallWidth, 0f, new Vector2(this.Size.X / 2, this.Size.Y + (WorldEntity.WallWidth / 2)), 0, BodyType.Static)));
+            
+            _walls.ForEach(b =>
+            { // Setup wall collisions
+                b.CollisionCategories = Categories.BorderCollisionCategories;
+                b.CollidesWith = Categories.BorderCollidesWith;
+                b.IgnoreCCDWith = Categories.BorderIgnoreCCDWith;
+
+                b.Restitution = 1f;
+                b.Friction = 0f;
+            });
         }
         #endregion
     }
