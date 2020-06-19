@@ -45,6 +45,19 @@ namespace VoidHuntersRevived.Server.Scenes
                 pentagon.Position = rand.NextVector2(0, Chunk.Size * 10);
                 pentagon.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
 
+                if (i % 2 == 0)
+                {
+                    var vBeam = this.Entities.Create<ShipPart>("entity:ship-part:hull:beam:vertical");
+                    vBeam.Position = rand.NextVector2(0, Chunk.Size * 10);
+                    vBeam.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+                }
+                else
+                {
+                    var hBeam = this.Entities.Create<ShipPart>("entity:ship-part:hull:beam:horizontal");
+                    hBeam.Position = rand.NextVector2(0, Chunk.Size * 10);
+                    hBeam.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+                }
+
                 for (Int32 j = 0; j < 5; j++)
                 {
                     var thruster = this.Entities.Create<ShipPart>("entity:ship-part:thruster:small");

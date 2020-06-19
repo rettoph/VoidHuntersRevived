@@ -46,6 +46,8 @@ namespace VoidHuntersRevived.Client.Library.Entities
             _contacts = new HashSet<BodyEntity>();
 
             _entities.OnAdded += this.HandleEntityAdded;
+
+            this.LayerGroup = 10;
         }
 
         protected override void Dispose()

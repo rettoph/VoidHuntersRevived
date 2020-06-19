@@ -45,6 +45,8 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
                 { // Only proceed with positional lerping if the slave is not already matching the master...
                     var strength = BodyEntity.SlaveLerpStrength * (Single)gameTime.ElapsedGameTime.TotalMilliseconds;
 
+                    this.driven.slave.LinearVelocity = Vector2.Lerp(this.driven.slave.LinearVelocity, this.driven.master.LinearVelocity, strength);
+                    this.driven.slave.AngularVelocity = MathHelper.Lerp(this.driven.slave.AngularVelocity, this.driven.master.AngularVelocity, strength);
                     this.driven.slave.SetTransformIgnoreContacts(
                         position: Vector2.Lerp(this.driven.slave.Position, this.driven.master.Position, strength),
                         angle: MathHelper.Lerp(this.driven.slave.Rotation, this.driven.master.Rotation, strength));
@@ -73,8 +75,8 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
                 this.driven.Position = im.ReadVector2();
                 this.driven.Rotation = im.ReadSingle();
 
-                this.driven.LinearVelocity = im.ReadVector2();
-                this.driven.AngularVelocity = im.ReadSingle();
+                this.driven.master.LinearVelocity = im.ReadVector2();
+                this.driven.master.AngularVelocity = im.ReadSingle();
             }
             else
             { // Skip the bits that would have been read...

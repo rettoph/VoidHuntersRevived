@@ -74,6 +74,44 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             });
             #endregion
 
+            #region Vertical Beam
+            var vBeam = new ShipPartConfiguration();
+            vBeam.AddSide(MathHelper.ToRadians(0), ShipPartConfiguration.NodeType.Male);
+            vBeam.AddSide(MathHelper.ToRadians(90), ShipPartConfiguration.NodeType.Female);
+            vBeam.AddSide(MathHelper.ToRadians(180), ShipPartConfiguration.NodeType.Female);
+            vBeam.AddSide(MathHelper.ToRadians(180), ShipPartConfiguration.NodeType.Female);
+            vBeam.AddSide(MathHelper.ToRadians(90), ShipPartConfiguration.NodeType.Female);
+            vBeam.AddSide(MathHelper.ToRadians(90), ShipPartConfiguration.NodeType.Female);
+            vBeam.AddSide(MathHelper.ToRadians(180), ShipPartConfiguration.NodeType.Female);
+            vBeam.AddSide(MathHelper.ToRadians(180), ShipPartConfiguration.NodeType.Female);
+            vBeam.Flush();
+
+            services.AddConfiguration<RigidShipPart>("entity:ship-part:hull:beam:vertical", (s, p, c) =>
+            {
+                s.Configuration = vBeam;
+            });
+            #endregion
+
+            #region Vertical Beam
+            var hBeam = new ShipPartConfiguration();
+            hBeam.AddSide(MathHelper.ToRadians(180), ShipPartConfiguration.NodeType.Male);
+            hBeam.AddSide(MathHelper.ToRadians(180), ShipPartConfiguration.NodeType.Female);
+            hBeam.AddSide(MathHelper.ToRadians(90), ShipPartConfiguration.NodeType.Female);
+            hBeam.AddSide(MathHelper.ToRadians(90), ShipPartConfiguration.NodeType.Female);
+            hBeam.AddSide(MathHelper.ToRadians(180), ShipPartConfiguration.NodeType.Female);
+            hBeam.AddSide(MathHelper.ToRadians(180), ShipPartConfiguration.NodeType.Female);
+            hBeam.AddSide(MathHelper.ToRadians(90), ShipPartConfiguration.NodeType.Female);
+            hBeam.AddSide(MathHelper.ToRadians(90), ShipPartConfiguration.NodeType.Female);
+            hBeam.Flush();
+
+            services.AddConfiguration<RigidShipPart>("entity:ship-part:hull:beam:horizontal", (s, p, c) =>
+            {
+                s.Configuration = hBeam;
+            });
+            #endregion
+            #endregion
+
+            #region Chassis
             #region Mosquito
             // Create mosquito chassis
             var mosquito = new ShipPartConfiguration();

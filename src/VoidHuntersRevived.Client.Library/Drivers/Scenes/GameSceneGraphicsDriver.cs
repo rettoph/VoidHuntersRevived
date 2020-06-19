@@ -4,6 +4,7 @@ using Guppy;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.LayerGroups;
 using Guppy.UI.Entities;
 using Guppy.Utilities;
 using Microsoft.Xna.Framework;
@@ -18,6 +19,7 @@ using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Drivers;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
+using VoidHuntersRevived.Library.Layers;
 using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
@@ -47,6 +49,23 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
         protected override void ConfigurePartial(ServiceProvider provider)
         {
             base.ConfigurePartial(provider);
+
+            // Create new required layers
+            // Pre world updates (Cursor) 
+            this.driven.Layers.Create<GameLayer>((l, p, c) =>
+            {
+                l.Group = new SingleLayerGroup(-10);
+                l.DrawOrder = -10;
+                l.UpdateOrder = -10;
+            });
+
+            // Post world components (Sensor, TractorBeam, Ship, TrailManager, ect)
+            this.driven.Layers.Create<GameLayer>((l, p, c) =>
+            {
+                l.Group = new SingleLayerGroup(10);
+                l.DrawOrder = 10;
+                l.UpdateOrder = 10;
+            });
 
             provider.Service(out _window);
             provider.Service(out _graphics);
@@ -89,6 +108,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
                 provider.GetContent<Texture2D>("sprite:background:2"),
                 provider.GetContent<Texture2D>("sprite:background:3")
             };
+
+            this.CleanViewport();
         }
 
         protected override void DisposePartial()

@@ -62,6 +62,15 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddAndBindDriver<TractorBeam, TractorBeamGraphicsDriver>(p => new TractorBeamGraphicsDriver());
             services.AddAndBindDriver<Thruster, ThrusterTrailDriver>(p => new ThrusterTrailDriver());
 
+            services.AddConfiguration<Ship>((t, p, c) =>
+            {
+                t.LayerGroup = 10;
+            });
+            services.AddConfiguration<TractorBeam>((t, p, c) =>
+            {
+                t.LayerGroup = 10;
+            });
+
             // Configure UI elements
             services.AddConfiguration<StageLayer>((l, p, c) =>
             {

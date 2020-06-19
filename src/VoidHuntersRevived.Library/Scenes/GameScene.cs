@@ -53,10 +53,13 @@ namespace VoidHuntersRevived.Library.Scenes
             this.group = provider.GetService<Peer>().Groups.GetOrCreateById(Guid.Empty);
 
             // Create some default layers.
+            // World Components (ShipParts, WorldEntity, Players, ect)
             this.Layers.Create<GameLayer>((l, p, c) =>
             {
-                l.Group = new RangeLayerGroup(0, 100);
+                l.Group = new SingleLayerGroup(0);
             });
+
+
 
             this.Entities.OnAdded += this.HandleEntityAdded;
         }

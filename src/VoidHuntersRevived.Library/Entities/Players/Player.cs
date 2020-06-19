@@ -48,8 +48,6 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
             // Auto add the current player to the global player collection...
             provider.GetService<PlayerCollection>().TryAdd(this);
-
-            this.UpdateOrder = 1000;
         }
         #endregion
     }

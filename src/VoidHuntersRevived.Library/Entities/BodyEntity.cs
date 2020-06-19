@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Library.Entities
         /// The threshold that must be surpassed by the position
         /// in order for an instant slave snap to take place.
         /// </summary>
-        public static Single PositionSnapThreshold { get; set; } = 2f;
+        public static Single PositionSnapThreshold { get; set; } = 5f;
         /// <summary>
         /// The threshold that must be surpassed by the rotation
         /// in order for an instant slave snap to take place.

@@ -28,6 +28,8 @@ namespace VoidHuntersRevived.Client.Library.Entities
 
             _trails = new Dictionary<Thruster, Trail>();
             _dirtyTrails = new Queue<Trail>();
+
+            this.LayerGroup = 10;
         }
         #endregion
 

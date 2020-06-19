@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Library.Entities
 
             this.Size = new Vector2(128, 128);
 
-            this.UpdateOrder = 100;
+            this.UpdateOrder = -100;
         }
 
         protected override void Dispose()
