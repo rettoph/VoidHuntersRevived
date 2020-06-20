@@ -84,7 +84,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
 
             _cursor.OnScrolled += this.HandleCursorScroll;
             this.driven.OnPreDraw += this.PreDraw;
-            this.driven.OnPostDraw += this.PostDraw;
             _window.ClientSizeChanged += this.HandleClientSizeChanged;
 
             provider.GetService<GameScene>().IfOrOnWorld(world =>
@@ -118,7 +117,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
 
             this.driven.OnDraw -= this.Draw;
             this.driven.OnPreDraw -= this.PreDraw;
-            this.driven.OnPostDraw -= this.PostDraw;
             _window.ClientSizeChanged -= this.HandleClientSizeChanged;
         }
         #endregion
@@ -135,10 +133,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
         private void PreDraw(GameTime gameTime)
         {
             _camera.TryClean(gameTime);
-            _primitiveBatch.Begin(_camera.View, _camera.Projection);
             _graphics.Clear(Color.Black);
 
-            
             _spriteBatch.Begin(samplerState: SamplerState.LinearWrap, blendState: BlendState.AlphaBlend);
             for (Int32 i=0; i< _backgrounds.Length; i++)
                 _spriteBatch.Draw(
@@ -158,11 +154,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
         {
             // _debugMaster.RenderDebugData(_camera.Projection, _camera.View);
             // _debugSlave.RenderDebugData(_camera.Projection, _camera.View);
-        }
-
-        private void PostDraw(GameTime gameTime)
-        {
-            _primitiveBatch.End();
         }
         #endregion
 

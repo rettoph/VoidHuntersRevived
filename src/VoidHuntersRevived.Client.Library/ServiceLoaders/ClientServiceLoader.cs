@@ -15,6 +15,7 @@ using VoidHuntersRevived.Client.Library.Drivers.Entities;
 using VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers;
 using VoidHuntersRevived.Client.Library.Drivers.Entities.Players;
 using VoidHuntersRevived.Client.Library.Drivers.Entities.Thrusters;
+using VoidHuntersRevived.Client.Library.Drivers.Layers;
 using VoidHuntersRevived.Client.Library.Drivers.Scenes;
 using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Client.Library.Pages;
@@ -27,6 +28,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Extensions.Utilities;
+using VoidHuntersRevived.Library.Layers;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Utilities;
 
@@ -55,6 +57,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
 
             // Configure Drivers
             services.AddAndBindDriver<GameScene, GameSceneGraphicsDriver>(p => new GameSceneGraphicsDriver());
+            services.AddAndBindDriver<GameLayer, GameLayerGraphicsDriver>(p => new GameLayerGraphicsDriver());
             services.AddAndBindDriver<WorldEntity, WorldEntityGraphicsDriver>(p => new WorldEntityGraphicsDriver());
             services.AddAndBindDriver<ShipPart, ShipPartGraphicsDriver>(p => new ShipPartGraphicsDriver());
             services.AddAndBindDriver<UserPlayer, UserPlayerLocalControllerDriver>(p => new UserPlayerLocalControllerDriver());
