@@ -11,21 +11,21 @@ using VoidHuntersRevived.Library.Extensions.Farseer;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities
 {
-    internal sealed class BodyEntityPartialAuthorizationNetworkDriver : BaseAuthorizationDriver<BodyEntity>
+    internal sealed class BodyEntityMinimumAuthorizationNetworkDriver : NetworkEntityAuthorizationDriver<BodyEntity>
     {
         #region Lifecycle Methods
-        protected override void ConfigurePartial(ServiceProvider provider)
+        protected override void ConfigureMinimum(ServiceProvider provider)
         {
-            base.ConfigureFull(provider);
+            base.ConfigureMinimum(provider);
 
             this.driven.OnUpdate += this.Update;
 
             this.driven.Actions.Set("update:position", this.ReadPosition);
         }
 
-        protected override void DisposePartial()
+        protected override void DisposeMinimum()
         {
-            base.DisposePartial();
+            base.DisposeMinimum();
 
             this.driven.OnUpdate -= this.Update;
 
@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         #region Frame Methods
         private void Update(GameTime gameTime)
         {
-            if (this.driven.Authorization == GameAuthorization.Partial)
+            if (this.driven.Authorization == GameAuthorization.Minimum)
             {
                 var positionDif = Vector2.Distance(this.driven.slave.Position, this.driven.master.Position);
                 var rotationDif = MathHelper.Distance(this.driven.slave.Rotation, this.driven.master.Rotation);
@@ -70,7 +70,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         #region Network Methods
         private void ReadPosition(NetIncomingMessage im)
         {
-            if (this.driven.Authorization == GameAuthorization.Partial)
+            if (this.driven.Authorization == GameAuthorization.Minimum)
             {
                 this.driven.Position = im.ReadVector2();
                 this.driven.Rotation = im.ReadSingle();

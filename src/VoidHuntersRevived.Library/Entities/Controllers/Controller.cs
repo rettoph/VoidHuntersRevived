@@ -1,5 +1,6 @@
 ﻿using Guppy;
 using Guppy.DependencyInjection;
+using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,6 +19,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
     {
         #region Private Fields
         private HashSet<ShipPart> _parts;
+        private GameAuthorization _authorization;
         #endregion
 
         #region Protected Attributes
@@ -26,10 +28,27 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
         #region Public Attributes
         /// <summary>
-        /// Used to determin if a ShipPart should behave as a slave
-        /// or master when contained within the current controller.
+        /// Used to determin how a ShipPart should behave when
+        /// container within the current controller.
         /// </summary>
-        public GameAuthorization Authorization { get; protected set; }
+        public GameAuthorization Authorization
+        {
+            get => _authorization;
+            protected set
+            {
+                if(_authorization != value)
+                {
+                    if (this.OnAuthorizationChanged == null)
+                        _authorization = value;
+                    else
+                        this.OnAuthorizationChanged.Invoke(this, _authorization, _authorization = value);
+                }
+            }
+        }
+        #endregion
+
+        #region Events
+        public GuppyDeltaEventHandler<Controller, GameAuthorization> OnAuthorizationChanged;
         #endregion
 
         #region Lifecycle Methods

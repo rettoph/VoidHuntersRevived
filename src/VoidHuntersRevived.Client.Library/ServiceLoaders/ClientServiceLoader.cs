@@ -39,11 +39,6 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
     {
         public void ConfigureServices(ServiceCollection services)
         {
-            services.AddConfiguration<Settings>((s, p, c) =>
-            { // Configure the client settings...
-                s.Set<GameAuthorization>(GameAuthorization.Partial);
-            }, 1);
-
             services.AddScoped<FarseerCamera2D>(p => new FarseerCamera2D());
             services.AddScoped<ShipPartRenderer>(p => new ShipPartRenderer());
             services.AddScoped<Sensor>(p => new Sensor());

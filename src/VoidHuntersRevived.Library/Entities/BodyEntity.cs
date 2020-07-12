@@ -203,7 +203,7 @@ namespace VoidHuntersRevived.Library.Entities
 
         public virtual void SetTransformIgnoreContacts(Vector2 position, Single angle)
         {
-            if (this.Authorization == GameAuthorization.Partial)
+            if (this.Authorization == GameAuthorization.Local)
                 this.master.SetTransformIgnoreContacts(position, angle);
             else
                 this.Do(b => b.SetTransformIgnoreContacts(position, angle));

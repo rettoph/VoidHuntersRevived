@@ -14,7 +14,7 @@ using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities
 {
-    internal sealed class ShipFullAuthorizationNetworkDriver : BaseAuthorizationDriver<Ship>
+    internal sealed class ShipFullAuthorizationNetworkDriver : NetworkEntityAuthorizationDriver<Ship>
     {
         #region Private Fields
         private Boolean _dirtyTarget;
@@ -99,9 +99,9 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
         private void WriteTractorBeamAction(NetOutgoingMessage om, TractorBeam.Action action)
         {
-            this.WriteUpdateTarget(om);
             om.Write("tractor-beam:action", m =>
             {
+                m.Write(this.driven.TractorBeam.Position);
                 m.Write((Byte)action.Type);
                 m.Write(action.Target);
             });

@@ -13,6 +13,7 @@ namespace VoidHuntersRevived.Library.Drivers
     {
         #region Private Fields
         private GameAuthorization _authorization;
+        private ServiceProvider _provider;
         #endregion
 
         #region Lifecycle Methods
@@ -20,18 +21,10 @@ namespace VoidHuntersRevived.Library.Drivers
         {
             base.Configure(driven, provider);
 
-            _authorization = provider.GetService<Settings>().Get<GameAuthorization>();
+            _provider = provider;
 
             this.Configure(provider, _authorization);
-            switch(_authorization)
-            {
-                case GameAuthorization.Full:
-                    this.ConfigureFull(provider);
-                    break;
-                case GameAuthorization.Partial:
-                    this.ConfigurePartial(provider);
-                    break;
-            }
+            this.UpdateAuthorization(this.GetDefaultAuthorization());
         }
 
         protected override void Dispose()
@@ -39,15 +32,7 @@ namespace VoidHuntersRevived.Library.Drivers
             base.Dispose();
 
             this.Dispose(_authorization);
-            switch (_authorization)
-            {
-                case GameAuthorization.Full:
-                    this.DisposeFull();
-                    break;
-                case GameAuthorization.Partial:
-                    this.DisposePartial();
-                    break;
-            }
+            this.UpdateAuthorization(GameAuthorization.None);
         }
 
         protected virtual void ConfigureFull(ServiceProvider provider)
@@ -55,7 +40,12 @@ namespace VoidHuntersRevived.Library.Drivers
 
         }
 
-        protected virtual void ConfigurePartial(ServiceProvider provider)
+        protected virtual void ConfigureLocal(ServiceProvider provider)
+        {
+
+        }
+
+        protected virtual void ConfigureMinimum(ServiceProvider provider)
         {
 
         }
@@ -70,7 +60,12 @@ namespace VoidHuntersRevived.Library.Drivers
 
         }
 
-        protected virtual void DisposePartial()
+        protected virtual void DisposeLocal()
+        {
+
+        }
+
+        protected virtual void DisposeMinimum()
         {
 
         }
@@ -79,6 +74,39 @@ namespace VoidHuntersRevived.Library.Drivers
         {
 
         }
+
+        protected void UpdateAuthorization(GameAuthorization authorization)
+        {
+            switch (_authorization)
+            {
+                case GameAuthorization.Full:
+                    this.DisposeFull();
+                    break;
+                case GameAuthorization.Local:
+                    this.DisposeLocal();
+                    break;
+                case GameAuthorization.Minimum:
+                    this.DisposeMinimum();
+                    break;
+            }
+
+            _authorization = authorization;
+            switch (_authorization)
+            {
+                case GameAuthorization.Full:
+                    this.ConfigureFull(_provider);
+                    break;
+                case GameAuthorization.Local:
+                    this.ConfigureLocal(_provider);
+                    break;
+                case GameAuthorization.Minimum:
+                    this.ConfigureMinimum(_provider);
+                    break;
+            }
+        }
+
+        protected virtual GameAuthorization GetDefaultAuthorization()
+            => _provider.GetService<Settings>().Get<GameAuthorization>();
         #endregion
     }
 }

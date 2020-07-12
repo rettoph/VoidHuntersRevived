@@ -8,6 +8,7 @@ using System.Text;
 using VoidHuntersRevived.Drivers.Scenes;
 using VoidHuntersRevived.Library.Drivers.Entities;
 using VoidHuntersRevived.Library.Drivers.Entities.Players;
+using VoidHuntersRevived.Library.Drivers.Entities.ShipParts;
 using VoidHuntersRevived.Library.Drivers.Scenes;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
@@ -26,20 +27,20 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
         public void ConfigureServices(ServiceCollection services)
         {
             services.AddAndBindDriver<GameScene, GameSceneFullAuthorityNetworkDriver>(p => new GameSceneFullAuthorityNetworkDriver());
-            services.AddAndBindDriver<GameScene, GameScenePartialAuthrotityNetworkDriver>(p => new GameScenePartialAuthrotityNetworkDriver());
+            services.AddAndBindDriver<GameScene, GameSceneMinimumAuthorityNetworkDriver>(p => new GameSceneMinimumAuthorityNetworkDriver());
 
             services.AddAndBindDriver<Player, PlayerFullAuthorizationNetworkDriver>(p => new PlayerFullAuthorizationNetworkDriver());
-            services.AddAndBindDriver<Player, PlayerPartialAuthorizationNetworkDriver>(p => new PlayerPartialAuthorizationNetworkDriver());
+            services.AddAndBindDriver<Player, PlayerMinimumAuthorizationNetworkDriver>(p => new PlayerMinimumAuthorizationNetworkDriver());
             services.AddAndBindDriver<UserPlayer, UserPlayerFullAuthorizationNetworkDriver>(p => new UserPlayerFullAuthorizationNetworkDriver());
-            services.AddAndBindDriver<UserPlayer, UserPlayerPartialAuthorizationNetworkDriver>(p => new UserPlayerPartialAuthorizationNetworkDriver());
+            services.AddAndBindDriver<UserPlayer, UserPlayerMinimumAuthorizationNetworkDriver>(p => new UserPlayerMinimumAuthorizationNetworkDriver());
             services.AddAndBindDriver<WorldEntity, WorldEntityFullAuthorizationNetworkDriver>(p => new WorldEntityFullAuthorizationNetworkDriver());
-            services.AddAndBindDriver<WorldEntity, WorldEntityPartialAuthorizationNetworkDriver>(p => new WorldEntityPartialAuthorizationNetworkDriver());
+            services.AddAndBindDriver<WorldEntity, WorldEntityMinimumAuthorizationNetworkDriver>(p => new WorldEntityMinimumAuthorizationNetworkDriver());
             services.AddAndBindDriver<BodyEntity, BodyEntityFullAuthorizationNetworkDriver>(p => new BodyEntityFullAuthorizationNetworkDriver());
-            services.AddAndBindDriver<BodyEntity, BodyEntityPartialAuthorizationNetworkDriver>(p => new BodyEntityPartialAuthorizationNetworkDriver());
+            services.AddAndBindDriver<BodyEntity, BodyEntityMinimumAuthorizationNetworkDriver>(p => new BodyEntityMinimumAuthorizationNetworkDriver());
             services.AddAndBindDriver<Ship, ShipFullAuthorizationNetworkDriver>(p => new ShipFullAuthorizationNetworkDriver());
-            services.AddAndBindDriver<Ship, ShipPartialAuthorizationNetworkDriver>(p => new ShipPartialAuthorizationNetworkDriver());
+            services.AddAndBindDriver<Ship, ShipMinimumAuthorizationNetworkDriver>(p => new ShipMinimumAuthorizationNetworkDriver());
             services.AddAndBindDriver<ShipPart, ShipPartFullAuthorizationNetworkDriver>(p => new ShipPartFullAuthorizationNetworkDriver());
-            services.AddAndBindDriver<ShipPart, ShipPartPartialAuthorizationNetworkDriver>(p => new ShipPartPartialAuthorizationNetworkDriver());
+            services.AddAndBindDriver<ShipPart, ShipPartMinimumAuthorizationNetworkDriver>(p => new ShipPartMinimumAuthorizationNetworkDriver());
         }
 
         public void ConfigureProvider(ServiceProvider provider)

@@ -16,7 +16,6 @@ namespace VoidHuntersRevived.Library.Entities.Players
     {
         #region Private Fields
         private User _user;
-        private GameAuthorization _authorization;
         #endregion
 
         #region Public Attributes
@@ -33,8 +32,6 @@ namespace VoidHuntersRevived.Library.Entities.Players
             }
         }
         public override String Name => this.User?.Name;
-
-        public override GameAuthorization Authorization => _authorization;
         #endregion
 
         #region Events
@@ -45,14 +42,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
-
-            _authorization = base.Authorization;
         }
-        #endregion
-
-        #region Helper Methods
-        public void SetAuthorization(GameAuthorization authorization)
-            => _authorization = authorization;
         #endregion
     }
 }

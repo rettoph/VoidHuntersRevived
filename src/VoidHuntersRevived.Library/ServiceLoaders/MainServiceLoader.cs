@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
 
             services.AddConfiguration<Settings>((s, p, c) =>
             { // Configure the default settings...
-                s.Set<GameAuthorization>(GameAuthorization.None);
+                s.Set<GameAuthorization>(GameAuthorization.Minimum);
             });
 
             // Register all default layers

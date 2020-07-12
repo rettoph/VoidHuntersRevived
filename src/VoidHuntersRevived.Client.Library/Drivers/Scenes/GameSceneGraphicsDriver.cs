@@ -46,9 +46,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
         #endregion
 
         #region Lifecycle Methods
-        protected override void ConfigurePartial(ServiceProvider provider)
+        protected override void ConfigureMinimum(ServiceProvider provider)
         {
-            base.ConfigurePartial(provider);
+            base.ConfigureMinimum(provider);
 
             // Create new required layers
             // Pre world updates (Cursor) 
@@ -111,9 +111,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
             this.CleanViewport();
         }
 
-        protected override void DisposePartial()
+        protected override void DisposeMinimum()
         {
-            base.DisposePartial();
+            base.DisposeMinimum();
 
             this.driven.OnDraw -= this.Draw;
             this.driven.OnPreDraw -= this.PreDraw;
@@ -152,8 +152,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
 
         private void Draw(GameTime gameTime)
         {
-            // _debugMaster.RenderDebugData(_camera.Projection, _camera.View);
-            // _debugSlave.RenderDebugData(_camera.Projection, _camera.View);
+            _debugMaster.RenderDebugData(_camera.Projection, _camera.View);
+            _debugSlave.RenderDebugData(_camera.Projection, _camera.View);
         }
         #endregion
 

@@ -10,19 +10,19 @@ using VoidHuntersRevived.Library.Extensions.Farseer;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities
 {
-    internal sealed class WorldEntityPartialAuthorizationNetworkDriver : BaseAuthorizationDriver<WorldEntity>
+    internal sealed class WorldEntityMinimumAuthorizationNetworkDriver : BaseAuthorizationDriver<WorldEntity>
     {
         #region Lifecycle Methods
-        protected override void ConfigurePartial(ServiceProvider provider)
+        protected override void ConfigureMinimum(ServiceProvider provider)
         {
-            base.ConfigureFull(provider);
+            base.ConfigureMinimum(provider);
 
             this.driven.Actions.Set("update:size", this.ReadSize);
         }
 
-        protected override void DisposePartial()
+        protected override void DisposeMinimum()
         {
-            base.DisposePartial();
+            base.DisposeMinimum();
 
             this.driven.Actions.Remove("update:size");
         }

@@ -11,7 +11,7 @@ using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities
 {
-    internal sealed class BodyEntityFullAuthorizationNetworkDriver : BaseAuthorizationDriver<BodyEntity>
+    internal sealed class BodyEntityFullAuthorizationNetworkDriver : NetworkEntityAuthorizationDriver<BodyEntity>
     {
         #region Private Fields
         private ActionTimer _timer;

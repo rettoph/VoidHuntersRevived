@@ -13,25 +13,25 @@ using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities.Players
 {
-    internal sealed class UserPlayerPartialAuthorizationNetworkDriver : BaseAuthorizationDriver<UserPlayer>
+    internal sealed class UserPlayerMinimumAuthorizationNetworkDriver : BaseAuthorizationDriver<UserPlayer>
     {
         #region Private Fields
         private GameScene _scene;
         #endregion
 
         #region Lifecycle Methods
-        protected override void ConfigurePartial(ServiceProvider provider)
+        protected override void ConfigureMinimum(ServiceProvider provider)
         {
-            base.ConfigurePartial(provider);
+            base.ConfigureMinimum(provider);
 
             provider.Service(out _scene);
 
             this.driven.Actions.Set("update:user", this.ReadUser);
         }
 
-        protected override void DisposePartial()
+        protected override void DisposeMinimum()
         {
-            base.DisposePartial();
+            base.DisposeMinimum();
 
             this.driven.Actions.Remove("update:user");
         }

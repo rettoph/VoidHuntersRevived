@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
     /// authority peer (such as create and update);
     /// do nothing.
     /// </summary>
-    internal sealed class GameScenePartialAuthrotityNetworkDriver : GameSceneNetworkDriver
+    internal sealed class GameSceneMinimumAuthorityNetworkDriver : GameSceneNetworkDriver
     {
         #region Private Fields
         private Queue<NetIncomingMessage> _creates;
@@ -29,9 +29,9 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
         #endregion
 
         #region Lifecycle Methods
-        protected override void ConfigurePartial(ServiceProvider provider)
+        protected override void ConfigureMinimum(ServiceProvider provider)
         {
-            base.ConfigurePartial(provider);
+            base.ConfigureMinimum(provider);
 
             this.ConfigureBase(provider);
 

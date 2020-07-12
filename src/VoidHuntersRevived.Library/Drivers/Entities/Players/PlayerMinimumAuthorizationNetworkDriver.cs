@@ -12,25 +12,25 @@ using VoidHuntersRevived.Library.Entities.Players;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities.Players
 {
-    internal sealed class PlayerPartialAuthorizationNetworkDriver : BaseAuthorizationDriver<Player>
+    internal sealed class PlayerMinimumAuthorizationNetworkDriver : BaseAuthorizationDriver<Player>
     {
         #region Private Fields
         private EntityCollection _entities;
         #endregion
 
         #region Lifecycle Methods
-        protected override void ConfigurePartial(ServiceProvider provider)
+        protected override void ConfigureMinimum(ServiceProvider provider)
         {
-            base.ConfigurePartial(provider);
+            base.ConfigureMinimum(provider);
 
             provider.Service(out _entities);
 
             this.driven.Actions.Set("update:ship", this.ReadShip);
         }
 
-        protected override void DisposePartial()
+        protected override void DisposeMinimum()
         {
-            base.DisposePartial();
+            base.DisposeMinimum();
 
             this.driven.Actions.Remove("update:ship");
         }

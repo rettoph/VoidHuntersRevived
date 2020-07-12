@@ -9,13 +9,13 @@ using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 
-namespace VoidHuntersRevived.Library.Drivers.Entities
+namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
 {
     /// <summary>
     /// Internal driver to manage special actions when the
     /// Game's Authrization level is set to full.
     /// </summary>
-    internal sealed class ShipPartFullAuthorizationNetworkDriver : BaseAuthorizationDriver<ShipPart>
+    internal sealed class ShipPartFullAuthorizationNetworkDriver : NetworkEntityAuthorizationDriver<ShipPart>
     {
         #region Lifecycle Methods
         protected override void ConfigureFull(ServiceProvider provider)
@@ -27,8 +27,6 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             this.driven.MaleConnectionNode.OnDetached += this.HandleMaleConnectionNodeAttachmentChanged;
             this.driven.OnControllerChanged += this.HandleControllerChanged;
         }
-
-
 
         protected override void DisposeFull()
         {

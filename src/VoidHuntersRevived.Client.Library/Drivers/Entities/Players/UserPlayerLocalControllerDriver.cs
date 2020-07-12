@@ -11,6 +11,7 @@ using System.Linq;
 using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Drivers;
+using VoidHuntersRevived.Library.Drivers.Entities;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
@@ -24,7 +25,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
     /// Simple driver that will manage local controls for 
     /// players owned by the current client.
     /// </summary>
-    internal sealed class UserPlayerLocalControllerDriver : BaseAuthorizationDriver<UserPlayer>
+    internal sealed class UserPlayerLocalControllerDriver : NetworkEntityAuthorizationDriver<UserPlayer>
     {
         #region Private Fields
         private Peer _peer;
@@ -49,20 +50,27 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             this.driven.OnUserChanged += this.HandleUserChanged;
         }
 
-        protected override void Dispose()
+        protected override void ConfigureLocal(ServiceProvider provider)
         {
-            base.DisposePartial();
+            base.ConfigureLocal(provider);
 
-            this.driven.OnUserChanged -= this.HandleUserChanged;
-            this.driven.OnUpdate -= this.Update;
-            _cursor.OnPressed -= this.HandleCursorPressed;
+            this.driven.OnUpdate += this.Update;
+            _cursor.OnPressed += this.HandleCursorPressed;
+            _cursor.OnReleased += this.HandleCursorReleased;
         }
 
-        protected override void DisposePartial()
+        protected override void Dispose()
         {
-            base.DisposePartial();
+            this.driven.OnUserChanged -= this.HandleUserChanged;
+        }
 
-            this.driven.OnUserChanged += this.HandleUserChanged;
+        protected override void DisposeLocal()
+        {
+            base.DisposeLocal();
+
+            this.driven.OnUpdate -= this.Update;
+            _cursor.OnPressed -= this.HandleCursorPressed;
+            _cursor.OnReleased -= this.HandleCursorReleased;
         }
         #endregion
 
@@ -134,19 +142,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         private void HandleUserChanged(UserPlayer sender, User arg)
         {
             if(arg == _peer.CurrentUser)
-            { // Allow local player controls...
-                this.driven.OnUpdate += this.Update;
-                _cursor.OnPressed += this.HandleCursorPressed;
-                _cursor.OnReleased += this.HandleCursorReleased;
-
-                // Give this specific user full local authority...
-                this.driven.SetAuthorization(GameAuthorization.Full);
-            }
-            else
-            { // Disable local player controls
-                this.driven.OnUpdate -= this.Update;
-                _cursor.OnPressed -= this.HandleCursorPressed;
-                _cursor.OnReleased -= this.HandleCursorReleased;
+            {
+                // Give this specific user local authority...
+                this.driven.Authorization = GameAuthorization.Local;
             }
         }
 

@@ -16,7 +16,7 @@ using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities
 {
-    internal sealed class ShipPartialAuthorizationNetworkDriver : BaseAuthorizationDriver<Ship>
+    internal sealed class ShipMinimumAuthorizationNetworkDriver : NetworkEntityAuthorizationDriver<Ship>
     {
         #region Private Fields
         private EntityCollection _entities;
@@ -30,9 +30,9 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         #endregion
 
         #region Lifecycle Methods
-        protected override void ConfigurePartial(ServiceProvider provider)
+        protected override void ConfigureMinimum(ServiceProvider provider)
         {
-            base.ConfigurePartial(provider);
+            base.ConfigureMinimum(provider);
 
             provider.Service(out _entities);
             provider.Service(out _logger);
@@ -45,9 +45,9 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             this.driven.Actions.Set("tractor-beam:action", this.ReadTractorBeamAction);
         }
 
-        protected override void DisposePartial()
+        protected override void DisposeMinimum()
         {
-            base.DisposePartial();
+            base.DisposeMinimum();
 
             this.driven.OnUpdate -= this.Update;
 
@@ -58,12 +58,11 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         }
         #endregion
 
-
         #region Frame Methods
         private void Update(GameTime gameTime)
         {
-            if(this.driven.Authorization == GameAuthorization.Partial)
-                this.driven.Target = Vector2.Lerp(this.driven.Target, _targetTarget, Math.Min(1, ShipPartialAuthorizationNetworkDriver.TargetLerpStrength * (Single)gameTime.ElapsedGameTime.TotalMilliseconds));
+            if(this.driven.Authorization == GameAuthorization.Local)
+                this.driven.Target = Vector2.Lerp(this.driven.Target, _targetTarget, Math.Min(1, ShipMinimumAuthorizationNetworkDriver.TargetLerpStrength * (Single)gameTime.ElapsedGameTime.TotalMilliseconds));
         }
         #endregion
 
@@ -78,7 +77,10 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             => _targetTarget = im.ReadVector2();
 
         private void ReadTractorBeamAction(NetIncomingMessage im)
-            => this.driven.TractorBeam.TryAction(new TractorBeam.Action((TractorBeam.ActionType)im.ReadByte(), im.ReadEntity<ShipPart>(_entities)));
+        {
+            this.driven.TractorBeam.Position = im.ReadVector2();
+            this.driven.TractorBeam.TryAction(new TractorBeam.Action((TractorBeam.ActionType)im.ReadByte(), im.ReadEntity<ShipPart>(_entities)));
+        }
         #endregion
     }
 }

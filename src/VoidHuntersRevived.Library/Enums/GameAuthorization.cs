@@ -15,8 +15,9 @@ namespace VoidHuntersRevived.Library.Enums
     /// </summary>
     public enum GameAuthorization
     {
-        None    = 0, // Indicates that all permanent game actions must be authorized directly from the connected peer.
-        Partial = 1, // Indicates that some permanent game actions may be done locally before confirmation.
-        Full    = 2 // Indicates that all permanent game actions may be done locally without any confirmation.
+        None    = 0,
+        Minimum = 1, // Indicates that all permanent game actions must be authorized directly from the connected peer.
+        Local = 2, // Indicates that some permanent game actions may be done locally before confirmation.
+        Full    = 3 // Indicates that all permanent game actions may be done locally without any confirmation.
     }
 }

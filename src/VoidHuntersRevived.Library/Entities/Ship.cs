@@ -46,10 +46,7 @@ namespace VoidHuntersRevived.Library.Entities
             set
             {
                 if(value != _player)
-                {
-                    _player = value;
-                    this.OnPlayerChanged?.Invoke(this, _player);
-                }
+                    this.OnPlayerChanged.Invoke(this, _player, _player = value);
             }
         }
 
@@ -91,8 +88,6 @@ namespace VoidHuntersRevived.Library.Entities
 
         public TractorBeam TractorBeam { get; private set; }
 
-        public override GameAuthorization Authorization => this.Player == default(Player) ? base.Authorization : this.Player.Authorization;
-
         public IEnumerable<ConnectionNode> OpenFemaleNodes => _openFemaleNodes;
 
         public Color Color => Color.Cyan;
@@ -104,7 +99,7 @@ namespace VoidHuntersRevived.Library.Entities
         public event GuppyDeltaEventHandler<Ship, ShipPart> OnBridgeChanged;
         public event OnDirectionChangedDelegate OnDirectionChanged;
         public event GuppyEventHandler<Ship, Vector2> OnTargetChanged;
-        public event GuppyEventHandler<Ship, Player> OnPlayerChanged;
+        public event GuppyDeltaEventHandler<Ship, Player> OnPlayerChanged;
         #endregion
 
         #region Lifecycle Methods
@@ -117,6 +112,17 @@ namespace VoidHuntersRevived.Library.Entities
             provider.Service(out _controller);
 
             this.TractorBeam = provider.GetService<TractorBeam>((t, p, c) => t.Ship = this);
+
+            this.OnPlayerChanged += this.HandlePlayerChanged;
+            this.OnAuthorizationChanged += this.HandleAuthorizationChanged;
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.OnPlayerChanged -= this.HandlePlayerChanged;
+            this.OnAuthorizationChanged -= this.HandleAuthorizationChanged;
         }
         #endregion
 
@@ -240,6 +246,24 @@ namespace VoidHuntersRevived.Library.Entities
         #region Event Handlers
         private void HandleBridgeCleaned(ShipPart sender, ShipPart.DirtyChainType arg)
             => this.LoadOpenFemaleNodes();
+
+        private void HandlePlayerChanged(Ship sender, Player old, Player player)
+        {
+            // Auto update the internal authorization value...
+            this.Authorization = player?.Authorization ?? this.settings.Get<GameAuthorization>();
+
+            if(old != null)
+                player.OnAuthorizationChanged -= this.HandlePlayerAuthorizationChanged;
+            
+            if(player != null)
+                player.OnAuthorizationChanged += this.HandlePlayerAuthorizationChanged;
+        }
+
+        private void HandlePlayerAuthorizationChanged(NetworkEntity sender, GameAuthorization old, GameAuthorization value)
+            => this.Authorization = value;
+
+        private void HandleAuthorizationChanged(NetworkEntity sender, GameAuthorization old, GameAuthorization value)
+            => _controller.SetAuthorization(this.Authorization);
         #endregion
     }
 }

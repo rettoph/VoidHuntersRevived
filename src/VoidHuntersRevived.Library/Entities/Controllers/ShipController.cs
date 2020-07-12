@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.Entities.Controllers
@@ -80,6 +81,11 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             // Attempt to auto add the ship part back into the chunks...
             _chunks.TryAdd(shipPart);
         }
+        #endregion
+
+        #region Helper Methods
+        internal void SetAuthorization(GameAuthorization authorization)
+            => this.Authorization = authorization;
         #endregion
     }
 }

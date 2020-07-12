@@ -1,4 +1,6 @@
-﻿using Guppy.DependencyInjection;
+﻿
+
+using Guppy.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,20 +50,27 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             {
                 if (this.IsRoot)
                 {
+                    if(_controller != null)
+                        _controller.OnAuthorizationChanged -= this.HandleControllerAuthorizationChanged;
+
                     _controller = value;
+
+                    if (_controller != null)
+                        _controller.OnAuthorizationChanged += this.HandleControllerAuthorizationChanged;
+
                     this.OnControllerChanged?.Invoke(this, _controller);
                 }
                 else
                     throw new Exception("Unable to update Controller of child ShipPart.");
             }
         }
+
         public ShipPartConfiguration Configuration { get; set; }
         public Boolean IsRoot => !this.MaleConnectionNode.Attached;
         public ShipPart Root => this.IsRoot ? this : this.Parent.Root;
         public ShipPart Parent => this.IsRoot ? null : this.MaleConnectionNode.Target.Parent;
 
         public Color Color => this.Root.Ship == default(Ship) ? this.Root.Configuration.DefaultColor : this.Ship.Color;
-        public override GameAuthorization Authorization => this.Root.Controller == default(Controller) ? base.Authorization : this.Root.Controller.Authorization;
         #endregion
 
         #region Events
@@ -103,6 +112,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             this.LinearDamping = 0.5f;
 
             this.MaleConnectionNode.OnDetached += this.HandleMaleConnectionNodeDetached;
+            this.OnControllerChanged += this.HandleControllerChanged;
         }
 
         protected override void Dispose()
@@ -115,6 +125,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             this.OnRootChanged -= this.HandleRootChanged;
             this.OnChainCleaned -= this.HandleChainCleaned;
             this.MaleConnectionNode.OnDetached -= this.HandleMaleConnectionNodeDetached;
+            this.OnControllerChanged -= this.HandleControllerChanged;
         }
         #endregion
 
@@ -159,6 +170,19 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             // Automatically add ShipPart to the chunk manager on male detach...
             _chunks.TryAdd(this);
         }
+
+
+        /// <summary>
+        /// Configure internal attributes and event when the entities
+        /// controller value is updated...
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="controller"></param>
+        private void HandleControllerChanged(ShipPart sender, Controller controller)
+            => this.Authorization = controller?.Authorization ?? this.settings.Get<GameAuthorization>();
+
+        private void HandleControllerAuthorizationChanged(Controller sender, GameAuthorization old, GameAuthorization value)
+            => this.Authorization = this.Controller.Authorization;
         #endregion
     }
 }

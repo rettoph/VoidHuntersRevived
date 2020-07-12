@@ -26,6 +26,7 @@ namespace VoidHuntersRevived.Library.Entities
     {
         #region Private Fields
         private GameScene _scene;
+        private GameAuthorization _authorization;
         #endregion
 
         #region Protected Attributes
@@ -43,12 +44,27 @@ namespace VoidHuntersRevived.Library.Entities
         /// The current object game authroization status. By default, this is the global
         /// GameAuthorization value but it may be over written.
         /// </summary>
-        public virtual GameAuthorization Authorization => this.settings.Get<GameAuthorization>();
+        public GameAuthorization Authorization
+        {
+            get => _authorization;
+            set
+            {
+                if(value != _authorization)
+                {
+                    if (this.OnAuthorizationChanged == null)
+                        _authorization = value;
+                    else
+                        this.OnAuthorizationChanged.Invoke(this, _authorization, _authorization = value);
+                }
+                    
+            }
+        }
         #endregion
 
         #region Events
         public event NetIncomingMessageDelegate OnRead;
         public event NetOutgoingMessageDelegate OnWrite;
+        public event GuppyDeltaEventHandler<NetworkEntity, GameAuthorization> OnAuthorizationChanged;
         #endregion
 
         #region Lifecycle Methods
@@ -63,6 +79,7 @@ namespace VoidHuntersRevived.Library.Entities
 
             // Create and setup a brand new action delegater instance...
             this.Actions = new MessageManager(this.BuildActionMessage);
+            this.Authorization = this.settings.Get<GameAuthorization>();
         }
 
         protected override void PostInitialize(ServiceProvider provider)
