@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
+using Guppy.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Client.Library.Entities
 {

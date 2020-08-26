@@ -10,6 +10,7 @@ using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Utilities;
+using Guppy.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Library.Entities
 {

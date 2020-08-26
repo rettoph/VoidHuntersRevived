@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.Controllers;
+using Guppy.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
 {

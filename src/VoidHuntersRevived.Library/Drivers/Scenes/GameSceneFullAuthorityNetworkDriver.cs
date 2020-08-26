@@ -20,6 +20,7 @@ using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Drivers.Scenes;
 using System.Collections.Concurrent;
+using Guppy.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Drivers.Scenes
 {

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Collections;
+using Guppy.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Library.Entities.Players
 {

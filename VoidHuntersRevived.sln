@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Client.W
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "clients", "clients", "{CBA9D834-D5F5-4941-B2A1-2BBDDDA6394F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.IO", "libraries\Guppy\src\Guppy.IO\Guppy.IO.csproj", "{329201BD-06EA-42DA-B2A5-8A24DF10E658}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{59248A83-77BE-4292-AC32-D13C43A891F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59248A83-77BE-4292-AC32-D13C43A891F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59248A83-77BE-4292-AC32-D13C43A891F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{329201BD-06EA-42DA-B2A5-8A24DF10E658}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{329201BD-06EA-42DA-B2A5-8A24DF10E658}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{329201BD-06EA-42DA-B2A5-8A24DF10E658}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{329201BD-06EA-42DA-B2A5-8A24DF10E658}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,6 +103,7 @@ Global
 		{82D2DBC2-87A5-466D-B2CC-93426BAD562C} = {CBA9D834-D5F5-4941-B2A1-2BBDDDA6394F}
 		{59248A83-77BE-4292-AC32-D13C43A891F8} = {CBA9D834-D5F5-4941-B2A1-2BBDDDA6394F}
 		{CBA9D834-D5F5-4941-B2A1-2BBDDDA6394F} = {D2A649EA-BF5F-4B70-87EB-DFA556F59B99}
+		{329201BD-06EA-42DA-B2A5-8A24DF10E658} = {DA5CAD48-BEB9-4316-814A-820EA2A21081}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FCB1CA3-2B6C-469F-B569-084FC0B57488}

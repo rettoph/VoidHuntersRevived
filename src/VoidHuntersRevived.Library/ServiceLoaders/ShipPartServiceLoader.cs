@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
         {
             Settings.MaxPolygonVertices = 16;
 
-            services.AddEntity<RigidShipPart>(p => new RigidShipPart());
+            services.AddFactory<RigidShipPart>(p => new RigidShipPart());
 
             #region Hulls
             #region Triangle
@@ -30,6 +30,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             triangle.AddPolygon(3);
             triangle.Flush();
 
+            services.AddTransient<RigidShipPart>("entity:ship-part:hull:triangle");
             services.AddConfiguration<RigidShipPart>("entity:ship-part:hull:triangle", (s, p, c) =>
             {
                 s.Configuration = triangle;
@@ -41,6 +42,8 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             square.AddPolygon(4);
             square.Flush();
 
+
+            services.AddTransient<RigidShipPart>("entity:ship-part:hull:square");
             services.AddConfiguration<RigidShipPart>("entity:ship-part:hull:square", (s, p, c) =>
             {
                 s.Configuration = square;
@@ -52,6 +55,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             hexagon.AddPolygon(6);
             hexagon.Flush();
 
+            services.AddTransient<RigidShipPart>("entity:ship-part:hull:hexagon");
             services.AddConfiguration<RigidShipPart>("entity:ship-part:hull:hexagon", (s, p, c) =>
             {
                 s.Configuration = hexagon;
@@ -67,7 +71,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             pentagon.AddSide(MathHelper.ToRadians(150), ShipPartConfiguration.NodeType.Female);
             pentagon.Flush();
 
-
+            services.AddTransient<RigidShipPart>("entity:ship-part:hull:pentagon");
             services.AddConfiguration<RigidShipPart>("entity:ship-part:hull:pentagon", (s, p, c) =>
             {
                 s.Configuration = pentagon;
@@ -86,6 +90,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             vBeam.AddSide(MathHelper.ToRadians(180), ShipPartConfiguration.NodeType.Female);
             vBeam.Flush();
 
+            services.AddTransient<RigidShipPart>("entity:ship-part:hull:beam:vertical");
             services.AddConfiguration<RigidShipPart>("entity:ship-part:hull:beam:vertical", (s, p, c) =>
             {
                 s.Configuration = vBeam;
@@ -104,6 +109,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             hBeam.AddSide(MathHelper.ToRadians(90), ShipPartConfiguration.NodeType.Female);
             hBeam.Flush();
 
+            services.AddTransient<RigidShipPart>("entity:ship-part:hull:beam:horizontal");
             services.AddConfiguration<RigidShipPart>("entity:ship-part:hull:beam:horizontal", (s, p, c) =>
             {
                 s.Configuration = hBeam;
@@ -147,6 +153,8 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                 mosquito.Vertices.ElementAt(1)[3],
                 mosquito.Vertices.ElementAt(1)[4],
             });
+
+            services.AddTransient<RigidShipPart>("entity:ship-part:chassis:mosquito");
             services.AddConfiguration<RigidShipPart>("entity:ship-part:chassis:mosquito", (s, p, c) =>
             {
                 s.Configuration = mosquito;
@@ -155,7 +163,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             #endregion
 
             #region Thrusters
-            services.AddEntity<Thruster>(p => new Thruster());
+            services.AddFactory<Thruster>(p => new Thruster());
 
             #region Thruster
             var thruster = new ShipPartConfiguration();
@@ -167,6 +175,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             thruster.AddNode(0.3f, 0, 0, ShipPartConfiguration.NodeType.Male);
             thruster.Flush();
 
+            services.AddTransient<Thruster>("entity:ship-part:thruster:small");
             services.AddConfiguration<Thruster>("entity:ship-part:thruster:small", (s, p, c) =>
             {
                 s.Configuration = thruster;

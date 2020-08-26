@@ -13,6 +13,7 @@ using System.Text;
 using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Utilities;
+using Guppy.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Client.Library.Utilities
 {

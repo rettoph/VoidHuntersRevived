@@ -1,6 +1,4 @@
-﻿
-
-using Guppy.DependencyInjection;
+﻿using Guppy.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +11,7 @@ using VoidHuntersRevived.Library.Collections;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Enums;
+using Guppy.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {

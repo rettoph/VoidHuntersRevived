@@ -10,6 +10,8 @@ using System.Text;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Scenes;
+using Guppy.Extensions.DependencyInjection;
+using Guppy.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities.Players
 {

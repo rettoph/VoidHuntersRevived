@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Library.Utilities
             => group.Messages.Create(NetDeliveryMethod.ReliableOrdered, 1, recipient).Write("entity:create", om =>
                 {
                     om.Write(entity.Id);
-                    om.Write(entity.ServiceConfiguration.Id);
+                    om.Write(entity.ServiceDescriptor.Id);
                 });
 
         public static NetOutgoingMessage BuildUpdateMessage(NetDeliveryMethod method, Int32 sequenceChannel, Group group, NetworkEntity entity, NetConnection recipient = null)

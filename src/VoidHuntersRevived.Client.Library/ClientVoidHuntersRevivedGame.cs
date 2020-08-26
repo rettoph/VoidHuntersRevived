@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library;
 using VoidHuntersRevived.Library.Scenes;
+using Guppy.Extensions.DependencyInjection;
+using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Client.Library
 {

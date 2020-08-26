@@ -11,6 +11,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using Guppy.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Library.Entities.Controllers
 {

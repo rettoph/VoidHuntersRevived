@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using Guppy.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Client.Library.Utilities.Cameras
 {

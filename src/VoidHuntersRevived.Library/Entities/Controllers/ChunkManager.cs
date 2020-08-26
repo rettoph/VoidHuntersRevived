@@ -16,6 +16,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Utilities;
+using Guppy.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Library.Entities.Controllers
 {

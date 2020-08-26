@@ -13,6 +13,7 @@ using VoidHuntersRevived.Library.Extensions.Farseer;
 using FarseerPhysics.Collision.Shapes;
 using Lidgren.Network;
 using VoidHuntersRevived.Library.Enums;
+using Guppy.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Library.Entities
 {

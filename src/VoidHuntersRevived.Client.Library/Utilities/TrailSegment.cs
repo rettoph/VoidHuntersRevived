@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
 
         #region Private Fields
         private ServiceProvider _provider;
-        private ServiceTypeDescriptor _descriptor;
+        private ServiceDescriptor _descriptor;
         private Trail _trail;
         private Single _direction;
         private Single _strength;
@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         internal TrailSegment(ServiceProvider provider)
         {
             _provider = provider;
-            _descriptor = provider.GetServiceTypeDescriptor<TrailSegment>();
+            _descriptor = provider.GetServiceDescriptor<TrailSegment>();
         }
 
         public TrailSegment Initialize(Trail trail)
@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
 
         public void Dispose()
         {
-            _descriptor.Release(this);
+            _descriptor.Factory.Return(this);
         }
         #endregion
 

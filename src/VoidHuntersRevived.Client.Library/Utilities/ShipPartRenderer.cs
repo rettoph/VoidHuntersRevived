@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using Guppy.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Client.Library.Utilities
 {

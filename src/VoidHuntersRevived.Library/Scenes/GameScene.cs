@@ -19,6 +19,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Layers;
 using VoidHuntersRevived.Library.Utilities;
+using Guppy.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Library.Scenes
 {
@@ -58,8 +59,6 @@ namespace VoidHuntersRevived.Library.Scenes
             {
                 l.Group = new SingleLayerGroup(0);
             });
-
-
 
             this.Entities.OnAdded += this.HandleEntityAdded;
         }

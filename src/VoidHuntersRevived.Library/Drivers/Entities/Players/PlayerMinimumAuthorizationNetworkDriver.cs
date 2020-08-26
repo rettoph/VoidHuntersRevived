@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
+using Guppy.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities.Players
 {

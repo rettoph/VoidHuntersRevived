@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Utilities;
+using Guppy.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Library.Drivers
 {
@@ -23,7 +24,6 @@ namespace VoidHuntersRevived.Library.Drivers
 
             _provider = provider;
 
-            this.Configure(provider, _authorization);
             this.UpdateAuthorization(this.GetDefaultAuthorization());
         }
 
@@ -77,6 +77,8 @@ namespace VoidHuntersRevived.Library.Drivers
 
         protected void UpdateAuthorization(GameAuthorization authorization)
         {
+            this.Dispose(authorization);
+
             switch (_authorization)
             {
                 case GameAuthorization.Full:
@@ -91,6 +93,7 @@ namespace VoidHuntersRevived.Library.Drivers
             }
 
             _authorization = authorization;
+            this.Configure(_provider, _authorization);
             switch (_authorization)
             {
                 case GameAuthorization.Full:

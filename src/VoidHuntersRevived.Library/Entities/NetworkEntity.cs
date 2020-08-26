@@ -14,6 +14,7 @@ using Guppy.Interfaces;
 using Guppy.Network.Utilities.Messages;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Enums;
+using Guppy.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -86,7 +87,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.PostInitialize(provider);
 
-            this.logger.LogTrace(() => $"Created new NetworkEntity<{this.GetType().Name}>({this.Id}) => '{this.ServiceConfiguration.Name}'");
+            this.logger.LogTrace(() => $"Created new NetworkEntity<{this.GetType().Name}>({this.Id}) => '{this.ServiceDescriptor.Name}'");
         }
         #endregion
 

@@ -3,14 +3,10 @@ using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.LayerGroups;
-using Guppy.Loaders;
 using Guppy.UI.Components;
 using Guppy.UI.Enums;
 using Guppy.UI.Layers;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using VoidHuntersRevived.Client.Library.Drivers.Entities;
 using VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers;
 using VoidHuntersRevived.Client.Library.Drivers.Entities.Players;
@@ -26,7 +22,6 @@ using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
-using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Extensions.Utilities;
 using VoidHuntersRevived.Library.Layers;
 using VoidHuntersRevived.Library.Scenes;
@@ -39,14 +34,23 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
     {
         public void ConfigureServices(ServiceCollection services)
         {
-            services.AddScoped<FarseerCamera2D>(p => new FarseerCamera2D());
-            services.AddScoped<ShipPartRenderer>(p => new ShipPartRenderer());
-            services.AddScoped<Sensor>(p => new Sensor());
-            services.AddScoped<TrailManager>(p => new TrailManager());
-            services.AddTransient<Trail>(p => new Trail());
-            services.AddTransient<TrailSegment>(p => new TrailSegment(p));
+            // Configure service factories...
+            services.AddFactory<FarseerCamera2D>(p => new FarseerCamera2D());
+            services.AddFactory<ShipPartRenderer>(p => new ShipPartRenderer());
+            services.AddFactory<Sensor>(p => new Sensor());
+            services.AddFactory<TrailManager>(p => new TrailManager());
+            services.AddFactory<Trail>(p => new Trail());
+            services.AddFactory<TrailSegment>(p => new TrailSegment(p));
+            services.AddFactory<TitlePage>(p => new TitlePage());
 
-            services.AddTransient<TitlePage>(p => new TitlePage());
+            // Configure service lifetimes...
+            services.AddScoped<FarseerCamera2D>();
+            services.AddScoped<ShipPartRenderer>();
+            services.AddScoped<Sensor>();
+            services.AddScoped<TrailManager>();
+            services.AddTransient<Trail>();
+            services.AddTransient<TrailSegment>();
+            services.AddTransient<TitlePage>();
 
             services.AddGame<ClientVoidHuntersRevivedGame>(p => new ClientVoidHuntersRevivedGame());
 
@@ -70,27 +74,26 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             });
 
             // Configure UI elements
-            services.AddConfiguration<StageLayer>((l, p, c) =>
+            services.AddConfiguration<StageLayer>((l, p, s) =>
             {
                 l.Group = new SingleLayerGroup(0);
-                return l;
             });
 
-            services.AddConfiguration<Label>("ui:header:1", (l, p, f) =>
+            services.AddConfiguration<Label>("ui:header:1", (l, p, s) =>
             {
                 l.Inline = true;
                 l.TextAlignment = Alignment.Center;
                 l.Font = p.GetContent<SpriteFont>("ui:font:header:1");
             });
 
-            services.AddConfiguration<Label>("ui:header:2", (l, p, f) =>
+            services.AddConfiguration<Label>("ui:header:2", (l, p, s) =>
             {
                 l.Inline = true;
                 l.TextAlignment = Alignment.Left;
                 l.Font = p.GetContent<SpriteFont>("ui:font:header:2");
             });
 
-            services.AddConfiguration<Component>("ui:logo", (c, p, f) =>
+            services.AddConfiguration<Component>("ui:logo", (c, p, s) =>
             {
                 c.Bounds.Set(0, 0, 75, 75);
                 c.Background = p.GetContent<Texture2D>("ui:texture:logo");
@@ -101,9 +104,6 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
         {
             // Configure the console logging component...
             provider.GetService<Logger>().ConfigureConsoleLogging();
-
-            // Increate pool size for trail segments...
-            provider.GetServiceTypeDescriptor<TrailSegment>().MaxPoolSize = 5000;
         }
     }
 }

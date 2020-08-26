@@ -21,29 +21,47 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
     {
         public void ConfigureServices(ServiceCollection services)
         {
-            services.AddScoped<Settings>(p => new Settings());
+            // Register service factories...
+            services.AddFactory<Settings>(p => new Settings());
+            services.AddFactory<ConnectionNode>(p => new ConnectionNode());
+            services.AddFactory<Logger>(p => new Logger());
+            services.AddFactory<PlayerCollection>(p => new PlayerCollection());
+            services.AddFactory<Chunk>(p => new Chunk());
+            services.AddFactory<GameLayer>(p => new GameLayer());
+
+            // Register services...
+            services.AddScoped<Settings>();
+            services.AddTransient<ConnectionNode>();
+            services.AddSingleton<Logger>();
+            services.AddScoped<PlayerCollection>();
+            services.AddTransient<Chunk>();
+            services.AddTransient<GameLayer>();
+
+
+            // Register Scenes...
             services.AddScene<GameScene>(p => new GameScene());
-            services.AddTransient<ConnectionNode>(p => new ConnectionNode());
-            services.AddSingleton<Logger>(p => new Logger());
-            services.AddScoped<PlayerCollection>(p => new PlayerCollection());
-            services.AddTransient<Chunk>(p => new Chunk());
 
             services.AddConfiguration<Settings>((s, p, c) =>
             { // Configure the default settings...
                 s.Set<GameAuthorization>(GameAuthorization.Minimum);
-            });
+            }, -10);
 
-            // Register all default layers
-            services.AddTransient<GameLayer>(p => new GameLayer());
+            // Register all default entities & their factories
+            services.AddFactory<ChunkManager>(p => new ChunkManager());
+            services.AddFactory<WorldEntity>(p => new WorldEntity());
+            services.AddFactory<BodyEntity>(p => new BodyEntity());
+            services.AddFactory<Ship>(p => new Ship());
+            services.AddFactory<UserPlayer>(p => new UserPlayer());
+            services.AddFactory<ShipController>(p => new ShipController());
+            services.AddFactory<TractorBeam>(p => new TractorBeam());
 
-            // Register all default entities
-            services.AddScoped<ChunkManager>(p => new ChunkManager());
-            services.AddScoped<WorldEntity>(p => new WorldEntity());
-            services.AddEntity<BodyEntity>(p => new BodyEntity());
-            services.AddEntity<Ship>(p => new Ship());
-            services.AddEntity<UserPlayer>(p => new UserPlayer());
-            services.AddEntity<ShipController>(p => new ShipController());
-            services.AddEntity<TractorBeam>(p => new TractorBeam());
+            services.AddScoped<ChunkManager>();
+            services.AddScoped<WorldEntity>();
+            services.AddTransient<BodyEntity>();
+            services.AddTransient<Ship>();
+            services.AddTransient<UserPlayer>();
+            services.AddTransient<ShipController>();
+            services.AddTransient<TractorBeam>();
         }
 
         public void ConfigureProvider(ServiceProvider provider)

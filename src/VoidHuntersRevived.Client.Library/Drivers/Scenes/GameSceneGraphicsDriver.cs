@@ -152,8 +152,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
 
         private void Draw(GameTime gameTime)
         {
-            _debugMaster.RenderDebugData(_camera.Projection, _camera.View);
-            _debugSlave.RenderDebugData(_camera.Projection, _camera.View);
+            // _debugMaster.RenderDebugData(_camera.Projection, _camera.View);
+            // _debugSlave.RenderDebugData(_camera.Projection, _camera.View);
         }
         #endregion
 
