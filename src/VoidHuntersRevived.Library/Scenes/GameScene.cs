@@ -20,6 +20,7 @@ using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Layers;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.IO;
 
 namespace VoidHuntersRevived.Library.Scenes
 {

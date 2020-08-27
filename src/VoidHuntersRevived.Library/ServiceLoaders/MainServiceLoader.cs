@@ -24,7 +24,6 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             // Register service factories...
             services.AddFactory<Settings>(p => new Settings());
             services.AddFactory<ConnectionNode>(p => new ConnectionNode());
-            services.AddFactory<Logger>(p => new Logger());
             services.AddFactory<PlayerCollection>(p => new PlayerCollection());
             services.AddFactory<Chunk>(p => new Chunk());
             services.AddFactory<GameLayer>(p => new GameLayer());
@@ -32,7 +31,6 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             // Register services...
             services.AddScoped<Settings>();
             services.AddTransient<ConnectionNode>();
-            services.AddSingleton<Logger>();
             services.AddScoped<PlayerCollection>();
             services.AddTransient<Chunk>();
             services.AddTransient<GameLayer>();

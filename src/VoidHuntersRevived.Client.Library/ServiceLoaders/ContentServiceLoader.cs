@@ -1,7 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.DependencyInjection;
 using Guppy.Interfaces;
-using Guppy.Loaders;
+using Guppy.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
         public void ConfigureServices(ServiceCollection services)
         {
             // Register Content
-            services.AddConfiguration<ContentLoader>((content, p, c) =>
+            services.AddConfiguration<ContentService>((content, p, c) =>
             {
                 content.TryRegister("ui:font:header:1", "Fonts/BiomeLight-Big");
                 content.TryRegister("ui:font:header:2", "Fonts/BiomeLight-Small");

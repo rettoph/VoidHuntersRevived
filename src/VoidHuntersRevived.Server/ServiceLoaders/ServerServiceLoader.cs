@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Enums;
-using VoidHuntersRevived.Library.Extensions.Utilities;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Server.Scenes;
@@ -29,8 +28,7 @@ namespace VoidHuntersRevived.Server.ServiceLoaders
 
         public void ConfigureProvider(ServiceProvider provider)
         {
-            // Configure the console logging component...
-            provider.GetService<Logger>().ConfigureConsoleLogging();
+            // throw new NotImplementedException();
         }
     }
 }

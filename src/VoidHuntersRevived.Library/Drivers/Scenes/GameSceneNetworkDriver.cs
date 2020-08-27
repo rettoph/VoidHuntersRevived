@@ -12,6 +12,7 @@ using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.IO;
 
 namespace VoidHuntersRevived.Library.Drivers.Scenes
 {

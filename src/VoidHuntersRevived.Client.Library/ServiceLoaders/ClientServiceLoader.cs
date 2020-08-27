@@ -22,7 +22,6 @@ using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
-using VoidHuntersRevived.Library.Extensions.Utilities;
 using VoidHuntersRevived.Library.Layers;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Utilities;
@@ -102,8 +101,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
 
         public void ConfigureProvider(ServiceProvider provider)
         {
-            // Configure the console logging component...
-            provider.GetService<Logger>().ConfigureConsoleLogging();
+            // throw new NotImplementedException();
         }
     }
 }
