@@ -10,6 +10,7 @@ using VoidHuntersRevived.Library.Extensions.Farseer;
 using FarseerPhysics.Collision.Shapes;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
+using Guppy.IO.Extensions.log4net;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -62,7 +63,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             // Auto dispose of any fixtures within the given queue
             while (fixtures.Any())
             {
-                this.logger.LogTrace(() => $"Destroying RigidShipPart({this.Id}) Fixture");
+                this.log.Verbose(() => $"Destroying RigidShipPart({this.Id}) Fixture");
                 fixtures.Dequeue().Destroy();
             }
                 
@@ -70,7 +71,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             // Create new fixtures for all vertices contained in the configuration
             this.Configuration.Vertices.ForEach(data =>
             {
-                this.logger.LogTrace(() => $"Creating Fixture for RigidShipPart({this.Id}) on ShipPart({this.Root.Id})");
+                this.log.Verbose(() => $"Creating Fixture for RigidShipPart({this.Id}) on ShipPart({this.Root.Id})");
 
                 Vertices vertices = new Vertices(data);
                 vertices.Transform(this.LocalTransformation);

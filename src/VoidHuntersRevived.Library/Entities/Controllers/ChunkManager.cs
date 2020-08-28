@@ -18,6 +18,7 @@ using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.IO;
+using log4net;
 
 namespace VoidHuntersRevived.Library.Entities.Controllers
 {
@@ -103,7 +104,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #endregion
 
         #region Private Fields
-        private Logger _logger;
+        private ILog _logger;
         private List<Chunk> _cache;
         private ServiceProvider _provider;
         private WorldEntity _world;

@@ -11,6 +11,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.IO.Extensions.log4net;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -157,7 +158,7 @@ namespace VoidHuntersRevived.Library.Entities
                         this.Bridge.Ship = null;
                     }
 
-                    this.logger.LogTrace($"Ship({this.Id}) => Setting bridge to ShipPart<{bridge.GetType().Name}>({bridge.Id})");
+                    this.log.Verbose($"Ship({this.Id}) => Setting bridge to ShipPart<{bridge.GetType().Name}>({bridge.Id})");
                     this.Bridge = bridge;
                     if (this.Bridge != null)
                     { // Setup the new bridge...

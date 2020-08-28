@@ -2,6 +2,10 @@
 using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
+using Guppy.IO.Extensions.log4net;
+using log4net;
+using log4net.Appender;
+using log4net.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -60,6 +64,36 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddTransient<UserPlayer>();
             services.AddTransient<ShipController>();
             services.AddTransient<TractorBeam>();
+
+            services.AddConfiguration<ILog>((l, p, s) =>
+            {
+                l.ConfigureConsoleAppender(new ManagedColoredConsoleAppender.LevelColors()
+                {
+                    BackColor = ConsoleColor.Red,
+                    ForeColor = ConsoleColor.White,
+                    Level = Level.Fatal
+                }, new ManagedColoredConsoleAppender.LevelColors()
+                {
+                    ForeColor = ConsoleColor.Red,
+                    Level = Level.Error
+                }, new ManagedColoredConsoleAppender.LevelColors()
+                {
+                    ForeColor = ConsoleColor.Yellow,
+                    Level = Level.Warn
+                }, new ManagedColoredConsoleAppender.LevelColors()
+                {
+                    ForeColor = ConsoleColor.White,
+                    Level = Level.Info
+                }, new ManagedColoredConsoleAppender.LevelColors()
+                {
+                    ForeColor = ConsoleColor.Magenta,
+                    Level = Level.Debug
+                }, new ManagedColoredConsoleAppender.LevelColors()
+                {
+                    ForeColor = ConsoleColor.Cyan,
+                    Level = Level.Verbose
+                });
+            });
         }
 
         public void ConfigureProvider(ServiceProvider provider)

@@ -12,6 +12,7 @@ using VoidHuntersRevived.Library.Utilities;
 using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Enums;
 using Guppy.Collections;
+using Guppy.IO.Extensions.log4net;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -85,7 +86,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #region Helper Methods
         public void CleanChain(DirtyChainType direction)
         {
-            this.logger.LogTrace(() => $"Cleaning ({this.Id}) => {direction}");
+            this.log.Verbose(() => $"Cleaning ({this.Id}) => {direction}");
 
             // Recursively update all elements down the chain
             if (direction.HasFlag(DirtyChainType.Down))
@@ -93,7 +94,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 // Check the cached root value
                 if(this.Root != _root)
                 { // If the root has changed...
-                    this.logger.LogTrace(() => $"ShipPart({this.Id}) Root changed from ShipPart({_root?.Id}) to ShipPart({this.Root.Id})");
+                    this.log.Verbose(() => $"ShipPart({this.Id}) Root changed from ShipPart({_root?.Id}) to ShipPart({this.Root.Id})");
                     this.OnRootChanged?.Invoke(this, _root, this.Root);
                     _root = this.Root;
                 }
@@ -127,7 +128,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #region Event Handlers
         private void ConnectionNode_HandleMaleConnectionNodeAttached(ConnectionNode sender, ConnectionNode arg)
         {
-            this.logger.LogTrace(() => $"Attached ShipPart({this.Id}) to ShipPart({this.MaleConnectionNode.Target.Parent.Id}) FemaleNode({this.MaleConnectionNode.Target.Id})");
+            this.log.Verbose(() => $"Attached ShipPart({this.Id}) to ShipPart({this.MaleConnectionNode.Target.Parent.Id}) FemaleNode({this.MaleConnectionNode.Target.Id})");
 
             this.CleanChain(DirtyChainType.Both);
         }

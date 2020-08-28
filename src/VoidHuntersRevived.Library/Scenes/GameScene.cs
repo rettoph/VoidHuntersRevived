@@ -21,6 +21,7 @@ using VoidHuntersRevived.Library.Layers;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.IO;
+using log4net;
 
 namespace VoidHuntersRevived.Library.Scenes
 {
@@ -33,7 +34,7 @@ namespace VoidHuntersRevived.Library.Scenes
 
         #region Protected Attributes
         protected Settings settings { get; private set; }
-        protected Logger logger { get; private set; }
+        protected ILog log { get; private set; }
         protected Group group { get; private set; }
         #endregion
 
@@ -50,7 +51,7 @@ namespace VoidHuntersRevived.Library.Scenes
             _world = default(WorldEntity);
             _onWorldActions = default(Action<WorldEntity>);
 
-            this.logger = provider.GetService<Logger>();
+            this.log = provider.GetService<ILog>();
 
             this.group = provider.GetService<Peer>().Groups.GetOrCreateById(Guid.Empty);
 

@@ -13,6 +13,7 @@ using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.IO;
+using log4net;
 
 namespace VoidHuntersRevived.Library.Drivers.Scenes
 {
@@ -25,7 +26,7 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
     {
         #region Private Fields
         private Queue<NetIncomingMessage> _updates;
-        private Logger _logger;
+        private ILog _logger;
         #endregion
 
         #region Protected Fields
@@ -69,7 +70,7 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
                 im.Position -= 128;
                 var id = im.ReadGuid();
 
-                _logger.LogWarning($"Unable to update NetworkEntity({id})");
+                _logger.Warn($"Unable to update NetworkEntity({id})");
             }
         }
         #endregion

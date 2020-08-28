@@ -13,6 +13,8 @@ using VoidHuntersRevived.Library.Extensions.Farseer;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.IO;
+using log4net;
+using Guppy.IO.Extensions.log4net;
 
 namespace VoidHuntersRevived.Library.Entities.Controllers
 {
@@ -54,7 +56,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
         #region Private Fields
         private ChunkManager _chunks;
-        private Logger _logger;
+        private ILog _logger;
         #endregion
 
         #region Public Attributes
@@ -187,7 +189,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                     break;
             }
 
-            _logger.LogTrace(() => $"Attempted TractorBeam.ActionType({action.Type}) on ShipPart({action.Target?.Id}) and ended with TractorBeam.ActionType({response.Type})");
+            _logger.Verbose(() => $"Attempted TractorBeam.ActionType({action.Type}) on ShipPart({action.Target?.Id}) and ended with TractorBeam.ActionType({response.Type})");
             this.OnAction?.Invoke(this, response);
 
             return response;

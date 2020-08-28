@@ -13,6 +13,8 @@ using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.IO;
+using log4net;
+using Guppy.IO.Extensions.log4net;
 
 namespace VoidHuntersRevived.Library.Drivers.Scenes
 {
@@ -26,7 +28,7 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
         #region Private Fields
         private Queue<NetIncomingMessage> _creates;
         private Queue<NetIncomingMessage> _removes;
-        private Logger _logger;
+        private ILog _logger;
         private Byte _state;
         #endregion
 
@@ -90,12 +92,12 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
             // If the setup is complete...
             if (im.ReadBoolean())
             {
-                _logger.LogInformation(() => $"GameScene: Setup completed.\nCreates: {_creates.Count()}\nUpdates: {this.updates.Count()}\nRemoves: {_removes.Count()}");
+                _logger.Info(() => $"GameScene: Setup completed.\nCreates: {_creates.Count()}\nUpdates: {this.updates.Count()}\nRemoves: {_removes.Count()}");
                 this.driven.OnUpdate += this.Update;
             }
             else
             {
-                _logger.LogInformation(() => "GameScene: Setup started.");
+                _logger.Info(() => "GameScene: Setup started.");
             }
         }
 

@@ -15,6 +15,7 @@ using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.IO;
+using log4net;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities
 {
@@ -23,7 +24,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         #region Private Fields
         private EntityCollection _entities;
         private Vector2 _targetTarget;
-        private Logger _logger;
+        private ILog _logger;
         private Player _player;
         #endregion
 

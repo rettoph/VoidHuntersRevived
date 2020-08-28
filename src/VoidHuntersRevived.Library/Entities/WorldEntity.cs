@@ -88,7 +88,7 @@ namespace VoidHuntersRevived.Library.Entities
         #region Event Handlers
         private void HandleSizeChanged(WorldEntity sender, Vector2 arg)
         {
-            this.logger.LogInformation($"World Size Changed => {this.Size}");
+            this.log.Info($"World Size Changed => {this.Size}");
 
             // Destroy any pre-existing walls...
             while (_walls.Any())

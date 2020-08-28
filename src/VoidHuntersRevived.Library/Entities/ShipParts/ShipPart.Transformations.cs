@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.IO.Extensions.log4net;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -49,7 +50,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// </summary>
         protected virtual void UpdateLocalTranslation()
         {
-            this.logger.LogTrace($"Translating ShipPart({this.Id}) Matrices");
+            this.log.Verbose($"Translating ShipPart({this.Id}) Matrices");
 
             if (this.IsRoot)
             { // If the current part is the root, there is no need to track a translation matrix

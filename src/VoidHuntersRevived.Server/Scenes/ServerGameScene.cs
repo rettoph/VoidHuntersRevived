@@ -8,6 +8,7 @@ using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Extensions.System;
 using VoidHuntersRevived.Library.Scenes;
+using Guppy.IO.Extensions.log4net;
 
 namespace VoidHuntersRevived.Server.Scenes
 {
@@ -19,7 +20,7 @@ namespace VoidHuntersRevived.Server.Scenes
             base.PostInitialize(provider);
 
 
-            this.logger.LogDebug(() => "Server");
+            this.log.Debug(() => "Server");
 
             this.Entities.Create<WorldEntity>((w, p, c) =>
             {

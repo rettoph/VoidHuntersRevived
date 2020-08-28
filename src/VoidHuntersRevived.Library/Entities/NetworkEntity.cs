@@ -16,6 +16,8 @@ using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Enums;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.IO;
+using log4net;
+using Guppy.IO.Extensions.log4net;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -36,7 +38,7 @@ namespace VoidHuntersRevived.Library.Entities
         /// Simple reference to the global game settings.
         /// </summary>
         protected Settings settings { get; private set; }
-        protected Logger logger { get; private set; }
+        protected ILog log { get; private set; }
         #endregion
 
         #region Public Attributes
@@ -77,7 +79,7 @@ namespace VoidHuntersRevived.Library.Entities
             provider.Service(out _scene);
 
             this.settings = provider.GetService<Settings>();
-            this.logger = provider.GetService<Logger>();
+            this.log = provider.GetService<ILog>();
 
             // Create and setup a brand new action delegater instance...
             this.Actions = new MessageManager(this.BuildActionMessage);
@@ -88,7 +90,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.PostInitialize(provider);
 
-            this.logger.LogTrace(() => $"Created new NetworkEntity<{this.GetType().Name}>({this.Id}) => '{this.ServiceDescriptor.Name}'");
+            this.log.Verbose(() => $"Created new NetworkEntity<{this.GetType().Name}>({this.Id}) => '{this.ServiceDescriptor.Name}'");
         }
         #endregion
 
