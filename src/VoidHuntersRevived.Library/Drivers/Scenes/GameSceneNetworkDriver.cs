@@ -65,12 +65,11 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
             {
                 this.driven.Entities.GetById<NetworkEntity>(im.ReadGuid()).TryRead(im);
             }
-            catch(Exception e)
+            catch(NullReferenceException e)
             {
                 im.Position -= 128;
-                var id = im.ReadGuid();
 
-                _logger.Warn($"Unable to update NetworkEntity({id})");
+                _logger.Warn($"Unable to update NetworkEntity({im.ReadGuid()})");
             }
         }
         #endregion

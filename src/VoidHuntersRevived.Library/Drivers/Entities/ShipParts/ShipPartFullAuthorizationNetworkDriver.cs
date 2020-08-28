@@ -26,6 +26,8 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
             this.driven.MaleConnectionNode.OnAttached += this.HandleMaleConnectionNodeAttachmentChanged;
             this.driven.MaleConnectionNode.OnDetached += this.HandleMaleConnectionNodeAttachmentChanged;
             this.driven.OnControllerChanged += this.HandleControllerChanged;
+
+            this.driven.Actions.Set("male-connection-node", this.ReadMaleConnectionNode);
         }
 
         protected override void DisposeFull()
@@ -36,6 +38,8 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
             this.driven.MaleConnectionNode.OnAttached -= this.HandleMaleConnectionNodeAttachmentChanged;
             this.driven.MaleConnectionNode.OnDetached -= this.HandleMaleConnectionNodeAttachmentChanged;
             this.driven.OnControllerChanged -= this.HandleControllerChanged;
+
+            this.driven.Actions.Remove("male-connection-node");
         }
         #endregion
 
@@ -50,6 +54,15 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
                     m.Write(this.driven.MaleConnectionNode.Target.Index);
                 }
             });
+        }
+
+        private void ReadMaleConnectionNode(NetIncomingMessage im)
+        {
+            if (im.ReadBoolean())
+            { // Read message info
+                im.ReadGuid();
+                im.ReadInt32();
+            }
         }
         #endregion
 

@@ -16,6 +16,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             base.Configure(driven, provider);
 
+            this.driven.OnPreAuthorizationChanged += this.HandlePreAuthorizationChanged;
             this.driven.OnAuthorizationChanged += this.HandleAuthorizationChanged;
         }
         #endregion
@@ -27,7 +28,10 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
         #region Event Handlers
         private void HandleAuthorizationChanged(NetworkEntity sender, GameAuthorization old, GameAuthorization value)
-            => this.UpdateAuthorization(value);
+            => this.ConfigureAuthorization(value);
+
+        private void HandlePreAuthorizationChanged(NetworkEntity sender, GameAuthorization arg)
+            => this.DisposeAuthorization();
         #endregion
     }
 }

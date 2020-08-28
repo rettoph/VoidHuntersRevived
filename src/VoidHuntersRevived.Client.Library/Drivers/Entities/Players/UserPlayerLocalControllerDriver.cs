@@ -145,7 +145,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             if(arg == _peer.CurrentUser)
             {
                 // Give this specific user local authority...
-                this.driven.Authorization = GameAuthorization.Local;
+                this.driven.Authorization |= GameAuthorization.Local;
             }
         }
 

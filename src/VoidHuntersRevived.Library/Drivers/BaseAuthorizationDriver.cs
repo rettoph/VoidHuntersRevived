@@ -77,35 +77,32 @@ namespace VoidHuntersRevived.Library.Drivers
 
         protected void UpdateAuthorization(GameAuthorization authorization)
         {
-            this.Dispose(authorization);
+            this.DisposeAuthorization();
+            this.ConfigureAuthorization(authorization);
+        }
 
-            switch (_authorization)
-            {
-                case GameAuthorization.Full:
-                    this.DisposeFull();
-                    break;
-                case GameAuthorization.Local:
-                    this.DisposeLocal();
-                    break;
-                case GameAuthorization.Minimum:
-                    this.DisposeMinimum();
-                    break;
-            }
+        protected void DisposeAuthorization()
+        {
+            this.Dispose(_authorization);
 
+            if (_authorization.HasFlag(GameAuthorization.Full))
+                this.DisposeFull();
+            if (_authorization.HasFlag(GameAuthorization.Local))
+                this.DisposeLocal();
+            if (_authorization.HasFlag(GameAuthorization.Minimum))
+                this.DisposeMinimum();
+        }
+
+        protected void ConfigureAuthorization(GameAuthorization authorization)
+        {
             _authorization = authorization;
             this.Configure(_provider, _authorization);
-            switch (_authorization)
-            {
-                case GameAuthorization.Full:
-                    this.ConfigureFull(_provider);
-                    break;
-                case GameAuthorization.Local:
-                    this.ConfigureLocal(_provider);
-                    break;
-                case GameAuthorization.Minimum:
-                    this.ConfigureMinimum(_provider);
-                    break;
-            }
+            if (_authorization.HasFlag(GameAuthorization.Full))
+                this.ConfigureFull(_provider);
+            if (_authorization.HasFlag(GameAuthorization.Local))
+                this.ConfigureLocal(_provider);
+            if (_authorization.HasFlag(GameAuthorization.Minimum))
+                this.ConfigureMinimum(_provider);
         }
 
         protected virtual GameAuthorization GetDefaultAuthorization()

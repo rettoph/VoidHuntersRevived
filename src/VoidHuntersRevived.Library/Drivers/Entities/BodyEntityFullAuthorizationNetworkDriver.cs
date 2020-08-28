@@ -26,6 +26,8 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
             this.driven.OnUpdate += this.Update;
             this.driven.OnWrite += this.WritePosition;
+
+            this.driven.Actions.Set("update:position", this.ReadPosition);
         }
 
         protected override void DisposeFull()
@@ -34,6 +36,8 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
             this.driven.OnUpdate -= this.Update;
             this.driven.OnWrite -= this.WritePosition;
+
+            this.driven.Actions.Remove("update:position");
         }
         #endregion
 
@@ -50,6 +54,16 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         #region Network Methods
         private void WritePosition(NetOutgoingMessage om)
             => BodyEntityFullAuthorizationNetworkDriver.WritePosition(this.driven, om);
+
+        private void ReadPosition(NetIncomingMessage im)
+        {
+            // Nothing should happen when info is read on full control...
+            im.ReadVector2();
+            im.ReadSingle();
+
+            im.ReadVector2();
+            im.ReadSingle();
+        }
         #endregion
 
         #region Static Methods
