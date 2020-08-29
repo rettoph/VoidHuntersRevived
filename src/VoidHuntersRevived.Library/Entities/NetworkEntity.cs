@@ -55,8 +55,6 @@ namespace VoidHuntersRevived.Library.Entities
             {
                 if(value != _authorization)
                 {
-                    this.OnPreAuthorizationChanged?.Invoke(this, _authorization);
-
                     if (this.OnAuthorizationChanged == null)
                         _authorization = value;
                     else
@@ -70,7 +68,6 @@ namespace VoidHuntersRevived.Library.Entities
         #region Events
         public event NetIncomingMessageDelegate OnRead;
         public event NetOutgoingMessageDelegate OnWrite;
-        public event GuppyEventHandler<NetworkEntity, GameAuthorization> OnPreAuthorizationChanged;
         public event GuppyDeltaEventHandler<NetworkEntity, GameAuthorization> OnAuthorizationChanged;
         #endregion
 
