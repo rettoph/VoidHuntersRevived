@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
     /// Internal driver to manage special actions when the
     /// Game's Authrization level is set to full.
     /// </summary>
-    internal sealed class ShipPartFullAuthorizationNetworkDriver : NetworkEntityAuthorizationDriver<ShipPart>
+    internal sealed class ShipPartFullAuthorizationNetworkDriver : NetworkEntityNetworkDriver<ShipPart>
     {
         #region Lifecycle Methods
         protected override void ConfigureFull(ServiceProvider provider)
@@ -83,7 +83,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
         /// <param name="sender"></param>
         /// <param name="arg"></param>
         private void HandleControllerChanged(ShipPart sender, Controller arg)
-            => BodyEntityFullAuthorizationNetworkDriver.WritePosition(this.driven, this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 8));
+            => BodyEntityNetworkDriver.WritePosition(this.driven, this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 8));
         #endregion
     }
 }

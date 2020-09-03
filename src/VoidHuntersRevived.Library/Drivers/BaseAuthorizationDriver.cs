@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Library.Drivers
 
             _provider = provider;
 
-            this.UpdateAuthorization(this.GetDefaultAuthorization());
+            this.UpdateAuthorization(this.GetGameAuthorization());
         }
 
         protected override void Dispose()
@@ -75,6 +75,11 @@ namespace VoidHuntersRevived.Library.Drivers
 
         }
 
+        /// <summary>
+        /// Both dispose previous cached authorization and
+        /// setup the new value.
+        /// </summary>
+        /// <param name="authorization"></param>
         protected void UpdateAuthorization(GameAuthorization authorization)
         {
             this.DisposeAuthorization();
@@ -105,7 +110,7 @@ namespace VoidHuntersRevived.Library.Drivers
                 this.ConfigureMinimum(_provider);
         }
 
-        protected virtual GameAuthorization GetDefaultAuthorization()
+        protected virtual GameAuthorization GetGameAuthorization()
             => _provider.GetService<Settings>().Get<GameAuthorization>();
         #endregion
     }

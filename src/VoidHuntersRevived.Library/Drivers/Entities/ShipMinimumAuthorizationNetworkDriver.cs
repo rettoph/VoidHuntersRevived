@@ -19,7 +19,7 @@ using log4net;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities
 {
-    internal sealed class ShipMinimumAuthorizationNetworkDriver : NetworkEntityAuthorizationDriver<Ship>
+    internal sealed class ShipMinimumAuthorizationNetworkDriver : NetworkEntityNetworkDriver<Ship>
     {
         #region Private Fields
         private EntityCollection _entities;

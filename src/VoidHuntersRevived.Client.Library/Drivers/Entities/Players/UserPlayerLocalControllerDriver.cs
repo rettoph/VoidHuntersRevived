@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
     /// Simple driver that will manage local controls for 
     /// players owned by the current client.
     /// </summary>
-    internal sealed class UserPlayerLocalControllerDriver : NetworkEntityAuthorizationDriver<UserPlayer>
+    internal sealed class UserPlayerLocalControllerDriver : NetworkEntityNetworkDriver<UserPlayer>
     {
         #region Private Fields
         private Peer _peer;

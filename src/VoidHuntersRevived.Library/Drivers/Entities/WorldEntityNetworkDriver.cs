@@ -1,19 +1,30 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities;
-using Guppy.Network.Extensions.Lidgren;
-using System.Linq;
-using VoidHuntersRevived.Library.Utilities;
+using VoidHuntersRevived.Library.Enums;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities
 {
-    internal sealed class WorldEntityFullAuthorizationNetworkDriver : BaseAuthorizationDriver<WorldEntity>
+    /// <summary>
+    /// The world entity driver primarily responsible for handling
+    /// network messaging across all game authorization methods.
+    /// </summary>
+    internal sealed class WorldEntityNetworkDriver : NetworkEntityNetworkDriver<WorldEntity>
     {
         #region Lifecycle Methods
+        protected override void Configure(object driven, ServiceProvider provider)
+        {
+            base.Configure(driven, provider);
+
+            this.driven.Actions.Set("update:size", this.ReadSize);
+            this.AddAction("update:size", false, 64, (GameAuthorization.Minimum, this.ReadSize));
+        }
+
         protected override void ConfigureFull(ServiceProvider provider)
         {
             base.ConfigureFull(provider);
@@ -31,15 +42,15 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         }
         #endregion
 
-
-        #region Network Methods
+        #region Message Handlers
         private void WriteSize(NetOutgoingMessage om)
-        {
-            om.Write("update:size", m =>
+            => om.Write("update:size", m =>
             {
                 m.Write(this.driven.Size);
             });
-        }
+
+        private void ReadSize(NetIncomingMessage im)
+            => this.driven.Size = im.ReadVector2();
         #endregion
 
         #region Event Handlers

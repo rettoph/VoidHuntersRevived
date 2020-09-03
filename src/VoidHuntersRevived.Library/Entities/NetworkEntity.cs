@@ -107,7 +107,6 @@ namespace VoidHuntersRevived.Library.Entities
             this.Actions.Read(im);
             // Read actions
             this.OnRead?.Invoke(im);
-            
         }
 
         public void TryWrite(NetOutgoingMessage om)

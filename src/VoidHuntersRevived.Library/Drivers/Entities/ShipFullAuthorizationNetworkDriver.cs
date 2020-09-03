@@ -14,7 +14,7 @@ using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities
 {
-    internal sealed class ShipFullAuthorizationNetworkDriver : NetworkEntityAuthorizationDriver<Ship>
+    internal sealed class ShipFullAuthorizationNetworkDriver : NetworkEntityNetworkDriver<Ship>
     {
         #region Private Fields
         private Boolean _dirtyTarget;

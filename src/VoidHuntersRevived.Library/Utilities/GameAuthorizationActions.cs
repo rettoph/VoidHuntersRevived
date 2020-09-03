@@ -21,21 +21,27 @@ namespace VoidHuntersRevived.Library.Utilities
         #region Public Fields
         public readonly String Type;
         public Boolean Required { get; set; }
+        public Int32 SizeInBits { get; set; }
         #endregion
 
         #region Constructor
+        /// <summary>
+        /// Public constructor
+        /// </summary>
+        /// <param name="type">The name of the action beinf represented within the current contained.</param>
+        /// <param name="actions">A map of which actions to preform based on a GameAuthorization index.</param>
+        /// <param name="required">Whether or not the handler must be defined for all possible GameAuthorizations</param>
         internal GameAuthorizationActions(
             String type,
-            GameAuthorization authorization,
             Dictionary<GameAuthorization, Action<NetIncomingMessage>> actions,
-            Boolean required)
+            Boolean required = true,
+            Int32 sizeInBits = 0)
         {
             _actions = actions;
 
             this.Type = type;
             this.Required = required;
-
-            this.ConfigureAuthorization(authorization);
+            this.SizeInBits = sizeInBits;
         }
 
         public void Dispose()
@@ -55,7 +61,7 @@ namespace VoidHuntersRevived.Library.Utilities
         /// <param name="sender"></param>
         /// <param name="old"></param>
         /// <param name="value"></param>
-        private void ConfigureAuthorization(GameAuthorization authorization)
+        public void ConfigureAuthorization(GameAuthorization authorization)
         {
             if (_actions.ContainsKey(authorization))
                 _action = _actions[authorization];
@@ -67,13 +73,8 @@ namespace VoidHuntersRevived.Library.Utilities
 
         private void DefaultOptionalAction(NetIncomingMessage im)
         {
-            // Just do nothing...
-        }
-
-        private void DefaultRequiredAction(NetIncomingMessage im)
-        {
-            // Throw an error...
-            
+            // Just skip based on message size
+            im.Position += this.SizeInBits;
         }
         #endregion
     }

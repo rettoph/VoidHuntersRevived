@@ -10,7 +10,7 @@ using Guppy.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
 {
-    internal sealed class ShipPartMinimumAuthorizationNetworkDriver : NetworkEntityAuthorizationDriver<ShipPart>
+    internal sealed class ShipPartMinimumAuthorizationNetworkDriver : NetworkEntityNetworkDriver<ShipPart>
     {
         #region Private Fields
         private EntityCollection _entities;
