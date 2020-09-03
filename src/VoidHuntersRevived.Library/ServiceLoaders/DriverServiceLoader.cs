@@ -34,13 +34,10 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddAndBindDriver<UserPlayer, UserPlayerFullAuthorizationNetworkDriver>(p => new UserPlayerFullAuthorizationNetworkDriver());
             services.AddAndBindDriver<UserPlayer, UserPlayerMinimumAuthorizationNetworkDriver>(p => new UserPlayerMinimumAuthorizationNetworkDriver());
             services.AddAndBindDriver<WorldEntity, WorldEntityNetworkDriver>(p => new WorldEntityNetworkDriver());
-            // services.AddAndBindDriver<BodyEntity, BodyEntityFullAuthorizationNetworkDriver>(p => new BodyEntityFullAuthorizationNetworkDriver());
-            // services.AddAndBindDriver<BodyEntity, BodyEntityMinimumAuthorizationNetworkDriver>(p => new BodyEntityMinimumAuthorizationNetworkDriver());
             services.AddAndBindDriver<BodyEntity, BodyEntityNetworkDriver>(p => new BodyEntityNetworkDriver());
             services.AddAndBindDriver<Ship, ShipFullAuthorizationNetworkDriver>(p => new ShipFullAuthorizationNetworkDriver());
             services.AddAndBindDriver<Ship, ShipMinimumAuthorizationNetworkDriver>(p => new ShipMinimumAuthorizationNetworkDriver());
-            services.AddAndBindDriver<ShipPart, ShipPartFullAuthorizationNetworkDriver>(p => new ShipPartFullAuthorizationNetworkDriver());
-            services.AddAndBindDriver<ShipPart, ShipPartMinimumAuthorizationNetworkDriver>(p => new ShipPartMinimumAuthorizationNetworkDriver());
+            services.AddAndBindDriver<ShipPart, ShipPartNetworkDriver>(p => new ShipPartNetworkDriver());
         }
 
         public void ConfigureProvider(ServiceProvider provider)

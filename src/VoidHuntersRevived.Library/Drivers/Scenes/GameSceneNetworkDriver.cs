@@ -52,7 +52,6 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
         #region Frame Methods
         protected virtual void Update(GameTime gameTime)
         {
-            var u = _updates.Count;
             while (_updates.Any())
                 this.UpdateNetworkEntity(_updates.Dequeue());
         }

@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             base.Configure(driven, provider);
 
             this.driven.Actions.Set("update:size", this.ReadSize);
-            this.AddAction("update:size", false, 64, (GameAuthorization.Minimum, this.ReadSize));
+            this.AddAction("update:size", this.SkipSize, (GameAuthorization.Minimum, this.ReadSize));
         }
 
         protected override void ConfigureFull(ServiceProvider provider)
@@ -51,6 +51,9 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
         private void ReadSize(NetIncomingMessage im)
             => this.driven.Size = im.ReadVector2();
+
+        private void SkipSize(NetIncomingMessage im)
+            => im.Position += 64;
         #endregion
 
         #region Event Handlers

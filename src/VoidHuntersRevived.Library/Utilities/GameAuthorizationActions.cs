@@ -16,12 +16,11 @@ namespace VoidHuntersRevived.Library.Utilities
         #region Private Fields
         private Dictionary<GameAuthorization, Action<NetIncomingMessage>> _actions;
         private Action<NetIncomingMessage> _action;
+        private Action<NetIncomingMessage> _defaultAction;
         #endregion
 
         #region Public Fields
         public readonly String Type;
-        public Boolean Required { get; set; }
-        public Int32 SizeInBits { get; set; }
         #endregion
 
         #region Constructor
@@ -29,19 +28,17 @@ namespace VoidHuntersRevived.Library.Utilities
         /// Public constructor
         /// </summary>
         /// <param name="type">The name of the action beinf represented within the current contained.</param>
+        /// <param name="defaultAction">The default action to run if none is defined.</param>
         /// <param name="actions">A map of which actions to preform based on a GameAuthorization index.</param>
-        /// <param name="required">Whether or not the handler must be defined for all possible GameAuthorizations</param>
         internal GameAuthorizationActions(
             String type,
-            Dictionary<GameAuthorization, Action<NetIncomingMessage>> actions,
-            Boolean required = true,
-            Int32 sizeInBits = 0)
+            Action<NetIncomingMessage> defaultAction,
+            Dictionary<GameAuthorization, Action<NetIncomingMessage>> actions)
         {
             _actions = actions;
+            _defaultAction = defaultAction;
 
             this.Type = type;
-            this.Required = required;
-            this.SizeInBits = sizeInBits;
         }
 
         public void Dispose()
@@ -65,17 +62,12 @@ namespace VoidHuntersRevived.Library.Utilities
         {
             if (_actions.ContainsKey(authorization))
                 _action = _actions[authorization];
-            else if (this.Required)
-                throw new InvalidOperationException($"No Action({this.Type}) defined for GameAuthorization<{authorization}>");
             else
                 _action = this.DefaultOptionalAction;
         }
 
         private void DefaultOptionalAction(NetIncomingMessage im)
-        {
-            // Just skip based on message size
-            im.Position += this.SizeInBits;
-        }
+            => _defaultAction?.Invoke(im);
         #endregion
     }
 }

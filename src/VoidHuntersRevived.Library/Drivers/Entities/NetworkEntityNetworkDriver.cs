@@ -49,14 +49,13 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         /// </summary>
         /// <param name="type"></param>
         /// <param name="map"></param>
-        protected void AddAction(String type, Boolean required = false, Int32 sizeInBits = 0, params(GameAuthorization authorization, Action<NetIncomingMessage> handler)[] map)
+        protected void AddAction(String type, Action<NetIncomingMessage> defaultAction, params(GameAuthorization authorization, Action<NetIncomingMessage> action)[] map)
         {
             // Create new GameAuthorizaion instance based on recieved authorization handler map
             var action = new GameAuthorizationActions(
                 type: type, 
-                actions: map.ToDictionary(keySelector: kvp => kvp.authorization, elementSelector: kvp => kvp.handler), 
-                required: required,
-                sizeInBits: sizeInBits);
+                defaultAction: defaultAction,
+                actions: map.ToDictionary(keySelector: kvp => kvp.authorization, elementSelector: kvp => kvp.action));
 
             this.driven.Actions.Set(action.Type, action.DoAction);
             action.ConfigureAuthorization(this.GetGameAuthorization());

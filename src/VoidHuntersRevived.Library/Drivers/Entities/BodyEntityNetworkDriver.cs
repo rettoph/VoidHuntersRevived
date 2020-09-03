@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
             _timer = new ActionTimer(150);
 
-            this.AddAction("update:position", false, 192, (GameAuthorization.Minimum, this.ReadPosition));
+            this.AddAction("update:position", this.SkipPosition, (GameAuthorization.Minimum, this.ReadPosition));
         }
 
         protected override void ConfigureFull(ServiceProvider provider)
@@ -116,6 +116,9 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             this.driven.master.LinearVelocity = im.ReadVector2();
             this.driven.master.AngularVelocity = im.ReadSingle();
         }
+
+        private void SkipPosition(NetIncomingMessage im)
+            => im.Position += 192;
         #endregion
 
         #region Static Methods
