@@ -19,6 +19,10 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
+using System.Collections.Generic;
+using Guppy.Extensions.Collections;
+using static VoidHuntersRevived.Client.Library.Services.KeyService;
+using VoidHuntersRevived.Client.Library.Services;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 {
@@ -34,6 +38,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         private Sensor _sensor;
         private ActionTimer _targetSender;
         private Cursor _cursor;
+        private KeyService _keys;
+        private Dictionary<Keys, Ship.Direction> _controls;
         #endregion
 
         #region Lifecycle Methods
@@ -47,6 +53,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             provider.Service(out _camera);
             provider.Service(out _sensor);
             provider.Service(out _cursor);
+            provider.Service(out _keys);
 
             this.driven.OnUserChanged += this.HandleUserChanged;
         }
@@ -58,6 +65,20 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             this.driven.OnUpdate += this.Update;
             _cursor.OnPressed += this.HandleCursorPressed;
             _cursor.OnReleased += this.HandleCursorReleased;
+
+            _controls = new Dictionary<Keys, Ship.Direction>();
+            _controls.Add(Keys.W, Ship.Direction.Forward);
+            _controls.Add(Keys.D, Ship.Direction.TurnRight);
+            _controls.Add(Keys.S, Ship.Direction.Backward);
+            _controls.Add(Keys.A, Ship.Direction.TurnLeft);
+            _controls.Add(Keys.Q, Ship.Direction.Left);
+            _controls.Add(Keys.E, Ship.Direction.Right);
+
+            _controls.ForEach(map =>
+            {
+                _keys[map.Key].OnKeyPressed += this.HandleKeyStateChanged;
+                _keys[map.Key].OnKeyReleased += this.HandleKeyStateChanged;
+            });
         }
 
         protected override void Dispose()
@@ -72,6 +93,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             this.driven.OnUpdate -= this.Update;
             _cursor.OnPressed -= this.HandleCursorPressed;
             _cursor.OnReleased -= this.HandleCursorReleased;
+
+            _controls.ForEach(map =>
+            {
+                _keys[map.Key].OnKeyPressed -= this.HandleKeyStateChanged;
+                _keys[map.Key].OnKeyReleased -= this.HandleKeyStateChanged;
+            });
         }
         #endregion
 
@@ -80,15 +107,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         {
             if(this.driven.Ship != null)
             {
-                // Update ship directions...
-                var kState = Keyboard.GetState();
-                this.TrySetShipDirection(Ship.Direction.Forward, kState.IsKeyDown(Keys.W));
-                this.TrySetShipDirection(Ship.Direction.TurnRight, kState.IsKeyDown(Keys.D));
-                this.TrySetShipDirection(Ship.Direction.Backward, kState.IsKeyDown(Keys.S));
-                this.TrySetShipDirection(Ship.Direction.TurnLeft, kState.IsKeyDown(Keys.A));
-                this.TrySetShipDirection(Ship.Direction.Left, kState.IsKeyDown(Keys.Q));
-                this.TrySetShipDirection(Ship.Direction.Right, kState.IsKeyDown(Keys.E));
-
                 this.driven.Ship.WorldTarget = _sensor.Position;
                 _targetSender.Update(gameTime, () =>
                 { // Attempt to send the newest target value...
@@ -154,6 +172,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 
         private void HandleCursorReleased(Cursor sender, Cursor.Button arg)
             => this.TryDeselectShipTractorBeam();
+
+        /// <summary>
+        /// Manage a mapped control key being pressed.
+        /// </summary>
+        /// <param name="key"></param>
+        private void HandleKeyStateChanged(KeyManager key)
+            => this.TrySetShipDirection(_controls[key.Key], key.Pressed);
         #endregion
 
         #region Network Methods
