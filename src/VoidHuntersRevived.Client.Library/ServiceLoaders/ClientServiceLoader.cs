@@ -15,6 +15,7 @@ using VoidHuntersRevived.Client.Library.Drivers.Layers;
 using VoidHuntersRevived.Client.Library.Drivers.Scenes;
 using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Client.Library.Pages;
+using VoidHuntersRevived.Client.Library.Services;
 using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Entities;
@@ -41,6 +42,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddFactory<Trail>(p => new Trail());
             services.AddFactory<TrailSegment>(p => new TrailSegment(p));
             services.AddFactory<TitlePage>(p => new TitlePage());
+            services.AddFactory<KeyService>(p => new KeyService());
 
             // Configure service lifetimes...
             services.AddScoped<FarseerCamera2D>();
@@ -50,6 +52,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddTransient<Trail>();
             services.AddTransient<TrailSegment>();
             services.AddTransient<TitlePage>();
+            services.AddSingleton<KeyService>();
 
             services.AddGame<ClientVoidHuntersRevivedGame>(p => new ClientVoidHuntersRevivedGame());
 

@@ -9,6 +9,8 @@ using VoidHuntersRevived.Library;
 using VoidHuntersRevived.Library.Scenes;
 using Guppy.Extensions.DependencyInjection;
 using VoidHuntersRevived.Library.Utilities;
+using Microsoft.Xna.Framework;
+using VoidHuntersRevived.Client.Library.Services;
 
 namespace VoidHuntersRevived.Client.Library
 {
@@ -37,6 +39,9 @@ namespace VoidHuntersRevived.Client.Library
             base.Initialize(provider);
 
             this.Scenes.Create<GameScene>();
+
+            // Start the key service...
+            provider.GetService<KeyService>().TryStart();
         }
         #endregion
     }

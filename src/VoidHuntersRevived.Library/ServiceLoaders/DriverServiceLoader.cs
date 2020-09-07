@@ -29,8 +29,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddAndBindDriver<GameScene, GameSceneFullAuthorityNetworkDriver>(p => new GameSceneFullAuthorityNetworkDriver());
             services.AddAndBindDriver<GameScene, GameSceneMinimumAuthorityNetworkDriver>(p => new GameSceneMinimumAuthorityNetworkDriver());
 
-            services.AddAndBindDriver<Player, PlayerFullAuthorizationNetworkDriver>(p => new PlayerFullAuthorizationNetworkDriver());
-            services.AddAndBindDriver<Player, PlayerMinimumAuthorizationNetworkDriver>(p => new PlayerMinimumAuthorizationNetworkDriver());
+            services.AddAndBindDriver<Player, PlayerNetworkDriver>(p => new PlayerNetworkDriver());
             services.AddAndBindDriver<UserPlayer, UserPlayerFullAuthorizationNetworkDriver>(p => new UserPlayerFullAuthorizationNetworkDriver());
             services.AddAndBindDriver<UserPlayer, UserPlayerMinimumAuthorizationNetworkDriver>(p => new UserPlayerMinimumAuthorizationNetworkDriver());
             services.AddAndBindDriver<WorldEntity, WorldEntityNetworkDriver>(p => new WorldEntityNetworkDriver());

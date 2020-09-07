@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
             _timer = new ActionTimer(150);
 
-            this.AddAction("update:position", this.SkipPosition, (GameAuthorization.Minimum, this.ReadPosition));
+            this.AddAction("update:position", this.ReadPosition, (GameAuthorization.Full, this.SkipPosition));
         }
 
         protected override void ConfigureFull(ServiceProvider provider)
@@ -73,7 +73,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
         private void MinimumUpdate(GameTime gameTime)
         {
-            if (this.driven.Authorization == GameAuthorization.Minimum)
+            if (this.driven.Authorization.HasFlag(GameAuthorization.Minimum))
             {
                 var positionDif = Vector2.Distance(this.driven.slave.Position, this.driven.master.Position);
                 var rotationDif = MathHelper.Distance(this.driven.slave.Rotation, this.driven.master.Rotation);
@@ -110,8 +110,8 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
         private void ReadPosition(NetIncomingMessage im)
         {
-            this.driven.Position = im.ReadVector2();
-            this.driven.Rotation = im.ReadSingle();
+            this.driven.master.Position = im.ReadVector2();
+            this.driven.master.Rotation = im.ReadSingle();
 
             this.driven.master.LinearVelocity = im.ReadVector2();
             this.driven.master.AngularVelocity = im.ReadSingle();

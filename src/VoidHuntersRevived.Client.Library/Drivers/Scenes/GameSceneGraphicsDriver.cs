@@ -10,11 +10,13 @@ using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Entities;
+using VoidHuntersRevived.Client.Library.Services;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Drivers;
 using VoidHuntersRevived.Library.Entities;
@@ -30,8 +32,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
         private GameWindow _window;
         private GraphicsDevice _graphics;
         private BasicEffect _ambient;
-        private DebugViewXNA _debugMaster;
-        private DebugViewXNA _debugSlave;
         private FarseerCamera2D _camera;
         private Cursor _cursor;
         private ContentManager _content;
@@ -40,9 +40,17 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
         private ChunkManager _chunks;
         private Texture2D[] _backgrounds;
         private SpriteBatch _spriteBatch;
+        private GameScene _scene;
 
         private Vector2 _viewportSize;
         private Rectangle _viewportBounds;
+
+        private DebugViewXNA _debugMaster;
+        private DebugViewXNA _debugSlave;
+        private Boolean _renderMaster;
+        private Boolean _renderSlave;
+
+        private KeyService _keys;
         #endregion
 
         #region Lifecycle Methods
@@ -76,6 +84,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
             provider.Service(out _sensor);
             provider.Service(out _chunks);
             provider.Service(out _spriteBatch);
+            provider.Service(out _keys);
+            provider.Service(out _scene);
 
             _ambient = new BasicEffect(_graphics);
 
@@ -85,11 +95,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
             _cursor.OnScrolled += this.HandleCursorScroll;
             this.driven.OnPreDraw += this.PreDraw;
             _window.ClientSizeChanged += this.HandleClientSizeChanged;
+            _keys[Keys.F1].OnKeyPressed += this.OnKeyPressed;
+            _keys[Keys.F2].OnKeyPressed += this.OnKeyPressed;
 
-            provider.GetService<GameScene>().IfOrOnWorld(world =>
+            _scene.IfOrOnWorld(world =>
             { // Setup world rendering after a world instance is created
-                this.driven.OnDraw += this.Draw;
-
                 _debugMaster = new DebugViewXNA(world.Master);
                 _debugMaster.LoadContent(_graphics, _content);
 
@@ -115,9 +125,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
         {
             base.DisposeMinimum();
 
-            this.driven.OnDraw -= this.Draw;
             this.driven.OnPreDraw -= this.PreDraw;
             _window.ClientSizeChanged -= this.HandleClientSizeChanged;
+            _keys[Keys.F1].OnKeyPressed -= this.OnKeyPressed;
+            _keys[Keys.F2].OnKeyPressed -= this.OnKeyPressed;
         }
         #endregion
 
@@ -150,10 +161,14 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
             _spriteBatch.End();
         }
 
-        private void Draw(GameTime gameTime)
+        private void DrawMaster(GameTime gameTime)
         {
-            // _debugMaster.RenderDebugData(_camera.Projection, _camera.View);
-            // _debugSlave.RenderDebugData(_camera.Projection, _camera.View);
+            _debugMaster.RenderDebugData(_camera.Projection, _camera.View);
+        }
+
+        private void DrawSlave(GameTime gameTime)
+        {
+            _debugSlave.RenderDebugData(_camera.Projection, _camera.View);
         }
         #endregion
 
@@ -166,6 +181,33 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
 
         private void HandleClientSizeChanged(object sender, EventArgs e)
             => this.CleanViewport();
+
+        private void OnKeyPressed(KeyService.KeyManager manager)
+        {
+            switch(manager.Key)
+            {
+                case Keys.F1:
+                    _renderMaster = !_renderMaster;
+                    _scene.IfOrOnWorld(w =>
+                    { // Ensure that the world exists before this stage...
+                        if (_renderMaster)
+                            this.driven.OnDraw += this.DrawMaster;
+                        else
+                            this.driven.OnDraw -= this.DrawMaster;
+                    });
+                    break;
+                case Keys.F2:
+                    _renderSlave = !_renderSlave;
+                    _scene.IfOrOnWorld(w =>
+                    { // Ensure that the world exists before this stage...
+                        if (_renderSlave)
+                            this.driven.OnDraw += this.DrawSlave;
+                        else
+                            this.driven.OnDraw -= this.DrawSlave;
+                    });
+                    break;
+            }
+        }
         #endregion
     }
 }

@@ -64,7 +64,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         #region Frame Methods
         private void Update(GameTime gameTime)
         {
-            if(this.driven.Authorization == GameAuthorization.Local)
+            if(!this.driven.Authorization.HasFlag(GameAuthorization.Local))
                 this.driven.Target = Vector2.Lerp(this.driven.Target, _targetTarget, Math.Min(1, ShipMinimumAuthorizationNetworkDriver.TargetLerpStrength * (Single)gameTime.ElapsedGameTime.TotalMilliseconds));
         }
         #endregion
