@@ -85,11 +85,6 @@ namespace VoidHuntersRevived.Library.Entities
         /// </summary>
         public ShipPart Bridge { get; private set; }
 
-        /// <summary>
-        /// The current active Direction flags.
-        /// </summary>
-        public Direction ActiveDirections { get; private set; }
-
         public TractorBeam TractorBeam { get; private set; }
 
         public IEnumerable<ConnectionNode> OpenFemaleNodes => _openFemaleNodes;
@@ -100,10 +95,7 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Events
-        public delegate void OnDirectionChangedDelegate(Ship sender, Ship.Direction direction, Boolean value);
-
         public event GuppyDeltaEventHandler<Ship, ShipPart> OnBridgeChanged;
-        public event OnDirectionChangedDelegate OnDirectionChanged;
         public event GuppyEventHandler<Ship, Vector2> OnTargetChanged;
         public event GuppyDeltaEventHandler<Ship, Player> OnPlayerChanged;
         #endregion
@@ -122,6 +114,10 @@ namespace VoidHuntersRevived.Library.Entities
 
             this.OnPlayerChanged += this.HandlePlayerChanged;
             this.OnAuthorizationChanged += this.HandleAuthorizationChanged;
+
+            // Initialize partial classes.
+            this.Events_PreIninitialize(provider);
+            this.Directions_PreInitialize(provider);
         }
 
         protected override void Dispose()
@@ -130,6 +126,10 @@ namespace VoidHuntersRevived.Library.Entities
 
             this.OnPlayerChanged -= this.HandlePlayerChanged;
             this.OnAuthorizationChanged -= this.HandleAuthorizationChanged;
+
+            // Dispose partial classes
+            this.Events_Dispose();
+            this.Directions_Dispose();
         }
         #endregion
 
@@ -202,28 +202,7 @@ namespace VoidHuntersRevived.Library.Entities
             return false;
         }
 
-        /// <summary>
-        /// Set a specified directional flag.
-        /// </summary>
-        /// <param name="direction"></param>
-        /// <param name="value"></param>
-        public Boolean TrySetDirection(Direction direction, Boolean value)
-        {
-            if (value && !this.ActiveDirections.HasFlag(direction))
-            {
-                this.ActiveDirections |= direction;
-                this.OnDirectionChanged?.Invoke(this, direction, value);
-                return true;
-            }
-            else if (!value && this.ActiveDirections.HasFlag(direction))
-            {
-                this.ActiveDirections &= ~direction;
-                this.OnDirectionChanged?.Invoke(this, direction, value);
-                return true;
-            }
 
-            return false;
-        }
 
         private void LoadOpenFemaleNodes()
         {

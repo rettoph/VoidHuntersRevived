@@ -10,6 +10,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Events;
 using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities
@@ -35,10 +36,11 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             this.driven.OnWrite += this.WriteDirections;
             this.driven.OnWrite += this.WriteUpdateTarget;
             this.driven.OnBridgeChanged += this.HandleBridgeChanged;
-            this.driven.OnDirectionChanged += this.HandleDirectionChanged;
             this.driven.OnTargetChanged += this.HandleTargetChanged;
             this.driven.TractorBeam.OnSelected += this.HandleTractorBeamSelected;
             this.driven.TractorBeam.OnDeselected += this.HandleTractorBeamDeselected;
+
+            this.driven.Events[ShipEventType.Direction].OnEvent += this.HandleDirectionChanged;
         }
 
         protected override void DisposeFull()
@@ -51,10 +53,11 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             this.driven.OnWrite -= this.WriteDirections;
             this.driven.OnWrite -= this.WriteUpdateTarget;
             this.driven.OnBridgeChanged -= this.HandleBridgeChanged;
-            this.driven.OnDirectionChanged -= this.HandleDirectionChanged;
             this.driven.OnTargetChanged -= this.HandleTargetChanged;
             this.driven.TractorBeam.OnSelected -= this.HandleTractorBeamSelected;
             this.driven.TractorBeam.OnDeselected -= this.HandleTractorBeamDeselected;
+
+            this.driven.Events[ShipEventType.Direction].OnEvent -= this.HandleDirectionChanged;
         }
         #endregion
 
@@ -75,11 +78,11 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
                 om.Write(this.driven.Bridge);
             });
 
-        private void WriteUpdateDirection(NetOutgoingMessage om, Ship.Direction direction, Boolean value)
+        private void WriteUpdateDirection(NetOutgoingMessage om, Ship.Direction direction, Boolean state)
             => om.Write("update:direction", m =>
             {
                 om.Write((Byte)direction);
-                om.Write(value);
+                om.Write(state);
             });
 
         private void WriteDirections(NetOutgoingMessage om)
@@ -112,8 +115,11 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         private void HandleBridgeChanged(Ship sender, ShipPart old, ShipPart value)
             => this.WriteUpdateBridge(this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 4));
 
-        private void HandleDirectionChanged(Ship sender, Ship.Direction direction, bool value)
-            => this.WriteUpdateDirection(this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 4), direction, value);
+        private void HandleDirectionChanged(Ship ship, ShipEventArgs args)
+            => this.WriteUpdateDirection(
+                om: this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 4), 
+                direction: args.DirectionData.Direction, 
+                state: args.DirectionData.State);
 
         private void HandleTargetChanged(Ship sender, Vector2 arg)
             => _dirtyTarget = true;
