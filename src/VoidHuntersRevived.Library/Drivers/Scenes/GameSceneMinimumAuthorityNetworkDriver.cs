@@ -15,6 +15,7 @@ using Guppy.Extensions.DependencyInjection;
 using Guppy.IO;
 using log4net;
 using Guppy.IO.Extensions.log4net;
+using Guppy.Network.Utilities.Messages;
 
 namespace VoidHuntersRevived.Library.Drivers.Scenes
 {
@@ -44,9 +45,9 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
             _creates = new Queue<NetIncomingMessage>();
             _removes = new Queue<NetIncomingMessage>();
 
-            this.driven.Group.Messages.Set("scene:setup", this.HandleSceneSetupMessage);
-            this.driven.Group.Messages.Set("entity:create", this.HandleEntityCreateMessage);
-            this.driven.Group.Messages.Set("entity:remove", this.HandleEntityRemoveMessage);
+            this.driven.Group.Messages.Add("scene:setup", this.HandleSceneSetupMessage);
+            this.driven.Group.Messages.Add("entity:create", this.HandleEntityCreateMessage);
+            this.driven.Group.Messages.Add("entity:remove", this.HandleEntityRemoveMessage);
         }
 
         protected override void Dispose()
@@ -101,16 +102,16 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
             }
         }
 
-        private Boolean HandleEntityCreateMessage(NetIncomingMessage im)
+        private MessageManager.ReaderResponse HandleEntityCreateMessage(NetIncomingMessage im)
         {
             _creates.Enqueue(im);
-            return false;
+            return MessageManager.ReaderResponse.Stop;
         }
 
-        private Boolean HandleEntityRemoveMessage(NetIncomingMessage im)
+        private MessageManager.ReaderResponse HandleEntityRemoveMessage(NetIncomingMessage im)
         {
             _removes.Enqueue(im);
-            return false;
+            return MessageManager.ReaderResponse.Stop;
         }
         #endregion
     }

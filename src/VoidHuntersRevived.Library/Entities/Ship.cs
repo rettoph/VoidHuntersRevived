@@ -12,10 +12,11 @@ using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.IO.Extensions.log4net;
+using Guppy.Collections;
 
 namespace VoidHuntersRevived.Library.Entities
 {
-    public class Ship : NetworkEntity
+    public partial class Ship : NetworkEntity
     {
         #region Enums
         [Flags]
@@ -36,6 +37,7 @@ namespace VoidHuntersRevived.Library.Entities
         private ShipController _controller;
         private IList<ConnectionNode> _openFemaleNodes;
         private Player _player;
+        private EntityCollection _entities;
         #endregion
 
         #region Public Attributes
@@ -93,6 +95,8 @@ namespace VoidHuntersRevived.Library.Entities
         public IEnumerable<ConnectionNode> OpenFemaleNodes => _openFemaleNodes;
 
         public Color Color => Color.Cyan;
+
+        public String Title { get; set; } = "Unnamed Ship";
         #endregion
 
         #region Events
@@ -112,6 +116,7 @@ namespace VoidHuntersRevived.Library.Entities
             _openFemaleNodes = new List<ConnectionNode>();
 
             provider.Service(out _controller);
+            provider.Service(out _entities);
 
             this.TractorBeam = provider.GetService<TractorBeam>((t, p, c) => t.Ship = this);
 

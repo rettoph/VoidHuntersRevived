@@ -14,6 +14,7 @@ using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.IO;
 using log4net;
+using Guppy.Network.Utilities.Messages;
 
 namespace VoidHuntersRevived.Library.Drivers.Scenes
 {
@@ -40,7 +41,7 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
 
             provider.Service(out _logger);
 
-            this.driven.Group.Messages.Set("entity:update", this.HandleEntityUpdateMessage);
+            this.driven.Group.Messages.Add("entity:update", this.HandleEntityUpdateMessage);
         }
 
         protected void DisposeBase()
@@ -74,10 +75,10 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
         #endregion
 
         #region Message Handlers
-        private Boolean HandleEntityUpdateMessage(NetIncomingMessage im)
+        private MessageManager.ReaderResponse HandleEntityUpdateMessage(NetIncomingMessage im)
         {
             _updates.Enqueue(im);
-            return false;
+            return MessageManager.ReaderResponse.Stop;
         }
         #endregion
     }

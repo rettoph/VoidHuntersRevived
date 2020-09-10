@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using Guppy.Extensions.Collections;
 using static VoidHuntersRevived.Client.Library.Services.KeyService;
 using VoidHuntersRevived.Client.Library.Services;
+using System.IO;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 {
@@ -79,6 +80,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
                 _keys[map.Key].OnKeyPressed += this.HandleKeyStateChanged;
                 _keys[map.Key].OnKeyReleased += this.HandleKeyStateChanged;
             });
+
+            _keys[Keys.F3].OnKeyPressed += this.SaveShipToFile;
         }
 
         protected override void Dispose()
@@ -179,6 +182,24 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         /// <param name="key"></param>
         private void HandleKeyStateChanged(KeyManager key)
             => this.TrySetShipDirection(_controls[key.Key], key.Pressed);
+
+        /// <summary>
+        /// Save the current ship to a file.
+        /// </summary>
+        /// <param name="key"></param>
+        private void SaveShipToFile(KeyManager key)
+        {
+            Directory.CreateDirectory("ships");
+            using (FileStream file = File.Open("ships/test.vh", FileMode.Create))
+            {
+                using(MemoryStream ship = this.driven.Ship.Export())
+                {
+                    var data = ship.ToArray();
+                    file.Write(data, 0, data.Length);
+                    file.Flush();
+                }
+            }
+        }
         #endregion
 
         #region Network Methods

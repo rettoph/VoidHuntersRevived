@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
 
             provider.Service(out _scene);
 
-            this.driven.Actions.Set("update:user", this.ReadUser);
+            this.driven.Actions.Add("update:user", this.ReadUser);
         }
 
         protected override void DisposeMinimum()

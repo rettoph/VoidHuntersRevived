@@ -42,10 +42,10 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
             this.driven.OnUpdate += this.Update;
 
-            this.driven.Actions.Set("update:bridge", this.ReadUpdateBridge);
-            this.driven.Actions.Set("update:direction", this.ReadUpdateDirection);
-            this.driven.Actions.Set("update:target", this.ReadUpdateTarget);
-            this.driven.Actions.Set("tractor-beam:action", this.ReadTractorBeamAction);
+            this.driven.Actions.Add("update:bridge", this.ReadUpdateBridge);
+            this.driven.Actions.Add("update:direction", this.ReadUpdateDirection);
+            this.driven.Actions.Add("update:target", this.ReadUpdateTarget);
+            this.driven.Actions.Add("tractor-beam:action", this.ReadTractorBeamAction);
         }
 
         protected override void DisposeMinimum()
