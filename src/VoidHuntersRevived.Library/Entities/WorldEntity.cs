@@ -60,9 +60,9 @@ namespace VoidHuntersRevived.Library.Entities
             this.UpdateOrder = -100;
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             this.OnSizeChanged -= this.HandleSizeChanged;
         }

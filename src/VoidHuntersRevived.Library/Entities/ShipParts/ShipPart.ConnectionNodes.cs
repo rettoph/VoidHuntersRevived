@@ -75,8 +75,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
         private void ConnectionNode_Dispose()
         {
-            this.MaleConnectionNode.TryDispose();
-            this.FemaleConnectionNodes.ForEach(f => f.TryDispose());
+            this.MaleConnectionNode.TryRelease();
+            this.FemaleConnectionNodes.ForEach(f => f.TryRelease());
 
             this.MaleConnectionNode.OnAttached -= this.ConnectionNode_HandleMaleConnectionNodeAttached;
             this.MaleConnectionNode.OnDetached -= this.ConnectionNode_HandleMaleConnectionNodeDetached;

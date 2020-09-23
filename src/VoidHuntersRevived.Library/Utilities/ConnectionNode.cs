@@ -77,9 +77,9 @@ namespace VoidHuntersRevived.Library.Utilities
         #endregion
 
         #region Lifecycle Methods
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             if(this.Attached)
             { // Auto detach if needed...

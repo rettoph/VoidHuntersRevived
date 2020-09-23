@@ -1,5 +1,8 @@
 ﻿using Guppy;
 using Guppy.Extensions;
+using Guppy.Interfaces;
+using Guppy.Lists;
+using Guppy.Lists.Interfaces;
 using Guppy.Network.Extensions;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
@@ -20,6 +23,9 @@ namespace VoidHuntersRevived.Server
             };
 
             config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
+
+            ServiceList<IService> test = null;
+            test.Create<Entity>("adsad");
 
 
             var game = new GuppyLoader()

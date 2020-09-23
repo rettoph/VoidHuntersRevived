@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
 
             provider.Service(out _logger);
 
-            this.driven.Group.Messages.Add("entity:update", this.HandleEntityUpdateMessage);
+            this.driven.Group.Messages.Set("entity:update", this.HandleEntityUpdateMessage);
         }
 
         protected void DisposeBase()
@@ -75,10 +75,10 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
         #endregion
 
         #region Message Handlers
-        private MessageManager.ReaderResponse HandleEntityUpdateMessage(NetIncomingMessage im)
+        private Boolean HandleEntityUpdateMessage(NetIncomingMessage im)
         {
             _updates.Enqueue(im);
-            return MessageManager.ReaderResponse.Stop;
+            return false;
         }
         #endregion
     }

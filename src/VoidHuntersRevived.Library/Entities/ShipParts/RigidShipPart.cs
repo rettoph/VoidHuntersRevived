@@ -39,9 +39,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             this.OnRootChanged += this.HandleRootChanged;
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             while (_fixtures.Any())
                 _fixtures.Dequeue().Destroy();

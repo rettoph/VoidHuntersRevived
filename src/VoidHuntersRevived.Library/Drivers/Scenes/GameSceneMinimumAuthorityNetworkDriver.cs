@@ -45,9 +45,9 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
             _creates = new Queue<NetIncomingMessage>();
             _removes = new Queue<NetIncomingMessage>();
 
-            this.driven.Group.Messages.Add("scene:setup", this.HandleSceneSetupMessage);
-            this.driven.Group.Messages.Add("entity:create", this.HandleEntityCreateMessage);
-            this.driven.Group.Messages.Add("entity:remove", this.HandleEntityRemoveMessage);
+            this.driven.Group.Messages.Set("scene:setup", this.HandleSceneSetupMessage);
+            this.driven.Group.Messages.Set("entity:create", this.HandleEntityCreateMessage);
+            this.driven.Group.Messages.Set("entity:remove", this.HandleEntityRemoveMessage);
         }
 
         protected override void Dispose()
@@ -83,7 +83,7 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
             => this.driven.Entities.GetById<NetworkEntity>(im.ReadGuid()).TryRead(im);
 
         private void RemoveNetworkEntity(NetIncomingMessage im)
-            => this.driven.Entities.GetById<NetworkEntity>(im.ReadGuid()).TryDispose();
+            => this.driven.Entities.GetById<NetworkEntity>(im.ReadGuid()).TryRelease();
         #endregion
 
         #region Message Handlers
@@ -102,16 +102,16 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
             }
         }
 
-        private MessageManager.ReaderResponse HandleEntityCreateMessage(NetIncomingMessage im)
+        private Boolean HandleEntityCreateMessage(NetIncomingMessage im)
         {
             _creates.Enqueue(im);
-            return MessageManager.ReaderResponse.Stop;
+            return false;
         }
 
-        private MessageManager.ReaderResponse HandleEntityRemoveMessage(NetIncomingMessage im)
+        private Boolean HandleEntityRemoveMessage(NetIncomingMessage im)
         {
             _removes.Enqueue(im);
-            return MessageManager.ReaderResponse.Stop;
+            return false;
         }
         #endregion
     }

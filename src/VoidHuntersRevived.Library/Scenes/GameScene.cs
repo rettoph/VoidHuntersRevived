@@ -65,11 +65,11 @@ namespace VoidHuntersRevived.Library.Scenes
             this.Entities.OnAdded += this.HandleEntityAdded;
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
-            this.group.TryDispose();
+            this.group.TryRelease();
 
             this.Entities.OnAdded -= this.HandleEntityAdded;
         }

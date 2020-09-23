@@ -27,9 +27,9 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
 
             provider.Service(out _entities);
 
-            this.driven.Actions.Add("update:ship:direction:request", this.HandleUpdateShipDirectionRequest);
-            this.driven.Actions.Add("update:ship:target:request", this.HandleUpdateShipTargetRequest);
-            this.driven.Actions.Add("ship:tractor-beam:action:request", this.HandleShipTractorBeamActionRequest);
+            this.driven.Actions.Set("update:ship:direction:request", this.HandleUpdateShipDirectionRequest);
+            this.driven.Actions.Set("update:ship:target:request", this.HandleUpdateShipTargetRequest);
+            this.driven.Actions.Set("ship:tractor-beam:action:request", this.HandleShipTractorBeamActionRequest);
 
             this.driven.OnUserChanged += this.HandleUserChanged;
             this.driven.OnWrite += this.WriteUser;

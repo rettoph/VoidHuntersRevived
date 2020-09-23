@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
                 defaultAction: defaultAction,
                 actions: map.ToDictionary(keySelector: kvp => kvp.authorization, elementSelector: kvp => kvp.action));
 
-            this.driven.Actions.Add(action.Type, action.DoAction);
+            this.driven.Actions.Set(action.Type, action.DoAction);
             action.ConfigureAuthorization(this.GetGameAuthorization());
 
             // Internally store new game action..

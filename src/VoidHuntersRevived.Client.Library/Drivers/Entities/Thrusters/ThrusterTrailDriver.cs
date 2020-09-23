@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Thrusters
             base.Dispose();
 
             this.driven.OnUpdate -= _trail.Update;
-            _trail.TryDispose();
+            _trail.TryRelease();
         }
         #endregion
     }

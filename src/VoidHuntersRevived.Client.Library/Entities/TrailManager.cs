@@ -54,13 +54,13 @@ namespace VoidHuntersRevived.Client.Library.Entities
             {
                 t.thruster = thruster;
 
-                t.OnDisposed += this.HandleTrailDisposed;
+                t.OnReleased += this.HandleTrailReleased;
                 t.OnDirty += this.HandleTrailDirty;
             }); 
 
         private void RemoveTrail(Trail trail)
         {
-            trail.OnDisposed -= this.HandleTrailDisposed;
+            trail.OnReleased -= this.HandleTrailReleased;
             trail.OnDirty -= this.HandleTrailDirty;
 
             _trails.Remove(trail.thruster);
@@ -68,7 +68,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
         #endregion
 
         #region Event Handlers
-        private void HandleTrailDisposed(IService sender)
+        private void HandleTrailReleased(IService sender)
             => this.RemoveTrail(sender as Trail);
 
         private void HandleTrailDirty(Trail sender)

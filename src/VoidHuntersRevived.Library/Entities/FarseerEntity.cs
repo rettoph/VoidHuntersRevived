@@ -74,9 +74,9 @@ namespace VoidHuntersRevived.Library.Entities
             this.Build(provider);
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             this.OnDo -= this.DoMaster;
             this.OnDo -= this.DoSlave;

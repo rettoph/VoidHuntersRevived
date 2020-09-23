@@ -33,7 +33,6 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Private Fields
-        private Vector2 _target;
         private ShipController _controller;
         private IList<ConnectionNode> _openFemaleNodes;
         private Player _player;
@@ -55,32 +54,6 @@ namespace VoidHuntersRevived.Library.Entities
         }
 
         /// <summary>
-        /// The Ship's current target. This is a position relative 
-        /// to the ship's current bridge's position.
-        /// </summary>
-        public Vector2 Target
-        {
-            get => _target;
-            set
-            {
-                if(_target != value)
-                {
-                    _target = value;
-                    this.OnTargetChanged?.Invoke(this, _target);
-                }
-            }
-        }
-
-        /// <summary>
-        /// The calculated world position of the ship's current
-        /// target.
-        /// </summary>
-        public Vector2 WorldTarget { 
-            get => this.Bridge == default(ShipPart) ? Vector2.Zero : this.Bridge.WorldCenter + this.Target;
-            set => this.Target = value - this.Bridge.WorldCenter;
-        }
-
-        /// <summary>
         /// The ships current bridge ship part (if any).
         /// </summary>
         public ShipPart Bridge { get; private set; }
@@ -96,7 +69,6 @@ namespace VoidHuntersRevived.Library.Entities
 
         #region Events
         public event GuppyDeltaEventHandler<Ship, ShipPart> OnBridgeChanged;
-        public event GuppyEventHandler<Ship, Vector2> OnTargetChanged;
         public event GuppyDeltaEventHandler<Ship, Player> OnPlayerChanged;
         #endregion
 
@@ -118,18 +90,20 @@ namespace VoidHuntersRevived.Library.Entities
             // Initialize partial classes.
             this.Events_PreIninitialize(provider);
             this.Directions_PreInitialize(provider);
+            this.Targeting_PreInitialize(provider);
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             this.OnPlayerChanged -= this.HandlePlayerChanged;
             this.OnAuthorizationChanged -= this.HandleAuthorizationChanged;
 
             // Dispose partial classes
-            this.Events_Dispose();
             this.Directions_Dispose();
+            this.Events_Dispose();
+            this.Targeting_Dispose();
         }
         #endregion
 

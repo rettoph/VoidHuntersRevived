@@ -167,9 +167,9 @@ namespace VoidHuntersRevived.Library.Entities
             _fixtures = new HashSet<FixtureContainer>();
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
         }
         #endregion
 

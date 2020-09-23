@@ -104,9 +104,9 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             this.CanAttach += this.DefaultCanAttach;
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             this.CanAttach += this.DefaultCanAttach;
         }

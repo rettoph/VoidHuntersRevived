@@ -159,9 +159,9 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             this.UpdateOrder = 110;
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             _world.OnSizeChanged -= this.HandleWorldSizeChanged;
         }
@@ -231,7 +231,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         private void BuildChunks()
         {
             // Clear all pre-existing chunks...
-            _chunks.ForEach(c => c.Value.TryDispose());
+            _chunks.ForEach(c => c.Value.TryRelease());
             _chunks.Clear();
 
             // Create a new list of chunks based on the size of the world...

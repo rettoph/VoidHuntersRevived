@@ -36,11 +36,11 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             this.driven.OnWrite += this.WriteDirections;
             this.driven.OnWrite += this.WriteUpdateTarget;
             this.driven.OnBridgeChanged += this.HandleBridgeChanged;
-            this.driven.OnTargetChanged += this.HandleTargetChanged;
             this.driven.TractorBeam.OnSelected += this.HandleTractorBeamSelected;
             this.driven.TractorBeam.OnDeselected += this.HandleTractorBeamDeselected;
 
             this.driven.Events[ShipEventType.Direction].OnEvent += this.HandleDirectionChanged;
+            this.driven.Events[ShipEventType.Target].OnEvent += this.HandleTargetChanged;
         }
 
         protected override void DisposeFull()
@@ -53,11 +53,11 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             this.driven.OnWrite -= this.WriteDirections;
             this.driven.OnWrite -= this.WriteUpdateTarget;
             this.driven.OnBridgeChanged -= this.HandleBridgeChanged;
-            this.driven.OnTargetChanged -= this.HandleTargetChanged;
             this.driven.TractorBeam.OnSelected -= this.HandleTractorBeamSelected;
             this.driven.TractorBeam.OnDeselected -= this.HandleTractorBeamDeselected;
 
             this.driven.Events[ShipEventType.Direction].OnEvent -= this.HandleDirectionChanged;
+            this.driven.Events[ShipEventType.Target].OnEvent -= this.HandleTargetChanged;
         }
         #endregion
 
@@ -121,7 +121,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
                 direction: args.DirectionData.Direction, 
                 state: args.DirectionData.State);
 
-        private void HandleTargetChanged(Ship sender, Vector2 arg)
+        private void HandleTargetChanged(Ship ship, ShipEventArgs args)
             => _dirtyTarget = true;
 
         private void HandleTractorBeamSelected(TractorBeam sender, TractorBeam.Action action)

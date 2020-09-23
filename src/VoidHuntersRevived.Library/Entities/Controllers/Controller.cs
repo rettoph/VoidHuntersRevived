@@ -62,9 +62,9 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             this.Authorization = provider.GetService<Settings>().Get<GameAuthorization>();
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             _parts.Clear();
         }

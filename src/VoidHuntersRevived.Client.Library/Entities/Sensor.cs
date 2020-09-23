@@ -51,9 +51,9 @@ namespace VoidHuntersRevived.Client.Library.Entities
             this.LayerGroup = 10;
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             _body?.Dispose();
 

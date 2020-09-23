@@ -114,9 +114,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             this.OnControllerChanged += this.HandleControllerChanged;
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             this.Transformations_Dispose();
             this.ConnectionNode_Dispose();

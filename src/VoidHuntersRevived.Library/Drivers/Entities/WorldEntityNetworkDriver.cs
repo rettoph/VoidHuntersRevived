@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             base.Configure(driven, provider);
 
-            this.driven.Actions.Add("update:size", this.ReadSize);
+            this.driven.Actions.Set("update:size", this.ReadSize);
             this.AddAction("update:size", this.SkipSize, (GameAuthorization.Minimum, this.ReadSize));
         }
 
