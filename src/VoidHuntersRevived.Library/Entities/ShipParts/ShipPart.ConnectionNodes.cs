@@ -11,7 +11,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Enums;
-using Guppy.Collections;
+using Guppy.Lists;
 using Guppy.IO.Extensions.log4net;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts

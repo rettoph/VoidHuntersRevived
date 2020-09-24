@@ -15,7 +15,7 @@ using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.System;
 using VoidHuntersRevived.Library.Drivers;
-using Guppy.Collections;
+using Guppy.Lists;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Drivers.Scenes;
@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Drivers.Scenes
     internal sealed class GameSceneFullAuthorityNetworkDriver : GameSceneNetworkDriver
     {
         #region Private Fields
-        private EntityCollection _entities;
+        private EntityList _entities;
         private List<NetworkEntity> _networkEntities;
         private Queue<NetworkEntity> _created;
         private Queue<NetworkEntity> _setups;

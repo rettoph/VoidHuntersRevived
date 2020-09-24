@@ -7,7 +7,6 @@ using VoidHuntersRevived.Library.Configurations;
 using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 using Guppy.Interfaces;
-using VoidHuntersRevived.Library.Collections;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Enums;

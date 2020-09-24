@@ -1,5 +1,5 @@
 ﻿using Guppy;
-using Guppy.Collections;
+using Guppy.Lists;
 using Guppy.DependencyInjection;
 using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
     internal sealed class ShipMinimumAuthorizationNetworkDriver : NetworkEntityNetworkDriver<Ship>
     {
         #region Private Fields
-        private EntityCollection _entities;
+        private EntityList _entities;
         private Vector2 _targetTarget;
         private ILog _logger;
         private Player _player;

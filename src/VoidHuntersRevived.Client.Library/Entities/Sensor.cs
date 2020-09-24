@@ -2,7 +2,7 @@
 using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Factories;
 using Guppy;
-using Guppy.Collections;
+using Guppy.Lists;
 using Guppy.DependencyInjection;
 using Guppy.UI.Entities;
 using Microsoft.Xna.Framework;
@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
     public class Sensor : Entity
     {
         #region Private Fields
-        private EntityCollection _entities;
+        private EntityList _entities;
         private Cursor _cursor;
         private WorldEntity _world;
         private FarseerCamera2D _camera;

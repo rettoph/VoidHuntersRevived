@@ -2,7 +2,7 @@
 using FarseerPhysics.Common;
 using FarseerPhysics.Dynamics;
 using Guppy;
-using Guppy.Collections;
+using Guppy.Lists;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
 using Guppy.Utilities.Cameras;
@@ -108,7 +108,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         private List<Chunk> _cache;
         private ServiceProvider _provider;
         private WorldEntity _world;
-        private EntityCollection _entities;
+        private EntityList _entities;
         private Dictionary<Chunk.Position, Chunk> _chunks;
         /// <summary>
         /// Creates a link between a ShipPart and all of its

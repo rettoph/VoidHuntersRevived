@@ -1,5 +1,5 @@
 ﻿using Guppy;
-using Guppy.Collections;
+using Guppy.Lists;
 using Guppy.DependencyInjection;
 using Guppy.Network;
 using Guppy.Network.Extensions.Lidgren;
@@ -10,7 +10,6 @@ using System.Text;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Scenes;
-using Guppy.Extensions.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities.Players

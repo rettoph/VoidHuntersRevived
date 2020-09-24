@@ -3,13 +3,13 @@ using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.IO.Extensions.log4net;
+using Guppy.Lists;
 using log4net;
 using log4net.Appender;
 using log4net.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Library.Collections;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
@@ -28,14 +28,14 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             // Register service factories...
             services.AddFactory<Settings>(p => new Settings());
             services.AddFactory<ConnectionNode>(p => new ConnectionNode());
-            services.AddFactory<PlayerCollection>(p => new PlayerCollection());
+            services.AddFactory<ServiceList<Player>>(p => new ServiceList<Player>(autoFill: true));
             services.AddFactory<Chunk>(p => new Chunk());
             services.AddFactory<GameLayer>(p => new GameLayer());
 
             // Register services...
             services.AddScoped<Settings>();
             services.AddTransient<ConnectionNode>();
-            services.AddScoped<PlayerCollection>();
+            services.AddScoped<ServiceList<Player>>();
             services.AddTransient<Chunk>();
             services.AddTransient<GameLayer>();
 

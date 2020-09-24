@@ -4,8 +4,8 @@ using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Library.Collections;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Lists;
 
 namespace VoidHuntersRevived.Library.Entities.Players
 {
@@ -40,16 +40,6 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
         #region Events
         public event GuppyDeltaEventHandler<Player, Ship> OnShipChanged;
-        #endregion
-
-        #region Lifecycle Methods
-        protected override void PreInitialize(ServiceProvider provider)
-        {
-            base.PreInitialize(provider);
-
-            // Auto add the current player to the global player collection...
-            provider.GetService<PlayerCollection>().TryAdd(this);
-        }
         #endregion
     }
 }

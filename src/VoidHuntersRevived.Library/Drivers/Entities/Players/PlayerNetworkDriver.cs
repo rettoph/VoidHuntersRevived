@@ -1,4 +1,4 @@
-﻿using Guppy.Collections;
+﻿using Guppy.Lists;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Network.Extensions.Lidgren;
@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
     internal sealed class PlayerNetworkDriver : NetworkEntityNetworkDriver<Player>
     {
         #region Private Fields
-        private EntityCollection _entities;
+        private EntityList _entities;
         #endregion
 
         #region Lifecycle Methods

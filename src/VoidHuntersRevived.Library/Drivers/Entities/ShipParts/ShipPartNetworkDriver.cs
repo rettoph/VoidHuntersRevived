@@ -9,14 +9,14 @@ using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Enums;
 using Guppy.Extensions.DependencyInjection;
-using Guppy.Collections;
+using Guppy.Lists;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
 {
     internal sealed class ShipPartNetworkDriver : NetworkEntityNetworkDriver<ShipPart>
     {
         #region Private Fields
-        private EntityCollection _entities;
+        private EntityList _entities;
         #endregion
 
         #region Lifecycle Methods

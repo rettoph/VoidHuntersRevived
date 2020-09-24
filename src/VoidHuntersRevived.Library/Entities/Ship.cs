@@ -12,7 +12,7 @@ using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.IO.Extensions.log4net;
-using Guppy.Collections;
+using Guppy.Lists;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Library.Entities
         private ShipController _controller;
         private IList<ConnectionNode> _openFemaleNodes;
         private Player _player;
-        private EntityCollection _entities;
+        private EntityList _entities;
         #endregion
 
         #region Public Attributes
