@@ -44,6 +44,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddFactory<TitlePage>(p => new TitlePage());
             services.AddFactory<KeyService>(p => new KeyService());
             services.AddFactory<DebugService>(p => new DebugService());
+            services.AddFactory<InputCommandService>(p => new InputCommandService());
 
             // Configure service lifetimes...
             services.AddScoped<FarseerCamera2D>();
@@ -55,6 +56,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddTransient<TitlePage>();
             services.AddSingleton<KeyService>();
             services.AddSingleton<DebugService>();
+            services.AddSingleton<InputCommandService>(autoBuild: true);
 
             services.AddGame<ClientVoidHuntersRevivedGame>(p => new ClientVoidHuntersRevivedGame());
 
