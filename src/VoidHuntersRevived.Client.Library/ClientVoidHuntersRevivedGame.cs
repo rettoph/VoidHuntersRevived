@@ -11,6 +11,8 @@ using Guppy.Extensions.DependencyInjection;
 using VoidHuntersRevived.Library.Utilities;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Client.Library.Services;
+using Guppy;
+using Microsoft.Xna.Framework.Input;
 
 namespace VoidHuntersRevived.Client.Library
 {
@@ -18,12 +20,18 @@ namespace VoidHuntersRevived.Client.Library
     {
         #region Private Fields
         private ClientPeer _client;
+        private KeyService _keys;
+        private DebugService _debug;
+        private Boolean _renderDebug;
         #endregion
 
         #region Lifecycle Methods
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
+
+            provider.Service(out _keys);
+            provider.Service(out _debug);
 
             _client = provider.GetService<ClientPeer>();
             _client.TryStart();
@@ -41,7 +49,25 @@ namespace VoidHuntersRevived.Client.Library
             this.Scenes.Create<GameScene>();
 
             // Start the key service...
-            provider.GetService<KeyService>().TryStart();
+            _keys.TryStart();
+            _keys[Keys.F3].OnKeyPressed += (k) => _renderDebug = !_renderDebug;
+        }
+        #endregion
+
+        #region Frame Methods
+        protected override void PostDraw(GameTime gameTime)
+        {
+            base.PostDraw(gameTime);
+
+            if(_renderDebug)
+                _debug.TryDraw(gameTime);
+        }
+
+        protected override void PostUpdate(GameTime gameTime)
+        {
+            base.PostUpdate(gameTime);
+
+            _debug.TryUpdate(gameTime);
         }
         #endregion
     }

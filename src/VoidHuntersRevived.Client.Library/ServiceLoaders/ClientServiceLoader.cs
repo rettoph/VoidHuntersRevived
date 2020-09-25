@@ -43,6 +43,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddFactory<TrailSegment>(p => new TrailSegment(p));
             services.AddFactory<TitlePage>(p => new TitlePage());
             services.AddFactory<KeyService>(p => new KeyService());
+            services.AddFactory<DebugService>(p => new DebugService());
 
             // Configure service lifetimes...
             services.AddScoped<FarseerCamera2D>();
@@ -53,6 +54,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddTransient<TrailSegment>();
             services.AddTransient<TitlePage>();
             services.AddSingleton<KeyService>();
+            services.AddSingleton<DebugService>();
 
             services.AddGame<ClientVoidHuntersRevivedGame>(p => new ClientVoidHuntersRevivedGame());
 

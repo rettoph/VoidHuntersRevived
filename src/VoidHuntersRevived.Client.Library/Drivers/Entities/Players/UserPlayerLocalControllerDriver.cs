@@ -41,6 +41,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         private Cursor _cursor;
         private KeyService _keys;
         private Dictionary<Keys, Ship.Direction> _controls;
+        private DebugService _debug;
         #endregion
 
         #region Lifecycle Methods
@@ -55,6 +56,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             provider.Service(out _sensor);
             provider.Service(out _cursor);
             provider.Service(out _keys);
+            provider.Service(out _debug);
 
             this.driven.OnUserChanged += this.HandleUserChanged;
         }
@@ -82,6 +84,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             });
 
             _keys[Keys.F3].OnKeyPressed += this.SaveShipToFile;
+
+            _debug.Lines += this.RenderDebug;
         }
 
         protected override void Dispose()
@@ -120,6 +124,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
                 _camera.MoveTo(this.driven.Ship.Bridge.WorldCenter);
             }
         }
+
+        private String RenderDebug(GameTime gameTime)
+            => $"X: {this.driven.Ship.Bridge?.Position.X.ToString("#,##0.00")}, Y: {this.driven.Ship.Bridge?.Position.Y.ToString("#,##0.00")}";
         #endregion
 
         #region Helper Methods
