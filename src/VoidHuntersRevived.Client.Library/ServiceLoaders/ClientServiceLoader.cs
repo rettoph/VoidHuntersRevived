@@ -3,9 +3,6 @@ using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.LayerGroups;
-using Guppy.UI.Components;
-using Guppy.UI.Enums;
-using Guppy.UI.Layers;
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Client.Library.Drivers.Entities;
 using VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers;
@@ -14,7 +11,6 @@ using VoidHuntersRevived.Client.Library.Drivers.Entities.Thrusters;
 using VoidHuntersRevived.Client.Library.Drivers.Layers;
 using VoidHuntersRevived.Client.Library.Drivers.Scenes;
 using VoidHuntersRevived.Client.Library.Entities;
-using VoidHuntersRevived.Client.Library.Pages;
 using VoidHuntersRevived.Client.Library.Services;
 using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
@@ -25,7 +21,6 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Layers;
 using VoidHuntersRevived.Library.Scenes;
-using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Client.Library.ServiceLoaders
 {
@@ -41,8 +36,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddFactory<TrailManager>(p => new TrailManager());
             services.AddFactory<Trail>(p => new Trail());
             services.AddFactory<TrailSegment>(p => new TrailSegment(p));
-            services.AddFactory<TitlePage>(p => new TitlePage());
-            services.AddFactory<KeyService>(p => new KeyService());
+            services.AddFactory<ButtonService>(p => new ButtonService());
             services.AddFactory<DebugService>(p => new DebugService());
             services.AddFactory<InputCommandService>(p => new InputCommandService());
 
@@ -53,8 +47,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddScoped<TrailManager>();
             services.AddTransient<Trail>();
             services.AddTransient<TrailSegment>();
-            services.AddTransient<TitlePage>();
-            services.AddSingleton<KeyService>();
+            services.AddSingleton<ButtonService>();
             services.AddSingleton<DebugService>();
             services.AddSingleton<InputCommandService>(autoBuild: true);
 
@@ -77,32 +70,6 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddConfiguration<TractorBeam>((t, p, c) =>
             {
                 t.LayerGroup = 10;
-            });
-
-            // Configure UI elements
-            services.AddConfiguration<StageLayer>((l, p, s) =>
-            {
-                l.Group = new SingleLayerGroup(0);
-            });
-
-            services.AddConfiguration<Label>("ui:header:1", (l, p, s) =>
-            {
-                l.Inline = true;
-                l.TextAlignment = Alignment.Center;
-                l.Font = p.GetContent<SpriteFont>("ui:font:header:1");
-            });
-
-            services.AddConfiguration<Label>("ui:header:2", (l, p, s) =>
-            {
-                l.Inline = true;
-                l.TextAlignment = Alignment.Left;
-                l.Font = p.GetContent<SpriteFont>("ui:font:header:2");
-            });
-
-            services.AddConfiguration<Component>("ui:logo", (c, p, s) =>
-            {
-                c.Bounds.Set(0, 0, 75, 75);
-                c.Background = p.GetContent<Texture2D>("ui:texture:logo");
             });
         }
 

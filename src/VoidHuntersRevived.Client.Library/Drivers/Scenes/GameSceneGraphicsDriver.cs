@@ -4,8 +4,9 @@ using Guppy;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.IO.Input;
+using Guppy.IO.Services;
 using Guppy.LayerGroups;
-using Guppy.UI.Entities;
 using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -33,7 +34,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
         private GraphicsDevice _graphics;
         private BasicEffect _ambient;
         private FarseerCamera2D _camera;
-        private Cursor _cursor;
+        private MouseService _mouse;
         private ContentManager _content;
         private Guppy.Utilities.PrimitiveBatch _primitiveBatch;
         private Sensor _sensor;
@@ -50,7 +51,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
         private Boolean _renderMaster;
         private Boolean _renderSlave;
 
-        private KeyService _keys;
+        private ButtonService _keys;
         #endregion
 
         #region Lifecycle Methods
@@ -78,7 +79,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
             provider.Service(out _window);
             provider.Service(out _graphics);
             provider.Service(out _camera);
-            provider.Service(out _cursor);
+            provider.Service(out _mouse);
             provider.Service(out _content);
             provider.Service(out _primitiveBatch);
             provider.Service(out _sensor);
@@ -92,7 +93,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
             _camera.MinZoom = 0.025f;
             _camera.MaxZoom = 0.5f;
 
-            _cursor.OnScrolled += this.HandleCursorScroll;
+            _mouse.OnScrollWheelValueChanged += this.HandleMouseScrollWheelValueChanged;
             this.driven.OnPreDraw += this.PreDraw;
             _window.ClientSizeChanged += this.HandleClientSizeChanged;
             _keys[Keys.F1].OnKeyPressed += this.OnKeyPressed;
@@ -126,6 +127,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
             base.DisposeMinimum();
 
             this.driven.OnPreDraw -= this.PreDraw;
+            _mouse.OnScrollWheelValueChanged -= this.HandleMouseScrollWheelValueChanged;
             _window.ClientSizeChanged -= this.HandleClientSizeChanged;
             _keys[Keys.F1].OnKeyPressed -= this.OnKeyPressed;
             _keys[Keys.F2].OnKeyPressed -= this.OnKeyPressed;
@@ -173,18 +175,15 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
         #endregion
 
         #region EventHandlers
-        private void HandleCursorScroll(Cursor sender, float old, float value)
-        {
-            var delta = (value - old) / 120;
-            _camera.ZoomBy((Single)Math.Pow(1.5, delta));
-        }
+        private void HandleMouseScrollWheelValueChanged(MouseService sender, ScrollWheelArgs args)
+            => _camera.ZoomBy((Single) Math.Pow(1.5, args.Delta / 120));
 
         private void HandleClientSizeChanged(object sender, EventArgs e)
             => this.CleanViewport();
 
-        private void OnKeyPressed(KeyService.KeyManager manager)
+        private void OnKeyPressed(ButtonService.ButtonManager manager, ButtonService.ButtonValue args)
         {
-            switch(manager.Key)
+            switch(args.Which.KeyboardKey)
             {
                 case Keys.F1:
                     _renderMaster = !_renderMaster;

@@ -61,7 +61,7 @@
       <Name>FarseerPhysics.MonoGame.DebugView</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.UI\Guppy.UI.csproj">
-      <Project>{bb6a4922-4cba-4067-906f-399a2ea96f7e}</Project>
+      <Project>{4bec07ba-46a1-4905-97a9-52e5408d39b0}</Project>
       <Name>Guppy.UI</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy\Guppy.csproj">

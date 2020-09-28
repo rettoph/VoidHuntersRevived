@@ -1,6 +1,7 @@
 ﻿using FarseerPhysics;
 using Guppy;
 using Guppy.Extensions;
+using Guppy.IO.Input.Extensions;
 using Guppy.Network.Extensions;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
@@ -46,6 +47,7 @@ namespace VoidHuntersRevived.Client.Library
 
             game = guppy.ConfigureMonoGame(graphics, this.Content, this.Window)
                 .ConfigureClient(new NetPeerConfiguration("vhr"))
+                .ConfigureInput()
                 .Initialize()
                 .BuildGame<ClientVoidHuntersRevivedGame>();
         }

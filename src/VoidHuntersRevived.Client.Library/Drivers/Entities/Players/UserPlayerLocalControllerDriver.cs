@@ -2,7 +2,6 @@
 using Guppy.Network;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Peers;
-using Guppy.UI.Entities;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -21,9 +20,11 @@ using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using Guppy.Extensions.Collections;
-using static VoidHuntersRevived.Client.Library.Services.KeyService;
+using static VoidHuntersRevived.Client.Library.Services.ButtonService;
 using VoidHuntersRevived.Client.Library.Services;
 using System.IO;
+using Guppy.IO.Services;
+using Guppy.IO.Input;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 {
@@ -38,8 +39,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         private FarseerCamera2D _camera;
         private Sensor _sensor;
         private ActionTimer _targetSender;
-        private Cursor _cursor;
-        private KeyService _keys;
+        private MouseService _mouse;
+        private ButtonService _keys;
         private Dictionary<Keys, Ship.Direction> _controls;
         private DebugService _debug;
         #endregion
@@ -54,7 +55,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             provider.Service(out _peer);
             provider.Service(out _camera);
             provider.Service(out _sensor);
-            provider.Service(out _cursor);
+            provider.Service(out _mouse);
             provider.Service(out _keys);
             provider.Service(out _debug);
 
@@ -66,8 +67,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             base.ConfigureLocal(provider);
 
             this.driven.OnUpdate += this.Update;
-            _cursor.OnPressed += this.HandleCursorPressed;
-            _cursor.OnReleased += this.HandleCursorReleased;
+            _mouse.OnButtonState[ButtonState.Pressed]  += this.HandleCursorPressed;
+            _mouse.OnButtonState[ButtonState.Released] += this.HandleCursorReleased;
 
             _controls = new Dictionary<Keys, Ship.Direction>();
             _controls.Add(Keys.W, Ship.Direction.Forward);
@@ -98,8 +99,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             base.DisposeLocal();
 
             this.driven.OnUpdate -= this.Update;
-            _cursor.OnPressed -= this.HandleCursorPressed;
-            _cursor.OnReleased -= this.HandleCursorReleased;
+            _mouse.OnButtonState[ButtonState.Pressed]  -= this.HandleCursorPressed;
+            _mouse.OnButtonState[ButtonState.Released] -= this.HandleCursorReleased;
 
             _controls.ForEach(map =>
             {
@@ -177,24 +178,24 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             }
         }
 
-        private void HandleCursorPressed(Cursor sender, Cursor.Button arg)
+        private void HandleCursorPressed(InputManager sender, InputArgs args)
             => this.TrySelectShipTractorBeam();
 
-        private void HandleCursorReleased(Cursor sender, Cursor.Button arg)
+        private void HandleCursorReleased(InputManager sender, InputArgs args)
             => this.TryDeselectShipTractorBeam();
 
         /// <summary>
         /// Manage a mapped control key being pressed.
         /// </summary>
-        /// <param name="key"></param>
-        private void HandleKeyStateChanged(KeyManager key)
-            => this.TrySetShipDirection(_controls[key.Key], key.Pressed);
+        /// <param name="sender"></param>
+        private void HandleKeyStateChanged(ButtonManager sender, ButtonService.ButtonValue args)
+            => this.TrySetShipDirection(_controls[args.Which.KeyboardKey], args.State == ButtonState.Pressed);
 
         /// <summary>
         /// Save the current ship to a file.
         /// </summary>
-        /// <param name="key"></param>
-        private void SaveShipToFile(KeyManager key)
+        /// <param name="sender"></param>
+        private void SaveShipToFile(ButtonManager sender, ButtonService.ButtonValue args)
         {
             Directory.CreateDirectory("ships");
             using (FileStream file = File.Open("ships/test.vh", FileMode.Create))

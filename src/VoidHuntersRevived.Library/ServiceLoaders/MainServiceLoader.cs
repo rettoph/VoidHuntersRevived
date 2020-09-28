@@ -2,11 +2,13 @@
 using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
+using Guppy.IO.Commands.Services;
 using Guppy.IO.Extensions.log4net;
 using Guppy.Lists;
 using log4net;
 using log4net.Appender;
 using log4net.Core;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -100,7 +102,11 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
 
         public void ConfigureProvider(ServiceProvider provider)
         {
-            // throw new NotImplementedException();
+            var log = provider.GetService<ILog>();
+            provider.GetService<CommandService>().OnExcecute += (c, a) =>
+            {
+                log.Debug(a);
+            };
         }
     }
 }

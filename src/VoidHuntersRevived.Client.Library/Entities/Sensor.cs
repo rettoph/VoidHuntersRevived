@@ -4,7 +4,6 @@ using FarseerPhysics.Factories;
 using Guppy;
 using Guppy.Lists;
 using Guppy.DependencyInjection;
-using Guppy.UI.Entities;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -13,6 +12,7 @@ using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.IO.Services;
 
 namespace VoidHuntersRevived.Client.Library.Entities
 {
@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
     {
         #region Private Fields
         private EntityList _entities;
-        private Cursor _cursor;
+        private MouseService _mouse;
         private WorldEntity _world;
         private FarseerCamera2D _camera;
         private Body _body;
@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
             base.PreInitialize(provider);
 
             provider.Service(out _entities);
-            provider.Service(out _cursor);
+            provider.Service(out _mouse);
             provider.Service(out _camera);
 
             _contacts = new HashSet<BodyEntity>();
@@ -65,7 +65,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
         #region Frame Methods
         private void UpdateBody(GameTime gameTime)
         {
-            var position = _camera.Unproject(_cursor.Position.ToVector3());
+            var position = _camera.Unproject(_mouse.Position.ToVector3());
             _body.SetTransform(position.ToVector2(), 0);
         }
         #endregion

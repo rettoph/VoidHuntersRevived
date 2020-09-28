@@ -1,7 +1,6 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Network;
 using Guppy.Network.Peers;
-using Guppy.UI.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,7 +19,7 @@ namespace VoidHuntersRevived.Client.Library
     {
         #region Private Fields
         private ClientPeer _client;
-        private KeyService _keys;
+        private ButtonService _keys;
         private DebugService _debug;
         private Boolean _renderDebug;
         #endregion
@@ -50,7 +49,7 @@ namespace VoidHuntersRevived.Client.Library
 
             // Start the key service...
             _keys.TryStart();
-            _keys[Keys.F3].OnKeyPressed += (k) => _renderDebug = !_renderDebug;
+            _keys[Keys.F3].OnKeyPressed += (s, a) => _renderDebug = !_renderDebug;
         }
         #endregion
 

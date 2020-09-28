@@ -7,7 +7,10 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.IO.Commands;
-using VoidHuntersRevived.Client.Library.Commands;
+using Guppy.IO.Commands.Contexts;
+using VoidHuntersRevived.Library.Events;
+using VoidHuntersRevived.Library.Entities;
+using System.Linq;
 
 namespace VoidHuntersRevived.Client.Library.ServiceLoaders
 {
@@ -21,15 +24,31 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
 
         public void ConfigureProvider(ServiceProvider provider)
         {
-            provider.GetService<CommandService>().TryAdd(new SegmentContext()
+            provider.GetService<CommandService>().TryAddSubCommand(new CommandContext()
             {
-                Identifier = "set",
-                SubSegments = new SegmentContext[]
+                Word = "set",
+                SubCommands = new CommandContext[]
                 {
-                    new SegmentContext()
+                    new CommandContext()
                     {
-                        Identifier = "direction",
-                        Command = new SetDirectionCommandContext()
+                        Word = "direction",
+                        Arguments = new ArgContext[]
+                        {
+                            new ArgContext()
+                            {
+                                Identifier = "direction",
+                                Aliases = "d".ToCharArray(),
+                                Required = true,
+                                Type = new ArgType("Direction", s => Enum.Parse(typeof(Ship.Direction), s, true), ((Ship.Direction[])Enum.GetValues(typeof(Ship.Direction))).Select(d => d.ToString().ToLower()).ToArray())
+                            },
+                            new ArgContext()
+                            {
+                                Identifier = "value",
+                                Aliases = "v".ToCharArray(),
+                                Required = true,
+                                Type = ArgType.Boolean
+                            }
+                        }
                     }
                 }
             });
