@@ -35,9 +35,9 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
             this.driven.OnWrite += this.WriteUser;
         }
 
-        protected override void DisposeFull()
+        protected override void ReleaseFull()
         {
-            base.DisposeFull();
+            base.ReleaseFull();
 
             this.driven.Actions.Remove("update:ship:direction:request");
             this.driven.Actions.Remove("update:ship:target:request");

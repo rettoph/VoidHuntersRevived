@@ -39,9 +39,9 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             this.driven.OnWrite += this.WritePosition;
         }
 
-        protected override void DisposeFull()
+        protected override void ReleaseFull()
         {
-            base.DisposeFull();
+            base.ReleaseFull();
 
             this.driven.OnUpdate -= this.FullUpdate;
             this.driven.OnWrite -= this.WritePosition;
@@ -54,9 +54,9 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             this.driven.OnUpdate += this.MinimumUpdate;
         }
 
-        protected override void DisposeMinimum()
+        protected override void ReleaseMinimum()
         {
-            base.DisposeMinimum();
+            base.ReleaseMinimum();
 
             this.driven.OnUpdate -= this.MinimumUpdate;
         }

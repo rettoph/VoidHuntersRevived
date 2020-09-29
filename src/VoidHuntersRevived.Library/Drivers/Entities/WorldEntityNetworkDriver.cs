@@ -33,9 +33,9 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             this.driven.OnSizeChanged += this.HandleSizeChanged;
         }
 
-        protected override void DisposeFull()
+        protected override void ReleaseFull()
         {
-            base.DisposeFull();
+            base.ReleaseFull();
 
             this.driven.OnWrite -= this.WriteSize;
             this.driven.OnSizeChanged -= this.HandleSizeChanged;

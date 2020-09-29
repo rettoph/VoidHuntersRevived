@@ -45,9 +45,9 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
             this.driven.OnControllerChanged += this.HandleControllerChanged;
         }
 
-        protected override void DisposeFull()
+        protected override void ReleaseFull()
         {
-            base.DisposeFull();
+            base.ReleaseFull();
 
             this.driven.OnWrite -= this.WriteMaleConnectionNode;
             this.driven.MaleConnectionNode.OnAttached -= this.HandleMaleConnectionNodeAttachmentChanged;

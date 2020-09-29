@@ -68,7 +68,7 @@ namespace VoidHuntersRevived.Drivers.Scenes
             this.driven.Group.Users.OnAdded += this.HandleUserJoined;
         }
 
-        protected override void DisposeFull()
+        protected override void ReleaseFull()
         {
             base.Dispose();
 

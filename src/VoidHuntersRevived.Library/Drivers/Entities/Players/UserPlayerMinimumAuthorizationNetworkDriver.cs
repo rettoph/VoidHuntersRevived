@@ -30,9 +30,9 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
             this.driven.Actions.Set("update:user", this.ReadUser);
         }
 
-        protected override void DisposeMinimum()
+        protected override void ReleaseMinimum()
         {
-            base.DisposeMinimum();
+            base.ReleaseMinimum();
 
             this.driven.Actions.Remove("update:user");
         }

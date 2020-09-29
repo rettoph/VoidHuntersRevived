@@ -48,9 +48,9 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             this.driven.Actions.Set("tractor-beam:action", this.ReadTractorBeamAction);
         }
 
-        protected override void DisposeMinimum()
+        protected override void ReleaseMinimum()
         {
-            base.DisposeMinimum();
+            base.ReleaseMinimum();
 
             this.driven.OnUpdate -= this.Update;
 

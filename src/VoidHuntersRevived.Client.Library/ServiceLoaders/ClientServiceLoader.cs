@@ -36,9 +36,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddFactory<TrailManager>(p => new TrailManager());
             services.AddFactory<Trail>(p => new Trail());
             services.AddFactory<TrailSegment>(p => new TrailSegment(p));
-            services.AddFactory<ButtonService>(p => new ButtonService());
             services.AddFactory<DebugService>(p => new DebugService());
-            services.AddFactory<InputCommandService>(p => new InputCommandService());
 
             // Configure service lifetimes...
             services.AddScoped<FarseerCamera2D>();
@@ -47,9 +45,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddScoped<TrailManager>();
             services.AddTransient<Trail>();
             services.AddTransient<TrailSegment>();
-            services.AddSingleton<ButtonService>();
             services.AddSingleton<DebugService>();
-            services.AddSingleton<InputCommandService>(autoBuild: true);
 
             services.AddGame<ClientVoidHuntersRevivedGame>(p => new ClientVoidHuntersRevivedGame());
 

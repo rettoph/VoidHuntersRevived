@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Client.Library.Services;
 using Guppy;
 using Microsoft.Xna.Framework.Input;
+using Guppy.IO.Input.Services;
 
 namespace VoidHuntersRevived.Client.Library
 {
@@ -19,7 +20,7 @@ namespace VoidHuntersRevived.Client.Library
     {
         #region Private Fields
         private ClientPeer _client;
-        private ButtonService _keys;
+        private KeyboardService _keys;
         private DebugService _debug;
         private Boolean _renderDebug;
         #endregion
@@ -48,8 +49,7 @@ namespace VoidHuntersRevived.Client.Library
             this.Scenes.Create<GameScene>();
 
             // Start the key service...
-            _keys.TryStart();
-            _keys[Keys.F3].OnKeyPressed += (s, a) => _renderDebug = !_renderDebug;
+            _keys[Keys.F3].OnState[ButtonState.Pressed] += (s, a) => _renderDebug = !_renderDebug;
         }
         #endregion
 

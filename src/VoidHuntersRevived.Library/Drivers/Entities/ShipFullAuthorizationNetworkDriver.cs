@@ -43,9 +43,9 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             this.driven.Events[ShipEventType.Target].OnEvent += this.HandleTargetChanged;
         }
 
-        protected override void DisposeFull()
+        protected override void ReleaseFull()
         {
-            base.DisposeFull();
+            base.ReleaseFull();
 
             this.driven.OnUpdate -= this.Update;
 

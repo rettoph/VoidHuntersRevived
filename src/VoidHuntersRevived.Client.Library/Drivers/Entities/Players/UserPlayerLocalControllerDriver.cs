@@ -9,7 +9,6 @@ using System;
 using System.Linq;
 using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
-using VoidHuntersRevived.Library.Drivers;
 using VoidHuntersRevived.Library.Drivers.Entities;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
@@ -20,11 +19,13 @@ using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using Guppy.Extensions.Collections;
-using static VoidHuntersRevived.Client.Library.Services.ButtonService;
 using VoidHuntersRevived.Client.Library.Services;
 using System.IO;
 using Guppy.IO.Services;
 using Guppy.IO.Input;
+using Guppy.IO.Commands.Services;
+using Guppy.IO.Commands;
+using Guppy.IO.Commands.Interfaces;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 {
@@ -40,9 +41,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         private Sensor _sensor;
         private ActionTimer _targetSender;
         private MouseService _mouse;
-        private ButtonService _keys;
-        private Dictionary<Keys, Ship.Direction> _controls;
         private DebugService _debug;
+        private CommandService _commands;
         #endregion
 
         #region Lifecycle Methods
@@ -56,8 +56,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             provider.Service(out _camera);
             provider.Service(out _sensor);
             provider.Service(out _mouse);
-            provider.Service(out _keys);
             provider.Service(out _debug);
+            provider.Service(out _commands);
 
             this.driven.OnUserChanged += this.HandleUserChanged;
         }
@@ -67,24 +67,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             base.ConfigureLocal(provider);
 
             this.driven.OnUpdate += this.Update;
+
+
             _mouse.OnButtonState[ButtonState.Pressed]  += this.HandleCursorPressed;
             _mouse.OnButtonState[ButtonState.Released] += this.HandleCursorReleased;
 
-            _controls = new Dictionary<Keys, Ship.Direction>();
-            _controls.Add(Keys.W, Ship.Direction.Forward);
-            _controls.Add(Keys.D, Ship.Direction.TurnRight);
-            _controls.Add(Keys.S, Ship.Direction.Backward);
-            _controls.Add(Keys.A, Ship.Direction.TurnLeft);
-            _controls.Add(Keys.Q, Ship.Direction.Left);
-            _controls.Add(Keys.E, Ship.Direction.Right);
-
-            _controls.ForEach(map =>
-            {
-                _keys[map.Key].OnKeyPressed += this.HandleKeyStateChanged;
-                _keys[map.Key].OnKeyReleased += this.HandleKeyStateChanged;
-            });
-
-            _keys[Keys.F3].OnKeyPressed += this.SaveShipToFile;
+            _commands["set"]["direction"].OnExcecute += this.HandleSetDirectionCommand;
+            // _keys[Keys.F3].OnKeyPressed += this.SaveShipToFile;
 
             _debug.Lines += this.RenderDebug;
         }
@@ -94,19 +83,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             this.driven.OnUserChanged -= this.HandleUserChanged;
         }
 
-        protected override void DisposeLocal()
+        protected override void ReleaseLocal()
         {
-            base.DisposeLocal();
+            base.ReleaseLocal();
 
             this.driven.OnUpdate -= this.Update;
             _mouse.OnButtonState[ButtonState.Pressed]  -= this.HandleCursorPressed;
             _mouse.OnButtonState[ButtonState.Released] -= this.HandleCursorReleased;
-
-            _controls.ForEach(map =>
-            {
-                _keys[map.Key].OnKeyPressed -= this.HandleKeyStateChanged;
-                _keys[map.Key].OnKeyReleased -= this.HandleKeyStateChanged;
-            });
         }
         #endregion
 
@@ -169,6 +152,15 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         #endregion
 
         #region Event Handlers
+        /// <summary>
+        /// When the "set direction" command is execued attempt to update the
+        /// player's ship's direction.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void HandleSetDirectionCommand(ICommand sender, CommandArguments args)
+            => this.TrySetShipDirection((Ship.Direction)args["direction"], (Boolean)args["value"]);
+
         private void HandleUserChanged(UserPlayer sender, User arg)
         {
             if(arg == _peer.CurrentUser)
@@ -185,29 +177,22 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             => this.TryDeselectShipTractorBeam();
 
         /// <summary>
-        /// Manage a mapped control key being pressed.
-        /// </summary>
-        /// <param name="sender"></param>
-        private void HandleKeyStateChanged(ButtonManager sender, ButtonService.ButtonValue args)
-            => this.TrySetShipDirection(_controls[args.Which.KeyboardKey], args.State == ButtonState.Pressed);
-
-        /// <summary>
         /// Save the current ship to a file.
         /// </summary>
         /// <param name="sender"></param>
-        private void SaveShipToFile(ButtonManager sender, ButtonService.ButtonValue args)
-        {
-            Directory.CreateDirectory("ships");
-            using (FileStream file = File.Open("ships/test.vh", FileMode.Create))
-            {
-                using(MemoryStream ship = this.driven.Ship.Export())
-                {
-                    var data = ship.ToArray();
-                    file.Write(data, 0, data.Length);
-                    file.Flush();
-                }
-            }
-        }
+        // private void SaveShipToFile(ButtonManager sender, ButtonService.ButtonValue args)
+        // {
+        //     Directory.CreateDirectory("ships");
+        //     using (FileStream file = File.Open("ships/test.vh", FileMode.Create))
+        //     {
+        //         using(MemoryStream ship = this.driven.Ship.Export())
+        //         {
+        //             var data = ship.ToArray();
+        //             file.Write(data, 0, data.Length);
+        //             file.Flush();
+        //         }
+        //     }
+        // }
         #endregion
 
         #region Network Methods

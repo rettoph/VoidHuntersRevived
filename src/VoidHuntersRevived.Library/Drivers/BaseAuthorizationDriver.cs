@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Library.Drivers
         {
             base.Dispose();
 
-            this.Dispose(_authorization);
+            this.Release(_authorization);
             this.UpdateAuthorization(GameAuthorization.None);
         }
 
@@ -55,22 +55,22 @@ namespace VoidHuntersRevived.Library.Drivers
 
         }
 
-        protected virtual void DisposeFull()
+        protected virtual void ReleaseFull()
         {
 
         }
 
-        protected virtual void DisposeLocal()
+        protected virtual void ReleaseLocal()
         {
 
         }
 
-        protected virtual void DisposeMinimum()
+        protected virtual void ReleaseMinimum()
         {
 
         }
 
-        protected virtual void Dispose(GameAuthorization authorization)
+        protected virtual void Release(GameAuthorization authorization)
         {
 
         }
@@ -88,14 +88,14 @@ namespace VoidHuntersRevived.Library.Drivers
 
         protected void DisposeAuthorization()
         {
-            this.Dispose(_authorization);
+            this.Release(_authorization);
 
             if (_authorization.HasFlag(GameAuthorization.Full))
-                this.DisposeFull();
+                this.ReleaseFull();
             if (_authorization.HasFlag(GameAuthorization.Local))
-                this.DisposeLocal();
+                this.ReleaseLocal();
             if (_authorization.HasFlag(GameAuthorization.Minimum))
-                this.DisposeMinimum();
+                this.ReleaseMinimum();
         }
 
         protected void ConfigureAuthorization(GameAuthorization authorization)

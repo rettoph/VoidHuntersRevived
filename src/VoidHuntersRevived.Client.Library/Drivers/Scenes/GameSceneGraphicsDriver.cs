@@ -5,6 +5,7 @@ using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.IO.Input;
+using Guppy.IO.Input.Services;
 using Guppy.IO.Services;
 using Guppy.LayerGroups;
 using Guppy.Utilities;
@@ -51,7 +52,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
         private Boolean _renderMaster;
         private Boolean _renderSlave;
 
-        private ButtonService _keys;
+        private KeyboardService _keys;
         #endregion
 
         #region Lifecycle Methods
@@ -96,8 +97,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
             _mouse.OnScrollWheelValueChanged += this.HandleMouseScrollWheelValueChanged;
             this.driven.OnPreDraw += this.PreDraw;
             _window.ClientSizeChanged += this.HandleClientSizeChanged;
-            _keys[Keys.F1].OnKeyPressed += this.OnKeyPressed;
-            _keys[Keys.F2].OnKeyPressed += this.OnKeyPressed;
+            _keys[Keys.F1].OnState[ButtonState.Pressed] += this.OnKeyPressed;
+            _keys[Keys.F2].OnState[ButtonState.Pressed] += this.OnKeyPressed;
 
             _scene.IfOrOnWorld(world =>
             { // Setup world rendering after a world instance is created
@@ -122,15 +123,15 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
             this.CleanViewport();
         }
 
-        protected override void DisposeMinimum()
+        protected override void ReleaseMinimum()
         {
-            base.DisposeMinimum();
+            base.ReleaseMinimum();
 
             this.driven.OnPreDraw -= this.PreDraw;
             _mouse.OnScrollWheelValueChanged -= this.HandleMouseScrollWheelValueChanged;
             _window.ClientSizeChanged -= this.HandleClientSizeChanged;
-            _keys[Keys.F1].OnKeyPressed -= this.OnKeyPressed;
-            _keys[Keys.F2].OnKeyPressed -= this.OnKeyPressed;
+            _keys[Keys.F1].OnState[ButtonState.Pressed] -= this.OnKeyPressed;
+            _keys[Keys.F2].OnState[ButtonState.Pressed] -= this.OnKeyPressed;
         }
         #endregion
 
@@ -181,7 +182,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
         private void HandleClientSizeChanged(object sender, EventArgs e)
             => this.CleanViewport();
 
-        private void OnKeyPressed(ButtonService.ButtonManager manager, ButtonService.ButtonValue args)
+        private void OnKeyPressed(InputManager sender, InputArgs args)
         {
             switch(args.Which.KeyboardKey)
             {
