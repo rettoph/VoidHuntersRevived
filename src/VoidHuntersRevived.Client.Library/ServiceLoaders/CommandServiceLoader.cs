@@ -12,6 +12,7 @@ using VoidHuntersRevived.Library.Events;
 using VoidHuntersRevived.Library.Entities;
 using System.Linq;
 using VoidHuntersRevived.Library.Entities.Controllers;
+using VoidHuntersRevived.Client.Library.Enums;
 
 namespace VoidHuntersRevived.Client.Library.ServiceLoaders
 {
@@ -69,6 +70,52 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                         Required = true,
                         Aliases = "a".ToCharArray(),
                         Type = ArgType.FromEnum<TractorBeam.ActionType>()
+                    }
+                }
+            });
+
+            // Add save commands...
+            commands.TryAddSubCommand(new CommandContext()
+            {
+                Word = "save",
+                SubCommands = new CommandContext[]
+                {
+                    new CommandContext()
+                    {
+                        Word = "ship",
+                        Arguments = new ArgContext[]
+                        {
+                            new ArgContext()
+                            {
+                                Identifier = "name",
+                                Required = true,
+                                Aliases = "n".ToCharArray(),
+                                Type = ArgType.String
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Add toggle commands...
+            commands.TryAddSubCommand(new CommandContext()
+            {
+                Word = "toggle",
+                SubCommands = new CommandContext[]
+                {
+                    new CommandContext()
+                    {
+                        Word = "debug",
+                        Arguments = new ArgContext[]
+                        {
+                            new ArgContext()
+                            {
+                                Identifier = "type",
+                                Required = true,
+                                Aliases = "t".ToCharArray(),
+                                Type = ArgType.FromEnum<DebugType>()
+                            }
+                        }
                     }
                 }
             });

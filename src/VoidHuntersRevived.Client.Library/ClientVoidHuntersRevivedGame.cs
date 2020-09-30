@@ -13,6 +13,9 @@ using VoidHuntersRevived.Client.Library.Services;
 using Guppy;
 using Microsoft.Xna.Framework.Input;
 using Guppy.IO.Input.Services;
+using Guppy.IO.Commands.Services;
+using Guppy.IO.Commands.Interfaces;
+using Guppy.IO.Commands;
 
 namespace VoidHuntersRevived.Client.Library
 {
@@ -20,7 +23,7 @@ namespace VoidHuntersRevived.Client.Library
     {
         #region Private Fields
         private ClientPeer _client;
-        private KeyboardService _keys;
+        private CommandService _commands;
         private DebugService _debug;
         private Boolean _renderDebug;
         #endregion
@@ -30,7 +33,7 @@ namespace VoidHuntersRevived.Client.Library
         {
             base.PreInitialize(provider);
 
-            provider.Service(out _keys);
+            provider.Service(out _commands);
             provider.Service(out _debug);
 
             _client = provider.GetService<ClientPeer>();
@@ -49,7 +52,14 @@ namespace VoidHuntersRevived.Client.Library
             this.Scenes.Create<GameScene>();
 
             // Start the key service...
-            _keys[Keys.F3].OnState[ButtonState.Pressed] += (s, a) => _renderDebug = !_renderDebug;
+            _commands["toggle"]["debug"].OnExcecute += this.HandleToggleDebugCommand;
+        }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _commands["toggle"]["debug"].OnExcecute -= this.HandleToggleDebugCommand;
         }
         #endregion
 
@@ -67,6 +77,11 @@ namespace VoidHuntersRevived.Client.Library
             base.PostUpdate(gameTime);
 
             _debug.TryUpdate(gameTime);
+        }
+
+        private void HandleToggleDebugCommand(ICommand sender, CommandArguments args)
+        {
+            _renderDebug = !_renderDebug;
         }
         #endregion
     }

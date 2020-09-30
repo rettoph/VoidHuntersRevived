@@ -68,12 +68,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 
             this.driven.OnUpdate += this.Update;
 
-
-            _mouse.OnButtonState[ButtonState.Pressed]  += this.HandleCursorPressed;
-            _mouse.OnButtonState[ButtonState.Released] += this.HandleCursorReleased;
-
             _commands["set"]["direction"].OnExcecute += this.HandleSetDirectionCommand;
-            // _keys[Keys.F3].OnKeyPressed += this.SaveShipToFile;
+            _commands["tractorbeam"].OnExcecute += this.HandleTractorBeamCommand;
+            _commands["save"]["ship"].OnExcecute += this.HandleSaveShipCommand;
 
             _debug.Lines += this.RenderDebug;
         }
@@ -88,8 +85,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             base.ReleaseLocal();
 
             this.driven.OnUpdate -= this.Update;
-            _mouse.OnButtonState[ButtonState.Pressed]  -= this.HandleCursorPressed;
-            _mouse.OnButtonState[ButtonState.Released] -= this.HandleCursorReleased;
+
+            _commands["set"]["direction"].OnExcecute -= this.HandleSetDirectionCommand;
+            _commands["tractorbeam"].OnExcecute -= this.HandleTractorBeamCommand;
+            _commands["save"]["ship"].OnExcecute -= this.HandleSaveShipCommand;
+
+            _debug.Lines -= this.RenderDebug;
         }
         #endregion
 
@@ -122,20 +123,17 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             }
         }
 
-        private void TrySelectShipTractorBeam()
+        private void TryTractorBeamAction(TractorBeam.ActionType action)
         {
-            var target = _sensor.Contacts
+            var target = this.driven.Ship.TractorBeam.Selected ?? _sensor.Contacts
                 .Where(c => c is ShipPart)
                 .Select(c => (c as ShipPart).Controller is ChunkManager ? (c as ShipPart).Root : (c as ShipPart))
                 .Where(s => this.driven.Ship.TractorBeam.CanSelect(s))
                 .OrderBy(s => Vector2.Distance(this.driven.Ship.WorldTarget, s.WorldCenter))
                 .FirstOrDefault();
 
-            this.HandleTractorBeamAction(this.driven.Ship.TractorBeam.TrySelect(target));
+            this.HandleTractorBeamAction(this.driven.Ship.TractorBeam.TryAction(new TractorBeam.Action(action, target)));
         }
-
-        private void TryDeselectShipTractorBeam()
-            => this.HandleTractorBeamAction(this.driven.Ship.TractorBeam.TryDeselect(attach: true));
 
         /// <summary>
         /// Broadcast a tractorbeam action to the server in the form of an
@@ -161,6 +159,23 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         private void HandleSetDirectionCommand(ICommand sender, CommandArguments args)
             => this.TrySetShipDirection((Ship.Direction)args["direction"], (Boolean)args["value"]);
 
+        private void HandleTractorBeamCommand(ICommand sender, CommandArguments args)
+            => this.TryTractorBeamAction((TractorBeam.ActionType)args["action"]);
+
+        private void HandleSaveShipCommand(ICommand sender, CommandArguments args)
+        {
+            Directory.CreateDirectory("ships");
+            using (FileStream file = File.Open($"ships/{args["name"]}.vh", FileMode.Create))
+            {
+                using(MemoryStream ship = this.driven.Ship.Export())
+                {
+                    var data = ship.ToArray();
+                    file.Write(data, 0, data.Length);
+                    file.Flush();
+                }
+            }
+        }
+
         private void HandleUserChanged(UserPlayer sender, User arg)
         {
             if(arg == _peer.CurrentUser)
@@ -169,30 +184,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
                 this.driven.Authorization |= GameAuthorization.Local;
             }
         }
-
-        private void HandleCursorPressed(InputManager sender, InputArgs args)
-            => this.TrySelectShipTractorBeam();
-
-        private void HandleCursorReleased(InputManager sender, InputArgs args)
-            => this.TryDeselectShipTractorBeam();
-
-        /// <summary>
-        /// Save the current ship to a file.
-        /// </summary>
-        /// <param name="sender"></param>
-        // private void SaveShipToFile(ButtonManager sender, ButtonService.ButtonValue args)
-        // {
-        //     Directory.CreateDirectory("ships");
-        //     using (FileStream file = File.Open("ships/test.vh", FileMode.Create))
-        //     {
-        //         using(MemoryStream ship = this.driven.Ship.Export())
-        //         {
-        //             var data = ship.ToArray();
-        //             file.Write(data, 0, data.Length);
-        //             file.Flush();
-        //         }
-        //     }
-        // }
         #endregion
 
         #region Network Methods

@@ -94,16 +94,60 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             #endregion
 
             #region TractorBeam Inputs
-            // inputs.Add(new InputCommandContext()
-            // {
-            //     Handle = "tractorbeam",
-            //     DefaultInput = new InputType(Keys.W),
-            //     Commands = new[]
-            //     {
-            //         (state: ButtonState.Pressed, command: "tractorbeam -a=select"),
-            //         (state: ButtonState.Released, command: "tractorbeam -a=attach")
-            //     }
-            // });
+            inputs.Add(new InputCommandContext()
+            {
+                Handle = "tractorbeam",
+                DefaultInput = new InputType(MouseButton.Right),
+                Commands = new[]
+                {
+                    (state: ButtonState.Pressed, command: "tractorbeam -a=select"),
+                    (state: ButtonState.Released, command: "tractorbeam -a=attach")
+                }
+            });
+            #endregion
+
+            #region Save Inputs
+            inputs.Add(new InputCommandContext()
+            {
+                Handle = "save_ship",
+                DefaultInput = new InputType(Keys.F12),
+                Commands = new[]
+                {
+                    (state: ButtonState.Pressed, command: "save ship -n=ship"),
+                }
+            });
+            #endregion
+
+            #region Toggle Debug Inputs
+            inputs.Add(new InputCommandContext()
+            {
+                Handle = "toggle_debug_slave",
+                DefaultInput = new InputType(Keys.F1),
+                Commands = new[]
+                {
+                    (state: ButtonState.Pressed, command: "toggle debug -t=slave"),
+                }
+            });
+
+            inputs.Add(new InputCommandContext()
+            {
+                Handle = "toggle_debug_master",
+                DefaultInput = new InputType(Keys.F2),
+                Commands = new[]
+    {
+                    (state: ButtonState.Pressed, command: "toggle debug -t=master"),
+                }
+            });
+
+            inputs.Add(new InputCommandContext()
+            {
+                Handle = "toggle_debug_data",
+                DefaultInput = new InputType(Keys.F3),
+                Commands = new[]
+    {
+                    (state: ButtonState.Pressed, command: "toggle debug -t=data"),
+                }
+            });
             #endregion
         }
     }

@@ -4,6 +4,9 @@ using Guppy;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.IO.Commands;
+using Guppy.IO.Commands.Interfaces;
+using Guppy.IO.Commands.Services;
 using Guppy.IO.Input;
 using Guppy.IO.Input.Services;
 using Guppy.IO.Services;
@@ -18,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Entities;
+using VoidHuntersRevived.Client.Library.Enums;
 using VoidHuntersRevived.Client.Library.Services;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Drivers;
@@ -52,7 +56,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
         private Boolean _renderMaster;
         private Boolean _renderSlave;
 
-        private KeyboardService _keys;
+        private CommandService _commands;
         #endregion
 
         #region Lifecycle Methods
@@ -86,7 +90,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
             provider.Service(out _sensor);
             provider.Service(out _chunks);
             provider.Service(out _spriteBatch);
-            provider.Service(out _keys);
+            provider.Service(out _commands);
             provider.Service(out _scene);
 
             _ambient = new BasicEffect(_graphics);
@@ -97,8 +101,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
             _mouse.OnScrollWheelValueChanged += this.HandleMouseScrollWheelValueChanged;
             this.driven.OnPreDraw += this.PreDraw;
             _window.ClientSizeChanged += this.HandleClientSizeChanged;
-            _keys[Keys.F1].OnState[ButtonState.Pressed] += this.OnKeyPressed;
-            _keys[Keys.F2].OnState[ButtonState.Pressed] += this.OnKeyPressed;
+            _commands["toggle"]["debug"].OnExcecute += this.HandleToggleDebugCommands;
 
             _scene.IfOrOnWorld(world =>
             { // Setup world rendering after a world instance is created
@@ -130,8 +133,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
             this.driven.OnPreDraw -= this.PreDraw;
             _mouse.OnScrollWheelValueChanged -= this.HandleMouseScrollWheelValueChanged;
             _window.ClientSizeChanged -= this.HandleClientSizeChanged;
-            _keys[Keys.F1].OnState[ButtonState.Pressed] -= this.OnKeyPressed;
-            _keys[Keys.F2].OnState[ButtonState.Pressed] -= this.OnKeyPressed;
+            _commands["toggle"]["debug"].OnExcecute -= this.HandleToggleDebugCommands;
         }
         #endregion
 
@@ -182,11 +184,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
         private void HandleClientSizeChanged(object sender, EventArgs e)
             => this.CleanViewport();
 
-        private void OnKeyPressed(InputManager sender, InputArgs args)
+        private void HandleToggleDebugCommands(ICommand sender, CommandArguments args)
         {
-            switch(args.Which.KeyboardKey)
+            switch ((DebugType)args["type"])
             {
-                case Keys.F1:
+                case DebugType.Master:
                     _renderMaster = !_renderMaster;
                     _scene.IfOrOnWorld(w =>
                     { // Ensure that the world exists before this stage...
@@ -196,7 +198,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Scenes
                             this.driven.OnDraw -= this.DrawMaster;
                     });
                     break;
-                case Keys.F2:
+                case DebugType.Slave:
                     _renderSlave = !_renderSlave;
                     _scene.IfOrOnWorld(w =>
                     { // Ensure that the world exists before this stage...
