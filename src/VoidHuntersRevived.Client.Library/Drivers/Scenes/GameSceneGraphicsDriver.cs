@@ -11,6 +11,7 @@ using Guppy.IO.Input;
 using Guppy.IO.Input.Services;
 using Guppy.IO.Services;
 using Guppy.LayerGroups;
+using Guppy.UI.Entities;
 using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;

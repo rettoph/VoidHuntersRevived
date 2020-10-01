@@ -11,6 +11,7 @@ using VoidHuntersRevived.Client.Library.Drivers.Entities.Thrusters;
 using VoidHuntersRevived.Client.Library.Drivers.Layers;
 using VoidHuntersRevived.Client.Library.Drivers.Scenes;
 using VoidHuntersRevived.Client.Library.Entities;
+using VoidHuntersRevived.Client.Library.Scenes;
 using VoidHuntersRevived.Client.Library.Services;
 using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
@@ -48,6 +49,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddSingleton<DebugService>();
 
             services.AddGame<ClientVoidHuntersRevivedGame>(p => new ClientVoidHuntersRevivedGame());
+            services.AddScene<GameScene>(p => new ClientGameScene(), 1);
 
             // Configure Drivers
             services.AddAndBindDriver<GameScene, GameSceneGraphicsDriver>(p => new GameSceneGraphicsDriver());
