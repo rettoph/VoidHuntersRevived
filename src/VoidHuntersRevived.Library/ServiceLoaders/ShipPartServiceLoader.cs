@@ -167,7 +167,8 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
 
             #region Thruster
             var thruster = new ShipPartConfiguration();
-            thruster.DefaultColor = Color.Green;
+            thruster.DefaultColor = Color.LimeGreen
+                ;
             thruster.AddVertice(-0.1f, -0.3f);
             thruster.AddVertice(-0.1f, 0.3f);
             thruster.AddVertice(0.4f, 0.1f);

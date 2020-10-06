@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Server.Scenes
             });
 
             var rand = new Random(1);
-            for(Int32 i=0; i<1; i++)
+            for(Int32 i=0; i<50; i++)
             {
                 var triangle = this.Entities.Create<ShipPart>("entity:ship-part:hull:triangle");
                 triangle.Position = rand.NextVector2(0, Chunk.Size * 10);

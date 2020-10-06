@@ -11,6 +11,8 @@ using System.Text;
 using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Utilities.Primitives;
+using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities
 {
@@ -22,6 +24,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
     {
         #region Private Fields
         private ShipPartRenderer _renderer;
+        private Guppy.Utilities.Primitives.PrimitivePath _path;
+        private PrimitiveBatch _batch;
+        private FarseerCamera2D _camera;
         #endregion
 
         #region Lifecycle Methods
@@ -29,7 +34,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
         {
             base.Configure(driven, provider);
 
-            provider.Service(out _renderer);
+            provider.Service(out _batch);
+            provider.Service(out _camera);
 
             this.driven.OnDraw += this.Draw;
         }
@@ -44,7 +50,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
 
         #region Frame Methods
         private void Draw(GameTime gameTime)
-            => _renderer.Draw(this.driven);
+        {
+            this.driven.Configuration.PrimitivePath.Draw(0.01f * (1 / _camera.Zoom), this.driven.Color, this.driven.WorldTransformation, _batch);
+        }
         #endregion
     }
 }

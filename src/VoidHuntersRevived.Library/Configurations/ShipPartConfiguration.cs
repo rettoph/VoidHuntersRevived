@@ -1,5 +1,6 @@
 ﻿using FarseerPhysics.Common;
 using FarseerPhysics.Common.ConvexHull;
+using Guppy.Utilities.Primitives;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -48,7 +49,9 @@ namespace VoidHuntersRevived.Library.Configurations
 
         public Color DefaultColor { get; set; } = Color.Orange;
 
-        public Vertices Hull { get; set; }
+        public Vertices Hull { get; private set; }
+
+        public PrimitivePath PrimitivePath { get; private set; }
         #endregion
 
         #region Helper Fields
@@ -146,7 +149,7 @@ namespace VoidHuntersRevived.Library.Configurations
 
             // Update output hull...
             if(!_setHull)
-                this.Hull = GiftWrap.GetConvexHull(_allVertices);
+                this.SetHull(GiftWrap.GetConvexHull(_allVertices));
 
             return this;
         }
@@ -184,6 +187,7 @@ namespace VoidHuntersRevived.Library.Configurations
         {
             this.Hull = vertices;
             _setHull = true;
+            this.PrimitivePath = new PrimitivePath(this.Hull.ToArray());
         }
         public void SetHull(Vector2[] vertices)
             => this.SetHull(new Vertices(vertices));
