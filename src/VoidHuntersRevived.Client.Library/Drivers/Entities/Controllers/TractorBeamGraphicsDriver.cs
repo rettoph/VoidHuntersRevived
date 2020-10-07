@@ -37,8 +37,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
         #region Frame Methods
         private void Draw(GameTime gameTime)
         {
-            _primitiveBatch.DrawLine(this.driven.Position - Vector2.UnitX, this.driven.Position + Vector2.UnitX, Color.Red);
-            _primitiveBatch.DrawLine(this.driven.Position - Vector2.UnitY, this.driven.Position + Vector2.UnitY, Color.Red);
+            _primitiveBatch.DrawLine(Color.Red, this.driven.Position - Vector2.UnitX, this.driven.Position + Vector2.UnitX);
+            _primitiveBatch.DrawLine(Color.Red, this.driven.Position - Vector2.UnitY, this.driven.Position + Vector2.UnitY);
         }
         #endregion
     }

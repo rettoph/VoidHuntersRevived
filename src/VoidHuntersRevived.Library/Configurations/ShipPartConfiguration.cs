@@ -50,8 +50,6 @@ namespace VoidHuntersRevived.Library.Configurations
         public Color DefaultColor { get; set; } = Color.Orange;
 
         public Vertices Hull { get; private set; }
-
-        public PrimitivePath PrimitivePath { get; private set; }
         #endregion
 
         #region Helper Fields
@@ -187,7 +185,6 @@ namespace VoidHuntersRevived.Library.Configurations
         {
             this.Hull = vertices;
             _setHull = true;
-            this.PrimitivePath = new PrimitivePath(this.Hull.ToArray());
         }
         public void SetHull(Vector2[] vertices)
             => this.SetHull(new Vertices(vertices));

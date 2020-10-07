@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
         #region Frame Methods
         private void Draw(GameTime gameTime)
         {
-            _primitiveBatch.DrawRectangle(new Rectangle(Point.Zero, this.driven.Size.ToPoint()), Color.Gray);
+            _primitiveBatch.DrawRectangle(Color.Gray, new Rectangle(Point.Zero, this.driven.Size.ToPoint()));
         }
         #endregion
     }

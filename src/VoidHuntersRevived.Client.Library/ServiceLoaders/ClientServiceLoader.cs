@@ -32,21 +32,21 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
         {
             // Configure service factories...
             services.AddFactory<FarseerCamera2D>(p => new FarseerCamera2D());
-            services.AddFactory<ShipPartRenderer>(p => new ShipPartRenderer());
             services.AddFactory<Sensor>(p => new Sensor());
             services.AddFactory<TrailManager>(p => new TrailManager());
             services.AddFactory<Trail>(p => new Trail());
             services.AddFactory<TrailSegment>(p => new TrailSegment(p));
             services.AddFactory<DebugService>(p => new DebugService());
+            services.AddFactory<ShipPartRenderService>(p => new ShipPartRenderService());
 
             // Configure service lifetimes...
             services.AddScoped<FarseerCamera2D>();
-            services.AddScoped<ShipPartRenderer>();
             services.AddScoped<Sensor>();
             services.AddScoped<TrailManager>();
             services.AddTransient<Trail>();
             services.AddTransient<TrailSegment>();
             services.AddSingleton<DebugService>();
+            services.AddScoped<ShipPartRenderService>();
 
             services.AddGame<ClientVoidHuntersRevivedGame>(p => new ClientVoidHuntersRevivedGame());
             services.AddScene<GameScene>(p => new ClientGameScene(), 1);

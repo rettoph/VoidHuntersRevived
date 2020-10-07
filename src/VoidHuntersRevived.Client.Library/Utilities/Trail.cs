@@ -116,8 +116,8 @@ namespace VoidHuntersRevived.Client.Library.Utilities
 
         private void DrawSegments(TrailSegment s1, TrailSegment s2)
         {
-            _primitiveBatch.DrawTriangle(s1.Port, s1.Color, s1.Starboard, s1.Color, s2.Starboard, s2.Color);
-            _primitiveBatch.DrawTriangle(s2.Starboard, s2.Color, s2.Port, s2.Color, s1.Port, s1.Color);
+            _primitiveBatch.DrawTriangle(s1.Color, s1.Port, s1.Starboard, s2.Starboard);
+            _primitiveBatch.DrawTriangle(s1.Color, s2.Starboard, s2.Port, s1.Port);
         }
         #endregion
     }
