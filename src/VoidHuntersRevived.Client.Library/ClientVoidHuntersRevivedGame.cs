@@ -16,6 +16,8 @@ using Guppy.IO.Input.Services;
 using Guppy.IO.Commands.Services;
 using Guppy.IO.Commands.Interfaces;
 using Guppy.IO.Commands;
+using VoidHuntersRevived.Client.Library.Enums;
+using System.Linq;
 
 namespace VoidHuntersRevived.Client.Library
 {
@@ -26,6 +28,7 @@ namespace VoidHuntersRevived.Client.Library
         private CommandService _commands;
         private DebugService _debug;
         private Boolean _renderDebug;
+        private Queue<Double> _frameTimes;
         #endregion
 
         #region Lifecycle Methods
@@ -49,7 +52,11 @@ namespace VoidHuntersRevived.Client.Library
         {
             base.Initialize(provider);
 
+            _frameTimes = new Queue<double>(new Double[10]);
+
             this.Scenes.Create<GameScene>();
+
+            _debug.Lines += this.RenderFPS;
 
             // Start the key service...
             _commands["toggle"]["debug"].OnExcecute += this.HandleToggleDebugCommand;
@@ -77,11 +84,22 @@ namespace VoidHuntersRevived.Client.Library
             base.PostUpdate(gameTime);
 
             _debug.TryUpdate(gameTime);
-        }
 
+            _frameTimes.Enqueue(gameTime.ElapsedGameTime.TotalMilliseconds);
+            _frameTimes.Dequeue();
+        }
+        #endregion
+
+        #region Event Handlers
+        private string RenderFPS(GameTime gameTime)
+            => $"FPS: {(1000 / _frameTimes.Average()).ToString("#,#00.0")}\n";
+        #endregion
+
+        #region Command Handlers
         private void HandleToggleDebugCommand(ICommand sender, CommandArguments args)
         {
-            _renderDebug = !_renderDebug;
+            if((DebugType)args["type"] == DebugType.Data)
+                _renderDebug = !_renderDebug;
         }
         #endregion
     }

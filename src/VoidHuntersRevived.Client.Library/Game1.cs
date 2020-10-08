@@ -27,7 +27,6 @@ namespace VoidHuntersRevived.Client.Library
 
             this.IsMouseVisible = true;
             this.Window.AllowUserResizing = true;
-            this.IsFixedTimeStep = false;
         }
 
         /// <summary>
@@ -44,6 +43,8 @@ namespace VoidHuntersRevived.Client.Library
 
             // Settings.ContinuousPhysics = false;
             // Settings.EnableDiagnostics = false;
+
+            this.IsFixedTimeStep = false;
 
             game = guppy.ConfigureMonoGame(graphics, this.Content, this.Window)
                 .ConfigureClient(new NetPeerConfiguration("vhr"))
@@ -93,8 +94,6 @@ namespace VoidHuntersRevived.Client.Library
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
             // TODO: Add your drawing code here
             game.TryDraw(gameTime);
 
