@@ -64,6 +64,10 @@ namespace VoidHuntersRevived.Server.Scenes
                     var thruster = this.Entities.Create<ShipPart>("entity:ship-part:thruster:small");
                     thruster.Position = rand.NextVector2(0, world.Size.X);
                     thruster.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+
+                    var weapon = this.Entities.Create<ShipPart>("entity:ship-part:weapon");
+                    weapon.Position = rand.NextVector2(0, world.Size.X);
+                    weapon.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
                 }
             }
         }

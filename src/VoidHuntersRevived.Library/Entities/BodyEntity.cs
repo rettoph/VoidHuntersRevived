@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Library.Utilities;
+using VoidHuntersRevived.Library.Utilities.Farseer;
 using VoidHuntersRevived.Library.Extensions.Farseer;
 using FarseerPhysics.Collision.Shapes;
 using Lidgren.Network;

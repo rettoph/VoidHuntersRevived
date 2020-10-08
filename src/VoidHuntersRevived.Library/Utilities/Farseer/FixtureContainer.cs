@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities;
 
-namespace VoidHuntersRevived.Library.Utilities
+namespace VoidHuntersRevived.Library.Utilities.Farseer
 {
     public sealed class FixtureContainer
     {

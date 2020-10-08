@@ -12,6 +12,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Configurations;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
+using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
 
 namespace VoidHuntersRevived.Library.ServiceLoaders
 {
@@ -167,8 +168,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
 
             #region Thruster
             var thruster = new ShipPartConfiguration();
-            thruster.DefaultColor = Color.LimeGreen
-                ;
+            thruster.DefaultColor = Color.LimeGreen;
             thruster.AddVertice(-0.1f, 0.3f);
             thruster.AddVertice(-0.1f, -0.3f);
             thruster.AddVertice(0.4f, -0.1f);
@@ -180,6 +180,27 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddConfiguration<Thruster>("entity:ship-part:thruster:small", (s, p, c) =>
             {
                 s.Configuration = thruster;
+            });
+            #endregion
+            #endregion
+
+            #region Weapons
+            services.AddFactory<Weapon>(p => new Weapon());
+
+            #region Weapon
+            var weapon = new ShipPartConfiguration();
+            weapon.DefaultColor = Color.Red;
+            weapon.AddVertice(-0.75f, 0.1f);
+            weapon.AddVertice(-0.75f, -0.1f);
+            weapon.AddVertice(0.1f, -0.2f);
+            weapon.AddVertice(0.1f, 0.2f);
+            weapon.AddNode(0, 0, 0, ShipPartConfiguration.NodeType.Male);
+            weapon.Flush();
+
+            services.AddTransient<Weapon>("entity:ship-part:weapon");
+            services.AddConfiguration<Weapon>("entity:ship-part:weapon", (s, p, c) =>
+            {
+                s.Configuration = weapon;
             });
             #endregion
             #endregion

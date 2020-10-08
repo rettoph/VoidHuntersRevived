@@ -11,6 +11,7 @@ using FarseerPhysics.Collision.Shapes;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
 using Guppy.IO.Extensions.log4net;
+using VoidHuntersRevived.Library.Utilities.Farseer;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {

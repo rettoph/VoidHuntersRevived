@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// </summary>
         public Single LocalRotation { get; private set; } = 0;
 
-        public Matrix WorldTransformation
+        public virtual Matrix WorldTransformation
         {
             get => this.LocalTransformation * Matrix.CreateRotationZ(this.Root.Rotation) * Matrix.CreateTranslation(this.Root.Position.X, this.Root.Position.Y, 0);
         }
