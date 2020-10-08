@@ -21,6 +21,9 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Drivers.Scenes;
 using System.Collections.Concurrent;
 using Guppy.Extensions.DependencyInjection;
+using System.IO;
+using VoidHuntersRevived.Library.Extensions.System;
+using VoidHuntersRevived.Library.Entities.Controllers;
 
 namespace VoidHuntersRevived.Drivers.Scenes
 {
@@ -133,8 +136,8 @@ namespace VoidHuntersRevived.Drivers.Scenes
                 up.User = user;
                 up.Ship = _entities.Create<Ship>((s, p2, c2) =>
                 {
-                    s.SetBridge(_entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
-                    s.Bridge.Position = new Vector2(15, 5);
+                    s.Import(File.OpenRead("Ships/mosquito.vh"));
+                    s.Bridge.Position = (new Random()).NextVector2(0, Chunk.Size * 10);
                 });
             });
         }

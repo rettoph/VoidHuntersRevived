@@ -7,14 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Ships\**" />
-    <EmbeddedResource Remove="Ships\**" />
-    <None Remove="Ships\**" />
+    <None Remove="ship-part-export.dat" />
+    <None Remove="ship.vh" />
+    <None Remove="Ships\mosquito.vh" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ship-part-export.dat" />
-    <None Remove="ship.vh" />
+    <Content Include="Ships\mosquito.vh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
