@@ -121,6 +121,19 @@ namespace VoidHuntersRevived.Library.Utilities
                 this.OnDetached?.Invoke(this, old);
             }
         }
+
+        /// <summary>
+        /// Reposition the input ShipPart as if it were to
+        /// attach to the current node.
+        /// </summary>
+        public void TryPreview(ShipPart shipPart)
+        {
+            var rotation = this.WorldRotation - shipPart.MaleConnectionNode.LocalRotation;
+
+            shipPart.SetTransformIgnoreContacts(
+                position: this.WorldPosition - Vector2.Transform(shipPart.MaleConnectionNode.LocalPosition, Matrix.CreateRotationZ(rotation)),
+                angle: rotation);
+        }
         #endregion
 
         #region Static Methods

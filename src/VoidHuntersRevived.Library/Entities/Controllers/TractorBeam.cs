@@ -152,16 +152,9 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                 }
                 else
                 { // There is an available connection node. Position the ship part to preview it...
-                    // Rather than creating the attachment, we just want to move the selection
-                    // so that a user can preview what it would look like when attached.
-                    var rotation = node.WorldRotation - this.Selected.MaleConnectionNode.LocalRotation;
-                    
                     this.parts.ForEach(p =>
                     {
-                        p.SetTransformIgnoreContacts(
-                            position: node.WorldPosition - Vector2.Transform(this.Selected.MaleConnectionNode.LocalPosition, Matrix.CreateRotationZ(rotation)),
-                            angle: rotation);
-
+                        node.TryPreview(p);
                         p.TryUpdate(gameTime);
                     });
                 }

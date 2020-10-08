@@ -77,6 +77,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             while (_joints.Any())
                 this.RemoveJoint(_joints.First().Key, _joints.First().Value);
 
+            // Reposition the current weapon at a 0deg angle
+            this.MaleConnectionNode.Target?.TryPreview(this);
+
             if(!this.IsRoot)
             { // Only bother creating any joints if the current Weapon is not a root piece
                 this.Do(body =>
@@ -175,6 +178,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             // Attempt to update the weapons target...
             if (this.Root.Ship != default(Ship))
                 this.TryAim(this.Root.Ship.WorldTarget);
+            else
+                this.MaleConnectionNode.Target?.TryPreview(this);
         }
         #endregion
 
