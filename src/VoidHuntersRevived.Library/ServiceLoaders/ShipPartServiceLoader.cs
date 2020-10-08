@@ -169,10 +169,10 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             var thruster = new ShipPartConfiguration();
             thruster.DefaultColor = Color.LimeGreen
                 ;
-            thruster.AddVertice(-0.1f, -0.3f);
             thruster.AddVertice(-0.1f, 0.3f);
-            thruster.AddVertice(0.4f, 0.1f);
+            thruster.AddVertice(-0.1f, -0.3f);
             thruster.AddVertice(0.4f, -0.1f);
+            thruster.AddVertice(0.4f, 0.1f);
             thruster.AddNode(0.3f, 0, 0, ShipPartConfiguration.NodeType.Male);
             thruster.Flush();
 

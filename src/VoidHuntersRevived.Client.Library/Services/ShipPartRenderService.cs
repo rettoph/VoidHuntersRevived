@@ -1,11 +1,13 @@
 ﻿using Guppy;
 using Guppy.DependencyInjection;
+using Guppy.Extensions.Collections;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Utilities;
 using Guppy.Utilities.Primitives;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Configurations;
@@ -21,8 +23,20 @@ namespace VoidHuntersRevived.Client.Library.Services
     /// </summary>
     public class ShipPartRenderService : Asyncable
     {
+        #region Constants
+        private static Color TransparentWhite = new Color(255, 255, 255, 0);
+        #endregion
+
+        #region Private Structs
+        private struct ShipPartConfigurationPrimitiveData
+        {
+            public PrimitivePath Path;
+            public PrimitiveShape[] Shapes;
+        }
+        #endregion
+
         #region Private Fields
-        private Dictionary<ShipPartConfiguration, PrimitivePath> _paths;
+        private Dictionary<ShipPartConfiguration, ShipPartConfigurationPrimitiveData> _primitives;
 
         private Single _configuredZoom;
         private FarseerCamera2D _camera;
@@ -35,7 +49,7 @@ namespace VoidHuntersRevived.Client.Library.Services
         {
             base.Initialize(provider);
 
-            _paths = new Dictionary<ShipPartConfiguration, PrimitivePath>();
+            _primitives = new Dictionary<ShipPartConfiguration, ShipPartConfigurationPrimitiveData>();
 
             provider.Service(out _camera);
             provider.Service(out _primitiveBatch);
@@ -59,16 +73,25 @@ namespace VoidHuntersRevived.Client.Library.Services
                 _configuredZoom = _camera.Zoom;
                 _width = 0.01f * (1 / _camera.Zoom);
 
-                foreach(PrimitivePath path in _paths.Values)
-                    path.Width = _width;
+                foreach(ShipPartConfigurationPrimitiveData primitives in _primitives.Values)
+                    primitives.Path.Width = _width;
             }
         }
 
         public void Draw(ShipPart shipPart)
         {
+            _primitives[shipPart.Configuration].Shapes.ForEach(shape =>
+            { // Draw all part shapes...
+                _primitiveBatch.DrawPrimitive(
+                    shape,
+                    Color.Lerp(shipPart.Color, Color.TransparentBlack, 0.25f),
+                    shipPart.WorldTransformation);
+            });
+
+            // Draw part path...
             _primitiveBatch.DrawPrimitive(
-                _paths[shipPart.Configuration], 
-                shipPart.Color, 
+                _primitives[shipPart.Configuration].Path, 
+                Color.Lerp(shipPart.Color, ShipPartRenderService.TransparentWhite, 0.25f), 
                 shipPart.WorldTransformation);
         }
         #endregion
@@ -76,10 +99,14 @@ namespace VoidHuntersRevived.Client.Library.Services
         #region Helper Methods
         public void ValidateConfiguration(ShipPart shipPart)
         {
-            if (_paths.ContainsKey(shipPart.Configuration))
+            if (_primitives.ContainsKey(shipPart.Configuration))
                 return;
 
-            _paths[shipPart.Configuration] = PrimitivePath.Create(_width, shipPart.Configuration.Hull);
+            _primitives[shipPart.Configuration] = new ShipPartConfigurationPrimitiveData()
+            {
+                Path = PrimitivePath.Create(_width, shipPart.Configuration.Hull),
+                Shapes = shipPart.Configuration.Vertices.Select(v => PrimitiveShape.Create(v)).ToArray()
+            };
         }
         #endregion
     }
