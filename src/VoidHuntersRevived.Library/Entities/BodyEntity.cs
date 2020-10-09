@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Library.Entities
         /// The amount a slave body should lerp towards the master
         /// per millisecond
         /// </summary>
-        public static Single SlaveLerpStrength { get; set; } = 0.0015625f;
+        public static Single SlaveLerpStrength { get; set; } = 0.0015625f / 3;
 
         /// <summary>
         /// The threshold that must be surpassed by the position

@@ -8,6 +8,9 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
+using System.Linq;
+using VoidHuntersRevived.Library.Extensions.System.Collections;
+using Microsoft.Xna.Framework;
 
 namespace VoidHuntersRevived.Library.Entities.Controllers
 {
@@ -21,6 +24,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #region Private Fields
         private HashSet<ShipPart> _parts;
         private GameAuthorization _authorization;
+        private Queue<ShipPart> _synchronization;
         #endregion
 
         #region Protected Attributes
@@ -58,6 +62,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             base.PreInitialize(provider);
 
             _parts = new HashSet<ShipPart>();
+            _synchronization = new Queue<ShipPart>();
 
             this.Authorization = provider.GetService<Settings>().Get<GameAuthorization>();
         }
@@ -70,19 +75,43 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         }
         #endregion
 
-        #region Helper Methods
-        protected virtual Boolean CanAdd(ShipPart shipPart)
-            => shipPart != default(ShipPart) && shipPart.IsRoot;
+        #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
 
-        protected virtual void Add(ShipPart shipPart)
+            this.FlushAll();
+        }
+        #endregion
+
+        #region Helper Methods
+        protected virtual void FlushAll()
+        {
+            while (_synchronization.Any())
+                this.TryFlush(_synchronization.Dequeue());
+        }
+
+        private void TryFlush(ShipPart shipPart)
+        {
+            if (this.CanAdd(shipPart))
+                this.Flush(shipPart);
+        }
+
+        protected virtual void Flush(ShipPart shipPart)
         {
             shipPart.Controller?.Remove(shipPart);
             _parts.Add(shipPart);
             shipPart.Controller = this;
         }
 
+        protected virtual Boolean CanAdd(ShipPart shipPart)
+            => shipPart != default(ShipPart) && shipPart.IsRoot;
+
+        protected virtual void Add(ShipPart shipPart)
+            => _synchronization.Enqueue(shipPart);
+
         protected virtual Boolean CanRemove(ShipPart shipPart)
-            => _parts.Contains(shipPart);
+            => _parts.Contains(shipPart) || _synchronization.Contains(shipPart);
 
         protected internal virtual void TryRemove(ShipPart shipPart)
         {
@@ -92,7 +121,11 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
         protected virtual void Remove(ShipPart shipPart)
         {
-            _parts.Remove(shipPart);
+            if(_parts.Contains(shipPart))
+                _parts.Remove(shipPart);
+
+            if (_synchronization.Contains(shipPart))
+                _synchronization.Remove(shipPart);
 
             if(shipPart.IsRoot) // Reset the controller if the part is still root.
                 shipPart.Controller = null;

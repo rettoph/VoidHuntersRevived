@@ -109,16 +109,19 @@ namespace VoidHuntersRevived.Library.Utilities
             }
         }
 
-        public void TryDetach()
+        public void TryDetach(Boolean align = true)
         {
             if (this.Attached)
             { // Only proceed if there is an existing attachment
                 var old = this.Target;
 
                 this.Target = null;
-                old.TryDetach();
+                old.TryDetach(false);
 
                 this.OnDetached?.Invoke(this, old);
+
+                if(align)
+                    old.TryPreview(this.Parent);
             }
         }
 

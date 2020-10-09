@@ -97,7 +97,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         #region Frame Methods
         private void Update(GameTime gameTime)
         {
-            if(this.driven.Ship != null)
+            if (this.driven.Ship != null)
             {
                 this.driven.Ship.WorldTarget = _sensor.Position;
                 _targetSender.Update(gameTime, () =>

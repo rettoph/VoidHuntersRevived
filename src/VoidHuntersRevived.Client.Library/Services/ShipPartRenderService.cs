@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Client.Library.Services
     /// directly to screen with little passing from
     /// the ship part itself.
     /// </summary>
-    public class ShipPartRenderService : Asyncable
+    public class ShipPartRenderService : Service
     {
         #region Constants
         private static Color TransparentWhite = new Color(255, 255, 255, 0);
@@ -58,16 +58,12 @@ namespace VoidHuntersRevived.Client.Library.Services
         protected override void PostInitialize(ServiceProvider provider)
         {
             base.PostInitialize(provider);
-
-            this.TryStart(false);
         }
         #endregion
 
         #region Frame Methods
-        protected override void Update(GameTime gameTime)
+        internal void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-
             if(_camera.Zoom != _configuredZoom && Math.Abs(_configuredZoom - _camera.Zoom) / _configuredZoom > 0.005f)
             {
                 _configuredZoom = _camera.Zoom;

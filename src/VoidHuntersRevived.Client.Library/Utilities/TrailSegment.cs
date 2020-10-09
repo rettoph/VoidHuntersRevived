@@ -15,7 +15,11 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         #region Static Fields
         public static Double MaxAge { get; private set; } = 2000;
         private static Vector3 Spread = Vector3.UnitX * 0.25f;
-        private static Vector3 Speed = Vector3.UnitX * 0.005f;
+
+        /// <summary>
+        /// Pixels per second
+        /// </summary>
+        private static Vector3 Speed = Vector3.UnitX;
         #endregion
 
         #region Private Fields
@@ -64,9 +68,11 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         #region Frame Methods
         public void Update(GameTime gameTime)
         {
+            var speed = _tangentDelta * (Single)gameTime.ElapsedGameTime.TotalSeconds;
+
             this.Age += gameTime.ElapsedGameTime.TotalMilliseconds;
-            this.Port += _tangentDelta;
-            this.Starboard -= _tangentDelta;
+            this.Port += speed;
+            this.Starboard -= speed;
             this.Color = Color.Lerp(Color.Transparent, _initialColor, _strength * (1 - ((Single)(this.Age / TrailSegment.MaxAge))));
         }
         #endregion

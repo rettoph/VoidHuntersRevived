@@ -27,6 +27,14 @@ namespace VoidHuntersRevived.Client.Library
 
             this.IsMouseVisible = true;
             this.Window.AllowUserResizing = true;
+            this.IsFixedTimeStep = false;
+
+            this.graphics.PreparingDeviceSettings += (s, e) =>
+            {
+                e.GraphicsDeviceInformation.PresentationParameters.PresentationInterval = PresentInterval.Immediate;
+            };
+            this.graphics.SynchronizeWithVerticalRetrace = false;
+            this.graphics.ApplyChanges();
         }
 
         /// <summary>
@@ -43,8 +51,7 @@ namespace VoidHuntersRevived.Client.Library
 
             // Settings.ContinuousPhysics = false;
             // Settings.EnableDiagnostics = false;
-
-            this.IsFixedTimeStep = false;
+            
 
             game = guppy.ConfigureMonoGame(graphics, this.Content, this.Window)
                 .ConfigureClient(new NetPeerConfiguration("vhr"))
@@ -82,7 +89,6 @@ namespace VoidHuntersRevived.Client.Library
         protected override void Update(GameTime gameTime)
         {
             // TODO: Add your update logic here
-
             base.Update(gameTime);
 
             game.TryUpdate(gameTime);

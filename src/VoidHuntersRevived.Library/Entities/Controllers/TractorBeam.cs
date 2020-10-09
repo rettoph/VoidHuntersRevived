@@ -27,10 +27,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
     /// </summary>
     public class TractorBeam : Controller
     {
-        #region Static Attributes
-        private static GameTime EmptyGameTime { get; set; } = new GameTime();
-        #endregion
-
         #region Enums
         [Flags]
         public enum ActionType { 
@@ -57,6 +53,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #region Private Fields
         private ChunkManager _chunks;
         private ILog _logger;
+        private ThreadSynchronizer _synchronizer;
         #endregion
 
         #region Public Attributes
@@ -99,6 +96,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             provider.Service(out _chunks);
             provider.Service(out _logger);
 
+            _synchronizer = new ThreadSynchronizer();
+
             this.Authorization = GameAuthorization.Full;
 
             this.CanAttach += this.DefaultCanAttach;
@@ -123,6 +122,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            _synchronizer.Update(gameTime);
 
             this.Position = this.Ship.WorldTarget;
             this.Align(gameTime);
@@ -154,7 +155,11 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                 { // There is an available connection node. Position the ship part to preview it...
                     this.parts.ForEach(p =>
                     {
+                        p.LinearVelocity = Vector2.Zero;
+                        p.AngularVelocity = 0f;
+
                         node.TryPreview(p);
+
                         p.TryUpdate(gameTime);
                     });
                 }
@@ -197,12 +202,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         public Boolean CanSelect(ShipPart shipPart)
             => this.CanAdd(shipPart);
 
-        /// <summary>
-        /// Attempt to grab a given ShipPart within the tractor beam.
-        /// </summary>
-        /// <param name="shipPart"></param>
-        public TractorBeam.Action TrySelect(ShipPart shipPart)
-            => this.TryAction(new TractorBeam.Action(ActionType.Select, shipPart));
         private TractorBeam.Action TrySelect(TractorBeam.Action action)
         {
             if (action.Type != ActionType.Select)
@@ -210,10 +209,12 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
             if (this.CanAdd(action.Target))
             {
-                action.Target.MaleConnectionNode.TryDetach();
-                this.Add(action.Target);
-                this.TryUpdate(TractorBeam.EmptyGameTime);
-                this.OnSelected?.Invoke(this, action);
+                _synchronizer.Do(gt =>
+                {
+                    action.Target.MaleConnectionNode.TryDetach();
+                    this.Add(action.Target);
+                    this.OnSelected?.Invoke(this, action);
+                });
 
                 return action;
             }
@@ -232,7 +233,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             shipPart.AngularVelocity = 0f;
 
             if(this.Selected != default(ShipPart)) // Auto attempt a deselect if any...
-                this.TryDeselect();
+                this.TryAction(new Action(ActionType.Deselect));
 
             this.Selected = shipPart;
         }
@@ -242,8 +243,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         /// </summary>
         /// <param name="attach">Whether or not an attachment should also be attempted...</param>
         /// <returns></returns>
-        public TractorBeam.Action TryDeselect(Boolean attach = false)
-            => this.TryAction(new Action(attach ? ActionType.Attach : ActionType.Deselect, this.Selected));
         private TractorBeam.Action TryDeselect(TractorBeam.Action action)
         {
             if (!action.Type.HasFlag(TractorBeam.ActionType.Deselect))
@@ -251,11 +250,12 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
             if (this.CanRemove(action.Target))
             {
-                this.TryUpdate(TractorBeam.EmptyGameTime);
-
-                var old = this.Selected;
-                _chunks.TryAdd(old);
-                this.OnDeselected?.Invoke(this, action);
+                _synchronizer.Do(gt =>
+                {
+                    var old = this.Selected;
+                    _chunks.TryAdd(old);
+                    this.OnDeselected?.Invoke(this, action);
+                });
 
                 if (action.Type.HasFlag(TractorBeam.ActionType.Attach))
                     return this.TryAttach(action);
@@ -287,11 +287,14 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                 if (!d(action.Target, node))
                     return new Action(ActionType.Deselect, action.Target);
 
-            // If all the delegates allow the current attachment...
-            action.Target.MaleConnectionNode.TryAttach(node);
+            _synchronizer.Do(gt =>
+            {
+                // If all the delegates allow the current attachment...
+                action.Target.MaleConnectionNode.TryAttach(node);
 
-            if(action.Type != ActionType.None) // Invoke the action event as needed...
-                this.OnAttached?.Invoke(this, action);
+                if (action.Type != ActionType.None) // Invoke the action event as needed...
+                    this.OnAttached?.Invoke(this, action);
+            });
 
             return action;
         }

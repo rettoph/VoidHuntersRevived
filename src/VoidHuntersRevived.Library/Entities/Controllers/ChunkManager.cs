@@ -125,13 +125,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         private List<ShipPart> _quarantine;
 
         /// <summary>
-        /// New ShipParts are added here before being
-        /// put directly into quarantine. This is to make
-        /// the entire process more threadsafe...
-        /// </summary>
-        private Queue<ShipPart> _dirty;
-
-        /// <summary>
         /// List of ShipParts that have passed
         /// quarantine but are not yet added
         /// into a chunk.
@@ -154,7 +147,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             _chunks = new Dictionary<Chunk.Position, Chunk>();
             _shipPartChunks = new Dictionary<ShipPart, ShipPartChunks>();
             _quarantine = new List<ShipPart>();
-            _dirty = new Queue<ShipPart>();
             _clean = new Queue<ShipPart>();
 
             _provider = provider;
@@ -185,9 +177,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            while (_dirty.Any()) // Add all new items into quarantine.
-                _quarantine.Add(_dirty.Dequeue());
 
             _quarantine.ForEach(sp =>
             {
@@ -303,20 +292,16 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                 this.Add(shipPart);
         }
 
-        protected override void Add(ShipPart shipPart)
+        protected override void Flush(ShipPart shipPart)
         {
-            base.Add(shipPart);
-
-            // Create a new ShipPartChunks instance.
-            if (!_shipPartChunks.ContainsKey(shipPart)) 
-                _shipPartChunks[shipPart] = new ShipPartChunks(this, shipPart);
+            base.Flush(shipPart);
 
             // Add the new ship part straight into quarantine
+            _quarantine.Add(shipPart);
+
+            // Update the new parts properties
             shipPart.SleepingAllowed = true;
             shipPart.Awake = true;
-
-            // Add the new shippart into the dirty queue...
-            _dirty.Enqueue(shipPart);
 
             // Update the new parts collisions
             shipPart.CollisionCategories = Categories.PassiveCollisionCategories;
@@ -324,24 +309,18 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             shipPart.IgnoreCCDWith = Categories.PassiveIgnoreCCDWith;
         }
 
+        protected override void Add(ShipPart shipPart)
+        {
+            base.Add(shipPart);
+
+            // Create a new ShipPartChunks instance.
+            if (!_shipPartChunks.ContainsKey(shipPart))
+                _shipPartChunks[shipPart] = new ShipPartChunks(this, shipPart);
+        }
+
         protected override void Remove(ShipPart shipPart)
         {
             base.Remove(shipPart);
-
-            // Remove the ship part the incoming items queue if needed...
-            if (_dirty.Contains(shipPart))
-            {
-                ShipPart item = default(ShipPart);
-                do
-                {
-                    item = _dirty.Dequeue();
-
-                    if (item != shipPart)
-                        _dirty.Enqueue(item);
-
-                } while (item != shipPart);
-                 
-            }
 
             // Remove the ship part from quarantine if needed...
             if (_quarantine.Contains(shipPart))

@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             _joints = new Dictionary<Body, RevoluteJoint>();
 
             // Create new shapes for the part
-            this.Configuration.Vertices.ForEach(v => this.BuildFixture(new PolygonShape(v, 0.5f), this));
+            this.Configuration.Vertices.ForEach(v => this.BuildFixture(new PolygonShape(v, 0.01f), this));
 
             this.OnRootChanged += this.HandleRootChanged;
 
@@ -183,6 +183,16 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         }
         #endregion
 
+        #region Helper Methods
+        private void CleanCollision()
+        {
+            // Automatically set the weapons collision values to match the root.
+            this.CollidesWith = this.Root.CollidesWith;
+            this.CollisionCategories = this.Root.CollisionCategories;
+            this.IgnoreCCDWith = this.Root.IgnoreCCDWith;
+        }
+        #endregion
+
         #region Event Handlers
         private void HandleRootChanged(ShipPart sender, ShipPart old, ShipPart value)
         {
@@ -191,13 +201,26 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             if (old != default(ShipPart) && old != this)
             {
                 old.OnUpdate -= this.TryUpdate;
+
+                value.OnCollidesWithChanged -= this.HandleCollisionChanged;
+                value.OnCollisionCategoriesChanged -= this.HandleCollisionChanged;
+                value.OnIgnoreCCDWithChanged -= this.HandleCollisionChanged;
             }
 
             if (value != default(ShipPart) && value != this)
             {
                 value.OnUpdate += this.TryUpdate;
+
+                value.OnCollidesWithChanged += this.HandleCollisionChanged;
+                value.OnCollisionCategoriesChanged += this.HandleCollisionChanged;
+                value.OnIgnoreCCDWithChanged += this.HandleCollisionChanged;
+
+                this.CleanCollision();
             }
         }
+
+        private void HandleCollisionChanged(BodyEntity sender, Category arg)
+            => this.CleanCollision();
         #endregion
     }
 }

@@ -24,11 +24,11 @@ namespace VoidHuntersRevived.Server.Scenes
 
             var world = this.Entities.Create<WorldEntity>((w, p, c) =>
             {
-                w.Size = new Vector2(Chunk.Size * 10, Chunk.Size * 10);
+                w.Size = new Vector2(Chunk.Size * 5, Chunk.Size * 5);
             });
 
             var rand = new Random(1);
-            for(Int32 i=0; i<50; i++)
+            for(Int32 i=0; i<10; i++)
             {
                 var triangle = this.Entities.Create<ShipPart>("entity:ship-part:hull:triangle");
                 triangle.Position = rand.NextVector2(0, world.Size.X);
