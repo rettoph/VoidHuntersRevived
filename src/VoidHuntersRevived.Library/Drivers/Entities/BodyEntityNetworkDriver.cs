@@ -10,6 +10,7 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Extensions.Farseer;
+using Guppy.Events.Delegates;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities
 {
@@ -65,7 +66,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         #region Frame Methods
         private void FullUpdate(GameTime gameTime)
         {
-            _timer.Update(gameTime, t => t && this.driven.Fixtures.Any(), () =>
+            _timer.Update(gameTime, t => t && this.driven.ValidateWritePosition.Validate(this.driven, gameTime), () =>
             { // Broadcast a positional upddate
                 this.WritePosition(this.driven.Actions.Create(NetDeliveryMethod.UnreliableSequenced, 8));
             });
@@ -80,7 +81,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
                 if (rotationDif > 0.0001f || positionDif > 0.001f)
                 { // Only proceed with positional lerping if the slave is not already matching the master...
-                    var strength = BodyEntity.SlaveLerpStrength * (Single)gameTime.ElapsedGameTime.TotalMilliseconds;
+                    var strength = BodyEntity.SlaveLerpStrength * (Single)gameTime.ElapsedGameTime.TotalSeconds;
 
                     this.driven.slave.LinearVelocity = Vector2.Lerp(this.driven.slave.LinearVelocity, this.driven.master.LinearVelocity, strength);
                     this.driven.slave.AngularVelocity = MathHelper.Lerp(this.driven.slave.AngularVelocity, this.driven.master.AngularVelocity, strength);

@@ -14,6 +14,8 @@ using FarseerPhysics.Collision.Shapes;
 using Lidgren.Network;
 using VoidHuntersRevived.Library.Enums;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Events.Delegates;
+using System.Linq;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -22,9 +24,9 @@ namespace VoidHuntersRevived.Library.Entities
         #region Static Attributes
         /// <summary>
         /// The amount a slave body should lerp towards the master
-        /// per millisecond
+        /// per second
         /// </summary>
-        public static Single SlaveLerpStrength { get; set; } = 0.0015625f / 3;
+        public static Single SlaveLerpStrength { get; set; } = 1f;
 
         /// <summary>
         /// The threshold that must be surpassed by the position
@@ -157,6 +159,12 @@ namespace VoidHuntersRevived.Library.Entities
         public event GuppyEventHandler<BodyEntity, Category> OnCollisionCategoriesChanged;
         public event GuppyEventHandler<BodyEntity, Category> OnCollidesWithChanged;
         public event GuppyEventHandler<BodyEntity, Category> OnIgnoreCCDWithChanged;
+
+        /// <summary>
+        /// Used by the BodyEntityNetworkDriver, this detects whether or not
+        /// the entity positional data should be pushed through the network.
+        /// </summary>
+        protected internal ValidateEventDelegate<BodyEntity, GameTime> ValidateWritePosition;
         #endregion
 
         #region Lifecycle Methods
@@ -165,11 +173,15 @@ namespace VoidHuntersRevived.Library.Entities
             base.PreInitialize(provider);
 
             _fixtures = new HashSet<FixtureContainer>();
+
+            this.ValidateWritePosition += this.HandleValidateWritePosition;
         }
 
         protected override void Release()
         {
             base.Release();
+
+            this.ValidateWritePosition -= this.HandleValidateWritePosition;
         }
         #endregion
 
@@ -225,6 +237,11 @@ namespace VoidHuntersRevived.Library.Entities
 
         protected override FarseerEntity<World> GetParent(ServiceProvider provider)
             => provider.GetService<WorldEntity>();
+        #endregion
+
+        #region Event Handlers
+        private bool HandleValidateWritePosition(BodyEntity sender, GameTime args)
+            => this.Fixtures.Any();
         #endregion
     }
 }

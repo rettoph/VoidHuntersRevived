@@ -125,7 +125,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
             _synchronizer.Update(gameTime);
 
-            this.Position = this.Ship.WorldTarget;
+            this.Position = this.Ship.Target;
             this.Align(gameTime);
         }
         #endregion

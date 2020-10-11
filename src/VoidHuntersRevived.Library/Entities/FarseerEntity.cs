@@ -89,7 +89,7 @@ namespace VoidHuntersRevived.Library.Entities
         /// Farseer objects.
         /// </summary>
         /// <param name="action"></param>
-        protected void Do(Action<T> action)
+        public void Do(Action<T> action)
          => this.OnDo(action);
 
         /// <summary>

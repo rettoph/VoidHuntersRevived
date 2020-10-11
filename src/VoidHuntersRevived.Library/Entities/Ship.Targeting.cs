@@ -18,10 +18,10 @@ namespace VoidHuntersRevived.Library.Entities
         private Vector2 _target;
         #endregion
 
-        #region Public Attributes
+        #region Public Properties
         /// <summary>
-        /// The Ship's current target. This is a position relative 
-        /// to the ship's current bridge's position.
+        /// The calculated world position of the ship's current
+        /// target.
         /// </summary>
         public Vector2 Target
         {
@@ -34,16 +34,6 @@ namespace VoidHuntersRevived.Library.Entities
                     TargetData = value
                 });
             }
-        }
-
-        /// <summary>
-        /// The calculated world position of the ship's current
-        /// target.
-        /// </summary>
-        public Vector2 WorldTarget
-        {
-            get => this.Bridge == default(ShipPart) ? Vector2.Zero : this.Bridge.WorldCenter + this.Target;
-            set => this.Target = value - this.Bridge.WorldCenter;
         }
         #endregion
 
@@ -63,5 +53,5 @@ namespace VoidHuntersRevived.Library.Entities
         private bool ValidateTargetEvent(Ship ship, ShipEventArgs args)
             => _target != (_target = args.TargetData);
         #endregion
-        }
+    }
 }

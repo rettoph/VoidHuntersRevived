@@ -9,6 +9,8 @@ using VoidHuntersRevived.Library.Configurations;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Extensions.System;
 using Guppy.Extensions.DependencyInjection;
+using FarseerPhysics.Dynamics;
+using VoidHuntersRevived.Library.Extensions.Farseer;
 
 namespace VoidHuntersRevived.Library.Utilities
 {
@@ -63,12 +65,12 @@ namespace VoidHuntersRevived.Library.Utilities
         /// <summary>
         /// The Node's current posotion relative to the world.
         /// </summary>
-        public Vector2 WorldPosition { get => this.Parent.Root.Position + Vector2.Transform(this.LocalPosition, this.Parent.LocalTransformation * Matrix.CreateRotationZ(this.Parent.Root.Rotation)); }
+        public Vector2 WorldPosition => this.GetWorldPosition(this.Parent.Root.live);
 
         /// <summary>
         /// The node's current rotation relative to the world.
         /// </summary>
-        public Single WorldRotation { get => this.Parent.Root.Rotation + this.Parent.LocalRotation + this.LocalRotation; }
+        public Single WorldRotation => this.GetWordRotation(this.Parent.Root.live);
         #endregion
 
         #region Events
@@ -131,12 +133,22 @@ namespace VoidHuntersRevived.Library.Utilities
         /// </summary>
         public void TryPreview(ShipPart shipPart)
         {
-            var rotation = this.WorldRotation - shipPart.MaleConnectionNode.LocalRotation;
+            shipPart.Do(b =>
+            {
+                var root = this.Parent.Root.GetChild(shipPart.GetParent(b));
+                var rotation = MathHelper.WrapAngle(this.GetWordRotation(root) - shipPart.MaleConnectionNode.LocalRotation);
 
-            shipPart.SetTransformIgnoreContacts(
-                position: this.WorldPosition - Vector2.Transform(shipPart.MaleConnectionNode.LocalPosition, Matrix.CreateRotationZ(rotation)),
-                angle: rotation);
+                b.SetTransformIgnoreContacts(
+                    position: this.GetWorldPosition(root) - Vector2.Transform(shipPart.MaleConnectionNode.LocalPosition, Matrix.CreateRotationZ(rotation)),
+                    angle: rotation);
+            });
         }
+
+        public Vector2 GetWorldPosition(Body root)
+            => root.Position + Vector2.Transform(this.LocalPosition, this.Parent.LocalTransformation * Matrix.CreateRotationZ(root.Rotation));
+
+        public Single GetWordRotation(Body root)
+            => root.Rotation + this.Parent.LocalRotation + this.LocalRotation;
         #endregion
 
         #region Static Methods

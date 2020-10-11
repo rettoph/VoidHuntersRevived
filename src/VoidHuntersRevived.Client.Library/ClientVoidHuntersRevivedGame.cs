@@ -28,7 +28,8 @@ namespace VoidHuntersRevived.Client.Library
         private CommandService _commands;
         private DebugService _debug;
         private Boolean _renderDebug;
-        private Queue<Double> _frameTimes;
+        private Double[] _frameTimes;
+        private Int32 _frameTimeIndex;
         #endregion
 
         #region Lifecycle Methods
@@ -52,7 +53,7 @@ namespace VoidHuntersRevived.Client.Library
         {
             base.Initialize(provider);
 
-            _frameTimes = new Queue<double>(new Double[10]);
+            _frameTimes = new Double[50];
 
             this.Scenes.Create<GameScene>();
 
@@ -85,8 +86,7 @@ namespace VoidHuntersRevived.Client.Library
 
             _debug.TryUpdate(gameTime);
 
-            _frameTimes.Enqueue(gameTime.ElapsedGameTime.TotalMilliseconds);
-            _frameTimes.Dequeue();
+            _frameTimes[(_frameTimeIndex = (_frameTimeIndex + 1) % _frameTimes.Length)] = gameTime.ElapsedGameTime.TotalMilliseconds;
         }
         #endregion
 

@@ -111,6 +111,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             this.MaleConnectionNode.OnDetached += this.HandleMaleConnectionNodeDetached;
             this.OnControllerChanged += this.HandleControllerChanged;
+            this.ValidateWritePosition += this.HandleValidateWritePosition;
         }
 
         protected override void Release()
@@ -124,6 +125,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             this.OnChainCleaned -= this.HandleChainCleaned;
             this.MaleConnectionNode.OnDetached -= this.HandleMaleConnectionNodeDetached;
             this.OnControllerChanged -= this.HandleControllerChanged;
+            this.ValidateWritePosition -= this.HandleValidateWritePosition;
         }
         #endregion
 
@@ -181,6 +183,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
         private void HandleControllerAuthorizationChanged(Controller sender, GameAuthorization old, GameAuthorization value)
             => this.Authorization = this.Controller.Authorization;
+
+        private bool HandleValidateWritePosition(BodyEntity sender, GameTime args)
+            => this.IsRoot;
         #endregion
     }
 }

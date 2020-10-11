@@ -67,6 +67,25 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         }
         #endregion
 
+        #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if (_dirtyJoints)
+            {
+                this.UpdateJoints();
+                _dirtyJoints = false;
+            }
+
+            // Attempt to update the weapons target...
+            if (this.Root.Ship != default(Ship))
+                this.TryAim(this.Root.Ship.Target);
+            else
+                this.MaleConnectionNode.Target?.TryPreview(this);
+        }
+        #endregion
+
         #region Helper Methods
         /// <summary>
         /// Refresh/create the internal joints as needed.
@@ -80,7 +99,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             // Reposition the current weapon at a 0deg angle
             this.MaleConnectionNode.Target?.TryPreview(this);
 
-            if(!this.IsRoot)
+            if (!this.IsRoot)
             { // Only bother creating any joints if the current Weapon is not a root piece
                 this.Do(body =>
                 { // Create a joint for each internal body
@@ -162,28 +181,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
             return default(RevoluteJoint);
         }
-        #endregion
 
-        #region Frame Methods
-        protected override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-
-            if (_dirtyJoints)
-            {
-                this.UpdateJoints();
-                _dirtyJoints = false;
-            }
-
-            // Attempt to update the weapons target...
-            if (this.Root.Ship != default(Ship))
-                this.TryAim(this.Root.Ship.WorldTarget);
-            else
-                this.MaleConnectionNode.Target?.TryPreview(this);
-        }
-        #endregion
-
-        #region Helper Methods
         private void CleanCollision()
         {
             // Automatically set the weapons collision values to match the root.

@@ -99,7 +99,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         {
             if (this.driven.Ship != null)
             {
-                this.driven.Ship.WorldTarget = _sensor.Position;
+                this.driven.Ship.Target = _sensor.Position;
                 _targetSender.Update(gameTime, () =>
                 { // Attempt to send the newest target value...
                     this.WriteUpdateShipTargetRequest(this.driven.Actions.Create(NetDeliveryMethod.Unreliable, 8));
@@ -129,7 +129,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
                 .Where(c => c is ShipPart)
                 .Select(c => (c as ShipPart).Controller is ChunkManager ? (c as ShipPart).Root : (c as ShipPart))
                 .Where(s => this.driven.Ship.TractorBeam.CanSelect(s))
-                .OrderBy(s => Vector2.Distance(this.driven.Ship.WorldTarget, s.WorldCenter))
+                .OrderBy(s => Vector2.Distance(this.driven.Ship.Target, s.WorldCenter))
                 .FirstOrDefault();
 
             this.HandleTractorBeamAction(this.driven.Ship.TractorBeam.TryAction(new TractorBeam.Action(action, target)));
