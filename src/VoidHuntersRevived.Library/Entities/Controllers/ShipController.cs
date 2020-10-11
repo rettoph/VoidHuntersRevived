@@ -52,21 +52,15 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #endregion
 
         #region Controller Methods
-        internal void TryAdd(ShipPart bridge)
-        {
-            if (this.CanAdd(bridge))
-            {
-                // Auto remove any other parts..
-                while (this.parts.Any())
-                    this.Remove(this.parts.First());
-
-                // Add the new bridge in...
-                this.Add(bridge);
-            }
-        }
+        internal new void TryAdd(ShipPart bridge)
+            => base.TryAdd(bridge);
 
         protected override void Add(ShipPart shipPart)
         {
+            // Auto remove any other parts..
+            while (this.parts.Any())
+                this.TryRemove(this.parts.First());
+
             base.Add(shipPart);
 
             // Update the new parts collisions

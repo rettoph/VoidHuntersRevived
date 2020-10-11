@@ -286,18 +286,19 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         /// Chunk manager.
         /// </summary>
         /// <param name="shipPart"></param>
-        public void TryAdd(ShipPart shipPart)
-        {
-            if (this.CanAdd(shipPart))
-                this.Add(shipPart);
-        }
+        public new void TryAdd(ShipPart shipPart)
+            => base.TryAdd(shipPart);
 
-        protected override void Flush(ShipPart shipPart)
+        protected override void Add(ShipPart shipPart)
         {
-            base.Flush(shipPart);
+            base.Add(shipPart);
+
+            // Create a new ShipPartChunks instance.
+            if (!_shipPartChunks.ContainsKey(shipPart))
+                _shipPartChunks[shipPart] = new ShipPartChunks(this, shipPart);
 
             // Add the new ship part straight into quarantine
-            _quarantine.Add(shipPart);
+            this.synchronizer.Do(gt => _quarantine.Add(shipPart));
 
             // Update the new parts properties
             shipPart.SleepingAllowed = true;
@@ -309,22 +310,13 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             shipPart.IgnoreCCDWith = Categories.PassiveIgnoreCCDWith;
         }
 
-        protected override void Add(ShipPart shipPart)
-        {
-            base.Add(shipPart);
-
-            // Create a new ShipPartChunks instance.
-            if (!_shipPartChunks.ContainsKey(shipPart))
-                _shipPartChunks[shipPart] = new ShipPartChunks(this, shipPart);
-        }
-
         protected override void Remove(ShipPart shipPart)
         {
             base.Remove(shipPart);
 
             // Remove the ship part from quarantine if needed...
             if (_quarantine.Contains(shipPart))
-                _quarantine.Remove(shipPart);
+                this.synchronizer.Do(gt => _quarantine.Remove(shipPart));
 
             // Clear cached chunks
             _shipPartChunks[shipPart].ClearChunks();

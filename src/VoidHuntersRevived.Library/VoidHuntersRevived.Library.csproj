@@ -20,5 +20,9 @@
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy\Guppy.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Drivers\Entities\ShipParts\Weapons\" />
+  </ItemGroup>
 
 </Project>

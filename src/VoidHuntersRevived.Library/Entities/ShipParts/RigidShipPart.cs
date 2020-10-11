@@ -96,5 +96,15 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             _localCenter = this.IsRoot ? base.LocalCenter : Vector2.Transform(this.Configuration.Centeroid, this.LocalTransformation);
         }
         #endregion
+
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            if(this.Configuration.Vertices.Count() == 2)
+            {
+
+            }
+        }
     }
 }

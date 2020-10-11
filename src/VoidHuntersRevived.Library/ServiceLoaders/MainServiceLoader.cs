@@ -33,6 +33,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddFactory<ServiceList<Player>>(p => new ServiceList<Player>(autoFill: true));
             services.AddFactory<Chunk>(p => new Chunk());
             services.AddFactory<GameLayer>(p => new GameLayer());
+            services.AddFactory<ThreadSynchronizer>(p => new ThreadSynchronizer());
 
             // Register services...
             services.AddScoped<Settings>();
@@ -40,6 +41,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddScoped<ServiceList<Player>>();
             services.AddTransient<Chunk>();
             services.AddTransient<GameLayer>();
+            services.AddScoped<ThreadSynchronizer>("synchronizer:controller");
 
 
             // Register Scenes...

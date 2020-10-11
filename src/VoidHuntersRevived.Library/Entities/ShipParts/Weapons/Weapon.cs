@@ -3,12 +3,16 @@ using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Joints;
 using FarseerPhysics.Factories;
 using Guppy.DependencyInjection;
+using Guppy.Events.Delegates;
 using Guppy.Extensions.Collections;
+using Guppy.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VoidHuntersRevived.Library.Entities.Ammunitions;
+using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 {
@@ -20,7 +24,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
     /// All "shots" from weapons should be maintined
     /// internally.
     /// </summary>
-    public class Weapon : ShipPart
+    public abstract class Weapon : ShipPart
     {
         #region Private Fields
         /// <summary>
@@ -32,6 +36,18 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         /// When true, joints will be updated next frame
         /// </summary>
         private Boolean _dirtyJoints;
+
+        /// <summary>
+        /// Simple timer to manage the weapons fire rate.
+        /// </summary>
+        private ActionTimer _fireTimer;
+
+        /// <summary>
+        /// An internal list of all live ammuntions within the weapon.
+        /// </summary>
+        private List<Ammunition> _ammunitions;
+
+        private ServiceProvider _provider;
         #endregion
 
         #region Public Properties
@@ -44,11 +60,20 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         public override Matrix WorldTransformation => Matrix.CreateRotationZ(this.Get<Single>(b => this.GetJoint(b)?.JointAngle ?? 0)) * base.WorldTransformation;
         #endregion
 
+        #region Events
+        public ValidateEventDelegate<Ship, ShipPart> ValidateFire;
+        public GuppyEventHandler<Weapon, Ammunition> OnFire;
+        #endregion
+
         #region Lifecycle Methods
         protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
+            _ammunitions = new List<Ammunition>();
             _joints = new Dictionary<Body, RevoluteJoint>();
+            _fireTimer = new ActionTimer(250);
+
+            _provider = provider;
 
             // Create new shapes for the part
             this.Configuration.Vertices.ForEach(v => this.BuildFixture(new PolygonShape(v, 0.01f), this));
@@ -80,9 +105,24 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
             // Attempt to update the weapons target...
             if (this.Root.Ship != default(Ship))
+            {
                 this.TryAim(this.Root.Ship.Target);
+
+                // For now just continiously try to fire
+                // _fireTimer.Update(gameTime, this.TryFire);
+
+                // Update all ammunitions
+                _ammunitions.TryUpdateAll(gameTime);
+            }
             else
                 this.MaleConnectionNode.Target?.TryPreview(this);
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            _ammunitions.TryDrawAll(gameTime);
         }
         #endregion
 
@@ -182,6 +222,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             return default(RevoluteJoint);
         }
 
+        /// <summary>
+        /// Refresh the current weapons collisions
+        /// </summary>
         private void CleanCollision()
         {
             // Automatically set the weapons collision values to match the root.
@@ -189,6 +232,19 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             this.CollisionCategories = this.Root.CollisionCategories;
             this.IgnoreCCDWith = this.Root.IgnoreCCDWith;
         }
+
+        public void TryFire()
+        {
+            if (this.ValidateFire?.Validate(this.Root.Ship, this) ?? true)
+            {
+                var ammo = this.Fire(_provider);
+                _ammunitions.Add(ammo);
+
+                this.OnFire?.Invoke(this, ammo);
+            }
+        }
+
+        protected abstract Ammunition Fire(ServiceProvider provider);
         #endregion
 
         #region Event Handlers

@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Server.Scenes
             });
 
             var rand = new Random(1);
-            for(Int32 i=0; i<10; i++)
+            for(Int32 i=0; i<0; i++)
             {
                 var triangle = this.Entities.Create<ShipPart>("entity:ship-part:hull:triangle");
                 triangle.Position = rand.NextVector2(0, world.Size.X);
@@ -65,11 +65,18 @@ namespace VoidHuntersRevived.Server.Scenes
                     thruster.Position = rand.NextVector2(0, world.Size.X);
                     thruster.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
 
-                    var weapon = this.Entities.Create<ShipPart>("entity:ship-part:weapon");
+                    var weapon = this.Entities.Create<ShipPart>("entity:ship-part:weapon:mass-driver");
                     weapon.Position = rand.NextVector2(0, world.Size.X);
                     weapon.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
                 }
             }
+        }
+        #endregion
+
+        #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
         }
         #endregion
     }

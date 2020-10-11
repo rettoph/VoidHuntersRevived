@@ -137,6 +137,7 @@ namespace VoidHuntersRevived.Drivers.Scenes
                 up.Ship = _entities.Create<Ship>((s, p2, c2) =>
                 {
                     s.Import(File.OpenRead("Ships/mosquito.vh"));
+                    // s.SetBridge(_entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
                     s.Bridge.Position = (new Random()).NextVector2(0, Chunk.Size * 5);
                 });
             });

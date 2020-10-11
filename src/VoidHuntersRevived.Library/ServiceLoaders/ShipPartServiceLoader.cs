@@ -1,5 +1,6 @@
 ﻿using FarseerPhysics;
 using FarseerPhysics.Dynamics;
+using Guppy;
 using Guppy.Attributes;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
@@ -10,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Library.Configurations;
+using VoidHuntersRevived.Library.Entities.Ammunitions;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
@@ -185,23 +187,30 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             #endregion
 
             #region Weapons
-            services.AddFactory<Weapon>(p => new Weapon());
+            services.AddFactory<Gun>(p => new Gun());
 
             #region Weapon
-            var weapon = new ShipPartConfiguration();
-            weapon.DefaultColor = Color.Red;
-            weapon.AddVertice(-0.75f, 0.1f);
-            weapon.AddVertice(-0.75f, -0.1f);
-            weapon.AddVertice(0.1f, -0.2f);
-            weapon.AddVertice(0.1f, 0.2f);
-            weapon.AddNode(0, 0, 0, ShipPartConfiguration.NodeType.Male);
-            weapon.Flush();
+            var massDriver = new ShipPartConfiguration();
+            massDriver.DefaultColor = Color.Red;
+            massDriver.AddVertice(-0.75f, 0.1f);
+            massDriver.AddVertice(-0.75f, -0.1f);
+            massDriver.AddVertice(0.1f, -0.2f);
+            massDriver.AddVertice(0.1f, 0.2f);
+            massDriver.AddNode(0, 0, 0, ShipPartConfiguration.NodeType.Male);
+            massDriver.Flush();
 
-            services.AddTransient<Weapon>("entity:ship-part:weapon");
-            services.AddConfiguration<Weapon>("entity:ship-part:weapon", (s, p, c) =>
+            services.AddTransient<Gun>("entity:ship-part:weapon:mass-driver");
+            services.AddConfiguration<Gun>("entity:ship-part:weapon:mass-driver", (s, p, c) =>
             {
-                s.Configuration = weapon;
+                s.Configuration = massDriver;
             });
+            #endregion
+            #endregion
+
+            #region Ammunitions
+            #region Bullet
+            services.AddFactory<Bullet>(b => new Bullet());
+            services.AddTransient<Bullet>();
             #endregion
             #endregion
         }

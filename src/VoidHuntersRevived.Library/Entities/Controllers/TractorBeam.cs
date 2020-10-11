@@ -53,7 +53,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #region Private Fields
         private ChunkManager _chunks;
         private ILog _logger;
-        private ThreadSynchronizer _synchronizer;
         #endregion
 
         #region Public Attributes
@@ -96,9 +95,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             provider.Service(out _chunks);
             provider.Service(out _logger);
 
-            _synchronizer = new ThreadSynchronizer();
-
             this.Authorization = GameAuthorization.Full;
+            this.UpdateOrder = 120;
 
             this.CanAttach += this.DefaultCanAttach;
         }
@@ -123,7 +121,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             base.Update(gameTime);
 
-            _synchronizer.Update(gameTime);
+            this.parts.ForEach(p => p.TryUpdate(gameTime));
 
             this.Position = this.Ship.Target;
             this.Align(gameTime);
@@ -209,12 +207,9 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
             if (this.CanAdd(action.Target))
             {
-                _synchronizer.Do(gt =>
-                {
-                    action.Target.MaleConnectionNode.TryDetach();
-                    this.Add(action.Target);
-                    this.OnSelected?.Invoke(this, action);
-                });
+                action.Target.MaleConnectionNode.TryDetach();
+                this.TryAdd(action.Target);
+                this.OnSelected?.Invoke(this, action);
 
                 return action;
             }
@@ -250,12 +245,9 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
             if (this.CanRemove(action.Target))
             {
-                _synchronizer.Do(gt =>
-                {
-                    var old = this.Selected;
-                    _chunks.TryAdd(old);
-                    this.OnDeselected?.Invoke(this, action);
-                });
+                var old = this.Selected;
+                _chunks.TryAdd(old);
+                this.OnDeselected?.Invoke(this, action);
 
                 if (action.Type.HasFlag(TractorBeam.ActionType.Attach))
                     return this.TryAttach(action);
@@ -287,14 +279,11 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                 if (!d(action.Target, node))
                     return new Action(ActionType.Deselect, action.Target);
 
-            _synchronizer.Do(gt =>
-            {
-                // If all the delegates allow the current attachment...
-                action.Target.MaleConnectionNode.TryAttach(node);
+            // If all the delegates allow the current attachment...
+            action.Target.MaleConnectionNode.TryAttach(node);
 
-                if (action.Type != ActionType.None) // Invoke the action event as needed...
-                    this.OnAttached?.Invoke(this, action);
-            });
+            if (action.Type != ActionType.None) // Invoke the action event as needed...
+                this.OnAttached?.Invoke(this, action);
 
             return action;
         }
