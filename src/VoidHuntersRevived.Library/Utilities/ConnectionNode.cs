@@ -91,7 +91,7 @@ namespace VoidHuntersRevived.Library.Utilities
         #endregion
 
         #region Helper Methods
-        public void TryAttach(ConnectionNode target)
+        public void TryAttach(ConnectionNode target, Boolean align = true)
         {
             if(target != this && target != this.Target)
             { // Only proceed if the connection is a valid non-existing one
@@ -102,9 +102,12 @@ namespace VoidHuntersRevived.Library.Utilities
                 // Create the local attachment
                 this.Target = target;
 
+                if (align)
+                    target.TryPreview(this.Parent);
+
                 // Ensure that the connection runs both ways
                 if (target.Target != this)
-                    target.TryAttach(this);
+                    target.TryAttach(this, false);
 
                 // Trigger the attachment event...
                 this.OnAttached?.Invoke(this, this.Target);

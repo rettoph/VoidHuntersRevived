@@ -315,8 +315,11 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             base.Remove(shipPart);
 
             // Remove the ship part from quarantine if needed...
-            if (_quarantine.Contains(shipPart))
-                this.synchronizer.Do(gt => _quarantine.Remove(shipPart));
+            this.synchronizer.Do(gt =>
+            {
+                if (_quarantine.Contains(shipPart))
+                    _quarantine.Remove(shipPart);
+            });
 
             // Clear cached chunks
             _shipPartChunks[shipPart].ClearChunks();

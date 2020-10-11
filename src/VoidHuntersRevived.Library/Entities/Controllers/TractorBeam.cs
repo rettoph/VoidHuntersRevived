@@ -246,13 +246,17 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             if (this.CanRemove(action.Target))
             {
                 var old = this.Selected;
-                _chunks.TryAdd(old);
                 this.OnDeselected?.Invoke(this, action);
 
                 if (action.Type.HasFlag(TractorBeam.ActionType.Attach))
+                {
                     return this.TryAttach(action);
+                }
                 else
+                {
+                    _chunks.TryAdd(old);
                     return action;
+                }
             }
 
             return new Action(ActionType.None, this.Selected);
@@ -277,7 +281,10 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
             foreach (CanAttachDelegate d in this.CanAttach.GetInvocationList())
                 if (!d(action.Target, node))
+                {
+                    _chunks.TryAdd(this.Selected);
                     return new Action(ActionType.Deselect, action.Target);
+                }
 
             // If all the delegates allow the current attachment...
             action.Target.MaleConnectionNode.TryAttach(node);
