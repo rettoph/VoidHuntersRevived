@@ -206,6 +206,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             {
                 om.Write((Byte)action.Type);
                 om.Write(action.Target);
+
+                if(om.WriteExists(action.Target))
+                {
+                    om.Write(action.Target.Position);
+                    om.Write(action.Target.Rotation);
+                }
             });
         }
         #endregion

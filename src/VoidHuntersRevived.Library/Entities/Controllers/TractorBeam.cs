@@ -15,6 +15,7 @@ using Guppy.Extensions.DependencyInjection;
 using Guppy.IO;
 using log4net;
 using Guppy.IO.Extensions.log4net;
+using Guppy.Events.Delegates;
 
 namespace VoidHuntersRevived.Library.Entities.Controllers
 {
@@ -78,13 +79,11 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         public event GuppyEventHandler<TractorBeam, TractorBeam.Action> OnAttached;
         public event GuppyEventHandler<TractorBeam, TractorBeam.Action> OnAction;
 
-        public delegate Boolean CanAttachDelegate(ShipPart shipPart, ConnectionNode target);
-
         /// <summary>
         /// Indicates whether or not a attachment can be made between
         /// a given ShipPart and target ConnectionNode.
         /// </summary>
-        public CanAttachDelegate CanAttach;
+        public event ValidateEventDelegate<ShipPart, ConnectionNode> CanAttach;
         #endregion
 
         #region Lifecycle Methods
@@ -207,9 +206,12 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
             if (this.CanAdd(action.Target))
             {
-                action.Target.MaleConnectionNode.TryDetach();
-                this.TryAdd(action.Target);
-                this.OnSelected?.Invoke(this, action);
+                this.synchronizer.Do(gt =>
+                {
+                    action.Target.MaleConnectionNode.TryDetach();
+                    this.TryAdd(action.Target);
+                    this.OnSelected?.Invoke(this, action);
+                });
 
                 return action;
             }
@@ -218,7 +220,17 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         }
 
         protected override bool CanAdd(ShipPart shipPart)
-            => shipPart != default(ShipPart) && ((shipPart.IsRoot && shipPart.Controller is ChunkManager) || (!shipPart.IsRoot && shipPart.Root.Ship == this.Ship));
+        {
+            if (this.Selected != default(ShipPart))
+                return false;
+
+            if (shipPart != default(ShipPart) && ((shipPart.IsRoot && shipPart.Controller is ChunkManager)))
+                return true;
+            else if ((!shipPart.IsRoot && shipPart.Root.Ship == this.Ship))
+                return true;
+
+            return false;
+        }
 
         protected override void Add(ShipPart shipPart)
         {
@@ -266,7 +278,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             base.Remove(shipPart);
 
-            this.Selected = null;
+            this.synchronizer.Do(gt => this.Selected = null);
         }
 
         /// <summary>
@@ -279,20 +291,22 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             var node = this.Ship.GetClosestOpenFemaleNode(this.Position);
 
-            foreach (CanAttachDelegate d in this.CanAttach.GetInvocationList())
-                if (!d(action.Target, node))
+            if (this.CanAttach?.Validate(action.Target, node) ?? false)
+            {
+                // If all the delegates allow the current attachment...
+                this.synchronizer.Do(gt =>
                 {
-                    _chunks.TryAdd(this.Selected);
-                    return new Action(ActionType.Deselect, action.Target);
-                }
+                    action.Target.MaleConnectionNode.TryAttach(node);
+                    this.OnAttached?.Invoke(this, action);
+                });
 
-            // If all the delegates allow the current attachment...
-            action.Target.MaleConnectionNode.TryAttach(node);
-
-            if (action.Type != ActionType.None) // Invoke the action event as needed...
-                this.OnAttached?.Invoke(this, action);
-
-            return action;
+                return action;
+            }
+            else
+            {
+                _chunks.TryAdd(this.Selected);
+                return new Action(ActionType.Deselect, action.Target);
+            }
         }
         /// <summary>
         /// Detect the best possible attachment node and attempt a connection.

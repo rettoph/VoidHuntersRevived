@@ -67,7 +67,16 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
             => this.driven.Ship.Target = im.ReadVector2();
 
         private void HandleShipTractorBeamActionRequest(NetIncomingMessage im)
-            => this.driven.Ship.TractorBeam.TryAction(new TractorBeam.Action((TractorBeam.ActionType)im.ReadByte(), im.ReadEntity<ShipPart>(_entities)));
+        {
+            var action = new TractorBeam.Action((TractorBeam.ActionType)im.ReadByte(), im.ReadEntity<ShipPart>(_entities));
+            this.driven.Ship.TractorBeam.TryAction(action);
+
+            if(im.ReadExists())
+            {
+                action.Target.Position = im.ReadVector2();
+                action.Target.Rotation = im.ReadSingle();
+            }
+        }
         #endregion
 
         #region Event Handlers

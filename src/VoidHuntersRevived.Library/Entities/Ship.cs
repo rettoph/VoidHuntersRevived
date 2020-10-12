@@ -180,8 +180,11 @@ namespace VoidHuntersRevived.Library.Entities
 
         private void LoadOpenFemaleNodes()
         {
-            _openFemaleNodes.Clear();
-            this.Bridge?.GetOpenFemaleConnectionNodes(ref _openFemaleNodes);
+            lock (_openFemaleNodes)
+            {
+                _openFemaleNodes.Clear();
+                this.Bridge?.GetOpenFemaleConnectionNodes(ref _openFemaleNodes);
+            }
         }
 
         /// <summary>
@@ -192,14 +195,17 @@ namespace VoidHuntersRevived.Library.Entities
         /// <returns></returns>
         public ConnectionNode GetClosestOpenFemaleNode(Vector2 position, Single range = 0.75f)
         {
-            ConnectionNode closest = default(ConnectionNode);
-            Single distance = range;
+            lock (_openFemaleNodes)
+            {
+                ConnectionNode closest = default(ConnectionNode);
+                Single distance = range;
 
-            foreach(ConnectionNode node in _openFemaleNodes)
-                if (distance != (distance = Math.Min(Vector2.Distance(node.WorldPosition, position), distance)))
-                    closest = node;
+                foreach (ConnectionNode node in _openFemaleNodes)
+                    if (distance != (distance = Math.Min(Vector2.Distance(node.WorldPosition, position), distance)))
+                        closest = node;
 
-            return closest;
+                return closest;
+            }
         }
         #endregion
 
