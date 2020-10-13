@@ -40,13 +40,14 @@ namespace VoidHuntersRevived.Drivers.Scenes
         #region Private Fields
         private EntityList _entities;
         private List<NetworkEntity> _networkEntities;
-        private Queue<NetworkEntity> _created;
-        private Queue<NetworkEntity> _setups;
-        private Queue<NetworkEntity> _removed;
+        private ConcurrentQueue<NetworkEntity> _created;
+        private ConcurrentQueue<NetworkEntity> _setups;
+        private ConcurrentQueue<NetworkEntity> _removed;
         private UserNetConnectionDictionary _userConnections;
 
         private ConcurrentQueue<User> _newUsers;
         private User _user;
+        private NetworkEntity _entity;
         #endregion
 
         #region Lifecycle Methods
@@ -57,9 +58,9 @@ namespace VoidHuntersRevived.Drivers.Scenes
             this.ConfigureBase(provider);
 
             _networkEntities = new List<NetworkEntity>();
-            _created = new Queue<NetworkEntity>();
-            _setups = new Queue<NetworkEntity>();
-            _removed = new Queue<NetworkEntity>();
+            _created = new ConcurrentQueue<NetworkEntity>();
+            _setups = new ConcurrentQueue<NetworkEntity>();
+            _removed = new ConcurrentQueue<NetworkEntity>();
             _newUsers = new ConcurrentQueue<User>();
 
             provider.Service(out _entities);
@@ -95,16 +96,24 @@ namespace VoidHuntersRevived.Drivers.Scenes
 
             while (_created.Any())
             {
-                var entity = _created.Dequeue();
-                NetworkEntityMessageBuilder.BuildCreateMessage(this.driven.Group, entity);
-                _setups.Enqueue(entity);
+                Console.WriteLine(_created.First());
+
+                _created.TryDequeue(out _entity);
+                NetworkEntityMessageBuilder.BuildCreateMessage(this.driven.Group, _entity);
+                _setups.Enqueue(_entity);
             }
 
-            while (_setups.Any())
-                NetworkEntityMessageBuilder.BuildSetupMessage(this.driven.Group, _setups.Dequeue());
+            while (_setups.Any()) 
+            {
+                _setups.TryDequeue(out _entity);
+                NetworkEntityMessageBuilder.BuildSetupMessage(this.driven.Group, _entity);
+            }
 
             while (_removed.Any())
-                NetworkEntityMessageBuilder.BuildRemoveMessage(this.driven.Group, _removed.Dequeue());
+            {
+                _removed.TryDequeue(out _entity);
+                NetworkEntityMessageBuilder.BuildRemoveMessage(this.driven.Group, _entity);
+            }
         }
         #endregion
 

@@ -4,6 +4,7 @@ using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace VoidHuntersRevived.Library.Entities.Ammunitions
@@ -24,14 +25,7 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         {
             base.Initialize(provider);
 
-            try
-            {
-                provider.Service(out _primitiveBatch);
-            }
-            catch(Exception e)
-            {
-
-            }
+            provider.Service(out _primitiveBatch);
         }
         #endregion
 
@@ -40,7 +34,7 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         {
             base.Draw(gameTime);
 
-            _primitiveBatch.DrawLine(Color.Red, this.Position, this.Position + this.Velocity);
+            _primitiveBatch.DrawLine(Color.Red, this.Position, this.Position + (this.Velocity * 0.05f));
         }
 
         protected override void Update(GameTime gameTime)

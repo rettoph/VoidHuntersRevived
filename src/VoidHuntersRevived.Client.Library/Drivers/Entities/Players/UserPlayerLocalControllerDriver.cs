@@ -100,7 +100,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             if (this.driven.Ship != null)
             {
                 this.driven.Ship.Target = _sensor.Position;
-                _targetSender.Update(gameTime, () =>
+                _targetSender.Update(gameTime, gt =>
                 { // Attempt to send the newest target value...
                     this.WriteUpdateShipTargetRequest(this.driven.Actions.Create(NetDeliveryMethod.Unreliable, 8));
                 });

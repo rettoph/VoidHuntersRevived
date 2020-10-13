@@ -81,7 +81,10 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Update(gameTime);
 
-            this.Do(w => w.Step((Single)gameTime.ElapsedGameTime.TotalSeconds));
+            this.Do(w =>
+            {
+                w.Step((Single)gameTime.ElapsedGameTime.TotalSeconds);
+            });
         }
         #endregion
 

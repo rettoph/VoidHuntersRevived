@@ -66,7 +66,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         #region Frame Methods
         private void FullUpdate(GameTime gameTime)
         {
-            _timer.Update(gameTime, t => t && this.driven.ValidateWritePosition.Validate(this.driven, gameTime), () =>
+            _timer.Update(gameTime, t => t && this.driven.ValidateWritePosition.Validate(this.driven, gameTime), gt =>
             { // Broadcast a positional upddate
                 this.WritePosition(this.driven.Actions.Create(NetDeliveryMethod.UnreliableSequenced, 8));
             });

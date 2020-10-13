@@ -74,7 +74,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
             _segmentTimer.Update(
                 gameTime: gameTime,
                 filter: t => t && this.thruster.Strength > 0.01f,
-                action: () => _segments.Enqueue(_provider.GetService<TrailSegment>().Initialize(this)));
+                action: gt => _segments.Enqueue(_provider.GetService<TrailSegment>().Initialize(this)));
 
             _expired = 0;
             _segments.ForEach(s =>

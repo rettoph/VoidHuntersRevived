@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             return provider.GetService<Bullet>((b, p, d) =>
             {
                 b.Position = this.Position;
-                b.Velocity = Vector2.Transform(Vector2.UnitX * 2, Matrix.CreateRotationZ(MathHelper.WrapAngle(this.Rotation + MathHelper.Pi)));
+                b.Velocity = Vector2.Transform(Vector2.UnitX * 15, Matrix.CreateRotationZ(MathHelper.WrapAngle(this.Rotation + MathHelper.Pi)));
             });
         }
         #endregion

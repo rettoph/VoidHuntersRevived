@@ -8,8 +8,7 @@ using System;
 namespace VoidHuntersRevived.Server
 {
     class Program
-    {
-      
+    {      
         static void Main(string[] args)
         {
             var config = new NetPeerConfiguration("vhr")
@@ -25,6 +24,8 @@ namespace VoidHuntersRevived.Server
                 .BuildGame<ServerVoidHuntersRevivedGame>();
 
             game.TryStart(false);
+
+            Console.ReadLine();
         }
     }
 }

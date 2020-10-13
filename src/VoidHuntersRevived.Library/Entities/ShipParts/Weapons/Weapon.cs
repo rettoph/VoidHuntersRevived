@@ -48,6 +48,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         private List<Ammunition> _ammunitions;
 
         private ServiceProvider _provider;
+
+        private Double _fireTime;
+        private Single _curRecoil;
         #endregion
 
         #region Public Properties
@@ -57,7 +60,12 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         public IReadOnlyDictionary<Body, RevoluteJoint> Joints => _joints;
 
         /// <inheritdoc />
-        public override Matrix WorldTransformation => Matrix.CreateRotationZ(this.Get<Single>(b => this.GetJoint(b)?.JointAngle ?? 0)) * base.WorldTransformation;
+        public override Matrix WorldTransformation => Matrix.CreateTranslation(_curRecoil, 0, 0) * Matrix.CreateRotationZ(this.Get<Single>(b => this.GetJoint(b)?.JointAngle ?? 0)) * base.WorldTransformation;
+
+        /// <summary>
+        /// The amount (in farseer units) the gun should recoil when fired.
+        /// </summary>
+        public Single Recoil { get; set; } = 0.3f;
         #endregion
 
         #region Events
@@ -71,7 +79,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             base.Initialize(provider);
             _ammunitions = new List<Ammunition>();
             _joints = new Dictionary<Body, RevoluteJoint>();
-            _fireTimer = new ActionTimer(250);
+            _fireTimer = new ActionTimer(400);
 
             _provider = provider;
 
@@ -108,14 +116,21 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             {
                 this.TryAim(this.Root.Ship.Target);
 
-                // For now just continiously try to fire
-                // _fireTimer.Update(gameTime, this.TryFire);
+                // Update the recoil as needed
+                if(this.Recoil > 0 && _curRecoil < 0.99f)
+                    _curRecoil = MathHelper.Lerp(this.Recoil, 0, MathHelper.Min(1f, (Single)((gameTime.TotalGameTime.TotalMilliseconds - _fireTime) / (_fireTimer.Interval / 1.5))));
+
+                // For now just continuously try to fire
+                _fireTimer.Update(gameTime, this.TryFire);
 
                 // Update all ammunitions
                 _ammunitions.TryUpdateAll(gameTime);
             }
             else
+            {
+                _curRecoil = 0;
                 this.MaleConnectionNode.Target?.TryPreview(this);
+            }
         }
 
         protected override void Draw(GameTime gameTime)
@@ -233,13 +248,15 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             this.IgnoreCCDWith = this.Root.IgnoreCCDWith;
         }
 
-        public void TryFire()
+        public void TryFire(GameTime gameTime)
         {
             if (this.ValidateFire?.Validate(this.Root.Ship, this) ?? true)
             {
+                _fireTime = gameTime.TotalGameTime.TotalMilliseconds;
+                _curRecoil = this.Recoil;
                 var ammo = this.Fire(_provider);
                 _ammunitions.Add(ammo);
-
+                
                 this.OnFire?.Invoke(this, ammo);
             }
         }

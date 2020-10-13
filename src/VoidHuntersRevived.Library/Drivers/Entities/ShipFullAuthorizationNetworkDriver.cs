@@ -64,7 +64,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         #region Frame Methods
         private void Update(GameTime gameTime)
         {
-            _targetSender.Update(gameTime, t => t && _dirtyTarget, () =>
+            _targetSender.Update(gameTime, t => t && _dirtyTarget, gt =>
             {
                 this.WriteUpdateTarget(this.driven.Actions.Create(NetDeliveryMethod.Unreliable, 4));
             });
