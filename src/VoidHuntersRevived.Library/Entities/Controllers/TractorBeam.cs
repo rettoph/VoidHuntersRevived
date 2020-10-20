@@ -223,6 +223,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             if (this.Selected != default(ShipPart))
                 return false;
+            else if (shipPart == default(ShipPart))
+                return false;
 
             if (shipPart != default(ShipPart) && ((shipPart.IsRoot && shipPart.Controller is ChunkManager)))
                 return true;

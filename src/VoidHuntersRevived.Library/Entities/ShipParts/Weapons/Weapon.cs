@@ -51,6 +51,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
         private Double _fireTime;
         private Single _curRecoil;
+        private Boolean _firing;
         #endregion
 
         #region Public Properties
@@ -66,11 +67,25 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         /// The amount (in farseer units) the gun should recoil when fired.
         /// </summary>
         public Single Recoil { get; set; } = 0.3f;
+
+        public Boolean Firing
+        {
+            get => _firing;
+            set
+            {
+                if(value != _firing)
+                {
+                    _firing = value;
+                    this.OnFiringChanged?.Invoke(this, _firing);
+                }
+            }
+        }
         #endregion
 
         #region Events
-        public ValidateEventDelegate<Ship, ShipPart> ValidateFire;
-        public GuppyEventHandler<Weapon, Ammunition> OnFire;
+        public event ValidateEventDelegate<Ship, ShipPart> ValidateFire;
+        public event GuppyEventHandler<Weapon, Ammunition> OnFire;
+        public event GuppyEventHandler<Weapon, Boolean> OnFiringChanged;
         #endregion
 
         #region Lifecycle Methods
@@ -87,6 +102,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             this.Configuration.Vertices.ForEach(v => this.BuildFixture(new PolygonShape(v, 0.01f), this));
 
             this.OnRootChanged += this.HandleRootChanged;
+            this.OnFiringChanged += this.HandleFiringChanged;
 
             // Create new default joints as needed
             this.UpdateJoints();
@@ -97,6 +113,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             base.Release();
 
             this.OnRootChanged -= this.HandleRootChanged;
+            this.OnFiringChanged -= this.HandleFiringChanged;
         }
         #endregion
 
@@ -111,26 +128,36 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                 _dirtyJoints = false;
             }
 
-            // Attempt to update the weapons target...
-            if (this.Root.Ship != default(Ship))
-            {
-                this.TryAim(this.Root.Ship.Target);
+            // Update all ammunitions
+            _ammunitions.TryUpdateAll(gameTime);
+        }
 
-                // Update the recoil as needed
-                if(this.Recoil > 0 && _curRecoil < 0.99f)
-                    _curRecoil = MathHelper.Lerp(this.Recoil, 0, MathHelper.Min(1f, (Single)((gameTime.TotalGameTime.TotalMilliseconds - _fireTime) / (_fireTimer.Interval / 1.5))));
+        /// <summary>
+        /// Update the fire timer, and trigger a fire
+        /// event if needed.
+        /// </summary>
+        /// <param name="gameTime"></param>
+        private void UpdateFire(GameTime gameTime)
+            => _fireTimer.Update(gameTime, this.TryFire);
 
-                // For now just continuously try to fire
-                _fireTimer.Update(gameTime, this.TryFire);
+        /// <summary>
+        ///  Specifically used to update the wepaons position. Only 
+        ///  applicable when the root is not connected to a ship.
+        /// </summary>
+        /// <param name="gameTime"></param>
+        private void UpdatePosition(GameTime gameTime)
+        {
+            _curRecoil = 0;
+            this.MaleConnectionNode.Target?.TryPreview(this);
+        }
 
-                // Update all ammunitions
-                _ammunitions.TryUpdateAll(gameTime);
-            }
-            else
-            {
-                _curRecoil = 0;
-                this.MaleConnectionNode.Target?.TryPreview(this);
-            }
+        private void UpdateAim(GameTime gameTime)
+        {
+            // Update the recoil as needed
+            if (this.Recoil > 0 && _curRecoil < 0.99f)
+                _curRecoil = MathHelper.Lerp(this.Recoil, 0, MathHelper.Min(1f, (Single)((gameTime.TotalGameTime.TotalMilliseconds - _fireTime) / (_fireTimer.Interval / 1.5))));
+
+            this.TryAim(this.Root.Ship.Target);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -223,8 +250,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
                     // Set the joints speed...
                     joint.MotorSpeed = diff * (1000f / 64f);
-
-                    // Console.WriteLine($"World Anchor: ({joint.WorldAnchorB.X.ToString("00.0")}, {joint.WorldAnchorB.Y.ToString("00.0")}); Target: ({target.X.ToString("00.0")}, {target.Y.ToString("00.0")}); Offset: ({offset.X.ToString("00.0")}, {offset.Y.ToString("00.0")}); Target Angle: {(angle).ToString("000.00")}; Joint Angle: {(joint.JointAngle).ToString("000.00")}; Diff: {(diff).ToString("000.00")}");
                 }
             });
         }
@@ -246,6 +271,20 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             this.CollidesWith = this.Root.CollidesWith;
             this.CollisionCategories = this.Root.CollisionCategories;
             this.IgnoreCCDWith = this.Root.IgnoreCCDWith;
+        }
+
+        /// <summary>
+        /// Clean which update methods should be invoked each frame...
+        /// </summary>
+        private void CleanUpdate()
+        {
+            this.OnUpdate -= this.UpdateAim;
+            this.OnUpdate -= this.UpdatePosition;
+
+            if (this.Root.Ship == default(Ship)) // When there is no ship, update position directly...
+                this.OnUpdate += this.UpdatePosition;
+            else // When there is a ship, attempt to aim the gun
+                this.OnUpdate += this.UpdateAim;
         }
 
         public void TryFire(GameTime gameTime)
@@ -273,25 +312,46 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             {
                 old.OnUpdate -= this.TryUpdate;
 
-                value.OnCollidesWithChanged -= this.HandleCollisionChanged;
-                value.OnCollisionCategoriesChanged -= this.HandleCollisionChanged;
-                value.OnIgnoreCCDWithChanged -= this.HandleCollisionChanged;
+                value.OnCollidesWithChanged -= this.HandleRootCollisionChanged;
+                value.OnCollisionCategoriesChanged -= this.HandleRootCollisionChanged;
+                value.OnIgnoreCCDWithChanged -= this.HandleRootCollisionChanged;
+                value.OnShipChanged -= this.HandleRootShipChanged;
             }
 
             if (value != default(ShipPart) && value != this)
             {
                 value.OnUpdate += this.TryUpdate;
 
-                value.OnCollidesWithChanged += this.HandleCollisionChanged;
-                value.OnCollisionCategoriesChanged += this.HandleCollisionChanged;
-                value.OnIgnoreCCDWithChanged += this.HandleCollisionChanged;
-
-                this.CleanCollision();
+                value.OnCollidesWithChanged += this.HandleRootCollisionChanged;
+                value.OnCollisionCategoriesChanged += this.HandleRootCollisionChanged;
+                value.OnIgnoreCCDWithChanged += this.HandleRootCollisionChanged;
+                value.OnShipChanged += this.HandleRootShipChanged;
             }
+
+            // Clean default wepaon data
+            this.CleanCollision();
+            this.CleanUpdate();
         }
 
-        private void HandleCollisionChanged(BodyEntity sender, Category arg)
+
+
+        private void HandleRootCollisionChanged(BodyEntity sender, Category arg)
             => this.CleanCollision();
+
+        private void HandleRootShipChanged(ShipPart sender, Ship old, Ship value)
+            => this.CleanUpdate();
+
+        private void HandleFiringChanged(Weapon sender, bool value)
+        {
+            if(value)
+            {
+                this.OnUpdate += this.UpdateFire;
+            }
+            else
+            {
+                this.OnUpdate -= this.UpdateFire;
+            }
+        }
         #endregion
     }
 }

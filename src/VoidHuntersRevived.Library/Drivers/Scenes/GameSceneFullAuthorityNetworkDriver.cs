@@ -96,8 +96,6 @@ namespace VoidHuntersRevived.Drivers.Scenes
 
             while (_created.Any())
             {
-                Console.WriteLine(_created.First());
-
                 _created.TryDequeue(out _entity);
                 NetworkEntityMessageBuilder.BuildCreateMessage(this.driven.Group, _entity);
                 _setups.Enqueue(_entity);
