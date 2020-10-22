@@ -55,7 +55,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #region Private Fields
         private Position _position;
         private WorldEntity _world;
-        private HashSet<ShipPart> _parts;
+        private HashSet<Chain> _chains;
         private ChunkManager _chunks;
         #endregion
 
@@ -78,7 +78,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             base.PreInitialize(provider);
 
-            _parts = new HashSet<ShipPart>();
+            _chains = new HashSet<Chain>();
 
             provider.Service(out _world);
             provider.Service(out _chunks);
@@ -90,7 +90,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             base.Draw(gameTime);
 
-            _parts.ForEach(p => _chunks.shipPartChunks[p].TryDraw(gameTime));
+            _chains.ForEach(p => _chunks.chainChunks[p].TryDraw(gameTime));
         }
         #endregion
 
@@ -104,11 +104,11 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             this.Bounds = new Rectangle((Int32)this.X, (Int32)this.Y, Chunk.Size, Chunk.Size);
         }
 
-        internal void Add(ShipPart shipPart)
-            => _parts.Add(shipPart);
+        internal void Add(Chain chain)
+            => _chains.Add(chain);
 
-        internal void Remove(ShipPart shipPart)
-            => _parts.Remove(shipPart);
+        internal void Remove(Chain chain)
+            => _chains.Remove(chain);
         #endregion
     }
 }

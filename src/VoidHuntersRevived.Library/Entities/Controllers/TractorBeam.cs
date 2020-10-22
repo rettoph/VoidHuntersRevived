@@ -43,10 +43,10 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             public readonly ActionType Type;
             public readonly ShipPart Target;
 
-            public Action(ActionType type = ActionType.None, ShipPart shipPart = default(ShipPart))
+            public Action(ActionType type = ActionType.None, ShipPart target = default(ShipPart))
             {
                 this.Type = type;
-                this.Target = shipPart;
+                this.Target = target;
             }
         }
         #endregion
@@ -65,7 +65,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         /// <summary>
         /// The currently selected target, if any
         /// </summary>
-        public ShipPart Selected { get; private set; }
+        public Chain Selected { get; private set; }
 
         /// <summary>
         /// The world position of the tractor beam
@@ -74,10 +74,10 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #endregion
 
         #region Events & Delegates
-        public event GuppyEventHandler<TractorBeam, TractorBeam.Action> OnSelected;
-        public event GuppyEventHandler<TractorBeam, TractorBeam.Action> OnDeselected;
-        public event GuppyEventHandler<TractorBeam, TractorBeam.Action> OnAttached;
-        public event GuppyEventHandler<TractorBeam, TractorBeam.Action> OnAction;
+        public event OnEventDelegate<TractorBeam, TractorBeam.Action> OnSelected;
+        public event OnEventDelegate<TractorBeam, TractorBeam.Action> OnDeselected;
+        public event OnEventDelegate<TractorBeam, TractorBeam.Action> OnAttached;
+        public event OnEventDelegate<TractorBeam, TractorBeam.Action> OnAction;
 
         /// <summary>
         /// Indicates whether or not a attachment can be made between
@@ -113,14 +113,14 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             base.Draw(gameTime);
 
-            this.parts.ForEach(p => p.TryDraw(gameTime));
+            this.chains.ForEach(p => p.TryDraw(gameTime));
         }
 
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            this.parts.ForEach(p => p.TryUpdate(gameTime));
+            this.chains.ForEach(p => p.TryUpdate(gameTime));
 
             this.Position = this.Ship.Target;
             this.Align(gameTime);
@@ -133,31 +133,31 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         /// </summary>
         private void Align(GameTime gameTime)
         {
-            if (this.parts.Any())
+            if (this.chains.Any())
             {
                 var node = this.Ship.GetClosestOpenFemaleNode(this.Position);
 
                 if(node == default(ConnectionNode))
                 { // There is no available connection node.. just update the position directly...
-                    this.parts.ForEach(p =>
+                    this.chains.ForEach(chain =>
                     {
-                        p.SetTransformIgnoreContacts(
-                            position: this.Position - Vector2.Transform(p.Configuration.Centeroid, Matrix.CreateRotationZ(p.Rotation)),
-                            angle: p.Rotation);
+                        chain.Root.SetTransformIgnoreContacts(
+                            position: this.Position - Vector2.Transform(chain.Root.Configuration.Centeroid, Matrix.CreateRotationZ(chain.Root.Rotation)),
+                            angle: chain.Root.Rotation);
 
-                        p.TryUpdate(gameTime);
+                        chain.TryUpdate(gameTime);
                     });
                 }
                 else
                 { // There is an available connection node. Position the ship part to preview it...
-                    this.parts.ForEach(p =>
+                    this.chains.ForEach(chain =>
                     {
-                        p.LinearVelocity = Vector2.Zero;
-                        p.AngularVelocity = 0f;
+                        chain.Root.LinearVelocity = Vector2.Zero;
+                        chain.Root.AngularVelocity = 0f;
 
-                        node.TryPreview(p);
+                        node.TryPreview(chain.Root);
 
-                        p.TryUpdate(gameTime);
+                        chain.TryUpdate(gameTime);
                     });
                 }
             }
@@ -194,22 +194,27 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         /// Simple helper method to determin if the recieved
         /// ShipPart may be selected by the tractor beam.
         /// </summary>
-        /// <param name="shipPart"></param>
+        /// <param name="target"></param>
         /// <returns></returns>
-        public Boolean CanSelect(ShipPart shipPart)
-            => this.CanAdd(shipPart);
+        public Boolean CanSelect(ShipPart target)
+        {
+            if (target?.Chain.Ship == this.Ship)
+                return true;
+
+            return this.CanAdd(target.Chain);
+        }
 
         private TractorBeam.Action TrySelect(TractorBeam.Action action)
         {
             if (action.Type != ActionType.Select)
                 throw new ArgumentException($"Unable to create selection, Invalid ActionType({action.Type}) recieved.");
 
-            if (this.CanAdd(action.Target))
+            if (this.CanSelect(action.Target))
             {
                 this.synchronizer.Do(gt =>
                 {
-                    action.Target.MaleConnectionNode.TryDetach();
-                    this.TryAdd(action.Target);
+                    action.Target.Root.MaleConnectionNode.TryDetach();
+                    this.TryAdd(action.Target.Chain);
                     this.OnSelected?.Invoke(this, action);
                 });
 
@@ -219,32 +224,24 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             return new TractorBeam.Action(ActionType.None, action.Target);
         }
 
-        protected override bool CanAdd(ShipPart shipPart)
+        protected override bool CanAdd(Chain chain)
+            => chain?.Controller is ChunkManager;
+
+        protected override void Add(Chain chain)
         {
-            if (this.Selected != default(ShipPart))
-                return false;
-            else if (shipPart == default(ShipPart))
-                return false;
+            base.Add(chain);
 
-            if (shipPart != default(ShipPart) && ((shipPart.IsRoot && shipPart.Controller is ChunkManager)))
-                return true;
-            else if ((!shipPart.IsRoot && shipPart.Root.Ship == this.Ship))
-                return true;
+            chain.Do(sp =>
+            {
+                sp.LinearVelocity = Vector2.Zero;
+                sp.AngularVelocity = 0f;
+            });
 
-            return false;
-        }
 
-        protected override void Add(ShipPart shipPart)
-        {
-            base.Add(shipPart);
-
-            shipPart.LinearVelocity = Vector2.Zero;
-            shipPart.AngularVelocity = 0f;
-
-            if(this.Selected != default(ShipPart)) // Auto attempt a deselect if any...
+            if(this.Selected != default(Chain)) // Auto attempt a deselect if any...
                 this.TryAction(new Action(ActionType.Deselect));
 
-            this.Selected = shipPart;
+            this.Selected = chain;
         }
 
         /// <summary>
@@ -257,7 +254,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             if (!action.Type.HasFlag(TractorBeam.ActionType.Deselect))
                 throw new ArgumentException($"Unable to create deselection, Invalid ActionType({action.Type}) recieved.");
 
-            if (this.CanRemove(action.Target))
+            if (this.CanRemove(action.Target.Chain))
             {
                 var old = this.Selected;
                 this.OnDeselected?.Invoke(this, action);
@@ -273,12 +270,12 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                 }
             }
 
-            return new Action(ActionType.None, this.Selected);
+            return new Action(ActionType.None, this.Selected?.Root);
         }
 
-        protected override void Remove(ShipPart shipPart)
+        protected override void Remove(Chain chain)
         {
-            base.Remove(shipPart);
+            base.Remove(chain);
 
             this.synchronizer.Do(gt => this.Selected = null);
         }

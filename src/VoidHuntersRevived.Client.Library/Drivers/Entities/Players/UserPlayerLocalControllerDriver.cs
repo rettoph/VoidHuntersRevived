@@ -26,6 +26,7 @@ using Guppy.IO.Input;
 using Guppy.IO.Commands.Services;
 using Guppy.IO.Commands;
 using Guppy.IO.Commands.Interfaces;
+using Guppy.Lists;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 {
@@ -43,6 +44,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         private MouseService _mouse;
         private DebugService _debug;
         private CommandService _commands;
+        private EntityList _entites;
         #endregion
 
         #region Lifecycle Methods
@@ -58,6 +60,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             provider.Service(out _mouse);
             provider.Service(out _debug);
             provider.Service(out _commands);
+            provider.Service(out _entites);
 
             this.driven.OnUserChanged += this.HandleUserChanged;
         }
@@ -111,7 +114,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
         }
 
         private String RenderDebug(GameTime gameTime)
-            => $"X: {this.driven.Ship.Bridge?.Position.X.ToString("#,##0.00")}, Y: {this.driven.Ship.Bridge?.Position.Y.ToString("#,##0.00")}";
+            => $"X: {this.driven.Ship.Bridge?.Position.X.ToString("#,##0.00")}, Y: {this.driven.Ship.Bridge?.Position.Y.ToString("#,##0.00")}\n" +
+            $"Chains: {_entites.Where(e => e is Chain).Count()}\n";
         #endregion
 
         #region Helper Methods
@@ -125,7 +129,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
 
         private void TryTractorBeamAction(TractorBeam.ActionType action)
         {
-            var target = this.driven.Ship.TractorBeam.Selected ?? _sensor.Contacts
+            var target = this.driven.Ship.TractorBeam.Selected?.Root ?? _sensor.Contacts
                 .Where(c => c is ShipPart)
                 .Select(c => (c as ShipPart).Controller is ChunkManager ? (c as ShipPart).Root : (c as ShipPart))
                 .Where(s => this.driven.Ship.TractorBeam.CanSelect(s))
@@ -176,9 +180,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Players
             }
         }
 
-        private void HandleUserChanged(UserPlayer sender, User arg)
+        private void HandleUserChanged(UserPlayer sender, User old, User value)
         {
-            if(arg == _peer.CurrentUser)
+            if(value == _peer.CurrentUser)
             {
                 // Give this specific user local authority...
                 this.driven.Authorization |= GameAuthorization.Local;

@@ -60,6 +60,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddFactory<UserPlayer>(p => new UserPlayer());
             services.AddFactory<ShipController>(p => new ShipController());
             services.AddFactory<TractorBeam>(p => new TractorBeam());
+            services.AddFactory<Chain>(p => new Chain());
 
             services.AddScoped<ChunkManager>();
             services.AddScoped<WorldEntity>();
@@ -68,6 +69,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddTransient<UserPlayer>();
             services.AddTransient<ShipController>();
             services.AddTransient<TractorBeam>();
+            services.AddTransient<Chain>();
 
             services.AddConfiguration<ILog>((l, p, s) =>
             {

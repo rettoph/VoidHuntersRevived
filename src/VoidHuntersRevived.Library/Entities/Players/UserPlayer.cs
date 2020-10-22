@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Events.Delegates;
 using Guppy.Interfaces;
 using Guppy.Network;
 using System;
@@ -22,20 +23,13 @@ namespace VoidHuntersRevived.Library.Entities.Players
         public User User
         {
             get => _user;
-            set
-            {
-                if (this.User != value)
-                {
-                    _user = value;
-                    this.OnUserChanged?.Invoke(this, _user);
-                }
-            }
+            set => this.OnUserChanged.InvokeIfChanged(value != _user, this, ref _user, value);
         }
         public override String Name => this.User?.Name;
         #endregion
 
         #region Events
-        public event GuppyEventHandler<UserPlayer, User> OnUserChanged;
+        public event OnChangedEventDelegate<UserPlayer, User> OnUserChanged;
         #endregion
 
         #region Lifecycle Methods

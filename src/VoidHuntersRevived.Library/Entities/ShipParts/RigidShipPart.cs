@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             _fixtures = new Queue<FixtureContainer>();
 
-            this.OnRootChanged += this.HandleRootChanged;
+            this.OnChainChanged += this.HandleChainChanged;
         }
 
         protected override void Release()
@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             while (_fixtures.Any())
                 _fixtures.Dequeue().Destroy();
 
-            this.OnRootChanged -= this.HandleRootChanged;
+            this.OnChainChanged -= this.HandleChainChanged;
         }
         #endregion
 
@@ -83,28 +83,18 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
         #region Event Handlers
         /// <summary>
-        /// When the root piece changes, we must restructure the entire
+        /// When the chain changes, we must restructure the entire
         /// ship part to merge with the root.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="old"></param>
         /// <param name="value"></param>
-        private void HandleRootChanged(ShipPart sender, ShipPart old, ShipPart value)
+        private void HandleChainChanged(ShipPart sender, Chain old, Chain value)
         {
             this.AddFixtures(this.Root, _fixtures);
 
             _localCenter = this.IsRoot ? base.LocalCenter : Vector2.Transform(this.Configuration.Centeroid, this.LocalTransformation);
         }
         #endregion
-
-        protected override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-
-            if(this.Configuration.Vertices.Count() == 2)
-            {
-
-            }
-        }
     }
 }

@@ -18,6 +18,7 @@ using Guppy.Extensions.DependencyInjection;
 using Guppy.IO;
 using log4net;
 using Guppy.IO.Extensions.log4net;
+using Guppy.Events.Delegates;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -51,24 +52,14 @@ namespace VoidHuntersRevived.Library.Entities
         public GameAuthorization Authorization
         {
             get => _authorization;
-            set
-            {
-                if(value != _authorization)
-                {
-                    if (this.OnAuthorizationChanged == null)
-                        _authorization = value;
-                    else
-                        this.OnAuthorizationChanged.Invoke(this, _authorization, _authorization = value);
-                }
-                    
-            }
+            set => this.OnAuthorizationChanged.InvokeIfChanged(value != _authorization, this, ref _authorization, value);
         }
         #endregion
 
         #region Events
         public event NetIncomingMessageDelegate OnRead;
         public event NetOutgoingMessageDelegate OnWrite;
-        public event GuppyDeltaEventHandler<NetworkEntity, GameAuthorization> OnAuthorizationChanged;
+        public event OnChangedEventDelegate<NetworkEntity, GameAuthorization> OnAuthorizationChanged;
         #endregion
 
         #region Lifecycle Methods

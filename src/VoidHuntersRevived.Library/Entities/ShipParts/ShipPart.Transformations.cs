@@ -40,12 +40,12 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #region Lifecycle Methods
         private void Transformations_PreInitialize(ServiceProvider provider)
         {
-            this.OnRootChanged += this.Transformations_HandleRootChanged;
+            this.OnChainChanged += this.Transformations_HandleChainChanged;
         }
 
-        private void Transformations_Dispose()
+        private void Transformations_Release()
         {
-            this.OnRootChanged -= this.Transformations_HandleRootChanged;
+            this.OnChainChanged -= this.Transformations_HandleChainChanged;
         }
         #endregion
 
@@ -77,7 +77,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #endregion
 
         #region Event Handlers
-        private void Transformations_HandleRootChanged(ShipPart sender, ShipPart old, ShipPart value)
+        private void Transformations_HandleChainChanged(ShipPart sender, Chain old, Chain value)
         {
             this.UpdateLocalTranslation();
         }

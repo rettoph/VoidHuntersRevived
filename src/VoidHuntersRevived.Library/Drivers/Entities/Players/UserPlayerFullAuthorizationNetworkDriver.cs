@@ -80,7 +80,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
         #endregion
 
         #region Event Handlers
-        private void HandleUserChanged(UserPlayer sender, User arg)
+        private void HandleUserChanged(UserPlayer sender, User old, User value)
             => this.WriteUser(this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 5));
         #endregion
     }

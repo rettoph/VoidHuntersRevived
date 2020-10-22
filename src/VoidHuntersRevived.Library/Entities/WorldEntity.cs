@@ -1,6 +1,7 @@
 ﻿using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
 using Guppy.DependencyInjection;
+using Guppy.Events.Delegates;
 using Guppy.Extensions.Collections;
 using Guppy.Interfaces;
 using Microsoft.Xna.Framework;
@@ -31,19 +32,12 @@ namespace VoidHuntersRevived.Library.Entities
         public Vector2 Size
         {
             get => _size;
-            set
-            {
-                if(_size != value)
-                {
-                    _size = value;
-                    this.OnSizeChanged?.Invoke(this, this.Size);
-                }
-            }
+            set => this.OnSizeChanged.InvokeIfChanged(_size != value, this, ref _size, value);
         }
         #endregion
 
         #region Events
-        public event GuppyEventHandler<WorldEntity, Vector2> OnSizeChanged;
+        public event OnEventDelegate<WorldEntity, Vector2> OnSizeChanged;
         #endregion
 
         #region Lifecycle Methods

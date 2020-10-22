@@ -107,7 +107,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="arg"></param>
-        private void HandleControllerChanged(ShipPart sender, Controller arg)
+        private void HandleControllerChanged(ShipPart sender, Controller old, Controller value)
             => BodyEntityNetworkDriver.WritePosition(this.driven, this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 8));
         #endregion
     }

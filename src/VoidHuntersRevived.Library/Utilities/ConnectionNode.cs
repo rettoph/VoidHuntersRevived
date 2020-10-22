@@ -11,6 +11,7 @@ using VoidHuntersRevived.Library.Extensions.System;
 using Guppy.Extensions.DependencyInjection;
 using FarseerPhysics.Dynamics;
 using VoidHuntersRevived.Library.Extensions.Farseer;
+using Guppy.Events.Delegates;
 
 namespace VoidHuntersRevived.Library.Utilities
 {
@@ -74,8 +75,8 @@ namespace VoidHuntersRevived.Library.Utilities
         #endregion
 
         #region Events
-        public GuppyEventHandler<ConnectionNode, ConnectionNode> OnAttached;
-        public GuppyEventHandler<ConnectionNode, ConnectionNode> OnDetached;
+        public OnEventDelegate<ConnectionNode, ConnectionNode> OnAttached;
+        public OnEventDelegate<ConnectionNode, ConnectionNode> OnDetached;
         #endregion
 
         #region Lifecycle Methods

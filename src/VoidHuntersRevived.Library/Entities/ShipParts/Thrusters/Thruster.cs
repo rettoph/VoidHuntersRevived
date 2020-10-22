@@ -33,14 +33,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         {
             base.PreInitialize(provider);
 
-            this.OnRootChanged += this.HandleRootChanged;
+            this.OnChainChanged += this.HandleChainChanged;
         }
 
         protected override void Release()
         {
             base.Release();
 
-            this.OnRootChanged -= this.HandleRootChanged;
+            this.OnChainChanged -= this.HandleChainChanged;
         }
         #endregion
 
@@ -142,17 +142,17 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         #endregion
 
         #region Event Handlers
-        private void HandleRootChanged(ShipPart sender, ShipPart old, ShipPart value)
+        private void HandleChainChanged(ShipPart sender, Chain old, Chain value)
         {
             // Update the internal directions...
             this.Directions = this.GetDirections();
 
-            if(old != default(ShipPart) && old != this)
+            if(old != default(Chain))
             {
                 old.OnUpdate -= this.TryUpdate;
             }
 
-            if(value != default(ShipPart) && value != this)
+            if(value != default(Chain))
             {
                 value.OnUpdate += this.TryUpdate;
             }

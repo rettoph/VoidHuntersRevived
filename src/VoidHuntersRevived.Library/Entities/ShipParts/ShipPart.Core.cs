@@ -11,6 +11,7 @@ using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Enums;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Events.Delegates;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -19,69 +20,56 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #region Private Fields
         private Ship _ship;
         private Controller _controller;
-        private ChunkManager _chunks;
         #endregion
 
-        #region Public Attributes
+        #region Public Properties
         public Ship Ship
         {
-            get => this.IsRoot ? _ship : this.Root.Ship;
+            get => _ship;
             internal set
             {
-                if (this.IsRoot)
+                if(value != _ship)
                 {
-                    if (_ship != value)
-                    {
-                        var old = _ship;
-                        _ship = value;
-                        this.OnShipChanged?.Invoke(this, old, _ship);
-                    }
+                    var old = _ship;
+                    _ship = value;
+
+                    this.OnShipChanged?.Invoke(this, old, _ship);
                 }
-                else
-                    throw new Exception("Unable to update Ship of child ShipPart.");
             }
         }
+
         public Controller Controller
         {
-            get => this.IsRoot ? _controller : this.Root.Controller;
-            internal set
-            {
-                if (this.IsRoot)
-                {
-                    if(_controller != null)
-                        _controller.OnAuthorizationChanged -= this.HandleControllerAuthorizationChanged;
-
-                    _controller = value;
-
-                    if (_controller != null)
-                        _controller.OnAuthorizationChanged += this.HandleControllerAuthorizationChanged;
-
-                    this.OnControllerChanged?.Invoke(this, _controller);
-                }
-                else
-                    throw new Exception("Unable to update Controller of child ShipPart.");
-            }
+            get => _controller;
+            internal set => this.OnControllerChanged.InvokeIfChanged(_controller != value, this, ref _controller, value);
         }
 
         public ShipPartConfiguration Configuration { get; set; }
         public Boolean IsRoot => !this.MaleConnectionNode.Attached;
-        public ShipPart Root => this.IsRoot ? this : this.Parent.Root;
+        public ShipPart Root => this.Chain.Root;
         public ShipPart Parent => this.IsRoot ? null : this.MaleConnectionNode.Target.Parent;
 
         public Color Color => this.Root.Ship == default(Ship) ? this.Root.Configuration.DefaultColor : this.Ship.Color;
         #endregion
 
         #region Events
-        public event GuppyEventHandler<ShipPart, Controller> OnControllerChanged;
-        public event GuppyDeltaEventHandler<ShipPart, Ship> OnShipChanged;
+        public event OnChangedEventDelegate<ShipPart, Controller> OnControllerChanged;
+        public event OnChangedEventDelegate<ShipPart, Ship> OnShipChanged;
         #endregion
 
         #region Lifecycle Methods
+        protected override void Create(ServiceProvider provider)
+        {
+            base.Create(provider);
+
+            this.OnChainChanged += this.HandleChainChanged;
+            this.OnControllerChanged += this.HandleControllerChanged;
+            this.ValidateWritePosition += this.HandleValidateWritePosition;
+        }
+
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
-
-            provider.Service(out _chunks);
 
             this.Transformations_PreInitialize(provider);
 
@@ -89,41 +77,35 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             this.Enabled = false;
             this.Visible = false;
-
-            this.OnRootChanged += this.HandleRootChanged;
-            this.OnChainCleaned += this.HandleChainCleaned;
         }
 
         protected override void Initialize(ServiceProvider provider)
         {
             // Run _before_ Driven.Initialize to beat the Driver configuration.
             this.ConnectionNode_Initialize(provider);
+            this.Chain_Initialize(provider);
 
             base.Initialize(provider);
 
-            // Add the ship part to the chunk manager by default...
-            _chunks.TryAdd(this);
-
             // Clean the chain once the ship part is initialized
-            this.CleanChain(DirtyChainType.Both);
             this.AngularDamping = 0.5f;
             this.LinearDamping = 0.5f;
-
-            this.MaleConnectionNode.OnDetached += this.HandleMaleConnectionNodeDetached;
-            this.OnControllerChanged += this.HandleControllerChanged;
-            this.ValidateWritePosition += this.HandleValidateWritePosition;
         }
 
         protected override void Release()
         {
             base.Release();
 
-            this.Transformations_Dispose();
-            this.ConnectionNode_Dispose();
+            this.Transformations_Release();
+            this.ConnectionNode_Release();
+            this.Chain_Release();
+        }
 
-            this.OnRootChanged -= this.HandleRootChanged;
-            this.OnChainCleaned -= this.HandleChainCleaned;
-            this.MaleConnectionNode.OnDetached -= this.HandleMaleConnectionNodeDetached;
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.OnChainChanged -= this.HandleChainChanged;
             this.OnControllerChanged -= this.HandleControllerChanged;
             this.ValidateWritePosition -= this.HandleValidateWritePosition;
         }
@@ -131,58 +113,40 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
         #region Event Handlers
         /// <summary>
-        /// Simple handler that will map the internal draw methods
-        /// of ship parts so that when the root part is drawn
-        /// all children will also be drawn.
+        /// Reconfigure some internal actions when a ship part is added into a
+        /// brand new chain...
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="old"></param>
         /// <param name="value"></param>
-        private void HandleRootChanged(ShipPart sender, ShipPart old, ShipPart value)
+        private void HandleChainChanged(ShipPart sender, Chain old, Chain value)
         {
-            if (old != null && old != this)
-            {
+            if(old != default(Chain))
+            { // Unset old chain actions as needed...
+                // Remove the draw handler from the old chain
                 old.OnDraw -= this.TryDraw;
             }
 
-            if (value != this)
-            {
-                // Unset any saved ship value...
-                _ship?.SetBridge(null);
-                _ship = null;
-
+            if(value != default(Chain))
+            { // Set new chain actions as needed...
+                // When the root chain is drawn, we should draw the current ship part as well
                 value.OnDraw += this.TryDraw;
+
+                // Flush the default chain values to the ShipPart...
+                this.Ship = value.Ship;
+                this.Controller = value.Controller;
+                // this.Authorization = value.Controller.Authorization;
             }
         }
-
-        private void HandleChainCleaned(ShipPart sender, DirtyChainType arg)
-        {
-            if(!this.IsRoot)
-            {
-                // Uset any saved controller value
-                _controller?.TryRemove(this);
-                _controller = null;
-            }
-        }
-
-        private void HandleMaleConnectionNodeDetached(ConnectionNode sender, ConnectionNode arg)
-        {
-            // Automatically add ShipPart to the chunk manager on male detach...
-            _chunks.TryAdd(this);
-        }
-
 
         /// <summary>
         /// Configure internal attributes and event when the entities
         /// controller value is updated...
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="controller"></param>
-        private void HandleControllerChanged(ShipPart sender, Controller controller)
-            => this.Authorization = controller?.Authorization ?? this.settings.Get<GameAuthorization>();
-
-        private void HandleControllerAuthorizationChanged(Controller sender, GameAuthorization old, GameAuthorization value)
-            => this.Authorization = this.Controller.Authorization;
+        /// <param name="value"></param>
+        private void HandleControllerChanged(ShipPart sender, Controller old, Controller value)
+            => this.Authorization = value?.Authorization ?? this.settings.Get<GameAuthorization>();
 
         private bool HandleValidateWritePosition(BodyEntity sender, GameTime args)
             => this.IsRoot;

@@ -25,9 +25,9 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
     public class ChunkManager : Controller
     {
         #region Internal Ccasses
-        internal class ShipPartChunks
+        internal class ChainChunks
         {
-            private ShipPart _shipPart;
+            private Chain _chain;
 
             /// <summary>
             /// A collection of all chunks that the 
@@ -42,10 +42,10 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
             private ChunkManager _manager;
 
-            public ShipPartChunks(ChunkManager manager, ShipPart shipPart)
+            public ChainChunks(ChunkManager manager, Chain chain)
             {
                 _manager = manager;
-                _shipPart = shipPart;
+                _chain = chain;
                 _chunks = new HashSet<Chunk>();
                 _lastDraw = default(Double);
             }
@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             {
                 if(_lastDraw != gameTime.ElapsedGameTime.TotalMilliseconds)
                 {
-                    _shipPart.TryDraw(gameTime);
+                    _chain.TryDraw(gameTime);
                     _lastDraw = gameTime.ElapsedGameTime.TotalMilliseconds;
                 }
             }
@@ -66,7 +66,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             {
                 this.ClearChunks();
                 Queue<ShipPart> children = new Queue<ShipPart>();
-                children.Enqueue(_shipPart);
+                children.Enqueue(_chain.Root);
                 ShipPart child;
                 Transform transform;
                 AABB aabb;
@@ -86,7 +86,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                         if (_manager.chunks.ContainsKey(p) && !_chunks.Contains(_manager.chunks[p]))
                         {
                             _chunks.Add(_manager.chunks[p]);
-                            _manager.chunks[p].Add(_shipPart);
+                            _manager.chunks[p].Add(_chain);
                         }
                     }
                 }
@@ -97,7 +97,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             /// </summary>
             public void ClearChunks()
             {
-                _chunks.ForEach(c => c.Remove(_shipPart));
+                _chunks.ForEach(c => c.Remove(_chain));
                 _chunks.Clear();
             }
         }
@@ -111,29 +111,29 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         private EntityList _entities;
         private Dictionary<Chunk.Position, Chunk> _chunks;
         /// <summary>
-        /// Creates a link between a ShipPart and all of its
+        /// Creates a link between a chain and all of its
         /// current chunks.
         /// </summary>
-        private Dictionary<ShipPart, ShipPartChunks> _shipPartChunks;
+        private Dictionary<Chain, ChainChunks> _chainChunks;
 
         /// <summary>
-        /// New & incoming ShipParts must pass quarantine
+        /// New & incoming chain must pass quarantine
         /// before they can be added into a chunk.
         /// 
         /// (Essentially they just need to be asleep)
         /// </summary>
-        private List<ShipPart> _quarantine;
+        private List<Chain> _quarantine;
 
         /// <summary>
-        /// List of ShipParts that have passed
+        /// List of chains that have passed
         /// quarantine but are not yet added
         /// into a chunk.
         /// </summary>
-        private Queue<ShipPart> _clean;
+        private Queue<Chain> _clean;
         #endregion
 
         #region Internal Fields
-        internal Dictionary<ShipPart, ShipPartChunks> shipPartChunks => _shipPartChunks;
+        internal Dictionary<Chain, ChainChunks> chainChunks => _chainChunks;
         internal WorldEntity world => _world;
         internal Dictionary<Chunk.Position, Chunk> chunks => _chunks;
         #endregion
@@ -145,9 +145,9 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
             _cache = new List<Chunk>();
             _chunks = new Dictionary<Chunk.Position, Chunk>();
-            _shipPartChunks = new Dictionary<ShipPart, ShipPartChunks>();
-            _quarantine = new List<ShipPart>();
-            _clean = new Queue<ShipPart>();
+            _chainChunks = new Dictionary<Chain, ChainChunks>();
+            _quarantine = new List<Chain>();
+            _clean = new Queue<Chain>();
 
             _provider = provider;
             provider.Service(out _entities);
@@ -178,12 +178,12 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             base.Update(gameTime);
 
-            _quarantine.ForEach(sp =>
+            _quarantine.ForEach(chain =>
             {
-                sp.TryUpdate(gameTime);
+                chain.TryUpdate(gameTime);
 
-                if(!sp.Awake)
-                    _clean.Enqueue(sp);
+                if(!chain.Root.Awake)
+                    _clean.Enqueue(chain);
             });
 
             if (_clean.Any())
@@ -201,15 +201,15 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         /// Add a ship part straight into all of its chunks.
         /// This assumes it has passed quarantine.
         /// </summary>
-        /// <param name="shipPart"></param>
-        private void AddToChunks(ShipPart shipPart)
+        /// <param name="chain"></param>
+        private void AddToChunks(Chain chain)
         {
             // Remove the ship part from quarantine
-            _quarantine.Remove(shipPart);
+            _quarantine.Remove(chain);
 
-            if(this.CanAdd(shipPart) && shipPart.Controller == this)
+            if(this.CanAdd(chain) && chain.Controller == this)
             { // Only proceed if the ShipPart is still a part of the ChunkManager...
-                _shipPartChunks[shipPart].LoadChunks();
+                _chainChunks[chain].LoadChunks();
             }
         }
 
@@ -248,12 +248,12 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             }
 
             // Re-add all internal entities
-            if (this.parts.Any())
+            if (this.chains.Any())
             {
                 _world.live.Step(0);
-                this.parts.ForEach(p =>
+                this.chains.ForEach(p =>
                 {
-                    _shipPartChunks[p].ClearChunks();
+                    _chainChunks[p].ClearChunks();
                     if(!_quarantine.Contains(p))
                         this.AddToChunks(p);
                 });
@@ -282,47 +282,50 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
         #region Controller Methods
         /// <summary>
-        /// Add an existing ShipPart into the
+        /// Add an existing Chain into the
         /// Chunk manager.
         /// </summary>
-        /// <param name="shipPart"></param>
-        public new void TryAdd(ShipPart shipPart)
-            => base.TryAdd(shipPart);
+        /// <param name="chain"></param>
+        public new void TryAdd(Chain chain)
+            => base.TryAdd(chain);
 
-        protected override void Add(ShipPart shipPart)
+        protected override void Add(Chain chain)
         {
-            base.Add(shipPart);
+            base.Add(chain);
 
             // Create a new ShipPartChunks instance.
-            if (!_shipPartChunks.ContainsKey(shipPart))
-                _shipPartChunks[shipPart] = new ShipPartChunks(this, shipPart);
+            if (!_chainChunks.ContainsKey(chain))
+                _chainChunks[chain] = new ChainChunks(this, chain);
 
             // Add the new ship part straight into quarantine
-            this.synchronizer.Do(gt => _quarantine.Add(shipPart));
+            this.synchronizer.Do(gt => _quarantine.Add(chain));
 
             // Update the new parts properties
-            shipPart.SleepingAllowed = true;
-            shipPart.Awake = true;
+            chain.Do(sp =>
+            {
+                sp.SleepingAllowed = true;
+                sp.Awake = true;
 
-            // Update the new parts collisions
-            shipPart.CollisionCategories = Categories.PassiveCollisionCategories;
-            shipPart.CollidesWith = Categories.PassiveCollidesWith;
-            shipPart.IgnoreCCDWith = Categories.PassiveIgnoreCCDWith;
+                // Update the new parts collisions
+                sp.CollisionCategories = Categories.PassiveCollisionCategories;
+                sp.CollidesWith = Categories.PassiveCollidesWith;
+                sp.IgnoreCCDWith = Categories.PassiveIgnoreCCDWith;
+            });
         }
 
-        protected override void Remove(ShipPart shipPart)
+        protected override void Remove(Chain chain)
         {
-            base.Remove(shipPart);
+            base.Remove(chain);
 
             // Remove the ship part from quarantine if needed...
             this.synchronizer.Do(gt =>
             {
-                if (_quarantine.Contains(shipPart))
-                    _quarantine.Remove(shipPart);
+                if (_quarantine.Contains(chain))
+                    _quarantine.Remove(chain);
             });
 
             // Clear cached chunks
-            _shipPartChunks[shipPart].ClearChunks();
+            _chainChunks[chain].ClearChunks();
         }
         #endregion
 

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Lists;
+using Guppy.Events.Delegates;
 
 namespace VoidHuntersRevived.Library.Entities.Players
 {
@@ -25,21 +26,12 @@ namespace VoidHuntersRevived.Library.Entities.Players
         public Ship Ship
         {
             get => _ship;
-            set
-            {
-                if(this.Ship != value)
-                {
-                    var old = _ship;
-                    _ship = value;
-                    _ship.Player = this;
-                    this.OnShipChanged?.Invoke(this, old, this.Ship);
-                }
-            }
+            set => this.OnShipChanged.InvokeIfChanged(value != _ship, this, ref _ship, value);
         }
         #endregion
 
         #region Events
-        public event GuppyDeltaEventHandler<Player, Ship> OnShipChanged;
+        public event OnChangedEventDelegate<Player, Ship> OnShipChanged;
         #endregion
     }
 }

@@ -14,6 +14,7 @@ using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Events.Delegates;
 
 namespace VoidHuntersRevived.Client.Library.Utilities
 {
@@ -44,7 +45,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         #endregion
 
         #region Events
-        public event GuppyEventHandler<Trail> OnDirty;
+        public event OnEventDelegate<Trail> OnDirty;
         #endregion
 
         #region Lifecycle Methods

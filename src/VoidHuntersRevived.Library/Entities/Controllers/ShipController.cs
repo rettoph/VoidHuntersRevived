@@ -40,41 +40,44 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             base.Update(gameTime);
 
-            this.parts.ForEach(p => p.TryUpdate(gameTime));
+            this.chains.ForEach(p => p.TryUpdate(gameTime));
         }
 
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
 
-            this.parts.ForEach(p => p.TryDraw(gameTime));
+            this.chains.ForEach(p => p.TryDraw(gameTime));
         }
         #endregion
 
         #region Controller Methods
-        internal new void TryAdd(ShipPart bridge)
-            => base.TryAdd(bridge);
+        internal new void TryAdd(Chain chain)
+            => base.TryAdd(chain);
 
-        protected override void Add(ShipPart shipPart)
+        protected override void Add(Chain chain)
         {
             // Auto remove any other parts..
-            while (this.parts.Any())
-                this.TryRemove(this.parts.First());
+            while (this.chains.Any())
+                this.TryRemove(this.chains.First());
 
-            base.Add(shipPart);
+            base.Add(chain);
 
             // Update the new parts collisions
-            shipPart.CollisionCategories = Categories.ActiveCollisionCategories;
-            shipPart.CollidesWith = Categories.ActiveCollidesWith;
-            shipPart.IgnoreCCDWith = Categories.ActiveIgnoreCCDWith;
+            chain.Do(sp =>
+            {
+                sp.CollisionCategories = Categories.ActiveCollisionCategories;
+                sp.CollidesWith = Categories.ActiveCollidesWith;
+                sp.IgnoreCCDWith = Categories.ActiveIgnoreCCDWith;
+            });
         }
 
-        protected override void Remove(ShipPart shipPart)
+        protected override void Remove(Chain chain)
         {
-            base.Remove(shipPart);
+            base.Remove(chain);
 
             // Attempt to auto add the ship part back into the chunks...
-            _chunks.TryAdd(shipPart);
+            _chunks.TryAdd(chain);
         }
         #endregion
 

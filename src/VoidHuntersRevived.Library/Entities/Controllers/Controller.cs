@@ -11,6 +11,7 @@ using Guppy.Extensions.DependencyInjection;
 using System.Linq;
 using VoidHuntersRevived.Library.Extensions.System.Collections;
 using Microsoft.Xna.Framework;
+using Guppy.Events.Delegates;
 
 namespace VoidHuntersRevived.Library.Entities.Controllers
 {
@@ -22,13 +23,13 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
     public class Controller : Entity
     {
         #region Private Fields
-        private HashSet<ShipPart> _parts;
+        private HashSet<Chain> _chains;
         private GameAuthorization _authorization;
         
         #endregion
 
         #region Protected Attributes
-        protected IEnumerable<ShipPart> parts => _parts;
+        protected IEnumerable<Chain> chains => _chains;
         protected ThreadSynchronizer synchronizer { get; private set; }
         #endregion
 
@@ -40,21 +41,12 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         public GameAuthorization Authorization
         {
             get => _authorization;
-            protected set
-            {
-                if(_authorization != value)
-                {
-                    if (this.OnAuthorizationChanged == null)
-                        _authorization = value;
-                    else
-                        this.OnAuthorizationChanged.Invoke(this, _authorization, _authorization = value);
-                }
-            }
+            protected set => this.OnAuthorizationChanged.InvokeIfChanged(value != _authorization, this, ref _authorization, value);
         }
         #endregion
 
         #region Events
-        public GuppyDeltaEventHandler<Controller, GameAuthorization> OnAuthorizationChanged;
+        public OnChangedEventDelegate<Controller, GameAuthorization> OnAuthorizationChanged;
         #endregion
 
         #region Lifecycle Methods
@@ -62,7 +54,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             base.PreInitialize(provider);
 
-            _parts = new HashSet<ShipPart>();
+            _chains = new HashSet<Chain>();
 
             // this.synchronizer = provider.GetService<ThreadSynchronizer>("synchronizer:controller");
             this.synchronizer = new ThreadSynchronizer();
@@ -74,7 +66,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             base.Release();
 
-            _parts.Clear();
+            _chains.Clear();
         }
         #endregion
 
@@ -88,41 +80,39 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #endregion
 
         #region Helper Methods
-        protected void TryAdd(ShipPart shipPart)
+        protected void TryAdd(Chain chain)
         {
             this.synchronizer.Do(gt =>
             {
-                if (this.CanAdd(shipPart))
-                    this.Add(shipPart);
+                if (this.CanAdd(chain))
+                    this.Add(chain);
             });
         }
 
-        protected virtual Boolean CanAdd(ShipPart shipPart)
-            => shipPart != default(ShipPart) && shipPart.IsRoot;
+        protected virtual Boolean CanAdd(Chain chain)
+            => chain != default(Chain) && !_chains.Contains(chain);
 
-        protected virtual void Add(ShipPart shipPart)
+        protected virtual void Add(Chain chain)
         {
-            shipPart.Controller?.TryRemove(shipPart);
-            _parts.Add(shipPart);
-            shipPart.Controller = this;
+            chain.Controller?.TryRemove(chain);
+            _chains.Add(chain);
+            chain.Controller = this;
         }
 
-        protected virtual Boolean CanRemove(ShipPart shipPart)
-            => _parts.Contains(shipPart);
+        protected virtual Boolean CanRemove(Chain chain)
+            => _chains.Contains(chain);
 
-        protected internal virtual void TryRemove(ShipPart shipPart)
+        protected internal virtual void TryRemove(Chain chain)
         {
-            if (this.CanRemove(shipPart))
-                this.Remove(shipPart);
+            if (this.CanRemove(chain))
+                this.Remove(chain);
         }
 
-        protected virtual void Remove(ShipPart shipPart)
+        protected virtual void Remove(Chain chain)
         {
-            this.synchronizer.Do(gt => _parts.Remove(shipPart));
+            this.synchronizer.Do(gt => _chains.Remove(chain));
 
-
-            if (shipPart.IsRoot) // Reset the controller if the part is still root.
-                shipPart.Controller = null;
+            chain.Controller = null;
         }
         #endregion
     }

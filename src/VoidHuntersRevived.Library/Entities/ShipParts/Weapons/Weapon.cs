@@ -71,21 +71,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         public Boolean Firing
         {
             get => _firing;
-            set
-            {
-                if(value != _firing)
-                {
-                    _firing = value;
-                    this.OnFiringChanged?.Invoke(this, _firing);
-                }
-            }
+            set => this.OnFiringChanged.InvokeIfChanged(value != _firing, this, ref _firing, value);
         }
         #endregion
 
         #region Events
         public event ValidateEventDelegate<Ship, ShipPart> ValidateFire;
-        public event GuppyEventHandler<Weapon, Ammunition> OnFire;
-        public event GuppyEventHandler<Weapon, Boolean> OnFiringChanged;
+        public event OnEventDelegate<Weapon, Ammunition> OnFire;
+        public event OnEventDelegate<Weapon, Boolean> OnFiringChanged;
         #endregion
 
         #region Lifecycle Methods
@@ -101,7 +94,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             // Create new shapes for the part
             this.Configuration.Vertices.ForEach(v => this.BuildFixture(new PolygonShape(v, 0.01f), this));
 
-            this.OnRootChanged += this.HandleRootChanged;
+            this.OnChainChanged += this.HandleChainChanged;
             this.OnFiringChanged += this.HandleFiringChanged;
 
             // Create new default joints as needed
@@ -112,7 +105,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         {
             base.Release();
 
-            this.OnRootChanged -= this.HandleRootChanged;
+            this.OnChainChanged -= this.HandleChainChanged;
             this.OnFiringChanged -= this.HandleFiringChanged;
         }
         #endregion
@@ -304,36 +297,34 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         #endregion
 
         #region Event Handlers
-        private void HandleRootChanged(ShipPart sender, ShipPart old, ShipPart value)
+        private void HandleChainChanged(ShipPart sender, Chain old, Chain value)
         {
             _dirtyJoints = true;
 
-            if (old != default(ShipPart) && old != this)
+            if (old != default(Chain))
             {
                 old.OnUpdate -= this.TryUpdate;
 
-                value.OnCollidesWithChanged -= this.HandleRootCollisionChanged;
-                value.OnCollisionCategoriesChanged -= this.HandleRootCollisionChanged;
-                value.OnIgnoreCCDWithChanged -= this.HandleRootCollisionChanged;
-                value.OnShipChanged -= this.HandleRootShipChanged;
+                old.Root.OnCollidesWithChanged -= this.HandleRootCollisionChanged;
+                old.Root.OnCollisionCategoriesChanged -= this.HandleRootCollisionChanged;
+                old.Root.OnIgnoreCCDWithChanged -= this.HandleRootCollisionChanged;
+                old.Root.OnShipChanged -= this.HandleRootShipChanged;
             }
 
-            if (value != default(ShipPart) && value != this)
+            if (value != default(Chain))
             {
                 value.OnUpdate += this.TryUpdate;
 
-                value.OnCollidesWithChanged += this.HandleRootCollisionChanged;
-                value.OnCollisionCategoriesChanged += this.HandleRootCollisionChanged;
-                value.OnIgnoreCCDWithChanged += this.HandleRootCollisionChanged;
-                value.OnShipChanged += this.HandleRootShipChanged;
+                value.Root.OnCollidesWithChanged += this.HandleRootCollisionChanged;
+                value.Root.OnCollisionCategoriesChanged += this.HandleRootCollisionChanged;
+                value.Root.OnIgnoreCCDWithChanged += this.HandleRootCollisionChanged;
+                value.Root.OnShipChanged += this.HandleRootShipChanged;
             }
 
             // Clean default wepaon data
             this.CleanCollision();
             this.CleanUpdate();
         }
-
-
 
         private void HandleRootCollisionChanged(BodyEntity sender, Category arg)
             => this.CleanCollision();

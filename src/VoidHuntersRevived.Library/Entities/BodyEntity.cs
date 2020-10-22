@@ -153,12 +153,12 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Events
-        public event GuppyEventHandler<BodyEntity, FixtureContainer> OnFixtureCreated;
-        public event GuppyEventHandler<BodyEntity, FixtureContainer> OnFixtureDestroyed;
-        public event GuppyEventHandler<BodyEntity, BodyType> OnBodyTypeChanged;
-        public event GuppyEventHandler<BodyEntity, Category> OnCollisionCategoriesChanged;
-        public event GuppyEventHandler<BodyEntity, Category> OnCollidesWithChanged;
-        public event GuppyEventHandler<BodyEntity, Category> OnIgnoreCCDWithChanged;
+        public event OnEventDelegate<BodyEntity, FixtureContainer> OnFixtureCreated;
+        public event OnEventDelegate<BodyEntity, FixtureContainer> OnFixtureDestroyed;
+        public event OnEventDelegate<BodyEntity, BodyType> OnBodyTypeChanged;
+        public event OnEventDelegate<BodyEntity, Category> OnCollisionCategoriesChanged;
+        public event OnEventDelegate<BodyEntity, Category> OnCollidesWithChanged;
+        public event OnEventDelegate<BodyEntity, Category> OnIgnoreCCDWithChanged;
 
         /// <summary>
         /// Used by the BodyEntityNetworkDriver, this detects whether or not

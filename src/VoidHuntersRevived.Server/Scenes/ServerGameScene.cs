@@ -27,49 +27,49 @@ namespace VoidHuntersRevived.Server.Scenes
                 w.Size = new Vector2(Chunk.Size * 5, Chunk.Size * 5);
             });
 
-            // var rand = new Random(1);
-            // for(Int32 i=0; i<0; i++)
-            // {
-            //     var triangle = this.Entities.Create<ShipPart>("entity:ship-part:hull:triangle");
-            //     triangle.Position = rand.NextVector2(0, world.Size.X);
-            //     triangle.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
-            // 
-            //     var square = this.Entities.Create<ShipPart>("entity:ship-part:hull:square");
-            //     square.Position = rand.NextVector2(0, world.Size.X);
-            //     square.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
-            // 
-            //     var hexagon = this.Entities.Create<ShipPart>("entity:ship-part:hull:hexagon");
-            //     hexagon.Position = rand.NextVector2(0, world.Size.X);
-            //     hexagon.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
-            // 
-            //     var pentagon = this.Entities.Create<ShipPart>("entity:ship-part:hull:pentagon");
-            //     pentagon.Position = rand.NextVector2(0, world.Size.X);
-            //     pentagon.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
-            // 
-            //     if (i % 2 == 0)
-            //     {
-            //         var vBeam = this.Entities.Create<ShipPart>("entity:ship-part:hull:beam:vertical");
-            //         vBeam.Position = rand.NextVector2(0, world.Size.X);
-            //         vBeam.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
-            //     }
-            //     else
-            //     {
-            //         var hBeam = this.Entities.Create<ShipPart>("entity:ship-part:hull:beam:horizontal");
-            //         hBeam.Position = rand.NextVector2(0, world.Size.X);
-            //         hBeam.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
-            //     }
-            // 
-            //     for (Int32 j = 0; j < 5; j++)
-            //     {
-            //         var thruster = this.Entities.Create<ShipPart>("entity:ship-part:thruster:small");
-            //         thruster.Position = rand.NextVector2(0, world.Size.X);
-            //         thruster.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
-            // 
-            //         var weapon = this.Entities.Create<ShipPart>("entity:ship-part:weapon:mass-driver");
-            //         weapon.Position = rand.NextVector2(0, world.Size.X);
-            //         weapon.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
-            //     }
-            // }
+            var rand = new Random(1);
+            for(Int32 i=0; i<0; i++)
+            {
+                var triangle = this.Entities.Create<ShipPart>("entity:ship-part:hull:triangle");
+                triangle.Position = rand.NextVector2(0, world.Size.X);
+                triangle.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+            
+                var square = this.Entities.Create<ShipPart>("entity:ship-part:hull:square");
+                square.Position = rand.NextVector2(0, world.Size.X);
+                square.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+            
+                var hexagon = this.Entities.Create<ShipPart>("entity:ship-part:hull:hexagon");
+                hexagon.Position = rand.NextVector2(0, world.Size.X);
+                hexagon.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+            
+                var pentagon = this.Entities.Create<ShipPart>("entity:ship-part:hull:pentagon");
+                pentagon.Position = rand.NextVector2(0, world.Size.X);
+                pentagon.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+            
+                if (i % 2 == 0)
+                {
+                    var vBeam = this.Entities.Create<ShipPart>("entity:ship-part:hull:beam:vertical");
+                    vBeam.Position = rand.NextVector2(0, world.Size.X);
+                    vBeam.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+                }
+                else
+                {
+                    var hBeam = this.Entities.Create<ShipPart>("entity:ship-part:hull:beam:horizontal");
+                    hBeam.Position = rand.NextVector2(0, world.Size.X);
+                    hBeam.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+                }
+            
+                for (Int32 j = 0; j < 5; j++)
+                {
+                    var thruster = this.Entities.Create<ShipPart>("entity:ship-part:thruster:small");
+                    thruster.Position = rand.NextVector2(0, world.Size.X);
+                    thruster.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+            
+                    var weapon = this.Entities.Create<ShipPart>("entity:ship-part:weapon:mass-driver");
+                    weapon.Position = rand.NextVector2(0, world.Size.X);
+                    weapon.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+                }
+            }
         }
         #endregion
 

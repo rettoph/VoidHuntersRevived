@@ -13,6 +13,7 @@ using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.IO.Extensions.log4net;
 using Guppy.Lists;
+using Guppy.Events.Delegates;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -39,18 +40,14 @@ namespace VoidHuntersRevived.Library.Entities
         private EntityList _entities;
         #endregion
 
-        #region Public Attributes
+        #region Public Properties
         /// <summary>
         /// The current player managing the ship (if any)
         /// </summary>
         public Player Player
         {
             get => _player;
-            set
-            {
-                if(value != _player)
-                    this.OnPlayerChanged.Invoke(this, _player, _player = value);
-            }
+            set => this.OnPlayerChanged.InvokeIfChanged(value != _player, this, ref _player, value);
         }
 
         /// <summary>
@@ -68,8 +65,8 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Events
-        public event GuppyDeltaEventHandler<Ship, ShipPart> OnBridgeChanged;
-        public event GuppyDeltaEventHandler<Ship, Player> OnPlayerChanged;
+        public event OnChangedEventDelegate<Ship, ShipPart> OnBridgeChanged;
+        public event OnChangedEventDelegate<Ship, Player> OnPlayerChanged;
         #endregion
 
         #region Lifecycle Methods
@@ -133,17 +130,21 @@ namespace VoidHuntersRevived.Library.Entities
                     var old = this.Bridge;
                     if (this.Bridge != null)
                     { // Remove old bridge...
-                        this.Bridge.OnChainCleaned -= this.HandleBridgeCleaned;
-                        this.Bridge.Ship = null;
+                        this.Bridge.Chain.OnShipPartAdded -= this.HandleBridgeCleaned;
+                        this.Bridge.Chain.OnShipPartRemoved -= this.HandleBridgeCleaned;
+                        this.Bridge.Chain.Authorization = this.settings.Get<GameAuthorization>();
+                        this.Bridge.Chain.Ship = null;
                     }
 
                     this.log.Verbose($"Ship({this.Id}) => Setting bridge to ShipPart<{bridge.GetType().Name}>({bridge.Id})");
                     this.Bridge = bridge;
                     if (this.Bridge != null)
                     { // Setup the new bridge...
-                        _controller.TryAdd(this.Bridge);
-                        this.Bridge.Ship = this;
-                        this.Bridge.OnChainCleaned += this.HandleBridgeCleaned;
+                        _controller.TryAdd(this.Bridge.Chain);
+                        this.Bridge.Chain.Ship = this;
+                        this.Bridge.Chain.Authorization = this.Authorization;
+                        this.Bridge.Chain.OnShipPartAdded += this.HandleBridgeCleaned;
+                        this.Bridge.Chain.OnShipPartRemoved += this.HandleBridgeCleaned;
                     }
 
                     // Invoke the change event...
@@ -162,12 +163,12 @@ namespace VoidHuntersRevived.Library.Entities
         /// <returns></returns>
         private bool ValidateBridge(ShipPart bridge)
         {
-            // Instance false
+            // Instant false
             if (!bridge.IsRoot)
                 return false;
 
             // Instant true
-            if (bridge == null)
+            if (bridge == default(ShipPart))
                 return true;
             else if (bridge.IsRoot)
                 return true;
@@ -210,7 +211,7 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Event Handlers
-        private void HandleBridgeCleaned(ShipPart sender, ShipPart.DirtyChainType arg)
+        private void HandleBridgeCleaned(Chain sender, ShipPart arg)
             => this.LoadOpenFemaleNodes();
 
         private void HandlePlayerChanged(Ship sender, Player old, Player player)
@@ -229,7 +230,10 @@ namespace VoidHuntersRevived.Library.Entities
             => this.Authorization = value;
 
         private void HandleAuthorizationChanged(NetworkEntity sender, GameAuthorization old, GameAuthorization value)
-            => _controller.SetAuthorization(this.Authorization);
+        {
+            _controller.SetAuthorization(value);
+            this.Bridge.Chain.Authorization = value;
+        }
         #endregion
     }
 }
