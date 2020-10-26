@@ -81,9 +81,6 @@ namespace VoidHuntersRevived.Library.Entities
 
             this.TractorBeam = provider.GetService<TractorBeam>((t, p, c) => t.Ship = this);
 
-            this.OnPlayerChanged += this.HandlePlayerChanged;
-            this.OnAuthorizationChanged += this.HandleAuthorizationChanged;
-
             // Initialize partial classes.
             this.Events_PreIninitialize(provider);
             this.Directions_PreInitialize(provider);
@@ -93,9 +90,6 @@ namespace VoidHuntersRevived.Library.Entities
         protected override void Release()
         {
             base.Release();
-
-            this.OnPlayerChanged -= this.HandlePlayerChanged;
-            this.OnAuthorizationChanged -= this.HandleAuthorizationChanged;
 
             // Dispose partial classes
             this.Directions_Dispose();
@@ -132,7 +126,6 @@ namespace VoidHuntersRevived.Library.Entities
                     { // Remove old bridge...
                         this.Bridge.Chain.OnShipPartAdded -= this.HandleBridgeCleaned;
                         this.Bridge.Chain.OnShipPartRemoved -= this.HandleBridgeCleaned;
-                        this.Bridge.Chain.Authorization = this.settings.Get<GameAuthorization>();
                         this.Bridge.Chain.Ship = null;
                     }
 
@@ -142,7 +135,6 @@ namespace VoidHuntersRevived.Library.Entities
                     { // Setup the new bridge...
                         _controller.TryAdd(this.Bridge.Chain);
                         this.Bridge.Chain.Ship = this;
-                        this.Bridge.Chain.Authorization = this.Authorization;
                         this.Bridge.Chain.OnShipPartAdded += this.HandleBridgeCleaned;
                         this.Bridge.Chain.OnShipPartRemoved += this.HandleBridgeCleaned;
                     }
@@ -213,27 +205,6 @@ namespace VoidHuntersRevived.Library.Entities
         #region Event Handlers
         private void HandleBridgeCleaned(Chain sender, ShipPart arg)
             => this.LoadOpenFemaleNodes();
-
-        private void HandlePlayerChanged(Ship sender, Player old, Player player)
-        {
-            // Auto update the internal authorization value...
-            this.Authorization = player?.Authorization ?? this.settings.Get<GameAuthorization>();
-
-            if(old != null)
-                player.OnAuthorizationChanged -= this.HandlePlayerAuthorizationChanged;
-            
-            if(player != null)
-                player.OnAuthorizationChanged += this.HandlePlayerAuthorizationChanged;
-        }
-
-        private void HandlePlayerAuthorizationChanged(NetworkEntity sender, GameAuthorization old, GameAuthorization value)
-            => this.Authorization = value;
-
-        private void HandleAuthorizationChanged(NetworkEntity sender, GameAuthorization old, GameAuthorization value)
-        {
-            _controller.SetAuthorization(value);
-            this.Bridge.Chain.Authorization = value;
-        }
         #endregion
     }
 }

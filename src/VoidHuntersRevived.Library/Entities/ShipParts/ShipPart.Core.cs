@@ -63,7 +63,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             base.Create(provider);
 
             this.OnChainChanged += this.HandleChainChanged;
-            this.OnControllerChanged += this.HandleControllerChanged;
             this.ValidateWritePosition += this.HandleValidateWritePosition;
         }
 
@@ -106,7 +105,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             base.Dispose();
 
             this.OnChainChanged -= this.HandleChainChanged;
-            this.OnControllerChanged -= this.HandleControllerChanged;
             this.ValidateWritePosition -= this.HandleValidateWritePosition;
         }
         #endregion
@@ -138,15 +136,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 // this.Authorization = value.Controller.Authorization;
             }
         }
-
-        /// <summary>
-        /// Configure internal attributes and event when the entities
-        /// controller value is updated...
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="value"></param>
-        private void HandleControllerChanged(ShipPart sender, Controller old, Controller value)
-            => this.Authorization = value?.Authorization ?? this.settings.Get<GameAuthorization>();
 
         private bool HandleValidateWritePosition(BodyEntity sender, GameTime args)
             => this.IsRoot;

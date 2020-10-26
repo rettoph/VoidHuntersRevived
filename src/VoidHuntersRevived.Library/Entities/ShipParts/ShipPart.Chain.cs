@@ -97,9 +97,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// <param name="sender"></param>
         /// <param name="arg"></param>
         private void Chain_HandleMaleConnectionNodeDetached(ConnectionNode sender, ConnectionNode arg)
-        {
-            this.Chain.Remove(this);
-        }
+            => this.Chain.Remove(this);
         #endregion
     }
 }

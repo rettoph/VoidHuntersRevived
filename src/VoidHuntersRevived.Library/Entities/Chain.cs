@@ -54,22 +54,11 @@ namespace VoidHuntersRevived.Library.Entities
                 this.Do(sp => sp.Controller = value);
             }
         }
-
-        public GameAuthorization Authorization
-        {
-            get => _authorization;
-            internal set
-            {
-                this.OnAuthorizationChanged.InvokeIfChanged(value != _authorization, this, ref _authorization, value);
-                this.Do(sp => sp.Authorization = value);
-            }
-        }
         #endregion
 
         #region Events
         public event OnChangedEventDelegate<Chain, Controller> OnControllerChanged;
         public event OnChangedEventDelegate<Chain, Ship> OnShipChanged;
-        public event OnChangedEventDelegate<Chain, GameAuthorization> OnAuthorizationChanged;
         public event OnEventDelegate<Chain, ShipPart> OnShipPartAdded;
         public event OnEventDelegate<Chain, ShipPart> OnShipPartRemoved;
         #endregion

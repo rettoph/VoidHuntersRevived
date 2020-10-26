@@ -5,11 +5,6 @@ using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Drivers.Scenes;
-using VoidHuntersRevived.Library.Drivers.Entities;
-using VoidHuntersRevived.Library.Drivers.Entities.Players;
-using VoidHuntersRevived.Library.Drivers.Entities.ShipParts;
-using VoidHuntersRevived.Library.Drivers.Scenes;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
@@ -26,17 +21,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
     {
         public void ConfigureServices(ServiceCollection services)
         {
-            services.AddAndBindDriver<GameScene, GameSceneFullAuthorityNetworkDriver>(p => new GameSceneFullAuthorityNetworkDriver());
-            services.AddAndBindDriver<GameScene, GameSceneMinimumAuthorityNetworkDriver>(p => new GameSceneMinimumAuthorityNetworkDriver());
-
-            services.AddAndBindDriver<Player, PlayerNetworkDriver>(p => new PlayerNetworkDriver());
-            services.AddAndBindDriver<UserPlayer, UserPlayerFullAuthorizationNetworkDriver>(p => new UserPlayerFullAuthorizationNetworkDriver());
-            services.AddAndBindDriver<UserPlayer, UserPlayerMinimumAuthorizationNetworkDriver>(p => new UserPlayerMinimumAuthorizationNetworkDriver());
-            services.AddAndBindDriver<WorldEntity, WorldEntityNetworkDriver>(p => new WorldEntityNetworkDriver());
-            services.AddAndBindDriver<BodyEntity, BodyEntityNetworkDriver>(p => new BodyEntityNetworkDriver());
-            services.AddAndBindDriver<Ship, ShipFullAuthorizationNetworkDriver>(p => new ShipFullAuthorizationNetworkDriver());
-            services.AddAndBindDriver<Ship, ShipMinimumAuthorizationNetworkDriver>(p => new ShipMinimumAuthorizationNetworkDriver());
-            services.AddAndBindDriver<ShipPart, ShipPartNetworkDriver>(p => new ShipPartNetworkDriver());
+            // throw new NotImplementedException();
         }
 
         public void ConfigureProvider(ServiceProvider provider)

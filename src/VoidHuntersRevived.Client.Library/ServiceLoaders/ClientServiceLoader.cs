@@ -4,12 +4,6 @@ using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.LayerGroups;
 using Microsoft.Xna.Framework.Graphics;
-using VoidHuntersRevived.Client.Library.Drivers.Entities;
-using VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers;
-using VoidHuntersRevived.Client.Library.Drivers.Entities.Players;
-using VoidHuntersRevived.Client.Library.Drivers.Entities.Thrusters;
-using VoidHuntersRevived.Client.Library.Drivers.Layers;
-using VoidHuntersRevived.Client.Library.Drivers.Scenes;
 using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Client.Library.Scenes;
 using VoidHuntersRevived.Client.Library.Services;
@@ -50,16 +44,6 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
 
             services.AddGame<ClientVoidHuntersRevivedGame>(p => new ClientVoidHuntersRevivedGame());
             services.AddScene<GameScene>(p => new ClientGameScene(), 1);
-
-            // Configure Drivers
-            services.AddAndBindDriver<GameScene, GameSceneGraphicsDriver>(p => new GameSceneGraphicsDriver());
-            services.AddAndBindDriver<GameLayer, GameLayerGraphicsDriver>(p => new GameLayerGraphicsDriver());
-            services.AddAndBindDriver<WorldEntity, WorldEntityGraphicsDriver>(p => new WorldEntityGraphicsDriver());
-            services.AddAndBindDriver<ShipPart, ShipPartGraphicsDriver>(p => new ShipPartGraphicsDriver());
-            services.AddAndBindDriver<UserPlayer, UserPlayerLocalControllerDriver>(p => new UserPlayerLocalControllerDriver());
-            services.AddAndBindDriver<ChunkManager, ChunkManagerGraphicsDriver>(p => new ChunkManagerGraphicsDriver());
-            services.AddAndBindDriver<TractorBeam, TractorBeamGraphicsDriver>(p => new TractorBeamGraphicsDriver());
-            services.AddAndBindDriver<Thruster, ThrusterTrailDriver>(p => new ThrusterTrailDriver());
 
             services.AddConfiguration<Ship>((t, p, c) =>
             {

@@ -25,7 +25,7 @@ using log4net;
 
 namespace VoidHuntersRevived.Library.Scenes
 {
-    public class GameScene : Scene
+    public partial class GameScene : Scene
     {
         #region Private Fields
         private WorldEntity _world;

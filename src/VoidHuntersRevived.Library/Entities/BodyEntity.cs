@@ -215,12 +215,7 @@ namespace VoidHuntersRevived.Library.Entities
         }
 
         public virtual void SetTransformIgnoreContacts(Vector2 position, Single angle)
-        {
-            if (this.Authorization == GameAuthorization.Local)
-                this.master.SetTransformIgnoreContacts(position, angle);
-            else
-                this.Do(b => b.SetTransformIgnoreContacts(position, angle));
-        }
+            => this.Do(b => b.SetTransformIgnoreContacts(position, angle));
 
         public virtual void ApplyForce(Vector2 force, Vector2 point)
             => this.Do(b => b.ApplyForce(ref force, ref point));

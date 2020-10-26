@@ -44,22 +44,11 @@ namespace VoidHuntersRevived.Library.Entities
 
         #region Public Attributes
         public MessageManager Actions { get; private set; }
-
-        /// <summary>
-        /// The current object game authroization status. By default, this is the global
-        /// GameAuthorization value but it may be over written.
-        /// </summary>
-        public GameAuthorization Authorization
-        {
-            get => _authorization;
-            set => this.OnAuthorizationChanged.InvokeIfChanged(value != _authorization, this, ref _authorization, value);
-        }
         #endregion
 
         #region Events
         public event NetIncomingMessageDelegate OnRead;
         public event NetOutgoingMessageDelegate OnWrite;
-        public event OnChangedEventDelegate<NetworkEntity, GameAuthorization> OnAuthorizationChanged;
         #endregion
 
         #region Lifecycle Methods
@@ -74,7 +63,6 @@ namespace VoidHuntersRevived.Library.Entities
 
             // Create and setup a brand new action delegater instance...
             this.Actions = new MessageManager(this.BuildActionMessage);
-            this.Authorization = this.settings.Get<GameAuthorization>();
         }
 
         protected override void PostInitialize(ServiceProvider provider)
