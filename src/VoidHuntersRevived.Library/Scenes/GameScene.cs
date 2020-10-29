@@ -62,6 +62,11 @@ namespace VoidHuntersRevived.Library.Scenes
                 l.Group = new SingleLayerGroup(0);
             });
 
+            this.Layers.Create<GameLayer>((l, p, c) =>
+            {
+                l.Group = new SingleLayerGroup(10);
+            });
+
             this.Entities.OnAdded += this.HandleEntityAdded;
         }
 

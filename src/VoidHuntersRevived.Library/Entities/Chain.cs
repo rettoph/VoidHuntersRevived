@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Library.Entities
         private Ship _ship;
         private Controller _controller;
         private ShipPart _root;
-        private GameAuthorization _authorization;
+        private NetworkAuthorization _authorization;
         #endregion
 
         #region Public Properties
@@ -69,7 +69,7 @@ namespace VoidHuntersRevived.Library.Entities
             base.Initialize(provider);
 
             _provider = provider;
-            _authorization = provider.GetService<Settings>().Get<GameAuthorization>();
+            _authorization = provider.GetService<Settings>().Get<NetworkAuthorization>();
             provider.Service(out _logger);
 
             _logger.Verbose(() => $"Created new Chain bound to ShipPart<{this.Root.ServiceDescriptor.Name}>({this.Root.Id}).");

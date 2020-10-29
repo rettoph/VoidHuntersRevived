@@ -282,7 +282,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
         public void TryFire(GameTime gameTime)
         {
-            if (this.ValidateFire?.Validate(this.Root.Ship, this) ?? true)
+            if (this.ValidateFire.Validate(this.Root.Ship, this, true))
             {
                 _fireTime = gameTime.TotalGameTime.TotalMilliseconds;
                 _curRecoil = this.Recoil;

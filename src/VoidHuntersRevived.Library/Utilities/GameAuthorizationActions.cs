@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Library.Utilities
     internal sealed class GameAuthorizationActions : IDisposable
     {
         #region Private Fields
-        private Dictionary<GameAuthorization, Action<NetIncomingMessage>> _actions;
+        private Dictionary<NetworkAuthorization, Action<NetIncomingMessage>> _actions;
         private Action<NetIncomingMessage> _action;
         private Action<NetIncomingMessage> _defaultAction;
         #endregion
@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Library.Utilities
         internal GameAuthorizationActions(
             String type,
             Action<NetIncomingMessage> defaultAction,
-            Dictionary<GameAuthorization, Action<NetIncomingMessage>> actions)
+            Dictionary<NetworkAuthorization, Action<NetIncomingMessage>> actions)
         {
             _actions = actions;
             _defaultAction = defaultAction;
@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Library.Utilities
         /// <param name="sender"></param>
         /// <param name="old"></param>
         /// <param name="value"></param>
-        public void ConfigureAuthorization(GameAuthorization authorization)
+        public void ConfigureAuthorization(NetworkAuthorization authorization)
         {
             if (_actions.ContainsKey(authorization))
                 _action = _actions[authorization];

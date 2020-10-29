@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Server.ServiceLoaders
 
             services.AddConfiguration<Settings>((s, p, c) =>
             { // Configure the server settings...
-                s.Set<GameAuthorization>(GameAuthorization.Full);
+                s.Set<NetworkAuthorization>(NetworkAuthorization.Master);
             }, 1);
         }
 

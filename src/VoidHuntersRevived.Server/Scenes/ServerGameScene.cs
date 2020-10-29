@@ -9,12 +9,22 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Extensions.System;
 using VoidHuntersRevived.Library.Scenes;
 using Guppy.IO.Extensions.log4net;
+using Guppy.Lists.Interfaces;
+using Guppy.Network;
+using VoidHuntersRevived.Library.Entities.Players;
 
 namespace VoidHuntersRevived.Server.Scenes
 {
     public sealed class ServerGameScene : GameScene
     {
         #region Lifecycle Methods
+        protected override void Initialize(ServiceProvider provider)
+        {
+            base.Initialize(provider);
+
+            this.group.Users.OnAdded += this.HandleUserJoined;
+        }
+
         protected override void PostInitialize(ServiceProvider provider)
         {
             base.PostInitialize(provider);
@@ -77,6 +87,23 @@ namespace VoidHuntersRevived.Server.Scenes
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+        }
+        #endregion
+
+        #region Event Handlers
+        /// <summary>
+        /// When a new user joins we should create a brand new 
+        /// player instance for them.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void HandleUserJoined(IServiceList<User> sender, User user)
+        {
+            this.Entities.Create<UserPlayer>((player, p, d) =>
+            {
+                player.User = user;
+                player.Ship = this.Entities.Create<Ship>();
+            });
         }
         #endregion
     }

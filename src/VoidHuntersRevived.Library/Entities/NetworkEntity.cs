@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Library.Entities
     {
         #region Private Fields
         private GameScene _scene;
-        private GameAuthorization _authorization;
+        private NetworkAuthorization _authorization;
         #endregion
 
         #region Protected Attributes
@@ -83,7 +83,6 @@ namespace VoidHuntersRevived.Library.Entities
         #region INetworkService Implementation
         public void TryRead(NetIncomingMessage im)
         {
-            this.Actions.Read(im);
             // Read actions
             this.OnRead?.Invoke(im);
         }

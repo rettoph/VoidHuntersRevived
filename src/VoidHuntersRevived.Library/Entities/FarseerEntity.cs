@@ -108,7 +108,7 @@ namespace VoidHuntersRevived.Library.Entities
             this.OnDo += this.DoMaster;
             _live = this.master;
 
-            if (this.settings.Get<GameAuthorization>() < GameAuthorization.Full)
+            if (this.settings.Get<NetworkAuthorization>() < NetworkAuthorization.Master)
             {
                 this.slave = this.BuildSlave(provider);
                 this.OnDo += this.DoSlave;

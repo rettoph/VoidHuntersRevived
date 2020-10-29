@@ -70,6 +70,13 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Lifecycle Methods
+        protected override void Create(ServiceProvider provider)
+        {
+            base.Create(provider);
+
+            this.Network_Create(provider);
+        }
+
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
@@ -95,6 +102,13 @@ namespace VoidHuntersRevived.Library.Entities
             this.Directions_Dispose();
             this.Events_Dispose();
             this.Targeting_Dispose();
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.Network_Dispose();
         }
         #endregion
 

@@ -94,7 +94,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             provider.Service(out _chunks);
             provider.Service(out _logger);
 
-            this.Authorization = GameAuthorization.Full;
+            this.Authorization = NetworkAuthorization.Master;
             this.UpdateOrder = 120;
 
             this.CanAttach += this.DefaultCanAttach;
@@ -290,7 +290,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             var node = this.Ship.GetClosestOpenFemaleNode(this.Position);
 
-            if (this.CanAttach?.Validate(action.Target, node) ?? false)
+            if (this.CanAttach.Validate(action.Target, node, false))
             {
                 // If all the delegates allow the current attachment...
                 this.synchronizer.Do(gt =>

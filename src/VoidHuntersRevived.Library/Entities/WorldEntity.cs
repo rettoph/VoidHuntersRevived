@@ -4,12 +4,14 @@ using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
 using Guppy.Extensions.Collections;
 using Guppy.Interfaces;
+using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Library.Utilities;
+using Guppy.Network.Extensions.Lidgren;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -41,13 +43,20 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Lifecycle Methods
+        protected override void Create(ServiceProvider provider)
+        {
+            base.Create(provider);
+
+            this.OnRead += this.ReadSize;
+            this.OnWrite += this.WriteSize;
+            this.OnSizeChanged += this.HandleSizeChanged;
+        }
+
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
             _walls = new Queue<Body>();
-
-            this.OnSizeChanged += this.HandleSizeChanged;
 
             this.Size = new Vector2(128, 128);
 
@@ -57,7 +66,14 @@ namespace VoidHuntersRevived.Library.Entities
         protected override void Release()
         {
             base.Release();
+        }
 
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.OnRead -= this.ReadSize;
+            this.OnWrite -= this.WriteSize;
             this.OnSizeChanged -= this.HandleSizeChanged;
         }
         #endregion
@@ -80,6 +96,14 @@ namespace VoidHuntersRevived.Library.Entities
                 w.Step((Single)gameTime.ElapsedGameTime.TotalSeconds);
             });
         }
+        #endregion
+
+        #region Network Methods
+        internal void WriteSize(NetOutgoingMessage om)
+            => om.Write(this.Size);
+
+        internal void ReadSize(NetIncomingMessage im)
+            => this.Size = im.ReadVector2();
         #endregion
 
         #region Event Handlers

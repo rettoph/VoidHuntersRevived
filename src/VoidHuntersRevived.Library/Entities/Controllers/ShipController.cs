@@ -82,7 +82,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #endregion
 
         #region Helper Methods
-        internal void SetAuthorization(GameAuthorization authorization)
+        internal void SetAuthorization(NetworkAuthorization authorization)
             => this.Authorization = authorization;
         #endregion
     }

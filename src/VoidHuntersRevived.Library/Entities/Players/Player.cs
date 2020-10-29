@@ -1,12 +1,11 @@
-﻿using Guppy;
-using Guppy.DependencyInjection;
-using Guppy.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Lists;
-using Guppy.Events.Delegates;
+using Guppy.Network.Extensions.Lidgren;
+using Lidgren.Network;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using Guppy.Enums;
 
 namespace VoidHuntersRevived.Library.Entities.Players
 {
@@ -17,21 +16,69 @@ namespace VoidHuntersRevived.Library.Entities.Players
     /// </summary>
     public abstract class Player : NetworkEntity
     {
-        #region Private Fields
+        #region private Fields
+        private EntityList _entities;
         private Ship _ship;
         #endregion
 
-        #region Public Attributes
+        #region Public Properties
         public abstract String Name { get; }
         public Ship Ship
         {
             get => _ship;
-            set => this.OnShipChanged.InvokeIfChanged(value != _ship, this, ref _ship, value);
+            set
+            {
+                if (this.InitializationStatus >= InitializationStatus.Initializing)
+                    throw new Exception("Unable to update Player Ship value once initialization has started.");
+
+                if (_ship != null)
+                    _ship.Player = null;
+
+                _ship = value;
+                _ship.Player = this;
+            }
         }
         #endregion
 
-        #region Events
-        public event OnChangedEventDelegate<Player, Ship> OnShipChanged;
+        #region Lifecycle Methods
+        protected override void Create(ServiceProvider provider)
+        {
+            base.Create(provider);
+
+            this.OnRead += this.ReadShip;
+            this.OnWrite += this.WriteShip;
+        }
+
+        protected override void PreInitialize(ServiceProvider provider)
+        {
+            base.PreInitialize(provider);
+
+            provider.Service(out _entities);
+        }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            // Unset the old ship value...
+            this.Ship = null;
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.OnRead -= this.ReadShip;
+            this.OnWrite -= this.WriteShip;
+        }
+        #endregion
+
+        #region Network Methods
+        private void ReadShip(NetIncomingMessage im)
+            => this.Ship = im.ReadEntity<Ship>(_entities);
+
+        private void WriteShip(NetOutgoingMessage om)
+            => om.Write(this.Ship);
         #endregion
     }
 }

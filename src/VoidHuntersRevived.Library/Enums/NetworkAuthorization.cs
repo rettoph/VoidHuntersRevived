@@ -13,12 +13,9 @@ namespace VoidHuntersRevived.Library.Enums
     /// authorization will wait for confirmation from the server before
     /// destroying the same ship.
     /// </summary>
-    [Flags]
-    public enum GameAuthorization
+    public enum NetworkAuthorization
     {
-        None    = 0,
-        Minimum = 1, // Indicates that all permanent game actions must be authorized directly from the connected peer.
-        Local   = 2, // Indicates that some permanent game actions may be done locally before confirmation.
-        Full    = 4  // Indicates that all permanent game actions may be done locally without any confirmation.
+        Slave,
+        Master
     }
 }

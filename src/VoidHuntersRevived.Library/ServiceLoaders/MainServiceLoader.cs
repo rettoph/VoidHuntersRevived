@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
 
             services.AddConfiguration<Settings>((s, p, c) =>
             { // Configure the default settings...
-                s.Set<GameAuthorization>(GameAuthorization.Minimum);
+                s.Set<NetworkAuthorization>(NetworkAuthorization.Slave);
             }, -10);
 
             // Register all default entities & their factories

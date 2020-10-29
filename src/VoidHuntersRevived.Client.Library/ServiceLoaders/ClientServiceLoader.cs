@@ -3,7 +3,9 @@ using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.LayerGroups;
+using Guppy.Network.Peers;
 using Microsoft.Xna.Framework.Graphics;
+using VoidHuntersRevived.Client.Library.Drivers.Players;
 using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Client.Library.Scenes;
 using VoidHuntersRevived.Client.Library.Services;
@@ -44,6 +46,10 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
 
             services.AddGame<ClientVoidHuntersRevivedGame>(p => new ClientVoidHuntersRevivedGame());
             services.AddScene<GameScene>(p => new ClientGameScene(), 1);
+
+            services.AddAndBindDriver<UserPlayer, LocalUserPlayerDriver>(
+                factory: p => new LocalUserPlayerDriver(),
+                filter: (up, p) => up.User == p.GetService<ClientPeer>().CurrentUser);
 
             services.AddConfiguration<Ship>((t, p, c) =>
             {

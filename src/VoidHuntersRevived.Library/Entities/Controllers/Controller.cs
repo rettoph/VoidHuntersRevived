@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
     {
         #region Private Fields
         private HashSet<Chain> _chains;
-        private GameAuthorization _authorization;
+        private NetworkAuthorization _authorization;
         
         #endregion
 
@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         /// Used to determin how a ShipPart should behave when
         /// container within the current controller.
         /// </summary>
-        public GameAuthorization Authorization
+        public NetworkAuthorization Authorization
         {
             get => _authorization;
             protected set => this.OnAuthorizationChanged.InvokeIfChanged(value != _authorization, this, ref _authorization, value);
@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #endregion
 
         #region Events
-        public OnChangedEventDelegate<Controller, GameAuthorization> OnAuthorizationChanged;
+        public OnChangedEventDelegate<Controller, NetworkAuthorization> OnAuthorizationChanged;
         #endregion
 
         #region Lifecycle Methods
@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             // this.synchronizer = provider.GetService<ThreadSynchronizer>("synchronizer:controller");
             this.synchronizer = new ThreadSynchronizer();
 
-            this.Authorization = provider.GetService<Settings>().Get<GameAuthorization>();
+            this.Authorization = provider.GetService<Settings>().Get<NetworkAuthorization>();
         }
 
         protected override void Release()
