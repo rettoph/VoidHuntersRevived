@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
     [AutoLoad]
     public sealed class ClientServiceLoader : IServiceLoader
     {
-        public void ConfigureServices(ServiceCollection services)
+        public void RegisterServices(ServiceCollection services)
         {
             // Configure service factories...
             services.AddFactory<FarseerCamera2D>(p => new FarseerCamera2D());
@@ -47,15 +47,15 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddGame<ClientVoidHuntersRevivedGame>(p => new ClientVoidHuntersRevivedGame());
             services.AddScene<GameScene>(p => new ClientGameScene(), 1);
 
-            services.AddAndBindDriver<UserPlayer, LocalUserPlayerDriver>(
-                factory: p => new LocalUserPlayerDriver(),
+            services.AddAndBindDriver<UserPlayer, UserPlayerLocalDriver>(
+                factory: p => new UserPlayerLocalDriver(),
                 filter: (up, p) => up.User == p.GetService<ClientPeer>().CurrentUser);
 
-            services.AddConfiguration<Ship>((t, p, c) =>
+            services.AddSetup<Ship>((t, p, c) =>
             {
                 t.LayerGroup = 10;
             });
-            services.AddConfiguration<TractorBeam>((t, p, c) =>
+            services.AddSetup<TractorBeam>((t, p, c) =>
             {
                 t.LayerGroup = 10;
             });

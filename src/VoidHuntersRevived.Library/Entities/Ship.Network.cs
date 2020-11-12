@@ -8,6 +8,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using Guppy.Extensions.System;
 using Guppy.Utilities;
 using Guppy.DependencyInjection;
+using VoidHuntersRevived.Library.Enums;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -16,24 +17,16 @@ namespace VoidHuntersRevived.Library.Entities
         #region Lifecycle Methods
         private void Network_Create(ServiceProvider provider)
         {
-            this.OnWrite += this.WriteBridge;
-            this.OnWrite += this.WriteDirections;
-            this.OnWrite += this.WriteTarget;
-
-            this.OnRead += this.ReadBridge;
-            this.OnRead += this.ReadDirections;
-            this.OnRead += this.ReadTarget;
+            this.MessageHandlers[MessageType.Setup].Add(this.ReadBridge, this.WriteBridge);
+            this.MessageHandlers[MessageType.Setup].Add(this.ReadDirections, this.WriteDirections);
+            this.MessageHandlers[MessageType.Setup].Add(this.ReadTarget, this.WriteTarget);
         }
 
         private void Network_Dispose()
         {
-            this.OnWrite -= this.WriteBridge;
-            this.OnWrite -= this.WriteDirections;
-            this.OnWrite -= this.WriteTarget;
-
-            this.OnRead -= this.ReadBridge;
-            this.OnRead -= this.ReadDirections;
-            this.OnRead -= this.ReadTarget;
+            this.MessageHandlers[MessageType.Setup].Remove(this.ReadBridge, this.WriteBridge);
+            this.MessageHandlers[MessageType.Setup].Remove(this.ReadDirections, this.WriteDirections);
+            this.MessageHandlers[MessageType.Setup].Remove(this.ReadTarget, this.WriteTarget);
         }
         #endregion
 

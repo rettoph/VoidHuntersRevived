@@ -54,7 +54,6 @@ namespace VoidHuntersRevived.Client.Library
             
 
             game = guppy.ConfigureMonoGame(graphics, this.Content, this.Window)
-                .ConfigureClient(new NetPeerConfiguration("vhr"))
                 .ConfigureInput()
                 .Initialize()
                 .BuildGame<ClientVoidHuntersRevivedGame>();

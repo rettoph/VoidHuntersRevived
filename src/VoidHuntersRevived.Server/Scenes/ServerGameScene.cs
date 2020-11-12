@@ -102,7 +102,10 @@ namespace VoidHuntersRevived.Server.Scenes
             this.Entities.Create<UserPlayer>((player, p, d) =>
             {
                 player.User = user;
-                player.Ship = this.Entities.Create<Ship>();
+                player.Ship = this.Entities.Create<Ship>((ship, p2, c) =>
+                {
+                    ship.SetBridge(this.Entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
+                });
             });
         }
         #endregion

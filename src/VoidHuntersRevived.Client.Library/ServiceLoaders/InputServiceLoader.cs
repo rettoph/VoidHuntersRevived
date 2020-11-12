@@ -14,10 +14,10 @@ using System.Text;
 
 namespace VoidHuntersRevived.Client.Library.ServiceLoaders
 {
-    [AutoLoad(200)]
+    [AutoLoad(10)]
     internal sealed class InputServiceLoader : IServiceLoader
     {
-        public void ConfigureServices(ServiceCollection services)
+        public void RegisterServices(ServiceCollection services)
         {
             // throw new NotImplementedException();
         }

@@ -19,6 +19,8 @@ using Guppy.IO;
 using log4net;
 using Guppy.IO.Extensions.log4net;
 using Guppy.Events.Delegates;
+using Guppy.Utilities;
+using Guppy.Extensions.System;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -27,11 +29,10 @@ namespace VoidHuntersRevived.Library.Entities
     /// be stransmited through the network & has the ability
     /// to be updated.
     /// </summary>
-    public class NetworkEntity : Entity, INetworkService
+    public class NetworkEntity : Entity
     {
         #region Private Fields
         private GameScene _scene;
-        private NetworkAuthorization _authorization;
         #endregion
 
         #region Protected Attributes
@@ -47,11 +48,22 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Events
-        public event NetIncomingMessageDelegate OnRead;
-        public event NetOutgoingMessageDelegate OnWrite;
+        public Dictionary<MessageType, NetworkEntityMessageTypeHandler> MessageHandlers { get; private set; }
         #endregion
 
         #region Lifecycle Methods
+        protected override void Create(ServiceProvider provider)
+        {
+            base.Create(provider);
+
+            // Create and setup a brand new action delegater instance...
+            this.MessageHandlers = DictionaryHelper.BuildEnumDictionary<MessageType, NetworkEntityMessageTypeHandler>(t => new NetworkEntityMessageTypeHandler(t, this));
+            this.Actions = new MessageManager(this.BuildActionMessage);
+
+            this.MessageHandlers[MessageType.Create].OnWrite += om => om.Write(this.ServiceConfiguration.Id);
+            this.MessageHandlers[MessageType.Action].OnRead += im => this.Actions.Read(im);
+        }
+
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
@@ -61,15 +73,7 @@ namespace VoidHuntersRevived.Library.Entities
             this.settings = provider.GetService<Settings>();
             this.log = provider.GetService<ILog>();
 
-            // Create and setup a brand new action delegater instance...
-            this.Actions = new MessageManager(this.BuildActionMessage);
-        }
-
-        protected override void PostInitialize(ServiceProvider provider)
-        {
-            base.PostInitialize(provider);
-
-            this.log.Verbose(() => $"Created new NetworkEntity<{this.GetType().Name}>({this.Id}) => '{this.ServiceDescriptor.Name}'");
+            this.log.Verbose(() => $"Creating new NetworkEntity<{this.GetType().Name}>({this.Id}) => '{this.ServiceConfiguration.Name}'");
         }
         #endregion
 
@@ -80,23 +84,12 @@ namespace VoidHuntersRevived.Library.Entities
         }
         #endregion
 
-        #region INetworkService Implementation
-        public void TryRead(NetIncomingMessage im)
-        {
-            // Read actions
-            this.OnRead?.Invoke(im);
-        }
-
-        public void TryWrite(NetOutgoingMessage om)
-        {
-            // Write actions
-            this.OnWrite?.Invoke(om);
-        }
-        #endregion
-
         #region Network Methods
         private NetOutgoingMessage BuildActionMessage(NetDeliveryMethod method, Int32 sequenceChannel, NetConnection recipient = null)
-            => NetworkEntityMessageBuilder.BuildUpdateMessage(method, sequenceChannel, _scene.Group, this, recipient);
+            => _scene.Group.Messages.Create(method, sequenceChannel, recipient).Then(om =>
+            {
+                this.MessageHandlers[MessageType.Action].TryWrite(om);
+            });
         #endregion
     }
 }

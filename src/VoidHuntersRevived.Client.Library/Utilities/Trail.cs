@@ -3,7 +3,6 @@ using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
 using Guppy.Interfaces;
 using Guppy.Utilities;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;

@@ -12,10 +12,10 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
     [AutoLoad]
     internal sealed class ContentServiceLoader : IServiceLoader
     {
-        public void ConfigureServices(ServiceCollection services)
+        public void RegisterServices(ServiceCollection services)
         {
             // Register Content
-            services.AddConfiguration<ContentService>((content, p, c) =>
+            services.AddSetup<ContentService>((content, p, c) =>
             {
                 content.TryRegister("debug:font", "UI/Font");
 

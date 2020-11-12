@@ -7,6 +7,7 @@ using System.Text;
 using VoidHuntersRevived.Library;
 using VoidHuntersRevived.Library.Scenes;
 using Guppy.Extensions.DependencyInjection;
+using Microsoft.Xna.Framework;
 
 namespace VoidHuntersRevived.Server
 {

@@ -3,9 +3,9 @@ using Guppy.Extensions.DependencyInjection;
 using Guppy.Lists;
 using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using Guppy.Enums;
+using VoidHuntersRevived.Library.Enums;
 
 namespace VoidHuntersRevived.Library.Entities.Players
 {
@@ -45,8 +45,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
         {
             base.Create(provider);
 
-            this.OnRead += this.ReadShip;
-            this.OnWrite += this.WriteShip;
+            this.MessageHandlers[MessageType.Create].Add(this.ReadShip, this.WriteShip);
         }
 
         protected override void PreInitialize(ServiceProvider provider)
@@ -68,8 +67,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
         {
             base.Dispose();
 
-            this.OnRead -= this.ReadShip;
-            this.OnWrite -= this.WriteShip;
+            this.MessageHandlers[MessageType.Create].Add(this.ReadShip, this.WriteShip);
         }
         #endregion
 

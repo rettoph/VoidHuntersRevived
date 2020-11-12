@@ -72,7 +72,7 @@ namespace VoidHuntersRevived.Library.Entities
             _authorization = provider.GetService<Settings>().Get<NetworkAuthorization>();
             provider.Service(out _logger);
 
-            _logger.Verbose(() => $"Created new Chain bound to ShipPart<{this.Root.ServiceDescriptor.Name}>({this.Root.Id}).");
+            _logger.Verbose(() => $"Created new Chain bound to ShipPart<{this.Root.ServiceConfiguration.Name}>({this.Root.Id}).");
 
             this.Enabled = false;
             this.Visible = false;

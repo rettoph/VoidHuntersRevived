@@ -6,6 +6,7 @@ using Guppy.Network.Groups;
 using Lidgren.Network;
 using System;
 using Guppy.Enums;
+using VoidHuntersRevived.Library.Enums;
 
 namespace VoidHuntersRevived.Library.Entities.Players
 {
@@ -41,8 +42,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
         {
             base.Create(provider);
 
-            this.OnRead += this.ReadUser;
-            this.OnWrite += this.WriteUser;
+            this.MessageHandlers[MessageType.Create].Add(this.ReadUser, this.WriteUser);
         }
 
         protected override void PreInitialize(ServiceProvider provider)
@@ -56,8 +56,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
         {
             base.Dispose();
 
-            this.OnRead -= this.ReadUser;
-            this.OnWrite -= this.WriteUser;
+            this.MessageHandlers[MessageType.Create].Remove(this.ReadUser, this.WriteUser);
         }
         #endregion
 

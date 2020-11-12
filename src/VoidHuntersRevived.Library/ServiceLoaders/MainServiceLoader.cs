@@ -8,7 +8,6 @@ using Guppy.Lists;
 using log4net;
 using log4net.Appender;
 using log4net.Core;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -25,12 +24,12 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
     [AutoLoad]
     internal sealed class MainServiceLoader : IServiceLoader
     {
-        public void ConfigureServices(ServiceCollection services)
+        public void RegisterServices(Guppy.DependencyInjection.ServiceCollection services)
         {
             // Register service factories...
             services.AddFactory<Settings>(p => new Settings());
             services.AddFactory<ConnectionNode>(p => new ConnectionNode());
-            services.AddFactory<ServiceList<Player>>(p => new ServiceList<Player>(autoFill: true));
+            services.AddFactory<ServiceList<Player>>(p => new ServiceList<Player>());
             services.AddFactory<Chunk>(p => new Chunk());
             services.AddFactory<GameLayer>(p => new GameLayer());
             services.AddFactory<ThreadSynchronizer>(p => new ThreadSynchronizer());
@@ -47,7 +46,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             // Register Scenes...
             services.AddScene<GameScene>(p => new GameScene());
 
-            services.AddConfiguration<Settings>((s, p, c) =>
+            services.AddSetup<Settings>((s, p, c) =>
             { // Configure the default settings...
                 s.Set<NetworkAuthorization>(NetworkAuthorization.Slave);
             }, -10);
@@ -71,7 +70,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddTransient<TractorBeam>();
             services.AddTransient<Chain>();
 
-            services.AddConfiguration<ILog>((l, p, s) =>
+            services.AddSetup<ILog>((l, p, s) =>
             {
                 l.SetLevel(Level.Verbose);
                 l.ConfigureFileAppender($"logs\\{DateTime.Now.ToString("yyy-MM-dd")}.txt")

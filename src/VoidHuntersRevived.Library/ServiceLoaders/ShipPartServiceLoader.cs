@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
     [AutoLoad]
     internal sealed class ShipPartServiceLoader : IServiceLoader
     {
-        public void ConfigureServices(ServiceCollection services)
+        public void RegisterServices(ServiceCollection services)
         {
             Settings.MaxPolygonVertices = 16;
 
@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             triangle.Flush();
 
             services.AddTransient<RigidShipPart>("entity:ship-part:hull:triangle");
-            services.AddConfiguration<RigidShipPart>("entity:ship-part:hull:triangle", (s, p, c) =>
+            services.AddSetup<RigidShipPart>("entity:ship-part:hull:triangle", (s, p, c) =>
             {
                 s.Configuration = triangle;
             });
@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
 
 
             services.AddTransient<RigidShipPart>("entity:ship-part:hull:square");
-            services.AddConfiguration<RigidShipPart>("entity:ship-part:hull:square", (s, p, c) =>
+            services.AddSetup<RigidShipPart>("entity:ship-part:hull:square", (s, p, c) =>
             {
                 s.Configuration = square;
             });
@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             hexagon.Flush();
 
             services.AddTransient<RigidShipPart>("entity:ship-part:hull:hexagon");
-            services.AddConfiguration<RigidShipPart>("entity:ship-part:hull:hexagon", (s, p, c) =>
+            services.AddSetup<RigidShipPart>("entity:ship-part:hull:hexagon", (s, p, c) =>
             {
                 s.Configuration = hexagon;
             });
@@ -75,7 +75,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             pentagon.Flush();
 
             services.AddTransient<RigidShipPart>("entity:ship-part:hull:pentagon");
-            services.AddConfiguration<RigidShipPart>("entity:ship-part:hull:pentagon", (s, p, c) =>
+            services.AddSetup<RigidShipPart>("entity:ship-part:hull:pentagon", (s, p, c) =>
             {
                 s.Configuration = pentagon;
             });
@@ -94,7 +94,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             vBeam.Flush();
 
             services.AddTransient<RigidShipPart>("entity:ship-part:hull:beam:vertical");
-            services.AddConfiguration<RigidShipPart>("entity:ship-part:hull:beam:vertical", (s, p, c) =>
+            services.AddSetup<RigidShipPart>("entity:ship-part:hull:beam:vertical", (s, p, c) =>
             {
                 s.Configuration = vBeam;
             });
@@ -113,7 +113,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             hBeam.Flush();
 
             services.AddTransient<RigidShipPart>("entity:ship-part:hull:beam:horizontal");
-            services.AddConfiguration<RigidShipPart>("entity:ship-part:hull:beam:horizontal", (s, p, c) =>
+            services.AddSetup<RigidShipPart>("entity:ship-part:hull:beam:horizontal", (s, p, c) =>
             {
                 s.Configuration = hBeam;
             });
@@ -158,7 +158,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             });
 
             services.AddTransient<RigidShipPart>("entity:ship-part:chassis:mosquito");
-            services.AddConfiguration<RigidShipPart>("entity:ship-part:chassis:mosquito", (s, p, c) =>
+            services.AddSetup<RigidShipPart>("entity:ship-part:chassis:mosquito", (s, p, c) =>
             {
                 s.Configuration = mosquito;
             });
@@ -179,7 +179,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             thruster.Flush();
 
             services.AddTransient<Thruster>("entity:ship-part:thruster:small");
-            services.AddConfiguration<Thruster>("entity:ship-part:thruster:small", (s, p, c) =>
+            services.AddSetup<Thruster>("entity:ship-part:thruster:small", (s, p, c) =>
             {
                 s.Configuration = thruster;
             });
@@ -200,7 +200,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             massDriver.Flush();
 
             services.AddTransient<Gun>("entity:ship-part:weapon:mass-driver");
-            services.AddConfiguration<Gun>("entity:ship-part:weapon:mass-driver", (s, p, c) =>
+            services.AddSetup<Gun>("entity:ship-part:weapon:mass-driver", (s, p, c) =>
             {
                 s.Configuration = massDriver;
             });

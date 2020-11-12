@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Drivers;
 using VoidHuntersRevived.Library.Drivers.Entities;
+using VoidHuntersRevived.Library.Drivers.Entities.Players;
 using VoidHuntersRevived.Library.Drivers.Scenes;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
@@ -24,7 +25,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
     [AutoLoad]
     internal sealed class DriverServiceLoader : IServiceLoader
     {
-        public void ConfigureServices(ServiceCollection services)
+        public void RegisterServices(ServiceCollection services)
         {
             #region Default Filters
             services.AddDriverFilter(
@@ -41,6 +42,8 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
 
             services.AddAndBindDriver<WorldEntity, WorldEntityMasterNetworkAuthorizationDriver>(p => new WorldEntityMasterNetworkAuthorizationDriver());
             services.AddAndBindDriver<WorldEntity, WorldEntitySlaveNetworkAuthorizationDriver>(p => new WorldEntitySlaveNetworkAuthorizationDriver());
+
+            services.AddAndBindDriver<UserPlayer, UserPlayerMasterNetworkAuthorizationDriver>(p => new UserPlayerMasterNetworkAuthorizationDriver());
         }
 
         public void ConfigureProvider(ServiceProvider provider)

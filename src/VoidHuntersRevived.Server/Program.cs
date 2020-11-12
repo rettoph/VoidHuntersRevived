@@ -11,15 +11,7 @@ namespace VoidHuntersRevived.Server
     {      
         static void Main(string[] args)
         {
-            var config = new NetPeerConfiguration("vhr")
-            {
-                Port = 1337,
-            };
-
-            config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
-
             var game = new GuppyLoader()
-                .ConfigureServer(config)
                 .Initialize()
                 .BuildGame<ServerVoidHuntersRevivedGame>();
 

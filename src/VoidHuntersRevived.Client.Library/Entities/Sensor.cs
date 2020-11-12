@@ -13,6 +13,7 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.IO.Services;
+using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Client.Library.Entities
 {
@@ -22,12 +23,12 @@ namespace VoidHuntersRevived.Client.Library.Entities
     public class Sensor : Entity
     {
         #region Private Fields
-        private EntityList _entities;
         private MouseService _mouse;
         private WorldEntity _world;
         private FarseerCamera2D _camera;
         private Body _body;
         private HashSet<BodyEntity> _contacts;
+        private GameScene _scene;
         #endregion
 
         #region Public Attributes
@@ -40,13 +41,13 @@ namespace VoidHuntersRevived.Client.Library.Entities
         {
             base.PreInitialize(provider);
 
-            provider.Service(out _entities);
             provider.Service(out _mouse);
             provider.Service(out _camera);
+            provider.Service(out _scene);
 
             _contacts = new HashSet<BodyEntity>();
 
-            _entities.OnAdded += this.HandleEntityAdded;
+            _scene.IfOrOnWorld(this.ConfigureFarseer);
 
             this.LayerGroup = 10;
         }
@@ -58,7 +59,6 @@ namespace VoidHuntersRevived.Client.Library.Entities
             _body?.Dispose();
 
             this.OnUpdate -= this.UpdateBody;
-            _entities.OnAdded -= this.HandleEntityAdded;
         }
         #endregion
 
@@ -71,29 +71,19 @@ namespace VoidHuntersRevived.Client.Library.Entities
         #endregion
 
         #region Event Handlers
-        /// <summary>
-        /// Wait for the world to  be created before
-        /// finalizing initialization.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="arg"></param>
-        private void HandleEntityAdded(IEnumerable<Entity> sender, Entity arg)
+        private void ConfigureFarseer(WorldEntity world)
         {
-            if(arg is WorldEntity)
-            {
-                _world = arg as WorldEntity;
-                _entities.OnAdded -= this.HandleEntityAdded;
+            _world = world;
 
-                _body = BodyFactory.CreateCircle(_world.Slave, 3f, 0f);
-                _body.IsSensor = true;
-                _body.SleepingAllowed = false;
-                _body.BodyType = BodyType.Dynamic;
+            _body = BodyFactory.CreateCircle(_world.Slave, 3f, 0f);
+            _body.IsSensor = true;
+            _body.SleepingAllowed = false;
+            _body.BodyType = BodyType.Dynamic;
 
-                _body.OnCollision += this.HandleSensorCollision;
-                _body.OnSeparation += this.HandleSensorSeparation;
+            _body.OnCollision += this.HandleSensorCollision;
+            _body.OnSeparation += this.HandleSensorSeparation;
 
-                this.OnUpdate += this.UpdateBody;
-            }
+            this.OnUpdate += this.UpdateBody;
         }
 
         private bool HandleSensorCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)

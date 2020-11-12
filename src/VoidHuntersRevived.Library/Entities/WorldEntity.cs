@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Network.Extensions.Lidgren;
+using VoidHuntersRevived.Library.Enums;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -47,9 +48,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Create(provider);
 
-            this.OnRead += this.ReadSize;
-            this.OnWrite += this.WriteSize;
-            this.OnSizeChanged += this.HandleSizeChanged;
+            this.MessageHandlers[MessageType.Setup].Add(this.ReadSize, this.WriteSize);
         }
 
         protected override void PreInitialize(ServiceProvider provider)
@@ -72,8 +71,8 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Dispose();
 
-            this.OnRead -= this.ReadSize;
-            this.OnWrite -= this.WriteSize;
+            this.MessageHandlers[MessageType.Setup].Remove(this.ReadSize, this.WriteSize);
+
             this.OnSizeChanged -= this.HandleSizeChanged;
         }
         #endregion

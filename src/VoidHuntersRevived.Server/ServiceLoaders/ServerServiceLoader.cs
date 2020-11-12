@@ -2,6 +2,7 @@
 using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
+using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,15 +16,21 @@ namespace VoidHuntersRevived.Server.ServiceLoaders
     [AutoLoad]
     internal sealed class ServerServiceLoader : IServiceLoader
     {
-        public void ConfigureServices(ServiceCollection services)
+        public void RegisterServices(ServiceCollection services)
         {
             services.AddGame<ServerVoidHuntersRevivedGame>(p => new ServerVoidHuntersRevivedGame());
             services.AddScene<GameScene>(p => new ServerGameScene(), 1);
 
-            services.AddConfiguration<Settings>((s, p, c) =>
+            services.AddSetup<Settings>((s, p, c) =>
             { // Configure the server settings...
                 s.Set<NetworkAuthorization>(NetworkAuthorization.Master);
             }, 1);
+
+            services.AddSetup<NetPeerConfiguration>((config, p, c) =>
+            {
+                config.Port = 1337;
+                config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
+            });
         }
 
         public void ConfigureProvider(ServiceProvider provider)

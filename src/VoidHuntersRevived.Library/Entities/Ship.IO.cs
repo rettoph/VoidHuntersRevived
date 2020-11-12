@@ -80,7 +80,7 @@ namespace VoidHuntersRevived.Library.Entities
         }
         private void ExportComponents(ShipPart input, BinaryWriter output)
         {
-            output.Write(input.ServiceDescriptor.Name);
+            output.Write(input.ServiceConfiguration.Name);
 
             foreach (ConnectionNode female in input.FemaleConnectionNodes)
             { // Iterate through all females in the input...

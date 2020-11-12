@@ -1,6 +1,7 @@
 ﻿using Guppy;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Extensions.System;
 using Guppy.Lists;
 using Guppy.Lists.Interfaces;
 using Guppy.Network;
@@ -13,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Utilities;
 
@@ -44,6 +46,8 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
             provider.Service(out _entities);
             provider.Service(out _userConnections);
 
+            this.driven.Group.Messages.Set("entity:message", this.HandleEntityMessage);
+
             _entities.OnAdded += this.HandleEntityAdded;
             _entities.OnRemoved += this.HandleEntityRemoved;
             this.driven.Group.Users.OnAdded += this.HandleUserJoined;
@@ -71,14 +75,27 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
             { // Broadcast all new network entities...
                 _entity = _creates.Dequeue();
                 _networkEntities.Add(_entity);
-                NetworkEntityMessageBuilder.BuildCreateMessage(this.driven.Group, _entity);
+
+                this.driven.Group.Messages.Create(NetDeliveryMethod.ReliableOrdered, 1).Then(create =>
+                { // Broadcast a create message...
+                    _entity.MessageHandlers[MessageType.Create].TryWrite(create);
+
+                    this.driven.Group.Messages.Create(NetDeliveryMethod.ReliableOrdered, 1).Then(setup =>
+                    { // Broadcast a setup message...
+                        _entity.MessageHandlers[MessageType.Setup].TryWrite(setup);
+                    });
+                });
             }
 
             while (_removes.Any())
             { // Broadcast all removed network entities...
                 _entity = _removes.Dequeue();
                 _networkEntities.Remove(_entity);
-                NetworkEntityMessageBuilder.BuildRemoveMessage(this.driven.Group, _entity);
+
+                this.driven.Group.Messages.Create(NetDeliveryMethod.ReliableOrdered, 1).Then(om =>
+                {
+                    _entity.MessageHandlers[MessageType.Remove].TryWrite(om);
+                });
             }
         }
         #endregion
@@ -95,13 +112,37 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
 
             _networkEntities.ForEach(e =>
             {
-                NetworkEntityMessageBuilder.BuildCreateMessage(this.driven.Group, e, connection);
+                this.driven.Group.Messages.Create(NetDeliveryMethod.ReliableOrdered, 1, connection).Then(create =>
+                { // Broadcast a create message...
+                    _entity.MessageHandlers[MessageType.Create].TryWrite(create);
+
+                    this.driven.Group.Messages.Create(NetDeliveryMethod.ReliableOrdered, 1, connection).Then(setup =>
+                    { // Broadcast a setup message...
+                        _entity.MessageHandlers[MessageType.Setup].TryWrite(setup);
+                    });
+                });
             });
 
             this.driven.Group.Messages.Create(NetDeliveryMethod.ReliableOrdered, 1, connection).Write("scene:setup", om =>
             { // Send true bit, representing complete setup...
                 om.Write(true);
             });
+        }
+        #endregion
+
+        #region Message Handlers
+        private Boolean HandleEntityMessage(NetIncomingMessage obj)
+        {
+            switch((MessageType)obj.ReadByte())
+            {
+                case MessageType.Action:
+                    _entities.GetById<NetworkEntity>(obj.ReadGuid()).MessageHandlers[MessageType.Action].TryRead(obj);
+                    break;
+                default:
+                    throw new Exception("Invalid master message type recieved.");
+            }
+
+            return false;
         }
         #endregion
 
