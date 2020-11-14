@@ -16,6 +16,7 @@ using VoidHuntersRevived.Library.Enums;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Events.Delegates;
 using System.Linq;
+using Guppy.Extensions.System;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -160,6 +161,7 @@ namespace VoidHuntersRevived.Library.Entities
         public event OnEventDelegate<BodyEntity, Category> OnCollidesWithChanged;
         public event OnEventDelegate<BodyEntity, Category> OnIgnoreCCDWithChanged;
 
+
         /// <summary>
         /// Used by the BodyEntityNetworkDriver, this detects whether or not
         /// the entity positional data should be pushed through the network.
@@ -168,20 +170,34 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Lifecycle Methods
+        protected override void Create(ServiceProvider provider)
+        {
+            base.Create(provider);
+
+            this.ValidateWritePosition += this.HandleValidateWritePosition;
+        }
+
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
             _fixtures = new HashSet<FixtureContainer>();
 
-            this.ValidateWritePosition += this.HandleValidateWritePosition;
+            this.MessageHandlers[MessageType.Create].Add(this.CreateReadPosition, this.master.WritePosition);
         }
 
         protected override void Release()
         {
             base.Release();
 
-            this.ValidateWritePosition -= this.HandleValidateWritePosition;
+            this.MessageHandlers[MessageType.Create].Remove(this.CreateReadPosition, this.master.WritePosition);
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.ValidateWritePosition += this.HandleValidateWritePosition;
         }
         #endregion
 
@@ -236,7 +252,15 @@ namespace VoidHuntersRevived.Library.Entities
 
         #region Event Handlers
         private bool HandleValidateWritePosition(BodyEntity sender, GameTime args)
-            => this.Fixtures.Any();
+            => this.live.FixtureList.Any();
+        #endregion
+
+        #region Network Methods
+        private void CreateReadPosition(NetIncomingMessage im)
+        {
+            this.master.ReadPosition(im);
+            this.slave?.CopyPosition(this.master);
+        }
         #endregion
     }
 }

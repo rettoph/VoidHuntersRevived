@@ -22,6 +22,8 @@ using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.IO;
 using log4net;
+using System.Linq;
+using Guppy.Extensions.System;
 
 namespace VoidHuntersRevived.Library.Scenes
 {
@@ -30,12 +32,18 @@ namespace VoidHuntersRevived.Library.Scenes
         #region Private Fields
         private WorldEntity _world;
         private Action<WorldEntity> _onWorldActions;
+        private ActionTimer _dirtyEntityCleanTimer;
+        private NetworkEntity _entity;
         #endregion
 
         #region Protected Attributes
         protected Settings settings { get; private set; }
         protected ILog log { get; private set; }
         protected Group group { get; private set; }
+        #endregion
+
+        #region Internal Fields
+        internal Queue<NetworkEntity> dirtyEntities { get; set; }
         #endregion
 
         #region Public Attributes
@@ -50,6 +58,8 @@ namespace VoidHuntersRevived.Library.Scenes
 
             _world = default(WorldEntity);
             _onWorldActions = default(Action<WorldEntity>);
+            _dirtyEntityCleanTimer = new ActionTimer(150);
+            this.dirtyEntities = new Queue<NetworkEntity>();
 
             this.log = provider.GetService<ILog>();
 
@@ -91,6 +101,18 @@ namespace VoidHuntersRevived.Library.Scenes
             base.Update(gameTime);
 
             this.group.TryUpdate(gameTime);
+
+            _dirtyEntityCleanTimer.Update(gameTime, gt =>
+            { // Flush all dirty entities down the peer as needed.
+                while (this.dirtyEntities.Any())
+                { // Attempt to clean all dirty entities as needed...
+                    _entity = this.dirtyEntities.Dequeue();
+                    this.group.Messages.Create(NetDeliveryMethod.Unreliable, 11).Then(om =>
+                    { // Build a new update message...
+                        _entity.MessageHandlers[MessageType.Update].TryWrite(om);
+                    });
+                }
+            });
         }
         #endregion
 

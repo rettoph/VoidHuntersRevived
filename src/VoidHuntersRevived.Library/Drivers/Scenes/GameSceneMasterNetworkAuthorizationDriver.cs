@@ -110,15 +110,15 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
                 om.Write(false);
             });
 
-            _networkEntities.ForEach(e =>
+            _networkEntities.ForEach(entity =>
             {
                 this.driven.Group.Messages.Create(NetDeliveryMethod.ReliableOrdered, 1, connection).Then(create =>
                 { // Broadcast a create message...
-                    _entity.MessageHandlers[MessageType.Create].TryWrite(create);
+                    entity.MessageHandlers[MessageType.Create].TryWrite(create);
 
                     this.driven.Group.Messages.Create(NetDeliveryMethod.ReliableOrdered, 1, connection).Then(setup =>
                     { // Broadcast a setup message...
-                        _entity.MessageHandlers[MessageType.Setup].TryWrite(setup);
+                        entity.MessageHandlers[MessageType.Setup].TryWrite(setup);
                     });
                 });
             });

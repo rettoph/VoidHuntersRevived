@@ -55,26 +55,15 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
         #endregion
 
         #region Network Entity Manipulation Methods
-        /// <summary>
-        /// Recersively create all recieved NetworkEntities,
-        /// then read network data for all entities, and
-        /// finally complete initialization.
-        /// </summary>
-        /// <param name="im"></param>
-        private void ReadCreateNetworkEntityMessage(NetIncomingMessage im)
-            => _entities.Create<NetworkEntity>(id: im.ReadGuid(), descriptorId: im.ReadUInt32(), setup: (e, p, d) =>
-                {
-                    e.MessageHandlers[MessageType.Create].TryRead(im);
-                    im.ReadUInt32();
-                    this.HandleEntityMessage(im);
-                });
-
         private void ReadEntityMessage(MessageType type, NetIncomingMessage im)
         {
-            switch(type)
+            switch (type)
             {
                 case MessageType.Create:
-                    _entities.Create<NetworkEntity>(id: im.ReadGuid(), descriptorId: im.ReadUInt32(), setup: (e, p, d) =>
+                    var id = im.ReadGuid();
+                    var descriptorId = im.ReadUInt32();
+
+                    _entities.Create<NetworkEntity>(id: id, descriptorId: descriptorId, setup: (e, p, d) =>
                     {
                         e.MessageHandlers[MessageType.Create].TryRead(im);
                     });
@@ -87,14 +76,9 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
                     });
                     break;
                 default:
-                    _entities.GetById<NetworkEntity>(im.ReadGuid()).MessageHandlers[type].TryRead(im);
+                    _entities.GetById<NetworkEntity>(im.ReadGuid())?.MessageHandlers[type].TryRead(im);
                     break;
             }
-            
-        }
-
-        private void ReadRemoveNetworkEntityMessage(NetIncomingMessage im)
-        {
 
         }
         #endregion

@@ -5,8 +5,11 @@ using Guppy.Interfaces;
 using Guppy.LayerGroups;
 using Guppy.Network.Peers;
 using Microsoft.Xna.Framework.Graphics;
+using VoidHuntersRevived.Client.Library.Drivers.Entities;
+using VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers;
 using VoidHuntersRevived.Client.Library.Drivers.Players;
 using VoidHuntersRevived.Client.Library.Entities;
+using VoidHuntersRevived.Client.Library.Layers;
 using VoidHuntersRevived.Client.Library.Scenes;
 using VoidHuntersRevived.Client.Library.Services;
 using VoidHuntersRevived.Client.Library.Utilities;
@@ -34,6 +37,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddFactory<TrailSegment>(p => new TrailSegment(p));
             services.AddFactory<DebugService>(p => new DebugService());
             services.AddFactory<ShipPartRenderService>(p => new ShipPartRenderService());
+            services.AddFactory<GameLayer>(factory: p => new ClientGameLayer(), priority: 1);
 
             // Configure service lifetimes...
             services.AddScoped<FarseerCamera2D>();
@@ -47,6 +51,9 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddGame<ClientVoidHuntersRevivedGame>(p => new ClientVoidHuntersRevivedGame());
             services.AddScene<GameScene>(p => new ClientGameScene(), 1);
 
+            services.AddAndBindDriver<ChunkManager, ChunkManagerGraphicsDriver>(p => new ChunkManagerGraphicsDriver());
+            services.AddAndBindDriver<WorldEntity, WorldEntityGraphicsDriver>(p => new WorldEntityGraphicsDriver());
+            services.AddAndBindDriver<ShipPart, ShipPartGraphicsDriver>(p => new ShipPartGraphicsDriver());
             services.AddAndBindDriver<UserPlayer, UserPlayerLocalDriver>(
                 factory: p => new UserPlayerLocalDriver(),
                 filter: (up, p) => up.User == p.GetService<ClientPeer>().CurrentUser);

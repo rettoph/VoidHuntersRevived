@@ -14,15 +14,13 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
         {
             base.Initialize(driven, provider);
 
-            this.driven.Actions.Set("update:ship:target:request", this.HandleUpdateShiTargetRequestMessage);
+            this.driven.Actions.Set("update:ship:target:request", this.HandleUpdateShipTargetRequestMessage);
         }
         #endregion
 
         #region Message Handlers
-        private void HandleUpdateShiTargetRequestMessage(NetIncomingMessage obj)
-        {
-            throw new NotImplementedException();
-        }
+        private void HandleUpdateShipTargetRequestMessage(NetIncomingMessage im)
+            => this.driven.Ship.ReadTarget(im);
         #endregion
     }
 }

@@ -1,6 +1,8 @@
-﻿using Guppy.Attributes;
+﻿using Guppy;
+using Guppy.Attributes;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Extensions.System;
 using Guppy.Interfaces;
 using Guppy.IO.Commands.Services;
 using Guppy.IO.Extensions.log4net;
@@ -8,6 +10,7 @@ using Guppy.Lists;
 using log4net;
 using log4net.Appender;
 using log4net.Core;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -32,7 +35,6 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddFactory<ServiceList<Player>>(p => new ServiceList<Player>());
             services.AddFactory<Chunk>(p => new Chunk());
             services.AddFactory<GameLayer>(p => new GameLayer());
-            services.AddFactory<ThreadSynchronizer>(p => new ThreadSynchronizer());
 
             // Register services...
             services.AddScoped<Settings>();
@@ -40,7 +42,6 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddScoped<ServiceList<Player>>();
             services.AddTransient<Chunk>();
             services.AddTransient<GameLayer>();
-            services.AddScoped<ThreadSynchronizer>("synchronizer:controller");
 
 
             // Register Scenes...
@@ -69,6 +70,18 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddTransient<ShipController>();
             services.AddTransient<TractorBeam>();
             services.AddTransient<Chain>();
+
+            services.AddSetup<Entity>((e, p, c) =>
+            {
+                if(c.Lifetime == ServiceLifetime.Scoped)
+                {
+                    p.GetService<EntityList>().Then(entities =>
+                    {
+                        if (!entities.Contains(e))
+                            entities.TryAdd(e);
+                    });
+                }
+            });
 
             services.AddSetup<ILog>((l, p, s) =>
             {
@@ -103,7 +116,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                     });
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(Guppy.DependencyInjection.ServiceProvider provider)
         {
             var log = provider.GetService<ILog>();
             provider.GetService<CommandService>().OnExcecute += (c, a) =>

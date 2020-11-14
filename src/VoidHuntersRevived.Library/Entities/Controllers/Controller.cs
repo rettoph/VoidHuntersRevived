@@ -12,6 +12,7 @@ using System.Linq;
 using VoidHuntersRevived.Library.Extensions.System.Collections;
 using Microsoft.Xna.Framework;
 using Guppy.Events.Delegates;
+using Guppy.Utilities;
 
 namespace VoidHuntersRevived.Library.Entities.Controllers
 {
@@ -25,12 +26,11 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #region Private Fields
         private HashSet<Chain> _chains;
         private NetworkAuthorization _authorization;
-        
         #endregion
 
         #region Protected Attributes
         protected IEnumerable<Chain> chains => _chains;
-        protected ThreadSynchronizer synchronizer { get; private set; }
+        protected Synchronizer synchronizer { get; private set; }
         #endregion
 
         #region Public Attributes
@@ -56,8 +56,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
             _chains = new HashSet<Chain>();
 
-            // this.synchronizer = provider.GetService<ThreadSynchronizer>("synchronizer:controller");
-            this.synchronizer = new ThreadSynchronizer();
+            this.synchronizer = provider.GetService<Synchronizer>();
 
             this.Authorization = provider.GetService<Settings>().Get<NetworkAuthorization>();
         }
@@ -70,23 +69,11 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         }
         #endregion
 
-        #region Frame Methods
-        protected override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-
-            this.synchronizer.Update(gameTime);
-        }
-        #endregion
-
         #region Helper Methods
         protected void TryAdd(Chain chain)
         {
-            this.synchronizer.Do(gt =>
-            {
-                if (this.CanAdd(chain))
-                    this.Add(chain);
-            });
+            if (this.CanAdd(chain))
+                this.Add(chain);
         }
 
         protected virtual Boolean CanAdd(Chain chain)
@@ -95,7 +82,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         protected virtual void Add(Chain chain)
         {
             chain.Controller?.TryRemove(chain);
-            _chains.Add(chain);
+            this.synchronizer.Enqueue(gt => _chains.Add(chain));
             chain.Controller = this;
         }
 
@@ -110,7 +97,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
         protected virtual void Remove(Chain chain)
         {
-            this.synchronizer.Do(gt => _chains.Remove(chain));
+            this.synchronizer.Enqueue(gt => _chains.Remove(chain));
 
             chain.Controller = null;
         }

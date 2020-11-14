@@ -30,37 +30,37 @@ namespace VoidHuntersRevived.Library.Entities
         }
         #endregion
 
-        internal void ReadBridge(NetIncomingMessage im)
+        public void ReadBridge(NetIncomingMessage im)
             => this.SetBridge(im.ReadEntity<ShipPart>(_entities));
 
-        internal void ReadDirections(NetIncomingMessage im)
+        public void ReadDirections(NetIncomingMessage im)
         {
             for (Int32 i = 0; i < EnumHelper.Count<Ship.Direction>(); i++)
                 this.ReadDirection(im);
         }
 
-        internal void ReadDirection(NetIncomingMessage im)
+        public void ReadDirection(NetIncomingMessage im)
             => this.TrySetDirection((Ship.Direction)im.ReadByte(), im.ReadBoolean());
 
-        internal void ReadTarget(NetIncomingMessage im)
+        public void ReadTarget(NetIncomingMessage im)
             => this.Target = im.ReadVector2();
 
-        internal void WriteBridge(NetOutgoingMessage om)
+        public void WriteBridge(NetOutgoingMessage om)
             => om.Write(this.Bridge);
 
-        internal void WriteDirections(NetOutgoingMessage om)
+        public void WriteDirections(NetOutgoingMessage om)
             => EnumHelper.GetValues<Ship.Direction>().ForEach(d =>
             {
                 this.WriteDirection(om, d);
             });
 
-        internal void WriteDirection(NetOutgoingMessage om, Ship.Direction direction)
+        public void WriteDirection(NetOutgoingMessage om, Ship.Direction direction)
         {
             om.Write((Byte)direction);
             om.Write((this.ActiveDirections & direction) != 0);
         }
 
-        internal void WriteTarget(NetOutgoingMessage om)
+        public void WriteTarget(NetOutgoingMessage om)
             => om.Write(this.Target);
     }
 }

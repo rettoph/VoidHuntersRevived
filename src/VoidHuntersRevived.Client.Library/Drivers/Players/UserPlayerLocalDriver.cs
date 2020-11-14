@@ -122,7 +122,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
         private void WriteUpdateShipTargetRequest(NetOutgoingMessage om)
             => om.Write("update:ship:target:request", m =>
             {
-                m.Write(this.driven.Ship.Target);
+                this.driven.Ship.WriteTarget(om);
             });
 
         private void WriteShipTractorBeamActionRequest(NetOutgoingMessage om, TractorBeam.Action action)

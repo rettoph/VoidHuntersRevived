@@ -211,7 +211,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
             if (this.CanSelect(action.Target))
             {
-                this.synchronizer.Do(gt =>
+                this.synchronizer.Enqueue(gt =>
                 {
                     action.Target.Root.MaleConnectionNode.TryDetach();
                     this.TryAdd(action.Target.Chain);
@@ -277,7 +277,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             base.Remove(chain);
 
-            this.synchronizer.Do(gt => this.Selected = null);
+            this.synchronizer.Enqueue(gt => this.Selected = null);
         }
 
         /// <summary>
@@ -293,7 +293,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             if (this.CanAttach.Validate(action.Target, node, false))
             {
                 // If all the delegates allow the current attachment...
-                this.synchronizer.Do(gt =>
+                this.synchronizer.Enqueue(gt =>
                 {
                     action.Target.MaleConnectionNode.TryAttach(node);
                     this.OnAttached?.Invoke(this, action);

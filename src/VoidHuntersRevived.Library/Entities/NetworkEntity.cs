@@ -45,6 +45,14 @@ namespace VoidHuntersRevived.Library.Entities
 
         #region Public Attributes
         public MessageManager Actions { get; private set; }
+
+        /// <summary>
+        /// Indicates whether or not the current entity should broadcast
+        /// an Update message through the peer. When true, the entity will
+        /// be enqueued within the GameScene.dirtyEntities queue to be 
+        /// sent on the next flush.
+        /// </summary>
+        public DirtyState DirtyState { get; set; }
         #endregion
 
         #region Events
@@ -62,6 +70,7 @@ namespace VoidHuntersRevived.Library.Entities
 
             this.MessageHandlers[MessageType.Create].OnWrite += om => om.Write(this.ServiceConfiguration.Id);
             this.MessageHandlers[MessageType.Action].OnRead += im => this.Actions.Read(im);
+            this.MessageHandlers[MessageType.Update].OnWrite += im => this.DirtyState &= ~DirtyState.Cleaning;
         }
 
         protected override void PreInitialize(ServiceProvider provider)
@@ -81,6 +90,14 @@ namespace VoidHuntersRevived.Library.Entities
         protected override void PostUpdate(GameTime gameTime)
         {
             base.PostUpdate(gameTime);
+
+            if ((this.DirtyState & DirtyState.Cleaning) == 0 && (this.DirtyState & DirtyState.DirtyAndFilthy) != 0)
+            { // Enque the current entity to be cleaned & update the DirtyState...
+                _scene.dirtyEntities.Enqueue(this);
+
+                this.DirtyState |= DirtyState.Cleaning;
+                this.DirtyState &= ~DirtyState.Dirty;
+            }
         }
         #endregion
 

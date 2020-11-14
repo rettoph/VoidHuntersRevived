@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 {
     public class ChunkManager : Controller
     {
-        #region Internal Ccasses
+        #region Internal Classes
         internal class ChainChunks
         {
             private Chain _chain;
@@ -207,7 +207,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             // Remove the ship part from quarantine
             _quarantine.Remove(chain);
 
-            if(this.CanAdd(chain) && chain.Controller == this)
+            if(chain != default && chain.Controller == this)
             { // Only proceed if the ShipPart is still a part of the ChunkManager...
                 _chainChunks[chain].LoadChunks();
             }
@@ -298,7 +298,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                 _chainChunks[chain] = new ChainChunks(this, chain);
 
             // Add the new ship part straight into quarantine
-            this.synchronizer.Do(gt => _quarantine.Add(chain));
+            this.synchronizer.Enqueue(gt => _quarantine.Add(chain));
 
             // Update the new parts properties
             chain.Do(sp =>
@@ -318,7 +318,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             base.Remove(chain);
 
             // Remove the ship part from quarantine if needed...
-            this.synchronizer.Do(gt =>
+            this.synchronizer.Enqueue(gt =>
             {
                 if (_quarantine.Contains(chain))
                     _quarantine.Remove(chain);

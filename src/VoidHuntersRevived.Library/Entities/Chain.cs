@@ -14,6 +14,7 @@ using Guppy.IO.Extensions.log4net;
 using Guppy.Events.Delegates;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Utilities;
+using Microsoft.Xna.Framework;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -76,6 +77,15 @@ namespace VoidHuntersRevived.Library.Entities
 
             this.Enabled = false;
             this.Visible = false;
+        }
+        #endregion
+
+        #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            this.Root.TryUpdate(gameTime);
         }
         #endregion
 

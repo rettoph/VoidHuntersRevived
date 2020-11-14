@@ -49,6 +49,8 @@ namespace VoidHuntersRevived.Library.Entities
             base.Create(provider);
 
             this.MessageHandlers[MessageType.Setup].Add(this.ReadSize, this.WriteSize);
+
+            this.OnSizeChanged += this.HandleSizeChanged;
         }
 
         protected override void PreInitialize(ServiceProvider provider)
