@@ -42,7 +42,6 @@ namespace VoidHuntersRevived.Library.Entities
             internal set
             {
                 this.OnShipChanged.InvokeIfChanged(_ship != value, this, ref _ship, value);
-                this.Do(sp => sp.Ship = value);
             }
         }
 
@@ -52,7 +51,6 @@ namespace VoidHuntersRevived.Library.Entities
             internal set
             {
                 this.OnControllerChanged.InvokeIfChanged(_controller != value, this, ref _controller, value);
-                this.Do(sp => sp.Controller = value);
             }
         }
         #endregion

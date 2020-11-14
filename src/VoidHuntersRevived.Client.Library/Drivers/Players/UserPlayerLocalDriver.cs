@@ -86,7 +86,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
         {
             var target = this.driven.Ship.TractorBeam.Selected?.Root ?? _sensor.Contacts
                 .Where(c => c is ShipPart)
-                .Select(c => (c as ShipPart).Controller is ChunkManager ? (c as ShipPart).Root : (c as ShipPart))
+                .Select(c => (c as ShipPart).Chain.Controller is ChunkManager ? (c as ShipPart).Root : (c as ShipPart))
                 .Where(s => this.driven.Ship.TractorBeam.CanSelect(s))
                 .OrderBy(s => Vector2.Distance(this.driven.Ship.Target, s.WorldCenter))
                 .FirstOrDefault();

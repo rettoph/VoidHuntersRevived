@@ -17,44 +17,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
     public partial class ShipPart : BodyEntity
     {
-        #region Private Fields
-        private Ship _ship;
-        private Controller _controller;
-        #endregion
-
         #region Public Properties
-        public Ship Ship
-        {
-            get => _ship;
-            internal set
-            {
-                if(value != _ship)
-                {
-                    var old = _ship;
-                    _ship = value;
-
-                    this.OnShipChanged?.Invoke(this, old, _ship);
-                }
-            }
-        }
-
-        public Controller Controller
-        {
-            get => _controller;
-            internal set => this.OnControllerChanged.InvokeIfChanged(_controller != value, this, ref _controller, value);
-        }
-
         public ShipPartConfiguration Configuration { get; set; }
         public Boolean IsRoot => !this.MaleConnectionNode.Attached;
         public ShipPart Root => this.Chain.Root;
         public ShipPart Parent => this.IsRoot ? null : this.MaleConnectionNode.Target.Parent;
 
-        public Color Color => this.Root.Ship == default(Ship) ? this.Root.Configuration.DefaultColor : this.Ship.Color;
-        #endregion
-
-        #region Events
-        public event OnChangedEventDelegate<ShipPart, Controller> OnControllerChanged;
-        public event OnChangedEventDelegate<ShipPart, Ship> OnShipChanged;
+        public Color Color => this.Chain.Ship?.Color ?? this.Root.Configuration.DefaultColor;
         #endregion
 
         #region Lifecycle Methods
@@ -129,11 +98,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             { // Set new chain actions as needed...
                 // When the root chain is drawn, we should draw the current ship part as well
                 value.OnDraw += this.TryDraw;
-
-                // Flush the default chain values to the ShipPart...
-                this.Ship = value.Ship;
-                this.Controller = value.Controller;
-                // this.Authorization = value.Controller.Authorization;
             }
         }
 

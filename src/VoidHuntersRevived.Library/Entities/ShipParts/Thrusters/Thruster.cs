@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         /// <summary>
         /// Indicates if the thruster was activeted this frame.
         /// </summary>
-        public Boolean Active => this.Root.Ship != default(Ship) && (this.Root.Ship.ActiveDirections & this.Directions) != 0;
+        public Boolean Active => this.Chain.Ship != default(Ship) && (this.Chain.Ship.ActiveDirections & this.Directions) != 0;
         public Vector2 Thrust { get => Vector2.UnitX * 10f; }
         public Single Strength { get; private set; }
         public Vector2 LocalThrust { get => Vector2.Transform(this.Thrust, Matrix.CreateRotationZ(this.LocalRotation)); }

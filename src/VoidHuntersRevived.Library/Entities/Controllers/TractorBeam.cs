@@ -325,7 +325,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                 return false;
             else if (!shipPart.IsRoot)
                 return false;
-            else if (target.Parent.Root.Ship != this.Ship)
+            else if (target.Parent.Chain.Ship != this.Ship)
                 return false;
             
             // By default, return true.

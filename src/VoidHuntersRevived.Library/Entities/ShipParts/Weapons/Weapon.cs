@@ -150,7 +150,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             if (this.Recoil > 0 && _curRecoil < 0.99f)
                 _curRecoil = MathHelper.Lerp(this.Recoil, 0, MathHelper.Min(1f, (Single)((gameTime.TotalGameTime.TotalMilliseconds - _fireTime) / (_fireTimer.Interval / 1.5))));
 
-            this.TryAim(this.Root.Ship.Target);
+            this.TryAim(this.Chain.Ship.Target);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -274,7 +274,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             this.OnUpdate -= this.UpdateAim;
             this.OnUpdate -= this.UpdatePosition;
 
-            if (this.Root.Ship == default(Ship)) // When there is no ship, update position directly...
+            if (this.Chain.Ship == default(Ship)) // When there is no ship, update position directly...
                 this.OnUpdate += this.UpdatePosition;
             else // When there is a ship, attempt to aim the gun
                 this.OnUpdate += this.UpdateAim;
@@ -282,7 +282,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
         public void TryFire(GameTime gameTime)
         {
-            if (this.ValidateFire.Validate(this.Root.Ship, this, true))
+            if (this.ValidateFire.Validate(this.Chain.Ship, this, true))
             {
                 _fireTime = gameTime.TotalGameTime.TotalMilliseconds;
                 _curRecoil = this.Recoil;
@@ -308,7 +308,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                 old.Root.OnCollidesWithChanged -= this.HandleRootCollisionChanged;
                 old.Root.OnCollisionCategoriesChanged -= this.HandleRootCollisionChanged;
                 old.Root.OnIgnoreCCDWithChanged -= this.HandleRootCollisionChanged;
-                old.Root.OnShipChanged -= this.HandleRootShipChanged;
+                old.OnShipChanged -= this.HandleRootShipChanged;
             }
 
             if (value != default(Chain))
@@ -318,7 +318,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                 value.Root.OnCollidesWithChanged += this.HandleRootCollisionChanged;
                 value.Root.OnCollisionCategoriesChanged += this.HandleRootCollisionChanged;
                 value.Root.OnIgnoreCCDWithChanged += this.HandleRootCollisionChanged;
-                value.Root.OnShipChanged += this.HandleRootShipChanged;
+                value.OnShipChanged += this.HandleRootShipChanged;
             }
 
             // Clean default wepaon data
@@ -329,7 +329,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         private void HandleRootCollisionChanged(BodyEntity sender, Category arg)
             => this.CleanCollision();
 
-        private void HandleRootShipChanged(ShipPart sender, Ship old, Ship value)
+        private void HandleRootShipChanged(Chain sender, Ship old, Ship value)
             => this.CleanUpdate();
 
         private void HandleFiringChanged(Weapon sender, bool value)
