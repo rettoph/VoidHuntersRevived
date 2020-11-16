@@ -1,9 +1,11 @@
 ﻿using Guppy;
 using Guppy.Attributes;
 using Guppy.DependencyInjection;
+using Guppy.Extensions.Collections;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Extensions.System;
 using Guppy.Interfaces;
+using Guppy.IO.Commands;
 using Guppy.IO.Commands.Services;
 using Guppy.IO.Extensions.log4net;
 using Guppy.Lists;
@@ -119,9 +121,25 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
         public void ConfigureProvider(Guppy.DependencyInjection.ServiceProvider provider)
         {
             var log = provider.GetService<ILog>();
-            provider.GetService<CommandService>().OnExcecute += (c, a) =>
+            provider.GetService<CommandService>().OnExcecuted += (arguments, responses) =>
             {
-                log.Debug(a);
+                log.Debug(arguments);
+
+                responses.ForEach(response =>
+                {
+                    switch (response.Type)
+                    {
+                        case CommandResponseType.Success:
+                            log.Info(response.ToString());
+                            break;
+                        case CommandResponseType.Warning:
+                            log.Warn(response.ToString());
+                            break;
+                        case CommandResponseType.Error:
+                            log.Error(response.ToString());
+                            break;
+                    }
+                });
             };
         }
     }

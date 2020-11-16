@@ -29,12 +29,12 @@ namespace VoidHuntersRevived.Client.Library
             this.Window.AllowUserResizing = true;
             this.IsFixedTimeStep = false;
 
-            this.graphics.PreparingDeviceSettings += (s, e) =>
-            {
-                e.GraphicsDeviceInformation.PresentationParameters.PresentationInterval = PresentInterval.Immediate;
-            };
-            this.graphics.SynchronizeWithVerticalRetrace = false;
-            this.graphics.ApplyChanges();
+            // this.graphics.PreparingDeviceSettings += (s, e) =>
+            // {
+            //     e.GraphicsDeviceInformation.PresentationParameters.PresentationInterval = PresentInterval.Immediate;
+            // };
+            // this.graphics.SynchronizeWithVerticalRetrace = false;
+            // this.graphics.ApplyChanges();
         }
 
         /// <summary>

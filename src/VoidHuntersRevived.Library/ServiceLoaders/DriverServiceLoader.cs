@@ -8,6 +8,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Drivers;
 using VoidHuntersRevived.Library.Drivers.Entities;
 using VoidHuntersRevived.Library.Drivers.Entities.Players;
+using VoidHuntersRevived.Library.Drivers.Entities.ShipParts;
 using VoidHuntersRevived.Library.Drivers.Scenes;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
@@ -47,6 +48,9 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
 
             services.AddAndBindDriver<BodyEntity, BodyEntityMasterNetworkAuthorizationDriver>(p => new BodyEntityMasterNetworkAuthorizationDriver());
             services.AddAndBindDriver<BodyEntity, BodyEntitySlaveNetworkAuthorizationDriver>(p => new BodyEntitySlaveNetworkAuthorizationDriver());
+
+            services.AddAndBindDriver<ShipPart, ShipPartMasterNetworkAuthorizationDriver>(p => new ShipPartMasterNetworkAuthorizationDriver());
+            services.AddAndBindDriver<ShipPart, ShipPartSlaveNetworkAuthorizationDriver>(p => new ShipPartSlaveNetworkAuthorizationDriver());
         }
 
         public void ConfigureProvider(ServiceProvider provider)

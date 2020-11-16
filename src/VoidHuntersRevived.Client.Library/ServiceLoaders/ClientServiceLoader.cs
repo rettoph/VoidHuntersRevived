@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             // Configure service factories...
             services.AddFactory<FarseerCamera2D>(p => new FarseerCamera2D());
             services.AddFactory<Sensor>(p => new Sensor());
-            services.AddFactory<TrailManager>(p => new TrailManager());
+            services.AddFactory<TrailService>(p => new TrailService());
             services.AddFactory<Trail>(p => new Trail());
             services.AddFactory<TrailSegment>(p => new TrailSegment(p));
             services.AddFactory<DebugService>(p => new DebugService());
@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             // Configure service lifetimes...
             services.AddScoped<FarseerCamera2D>();
             services.AddScoped<Sensor>();
-            services.AddScoped<TrailManager>();
+            services.AddScoped<TrailService>();
             services.AddTransient<Trail>();
             services.AddTransient<TrailSegment>();
             services.AddSingleton<DebugService>();

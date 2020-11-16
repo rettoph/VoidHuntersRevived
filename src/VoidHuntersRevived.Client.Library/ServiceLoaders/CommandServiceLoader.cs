@@ -29,14 +29,16 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             var commands = provider.GetService<CommandService>();
 
             // Add set commands...
-            commands.TryAddSubCommand(new CommandContext()
+            commands.TryAddCommand(new CommandContext()
             {
-                Word = "set",
-                SubCommands = new CommandContext[]
+                Word = "ship",
+                Description = "Manipulate the current user's ship.",
+                Commands = new CommandContext[]
                 {
                     new CommandContext()
                     {
                         Word = "direction",
+                        Description = "Update the ship's direction.",
                         Arguments = new ArgContext[]
                         {
                             new ArgContext()
@@ -54,35 +56,11 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                                 Type = ArgType.Boolean
                             }
                         }
-                    }
-                }
-            });
-
-            // Add tractor beam commands...
-            commands.TryAddSubCommand(new CommandContext()
-            {
-                Word = "tractorbeam",
-                Arguments = new ArgContext[]
-                {
-                    new ArgContext()
-                    {
-                        Identifier = "action",
-                        Required = true,
-                        Aliases = "a".ToCharArray(),
-                        Type = ArgType.FromEnum<TractorBeam.ActionType>()
-                    }
-                }
-            });
-
-            // Add save commands...
-            commands.TryAddSubCommand(new CommandContext()
-            {
-                Word = "save",
-                SubCommands = new CommandContext[]
-                {
+                    },
                     new CommandContext()
                     {
-                        Word = "ship",
+                        Word = "save",
+                        Description = "Save the ship data to file.",
                         Arguments = new ArgContext[]
                         {
                             new ArgContext()
@@ -93,15 +71,30 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                                 Type = ArgType.String
                             }
                         }
+                    },
+                    new CommandContext()
+                    {
+                        Word = "tractorbeam",
+                        Description = "Manipulate the ship's tractorbeam.",
+                        Arguments = new ArgContext[]
+                        {
+                            new ArgContext()
+                            {
+                                Identifier = "action",
+                                Required = true,
+                                Aliases = "a".ToCharArray(),
+                                Type = ArgType.FromEnum<TractorBeam.ActionType>()
+                            }
+                        }
                     }
                 }
             });
 
             // Add toggle commands...
-            commands.TryAddSubCommand(new CommandContext()
+            commands.TryAddCommand(new CommandContext()
             {
                 Word = "toggle",
-                SubCommands = new CommandContext[]
+                Commands = new CommandContext[]
                 {
                     new CommandContext()
                     {

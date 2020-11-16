@@ -16,8 +16,6 @@ namespace VoidHuntersRevived.Server
                 .BuildGame<ServerVoidHuntersRevivedGame>();
 
             game.TryStart(false);
-
-            Console.ReadLine();
         }
     }
 }

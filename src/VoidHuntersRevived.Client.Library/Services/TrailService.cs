@@ -10,9 +10,9 @@ using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using Guppy.Extensions.DependencyInjection;
 
-namespace VoidHuntersRevived.Client.Library.Entities
+namespace VoidHuntersRevived.Client.Library.Services
 {
-    public sealed class TrailManager : Entity
+    public sealed class TrailService : Frameable
     {
         #region Private Fields
         private ServiceProvider _provider;
@@ -29,8 +29,6 @@ namespace VoidHuntersRevived.Client.Library.Entities
 
             _trails = new Dictionary<Thruster, Trail>();
             _dirtyTrails = new Queue<Trail>();
-
-            this.LayerGroup = 10;
         }
         #endregion
 

@@ -12,15 +12,23 @@ using Guppy.IO.Extensions.log4net;
 using Guppy.Lists.Interfaces;
 using Guppy.Network;
 using VoidHuntersRevived.Library.Entities.Players;
+using System.IO;
+using Guppy.Utilities;
 
 namespace VoidHuntersRevived.Server.Scenes
 {
     public sealed class ServerGameScene : GameScene
     {
+        #region Private Fields
+        private Synchronizer _synchronizer;
+        #endregion
+
         #region Lifecycle Methods
         protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
+
+            provider.Service(out _synchronizer);
 
             this.group.Users.OnAdded += this.HandleUserJoined;
         }
@@ -99,12 +107,17 @@ namespace VoidHuntersRevived.Server.Scenes
         /// <param name="args"></param>
         private void HandleUserJoined(IServiceList<User> sender, User user)
         {
-            this.Entities.Create<UserPlayer>((player, p, d) =>
+            _synchronizer.Enqueue(gt =>
             {
-                player.User = user;
-                player.Ship = this.Entities.Create<Ship>((ship, p2, c) =>
+                this.Entities.Create<UserPlayer>((player, p, d) =>
                 {
-                    ship.SetBridge(this.Entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
+                    player.User = user;
+                    player.Ship = this.Entities.Create<Ship>((ship, p2, c) =>
+                    {
+                        ship.Import(File.OpenRead("Ships/mosquito.vh"));
+                        ship.Bridge.Position = (new Random(user.Id.GetHashCode())).NextVector2(0, 10);
+                        // ship.SetBridge(this.Entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
+                    });
                 });
             });
         }

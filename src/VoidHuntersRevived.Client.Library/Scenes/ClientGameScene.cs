@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Client.Library.Enums;
 using VoidHuntersRevived.Client.Library.Services;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
@@ -166,30 +167,41 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         #endregion
 
         #region Command Handlers
-        private void HandleToggleDebugCommand(ICommand sender, CommandArguments args)
+        private CommandResponse HandleToggleDebugCommand(ICommand sender, CommandInput input)
         {
-            switch ((DebugType)args["type"])
+            try
             {
-                case DebugType.Master:
-                    _renderMaster = !_renderMaster;
-                    this.IfOrOnWorld(w =>
-                    { // Ensure that the world exists before this stage...
+                switch ((DebugType)input["type"])
+                {
+                    case DebugType.Master:
+                        _renderMaster = !_renderMaster;
+                        this.IfOrOnWorld(w =>
+                        { // Ensure that the world exists before this stage...
                         if (_renderMaster)
-                            this.OnDraw += this.DrawMaster;
-                        else
-                            this.OnDraw -= this.DrawMaster;
-                    });
-                    break;
-                case DebugType.Slave:
-                    _renderSlave = !_renderSlave;
-                    this.IfOrOnWorld(w =>
-                    { // Ensure that the world exists before this stage...
+                                this.OnDraw += this.DrawMaster;
+                            else
+                                this.OnDraw -= this.DrawMaster;
+                        });
+
+                        return CommandResponse.Success($"Set RenderMaster to {_renderMaster}.");
+                    case DebugType.Slave:
+                        _renderSlave = !_renderSlave;
+                        this.IfOrOnWorld(w =>
+                        { // Ensure that the world exists before this stage...
                         if (_renderSlave)
-                            this.OnDraw += this.DrawSlave;
-                        else
-                            this.OnDraw -= this.DrawSlave;
-                    });
-                    break;
+                                this.OnDraw += this.DrawSlave;
+                            else
+                                this.OnDraw -= this.DrawSlave;
+                        });
+
+                        return CommandResponse.Success($"Set RenderSlave to {_renderSlave}.");
+                    default:
+                        return CommandResponse.Empty;
+                }
+            }
+            catch(Exception e)
+            {
+                return CommandResponse.Error($"Unable to toggle Debug Render.", e);
             }
         }
         #endregion

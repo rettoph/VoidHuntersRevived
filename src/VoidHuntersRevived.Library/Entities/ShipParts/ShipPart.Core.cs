@@ -12,11 +12,18 @@ using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Enums;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Events.Delegates;
+using Lidgren.Network;
+using Guppy.Network.Extensions.Lidgren;
+using Guppy.Lists;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
     public partial class ShipPart : BodyEntity
     {
+        #region Private Fields
+        private EntityList _entities;
+        #endregion
+
         #region Public Properties
         public ShipPartConfiguration Configuration { get; set; }
         public Boolean IsRoot => !this.MaleConnectionNode.Attached;
@@ -38,6 +45,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
+
+            provider.Service(out _entities);
 
             this.Transformations_PreInitialize(provider);
 
@@ -75,6 +84,24 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             this.OnChainChanged -= this.HandleChainChanged;
             this.ValidateCleaning -= this.HandleValidateCleaning;
+        }
+        #endregion
+
+        #region Network Methods
+        public void ReadMaleConnectionNode(NetIncomingMessage im)
+        {
+            if(im.ReadBoolean())
+                this.MaleConnectionNode.TryAttach(
+                    target: _entities.GetById<ShipPart>(im.ReadGuid()).FemaleConnectionNodes[im.ReadInt32()]);
+        }
+
+        public void WriteMaleConnectionNode(NetOutgoingMessage om)
+        {
+            if(om.WriteIf(this.MaleConnectionNode.Attached))
+            {
+                om.Write(this.MaleConnectionNode.Target.Parent.Id);
+                om.Write(this.MaleConnectionNode.Target.Index);
+            }
         }
         #endregion
 

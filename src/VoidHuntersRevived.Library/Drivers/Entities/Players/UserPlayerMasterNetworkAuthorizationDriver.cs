@@ -2,6 +2,8 @@
 using Guppy.Extensions.System;
 using Guppy.Lists;
 using Guppy.Network.Extensions.Lidgren;
+using Guppy.Network.Utilities;
+using Guppy.Network.Utilities.Messages;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
@@ -17,6 +19,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
     {
         #region Private Fields
         private EntityList _entities;
+        private NetConnection _userConnection;
         #endregion
 
         #region Lifecycle Methods
@@ -25,9 +28,12 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
             base.Initialize(driven, provider);
 
             provider.Service(out _entities);
-            
+            _userConnection = provider.GetService<UserNetConnectionDictionary>().Connections[this.driven.User];
+
+            this.driven.Actions.ValidateRead += this.ValidateReadAction;
             this.driven.Actions.Set("update:ship:target:request", this.HandleUpdateShipTargetRequestMessage);
             this.driven.Actions.Set("ship:tractor-beam:action:request", this.HandleShipTractorBeamActionRequestMessage);
+            this.driven.Actions.Set("update:ship:direction:request", this.HandleUpdateShipDirectionRequestMessage);
         }
         #endregion
 
@@ -47,6 +53,31 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
                                 position: im.ReadVector2(),
                                 angle: im.ReadSingle());
                     })));
+        }
+
+        private void HandleUpdateShipDirectionRequestMessage(NetIncomingMessage im)
+        {
+            this.driven.Ship.TrySetDirection(im.ReadEnum<Ship.Direction>(), im.ReadBoolean());
+        }
+        #endregion
+
+        #region Event Handlers
+        /// <summary>
+        /// We must ensure that the requested UserPlayer action comes from 
+        /// the connected Peer. Anything else shuld be rejected.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        private bool ValidateReadAction(MessageManager sender, NetIncomingMessage args)
+        {
+            if (args.SenderConnection == _userConnection)
+                return true;
+
+            // The sender is invalid...
+            args.SenderConnection.Disconnect("Goodbye.");
+
+            return false;
         }
         #endregion
     }

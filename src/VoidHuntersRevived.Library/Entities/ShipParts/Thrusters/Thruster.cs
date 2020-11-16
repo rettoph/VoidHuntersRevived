@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
     public class Thruster : RigidShipPart
     {
         #region Static Properties
-        public static Single StrengthAcceleration = 0.00625f;
+        public static Single StrengthAcceleration = 1f;
         #endregion
 
         #region Public Properties
@@ -50,11 +50,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
             base.Update(gameTime);
 
             // Apply thrust to the internal fixture...
-            if ((!this.Active && this.Strength > 0) || (this.Active && this.Strength < 1))
+            if (this.Active || this.Strength > 0)
                 this.Strength = MathHelper.Lerp(
                     value1: this.Strength,
                     value2: this.ApplyThrust(this.Root) ? 1 : 0,
-                    amount: Thruster.StrengthAcceleration * (Single)gameTime.ElapsedGameTime.TotalMilliseconds);
+                    amount: Thruster.StrengthAcceleration * (Single)gameTime.ElapsedGameTime.TotalSeconds);
         }
         #endregion
 

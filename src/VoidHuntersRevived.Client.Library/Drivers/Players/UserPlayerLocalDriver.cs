@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
         {
             base.Initialize(driven, provider);
 
-            if(provider.GetService<ClientPeer>().CurrentUser == driven.User)
+            if (provider.GetService<ClientPeer>().CurrentUser == driven.User)
             { // Setup the local user player driver now...
                 provider.Service(out _commands);
                 provider.Service(out _sensor);
@@ -49,8 +49,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
 
                 this.driven.OnUpdate += this.Update;
 
-                _commands["set"]["direction"].OnExcecute += this.HandleSetDirectionCommand;
-                _commands["tractorbeam"].OnExcecute += this.HandleTractorBeamCommand;
+                _commands["ship"]["direction"].OnExcecute += this.HandleShipDirectionCommand;
+                _commands["ship"]["tractorbeam"].OnExcecute += this.HandleShipTractorBeamCommand;
 
                 _configured = true;
             }
@@ -64,8 +64,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
             {
                 this.driven.OnUpdate -= this.Update;
 
-                _commands["set"]["direction"].OnExcecute -= this.HandleSetDirectionCommand;
-                _commands["tractorbeam"].OnExcecute -= this.HandleTractorBeamCommand;
+                _commands["ship"]["direction"].OnExcecute -= this.HandleShipDirectionCommand;
+                _commands["ship"]["tractorbeam"].OnExcecute -= this.HandleShipTractorBeamCommand;
             }
         }
         #endregion
@@ -104,15 +104,29 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
                     om: this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 10),
                     action: response);
         }
+
+        private void TrySetShipDirection(Ship.Direction direction, Boolean value)
+        {
+            if (this.driven.Ship.TrySetDirection(direction, value))
+            { // If successful, broadcast a message request...
+                this.WriteUpdateShipDirectionRequest(this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 7), direction, value);
+            }
+        }
         #endregion
 
         #region Command Handlers
-        private void HandleTractorBeamCommand(ICommand sender, CommandArguments args)
-            => this.TryTractorBeamAction((TractorBeam.ActionType)args["action"]);
-
-        private void HandleSetDirectionCommand(ICommand sender, CommandArguments args)
+        private CommandResponse HandleShipTractorBeamCommand(ICommand sender, CommandInput input)
         {
-            throw new NotImplementedException();
+            this.TryTractorBeamAction((TractorBeam.ActionType)input["action"]);
+
+            return CommandResponse.Empty;
+        }
+
+        private CommandResponse HandleShipDirectionCommand(ICommand sender, CommandInput input)
+        {
+            this.TrySetShipDirection((Ship.Direction)input["direction"], (Boolean)input["value"]);
+
+            return CommandResponse.Empty;
         }
         #endregion
 
@@ -120,7 +134,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
         private void WriteUpdateShipDirectionRequest(NetOutgoingMessage om, Ship.Direction direction, Boolean value)
             => om.Write("update:ship:direction:request", m =>
             {
-                m.Write((Byte)direction);
+                m.Write(direction);
                 m.Write(value);
             });
 
@@ -134,7 +148,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
         {
             om.Write("ship:tractor-beam:action:request", m =>
             {
-                m.Write((Byte)action.Type);
+                m.Write(action.Type);
                 m.Write(action.Target);
 
 

@@ -18,6 +18,7 @@ using Guppy.IO.Commands.Interfaces;
 using Guppy.IO.Commands;
 using VoidHuntersRevived.Client.Library.Enums;
 using System.Linq;
+using System.Threading;
 
 namespace VoidHuntersRevived.Client.Library
 {
@@ -47,6 +48,20 @@ namespace VoidHuntersRevived.Client.Library
             user.Name = "Rettoph";
 
             _client.TryConnect("localhost", 1337, user);
+
+            new Thread(new ThreadStart(() =>
+            {
+                while (true)
+                {
+                    var input = Console.ReadLine();
+
+                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    Console.Write(new string(' ', Console.WindowWidth));
+                    Console.SetCursorPosition(0, Console.CursorTop);
+
+                    _commands.TryExecute(input);
+                }
+            })).Start();
         }
 
         protected override void Initialize(ServiceProvider provider)
@@ -96,10 +111,16 @@ namespace VoidHuntersRevived.Client.Library
         #endregion
 
         #region Command Handlers
-        private void HandleToggleDebugCommand(ICommand sender, CommandArguments args)
+        private CommandResponse HandleToggleDebugCommand(ICommand sender, CommandInput input)
         {
-            if((DebugType)args["type"] == DebugType.Data)
+            if ((DebugType)input["type"] == DebugType.Data)
+            {
                 _renderDebug = !_renderDebug;
+
+                return CommandResponse.Success($"Set RenderDebug to {_renderDebug}");
+            }
+
+            return CommandResponse.Empty;
         }
         #endregion
     }

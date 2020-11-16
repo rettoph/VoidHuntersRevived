@@ -33,8 +33,8 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                 DefaultInput = new InputType(Keys.W),
                 Commands = new[]
                 {
-                    (state: ButtonState.Pressed, command: "set direction -d=Forward -v=true"),
-                    (state: ButtonState.Released, command: "set direction -d=Forward -v=false")
+                    (state: ButtonState.Pressed, command: "ship direction -d=Forward -v=true"),
+                    (state: ButtonState.Released, command: "ship direction -d=Forward -v=false")
                 }
             });
 
@@ -44,8 +44,8 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                 DefaultInput = new InputType(Keys.A),
                 Commands = new[]
                 {
-                    (state: ButtonState.Pressed, command: "set direction -d=TurnLeft -v=true"),
-                    (state: ButtonState.Released, command: "set direction -d=TurnLeft -v=false")
+                    (state: ButtonState.Pressed, command: "ship direction -d=TurnLeft -v=true"),
+                    (state: ButtonState.Released, command: "ship direction -d=TurnLeft -v=false")
                 }
             });
 
@@ -55,8 +55,8 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                 DefaultInput = new InputType(Keys.S),
                 Commands = new[]
                 {
-                    (state: ButtonState.Pressed, command: "set direction -d=Backward -v=true"),
-                    (state: ButtonState.Released, command: "set direction -d=Backward -v=false")
+                    (state: ButtonState.Pressed, command: "ship direction -d=Backward -v=true"),
+                    (state: ButtonState.Released, command: "ship direction -d=Backward -v=false")
                 }
             });
 
@@ -66,8 +66,8 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                 DefaultInput = new InputType(Keys.D),
                 Commands = new[]
                 {
-                    (state: ButtonState.Pressed, command: "set direction -d=TurnRight -v=true"),
-                    (state: ButtonState.Released, command: "set direction -d=TurnRight -v=false")
+                    (state: ButtonState.Pressed, command: "ship direction -d=TurnRight -v=true"),
+                    (state: ButtonState.Released, command: "ship direction -d=TurnRight -v=false")
                 }
             });
 
@@ -77,8 +77,8 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                 DefaultInput = new InputType(Keys.Q),
                 Commands = new[]
                 {
-                    (state: ButtonState.Pressed, command: "set direction -d=Left -v=true"),
-                    (state: ButtonState.Released, command: "set direction -d=Left -v=false")
+                    (state: ButtonState.Pressed, command: "ship direction -d=Left -v=true"),
+                    (state: ButtonState.Released, command: "ship direction -d=Left -v=false")
                 }
             });
 
@@ -88,8 +88,8 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                 DefaultInput = new InputType(Keys.E),
                 Commands = new[]
                 {
-                    (state: ButtonState.Pressed, command: "set direction -d=Right -v=true"),
-                    (state: ButtonState.Released, command: "set direction -d=Right -v=false")
+                    (state: ButtonState.Pressed, command: "ship direction -d=Right -v=true"),
+                    (state: ButtonState.Released, command: "ship direction -d=Right -v=false")
                 }
             });
             #endregion
@@ -101,8 +101,8 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                 DefaultInput = new InputType(MouseButton.Right),
                 Commands = new[]
                 {
-                    (state: ButtonState.Pressed, command: "tractorbeam -a=select"),
-                    (state: ButtonState.Released, command: "tractorbeam -a=attach")
+                    (state: ButtonState.Pressed, command: "ship tractorbeam -a=select"),
+                    (state: ButtonState.Released, command: "ship tractorbeam -a=attach")
                 }
             });
             #endregion

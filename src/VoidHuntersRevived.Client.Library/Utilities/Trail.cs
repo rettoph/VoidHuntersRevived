@@ -9,11 +9,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Events.Delegates;
+using VoidHuntersRevived.Client.Library.Services;
 
 namespace VoidHuntersRevived.Client.Library.Utilities
 {
@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         #endregion
 
         #region Private Fields
-        private TrailManager _manager;
+        private TrailService _trails;
         private ServiceProvider _provider;
         private Queue<TrailSegment> _segments;
         private Int32 _expired;
@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         #endregion
 
         #region Internal Fields
-        internal TrailManager manager => _manager;
+        internal TrailService trails => _trails;
         internal Thruster thruster { get; set; }
         #endregion
 
@@ -53,7 +53,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
             base.PreInitialize(provider);
 
             _provider = provider;
-            provider.Service(out _manager);
+            provider.Service(out _trails);
             provider.Service(out _primitiveBatch);
 
             _segmentTimer = new ActionTimer(Trail.SegmentInterval);
