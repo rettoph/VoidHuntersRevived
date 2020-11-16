@@ -99,13 +99,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
 
             var response = this.driven.Ship.TractorBeam.TryAction(new TractorBeam.Action(action, target));
 
-            _synchronizer.Enqueue(gt =>
-            { // Broadcast a request message to the connected peer...
-                if (response.Type != TractorBeam.ActionType.None)
-                    this.WriteShipTractorBeamActionRequest(
-                        om: this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 10),
-                        action: response);
-            });
+            if (response.Type != TractorBeam.ActionType.None)
+                this.WriteShipTractorBeamActionRequest(
+                    om: this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 10),
+                    action: response);
         }
         #endregion
 

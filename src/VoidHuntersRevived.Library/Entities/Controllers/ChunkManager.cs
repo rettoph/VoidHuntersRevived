@@ -298,7 +298,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                 _chainChunks[chain] = new ChainChunks(this, chain);
 
             // Add the new ship part straight into quarantine
-            this.synchronizer.Enqueue(gt => _quarantine.Add(chain));
+            _quarantine.Add(chain);
 
             // Update the new parts properties
             chain.Do(sp =>
@@ -318,11 +318,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             base.Remove(chain);
 
             // Remove the ship part from quarantine if needed...
-            this.synchronizer.Enqueue(gt =>
-            {
-                if (_quarantine.Contains(chain))
-                    _quarantine.Remove(chain);
-            });
+            if (_quarantine.Contains(chain))
+                _quarantine.Remove(chain);
 
             // Clear cached chunks
             _chainChunks[chain].ClearChunks();

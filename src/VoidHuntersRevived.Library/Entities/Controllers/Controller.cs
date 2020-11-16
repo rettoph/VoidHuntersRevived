@@ -29,7 +29,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
         #region Protected Attributes
         protected IEnumerable<Chain> chains => _chains;
-        protected Synchronizer synchronizer { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -38,8 +37,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             base.PreInitialize(provider);
 
             _chains = new HashSet<Chain>();
-
-            this.synchronizer = provider.GetService<Synchronizer>();
         }
 
         protected override void Release()
@@ -63,7 +60,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         protected virtual void Add(Chain chain)
         {
             chain.Controller?.TryRemove(chain);
-            this.synchronizer.Enqueue(gt => _chains.Add(chain));
+            _chains.Add(chain);
             chain.Controller = this;
 
             chain.OnReleased += this.HandleChainReleased;
@@ -80,8 +77,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
         protected virtual void Remove(Chain chain)
         {
-            this.synchronizer.Enqueue(gt => _chains.Remove(chain));
-
+            _chains.Remove(chain);
             chain.Controller = null;
 
             chain.OnReleased -= this.HandleChainReleased;
