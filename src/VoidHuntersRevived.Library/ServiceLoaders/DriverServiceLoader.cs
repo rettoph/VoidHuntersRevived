@@ -46,6 +46,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddAndBindDriver<UserPlayer, UserPlayerMasterNetworkAuthorizationDriver>(p => new UserPlayerMasterNetworkAuthorizationDriver());
 
             services.AddAndBindDriver<BodyEntity, BodyEntityMasterNetworkAuthorizationDriver>(p => new BodyEntityMasterNetworkAuthorizationDriver());
+            services.AddAndBindDriver<BodyEntity, BodyEntitySlaveNetworkAuthorizationDriver>(p => new BodyEntitySlaveNetworkAuthorizationDriver());
         }
 
         public void ConfigureProvider(ServiceProvider provider)

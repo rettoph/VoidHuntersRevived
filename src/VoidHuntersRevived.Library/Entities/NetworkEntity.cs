@@ -57,6 +57,12 @@ namespace VoidHuntersRevived.Library.Entities
 
         #region Events
         public Dictionary<MessageType, NetworkEntityMessageTypeHandler> MessageHandlers { get; private set; }
+
+        /// <summary>
+        /// Custom object used to determin whether or not a network object
+        /// should be cleaned this frame.
+        /// </summary>
+        protected internal ValidateEventDelegate<NetworkEntity, GameTime> ValidateCleaning;
         #endregion
 
         #region Lifecycle Methods
@@ -91,7 +97,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.PostUpdate(gameTime);
 
-            if ((this.DirtyState & DirtyState.Cleaning) == 0 && (this.DirtyState & DirtyState.DirtyAndFilthy) != 0)
+            if ((this.DirtyState & DirtyState.Cleaning) == 0 && (this.DirtyState & DirtyState.DirtyAndFilthy) != 0 && this.ValidateCleaning.Validate(this, gameTime, true))
             { // Enque the current entity to be cleaned & update the DirtyState...
                 _scene.dirtyEntities.Enqueue(this);
 

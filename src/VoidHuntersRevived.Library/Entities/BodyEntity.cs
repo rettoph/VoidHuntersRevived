@@ -160,13 +160,6 @@ namespace VoidHuntersRevived.Library.Entities
         public event OnEventDelegate<BodyEntity, Category> OnCollisionCategoriesChanged;
         public event OnEventDelegate<BodyEntity, Category> OnCollidesWithChanged;
         public event OnEventDelegate<BodyEntity, Category> OnIgnoreCCDWithChanged;
-
-
-        /// <summary>
-        /// Used by the BodyEntityNetworkDriver, this detects whether or not
-        /// the entity positional data should be pushed through the network.
-        /// </summary>
-        protected internal ValidateEventDelegate<BodyEntity, GameTime> ValidateWritePosition;
         #endregion
 
         #region Lifecycle Methods
@@ -174,7 +167,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Create(provider);
 
-            this.ValidateWritePosition += this.HandleValidateWritePosition;
+            this.ValidateCleaning += this.HandleValidateCleaning;
         }
 
         protected override void PreInitialize(ServiceProvider provider)
@@ -197,7 +190,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Dispose();
 
-            this.ValidateWritePosition += this.HandleValidateWritePosition;
+            this.ValidateCleaning += this.HandleValidateCleaning;
         }
         #endregion
 
@@ -251,7 +244,7 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Event Handlers
-        private bool HandleValidateWritePosition(BodyEntity sender, GameTime args)
+        private bool HandleValidateCleaning(NetworkEntity sender, GameTime args)
             => this.live.FixtureList.Any();
         #endregion
 

@@ -18,6 +18,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Utilities;
+using Guppy.Utilities;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Players
 {
@@ -29,6 +30,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
         private Sensor _sensor;
         private FarseerCamera2D _camera;
         private ActionTimer _targetSender;
+        private Synchronizer _synchronizer;
         #endregion
 
         #region Lifecycle Methods
@@ -41,6 +43,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
                 provider.Service(out _commands);
                 provider.Service(out _sensor);
                 provider.Service(out _camera);
+                provider.Service(out _synchronizer);
 
                 _targetSender = new ActionTimer(50);
 
@@ -59,7 +62,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
 
             if(_configured)
             {
+                this.driven.OnUpdate -= this.Update;
 
+                _commands["set"]["direction"].OnExcecute -= this.HandleSetDirectionCommand;
+                _commands["tractorbeam"].OnExcecute -= this.HandleTractorBeamCommand;
             }
         }
         #endregion
@@ -93,11 +99,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
 
             var response = this.driven.Ship.TractorBeam.TryAction(new TractorBeam.Action(action, target));
 
-            // Broadcast a request message to the connected peer...
-            if (response.Type != TractorBeam.ActionType.None)
-                this.WriteShipTractorBeamActionRequest(
-                    om: this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 10),
-                    action: response);
+            _synchronizer.Enqueue(gt =>
+            { // Broadcast a request message to the connected peer...
+                if (response.Type != TractorBeam.ActionType.None)
+                    this.WriteShipTractorBeamActionRequest(
+                        om: this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 10),
+                        action: response);
+            });
         }
         #endregion
 
@@ -122,20 +130,21 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
         private void WriteUpdateShipTargetRequest(NetOutgoingMessage om)
             => om.Write("update:ship:target:request", m =>
             {
-                this.driven.Ship.WriteTarget(om);
+                this.driven.Ship.WriteTarget(m);
             });
 
         private void WriteShipTractorBeamActionRequest(NetOutgoingMessage om, TractorBeam.Action action)
         {
             om.Write("ship:tractor-beam:action:request", m =>
             {
-                om.Write((Byte)action.Type);
-                om.Write(action.Target);
+                m.Write((Byte)action.Type);
+                m.Write(action.Target);
 
-                if (om.WriteExists(action.Target))
+
+                if (m.WriteExists(action.Target))
                 {
-                    om.Write(action.Target.Position);
-                    om.Write(action.Target.Rotation);
+                    m.Write(action.Target.Position);
+                    m.Write(action.Target.Rotation);
                 }
             });
         }

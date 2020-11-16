@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             base.Create(provider);
 
             this.OnChainChanged += this.HandleChainChanged;
-            this.ValidateWritePosition += this.HandleValidateWritePosition;
+            this.ValidateCleaning += this.HandleValidateCleaning;
         }
 
         protected override void PreInitialize(ServiceProvider provider)
@@ -74,7 +74,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             base.Dispose();
 
             this.OnChainChanged -= this.HandleChainChanged;
-            this.ValidateWritePosition -= this.HandleValidateWritePosition;
+            this.ValidateCleaning -= this.HandleValidateCleaning;
         }
         #endregion
 
@@ -101,7 +101,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             }
         }
 
-        private bool HandleValidateWritePosition(BodyEntity sender, GameTime args)
+        private bool HandleValidateCleaning(NetworkEntity sender, GameTime args)
             => this.IsRoot;
         #endregion
     }

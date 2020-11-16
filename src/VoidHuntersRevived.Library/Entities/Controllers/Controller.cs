@@ -25,28 +25,11 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
     {
         #region Private Fields
         private HashSet<Chain> _chains;
-        private NetworkAuthorization _authorization;
         #endregion
 
         #region Protected Attributes
         protected IEnumerable<Chain> chains => _chains;
         protected Synchronizer synchronizer { get; private set; }
-        #endregion
-
-        #region Public Attributes
-        /// <summary>
-        /// Used to determin how a ShipPart should behave when
-        /// container within the current controller.
-        /// </summary>
-        public NetworkAuthorization Authorization
-        {
-            get => _authorization;
-            protected set => this.OnAuthorizationChanged.InvokeIfChanged(value != _authorization, this, ref _authorization, value);
-        }
-        #endregion
-
-        #region Events
-        public OnChangedEventDelegate<Controller, NetworkAuthorization> OnAuthorizationChanged;
         #endregion
 
         #region Lifecycle Methods
@@ -57,8 +40,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             _chains = new HashSet<Chain>();
 
             this.synchronizer = provider.GetService<Synchronizer>();
-
-            this.Authorization = provider.GetService<Settings>().Get<NetworkAuthorization>();
         }
 
         protected override void Release()
@@ -84,6 +65,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             chain.Controller?.TryRemove(chain);
             this.synchronizer.Enqueue(gt => _chains.Add(chain));
             chain.Controller = this;
+
+            chain.OnReleased += this.HandleChainReleased;
         }
 
         protected virtual Boolean CanRemove(Chain chain)
@@ -100,7 +83,19 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             this.synchronizer.Enqueue(gt => _chains.Remove(chain));
 
             chain.Controller = null;
+
+            chain.OnReleased -= this.HandleChainReleased;
         }
+        #endregion
+
+        #region Event Handlers
+        /// <summary>
+        /// Auto remove any chain that gets released from
+        /// the stack.
+        /// </summary>
+        /// <param name="sender"></param>
+        private void HandleChainReleased(IService sender)
+            => this.Remove(sender as Chain);
         #endregion
     }
 }

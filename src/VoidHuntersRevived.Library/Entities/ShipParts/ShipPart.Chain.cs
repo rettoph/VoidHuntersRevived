@@ -17,6 +17,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
     {
         #region Private Fields
         private Chain _chain;
+        private ServiceProvider _provider;
         #endregion
 
         #region Public Properties
@@ -34,6 +35,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #region Lifecycle Methods
         private void Chain_Initialize(ServiceProvider provider)
         {
+            _provider = provider;
+
             this.OnChainChanged += this.Chain_HandleOnChainChanged;
 
             this.MaleConnectionNode.OnAttached += this.Chain_HandleMaleConnectionNodeAttached;
@@ -80,11 +83,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// <param name="arg"></param>
         private void Chain_HandleMaleConnectionNodeAttached(ConnectionNode sender, ConnectionNode arg)
         {
-            // Remove from old chain (if any)...
-            this.Chain.Remove(this);
-
             // Add into new chain...
-            arg.Parent.Root.Chain.Add(this);
+            arg.Parent.Chain.Add(this);
         }
 
         /// <summary>
@@ -97,9 +97,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// <param name="sender"></param>
         /// <param name="arg"></param>
         private void Chain_HandleMaleConnectionNodeDetached(ConnectionNode sender, ConnectionNode arg)
-        {
-            this.Chain.Remove(this);
-        }
+            => Chain.Create(_provider, this);
         #endregion
     }
 }

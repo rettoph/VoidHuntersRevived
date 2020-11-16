@@ -80,10 +80,5 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             _chunks.TryAdd(chain);
         }
         #endregion
-
-        #region Helper Methods
-        internal void SetAuthorization(NetworkAuthorization authorization)
-            => this.Authorization = authorization;
-        #endregion
     }
 }

@@ -139,7 +139,7 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
                     _entities.GetById<NetworkEntity>(obj.ReadGuid()).MessageHandlers[MessageType.Action].TryRead(obj);
                     break;
                 default:
-                    throw new Exception("Invalid master message type recieved.");
+                    throw new Exception("Invalid message type recieved.");
             }
 
             return false;

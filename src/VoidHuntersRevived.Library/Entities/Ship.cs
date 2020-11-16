@@ -86,7 +86,7 @@ namespace VoidHuntersRevived.Library.Entities
             provider.Service(out _controller);
             provider.Service(out _entities);
 
-            this.TractorBeam = provider.GetService<TractorBeam>((t, p, c) => t.Ship = this);
+            this.TractorBeam = provider.GetService<EntityList>().Create<TractorBeam>((t, p, c) => t.Ship = this);
 
             // Initialize partial classes.
             this.Events_PreIninitialize(provider);

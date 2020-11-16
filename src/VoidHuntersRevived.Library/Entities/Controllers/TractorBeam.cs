@@ -94,7 +94,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             provider.Service(out _chunks);
             provider.Service(out _logger);
 
-            this.Authorization = NetworkAuthorization.Master;
             this.UpdateOrder = 120;
 
             this.CanAttach += this.DefaultCanAttach;
@@ -198,10 +197,10 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         /// <returns></returns>
         public Boolean CanSelect(ShipPart target)
         {
-            if (target?.Chain.Ship == this.Ship)
+            if (target?.Chain.Ship == this.Ship && !target.IsRoot)
                 return true;
 
-            return this.CanAdd(target.Chain);
+            return this.CanAdd(target?.Chain);
         }
 
         private TractorBeam.Action TrySelect(TractorBeam.Action action)
@@ -213,7 +212,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             {
                 this.synchronizer.Enqueue(gt =>
                 {
-                    action.Target.Root.MaleConnectionNode.TryDetach();
+                    action.Target.MaleConnectionNode.TryDetach();
                     this.TryAdd(action.Target.Chain);
                     this.OnSelected?.Invoke(this, action);
                 });
@@ -254,7 +253,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             if (!action.Type.HasFlag(TractorBeam.ActionType.Deselect))
                 throw new ArgumentException($"Unable to create deselection, Invalid ActionType({action.Type}) recieved.");
 
-            if (this.CanRemove(action.Target.Chain))
+            if (this.CanRemove(action.Target?.Chain))
             {
                 var old = this.Selected;
                 this.OnDeselected?.Invoke(this, action);
@@ -291,8 +290,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             var node = this.Ship.GetClosestOpenFemaleNode(this.Position);
 
             if (this.CanAttach.Validate(action.Target, node, false))
-            {
-                // If all the delegates allow the current attachment...
+            { // If all the delegates allow the current attachment...
                 this.synchronizer.Enqueue(gt =>
                 {
                     action.Target.MaleConnectionNode.TryAttach(node);

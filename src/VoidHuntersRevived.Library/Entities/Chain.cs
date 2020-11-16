@@ -88,23 +88,35 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Helper Methods
-        internal void Remove(ShipPart shipPart)
+        /// <summary>
+        /// Remove an item from the chain and add into another chain.
+        /// </summary>
+        /// <param name="shipPart"></param>
+        /// <param name="into"></param>
+        private Boolean Remove(ShipPart shipPart, Chain into)
         {
-            if(shipPart == this.Root)
-            { // There is nothing left in the chain, so self release...
+            // There is nothing left in the chain, so self release...
+            if (shipPart == this.Root)
                 this.TryRelease();
-            }
-            else
-            { // The ShipPart to remove is a child, add it into a new chain of its own...
-                Chain.Create(_provider, shipPart);
-            }
+
+            // Set the chain to null...
+            shipPart.Chain = into;
 
             this.OnShipPartRemoved?.Invoke(this, shipPart);
+
+            return true;
         }
 
         internal void Add(ShipPart shipPart)
         {
-            shipPart.Chain = this;
+            this.Do(shipPart, sp =>
+            {
+                // Remove from old chain (if any)...
+                if(!sp.Chain?.Remove(shipPart, this) ?? true);
+                    sp.Chain = this; // Set the internal chain values...
+            });
+
+            // Invoke the ShipPartAdded event once.
             this.OnShipPartAdded?.Invoke(this, shipPart);
         }
 
@@ -129,7 +141,7 @@ namespace VoidHuntersRevived.Library.Entities
             => provider.GetService<Chain>((chain, p, d) =>
             { // Configure the new chain...
                 chain.Root = root;
-                root.Chain = chain;
+                chain.Add(root);
 
                 // Add the new chain into the chunk manager by default
                 provider.GetService<ChunkManager>().TryAdd(chain);

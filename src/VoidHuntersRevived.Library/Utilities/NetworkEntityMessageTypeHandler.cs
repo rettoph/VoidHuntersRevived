@@ -41,7 +41,6 @@ namespace VoidHuntersRevived.Library.Utilities
                 // Write needed data...
                 this.OnWrite?.Invoke(m);
             });
-            
         }
 
         public void Add(NetIncomingMessageDelegate reader, NetOutgoingMessageDelegate writer)
