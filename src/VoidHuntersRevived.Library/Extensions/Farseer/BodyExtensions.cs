@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Library.Extensions.Farseer
 
         public static void ReadPosition(this Body body, NetIncomingMessage im)
         {
-            body.SetTransform(im.ReadVector2(), im.ReadSingle());
+            body.SetTransformIgnoreContacts(im.ReadVector2(), im.ReadSingle());
 
             body.LinearVelocity = im.ReadVector2();
             body.AngularVelocity = im.ReadSingle();

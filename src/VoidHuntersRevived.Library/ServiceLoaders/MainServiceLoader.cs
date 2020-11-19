@@ -83,7 +83,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                             entities.TryAdd(e);
                     });
                 }
-            });
+            }, 15);
 
             services.AddSetup<ILog>((l, p, s) =>
             {

@@ -13,6 +13,21 @@ using System.Text;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Enums;
+using Guppy.IO.Commands.Services;
+using Guppy.IO.Commands;
+using Guppy.IO.Commands.Interfaces;
+using Guppy.Extensions.System;
+using Guppy.Utilities.ObjectDumper;
+using System.Reflection;
+using log4net;
+using FarseerPhysics.Dynamics.Joints;
+using VoidHuntersRevived.Library.Scenes;
+using Guppy;
+using Guppy.Lists;
+using Guppy.Network.Utilities.Messages;
+using VoidHuntersRevived.Library.Entities.Controllers;
+using VoidHuntersRevived.Library.Configurations;
+using VoidHuntersRevived.Library.Entities.Players;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -25,6 +40,9 @@ namespace VoidHuntersRevived.Library.Entities
         #region Private Fields
         private Vector2 _size;
         private Queue<Body> _walls;
+        private CommandService _commands;
+        private ILog _log;
+        private GameScene _scene;
         #endregion
 
         #region Public Attributes
@@ -57,11 +75,17 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.PreInitialize(provider);
 
+            provider.Service(out _commands);
+            provider.Service(out _log);
+            provider.Service(out _scene);
+
             _walls = new Queue<Body>();
 
             this.Size = new Vector2(128, 128);
 
             this.UpdateOrder = -100;
+
+            _commands["world"]["info"].OnExcecute += this.HandleWorldInfoCommand;
         }
 
         protected override void Release()
@@ -91,11 +115,91 @@ namespace VoidHuntersRevived.Library.Entities
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
+            
             this.Do(w =>
             {
                 w.Step((Single)gameTime.ElapsedGameTime.TotalSeconds);
             });
+        }
+        #endregion
+
+        #region Command Handlers
+        private CommandResponse HandleWorldInfoCommand(ICommand sender, CommandInput input)
+        {
+            String line = "";
+
+            ObjectDumper.Dump(
+                (text, segment) =>
+                {
+                        // if (text.StartsWith("\n"))
+                        // {
+                        //     _log.Info(line.TrimStart('\n'));
+                        //     line = "";
+                        // }
+                        // 
+                        // line += text;
+                        // 
+                        // if (text.EndsWith("\n"))
+                        // {
+                        //     _log.Info(line.TrimEnd('\n'));
+                        //     line = "";
+                        // }
+
+                        switch (segment)
+                    {
+                        case ObjectDumper.DumpSegment.Scaffold:
+                            Console.ForegroundColor = ConsoleColor.Gray;
+                            break;
+                        case ObjectDumper.DumpSegment.Name:
+                            Console.ForegroundColor = ConsoleColor.White;
+                            break;
+                        case ObjectDumper.DumpSegment.MemberType:
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            break;
+                        case ObjectDumper.DumpSegment.Type:
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                            break;
+                        case ObjectDumper.DumpSegment.Value:
+                            Console.ForegroundColor = ConsoleColor.White;
+                            break;
+                        case ObjectDumper.DumpSegment.Children:
+                            Console.ForegroundColor = ConsoleColor.Magenta;
+                            break;
+                        case ObjectDumper.DumpSegment.Exception:
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            break;
+                    }
+
+                    Console.Write(text);
+                },
+                (_scene.Entities.First(e => e is Ship) as Ship).Bridge.master,
+                input.GetIfContains<Int32>("depth"),
+                input.GetIfContains<MemberTypes>("members"),
+                typeof(Assembly),
+                typeof(World),
+                typeof(JointEdge),
+                typeof(Type),
+                typeof(Layer),
+                typeof(EntityList),
+                typeof(LayerList),
+                typeof(Scene),
+                typeof(Chain),
+                typeof(ILog),
+                typeof(Settings),
+                typeof(MessageManager),
+                typeof(NetworkEntityMessageTypeHandler),
+                typeof(ChunkManager),
+                typeof(IEnumerable<ConnectionNode>),
+                typeof(Matrix),
+                typeof(ServiceFactory),
+                typeof(ShipPartConfiguration),
+                typeof(ShipController),
+                typeof(IList<ConnectionNode>),
+                typeof(ServiceProvider),
+                typeof(Player),
+                typeof(MethodInfo));
+
+            return CommandResponse.Empty;
         }
         #endregion
 

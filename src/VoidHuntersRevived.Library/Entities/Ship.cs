@@ -14,6 +14,8 @@ using Guppy.Extensions.DependencyInjection;
 using Guppy.IO.Extensions.log4net;
 using Guppy.Lists;
 using Guppy.Events.Delegates;
+using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
+using Guppy.Extensions.Collections;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -117,7 +119,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Update(gameTime);
 
-            _controller.TryUpdate(gameTime);
+            _controller.TryUpdate(gameTime);                
         }
 
         protected override void Draw(GameTime gameTime)

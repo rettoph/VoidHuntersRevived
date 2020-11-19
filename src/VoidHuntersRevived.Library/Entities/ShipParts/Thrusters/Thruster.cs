@@ -152,7 +152,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
                 old.OnUpdate -= this.TryUpdate;
             }
 
-            if(value != default(Chain))
+            if(value != default(Chain) && value.Root != this)
             {
                 value.OnUpdate += this.TryUpdate;
             }

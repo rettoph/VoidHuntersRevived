@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Library.Entities
         /// The amount a slave body should lerp towards the master
         /// per second
         /// </summary>
-        public static Single SlaveLerpStrength { get; set; } = 1f;
+        public static Single SlaveLerpStrength { get; set; } = 5f;
 
         /// <summary>
         /// The threshold that must be surpassed by the position
@@ -228,7 +228,11 @@ namespace VoidHuntersRevived.Library.Entities
         public virtual void ApplyForce(Vector2 force, Func<Body, Vector2> pointGetter)
             => this.Do(b => b.ApplyForce(force, pointGetter(b)));
         public virtual void ApplyForce(Func<Body, Vector2> forceGetter, Func<Body, Vector2> pointGetter)
-            => this.Do(b => b.ApplyForce(forceGetter(b), pointGetter(b)));
+            => this.Do(b =>
+            {
+                // Console.WriteLine($"{this.Id} => {forceGetter(b).Length().ToString("00.000")} => {b.LinearDamping} => {b.LinearVelocity.Length().ToString("00.000")}");
+                b.ApplyForce(forceGetter(b), pointGetter(b));
+            });
         #endregion
 
         #region FarseerChildEntity Implementation
