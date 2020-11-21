@@ -65,8 +65,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             base.Initialize(provider);
 
             // Clean the chain once the ship part is initialized
-            this.AngularDamping = 0.05f;
-            this.LinearDamping = 0.05f;
+            this.AngularDamping = 0.5f;
+            this.LinearDamping = 0.5f;
         }
 
         protected override void Release()

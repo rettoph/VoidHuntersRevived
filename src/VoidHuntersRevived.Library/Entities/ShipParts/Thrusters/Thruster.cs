@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Events.Delegates;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,12 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
     public class Thruster : RigidShipPart
     {
         #region Static Properties
-        public static Single StrengthAcceleration = 1f;
+        public static Single StrengthAcceleration { get; set; } = 1f;
+        public static Single ImpulseModifierEpsilon { get; set; } = 0.00001f;
+        #endregion
+
+        #region Private Fields
+        private Single _impulseModifier;
         #endregion
 
         #region Public Properties
@@ -23,9 +29,60 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         /// Indicates if the thruster was activeted this frame.
         /// </summary>
         public Boolean Active => this.Chain.Ship != default(Ship) && (this.Chain.Ship.ActiveDirections & this.Directions) != 0;
-        public Vector2 Thrust { get => Vector2.UnitX * 10f; }
-        public Single Strength { get; private set; }
-        public Vector2 LocalThrust { get => Vector2.Transform(this.Thrust, Matrix.CreateRotationZ(this.LocalRotation)); }
+
+        /// <summary>
+        /// The maximum force per second 
+        /// achievable by the current thruster.
+        /// </summary>
+        public Vector2 FullImpulse { get => Vector2.UnitX * 10f; }
+
+        /// <summary>
+        /// The multipier applied to FullImpulse in order to
+        /// calculate the current
+        /// </summary>
+        public Single ImpulseModifier
+        {
+            get => _impulseModifier;
+            set
+            {
+                if (_impulseModifier != value)
+                {
+                    if (_impulseModifier == 0)
+                    {
+                        _impulseModifier = value;
+                        this.OnImpulse?.Invoke(this, true);
+                    }
+                    else if (value <= Thruster.ImpulseModifierEpsilon)
+                    {
+                        _impulseModifier = 0;
+                        this.OnImpulse?.Invoke(this, false);
+                    }
+                    else
+                    {
+                        _impulseModifier = value;
+                    }
+                }
+                
+            }
+        }
+
+        /// <summary>
+        /// The current impulse applied by the thruster.
+        /// </summary>
+        public Vector2 Impulse => this.FullImpulse * this.ImpulseModifier;
+
+        /// <summary>
+        /// The local point at which impulse will be applied.
+        /// </summary>
+        public Vector2 LocalImpulsePoint { get => Vector2.Transform(this.FullImpulse, Matrix.CreateRotationZ(this.LocalRotation)); }
+        #endregion
+
+        #region Events
+        /// <summary>
+        /// indicates that the current thruster's impulse value
+        /// has changed from either nothing or anything.
+        /// </summary>
+        public event OnEventDelegate<Thruster, Boolean> OnImpulse;
         #endregion
 
         #region Lifecycle Methods
@@ -50,11 +107,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
             base.Update(gameTime);
 
             // Apply thrust to the internal fixture...
-            if (this.Active || this.Strength > 0)
-                this.Strength = MathHelper.Lerp(
-                    value1: this.Strength,
+            if (this.Active || this.ImpulseModifier > Thruster.ImpulseModifierEpsilon)
+            {
+                this.ImpulseModifier = MathHelper.Lerp(
+                    value1: this.ImpulseModifier,
                     value2: this.ApplyThrust(this.Root) ? 1 : 0,
                     amount: Thruster.StrengthAcceleration * (Single)gameTime.ElapsedGameTime.TotalSeconds);
+            }
         }
         #endregion
 
@@ -71,7 +130,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
             { // Only apply any thrust if the current thruster is active...
                 root.ApplyForce(
                     // Calculate the thrusters position on the recieved body...
-                    forceGetter: b => (this.Thrust * this.Strength).RotateTo(b.Rotation + this.LocalRotation),
+                    forceGetter: b => (this.FullImpulse * this.ImpulseModifier).RotateTo(b.Rotation + this.LocalRotation),
                     // Calculate the thrust's world force relative to the recieved body...
                     pointGetter: b => b.Position + Vector2.Transform(Vector2.Zero, this.LocalTransformation * Matrix.CreateRotationZ(b.Rotation)));
 
@@ -97,7 +156,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
             // The point acceleration is applied
             var ap = this.LocalCenter;
             // The point acceleration is targeting
-            var at = ap + this.LocalThrust;
+            var at = ap + this.LocalImpulsePoint;
 
             // The angle between the com and the acceleration point
             var apr = MathHelper.WrapAngle((float)Math.Atan2(ap.Y - com.Y, ap.X - com.X));

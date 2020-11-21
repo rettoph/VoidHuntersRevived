@@ -34,6 +34,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private ContentManager _content;
         private Texture2D[] _backgrounds;
         private SpriteBatch _spriteBatch;
+        private TrailService _trails;
 
         private Vector2 _viewportSize;
         private Rectangle _viewportBounds;
@@ -59,6 +60,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             provider.Service(out _content);
             provider.Service(out _spriteBatch);
             provider.Service(out _commands);
+            provider.Service(out _trails);
 
             _backgrounds = new Texture2D[]
             {
@@ -127,6 +129,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             base.Update(gameTime);
 
             _shipPartRenderService.Update(gameTime);
+
+            _trails.TryUpdate(gameTime);
         }
 
         protected override void PreDraw(GameTime gameTime)
@@ -149,6 +153,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                     SpriteEffects.None,
                     0);
             _spriteBatch.End();
+
+            _trails.TryDraw(gameTime);
         }
 
         private void DrawMaster(GameTime gameTime)

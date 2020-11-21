@@ -14,6 +14,7 @@ using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Events.Delegates;
 using VoidHuntersRevived.Client.Library.Services;
+using System.Drawing;
 
 namespace VoidHuntersRevived.Client.Library.Utilities
 {
@@ -22,103 +23,122 @@ namespace VoidHuntersRevived.Client.Library.Utilities
     /// Each segment represents a single point of 
     /// thrust the thruster passed.
     /// </summary>
-    internal sealed class Trail : Service
+    internal sealed class Trail : Frameable
     {
-        #region Static Fields
-        public static Double SegmentInterval { get; private set; } = 64;
+        #region Static Properties
+        /// <summary>
+        /// The maximum segment age (in seconds)
+        /// before it should be deleted.
+        /// </summary>
+        public static Double MaxSegmentAge = 10;
         #endregion
 
         #region Private Fields
-        private TrailService _trails;
         private ServiceProvider _provider;
+        private Single _top, _right, _bottom, _left;
         private Queue<TrailSegment> _segments;
-        private Int32 _expired;
-        private ActionTimer _segmentTimer;
-        private PrimitiveBatch _primitiveBatch;
-        private TrailSegment _live;
         #endregion
 
-        #region Internal Fields
-        internal TrailService trails => _trails;
-        internal Thruster thruster { get; set; }
+        #region Public Properties
+        public IReadOnlyCollection<TrailSegment> Segments => _segments;
+        public Thruster Thruster { get; internal set; }
+        public RectangleF Bounds => new RectangleF(
+            x: _left, 
+            y: _top, 
+            width: _right - _left, 
+            height: _bottom - _top);
         #endregion
 
-        #region Events
-        public event OnEventDelegate<Trail> OnDirty;
+        #region Constructors
+        internal Trail()
+        {
+
+        }
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
-            base.PreInitialize(provider);
+            base.Initialize(provider);
 
             _provider = provider;
-            provider.Service(out _trails);
-            provider.Service(out _primitiveBatch);
 
-            _segmentTimer = new ActionTimer(Trail.SegmentInterval);
             _segments = new Queue<TrailSegment>();
+            this.TryAddSegment(); // Add a segment on start...
+
+            this.Thruster.OnReleased += this.HandleThrusterReleased;
         }
 
-        protected override void PostInitialize(ServiceProvider provider)
+        protected override void Release()
         {
-            base.PostInitialize(provider);
+            base.Release();
 
-            _live = _provider.GetService<TrailSegment>().Initialize(this);
+            this.TryDisown();
         }
         #endregion
 
         #region Frame Methods
-        public void Update(GameTime gameTime)
+        protected override void Update(GameTime gameTime)
         {
-            _segmentTimer.Update(
-                gameTime: gameTime,
-                filter: t => t && this.thruster.Strength > 0.01f,
-                action: gt => _segments.Enqueue(_provider.GetService<TrailSegment>().Initialize(this)));
+            base.Update(gameTime);
 
-            _expired = 0;
-            _segments.ForEach(s =>
+            if (_segments.Any())
             {
-                s.Update(gameTime);
+                _segments.ForEach(segment =>
+                {
+                    segment.TryUpdate(gameTime);
 
-                if (s.Age > 2000)
-                    _expired++;
-            });
+                    _top    = Math.Min(_top   , segment.Position.Y);
+                    _right  = Math.Max(_right , segment.Position.X);
+                    _bottom = Math.Max(_bottom, segment.Position.Y);
+                    _left   = Math.Min(_left  , segment.Position.X);
+                });
 
-            if(_expired > 0)
-                for(var i=0; i< _expired; i++)
-                    _segments.Dequeue().Dispose();
-
-            if(_segments.Any())
-                this.OnDirty.Invoke(this);
-        }
-
-        public void Draw(GameTime gameTime)
-        {
-            TrailSegment _last, _cur = default(TrailSegment);
-            Int32 i = 0;
-
-            foreach (TrailSegment segment in _segments)
-            {
-                _last = _cur;
-                _cur = segment;
-
-                if (i > 0)
-                    this.DrawSegments(_last, _cur);
-
-                i++;
+                if (_segments.First().Age >= Trail.MaxSegmentAge)
+                    _segments.Dequeue().TryRelease();
             }
-
-            _live.Refresh();
-            _live.Update(gameTime);
-            this.DrawSegments(_cur, _live);
+            else // Auto dispose once no segments exist...
+                this.TryDispose();
         }
+        #endregion
 
-        private void DrawSegments(TrailSegment s1, TrailSegment s2)
+        #region Helper Methods
+        /// <summary>
+        /// Attempt to create a brand new segment 
+        /// based on the current trail's 
+        /// thruster's status.
+        /// </summary>
+        public void TryAddSegment()
         {
-            _primitiveBatch.DrawTriangle(s1.Color, s1.Port, s1.Color, s1.Starboard, s2.Color, s2.Starboard);
-            _primitiveBatch.DrawTriangle(s2.Color, s2.Starboard, s2.Color, s2.Port, s1.Color, s1.Port);
+            if(this.Thruster?.ImpulseModifier > Thruster.ImpulseModifierEpsilon)
+            { // Only add a segment if this trail is not orphan & applying thrust...
+                _segments.Enqueue(_provider.GetService<TrailSegment>((segment, p, c) =>
+                {
+
+                }));
+            }
         }
+
+        /// <summary>
+        /// Used when the owning thruster disowns
+        /// the current trail.
+        /// </summary>
+        internal void TryDisown()
+        {
+            if (this.Thruster != default)
+            { // Only proceed if the trail is not already an orphan...
+                // Remove all event handlers...
+                this.Thruster.OnReleased -= this.HandleThrusterReleased;
+
+                // Unbind the internal thruster, becoming an orphan
+                this.Thruster = null;
+            }
+        }
+        #endregion
+
+        #region Events
+        private void HandleThrusterReleased(IService sender)
+            => this.TryDisown();
         #endregion
     }
 }

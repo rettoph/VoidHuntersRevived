@@ -7,7 +7,7 @@ using System.Text;
 using VoidHuntersRevived.Client.Library.Services;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 
-namespace VoidHuntersRevived.Client.Library.Drivers.Entities
+namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
 {
     /// <summary>
     /// Primary driver responsible for rendering

@@ -74,7 +74,7 @@ namespace VoidHuntersRevived.Client.Library.Services
             }
         }
 
-        public void Draw(ShipPart shipPart)
+        internal void Draw(ShipPart shipPart)
         {
             _primitives[shipPart.Configuration].Shapes.ForEach(shape =>
             { // Draw all part shapes...
