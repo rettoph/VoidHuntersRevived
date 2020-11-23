@@ -4,6 +4,7 @@ using Guppy.Extensions.Collections;
 using Guppy.Extensions.System;
 using Guppy.Extensions.Utilities;
 using Guppy.Lists;
+using Guppy.Services;
 using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -22,14 +23,18 @@ namespace VoidHuntersRevived.Client.Library.Services
     public sealed class TrailService : Frameable
     {
         #region Private Fields
-        private ServiceList<Trail> _trails;
+        private FrameableList<Trail> _trails;
 
         private PrimitiveBatch _primitiveBatch;
         private FarseerCamera2D _camera;
+        private DebugService _debug;
+        private GameWindow _window;
+        private ContentService _content;
+        private GraphicsDevice _graphics;
 
         private ActionTimer _segmentTimer;
-
-        private DebugService _debug;
+        private RenderTarget2D _target;
+        private Effect _blur;
         #endregion
 
         #region Constructors
@@ -48,9 +53,15 @@ namespace VoidHuntersRevived.Client.Library.Services
             provider.Service(out _camera);
             provider.Service(out _trails);
             provider.Service(out _debug);
+            provider.Service(out _window);
+            provider.Service(out _content);
+            provider.Service(out _graphics);
 
-            _segmentTimer = new ActionTimer(150);
+            _blur = _content.Get<Effect>("effect:blur");
+
+            _segmentTimer = new ActionTimer(100);
             _debug.Lines += this.HandleDebugLines;
+            _window.ClientSizeChanged += this.HandleClientSizeChanged;
         }
         #endregion
 
@@ -64,27 +75,39 @@ namespace VoidHuntersRevived.Client.Library.Services
                 _trails.ForEach(trail => trail.TryAddSegment());
             });
 
-            _trails.ForEach(trail => trail.TryUpdate(gameTime));
+            _trails.TryUpdate(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
 
+            var targets = _graphics.GetRenderTargets();
+            _graphics.SetRenderTarget(_target);
+
+            // Draw the trails on our render target...
             _primitiveBatch.Begin(_camera, BlendState.AlphaBlend);
-            _trails.ForEach(t => t.TryDraw(gameTime));
+            _trails.TryDraw(gameTime);
             _primitiveBatch.End();
+
+            _graphics.SetRenderTargets(targets);
         }
         #endregion
 
         #region Helper Methods
         internal Trail BuildTrail(Thruster thruster)
             => _trails.Create<Trail>((trail, p, c) => trail.Thruster = thruster);
+
+        private void CleanTarget()
+            => _target = new RenderTarget2D(_graphics, _graphics.Viewport.Width, _graphics.Viewport.Height);
         #endregion
 
         #region Event Handlers
         private string HandleDebugLines(GameTime gameTime)
             => $"Trails: {_trails.Count.ToString("#,###,##0")}";
+
+        private void HandleClientSizeChanged(object sender, EventArgs e)
+            => this.CleanTarget();
         #endregion
     }
 }

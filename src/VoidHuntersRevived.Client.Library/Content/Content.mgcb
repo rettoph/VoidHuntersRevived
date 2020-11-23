@@ -96,3 +96,9 @@
 /processorParam:TextureFormat=Color
 /build:Sprites/background-3.png
 
+#begin Effects/GaussianBlur.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/GaussianBlur.fx
+

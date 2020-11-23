@@ -80,7 +80,7 @@ namespace VoidHuntersRevived.Client.Library.Services
             { // Draw all part shapes...
                 _primitiveBatch.DrawPrimitive(
                     shape,
-                    Color.Lerp(shipPart.Color, Color.TransparentBlack, 0.25f),
+                    Color.Lerp(shipPart.Color, Color.Transparent, 0.25f),
                     shipPart.WorldTransformation);
             });
 

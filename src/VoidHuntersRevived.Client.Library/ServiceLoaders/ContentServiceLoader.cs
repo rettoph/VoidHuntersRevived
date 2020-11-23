@@ -26,6 +26,8 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                 content.TryRegister("sprite:background:1", "Sprites/background-1");
                 content.TryRegister("sprite:background:2", "Sprites/background-2");
                 content.TryRegister("sprite:background:3", "Sprites/background-3");
+
+                content.TryRegister("effect:blur", "Effects/GaussianBlur");
             });
         }
 

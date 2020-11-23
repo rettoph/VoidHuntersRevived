@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="echo D|xcopy /E /Y /R &quot;$(SolutionDir)src\VoidHuntersRevived.Client.Library\Content\bin\DesktopGL&quot; &quot;Content\&quot;" />
+    <Exec Command="echo D|xcopy /E /Y /R &quot;$(SolutionDir)src\VoidHuntersRevived.Client.Library\Content\bin\DesktopGL&quot; &quot;$(TargetDir)\Content\&quot;" />
   </Target>
 
 </Project>

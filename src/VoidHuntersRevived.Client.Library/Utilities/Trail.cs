@@ -15,6 +15,12 @@ using Guppy.Extensions.DependencyInjection;
 using Guppy.Events.Delegates;
 using VoidHuntersRevived.Client.Library.Services;
 using System.Drawing;
+using Guppy.Utilities.Primitives;
+
+using Color = Microsoft.Xna.Framework.Color;
+using Guppy.Extensions.System;
+using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
+using Guppy.Extensions.Utilities;
 
 namespace VoidHuntersRevived.Client.Library.Utilities
 {
@@ -35,8 +41,11 @@ namespace VoidHuntersRevived.Client.Library.Utilities
 
         #region Private Fields
         private ServiceProvider _provider;
+        private PrimitiveBatch _primitiveBatch;
+
         private Single _top, _right, _bottom, _left;
         private Queue<TrailSegment> _segments;
+        private TrailSegment _youngestSegment;
         #endregion
 
         #region Public Properties
@@ -57,6 +66,13 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         #endregion
 
         #region Lifecycle Methods
+        protected override void Create(ServiceProvider provider)
+        {
+            base.Create(provider);
+
+            provider.Service(out _primitiveBatch);
+        }
+
         protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
@@ -84,6 +100,11 @@ namespace VoidHuntersRevived.Client.Library.Utilities
 
             if (_segments.Any())
             {
+                _top = Single.MaxValue;
+                _right = 0;
+                _bottom = 0;
+                _left = Single.MaxValue;
+
                 _segments.ForEach(segment =>
                 {
                     segment.TryUpdate(gameTime);
@@ -95,11 +116,50 @@ namespace VoidHuntersRevived.Client.Library.Utilities
                 });
 
                 if (_segments.First().Age >= Trail.MaxSegmentAge)
+                {
                     _segments.Dequeue().TryRelease();
+
+                    // Auto release once all segments have expired.
+                    if(!_segments.Any())
+                        this.TryRelease();
+                }
             }
-            else // Auto dispose once no segments exist...
-                this.TryDispose();
+            else // Auto release once no segments exist...
+                this.TryRelease();
         }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            foreach(TrailSegment segment in _segments.Skip(1))
+            {
+                segment.TryDraw(gameTime);
+            }
+
+            if (this.Thruster != default)
+            {
+                var color = Color.Lerp(Color.Transparent, this.Thruster.Color, this.Thruster.ImpulseModifier * 0.6f);
+                _primitiveBatch.DrawTriangle(Color.Transparent, _youngestSegment.Port, color, this.Thruster.Position, _youngestSegment.Color, _youngestSegment.Position);
+                _primitiveBatch.DrawTriangle(Color.Transparent, _youngestSegment.Starboard, _youngestSegment.Color, _youngestSegment.Position, color, this.Thruster.Position);
+            }
+        }
+
+        // protected override void DebugDraw(GameTime gameTime)
+        // {
+        //     base.Draw(gameTime);
+        // 
+        //     Trail.LastSegment = _segments.First();
+        // 
+        //     foreach (TrailSegment segment in _segments.Skip(1))
+        //     {
+        //         _primitiveBatch.DrawLine(segment.Color, Trail.LastSegment.Position, segment.Position);
+        //         _primitiveBatch.DrawLine(segment.Color, segment.Position + segment.StarboardSpread, segment.Position + segment.PortSpread);
+        //         Trail.LastSegment = segment;
+        //     }
+        // 
+        //     _primitiveBatch.DrawRectangleF(Color.Red, this.Bounds);
+        // }
         #endregion
 
         #region Helper Methods
@@ -112,9 +172,14 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         {
             if(this.Thruster?.ImpulseModifier > Thruster.ImpulseModifierEpsilon)
             { // Only add a segment if this trail is not orphan & applying thrust...
-                _segments.Enqueue(_provider.GetService<TrailSegment>((segment, p, c) =>
+                _segments.Enqueue(_youngestSegment = _provider.GetService<TrailSegment>((segment, p, c) =>
                 {
-
+                    segment.Position = this.Thruster.Position;
+                    segment.Velocity = (this.Thruster.Root.LinearVelocity + Thruster.FullImpulse.RotateTo(this.Thruster.Rotation + MathHelper.Pi)) / 2;
+                    segment.Rotation = this.Thruster.Rotation;
+                    segment.BaseColor = Color.Lerp(Color.Transparent, this.Thruster.Color, this.Thruster.ImpulseModifier * 0.6f);
+                    segment.SpreadModifier = this.Thruster.ImpulseModifier;
+                    segment.OlderSibling = _youngestSegment;
                 }));
             }
         }

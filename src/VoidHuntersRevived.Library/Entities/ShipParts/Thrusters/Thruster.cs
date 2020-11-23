@@ -47,15 +47,18 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
             {
                 if (_impulseModifier != value)
                 {
-                    if (_impulseModifier == 0)
+                    if (value <= Thruster.ImpulseModifierEpsilon)
+                    {
+                        if(_impulseModifier != 0)
+                        {
+                            _impulseModifier = 0;
+                            this.OnImpulse?.Invoke(this, false);
+                        }
+                    }
+                    else if (_impulseModifier == 0)
                     {
                         _impulseModifier = value;
                         this.OnImpulse?.Invoke(this, true);
-                    }
-                    else if (value <= Thruster.ImpulseModifierEpsilon)
-                    {
-                        _impulseModifier = 0;
-                        this.OnImpulse?.Invoke(this, false);
                     }
                     else
                     {
@@ -130,7 +133,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
             { // Only apply any thrust if the current thruster is active...
                 root.ApplyForce(
                     // Calculate the thrusters position on the recieved body...
-                    forceGetter: b => (this.FullImpulse * this.ImpulseModifier).RotateTo(b.Rotation + this.LocalRotation),
+                    forceGetter: b => this.Impulse.RotateTo(b.Rotation + this.LocalRotation),
                     // Calculate the thrust's world force relative to the recieved body...
                     pointGetter: b => b.Position + Vector2.Transform(Vector2.Zero, this.LocalTransformation * Matrix.CreateRotationZ(b.Rotation)));
 

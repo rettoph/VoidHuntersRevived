@@ -1,6 +1,7 @@
 ﻿using Guppy;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -13,9 +14,40 @@ namespace VoidHuntersRevived.Client.Library.Utilities
 {
     internal sealed class TrailSegment : Frameable
     {
+        #region Static Properties
+        /// <summary>
+        /// The amount a single trail segment should spread 
+        /// per second.
+        /// </summary>
+        public static Single Spread { get; set; } = 4;
+        #endregion
+
+        #region Private Fields
+        /// <summary>
+        /// The relative spread valud calculated based on the 
+        /// current segment orientation.
+        /// </summary>
+        private Vector2 _spread;
+
+        private PrimitiveBatch _primitiveBatch;
+
+        private static Int32 _index;
+        #endregion
+
         #region Public Properties
         public Double Age { get; private set; }
-        public Vector2 Position { get; private set; }
+        public Vector2 Position { get; internal set; }
+        public Vector2 Velocity { get; internal set; }
+        public Single Rotation { get; internal set; }
+        public Color BaseColor { get; internal set; }
+        public Single SpreadModifier { get; internal set; }
+        public TrailSegment OlderSibling { get; internal set; }
+
+        public Color Color { get; private set; }
+        public Vector2 StarboardSpread { get; private set; }
+        public Vector2 PortSpread { get; private set; }
+        public Vector2 Starboard { get; private set; }
+        public Vector2 Port { get; private set; }
         #endregion
 
         #region Constructors
@@ -25,12 +57,66 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         }
         #endregion
 
+        #region Lifecycle Methods
+        protected override void Create(ServiceProvider provider)
+        {
+            base.Create(provider);
+
+            provider.Service(out _primitiveBatch);
+        }
+
+        protected override void Initialize(ServiceProvider provider)
+        {
+            base.Initialize(provider);
+
+            this.Age = 0;
+            this.StarboardSpread = Vector2.Zero;
+            this.PortSpread = Vector2.Zero;
+
+            _spread = Vector2.Transform(Vector2.UnitX * TrailSegment.Spread * this.SpreadModifier, Matrix.CreateRotationZ(this.Rotation + MathHelper.PiOver2));
+        }
+        #endregion
+
         #region Frame Methods
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
             this.Age += gameTime.ElapsedGameTime.TotalSeconds;
+            this.Position += this.Velocity * (Single)gameTime.ElapsedGameTime.TotalSeconds;
+
+            this.StarboardSpread += _spread * (Single)gameTime.ElapsedGameTime.TotalSeconds;
+            this.PortSpread -= _spread * (Single)gameTime.ElapsedGameTime.TotalSeconds;
+
+            this.Starboard = this.Position + this.StarboardSpread;
+            this.Port = this.Position + this.PortSpread;
+
+            this.Color = Color.Lerp(this.BaseColor, Color.Transparent, Math.Min(1, (Single)(this.Age * 2 / Trail.MaxSegmentAge)));
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            _primitiveBatch.DrawTriangle(Color.Transparent, this.OlderSibling.Port, this.Color, this.Position, this.OlderSibling.Color, this.OlderSibling.Position);
+            _primitiveBatch.DrawTriangle(Color.Transparent, this.OlderSibling.Starboard, this.OlderSibling.Color, this.OlderSibling.Position, this.Color, this.Position);
+
+            _primitiveBatch.DrawTriangle(Color.Transparent, this.Port, this.Color, this.Position, Color.Transparent, this.OlderSibling.Port);
+            _primitiveBatch.DrawTriangle(this.Color, this.Position, Color.Transparent, this.Starboard, Color.Transparent, this.OlderSibling.Starboard);
+        
+            // if((_index & 1) != 0)
+            // {
+            //     _primitiveBatch.DrawLine(Color.Red, this.OlderSibling.Position, this.Position);
+            //     _primitiveBatch.DrawLine(Color.Red, this.OlderSibling.Port, this.Port);
+            //     _primitiveBatch.DrawLine(Color.Red, this.OlderSibling.Starboard, this.Starboard);
+            // }
+            // else
+            // {
+            //     _primitiveBatch.DrawLine(Color.Green, this.OlderSibling.Position, this.Position);
+            //     _primitiveBatch.DrawLine(Color.Green, this.OlderSibling.Port, this.Port);
+            //     _primitiveBatch.DrawLine(Color.Green, this.OlderSibling.Starboard, this.Starboard);
+            // }
+            _index++;
         }
         #endregion
     }

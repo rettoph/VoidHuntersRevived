@@ -70,7 +70,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             };
 
             _camera.MinZoom = 0.025f;
-            _camera.MaxZoom = 0.5f;
+            _camera.MaxZoom = 2f;
 
             // Pre world updates (Cursor) 
             this.Layers.Create<GameLayer>((l, p, c) =>
