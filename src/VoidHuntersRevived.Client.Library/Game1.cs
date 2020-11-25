@@ -32,8 +32,10 @@ namespace VoidHuntersRevived.Client.Library
             this.graphics.PreparingDeviceSettings += (s, e) =>
             {
                 e.GraphicsDeviceInformation.PresentationParameters.PresentationInterval = PresentInterval.Immediate;
+                e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
             };
             this.graphics.SynchronizeWithVerticalRetrace = false;
+            this.graphics.GraphicsProfile = GraphicsProfile.HiDef;
             this.graphics.ApplyChanges();
         }
 

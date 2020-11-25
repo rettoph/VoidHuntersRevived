@@ -49,19 +49,20 @@ namespace VoidHuntersRevived.Client.Library
 
             _client.TryConnect("localhost", 1337, user);
 
-            new Thread(new ThreadStart(() =>
-            {
-                while (true)
+            if(Console.Read() != -1)
+                new Thread(new ThreadStart(() =>
                 {
-                    var input = Console.ReadLine();
+                    while (true)
+                    {
+                        var input = Console.ReadLine();
 
-                    Console.SetCursorPosition(0, Console.CursorTop - 1);
-                    Console.Write(new string(' ', Console.WindowWidth));
-                    Console.SetCursorPosition(0, Console.CursorTop);
+                        Console.SetCursorPosition(0, Console.CursorTop - 1);
+                        Console.Write(new string(' ', Console.WindowWidth));
+                        Console.SetCursorPosition(0, Console.CursorTop);
 
-                    _commands.TryExecute(input);
-                }
-            })).Start();
+                        _commands.TryExecute(input);
+                    }
+                })).Start();
         }
 
         protected override void Initialize(ServiceProvider provider)

@@ -37,6 +37,8 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         /// before it should be deleted.
         /// </summary>
         public static Double MaxSegmentAge = 10;
+
+        private static Single MaxColorMultiplier = 0.3f;
         #endregion
 
         #region Private Fields
@@ -139,9 +141,9 @@ namespace VoidHuntersRevived.Client.Library.Utilities
 
             if (this.Thruster != default)
             {
-                var color = Color.Lerp(Color.Transparent, this.Thruster.Color, this.Thruster.ImpulseModifier * 0.6f);
-                _primitiveBatch.DrawTriangle(Color.Transparent, _youngestSegment.Port, color, this.Thruster.Position, _youngestSegment.Color, _youngestSegment.Position);
-                _primitiveBatch.DrawTriangle(Color.Transparent, _youngestSegment.Starboard, _youngestSegment.Color, _youngestSegment.Position, color, this.Thruster.Position);
+                var color = Color.Lerp(Color.Transparent, this.Thruster.Color, this.Thruster.ImpulseModifier * Trail.MaxColorMultiplier);
+                _primitiveBatch.DrawTriangle(_youngestSegment.Color, _youngestSegment.Port, color, this.Thruster.Position, _youngestSegment.Color, _youngestSegment.Position);
+                _primitiveBatch.DrawTriangle(_youngestSegment.Color, _youngestSegment.Starboard, _youngestSegment.Color, _youngestSegment.Position, color, this.Thruster.Position);
             }
         }
 
@@ -175,9 +177,9 @@ namespace VoidHuntersRevived.Client.Library.Utilities
                 _segments.Enqueue(_youngestSegment = _provider.GetService<TrailSegment>((segment, p, c) =>
                 {
                     segment.Position = this.Thruster.Position;
-                    segment.Velocity = (this.Thruster.Root.LinearVelocity + Thruster.FullImpulse.RotateTo(this.Thruster.Rotation + MathHelper.Pi)) / 2;
+                    segment.Velocity = (this.Thruster.Root.LinearVelocity + Thruster.FullImpulse.RotateTo(this.Thruster.Rotation + MathHelper.Pi)) / 2.5f;
                     segment.Rotation = this.Thruster.Rotation;
-                    segment.BaseColor = Color.Lerp(Color.Transparent, this.Thruster.Color, this.Thruster.ImpulseModifier * 0.6f);
+                    segment.BaseColor = Color.Lerp(Color.Transparent, this.Thruster.Color, this.Thruster.ImpulseModifier * Trail.MaxColorMultiplier);
                     segment.SpreadModifier = this.Thruster.ImpulseModifier;
                     segment.OlderSibling = _youngestSegment;
                 }));

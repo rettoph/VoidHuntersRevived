@@ -107,7 +107,7 @@ namespace VoidHuntersRevived.Library.Scenes
                 while (this.dirtyEntities.Any())
                 { // Attempt to clean all dirty entities as needed...
                     _entity = this.dirtyEntities.Dequeue();
-                    this.group.Messages.Create(NetDeliveryMethod.Unreliable, 11).Then(om =>
+                    this.group.Messages.Create(NetDeliveryMethod.Unreliable, 0).Then(om =>
                     { // Build a new update message...
                         _entity.MessageHandlers[MessageType.Update].TryWrite(om);
                     });

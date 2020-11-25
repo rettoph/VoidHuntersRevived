@@ -13,19 +13,17 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Fonts/Biome-Normal.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:Fonts/Biome-Normal.spritefont
+#begin Effects/Bloom.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/Bloom.fx
 
-#begin Fonts/BiomeLight-Normal.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:Fonts/BiomeLight-Normal.spritefont
+#begin Effects/GaussianBlur.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/GaussianBlur.fx
 
 #begin Fonts/BiomeBold-Big.spritefont
 /importer:FontDescriptionImporter
@@ -41,6 +39,13 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/BiomeLight-Big.spritefont
 
+#begin Fonts/BiomeLight-Normal.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/BiomeLight-Normal.spritefont
+
 #begin Fonts/BiomeLight-Small.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -48,17 +53,12 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/BiomeLight-Small.spritefont
 
-#begin Sprites/icon2alpha.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
+#begin Fonts/Biome-Normal.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Sprites/icon2alpha.png
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Biome-Normal.spritefont
 
 #begin Sprites/background-1.png
 /importer:TextureImporter
@@ -96,9 +96,15 @@
 /processorParam:TextureFormat=Color
 /build:Sprites/background-3.png
 
-#begin Effects/GaussianBlur.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/GaussianBlur.fx
+#begin Sprites/icon2alpha.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Sprites/icon2alpha.png
 

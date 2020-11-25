@@ -112,7 +112,7 @@ namespace VoidHuntersRevived.Library.Entities
             this.Do(shipPart, sp =>
             {
                 // Remove from old chain (if any)...
-                if(!sp.Chain?.Remove(shipPart, this) ?? true);
+                if(!sp.Chain?.Remove(shipPart, this) ?? true)
                     sp.Chain = this; // Set the internal chain values...
             });
 

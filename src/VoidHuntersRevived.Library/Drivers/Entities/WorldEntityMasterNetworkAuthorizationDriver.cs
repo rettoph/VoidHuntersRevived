@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
         #region Event Handlers
         private void HandleSizeChanged(WorldEntity sender, Vector2 arg)
-            => this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 2).Write("update:size", m =>
+            => this.driven.Actions.Create(NetDeliveryMethod.ReliableOrdered, 2).Write("update:size", m =>
             {
                 m.Write(this.driven.Size);
             });

@@ -261,9 +261,12 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         private void CleanCollision()
         {
             // Automatically set the weapons collision values to match the root.
-            this.CollidesWith = this.Root.CollidesWith;
-            this.CollisionCategories = this.Root.CollisionCategories;
-            this.IgnoreCCDWith = this.Root.IgnoreCCDWith;
+            if (!this.IsRoot)
+            {
+                this.CollidesWith = this.Root.CollidesWith;
+                this.CollisionCategories = this.Root.CollisionCategories;
+                this.IgnoreCCDWith = this.Root.IgnoreCCDWith;
+            }
         }
 
         /// <summary>

@@ -78,7 +78,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
                 this.driven.Ship.Target = _sensor.Position;
                 _targetSender.Update(gameTime, gt =>
                 { // Attempt to send the newest target value...
-                    this.WriteUpdateShipTargetRequest(this.driven.Actions.Create(NetDeliveryMethod.Unreliable, 8));
+                    this.WriteUpdateShipTargetRequest(this.driven.Actions.Create(NetDeliveryMethod.Unreliable, 0));
                 });
 
                 // Update camera position...
@@ -101,7 +101,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
 
             if (response.Type != TractorBeam.ActionType.None)
                 this.WriteShipTractorBeamActionRequest(
-                    om: this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 10),
+                    om: this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 0),
                     action: response);
         }
 
@@ -109,7 +109,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
         {
             if (this.driven.Ship.TrySetDirection(direction, value))
             { // If successful, broadcast a message request...
-                this.WriteUpdateShipDirectionRequest(this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 7), direction, value);
+                this.WriteUpdateShipDirectionRequest(this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 0), direction, value);
             }
         }
         #endregion

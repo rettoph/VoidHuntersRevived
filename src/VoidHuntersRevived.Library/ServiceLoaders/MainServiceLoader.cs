@@ -9,12 +9,16 @@ using Guppy.IO.Commands;
 using Guppy.IO.Commands.Services;
 using Guppy.IO.Extensions.log4net;
 using Guppy.Lists;
+using Guppy.Network.Peers;
+using Guppy.Utilities;
+using Lidgren.Network;
 using log4net;
 using log4net.Appender;
 using log4net.Core;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
@@ -116,6 +120,35 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                             Level = Level.Verbose
                         });
                     });
+
+            services.AddSetup<NetPeerConfiguration>((config, p, c) =>
+            {
+                config.LocalAddress = IPAddress.Parse("::1");
+                // EnumHelper.GetValues<NetIncomingMessageType>().ForEach(mt => config.EnableMessageType(mt));
+            });
+
+            // services.AddSetup<Peer>((peer, p, c) =>
+            // {
+            //     EnumHelper.GetValues<NetIncomingMessageType>().ForEach(mt =>
+            //     {
+            //         peer.MessageTypeDelegates[mt] += m =>
+            //         {
+            //             switch (m.MessageType)
+            //             {
+            //                 case NetIncomingMessageType.WarningMessage:
+            //                 case NetIncomingMessageType.ErrorMessage:
+            //                 case NetIncomingMessageType.DebugMessage:
+            //                 case NetIncomingMessageType.VerboseDebugMessage:
+            //                 case NetIncomingMessageType.Error:
+            //                     Console.WriteLine($"{m.MessageType}: {m.ReadString()}");
+            //                     break;
+            //                 default:
+            //                     Console.WriteLine(m.MessageType);
+            //                     break;
+            //             }
+            //         };
+            //     });
+            // });
         }
 
         public void ConfigureProvider(Guppy.DependencyInjection.ServiceProvider provider)

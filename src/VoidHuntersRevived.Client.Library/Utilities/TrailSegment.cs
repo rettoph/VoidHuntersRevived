@@ -30,8 +30,6 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         private Vector2 _spread;
 
         private PrimitiveBatch _primitiveBatch;
-
-        private static Int32 _index;
         #endregion
 
         #region Public Properties
@@ -98,25 +96,43 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         {
             base.Draw(gameTime);
 
-            _primitiveBatch.DrawTriangle(Color.Transparent, this.OlderSibling.Port, this.Color, this.Position, this.OlderSibling.Color, this.OlderSibling.Position);
-            _primitiveBatch.DrawTriangle(Color.Transparent, this.OlderSibling.Starboard, this.OlderSibling.Color, this.OlderSibling.Position, this.Color, this.Position);
+            _primitiveBatch.DrawTriangle(
+                c1: this.OlderSibling.Color,
+                p1: this.OlderSibling.Starboard,
+                c2: this.OlderSibling.Color,
+                p2: this.OlderSibling.Position,
+                c3: this.Color,
+                p3: this.Position);
 
-            _primitiveBatch.DrawTriangle(Color.Transparent, this.Port, this.Color, this.Position, Color.Transparent, this.OlderSibling.Port);
-            _primitiveBatch.DrawTriangle(this.Color, this.Position, Color.Transparent, this.Starboard, Color.Transparent, this.OlderSibling.Starboard);
-        
-            // if((_index & 1) != 0)
-            // {
-            //     _primitiveBatch.DrawLine(Color.Red, this.OlderSibling.Position, this.Position);
-            //     _primitiveBatch.DrawLine(Color.Red, this.OlderSibling.Port, this.Port);
-            //     _primitiveBatch.DrawLine(Color.Red, this.OlderSibling.Starboard, this.Starboard);
-            // }
-            // else
-            // {
-            //     _primitiveBatch.DrawLine(Color.Green, this.OlderSibling.Position, this.Position);
-            //     _primitiveBatch.DrawLine(Color.Green, this.OlderSibling.Port, this.Port);
-            //     _primitiveBatch.DrawLine(Color.Green, this.OlderSibling.Starboard, this.Starboard);
-            // }
-            _index++;
+            _primitiveBatch.DrawTriangle(
+                c1: this.Color,
+                p1: this.Starboard,
+                c2: this.OlderSibling.Color,
+                p2: this.OlderSibling.Starboard,
+                c3: this.Color,
+                p3: this.Position);
+
+            _primitiveBatch.DrawTriangle(
+                c1: this.OlderSibling.Color,
+                p1: this.OlderSibling.Port,
+                c2: this.Color,
+                p2: this.Position,
+                c3: this.OlderSibling.Color,
+                p3: this.OlderSibling.Position);
+
+            _primitiveBatch.DrawTriangle(
+                c1: this.Color,
+                p1: this.Port,
+                c2: this.Color,
+                p2: this.Position,
+                c3: this.OlderSibling.Color,
+                p3: this.OlderSibling.Port);
+
+            // _primitiveBatch.DrawTriangle(Color.Transparent, this.OlderSibling.Port, this.Color, this.Position, this.OlderSibling.Color, this.OlderSibling.Position);
+            // _primitiveBatch.DrawTriangle(Color.Transparent, this.OlderSibling.Starboard, this.OlderSibling.Color, this.OlderSibling.Position, this.Color, this.Position);
+            // 
+            // _primitiveBatch.DrawTriangle(Color.Transparent, this.Port, this.Color, this.Position, Color.Transparent, this.OlderSibling.Port);
+            // _primitiveBatch.DrawTriangle(this.Color, this.Position, Color.Transparent, this.Starboard, Color.Transparent, this.OlderSibling.Starboard);
         }
         #endregion
     }
