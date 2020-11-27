@@ -7,15 +7,18 @@ using Guppy.IO.Commands.Services;
 using Guppy.IO.Input;
 using Guppy.IO.Services;
 using Guppy.LayerGroups;
+using Guppy.Services;
 using Guppy.UI.Entities;
 using Guppy.UI.Layers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using VoidHuntersRevived.Client.Library.Effects;
 using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Client.Library.Enums;
 using VoidHuntersRevived.Client.Library.Services;
+using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Layers;
 using VoidHuntersRevived.Library.Scenes;
@@ -31,7 +34,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private GraphicsDevice _graphics;
         private FarseerCamera2D _camera;
         private MouseService _mouse;
-        private ContentManager _content;
+        private ContentService _content;
         private Texture2D[] _backgrounds;
         private SpriteBatch _spriteBatch;
         private TrailService _trails;
@@ -45,6 +48,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private Boolean _renderSlave;
 
         private CommandService _commands;
+
+        private GaussianBlurFilter _blur;
         #endregion
 
         #region Lifecycle Methods
@@ -61,6 +66,11 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             provider.Service(out _spriteBatch);
             provider.Service(out _commands);
             provider.Service(out _trails);
+
+            _blur = new GaussianBlurFilter(provider);
+            _window.ClientSizeChanged += this.HandleClientSizeChanged;
+
+            this.CleanEffects();
 
             _backgrounds = new Texture2D[]
             {
@@ -110,6 +120,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             });
 
             this.CleanViewport();
+            this.CleanEffects();
         }
 
         protected override void Release()
@@ -138,23 +149,53 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             base.PreDraw(gameTime);
 
             _camera.TryClean(gameTime);
-            _graphics.Clear(Color.Black);
 
+            _graphics.Clear(Color.Transparent);
+
+            _blur.Start();
             _spriteBatch.Begin(samplerState: SamplerState.LinearWrap, blendState: BlendState.AlphaBlend);
+
             for (Int32 i = 0; i < _backgrounds.Length; i++)
                 _spriteBatch.Draw(
-                    _backgrounds[i],
-                    _viewportSize + new Vector2(-_camera.Position.X * i % _backgrounds[i].Width, -_camera.Position.Y * i % _backgrounds[0].Height),
-                    _viewportBounds,
-                    Color.White,
-                    0,
-                    Vector2.Zero,
-                    1f,
-                    SpriteEffects.None,
-                    0);
+                    texture: _backgrounds[i],
+                    position: _viewportSize + new Vector2(-_camera.Position.X * i % _backgrounds[i].Width, -_camera.Position.Y * i % _backgrounds[0].Height),
+                    sourceRectangle: _viewportBounds,
+                    color: Color.White,
+                    rotation: 0,
+                    origin: Vector2.Zero,
+                    scale: 1f,
+                    effects: SpriteEffects.None,
+                    layerDepth: 0);
+
+            _spriteBatch.End();
+            _blur.End();
+
+            _spriteBatch.Begin(samplerState: SamplerState.LinearWrap, blendState: BlendState.AlphaBlend);
+
+            for (Int32 i = 0; i < _backgrounds.Length; i++)
+                _spriteBatch.Draw(
+                    texture: _backgrounds[i],
+                    position: _viewportSize + new Vector2(-_camera.Position.X * i % _backgrounds[i].Width, -_camera.Position.Y * i % _backgrounds[0].Height),
+                    sourceRectangle: _viewportBounds,
+                    color: Color.White,
+                    rotation: 0,
+                    origin: Vector2.Zero,
+                    scale: 1f,
+                    effects: SpriteEffects.None,
+                    layerDepth: 0);
+
             _spriteBatch.End();
 
             _trails.TryDraw(gameTime);
+
+            // _blur.Start();
+        }
+
+        protected override void PostDraw(GameTime gameTime)
+        {
+            base.PostDraw(gameTime);
+
+            // _blur.End();
         }
 
         private void DrawMaster(GameTime gameTime)
@@ -169,6 +210,15 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         {
             _viewportBounds = new Rectangle(_graphics.Viewport.Width, -_graphics.Viewport.Height, _graphics.Viewport.Width * 3, _graphics.Viewport.Height * 3);
             _viewportSize = new Vector2(-_graphics.Viewport.Width, -_graphics.Viewport.Height);
+
+            this.CleanEffects();
+        }
+
+        private void CleanEffects()
+        {
+            _blur.Resolution = _graphics.Viewport.Bounds.Size;
+            _blur.StreakLength = 2f;
+            _blur.Passes = 1;
         }
         #endregion
 

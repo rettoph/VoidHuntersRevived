@@ -42,6 +42,13 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters
 
             this.driven.OnImpulse += this.HandleDrivenImpulse;
         }
+
+        protected override void Release(Thruster driven)
+        {
+            base.Release(driven);
+
+            this.driven.OnImpulse -= this.HandleDrivenImpulse;
+        }
         #endregion
 
         #region Event Methods

@@ -21,20 +21,30 @@ SamplerState SpriteTextureSampler = sampler_state
 	AddressV = CLAMP;
 };
 
-float InverseHeight;
-float InverseWidth;
-float Strength;
+float2 InverseResolution;
+float StreakLength;
+
+static const float Kernel[5] =
+{
+	1.0 / 24.0,
+	4.0 / 24.0,
+	6.0 / 24.0,
+	4.0 / 24.0,
+	1.0 / 24.0
+};
 
 
 float4 VerticalePS(float2 Coords : TEXCOORD0) : COLOR
 {	
 	float4 color = 0;
 	
-	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + (float2(00, -2) * Strength) * InverseHeight) * 0.0625;
-	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + (float2(00, -1) * Strength) * InverseHeight) * 0.25;
-	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + (float2(00, 00) * Strength) * InverseHeight) * 0.375;
-	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + (float2(00, 01) * Strength) * InverseHeight) * 0.25;
-	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + (float2(00, 02) * Strength) * InverseHeight) * 0.0625;
+	float2 offset = float2(StreakLength * InverseResolution.x, StreakLength * InverseResolution.y);
+	
+	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + float2(00, -2) * offset) * Kernel[0];
+	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + float2(00, -1) * offset) * Kernel[1];
+	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + float2(00, 00) * offset) * Kernel[2];
+	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + float2(00, 01) * offset) * Kernel[3];
+	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + float2(00, 02) * offset) * Kernel[4];
 	
 	return color;
 }
@@ -43,11 +53,13 @@ float4 HorizontalPS(float2 Coords : TEXCOORD0) : COLOR
 {
 	float4 color = 0;
 	
-	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + (float2(-2, 00) * Strength) * InverseWidth) * 0.0625;
-	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + (float2(-1, 00) * Strength) * InverseWidth) * 0.25;
-	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + (float2(00, 00) * Strength) * InverseWidth) * 0.375;
-	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + (float2(01, 00) * Strength) * InverseWidth) * 0.25;
-	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + (float2(02, 00) * Strength) * InverseWidth) * 0.0625;
+	float2 offset = float2(StreakLength * InverseResolution.x, StreakLength * InverseResolution.y);
+	
+	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + float2(-2, 00) * offset) * Kernel[0];
+	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + float2(-1, 00) * offset) * Kernel[1];
+	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + float2(00, 00) * offset) * Kernel[2];
+	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + float2(01, 00) * offset) * Kernel[3];
+	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + float2(02, 00) * offset) * Kernel[4];
 	
 	return color;
 }
@@ -56,10 +68,10 @@ technique SpriteDrawing
 {
 	pass P0
 	{
-		PixelShader = compile PS_SHADERMODEL VerticalePS();
+		PixelShader = compile PS_SHADERMODEL HorizontalPS();
 	}
 	pass P1
 	{
-		PixelShader = compile PS_SHADERMODEL HorizontalPS();
+		PixelShader = compile PS_SHADERMODEL VerticalePS();
 	}
 };

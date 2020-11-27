@@ -5,6 +5,7 @@ using Guppy.Interfaces;
 using Guppy.LayerGroups;
 using Guppy.Lists;
 using Guppy.Network.Peers;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Client.Library.Drivers.Entities;
 using VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers;
@@ -42,6 +43,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddFactory<DebugService>(p => new DebugService());
             services.AddFactory<ShipPartRenderService>(p => new ShipPartRenderService());
             services.AddFactory<GameLayer>(factory: p => new ClientGameLayer(), priority: 1);
+            services.AddFactory<RenderTarget2DManager>(p => new RenderTarget2DManager(p.GetService<GraphicsDevice>(), p.GetService<GameWindow>()));
 
             // Configure service lifetimes...
             services.AddScoped<FarseerCamera2D>();
@@ -52,6 +54,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddSingleton<FrameableList<Trail>>();
             services.AddSingleton<DebugService>();
             services.AddScoped<ShipPartRenderService>();
+            services.AddTransient<RenderTarget2DManager>();
 
             services.AddGame<ClientVoidHuntersRevivedGame>(p => new ClientVoidHuntersRevivedGame());
             services.AddScene<GameScene>(p => new ClientGameScene(), 1);
