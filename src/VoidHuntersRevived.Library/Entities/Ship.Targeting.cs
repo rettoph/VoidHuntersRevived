@@ -1,10 +1,10 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Events.Delegates;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.ShipParts;
-using VoidHuntersRevived.Library.Events;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -15,43 +15,30 @@ namespace VoidHuntersRevived.Library.Entities
     public partial class Ship
     {
         #region Private Fields
+        /// <summary>
+        /// The private field referencing the current 
+        /// ship's world position target.
+        /// </summary>
         private Vector2 _target;
         #endregion
 
         #region Public Properties
         /// <summary>
-        /// The calculated world position of the ship's current
-        /// target.
+        /// The current ship's world position target.
         /// </summary>
         public Vector2 Target
         {
             get => _target;
-            set
-            {
-                this.TryInvokeEvent(new ShipEventArgs()
-                {
-                    Type = ShipEventType.Target,
-                    TargetData = value
-                });
-            }
+            set => this.OnTargetChanged.InvokeIfChanged(_target != value, this, ref _target, value);
         }
         #endregion
 
-        #region Lifecycle Methods
-        private void Targeting_PreInitialize(ServiceProvider provider)
-        {
-            this.Events[ShipEventType.Target].ValidateEvent += this.ValidateTargetEvent;
-        }
-
-        private void Targeting_Dispose()
-        {
-            this.Events[ShipEventType.Target].ValidateEvent -= this.ValidateTargetEvent;
-        }
-        #endregion
-
-        #region Event Handlers
-        private bool ValidateTargetEvent(Ship ship, ShipEventArgs args)
-            => _target != (_target = args.TargetData);
+        #region Events
+        /// <summary>
+        /// A simple event invoked when the <see cref="Target"/> property
+        /// is updated.
+        /// </summary>
+        public event OnEventDelegate<Ship, Vector2> OnTargetChanged;
         #endregion
     }
 }

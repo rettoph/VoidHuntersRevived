@@ -8,7 +8,6 @@ using System.Text;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.IO.Commands;
 using Guppy.IO.Commands.Contexts;
-using VoidHuntersRevived.Library.Events;
 using VoidHuntersRevived.Library.Entities;
 using System.Linq;
 using VoidHuntersRevived.Library.Entities.Controllers;

@@ -16,25 +16,6 @@ namespace VoidHuntersRevived.Library.Entities
 {
     public partial class Ship : NetworkEntity
     {
-        #region Enums
-        /// <summary>
-        /// A helper flags enum used
-        /// to store directional data
-        /// about the current ship.
-        /// </summary>
-        [Flags]
-        public enum Direction
-        {
-            None = 0,
-            Forward = 1,
-            Right = 2,
-            Backward = 4,
-            Left = 8,
-            TurnLeft = 16,
-            TurnRight = 32
-        }
-        #endregion
-
         #region Private Fields
         /// <summary>
         /// The primary internal controller to manage all internal
@@ -228,22 +209,6 @@ namespace VoidHuntersRevived.Library.Entities
 
             // Create a new tractor beam instance for this ship...
             this.TractorBeam = provider.GetService<EntityList>().Create<TractorBeam>((t, p, c) => t.Ship = this);
-
-            // Initialize partial classes.
-            this.Events_PreIninitialize(provider);
-            this.Directions_PreInitialize(provider);
-            this.Targeting_PreInitialize(provider);
-        }
-
-        /// <inheritdoc />
-        protected override void Release()
-        {
-            base.Release();
-
-            // Dispose partial classes
-            this.Directions_Dispose();
-            this.Events_Dispose();
-            this.Targeting_Dispose();
         }
 
         /// <inheritdoc />
