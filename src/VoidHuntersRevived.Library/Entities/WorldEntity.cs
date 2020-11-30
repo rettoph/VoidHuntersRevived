@@ -126,25 +126,9 @@ namespace VoidHuntersRevived.Library.Entities
         #region Command Handlers
         private CommandResponse HandleWorldInfoCommand(ICommand sender, CommandInput input)
         {
-            String line = "";
-
             ObjectDumper.Dump(
                 (text, segment) =>
                 {
-                        // if (text.StartsWith("\n"))
-                        // {
-                        //     _log.Info(line.TrimStart('\n'));
-                        //     line = "";
-                        // }
-                        // 
-                        // line += text;
-                        // 
-                        // if (text.EndsWith("\n"))
-                        // {
-                        //     _log.Info(line.TrimEnd('\n'));
-                        //     line = "";
-                        // }
-
                         switch (segment)
                     {
                         case ObjectDumper.DumpSegment.Scaffold:

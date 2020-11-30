@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         public void ReadBridge(NetIncomingMessage im)
-            => this.SetBridge(im.ReadEntity<ShipPart>(_entities));
+            => this.Bridge = im.ReadEntity<ShipPart>(_entities);
 
         public void ReadDirections(NetIncomingMessage im)
         {

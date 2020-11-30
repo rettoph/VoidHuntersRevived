@@ -1,6 +1,8 @@
 ﻿using FarseerPhysics.DebugView;
 using Guppy.DependencyInjection;
+using Guppy.Extensions.Collections;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Extensions.Utilities;
 using Guppy.IO.Commands;
 using Guppy.IO.Commands.Interfaces;
 using Guppy.IO.Commands.Services;
@@ -14,12 +16,15 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Linq;
 using VoidHuntersRevived.Client.Library.Effects;
 using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Client.Library.Enums;
 using VoidHuntersRevived.Client.Library.Services;
 using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
+using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
+using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
 using VoidHuntersRevived.Library.Layers;
 using VoidHuntersRevived.Library.Scenes;
 
@@ -38,6 +43,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private Texture2D[] _backgrounds;
         private SpriteBatch _spriteBatch;
         private TrailService _trails;
+        private Guppy.Utilities.PrimitiveBatch _primitiveBatch;
 
         private Vector2 _viewportSize;
         private Rectangle _viewportBounds;
@@ -46,6 +52,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private DebugViewXNA _debugSlave;
         private Boolean _renderMaster;
         private Boolean _renderSlave;
+        private Boolean _renderImpulse;
 
         private CommandService _commands;
 
@@ -66,6 +73,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             provider.Service(out _spriteBatch);
             provider.Service(out _commands);
             provider.Service(out _trails);
+            provider.Service(out _primitiveBatch);
 
             _blur = new GaussianBlurFilter(provider);
             _window.ClientSizeChanged += this.HandleClientSizeChanged;
@@ -203,6 +211,22 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
         private void DrawSlave(GameTime gameTime)
             => _debugSlave.RenderDebugData(_camera.Projection, _camera.View);
+
+        private void DrawImpulse(GameTime gameTime)
+        {
+            _primitiveBatch.Begin(_camera);
+            this.Entities.Where(e => e is Thruster).Select(t => t as Thruster).ForEach(t =>
+            {
+                t.Root.Do(b =>
+                {
+                    var force = t.Impulse.RotateTo(b.Rotation + t.LocalRotation);
+                    var point = b.Position + Vector2.Transform(Vector2.Zero, t.LocalTransformation * Matrix.CreateRotationZ(b.Rotation));
+
+                    _primitiveBatch.DrawLine(Color.Red, point, Color.Transparent, point - force);
+                });
+            });
+            _primitiveBatch.End();
+        }
         #endregion
 
         #region Helper Methods
@@ -251,6 +275,13 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                         });
 
                         return CommandResponse.Success($"Set RenderSlave to {_renderSlave}.");
+                    case DebugType.Impulse:
+                        _renderImpulse = !_renderImpulse;
+                        if (_renderImpulse)
+                            this.OnPostDraw += this.DrawImpulse;
+                        else
+                            this.OnPostDraw -= this.DrawImpulse;
+                        return CommandResponse.Success($"Set RenderImpulse to {_renderImpulse}.");
                     default:
                         return CommandResponse.Empty;
                 }

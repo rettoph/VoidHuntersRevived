@@ -51,7 +51,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
         private Double _fireTime;
         private Single _curRecoil;
-        private Boolean _firing;
         #endregion
 
         #region Public Properties
@@ -67,18 +66,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         /// The amount (in farseer units) the gun should recoil when fired.
         /// </summary>
         public Single Recoil { get; set; } = 0.3f;
-
-        public Boolean Firing
-        {
-            get => _firing;
-            set => this.OnFiringChanged.InvokeIfChanged(value != _firing, this, ref _firing, value);
-        }
         #endregion
 
         #region Events
         public event ValidateEventDelegate<Ship, ShipPart> ValidateFire;
         public event OnEventDelegate<Weapon, Ammunition> OnFire;
-        public event OnEventDelegate<Weapon, Boolean> OnFiringChanged;
         #endregion
 
         #region Lifecycle Methods
@@ -95,7 +87,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             this.Configuration.Vertices.ForEach(v => this.BuildFixture(new PolygonShape(v, 0.01f), this));
 
             this.OnChainChanged += this.HandleChainChanged;
-            this.OnFiringChanged += this.HandleFiringChanged;
 
             // Create new default joints as needed
             this.UpdateJoints();
@@ -106,7 +97,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             base.Release();
 
             this.OnChainChanged -= this.HandleChainChanged;
-            this.OnFiringChanged -= this.HandleFiringChanged;
         }
         #endregion
 
@@ -334,18 +324,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
         private void HandleRootShipChanged(Chain sender, Ship old, Ship value)
             => this.CleanUpdate();
-
-        private void HandleFiringChanged(Weapon sender, bool value)
-        {
-            if(value)
-            {
-                this.OnUpdate += this.UpdateFire;
-            }
-            else
-            {
-                this.OnUpdate -= this.UpdateFire;
-            }
-        }
         #endregion
     }
 }

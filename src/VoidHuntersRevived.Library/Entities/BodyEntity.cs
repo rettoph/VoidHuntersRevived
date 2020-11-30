@@ -230,7 +230,6 @@ namespace VoidHuntersRevived.Library.Entities
         public virtual void ApplyForce(Func<Body, Vector2> forceGetter, Func<Body, Vector2> pointGetter)
             => this.Do(b =>
             {
-                // Console.WriteLine($"{this.Id} => {forceGetter(b).Length().ToString("00.000")} => {b.LinearDamping} => {b.LinearVelocity.Length().ToString("00.000")}");
                 b.ApplyForce(forceGetter(b), pointGetter(b));
             });
         #endregion

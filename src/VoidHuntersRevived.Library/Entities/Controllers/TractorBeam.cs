@@ -70,7 +70,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         /// <summary>
         /// The world position of the tractor beam
         /// </summary>
-        public Vector2 Position { get; set; }
+        public Vector2 Position => this.Ship.Target;
         #endregion
 
         #region Events & Delegates
@@ -121,7 +121,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
             this.chains.ForEach(p => p.TryUpdate(gameTime));
 
-            this.Position = this.Ship.Target;
             this.Align(gameTime);
         }
         #endregion

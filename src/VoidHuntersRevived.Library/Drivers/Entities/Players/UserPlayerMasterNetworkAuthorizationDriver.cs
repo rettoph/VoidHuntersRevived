@@ -43,16 +43,23 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
 
         private void HandleShipTractorBeamActionRequestMessage(NetIncomingMessage im)
         {
-            var response = this.driven.Ship.TractorBeam.TryAction(
-                action: new TractorBeam.Action(
-                    type: (TractorBeam.ActionType)im.ReadByte(),
-                    target: im.ReadEntity<ShipPart>(_entities).Then(sp =>
-                    {
-                        if (im.ReadBoolean())
-                            sp.SetTransformIgnoreContacts(
-                                position: im.ReadVector2(),
-                                angle: im.ReadSingle());
-                    })));
+            this.driven.Ship.ReadTarget(im);
+
+            var request = new TractorBeam.Action(
+                type: (TractorBeam.ActionType)im.ReadByte(),
+                target: im.ReadEntity<ShipPart>(_entities).Then(sp =>
+                {
+                    if (im.ReadBoolean())
+                        sp.SetTransformIgnoreContacts(
+                            position: im.ReadVector2(),
+                            angle: im.ReadSingle());
+                }));
+            var response = this.driven.Ship.TractorBeam.TryAction(request);
+
+            if(request.Type != response.Type)
+            { // Something went wrong, so we need to alert the requesting client...
+
+            }
         }
 
         private void HandleUpdateShipDirectionRequestMessage(NetIncomingMessage im)

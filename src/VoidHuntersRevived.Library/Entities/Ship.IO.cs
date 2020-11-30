@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Library.Entities
                         break;
                     // Import ship component data...
                     case ExportData.Components:
-                        this.SetBridge(this.ImportComponents(reader));
+                        this.Bridge = this.ImportComponents(reader);
                         break;
                 }
             }

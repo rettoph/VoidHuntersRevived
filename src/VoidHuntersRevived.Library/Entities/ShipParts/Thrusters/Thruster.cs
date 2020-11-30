@@ -126,7 +126,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         /// assuming that it belongs to the current
         /// Thruster's chain.
         /// </summary>
-        /// <param name="body"></param>
+        /// <param name="root"></param>
         public Boolean ApplyThrust(ShipPart root)
         {
             if (this.Active)
@@ -209,15 +209,31 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
             // Update the internal directions...
             this.Directions = this.GetDirections();
 
-            if(old != default(Chain))
+            if(old != default)
             {
                 old.OnUpdate -= this.TryUpdate;
+                old.OnShipPartAdded -= this.HandleChainShipPartAdded;
+                old.OnShipPartRemoved -= this.HandleChainShipPartRemoved;
             }
 
             if(value != default(Chain) && value.Root != this)
             {
                 value.OnUpdate += this.TryUpdate;
+                value.OnShipPartAdded += this.HandleChainShipPartAdded;
+                value.OnShipPartRemoved += this.HandleChainShipPartRemoved;
             }
+        }
+
+        private void HandleChainShipPartAdded(Chain sender, ShipPart args)
+        {
+            // Update the internal directions...
+            this.Directions = this.GetDirections();
+        }
+
+        private void HandleChainShipPartRemoved(Chain sender, ShipPart args)
+        {
+            // Update the internal directions...
+            this.Directions = this.GetDirections();
         }
         #endregion
     }

@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,9 +23,7 @@ namespace VoidHuntersRevived.Library.Entities
         #region Lifecycle Methods
         private void Events_PreIninitialize(ServiceProvider provider)
         {
-            this.Events = ((ShipEventType[])Enum.GetValues(typeof(ShipEventType))).ToDictionary(
-                keySelector: set => set,
-                elementSelector: set => new ShipEventManager(this, set));
+            this.Events = DictionaryHelper.BuildEnumDictionary<ShipEventType, ShipEventManager>(fallback: e => new ShipEventManager(this, e));
         }
 
         private void Events_Dispose()

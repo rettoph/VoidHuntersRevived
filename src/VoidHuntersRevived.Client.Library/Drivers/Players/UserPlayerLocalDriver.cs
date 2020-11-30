@@ -148,6 +148,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
         {
             om.Write("ship:tractor-beam:action:request", m =>
             {
+                this.driven.Ship.WriteTarget(m);
                 m.Write(action.Type);
                 m.Write(action.Target);
 

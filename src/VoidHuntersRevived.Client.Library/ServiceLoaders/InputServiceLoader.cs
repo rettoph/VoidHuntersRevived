@@ -135,7 +135,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                 Handle = "toggle_debug_master",
                 DefaultInput = new InputType(Keys.F2),
                 Commands = new[]
-    {
+                {
                     (state: ButtonState.Pressed, command: "toggle debug -t=master"),
                 }
             });
@@ -145,8 +145,18 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                 Handle = "toggle_debug_data",
                 DefaultInput = new InputType(Keys.F3),
                 Commands = new[]
-    {
+                {
                     (state: ButtonState.Pressed, command: "toggle debug -t=data"),
+                }
+            });
+
+            inputs.Add(new InputCommandContext()
+            {
+                Handle = "toggle_impulse_data",
+                DefaultInput = new InputType(Keys.F4),
+                Commands = new[]
+                {
+                    (state: ButtonState.Pressed, command: "toggle debug -t=impulse"),
                 }
             });
             #endregion

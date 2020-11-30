@@ -8,6 +8,7 @@ namespace VoidHuntersRevived.Client.Library.Enums
     {
         Master,
         Slave,
-        Data
+        Data,
+        Impulse
     }
 }
