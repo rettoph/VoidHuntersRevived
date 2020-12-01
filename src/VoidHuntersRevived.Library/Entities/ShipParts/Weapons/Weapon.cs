@@ -84,7 +84,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             _provider = provider;
 
             // Create new shapes for the part
-            this.Configuration.Vertices.ForEach(v => this.BuildFixture(new PolygonShape(v, 0.01f), this));
+            this.Configuration.Vertices.ForEach(v => this.BuildFixture(new PolygonShape(v, this.Configuration.Density), this));
 
             this.OnChainChanged += this.HandleChainChanged;
 

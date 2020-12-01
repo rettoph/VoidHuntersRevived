@@ -1,5 +1,8 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Extensions.System;
+using Guppy.IO.Commands;
+using Guppy.IO.Commands.Interfaces;
+using Guppy.IO.Commands.Services;
 using Guppy.Lists;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Utilities;
@@ -7,6 +10,7 @@ using Guppy.Network.Utilities.Messages;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
@@ -20,6 +24,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
         #region Private Fields
         private EntityList _entities;
         private NetConnection _userConnection;
+        private CommandService _commands;
         #endregion
 
         #region Lifecycle Methods

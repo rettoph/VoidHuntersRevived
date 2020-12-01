@@ -50,6 +50,8 @@ namespace VoidHuntersRevived.Library.Configurations
         public Color DefaultColor { get; set; } = Color.Orange;
 
         public Vertices Hull { get; private set; }
+
+        public Single Density { get; set; } = 0.5f;
         #endregion
 
         #region Helper Fields

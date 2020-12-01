@@ -9,9 +9,9 @@ using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Extensions.Farseer;
 using FarseerPhysics.Collision.Shapes;
 using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
 using Guppy.IO.Extensions.log4net;
 using VoidHuntersRevived.Library.Utilities.Farseer;
+using Guppy.Extensions.Microsoft.Xna.Framework;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -76,7 +76,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
                 Vertices vertices = new Vertices(data);
                 vertices.Transform(this.LocalTransformation);
-                fixtures.Enqueue(root.BuildFixture(new PolygonShape(vertices, 0.5f), this));
+                fixtures.Enqueue(root.BuildFixture(new PolygonShape(vertices, this.Configuration.Density), this));
             });
         }
         #endregion

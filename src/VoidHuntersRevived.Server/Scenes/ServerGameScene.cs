@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Server.Scenes
             });
 
             var rand = new Random(1);
-            for(Int32 i=0; i<1; i++)
+            for(Int32 i=0; i<5; i++)
             {
                 var triangle = this.Entities.Create<ShipPart>("entity:ship-part:hull:triangle");
                 triangle.Position = rand.NextVector2(0, world.Size.X);
@@ -77,9 +77,9 @@ namespace VoidHuntersRevived.Server.Scenes
                     hBeam.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
                 }
             
-                for (Int32 j = 0; j < 20; j++)
+                for (Int32 j = 0; j < 10; j++)
                 {
-                    var thruster = this.Entities.Create<ShipPart>("entity:ship-part:thruster:small");
+                    var thruster = this.Entities.Create<ShipPart>("entity:ship-part:weapon:mass-driver");
                     thruster.Position = rand.NextVector2(0, world.Size.X);
                     thruster.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
             
@@ -114,7 +114,7 @@ namespace VoidHuntersRevived.Server.Scenes
                     player.User = user;
                     player.Ship = this.Entities.Create<Ship>((ship, p2, c) =>
                     {
-                        ship.Import(File.OpenRead("Ships/mosquito.vh"));
+                        ship.Import(File.OpenRead("Ships/fast-boi.vh"));
                         
                         // ship.SetBridge(this.Entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
                         ship.Bridge.Position = (new Random()).NextVector2(0, 20);

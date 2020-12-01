@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
         /// <summary>
         /// A list of all children downstream connected directly to
-        /// the current ShipPart.
+        /// the current ShipPart instance.
         /// </summary>
         public IEnumerable<ShipPart> Children
         {
@@ -47,7 +47,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                         yield return female.Target.Parent;
             }
         }
-
         #endregion
 
         #region Lifecycle Methods
@@ -79,6 +78,29 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                     female.Target.Parent.GetOpenFemaleConnectionNodes(ref list);
                 else
                     list.Add(female);
+        }
+
+        /// <summary>
+        /// Populate the recieved list with all items
+        /// down the current <see cref="ShipPart"/>'s 
+        /// chain.
+        /// </summary>
+        /// <param name="output"></param>
+        public void Items(ref IList<ShipPart> output)
+        {
+            output.Add(this);
+
+            foreach (ConnectionNode female in this.FemaleConnectionNodes)
+                if (female.Attached)
+                    female.Target.Parent.Items(ref output);
+        }
+
+        public IEnumerable<ShipPart> Items()
+        {
+            IList<ShipPart> temp = new List<ShipPart>();
+            this.Items(ref temp);
+
+            return temp;
         }
         #endregion
     }

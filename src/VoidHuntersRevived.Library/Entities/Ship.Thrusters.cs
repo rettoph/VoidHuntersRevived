@@ -1,8 +1,18 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
+using Guppy.Extensions.Collections;
+using Guppy.Extensions.Microsoft.Xna.Framework;
+using Guppy.Extensions.System;
+using Guppy.Utilities;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
+using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
+using VoidHuntersRevived.Library.Extensions.System.Collections;
+using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -19,15 +29,15 @@ namespace VoidHuntersRevived.Library.Entities
         /// about the current ship.
         /// </summary>
         [Flags]
-        public enum Direction
+        public enum Direction : Byte
         {
             None = 0,
             Forward = 1,
             Right = 2,
             Backward = 4,
             Left = 8,
-            TurnLeft = 16,
-            TurnRight = 32
+            TurnRight = 16,
+            TurnLeft = 32
         }
         #endregion
 
@@ -64,12 +74,54 @@ namespace VoidHuntersRevived.Library.Entities
         }
         #endregion
 
+        #region Private Fields
+        /// <summary>
+        /// A dictionary containing each thruster proken by the
+        /// directions they will move the ship. Note, single
+        /// thruster instances can appear multiple times as they can
+        /// move the ship in several directions.
+        /// 
+        /// This list will be maintained based on the <see cref="OnClean"/>
+        /// event.
+        /// </summary>
+        private Dictionary<Ship.Direction, IList<Thruster>> _directionThrusters;
+
+        /// <summary>
+        /// A list property containing all thrusters currently within
+        /// the ship.
+        /// 
+        /// This list will be maintained based on the <see cref="OnClean"/>
+        /// event.
+        /// </summary>
+        private List<Thruster> _thrusters;
+        #endregion
+
         #region Public Attributes
         /// <summary>
         /// The current Ship's active directions. This can be updated via 
         /// the <see cref="TrySetDirection(Direction, bool)"/> helper method.
         /// </summary>
         public Ship.Direction ActiveDirections { get; private set; }
+
+        /// <summary>
+        /// A dictionary containing each thruster proken by the
+        /// directions they will move the ship, referencing <seealso cref="_directionThrusters"/>. Note, single
+        /// thruster instances can appear multiple times as they can
+        /// move the ship in several directions.
+        /// 
+        /// This list will be maintained based on the <see cref="OnClean"/>
+        /// event.
+        /// </summary>
+        public IReadOnlyDictionary<Ship.Direction, IList<Thruster>> DirectionThrusters => _directionThrusters;
+
+        /// <summary>
+        /// A list property containing all thrusters currently within
+        /// the ship, referencing <seealso cref="_thrusters"/>.
+        /// 
+        /// This list will be maintained based on the <see cref="OnClean"/>
+        /// event.
+        /// </summary>
+        public IReadOnlyList<Thruster> Thrusters => _thrusters;
         #endregion
 
         #region Events
@@ -80,6 +132,45 @@ namespace VoidHuntersRevived.Library.Entities
         /// This will contain the changed direction and its new state.
         /// </summary>
         public event OnEventDelegate<Ship, DirectionState> OnDirectionChanged;
+        #endregion
+
+        #region Lifecycle Methods
+        private void Thrusters_Create(ServiceProvider provider)
+        {
+            _thrusters = new List<Thruster>();
+            _directionThrusters = DictionaryHelper.BuildEnumDictionary<Ship.Direction, IList<Thruster>>(d => new List<Thruster>());
+
+            this.OnUpdate += this.Thrusters_Update;
+            this.OnClean += Ship.Thrusters_HandleClean;
+            this.OnDirectionChanged += Ship.Thrusters_HandleDirectionChanged;
+        }
+
+        private void Thrusters_PreInitialize(ServiceProvider provider)
+        {
+            // reset the ships current directions if needed...
+            this.ActiveDirections = Direction.None;
+        }
+
+        private void Thrusters_Dispose()
+        {
+            _thrusters.Clear();
+            _directionThrusters.Clear();
+
+            this.OnUpdate -= this.Thrusters_Update;
+            this.OnClean -= Ship.Thrusters_HandleClean;
+        }
+        #endregion
+
+        #region Frame Methods
+        /// <summary>
+        /// Update method to handle Thruster specific functionality.
+        /// </summary>
+        /// <param name="gameTime"></param>
+        private void Thrusters_Update(GameTime gameTime)
+        {
+            // Update all internal thrusters...
+            _thrusters.ForEach(t => t.TryUpdate(gameTime));
+        }
         #endregion
 
         #region Helper Methods
@@ -103,6 +194,9 @@ namespace VoidHuntersRevived.Library.Entities
         /// <returns></returns>
         public Boolean TrySetDirection(DirectionState args)
         {
+            if ((args.Direction & (args.Direction - 1)) != 0)
+                throw new Exception("Unable to set multiple directions at once.");
+
             if (args.State && (this.ActiveDirections & args.Direction) == 0)
                 this.ActiveDirections |= args.Direction;
             else if (!args.State && (this.ActiveDirections & args.Direction) != 0)
@@ -110,11 +204,61 @@ namespace VoidHuntersRevived.Library.Entities
             else
                 return false;
 
-            // If we've made it this fat then we know that the directional change was a success.
+            // If we've made it this far then we know that the directional change was a success.
             // Invoke the direction changed event now.
             this.OnDirectionChanged?.Invoke(this, args);
 
             return true;
+        }
+        #endregion
+
+        #region Event Handlers
+        /// <summary>
+        /// When the ship is cleaned we should iterate through
+        /// each child thruster and catalogue the direction it moves
+        /// the ship in.
+        /// </summary>
+        /// <param name="sender"></param>
+        private static void Thrusters_HandleClean(Ship sender)
+        {
+            // Clear then repopulate the internal thrusters list...
+            sender._thrusters.Clear();
+            sender._thrusters.AddRange(sender.Bridge?.Items().Where(c => c is Thruster).Select(c => c as Thruster));
+
+            // Clear all old stored direcitonal data...
+            sender._directionThrusters.ForEach(kvp => kvp.Value.Clear());
+
+            // Rebuild the directionThrusters dictionary...
+            sender.Thrusters.ForEach(thruster =>
+            { // Iterate through all internal thrusters...
+                // Reset the thruster's ActiveDirections...
+                thruster.ActiveDirections = Direction.None;
+                thruster.GetDirections().ForEach(direction =>
+                { // Iterate through all directions the current thruster activates...
+                    sender._directionThrusters[direction].Add(thruster);
+                });
+            });
+
+            sender.ActiveDirections.GetFlags().ForEach(direction =>
+            { // re-enable currently active thrusters...
+                sender.DirectionThrusters[direction].ForEach(thruster => thruster.ActiveDirections |= direction);
+            });
+        }
+
+        /// <summary>
+        /// When the direction changes we should update the
+        /// <see cref="Thruster.ActiveDirections"/> flags
+        /// based on the <see cref="Ship.DirectionThrusters"/>
+        /// state.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private static void Thrusters_HandleDirectionChanged(Ship sender, DirectionState args)
+        {
+            if(args.State)
+                sender.DirectionThrusters[args.Direction].ForEach(thruster => thruster.ActiveDirections |= args.Direction);
+            else
+                sender.DirectionThrusters[args.Direction].ForEach(thruster => thruster.ActiveDirections &= ~args.Direction);
         }
         #endregion
     }

@@ -168,7 +168,7 @@ namespace VoidHuntersRevived.Library.Entities
         /// Invoked whenever the Bridge's chain changes in any
         /// way. This iscludes parts being added & removed.
         /// </summary>
-        public event OnEventDelegate<Ship> OnCleaned;
+        public event OnEventDelegate<Ship> OnClean;
 
         /// <summary>
         /// Simple validator to determin if an incoming <see cref="Bridge"/>
@@ -188,6 +188,7 @@ namespace VoidHuntersRevived.Library.Entities
 
             // Create partial classes...
             this.Network_Create(provider);
+            this.Thrusters_Create(provider);
 
             // Add required event handlers...
             this.OnBridgeChanged += Ship.HandleBridgeChanged;
@@ -207,6 +208,9 @@ namespace VoidHuntersRevived.Library.Entities
             provider.Service(out _controller);
             provider.Service(out _entities);
 
+            // PreInitialize partial classes...
+            this.Thrusters_PreInitialize(provider);
+
             // Create a new tractor beam instance for this ship...
             this.TractorBeam = provider.GetService<EntityList>().Create<TractorBeam>((t, p, c) => t.Ship = this);
         }
@@ -218,6 +222,7 @@ namespace VoidHuntersRevived.Library.Entities
 
             // Dispose partial classes...
             this.Network_Dispose();
+            this.Thrusters_Dispose();
 
             // Remove required event handlers...
             this.OnBridgeChanged -= Ship.HandleBridgeChanged;
@@ -271,7 +276,7 @@ namespace VoidHuntersRevived.Library.Entities
             }
 
             // Invoke the cleaned event now that all required instances have been cleaned.
-            this.OnCleaned?.Invoke(this);
+            this.OnClean?.Invoke(this);
         }
 
         /// <summary>

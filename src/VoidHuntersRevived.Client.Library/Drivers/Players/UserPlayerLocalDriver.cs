@@ -19,6 +19,7 @@ using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Utilities;
+using System.IO;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Players
 {
@@ -51,6 +52,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
 
                 _commands["ship"]["direction"].OnExcecute += this.HandleShipDirectionCommand;
                 _commands["ship"]["tractorbeam"].OnExcecute += this.HandleShipTractorBeamCommand;
+                _commands["ship"]["save"].OnExcecute += this.HandleShipSaveCommand;
 
                 _configured = true;
             }
@@ -127,6 +129,16 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
             this.TrySetShipDirection((Ship.Direction)input["direction"], (Boolean)input["value"]);
 
             return CommandResponse.Empty;
+        }
+
+        private CommandResponse HandleShipSaveCommand(ICommand sender, CommandInput input)
+        {
+            Directory.CreateDirectory("Ships");
+
+            using (FileStream file = File.Open($"Ships/{(input["name"] as String)}.vh", FileMode.OpenOrCreate))
+                this.driven.Ship.Export().WriteTo(file);
+
+            return CommandResponse.Success();
         }
         #endregion
 

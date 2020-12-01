@@ -21,6 +21,7 @@ using Color = Microsoft.Xna.Framework.Color;
 using Guppy.Extensions.System;
 using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
 using Guppy.Extensions.Utilities;
+using Guppy.Extensions.Microsoft.Xna.Framework;
 
 namespace VoidHuntersRevived.Client.Library.Utilities
 {
@@ -38,7 +39,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         /// </summary>
         public static Double MaxSegmentAge = 10;
 
-        private static Single MaxColorMultiplier = 0.2f;
+        private static Single MaxColorMultiplier = 0.1f;
         #endregion
 
         #region Private Fields
