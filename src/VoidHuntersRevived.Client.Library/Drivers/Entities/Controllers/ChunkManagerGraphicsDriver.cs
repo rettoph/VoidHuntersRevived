@@ -4,6 +4,7 @@ using Guppy.Extensions.Collections;
 using Guppy.Extensions.Utilities;
 using Guppy.Utilities;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -27,7 +28,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
         #region Private Fields
         private FarseerCamera2D _camera;
         private WorldEntity _world;
-        private PrimitiveBatch _primitiveBatch;
+        private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         #endregion
 
         #region Lifecycle Methods
@@ -70,7 +71,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
             // Draw all visible chunks...
             this.driven.GetChunks(bounds).ForEach(c =>
             {
-                _primitiveBatch.DrawRectangle(ChunkManagerGraphicsDriver.ChunkColor, c.Bounds);
+                _primitiveBatch.TraceRectangle(ChunkManagerGraphicsDriver.ChunkColor, c.Bounds);
                 c.TryDraw(gameTime);
             });
         }

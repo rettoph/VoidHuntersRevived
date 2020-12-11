@@ -1,77 +1,45 @@
-﻿#if OPENGL
-	#define SV_POSITION POSITION
-	#define VS_SHADERMODEL vs_3_0
-	#define PS_SHADERMODEL ps_3_0
-#else
-	#define VS_SHADERMODEL vs_4_0_level_9_1
-	#define PS_SHADERMODEL ps_4_0_level_9_1
-#endif
+﻿// Pixel shader applies a one dimensional gaussian blur filter. This is used twice by the bloom postprocess, first to
+// blur horizontally, and then again to blur vertically.
 
-Texture2D SpriteTexture;
+sampler s0; // from SpriteBatch
 
-SamplerState SpriteTextureSampler = sampler_state
+#define SAMPLE_COUNT 15
+
+float2 _sampleOffsets[SAMPLE_COUNT];
+float _sampleWeights[SAMPLE_COUNT];
+
+
+float4 PixelShaderFunctionX(float2 texCoord : TEXCOORD0) : COLOR0
 {
-	Texture = <SpriteTexture>;
-	
-	MagFilter = LINEAR;
-	MinFilter = LINEAR;
-	MipFilter = LINEAR;
-
-	AddressU = CLAMP;
-	AddressV = CLAMP;
-};
-
-float2 InverseResolution;
-float StreakLength;
-
-static const float Kernel[5] =
-{
-	1.0 / 24.0,
-	4.0 / 24.0,
-	6.0 / 24.0,
-	4.0 / 24.0,
-	1.0 / 24.0
-};
-
-
-float4 VerticalePS(float2 Coords : TEXCOORD0) : COLOR
-{	
-	float4 color = 0;
-	
-	float2 offset = float2(StreakLength * InverseResolution.x, StreakLength * InverseResolution.y);
-	
-	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + float2(00, -2) * offset) * Kernel[0];
-	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + float2(00, -1) * offset) * Kernel[1];
-	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + float2(00, 00) * offset) * Kernel[2];
-	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + float2(00, 01) * offset) * Kernel[3];
-	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + float2(00, 02) * offset) * Kernel[4];
-	
-	return color;
+    float4 c = 0;
+    
+    // Combine a number of weighted image filter taps.
+    for (int i = 0; i < SAMPLE_COUNT; i++)
+        c += tex2D(s0, texCoord + float2(_sampleOffsets[i].x, 0)) * _sampleWeights[i];
+    
+    return c;
 }
 
-float4 HorizontalPS(float2 Coords : TEXCOORD0) : COLOR
+float4 PixelShaderFunctionY(float2 texCoord : TEXCOORD0) : COLOR0
 {
-	float4 color = 0;
-	
-	float2 offset = float2(StreakLength * InverseResolution.x, StreakLength * InverseResolution.y);
-	
-	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + float2(-2, 00) * offset) * Kernel[0];
-	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + float2(-1, 00) * offset) * Kernel[1];
-	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + float2(00, 00) * offset) * Kernel[2];
-	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + float2(01, 00) * offset) * Kernel[3];
-	color += SpriteTexture.Sample(SpriteTextureSampler, Coords + float2(02, 00) * offset) * Kernel[4];
-	
-	return color;
+    float4 c = 0;
+    
+    // Combine a number of weighted image filter taps.
+    for (int i = 0; i < SAMPLE_COUNT; i++)
+        c += tex2D(s0, texCoord + float2(0, _sampleOffsets[i].y)) * _sampleWeights[i];
+    
+    return c;
 }
 
-technique SpriteDrawing
+
+technique GaussianBlur
 {
-	pass P0
-	{
-		PixelShader = compile PS_SHADERMODEL HorizontalPS();
-	}
-	pass P1
-	{
-		PixelShader = compile PS_SHADERMODEL VerticalePS();
-	}
-};
+    pass Pass1
+    {
+        PixelShader = compile ps_2_0 PixelShaderFunctionX();
+    }
+    pass Pass2
+    {
+        PixelShader = compile ps_2_0 PixelShaderFunctionY();
+    }
+}

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
+using Guppy.Extensions.Utilities;
 
 namespace VoidHuntersRevived.Client.Library.Utilities
 {
@@ -29,7 +30,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         /// </summary>
         private Vector2 _spread;
 
-        private PrimitiveBatch _primitiveBatch;
+        private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         #endregion
 
         #region Public Properties
@@ -90,6 +91,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
             this.Port = this.Position + this.PortSpread;
 
             this.Color = Color.Lerp(this.BaseColor, Color.Transparent, Math.Min(1, (Single)(this.Age * 2 / Trail.MaxSegmentAge)));
+            // this.Color = this.BaseColor;
         }
 
         protected override void Draw(GameTime gameTime)
@@ -97,7 +99,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
             base.Draw(gameTime);
 
             _primitiveBatch.DrawTriangle(
-                c1: this.OlderSibling.Color,
+                c1: Color.Transparent,
                 p1: this.OlderSibling.Starboard,
                 c2: this.OlderSibling.Color,
                 p2: this.OlderSibling.Position,
@@ -105,15 +107,15 @@ namespace VoidHuntersRevived.Client.Library.Utilities
                 p3: this.Position);
 
             _primitiveBatch.DrawTriangle(
-                c1: this.Color,
+                c1: Color.Transparent,
                 p1: this.Starboard,
-                c2: this.OlderSibling.Color,
+                c2: Color.Transparent,
                 p2: this.OlderSibling.Starboard,
                 c3: this.Color,
                 p3: this.Position);
 
             _primitiveBatch.DrawTriangle(
-                c1: this.OlderSibling.Color,
+                c1: Color.Transparent,
                 p1: this.OlderSibling.Port,
                 c2: this.Color,
                 p2: this.Position,
@@ -121,18 +123,12 @@ namespace VoidHuntersRevived.Client.Library.Utilities
                 p3: this.OlderSibling.Position);
 
             _primitiveBatch.DrawTriangle(
-                c1: this.Color,
+                c1: Color.Transparent,
                 p1: this.Port,
                 c2: this.Color,
                 p2: this.Position,
-                c3: this.OlderSibling.Color,
+                c3: Color.Transparent,
                 p3: this.OlderSibling.Port);
-
-            // _primitiveBatch.DrawTriangle(Color.Transparent, this.OlderSibling.Port, this.Color, this.Position, this.OlderSibling.Color, this.OlderSibling.Position);
-            // _primitiveBatch.DrawTriangle(Color.Transparent, this.OlderSibling.Starboard, this.OlderSibling.Color, this.OlderSibling.Position, this.Color, this.Position);
-            // 
-            // _primitiveBatch.DrawTriangle(Color.Transparent, this.Port, this.Color, this.Position, Color.Transparent, this.OlderSibling.Port);
-            // _primitiveBatch.DrawTriangle(this.Color, this.Position, Color.Transparent, this.Starboard, Color.Transparent, this.OlderSibling.Starboard);
         }
         #endregion
     }

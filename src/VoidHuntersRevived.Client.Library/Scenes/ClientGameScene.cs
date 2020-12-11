@@ -13,6 +13,7 @@ using Guppy.LayerGroups;
 using Guppy.Services;
 using Guppy.UI.Entities;
 using Guppy.UI.Layers;
+using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -44,7 +45,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private Texture2D[] _backgrounds;
         private SpriteBatch _spriteBatch;
         private TrailService _trails;
-        private Guppy.Utilities.PrimitiveBatch _primitiveBatch;
+        private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
 
         private Vector2 _viewportSize;
         private Rectangle _viewportBounds;
@@ -242,7 +243,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private void CleanEffects()
         {
             _blur.Resolution = _graphics.Viewport.Bounds.Size;
-            _blur.StreakLength = 2f;
+            _blur.BlurAmount = 1f;
             _blur.Passes = 1;
         }
         #endregion

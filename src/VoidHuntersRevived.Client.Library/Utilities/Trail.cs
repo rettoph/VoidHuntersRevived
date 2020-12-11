@@ -39,12 +39,12 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         /// </summary>
         public static Double MaxSegmentAge = 10;
 
-        private static Single MaxColorMultiplier = 0.1f;
+        private static Single MaxColorMultiplier = 2f;
         #endregion
 
         #region Private Fields
         private ServiceProvider _provider;
-        private PrimitiveBatch _primitiveBatch;
+        private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
 
         private Single _top, _right, _bottom, _left;
         private Queue<TrailSegment> _segments;
@@ -143,8 +143,9 @@ namespace VoidHuntersRevived.Client.Library.Utilities
             if (this.Thruster?.Chain.Ship != default)
             {
                 var color = Color.Lerp(Color.Transparent, this.Thruster.Color, this.Thruster.ImpulseModifier * Trail.MaxColorMultiplier);
-                _primitiveBatch.DrawTriangle(_youngestSegment.Color, _youngestSegment.Port, color, this.Thruster.Position, _youngestSegment.Color, _youngestSegment.Position);
-                _primitiveBatch.DrawTriangle(_youngestSegment.Color, _youngestSegment.Starboard, _youngestSegment.Color, _youngestSegment.Position, color, this.Thruster.Position);
+                color = this.Thruster.Color;
+                // _primitiveBatch.DrawTriangle(Color.Transparent, _youngestSegment.Port, color, this.Thruster.Position, _youngestSegment.Color, _youngestSegment.Position);
+                // _primitiveBatch.DrawTriangle(Color.Transparent, _youngestSegment.Starboard, _youngestSegment.Color, _youngestSegment.Position, color, this.Thruster.Position);
             }
         }
 

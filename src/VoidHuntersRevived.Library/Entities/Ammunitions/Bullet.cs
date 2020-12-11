@@ -1,7 +1,9 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Extensions.Utilities;
 using Guppy.Utilities;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,7 +14,7 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
     public class Bullet : Ammunition
     {
         #region Private Fields
-        private PrimitiveBatch _primitiveBatch;
+        private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         #endregion
 
         #region Public Properties

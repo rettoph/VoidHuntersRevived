@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Client.Library.Services
         #region Private Fields
         private FrameableList<Trail> _trails;
 
-        private PrimitiveBatch _primitiveBatch;
+        private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private FarseerCamera2D _camera;
         private DebugService _debug;
         private GameWindow _window;
@@ -37,7 +37,6 @@ namespace VoidHuntersRevived.Client.Library.Services
         private SpriteBatch _spriteBatch;
 
         private ActionTimer _segmentTimer;
-        private GaussianBlurFilter _blur;
         #endregion
 
         #region Constructors
@@ -61,17 +60,9 @@ namespace VoidHuntersRevived.Client.Library.Services
             provider.Service(out _content);
             provider.Service(out _graphics);
 
-            _segmentTimer = new ActionTimer(150);
-            _blur = new GaussianBlurFilter(provider);
-            _blur.Resolution = _graphics.Viewport.Bounds.Size;
-            _blur.Passes = 5;
-            _blur.StreakLength = 1f;
+            _segmentTimer = new ActionTimer(100);
 
             _debug.Lines += this.HandleDebugLines;
-            _window.ClientSizeChanged += (s, a) =>
-            {
-                _blur.Resolution = _graphics.Viewport.Bounds.Size;
-            };
         }
         #endregion
 
@@ -92,12 +83,9 @@ namespace VoidHuntersRevived.Client.Library.Services
         {
             base.Draw(gameTime);
 
-            // Draw the trails on our render target...
-            // _blur.Start();
             _primitiveBatch.Begin(_camera, BlendState.AlphaBlend);
             _trails.TryDraw(gameTime);
             _primitiveBatch.End();
-            // _blur.End();
         }
         #endregion
 

@@ -11,6 +11,7 @@
     <None Remove="ship.vh" />
     <None Remove="Ships\fast-boi.vh" />
     <None Remove="Ships\mosquito.vh" />
+    <None Remove="Ships\small-boi.vh" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,6 +19,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Ships\mosquito.vh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Ships\small-boi.vh">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

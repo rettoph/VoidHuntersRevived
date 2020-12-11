@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Client.Library
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
-
+             
             provider.Service(out _commands);
             provider.Service(out _debug);
 

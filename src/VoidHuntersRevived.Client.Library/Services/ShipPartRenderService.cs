@@ -2,9 +2,11 @@
 using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Extensions.Utilities;
 using Guppy.Utilities;
 using Guppy.Utilities.Primitives;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +42,7 @@ namespace VoidHuntersRevived.Client.Library.Services
 
         private Single _configuredZoom;
         private FarseerCamera2D _camera;
-        private PrimitiveBatch _primitiveBatch;
+        private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private Single _width = 1;
         #endregion
 

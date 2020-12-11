@@ -2,6 +2,7 @@
 using Guppy.Extensions.Utilities;
 using Guppy.Utilities;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,7 +14,7 @@ namespace VoidHuntersRevived.Client.Library.Layers
     public class ClientGameLayer : GameLayer
     {
         #region Private Fields
-        private PrimitiveBatch _primitiveBatch;
+        private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private FarseerCamera2D _camera;
         #endregion
 

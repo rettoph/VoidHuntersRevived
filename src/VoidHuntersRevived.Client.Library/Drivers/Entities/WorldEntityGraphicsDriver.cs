@@ -3,6 +3,7 @@ using Guppy.DependencyInjection;
 using Guppy.Extensions.Utilities;
 using Guppy.Utilities;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,7 +17,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
     internal sealed class WorldEntityGraphicsDriver : Driver<WorldEntity>
     {
         #region Private Fields
-        private PrimitiveBatch _primitiveBatch;
+        private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private Rectangle _bounds;
         #endregion
 
@@ -44,7 +45,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
 
         #region Frame Methods
         private void Draw(GameTime gameTime)
-            => _primitiveBatch.DrawRectangle(Color.Gray, _bounds);
+            => _primitiveBatch.TraceRectangle(Color.Gray, _bounds);
         #endregion
 
         #region Helper Methods
