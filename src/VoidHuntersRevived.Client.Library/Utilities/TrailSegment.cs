@@ -10,6 +10,8 @@ using System.Text;
 using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using Guppy.Extensions.Utilities;
+using VoidHuntersRevived.Client.Library.Effects;
+using Guppy.Extensions.Microsoft.Xna.Framework;
 
 namespace VoidHuntersRevived.Client.Library.Utilities
 {
@@ -30,7 +32,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         /// </summary>
         private Vector2 _spread;
 
-        private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
+        private PrimitiveBatch<VertexTrailSegment, TrailInterpolationEffect> _primitiveBatch;
         #endregion
 
         #region Public Properties
@@ -47,6 +49,9 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         public Vector2 PortSpread { get; private set; }
         public Vector2 Starboard { get; private set; }
         public Vector2 Port { get; private set; }
+
+        public Single PortSlope { get; private set; }
+        public Single StarboardSlope { get; private set; }
         #endregion
 
         #region Constructors
@@ -91,7 +96,17 @@ namespace VoidHuntersRevived.Client.Library.Utilities
             this.Port = this.Position + this.PortSpread;
 
             this.Color = Color.Lerp(this.BaseColor, Color.Transparent, Math.Min(1, (Single)(this.Age * 2 / Trail.MaxSegmentAge)));
-            // this.Color = this.BaseColor;
+        
+            if(this.OlderSibling == default)
+            {
+                this.StarboardSlope = 1;
+                this.PortSlope = 1;
+            }
+            else
+            {
+                this.StarboardSlope = this.Position.Angle(this.OlderSibling.Starboard);
+                this.PortSlope = this.Position.Angle(this.OlderSibling.Port);
+            }
         }
 
         protected override void Draw(GameTime gameTime)
@@ -99,36 +114,96 @@ namespace VoidHuntersRevived.Client.Library.Utilities
             base.Draw(gameTime);
 
             _primitiveBatch.DrawTriangle(
-                c1: Color.Transparent,
-                p1: this.OlderSibling.Starboard,
-                c2: this.OlderSibling.Color,
-                p2: this.OlderSibling.Position,
-                c3: this.Color,
-                p3: this.Position);
+                v1: new VertexTrailSegment()
+                {
+                    Position = this.OlderSibling.Starboard,
+                    Color = this.Color,
+                    SegmentStart = this.Position,
+                    Slope = this.StarboardSlope
+                },
+                v2: new VertexTrailSegment()
+                {
+                    Position = this.OlderSibling.Position,
+                    Color = this.Color,
+                    SegmentStart = this.Position,
+                    Slope = this.StarboardSlope
+                },
+                v3: new VertexTrailSegment()
+                {
+                    Position = this.Position,
+                    Color = this.Color,
+                    SegmentStart = this.Position,
+                    Slope = this.StarboardSlope
+                });
 
             _primitiveBatch.DrawTriangle(
-                c1: Color.Transparent,
-                p1: this.Starboard,
-                c2: Color.Transparent,
-                p2: this.OlderSibling.Starboard,
-                c3: this.Color,
-                p3: this.Position);
+                v1: new VertexTrailSegment()
+                {
+                    Position = this.Starboard,
+                    Color = this.Color,
+                    SegmentStart = this.Position,
+                    Slope = this.StarboardSlope
+                },
+                v2: new VertexTrailSegment()
+                {
+                    Position = this.OlderSibling.Starboard,
+                    Color = this.Color,
+                    SegmentStart = this.Position,
+                    Slope = this.StarboardSlope
+                },
+                v3: new VertexTrailSegment()
+                {
+                    Position = this.Position,
+                    Color = this.Color,
+                    SegmentStart = this.Position,
+                    Slope = this.StarboardSlope
+                });
 
             _primitiveBatch.DrawTriangle(
-                c1: Color.Transparent,
-                p1: this.OlderSibling.Port,
-                c2: this.Color,
-                p2: this.Position,
-                c3: this.OlderSibling.Color,
-                p3: this.OlderSibling.Position);
+                v1: new VertexTrailSegment()
+                {
+                    Position = this.OlderSibling.Port,
+                    Color = this.Color,
+                    SegmentStart = this.Position,
+                    Slope = this.PortSlope
+                },
+                v2: new VertexTrailSegment()
+                {
+                    Position = this.Position,
+                    Color = this.Color,
+                    SegmentStart = this.Position,
+                    Slope = this.PortSlope
+                },
+                v3: new VertexTrailSegment()
+                {
+                    Position = this.OlderSibling.Position,
+                    Color = this.Color,
+                    SegmentStart = this.Position,
+                    Slope = this.PortSlope
+                });
 
             _primitiveBatch.DrawTriangle(
-                c1: Color.Transparent,
-                p1: this.Port,
-                c2: this.Color,
-                p2: this.Position,
-                c3: Color.Transparent,
-                p3: this.OlderSibling.Port);
+                v1: new VertexTrailSegment()
+                {
+                    Position = this.Port,
+                    Color = this.Color,
+                    SegmentStart = this.Position,
+                    Slope = this.PortSlope
+                },
+                v2: new VertexTrailSegment()
+                {
+                    Position = this.Position,
+                    Color = this.Color,
+                    SegmentStart = this.Position,
+                    Slope = this.PortSlope
+                },
+                v3: new VertexTrailSegment()
+                {
+                    Position = this.OlderSibling.Port,
+                    Color = this.Color,
+                    SegmentStart = this.Position,
+                    Slope = this.PortSlope
+                });
         }
         #endregion
     }

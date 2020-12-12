@@ -25,6 +25,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/GaussianBlur.fx
 
+#begin Effects/TrailInterpolation.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/TrailInterpolation.fx
+
 #begin Fonts/BiomeBold-Big.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

@@ -16,12 +16,12 @@ using Guppy.Events.Delegates;
 using VoidHuntersRevived.Client.Library.Services;
 using System.Drawing;
 using Guppy.Utilities.Primitives;
-
 using Color = Microsoft.Xna.Framework.Color;
 using Guppy.Extensions.System;
 using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
 using Guppy.Extensions.Utilities;
 using Guppy.Extensions.Microsoft.Xna.Framework;
+using VoidHuntersRevived.Client.Library.Effects;
 
 namespace VoidHuntersRevived.Client.Library.Utilities
 {
@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
 
         #region Private Fields
         private ServiceProvider _provider;
-        private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
+        private PrimitiveBatch<VertexTrailSegment, TrailInterpolationEffect> _primitiveBatch;
 
         private Single _top, _right, _bottom, _left;
         private Queue<TrailSegment> _segments;

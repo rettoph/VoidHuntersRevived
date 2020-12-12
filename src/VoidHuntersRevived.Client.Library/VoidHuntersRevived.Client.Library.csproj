@@ -3,8 +3,15 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>8.0</LangVersion>
+    <Configurations>Debug;Release</Configurations>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile />
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
@@ -12,6 +19,12 @@
 
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Content\Effects\Compiled\*.mgfx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   
   <ItemGroup>

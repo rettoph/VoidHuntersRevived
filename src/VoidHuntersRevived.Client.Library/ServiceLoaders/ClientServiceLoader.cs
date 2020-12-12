@@ -5,6 +5,7 @@ using Guppy.Interfaces;
 using Guppy.LayerGroups;
 using Guppy.Lists;
 using Guppy.Network.Peers;
+using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Client.Library.Drivers.Entities;
@@ -12,6 +13,7 @@ using VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers;
 using VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts;
 using VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Client.Library.Drivers.Players;
+using VoidHuntersRevived.Client.Library.Effects;
 using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Client.Library.Layers;
 using VoidHuntersRevived.Client.Library.Scenes;
@@ -44,7 +46,15 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddFactory<ShipPartRenderService>(p => new ShipPartRenderService());
             services.AddFactory<GameLayer>(factory: p => new ClientGameLayer(), priority: 1);
             services.AddFactory<RenderTarget2DManager>(p => new RenderTarget2DManager(p.GetService<GraphicsDevice>(), p.GetService<GameWindow>()));
+            services.AddFactory<PrimitiveBatch<VertexTrailSegment, TrailInterpolationEffect>>(p =>
+            {
+                var graphics = p.GetService<GraphicsDevice>();
 
+                return new PrimitiveBatch<VertexTrailSegment, TrailInterpolationEffect>(
+                    new TrailInterpolationEffect(graphics),
+                    graphics);
+            });
+            
             // Configure service lifetimes...
             services.AddScoped<FarseerCamera2D>();
             services.AddScoped<Sensor>();
@@ -55,6 +65,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddSingleton<DebugService>();
             services.AddScoped<ShipPartRenderService>();
             services.AddTransient<RenderTarget2DManager>();
+            services.AddSingleton<PrimitiveBatch<VertexTrailSegment, TrailInterpolationEffect>>();
 
             services.AddGame<ClientVoidHuntersRevivedGame>(p => new ClientVoidHuntersRevivedGame());
             services.AddScene<GameScene>(p => new ClientGameScene(), 1);

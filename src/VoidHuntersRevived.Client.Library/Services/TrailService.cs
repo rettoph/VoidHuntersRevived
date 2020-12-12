@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Client.Library.Services
         #region Private Fields
         private FrameableList<Trail> _trails;
 
-        private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
+        private PrimitiveBatch<VertexTrailSegment, TrailInterpolationEffect> _primitiveBatch;
         private FarseerCamera2D _camera;
         private DebugService _debug;
         private GameWindow _window;
@@ -83,7 +83,7 @@ namespace VoidHuntersRevived.Client.Library.Services
         {
             base.Draw(gameTime);
 
-            _primitiveBatch.Begin(_camera, BlendState.AlphaBlend);
+            _primitiveBatch.Begin(_camera, BlendState.NonPremultiplied);
             _trails.TryDraw(gameTime);
             _primitiveBatch.End();
         }
