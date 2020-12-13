@@ -32,6 +32,8 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         /// </summary>
         private Vector2 _spread;
 
+        private VertexTrailSegment[] _vertices;
+
         private PrimitiveBatch<VertexTrailSegment, TrailInterpolationEffect> _primitiveBatch;
         #endregion
 
@@ -50,7 +52,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         public Vector2 Starboard { get; private set; }
         public Vector2 Port { get; private set; }
 
-        public Single Slope { get; private set; }
+        public Single CurrentSpread { get; private set; }
         #endregion
 
         #region Constructors
@@ -66,6 +68,8 @@ namespace VoidHuntersRevived.Client.Library.Utilities
             base.Create(provider);
 
             provider.Service(out _primitiveBatch);
+
+            _vertices = new VertexTrailSegment[2];
         }
 
         protected override void Initialize(ServiceProvider provider)
@@ -94,9 +98,20 @@ namespace VoidHuntersRevived.Client.Library.Utilities
             this.Starboard = this.Position + this.StarboardSpread;
             this.Port = this.Position + this.PortSpread;
 
-            this.Color = Color.Lerp(this.BaseColor, Color.Transparent, Math.Min(1, (Single)(this.Age * 2 / Trail.MaxSegmentAge)));
+            this.CurrentSpread = Vector2.Distance(this.Port, this.Starboard);
 
-            this.Slope = this.Starboard.Angle(this.Port);
+            this.Color = Color.Lerp(this.BaseColor, Color.Transparent, Math.Min(1, (Single)(this.Age / Trail.MaxSegmentAge)));
+
+            // Update the internal quad vertices...
+            _vertices[0].Position = new Vector4(this.Starboard, 0, 1);
+            _vertices[0].Color = this.Color.ToVector4();
+            _vertices[0].RayLength = this.CurrentSpread;
+            _vertices[0].Port = this.Port;
+
+            _vertices[1].Position = new Vector4(this.Port, 0, 1);
+            _vertices[1].Color = this.Color.ToVector4();
+            _vertices[1].RayLength = this.CurrentSpread;
+            _vertices[1].Port = this.Port;
         }
 
         protected override void Draw(GameTime gameTime)
@@ -104,14 +119,14 @@ namespace VoidHuntersRevived.Client.Library.Utilities
             base.Draw(gameTime);
 
             _primitiveBatch.DrawTriangle(
-                v1: new VertexTrailSegment(this.OlderSibling.Starboard, this.OlderSibling.Color, this.OlderSibling.Port, this.OlderSibling.Starboard, this),
-                v2: new VertexTrailSegment(this.OlderSibling.Port, this.OlderSibling.Color, this.OlderSibling.Port, this.OlderSibling.Starboard, this),
-                v3: new VertexTrailSegment(this.Port, this.Color, this.Port, this.Starboard, this));
+                v1: ref this.OlderSibling._vertices[0],
+                v2: ref this.OlderSibling._vertices[1],
+                v3: ref this._vertices[1]);
 
             _primitiveBatch.DrawTriangle(
-                v1: new VertexTrailSegment(this.Starboard, this.Color, this.Port, this.Starboard, this),
-                v2: new VertexTrailSegment(this.OlderSibling.Starboard, this.OlderSibling.Color, this.OlderSibling.Port, this.OlderSibling.Starboard, this),
-                v3: new VertexTrailSegment(this.Port, this.Color, this.Port, this.Starboard, this));
+                v1: ref this._vertices[0],
+                v2: ref this.OlderSibling._vertices[0],
+                v3: ref this._vertices[1]);
 
             // _primitiveBatch.DrawTriangle(
             //     v1: new VertexTrailSegment()

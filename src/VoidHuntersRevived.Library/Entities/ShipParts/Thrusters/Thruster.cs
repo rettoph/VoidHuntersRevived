@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
     {
         #region Static Properties
         public static Single StrengthAcceleration { get; set; } = 1f;
-        public static Single ImpulseModifierEpsilon { get; set; } = 0.00001f;
+        public static Single ImpulseModifierEpsilon { get; set; } = 0.001f;
         #endregion
 
         #region Private Fields

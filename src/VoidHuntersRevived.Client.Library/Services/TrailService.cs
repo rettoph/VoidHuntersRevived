@@ -60,7 +60,7 @@ namespace VoidHuntersRevived.Client.Library.Services
             provider.Service(out _content);
             provider.Service(out _graphics);
 
-            _segmentTimer = new ActionTimer(100);
+            _segmentTimer = new ActionTimer(32);
 
             _debug.Lines += this.HandleDebugLines;
         }

@@ -14,17 +14,16 @@ struct VertexShaderInput
 	float4 Position : POSITION0;
     float4 Color : COLOR0;
     float2 WorldPosition : TEXCOORD0;
-    float2 Port : TEXCOORD1;
-    float2 Starboard : TEXCOORD2;
+    float RayLength : TEXCOORD1;
+    float2 Port : TEXCOORD2;
 };
 
 struct VertexShaderOutput
 {
 	float4 Position : SV_POSITION;
-    float4 Color : COLOR0;
-    float2 WorldPosition : TEXCOORD0;
-    float2 Port : TEXCOORD1;
-    float2 Starboard : TEXCOORD2;
+    nointerpolation float4 Color : COLOR0;
+    float RayLength : TEXCOORD1;
+    float SegmentLength : TEXCOORD2;
 };
 
 VertexShaderOutput MainVS(in VertexShaderInput input)
@@ -33,19 +32,16 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
     output.Position = mul(input.Position, WorldViewProjection);
     output.Color = input.Color;
-    output.WorldPosition = input.WorldPosition;
-    output.Port = input.Port;
-    output.Starboard = input.Starboard;
-	
+    output.RayLength = input.RayLength;
+    output.SegmentLength = distance(input.Port, input.WorldPosition);
+    
 	return output;
 }
 
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
-    float length = distance(input.Port, input.Starboard);
-    float position = distance(input.Port, input.WorldPosition);
-    float ratio = position / length;
-    float alpha = -4 * pow(ratio - 0.5, 2) + 1;
+    float ratio = input.SegmentLength / input.RayLength;
+    float alpha = 1 - abs(ratio - 0.5) * 2;
     
     return input.Color * float4(1, 1, 1, alpha);
 }

@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         /// </summary>
         public static Double MaxSegmentAge = 10;
 
-        private static Single MaxColorMultiplier = 1f;
+        private static Single MaxAlphaMultiplier = 0.1f;
         #endregion
 
         #region Private Fields
@@ -83,7 +83,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
             _provider = provider;
 
             _segments = new Queue<TrailSegment>();
-            this.TryAddSegment(); // Add a segment on start...
+            this.AddSegment(); // Add a segment on start...
 
             this.Thruster.OnReleased += this.HandleThrusterReleased;
         }
@@ -142,7 +142,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
 
             if (this.Thruster?.Chain.Ship != default)
             {
-                var color = Color.Lerp(Color.Transparent, this.Thruster.Color, this.Thruster.ImpulseModifier * Trail.MaxColorMultiplier);
+                var color = Color.Lerp(Color.Transparent, this.Thruster.Color, this.Thruster.ImpulseModifier * Trail.MaxAlphaMultiplier);
                 color = this.Thruster.Color;
                 // _primitiveBatch.DrawTriangle(Color.Transparent, _youngestSegment.Port, color, this.Thruster.Position, _youngestSegment.Color, _youngestSegment.Position);
                 // _primitiveBatch.DrawTriangle(Color.Transparent, _youngestSegment.Starboard, _youngestSegment.Color, _youngestSegment.Position, color, this.Thruster.Position);
@@ -174,18 +174,28 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         /// </summary>
         public void TryAddSegment()
         {
-            if(this.Thruster?.ImpulseModifier > Thruster.ImpulseModifierEpsilon)
+            if(this.Thruster?.ImpulseModifier > 0.1f
+                && (Vector2.Distance(_youngestSegment.Position, this.Thruster.Position) > 3f
+                || Math.Abs(this.Thruster.Rotation - _youngestSegment.Rotation) > 0.1f))
             { // Only add a segment if this trail is not orphan & applying thrust...
-                _segments.Enqueue(_youngestSegment = _provider.GetService<TrailSegment>((segment, p, c) =>
-                {
-                    segment.Position = this.Thruster.Position;
-                    segment.Velocity = (this.Thruster.Root.LinearVelocity + Thruster.FullImpulse.RotateTo(this.Thruster.Rotation + MathHelper.Pi)) / 1.75f;
-                    segment.Rotation = this.Thruster.Rotation;
-                    segment.BaseColor = Color.Lerp(Color.Transparent, this.Thruster.Color, this.Thruster.ImpulseModifier * Trail.MaxColorMultiplier);
-                    segment.SpreadModifier = this.Thruster.ImpulseModifier;
-                    segment.OlderSibling = _youngestSegment;
-                }));
+                this.AddSegment();
             }
+        }
+
+        /// <summary>
+        /// Add a segment, no checks done at all
+        /// </summary>
+        public void AddSegment()
+        {
+            _segments.Enqueue(_youngestSegment = _provider.GetService<TrailSegment>((segment, p, c) =>
+            {
+                segment.Position = this.Thruster.Position;
+                segment.Velocity = (this.Thruster.Root.LinearVelocity + Thruster.FullImpulse.RotateTo(this.Thruster.Rotation + MathHelper.Pi)) / 1.75f;
+                segment.Rotation = this.Thruster.Rotation;
+                segment.BaseColor = new Color(this.Thruster.Color, this.Thruster.ImpulseModifier * Trail.MaxAlphaMultiplier);
+                segment.SpreadModifier = this.Thruster.ImpulseModifier;
+                segment.OlderSibling = _youngestSegment;
+            }));
         }
 
         /// <summary>
