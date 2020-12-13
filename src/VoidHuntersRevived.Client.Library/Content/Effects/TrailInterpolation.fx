@@ -12,19 +12,19 @@ matrix WorldViewProjection;
 struct VertexShaderInput
 {
 	float4 Position : POSITION0;
-    nointerpolation float4 Color : COLOR0;
+    float4 Color : COLOR0;
     float2 WorldPosition : TEXCOORD0;
-    nointerpolation float2 SegmentStart : TEXCOORD1;
-    nointerpolation float Slope : TEXCOORD2;
+    float2 Port : TEXCOORD1;
+    float2 Starboard : TEXCOORD2;
 };
 
 struct VertexShaderOutput
 {
 	float4 Position : SV_POSITION;
-    nointerpolation float4 Color : COLOR0;
+    float4 Color : COLOR0;
     float2 WorldPosition : TEXCOORD0;
-    nointerpolation float2 SegmentStart : TEXCOORD1;
-    nointerpolation float Slope : TEXCOORD2;
+    float2 Port : TEXCOORD1;
+    float2 Starboard : TEXCOORD2;
 };
 
 VertexShaderOutput MainVS(in VertexShaderInput input)
@@ -34,24 +34,20 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     output.Position = mul(input.Position, WorldViewProjection);
     output.Color = input.Color;
     output.WorldPosition = input.WorldPosition;
-    output.SegmentStart = input.SegmentStart;
-    output.Slope = input.Slope;
+    output.Port = input.Port;
+    output.Starboard = input.Starboard;
 	
 	return output;
 }
 
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
-    if (input.WorldPosition.x == input.SegmentStart.x && input.WorldPosition.y == input.SegmentStart.y)
-        return float4(1, 1, 1, 1);
+    float length = distance(input.Port, input.Starboard);
+    float position = distance(input.Port, input.WorldPosition);
+    float ratio = position / length;
+    float alpha = -4 * pow(ratio - 0.5, 2) + 1;
     
-    float angle = atan2(input.SegmentStart.y - input.WorldPosition.y, input.SegmentStart.x - input.WorldPosition.x);
-    
-    if (angle - input.Slope > 0)
-        return float4(1, 0, 0, 1);
-    else
-        return float4(0, 0, 1, 1);
-
+    return input.Color * float4(1, 1, 1, alpha);
 }
 
 technique BasicColorDrawing

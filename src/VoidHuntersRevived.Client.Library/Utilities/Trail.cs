@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         /// </summary>
         public static Double MaxSegmentAge = 10;
 
-        private static Single MaxColorMultiplier = 2f;
+        private static Single MaxColorMultiplier = 1f;
         #endregion
 
         #region Private Fields

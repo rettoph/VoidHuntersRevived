@@ -17,32 +17,27 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         [FieldOffset(16)]
         private Vector4 _color;
 
+        [FieldOffset(0)]
+        private Vector2 _worldPosition;
+
         [FieldOffset(32)]
-        private Vector2 _segmentStart;
+        private Vector2 _port;
 
         [FieldOffset(40)]
-        private Single _slope;
+        private Vector2 _starboard;
         #endregion
 
         #region Public Properties
-        public Color Color
-        {
-            set => _color = value.ToVector4();
-        }
+        #endregion
 
-        public Vector2 Position
+        #region Constructor
+        public VertexTrailSegment(Vector2 position, Color color, Vector2 port, Vector2 starboard, TrailSegment segment)
         {
-            set => _position = new Vector4(value, 0, 1);
-        }
-
-        public Vector2 SegmentStart
-        {
-            set => _segmentStart = value;
-        }
-
-        public Single Slope
-        {
-            set => _slope = value;
+            _worldPosition = position;
+            _position = new Vector4(position, 0, 1);
+            _color = color.ToVector4();
+            _port = port;
+            _starboard = starboard;
         }
         #endregion
 
@@ -54,7 +49,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
             new VertexElement(16, VertexElementFormat.Vector4, VertexElementUsage.Color, 0),
             new VertexElement(0, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0),
             new VertexElement(32, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 1),
-            new VertexElement(40, VertexElementFormat.Single, VertexElementUsage.TextureCoordinate, 2)
+            new VertexElement(40, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 2)
         );
         #endregion
     }
