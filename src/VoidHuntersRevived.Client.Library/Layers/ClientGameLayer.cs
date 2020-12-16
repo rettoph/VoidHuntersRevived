@@ -25,6 +25,8 @@ namespace VoidHuntersRevived.Client.Library.Layers
 
             provider.Service(out _primitiveBatch);
             provider.Service(out _camera);
+
+            _primitiveBatch.Effect.VertexColorEnabled = true;
         }
         #endregion
 

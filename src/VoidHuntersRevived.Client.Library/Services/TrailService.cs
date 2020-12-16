@@ -26,43 +26,28 @@ namespace VoidHuntersRevived.Client.Library.Services
     public sealed class TrailService : Frameable
     {
         #region Private Fields
-        private FrameableList<Trail> _trails;
-
-        private PrimitiveBatch<VertexTrailSegment, TrailInterpolationEffect> _primitiveBatch;
+        private ServiceProvider _provider;
+        private PrimitiveBatch<TrailVertex, TrailInterpolationEffect> _primitiveBatch;
         private FarseerCamera2D _camera;
-        private DebugService _debug;
-        private GameWindow _window;
-        private ContentService _content;
-        private GraphicsDevice _graphics;
-        private SpriteBatch _spriteBatch;
-
         private ActionTimer _segmentTimer;
+        private List<Trail> _trails;
         #endregion
 
-        #region Constructors
-        internal TrailService()
+
+        #region Frame Methods
+        protected override void Initialize(ServiceProvider provider)
         {
+            base.Initialize(provider);
 
-        }
-        #endregion
-
-        #region Lifecycle Methods
-        protected override void PreInitialize(ServiceProvider provider)
-        {
-            base.PreInitialize(provider);
-
-            provider.Service(out _spriteBatch);
+            _provider = provider;
             provider.Service(out _primitiveBatch);
             provider.Service(out _camera);
-            provider.Service(out _trails);
-            provider.Service(out _debug);
-            provider.Service(out _window);
-            provider.Service(out _content);
-            provider.Service(out _graphics);
 
-            _segmentTimer = new ActionTimer(32);
+            _segmentTimer = new ActionTimer(250);
+            _trails = new List<Trail>();
 
-            _debug.Lines += this.HandleDebugLines;
+            _primitiveBatch.Effect.MaxAge = 10f;
+            _primitiveBatch.Effect.SpreadSpeed = 3f;
         }
         #endregion
 
@@ -71,32 +56,48 @@ namespace VoidHuntersRevived.Client.Library.Services
         {
             base.Update(gameTime);
 
-            _segmentTimer.Update(gameTime, gt =>
+            _trails.ForEach(trail =>
             {
-                _trails.ForEach(trail => trail.TryAddSegment());
+                trail.TryUpdate(gameTime);
             });
 
-            _trails.TryUpdate(gameTime);
+            _segmentTimer.Update(gameTime, gt =>
+            {
+                _trails.ForEach(trail =>
+                {
+                    trail.TryAddSegment(gameTime);
+                });
+            });
         }
 
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
 
+            _primitiveBatch.Effect.CurrentTimestamp = (Single)gameTime.TotalGameTime.TotalSeconds;
             _primitiveBatch.Begin(_camera, BlendState.NonPremultiplied);
-            _trails.TryDraw(gameTime);
+            _trails.ForEach(trail =>
+            {
+                trail.TryDraw(gameTime);
+            });
             _primitiveBatch.End();
         }
         #endregion
 
         #region Helper Methods
-        internal Trail BuildTrail(Thruster thruster)
-            => _trails.Create<Trail>((trail, p, c) => trail.Thruster = thruster);
-        #endregion
+        /// <summary>
+        /// Build a new trail bound to the recieved <paramref name="thruster"/>
+        /// and return its instance.
+        /// </summary>
+        /// <param name="thruster"></param>
+        /// <returns></returns>
 
-        #region Event Handlers
-        private string HandleDebugLines(GameTime gameTime)
-            => $"Trails: {_trails.Count.ToString("#,###,##0")}";
+        public Trail BuildTrail(Thruster thruster)
+            => _provider.GetService<Trail>((trail, p, c) =>
+            {
+                trail.Thruster = thruster;
+                _trails.Add(trail);
+            });
         #endregion
     }
 }

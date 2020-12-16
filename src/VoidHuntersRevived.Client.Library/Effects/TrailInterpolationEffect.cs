@@ -14,8 +14,34 @@ namespace VoidHuntersRevived.Client.Library.Effects
         private static Byte[] FileResourceBytes = EffectHelper.GetFileResourceBytes("Content/Effects/Compiled/TrailInterpolation.mgfx");
         #endregion
 
-        public TrailInterpolationEffect(GraphicsDevice graphicsDevice) : base(graphicsDevice, FileResourceBytes)
+        #region Private Fields
+        private EffectParameter _currentTimestamp;
+        private EffectParameter _maxAge;
+        private EffectParameter _spreadSpeed;
+        #endregion
+
+        #region Public Properties
+        public Single CurrentTimestamp
         {
+            set => _currentTimestamp.SetValue(value);
+        }
+
+        public Single MaxAge
+        {
+            set => _maxAge.SetValue(value);
+        }
+
+        public Single SpreadSpeed
+        {
+            set => _spreadSpeed.SetValue(value);
+        }
+        #endregion
+
+        public TrailInterpolationEffect(GraphicsDevice graphicsDevice) : base(graphicsDevice, TrailInterpolationEffect.FileResourceBytes)
+        {
+            _currentTimestamp = this.Parameters["CurrentTimestamp"];
+            _maxAge = this.Parameters["MaxAge"];
+            _spreadSpeed = this.Parameters["SpreadSpeed"];
         }
     }
 }

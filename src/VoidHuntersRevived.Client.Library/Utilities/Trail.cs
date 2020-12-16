@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
     /// Each segment represents a single point of 
     /// thrust the thruster passed.
     /// </summary>
-    internal sealed class Trail : Frameable
+    public sealed class Trail : Frameable
     {
         #region Static Properties
         /// <summary>
@@ -39,16 +39,17 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         /// </summary>
         public static Double MaxSegmentAge = 10;
 
-        private static Single MaxAlphaMultiplier = 0.1f;
+        public static Single MaxAlphaMultiplier = 0.2f;
         #endregion
 
         #region Private Fields
         private ServiceProvider _provider;
-        private PrimitiveBatch<VertexTrailSegment, TrailInterpolationEffect> _primitiveBatch;
+        private PrimitiveBatch<TrailVertex, TrailInterpolationEffect> _primitiveBatch;
 
         private Single _top, _right, _bottom, _left;
         private Queue<TrailSegment> _segments;
         private TrailSegment _youngestSegment;
+        private Boolean _addedInitialSegment;
         #endregion
 
         #region Public Properties
@@ -81,9 +82,8 @@ namespace VoidHuntersRevived.Client.Library.Utilities
             base.Initialize(provider);
 
             _provider = provider;
-
             _segments = new Queue<TrailSegment>();
-            this.AddSegment(); // Add a segment on start...
+            _addedInitialSegment = false;
 
             this.Thruster.OnReleased += this.HandleThrusterReleased;
         }
@@ -91,6 +91,10 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         protected override void Release()
         {
             base.Release();
+
+            _youngestSegment = null;
+            while (_segments.Any())
+                _segments.Dequeue().TryDispose();
 
             this.TryDisown();
         }
@@ -103,29 +107,35 @@ namespace VoidHuntersRevived.Client.Library.Utilities
 
             if (_segments.Any())
             {
+                // Refresh the youngest vertex...
+                if (this.Thruster != default)
+                    _youngestSegment.Setup(gameTime, this);
+
+                // Clear the internal boundry data
                 _top = Single.MaxValue;
                 _right = 0;
                 _bottom = 0;
                 _left = Single.MaxValue;
 
-                _segments.ForEach(segment =>
+                // Update each vertice & update bounds data.
+                _segments.ForEach(vertice =>
                 {
-                    segment.TryUpdate(gameTime);
-
-                    _top    = Math.Min(_top   , segment.Position.Y);
-                    _right  = Math.Max(_right , segment.Position.X);
-                    _bottom = Math.Max(_bottom, segment.Position.Y);
-                    _left   = Math.Min(_left  , segment.Position.X);
+                    // vertice.TryUpdate(gameTime);
+                    _top = Math.Min(_top, vertice.Position.Y);
+                    _right = Math.Max(_right, vertice.Position.X);
+                    _bottom = Math.Max(_bottom, vertice.Position.Y);
+                    _left = Math.Min(_left, vertice.Position.X);
                 });
 
-                if (_segments.First().Age >= Trail.MaxSegmentAge)
-                {
-                    _segments.Dequeue().TryRelease();
 
-                    // Auto release once all segments have expired.
-                    if(!_segments.Any())
-                        this.TryRelease();
-                }
+                if ((gameTime.TotalGameTime.TotalSeconds - _segments.First().PortVertex.CreatedTimestamp) > TrailSegment.MaxAge)
+                    _segments.Dequeue().TryDispose();
+            }
+            else if (!_addedInitialSegment)
+            { // No initial segment has been added...
+                this.AddSegment(gameTime);
+                this.AddSegment(gameTime);
+                _addedInitialSegment = true;
             }
             else // Auto release once no segments exist...
                 this.TryRelease();
@@ -135,18 +145,18 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         {
             base.Draw(gameTime);
 
-            foreach(TrailSegment segment in _segments.Skip(1))
+            _segments.Skip(1).ForEach(segment =>
             {
-                segment.TryDraw(gameTime);
-            }
+                _primitiveBatch.DrawTriangle(
+                    v1: ref segment.PortVertex,
+                    v2: ref segment.StarboardVertex,
+                    v3: ref segment.OlderSibling.PortVertex);
 
-            if (this.Thruster?.Chain.Ship != default)
-            {
-                var color = Color.Lerp(Color.Transparent, this.Thruster.Color, this.Thruster.ImpulseModifier * Trail.MaxAlphaMultiplier);
-                color = this.Thruster.Color;
-                // _primitiveBatch.DrawTriangle(Color.Transparent, _youngestSegment.Port, color, this.Thruster.Position, _youngestSegment.Color, _youngestSegment.Position);
-                // _primitiveBatch.DrawTriangle(Color.Transparent, _youngestSegment.Starboard, _youngestSegment.Color, _youngestSegment.Position, color, this.Thruster.Position);
-            }
+                _primitiveBatch.DrawTriangle(
+                    v1: ref segment.StarboardVertex,
+                    v2: ref segment.OlderSibling.StarboardVertex,
+                    v3: ref segment.OlderSibling.PortVertex);
+            });
         }
 
         // protected override void DebugDraw(GameTime gameTime)
@@ -172,28 +182,24 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         /// based on the current trail's 
         /// thruster's status.
         /// </summary>
-        public void TryAddSegment()
+        /// <param name="gameTime"></param>
+        public void TryAddSegment(GameTime gameTime)
         {
-            if(this.Thruster?.ImpulseModifier > 0.1f
-                && (Vector2.Distance(_youngestSegment.Position, this.Thruster.Position) > 3f
-                || Math.Abs(this.Thruster.Rotation - _youngestSegment.Rotation) > 0.1f))
+            if(this.Thruster?.ImpulseModifier > 0.1f)
             { // Only add a segment if this trail is not orphan & applying thrust...
-                this.AddSegment();
+                this.AddSegment(gameTime);
             }
         }
 
         /// <summary>
         /// Add a segment, no checks done at all
         /// </summary>
-        public void AddSegment()
+        /// <param name="gameTime"></param>
+        public void AddSegment(GameTime gameTime)
         {
             _segments.Enqueue(_youngestSegment = _provider.GetService<TrailSegment>((segment, p, c) =>
             {
-                segment.Position = this.Thruster.Position;
-                segment.Velocity = (this.Thruster.Root.LinearVelocity + Thruster.FullImpulse.RotateTo(this.Thruster.Rotation + MathHelper.Pi)) / 1.75f;
-                segment.Rotation = this.Thruster.Rotation;
-                segment.BaseColor = new Color(this.Thruster.Color, this.Thruster.ImpulseModifier * Trail.MaxAlphaMultiplier);
-                segment.SpreadModifier = this.Thruster.ImpulseModifier;
+                segment.Setup(gameTime, this);
                 segment.OlderSibling = _youngestSegment;
             }));
         }

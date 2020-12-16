@@ -46,11 +46,11 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddFactory<ShipPartRenderService>(p => new ShipPartRenderService());
             services.AddFactory<GameLayer>(factory: p => new ClientGameLayer(), priority: 1);
             services.AddFactory<RenderTarget2DManager>(p => new RenderTarget2DManager(p.GetService<GraphicsDevice>(), p.GetService<GameWindow>()));
-            services.AddFactory<PrimitiveBatch<VertexTrailSegment, TrailInterpolationEffect>>(p =>
+            services.AddFactory<PrimitiveBatch<TrailVertex, TrailInterpolationEffect>>(p =>
             {
                 var graphics = p.GetService<GraphicsDevice>();
 
-                return new PrimitiveBatch<VertexTrailSegment, TrailInterpolationEffect>(
+                return new PrimitiveBatch<TrailVertex, TrailInterpolationEffect>(
                     new TrailInterpolationEffect(graphics),
                     graphics);
             });
@@ -65,7 +65,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddSingleton<DebugService>();
             services.AddScoped<ShipPartRenderService>();
             services.AddTransient<RenderTarget2DManager>();
-            services.AddSingleton<PrimitiveBatch<VertexTrailSegment, TrailInterpolationEffect>>();
+            services.AddSingleton<PrimitiveBatch<TrailVertex, TrailInterpolationEffect>>();
 
             services.AddGame<ClientVoidHuntersRevivedGame>(p => new ClientVoidHuntersRevivedGame());
             services.AddScene<GameScene>(p => new ClientGameScene(), 1);

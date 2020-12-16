@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
 
         /// <summary>
         /// The multipier applied to FullImpulse in order to
-        /// calculate the current
+        /// calculate the current <see cref="Impulse"/>
         /// </summary>
         public Single ImpulseModifier
         {
