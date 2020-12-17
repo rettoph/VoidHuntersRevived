@@ -18,7 +18,7 @@ struct VertexShaderInput
     float2 Position : TEXCOORD0;
     float SpreadDirection : TEXCOORD1;
     float CreatedTimestamp : TEXCOORD2;
-    float2 ReverseImmpulse : TEXCOORD3;
+    float2 ReverseImpulse : TEXCOORD3;
 };
 
 struct VertexShaderOutput
@@ -36,7 +36,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
     float age = CurrentTimestamp - input.CreatedTimestamp;
     float2 spread = float2(cos(input.SpreadDirection), sin(input.SpreadDirection)) * (SpreadSpeed * age);
-    float4 position = mul(float4(input.Position + (input.ReverseImmpulse * age) + spread, 0, 1), WorldViewProjection);
+    float4 position = mul(float4(input.Position + (input.ReverseImpulse * age) + spread, 0, 1), WorldViewProjection);
     float4 startPosition = mul(float4(input.Position, 0, 1), WorldViewProjection);
     
     output.Position = position;
