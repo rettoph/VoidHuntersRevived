@@ -40,6 +40,8 @@ namespace VoidHuntersRevived.Client.Library.Utilities
 
         public Color Color { get; private set; }
 
+        public Vector2 ReverseImpulse { get; private set; }
+
         /// <summary>
         /// The current segments older sibling, if any.
         /// The siblings Port and Starboard vertices are
@@ -74,18 +76,21 @@ namespace VoidHuntersRevived.Client.Library.Utilities
             this.Position = trail.Thruster.Position;
             this.Rotation = trail.Thruster.Rotation;
             this.Color = new Color(trail.Thruster.Color, trail.Thruster.ImpulseModifier * Trail.MaxAlphaMultiplier);
+            this.ReverseImpulse = trail.Thruster.Impulse.RotateTo(trail.Thruster.Rotation + MathHelper.Pi);
 
             // Update the internal vertece data as required.
             this.PortVertex.Position = this.Position;
             this.PortVertex.SpreadDirection = this.Rotation - MathHelper.PiOver2;
             this.PortVertex.CreatedTimestamp =  (Single)gameTime.TotalGameTime.TotalSeconds;
             this.PortVertex.Color = this.Color;
+            this.PortVertex.ReverseImpulse = this.ReverseImpulse;
 
 
             this.StarboardVertex.Position = this.Position;
             this.StarboardVertex.SpreadDirection = this.Rotation + MathHelper.PiOver2;
             this.StarboardVertex.CreatedTimestamp = (Single)gameTime.TotalGameTime.TotalSeconds;
             this.StarboardVertex.Color = this.Color;
+            this.StarboardVertex.ReverseImpulse = this.ReverseImpulse;
         }
         #endregion
     }

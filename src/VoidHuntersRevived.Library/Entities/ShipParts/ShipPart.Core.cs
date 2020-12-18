@@ -15,6 +15,7 @@ using Guppy.Events.Delegates;
 using Lidgren.Network;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Lists;
+using VoidHuntersRevived.Library.Extensions.Lidgren.Network;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -92,16 +93,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             if(im.ReadBoolean())
                 this.MaleConnectionNode.TryAttach(
-                    target: _entities.GetById<ShipPart>(im.ReadGuid()).FemaleConnectionNodes[im.ReadInt32()]);
+                    target: im.ReadConnectionNode(_entities));
         }
 
         public void WriteMaleConnectionNode(NetOutgoingMessage om)
         {
             if(om.WriteIf(this.MaleConnectionNode.Attached))
-            {
-                om.Write(this.MaleConnectionNode.Target.Parent.Id);
-                om.Write(this.MaleConnectionNode.Target.Index);
-            }
+                om.Write(this.MaleConnectionNode.Target);
         }
         #endregion
 

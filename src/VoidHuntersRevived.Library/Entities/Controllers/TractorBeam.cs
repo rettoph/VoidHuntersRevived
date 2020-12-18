@@ -39,14 +39,34 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #endregion
 
         #region Structs
+        /// <summary>
+        /// Defines <see cref="TractorBeam"/> specific action data
+        /// that contains required data to preform a desired <see cref="ActionType"/>.
+        /// </summary>
         public struct Action {
+            /// <summary>
+            /// The <see cref="ActionType"/> this current <see cref="Action"/>
+            /// is defining.
+            /// </summary>
             public readonly ActionType Type;
-            public readonly ShipPart Target;
+            /// <summary>
+            /// The target<see cref="ShipPart"/> in question this <see cref="Type"/>
+            /// <see cref="ActionType"/> is to be preformed on.
+            /// </summary>
+            public readonly ShipPart TargetPart;
+            /// <summary>
+            /// The <see cref="ConnectionNode"/>, if any, this <see cref="ActionType"/> is to be
+            /// preformed on. This is generally used to defined which node
+            /// the <see cref="TargetPart"/> wishes to attach to when
+            /// the <see cref="Type"/> is <see cref="ActionType.Attach"/>.
+            /// </summary>
+            public ConnectionNode TargetNode;
 
-            public Action(ActionType type = ActionType.None, ShipPart target = default(ShipPart))
+            public Action(ActionType type = ActionType.None, ShipPart target = default(ShipPart), ConnectionNode targetNode = default(ConnectionNode))
             {
                 this.Type = type;
-                this.Target = target;
+                this.TargetPart = target;
+                this.TargetNode = targetNode;
             }
         }
         #endregion
@@ -182,7 +202,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                     break;
             }
 
-            _logger.Verbose(() => $"Attempted TractorBeam.ActionType({action.Type}) on ShipPart({action.Target?.Id}) and ended with TractorBeam.ActionType({response.Type})");
+            _logger.Verbose(() => $"Attempted TractorBeam.ActionType({action.Type}) on ShipPart({action.TargetPart?.Id}) and ended with TractorBeam.ActionType({response.Type})");
             this.OnAction?.Invoke(this, response);
 
             return response;
@@ -207,16 +227,16 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             if (action.Type != ActionType.Select)
                 throw new ArgumentException($"Unable to create selection, Invalid ActionType({action.Type}) recieved.");
 
-            if (this.CanSelect(action.Target))
+            if (this.CanSelect(action.TargetPart))
             {
-                action.Target.MaleConnectionNode.TryDetach();
-                this.TryAdd(action.Target.Chain);
+                action.TargetPart.MaleConnectionNode.TryDetach();
+                this.TryAdd(action.TargetPart.Chain);
                 this.OnSelected?.Invoke(this, action);
 
                 return action;
             }
 
-            return new TractorBeam.Action(ActionType.None, action.Target);
+            return new TractorBeam.Action(ActionType.None, action.TargetPart);
         }
 
         protected override bool CanAdd(Chain chain)
@@ -249,7 +269,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             if (!action.Type.HasFlag(TractorBeam.ActionType.Deselect))
                 throw new ArgumentException($"Unable to create deselection, Invalid ActionType({action.Type}) recieved.");
 
-            if (this.CanRemove(action.Target?.Chain))
+            if (this.CanRemove(action.TargetPart?.Chain))
             {
                 var old = this.Selected;
                 this.OnDeselected?.Invoke(this, action);
@@ -283,11 +303,12 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         /// <param name="target"></param>
         private TractorBeam.Action TryAttach(TractorBeam.Action action)
         {
-            var node = this.Ship.GetClosestOpenFemaleNode(this.Position);
+            var node = action.TargetNode ?? this.Ship.GetClosestOpenFemaleNode(this.Position);
 
-            if (this.CanAttach.Validate(action.Target, node, false))
+            if (this.CanAttach.Validate(action.TargetPart, node, false))
             { // If all the delegates allow the current attachment...
-                action.Target.MaleConnectionNode.TryAttach(node);
+                action.TargetPart.MaleConnectionNode.TryAttach(node);
+                action.TargetNode = node;
                 this.OnAttached?.Invoke(this, action);
 
                 return action;
@@ -295,7 +316,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             else
             {
                 _chunks.TryAdd(this.Selected);
-                return new Action(ActionType.Deselect, action.Target);
+                return new Action(ActionType.Deselect, action.TargetPart);
             }
         }
         /// <summary>

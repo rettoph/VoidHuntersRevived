@@ -20,6 +20,7 @@ using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Utilities;
 using System.IO;
+using VoidHuntersRevived.Library.Extensions.Lidgren.Network;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Players
 {
@@ -100,7 +101,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
                 .FirstOrDefault();
 
             var response = this.driven.Ship.TractorBeam.TryAction(new TractorBeam.Action(action, target));
-
             if (response.Type != TractorBeam.ActionType.None)
                 this.WriteShipTractorBeamActionRequest(
                     om: this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 0),
@@ -162,14 +162,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
             {
                 this.driven.Ship.WriteTarget(m);
                 m.Write(action.Type);
-                m.Write(action.Target);
-
-
-                if (m.WriteExists(action.Target))
+                m.Write(action.TargetPart, (m, e) =>
                 {
-                    m.Write(action.Target.Position);
-                    m.Write(action.Target.Rotation);
-                }
+                    m.Write(action.TargetPart.Position);
+                    m.Write(action.TargetPart.Rotation);
+                });
+                m.Write(action.TargetNode);
             });
         }
         #endregion

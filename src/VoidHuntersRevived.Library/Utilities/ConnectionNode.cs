@@ -12,6 +12,7 @@ using Guppy.Extensions.DependencyInjection;
 using FarseerPhysics.Dynamics;
 using VoidHuntersRevived.Library.Extensions.Farseer;
 using Guppy.Events.Delegates;
+using Lidgren.Network;
 
 namespace VoidHuntersRevived.Library.Utilities
 {
@@ -21,7 +22,7 @@ namespace VoidHuntersRevived.Library.Utilities
         /// <summary>
         /// The nodes index within the parent array
         /// </summary>
-        public Int32 Index { get; private set; }
+        public new Int32 Id { get; private set; }
         /// <summary>
         /// The ShipPart containing the current connection node
         /// </summary>
@@ -168,8 +169,7 @@ namespace VoidHuntersRevived.Library.Utilities
             {
                 // Update the parent
                 n.Parent = parent;
-                n.Id = id.ToGuid();
-                n.Index = id;
+                n.Id = id;
 
                 // Set the position & rotation values
                 n.LocalPosition = configuration.Position;

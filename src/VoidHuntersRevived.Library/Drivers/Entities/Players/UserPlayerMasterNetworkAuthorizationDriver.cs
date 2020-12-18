@@ -16,6 +16,7 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Extensions.Lidgren.Network;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities.Players
 {
@@ -24,7 +25,6 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
         #region Private Fields
         private EntityList _entities;
         private NetConnection _userConnection;
-        private CommandService _commands;
         #endregion
 
         #region Lifecycle Methods
@@ -52,18 +52,19 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
 
             var request = new TractorBeam.Action(
                 type: (TractorBeam.ActionType)im.ReadByte(),
-                target: im.ReadEntity<ShipPart>(_entities).Then(sp =>
+                target: im.ReadEntity<ShipPart>(_entities, (m, sp) =>
                 {
-                    if (im.ReadBoolean())
-                        sp.SetTransformIgnoreContacts(
-                            position: im.ReadVector2(),
-                            angle: im.ReadSingle());
-                }));
+                    sp.SetTransformIgnoreContacts(
+                        position: m.ReadVector2(),
+                        angle: m.ReadSingle());
+                }),
+                targetNode: im.ReadConnectionNode(_entities));
             var response = this.driven.Ship.TractorBeam.TryAction(request);
 
-            if(request.Type != response.Type)
-            { // Something went wrong, so we need to alert the requesting client...
-
+            if (request.Type != response.Type)
+            { // TODO: Something went wrong, so we need to alert the requesting client...
+                // For now, we just DC the client when this happens.. but thats not how we should release.
+                im.SenderConnection.Disconnect("There was an error processing your request.");
             }
         }
 

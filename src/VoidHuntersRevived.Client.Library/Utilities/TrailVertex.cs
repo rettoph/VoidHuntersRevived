@@ -22,6 +22,9 @@ namespace VoidHuntersRevived.Client.Library.Utilities
 
         [FieldOffset(28)]
         public Single CreatedTimestamp;
+
+        [FieldOffset(32)]
+        public Vector2 ReverseImpulse;
         #endregion
 
         #region Public Properties
@@ -38,7 +41,8 @@ namespace VoidHuntersRevived.Client.Library.Utilities
             new VertexElement(0, VertexElementFormat.Vector4, VertexElementUsage.Color, 0),
             new VertexElement(16, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0),
             new VertexElement(24, VertexElementFormat.Single, VertexElementUsage.TextureCoordinate, 1),
-            new VertexElement(28, VertexElementFormat.Single, VertexElementUsage.TextureCoordinate, 2)
+            new VertexElement(28, VertexElementFormat.Single, VertexElementUsage.TextureCoordinate, 2),
+            new VertexElement(32, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 3)
         );
         #endregion
     }
