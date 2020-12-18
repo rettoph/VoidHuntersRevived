@@ -86,19 +86,20 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// chain.
         /// </summary>
         /// <param name="output"></param>
-        public void Items(ref IList<ShipPart> output)
+        public void Items(ref IList<ShipPart> output, Func<ShipPart, Boolean> filter = null)
         {
-            output.Add(this);
+            if(filter?.Invoke(this) ?? true)
+                output.Add(this);
 
             foreach (ConnectionNode female in this.FemaleConnectionNodes)
                 if (female.Attached)
-                    female.Target.Parent.Items(ref output);
+                    female.Target.Parent.Items(ref output, filter);
         }
 
-        public IEnumerable<ShipPart> Items()
+        public IEnumerable<ShipPart> Items(Func<ShipPart, Boolean> filter = null)
         {
             IList<ShipPart> temp = new List<ShipPart>();
-            this.Items(ref temp);
+            this.Items(ref temp, filter);
 
             return temp;
         }

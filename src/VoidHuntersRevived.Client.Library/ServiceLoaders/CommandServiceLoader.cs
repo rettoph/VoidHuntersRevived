@@ -36,6 +36,21 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                 {
                     new CommandContext()
                     {
+                        Word = "fire",
+                        Description = "Set the ship's firing status.",
+                        Arguments = new ArgContext[]
+                        {
+                            new ArgContext()
+                            {
+                                Identifier = "value",
+                                Aliases = "v".ToCharArray(),
+                                Required = true,
+                                Type = ArgType.Boolean
+                            }
+                        }
+                    },
+                    new CommandContext()
+                    {
                         Word = "direction",
                         Description = "Update the ship's direction.",
                         Arguments = new ArgContext[]

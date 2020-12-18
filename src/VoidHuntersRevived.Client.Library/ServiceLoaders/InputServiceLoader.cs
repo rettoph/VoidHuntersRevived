@@ -29,6 +29,17 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             #region Ship Movement Inputs
             inputs.Add(new InputCommandContext()
             {
+                Handle = "set_firing",
+                DefaultInput = new InputType(MouseButton.Left),
+                Commands = new[]
+                {
+                    (state: ButtonState.Pressed, command: "ship fire -v=true"),
+                    (state: ButtonState.Released, command: "ship fire -v=false")
+                }
+            });
+
+            inputs.Add(new InputCommandContext()
+            {
                 Handle = "set_direction_forward",
                 DefaultInput = new InputType(Keys.W),
                 Commands = new[]

@@ -51,6 +51,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
 
                 this.driven.OnUpdate += this.Update;
 
+                _commands["ship"]["fire"].OnExcecute += this.HandleShipFireCommand;
                 _commands["ship"]["direction"].OnExcecute += this.HandleShipDirectionCommand;
                 _commands["ship"]["tractorbeam"].OnExcecute += this.HandleShipTractorBeamCommand;
                 _commands["ship"]["save"].OnExcecute += this.HandleShipSaveCommand;
@@ -117,6 +118,14 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
         #endregion
 
         #region Command Handlers
+        private CommandResponse HandleShipFireCommand(ICommand sender, CommandInput input)
+        {
+            var value = (Boolean)input["value"];
+            this.driven.Ship.Firing = value;
+
+            return CommandResponse.Empty;
+        }
+
         private CommandResponse HandleShipTractorBeamCommand(ICommand sender, CommandInput input)
         {
             this.TryTractorBeamAction((TractorBeam.ActionType)input["action"]);

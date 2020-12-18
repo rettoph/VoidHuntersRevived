@@ -42,26 +42,12 @@ namespace VoidHuntersRevived.Library.Entities
         private EntityList _entities;
 
         /// <summary>
-        /// Determin whether or not the current ship
-        /// is in the  act of firing.
-        /// </summary>
-        private Boolean _firing;
-
-        /// <summary>
         /// A list of all female nodes current open
         /// within the Ship's Bridge's chain. This is
         /// automatically updated when <see cref="Clean"/>
         /// is invoked.
         /// </summary>
         private IList<ConnectionNode> _openFemaleNodes;
-
-        /// <summary>
-        /// A list of all weapons contained within the
-        /// Ship's Bridge's chain. This is
-        /// automatically updated when <see cref="Clean"/>
-        /// is invoked.
-        /// </summary>
-        private List<Weapon> _weapons;
         #endregion
 
         #region Public Properties
@@ -128,24 +114,6 @@ namespace VoidHuntersRevived.Library.Entities
         /// invocations.
         /// </summary>
         public String Title { get; set; } = "Unnamed Ship";
-
-        /// <summary>
-        /// Determin whether or not the current ship
-        /// is in the  act of firing. Updating this value will automatically invoked
-        /// the <see cref="OnFiringChanged"/> event.
-        /// </summary>
-        public Boolean Firing
-        {
-            get => _firing;
-            set => this.OnFiringChanged.InvokeIfChanged(value != _firing, this, ref _firing, value);
-        }
-
-        /// <summary>
-        /// A readonly collection of all weapons contained within the
-        /// Ship's Bridge's chain. Value based on the
-        /// private <see cref="_weapons"/> field.
-        /// </summary>
-        public IReadOnlyCollection<Weapon> Weapons => _weapons;
         #endregion
 
         #region Events
@@ -158,11 +126,6 @@ namespace VoidHuntersRevived.Library.Entities
         /// Automatically invoked when the <see cref="Player"/> property is updated.
         /// </summary>
         public event OnChangedEventDelegate<Ship, Player> OnPlayerChanged;
-
-        /// <summary>
-        /// Automatically invoked when the <see cref="Firing"/> property is updated.
-        /// </summary>
-        public event OnEventDelegate<Ship, Boolean> OnFiringChanged;
 
         /// <summary>
         /// Invoked whenever the Bridge's chain changes in any
@@ -189,6 +152,7 @@ namespace VoidHuntersRevived.Library.Entities
             // Create partial classes...
             this.Network_Create(provider);
             this.Thrusters_Create(provider);
+            this.Weapons_Create(provider);
 
             // Add required event handlers...
             this.OnBridgeChanged += Ship.HandleBridgeChanged;
@@ -223,6 +187,7 @@ namespace VoidHuntersRevived.Library.Entities
             // Dispose partial classes...
             this.Network_Dispose();
             this.Thrusters_Dispose();
+            this.Weapons_Dispose();
 
             // Remove required event handlers...
             this.OnBridgeChanged -= Ship.HandleBridgeChanged;
@@ -262,17 +227,6 @@ namespace VoidHuntersRevived.Library.Entities
                 // Refresh the list of open female nodes...
                 _openFemaleNodes.Clear();
                 this.Bridge?.GetOpenFemaleConnectionNodes(ref _openFemaleNodes);
-            }
-
-            lock (_weapons)
-            {
-                // Refresh the internal list of weapons...
-                _weapons.Clear();
-
-                if (this.Bridge is Weapon w)
-                    _weapons.Add(w);
-
-                _weapons.AddRange(this.Bridge.Children.Where(c => c is Weapon).Select(c => c as Weapon));
             }
 
             // Invoke the cleaned event now that all required instances have been cleaned.

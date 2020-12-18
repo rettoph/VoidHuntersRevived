@@ -120,7 +120,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         /// event if needed.
         /// </summary>
         /// <param name="gameTime"></param>
-        private void UpdateFire(GameTime gameTime)
+        public void UpdateFire(GameTime gameTime)
             => _fireTimer.Update(gameTime, this.TryFire);
 
         /// <summary>
