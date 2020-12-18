@@ -5,6 +5,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Entities.Ammunitions;
 using Guppy.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
+using Guppy.Lists;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 {
@@ -16,10 +17,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
     {
         #region Weapon Implementation
         /// <inheritdoc />
-        protected override Ammunition Fire(ServiceProvider provider)
+        protected override Ammunition Fire(ServiceProvider provider, EntityList entities)
         {
-            return provider.GetService<Bullet>((b, p, d) =>
+            return entities.Create<Bullet>((b, p, d) =>
             {
+                b.Damage = 5f;
                 b.Position = this.Position;
                 b.Velocity = this.Root.LinearVelocity + Vector2.Transform(Vector2.UnitX * 15, Matrix.CreateRotationZ(MathHelper.WrapAngle(this.Rotation + MathHelper.Pi)));
             });

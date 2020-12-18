@@ -6,6 +6,7 @@ using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
 using Guppy.Extensions.Collections;
 using Guppy.Interfaces;
+using Guppy.Lists;
 using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using System;
@@ -38,12 +39,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         /// </summary>
         private ActionTimer _fireTimer;
 
-        /// <summary>
-        /// An internal collection of all live ammuntions within the weapon.
-        /// </summary>
-        private Queue<Ammunition> _ammunitions;
-
         private ServiceProvider _provider;
+        private EntityList _entities;
 
         private Double _fireTime;
         private Single _curRecoil;
@@ -86,11 +83,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
-            _ammunitions = new Queue<Ammunition>();
             _joints = new Dictionary<Body, RevoluteJoint>();
             _fireTimer = new ActionTimer(400);
 
             _provider = provider;
+            provider.Service(out _entities);
 
             // Create new shapes for the part
             this.Configuration.Vertices.ForEach(v => this.BuildFixture(new PolygonShape(v, this.Configuration.Density), this));
@@ -106,9 +103,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             base.Release();
 
             this.OnChainChanged -= this.HandleChainChanged;
-
-            while (_ammunitions.Any())
-                _ammunitions.Dequeue().TryRelease();
         }
 
         protected override void Dispose()
@@ -123,9 +117,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            // Update all ammunitions
-            _ammunitions.TryUpdateAll(gameTime);
         }
 
         /// <summary>
@@ -146,13 +137,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                 _curRecoil = MathHelper.Lerp(this.Recoil, 0, MathHelper.Min(1f, (Single)((gameTime.TotalGameTime.TotalMilliseconds - _fireTime) / (_fireTimer.Interval / 1.5))));
 
             this.TryAim(this.Chain.Ship.Target);
-        }
-
-        protected override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-
-            _ammunitions.TryDrawAll(gameTime);
         }
         #endregion
 
@@ -281,14 +265,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             {
                 _fireTime = gameTime.TotalGameTime.TotalMilliseconds;
                 _curRecoil = this.Recoil;
-                var ammo = this.Fire(_provider);
-                _ammunitions.Enqueue(ammo);
+                var ammo = this.Fire(_provider, _entities);
 
                 this.OnFire?.Invoke(this, ammo);
             });
         }
 
-        protected abstract Ammunition Fire(ServiceProvider provider);
+        protected abstract Ammunition Fire(ServiceProvider provider, EntityList entities);
         #endregion
 
         #region Event Handlers
@@ -314,9 +297,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             this.CleanCollision();
             this.CleanUpdate();
             this.CleanJoints();
-
-            while (_ammunitions.Any())
-                _ammunitions.Dequeue().TryRelease();
         }
 
         private void HandleRootCollisionChanged(BodyEntity sender, Category arg)

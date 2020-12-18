@@ -171,10 +171,10 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             #region Thruster
             var thruster = new ShipPartConfiguration();
             thruster.DefaultColor = Color.LimeGreen;
-            thruster.AddVertice(-0.1f, 0.3f);
-            thruster.AddVertice(-0.1f, -0.3f);
-            thruster.AddVertice(0.4f, -0.1f);
-            thruster.AddVertice(0.4f, 0.1f);
+            thruster.AddVertex(-0.1f, 0.3f);
+            thruster.AddVertex(-0.1f, -0.3f);
+            thruster.AddVertex(0.4f, -0.1f);
+            thruster.AddVertex(0.4f, 0.1f);
             thruster.AddNode(0.3f, 0, 0, ShipPartConfiguration.NodeType.Male);
             thruster.Flush();
 
@@ -192,10 +192,10 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             #region Weapon
             var massDriver = new ShipPartConfiguration();
             massDriver.DefaultColor = Color.Red;
-            massDriver.AddVertice(-0.75f, 0.1f);
-            massDriver.AddVertice(-0.75f, -0.1f);
-            massDriver.AddVertice(0.1f, -0.2f);
-            massDriver.AddVertice(0.1f, 0.2f);
+            massDriver.AddVertex(-0.75f, 0.1f);
+            massDriver.AddVertex(-0.75f, -0.1f);
+            massDriver.AddVertex(0.1f, -0.2f);
+            massDriver.AddVertex(0.1f, 0.2f);
             massDriver.AddNode(0, 0, 0, ShipPartConfiguration.NodeType.Male);
             massDriver.Flush();
 

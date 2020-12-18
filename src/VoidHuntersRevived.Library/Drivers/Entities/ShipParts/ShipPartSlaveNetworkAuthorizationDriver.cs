@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,6 +16,10 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
             base.Initialize(driven, provider);
 
             this.driven.MessageHandlers[MessageType.Setup].OnRead += this.driven.ReadMaleConnectionNode;
+            this.driven.MessageHandlers[MessageType.Setup].OnRead += this.driven.ReadHealth;
+            this.driven.MessageHandlers[MessageType.Update].OnRead += this.driven.ReadHealth;
+
+            this.driven.Actions.Set("update:health", this.driven.ReadHealth);
         }
 
         protected override void Release(ShipPart driven)
@@ -22,6 +27,10 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
             base.Release(driven);
 
             this.driven.MessageHandlers[MessageType.Setup].OnRead -= this.driven.ReadMaleConnectionNode;
+            this.driven.MessageHandlers[MessageType.Setup].OnRead -= this.driven.ReadHealth;
+            this.driven.MessageHandlers[MessageType.Update].OnRead -= this.driven.ReadHealth;
+
+            this.driven.Actions.Remove("update:health");
         }
         #endregion
     }

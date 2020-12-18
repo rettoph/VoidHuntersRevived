@@ -1,4 +1,6 @@
-﻿using Guppy.DependencyInjection;
+﻿using FarseerPhysics.Dynamics;
+using Guppy.DependencyInjection;
+using Guppy.Events.Delegates;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Extensions.Utilities;
 using Guppy.Utilities;
@@ -8,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Library.Entities.Ammunitions
 {
@@ -18,16 +21,44 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         #endregion
 
         #region Public Properties
+        /// <summary>
+        /// The amount of damage to be applied to
+        /// a target <see cref="ShipPart"/> on
+        /// <see cref="ShipPart.Hit(Ammunition)"/>
+        /// </summary>
+        public Single Damage { get; set; }
+
+        /// <summary>
+        /// The bullets current world position.
+        /// </summary>
         public Vector2 Position { get; internal set; }
+
+        /// <summary>
+        /// The bullets current velocity (per second).
+        /// </summary>
         public Vector2 Velocity { get; internal set; }
         #endregion
 
         #region Lifecycle Methods
+        protected override void Create(ServiceProvider provider)
+        {
+            base.Create(provider);
+
+            this.OnCollision += this.HandleCollision;
+        }
+
         protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
 
             provider.Service(out _primitiveBatch);
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.OnCollision -= this.HandleCollision;
         }
         #endregion
 
@@ -43,7 +74,19 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         {
             base.Update(gameTime);
 
-            this.Position += this.Velocity * (Single)gameTime.ElapsedGameTime.TotalSeconds;
+            this.CheckCollisions(
+                this.Position,
+                this.Position += this.Velocity * (Single)gameTime.ElapsedGameTime.TotalSeconds);
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandleCollision(Ammunition sender, ShipPart shipPart)
+        {
+            // When the bullet collides, we always want to dispose it.
+            // Note: Health damage is only applied on the master and is then broadcasted to all slaves.
+            // To see that functionality find the BulletMasterNetworkAuthorizationDriver driver.
+            this.TryRelease();
         }
         #endregion
     }

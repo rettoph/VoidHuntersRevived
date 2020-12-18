@@ -113,13 +113,20 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
                 this.WriteUpdateShipDirectionRequest(this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 0), direction, value);
             }
         }
+
+        private void TrySetShipFiring(Boolean value)
+        {
+            this.driven.Ship.Firing = value;
+
+            this.WriteUpdateShipFiringRequest(this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 0), value);
+        }
         #endregion
 
         #region Command Handlers
         private CommandResponse HandleShipFireCommand(ICommand sender, CommandInput input)
         {
-            var value = (Boolean)input["value"];
-            this.driven.Ship.Firing = value;
+            this.TrySetShipFiring((Boolean)input["value"]);
+            
 
             return CommandResponse.Empty;
         }
@@ -150,6 +157,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
         #endregion
 
         #region Network Methods
+        private void WriteUpdateShipFiringRequest(NetOutgoingMessage om, Boolean value)
+            => om.Write("update:ship:firing:request", m =>
+            {
+                m.Write(value);
+            });
+
         private void WriteUpdateShipDirectionRequest(NetOutgoingMessage om, Ship.Direction direction, Boolean value)
             => om.Write("update:ship:direction:request", m =>
             {

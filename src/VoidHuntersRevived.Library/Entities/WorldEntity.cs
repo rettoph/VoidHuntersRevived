@@ -46,8 +46,29 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Public Attributes
+        /// <summary>
+        /// The "real" instance of the current Farseer entity.
+        /// 
+        /// This should be changed to reflect rigid/instant states.
+        /// </summary>
         public World Master => this.master;
+
+        /// <summary>
+        /// The "visible" instance of the current Farseer entity.
+        /// 
+        /// This should only be updated internally via the UpdateSlave method or
+        /// OnUpdateSlave event. This usually appears as a slow lerp towards the
+        /// perfection of the master instance.
+        /// </summary>
         public World Slave => this.slave;
+
+        /// <summary>
+        /// The "live" instance. This is the master if there is no slave,
+        /// otherwise it will be the slave.
+        /// 
+        /// This is used to grab the current state of the entity for rendering
+        /// or informational purposes.
+        /// </summary>
         public World Live => this.live;
 
         public Vector2 Size

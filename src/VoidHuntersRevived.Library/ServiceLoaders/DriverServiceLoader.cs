@@ -7,10 +7,12 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Drivers;
 using VoidHuntersRevived.Library.Drivers.Entities;
+using VoidHuntersRevived.Library.Drivers.Entities.Ammunitions;
 using VoidHuntersRevived.Library.Drivers.Entities.Players;
 using VoidHuntersRevived.Library.Drivers.Entities.ShipParts;
 using VoidHuntersRevived.Library.Drivers.Scenes;
 using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Entities.Ammunitions;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
@@ -51,6 +53,8 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
 
             services.AddAndBindDriver<ShipPart, ShipPartMasterNetworkAuthorizationDriver>(p => new ShipPartMasterNetworkAuthorizationDriver());
             services.AddAndBindDriver<ShipPart, ShipPartSlaveNetworkAuthorizationDriver>(p => new ShipPartSlaveNetworkAuthorizationDriver());
+
+            services.AddAndBindDriver<Bullet, BulletMasterNetworkAuthorizationDriver>(p => new BulletMasterNetworkAuthorizationDriver());
         }
 
         public void ConfigureProvider(ServiceProvider provider)

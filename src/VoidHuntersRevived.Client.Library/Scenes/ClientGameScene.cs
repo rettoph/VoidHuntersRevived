@@ -25,6 +25,7 @@ using VoidHuntersRevived.Client.Library.Enums;
 using VoidHuntersRevived.Client.Library.Services;
 using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Client.Library.Utilities.Cameras;
+using VoidHuntersRevived.Library.Entities.Ammunitions;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
 using VoidHuntersRevived.Library.Layers;
@@ -46,6 +47,9 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private SpriteBatch _spriteBatch;
         private TrailService _trails;
         private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
+        private DebugService _debug;
+
+        private ServiceFactory _bulletServiceFactory;
 
         private Vector2 _viewportSize;
         private Rectangle _viewportBounds;
@@ -76,6 +80,9 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             provider.Service(out _commands);
             provider.Service(out _trails);
             provider.Service(out _primitiveBatch);
+            provider.Service(out _debug);
+
+            _bulletServiceFactory = provider.GetServiceFactory(typeof(Bullet));
 
             _blur = new GaussianBlurFilter(provider);
             _window.ClientSizeChanged += this.HandleClientSizeChanged;
@@ -116,6 +123,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             _mouse.OnScrollWheelValueChanged += this.HandleMouseScrollWheelValueChanged;
             _window.ClientSizeChanged += this.HandleClientSizeChanged;
+            _debug.Lines += this.RenderDebugLines;
 
             this.IfOrOnWorld(world =>
             { // Setup world rendering after a world instance is created
@@ -301,6 +309,12 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
         private void HandleMouseScrollWheelValueChanged(MouseService sender, ScrollWheelArgs args)
             => _camera.ZoomBy((Single)Math.Pow(1.5, args.Delta / 120));
+
+        private string RenderDebugLines(GameTime gameTime)
+        {
+            return $"Entities: {this.Entities.Count()}\n"
+                + $"Bullet Queue: {_bulletServiceFactory.Pools[typeof(Bullet)].Count()}";
+        }
         #endregion
     }
 }

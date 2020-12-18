@@ -39,6 +39,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
             this.driven.Actions.Set("update:ship:target:request", this.HandleUpdateShipTargetRequestMessage);
             this.driven.Actions.Set("ship:tractor-beam:action:request", this.HandleShipTractorBeamActionRequestMessage);
             this.driven.Actions.Set("update:ship:direction:request", this.HandleUpdateShipDirectionRequestMessage);
+            this.driven.Actions.Set("update:ship:firing:request", this.HandleUpdateShipFiringRequestMessage);
         }
         #endregion
 
@@ -71,6 +72,11 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
         private void HandleUpdateShipDirectionRequestMessage(NetIncomingMessage im)
         {
             this.driven.Ship.TrySetDirection(im.ReadEnum<Ship.Direction>(), im.ReadBoolean());
+        }
+
+        private void HandleUpdateShipFiringRequestMessage(NetIncomingMessage im)
+        {
+            this.driven.Ship.Firing = im.ReadBoolean();
         }
         #endregion
 

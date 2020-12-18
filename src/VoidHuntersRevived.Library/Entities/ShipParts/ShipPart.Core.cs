@@ -26,12 +26,38 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #endregion
 
         #region Public Properties
+        /// <summary>
+        /// The base <see cref="ShipPartConfiguration"/> values.
+        /// This determins vertices, hulls, colors, and more. This 
+        /// should be defined in startup via an <see cref="IServiceLoader"/>
+        /// instance.
+        /// </summary>
         public ShipPartConfiguration Configuration { get; set; }
+
+        /// <summary>
+        /// Determin whether or not the current <see cref="ShipPart"/>
+        /// is the rootmost part of the <see cref="Chain"/>.
+        /// </summary>
         public Boolean IsRoot => !this.MaleConnectionNode.Attached;
+
+        /// <summary>
+        /// Grab the rootmost <see cref="ShipPart"/> of the current <see cref="Chain"/>.
+        /// This may return itself.
+        /// </summary>
         public ShipPart Root => this.Chain.Root;
+
+        /// <summary>
+        /// Grabs the direct parent <see cref="ShipPart"/>, if any.
+        /// </summary>
         public ShipPart Parent => this.IsRoot ? null : this.MaleConnectionNode.Target.Parent;
 
-        public Color Color => this.Chain.Ship?.Color ?? this.Root.Configuration.DefaultColor;
+        /// <summary>
+        /// The current <see cref="Microsoft.Xna.Framework.Color"/>, based on the 
+        /// containing <see cref="Ship.Color"/> or <see cref="ShipPartConfiguration.DefaultColor"/>
+        /// as a fallback. The color value is then lerp'd to read based on the current
+        /// <see cref="Health"/>.
+        /// </summary>
+        public Color Color => Color.Lerp(Color.Red, this.Chain.Ship?.Color ?? this.Root.Configuration.DefaultColor, this.Health / this.Configuration.MaxHealth);
         #endregion
 
         #region Lifecycle Methods
@@ -62,6 +88,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             // Run _before_ Driven.Initialize to beat the Driver configuration.
             this.ConnectionNode_Initialize(provider);
             this.Chain_Initialize(provider);
+            this.Health_Initialize(provider);
 
             base.Initialize(provider);
 
