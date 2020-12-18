@@ -6,6 +6,7 @@ using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
 using Guppy.Extensions.Collections;
 using Guppy.Interfaces;
+using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -33,19 +34,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         private Dictionary<Body, RevoluteJoint> _joints;
 
         /// <summary>
-        /// When true, joints will be updated next frame
-        /// </summary>
-        private Boolean _dirtyJoints;
-
-        /// <summary>
         /// Simple timer to manage the weapons fire rate.
         /// </summary>
         private ActionTimer _fireTimer;
 
         /// <summary>
-        /// An internal list of all live ammuntions within the weapon.
+        /// An internal collection of all live ammuntions within the weapon.
         /// </summary>
-        private List<Ammunition> _ammunitions;
+        private Queue<Ammunition> _ammunitions;
 
         private ServiceProvider _provider;
 
@@ -66,18 +62,31 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         /// The amount (in farseer units) the gun should recoil when fired.
         /// </summary>
         public Single Recoil { get; set; } = 0.3f;
+
+        /// <summary>
+        /// Indicates that the weapon is currently aiming at the requested target
+        /// if false, we shouldnt fire.
+        /// </summary>
+        public Boolean TargetInRange { get; private set; }
         #endregion
 
         #region Events
-        public event ValidateEventDelegate<Ship, ShipPart> ValidateFire;
+        public event ValidateEventDelegate<Weapon, Ship> ValidateFire;
         public event OnEventDelegate<Weapon, Ammunition> OnFire;
         #endregion
 
         #region Lifecycle Methods
+        protected override void Create(ServiceProvider provider)
+        {
+            base.Create(provider);
+
+            this.ValidateFire += Weapon.HandleValidateFire;
+        }
+
         protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
-            _ammunitions = new List<Ammunition>();
+            _ammunitions = new Queue<Ammunition>();
             _joints = new Dictionary<Body, RevoluteJoint>();
             _fireTimer = new ActionTimer(400);
 
@@ -89,7 +98,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             this.OnChainChanged += this.HandleChainChanged;
 
             // Create new default joints as needed
-            this.UpdateJoints();
+            this.CleanJoints();
         }
 
         protected override void Release()
@@ -97,6 +106,16 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             base.Release();
 
             this.OnChainChanged -= this.HandleChainChanged;
+
+            while (_ammunitions.Any())
+                _ammunitions.Dequeue().TryRelease();
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.ValidateFire -= Weapon.HandleValidateFire;
         }
         #endregion
 
@@ -105,23 +124,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         {
             base.Update(gameTime);
 
-            if (_dirtyJoints)
-            {
-                this.UpdateJoints();
-                _dirtyJoints = false;
-            }
-
             // Update all ammunitions
             _ammunitions.TryUpdateAll(gameTime);
         }
-
-        /// <summary>
-        /// Update the fire timer, and trigger a fire
-        /// event if needed.
-        /// </summary>
-        /// <param name="gameTime"></param>
-        public void UpdateFire(GameTime gameTime)
-            => _fireTimer.Update(gameTime, this.TryFire);
 
         /// <summary>
         ///  Specifically used to update the wepaons position. Only 
@@ -155,7 +160,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         /// <summary>
         /// Refresh/create the internal joints as needed.
         /// </summary>
-        private void UpdateJoints()
+        private void CleanJoints()
         {
             // Auto dispose of each pre-existing joint
             while (_joints.Any())
@@ -222,17 +227,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                     var offset = joint.WorldAnchorB - target;
 
                     // Calculate the angle the joint should be to reach the current target...
-                    var angle = MathHelper.Clamp(
-                        value: MathHelper.WrapAngle(
-                            angle: (Single)Math.Atan2(offset.Y, offset.X) - this.MaleConnectionNode.WorldRotation),
-                        min: joint.LowerLimit,
-                        max: joint.UpperLimit);
+                    var angle = MathHelper.WrapAngle((Single)Math.Atan2(offset.Y, offset.X) - this.MaleConnectionNode.WorldRotation);
 
                     // Calculate the current different in angle
                     var diff = angle - joint.JointAngle;
 
                     // Set the joints speed...
                     joint.MotorSpeed = diff * (1000f / 64f);
+                    this.TargetInRange = MathHelper.Clamp(angle, joint.LowerLimit, joint.UpperLimit) == angle;
                 }
             });
         }
@@ -242,7 +244,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             if (_joints.ContainsKey(body))
                 return _joints[body];
 
-            return default(RevoluteJoint);
+            return default;
         }
 
         /// <summary>
@@ -275,15 +277,15 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
         public void TryFire(GameTime gameTime)
         {
-            if (this.ValidateFire.Validate(this.Chain.Ship, this, true))
+            _fireTimer.Update(gameTime, v => v && this.ValidateFire.Validate(this, this.Chain.Ship, true), gt =>
             {
                 _fireTime = gameTime.TotalGameTime.TotalMilliseconds;
                 _curRecoil = this.Recoil;
                 var ammo = this.Fire(_provider);
-                _ammunitions.Add(ammo);
-                
+                _ammunitions.Enqueue(ammo);
+
                 this.OnFire?.Invoke(this, ammo);
-            }
+            });
         }
 
         protected abstract Ammunition Fire(ServiceProvider provider);
@@ -292,12 +294,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         #region Event Handlers
         private void HandleChainChanged(ShipPart sender, Chain old, Chain value)
         {
-            _dirtyJoints = true;
-
             if (old != default(Chain))
             {
-                old.OnUpdate -= this.TryUpdate;
-
                 old.Root.OnCollidesWithChanged -= this.HandleRootCollisionChanged;
                 old.Root.OnCollisionCategoriesChanged -= this.HandleRootCollisionChanged;
                 old.Root.OnIgnoreCCDWithChanged -= this.HandleRootCollisionChanged;
@@ -306,8 +304,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
             if (value != default(Chain))
             {
-                value.OnUpdate += this.TryUpdate;
-
                 value.Root.OnCollidesWithChanged += this.HandleRootCollisionChanged;
                 value.Root.OnCollisionCategoriesChanged += this.HandleRootCollisionChanged;
                 value.Root.OnIgnoreCCDWithChanged += this.HandleRootCollisionChanged;
@@ -317,6 +313,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             // Clean default wepaon data
             this.CleanCollision();
             this.CleanUpdate();
+            this.CleanJoints();
+
+            while (_ammunitions.Any())
+                _ammunitions.Dequeue().TryRelease();
         }
 
         private void HandleRootCollisionChanged(BodyEntity sender, Category arg)
@@ -324,6 +324,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
         private void HandleRootShipChanged(Chain sender, Ship old, Ship value)
             => this.CleanUpdate();
+
+        private static bool HandleValidateFire(Weapon sender, Ship args)
+            => sender.TargetInRange;
         #endregion
     }
 }

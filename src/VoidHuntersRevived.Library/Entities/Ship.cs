@@ -243,7 +243,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             lock (_openFemaleNodes)
             {
-                ConnectionNode closest = default(ConnectionNode);
+                ConnectionNode closest = default;
                 Single distance = range;
 
                 foreach (ConnectionNode node in _openFemaleNodes)

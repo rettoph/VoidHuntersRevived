@@ -62,7 +62,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             /// </summary>
             public ConnectionNode TargetNode;
 
-            public Action(ActionType type = ActionType.None, ShipPart target = default(ShipPart), ConnectionNode targetNode = default(ConnectionNode))
+            public Action(ActionType type = ActionType.None, ShipPart target = default, ConnectionNode targetNode = default)
             {
                 this.Type = type;
                 this.TargetPart = target;

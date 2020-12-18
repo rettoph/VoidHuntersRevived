@@ -114,7 +114,7 @@ namespace VoidHuntersRevived.Server.Scenes
                     player.User = user;
                     player.Ship = this.Entities.Create<Ship>((ship, p2, c) =>
                     {
-                        ship.Import(File.OpenRead("Ships/fast-boi.vh"));
+                        ship.Import(File.OpenRead("Ships/mosquito.vh"));
                         
                         // ship.SetBridge(this.Entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
                         ship.Bridge.Position = (new Random()).NextVector2(0, 20);

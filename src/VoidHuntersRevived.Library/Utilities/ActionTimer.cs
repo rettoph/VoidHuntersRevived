@@ -17,6 +17,7 @@ namespace VoidHuntersRevived.Library.Utilities
 
         public ActionTimer(Double interval)
         {
+            _lastTrigger = interval;
             this.Interval = interval;
         }
 
@@ -28,23 +29,24 @@ namespace VoidHuntersRevived.Library.Utilities
         /// <param name="filter">Filter Action containing the current triggered state. True indicates that the last trigger has met or surpassed the interval rate.</param>
         public void Update(GameTime gameTime, Func<Boolean, Boolean> filter, Action<GameTime> action)
         {
-            _lastTrigger += gameTime.ElapsedGameTime.TotalMilliseconds;
-
-            if (filter.Invoke(_lastTrigger >= this.Interval))
+            if (filter.Invoke(gameTime.TotalGameTime.TotalMilliseconds - _lastTrigger > this.Interval))
             {
                 action.Invoke(gameTime);
-                _lastTrigger = 0;
+                _lastTrigger = gameTime.TotalGameTime.TotalMilliseconds;
             }
         }
         public void Update(GameTime gameTime, Action<GameTime> action)
         {
-            _lastTrigger += gameTime.ElapsedGameTime.TotalMilliseconds;
-
-            if (_lastTrigger >= this.Interval)
+            if (gameTime.TotalGameTime.TotalMilliseconds - _lastTrigger > this.Interval)
             {
                 action.Invoke(gameTime);
-                _lastTrigger = 0;
+                _lastTrigger = gameTime.TotalGameTime.TotalMilliseconds;
             }
+        }
+
+        public void Reset()
+        {
+            _lastTrigger = this.Interval;
         }
     }
 }

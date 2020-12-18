@@ -32,7 +32,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
         private Sensor _sensor;
         private FarseerCamera2D _camera;
         private ActionTimer _targetSender;
-        private Synchronizer _synchronizer;
         #endregion
 
         #region Lifecycle Methods
@@ -45,7 +44,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
                 provider.Service(out _commands);
                 provider.Service(out _sensor);
                 provider.Service(out _camera);
-                provider.Service(out _synchronizer);
 
                 _targetSender = new ActionTimer(50);
 
