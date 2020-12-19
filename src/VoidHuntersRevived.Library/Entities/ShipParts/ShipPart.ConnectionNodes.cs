@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 ConnectionNode.Build(provider, f, this, i)).ToArray();
         }
 
-        private void ConnectionNode_Release()
+        private void ConnectionNode_PreRelease()
         {
             this.MaleConnectionNode.TryRelease();
             this.FemaleConnectionNodes.ForEach(f => f.TryRelease());

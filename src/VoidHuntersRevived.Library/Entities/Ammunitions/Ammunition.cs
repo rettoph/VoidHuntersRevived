@@ -16,6 +16,15 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         private WorldEntity _world;
         #endregion
 
+        #region Public Properties
+        /// <summary>
+        /// The id of the chain that is responsible
+        /// for firing this ammunition. Used to ignore
+        /// internal collisions.
+        /// </summary>
+        public Guid ShooterId { get; set; }
+        #endregion
+
         #region Events
         public OnEventDelegate<Ammunition, ShipPart> OnCollision;
         public ValidateEventDelegate<Ammunition, ShipPart> ValidateCollision;
@@ -82,7 +91,7 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         /// <param name="shipPart"></param>
         /// <returns></returns>
         private bool HandleValidateCollision(Ammunition sender, ShipPart shipPart)
-            => shipPart.Health > 0 && shipPart.Chain.Ship != default;
+            => shipPart.Chain.Id != this.ShooterId && shipPart.Health > 0 && shipPart.Chain.Ship != default;
         #endregion
     }
 }

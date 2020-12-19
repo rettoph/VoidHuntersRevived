@@ -76,14 +76,8 @@ namespace VoidHuntersRevived.Library.Entities
         #region Frame Methods
         private void Weapons_Update(GameTime gameTime)
         {
-            if (this.Firing) // Update the weapon & fire it...
-                _weapons.ForEach(w =>
-                {
-                    w.TryUpdate(gameTime);
-                    w.TryFire(gameTime);
-                });
-            else // Just update the weapon...
-                _weapons.ForEach(w => w.TryUpdate(gameTime));
+            if (this.Firing) // Fire the weapon if needed...
+                _weapons.ForEach(w => w.TryFire(gameTime));
         }
         #endregion
 

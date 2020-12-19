@@ -87,7 +87,7 @@ namespace VoidHuntersRevived.Library.Utilities
 
             if(this.Attached)
             { // Auto detach if needed...
-                this.TryDetach();
+                this.TryDetach(false);
             }
         }
         #endregion
@@ -99,7 +99,7 @@ namespace VoidHuntersRevived.Library.Utilities
             { // Only proceed if the connection is a valid non-existing one
                 // First ensure that there is no pre-existing connection...
                 if (this.Attached)
-                    this.TryDetach();
+                    this.TryDetach(align);
 
                 // Create the local attachment
                 this.Target = target;
@@ -123,7 +123,7 @@ namespace VoidHuntersRevived.Library.Utilities
                 var old = this.Target;
 
                 this.Target = null;
-                old.TryDetach(false);
+                old.TryDetach(!align);
 
                 this.OnDetached?.Invoke(this, old);
 

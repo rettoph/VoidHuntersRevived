@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         /// The maximum force per second 
         /// achievable by the current thruster.
         /// </summary>
-        public virtual Vector2 FullImpulse { get => Vector2.UnitX * 5f; }
+        public virtual Vector2 FullImpulse { get => Vector2.UnitX * 7f; }
 
         /// <summary>
         /// The multipier applied to FullImpulse in order to

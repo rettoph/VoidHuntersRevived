@@ -60,19 +60,23 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
 
             // Register all default entities & their factories
             services.AddFactory<ChunkManager>(p => new ChunkManager());
+            services.AddFactory<ServiceList<NetworkEntity>>(p => new ServiceList<NetworkEntity>());
             services.AddFactory<WorldEntity>(p => new WorldEntity());
             services.AddFactory<BodyEntity>(p => new BodyEntity());
             services.AddFactory<Ship>(p => new Ship());
             services.AddFactory<UserPlayer>(p => new UserPlayer());
+            services.AddFactory<ComputerPlayer>(p => new ComputerPlayer());
             services.AddFactory<ShipController>(p => new ShipController());
             services.AddFactory<TractorBeam>(p => new TractorBeam());
             services.AddFactory<Chain>(p => new Chain());
 
             services.AddScoped<ChunkManager>();
+            services.AddScoped<ServiceList<NetworkEntity>>();
             services.AddScoped<WorldEntity>();
             services.AddTransient<BodyEntity>();
             services.AddTransient<Ship>();
             services.AddTransient<UserPlayer>();
+            services.AddTransient<ComputerPlayer>();
             services.AddTransient<ShipController>();
             services.AddTransient<TractorBeam>();
             services.AddTransient<Chain>();

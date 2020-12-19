@@ -266,6 +266,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                 _fireTime = gameTime.TotalGameTime.TotalMilliseconds;
                 _curRecoil = this.Recoil;
                 var ammo = this.Fire(_provider, _entities);
+                ammo.ShooterId = this.Chain.Id;
 
                 this.OnFire?.Invoke(this, ammo);
             });
@@ -283,6 +284,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                 old.Root.OnCollisionCategoriesChanged -= this.HandleRootCollisionChanged;
                 old.Root.OnIgnoreCCDWithChanged -= this.HandleRootCollisionChanged;
                 old.OnShipChanged -= this.HandleRootShipChanged;
+                old.OnUpdate -= this.TryUpdate;
             }
 
             if (value != default(Chain))
@@ -291,6 +293,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                 value.Root.OnCollisionCategoriesChanged += this.HandleRootCollisionChanged;
                 value.Root.OnIgnoreCCDWithChanged += this.HandleRootCollisionChanged;
                 value.OnShipChanged += this.HandleRootShipChanged;
+                value.OnUpdate += this.TryUpdate;
             }
 
             // Clean default wepaon data

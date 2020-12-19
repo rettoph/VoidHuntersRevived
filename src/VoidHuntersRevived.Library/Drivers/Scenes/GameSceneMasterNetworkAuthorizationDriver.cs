@@ -1,5 +1,6 @@
 ﻿using Guppy;
 using Guppy.DependencyInjection;
+using Guppy.Extensions.Collections;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Extensions.System;
 using Guppy.Lists;
@@ -24,9 +25,8 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
     {
         #region Private Fields
         private EntityList _entities;
-        private List<NetworkEntity> _networkEntities;
+        private ServiceList<NetworkEntity> _networkEntities;
         private Queue<NetworkEntity> _creates;
-        private Queue<NetworkEntity> _removes;
         private NetworkEntity _entity;
 
         private Queue<User> _newUsers;
@@ -38,18 +38,17 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
         {
             base.Initialize(driven, provider);
 
-            _networkEntities = new List<NetworkEntity>();
             _creates = new Queue<NetworkEntity>();
-            _removes = new Queue<NetworkEntity>();
             _newUsers = new Queue<User>();
 
             provider.Service(out _entities);
             provider.Service(out _userConnections);
+            provider.Service(out _networkEntities);
 
             this.driven.Group.Messages.Set("entity:message", this.HandleEntityMessage);
 
             _entities.OnAdded += this.HandleEntityAdded;
-            _entities.OnRemoved += this.HandleEntityRemoved;
+            _networkEntities.OnRemoved += this.HandleNetworkEntityRemoved;
             this.driven.Group.Users.OnAdded += this.HandleUserJoined;
             this.driven.OnUpdate += this.Update;
         }
@@ -59,7 +58,7 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
             base.Release(driven);
 
             _entities.OnAdded -= this.HandleEntityAdded;
-            _entities.OnRemoved -= this.HandleEntityRemoved;
+            _networkEntities.OnRemoved -= this.HandleNetworkEntityRemoved;
             this.driven.Group.Users.OnAdded -= this.HandleUserJoined;
             this.driven.OnUpdate -= this.Update;
         }
@@ -74,7 +73,7 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
             while (_creates.Any())
             { // Broadcast all new network entities...
                 _entity = _creates.Dequeue();
-                _networkEntities.Add(_entity);
+                _networkEntities.TryAdd(_entity);
 
                 this.driven.Group.Messages.Create(NetDeliveryMethod.ReliableOrdered, 1).Then(create =>
                 { // Broadcast a create message...
@@ -84,17 +83,6 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
                     { // Broadcast a setup message...
                         _entity.MessageHandlers[MessageType.Setup].TryWrite(setup);
                     });
-                });
-            }
-
-            while (_removes.Any())
-            { // Broadcast all removed network entities...
-                _entity = _removes.Dequeue();
-                _networkEntities.Remove(_entity);
-
-                this.driven.Group.Messages.Create(NetDeliveryMethod.ReliableOrdered, 1).Then(om =>
-                {
-                    _entity.MessageHandlers[MessageType.Remove].TryWrite(om);
                 });
             }
         }
@@ -149,14 +137,16 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
         #region Event Handlers
         private void HandleEntityAdded(IServiceList<Entity> sender, Entity entity)
         {
-            if (entity is NetworkEntity)
-                _creates.Enqueue(entity as NetworkEntity);
+            if (entity is NetworkEntity ne)
+                _creates.Enqueue(ne);
         }
 
-        private void HandleEntityRemoved(IServiceList<Entity> sender, Entity entity)
+        private void HandleNetworkEntityRemoved(IServiceList<NetworkEntity> sender, NetworkEntity entity)
         {
-            if (entity is NetworkEntity)
-                _removes.Enqueue(entity as NetworkEntity);
+            this.driven.Group.Messages.Create(NetDeliveryMethod.ReliableOrdered, 1).Then(om =>
+            { // Broadcast the removal data through the network.
+                entity.MessageHandlers[MessageType.Remove].TryWrite(om);
+            });
         }
 
         private void HandleUserJoined(IServiceList<User> sender, User user)
