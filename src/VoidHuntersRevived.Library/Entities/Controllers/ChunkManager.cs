@@ -210,6 +210,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             if(chain != default && chain.Controller == this)
             { // Only proceed if the ShipPart is still a part of the ChunkManager...
                 _chainChunks[chain].LoadChunks();
+
+                chain.Root.OnDo += this.HandleChainRootDo;
             }
         }
 
@@ -323,12 +325,30 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
             // Clear cached chunks
             _chainChunks[chain].ClearChunks();
+            chain.Root.OnDo -= this.HandleChainRootDo;
         }
         #endregion
 
         #region Event Handlers
         private void HandleWorldSizeChanged(WorldEntity sender, Vector2 arg)
             => this.BuildChunks();
+
+
+        /// <summary>
+        /// When <see cref="FarseerEntity{T}.Do(Action{T})"/> is invoked
+        /// on an internal <see cref="ShipPart"/> we need to add it back
+        /// into quarantine.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="action"></param>
+        private void HandleChainRootDo(FarseerEntity<Body> sender, Action<Body> action)
+        {
+            if(sender is ShipPart shipPart)
+            {
+                _chainChunks[shipPart.Chain].ClearChunks();
+                _quarantine.Add(shipPart.Chain);
+            }
+        }
         #endregion
     }
 }

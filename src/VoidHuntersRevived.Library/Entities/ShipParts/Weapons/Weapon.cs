@@ -178,6 +178,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                     joint.Enabled = true;
                     joint.LowerLimit = -(2 / 2);
                     joint.UpperLimit = (2 / 2);
+                    joint.Enabled = this.Chain.Ship != default;
 
                     // Save the joint internally
                     _joints[body] = joint;
@@ -306,7 +307,12 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             => this.CleanCollision();
 
         private void HandleRootShipChanged(Chain sender, Ship old, Ship value)
-            => this.CleanUpdate();
+        {
+            this.CleanUpdate();
+
+            // Enable or disable joints based on the Ship status..
+            _joints.Values.ForEach(j => j.Enabled = value != default);
+        }
 
         private static bool HandleValidateFire(Weapon sender, Ship args)
             => sender.TargetInRange;

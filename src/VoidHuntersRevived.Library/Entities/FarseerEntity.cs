@@ -2,6 +2,7 @@
 using FarseerPhysics.Factories;
 using Guppy;
 using Guppy.DependencyInjection;
+using Guppy.Events.Delegates;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -52,10 +53,6 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Events
-        public delegate void OnUpdateSlaveDelegate(GameTime gameTime, T master, T slave);
-        public delegate void OnUpdateMasterDelegate(GameTime gameTime, T master);
-        private delegate void DoDelegate(Action<T> action);
-
         /// <summary>
         /// Event invoked during the Do method. This is used
         /// to update all internal farseer instances at once
@@ -63,7 +60,7 @@ namespace VoidHuntersRevived.Library.Entities
         /// be used for global instant changes that do not
         /// need to lerp.
         /// </summary>
-        private event DoDelegate OnDo;
+        public event OnEventDelegate<FarseerEntity<T>, Action<T>> OnDo;
         #endregion
 
         #region Lifecycle Methods
@@ -78,8 +75,8 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Release();
 
-            this.OnDo -= this.DoMaster;
-            this.OnDo -= this.DoSlave;
+            this.OnDo -= FarseerEntity<T>.DoMaster;
+            this.OnDo -= FarseerEntity<T>.DoSlave;
         }
         #endregion
 
@@ -90,7 +87,7 @@ namespace VoidHuntersRevived.Library.Entities
         /// </summary>
         /// <param name="action"></param>
         public void Do(Action<T> action)
-         => this.OnDo(action);
+         => this.OnDo(this, action);
 
         /// <summary>
         /// Get a value from the live farseer object.
@@ -105,13 +102,13 @@ namespace VoidHuntersRevived.Library.Entities
         protected virtual void Build(ServiceProvider provider)
         {
             this.master = this.BuildMaster(provider);
-            this.OnDo += this.DoMaster;
+            this.OnDo += FarseerEntity<T>.DoMaster;
             _live = this.master;
 
             if (this.settings.Get<NetworkAuthorization>() < NetworkAuthorization.Master)
             {
                 this.slave = this.BuildSlave(provider);
-                this.OnDo += this.DoSlave;
+                this.OnDo += FarseerEntity<T>.DoSlave;
                 _live = this.slave;
             }
         }
@@ -119,11 +116,11 @@ namespace VoidHuntersRevived.Library.Entities
         protected abstract T BuildMaster(ServiceProvider provider);
         protected abstract T BuildSlave(ServiceProvider provider);
 
-        private void DoMaster(Action<T> action)
-            => action(this.master);
+        private static void DoMaster(FarseerEntity<T> sender, Action<T> action)
+            => action(sender.master);
 
-        private void DoSlave(Action<T> action)
-            => action(this.slave);
+        private static void DoSlave(FarseerEntity<T> sender, Action<T> action)
+            => action(sender.slave);
         #endregion
     }
 }
