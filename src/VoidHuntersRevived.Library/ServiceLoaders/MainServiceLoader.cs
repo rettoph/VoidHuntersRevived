@@ -69,6 +69,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddFactory<ShipController>(p => new ShipController());
             services.AddFactory<TractorBeam>(p => new TractorBeam());
             services.AddFactory<Chain>(p => new Chain());
+            services.AddFactory<Explosion>(p => new Explosion());
 
             services.AddScoped<ChunkManager>();
             services.AddScoped<ServiceList<NetworkEntity>>();
@@ -80,6 +81,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddTransient<ShipController>();
             services.AddTransient<TractorBeam>();
             services.AddTransient<Chain>();
+            services.AddTransient<Explosion>();
 
             services.AddSetup<Entity>((e, p, c) =>
             {

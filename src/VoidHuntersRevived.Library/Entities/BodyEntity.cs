@@ -195,9 +195,9 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Helper Methods
-        public virtual FixtureContainer BuildFixture(PolygonShape shape)
+        public virtual FixtureContainer BuildFixture(Shape shape)
             => this.BuildFixture(shape, this);
-        public virtual FixtureContainer BuildFixture(PolygonShape shape, BodyEntity owner)
+        public virtual FixtureContainer BuildFixture(Shape shape, BodyEntity owner)
             => new FixtureContainer(this, owner, shape).Then(fixture =>
             {
                 _fixtures.Add(fixture);

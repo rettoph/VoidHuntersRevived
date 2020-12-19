@@ -15,9 +15,11 @@ namespace VoidHuntersRevived.Library.Utilities.Farseer
 
         public readonly BodyEntity Root;
         public readonly BodyEntity Owner;
-        public readonly PolygonShape Shape;
+        public readonly Shape Shape;
 
-        public FixtureContainer(BodyEntity root, BodyEntity owner, PolygonShape shape)
+        public IReadOnlyList<Fixture> List => _fixtures;
+
+        public FixtureContainer(BodyEntity root, BodyEntity owner, Shape shape)
         {
             _fixtures = new List<Fixture>(2);
 
