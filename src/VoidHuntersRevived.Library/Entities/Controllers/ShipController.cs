@@ -68,7 +68,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             {
                 sp.CollisionCategories = Categories.ActiveCollisionCategories;
                 sp.CollidesWith = Categories.ActiveCollidesWith;
-                sp.IgnoreCCDWith = Categories.ActiveIgnoreCCDWith;
             });
         }
 

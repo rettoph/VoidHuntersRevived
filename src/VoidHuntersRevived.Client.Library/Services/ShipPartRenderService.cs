@@ -69,7 +69,7 @@ namespace VoidHuntersRevived.Client.Library.Services
             if(_camera.Zoom != _configuredZoom && Math.Abs(_configuredZoom - _camera.Zoom) / _configuredZoom > 0.005f)
             {
                 _configuredZoom = _camera.Zoom;
-                _width = 0.01f * (1 / _camera.Zoom);
+                _width = (1 / _camera.Zoom);
 
                 foreach(ShipPartConfigurationPrimitiveData primitives in _primitives.Values)
                     primitives.Path.Width = _width;

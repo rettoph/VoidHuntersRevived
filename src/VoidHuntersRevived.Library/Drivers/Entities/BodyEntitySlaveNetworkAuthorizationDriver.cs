@@ -7,7 +7,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
-using VoidHuntersRevived.Library.Extensions.Farseer;
+using VoidHuntersRevived.Library.Extensions.Aether;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities
 {

@@ -1,11 +1,11 @@
-﻿using FarseerPhysics.Dynamics;
-using Guppy;
+﻿using Guppy;
 using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Library.Entities.Ammunitions
@@ -71,7 +71,7 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         #region Event Handlers
         private float HandleCollision(Fixture arg1, Vector2 arg2, Vector2 arg3, float arg4)
         {
-            if (arg1.UserData is ShipPart target && this.ValidateCollision.Validate(this, target, true))
+            if (arg1.Tag is ShipPart target && this.ValidateCollision.Validate(this, target, true))
             {
                 this.OnCollision?.Invoke(this, target);
 

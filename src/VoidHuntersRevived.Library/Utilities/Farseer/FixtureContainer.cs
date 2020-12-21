@@ -1,11 +1,9 @@
-﻿using FarseerPhysics.Collision.Shapes;
-using FarseerPhysics.Common;
-using FarseerPhysics.Dynamics;
-using FarseerPhysics.Factories;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using tainicom.Aether.Physics2D.Collision.Shapes;
+using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Extensions.Aether;
 
 namespace VoidHuntersRevived.Library.Utilities.Farseer
 {
@@ -30,12 +28,12 @@ namespace VoidHuntersRevived.Library.Utilities.Farseer
 
         internal void Attach(Body body)
         {
-            var fixture = body.CreateFixture(this.Shape, this.Owner);
+            var fixture = body.CreateFixture(this.Shape);
+            fixture.Tag = this.Owner;
 
             // Setup default Fixture properties...
             fixture.CollisionCategories = this.Root.CollisionCategories;
             fixture.CollidesWith = this.Root.CollidesWith;
-            fixture.IgnoreCCDWith = this.Root.IgnoreCCDWith;
 
             _fixtures.Add(fixture);
         }
@@ -48,7 +46,7 @@ namespace VoidHuntersRevived.Library.Utilities.Farseer
         internal void Destroy(Boolean external)
         {
             if(external)
-                _fixtures.ForEach(f => f.Dispose());
+                _fixtures.ForEach(f => f.Remove());
         }
     }
 }

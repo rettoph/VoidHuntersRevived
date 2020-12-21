@@ -1,7 +1,4 @@
-﻿using FarseerPhysics.Dynamics;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using tainicom.Aether.Physics2D.Dynamics;
 
 namespace VoidHuntersRevived.Library.Utilities
 {
@@ -17,9 +14,5 @@ namespace VoidHuntersRevived.Library.Utilities
         public static readonly Category PassiveCollidesWith = Categories.BorderCollisionCategories;
         public static readonly Category ActiveCollidesWith = Categories.BorderCollisionCategories | Categories.ActiveCollisionCategories;
         public static readonly Category BorderCollidesWith = Categories.PassiveCollisionCategories | Categories.ActiveCollisionCategories;
-
-        public static readonly Category BorderIgnoreCCDWith = Category.None;
-        public static readonly Category PassiveIgnoreCCDWith = Category.Cat2 | Category.Cat3;
-        public static readonly Category ActiveIgnoreCCDWith = Category.Cat2;
     }
 }

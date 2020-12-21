@@ -1,12 +1,11 @@
-﻿using FarseerPhysics.Common;
-using FarseerPhysics.Common.ConvexHull;
-using FarseerPhysics.Dynamics;
-using Guppy.Utilities.Primitives;
+﻿using Guppy.Utilities.Primitives;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using tainicom.Aether.Physics2D.Common;
+using tainicom.Aether.Physics2D.Common.ConvexHull;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.ShipParts;

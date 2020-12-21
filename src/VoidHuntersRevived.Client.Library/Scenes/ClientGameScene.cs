@@ -1,5 +1,4 @@
-﻿using FarseerPhysics.DebugView;
-using Guppy.DependencyInjection;
+﻿using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Extensions.Microsoft.Xna.Framework;
@@ -19,6 +18,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Linq;
+using tainicom.Aether.Physics2D.Diagnostics;
 using VoidHuntersRevived.Client.Library.Effects;
 using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Client.Library.Enums;
@@ -54,8 +54,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private Vector2 _viewportSize;
         private Rectangle _viewportBounds;
 
-        private DebugViewXNA _debugMaster;
-        private DebugViewXNA _debugSlave;
+        private DebugView _debugMaster;
+        private DebugView _debugSlave;
         private Boolean _renderMaster;
         private Boolean _renderSlave;
         private Boolean _renderImpulse;
@@ -96,8 +96,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                 provider.GetContent<Texture2D>("sprite:background:3")
             };
 
-            _camera.MinZoom = 0.025f;
-            _camera.MaxZoom = 2f;
+            _camera.MinZoom = 10f;
+            _camera.MaxZoom = 50f;
 
             // Pre world updates (Cursor) 
             this.Layers.Create<GameLayer>((l, p, c) =>
@@ -127,10 +127,10 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             this.IfOrOnWorld(world =>
             { // Setup world rendering after a world instance is created
-                _debugMaster = new DebugViewXNA(world.Master);
+                _debugMaster = new DebugView(world.Master);
                 _debugMaster.LoadContent(_graphics, _content);
 
-                _debugSlave = new DebugViewXNA(world.Slave);
+                _debugSlave = new DebugView(world.Slave);
                 _debugSlave.LoadContent(_graphics, _content);
 
                 _debugSlave.InactiveShapeColor = Color.Green;

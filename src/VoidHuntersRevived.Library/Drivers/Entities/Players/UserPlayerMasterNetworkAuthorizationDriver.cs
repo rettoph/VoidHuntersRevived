@@ -77,14 +77,6 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
         private void HandleUpdateShipFiringRequestMessage(NetIncomingMessage im)
         {
             this.driven.Ship.Firing = im.ReadBoolean();
-            
-            if(this.driven.Ship.Firing)
-            {
-                _entities.Create<Explosion>((e, p, c) =>
-                {
-                    e.Position = this.driven.Ship.Target;
-                });
-            }
         }
         #endregion
 

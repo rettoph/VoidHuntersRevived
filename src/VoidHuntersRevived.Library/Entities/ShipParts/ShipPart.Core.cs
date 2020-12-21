@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Library.Configurations;
-using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 using Guppy.Interfaces;
 using VoidHuntersRevived.Library.Entities.Controllers;
@@ -16,6 +15,7 @@ using Lidgren.Network;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Lists;
 using VoidHuntersRevived.Library.Extensions.Lidgren.Network;
+using tainicom.Aether.Physics2D.Dynamics;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {

@@ -1,5 +1,4 @@
-﻿using FarseerPhysics;
-using Guppy.DependencyInjection;
+﻿using Guppy.DependencyInjection;
 using Guppy.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -26,7 +25,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities.Cameras
             => new RectangleF(
                 x: 0,
                 y: 0,
-                width: ConvertUnits.ToSimUnits(_graphics.Viewport.Bounds.Width),
-                height: ConvertUnits.ToSimUnits(_graphics.Viewport.Bounds.Height));
+                width: _graphics.Viewport.Bounds.Width,
+                height: _graphics.Viewport.Bounds.Height);
     }
 }

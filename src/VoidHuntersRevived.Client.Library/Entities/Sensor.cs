@@ -1,7 +1,4 @@
-﻿using FarseerPhysics.Dynamics;
-using FarseerPhysics.Dynamics.Contacts;
-using FarseerPhysics.Factories;
-using Guppy;
+﻿using Guppy;
 using Guppy.Lists;
 using Guppy.DependencyInjection;
 using Microsoft.Xna.Framework;
@@ -14,6 +11,9 @@ using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.IO.Services;
 using VoidHuntersRevived.Library.Scenes;
+using tainicom.Aether.Physics2D.Dynamics;
+using VoidHuntersRevived.Library.Extensions.Aether;
+using tainicom.Aether.Physics2D.Dynamics.Contacts;
 
 namespace VoidHuntersRevived.Client.Library.Entities
 {
@@ -56,7 +56,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
         {
             base.Release();
 
-            _body?.Dispose();
+            _body?.Remove();
 
             this.OnUpdate -= this.UpdateBody;
         }
@@ -75,8 +75,8 @@ namespace VoidHuntersRevived.Client.Library.Entities
         {
             _world = world;
 
-            _body = BodyFactory.CreateCircle(_world.Slave, 3f, 0f);
-            _body.IsSensor = true;
+            _body = _world.Slave.CreateCircle(3f, 0f);
+            _body.SetIsSensor(true);
             _body.SleepingAllowed = false;
             _body.BodyType = BodyType.Dynamic;
 
@@ -86,22 +86,22 @@ namespace VoidHuntersRevived.Client.Library.Entities
             this.OnUpdate += this.UpdateBody;
         }
 
-        private bool HandleSensorCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
+        private bool HandleSensorCollision(Fixture sender, Fixture other, Contact contact)
         {
-            if (fixtureA.UserData is BodyEntity)
-                _contacts.Add(fixtureA.UserData as BodyEntity);
-            if (fixtureB.UserData is BodyEntity)
-                _contacts.Add(fixtureB.UserData as BodyEntity);
+            if (sender.Tag is BodyEntity be1)
+                _contacts.Add(be1);
+            if (other.Tag is BodyEntity be2)
+                _contacts.Add(be2);
 
             return true;
         }
 
-        private void HandleSensorSeparation(Fixture fixtureA, Fixture fixtureB)
+        private void HandleSensorSeparation(Fixture sender, Fixture other, Contact contact)
         {
-            if (fixtureA.UserData is BodyEntity)
-                _contacts.Remove(fixtureA.UserData as BodyEntity);
-            if (fixtureB.UserData is BodyEntity)
-                _contacts.Remove(fixtureB.UserData as BodyEntity);
+            if (sender.Tag is BodyEntity be1)
+                _contacts.Remove(be1);
+            if (other.Tag is BodyEntity be2)
+                _contacts.Remove(be2);
         }
         #endregion
     }

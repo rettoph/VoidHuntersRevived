@@ -1,18 +1,12 @@
 ﻿using Guppy;
 using Guppy.DependencyInjection;
-using Guppy.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using VoidHuntersRevived.Library.Configurations;
 using VoidHuntersRevived.Library.Entities.ShipParts;
-using VoidHuntersRevived.Library.Extensions.System;
-using Guppy.Extensions.DependencyInjection;
-using FarseerPhysics.Dynamics;
-using VoidHuntersRevived.Library.Extensions.Farseer;
+using VoidHuntersRevived.Library.Extensions.Aether;
 using Guppy.Events.Delegates;
-using Lidgren.Network;
+using tainicom.Aether.Physics2D.Dynamics;
 
 namespace VoidHuntersRevived.Library.Utilities
 {

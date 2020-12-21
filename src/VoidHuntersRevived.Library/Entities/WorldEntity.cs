@@ -1,6 +1,4 @@
-﻿using FarseerPhysics.Dynamics;
-using FarseerPhysics.Factories;
-using Guppy.DependencyInjection;
+﻿using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
 using Guppy.Extensions.Collections;
 using Guppy.Interfaces;
@@ -20,7 +18,6 @@ using Guppy.Extensions.System;
 using Guppy.Utilities.ObjectDumper;
 using System.Reflection;
 using log4net;
-using FarseerPhysics.Dynamics.Joints;
 using VoidHuntersRevived.Library.Scenes;
 using Guppy;
 using Guppy.Lists;
@@ -28,10 +25,12 @@ using Guppy.Network.Utilities.Messages;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Configurations;
 using VoidHuntersRevived.Library.Entities.Players;
+using tainicom.Aether.Physics2D.Dynamics;
+using tainicom.Aether.Physics2D.Dynamics.Joints;
 
 namespace VoidHuntersRevived.Library.Entities
 {
-    public sealed class WorldEntity : FarseerEntity<World>
+    public sealed class WorldEntity : AetherEntity<World>
     {
         #region Static Attributes
         public static Int32 WallWidth { get; } = 10;
@@ -223,22 +222,24 @@ namespace VoidHuntersRevived.Library.Entities
 
             // Destroy any pre-existing walls...
             while (_walls.Any())
-                _walls.Dequeue().Dispose();
+            {
+                var wall = _walls.Dequeue();
+                wall.World.Remove(wall);
+            }
 
             // Create brand new walls...
-            this.Do(w => _walls.Enqueue(BodyFactory.CreateRectangle(w, WorldEntity.WallWidth, this.Size.Y + (WorldEntity.WallWidth * 2), 0f, new Vector2(-WorldEntity.WallWidth / 2, this.Size.Y / 2), 0, BodyType.Static)));
-            this.Do(w => _walls.Enqueue(BodyFactory.CreateRectangle(w, WorldEntity.WallWidth, this.Size.Y + (WorldEntity.WallWidth * 2), 0f, new Vector2(this.Size.X + (WorldEntity.WallWidth / 2), this.Size.Y / 2), 0, BodyType.Static)));
-            this.Do(w => _walls.Enqueue(BodyFactory.CreateRectangle(w, this.Size.X, WorldEntity.WallWidth, 0f, new Vector2(this.Size.X / 2, -WorldEntity.WallWidth / 2), 0, BodyType.Static)));
-            this.Do(w => _walls.Enqueue(BodyFactory.CreateRectangle(w, this.Size.X, WorldEntity.WallWidth, 0f, new Vector2(this.Size.X / 2, this.Size.Y + (WorldEntity.WallWidth / 2)), 0, BodyType.Static)));
+            this.Do(w => _walls.Enqueue(w.CreateRectangle(WorldEntity.WallWidth, this.Size.Y + (WorldEntity.WallWidth * 2), 0f, new Vector2(-WorldEntity.WallWidth / 2, this.Size.Y / 2), 0, BodyType.Static)));
+            this.Do(w => _walls.Enqueue(w.CreateRectangle(WorldEntity.WallWidth, this.Size.Y + (WorldEntity.WallWidth * 2), 0f, new Vector2(this.Size.X + (WorldEntity.WallWidth / 2), this.Size.Y / 2), 0, BodyType.Static)));
+            this.Do(w => _walls.Enqueue(w.CreateRectangle(this.Size.X, WorldEntity.WallWidth, 0f, new Vector2(this.Size.X / 2, -WorldEntity.WallWidth / 2), 0, BodyType.Static)));
+            this.Do(w => _walls.Enqueue(w.CreateRectangle(this.Size.X, WorldEntity.WallWidth, 0f, new Vector2(this.Size.X / 2, this.Size.Y + (WorldEntity.WallWidth / 2)), 0, BodyType.Static)));
             
             _walls.ForEach(b =>
             { // Setup wall collisions
-                b.CollisionCategories = Categories.BorderCollisionCategories;
-                b.CollidesWith = Categories.BorderCollidesWith;
-                b.IgnoreCCDWith = Categories.BorderIgnoreCCDWith;
+                b.SetCollisionCategories(Categories.BorderCollisionCategories);
+                b.SetCollidesWith(Categories.BorderCollidesWith);
 
-                b.Restitution = 1f;
-                b.Friction = 0f;
+                // b.Restitution = 1f;
+                // b.Friction = 0f;
             });
         }
         #endregion

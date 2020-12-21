@@ -1,5 +1,4 @@
-﻿using FarseerPhysics;
-using Guppy;
+﻿using Guppy;
 using Guppy.Extensions;
 using Guppy.IO.Input.Extensions;
 using Guppy.Network.Extensions;

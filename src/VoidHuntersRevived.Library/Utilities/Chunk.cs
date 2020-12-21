@@ -1,7 +1,4 @@
-﻿using FarseerPhysics.Common;
-using FarseerPhysics.Dynamics;
-using FarseerPhysics.Factories;
-using Guppy;
+﻿using Guppy;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
 using Microsoft.Xna.Framework;
@@ -12,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using Guppy.Extensions.DependencyInjection;
+using tainicom.Aether.Physics2D.Common;
 
 namespace VoidHuntersRevived.Library.Entities.Controllers
 {

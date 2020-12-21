@@ -1,15 +1,9 @@
-﻿using FarseerPhysics;
-using FarseerPhysics.Dynamics;
-using Guppy;
-using Guppy.Attributes;
+﻿using Guppy.Attributes;
 using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using tainicom.Aether.Physics2D;
 using VoidHuntersRevived.Library.Configurations;
 using VoidHuntersRevived.Library.Entities.Ammunitions;
 using VoidHuntersRevived.Library.Entities.ShipParts;

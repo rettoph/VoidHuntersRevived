@@ -1,5 +1,4 @@
-﻿using FarseerPhysics.Dynamics;
-using Guppy.DependencyInjection;
+﻿using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
 using Guppy.Interfaces;
 using Microsoft.Xna.Framework;
@@ -9,7 +8,7 @@ using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
-using VoidHuntersRevived.Library.Extensions.Farseer;
+using VoidHuntersRevived.Library.Extensions.Aether;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.IO;

@@ -1,17 +1,15 @@
-﻿using FarseerPhysics.Common;
-using Guppy.DependencyInjection;
+﻿using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using VoidHuntersRevived.Library.Utilities;
-using VoidHuntersRevived.Library.Extensions.Farseer;
-using FarseerPhysics.Collision.Shapes;
+using VoidHuntersRevived.Library.Extensions.Aether;
 using Microsoft.Xna.Framework;
 using Guppy.IO.Extensions.log4net;
 using VoidHuntersRevived.Library.Utilities.Farseer;
 using Guppy.Extensions.Microsoft.Xna.Framework;
+using tainicom.Aether.Physics2D.Common;
+using tainicom.Aether.Physics2D.Collision.Shapes;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {

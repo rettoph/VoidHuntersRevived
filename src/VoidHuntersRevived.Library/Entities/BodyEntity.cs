@@ -1,7 +1,4 @@
-﻿using FarseerPhysics.Common;
-using FarseerPhysics.Dynamics;
-using FarseerPhysics.Factories;
-using Guppy.DependencyInjection;
+﻿using Guppy.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Network.Extensions.Lidgren;
 using Microsoft.Xna.Framework;
@@ -9,18 +6,19 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Utilities.Farseer;
-using VoidHuntersRevived.Library.Extensions.Farseer;
-using FarseerPhysics.Collision.Shapes;
+using VoidHuntersRevived.Library.Extensions.Aether;
 using Lidgren.Network;
 using VoidHuntersRevived.Library.Enums;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Events.Delegates;
 using System.Linq;
 using Guppy.Extensions.System;
+using tainicom.Aether.Physics2D.Dynamics;
+using tainicom.Aether.Physics2D.Collision.Shapes;
 
 namespace VoidHuntersRevived.Library.Entities
 {
-    public class BodyEntity : FarseerChildEntity<Body, World>
+    public class BodyEntity : AetherChildEntity<Body, World>
     {
         #region Static Attributes
         /// <summary>
@@ -45,7 +43,6 @@ namespace VoidHuntersRevived.Library.Entities
         private HashSet<FixtureContainer> _fixtures;
         private Category _collisionCategories;
         private Category _collidesWith;
-        private Category _ignoreCCDWith;
         #endregion
 
         #region Public Attributes
@@ -120,7 +117,7 @@ namespace VoidHuntersRevived.Library.Entities
                 if(value != _collisionCategories)
                 {
                     _collisionCategories = value;
-                    this.Do(b => b.CollisionCategories = value);
+                    this.Do(b => b.SetCollisionCategories(value));
                     this.OnCollisionCategoriesChanged?.Invoke(this, this.CollisionCategories);
                 }
             }
@@ -133,21 +130,8 @@ namespace VoidHuntersRevived.Library.Entities
                 if (value != _collisionCategories)
                 {
                     _collidesWith = value;
-                    this.Do(b => b.CollidesWith = value);
+                    this.Do(b => b.SetCollidesWith(value));
                     this.OnCollidesWithChanged?.Invoke(this, this.CollidesWith);
-                }
-            }
-        }
-        public Category IgnoreCCDWith
-        {
-            get => _ignoreCCDWith;
-            set
-            {
-                if (value != _ignoreCCDWith)
-                {
-                    _ignoreCCDWith = value;
-                    this.Do(b => b.IgnoreCCDWith = value);
-                    this.OnIgnoreCCDWithChanged?.Invoke(this, this.IgnoreCCDWith);
                 }
             }
         }
@@ -159,7 +143,6 @@ namespace VoidHuntersRevived.Library.Entities
         public event OnEventDelegate<BodyEntity, BodyType> OnBodyTypeChanged;
         public event OnEventDelegate<BodyEntity, Category> OnCollisionCategoriesChanged;
         public event OnEventDelegate<BodyEntity, Category> OnCollidesWithChanged;
-        public event OnEventDelegate<BodyEntity, Category> OnIgnoreCCDWithChanged;
         #endregion
 
         #region Lifecycle Methods
@@ -236,9 +219,9 @@ namespace VoidHuntersRevived.Library.Entities
 
         #region FarseerChildEntity Implementation
         protected override Body Build(ServiceProvider provider, World parent)
-            => BodyFactory.CreateBody(parent);
+            => parent.CreateBody();
 
-        protected override FarseerEntity<World> GetParent(ServiceProvider provider)
+        protected override AetherEntity<World> GetParent(ServiceProvider provider)
             => provider.GetService<WorldEntity>();
         #endregion
 

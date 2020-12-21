@@ -1,5 +1,4 @@
-﻿using FarseerPhysics.Dynamics;
-using Guppy.DependencyInjection;
+﻿using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Extensions.Utilities;

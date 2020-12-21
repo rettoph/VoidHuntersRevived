@@ -1,8 +1,4 @@
-﻿using FarseerPhysics.Collision.Shapes;
-using FarseerPhysics.Dynamics;
-using FarseerPhysics.Dynamics.Joints;
-using FarseerPhysics.Factories;
-using Guppy.DependencyInjection;
+﻿using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
 using Guppy.Extensions.Collections;
 using Guppy.Interfaces;
@@ -13,6 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using tainicom.Aether.Physics2D.Collision.Shapes;
+using tainicom.Aether.Physics2D.Dynamics;
+using tainicom.Aether.Physics2D.Dynamics.Joints;
 using VoidHuntersRevived.Library.Entities.Ammunitions;
 using VoidHuntersRevived.Library.Utilities;
 
@@ -192,7 +191,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         /// <param name="p"></param>
         private void RemoveJoint(Body body, RevoluteJoint joint)
         {
-            this.GetParent(body).RemoveJoint(joint);
+            // TODO: Helper extension method?
+            joint.BodyA.World.Remove(joint);
             _joints.Remove(body);
         }
 
@@ -242,7 +242,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             {
                 this.CollidesWith = this.Root.CollidesWith;
                 this.CollisionCategories = this.Root.CollisionCategories;
-                this.IgnoreCCDWith = this.Root.IgnoreCCDWith;
             }
         }
 
@@ -283,7 +282,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             {
                 old.Root.OnCollidesWithChanged -= this.HandleRootCollisionChanged;
                 old.Root.OnCollisionCategoriesChanged -= this.HandleRootCollisionChanged;
-                old.Root.OnIgnoreCCDWithChanged -= this.HandleRootCollisionChanged;
                 old.OnShipChanged -= this.HandleRootShipChanged;
                 old.OnUpdate -= this.TryUpdate;
             }
@@ -292,7 +290,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             {
                 value.Root.OnCollidesWithChanged += this.HandleRootCollisionChanged;
                 value.Root.OnCollisionCategoriesChanged += this.HandleRootCollisionChanged;
-                value.Root.OnIgnoreCCDWithChanged += this.HandleRootCollisionChanged;
                 value.OnShipChanged += this.HandleRootShipChanged;
                 value.OnUpdate += this.TryUpdate;
             }

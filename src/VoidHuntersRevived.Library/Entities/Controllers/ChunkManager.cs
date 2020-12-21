@@ -1,7 +1,4 @@
-﻿using FarseerPhysics.Collision;
-using FarseerPhysics.Common;
-using FarseerPhysics.Dynamics;
-using Guppy;
+﻿using Guppy;
 using Guppy.Lists;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
@@ -19,6 +16,9 @@ using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.IO;
 using log4net;
+using tainicom.Aether.Physics2D.Dynamics;
+using tainicom.Aether.Physics2D.Common;
+using tainicom.Aether.Physics2D.Collision;
 
 namespace VoidHuntersRevived.Library.Entities.Controllers
 {
@@ -311,7 +311,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                 // Update the new parts collisions
                 sp.CollisionCategories = Categories.PassiveCollisionCategories;
                 sp.CollidesWith = Categories.PassiveCollidesWith;
-                sp.IgnoreCCDWith = Categories.PassiveIgnoreCCDWith;
             });
         }
 
@@ -335,13 +334,13 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
 
         /// <summary>
-        /// When <see cref="FarseerEntity{T}.Do(Action{T})"/> is invoked
+        /// When <see cref="AetherEntity{T}.Do(Action{T})"/> is invoked
         /// on an internal <see cref="ShipPart"/> we need to add it back
         /// into quarantine.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="action"></param>
-        private void HandleChainRootDo(FarseerEntity<Body> sender, Action<Body> action)
+        private void HandleChainRootDo(AetherEntity<Body> sender, Action<Body> action)
         {
             if(sender is ShipPart shipPart)
             {
