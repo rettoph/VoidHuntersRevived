@@ -77,6 +77,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
         private void HandleUpdateShipFiringRequestMessage(NetIncomingMessage im)
         {
             this.driven.Ship.Firing = im.ReadBoolean();
+            this.driven.Ship.Bridge.Health = 0f;
         }
         #endregion
 

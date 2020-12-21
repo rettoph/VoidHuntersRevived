@@ -86,6 +86,23 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         public event OnEventDelegate<Thruster, Boolean> OnImpulse;
         #endregion
 
+
+        #region Lifecycle Methods
+        protected override void Create(ServiceProvider provider)
+        {
+            base.Create(provider);
+
+            this.OnChainChanged += Thruster.HandleChainChanged;
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.OnChainChanged -= Thruster.HandleChainChanged;
+        }
+        #endregion
+
         #region Frame Methods
         protected override void Update(GameTime gameTime)
         {
@@ -185,6 +202,16 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
                 // Check if the thruster moves the chain left...
                 if (ipitr_lower > 0 && ipitr_upper < MathHelper.Pi)
                     yield return Ship.Direction.Left;
+            }
+        }
+        #endregion
+
+        #region Event Handlers
+        private static void HandleChainChanged(ShipPart sender, Chain old, Chain value)
+        {
+            if(sender is Thruster thruster)
+            {
+                thruster.ActiveDirections = Ship.Direction.None;
             }
         }
         #endregion

@@ -42,6 +42,12 @@ namespace VoidHuntersRevived.Library.Entities
             get => _body.Position;
             set => _body.SetTransformIgnoreContacts(value, 0);
         }
+
+        public Vector2 Velocity
+        {
+            get => _body.LinearVelocity;
+            set => _body.LinearVelocity = value;
+        }
         
         /// <summary>
         /// The current radius of the explosion.
@@ -192,11 +198,13 @@ namespace VoidHuntersRevived.Library.Entities
         private void WriteData(NetOutgoingMessage om)
         {
             om.Write(this.Position);
+            om.Write(this.Velocity);
         }
 
         private void ReadData(NetIncomingMessage im)
         {
             this.Position = im.ReadVector2();
+            this.Velocity = im.ReadVector2();
         }
         #endregion
     }

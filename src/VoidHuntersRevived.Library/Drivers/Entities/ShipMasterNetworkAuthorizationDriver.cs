@@ -66,6 +66,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
                 _entities.Create<Explosion>((e, p, c) =>
                 {
                     e.Position = sender.WorldCenter;
+                    e.Velocity = sender.LinearVelocity;
                 });
 
                 // Just in case, delete it now

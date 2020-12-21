@@ -44,6 +44,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters
             provider.Service(out _trails);
 
             this.driven.OnImpulse += this.HandleDrivenImpulse;
+            this.driven.OnChainChanged += this.HandleDrivenChainChanged;
         }
 
         protected override void Release(Thruster driven)
@@ -51,6 +52,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters
             base.Release(driven);
 
             this.driven.OnImpulse -= this.HandleDrivenImpulse;
+            this.driven.OnChainChanged -= this.HandleDrivenChainChanged;
         }
         #endregion
 
@@ -61,6 +63,11 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters
                 _trail = _trails.BuildTrail(this.driven);
             else
                 _trail?.TryDisown();
+        }
+
+        private void HandleDrivenChainChanged(ShipPart sender, Chain old, Chain value)
+        {
+            _trail?.TryDisown();
         }
         #endregion
     }
