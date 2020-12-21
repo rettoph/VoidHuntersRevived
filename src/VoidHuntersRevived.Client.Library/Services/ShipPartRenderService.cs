@@ -4,6 +4,7 @@ using Guppy.Extensions.Collections;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Extensions.Utilities;
 using Guppy.Utilities;
+using Guppy.Utilities.Cameras;
 using Guppy.Utilities.Primitives;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Configurations;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Client.Library.Services
         private Dictionary<ShipPartConfiguration, ShipPartConfigurationPrimitiveData> _primitives;
 
         private Single _configuredZoom;
-        private FarseerCamera2D _camera;
+        private Camera2D _camera;
         private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private Single _width = 1;
         #endregion

@@ -56,6 +56,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
 
             services.AddAndBindDriver<Ship, ShipMasterNetworkAuthorizationDriver>(p => new ShipMasterNetworkAuthorizationDriver());
             services.AddAndBindDriver<Bullet, BulletMasterNetworkAuthorizationDriver>(p => new BulletMasterNetworkAuthorizationDriver());
+            services.AddAndBindDriver<Explosion, ExplosionMasterNetworkAuthorizationDriver>(p => new ExplosionMasterNetworkAuthorizationDriver());
         }
 
         public void ConfigureProvider(ServiceProvider provider)

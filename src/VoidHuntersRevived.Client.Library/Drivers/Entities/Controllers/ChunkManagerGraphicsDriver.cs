@@ -3,13 +3,10 @@ using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
 using Guppy.Extensions.Utilities;
 using Guppy.Utilities;
+using Guppy.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
-using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Extensions.System.Drawing;
@@ -26,7 +23,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
         #endregion
 
         #region Private Fields
-        private FarseerCamera2D _camera;
+        private Camera2D _camera;
         private WorldEntity _world;
         private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         #endregion

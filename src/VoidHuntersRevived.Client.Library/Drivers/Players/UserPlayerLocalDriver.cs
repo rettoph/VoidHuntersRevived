@@ -16,11 +16,11 @@ using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using Guppy.Network.Extensions.Lidgren;
-using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Utilities;
 using System.IO;
 using VoidHuntersRevived.Library.Extensions.Lidgren.Network;
+using Guppy.Utilities.Cameras;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Players
 {
@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
         private Boolean _configured;
         private CommandService _commands;
         private Sensor _sensor;
-        private FarseerCamera2D _camera;
+        private Camera2D _camera;
         private ActionTimer _targetSender;
         #endregion
 

@@ -13,21 +13,17 @@ using Guppy.Services;
 using Guppy.UI.Entities;
 using Guppy.UI.Layers;
 using Guppy.Utilities;
+using Guppy.Utilities.Cameras;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Linq;
 using tainicom.Aether.Physics2D.Diagnostics;
 using VoidHuntersRevived.Client.Library.Effects;
-using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Client.Library.Enums;
 using VoidHuntersRevived.Client.Library.Services;
-using VoidHuntersRevived.Client.Library.Utilities;
-using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Entities.Ammunitions;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
-using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
 using VoidHuntersRevived.Library.Layers;
 using VoidHuntersRevived.Library.Scenes;
 
@@ -40,7 +36,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
         private GameWindow _window;
         private GraphicsDevice _graphics;
-        private FarseerCamera2D _camera;
+        private Camera2D _camera;
         private MouseService _mouse;
         private ContentService _content;
         private Texture2D[] _backgrounds;
@@ -96,8 +92,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                 provider.GetContent<Texture2D>("sprite:background:3")
             };
 
-            _camera.MinZoom = 10f;
-            _camera.MaxZoom = 50f;
+            _camera.MinZoom = 5f;
+            _camera.MaxZoom = 40f;
 
             // Pre world updates (Cursor) 
             this.Layers.Create<GameLayer>((l, p, c) =>

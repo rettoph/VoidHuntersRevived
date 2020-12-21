@@ -43,6 +43,7 @@ namespace VoidHuntersRevived.Library.Entities
         private HashSet<FixtureContainer> _fixtures;
         private Category _collisionCategories;
         private Category _collidesWith;
+        private Boolean _isSensor;
         #endregion
 
         #region Public Attributes
@@ -135,6 +136,19 @@ namespace VoidHuntersRevived.Library.Entities
                 }
             }
         }
+        public Boolean IsSensor
+        {
+            get => _isSensor;
+            set
+            {
+                if (value != _isSensor)
+                {
+                    _isSensor = value;
+                    this.Do(b => b.SetIsSensor(value));
+                    this.OnIsSensorChanged?.Invoke(this, this.IsSensor);
+                }
+            }
+        }
         #endregion
 
         #region Events
@@ -143,6 +157,8 @@ namespace VoidHuntersRevived.Library.Entities
         public event OnEventDelegate<BodyEntity, BodyType> OnBodyTypeChanged;
         public event OnEventDelegate<BodyEntity, Category> OnCollisionCategoriesChanged;
         public event OnEventDelegate<BodyEntity, Category> OnCollidesWithChanged;
+        public event OnEventDelegate<BodyEntity, Boolean> OnIsSensorChanged;
+        public event OnEventDelegate<BodyEntity> OnNudged;
         #endregion
 
         #region Lifecycle Methods
@@ -151,6 +167,7 @@ namespace VoidHuntersRevived.Library.Entities
             base.Create(provider);
 
             this.ValidateCleaning += this.HandleValidateCleaning;
+            this.OnDo += this.HandleDo;
         }
 
         protected override void PreInitialize(ServiceProvider provider)
@@ -174,10 +191,20 @@ namespace VoidHuntersRevived.Library.Entities
             base.Dispose();
 
             this.ValidateCleaning += this.HandleValidateCleaning;
+            this.OnDo -= this.HandleDo;
         }
         #endregion
 
         #region Helper Methods
+        /// <summary>
+        /// Run when the current entity should be "woken" up.
+        /// This is automatically ran when <see cref="AetherEntity{T}.Do(Action{T})"/>
+        /// is invoked. Practically, it can be used by the chunk to know when a <see cref="ShipParts.ShipPart"/>
+        /// should be added back into quarantine.
+        /// </summary>
+        public void Nudge()
+            => this.OnNudged?.Invoke(this);
+
         public virtual FixtureContainer BuildFixture(Shape shape)
             => this.BuildFixture(shape, this);
         public virtual FixtureContainer BuildFixture(Shape shape, BodyEntity owner)
@@ -228,6 +255,9 @@ namespace VoidHuntersRevived.Library.Entities
         #region Event Handlers
         private bool HandleValidateCleaning(NetworkEntity sender, GameTime args)
             => this.live.FixtureList.Any();
+
+        private void HandleDo(AetherEntity<Body> sender, Action<Body> args)
+            => this.Nudge();
         #endregion
 
         #region Network Methods

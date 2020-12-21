@@ -6,6 +6,7 @@ using Guppy.Extensions.Utilities;
 using Guppy.Lists;
 using Guppy.Services;
 using Guppy.Utilities;
+using Guppy.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -16,7 +17,6 @@ using VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Client.Library.Effects;
 using VoidHuntersRevived.Client.Library.Effects.Bloom;
 using VoidHuntersRevived.Client.Library.Utilities;
-using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Utilities;
@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Client.Library.Services
         #region Private Fields
         private ServiceProvider _provider;
         private PrimitiveBatch<TrailVertex, TrailInterpolationEffect> _primitiveBatch;
-        private FarseerCamera2D _camera;
+        private Camera2D _camera;
         private ActionTimer _segmentTimer;
         private List<Trail> _trails;
         #endregion

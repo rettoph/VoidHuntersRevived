@@ -81,7 +81,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                     foreach (Fixture fixture in child.live.FixtureList)
                     { // Check all fixtures within each child...
                         fixture.Shape.ComputeAABB(out aabb, ref transform, 0);
-
+    
                         var p = new Chunk.Position(aabb.Center);
                         if (_manager.chunks.ContainsKey(p) && !_chunks.Contains(_manager.chunks[p]))
                         {
@@ -211,7 +211,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             { // Only proceed if the ShipPart is still a part of the ChunkManager...
                 _chainChunks[chain].LoadChunks();
 
-                chain.Root.OnDo += this.HandleChainRootDo;
+                chain.Root.OnNudged += this.HandleChainRootNudged;
             }
         }
 
@@ -324,7 +324,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
             // Clear cached chunks
             _chainChunks[chain].ClearChunks();
-            chain.Root.OnDo -= this.HandleChainRootDo;
+            chain.Root.OnNudged -= this.HandleChainRootNudged;
         }
         #endregion
 
@@ -334,13 +334,13 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
 
         /// <summary>
-        /// When <see cref="AetherEntity{T}.Do(Action{T})"/> is invoked
+        /// When <see cref="BodyEntity.OnNudged"/> is called
         /// on an internal <see cref="ShipPart"/> we need to add it back
         /// into quarantine.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="action"></param>
-        private void HandleChainRootDo(AetherEntity<Body> sender, Action<Body> action)
+        private void HandleChainRootNudged(BodyEntity sender)
         {
             if(sender is ShipPart shipPart)
             {

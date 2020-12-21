@@ -19,7 +19,6 @@ using VoidHuntersRevived.Client.Library.Layers;
 using VoidHuntersRevived.Client.Library.Scenes;
 using VoidHuntersRevived.Client.Library.Services;
 using VoidHuntersRevived.Client.Library.Utilities;
-using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
@@ -36,7 +35,6 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
         public void RegisterServices(ServiceCollection services)
         {
             // Configure service factories...
-            services.AddFactory<FarseerCamera2D>(p => new FarseerCamera2D());
             services.AddFactory<Sensor>(p => new Sensor());
             services.AddFactory<Trail>(p => new Trail());
             services.AddFactory<TrailSegment>(p => new TrailSegment());
@@ -56,7 +54,6 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             });
             
             // Configure service lifetimes...
-            services.AddScoped<FarseerCamera2D>();
             services.AddScoped<Sensor>();
             services.AddTransient<Trail>();
             services.AddTransient<TrailSegment>();

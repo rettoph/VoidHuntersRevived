@@ -124,11 +124,11 @@ namespace VoidHuntersRevived.Library.Scenes
         #region Event Handlers
         private void HandleEntityAdded(IEnumerable<Entity> sender, Entity arg)
         {
-            if(arg is WorldEntity)
+            if(arg is WorldEntity world)
             {
                 this.Entities.OnAdded -= this.HandleEntityAdded;
 
-                _world = arg as WorldEntity;
+                _world = world;
                 _onWorldActions?.Invoke(_world);
             }
         }

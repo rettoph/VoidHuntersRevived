@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Client.Library.Utilities.Cameras;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
 using Guppy.Extensions.DependencyInjection;
@@ -14,6 +13,7 @@ using VoidHuntersRevived.Library.Scenes;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Library.Extensions.Aether;
 using tainicom.Aether.Physics2D.Dynamics.Contacts;
+using Guppy.Utilities.Cameras;
 
 namespace VoidHuntersRevived.Client.Library.Entities
 {
@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
         #region Private Fields
         private MouseService _mouse;
         private WorldEntity _world;
-        private FarseerCamera2D _camera;
+        private Camera2D _camera;
         private Body _body;
         private HashSet<BodyEntity> _contacts;
         private GameScene _scene;

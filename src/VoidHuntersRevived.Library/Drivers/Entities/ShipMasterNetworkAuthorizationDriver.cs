@@ -1,5 +1,6 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
+using Guppy.Lists;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,10 +15,16 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
     /// </summary>
     internal sealed class ShipMasterNetworkAuthorizationDriver : MasterNetworkAuthorizationDriver<Ship>
     {
+        #region Private Fields
+        private EntityList _entities;
+        #endregion
+
         #region Lifecycle Methods
         protected override void Initialize(Ship driven, ServiceProvider provider)
         {
             base.Initialize(driven, provider);
+
+            provider.Service(out _entities);
 
             this.driven.OnBridgeChanged += this.HandleBridgeChanged;
             this.CleanBridge(default, this.driven.Bridge);
@@ -55,10 +62,14 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             if(sender.Health == 0)
             { // Auto release the bridge
-                sender.Items(sp => (sp.Health / sp.Configuration.MaxHealth) < 0.25f)
-                    .ForEach(sp => sp.TryRelease());
+                // Create an explosion on the bridge (this should kill the bridge)
+                _entities.Create<Explosion>((e, p, c) =>
+                {
+                    e.Position = sender.WorldCenter;
+                });
 
-                // TODO: Create an explosion!!
+                // Just in case, delete it now
+                sender.TryRelease();
             }
         }
         #endregion
