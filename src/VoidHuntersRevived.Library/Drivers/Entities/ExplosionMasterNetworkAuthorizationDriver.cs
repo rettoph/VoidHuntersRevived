@@ -42,9 +42,9 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             if(target is ShipPart shipPart)
             {
-                shipPart.Health -= explosion.Damage * elapsedSeconds;
+                shipPart.Health = Math.Max(0, shipPart.Health - (explosion.Damage * elapsedSeconds));
 
-                if (shipPart.Health <= 0)
+                if (shipPart.Chain.Ship == default && shipPart.Health <= 0)
                     shipPart.TryRelease();
             }
         }

@@ -14,6 +14,7 @@ using VoidHuntersRevived.Library.Utilities;
 using log4net;
 using System.Linq;
 using Guppy.Extensions.System;
+using Guppy.Enums;
 
 namespace VoidHuntersRevived.Library.Scenes
 {
@@ -96,11 +97,13 @@ namespace VoidHuntersRevived.Library.Scenes
             { // Flush all dirty entities down the peer as needed.
                 while (this.dirtyEntities.Any())
                 { // Attempt to clean all dirty entities as needed...
-                    _entity = this.dirtyEntities.Dequeue();
-                    this.group.Messages.Create(NetDeliveryMethod.Unreliable, 0).Then(om =>
-                    { // Build a new update message...
-                        _entity.MessageHandlers[MessageType.Update].TryWrite(om);
-                    });
+                    if((_entity = this.dirtyEntities.Dequeue()).InitializationStatus == InitializationStatus.Ready)
+                    {
+                        this.group.Messages.Create(NetDeliveryMethod.Unreliable, 0).Then(om =>
+                        { // Build a new update message...
+                            _entity.MessageHandlers[MessageType.Update].TryWrite(om);
+                        });
+                    }
                 }
             });
         }

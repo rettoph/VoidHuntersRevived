@@ -59,13 +59,13 @@ namespace VoidHuntersRevived.Library.Entities
         /// this value will dissipate as the <see cref="Radius"/>
         /// increases.
         /// </summary>
-        public Single Force { get; set; } = 25f;
+        public Single Force { get; set; } = 30f;
 
         /// <summary>
         /// The DPS to be applied on health containing body
         /// entities caught within the explosion.
         /// </summary>
-        public Single Damage { get; set; } = 25f;
+        public Single Damage { get; set; } = 10f;
 
         /// <summary>
         /// The current age of the explosion.
@@ -161,7 +161,7 @@ namespace VoidHuntersRevived.Library.Entities
                 {
                     Vector2 forceVector = this.Position - entity.Position;
                     forceVector *= 1f / (float)Math.Sqrt(forceVector.X * forceVector.X + forceVector.Y * forceVector.Y);
-                    forceVector *= force;
+                    forceVector *= force * (float)Math.Pow(entity.live.Mass, 2);
                     forceVector *= -1;
 
                     entity.ApplyForce(forceVector, this.Position);
