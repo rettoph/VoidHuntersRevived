@@ -22,6 +22,7 @@ using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
 using Guppy.Extensions.Utilities;
 using Guppy.Extensions.Microsoft.Xna.Framework;
 using VoidHuntersRevived.Client.Library.Effects;
+using VoidHuntersRevived.Client.Library.Utilities.Vertices;
 
 namespace VoidHuntersRevived.Client.Library.Utilities
 {

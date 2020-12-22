@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace VoidHuntersRevived.Client.Library.Utilities
+namespace VoidHuntersRevived.Client.Library.Utilities.Vertices
 {
     [StructLayout(LayoutKind.Explicit)]
-    public struct TrailVertex : IVertexType
+    public struct ExplosionVertex : IVertexType
     {
         #region Fields
         [FieldOffset(0)]
@@ -18,13 +18,10 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         public Vector2 Position;
 
         [FieldOffset(24)]
-        public Single SpreadDirection;
-
-        [FieldOffset(28)]
-        public Single CreatedTimestamp;
+        public Vector2 Velocity;
 
         [FieldOffset(32)]
-        public Vector2 ReverseImpulse;
+        public Single CreatedTimestamp;
         #endregion
 
         #region Public Properties
@@ -35,14 +32,13 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         #endregion
 
         #region IVertexType Implementation
-        VertexDeclaration IVertexType.VertexDeclaration => TrailVertex.VertexDeclaration;
+        VertexDeclaration IVertexType.VertexDeclaration => ExplosionVertex.VertexDeclaration;
         private static readonly VertexDeclaration VertexDeclaration = new VertexDeclaration
         (
             new VertexElement(0, VertexElementFormat.Vector4, VertexElementUsage.Color, 0),
             new VertexElement(16, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0),
-            new VertexElement(24, VertexElementFormat.Single, VertexElementUsage.TextureCoordinate, 1),
-            new VertexElement(28, VertexElementFormat.Single, VertexElementUsage.TextureCoordinate, 2),
-            new VertexElement(32, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 3)
+            new VertexElement(24, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 1),
+            new VertexElement(32, VertexElementFormat.Single, VertexElementUsage.TextureCoordinate, 2)
         );
         #endregion
     }

@@ -42,6 +42,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private Texture2D[] _backgrounds;
         private SpriteBatch _spriteBatch;
         private TrailService _trails;
+        private ExplosionParticleService _explosionParticles;
         private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private DebugService _debug;
 
@@ -75,6 +76,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             provider.Service(out _spriteBatch);
             provider.Service(out _commands);
             provider.Service(out _trails);
+            provider.Service(out _explosionParticles);
             provider.Service(out _primitiveBatch);
             provider.Service(out _debug);
 
@@ -156,6 +158,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _shipPartRenderService.Update(gameTime);
 
             _trails.TryUpdate(gameTime);
+            _explosionParticles.TryUpdate(gameTime);
         }
 
         protected override void PreDraw(GameTime gameTime)
@@ -201,6 +204,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _spriteBatch.End();
 
             _trails.TryDraw(gameTime);
+            _explosionParticles.TryDraw(gameTime);
 
             // _blur.Start();
         }

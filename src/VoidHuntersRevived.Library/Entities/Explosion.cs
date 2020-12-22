@@ -78,6 +78,11 @@ namespace VoidHuntersRevived.Library.Entities
         /// no longer apply any impulses.
         /// </summary>
         public Single MaxAge { get; set; } = 2f;
+
+        /// <summary>
+        /// The color of the current explosion
+        /// </summary>
+        public Color Color { get; set; } = Color.Red;
         #endregion
 
         #region Events

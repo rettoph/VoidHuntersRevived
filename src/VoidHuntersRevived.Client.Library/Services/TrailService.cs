@@ -17,6 +17,7 @@ using VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Client.Library.Effects;
 using VoidHuntersRevived.Client.Library.Effects.Bloom;
 using VoidHuntersRevived.Client.Library.Utilities;
+using VoidHuntersRevived.Client.Library.Utilities.Vertices;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Utilities;
