@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Client.Library.Effects
     /// <summary>
     /// The primary effect used to manage explosion particles.
     /// This is primarily only used within the 
-    /// <see cref="Services.ExplosionParticleService"/> class.
+    /// <see cref="Services.ExplosionRenderService"/> class.
     /// </summary>
     public class ExplosionEffect : EffectMatricesEffect
     {

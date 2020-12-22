@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters
     internal sealed class ThrusterTrailsDriver : Driver<Thruster>
     {
         #region Private Fields
-        private TrailService _trails;
+        private TrailRenderService _trails;
         private Trail _trail;
         #endregion
 

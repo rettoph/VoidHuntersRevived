@@ -39,9 +39,9 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddFactory<Sensor>(p => new Sensor());
             services.AddFactory<Trail>(p => new Trail());
             services.AddFactory<TrailSegment>(p => new TrailSegment());
-            services.AddFactory<TrailService>(p => new TrailService());
+            services.AddFactory<TrailRenderService>(p => new TrailRenderService());
             services.AddFactory<FrameableList<Trail>>(p => new FrameableList<Trail>());
-            services.AddFactory<ExplosionParticleService>(p => new ExplosionParticleService());
+            services.AddFactory<ExplosionRenderService>(p => new ExplosionRenderService());
             services.AddFactory<DebugService>(p => new DebugService());
             services.AddFactory<ShipPartRenderService>(p => new ShipPartRenderService());
             services.AddFactory<GameLayer>(factory: p => new ClientGameLayer(), priority: 1);
@@ -67,9 +67,9 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddScoped<Sensor>();
             services.AddTransient<Trail>();
             services.AddTransient<TrailSegment>();
-            services.AddScoped<TrailService>();
+            services.AddScoped<TrailRenderService>();
             services.AddScoped<FrameableList<Trail>>();
-            services.AddScoped<ExplosionParticleService>();
+            services.AddScoped<ExplosionRenderService>();
             services.AddSingleton<DebugService>();
             services.AddScoped<ShipPartRenderService>();
             services.AddTransient<RenderTarget2DManager>();

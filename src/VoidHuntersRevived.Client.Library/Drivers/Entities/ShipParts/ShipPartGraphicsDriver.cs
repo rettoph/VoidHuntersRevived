@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
         #region Frame Methods
         private void Draw(GameTime gameTime)
         {
-            _renderer.Draw(this.driven);
+            _renderer.Render(this.driven);
         }
         #endregion
     }

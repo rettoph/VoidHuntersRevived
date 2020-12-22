@@ -24,7 +24,7 @@ using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Client.Library.Services
 {
-    public sealed class TrailService : Frameable
+    public sealed class TrailRenderService : Frameable
     {
         #region Private Fields
         private ServiceProvider _provider;

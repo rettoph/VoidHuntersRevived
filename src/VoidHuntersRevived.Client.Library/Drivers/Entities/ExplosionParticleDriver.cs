@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
     internal sealed class ExplosionParticleDriver : Driver<Explosion>
     {
         #region Private Fields 
-        private ExplosionParticleService _particles;
+        private ExplosionRenderService _particles;
         #endregion
 
         #region Lifecycle Methods

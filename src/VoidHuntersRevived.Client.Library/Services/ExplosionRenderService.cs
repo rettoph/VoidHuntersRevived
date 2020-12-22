@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Client.Library.Services
     /// Simple service used to render explosion
     /// particles.
     /// </summary>
-    internal sealed class ExplosionParticleService : Frameable
+    internal sealed class ExplosionRenderService : Frameable
     {
         #region Private Fields
         private PrimitiveBatch<ExplosionVertex, ExplosionEffect> _primitiveBatch;

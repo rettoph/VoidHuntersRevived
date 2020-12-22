@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Client.Library.Services
     /// directly to screen with little passing from
     /// the ship part itself.
     /// </summary>
-    public class ShipPartRenderService : Service
+    public class ShipPartRenderService : Frameable
     {
         #region Constants
         private static Color TransparentWhite = new Color(255, 255, 255, 0);
@@ -64,8 +64,10 @@ namespace VoidHuntersRevived.Client.Library.Services
         #endregion
 
         #region Frame Methods
-        internal void Update(GameTime gameTime)
+        protected override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
+
             if(_camera.Zoom != _configuredZoom && Math.Abs(_configuredZoom - _camera.Zoom) / _configuredZoom > 0.005f)
             {
                 _configuredZoom = _camera.Zoom;
@@ -76,7 +78,11 @@ namespace VoidHuntersRevived.Client.Library.Services
             }
         }
 
-        internal void Draw(ShipPart shipPart)
+        /// <summary>
+        /// Render the specific ShipPart recieved, if possible.
+        /// </summary>
+        /// <param name="shipPart"></param>
+        public void Render(ShipPart shipPart)
         {
             _primitives[shipPart.Configuration].Shapes.ForEach(shape =>
             { // Draw all part shapes...
