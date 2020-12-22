@@ -46,7 +46,8 @@ namespace VoidHuntersRevived.Server.Scenes
             });
 
             var rand = new Random(1);
-            for (Int32 i=0; i<5; i++)
+
+            for(Int32 i=0; i < 5; i++)
             {
                 this.Entities.Create<ComputerPlayer>((player, p, d) =>
                 {
@@ -58,7 +59,10 @@ namespace VoidHuntersRevived.Server.Scenes
                         ship.Bridge.Position = rand.NextVector2(0, world.Size.X, 0, world.Size.Y);
                     });
                 });
+            }
 
+            for (Int32 i=0; i<50; i++)
+            {
                 var triangle = this.Entities.Create<ShipPart>("entity:ship-part:hull:triangle");
                 triangle.Position = rand.NextVector2(0, world.Size.X);
                 triangle.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);

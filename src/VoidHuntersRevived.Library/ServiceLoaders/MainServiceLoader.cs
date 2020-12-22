@@ -130,6 +130,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddSetup<NetPeerConfiguration>((config, p, c) =>
             {
                 config.LocalAddress = IPAddress.Parse("::1");
+                config.UseMessageRecycling = true;
                 // EnumHelper.GetValues<NetIncomingMessageType>().ForEach(mt => config.EnableMessageType(mt));
             });
 

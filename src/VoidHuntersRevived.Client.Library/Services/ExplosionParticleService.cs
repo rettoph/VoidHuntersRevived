@@ -13,6 +13,7 @@ using VoidHuntersRevived.Library.Entities;
 using Guppy.Extensions.Collections;
 using Guppy.Extensions.Utilities;
 using Microsoft.Xna.Framework.Graphics;
+using System.Linq;
 
 namespace VoidHuntersRevived.Client.Library.Services
 {
@@ -26,6 +27,7 @@ namespace VoidHuntersRevived.Client.Library.Services
         private PrimitiveBatch<ExplosionVertex, ExplosionEffect> _primitiveBatch;
         private Camera2D _camera;
         private List<ExplosionParticles> _particles;
+        private Queue<ExplosionParticles> _toRemove;
         #endregion
 
         #region Lifecycle Methods
@@ -37,6 +39,7 @@ namespace VoidHuntersRevived.Client.Library.Services
             provider.Service(out _camera);
 
             _particles = new List<ExplosionParticles>();
+            _toRemove = new Queue<ExplosionParticles>();
         }
         #endregion
 
@@ -51,6 +54,22 @@ namespace VoidHuntersRevived.Client.Library.Services
         #endregion
 
         #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+
+            _particles.ForEach((p) =>
+            {
+                if (gameTime.TotalGameTime.TotalSeconds > p.ExpireTimestamp)
+                    _toRemove.Enqueue(p);
+            });
+
+            while(_toRemove.Any())
+                _particles.Remove(_toRemove.Dequeue());
+        }
+
+
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
@@ -64,7 +83,7 @@ namespace VoidHuntersRevived.Client.Library.Services
                 Int32 i = 0;
                 p.Vertices.ForEach((v) =>
                 {
-                    _primitiveBatch.DrawTriangle(p.Center, v, p.Vertices[++i % p.Vertices.Length]);
+                    _primitiveBatch.DrawTriangle(v, p.Vertices[++i % p.Vertices.Length], p.Center);
                 });
                 
             });

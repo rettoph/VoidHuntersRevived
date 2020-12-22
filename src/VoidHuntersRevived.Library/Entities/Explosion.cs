@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Library.Entities
         /// this value will dissipate as the <see cref="Radius"/>
         /// increases.
         /// </summary>
-        public Single Force { get; set; } = 2f;
+        public Single Force { get; set; } = 25f;
 
         /// <summary>
         /// The DPS to be applied on health containing body
@@ -77,12 +77,12 @@ namespace VoidHuntersRevived.Library.Entities
         /// Once this is surpassed the explosion will
         /// no longer apply any impulses.
         /// </summary>
-        public Single MaxAge { get; set; } = 2f;
+        public Single MaxAge { get; set; } = 7f;
 
         /// <summary>
         /// The color of the current explosion
         /// </summary>
-        public Color Color { get; set; } = Color.Red;
+        public Color Color { get; set; } = Color.White;
         #endregion
 
         #region Events
@@ -110,7 +110,7 @@ namespace VoidHuntersRevived.Library.Entities
 
             _seperated = new Queue<BodyEntity>();
             _contacts = new HashSet<BodyEntity>();
-            _body = _world.Live.CreateCircle(10f, 0f).Then(b =>
+            _body = _world.Live.CreateCircle(15f, 0f).Then(b =>
             { // Set up the explosion body...
                 _circle = b.FixtureList[0].Shape as CircleShape;
 
@@ -152,7 +152,7 @@ namespace VoidHuntersRevived.Library.Entities
             if (this.Age <= this.MaxAge)
             {
                 var seconds = (Single)gameTime.ElapsedGameTime.TotalSeconds;
-                var force = this.Force * (1 - (this.Age / this.MaxAge));
+                var force = this.Force * (1 - (this.Age / this.MaxAge)) * seconds;
 
                 while (_seperated.Any())
                     _contacts.Remove(_seperated.Dequeue());
@@ -161,7 +161,7 @@ namespace VoidHuntersRevived.Library.Entities
                 {
                     Vector2 forceVector = this.Position - entity.Position;
                     forceVector *= 1f / (float)Math.Sqrt(forceVector.X * forceVector.X + forceVector.Y * forceVector.Y);
-                    forceVector *= force * entity.live.Mass;
+                    forceVector *= force;
                     forceVector *= -1;
 
                     entity.ApplyForce(forceVector, this.Position);
@@ -204,12 +204,18 @@ namespace VoidHuntersRevived.Library.Entities
         {
             om.Write(this.Position);
             om.Write(this.Velocity);
+            om.Write(this.Color);
+            om.Write(this.MaxAge);
+            om.Write(this.Damage);
         }
 
         private void ReadData(NetIncomingMessage im)
         {
             this.Position = im.ReadVector2();
             this.Velocity = im.ReadVector2();
+            this.Color = im.ReadColor();
+            this.MaxAge = im.ReadSingle();
+            this.Damage = im.ReadSingle();
         }
         #endregion
     }

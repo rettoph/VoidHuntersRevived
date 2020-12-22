@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
         {
             _entityMessages.Keys.ForEach(k =>
             {
-                if (_entityMessages[k].Any())
+                while (_entityMessages[k].Any())
                     this.ReadEntityMessage(k, _entityMessages[k].Dequeue());
             });
         }
@@ -80,6 +80,7 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
                     break;
             }
 
+            im.Recycle();
         }
         #endregion
 

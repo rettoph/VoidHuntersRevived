@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Library.Scenes
 
             _world = default(WorldEntity);
             _onWorldActions = default(Action<WorldEntity>);
-            _dirtyEntityCleanTimer = new ActionTimer(150);
+            _dirtyEntityCleanTimer = new ActionTimer(100);
             this.dirtyEntities = new Queue<NetworkEntity>();
 
             this.log = provider.GetService<ILog>();

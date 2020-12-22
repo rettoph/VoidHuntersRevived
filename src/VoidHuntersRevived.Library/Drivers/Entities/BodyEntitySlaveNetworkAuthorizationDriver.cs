@@ -47,13 +47,14 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             
             if (rotationDif > 0.0001f || positionDif > 0.001f)
             { // Only proceed with positional lerping if the slave is not already matching the master...
-                var strength = BodyEntity.SlaveLerpStrength * (Single)gameTime.ElapsedGameTime.TotalSeconds;
-            
-                this.driven.slave.LinearVelocity = Vector2.Lerp(this.driven.slave.LinearVelocity, this.driven.master.LinearVelocity, strength);
-                this.driven.slave.AngularVelocity = MathHelper.Lerp(this.driven.slave.AngularVelocity, this.driven.master.AngularVelocity, strength);
+                var posStrength = MathHelper.Clamp(BodyEntity.SlaveLerpStrength * (Single)gameTime.ElapsedGameTime.TotalSeconds, 0, 1);
+                var velStrength = MathHelper.Lerp(posStrength, 1, 0.75f);
+
+                this.driven.slave.LinearVelocity = Vector2.Lerp(this.driven.slave.LinearVelocity, this.driven.master.LinearVelocity, velStrength);
+                this.driven.slave.AngularVelocity = MathHelper.Lerp(this.driven.slave.AngularVelocity, this.driven.master.AngularVelocity, velStrength);
                 this.driven.slave.SetTransformIgnoreContacts(
-                    position: Vector2.Lerp(this.driven.slave.Position, this.driven.master.Position, strength),
-                    angle: MathHelper.Lerp(this.driven.slave.Rotation, this.driven.master.Rotation, strength));
+                    position: Vector2.Lerp(this.driven.slave.Position, this.driven.master.Position, posStrength),
+                    angle: MathHelper.Lerp(this.driven.slave.Rotation, this.driven.master.Rotation, posStrength));
             
                 // Instance snap as needed...
                 if (positionDif > BodyEntity.PositionSnapThreshold)

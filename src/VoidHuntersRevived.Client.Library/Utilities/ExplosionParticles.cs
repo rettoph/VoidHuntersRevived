@@ -27,18 +27,32 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         /// The outer bounds of the explosion.
         /// </summary>
         public ExplosionVertex[] Vertices;
+
+        /// <summary>
+        /// The timestamp at which the described particles
+        /// should expire
+        /// </summary>
+        public Double ExpireTimestamp;
+
+        /// <summary>
+        /// The maximum age of the descirbed particles.
+        /// </summary>
+        public Double MaxAge;
         #endregion
 
         #region Helper Methods
         public ExplosionParticles(GameTime gameTime, Explosion explosion)
         {
-            var now = (Single)gameTime.TotalGameTime.TotalSeconds;
-
+            var now = (Single)gameTime.TotalGameTime.TotalSeconds - explosion.Age;
+            var magnitude = (Single)Math.Sqrt(explosion.Velocity.Length());
 
             this.Center.Color = explosion.Color;
             this.Center.CreatedTimestamp = now;
             this.Center.Position = explosion.Position;
-            this.Center.Velocity = explosion.Velocity;
+            this.Center.Direction = 0;
+            this.Center.Magnitude = magnitude;
+            this.Center.Alpha = 1f;
+            this.Center.MaxAge = explosion.MaxAge;
 
             this.Vertices = new ExplosionVertex[ExplosionParticles.ParticleCount];
             var step = MathHelper.TwoPi / ExplosionParticles.ParticleCount;
@@ -48,8 +62,13 @@ namespace VoidHuntersRevived.Client.Library.Utilities
                 this.Vertices[i].Color = explosion.Color;
                 this.Vertices[i].CreatedTimestamp = now;
                 this.Vertices[i].Position = explosion.Position;
-                this.Vertices[i].Velocity = explosion.Velocity + Vector2.UnitX.Rotate(i * step);
+                this.Vertices[i].Direction = i * step;
+                this.Vertices[i].Magnitude = (magnitude * 1.2f) + (explosion.Force * 0.1f);
+                this.Vertices[i].Alpha = 0f;
+                this.Vertices[i].MaxAge = explosion.MaxAge;
             }
+
+            this.ExpireTimestamp = gameTime.TotalGameTime.TotalSeconds - explosion.Age + explosion.MaxAge;
         }
         #endregion
     }

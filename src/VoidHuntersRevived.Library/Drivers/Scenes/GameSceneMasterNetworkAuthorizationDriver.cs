@@ -119,16 +119,18 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
         #endregion
 
         #region Message Handlers
-        private Boolean HandleEntityMessage(NetIncomingMessage obj)
+        private Boolean HandleEntityMessage(NetIncomingMessage im)
         {
-            switch((MessageType)obj.ReadByte())
+            switch((MessageType)im.ReadByte())
             {
                 case MessageType.Action:
-                    _entities.GetById<NetworkEntity>(obj.ReadGuid()).MessageHandlers[MessageType.Action].TryRead(obj);
+                    _entities.GetById<NetworkEntity>(im.ReadGuid()).MessageHandlers[MessageType.Action].TryRead(im);
                     break;
                 default:
                     throw new Exception("Invalid message type recieved.");
             }
+
+            im.Recycle();
 
             return false;
         }

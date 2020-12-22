@@ -1,8 +1,10 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
 using Guppy.Lists;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
@@ -67,6 +69,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
                 {
                     e.Position = sender.WorldCenter;
                     e.Velocity = sender.LinearVelocity;
+                    e.Color = sender.Chain.Ship.Color;
                 });
 
                 // Just in case, delete it now
