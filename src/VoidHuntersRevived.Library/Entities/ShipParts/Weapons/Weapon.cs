@@ -253,10 +253,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             this.OnUpdate -= this.UpdateAim;
             this.OnUpdate -= this.UpdatePosition;
 
-            if (this.Chain.Ship == default(Ship)) // When there is no ship, update position directly...
-                this.OnUpdate += this.UpdatePosition;
-            else // When there is a ship, attempt to aim the gun
+            if(this.Chain.Ship != default)// When there is a ship, attempt to aim the gun
                 this.OnUpdate += this.UpdateAim;
+            else if(!this.IsRoot) // When there is no ship but its in a chain, update position directly...
+                this.OnUpdate += this.UpdatePosition;
         }
 
         public void TryFire(GameTime gameTime)

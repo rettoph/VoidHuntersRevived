@@ -346,6 +346,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             {
                 _chainChunks[shipPart.Chain].ClearChunks();
                 _quarantine.Add(shipPart.Chain);
+
+                shipPart.OnNudged -= this.HandleChainRootNudged;
             }
         }
         #endregion
