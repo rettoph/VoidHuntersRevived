@@ -12,9 +12,9 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
     internal sealed class ShipPartMasterNetworkAuthorizationDriver : MasterNetworkAuthorizationDriver<ShipPart>
     {
         #region Lifecycle Methods
-        protected override void Initialize(ShipPart driven, ServiceProvider provider)
+        protected override void InitializeRemote(ShipPart driven, ServiceProvider provider)
         {
-            base.Initialize(driven, provider);
+            base.InitializeRemote(driven, provider);
 
             this.driven.MessageHandlers[MessageType.Setup].OnWrite += this.driven.WriteMaleConnectionNode;
             this.driven.MessageHandlers[MessageType.Setup].OnWrite += this.driven.WriteHealth;
@@ -23,9 +23,9 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
             this.driven.OnHealthChanged += this.HandleHealthChanged;
         }
 
-        protected override void Release(ShipPart driven)
+        protected override void ReleaseRemote(ShipPart driven)
         {
-            base.Release(driven);
+            base.ReleaseRemote(driven);
 
             this.driven.MessageHandlers[MessageType.Setup].OnWrite -= this.driven.WriteMaleConnectionNode;
             this.driven.MessageHandlers[MessageType.Setup].OnWrite -= this.driven.WriteHealth;

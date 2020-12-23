@@ -88,15 +88,23 @@ namespace VoidHuntersRevived.Library.Entities
             this.settings = provider.GetService<Settings>();
             this.log = provider.GetService<ILog>();
 
+            if (this.settings.Get<HostType>() == HostType.Remote)
+                this.OnPostUpdate += this.PostUpdateRemote;
+
             this.log.Verbose(() => $"Creating new NetworkEntity<{this.GetType().Name}>({this.Id}) => '{this.ServiceConfiguration.Name}'");
+        }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            this.OnPostUpdate -= this.PostUpdateRemote;
         }
         #endregion
 
         #region Frame Methods
-        protected override void PostUpdate(GameTime gameTime)
+        private void PostUpdateRemote(GameTime gameTime)
         {
-            base.PostUpdate(gameTime);
-
             if ((this.DirtyState & DirtyState.Cleaning) == 0 && (this.DirtyState & DirtyState.DirtyAndFilthy) != 0 && this.ValidateCleaning.Validate(this, gameTime, true))
             { // Enque the current entity to be cleaned & update the DirtyState...
                 _scene.dirtyEntities.Enqueue(this);
@@ -105,6 +113,7 @@ namespace VoidHuntersRevived.Library.Entities
                 this.DirtyState &= ~DirtyState.Dirty;
             }
         }
+
         #endregion
 
         #region Network Methods

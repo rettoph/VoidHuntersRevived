@@ -13,16 +13,16 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
     internal sealed class WorldEntityMasterNetworkAuthorizationDriver : MasterNetworkAuthorizationDriver<WorldEntity>
     {
         #region Lifecycle Methods
-        protected override void Initialize(WorldEntity driven, ServiceProvider provider)
+        protected override void InitializeRemote(WorldEntity driven, ServiceProvider provider)
         {
-            base.Initialize(driven, provider);
+            base.InitializeRemote(driven, provider);
 
             this.driven.OnSizeChanged += this.HandleSizeChanged;
         }
 
-        protected override void Release(WorldEntity driven)
+        protected override void ReleaseRemote(WorldEntity driven)
         {
-            base.Release(driven);
+            base.ReleaseRemote(driven);
 
             this.driven.OnSizeChanged -= this.HandleSizeChanged;
         }

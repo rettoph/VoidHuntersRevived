@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VoidHuntersRevived.Library.Drivers
 {
-    public abstract class SlaveNetworkAuthorizationDriver<TDriven> : Driver<TDriven>
+    public abstract class SlaveNetworkAuthorizationDriver<TDriven> : RemoteHostDriver<TDriven>
         where TDriven : Driven
     {
     }

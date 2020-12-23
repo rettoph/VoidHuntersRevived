@@ -29,9 +29,9 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize(GameScene driven, ServiceProvider provider)
+        protected override void InitializeRemote(GameScene driven, ServiceProvider provider)
         {
-            base.Initialize(driven, provider);
+            base.InitializeRemote(driven, provider);
 
             provider.Service(out _logger);
             provider.Service(out _entities);
@@ -40,6 +40,14 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
 
             this.driven.Group.Messages.Set("scene:setup", this.HandleSceneSetupMessage);
             this.driven.Group.Messages.Set("entity:message", this.HandleEntityMessage);
+        }
+
+        protected override void ReleaseRemote(GameScene driven)
+        {
+            base.ReleaseRemote(driven);
+
+            this.driven.Group.Messages.Remove("scene:setup");
+            this.driven.Group.Messages.Remove("entity:message");
         }
         #endregion
 

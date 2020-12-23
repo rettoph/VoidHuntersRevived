@@ -53,6 +53,7 @@ namespace VoidHuntersRevived.Library.Scenes
             this.dirtyEntities = new Queue<NetworkEntity>();
 
             this.log = provider.GetService<ILog>();
+            this.settings = provider.GetService<Settings>();
 
             this.group = provider.GetService<Peer>().Groups.GetOrCreateById(Guid.Empty);
 
@@ -71,6 +72,16 @@ namespace VoidHuntersRevived.Library.Scenes
             this.Entities.OnAdded += this.HandleEntityAdded;
         }
 
+        protected override void Initialize(ServiceProvider provider)
+        {
+            base.Initialize(provider);
+
+            if (this.settings.Get<HostType>() == HostType.Remote)
+                this.OnUpdate += this.UpdateRemote;
+            else
+                this.OnUpdate += this.UpdateLocal;
+        }
+
         protected override void Release()
         {
             base.Release();
@@ -78,6 +89,8 @@ namespace VoidHuntersRevived.Library.Scenes
             this.group.TryRelease();
 
             this.Entities.OnAdded -= this.HandleEntityAdded;
+            this.OnUpdate -= this.UpdateRemote;
+            this.OnUpdate -= this.UpdateLocal;
         }
         #endregion
 
@@ -87,10 +100,8 @@ namespace VoidHuntersRevived.Library.Scenes
             base.Draw(gameTime);
         }
 
-        protected override void Update(GameTime gameTime)
+        private void UpdateRemote(GameTime gameTime)
         {
-            base.Update(gameTime);
-
             this.group.TryUpdate(gameTime);
 
             _dirtyEntityCleanTimer.Update(gameTime, gt =>
@@ -106,6 +117,11 @@ namespace VoidHuntersRevived.Library.Scenes
                     }
                 }
             });
+        }
+
+        private void UpdateLocal(GameTime gameTime)
+        {
+            this.group.Clear();
         }
         #endregion
 

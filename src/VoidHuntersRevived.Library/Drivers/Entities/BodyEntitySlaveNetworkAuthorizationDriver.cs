@@ -18,9 +18,9 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize(BodyEntity driven, ServiceProvider provider)
+        protected override void InitializeRemote(BodyEntity driven, ServiceProvider provider)
         {
-            base.Initialize(driven, provider);
+            base.InitializeRemote(driven, provider);
 
             provider.Service(out _client);
 
@@ -29,9 +29,9 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             this.driven.MessageHandlers[MessageType.Update].OnRead += this.driven.master.ReadPosition;
         }
 
-        protected override void Release(BodyEntity driven)
+        protected override void ReleaseRemote(BodyEntity driven)
         {
-            base.Release(driven);
+            base.ReleaseRemote(driven);
 
             this.driven.OnUpdate -= this.Update;
 

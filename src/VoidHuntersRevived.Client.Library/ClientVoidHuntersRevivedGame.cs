@@ -19,6 +19,7 @@ using Guppy.IO.Commands;
 using VoidHuntersRevived.Client.Library.Enums;
 using System.Linq;
 using System.Threading;
+using VoidHuntersRevived.Client.Library.Scenes;
 
 namespace VoidHuntersRevived.Client.Library
 {
@@ -49,20 +50,19 @@ namespace VoidHuntersRevived.Client.Library
 
             _client.TryConnect("localhost", 1337, user);
 
-            if(Console.Read() != -1)
-                new Thread(new ThreadStart(() =>
+            new Thread(new ThreadStart(() =>
+            {
+                while (true)
                 {
-                    while (true)
-                    {
-                        var input = Console.ReadLine();
+                    var input = Console.ReadLine();
 
-                        Console.SetCursorPosition(0, Console.CursorTop - 1);
-                        Console.Write(new string(' ', Console.WindowWidth));
-                        Console.SetCursorPosition(0, Console.CursorTop);
+                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    Console.Write(new string(' ', Console.WindowWidth));
+                    Console.SetCursorPosition(0, Console.CursorTop);
 
-                        _commands.TryExecute(input);
-                    }
-                })).Start();
+                    _commands.TryExecute(input);
+                }
+            })).Start();
         }
 
         protected override void Initialize(ServiceProvider provider)

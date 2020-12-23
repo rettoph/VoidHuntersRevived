@@ -16,18 +16,18 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
     internal sealed class BodyEntityMasterNetworkAuthorizationDriver : MasterNetworkAuthorizationDriver<BodyEntity>
     {
         #region Lifecycle Methods
-        protected override void Initialize(BodyEntity driven, ServiceProvider provider)
+        protected override void InitializeRemote(BodyEntity driven, ServiceProvider provider)
         {
-            base.Initialize(driven, provider);
+            base.InitializeRemote(driven, provider);
 
             this.driven.DirtyState |= DirtyState.Filthy;
 
             this.driven.MessageHandlers[MessageType.Update].OnWrite += this.driven.master.WritePosition;
         }
 
-        protected override void Release(BodyEntity driven)
+        protected override void ReleaseRemote(BodyEntity driven)
         {
-            base.Release(driven);
+            base.ReleaseRemote(driven);
 
             this.driven.MessageHandlers[MessageType.Update].OnWrite -= this.driven.master.WritePosition;
         }

@@ -68,10 +68,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         }
         #endregion
 
-        #region Frame Methods
-
-        #endregion
-
         #region Event Handlers
         private void HandleMouseScrollWheelValueChanged(MouseService sender, ScrollWheelArgs args)
             => this.camera.ZoomBy((Single)Math.Pow(1.5, args.Delta / 120));

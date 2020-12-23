@@ -58,6 +58,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddSetup<Settings>((s, p, c) =>
             { // Configure the default settings...
                 s.Set<NetworkAuthorization>(NetworkAuthorization.Slave);
+                s.Set<HostType>(HostType.Remote);
             }, -10);
 
             // Register all default entities & their factories

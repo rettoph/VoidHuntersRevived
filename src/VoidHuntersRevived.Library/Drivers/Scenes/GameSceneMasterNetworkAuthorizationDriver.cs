@@ -34,9 +34,9 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize(GameScene driven, ServiceProvider provider)
+        protected override void InitializeRemote(GameScene driven, ServiceProvider provider)
         {
-            base.Initialize(driven, provider);
+            base.InitializeRemote(driven, provider);
 
             _creates = new Queue<NetworkEntity>();
             _newUsers = new Queue<User>();
@@ -53,9 +53,9 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
             this.driven.OnUpdate += this.Update;
         }
 
-        protected override void Release(GameScene driven)
+        protected override void ReleaseRemote(GameScene driven)
         {
-            base.Release(driven);
+            base.ReleaseRemote(driven);
 
             _entities.OnAdded -= this.HandleEntityAdded;
             _networkEntities.OnRemoved -= this.HandleNetworkEntityRemoved;
