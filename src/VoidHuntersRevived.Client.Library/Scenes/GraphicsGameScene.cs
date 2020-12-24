@@ -94,7 +94,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             this.Layers.Create<ScreenLayer>((l, p, c) =>
             {
                 l.Group = new SingleLayerGroup(1);
-                l.DrawOrder = 20;
+                l.DrawOrder = 50;
             });
 
             _stage = this.Entities.Create<Stage>((s, p, d) =>

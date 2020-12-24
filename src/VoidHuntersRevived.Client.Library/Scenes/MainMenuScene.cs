@@ -48,6 +48,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             provider.Service(out _graphics);
 
             #region UI
+            this.stage.Content.BackgroundColor[ElementState.Default] = new Color(Color.Black, 75);
             this.stage.Content.Children.Create<StackContainer>((container, p, c) =>
             {
                 container.Bounds.X = new CustomUnit(c => (c - container.Bounds.Width.ToPixel(c)) / 2);
@@ -88,10 +89,10 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             });
             #endregion
 
-            this.camera.Zoom = 100f;
+            this.camera.Zoom = 10f;
             this.camera.Position = new Vector2(Chunk.Size * 3, Chunk.Size * 3) / 2;
-            this.camera.MoveLerpStrength = 0.001f;
-            this.camera.ZoomLerpStrength = 0.002f;
+            this.camera.MoveLerpStrength = 0.0001f;
+            this.camera.ZoomLerpStrength = 0.0001f;
 
             _world = this.Entities.Create<WorldEntity>((w, p, c) =>
             {
