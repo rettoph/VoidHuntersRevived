@@ -15,6 +15,7 @@ using Guppy.Events.Delegates;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Utilities;
 using Microsoft.Xna.Framework;
+using Guppy.Enums;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -73,7 +74,7 @@ namespace VoidHuntersRevived.Library.Entities
 
             _logger.Verbose(() => $"Created new Chain bound to ShipPart<{this.Root.ServiceConfiguration.Name}>({this.Root.Id}).");
 
-            this.Root.OnReleased += this.HandleRootReleased;
+            this.Root.OnStatus[ServiceStatus.Releasing] += this.HandleRootReleasing;
 
             this.Enabled = false;
             this.Visible = false;
@@ -83,7 +84,14 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Release();
 
-            this.Root.OnReleased -= this.HandleRootReleased;
+            this.Root.OnStatus[ServiceStatus.Releasing] -= this.HandleRootReleasing;
+        }
+
+        protected override void PostRelease()
+        {
+            base.PostRelease();
+
+            this.Root = default;
         }
         #endregion
 
@@ -104,52 +112,37 @@ namespace VoidHuntersRevived.Library.Entities
         /// <param name="into"></param>
         private Boolean Remove(ShipPart shipPart, Chain into)
         {
-            // There is nothing left in the chain, so self release...
-            if (shipPart == this.Root)
-                this.TryRelease();
-
             // Set the chain to null...
             shipPart.Chain = into;
-
             this.OnShipPartRemoved?.Invoke(this, shipPart);
+
+            // There is nothing left in the chain, so self release...
+            if (shipPart == this.Root && into != this)
+                this.TryRelease();
 
             return true;
         }
 
         internal void Add(ShipPart shipPart)
         {
-            this.Do(shipPart, sp =>
+            if (shipPart == default)
+                return;
+
+            shipPart.Items().ForEach(sp =>
             {
                 // Remove from old chain (if any)...
-                if(!sp.Chain?.Remove(shipPart, this) ?? true)
+                if (!sp.Chain?.Remove(shipPart, this) ?? true)
                     sp.Chain = this; // Set the internal chain values...
             });
 
             // Invoke the ShipPartAdded event once.
             this.OnShipPartAdded?.Invoke(this, shipPart);
         }
-
-        /// <summary>
-        /// Recersively call an action preformed on ALL
-        /// internal chain ShipPart items.
-        /// </summary>
-        /// <param name="action"></param>
-        public void Do(Action<ShipPart> action)
-            => this.Do(this.Root, action);
-
-        private void Do(ShipPart target, Action<ShipPart> action)
-        {
-            action.Invoke(target);
-
-            target.Children.ForEach(child => this.Do(child, action));
-        }
         #endregion
 
         #region Event Handlers
-        private void HandleRootReleased(IService sender)
-        {
-            this.TryRelease();
-        }
+        private void HandleRootReleasing(IService sender)
+            => this.TryRelease();
         #endregion
 
         #region Static Methods

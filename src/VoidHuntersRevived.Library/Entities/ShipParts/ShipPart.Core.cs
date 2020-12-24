@@ -97,14 +97,26 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             this.LinearDamping = 0.25f;
         }
 
+        protected override void PreRelease()
+        {
+            base.PreRelease();
+
+            this.ConnectionNode_PreRelease();
+        }
+
         protected override void Release()
         {
-            this.ConnectionNode_PreRelease();
-
             base.Release();
 
             this.Transformations_Release();
             this.Chain_Release();
+        }
+
+        protected override void PostRelease()
+        {
+            base.PostRelease();
+
+            this.Chain_PostRelease();
         }
 
         protected override void Dispose()

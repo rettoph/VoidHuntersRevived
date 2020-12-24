@@ -23,6 +23,7 @@ using Guppy.Extensions.Utilities;
 using Guppy.Extensions.Microsoft.Xna.Framework;
 using VoidHuntersRevived.Client.Library.Effects;
 using VoidHuntersRevived.Client.Library.Utilities.Vertices;
+using Guppy.Enums;
 
 namespace VoidHuntersRevived.Client.Library.Utilities
 {
@@ -86,7 +87,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
             _segments = new Queue<TrailSegment>();
             _addedInitialSegment = false;
 
-            this.Thruster.OnReleased += this.HandleThrusterReleased;
+            this.Thruster.OnStatus[ServiceStatus.Releasing] += this.HandleThrusterReleasing;
         }
 
         protected override void Release()
@@ -130,7 +131,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
 
 
                 if ((gameTime.TotalGameTime.TotalSeconds - _segments.First().PortVertex.CreatedTimestamp) > TrailSegment.MaxAge)
-                    _segments.Dequeue().TryDispose();
+                    _segments.Dequeue().TryRelease();
             }
             else if (!_addedInitialSegment)
             { // No initial segment has been added...
@@ -214,7 +215,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
             if (this.Thruster != default)
             { // Only proceed if the trail is not already an orphan...
                 // Remove all event handlers...
-                this.Thruster.OnReleased -= this.HandleThrusterReleased;
+                this.Thruster.OnStatus[ServiceStatus.Releasing] -= this.HandleThrusterReleasing;
 
                 // Unbind the internal thruster, becoming an orphan
                 this.Thruster = null;
@@ -223,7 +224,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         #endregion
 
         #region Events
-        private void HandleThrusterReleased(IService sender)
+        private void HandleThrusterReleasing(IService sender)
             => this.TryDisown();
         #endregion
     }

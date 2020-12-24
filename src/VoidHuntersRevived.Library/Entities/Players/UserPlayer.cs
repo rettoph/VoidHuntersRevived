@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
             get => _user;
             set
             {
-                if (this.InitializationStatus >= InitializationStatus.Initializing)
+                if (this.Status >= ServiceStatus.Initializing)
                     throw new Exception("Unable to update UserPlayer User value once initialization has started.");
 
                 _user = value;

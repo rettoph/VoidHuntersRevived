@@ -3,16 +3,7 @@ using Guppy.DependencyInjection;
 using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using VoidHuntersRevived.Library.Entities.ShipParts;
-using VoidHuntersRevived.Library.Enums;
-using VoidHuntersRevived.Library.Utilities;
-using Guppy.Extensions.DependencyInjection;
-using System.Linq;
-using VoidHuntersRevived.Library.Extensions.System.Collections;
-using Microsoft.Xna.Framework;
-using Guppy.Events.Delegates;
-using Guppy.Utilities;
+using Guppy.Enums;
 
 namespace VoidHuntersRevived.Library.Entities.Controllers
 {
@@ -63,7 +54,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             _chains.Add(chain);
             chain.Controller = this;
 
-            chain.OnReleased += this.HandleChainReleased;
+            chain.OnStatus[ServiceStatus.Releasing] += this.HandleChainReleasing;
         }
 
         protected virtual Boolean CanRemove(Chain chain)
@@ -80,7 +71,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             _chains.Remove(chain);
             chain.Controller = null;
 
-            chain.OnReleased -= this.HandleChainReleased;
+            chain.OnStatus[ServiceStatus.Releasing] -= this.HandleChainReleasing;
         }
         #endregion
 
@@ -90,7 +81,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         /// the stack.
         /// </summary>
         /// <param name="sender"></param>
-        private void HandleChainReleased(IService sender)
+        private void HandleChainReleasing(IService sender)
             => this.Remove(sender as Chain);
         #endregion
     }

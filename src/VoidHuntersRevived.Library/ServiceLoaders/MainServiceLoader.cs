@@ -23,6 +23,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Layers;
 using VoidHuntersRevived.Library.Scenes;
@@ -39,6 +40,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddFactory<Settings>(p => new Settings());
             services.AddFactory<ConnectionNode>(p => new ConnectionNode());
             services.AddFactory<ServiceList<Player>>(p => new ServiceList<Player>());
+            services.AddFactory<ServiceList<BodyEntity>>(p => new ServiceList<BodyEntity>());
             services.AddFactory<Chunk>(p => new Chunk());
             services.AddFactory<GameLayer>(p => new GameLayer());
             services.AddFactory<Explosion>(p => new Explosion());
@@ -47,6 +49,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddScoped<Settings>();
             services.AddTransient<ConnectionNode>();
             services.AddScoped<ServiceList<Player>>();
+            services.AddTransient<ServiceList<BodyEntity>>();
             services.AddTransient<Chunk>();
             services.AddTransient<GameLayer>();
             services.AddTransient<Explosion>();

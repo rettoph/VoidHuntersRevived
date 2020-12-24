@@ -210,9 +210,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         private static void HandleChainChanged(ShipPart sender, Chain old, Chain value)
         {
             if(sender is Thruster thruster)
-            {
                 thruster.ActiveDirections = Ship.Direction.None;
-            }
         }
         #endregion
     }

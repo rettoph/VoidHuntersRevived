@@ -108,7 +108,7 @@ namespace VoidHuntersRevived.Library.Scenes
             { // Flush all dirty entities down the peer as needed.
                 while (this.dirtyEntities.Any())
                 { // Attempt to clean all dirty entities as needed...
-                    if((_entity = this.dirtyEntities.Dequeue()).InitializationStatus == InitializationStatus.Ready)
+                    if((_entity = this.dirtyEntities.Dequeue()).Status == ServiceStatus.Ready)
                     {
                         this.group.Messages.Create(NetDeliveryMethod.Unreliable, 0).Then(om =>
                         { // Build a new update message...

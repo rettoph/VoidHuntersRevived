@@ -123,12 +123,15 @@ namespace VoidHuntersRevived.Library.Entities
         }
         #endregion
 
-        #region Factory Methods
+        #region AetherEntity Implementation
         protected override World BuildMaster(ServiceProvider provider)
             => new World(Vector2.Zero);
 
         protected override World BuildSlave(ServiceProvider provider)
             => new World(Vector2.Zero);
+
+        protected override void Destroy()
+            => this.Do(w => w.Clear());
         #endregion
 
         #region Frame Methods

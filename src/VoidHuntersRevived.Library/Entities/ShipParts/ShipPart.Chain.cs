@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Enums;
 using Guppy.Events.Delegates;
 using Guppy.Extensions.Collections;
 using Guppy.Interfaces;
@@ -24,7 +25,15 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public Chain Chain
         {
             get => _chain;
-            internal set => this.OnChainChanged.InvokeIfChanged(value != _chain, this, ref _chain, value);
+            internal set 
+            {
+                // Note: The chain should only be set to null when the root ship-part is disposing.
+
+                if (value == default) // DO NOT invoke the event if the chain is being set to null.
+                    _chain = default;
+                else // Only invoke the event when the chain is being set to something other than null.
+                    this.OnChainChanged.InvokeIfChanged(value != _chain, this, ref _chain, value);
+            }
         }
         #endregion
 
@@ -53,6 +62,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             this.MaleConnectionNode.OnAttached -= this.Chain_HandleMaleConnectionNodeAttached;
             this.MaleConnectionNode.OnDetached -= this.Chain_HandleMaleConnectionNodeDetached;
+        }
+
+        private void Chain_PostRelease()
+        {
+            // Auto release the saved chain.
+            this.Chain.TryRelease();
+            this.Chain = null;
         }
         #endregion
 

@@ -3,6 +3,7 @@ using Guppy.Extensions.Collections;
 using Guppy.Extensions.Microsoft.Xna.Framework;
 using Guppy.Extensions.System;
 using Guppy.Extensions.Utilities;
+using Guppy.Lists;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Utilities;
 using Lidgren.Network;
@@ -28,9 +29,8 @@ namespace VoidHuntersRevived.Library.Entities
         private Body _body;
         private CircleShape _circle;
         private WorldEntity _world;
-        private HashSet<BodyEntity> _contacts;
+        private ServiceList<BodyEntity> _contacts;
         private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
-        private Queue<BodyEntity> _seperated;
         #endregion
 
         #region Public Properties
@@ -107,9 +107,8 @@ namespace VoidHuntersRevived.Library.Entities
 
             provider.Service(out _primitiveBatch);
             provider.Service(out _world);
+            provider.Service(out _contacts);
 
-            _seperated = new Queue<BodyEntity>();
-            _contacts = new HashSet<BodyEntity>();
             _body = _world.Live.CreateCircle(15f, 0f).Then(b =>
             { // Set up the explosion body...
                 _circle = b.FixtureList[0].Shape as CircleShape;
@@ -154,9 +153,6 @@ namespace VoidHuntersRevived.Library.Entities
                 var seconds = (Single)gameTime.ElapsedGameTime.TotalSeconds;
                 var force = this.Force * (1 - (this.Age / this.MaxAge)) * seconds;
 
-                while (_seperated.Any())
-                    _contacts.Remove(_seperated.Dequeue());
-
                 _contacts.ForEach(entity =>
                 {
                     Vector2 forceVector = this.Position - entity.Position;
@@ -182,7 +178,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             if(other.Tag is BodyEntity entity)
             {
-                _contacts.Add(entity);
+                _contacts.TryAdd(entity);
 
                 return true;
             }
@@ -192,9 +188,9 @@ namespace VoidHuntersRevived.Library.Entities
 
         private void HandleSeperation(Fixture sender, Fixture other, Contact contact)
         {
-            if (other.Tag is BodyEntity entity && !_seperated.Any(e => e == entity))
+            if (other.Tag is BodyEntity entity)
             {
-                _seperated.Enqueue(entity);
+                _contacts.TryRemove(entity);
             }
         }
         #endregion

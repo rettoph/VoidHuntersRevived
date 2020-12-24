@@ -245,7 +245,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             base.Add(chain);
 
-            chain.Do(sp =>
+            chain.Root.Items().ForEach(sp =>
             {
                 sp.LinearVelocity = Vector2.Zero;
                 sp.AngularVelocity = 0f;

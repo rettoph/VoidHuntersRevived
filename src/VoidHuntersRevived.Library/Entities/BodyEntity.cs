@@ -244,12 +244,15 @@ namespace VoidHuntersRevived.Library.Entities
             });
         #endregion
 
-        #region FarseerChildEntity Implementation
+        #region AetherChildEntity Implementation
         protected override Body Build(ServiceProvider provider, World parent)
             => parent.CreateBody();
 
         protected override AetherEntity<World> GetParent(ServiceProvider provider)
             => provider.GetService<WorldEntity>();
+
+        protected override void Destroy()
+            => this.Do(b => b.Remove());
         #endregion
 
         #region Event Handlers

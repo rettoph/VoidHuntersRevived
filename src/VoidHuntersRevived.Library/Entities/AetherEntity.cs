@@ -69,9 +69,11 @@ namespace VoidHuntersRevived.Library.Entities
             this.Build(provider);
         }
 
-        protected override void Release()
+        protected override void PostRelease()
         {
-            base.Release();
+            base.PostRelease();
+
+            this.Destroy();
 
             this.OnDo -= AetherEntity<T>.DoMaster;
             this.OnDo -= AetherEntity<T>.DoSlave;
@@ -119,6 +121,8 @@ namespace VoidHuntersRevived.Library.Entities
 
         private static void DoSlave(AetherEntity<T> sender, Action<T> action)
             => action(sender.slave);
+
+        protected abstract void Destroy();
         #endregion
     }
 }

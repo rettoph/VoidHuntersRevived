@@ -278,7 +278,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         #region Event Handlers
         private void HandleChainChanged(ShipPart sender, Chain old, Chain value)
         {
-            if (old != default(Chain))
+            if (old != default)
             {
                 old.Root.OnCollidesWithChanged -= this.HandleRootCollisionChanged;
                 old.Root.OnCollisionCategoriesChanged -= this.HandleRootCollisionChanged;
@@ -286,7 +286,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                 old.OnUpdate -= this.TryUpdate;
             }
 
-            if (value != default(Chain))
+            if (value != default)
             {
                 value.Root.OnCollidesWithChanged += this.HandleRootCollisionChanged;
                 value.Root.OnCollisionCategoriesChanged += this.HandleRootCollisionChanged;

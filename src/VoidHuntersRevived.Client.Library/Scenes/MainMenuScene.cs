@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Extensions.Collections;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Lists;
 using Guppy.UI.Elements;
@@ -26,6 +27,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private ServiceList<Player> _players;
         private WorldEntity _world;
         private Random _rand;
+        private GraphicsDevice _graphics;
         #endregion
 
         #region Lifecycle Methods
@@ -42,6 +44,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
+
+            provider.Service(out _graphics);
 
             #region UI
             this.stage.Content.Children.Create<StackContainer>((container, p, c) =>
@@ -84,14 +88,18 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             });
             #endregion
 
-            this.camera.ZoomTo(5);
+            this.camera.Zoom = 100f;
+            this.camera.Position = new Vector2(Chunk.Size * 3, Chunk.Size * 3) / 2;
+            this.camera.MoveLerpStrength = 0.001f;
+            this.camera.ZoomLerpStrength = 0.002f;
+
             _world = this.Entities.Create<WorldEntity>((w, p, c) =>
             {
                 w.Size = new Vector2(Chunk.Size * 3, Chunk.Size * 3);
             });
 
             _rand = new Random(1);
-            for (Int32 i = 0; i < 5; i++)
+            for (Int32 i = 0; i < 7; i++)
             {
                 this.Entities.Create<ComputerPlayer>((player, p, d) =>
                 {
@@ -124,6 +132,19 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             this.camera.MoveTo(_players.Where(p => p.Ship.Bridge != default)
                 .Select(p => p.Ship.Bridge.Position)
                 .Aggregate((p1, p2) => p1 + p2) / _players.Count());
+
+            Vector2 min = _world.Size;
+            Vector2 max = Vector2.Zero;
+            _players.Where(p => p.Ship.Bridge != default).ForEach(p =>
+            {
+                min = Vector2.Min(min, p.Ship.Bridge.Position);
+                max = Vector2.Max(max, p.Ship.Bridge.Position);
+            });
+
+            Vector2 size = (max - min) * 1.2f;
+            Vector2 scale = _graphics.Viewport.Bounds.Size.ToVector2() / size;
+
+            this.camera.ZoomTo(Math.Min(scale.X, scale.Y));
         }
         #endregion
 

@@ -64,7 +64,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             base.Add(chain);
 
             // Update the new parts collisions
-            chain.Do(sp =>
+            chain.Root.Items().ForEach(sp =>
             {
                 sp.CollisionCategories = Categories.ActiveCollisionCategories;
                 sp.CollidesWith = Categories.ActiveCollidesWith;

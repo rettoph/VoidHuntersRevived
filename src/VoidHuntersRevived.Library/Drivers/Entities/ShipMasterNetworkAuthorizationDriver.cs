@@ -1,6 +1,7 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
 using Guppy.Lists;
+using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
     {
         #region Private Fields
         private EntityList _entities;
+        private Synchronizer _synchronizer;
         #endregion
 
         #region Lifecycle Methods
@@ -27,6 +29,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             base.Initialize(driven, provider);
 
             provider.Service(out _entities);
+            provider.Service(out _synchronizer);
 
             this.driven.OnBridgeChanged += this.HandleBridgeChanged;
             this.CleanBridge(default, this.driven.Bridge);
@@ -62,8 +65,9 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
         private void HandleBridgeHealthChanged(ShipPart sender, float old, float value)
         {
-            if(sender.Health == 0)
+            if(sender.Health <= 0)
             { // Auto release the bridge
+
                 // Create an explosion on the bridge (this should kill the bridge)
                 _entities.Create<Explosion>((e, p, c) =>
                 {
@@ -72,8 +76,9 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
                     e.Color = sender.Chain.Ship.Color;
                 });
 
-                // Just in case, delete it now
-                sender.TryRelease();
+                // Just in case, manually release & delete it now
+                this.driven.Bridge = default;
+                _synchronizer.Enqueue(gt => sender.TryRelease());
             }
         }
         #endregion

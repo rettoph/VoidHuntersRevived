@@ -19,6 +19,8 @@ using log4net;
 using tainicom.Aether.Physics2D.Dynamics;
 using tainicom.Aether.Physics2D.Common;
 using tainicom.Aether.Physics2D.Collision;
+using Guppy.Enums;
+using Guppy.Interfaces;
 
 namespace VoidHuntersRevived.Library.Entities.Controllers
 {
@@ -295,6 +297,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             base.Add(chain);
 
+            chain.OnStatus[ServiceStatus.Releasing] += this.HandleChainReleasing;
+
             // Create a new ShipPartChunks instance.
             if (!_chainChunks.ContainsKey(chain))
                 _chainChunks[chain] = new ChainChunks(this, chain);
@@ -303,7 +307,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             _quarantine.Add(chain);
 
             // Update the new parts properties
-            chain.Do(sp =>
+            chain.Root.Items().ForEach(sp =>
             {
                 sp.SleepingAllowed = true;
                 sp.Awake = true;
@@ -325,6 +329,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             // Clear cached chunks
             _chainChunks[chain].ClearChunks();
             chain.Root.OnNudged -= this.HandleChainRootNudged;
+            chain.OnStatus[ServiceStatus.Releasing] -= this.HandleChainReleasing;
         }
         #endregion
 
@@ -350,6 +355,9 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                 shipPart.OnNudged -= this.HandleChainRootNudged;
             }
         }
+
+        private void HandleChainReleasing(IService sender)
+            => this.Remove(sender as Chain);
         #endregion
     }
 }

@@ -12,6 +12,7 @@ using Guppy.Lists;
 using Guppy.Events.Delegates;
 using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
 using Guppy.Interfaces;
+using Guppy.Enums;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -180,6 +181,14 @@ namespace VoidHuntersRevived.Library.Entities
             this.TractorBeam = provider.GetService<EntityList>().Create<TractorBeam>((t, p, c) => t.Ship = this);
         }
 
+        protected override void PostRelease()
+        {
+            base.PostRelease();
+
+            _bridge = null;
+            _player = null;
+        }
+
         /// <inheritdoc />
         protected override void Dispose()
         {
@@ -282,7 +291,7 @@ namespace VoidHuntersRevived.Library.Entities
             { // Remove old bridge...
                 old.Chain.OnShipPartAdded -= Ship.HandleBridgeChainChanged;
                 old.Chain.OnShipPartRemoved -= Ship.HandleBridgeChainChanged;
-                old.Chain.OnReleased -= sender.HandleBridgeChainReleased;
+                old.Chain.OnStatus[ServiceStatus.Releasing] -= sender.HandleBridgeChainReleasing;
                 old.Chain.Ship = null;
             }
 
@@ -295,7 +304,7 @@ namespace VoidHuntersRevived.Library.Entities
                 value.Chain.Ship = sender;
                 value.Chain.OnShipPartAdded += Ship.HandleBridgeChainChanged;
                 value.Chain.OnShipPartRemoved += Ship.HandleBridgeChainChanged;
-                value.Chain.OnReleased += sender.HandleBridgeChainReleased;
+                value.Chain.OnStatus[ServiceStatus.Releasing] += sender.HandleBridgeChainReleasing;
             }
 
             // Clean the ship before releasing...
@@ -329,7 +338,7 @@ namespace VoidHuntersRevived.Library.Entities
             return false;
         }
 
-        private void HandleBridgeChainReleased(IService sender)
+        private void HandleBridgeChainReleasing(IService sender)
             => this.Bridge = default;
         #endregion
     }
