@@ -21,6 +21,10 @@ namespace VoidHuntersRevived.Library.Entities.Players
         private Ship _ship;
         #endregion
 
+        #region Protected Fields
+        protected ServiceList<Player> players { get; private set; }
+        #endregion
+
         #region Public Properties
         public abstract String Name { get; }
         public Ship Ship
@@ -53,6 +57,9 @@ namespace VoidHuntersRevived.Library.Entities.Players
             base.PreInitialize(provider);
 
             provider.Service(out _entities);
+
+            this.players = provider.GetService<ServiceList<Player>>();
+            this.players.TryAdd(this);
         }
 
         protected override void Release()
@@ -61,6 +68,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
             // Unset the old ship value...
             this.Ship = null;
+            this.players.TryRemove(this);
         }
 
         protected override void Dispose()

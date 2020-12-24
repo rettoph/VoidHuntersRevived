@@ -88,7 +88,7 @@ namespace VoidHuntersRevived.Library.Entities
             {
                 // Refresh the internal list of weapons...
                 sender._weapons.Clear();
-                sender._weapons.AddRange(sender.Bridge?.Items(c => c is Weapon).Select(c => c as Weapon));
+                sender._weapons.AddRange(sender.Bridge?.Items(c => c is Weapon).Select(c => c as Weapon) ?? Enumerable.Empty<Weapon>());
             }
         }
         #endregion

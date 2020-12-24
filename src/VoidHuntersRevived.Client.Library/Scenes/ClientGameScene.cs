@@ -43,18 +43,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                 l.UpdateOrder = -10;
             });
 
-            // Create a ScreenLayer to hold the stage..
-            this.Layers.Create<ScreenLayer>((l, p, c) =>
-            {
-                l.Group = new SingleLayerGroup(1);
-                l.DrawOrder = 20;
-            });
-
-            this.Entities.Create<Stage>((s, p, d) =>
-            {
-                s.LayerGroup = 1;
-            });
-
             _mouse.OnScrollWheelValueChanged += this.HandleMouseScrollWheelValueChanged;
             _debug.Lines += this.RenderDebugLines;
         }

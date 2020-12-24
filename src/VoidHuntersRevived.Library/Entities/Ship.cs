@@ -11,6 +11,7 @@ using Guppy.IO.Extensions.log4net;
 using Guppy.Lists;
 using Guppy.Events.Delegates;
 using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
+using Guppy.Interfaces;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -281,18 +282,20 @@ namespace VoidHuntersRevived.Library.Entities
             { // Remove old bridge...
                 old.Chain.OnShipPartAdded -= Ship.HandleBridgeChainChanged;
                 old.Chain.OnShipPartRemoved -= Ship.HandleBridgeChainChanged;
+                old.Chain.OnReleased -= sender.HandleBridgeChainReleased;
                 old.Chain.Ship = null;
             }
 
-            // Simple log message
-            sender.log.Verbose($"Ship({sender.Id}) => Setting bridge to ShipPart<{value.GetType().Name}>({value.Id})");
-
             if (value != null)
             { // Setup the new bridge...
+                // Simple log message
+                sender.log.Verbose($"Ship({sender.Id}) => Setting bridge to ShipPart<{value.GetType().Name}>({value.Id})");
+
                 sender._controller.TryAdd(value.Chain);
                 value.Chain.Ship = sender;
                 value.Chain.OnShipPartAdded += Ship.HandleBridgeChainChanged;
                 value.Chain.OnShipPartRemoved += Ship.HandleBridgeChainChanged;
+                value.Chain.OnReleased += sender.HandleBridgeChainReleased;
             }
 
             // Clean the ship before releasing...
@@ -308,21 +311,26 @@ namespace VoidHuntersRevived.Library.Entities
         /// <returns></returns>
         private static bool ValidateBridge(Ship ship, ShipPart bridge)
         {
+            // Instant true
+            if (bridge == default(ShipPart))
+                return true;
+
             // Instant false
             if (!bridge.IsRoot)
                 return false;
             else if (bridge?.Chain.Ship != default)
                 return false;
 
-            // Instant true
-            if (bridge == default(ShipPart))
-                return true;
-            else if (bridge.IsRoot)
+            // True state
+            if (bridge.IsRoot)
                 return true;
 
             // Default false
             return false;
         }
+
+        private void HandleBridgeChainReleased(IService sender)
+            => this.Bridge = default;
         #endregion
     }
 }

@@ -225,26 +225,30 @@ namespace VoidHuntersRevived.Library.Entities
             {
                 // Clear then repopulate the internal thrusters list...
                 sender._thrusters.Clear();
-                sender._thrusters.AddRange(sender.Bridge?.Items(c => c is Thruster).Select(c => c as Thruster));
 
-                // Clear all old stored direcitonal data...
-                sender._directionThrusters.ForEach(kvp => kvp.Value.Clear());
+                if(sender.Bridge != default)
+                {
+                    sender._thrusters.AddRange(sender.Bridge?.Items(c => c is Thruster).Select(c => c as Thruster) ?? Enumerable.Empty<Thruster>());
 
-                // Rebuild the directionThrusters dictionary...
-                sender.Thrusters.ForEach(thruster =>
-                { // Iterate through all internal thrusters...
-                  // Reset the thruster's ActiveDirections...
-                thruster.ActiveDirections = Direction.None;
-                    thruster.GetDirections().ForEach(direction =>
-                    { // Iterate through all directions the current thruster activates...
-                    sender._directionThrusters[direction].Add(thruster);
+                    // Clear all old stored direcitonal data...
+                    sender._directionThrusters.ForEach(kvp => kvp.Value.Clear());
+
+                    // Rebuild the directionThrusters dictionary...
+                    sender.Thrusters.ForEach(thruster =>
+                    { // Iterate through all internal thrusters...
+                      // Reset the thruster's ActiveDirections...
+                        thruster.ActiveDirections = Direction.None;
+                        thruster.GetDirections().ForEach(direction =>
+                        { // Iterate through all directions the current thruster activates...
+                            sender._directionThrusters[direction].Add(thruster);
+                        });
                     });
-                });
 
-                sender.ActiveDirections.GetFlags().ForEach(direction =>
-                { // re-enable currently active thrusters...
-                sender.DirectionThrusters[direction].ForEach(thruster => thruster.ActiveDirections |= direction);
-                });
+                    sender.ActiveDirections.GetFlags().ForEach(direction =>
+                    { // re-enable currently active thrusters...
+                        sender.DirectionThrusters[direction].ForEach(thruster => thruster.ActiveDirections |= direction);
+                    });
+                }
             }
         }
 

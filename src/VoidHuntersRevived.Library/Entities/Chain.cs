@@ -73,8 +73,17 @@ namespace VoidHuntersRevived.Library.Entities
 
             _logger.Verbose(() => $"Created new Chain bound to ShipPart<{this.Root.ServiceConfiguration.Name}>({this.Root.Id}).");
 
+            this.Root.OnReleased += this.HandleRootReleased;
+
             this.Enabled = false;
             this.Visible = false;
+        }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            this.Root.OnReleased -= this.HandleRootReleased;
         }
         #endregion
 
@@ -133,6 +142,13 @@ namespace VoidHuntersRevived.Library.Entities
             action.Invoke(target);
 
             target.Children.ForEach(child => this.Do(child, action));
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandleRootReleased(IService sender)
+        {
+            this.TryRelease();
         }
         #endregion
 

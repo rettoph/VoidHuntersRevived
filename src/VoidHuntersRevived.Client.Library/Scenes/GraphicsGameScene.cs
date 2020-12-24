@@ -6,7 +6,10 @@ using Guppy.Extensions.Utilities;
 using Guppy.IO.Commands;
 using Guppy.IO.Commands.Interfaces;
 using Guppy.IO.Commands.Services;
+using Guppy.LayerGroups;
 using Guppy.Services;
+using Guppy.UI.Entities;
+using Guppy.UI.Layers;
 using Guppy.Utilities;
 using Guppy.Utilities.Cameras;
 using Microsoft.Xna.Framework;
@@ -49,6 +52,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private Texture2D[] _backgrounds;
         private Vector2 _viewportSize;
         private Rectangle _viewportBounds;
+        private Stage _stage;
 
         private DebugView _debugMaster;
         private DebugView _debugSlave;
@@ -59,6 +63,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
         #region Protected Properties
         protected Camera2D camera => _camera;
+        protected Stage stage => _stage;
         #endregion
 
         #region Lifecycle Methods
@@ -84,6 +89,18 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                 provider.GetContent<Texture2D>("sprite:background:2"),
                 provider.GetContent<Texture2D>("sprite:background:3")
             };
+
+            // Create a ScreenLayer to hold the stage..
+            this.Layers.Create<ScreenLayer>((l, p, c) =>
+            {
+                l.Group = new SingleLayerGroup(1);
+                l.DrawOrder = 20;
+            });
+
+            _stage = this.Entities.Create<Stage>((s, p, d) =>
+            {
+                s.LayerGroup = 1;
+            });
         }
 
         protected override void Initialize(ServiceProvider provider)
@@ -95,7 +112,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                 _debugMaster = new DebugView(world.Master);
                 _debugMaster.LoadContent(_graphics, _content);
 
-                _debugSlave = new DebugView(world.Slave);
+                _debugSlave = new DebugView(world.Live);
                 _debugSlave.LoadContent(_graphics, _content);
 
                 _debugSlave.InactiveShapeColor = Color.Green;

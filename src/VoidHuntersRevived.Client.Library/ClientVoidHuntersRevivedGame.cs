@@ -71,7 +71,7 @@ namespace VoidHuntersRevived.Client.Library
 
             _frameTimes = new Double[50];
 
-            this.Scenes.Create<GameScene>();
+            this.Scenes.Create<MainMenuScene>();
 
             _debug.Lines += this.RenderFPS;
 
