@@ -51,24 +51,36 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters
         {
             base.Release(driven);
 
+            this.TryClearTrail();
+
             this.driven.OnImpulse -= this.HandleDrivenImpulse;
             this.driven.OnChainChanged -= this.HandleDrivenChainChanged;
+        }
+        #endregion
+
+        #region Helper Methods
+        private void TryClearTrail()
+        {
+            if (_trail != default)
+            { // Reset trail if possible
+                _trail.Thruster = null;
+                _trail = null;
+            }
         }
         #endregion
 
         #region Event Methods
         private void HandleDrivenImpulse(Thruster sender, bool value)
         {
-            if(value)
+            if (value)
                 _trail = _trails.BuildTrail(this.driven);
             else
-                _trail?.TryDisown();
+                this.TryClearTrail();
+                
         }
 
         private void HandleDrivenChainChanged(ShipPart sender, Chain old, Chain value)
-        {
-            _trail?.TryDisown();
-        }
+            => this.TryClearTrail();
         #endregion
     }
 }

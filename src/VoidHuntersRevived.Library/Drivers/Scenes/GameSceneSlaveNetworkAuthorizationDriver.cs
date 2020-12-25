@@ -48,17 +48,17 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
 
             this.driven.Group.Messages.Remove("scene:setup");
             this.driven.Group.Messages.Remove("entity:message");
+
+            this.driven.OnUpdate -= this.Update;
         }
         #endregion
 
         #region Frame Methods
         private void Update(GameTime gameTime)
         {
-            _entityMessages.Keys.ForEach(k =>
-            {
-                while (_entityMessages[k].Any())
-                    this.ReadEntityMessage(k, _entityMessages[k].Dequeue());
-            });
+            foreach(MessageType type in _entityMessages.Keys)
+                while (_entityMessages[type].Any())
+                    this.ReadEntityMessage(type, _entityMessages[type].Dequeue());
         }
         #endregion
 

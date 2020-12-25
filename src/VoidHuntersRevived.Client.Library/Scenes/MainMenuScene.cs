@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             provider.Service(out _graphics);
 
             #region UI
-            this.stage.Content.BackgroundColor[ElementState.Default] = new Color(Color.Black, 75);
+            this.stage.Content.BackgroundColor[ElementState.Default] = new Color(Color.Black, 125);
             this.stage.Content.Children.Create<StackContainer>((container, p, c) =>
             {
                 container.Bounds.X = 0;
@@ -97,7 +97,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             });
 
             _rand = new Random(1);
-            for (Int32 i = 0; i < 7; i++)
+            for (Int32 i = 0; i < 25; i++)
             {
                 this.Entities.Create<ComputerPlayer>((player, p, d) =>
                 {

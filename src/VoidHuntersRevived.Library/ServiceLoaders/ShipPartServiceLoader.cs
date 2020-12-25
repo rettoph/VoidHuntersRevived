@@ -17,7 +17,10 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
     {
         public void RegisterServices(ServiceCollection services)
         {
-            Settings.MaxPolygonVertices = 16;
+            Settings.MaxPolygonVertices = 7;
+            Settings.ContinuousPhysics = false;
+            // Settings.PositionIterations = 1;
+            // Settings.VelocityIterations = 1;
 
             services.AddFactory<RigidShipPart>(p => new RigidShipPart());
 

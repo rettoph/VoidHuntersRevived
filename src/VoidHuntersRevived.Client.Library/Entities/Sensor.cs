@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
 
             _contacts = new HashSet<BodyEntity>();
 
-            _scene.IfOrOnWorld(this.ConfigureFarseer);
+            _scene.IfOrOnWorld(this.ConfigureAether);
 
             this.LayerGroup = 10;
         }
@@ -71,7 +71,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
         #endregion
 
         #region Event Handlers
-        private void ConfigureFarseer(WorldEntity world)
+        private void ConfigureAether(WorldEntity world)
         {
             _world = world;
 

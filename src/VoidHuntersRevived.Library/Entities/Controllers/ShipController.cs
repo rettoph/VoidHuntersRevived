@@ -40,14 +40,14 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             base.Update(gameTime);
 
-            this.chains.ForEach(p => p.TryUpdate(gameTime));
+            this.chains.TryUpdateAll(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
 
-            this.chains.ForEach(p => p.TryDraw(gameTime));
+            this.chains.TryDrawAll(gameTime);
         }
         #endregion
 
@@ -64,11 +64,11 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             base.Add(chain);
 
             // Update the new parts collisions
-            chain.Root.Items().ForEach(sp =>
+            foreach(ShipPart shipPart in chain.Root.Items())
             {
-                sp.CollisionCategories = Categories.ActiveCollisionCategories;
-                sp.CollidesWith = Categories.ActiveCollidesWith;
-            });
+                shipPart.CollisionCategories = Categories.ActiveCollisionCategories;
+                shipPart.CollidesWith = Categories.ActiveCollidesWith;
+            }
         }
 
         protected override void Remove(Chain chain)

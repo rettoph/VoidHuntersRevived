@@ -61,18 +61,16 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             // Auto dispose of any fixtures within the given queue
             while (fixtures.Any())
-            {
                 fixtures.Dequeue().Destroy();
-            }
-                
+
 
             // Create new fixtures for all vertices contained in the configuration
-            this.Configuration.Vertices.ForEach(data =>
+            foreach(Vertices data in this.Configuration.Vertices)
             {
                 Vertices vertices = new Vertices(data);
                 vertices.Transform(this.LocalTransformation);
                 fixtures.Enqueue(root.BuildFixture(new PolygonShape(vertices, this.Configuration.Density), this));
-            });
+            }
         }
         #endregion
 
@@ -86,9 +84,12 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// <param name="value"></param>
         private void HandleChainChanged(ShipPart sender, Chain old, Chain value)
         {
-            this.AddFixtures(this.Root, _fixtures);
+            if(value != default)
+            {
+                this.AddFixtures(this.Root, _fixtures);
 
-            _localCenter = this.IsRoot ? base.LocalCenter : Vector2.Transform(this.Configuration.Centeroid, this.LocalTransformation);
+                _localCenter = this.IsRoot ? base.LocalCenter : Vector2.Transform(this.Configuration.Centeroid, this.LocalTransformation);
+            }    
         }
         #endregion
     }

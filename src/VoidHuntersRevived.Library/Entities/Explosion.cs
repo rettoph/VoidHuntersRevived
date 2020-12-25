@@ -140,6 +140,8 @@ namespace VoidHuntersRevived.Library.Entities
             _body.OnCollision -= this.HandleCollision;
             _body.OnSeparation -= this.HandleSeperation;
             _body.Remove();
+
+            _contacts.TryRelease();
         }
         #endregion
 
@@ -153,18 +155,18 @@ namespace VoidHuntersRevived.Library.Entities
                 var seconds = (Single)gameTime.ElapsedGameTime.TotalSeconds;
                 var force = this.Force * (1 - (this.Age / this.MaxAge)) * seconds;
 
-                _contacts.ForEach(entity =>
+                foreach(BodyEntity entity in _contacts)
                 {
                     Vector2 forceVector = this.Position - entity.Position;
                     forceVector *= 1f / (float)Math.Sqrt(forceVector.X * forceVector.X + forceVector.Y * forceVector.Y);
                     forceVector *= force * (float)Math.Pow(entity.live.Mass, 2);
                     forceVector *= -1;
-
+                    
                     entity.ApplyForce(forceVector, this.Position);
                     entity.Nudge();
-
+                    
                     this.OnImpulseApplied?.Invoke(this, entity, force, forceVector, seconds);
-                });
+                }
 
                 // Increase the radius...
                 this.Age += (Single)gameTime.ElapsedGameTime.TotalSeconds;

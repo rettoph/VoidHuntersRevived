@@ -231,23 +231,24 @@ namespace VoidHuntersRevived.Library.Entities
                     sender._thrusters.AddRange(sender.Bridge?.Items(c => c is Thruster).Select(c => c as Thruster) ?? Enumerable.Empty<Thruster>());
 
                     // Clear all old stored direcitonal data...
-                    sender._directionThrusters.ForEach(kvp => kvp.Value.Clear());
+                    foreach (IList<Thruster> thrusters in sender._directionThrusters.Values)
+                        thrusters.Clear();
 
                     // Rebuild the directionThrusters dictionary...
-                    sender.Thrusters.ForEach(thruster =>
+                    foreach (Thruster thruster in sender.Thrusters)
                     { // Iterate through all internal thrusters...
-                      // Reset the thruster's ActiveDirections...
+                        // Reset the thruster's ActiveDirections...
                         thruster.ActiveDirections = Direction.None;
-                        thruster.GetDirections().ForEach(direction =>
-                        { // Iterate through all directions the current thruster activates...
-                            sender._directionThrusters[direction].Add(thruster);
-                        });
-                    });
 
-                    sender.ActiveDirections.GetFlags().ForEach(direction =>
-                    { // re-enable currently active thrusters...
-                        sender.DirectionThrusters[direction].ForEach(thruster => thruster.ActiveDirections |= direction);
-                    });
+                        foreach(Ship.Direction direction in thruster.GetDirections()) // Iterate through all directions the current thruster activates...
+                            sender._directionThrusters[direction].Add(thruster);
+                    }
+
+
+                    // re-enable currently active thrusters...
+                    foreach (Ship.Direction active in sender.ActiveDirections.GetFlags())
+                        foreach (Thruster thruster in sender.DirectionThrusters[active])
+                            thruster.ActiveDirections |= active;
                 }
             }
         }
@@ -262,10 +263,12 @@ namespace VoidHuntersRevived.Library.Entities
         /// <param name="args"></param>
         private static void Thrusters_HandleDirectionChanged(Ship sender, DirectionState args)
         {
-            if(args.State)
-                sender.DirectionThrusters[args.Direction].ForEach(thruster => thruster.ActiveDirections |= args.Direction);
+            if (args.State)
+                foreach (Thruster thruster in sender.DirectionThrusters[args.Direction])
+                    thruster.ActiveDirections |= args.Direction;
             else
-                sender.DirectionThrusters[args.Direction].ForEach(thruster => thruster.ActiveDirections &= ~args.Direction);
+                foreach (Thruster thruster in sender.DirectionThrusters[args.Direction])
+                    thruster.ActiveDirections &= ~args.Direction;
         }
         #endregion
     }

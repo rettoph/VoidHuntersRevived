@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public Single Health
         {
             get => _health;
-            set => this.OnHealthChanged.InvokeIfChanged(_health != value, this, ref _health, value);
+            set => this.OnHealthChanged.InvokeIf(_health != value, this, ref _health, value);
         }
         #endregion
 

@@ -15,6 +15,7 @@ using tainicom.Aether.Physics2D.Dynamics.Joints;
 using VoidHuntersRevived.Library.Entities.Ammunitions;
 using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Extensions.Aether;
+using tainicom.Aether.Physics2D.Common;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 {
@@ -90,7 +91,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             provider.Service(out _entities);
 
             // Create new shapes for the part
-            this.Configuration.Vertices.ForEach(v => this.BuildFixture(new PolygonShape(v, this.Configuration.Density), this));
+            foreach (Vertices vertices in this.Configuration.Vertices)
+                this.BuildFixture(new PolygonShape(vertices, this.Configuration.Density), this);
 
             this.OnChainChanged += this.HandleChainChanged;
 
@@ -102,6 +104,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         {
             base.Release();
 
+            this.CleanUpdate();
             this.OnChainChanged -= this.HandleChainChanged;
         }
 
@@ -264,7 +267,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             this.OnUpdate -= this.UpdateAim;
             this.OnUpdate -= this.UpdatePosition;
 
-            if(this.Chain.Ship != default)// When there is a ship, attempt to aim the gun
+            if(this.Chain?.Ship != default)// When there is a ship, attempt to aim the gun
                 this.OnUpdate += this.UpdateAim;
             else if(!this.IsRoot) // When there is no ship but its in a chain, update position directly...
                 this.OnUpdate += this.UpdatePosition;
@@ -319,7 +322,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             this.CleanUpdate();
 
             // Enable or disable joints based on the Ship status..
-            _joints.Values.ForEach(j => j.Enabled = value != default);
+            foreach (RevoluteJoint joint in _joints.Values)
+                joint.Enabled = value != default;
         }
 
         private static bool HandleValidateFire(Weapon sender, Ship args)

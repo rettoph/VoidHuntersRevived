@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
     public class TrailSegment : Service
     {
         #region Public Properties
-        public static Single MaxAge { get; set; } = 10f;
+        public static Single MaxAge { get; set; } = 5f;
 
         /// <summary>
         /// The current segment position, based on the
@@ -42,6 +42,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         public Color Color { get; private set; }
 
         public Vector2 ReverseImpulse { get; private set; }
+        public Single CreatedTimestamp { get; private set; }
 
         /// <summary>
         /// The current segments older sibling, if any.
@@ -57,10 +58,24 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         public TrailVertex StarboardVertex;
         #endregion
 
+        #region Constructor
+        internal TrailSegment()
+        {
+
+        }
+        #endregion
+
         #region Lifecycle Methods
         protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
+        }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            this.OlderSibling = null;
         }
         #endregion
 
@@ -78,18 +93,19 @@ namespace VoidHuntersRevived.Client.Library.Utilities
             this.Rotation = trail.Thruster.Rotation;
             this.Color = new Color(trail.Thruster.Color, trail.Thruster.ImpulseModifier * Trail.MaxAlphaMultiplier);
             this.ReverseImpulse = trail.Thruster.Impulse.RotateTo(trail.Thruster.Rotation + MathHelper.Pi);
+            this.CreatedTimestamp = (Single)gameTime.TotalGameTime.TotalSeconds;
 
             // Update the internal vertece data as required.
             this.PortVertex.Position = this.Position;
             this.PortVertex.SpreadDirection = this.Rotation - MathHelper.PiOver2;
-            this.PortVertex.CreatedTimestamp =  (Single)gameTime.TotalGameTime.TotalSeconds;
+            this.PortVertex.CreatedTimestamp = this.CreatedTimestamp;
             this.PortVertex.Color = this.Color;
             this.PortVertex.ReverseImpulse = this.ReverseImpulse;
 
 
             this.StarboardVertex.Position = this.Position;
             this.StarboardVertex.SpreadDirection = this.Rotation + MathHelper.PiOver2;
-            this.StarboardVertex.CreatedTimestamp = (Single)gameTime.TotalGameTime.TotalSeconds;
+            this.StarboardVertex.CreatedTimestamp = this.CreatedTimestamp;
             this.StarboardVertex.Color = this.Color;
             this.StarboardVertex.ReverseImpulse = this.ReverseImpulse;
         }

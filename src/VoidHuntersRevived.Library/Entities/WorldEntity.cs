@@ -103,7 +103,7 @@ namespace VoidHuntersRevived.Library.Entities
 
             this.Size = new Vector2(128, 128);
 
-            this.UpdateOrder = -100;
+            this.UpdateOrder = 100;
 
             _commands["world"]["info"].OnExcecute += this.HandleWorldInfoCommand;
         }
@@ -138,7 +138,7 @@ namespace VoidHuntersRevived.Library.Entities
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            
+
             this.Do(w =>
             {
                 w.Step((Single)gameTime.ElapsedGameTime.TotalSeconds);

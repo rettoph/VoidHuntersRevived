@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Client.Library.Effects;
@@ -31,11 +32,14 @@ namespace VoidHuntersRevived.Client.Library.Services
         private PrimitiveBatch<TrailVertex, TrailInterpolationEffect> _primitiveBatch;
         private Camera2D _camera;
         private ActionTimer _segmentTimer;
-        private List<Trail> _trails;
+        private FrameableList<Trail> _trails;
         #endregion
 
+        #region Public Properties
+        public IReadOnlyCollection<Trail> Trails => _trails.ToList();
+        #endregion
 
-        #region Frame Methods
+        #region Lifecycle Methods
         protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
@@ -43,12 +47,19 @@ namespace VoidHuntersRevived.Client.Library.Services
             _provider = provider;
             provider.Service(out _primitiveBatch);
             provider.Service(out _camera);
+            provider.Service(out _trails);
 
             _segmentTimer = new ActionTimer(250);
-            _trails = new List<Trail>();
 
-            _primitiveBatch.Effect.MaxAge = 10f;
+            _primitiveBatch.Effect.MaxAge = TrailSegment.MaxAge;
             _primitiveBatch.Effect.SpreadSpeed = 3f;
+        }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _trails.TryRelease();
         }
         #endregion
 
@@ -57,17 +68,12 @@ namespace VoidHuntersRevived.Client.Library.Services
         {
             base.Update(gameTime);
 
-            _trails.ForEach(trail =>
-            {
-                trail.TryUpdate(gameTime);
-            });
+            _trails.TryUpdate(gameTime);
 
             _segmentTimer.Update(gameTime, gt =>
             {
-                _trails.ForEach(trail =>
-                {
+                foreach(Trail trail in _trails)
                     trail.TryAddSegment(gameTime);
-                });
             });
         }
 
@@ -77,10 +83,7 @@ namespace VoidHuntersRevived.Client.Library.Services
 
             _primitiveBatch.Effect.CurrentTimestamp = (Single)gameTime.TotalGameTime.TotalSeconds;
             _primitiveBatch.Begin(_camera, BlendState.Additive);
-            _trails.ForEach(trail =>
-            {
-                trail.TryDraw(gameTime);
-            });
+            _trails.TryDraw(gameTime);
             _primitiveBatch.End();
         }
         #endregion
@@ -94,10 +97,9 @@ namespace VoidHuntersRevived.Client.Library.Services
         /// <returns></returns>
 
         public Trail BuildTrail(Thruster thruster)
-            => _provider.GetService<Trail>((trail, p, c) =>
+            => _trails.Create<Trail>((trail, p, c) =>
             {
                 trail.Thruster = thruster;
-                _trails.Add(trail);
             });
         #endregion
     }

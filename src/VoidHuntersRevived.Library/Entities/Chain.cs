@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Library.Entities
             get => _ship;
             internal set
             {
-                this.OnShipChanged.InvokeIfChanged(_ship != value, this, ref _ship, value);
+                this.OnShipChanged.InvokeIf(_ship != value, this, ref _ship, value);
             }
         }
 
@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Library.Entities
             get => _controller;
             internal set
             {
-                this.OnControllerChanged.InvokeIfChanged(_controller != value, this, ref _controller, value);
+                this.OnControllerChanged.InvokeIf(_controller != value, this, ref _controller, value);
             }
         }
         #endregion
@@ -72,7 +72,7 @@ namespace VoidHuntersRevived.Library.Entities
             _authorization = provider.GetService<Settings>().Get<NetworkAuthorization>();
             provider.Service(out _logger);
 
-            this.Root.OnStatus[ServiceStatus.Releasing] += this.HandleRootReleasing;
+            this.Root.OnStatus[ServiceStatus.PostReleasing] += this.HandleRootPostReleasing;
 
             this.Enabled = false;
             this.Visible = false;
@@ -82,7 +82,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Release();
 
-            this.Root.OnStatus[ServiceStatus.Releasing] -= this.HandleRootReleasing;
+            this.Root.OnStatus[ServiceStatus.PostReleasing] -= this.HandleRootPostReleasing;
         }
 
         protected override void PostRelease()
@@ -126,12 +126,12 @@ namespace VoidHuntersRevived.Library.Entities
             if (shipPart == default)
                 return;
 
-            shipPart.Items().ForEach(sp =>
+            foreach(ShipPart sp in shipPart.Items())
             {
                 // Remove from old chain (if any)...
                 if (!sp.Chain?.Remove(shipPart, this) ?? true)
                     sp.Chain = this; // Set the internal chain values...
-            });
+            }
 
             // Invoke the ShipPartAdded event once.
             this.OnShipPartAdded?.Invoke(this, shipPart);
@@ -139,7 +139,7 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Event Handlers
-        private void HandleRootReleasing(IService sender)
+        private void HandleRootPostReleasing(IService sender)
             => this.TryRelease();
         #endregion
 

@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         {
             return entities.Create<Bullet>((b, p, d) =>
             {
-                b.Damage = 100f;
+                b.Damage = 10f;
                 b.Position = this.Position;
                 b.Velocity = this.Root.LinearVelocity + Vector2.Transform(Vector2.UnitX * 15, Matrix.CreateRotationZ(MathHelper.WrapAngle(this.Rotation + MathHelper.Pi)));
             });

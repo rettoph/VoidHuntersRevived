@@ -52,16 +52,26 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         private Queue<TrailSegment> _segments;
         private TrailSegment _youngestSegment;
         private Boolean _addedInitialSegment;
+        private Thruster _thruster;
+        private Synchronizer _synchronizer;
         #endregion
 
         #region Public Properties
         public IReadOnlyCollection<TrailSegment> Segments => _segments;
-        public Thruster Thruster { get; internal set; }
+        public Thruster Thruster
+        {
+            get => _thruster;
+            set => this.OnThrusterChanged.InvokeIf(value != _thruster, this, ref _thruster, value);
+        }
         public RectangleF Bounds => new RectangleF(
             x: _left, 
             y: _top, 
             width: _right - _left, 
             height: _bottom - _top);
+        #endregion
+
+        #region Event Handlers
+        public OnChangedEventDelegate<Trail, Thruster> OnThrusterChanged;
         #endregion
 
         #region Constructors
@@ -77,17 +87,19 @@ namespace VoidHuntersRevived.Client.Library.Utilities
             base.Create(provider);
 
             provider.Service(out _primitiveBatch);
+
+            this.OnThrusterChanged += this.HandleThrusterChanged;
         }
 
         protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
 
+            provider.Service(out _synchronizer);
+
             _provider = provider;
             _segments = new Queue<TrailSegment>();
             _addedInitialSegment = false;
-
-            this.Thruster.OnStatus[ServiceStatus.Releasing] += this.HandleThrusterReleasing;
         }
 
         protected override void Release()
@@ -96,9 +108,9 @@ namespace VoidHuntersRevived.Client.Library.Utilities
 
             _youngestSegment = null;
             while (_segments.Any())
-                _segments.Dequeue().TryDispose();
+                _segments.Dequeue().TryRelease();
 
-            this.TryDisown();
+            this.Thruster = null;
         }
         #endregion
 
@@ -120,17 +132,16 @@ namespace VoidHuntersRevived.Client.Library.Utilities
                 _left = Single.MaxValue;
 
                 // Update each vertice & update bounds data.
-                _segments.ForEach(vertice =>
+                foreach(TrailSegment segment in _segments)
                 {
-                    // vertice.TryUpdate(gameTime);
-                    _top = Math.Min(_top, vertice.Position.Y);
-                    _right = Math.Max(_right, vertice.Position.X);
-                    _bottom = Math.Max(_bottom, vertice.Position.Y);
-                    _left = Math.Min(_left, vertice.Position.X);
-                });
+                    _top = Math.Min(_top, segment.Position.Y);
+                    _right = Math.Max(_right, segment.Position.X);
+                    _bottom = Math.Max(_bottom, segment.Position.Y);
+                    _left = Math.Min(_left, segment.Position.X);
+                }
 
 
-                if ((gameTime.TotalGameTime.TotalSeconds - _segments.First().PortVertex.CreatedTimestamp) > TrailSegment.MaxAge)
+                if ((gameTime.TotalGameTime.TotalSeconds - _segments.First().CreatedTimestamp) > TrailSegment.MaxAge)
                     _segments.Dequeue().TryRelease();
             }
             else if (!_addedInitialSegment)
@@ -140,14 +151,14 @@ namespace VoidHuntersRevived.Client.Library.Utilities
                 _addedInitialSegment = true;
             }
             else // Auto release once no segments exist...
-                this.TryRelease();
+                _synchronizer.Enqueue(gt => this.TryRelease());
         }
 
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
 
-            _segments.Skip(1).ForEach(segment =>
+            foreach(TrailSegment segment in _segments.Skip(1))
             {
                 _primitiveBatch.DrawTriangle(
                     v1: ref segment.PortVertex,
@@ -158,7 +169,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
                     v1: ref segment.StarboardVertex,
                     v2: ref segment.OlderSibling.StarboardVertex,
                     v3: ref segment.OlderSibling.PortVertex);
-            });
+            }
         }
 
         // protected override void DebugDraw(GameTime gameTime)
@@ -205,27 +216,26 @@ namespace VoidHuntersRevived.Client.Library.Utilities
                 segment.OlderSibling = _youngestSegment;
             }));
         }
-
-        /// <summary>
-        /// Used when the owning thruster disowns
-        /// the current trail.
-        /// </summary>
-        internal void TryDisown()
-        {
-            if (this.Thruster != default)
-            { // Only proceed if the trail is not already an orphan...
-                // Remove all event handlers...
-                this.Thruster.OnStatus[ServiceStatus.Releasing] -= this.HandleThrusterReleasing;
-
-                // Unbind the internal thruster, becoming an orphan
-                this.Thruster = null;
-            }
-        }
         #endregion
 
         #region Events
         private void HandleThrusterReleasing(IService sender)
-            => this.TryDisown();
+            => this.Thruster = null;
+
+        private void HandleThrusterChanged(Trail sender, Thruster old, Thruster value)
+        {
+            if (old != default)
+            { // Only proceed if the trail is not already an orphan...
+                // Remove all event handlers...
+                old.OnStatus[ServiceStatus.Releasing] -= this.HandleThrusterReleasing;
+            }
+
+            if(value != default)
+            {
+                // Add all event handlers...
+                value.OnStatus[ServiceStatus.Releasing] += this.HandleThrusterReleasing;
+            }
+        }
         #endregion
     }
 }

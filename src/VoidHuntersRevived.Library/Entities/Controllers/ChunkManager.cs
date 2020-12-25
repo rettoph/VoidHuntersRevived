@@ -69,18 +69,20 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                 this.ClearChunks();
                 Queue<ShipPart> children = new Queue<ShipPart>();
                 children.Enqueue(_chain.Root);
-                ShipPart child;
+                ShipPart target;
                 Transform transform;
                 AABB aabb;
 
                 while (children.Any())
                 {
                     // Select a singular child...
-                    child = children.Dequeue();
-                    child.live.GetTransform(out transform);
-                    child.Children.ForEach(c => children.Enqueue(c));
+                    target = children.Dequeue();
+                    target.live.GetTransform(out transform);
 
-                    foreach (Fixture fixture in child.live.FixtureList)
+                    foreach (ShipPart child in target.Children)
+                        children.Enqueue(child);
+
+                    foreach (Fixture fixture in target.live.FixtureList)
                     { // Check all fixtures within each child...
                         fixture.Shape.ComputeAABB(out aabb, ref transform, 0);
     
@@ -99,7 +101,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             /// </summary>
             public void ClearChunks()
             {
-                _chunks.ForEach(c => c.Remove(_chain));
+                foreach (Chunk chunk in _chunks)
+                    chunk.Remove(_chain);
                 _chunks.Clear();
             }
         }
@@ -138,6 +141,10 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         internal Dictionary<Chain, ChainChunks> chainChunks => _chainChunks;
         internal WorldEntity world => _world;
         internal Dictionary<Chunk.Position, Chunk> chunks => _chunks;
+        #endregion
+
+        #region Public Properties
+        public IReadOnlyCollection<Chain> Quarantine => _quarantine;
         #endregion
 
         #region Lifecycle Methods
@@ -235,7 +242,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         private void BuildChunks()
         {
             // Clear all pre-existing chunks...
-            _chunks.ForEach(c => c.Value.TryRelease());
+            foreach (Chunk chunk in _chunks.Values)
+                chunk.TryRelease();
             _chunks.Clear();
 
             // Create a new list of chunks based on the size of the world...
@@ -255,12 +263,12 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             if (this.chains.Any())
             {
                 _world.live.Step(0);
-                this.chains.ForEach(p =>
+                foreach(Chain chain in this.chains)
                 {
-                    _chainChunks[p].ClearChunks();
-                    if(!_quarantine.Contains(p))
-                        this.AddToChunks(p);
-                });
+                    _chainChunks[chain].ClearChunks();
+                    if (!_quarantine.Contains(chain))
+                        this.AddToChunks(chain);
+                }
             }
         }
 
@@ -307,15 +315,15 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             _quarantine.Add(chain);
 
             // Update the new parts properties
-            chain.Root.Items().ForEach(sp =>
+            foreach(ShipPart shipPart in chain.Root.Items())
             {
-                sp.SleepingAllowed = true;
-                sp.Awake = true;
+                shipPart.SleepingAllowed = true;
+                shipPart.Awake = true;
 
                 // Update the new parts collisions
-                sp.CollisionCategories = Categories.PassiveCollisionCategories;
-                sp.CollidesWith = Categories.PassiveCollidesWith;
-            });
+                shipPart.CollisionCategories = Categories.PassiveCollisionCategories;
+                shipPart.CollidesWith = Categories.PassiveCollidesWith;
+            }
         }
 
         protected override void Remove(Chain chain)

@@ -17,9 +17,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
     {
         #region Private Fields
         private MouseService _mouse;
-        private DebugService _debug;
-
-        private ServiceFactory _bulletServiceFactory;
         #endregion
 
         #region Lifecycle Methods
@@ -28,9 +25,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             base.PreInitialize(provider);
 
             provider.Service(out _mouse);
-            provider.Service(out _debug);
-
-            _bulletServiceFactory = provider.GetServiceFactory(typeof(Bullet));
 
             this.camera.MinZoom = 5f;
             this.camera.MaxZoom = 40f;
@@ -44,7 +38,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             });
 
             _mouse.OnScrollWheelValueChanged += this.HandleMouseScrollWheelValueChanged;
-            _debug.Lines += this.RenderDebugLines;
         }
 
         protected override void Release()
@@ -52,19 +45,12 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             base.Release();
 
             _mouse.OnScrollWheelValueChanged -= this.HandleMouseScrollWheelValueChanged;
-            _debug.Lines -= this.RenderDebugLines;
         }
         #endregion
 
         #region Event Handlers
         private void HandleMouseScrollWheelValueChanged(MouseService sender, ScrollWheelArgs args)
             => this.camera.ZoomBy((Single)Math.Pow(1.5, args.Delta / 120));
-
-        private string RenderDebugLines(GameTime gameTime)
-        {
-            return $"Entities: {this.Entities.Count()}\n"
-                + $"Bullet Queue: {_bulletServiceFactory.Pools[typeof(Bullet)].Count()}";
-        }
         #endregion
     }
 }

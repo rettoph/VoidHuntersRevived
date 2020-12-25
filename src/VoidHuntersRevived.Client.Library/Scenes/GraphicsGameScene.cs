@@ -22,6 +22,7 @@ using tainicom.Aether.Physics2D.Diagnostics;
 using VoidHuntersRevived.Client.Library.Effects;
 using VoidHuntersRevived.Client.Library.Enums;
 using VoidHuntersRevived.Client.Library.Services;
+using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Scenes;
 
@@ -40,6 +41,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private TrailRenderService _trails;
         private ExplosionRenderService _explosions;
         private CommandService _commands;
+        private DebugService _debug;
+        private ChunkManager _chunks;
 
         private GameWindow _window;
         private GraphicsDevice _graphics;
@@ -75,6 +78,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             provider.Service(out _trails);
             provider.Service(out _explosions);
             provider.Service(out _commands);
+            provider.Service(out _chunks);
+            provider.Service(out _debug);
             provider.Service(out _window);
             provider.Service(out _graphics);
             provider.Service(out _content);
@@ -121,6 +126,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             _window.ClientSizeChanged += this.HandleClientSizeChanged;
             _commands["toggle"]["debug"].OnExcecute += this.HandleToggleDebugCommand;
+            _debug.Lines += this.RenderDebugLines;
 
             // Setup required game instances.
             this.CleanViewport();
@@ -133,6 +139,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             _window.ClientSizeChanged -= this.HandleClientSizeChanged;
             _commands["toggle"]["debug"].OnExcecute -= this.HandleToggleDebugCommand;
+            _debug.Lines -= this.RenderDebugLines;
         }
         #endregion
 
@@ -267,6 +274,13 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         #region Event Handlers
         private void HandleClientSizeChanged(object sender, EventArgs e)
             => this.CleanViewport();
+
+        private string RenderDebugLines(GameTime gameTime)
+        {
+            return $"Entities: {this.Entities.Count().ToString("#,###")}\n"
+                + $"Quarantined: {_chunks.Quarantine.Count().ToString("#,###")}\n"
+                + $"Trails: {_trails.Trails.Count().ToString("#,###")}; Segments: {_trails.Trails.SelectMany(t => t.Segments).Count().ToString("#,###")}";
+        }
         #endregion
     }
 }

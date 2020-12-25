@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Library.Entities
         public Player Player
         {
             get => _player;
-            set => this.OnPlayerChanged.InvokeIfChanged(value != _player, this, ref _player, value);
+            set => this.OnPlayerChanged.InvokeIf(value != _player, this, ref _player, value);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace VoidHuntersRevived.Library.Entities
                 if(value != _bridge)
                 { // First, only proceed if the value has changed.
                     if (this.OnValidateBridge.Validate(this, value, false)) // Validate the incoming vlaue...
-                        this.OnBridgeChanged?.InvokeIfChanged(true, this, ref _bridge, value); // When successful, call the event...
+                        this.OnBridgeChanged?.InvokeIf(true, this, ref _bridge, value); // When successful, call the event...
                     else // When not successful, throw an exception...
                         throw new Exception("Invalid bridge value.");
                 }

@@ -25,15 +25,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public Chain Chain
         {
             get => _chain;
-            internal set 
-            {
-                // Note: The chain should only be set to null when the root ship-part is disposing.
-
-                if (value == default) // DO NOT invoke the event if the chain is being set to null.
-                    _chain = default;
-                else // Only invoke the event when the chain is being set to something other than null.
-                    this.OnChainChanged.InvokeIfChanged(value != _chain, this, ref _chain, value);
-            }
+            internal set => this.OnChainChanged.InvokeIf(value != _chain, this, ref _chain, value);
         }
         #endregion
 
@@ -58,17 +50,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
         private void Chain_Release()
         {
+            // Auto release the saved chain.
+            this.Chain = null;
+
             this.OnChainChanged -= this.Chain_HandleOnChainChanged;
 
             this.MaleConnectionNode.OnAttached -= this.Chain_HandleMaleConnectionNodeAttached;
             this.MaleConnectionNode.OnDetached -= this.Chain_HandleMaleConnectionNodeDetached;
-        }
-
-        private void Chain_PostRelease()
-        {
-            // Auto release the saved chain.
-            this.Chain.TryRelease();
-            this.Chain = null;
         }
         #endregion
 
@@ -84,11 +72,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         private void Chain_HandleOnChainChanged(ShipPart sender, Chain old, Chain value)
         {
             // Continue & iterate down the chain...
-            this.FemaleConnectionNodes.ForEach(f =>
-            {
-                if (f.Attached) // Update the child's chain value...
-                    f.Target.Parent.Chain = value;
-            });
+            foreach(ConnectionNode female in this.FemaleConnectionNodes)
+                if (female.Attached) // Update the child's chain value...
+                    female.Target.Parent.Chain = value;
         }
 
         /// <summary>

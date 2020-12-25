@@ -115,8 +115,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         protected override void PostRelease()
         {
             base.PostRelease();
-
-            this.Chain_PostRelease();
         }
 
         protected override void Dispose()
