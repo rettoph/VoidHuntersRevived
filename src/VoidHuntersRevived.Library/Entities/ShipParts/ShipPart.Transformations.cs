@@ -55,8 +55,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// </summary>
         protected virtual void UpdateLocalTranslation()
         {
-            this.log.Verbose($"Translating ShipPart({this.Id}) Matrices");
-
             if (this.IsRoot)
             { // If the current part is the root, there is no need to track a translation matrix
                 this.LocalTransformation = ShipPart.EmptyTranslation;
@@ -67,7 +65,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 var female = this.MaleConnectionNode.Target;
                 var male = this.MaleConnectionNode;
 
-                this.LocalRotation = this.Parent.LocalRotation + female.LocalRotation - male.LocalRotation;
+                this.LocalRotation = MathHelper.WrapAngle(this.Parent.LocalRotation + female.LocalRotation - male.LocalRotation);
 
                 this.LocalTransformation = Matrix.Invert(male.LocalTransformationMatrix)
                     * female.LocalTransformationMatrix

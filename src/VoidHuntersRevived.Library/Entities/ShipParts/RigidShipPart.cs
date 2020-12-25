@@ -62,7 +62,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             // Auto dispose of any fixtures within the given queue
             while (fixtures.Any())
             {
-                this.log.Verbose(() => $"Destroying RigidShipPart({this.Id}) Fixture");
                 fixtures.Dequeue().Destroy();
             }
                 
@@ -70,8 +69,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             // Create new fixtures for all vertices contained in the configuration
             this.Configuration.Vertices.ForEach(data =>
             {
-                this.log.Verbose(() => $"Creating Fixture for RigidShipPart({this.Id}) on ShipPart({this.Root.Id})");
-
                 Vertices vertices = new Vertices(data);
                 vertices.Transform(this.LocalTransformation);
                 fixtures.Enqueue(root.BuildFixture(new PolygonShape(vertices, this.Configuration.Density), this));

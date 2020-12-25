@@ -8,10 +8,10 @@ using Guppy.UI.Utilities.Units;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
+using VoidHuntersRevived.Client.Library.UI;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
@@ -51,39 +51,36 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             this.stage.Content.BackgroundColor[ElementState.Default] = new Color(Color.Black, 75);
             this.stage.Content.Children.Create<StackContainer>((container, p, c) =>
             {
-                container.Bounds.X = new CustomUnit(c => (c - container.Bounds.Width.ToPixel(c)) / 2);
-                container.Bounds.Y = 100;
-                container.Alignment = StackAlignment.Horizontal;
-                container.Children.Create<Element>((logo, p, c) =>
-                {
-                    logo.Bounds.Height = 75;
-                    logo.Bounds.Width = 75;
-                    logo.BackgroundImage[ElementState.Default] = p.GetContent<Texture2D>("sprite:ui:logo");
-                });
+                container.Bounds.X = 0;
+                container.Bounds.Y = 0.05f;
+                container.Alignment = StackAlignment.Vertical;
+                container.Inline = InlineType.Vertical;
 
-                container.Children.Create<StackContainer>((header, p, c) =>
+                container.Children.Create<HeaderComponent>();
+                container.Children.Create<FormComponent>((username, p, c) =>
                 {
-                    header.Alignment = StackAlignment.Vertical;
-                    header.Children.Create<StackContainer>((title, p, c) =>
+                    username.Label.Value = "Username";
+                    username.Input.Value = "Rettoph";
+                    username.Bounds.Width = 700;
+                    username.Input.Filter = new Regex("^[a-zA-Z0-9]{0,25}$");
+                });
+                container.Children.Create<StackContainer>((container2, p, c) =>
+                {
+                    container2.Bounds.X = new CustomUnit(c => (c - container2.Bounds.Width.ToPixel(c)) / 2);
+                    container2.Alignment = StackAlignment.Horizontal;
+                    container2.Children.Create<FormComponent>((host, p, c) =>
                     {
-                        title.Bounds.Width = 1f;
-                        title.Bounds.Height = 100;
-                        title.Alignment = StackAlignment.Horizontal;
-                        title.Children.Create<TextElement>("ui:label:title", (text, p, c) =>
-                        {
-                            text.Value = "Void Hunters";
-                            text.Font = p.GetContent<SpriteFont>("font:ui:label:bold");
-                        });
-                        title.Children.Create<TextElement>("ui:label:title", (text, p, c) =>
-                        {
-                            text.Value = " Revived";
-                            text.Font = p.GetContent<SpriteFont>("font:ui:label:light");
-                            text.Color[ElementState.Default] = p.GetColor("ui:label:color:2");
-                        });
+                        host.Label.Value = "Host";
+                        host.Input.Value = "localhost";
+                        host.Bounds.Width = 550;
+                        host.Input.Filter = new Regex("^[a-zA-Z0-9]{0,100}$");
                     });
-                    header.Children.Create<TextElement>("ui:label:title:small", (text, p, c) =>
+                    container2.Children.Create<FormComponent>((port, p, c) =>
                     {
-                        text.Value = "Alpha 0.1.1";
+                        port.Label.Value = "Port";
+                        port.Input.Value = "1337";
+                        port.Bounds.Width = 150;
+                        port.Input.Filter = new Regex("^[0-9]{0,5}$");
                     });
                 });
             });
@@ -106,7 +103,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                 {
                     player.Ship = this.Entities.Create<Ship>((ship, p2, c) =>
                     {
-                        ship.Import(File.OpenRead("Ships/mosquito.vh"));
+                        var ships = Directory.GetFiles("Ships", "*.vh");
+                        ship.Import(File.OpenRead(ships[_rand.Next(ships.Length)]));
 
                         // ship.SetBridge(this.Entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
                         ship.Bridge.Position = _rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y);
@@ -154,7 +152,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         {
             if(sender.Bridge == default)
             {
-                sender.Import(File.OpenRead("Ships/mosquito.vh"));
+                var ships = Directory.GetFiles("Ships", "*.vh");
+                sender.Import(File.OpenRead(ships[_rand.Next(ships.Length)]));
 
                 sender.Bridge.Position = _rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y);
             }

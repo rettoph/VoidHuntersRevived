@@ -297,9 +297,6 @@ namespace VoidHuntersRevived.Library.Entities
 
             if (value != null)
             { // Setup the new bridge...
-                // Simple log message
-                sender.log.Verbose($"Ship({sender.Id}) => Setting bridge to ShipPart<{value.GetType().Name}>({value.Id})");
-
                 sender._controller.TryAdd(value.Chain);
                 value.Chain.Ship = sender;
                 value.Chain.OnShipPartAdded += Ship.HandleBridgeChainChanged;

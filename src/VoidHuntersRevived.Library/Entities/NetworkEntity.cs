@@ -90,8 +90,6 @@ namespace VoidHuntersRevived.Library.Entities
 
             if (this.settings.Get<HostType>() == HostType.Remote)
                 this.OnPostUpdate += this.PostUpdateRemote;
-
-            this.log.Verbose(() => $"Creating new NetworkEntity<{this.GetType().Name}>({this.Id}) => '{this.ServiceConfiguration.Name}'");
         }
 
         protected override void Release()

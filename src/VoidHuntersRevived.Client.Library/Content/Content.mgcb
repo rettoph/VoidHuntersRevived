@@ -45,6 +45,13 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/BiomeBold-Big.spritefont
 
+#begin Fonts/Biome-Light.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Biome-Light.spritefont
+
 #begin Fonts/BiomeLight-Big.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

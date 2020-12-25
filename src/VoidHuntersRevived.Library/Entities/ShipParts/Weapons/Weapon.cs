@@ -14,6 +14,7 @@ using tainicom.Aether.Physics2D.Dynamics;
 using tainicom.Aether.Physics2D.Dynamics.Joints;
 using VoidHuntersRevived.Library.Entities.Ammunitions;
 using VoidHuntersRevived.Library.Utilities;
+using VoidHuntersRevived.Library.Extensions.Aether;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 {
@@ -171,12 +172,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                     // Finialize joint setup...
                     joint.MotorEnabled = true;
                     joint.CollideConnected = false;
-                    joint.MaxMotorTorque = 0.5f;
+                    joint.MaxMotorTorque = 0.75f;
                     joint.MotorSpeed = 0.0f;
-                    joint.LimitEnabled = true;
-                    joint.Enabled = true;
                     joint.LowerLimit = -(2 / 2);
                     joint.UpperLimit = (2 / 2);
+                    joint.LimitEnabled = true;
                     joint.Enabled = this.Chain.Ship != default;
 
                     // Save the joint internally
@@ -217,9 +217,20 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                     // Calculate the current different in angle
                     var diff = angle - joint.JointAngle;
 
-                    // Set the joints speed...
-                    joint.MotorSpeed = diff * (1000f / 64f);
-                    this.TargetInRange = MathHelper.Clamp(angle, joint.LowerLimit, joint.UpperLimit) == angle;
+                    if(diff + 1 < joint.LowerLimit)
+                    {
+                        body.Rotation = this.Root.GetChild(this.GetParent(body)).Rotation + this.LocalRotation - joint.UpperLimit;
+                    }
+                    else if(joint.UpperLimit < diff - 1)
+                    {
+                        body.Rotation = this.Root.GetChild(this.GetParent(body)).Rotation + this.LocalRotation + joint.UpperLimit;
+                    }
+                    else
+                    {
+                        // Set the joints speed...
+                        joint.MotorSpeed = diff * (1000f / 64f);
+                        this.TargetInRange = MathHelper.Clamp(angle, joint.LowerLimit, joint.UpperLimit) == angle;
+                    }
                 }
             });
         }

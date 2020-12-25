@@ -76,7 +76,7 @@ namespace VoidHuntersRevived.Client.Library.Services
             base.Draw(gameTime);
 
             _primitiveBatch.Effect.CurrentTimestamp = (Single)gameTime.TotalGameTime.TotalSeconds;
-            _primitiveBatch.Begin(_camera, BlendState.NonPremultiplied);
+            _primitiveBatch.Begin(_camera, BlendState.Additive);
             _trails.ForEach(trail =>
             {
                 trail.TryDraw(gameTime);
