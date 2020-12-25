@@ -1,12 +1,16 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.IO.Input.Services;
+using Guppy.IO.Services;
 using Guppy.Lists;
 using Guppy.UI.Elements;
 using Guppy.UI.Enums;
 using Guppy.UI.Utilities.Units;
+using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.IO;
 using System.Linq;
@@ -17,6 +21,7 @@ using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
 using VoidHuntersRevived.Library.Extensions.System;
 
 namespace VoidHuntersRevived.Client.Library.Scenes
@@ -28,6 +33,9 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private WorldEntity _world;
         private Random _rand;
         private GraphicsDevice _graphics;
+        private KeyboardService _keys;
+        private MouseService _mouse;
+        private Synchronizer _synchronizer;
         #endregion
 
         #region Lifecycle Methods
@@ -36,6 +44,9 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             base.PreInitialize(provider);
 
             provider.Service(out _players);
+            provider.Service(out _keys);
+            provider.Service(out _mouse);
+            provider.Service(out _synchronizer);
 
             this.settings.Set<NetworkAuthorization>(NetworkAuthorization.Master);
             this.settings.Set<HostType>(HostType.Local);
@@ -46,6 +57,28 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             base.Initialize(provider);
 
             provider.Service(out _graphics);
+
+            _keys[Keys.G].OnStateChanged += (s, args) =>
+            {
+                if(args.State == ButtonState.Pressed)
+                {
+                    _synchronizer.Enqueue(gt =>
+                    {
+                        this.Entities.Create<ComputerPlayer>((player, p, d) =>
+                        {
+                            player.Ship = this.Entities.Create<Ship>((ship, p2, c) =>
+                            {
+                                var ships = Directory.GetFiles("Ships", "*.vh");
+                                ship.Import(File.OpenRead(ships[_rand.Next(ships.Length)]));
+
+                                // ship.SetBridge(this.Entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
+                                ship.Bridge.Position = this.camera.Unproject(_mouse.Position.ToVector3()).ToVector2();
+                            });
+                            player.Ship.OnBridgeChanged += this.HandlePlayerBridgeChanged;
+                        });
+                    });
+                }
+            };
 
             #region UI
             this.stage.Content.BackgroundColor[ElementState.Default] = new Color(Color.Black, 125);
@@ -97,7 +130,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             });
 
             _rand = new Random(1);
-            for (Int32 i = 0; i < 25; i++)
+            for (Int32 i = 0; i < 5; i++)
             {
                 this.Entities.Create<ComputerPlayer>((player, p, d) =>
                 {
@@ -128,22 +161,25 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         {
             base.Update(gameTime);
 
-            this.camera.MoveTo(_players.Where(p => p.Ship.Bridge != default)
-                .Select(p => p.Ship.Bridge.Position)
-                .Aggregate((p1, p2) => p1 + p2) / _players.Count());
-
-            Vector2 min = _world.Size;
-            Vector2 max = Vector2.Zero;
-            _players.Where(p => p.Ship.Bridge != default).ForEach(p =>
+            if (_players.Any())
             {
-                min = Vector2.Min(min, p.Ship.Bridge.Position);
-                max = Vector2.Max(max, p.Ship.Bridge.Position);
-            });
+                this.camera.MoveTo(_players.Where(p => p.Ship.Bridge != default)
+                    .Select(p => p.Ship.Bridge.Position)
+                    .Aggregate((p1, p2) => p1 + p2) / _players.Count());
 
-            Vector2 size = (max - min) * 1.2f;
-            Vector2 scale = _graphics.Viewport.Bounds.Size.ToVector2() / size;
+                Vector2 min = _world.Size;
+                Vector2 max = Vector2.Zero;
+                _players.Where(p => p.Ship.Bridge != default).ForEach(p =>
+                {
+                    min = Vector2.Min(min, p.Ship.Bridge.Position);
+                    max = Vector2.Max(max, p.Ship.Bridge.Position);
+                });
 
-            this.camera.ZoomTo(Math.Min(scale.X, scale.Y));
+                Vector2 size = (max - min) * 1.2f;
+                Vector2 scale = _graphics.Viewport.Bounds.Size.ToVector2() / size;
+
+                this.camera.ZoomTo(Math.Min(25, Math.Min(scale.X, scale.Y)));
+            }
         }
         #endregion
 
@@ -152,10 +188,9 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         {
             if(sender.Bridge == default)
             {
-                var ships = Directory.GetFiles("Ships", "*.vh");
-                sender.Import(File.OpenRead(ships[_rand.Next(ships.Length)]));
-
-                sender.Bridge.Position = _rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y);
+                sender.Player.TryRelease();
+                sender.TryRelease();
+                sender.OnBridgeChanged -= this.HandlePlayerBridgeChanged;
             }
         }
         #endregion

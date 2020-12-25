@@ -70,14 +70,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                 shipPart.CollidesWith = Categories.ActiveCollidesWith;
             }
         }
-
-        protected override void Remove(Chain chain)
-        {
-            base.Remove(chain);
-
-            // Attempt to auto add the ship part back into the chunks...
-            _chunks.TryAdd(chain);
-        }
         #endregion
     }
 }

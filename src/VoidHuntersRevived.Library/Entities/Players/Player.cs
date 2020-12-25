@@ -32,14 +32,12 @@ namespace VoidHuntersRevived.Library.Entities.Players
             get => _ship;
             set
             {
-                if (this.Status >= ServiceStatus.Initializing)
+                if (this.Status >= ServiceStatus.Initializing && this.Status != ServiceStatus.Releasing)
                     throw new Exception("Unable to update Player Ship value once initialization has started.");
 
-                if (_ship != null)
-                    _ship.Player = null;
-
                 _ship = value;
-                _ship.Player = this;
+                if (_ship != null)
+                    _ship.Player = this;
             }
         }
         #endregion

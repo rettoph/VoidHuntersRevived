@@ -120,8 +120,8 @@ namespace VoidHuntersRevived.Library.Entities
                 b.SetCollidesWith(Categories.BorderCollidesWith);
                 b.SetCollisionCategories(Categories.BorderCollisionCategories);
 
-                b.OnCollision += this.HandleCollision;
-                b.OnSeparation += this.HandleSeperation;
+                // b.OnCollision += this.HandleCollision;
+                // b.OnSeparation += this.HandleSeperation;
             });
 
             this.Age = 0f;

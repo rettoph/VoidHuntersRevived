@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         }
 
         protected virtual Boolean CanAdd(Chain chain)
-            => chain != default(Chain) && !_chains.Contains(chain);
+            => chain != default(Chain) && chain.Status != ServiceStatus.NotReady && !_chains.Contains(chain);
 
         protected virtual void Add(Chain chain)
         {
