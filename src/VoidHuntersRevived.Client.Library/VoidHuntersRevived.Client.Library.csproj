@@ -13,8 +13,6 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Aether.Physics2D.Diagnostics.MG" Version="1.5.0" />
-    <PackageReference Include="Aether.Physics2D.MG" Version="1.5.0" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
   </ItemGroup>
@@ -40,6 +38,8 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\..\libraries\Aether.Physics2D\Physics2D.Diagnostics\Diagnostics\Aether.Physics2D.Diagnostics.NETSTANDARD2_0.MG.csproj" />
+    <ProjectReference Include="..\..\libraries\Aether.Physics2D\Physics2D\Aether.Physics2D.NETSTANDARD2_0.MG.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\libraries\lidgren-network-gen3\Lidgren.Network.MultiTarget\Lidgren.Network.MultiTarget.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Core\Guppy.Core.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />

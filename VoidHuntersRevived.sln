@@ -35,6 +35,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lidgren-network-gen3", "lid
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lidgren.Network.MultiTarget", "libraries\Guppy\libraries\lidgren-network-gen3\Lidgren.Network.MultiTarget\Lidgren.Network.MultiTarget.csproj", "{C68206A7-30AB-4BBC-9E98-B7F04D61C93D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aether.Physics2D", "Aether.Physics2D", "{846EEE2A-9193-41FF-A661-67380DBEBE60}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aether.Physics2D.NETSTANDARD2_0.MG", "libraries\Aether.Physics2D\Physics2D\Aether.Physics2D.NETSTANDARD2_0.MG.csproj", "{058BF07F-34FA-48C4-8E4D-D5DB6F3F9B8B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aether.Physics2D.Diagnostics.NETSTANDARD2_0.MG", "libraries\Aether.Physics2D\Physics2D.Diagnostics\Diagnostics\Aether.Physics2D.Diagnostics.NETSTANDARD2_0.MG.csproj", "{64BF497A-733C-404B-9D31-94B9ACC238C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Verbose|Any CPU = Debug_Verbose|Any CPU
@@ -102,6 +108,18 @@ Global
 		{C68206A7-30AB-4BBC-9E98-B7F04D61C93D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C68206A7-30AB-4BBC-9E98-B7F04D61C93D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C68206A7-30AB-4BBC-9E98-B7F04D61C93D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{058BF07F-34FA-48C4-8E4D-D5DB6F3F9B8B}.Debug_Verbose|Any CPU.ActiveCfg = Debug|Any CPU
+		{058BF07F-34FA-48C4-8E4D-D5DB6F3F9B8B}.Debug_Verbose|Any CPU.Build.0 = Debug|Any CPU
+		{058BF07F-34FA-48C4-8E4D-D5DB6F3F9B8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{058BF07F-34FA-48C4-8E4D-D5DB6F3F9B8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{058BF07F-34FA-48C4-8E4D-D5DB6F3F9B8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{058BF07F-34FA-48C4-8E4D-D5DB6F3F9B8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64BF497A-733C-404B-9D31-94B9ACC238C1}.Debug_Verbose|Any CPU.ActiveCfg = Debug|Any CPU
+		{64BF497A-733C-404B-9D31-94B9ACC238C1}.Debug_Verbose|Any CPU.Build.0 = Debug|Any CPU
+		{64BF497A-733C-404B-9D31-94B9ACC238C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64BF497A-733C-404B-9D31-94B9ACC238C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64BF497A-733C-404B-9D31-94B9ACC238C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64BF497A-733C-404B-9D31-94B9ACC238C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -121,6 +139,9 @@ Global
 		{A99D402B-E0BC-4D34-8136-F002468CA2E0} = {DA5CAD48-BEB9-4316-814A-820EA2A21081}
 		{B3FFC75F-63F5-429B-8243-C12BA4CA545C} = {A99D402B-E0BC-4D34-8136-F002468CA2E0}
 		{C68206A7-30AB-4BBC-9E98-B7F04D61C93D} = {B3FFC75F-63F5-429B-8243-C12BA4CA545C}
+		{846EEE2A-9193-41FF-A661-67380DBEBE60} = {1D6E7A76-CA5E-486C-9C2F-A9644FDA47AD}
+		{058BF07F-34FA-48C4-8E4D-D5DB6F3F9B8B} = {846EEE2A-9193-41FF-A661-67380DBEBE60}
+		{64BF497A-733C-404B-9D31-94B9ACC238C1} = {846EEE2A-9193-41FF-A661-67380DBEBE60}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FCB1CA3-2B6C-469F-B569-084FC0B57488}

@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
     {
         public void RegisterServices(ServiceCollection services)
         {
-            Settings.MaxPolygonVertices = 7;
+            Settings.MaxPolygonVertices = 9;
             Settings.ContinuousPhysics = false;
             // Settings.PositionIterations = 1;
             // Settings.VelocityIterations = 1;
