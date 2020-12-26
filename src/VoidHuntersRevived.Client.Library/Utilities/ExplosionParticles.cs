@@ -15,6 +15,11 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         /// The amount of particles to include within each explosion.
         /// </summary>
         public static Int32 ParticleCount { get; set; } = 15;
+
+        /// <summary>
+        /// Used for calculating particle variances.
+        /// </summary>
+        private static Random rand = new Random();
         #endregion
 
         #region Public Fields
@@ -29,46 +34,51 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         public ExplosionVertex[] Vertices;
 
         /// <summary>
+        /// The created timestamp to be passed
+        /// into all vertices.
+        /// </summary>
+        public Single CreatedTimestamp;
+
+        /// <summary>
         /// The timestamp at which the described particles
         /// should expire
         /// </summary>
         public Double ExpireTimestamp;
 
         /// <summary>
-        /// The maximum age of the descirbed particles.
+        /// The maximum age of the descirbed particles
+        ///  in seconds.
         /// </summary>
-        public Double MaxAge;
+        public Single MaxAge = 3;
         #endregion
 
         #region Helper Methods
-        public ExplosionParticles(GameTime gameTime, Explosion explosion)
+        public ExplosionParticles(WorldEntity.ExplosionData explosion, GameTime gameTime)
         {
-            var now = (Single)gameTime.TotalGameTime.TotalSeconds - explosion.Age;
-            var magnitude = (Single)Math.Sqrt(explosion.Velocity.Length());
+            this.CreatedTimestamp = (Single)gameTime.TotalGameTime.TotalSeconds;
+            this.ExpireTimestamp = gameTime.TotalGameTime.TotalSeconds + this.MaxAge;
 
-            this.Center.Color = explosion.Color;
-            this.Center.CreatedTimestamp = now;
             this.Center.Position = explosion.Position;
+            this.Center.Color = explosion.Color;
+            this.Center.MaxRadius = 0;
+            this.Center.CreatedTimestamp = this.CreatedTimestamp;
             this.Center.Direction = 0;
-            this.Center.Magnitude = magnitude;
             this.Center.Alpha = 1f;
-            this.Center.MaxAge = explosion.MaxAge;
+            this.Center.MaxAge = this.MaxAge;
 
             this.Vertices = new ExplosionVertex[ExplosionParticles.ParticleCount];
             var step = MathHelper.TwoPi / ExplosionParticles.ParticleCount;
 
             for (Int32 i=0; i < ExplosionParticles.ParticleCount; i++)
             {
-                this.Vertices[i].Color = explosion.Color;
-                this.Vertices[i].CreatedTimestamp = now;
                 this.Vertices[i].Position = explosion.Position;
+                this.Vertices[i].Color = explosion.Color;
+                this.Vertices[i].MaxRadius = explosion.Radius * (1 + (Single)rand.NextDouble() * 0.2f);
+                this.Vertices[i].CreatedTimestamp = this.CreatedTimestamp;
                 this.Vertices[i].Direction = i * step;
-                this.Vertices[i].Magnitude = (magnitude * 1.2f) + (explosion.Force * 0.1f);
                 this.Vertices[i].Alpha = 0f;
-                this.Vertices[i].MaxAge = explosion.MaxAge;
+                this.Vertices[i].MaxAge = this.MaxAge;
             }
-
-            this.ExpireTimestamp = gameTime.TotalGameTime.TotalSeconds - explosion.Age + explosion.MaxAge;
         }
         #endregion
     }

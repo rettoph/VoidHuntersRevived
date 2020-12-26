@@ -47,10 +47,10 @@ namespace VoidHuntersRevived.Client.Library.Services
         /// <summary>
         /// Configure the particles for the recieved explosion.
         /// </summary>
-        /// <param name="gameTime"></param>
         /// <param name="explosion"></param>
-        public void Configure(GameTime gameTime, Explosion explosion)
-            => _particles.Add(new ExplosionParticles(gameTime, explosion));
+        /// <param name="gameTime"></param>
+        public void Configure(WorldEntity.ExplosionData data, GameTime gameTime)
+            => _particles.Add(new ExplosionParticles(data, gameTime));
         #endregion
 
         #region Frame Methods

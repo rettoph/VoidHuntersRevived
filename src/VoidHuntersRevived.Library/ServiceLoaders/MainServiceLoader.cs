@@ -43,7 +43,6 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddFactory<ServiceList<BodyEntity>>(p => new ServiceList<BodyEntity>());
             services.AddFactory<Chunk>(p => new Chunk());
             services.AddFactory<GameLayer>(p => new GameLayer());
-            services.AddFactory<Explosion>(p => new Explosion());
 
             // Register services...
             services.AddScoped<Settings>();
@@ -52,7 +51,6 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddTransient<ServiceList<BodyEntity>>();
             services.AddTransient<Chunk>();
             services.AddTransient<GameLayer>();
-            services.AddTransient<Explosion>();
 
 
             // Register Scenes...

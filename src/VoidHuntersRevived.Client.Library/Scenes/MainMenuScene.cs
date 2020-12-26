@@ -15,6 +15,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using VoidHuntersRevived.Client.Library.UI;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
@@ -188,9 +189,11 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         {
             if(sender.Bridge == default)
             {
-                sender.Player.TryRelease();
-                sender.TryRelease();
-                sender.OnBridgeChanged -= this.HandlePlayerBridgeChanged;
+                var ships = Directory.GetFiles("Ships", "*.vh");
+                sender.Import(File.OpenRead(ships[_rand.Next(ships.Length)]));
+
+                // ship.SetBridge(this.Entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
+                sender.Bridge.Position = _rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y);
             }
         }
         #endregion

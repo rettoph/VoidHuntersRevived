@@ -14,10 +14,10 @@ struct VertexShaderInput
 {
 	float4 Color : COLOR0;
     float2 Position : TEXCOORD0;
-    float Direction : TEXCOORD1;
-    float Magnitude : TEXCOORD2;
-    float CreatedTimestamp : TEXCOORD3;
-    float Alpha : TEXCOORD4;
+    float MaxRadius : TEXCOORD1;
+    float Direction : TEXCOORD2;
+    float Alpha : TEXCOORD3;
+    float CreatedTimestamp : TEXCOORD4;
     float MaxAge : TEXCOORD5;
 };
 
@@ -31,12 +31,11 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 {
 	VertexShaderOutput output = (VertexShaderOutput)0;
 
-    float age = CurrentTimestamp - input.CreatedTimestamp;
-    float2 velocity = float2(cos(input.Direction), sin(input.Direction)) * input.Magnitude;
-    float2 position2d = input.Position + (velocity * age);
+    float age = (CurrentTimestamp - input.CreatedTimestamp) / input.MaxAge;
+    float2 position2d = input.Position + (float2(cos(input.Direction), sin(input.Direction)) * input.MaxRadius * age);
 	
     output.Position = mul(float4(position2d, 0, 1), WorldViewProjection);
-    output.Color = input.Color * float4(1, 1, 1, input.Alpha * (1 - (age / input.MaxAge)));
+    output.Color = input.Color * float4(1, 1, 1, input.Alpha * (1 - age));
     
 	return output;
 }

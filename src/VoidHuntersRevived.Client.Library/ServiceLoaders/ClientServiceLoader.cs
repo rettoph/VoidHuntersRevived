@@ -84,7 +84,6 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddAndBindDriver<WorldEntity, WorldEntityGraphicsDriver>(p => new WorldEntityGraphicsDriver());
             services.AddAndBindDriver<ShipPart, ShipPartGraphicsDriver>(p => new ShipPartGraphicsDriver());
             services.AddAndBindDriver<Thruster, ThrusterTrailsDriver>(p => new ThrusterTrailsDriver());
-            services.AddAndBindDriver<Explosion, ExplosionParticleDriver>(p => new ExplosionParticleDriver());
             services.AddAndBindDriver<UserPlayer, UserPlayerLocalDriver>(
                 factory: p => new UserPlayerLocalDriver(),
                 filter: (up, p) => up.User == p.GetService<ClientPeer>().CurrentUser);

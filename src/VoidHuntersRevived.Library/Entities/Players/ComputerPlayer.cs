@@ -15,6 +15,19 @@ namespace VoidHuntersRevived.Library.Entities.Players
     {
         public override String Name => "Computer";
 
+        #region Private Fields
+        private Player _target;
+        #endregion
+
+        #region Lifecycle Methods
+        protected override void Release()
+        {
+            base.Release();
+
+            _target = default;
+        }
+        #endregion
+
         #region Frame Methods
         protected override void Update(GameTime gameTime)
         {
@@ -22,14 +35,15 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
             if (this.Ship.Bridge != default(ShipPart))
             {
-                var nearest = this.players
-                    .Where(p => p.Id != this.Id && p.Ship?.Bridge != default(ShipPart) && Vector2.Distance(this.Ship.Bridge.WorldCenter, p.Ship.Bridge.WorldCenter) < 10000)
-                    .OrderBy(p => Vector2.Distance(this.Ship.Bridge.WorldCenter, p.Ship.Bridge.WorldCenter))
+                if(_target?.Ship?.Bridge == default || Vector2.Distance(this.Ship.Bridge.WorldCenter, _target.Ship.Bridge.WorldCenter) > 50)
+                    _target = this.players
+                        .Where(p => p.Id != this.Id && p.Ship?.Bridge != default(ShipPart) && Vector2.Distance(this.Ship.Bridge.WorldCenter, p.Ship.Bridge.WorldCenter) < 10000)
+                        .OrderBy(p => Vector2.Distance(this.Ship.Bridge.WorldCenter, p.Ship.Bridge.WorldCenter))
                     .FirstOrDefault();
 
-                if (nearest != default(Player))
+                if (_target != default(Player))
                 { // Only proceed if the target isnt null...
-                    var offset = nearest.Ship.Bridge.WorldCenter - this.Ship.Bridge.WorldCenter;
+                    var offset = _target.Ship.Bridge.WorldCenter - this.Ship.Bridge.WorldCenter;
 
                     // Re-position the current ship towards the target player...
                     var targetRotation = (Single)Math.Atan2(offset.Y, offset.X);
@@ -53,7 +67,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
                     }
 
                     // Change the velocity
-                    var distace = Vector2.Distance(this.Ship.Bridge.WorldCenter, nearest.Ship.Bridge.WorldCenter);
+                    var distace = Vector2.Distance(this.Ship.Bridge.WorldCenter, _target.Ship.Bridge.WorldCenter);
                     if (distace > 30 && Math.Abs(targetRotationDifference) < MathHelper.PiOver4)
                     {
                         this.Ship.TrySetDirection(Ship.Direction.Forward, true);
@@ -72,7 +86,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
 
                     // Update the ships target...
-                    this.Ship.Target = nearest.Ship.Bridge.WorldCenter;
+                    this.Ship.Target = _target.Ship.Bridge.WorldCenter;
 
                     if (distace < 40f)
                         this.Ship.Firing = true;
@@ -86,6 +100,8 @@ namespace VoidHuntersRevived.Library.Entities.Players
                     this.Ship.TrySetDirection(Ship.Direction.Backward, false);
                     this.Ship.TrySetDirection(Ship.Direction.Left, false);
                     this.Ship.TrySetDirection(Ship.Direction.Right, false);
+                    this.Ship.TrySetDirection(Ship.Direction.TurnLeft, false);
+                    this.Ship.TrySetDirection(Ship.Direction.TurnRight, false);
                 }
             }
         }

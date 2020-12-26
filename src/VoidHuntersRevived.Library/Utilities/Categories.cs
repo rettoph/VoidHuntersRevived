@@ -11,8 +11,9 @@ namespace VoidHuntersRevived.Library.Utilities
         public static readonly Category PassiveCollisionCategories = Category.Cat2;
         public static readonly Category ActiveCollisionCategories = Category.Cat3;
 
-        public static readonly Category PassiveCollidesWith = Categories.BorderCollisionCategories;
-        public static readonly Category ActiveCollidesWith = Categories.BorderCollisionCategories | Categories.ActiveCollisionCategories;
         public static readonly Category BorderCollidesWith = Categories.PassiveCollisionCategories | Categories.ActiveCollisionCategories;
+        public static readonly Category ActiveCollidesWith = Categories.BorderCollisionCategories | Categories.ActiveCollisionCategories;
+        public static readonly Category PassiveCollidesWith = Categories.BorderCollisionCategories;
+
     }
 }

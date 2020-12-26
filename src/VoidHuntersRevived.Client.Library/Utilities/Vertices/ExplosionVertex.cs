@@ -18,16 +18,16 @@ namespace VoidHuntersRevived.Client.Library.Utilities.Vertices
         public Vector2 Position;
 
         [FieldOffset(24)]
-        public Single Direction;
+        public Single MaxRadius;
 
         [FieldOffset(28)]
-        public Single Magnitude;
+        public Single Direction;
 
         [FieldOffset(32)]
-        public Single CreatedTimestamp;
+        public Single Alpha;
 
         [FieldOffset(36)]
-        public Single Alpha;
+        public Single CreatedTimestamp;
 
         [FieldOffset(40)]
         public Single MaxAge;

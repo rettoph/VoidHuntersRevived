@@ -21,6 +21,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         #region Private Fields
         private EntityList _entities;
         private Synchronizer _synchronizer;
+        private WorldEntity _world;
         #endregion
 
         #region Lifecycle Methods
@@ -30,6 +31,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
             provider.Service(out _entities);
             provider.Service(out _synchronizer);
+            provider.Service(out _world);
 
             this.driven.OnBridgeChanged += this.HandleBridgeChanged;
             this.CleanBridge(default, this.driven.Bridge);
@@ -67,18 +69,14 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             if(sender.Health <= 0)
             { // Auto release the bridge
+                // Release the part.
+                _synchronizer.Enqueue(gt => sender.TryRelease());
 
                 // Create an explosion on the bridge (this should kill the bridge)
-                _entities.Create<Explosion>((e, p, c) =>
-                {
-                    e.Position = sender.WorldCenter;
-                    e.Velocity = sender.LinearVelocity;
-                    e.Color = sender.Chain.Ship.Color;
-                });
+                _world.EnqeueExplosion(sender.Position, new Color(sender.Chain.Ship.Color, 0.5f), 10f, 10f);
 
-                // Just in case, manually release & delete it now
+                // Just in case, manually remove bridge reference.
                 this.driven.Bridge = default;
-                _synchronizer.Enqueue(gt => sender.TryRelease());
             }
         }
         #endregion
