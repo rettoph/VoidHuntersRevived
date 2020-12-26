@@ -1,6 +1,7 @@
 [submodule "libraries/Guppy"]
 	path = libraries/Guppy
 	url = https://github.com/rettoph/Guppy
-[submodule "libraries\\Aether.Physics2D"]
-	path = libraries\\Aether.Physics2D
+[submodule "libraries/Aether.Physics2D"]
+	path = libraries/Aether.Physics2D
 	url = https://github.com/tainicom/Aether.Physics2D/
+	ignore = dirty
