@@ -117,11 +117,35 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                         port.Input.Filter = new Regex("^[0-9]{0,5}$");
                     });
                 });
+
+                container.Children.Create<Container>((container3, p, c) =>
+                {
+                    container3.Padding.Top = 25;
+                    container3.Inline = InlineType.Vertical;
+
+                    container3.Children.Create<TextElement>((connect, p, c) =>
+                    {
+                        connect.Color[ElementState.Default] = Color.White;
+                        connect.BackgroundColor[ElementState.Default] = p.GetColor("ui:input:color:2");
+                        connect.BackgroundColor[ElementState.Hovered] = Color.Lerp(p.GetColor("ui:input:color:2"), Color.Black, 0.25f);
+                        connect.BackgroundColor[ElementState.Pressed] = Color.Lerp(p.GetColor("ui:input:color:2"), Color.Black, 0.5f);
+                        connect.Inline = InlineType.None;
+                        connect.Bounds.Width = 680;
+                        connect.Bounds.Height = 45;
+                        connect.Bounds.X = new CustomUnit(c => (c - connect.Bounds.Width.ToPixel(c)) / 2);
+                        connect.Alignment = Alignment.CenterCenter;
+                        connect.Font = p.GetContent<SpriteFont>("font:ui:normal");
+                        connect.Value = "Connect";
+                    });
+                });
             });
             #endregion
 
-            this.camera.Zoom = 10f;
-            this.camera.Position = new Vector2(Chunk.Size * 3, Chunk.Size * 3) / 2;
+            this.camera.Zoom = 30f;
+            var pos = (new Vector2(Chunk.Size * 3, Chunk.Size * 3) / 2);
+            pos.Round();
+            // pos += new Vector2(0.5f, 0.5f);
+            this.camera.Position = pos;
             this.camera.MoveLerpStrength = 0.0001f;
             this.camera.ZoomLerpStrength = 0.0001f;
 
@@ -131,7 +155,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             });
 
             _rand = new Random(1);
-            for (Int32 i = 0; i < 5; i++)
+            for (Int32 i = 0; i < 8; i++)
             {
                 this.Entities.Create<ComputerPlayer>((player, p, d) =>
                 {
@@ -141,7 +165,9 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                         ship.Import(File.OpenRead(ships[_rand.Next(ships.Length)]));
 
                         // ship.SetBridge(this.Entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
-                        ship.Bridge.Position = _rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y);
+                        ship.Bridge.SetTransformIgnoreContacts(
+                            _rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y),
+                            MathHelper.TwoPi * (Single)_rand.NextDouble());
                     });
                     player.Ship.OnBridgeChanged += this.HandlePlayerBridgeChanged;
                 });
@@ -193,7 +219,9 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                 sender.Import(File.OpenRead(ships[_rand.Next(ships.Length)]));
 
                 // ship.SetBridge(this.Entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
-                sender.Bridge.Position = _rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y);
+                sender.Bridge.SetTransformIgnoreContacts(
+                    _rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y), 
+                    MathHelper.TwoPi * (Single)_rand.NextDouble());
             }
         }
         #endregion

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Utilities;
 
@@ -25,20 +26,21 @@ namespace VoidHuntersRevived.Library.Entities
         }
         public void Import(Stream input)
         {
-            var reader = new BinaryReader(input);
-
-            while (input.Position < input.Length)
+            using (BinaryReader reader = new BinaryReader(input))
             {
-                switch ((Ship.ExportData)reader.ReadByte())
+                while (input.Position < input.Length)
                 {
-                    // Import ship title data...
-                    case ExportData.Title:
-                        this.Title = reader.ReadString();
-                        break;
-                    // Import ship component data...
-                    case ExportData.Components:
-                        this.Bridge = this.ImportComponents(reader);
-                        break;
+                    switch ((Ship.ExportData)reader.ReadByte())
+                    {
+                        // Import ship title data...
+                        case ExportData.Title:
+                            this.Title = reader.ReadString();
+                            break;
+                        // Import ship component data...
+                        case ExportData.Components:
+                            this.Bridge = this.ImportComponents(reader);
+                            break;
+                    }
                 }
             }
         }

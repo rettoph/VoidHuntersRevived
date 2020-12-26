@@ -209,38 +209,38 @@ namespace VoidHuntersRevived.Library.Entities
         /// <param name="gameTime"></param>
         public void CreateExplosion(WorldEntity.ExplosionData data, GameTime gameTime)
         {
-           //var targets = new HashSet<ShipPart>();
-           //
-           //var aabb = new AABB(
-           //    min: data.Position - new Vector2(data.Radius), 
-           //    max: data.Position + new Vector2(data.Radius));
-           //this.live.QueryAABB(fixture =>
-           //{
-           //    if ((Categories.BorderCollidesWith & fixture.CollisionCategories) != 0 
-           //        && fixture.Tag is ShipPart target && !targets.Contains(target))
-           //    {
-           //        targets.Add(target);
-           //
-           //        if(target.IsRoot)
-           //        { // Apply an impulse on the root piece.
-           //            float distance = Vector2.Distance(data.Position, target.Position);
-           //            float forcePercent = this.GetPercent(distance, data.Radius);
-           //
-           //            Vector2 forceVector = data.Position - target.Position;
-           //
-           //            if(distance > 0)
-           //                forceVector *= 1f / Math.Max((float)Math.Sqrt(forceVector.X * forceVector.X + forceVector.Y * forceVector.Y), Single.Epsilon);
-           //            forceVector *= data.Force * forcePercent;
-           //            forceVector *= -1;
-           //
-           //            target.ApplyForce(forceVector, data.Position);
-           //        }
-           //    }
-           //
-           //    return true;
-           //}, ref aabb);
-           //
-           //this.OnExplosionCreated?.Invoke(this, ref data, targets, gameTime);
+            var targets = new HashSet<ShipPart>();
+
+            var aabb = new AABB(
+                min: data.Position - new Vector2(data.Radius), 
+                max: data.Position + new Vector2(data.Radius));
+            this.live.QueryAABB(fixture =>
+            {
+                if ((Categories.BorderCollidesWith & fixture.CollisionCategories) != 0 
+                    && fixture.Tag is ShipPart target && !targets.Contains(target))
+                {
+                    targets.Add(target);
+
+                    if(target.IsRoot)
+                    { // Apply an impulse on the root piece.
+                        float distance = Vector2.Distance(data.Position, target.Position);
+                        float forcePercent = this.GetPercent(distance, data.Radius);
+
+                        Vector2 forceVector = data.Position - target.Position;
+
+                        if(distance > 0)
+                            forceVector *= 1f / Math.Max((float)Math.Sqrt(forceVector.X * forceVector.X + forceVector.Y * forceVector.Y), Single.Epsilon);
+                        forceVector *= data.Force * forcePercent;
+                        forceVector *= -1;
+
+                        target.ApplyForce(forceVector, data.Position);
+                    }
+                }
+
+                return true;
+            }, ref aabb);
+
+            this.OnExplosionCreated?.Invoke(this, ref data, targets, gameTime);
         }
 
         private void FlushExplosions(GameTime gameTime)
