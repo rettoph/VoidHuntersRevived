@@ -164,7 +164,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
         private void WriteUpdateShipFiringRequest(NetOutgoingMessage om, Boolean value)
             => om.Write("update:ship:firing:request", m =>
             {
-                m.Write(value);
+                this.driven.Ship.WriteFiring(m);
             });
 
         private void WriteUpdateShipDirectionRequest(NetOutgoingMessage om, Ship.Direction direction, Boolean value)
@@ -184,14 +184,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
         {
             om.Write("ship:tractor-beam:action:request", m =>
             {
-                this.driven.Ship.WriteTarget(m);
-                m.Write(action.Type);
-                m.Write(action.TargetPart, (m, e) =>
-                {
-                    m.Write(action.TargetPart.Position);
-                    m.Write(action.TargetPart.Rotation);
-                });
-                m.Write(action.TargetNode);
+                this.driven.Ship.TractorBeam.WriteAction(m, action);
             });
         }
         #endregion

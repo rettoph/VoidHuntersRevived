@@ -226,13 +226,13 @@ namespace VoidHuntersRevived.Library.Entities
                 // Clear then repopulate the internal thrusters list...
                 sender._thrusters.Clear();
 
-                if(sender.Bridge != default)
-                {
-                    sender._thrusters.AddRange(sender.Bridge?.Items(c => c is Thruster).Select(c => c as Thruster) ?? Enumerable.Empty<Thruster>());
+                // Clear all old stored direcitonal data...
+                foreach (IList<Thruster> thrusters in sender._directionThrusters.Values)
+                    thrusters.Clear();
 
-                    // Clear all old stored direcitonal data...
-                    foreach (IList<Thruster> thrusters in sender._directionThrusters.Values)
-                        thrusters.Clear();
+                if (sender.Bridge != default)
+                { // If there is abridge, search for all thrusters within the chain.
+                    sender._thrusters.AddRange(sender.Bridge?.Items(c => c is Thruster).Select(c => c as Thruster) ?? Enumerable.Empty<Thruster>());
 
                     // Rebuild the directionThrusters dictionary...
                     foreach (Thruster thruster in sender.Thrusters)

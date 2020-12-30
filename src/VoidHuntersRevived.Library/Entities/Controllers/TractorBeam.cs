@@ -15,6 +15,10 @@ using Guppy.IO;
 using log4net;
 using Guppy.IO.Extensions.log4net;
 using Guppy.Events.Delegates;
+using Lidgren.Network;
+using Guppy.Network.Extensions.Lidgren;
+using VoidHuntersRevived.Library.Extensions.Lidgren.Network;
+using Guppy.Lists;
 
 namespace VoidHuntersRevived.Library.Entities.Controllers
 {
@@ -73,6 +77,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #region Private Fields
         private ChunkManager _chunks;
         private ILog _logger;
+        private EntityList _entities;
         #endregion
 
         #region Public Attributes
@@ -112,6 +117,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
             provider.Service(out _chunks);
             provider.Service(out _logger);
+            provider.Service(out _entities);
 
             this.UpdateOrder = 120;
 
@@ -124,6 +130,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
             _chunks = null;
             _logger = null;
+            _entities = null;
 
             this.CanAttach += this.DefaultCanAttach;
         }
@@ -344,6 +351,38 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             
             // By default, return true.
             return true;
+        }
+        #endregion
+
+        #region Network Methods
+        public void WriteAction(NetOutgoingMessage om, TractorBeam.Action action)
+        {
+            this.Ship.WriteTarget(om);
+
+            om.Write(action.Type);
+            om.Write(action.TargetPart, (m, e) =>
+            {
+                m.Write(action.TargetPart.Position);
+                m.Write(action.TargetPart.Rotation);
+            });
+            om.Write(action.TargetNode);
+        }
+
+        public TractorBeam.Action ReadAction(NetIncomingMessage im)
+        {
+            this.Ship.ReadTarget(im);
+
+            var request = new TractorBeam.Action(
+                type: (TractorBeam.ActionType)im.ReadByte(),
+                target: im.ReadEntity<ShipPart>(_entities, (m, sp) =>
+                {
+                    sp.SetTransformIgnoreContacts(
+                        position: m.ReadVector2(),
+                        angle: m.ReadSingle());
+                }),
+                targetNode: im.ReadConnectionNode(_entities));
+
+            return this.TryAction(request);
         }
         #endregion
     }

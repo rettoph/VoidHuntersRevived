@@ -45,6 +45,9 @@ namespace VoidHuntersRevived.Library.Entities
         public void ReadTarget(NetIncomingMessage im)
             => this.Target = im.ReadVector2();
 
+        public void ReadFiring(NetIncomingMessage im)
+            => this.Firing = im.ReadBoolean();
+
         public void WriteBridge(NetOutgoingMessage om)
             => om.Write(this.Bridge);
 
@@ -62,5 +65,8 @@ namespace VoidHuntersRevived.Library.Entities
 
         public void WriteTarget(NetOutgoingMessage om)
             => om.Write(this.Target);
+
+        public void WriteFiring(NetOutgoingMessage om)
+            => om.Write(this.Firing);
     }
 }

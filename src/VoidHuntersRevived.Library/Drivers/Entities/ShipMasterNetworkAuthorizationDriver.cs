@@ -2,13 +2,17 @@
 using Guppy.Extensions.Collections;
 using Guppy.Lists;
 using Guppy.Utilities;
+using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using Guppy.Network.Extensions.Lidgren;
+using VoidHuntersRevived.Library.Extensions.Lidgren.Network;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities
 {
@@ -22,6 +26,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         private EntityList _entities;
         private Synchronizer _synchronizer;
         private WorldEntity _world;
+        private ActionTimer _targetSendTimer;
         #endregion
 
         #region Lifecycle Methods
@@ -34,7 +39,20 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             provider.Service(out _world);
 
             this.driven.OnBridgeChanged += this.HandleBridgeChanged;
+
             this.CleanBridge(default, this.driven.Bridge);
+        }
+
+        protected override void InitializeRemote(Ship driven, ServiceProvider provider)
+        {
+            base.InitializeRemote(driven, provider);
+
+            _targetSendTimer = new ActionTimer(150);
+
+            this.driven.OnUpdate += this.Update;
+            this.driven.OnFiringChanged += this.HandleFiringChanged;
+            this.driven.OnDirectionChanged += this.HandleDirectionChanged;
+            this.driven.TractorBeam.OnAction += this.HandleTractorBeamAction;
         }
 
         protected override void Release(Ship driven)
@@ -47,6 +65,28 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
             this.driven.OnBridgeChanged -= this.HandleBridgeChanged;
             this.CleanBridge(this.driven.Bridge, default);
+        }
+
+        protected override void ReleaseRemote(Ship driven)
+        {
+            base.ReleaseRemote(driven);
+
+            _targetSendTimer = null;
+
+            this.driven.OnUpdate -= this.Update;
+            this.driven.OnFiringChanged -= this.HandleFiringChanged;
+            this.driven.OnDirectionChanged -= this.HandleDirectionChanged;
+            this.driven.TractorBeam.OnAction -= this.HandleTractorBeamAction;
+        }
+        #endregion
+
+        #region Frame Methods
+        private void Update(GameTime gameTime)
+        {
+            _targetSendTimer.Update(gameTime, gt =>
+            { // Attempt to send the newest target value...
+                this.WriteUpdateTarget(this.driven.Actions.Create(NetDeliveryMethod.Unreliable, 0));
+            });
         }
         #endregion
 
@@ -62,6 +102,34 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             {
                 bridge.OnHealthChanged += this.HandleBridgeHealthChanged;
             }
+        }
+        #endregion
+
+        #region Network Methods
+        private void WriteUpdateTarget(NetOutgoingMessage om)
+            => om.Write("update:ship:target", m =>
+            {
+                this.driven.WriteTarget(m);
+            });
+
+        private void WriteUpdateFiring(NetOutgoingMessage om, Boolean value)
+            => om.Write("update:ship:firing", m =>
+            {
+                m.Write(value);
+            });
+
+        private void WriteUpdateDirection(NetOutgoingMessage om, Ship.Direction direction)
+            => om.Write("update:ship:direction", m =>
+            {
+                this.driven.WriteDirection(m, direction);
+            });
+
+        private void WriteTractorBeamAction(NetOutgoingMessage om, TractorBeam.Action action)
+        {
+            om.Write("ship:tractor-beam:action", m =>
+            {
+                this.driven.TractorBeam.WriteAction(m, action);
+            });
         }
         #endregion
 
@@ -83,6 +151,21 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
                 this.driven.Bridge = default;
             }
         }
+
+        private void HandleDirectionChanged(Ship sender, Ship.DirectionState args)
+            => this.WriteUpdateDirection(
+                this.driven.Actions.Create(NetDeliveryMethod.Unreliable, 0), 
+                args.Direction);
+
+        private void HandleFiringChanged(Ship sender, bool value)
+            => this.WriteUpdateFiring(
+                    this.driven.Actions.Create(NetDeliveryMethod.Unreliable, 0),
+                    value);
+
+        private void HandleTractorBeamAction(TractorBeam sender, TractorBeam.Action action)
+            => this.WriteTractorBeamAction(
+                this.driven.Actions.Create(NetDeliveryMethod.Unreliable, 0),
+                action);
         #endregion
     }
 }

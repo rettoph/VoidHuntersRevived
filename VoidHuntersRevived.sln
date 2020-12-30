@@ -41,8 +41,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aether.Physics2D.NETSTANDAR
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aether.Physics2D.Diagnostics.NETSTANDARD2_0.MG", "libraries\Aether.Physics2D\Physics2D.Diagnostics\Diagnostics\Aether.Physics2D.Diagnostics.NETSTANDARD2_0.MG.csproj", "{64BF497A-733C-404B-9D31-94B9ACC238C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test", "test\test.csproj", "{C4AB6197-C830-47D0-84D8-9ECEA2A78ADE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Verbose|Any CPU = Debug_Verbose|Any CPU
@@ -122,12 +120,6 @@ Global
 		{64BF497A-733C-404B-9D31-94B9ACC238C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64BF497A-733C-404B-9D31-94B9ACC238C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64BF497A-733C-404B-9D31-94B9ACC238C1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C4AB6197-C830-47D0-84D8-9ECEA2A78ADE}.Debug_Verbose|Any CPU.ActiveCfg = Debug|Any CPU
-		{C4AB6197-C830-47D0-84D8-9ECEA2A78ADE}.Debug_Verbose|Any CPU.Build.0 = Debug|Any CPU
-		{C4AB6197-C830-47D0-84D8-9ECEA2A78ADE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C4AB6197-C830-47D0-84D8-9ECEA2A78ADE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C4AB6197-C830-47D0-84D8-9ECEA2A78ADE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C4AB6197-C830-47D0-84D8-9ECEA2A78ADE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -61,36 +61,13 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
             => this.driven.Ship.ReadTarget(im);
 
         private void HandleShipTractorBeamActionRequestMessage(NetIncomingMessage im)
-        {
-            this.driven.Ship.ReadTarget(im);
-
-            var request = new TractorBeam.Action(
-                type: (TractorBeam.ActionType)im.ReadByte(),
-                target: im.ReadEntity<ShipPart>(_entities, (m, sp) =>
-                {
-                    sp.SetTransformIgnoreContacts(
-                        position: m.ReadVector2(),
-                        angle: m.ReadSingle());
-                }),
-                targetNode: im.ReadConnectionNode(_entities));
-            var response = this.driven.Ship.TractorBeam.TryAction(request);
-
-            if (request.Type != response.Type)
-            { // TODO: Something went wrong, so we need to alert the requesting client...
-                // For now, we just DC the client when this happens.. but thats not how we should release.
-                im.SenderConnection.Disconnect("There was an error processing your request.");
-            }
-        }
+            => this.driven.Ship.TractorBeam.ReadAction(im);
 
         private void HandleUpdateShipDirectionRequestMessage(NetIncomingMessage im)
-        {
-            this.driven.Ship.TrySetDirection(im.ReadEnum<Ship.Direction>(), im.ReadBoolean());
-        }
+            => this.driven.Ship.ReadDirection(im);
 
         private void HandleUpdateShipFiringRequestMessage(NetIncomingMessage im)
-        {
-            this.driven.Ship.Firing = im.ReadBoolean();
-        }
+            => this.driven.Ship.ReadFiring(im);
         #endregion
 
         #region Event Handlers

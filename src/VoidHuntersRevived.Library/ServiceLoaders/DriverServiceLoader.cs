@@ -55,6 +55,8 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddAndBindDriver<ShipPart, ShipPartSlaveNetworkAuthorizationDriver>(p => new ShipPartSlaveNetworkAuthorizationDriver());
 
             services.AddAndBindDriver<Ship, ShipMasterNetworkAuthorizationDriver>(p => new ShipMasterNetworkAuthorizationDriver());
+            services.AddAndBindDriver<Ship, ShipSlaveNetworkAuthorizationDriver>(p => new ShipSlaveNetworkAuthorizationDriver());
+
             services.AddAndBindDriver<Bullet, BulletMasterNetworkAuthorizationDriver>(p => new BulletMasterNetworkAuthorizationDriver());
         }
 
