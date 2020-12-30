@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
     public class RigidShipPart : ShipPart
     {
         #region Private Fields
-        private Queue<FixtureContainer> _fixtures;
+        private Queue<FixtureContainer> _rootFixtures;
         private Vector2 _localCenter;
         #endregion
 
@@ -29,11 +29,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void Create(ServiceProvider provider)
         {
-            base.PreInitialize(provider);
+            base.Create(provider);
 
-            _fixtures = new Queue<FixtureContainer>();
+            _rootFixtures = new Queue<FixtureContainer>();
 
             this.OnChainChanged += this.HandleChainChanged;
         }
@@ -42,8 +42,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             base.Release();
 
-            while (_fixtures.Any())
-                _fixtures.Dequeue().Destroy();
+            while (_rootFixtures.Any())
+                _rootFixtures.Dequeue().Destroy();
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
 
             this.OnChainChanged -= this.HandleChainChanged;
         }
@@ -86,7 +91,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             if(value != default)
             {
-                this.AddFixtures(this.Root, _fixtures);
+                this.AddFixtures(this.Root, _rootFixtures);
 
                 _localCenter = this.IsRoot ? base.LocalCenter : Vector2.Transform(this.Configuration.Centeroid, this.LocalTransformation);
             }    

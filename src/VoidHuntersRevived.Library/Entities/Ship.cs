@@ -185,6 +185,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Release();
 
+            this.Firing = false;
             this.Bridge = null;
             this.Player = null;
             _controller = null;

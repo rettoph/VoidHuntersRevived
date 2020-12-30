@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Events.Delegates;
 using Guppy.IO.Extensions.log4net;
 using Microsoft.Xna.Framework;
 using System;
@@ -37,15 +38,19 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         }
         #endregion
 
+        #region Events
+        public event OnEventDelegate<ShipPart> OnTransformationsCleaned;
+        #endregion
+
         #region Lifecycle Methods
-        private void Transformations_PreInitialize(ServiceProvider provider)
+        private void Transformations_Create(ServiceProvider provider)
         {
-            this.OnChainChanged += this.Transformations_HandleChainChanged;
+            this.OnChainChanged += ShipPart.Transformations_HandleChainChanged;
         }
 
-        private void Transformations_Release()
+        private void Transformations_Dispose()
         {
-            this.OnChainChanged -= this.Transformations_HandleChainChanged;
+            this.OnChainChanged -= ShipPart.Transformations_HandleChainChanged;
         }
         #endregion
 
@@ -71,14 +76,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                     * female.LocalTransformationMatrix
                     * this.Parent.LocalTransformation;
             }
+
+            this.OnTransformationsCleaned?.Invoke(this);
         }
         #endregion
 
         #region Event Handlers
-        private void Transformations_HandleChainChanged(ShipPart sender, Chain old, Chain value)
-        {
-            this.UpdateLocalTranslation();
-        }
+        private static void Transformations_HandleChainChanged(ShipPart sender, Chain old, Chain value)
+            => sender.UpdateLocalTranslation();
         #endregion
     }
 }

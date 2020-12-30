@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #endregion
 
         #region Events
-        public OnChangedEventDelegate<ShipPart, Chain> OnChainChanged;
+        public event OnChangedEventDelegate<ShipPart, Chain> OnChainChanged;
         #endregion
 
         #region Lifecycle Methods

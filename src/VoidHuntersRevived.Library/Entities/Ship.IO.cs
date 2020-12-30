@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -19,12 +20,12 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Import Methods
-        public void Import(Byte[] data)
+        public void Import(Byte[] data, Vector2 position = default, Single rotation = default)
         {
             using (MemoryStream stream = new MemoryStream(data))
-                this.Import(stream);
+                this.Import(stream, position);
         }
-        public void Import(Stream input)
+        public void Import(Stream input, Vector2 position = default, Single rotation = default)
         {
             using (BinaryReader reader = new BinaryReader(input))
             {
@@ -38,17 +39,18 @@ namespace VoidHuntersRevived.Library.Entities
                             break;
                         // Import ship component data...
                         case ExportData.Components:
-                            this.Bridge = this.ImportComponents(reader);
+                            this.Bridge = this.ImportComponents(reader, position, rotation);
                             break;
                     }
                 }
             }
         }
-        private ShipPart ImportComponents(BinaryReader input)
+        private ShipPart ImportComponents(BinaryReader input, Vector2 position = default, Single rotation = default)
         {
             var output = _entities.Create<ShipPart>(input.ReadString(), (sp, p, s) =>
             {
                 sp.Id = Guid.NewGuid();
+                sp.SetTransformIgnoreContacts(position, rotation);
             });
 
             foreach (ConnectionNode female in output.FemaleConnectionNodes)
@@ -56,7 +58,7 @@ namespace VoidHuntersRevived.Library.Entities
                 if (input.ReadBoolean())
                 { // If the stream has this node marked as attached...
                     // Create a new child and attatch it to the current node.
-                    this.ImportComponents(input).MaleConnectionNode.TryAttach(female);
+                    this.ImportComponents(input, position, rotation).MaleConnectionNode.TryAttach(female);
                 }
             }
 

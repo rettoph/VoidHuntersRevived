@@ -67,6 +67,10 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             this.settings.Set<NetworkAuthorization>(NetworkAuthorization.Master);
             this.settings.Set<HostType>(HostType.Local);
+
+            _client.OnConnectionStatusChanged += this.HandleClientConnectionStatusChanged;
+            _players.OnAdded += this.HandlePlayerAdded;
+            _players.OnRemoved += this.HandlePlayerRemoved;
         }
 
         protected override void Initialize(ServiceProvider provider)
@@ -84,10 +88,12 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                             player.Ship = this.Entities.Create<Ship>((ship, p2, c) =>
                             {
                                 var ships = Directory.GetFiles("Ships", "*.vh");
-                                ship.Import(File.OpenRead(ships[_rand.Next(ships.Length)]));
+                                ship.Import(
+                                    input: File.OpenRead(ships[_rand.Next(ships.Length)]), 
+                                    position: this.camera.Unproject(_mouse.Position.ToVector3()).ToVector2(),
+                                    rotation: MathHelper.TwoPi * (Single)_rand.NextDouble());
 
                                 // ship.SetBridge(this.Entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
-                                ship.Bridge.Position = this.camera.Unproject(_mouse.Position.ToVector3()).ToVector2();
                             });
                         });
                     });
@@ -155,7 +161,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             });
             #endregion
 
-            this.camera.Zoom = 30f;
+            this.camera.Zoom = 5f;
             var pos = (new Vector2(Chunk.Size * 3, Chunk.Size * 3) / 2);
             pos.Round();
             // pos += new Vector2(0.5f, 0.5f);
@@ -176,19 +182,13 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                     player.Ship = this.Entities.Create<Ship>((ship, p2, c) =>
                     {
                         var ships = Directory.GetFiles("Ships", "*.vh");
-                        ship.Import(File.OpenRead(ships[_rand.Next(ships.Length)]));
-
-                        // ship.SetBridge(this.Entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
-                        ship.Bridge.SetTransformIgnoreContacts(
-                            _rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y),
-                            MathHelper.TwoPi * (Single)_rand.NextDouble());
+                        ship.Import(
+                            input: File.OpenRead(ships[_rand.Next(ships.Length)]),
+                            position: _rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y),
+                            rotation: MathHelper.TwoPi * (Single)_rand.NextDouble());
                     });
                 });
             }
-
-            _client.OnConnectionStatusChanged += this.HandleClientConnectionStatusChanged;
-            _players.OnAdded += this.HandlePlayerAdded;
-            _players.OnRemoved += this.HandlePlayerRemoved;
         }
 
         protected override void Release()
@@ -256,12 +256,10 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             if(sender.Bridge == default && sender.Status == Guppy.Enums.ServiceStatus.Ready)
             {
                 var ships = Directory.GetFiles("Ships", "*.vh");
-                sender.Import(File.OpenRead(ships[_rand.Next(ships.Length)]));
-
-                // ship.SetBridge(this.Entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
-                sender.Bridge.SetTransformIgnoreContacts(
-                    _rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y), 
-                    MathHelper.TwoPi * (Single)_rand.NextDouble());
+                sender.Import(
+                    input: File.OpenRead(ships[_rand.Next(ships.Length)]),
+                    position: _rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y),
+                    rotation: MathHelper.TwoPi * (Single)_rand.NextDouble());
             }
         }
 

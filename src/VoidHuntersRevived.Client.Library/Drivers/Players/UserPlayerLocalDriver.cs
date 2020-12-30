@@ -88,7 +88,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
                 });
 
                 // Update camera position...
-                _camera.MoveTo(this.driven.Ship.Bridge.WorldCenter);
+                _camera.MoveTo(this.driven.Ship.Bridge?.WorldCenter ?? _camera.PositionTarget);
             }
         }
         #endregion

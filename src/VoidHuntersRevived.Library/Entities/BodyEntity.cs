@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Private Fields
-        private HashSet<FixtureContainer> _fixtures;
+        private Queue<FixtureContainer> _fixtures;
         private Category _collisionCategories;
         private Category _collidesWith;
         private Boolean _isSensor;
@@ -174,7 +174,7 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.PreInitialize(provider);
 
-            _fixtures = new HashSet<FixtureContainer>();
+            _fixtures = new Queue<FixtureContainer>();
 
             this.MessageHandlers[MessageType.Create].Add(this.CreateReadPosition, this.master.WritePosition);
         }
@@ -182,6 +182,9 @@ namespace VoidHuntersRevived.Library.Entities
         protected override void Release()
         {
             base.Release();
+
+            while (_fixtures.Any()) // Destroy all internal fixtures.
+                _fixtures.Dequeue().Destroy();
 
             this.MessageHandlers[MessageType.Create].Remove(this.CreateReadPosition, this.master.WritePosition);
         }
@@ -210,13 +213,12 @@ namespace VoidHuntersRevived.Library.Entities
         public virtual FixtureContainer BuildFixture(Shape shape, BodyEntity owner)
             => new FixtureContainer(this, owner, shape).Then(fixture =>
             {
-                _fixtures.Add(fixture);
+                _fixtures.Enqueue(fixture);
 
                 this.Do(fixture.Attach);
 
                 this.OnFixtureCreated?.Invoke(this, fixture);
             });
-
         public virtual void SetTransformIgnoreContacts(Vector2 position, Single angle)
             => this.Do(b => b.SetTransformIgnoreContacts(position, angle));
 

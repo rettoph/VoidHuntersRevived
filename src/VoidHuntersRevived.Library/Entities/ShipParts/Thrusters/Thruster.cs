@@ -95,6 +95,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
             this.OnChainChanged += Thruster.HandleChainChanged;
         }
 
+        protected override void PreRelease()
+        {
+            base.PreRelease();
+
+            this.ActiveDirections = Ship.Direction.None;
+            this.ImpulseModifier = 0f;
+        }
+
         protected override void Dispose()
         {
             base.Dispose();

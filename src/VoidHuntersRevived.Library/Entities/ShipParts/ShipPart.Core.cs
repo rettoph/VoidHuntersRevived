@@ -16,6 +16,7 @@ using Guppy.Network.Extensions.Lidgren;
 using Guppy.Lists;
 using VoidHuntersRevived.Library.Extensions.Lidgren.Network;
 using tainicom.Aether.Physics2D.Dynamics;
+using Guppy.Extensions.System;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -65,6 +66,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             base.Create(provider);
 
+            this.Transformations_Create(provider);
+
             this.OnChainChanged += this.HandleChainChanged;
             this.ValidateCleaning += this.HandleValidateCleaning;
         }
@@ -74,8 +77,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             base.PreInitialize(provider);
 
             provider.Service(out _entities);
-
-            this.Transformations_PreInitialize(provider);
 
             this.BodyType = BodyType.Dynamic;
 
@@ -109,8 +110,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             base.Release();
 
             _entities = null;
-
-            this.Transformations_Release();
             this.Chain_Release();
         }
 
@@ -125,6 +124,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             this.OnChainChanged -= this.HandleChainChanged;
             this.ValidateCleaning -= this.HandleValidateCleaning;
+
+            this.Transformations_Dispose();
         }
         #endregion
 
@@ -153,13 +154,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// <param name="value"></param>
         private void HandleChainChanged(ShipPart sender, Chain old, Chain value)
         {
-            if(old != default(Chain))
+            if(old != default)
             { // Unset old chain actions as needed...
                 // Remove the draw handler from the old chain
                 old.OnDraw -= this.TryDraw;
             }
 
-            if(value != default(Chain))
+            if(value != default)
             { // Set new chain actions as needed...
                 // When the root chain is drawn, we should draw the current ship part as well
                 value.OnDraw += this.TryDraw;

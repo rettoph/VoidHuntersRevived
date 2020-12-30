@@ -16,6 +16,8 @@ using VoidHuntersRevived.Library.Entities.Ammunitions;
 using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Extensions.Aether;
 using tainicom.Aether.Physics2D.Common;
+using Guppy.Extensions.System;
+using Guppy.Extensions.Microsoft.Xna.Framework;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 {
@@ -79,22 +81,27 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             base.Create(provider);
 
             this.ValidateFire += Weapon.HandleValidateFire;
+            this.OnChainChanged += Weapon.HandleChainChanged;
         }
 
-        protected override void Initialize(ServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
-            base.Initialize(provider);
+            base.PreInitialize(provider);
+
             _joints = new Dictionary<Body, RevoluteJoint>();
             _fireTimer = new ActionTimer(400);
 
             _provider = provider;
             provider.Service(out _entities);
+        }
+
+        protected override void Initialize(ServiceProvider provider)
+        {
+            base.Initialize(provider);
 
             // Create new shapes for the part
             foreach (Vertices vertices in this.Configuration.Vertices)
                 this.BuildFixture(new PolygonShape(vertices, this.Configuration.Density), this);
-
-            this.OnChainChanged += this.HandleChainChanged;
 
             // Create new default joints as needed
             this.CleanJoints();
@@ -107,8 +114,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             _provider = null;
             _entities = null;
 
-            this.CleanUpdate();
-            this.OnChainChanged -= this.HandleChainChanged;
+            // Auto dispose of each pre-existing joint
+            while (_joints.Any())
+                this.RemoveJoint(_joints.First().Key, _joints.First().Value);
         }
 
         protected override void Dispose()
@@ -116,6 +124,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             base.Dispose();
 
             this.ValidateFire -= Weapon.HandleValidateFire;
+            this.OnChainChanged -= Weapon.HandleChainChanged;
         }
         #endregion
 
@@ -156,13 +165,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             while (_joints.Any())
                 this.RemoveJoint(_joints.First().Key, _joints.First().Value);
 
-            // Reposition the current weapon at a 0deg angle
-            this.MaleConnectionNode.Target?.TryPreview(this);
-
             if (!this.IsRoot)
             { // Only bother creating any joints if the current Weapon is not a root piece
+                this.MaleConnectionNode.Target?.TryPreview(this);
                 this.Do(body =>
                 { // Create a joint for each internal body
+                    if (body.World == default || !body.FixtureList.Any())
+                        return; // Do nothing if World is null.
+
                     // Load the world & root body positions...
                     var world = this.GetParent(body);
                     var root = this.Root.GetChild(world);
@@ -176,10 +186,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                         anchorB: this.MaleConnectionNode.LocalPosition);
 
                     // Finialize joint setup...
-                    joint.MotorEnabled = true;
                     joint.CollideConnected = false;
-                    joint.MaxMotorTorque = 0.75f;
+                    joint.MaxMotorTorque = 2f;
                     joint.MotorSpeed = 0.0f;
+                    joint.MotorEnabled = true;
                     joint.LowerLimit = -(2 / 2);
                     joint.UpperLimit = (2 / 2);
                     joint.LimitEnabled = true;
@@ -218,25 +228,15 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                     var offset = joint.WorldAnchorB - target;
 
                     // Calculate the angle the joint should be to reach the current target...
-                    var angle = MathHelper.WrapAngle((Single)Math.Atan2(offset.Y, offset.X) - this.MaleConnectionNode.WorldRotation);
+                    var angle = MathHelper.WrapAngle((Single)Math.Atan2(offset.Y, offset.X) - this.MaleConnectionNode.GetWordRotation(joint.BodyA));
 
                     // Calculate the current different in angle
                     var diff = angle - joint.JointAngle;
 
-                    if(diff + 1 < joint.LowerLimit)
-                    {
-                        body.Rotation = this.Root.GetChild(this.GetParent(body)).Rotation + this.LocalRotation - joint.UpperLimit;
-                    }
-                    else if(joint.UpperLimit < diff - 1)
-                    {
-                        body.Rotation = this.Root.GetChild(this.GetParent(body)).Rotation + this.LocalRotation + joint.UpperLimit;
-                    }
-                    else
-                    {
-                        // Set the joints speed...
-                        joint.MotorSpeed = diff * (1000f / 64f);
-                        this.TargetInRange = MathHelper.Clamp(angle, joint.LowerLimit, joint.UpperLimit) == angle;
-                    }
+                    joint.MotorSpeed = diff * (1000f / 64f);
+                    this.TargetInRange = MathHelper.Clamp(diff, joint.LowerLimit, joint.UpperLimit) == diff;
+
+                    // Console.WriteLine($"Offset: {offset.ToString("0.00")}; Angle: {angle.ToString("0.00")}; JointAngle: {joint.JointAngle.ToString("0.00")}; Diff: {diff.ToString("0.00")}");
                 }
             });
         }
@@ -270,7 +270,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             this.OnUpdate -= this.UpdateAim;
             this.OnUpdate -= this.UpdatePosition;
 
-            if(this.Chain?.Ship != default)// When there is a ship, attempt to aim the gun
+            if(this.Chain?.Ship != default) // When there is a ship, attempt to aim the gun
                 this.OnUpdate += this.UpdateAim;
             else if(!this.IsRoot) // When there is no ship but its in a chain, update position directly...
                 this.OnUpdate += this.UpdatePosition;
@@ -293,28 +293,31 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         #endregion
 
         #region Event Handlers
-        private void HandleChainChanged(ShipPart sender, Chain old, Chain value)
+        private static void HandleChainChanged(ShipPart sender, Chain old, Chain value)
         {
-            if (old != default)
+            if(sender is Weapon weapon)
             {
-                old.Root.OnCollidesWithChanged -= this.HandleRootCollisionChanged;
-                old.Root.OnCollisionCategoriesChanged -= this.HandleRootCollisionChanged;
-                old.OnShipChanged -= this.HandleRootShipChanged;
-                old.OnUpdate -= this.TryUpdate;
-            }
+                if (old != default)
+                {
+                    old.Root.OnCollidesWithChanged -= weapon.HandleRootCollisionChanged;
+                    old.Root.OnCollisionCategoriesChanged -= weapon.HandleRootCollisionChanged;
+                    old.OnShipChanged -= weapon.HandleRootShipChanged;
+                    old.OnUpdate -= weapon.TryUpdate;
+                }
 
-            if (value != default)
-            {
-                value.Root.OnCollidesWithChanged += this.HandleRootCollisionChanged;
-                value.Root.OnCollisionCategoriesChanged += this.HandleRootCollisionChanged;
-                value.OnShipChanged += this.HandleRootShipChanged;
-                value.OnUpdate += this.TryUpdate;
-            }
+                if (value != default)
+                {
+                    value.Root.OnCollidesWithChanged += weapon.HandleRootCollisionChanged;
+                    value.Root.OnCollisionCategoriesChanged += weapon.HandleRootCollisionChanged;
+                    value.OnShipChanged += weapon.HandleRootShipChanged;
+                    value.OnUpdate += weapon.TryUpdate;
+                }
 
-            // Clean default wepaon data
-            this.CleanCollision();
-            this.CleanUpdate();
-            this.CleanJoints();
+                // Clean default wepaon data
+                weapon.CleanCollision();
+                weapon.CleanUpdate();
+                weapon.CleanJoints();
+            }
         }
 
         private void HandleRootCollisionChanged(BodyEntity sender, Category arg)

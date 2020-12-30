@@ -57,18 +57,29 @@ namespace VoidHuntersRevived.Library.Entities.Players
             provider.Service(out _entities);
 
             this.players = provider.GetService<ServiceList<Player>>();
+        }
+
+        protected override void PostInitialize(ServiceProvider provider)
+        {
+            base.PostInitialize(provider);
+
             this.players.TryAdd(this);
         }
 
+        protected override void PreRelease()
+        {
+            base.PreRelease();
+
+            this.players.TryRemove(this);
+        }
         protected override void Release()
         {
             base.Release();
 
+            // Unset the old player values...
             _entities = null;
-
-            // Unset the old ship value...
             this.Ship = null;
-            this.players.TryRemove(this);
+            this.players = null;
         }
 
         protected override void Dispose()
