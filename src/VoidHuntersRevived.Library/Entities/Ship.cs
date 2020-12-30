@@ -181,12 +181,14 @@ namespace VoidHuntersRevived.Library.Entities
             this.TractorBeam = provider.GetService<EntityList>().Create<TractorBeam>((t, p, c) => t.Ship = this);
         }
 
-        protected override void PostRelease()
+        protected override void Release()
         {
-            base.PostRelease();
+            base.Release();
 
-            _bridge = null;
-            _player = null;
+            this.Bridge = null;
+            this.Player = null;
+            _controller = null;
+            _entities = null;
         }
 
         /// <inheritdoc />
@@ -292,6 +294,7 @@ namespace VoidHuntersRevived.Library.Entities
                 old.Chain.OnShipPartAdded -= Ship.HandleBridgeChainChanged;
                 old.Chain.OnShipPartRemoved -= Ship.HandleBridgeChainChanged;
                 old.Chain.OnStatus[ServiceStatus.Releasing] -= sender.HandleBridgeChainReleasing;
+                old.OnStatus[ServiceStatus.Releasing] -= sender.HandleBridgeReleasing;
                 old.Chain.Ship = null;
             }
 
@@ -302,6 +305,7 @@ namespace VoidHuntersRevived.Library.Entities
                 value.Chain.OnShipPartAdded += Ship.HandleBridgeChainChanged;
                 value.Chain.OnShipPartRemoved += Ship.HandleBridgeChainChanged;
                 value.Chain.OnStatus[ServiceStatus.Releasing] += sender.HandleBridgeChainReleasing;
+                value.OnStatus[ServiceStatus.Releasing] += sender.HandleBridgeReleasing;
             }
 
             // Clean the ship before releasing...
@@ -336,6 +340,9 @@ namespace VoidHuntersRevived.Library.Entities
         }
 
         private void HandleBridgeChainReleasing(IService sender)
+            => this.Bridge = default;
+
+        private void HandleBridgeReleasing(IService sender)
             => this.Bridge = default;
         #endregion
     }

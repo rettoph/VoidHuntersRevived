@@ -57,9 +57,12 @@ namespace VoidHuntersRevived.Client.Library.Services
             provider.Service(out _primitiveBatch);
         }
 
-        protected override void PostInitialize(ServiceProvider provider)
+        protected override void Release()
         {
-            base.PostInitialize(provider);
+            base.Release();
+
+            _camera = null;
+            _primitiveBatch = null;
         }
         #endregion
 

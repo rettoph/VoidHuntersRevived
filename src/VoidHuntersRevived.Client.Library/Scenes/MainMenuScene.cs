@@ -4,10 +4,14 @@ using Guppy.Extensions.DependencyInjection;
 using Guppy.IO.Input.Services;
 using Guppy.IO.Services;
 using Guppy.Lists;
+using Guppy.Lists.Interfaces;
+using Guppy.Network;
+using Guppy.Network.Peers;
 using Guppy.UI.Elements;
 using Guppy.UI.Enums;
 using Guppy.UI.Utilities.Units;
 using Guppy.Utilities;
+using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -15,7 +19,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading;
 using VoidHuntersRevived.Client.Library.UI;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
@@ -24,12 +27,14 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
 using VoidHuntersRevived.Library.Extensions.System;
+using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Client.Library.Scenes
 {
     public class MainMenuScene : GraphicsGameScene
     {
         #region Private Fields
+        private SceneList _scenes;
         private ServiceList<Player> _players;
         private WorldEntity _world;
         private Random _rand;
@@ -37,6 +42,13 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private KeyboardService _keys;
         private MouseService _mouse;
         private Synchronizer _synchronizer;
+        private ClientPeer _client;
+
+        private FormComponent _username;
+        private FormComponent _host;
+        private FormComponent _port;
+        private TextElement _connect;
+        private User _user;
         #endregion
 
         #region Lifecycle Methods
@@ -44,10 +56,14 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         {
             base.PreInitialize(provider);
 
+            provider.Service(out _scenes);
             provider.Service(out _players);
             provider.Service(out _keys);
             provider.Service(out _mouse);
             provider.Service(out _synchronizer);
+            provider.Service(out _client);
+            provider.Service(out _user);
+            provider.Service(out _graphics);
 
             this.settings.Set<NetworkAuthorization>(NetworkAuthorization.Master);
             this.settings.Set<HostType>(HostType.Local);
@@ -56,8 +72,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
-
-            provider.Service(out _graphics);
 
             _keys[Keys.G].OnStateChanged += (s, args) =>
             {
@@ -75,7 +89,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                                 // ship.SetBridge(this.Entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
                                 ship.Bridge.Position = this.camera.Unproject(_mouse.Position.ToVector3()).ToVector2();
                             });
-                            player.Ship.OnBridgeChanged += this.HandlePlayerBridgeChanged;
                         });
                     });
                 }
@@ -91,7 +104,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                 container.Inline = InlineType.Vertical;
 
                 container.Children.Create<HeaderComponent>();
-                container.Children.Create<FormComponent>((username, p, c) =>
+                _username = container.Children.Create<FormComponent>((username, p, c) =>
                 {
                     username.Label.Value = "Username";
                     username.Input.Value = "Rettoph";
@@ -102,14 +115,14 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                 {
                     container2.Bounds.X = new CustomUnit(c => (c - container2.Bounds.Width.ToPixel(c)) / 2);
                     container2.Alignment = StackAlignment.Horizontal;
-                    container2.Children.Create<FormComponent>((host, p, c) =>
+                    _host = container2.Children.Create<FormComponent>((host, p, c) =>
                     {
                         host.Label.Value = "Host";
                         host.Input.Value = "localhost";
                         host.Bounds.Width = 550;
                         host.Input.Filter = new Regex("^[a-zA-Z0-9]{0,100}$");
                     });
-                    container2.Children.Create<FormComponent>((port, p, c) =>
+                    _port = container2.Children.Create<FormComponent>((port, p, c) =>
                     {
                         port.Label.Value = "Port";
                         port.Input.Value = "1337";
@@ -123,7 +136,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                     container3.Padding.Top = 25;
                     container3.Inline = InlineType.Vertical;
 
-                    container3.Children.Create<TextElement>((connect, p, c) =>
+                    _connect = container3.Children.Create<TextElement>((connect, p, c) =>
                     {
                         connect.Color[ElementState.Default] = Color.White;
                         connect.BackgroundColor[ElementState.Default] = p.GetColor("ui:input:color:2");
@@ -136,6 +149,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                         connect.Alignment = Alignment.CenterCenter;
                         connect.Font = p.GetContent<SpriteFont>("font:ui:normal");
                         connect.Value = "Connect";
+                        connect.OnClicked += this.HandleConnectClicked;
                     });
                 });
             });
@@ -169,9 +183,12 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                             _rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y),
                             MathHelper.TwoPi * (Single)_rand.NextDouble());
                     });
-                    player.Ship.OnBridgeChanged += this.HandlePlayerBridgeChanged;
                 });
             }
+
+            _client.OnConnectionStatusChanged += this.HandleClientConnectionStatusChanged;
+            _players.OnAdded += this.HandlePlayerAdded;
+            _players.OnRemoved += this.HandlePlayerRemoved;
         }
 
         protected override void Release()
@@ -180,6 +197,29 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             this.settings.Set<NetworkAuthorization>(NetworkAuthorization.Slave);
             this.settings.Set<HostType>(HostType.Remote);
+
+            _players.TryRelease();
+            _connect.OnClicked -= this.HandleConnectClicked;
+            _players.OnAdded -= this.HandlePlayerAdded;
+            _players.OnRemoved -= this.HandlePlayerRemoved;
+
+            _scenes = null;
+            _players = null;
+            _keys = null;
+            _mouse = null;
+            _synchronizer = null;
+            _client = null;
+            _user = null;
+            _graphics = null;
+
+            _username = null;
+            _host = null;
+            _port = null;
+
+            _username = null;
+            _host = null;
+            _port = null;
+            _connect = null;
         }
         #endregion
 
@@ -213,7 +253,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         #region Event Handlers
         private void HandlePlayerBridgeChanged(Ship sender, ShipPart old, ShipPart value)
         {
-            if(sender.Bridge == default)
+            if(sender.Bridge == default && sender.Status == Guppy.Enums.ServiceStatus.Ready)
             {
                 var ships = Directory.GetFiles("Ships", "*.vh");
                 sender.Import(File.OpenRead(ships[_rand.Next(ships.Length)]));
@@ -223,6 +263,43 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                     _rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y), 
                     MathHelper.TwoPi * (Single)_rand.NextDouble());
             }
+        }
+
+        private void HandleConnectClicked(Element sender)
+        {
+            if (_client.ConnectionStatus != NetConnectionStatus.Disconnected)
+                return; // Stop here, we can only try connecting if the status is disconnected.
+
+            _user.Name = _username.Input.Value;
+
+            _client.TryConnect(
+                host: _host.Input.Value, 
+                port: Int32.Parse(_port.Input.Value), 
+                user: _user);
+        }
+
+        private void HandleClientConnectionStatusChanged(ClientPeer sender, NetConnectionStatus old, NetConnectionStatus value)
+        {
+            if(value == NetConnectionStatus.Connected)
+            {
+                
+                _synchronizer.Enqueue(gt =>
+                {
+                    var scene = _scenes.Create<GameScene>();
+                    _scenes.SetScene(scene);
+                    this.TryRelease();
+                });
+            }
+        }
+
+        private void HandlePlayerAdded(IServiceList<Player> sender, Player player)
+        {
+            player.Ship.OnBridgeChanged += this.HandlePlayerBridgeChanged;
+        }
+
+        private void HandlePlayerRemoved(IServiceList<Player> sender, Player player)
+        {
+            player.Ship.OnBridgeChanged -= this.HandlePlayerBridgeChanged;
         }
         #endregion
     }

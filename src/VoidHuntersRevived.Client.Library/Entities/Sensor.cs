@@ -56,9 +56,13 @@ namespace VoidHuntersRevived.Client.Library.Entities
         {
             base.Release();
 
-            _body?.Remove();
+            _body?.TryRemove();
 
             this.OnUpdate -= this.UpdateBody;
+
+            _mouse = null;
+            _camera = null;
+            _scene = null;
         }
         #endregion
 

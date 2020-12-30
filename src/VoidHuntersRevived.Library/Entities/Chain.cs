@@ -22,12 +22,10 @@ namespace VoidHuntersRevived.Library.Entities
     public class Chain : Entity
     {
         #region Private Fields
-        private ServiceProvider _provider;
         private ILog _logger;
         private Ship _ship;
         private Controller _controller;
         private ShipPart _root;
-        private NetworkAuthorization _authorization;
         #endregion
 
         #region Public Properties
@@ -68,8 +66,6 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Initialize(provider);
 
-            _provider = provider;
-            _authorization = provider.GetService<Settings>().Get<NetworkAuthorization>();
             provider.Service(out _logger);
 
             this.Root.OnStatus[ServiceStatus.PostReleasing] += this.HandleRootPostReleasing;
@@ -83,6 +79,11 @@ namespace VoidHuntersRevived.Library.Entities
             base.Release();
 
             this.Root.OnStatus[ServiceStatus.PostReleasing] -= this.HandleRootPostReleasing;
+
+            _logger = null;
+            this.Ship = null;
+            this.Root = null;
+            this.Controller = null;
         }
 
         protected override void PostRelease()

@@ -60,6 +60,11 @@ namespace VoidHuntersRevived.Client.Library.Services
             base.Release();
 
             _trails.TryRelease();
+
+            _provider = null;
+            _primitiveBatch = null;
+            _camera = null;
+            _trails = null;
         }
         #endregion
 

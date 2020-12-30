@@ -37,6 +37,13 @@ namespace VoidHuntersRevived.Server
 
             this.Scenes.Create<GameScene>();
         }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _commands = null;
+        }
         #endregion
 
         #region Frame Methods

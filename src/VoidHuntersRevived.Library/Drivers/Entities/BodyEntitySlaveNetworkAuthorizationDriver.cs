@@ -33,6 +33,8 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             base.ReleaseRemote(driven);
 
+            _client = null;
+
             this.driven.OnUpdate -= this.Update;
 
             this.driven.MessageHandlers[MessageType.Update].OnRead -= this.driven.master.ReadPosition;

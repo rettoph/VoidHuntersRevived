@@ -52,6 +52,13 @@ namespace VoidHuntersRevived.Library.Entities.Players
             provider.Service(out _group);
         }
 
+        protected override void Release()
+        {
+            base.Release();
+
+            _group = null;
+        }
+
         protected override void Dispose()
         {
             base.Dispose();

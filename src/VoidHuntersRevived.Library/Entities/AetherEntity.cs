@@ -69,6 +69,11 @@ namespace VoidHuntersRevived.Library.Entities
             this.Build(provider);
         }
 
+        protected override void PreRelease()
+        {
+            base.PreRelease();
+        }
+
         protected override void PostRelease()
         {
             base.PostRelease();

@@ -46,6 +46,9 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
         {
             base.ReleaseRemote(driven);
 
+            _logger = null;
+            _entities = null;
+
             this.driven.Group.Messages.Remove("scene:setup");
             this.driven.Group.Messages.Remove("entity:message");
 

@@ -104,6 +104,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         {
             base.Release();
 
+            _provider = null;
+            _entities = null;
+
             this.CleanUpdate();
             this.OnChainChanged -= this.HandleChainChanged;
         }
@@ -195,7 +198,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         private void RemoveJoint(Body body, RevoluteJoint joint)
         {
             // TODO: Helper extension method?
-            joint.BodyA.World.Remove(joint);
+            joint.TryRemove();
             _joints.Remove(body);
         }
 

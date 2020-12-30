@@ -33,6 +33,13 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             this.Visible = false;
             this.Enabled = false;
         }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _chunks = null;
+        }
         #endregion
 
         #region Frame Methods

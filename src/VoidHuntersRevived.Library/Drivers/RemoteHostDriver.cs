@@ -47,6 +47,8 @@ namespace VoidHuntersRevived.Library.Drivers
 
             if (settings.Get<HostType>() == HostType.Remote)
                 this.ReleaseRemote(driven);
+
+            _settings = null;
         }
 
         protected virtual void ReleaseRemote(TDriven driven)

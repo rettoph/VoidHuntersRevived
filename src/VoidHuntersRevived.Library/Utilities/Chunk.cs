@@ -81,6 +81,14 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             provider.Service(out _world);
             provider.Service(out _chunks);
         }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _world = null;
+            _chunks = null;
+        }
         #endregion
 
         #region Frame Methods

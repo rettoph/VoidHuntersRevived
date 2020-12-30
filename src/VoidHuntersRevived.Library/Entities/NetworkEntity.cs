@@ -96,6 +96,8 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Release();
 
+            _scene = null;
+
             this.OnPostUpdate -= this.PostUpdateRemote;
         }
         #endregion

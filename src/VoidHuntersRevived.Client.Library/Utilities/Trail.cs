@@ -106,11 +106,21 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         {
             base.Release();
 
-            _youngestSegment = null;
             while (_segments.Any())
                 _segments.Dequeue().TryRelease();
 
             this.Thruster = null;
+
+            _provider = null;
+            _youngestSegment = null;
+            _synchronizer = null;
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            _primitiveBatch = null;
         }
         #endregion
 

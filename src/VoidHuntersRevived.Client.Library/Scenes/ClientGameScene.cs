@@ -45,6 +45,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             base.Release();
 
             _mouse.OnScrollWheelValueChanged -= this.HandleMouseScrollWheelValueChanged;
+
+            _mouse = null;
         }
         #endregion
 

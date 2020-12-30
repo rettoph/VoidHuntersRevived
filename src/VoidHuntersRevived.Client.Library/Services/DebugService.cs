@@ -45,6 +45,15 @@ namespace VoidHuntersRevived.Client.Library.Services
 
             _font = _content.Get<SpriteFont>("debug:font");
         }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _spriteBatch = null;
+            _content = null;
+            _graphics = null;
+        }
         #endregion
 
         #region Frame Methods

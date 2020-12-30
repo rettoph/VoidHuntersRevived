@@ -61,6 +61,10 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
             _networkEntities.OnRemoved -= this.HandleNetworkEntityRemoved;
             this.driven.Group.Users.OnAdded -= this.HandleUserJoined;
             this.driven.OnUpdate -= this.Update;
+
+            _entities = null;
+            _userConnections = null;
+            _networkEntities = null;
         }
         #endregion
 

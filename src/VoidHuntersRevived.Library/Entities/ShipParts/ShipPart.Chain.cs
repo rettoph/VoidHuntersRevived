@@ -50,19 +50,21 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
         private void Chain_Release()
         {
-            // Auto release the saved chain.
-            this.Chain = null;
+            _provider = null;
 
             this.OnChainChanged -= this.Chain_HandleOnChainChanged;
 
             this.MaleConnectionNode.OnAttached -= this.Chain_HandleMaleConnectionNodeAttached;
             this.MaleConnectionNode.OnDetached -= this.Chain_HandleMaleConnectionNodeDetached;
+
+            // Auto release the saved chain.
+            this.Chain = null;
         }
         #endregion
 
         #region Event Handlers
         /// <summary>
-        /// Primary method invoked when the chain current shippart's chain
+        /// Primary method invoked when the current shippart's chain
         /// is updated. This will recursively update all children chains as
         /// well.
         /// </summary>

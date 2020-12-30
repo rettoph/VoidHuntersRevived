@@ -46,6 +46,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
             this.driven.OnDraw -= this.Draw;
             this.driven.OnSizeChanged -= this.HandleSizeChanged;
             this.driven.OnExplosionCreated -= this.HandleExplosionCreated;
+
+            _primitiveBatch = null;
+            _explosions = null;
         }
         #endregion
 

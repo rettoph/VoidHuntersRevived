@@ -11,8 +11,8 @@ namespace VoidHuntersRevived.Library.Extensions.Aether
     public static class BodyExtensions
     {
         #region Remove Methods
-        public static void Remove(this Body body)
-            => body.World.Remove(body);
+        public static void TryRemove(this Body body)
+            => body?.World?.Remove(body);
         #endregion
 
         #region Transform Methods

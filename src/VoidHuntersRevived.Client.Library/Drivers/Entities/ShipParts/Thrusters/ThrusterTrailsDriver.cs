@@ -55,6 +55,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters
 
             this.driven.OnImpulse -= this.HandleDrivenImpulse;
             this.driven.OnChainChanged -= this.HandleDrivenChainChanged;
+
+            _trails = null;
         }
         #endregion
 

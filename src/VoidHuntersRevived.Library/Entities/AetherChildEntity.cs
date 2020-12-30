@@ -1,4 +1,6 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Enums;
+using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -24,8 +26,17 @@ namespace VoidHuntersRevived.Library.Entities
             _children = new Dictionary<TParent, T>();
 
             this.parent = this.GetParent(provider);
+            this.parent.OnStatus[ServiceStatus.Releasing] += this.HandleParentReleased;
 
             base.PreInitialize(provider);
+        }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            this.parent.OnStatus[ServiceStatus.Releasing] -= this.HandleParentReleased;
+            this.parent = null;
         }
         #endregion
 
@@ -54,6 +65,11 @@ namespace VoidHuntersRevived.Library.Entities
 
         public T GetChild(TParent parent)
             => _children[parent];
+        #endregion
+
+        #region Event Handlers
+        private void HandleParentReleased(IService sender)
+            => this.TryRelease();
         #endregion
     }
 }

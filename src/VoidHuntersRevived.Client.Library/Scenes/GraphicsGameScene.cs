@@ -140,6 +140,19 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _window.ClientSizeChanged -= this.HandleClientSizeChanged;
             _commands["toggle"]["debug"].OnExcecute -= this.HandleToggleDebugCommand;
             _debug.Lines -= this.RenderDebugLines;
+
+            _shipParts = null;
+            _trails = null;
+            _explosions = null;
+            _commands = null;
+            _chunks = null;
+            _debug = null;
+            _window = null;
+            _graphics = null;
+            _content = null;
+            _spriteBatch = null;
+            _primitiveBatch = null;
+            _camera = null;
         }
         #endregion
 

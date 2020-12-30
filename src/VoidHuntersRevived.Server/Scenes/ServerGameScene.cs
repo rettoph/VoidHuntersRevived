@@ -104,6 +104,13 @@ namespace VoidHuntersRevived.Server.Scenes
                 }
             }
         }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _synchronizer = null;
+        }
         #endregion
 
         #region Frame Methods

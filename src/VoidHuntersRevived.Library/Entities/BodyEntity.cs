@@ -217,18 +217,6 @@ namespace VoidHuntersRevived.Library.Entities
                 this.OnFixtureCreated?.Invoke(this, fixture);
             });
 
-        public virtual Boolean DestroyFixture(FixtureContainer fixture)
-        {
-            if (_fixtures.Remove(fixture))
-            {
-                fixture.Destroy(true);
-                this.OnFixtureDestroyed?.Invoke(this, fixture);
-                return true;
-            }
-
-            return false;
-        }
-
         public virtual void SetTransformIgnoreContacts(Vector2 position, Single angle)
             => this.Do(b => b.SetTransformIgnoreContacts(position, angle));
 
@@ -252,7 +240,7 @@ namespace VoidHuntersRevived.Library.Entities
             => provider.GetService<WorldEntity>();
 
         protected override void Destroy()
-            => this.Do(b => b.Remove());
+            => this.Do(b => b.TryRemove());
         #endregion
 
         #region Event Handlers

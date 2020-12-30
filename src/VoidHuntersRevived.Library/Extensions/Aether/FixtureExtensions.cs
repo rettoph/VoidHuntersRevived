@@ -9,8 +9,13 @@ namespace VoidHuntersRevived.Library.Extensions.Aether
     public static class FixtureExtensions
     {
         #region Remove Methods
-        public static void Remove(this Fixture fixture)
-            => fixture.Body.Remove(fixture);
+        public static void TryRemove(this Fixture fixture)
+        {
+            if (fixture?.Body?.World == default)
+                return;
+            
+            fixture.Body.Remove(fixture);
+        }
         #endregion
     }
 }

@@ -8,8 +8,8 @@ namespace VoidHuntersRevived.Library.Extensions.Aether
     public static class JointExtensions
     {
         #region Remove Methods
-        public static void Remove(this Joint joint)
-            => joint.BodyA.World.Remove(joint);
+        public static void TryRemove(this Joint joint)
+            => joint?.BodyA?.World?.Remove(joint);
         #endregion
     }
 }

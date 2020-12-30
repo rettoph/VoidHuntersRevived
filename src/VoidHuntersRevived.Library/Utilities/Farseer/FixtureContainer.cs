@@ -40,13 +40,7 @@ namespace VoidHuntersRevived.Library.Utilities.Farseer
 
         public void Destroy()
         {
-            this.Root.DestroyFixture(this);
-        }
-
-        internal void Destroy(Boolean external)
-        {
-            if(external)
-                _fixtures.ForEach(f => f.Remove());
+            _fixtures.ForEach(f => f.TryRemove());
         }
     }
 }

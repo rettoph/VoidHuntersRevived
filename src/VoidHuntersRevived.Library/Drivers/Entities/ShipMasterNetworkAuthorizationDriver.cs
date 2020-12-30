@@ -41,6 +41,10 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             base.Release(driven);
 
+            _entities = null;
+            _synchronizer = null;
+            _world = null;
+
             this.driven.OnBridgeChanged -= this.HandleBridgeChanged;
             this.CleanBridge(this.driven.Bridge, default);
         }

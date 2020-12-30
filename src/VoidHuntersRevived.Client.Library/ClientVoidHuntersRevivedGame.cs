@@ -45,11 +45,6 @@ namespace VoidHuntersRevived.Client.Library
             _client = provider.GetService<ClientPeer>();
             _client.TryStart();
 
-            var user = provider.GetService<User>();
-            user.Name = "Rettoph";
-
-            _client.TryConnect("localhost", 1337, user);
-
             new Thread(new ThreadStart(() =>
             {
                 while (true)
@@ -84,6 +79,9 @@ namespace VoidHuntersRevived.Client.Library
             base.Release();
 
             _commands["toggle"]["debug"].OnExcecute -= this.HandleToggleDebugCommand;
+
+            _commands = null;
+            _debug = null;
         }
         #endregion
 

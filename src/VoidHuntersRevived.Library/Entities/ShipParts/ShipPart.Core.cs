@@ -108,6 +108,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             base.Release();
 
+            _entities = null;
+
             this.Transformations_Release();
             this.Chain_Release();
         }

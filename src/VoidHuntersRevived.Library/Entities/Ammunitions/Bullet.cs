@@ -67,6 +67,13 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
             this.Age = 0;
         }
 
+        protected override void Release()
+        {
+            base.Release();
+
+            _primitiveBatch = null;
+        }
+
         protected override void Dispose()
         {
             base.Dispose();

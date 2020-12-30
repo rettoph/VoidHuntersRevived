@@ -69,6 +69,10 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
                 _commands["ship"]["direction"].OnExcecute -= this.HandleShipDirectionCommand;
                 _commands["ship"]["tractorbeam"].OnExcecute -= this.HandleShipTractorBeamCommand;
             }
+
+            _commands = null;
+            _sensor = null;
+            _camera = null;
         }
         #endregion
 

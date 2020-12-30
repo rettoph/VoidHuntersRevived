@@ -138,14 +138,14 @@ namespace VoidHuntersRevived.Library.Entities
             _commands["world"]["info"].OnExcecute += this.HandleWorldInfoCommand;
         }
 
-        protected override void Initialize(ServiceProvider provider)
-        {
-            base.Initialize(provider);
-        }
-
         protected override void Release()
         {
             base.Release();
+
+            _commands = null;
+            _log = null;
+            _scene = null;
+            _synchronizer = null;
         }
 
         protected override void Dispose()

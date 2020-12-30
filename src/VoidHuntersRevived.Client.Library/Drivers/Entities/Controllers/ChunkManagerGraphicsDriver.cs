@@ -48,6 +48,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
             base.Release(driven);
 
             this.driven.OnDraw -= this.Draw;
+
+            _camera = null;
+            _primitiveBatch = null;
         }
         #endregion
 

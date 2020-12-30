@@ -172,6 +172,9 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             base.Release();
 
+            _provider = null;
+            _entities = null;
+            _logger = null;
             _world.OnSizeChanged -= this.HandleWorldSizeChanged;
         }
         #endregion

@@ -36,6 +36,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
             base.Release(driven);
 
             this.driven.OnDraw -= this.Draw;
+
+            _renderer = null;
         }
         #endregion
 

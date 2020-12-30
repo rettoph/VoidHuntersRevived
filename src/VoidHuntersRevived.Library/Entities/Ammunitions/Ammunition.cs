@@ -44,6 +44,14 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
 
             provider.Service(out _world);
         }
+
+        protected override void Release()
+        {
+            _world = null;
+
+            base.Release();
+        }
+
         protected override void Dispose()
         {
             base.Dispose();

@@ -64,6 +64,8 @@ namespace VoidHuntersRevived.Library.Entities.Players
         {
             base.Release();
 
+            _entities = null;
+
             // Unset the old ship value...
             this.Ship = null;
             this.players.TryRemove(this);

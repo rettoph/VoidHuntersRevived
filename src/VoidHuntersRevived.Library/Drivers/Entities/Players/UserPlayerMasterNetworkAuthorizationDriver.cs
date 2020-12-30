@@ -46,6 +46,8 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
         {
             base.ReleaseRemote(driven);
 
+            _entities = null;
+
             this.driven.Actions.ValidateRead -= this.ValidateReadAction;
             this.driven.Actions.Remove("update:ship:target:request");
             this.driven.Actions.Remove("ship:tractor-beam:action:request");

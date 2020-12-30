@@ -122,6 +122,9 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             base.Release();
 
+            _chunks = null;
+            _logger = null;
+
             this.CanAttach += this.DefaultCanAttach;
         }
         #endregion

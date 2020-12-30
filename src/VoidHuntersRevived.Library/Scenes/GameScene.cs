@@ -87,8 +87,6 @@ namespace VoidHuntersRevived.Library.Scenes
         {
             base.Release();
 
-            this.group.TryRelease();
-
             this.Entities.OnAdded -= this.HandleEntityAdded;
             this.OnUpdate -= this.UpdateRemote;
             this.OnUpdate -= this.UpdateLocal;

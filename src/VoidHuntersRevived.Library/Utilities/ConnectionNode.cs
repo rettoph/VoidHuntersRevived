@@ -134,6 +134,9 @@ namespace VoidHuntersRevived.Library.Utilities
         {
             shipPart.Do(b =>
             {
+                if (b.World == default)
+                    return;
+
                 var root = this.Parent.Root.GetChild(shipPart.GetParent(b));
                 var rotation = MathHelper.WrapAngle(this.GetWordRotation(root) - shipPart.MaleConnectionNode.LocalRotation);
 

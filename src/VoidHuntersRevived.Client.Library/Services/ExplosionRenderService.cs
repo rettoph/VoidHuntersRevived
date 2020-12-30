@@ -41,6 +41,14 @@ namespace VoidHuntersRevived.Client.Library.Services
             _particles = new List<ExplosionParticles>();
             _toRemove = new Queue<ExplosionParticles>();
         }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _primitiveBatch = null;
+            _camera = null;
+        }
         #endregion
 
         #region Helper Methods

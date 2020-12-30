@@ -28,6 +28,14 @@ namespace VoidHuntersRevived.Client.Library.Layers
 
             _primitiveBatch.Effect.VertexColorEnabled = true;
         }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _primitiveBatch = null;
+            _camera = null;
+        }
         #endregion
 
         #region Frame Methods
