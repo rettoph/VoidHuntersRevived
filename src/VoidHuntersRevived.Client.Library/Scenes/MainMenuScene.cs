@@ -39,8 +39,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private WorldEntity _world;
         private Random _rand;
         private GraphicsDevice _graphics;
-        private KeyboardService _keys;
-        private MouseService _mouse;
         private Synchronizer _synchronizer;
         private ClientPeer _client;
 
@@ -58,8 +56,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             provider.Service(out _scenes);
             provider.Service(out _players);
-            provider.Service(out _keys);
-            provider.Service(out _mouse);
             provider.Service(out _synchronizer);
             provider.Service(out _client);
             provider.Service(out _user);
@@ -76,29 +72,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
-
-            _keys[Keys.G].OnStateChanged += (s, args) =>
-            {
-                if(args.State == ButtonState.Pressed)
-                {
-                    _synchronizer.Enqueue(gt =>
-                    {
-                        this.Entities.Create<ComputerPlayer>((player, p, d) =>
-                        {
-                            player.Ship = this.Entities.Create<Ship>((ship, p2, c) =>
-                            {
-                                var ships = Directory.GetFiles("Ships", "*.vh");
-                                ship.Import(
-                                    input: File.OpenRead(ships[_rand.Next(ships.Length)]), 
-                                    position: this.camera.Unproject(_mouse.Position.ToVector3()).ToVector2(),
-                                    rotation: MathHelper.TwoPi * (Single)_rand.NextDouble());
-
-                                // ship.SetBridge(this.Entities.Create<ShipPart>("entity:ship-part:chassis:mosquito"));
-                            });
-                        });
-                    });
-                }
-            };
 
             #region UI
             this.stage.Content.BackgroundColor[ElementState.Default] = new Color(Color.Black, 125);
@@ -205,8 +178,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             _scenes = null;
             _players = null;
-            _keys = null;
-            _mouse = null;
             _synchronizer = null;
             _client = null;
             _user = null;

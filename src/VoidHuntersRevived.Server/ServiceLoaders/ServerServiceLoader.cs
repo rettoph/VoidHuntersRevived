@@ -5,6 +5,7 @@ using Guppy.Interfaces;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Scenes;

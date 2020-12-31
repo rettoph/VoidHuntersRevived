@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             provider.Service(out _synchronizer);
             provider.Service(out _world);
 
-            this.driven.OnBridgeChanged += this.HandleBridgeChanged;
+            this.driven.OnBridgeChanged += this.Health_HandleBridgeChanged;
 
             this.CleanBridge(default, this.driven.Bridge);
         }
@@ -50,6 +50,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             _targetSendTimer = new ActionTimer(150);
 
             this.driven.OnUpdate += this.Update;
+            this.driven.OnBridgeChanged += this.HandleBridgeChanged;
             this.driven.OnFiringChanged += this.HandleFiringChanged;
             this.driven.OnDirectionChanged += this.HandleDirectionChanged;
             this.driven.TractorBeam.OnAction += this.HandleTractorBeamAction;
@@ -63,7 +64,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             _synchronizer = null;
             _world = null;
 
-            this.driven.OnBridgeChanged -= this.HandleBridgeChanged;
+            this.driven.OnBridgeChanged -= this.Health_HandleBridgeChanged;
             this.CleanBridge(this.driven.Bridge, default);
         }
 
@@ -74,6 +75,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             _targetSendTimer = null;
 
             this.driven.OnUpdate -= this.Update;
+            this.driven.OnBridgeChanged -= this.HandleBridgeChanged;
             this.driven.OnFiringChanged -= this.HandleFiringChanged;
             this.driven.OnDirectionChanged -= this.HandleDirectionChanged;
             this.driven.TractorBeam.OnAction -= this.HandleTractorBeamAction;
@@ -131,10 +133,18 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
                 this.driven.TractorBeam.WriteAction(m, action);
             });
         }
+
+        private void WriteUpdateBridge(NetOutgoingMessage om, ShipPart bridge)
+        {
+            om.Write("update:ship:bridge", m =>
+            {
+                this.driven.WriteBridge(om);
+            });
+        }
         #endregion
 
         #region Event Handlers
-        private void HandleBridgeChanged(Ship sender, ShipPart old, ShipPart value)
+        private void Health_HandleBridgeChanged(Ship sender, ShipPart old, ShipPart value)
             => this.CleanBridge(old, value);
 
         private void HandleBridgeHealthChanged(ShipPart sender, float old, float value)
@@ -151,6 +161,11 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
                 this.driven.Bridge = default;
             }
         }
+
+        private void HandleBridgeChanged(Ship sender, ShipPart old, ShipPart value)
+            => this.WriteUpdateBridge(
+                    this.driven.Actions.Create(NetDeliveryMethod.ReliableOrdered, 10),
+                    value);
 
         private void HandleDirectionChanged(Ship sender, Ship.DirectionState args)
             => this.WriteUpdateDirection(

@@ -48,6 +48,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
                 _targetSender = new ActionTimer(50);
 
                 this.driven.OnUpdate += this.Update;
+                this.driven.Ship.OnBridgeChanged += this.HandleShipBridgeChanged;
 
                 _commands["ship"]["fire"].OnExcecute += this.HandleShipFireCommand;
                 _commands["ship"]["direction"].OnExcecute += this.HandleShipDirectionCommand;
@@ -65,9 +66,12 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
             if(_configured)
             {
                 this.driven.OnUpdate -= this.Update;
+                this.driven.Ship.OnBridgeChanged -= this.HandleShipBridgeChanged;
 
+                _commands["ship"]["fire"].OnExcecute -= this.HandleShipFireCommand;
                 _commands["ship"]["direction"].OnExcecute -= this.HandleShipDirectionCommand;
                 _commands["ship"]["tractorbeam"].OnExcecute -= this.HandleShipTractorBeamCommand;
+                _commands["ship"]["save"].OnExcecute -= this.HandleShipSaveCommand;
             }
 
             _commands = null;
@@ -186,6 +190,30 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
             {
                 this.driven.Ship.TractorBeam.WriteAction(m, action);
             });
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandleShipBridgeChanged(Ship sender, ShipPart old, ShipPart value)
+        {
+            if(value == default)
+            {
+                this.driven.Actions.Create(NetDeliveryMethod.ReliableOrdered, 10).Write("ship:spawn:request", m =>
+                {
+                    var ships = Directory.GetFiles("Ships", "*.vh");
+                    var rand = new Random();
+                    using (var fileStream = File.OpenRead(ships[rand.Next(ships.Length)]))
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            fileStream.CopyTo(memoryStream);
+                            var bytes = memoryStream.ToArray();
+                            m.Write(bytes.Length);
+                            m.Write(bytes);
+                        }
+                    }
+                });
+            }
         }
         #endregion
     }

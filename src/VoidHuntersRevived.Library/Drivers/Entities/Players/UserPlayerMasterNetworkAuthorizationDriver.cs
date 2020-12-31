@@ -8,6 +8,7 @@ using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Utilities;
 using Guppy.Network.Utilities.Messages;
 using Lidgren.Network;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,6 +18,7 @@ using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Extensions.Lidgren.Network;
+using VoidHuntersRevived.Library.Extensions.System;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities.Players
 {
@@ -25,6 +27,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
         #region Private Fields
         private EntityList _entities;
         private NetConnection _userConnection;
+        private WorldEntity _world;
         #endregion
 
         #region Lifecycle Methods
@@ -33,6 +36,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
             base.InitializeRemote(driven, provider);
 
             provider.Service(out _entities);
+            provider.Service(out _world);
             _userConnection = provider.GetService<UserNetConnectionDictionary>().Connections[this.driven.User];
 
             this.driven.Actions.ValidateRead += this.ValidateReadAction;
@@ -40,6 +44,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
             this.driven.Actions.Set("ship:tractor-beam:action:request", this.HandleShipTractorBeamActionRequestMessage);
             this.driven.Actions.Set("update:ship:direction:request", this.HandleUpdateShipDirectionRequestMessage);
             this.driven.Actions.Set("update:ship:firing:request", this.HandleUpdateShipFiringRequestMessage);
+            this.driven.Actions.Set("ship:spawn:request", this.HandleShipSpawnRequestMessage);
         }
 
         protected override void ReleaseRemote(UserPlayer driven)
@@ -47,12 +52,15 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
             base.ReleaseRemote(driven);
 
             _entities = null;
+            _world = null;
+            _userConnection = null;
 
             this.driven.Actions.ValidateRead -= this.ValidateReadAction;
             this.driven.Actions.Remove("update:ship:target:request");
             this.driven.Actions.Remove("ship:tractor-beam:action:request");
             this.driven.Actions.Remove("update:ship:direction:request");
             this.driven.Actions.Remove("update:ship:firing:request");
+            this.driven.Actions.Remove("ship:spawn:request");
         }
         #endregion
 
@@ -68,6 +76,17 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
 
         private void HandleUpdateShipFiringRequestMessage(NetIncomingMessage im)
             => this.driven.Ship.ReadFiring(im);
+
+        private void HandleShipSpawnRequestMessage(NetIncomingMessage im)
+        {
+            var length = im.ReadInt32();
+            var bytes = im.ReadBytes(length);
+            var rand = new Random();
+            this.driven.Ship.Import(
+                data: bytes,
+                position: rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y),
+                rotation: MathHelper.TwoPi * (Single)rand.Next());
+        }
         #endregion
 
         #region Event Handlers
