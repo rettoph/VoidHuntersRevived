@@ -44,20 +44,6 @@ namespace VoidHuntersRevived.Client.Library
 
             _client = provider.GetService<ClientPeer>();
             _client.TryStart();
-
-            new Thread(new ThreadStart(() =>
-            {
-                while (true)
-                {
-                    var input = Console.ReadLine();
-
-                    Console.SetCursorPosition(0, Console.CursorTop - 1);
-                    Console.Write(new string(' ', Console.WindowWidth));
-                    Console.SetCursorPosition(0, Console.CursorTop);
-
-                    _commands.TryExecute(input);
-                }
-            })).Start();
         }
 
         protected override void Initialize(ServiceProvider provider)
