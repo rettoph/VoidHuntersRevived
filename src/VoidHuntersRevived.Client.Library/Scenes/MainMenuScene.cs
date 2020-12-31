@@ -126,7 +126,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                         host.Label.Value = "Host";
                         host.Input.Value = "localhost";
                         host.Bounds.Width = 550;
-                        host.Input.Filter = new Regex("^[a-zA-Z0-9]{0,100}$");
+                        host.Input.Filter = new Regex("^[a-zA-Z0-9\\.]{0,100}$");
                     });
                     _port = container2.Children.Create<FormComponent>((port, p, c) =>
                     {
@@ -278,9 +278,10 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
         private void HandleClientConnectionStatusChanged(ClientPeer sender, NetConnectionStatus old, NetConnectionStatus value)
         {
+            Console.WriteLine(value);
+
             if(value == NetConnectionStatus.Connected)
             {
-                
                 _synchronizer.Enqueue(gt =>
                 {
                     var scene = _scenes.Create<GameScene>();
