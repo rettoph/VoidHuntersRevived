@@ -1,5 +1,5 @@
 ﻿using Guppy.DependencyInjection;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using Guppy.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
@@ -13,7 +13,7 @@ using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.IO;
 using log4net;
-using Guppy.IO.Extensions.log4net;
+using Guppy.Extensions.log4net;
 using Guppy.Events.Delegates;
 using Lidgren.Network;
 using Guppy.Network.Extensions.Lidgren;
@@ -76,7 +76,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
         #region Private Fields
         private ChunkManager _chunks;
-        private ILog _logger;
         private EntityList _entities;
         #endregion
 
@@ -116,7 +115,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             base.PreInitialize(provider);
 
             provider.Service(out _chunks);
-            provider.Service(out _logger);
             provider.Service(out _entities);
 
             this.UpdateOrder = 120;
@@ -129,7 +127,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             base.Release();
 
             _chunks = null;
-            _logger = null;
             _entities = null;
 
             this.CanAttach += this.DefaultCanAttach;
@@ -211,7 +208,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                     break;
             }
 
-            _logger.Verbose(() => $"Attempted TractorBeam.ActionType({action.Type}) on ShipPart({action.TargetPart?.Id}) and ended with TractorBeam.ActionType({response.Type})");
+            this.logger.Verbose(() => $"Attempted TractorBeam.ActionType({action.Type}) on ShipPart({action.TargetPart?.Id}) and ended with TractorBeam.ActionType({response.Type})");
             this.OnAction?.Invoke(this, response);
 
             return response;

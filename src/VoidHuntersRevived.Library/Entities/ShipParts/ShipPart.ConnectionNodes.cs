@@ -1,6 +1,6 @@
 ﻿using Guppy;
 using Guppy.DependencyInjection;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using Guppy.Interfaces;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
@@ -12,7 +12,7 @@ using VoidHuntersRevived.Library.Utilities;
 using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Enums;
 using Guppy.Lists;
-using Guppy.IO.Extensions.log4net;
+using Guppy.Extensions.log4net;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {

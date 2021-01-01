@@ -45,6 +45,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
             this.driven.Actions.Set("update:ship:direction:request", this.HandleUpdateShipDirectionRequestMessage);
             this.driven.Actions.Set("update:ship:firing:request", this.HandleUpdateShipFiringRequestMessage);
             this.driven.Actions.Set("ship:spawn:request", this.HandleShipSpawnRequestMessage);
+            this.driven.Actions.Set("spawn:ai:request", this.HandleSpawnAIRequestMessage);
         }
 
         protected override void ReleaseRemote(UserPlayer driven)
@@ -86,6 +87,25 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
                 data: bytes,
                 position: rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y),
                 rotation: MathHelper.TwoPi * (Single)rand.Next());
+        }
+
+        private void HandleSpawnAIRequestMessage(NetIncomingMessage im)
+        {
+            var length = im.ReadInt32();
+            var bytes = im.ReadBytes(length);
+            var position = im.ReadVector2();
+            var rotation = im.ReadSingle();
+
+            _entities.Create<ComputerPlayer>((player, p, d) =>
+            {
+                player.Ship = _entities.Create<Ship>((ship, p2, c) =>
+                {
+                    ship.Import(
+                        data: bytes,
+                        position: position,
+                        rotation: rotation);
+                    });
+            });
         }
         #endregion
 

@@ -7,10 +7,10 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using VoidHuntersRevived.Library.Entities.Controllers;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using log4net.Repository.Hierarchy;
 using log4net;
-using Guppy.IO.Extensions.log4net;
+using Guppy.Extensions.log4net;
 using Guppy.Events.Delegates;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Utilities;
@@ -22,7 +22,6 @@ namespace VoidHuntersRevived.Library.Entities
     public class Chain : Entity
     {
         #region Private Fields
-        private ILog _logger;
         private Ship _ship;
         private Controller _controller;
         private ShipPart _root;
@@ -66,8 +65,6 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Initialize(provider);
 
-            provider.Service(out _logger);
-
             this.Root.OnStatus[ServiceStatus.PostReleasing] += this.HandleRootPostReleasing;
 
             this.Enabled = false;
@@ -80,7 +77,6 @@ namespace VoidHuntersRevived.Library.Entities
 
             this.Root.OnStatus[ServiceStatus.PostReleasing] -= this.HandleRootPostReleasing;
 
-            _logger = null;
             this.Ship = null;
             this.Root = null;
             this.Controller = null;

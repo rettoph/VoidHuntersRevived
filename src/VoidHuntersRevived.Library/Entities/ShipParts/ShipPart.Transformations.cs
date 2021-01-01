@@ -1,6 +1,6 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
-using Guppy.IO.Extensions.log4net;
+using Guppy.Extensions.log4net;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;

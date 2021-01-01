@@ -1,13 +1,13 @@
 ﻿using Guppy;
 using Guppy.Attributes;
 using Guppy.DependencyInjection;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Extensions.System;
 using Guppy.Interfaces;
 using Guppy.IO.Commands;
 using Guppy.IO.Commands.Services;
-using Guppy.IO.Extensions.log4net;
+using Guppy.Extensions.log4net;
 using Guppy.Lists;
 using Guppy.Network.Peers;
 using Guppy.Utilities;
@@ -165,8 +165,6 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             var log = provider.GetService<ILog>();
             provider.GetService<CommandService>().OnExcecuted += (arguments, responses) =>
             {
-                log.Debug(arguments);
-
                 responses.ForEach(response =>
                 {
                     switch (response.Type)

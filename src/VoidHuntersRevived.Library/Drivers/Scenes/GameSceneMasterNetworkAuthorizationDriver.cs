@@ -1,6 +1,6 @@
 ﻿using Guppy;
 using Guppy.DependencyInjection;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Extensions.System;
 using Guppy.Lists;
@@ -18,6 +18,8 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Utilities;
+using VoidHuntersRevived.Library.Entities.Players;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Library.Drivers.Scenes
 {
@@ -28,6 +30,7 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
         private ServiceList<NetworkEntity> _networkEntities;
         private Queue<NetworkEntity> _creates;
         private NetworkEntity _entity;
+        private ServiceList<Player> _players;
 
         private Queue<User> _newUsers;
         private UserNetConnectionDictionary _userConnections;
@@ -44,6 +47,7 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
             provider.Service(out _entities);
             provider.Service(out _userConnections);
             provider.Service(out _networkEntities);
+            provider.Service(out _players);
 
             this.driven.Group.Messages.Set("entity:message", this.HandleEntityMessage);
 
@@ -51,6 +55,7 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
             _networkEntities.OnRemoved += this.HandleNetworkEntityRemoved;
             this.driven.Group.Users.OnAdded += this.HandleUserJoined;
             this.driven.OnUpdate += this.Update;
+            _players.OnAdded += this.HandlePlayerAdded;
         }
 
         protected override void ReleaseRemote(GameScene driven)
@@ -61,10 +66,12 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
             _networkEntities.OnRemoved -= this.HandleNetworkEntityRemoved;
             this.driven.Group.Users.OnAdded -= this.HandleUserJoined;
             this.driven.OnUpdate -= this.Update;
+            _players.OnAdded -= this.HandlePlayerAdded;
 
             _entities = null;
             _userConnections = null;
             _networkEntities = null;
+            _players = null;
         }
         #endregion
 
@@ -157,6 +164,25 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
 
         private void HandleUserJoined(IServiceList<User> sender, User user)
             => _newUsers.Enqueue(user);
+
+        private void HandlePlayerAdded(IServiceList<Player> sender, Player player)
+        {
+            if(player is ComputerPlayer ai)
+            { // Bind to some player events...
+                ai.Ship.OnBridgeChanged += this.HandleAIBridgeChanged;
+            }
+        }
+
+        private void HandleAIBridgeChanged(Ship sender, ShipPart old, ShipPart value)
+        {
+            if(value == default)
+            { // Destroy the ship & player.
+                sender.OnBridgeChanged -= this.HandleAIBridgeChanged;
+
+                sender.Player.TryRelease();
+                sender.TryRelease();
+            }
+        }
         #endregion
     }
 }

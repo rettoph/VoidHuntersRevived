@@ -1,7 +1,7 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Enums;
 using Guppy.Events.Delegates;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;

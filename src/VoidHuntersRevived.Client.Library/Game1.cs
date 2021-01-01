@@ -1,6 +1,5 @@
 ﻿using Guppy;
 using Guppy.Extensions;
-using Guppy.IO.Input.Extensions;
 using Guppy.Network.Extensions;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
@@ -58,8 +57,9 @@ namespace VoidHuntersRevived.Client.Library
             SDL_MaximizeWindow(Window.Handle);
 
 
-            game = guppy.ConfigureMonoGame(graphics, this.Content, this.Window)
+            this.game = guppy.ConfigureMonoGame(graphics, this.Content, this.Window)
                 .ConfigureInput()
+                .ConfigureTerminal("DiagnosticsFont")
                 .Initialize()
                 .BuildGame<ClientVoidHuntersRevivedGame>();
         }

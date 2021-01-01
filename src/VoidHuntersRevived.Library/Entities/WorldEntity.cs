@@ -1,6 +1,6 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using Guppy.Interfaces;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
@@ -63,7 +63,6 @@ namespace VoidHuntersRevived.Library.Entities
         private Vector2 _size;
         private Queue<Body> _walls;
         private CommandService _commands;
-        private ILog _log;
         private GameScene _scene;
         private Queue<ExplosionData> _explosions;
         private Synchronizer _synchronizer;
@@ -124,7 +123,6 @@ namespace VoidHuntersRevived.Library.Entities
             base.PreInitialize(provider);
 
             provider.Service(out _commands);
-            provider.Service(out _log);
             provider.Service(out _scene);
             provider.Service(out _synchronizer);
 
@@ -143,7 +141,6 @@ namespace VoidHuntersRevived.Library.Entities
             base.Release();
 
             _commands = null;
-            _log = null;
             _scene = null;
             _synchronizer = null;
         }
@@ -336,7 +333,7 @@ namespace VoidHuntersRevived.Library.Entities
         #region Event Handlers
         private void HandleSizeChanged(WorldEntity sender, Vector2 arg)
         {
-            this.log.Info($"World Size Changed => {this.Size}");
+            this.logger.Info($"World Size Changed => {this.Size}");
 
             // Destroy any pre-existing walls...
             while (_walls.Any())

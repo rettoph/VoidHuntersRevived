@@ -12,6 +12,7 @@ using VoidHuntersRevived.Library.Entities;
 using System.Linq;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Client.Library.Enums;
+using System.IO;
 
 namespace VoidHuntersRevived.Client.Library.ServiceLoaders
 {
@@ -121,6 +122,50 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                                 Required = true,
                                 Aliases = "t".ToCharArray(),
                                 Type = ArgType.FromEnum<DebugType>()
+                            }
+                        }
+                    }
+                }
+            });
+
+            commands.TryAddCommand(new CommandContext()
+            {
+                Word = "spawn",
+                Description = "Attempt to spawn an item into the game",
+                Commands = new CommandContext[] {
+                    new CommandContext()
+                    {
+                        Word = "ai",
+                        Description = "Attempt to spawn an AI instance into the game",
+                        Arguments = new ArgContext[]
+                        {
+                            new ArgContext()
+                            {
+                                Identifier = "name",
+                                Aliases = "n".ToCharArray(),
+                                Description = "The name of the ship to spawn. When empty, a random ship will be used instead.",
+                                Type = new ArgType("File Name", name => File.OpenRead($"Ships/{name}.vh"))
+                            },
+                            new ArgContext()
+                            {
+                                Identifier = "positionX",
+                                Aliases = "x".ToCharArray(),
+                                Description = "The X position at which to spawn the AI. If not defined, the cursor position will be used instead.",
+                                Type = ArgType.Single
+                            },
+                            new ArgContext()
+                            {
+                                Identifier = "positionY",
+                                Aliases = "y".ToCharArray(),
+                                Description = "The Y position at which to spawn the AI. If not defined, the cursor position will be used instead.",
+                                Type = ArgType.Single
+                            },
+                            new ArgContext()
+                            {
+                                Identifier = "rotation",
+                                Aliases = "r".ToCharArray(),
+                                Description = "The rotation at which to spawn the AI. If not defined, a random value will be used instead.",
+                                Type = ArgType.Single
                             }
                         }
                     }

@@ -30,7 +30,6 @@ namespace VoidHuntersRevived.Library.Scenes
 
         #region Protected Attributes
         protected Settings settings { get; private set; }
-        protected ILog log { get; private set; }
         protected Group group { get; private set; }
         #endregion
 
@@ -53,7 +52,6 @@ namespace VoidHuntersRevived.Library.Scenes
             _dirtyEntityCleanTimer = new ActionTimer(100);
             this.dirtyEntities = new Queue<NetworkEntity>();
 
-            this.log = provider.GetService<ILog>();
             this.settings = provider.GetService<Settings>();
 
             this.group = provider.GetService<Peer>().Groups.GetOrCreateById(Guid.Empty);

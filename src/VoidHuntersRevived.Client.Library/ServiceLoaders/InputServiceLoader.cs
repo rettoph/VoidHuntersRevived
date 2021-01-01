@@ -26,11 +26,25 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
         {
             var inputs = provider.GetService<InputCommandService>();
 
+            #region Spawn Inputs
+            inputs.Add(new InputCommandContext()
+            {
+                Handle = "try_spawn_ai",
+                DefaultInput = new InputType(Keys.G),
+                Lockable = true,
+                Commands = new[]
+                {
+                    (state: ButtonState.Released, command: "spawn ai")
+                }
+            });
+            #endregion
+
             #region Ship Movement Inputs
             inputs.Add(new InputCommandContext()
             {
                 Handle = "set_firing",
                 DefaultInput = new InputType(MouseButton.Left),
+                Lockable = true,
                 Commands = new[]
                 {
                     (state: ButtonState.Pressed, command: "ship fire -v=true"),
@@ -42,6 +56,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             {
                 Handle = "set_direction_forward",
                 DefaultInput = new InputType(Keys.W),
+                Lockable = true,
                 Commands = new[]
                 {
                     (state: ButtonState.Pressed, command: "ship direction -d=Forward -v=true"),
@@ -53,6 +68,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             {
                 Handle = "set_direction_turn_left",
                 DefaultInput = new InputType(Keys.A),
+                Lockable = true,
                 Commands = new[]
                 {
                     (state: ButtonState.Pressed, command: "ship direction -d=TurnLeft -v=true"),
@@ -64,6 +80,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             {
                 Handle = "set_direction_backward",
                 DefaultInput = new InputType(Keys.S),
+                Lockable = true,
                 Commands = new[]
                 {
                     (state: ButtonState.Pressed, command: "ship direction -d=Backward -v=true"),
@@ -75,6 +92,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             {
                 Handle = "set_direction_turn_right",
                 DefaultInput = new InputType(Keys.D),
+                Lockable = true,
                 Commands = new[]
                 {
                     (state: ButtonState.Pressed, command: "ship direction -d=TurnRight -v=true"),
@@ -86,6 +104,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             {
                 Handle = "set_direction_left",
                 DefaultInput = new InputType(Keys.Q),
+                Lockable = true,
                 Commands = new[]
                 {
                     (state: ButtonState.Pressed, command: "ship direction -d=Left -v=true"),
@@ -97,6 +116,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             {
                 Handle = "set_direction_right",
                 DefaultInput = new InputType(Keys.E),
+                Lockable = true,
                 Commands = new[]
                 {
                     (state: ButtonState.Pressed, command: "ship direction -d=Right -v=true"),
@@ -110,6 +130,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             {
                 Handle = "tractorbeam",
                 DefaultInput = new InputType(MouseButton.Right),
+                Lockable = true,
                 Commands = new[]
                 {
                     (state: ButtonState.Pressed, command: "ship tractorbeam -a=select"),

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Network.Extensions.Lidgren;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using Guppy.Extensions.System;
 using Guppy.Utilities;

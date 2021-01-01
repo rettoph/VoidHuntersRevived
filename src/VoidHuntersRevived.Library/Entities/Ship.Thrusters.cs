@@ -1,6 +1,6 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using Guppy.Extensions.Microsoft.Xna.Framework;
 using Guppy.Extensions.System;
 using Guppy.Utilities;

@@ -1,7 +1,7 @@
 ﻿using Guppy;
 using Guppy.Lists;
 using Guppy.DependencyInjection;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using Guppy.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -109,7 +109,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #endregion
 
         #region Private Fields
-        private ILog _logger;
         private List<Chunk> _cache;
         private ServiceProvider _provider;
         private WorldEntity _world;
@@ -160,7 +159,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
             _provider = provider;
             provider.Service(out _entities);
-            provider.Service(out _logger);
 
             // Complete setup after world creation.
             provider.GetService<GameScene>().IfOrOnWorld(this.SetupWorld);
@@ -174,7 +172,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
             _provider = null;
             _entities = null;
-            _logger = null;
             _world.OnSizeChanged -= this.HandleWorldSizeChanged;
         }
         #endregion

@@ -7,7 +7,7 @@ using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Utilities;
-using Guppy.IO.Extensions.log4net;
+using Guppy.Extensions.log4net;
 using Guppy.Lists;
 using Guppy.Events.Delegates;
 using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;

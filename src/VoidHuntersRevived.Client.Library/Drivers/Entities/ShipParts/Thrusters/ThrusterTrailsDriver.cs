@@ -1,6 +1,6 @@
 ﻿using Guppy;
 using Guppy.DependencyInjection;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using Guppy.IO.Commands;
 using Guppy.IO.Commands.Interfaces;
 using Guppy.IO.Commands.Services;

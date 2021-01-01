@@ -11,7 +11,7 @@ with.
     <!--
     Modify this string to change the font that will be imported.
     -->
-    <FontName>Arial</FontName>
+    <FontName>Fonts/src/SpaceMono-Regular.ttf</FontName>
 
     <!--
     Size is a float value, measured in points. Modify this value to change
@@ -55,9 +55,10 @@ with.
     <CharacterRegions>
       <CharacterRegion>
         <Start>&#32;</Start>
-        <End>&#32;</End>
+        <End>&#126;</End>
       </CharacterRegion>
     </CharacterRegions>
+    
     <!--
     ResourceFiles control the charaters which will be in the font. It does this
     by scanning the text in each of the resource files and adding those specific

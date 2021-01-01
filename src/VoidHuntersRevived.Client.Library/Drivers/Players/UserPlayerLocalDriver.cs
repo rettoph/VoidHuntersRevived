@@ -54,6 +54,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
                 _commands["ship"]["direction"].OnExcecute += this.HandleShipDirectionCommand;
                 _commands["ship"]["tractorbeam"].OnExcecute += this.HandleShipTractorBeamCommand;
                 _commands["ship"]["save"].OnExcecute += this.HandleShipSaveCommand;
+                _commands["spawn"]["ai"].OnExcecute += this.HandleSpawnAICommand;
 
                 _configured = true;
             }
@@ -72,6 +73,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
                 _commands["ship"]["direction"].OnExcecute -= this.HandleShipDirectionCommand;
                 _commands["ship"]["tractorbeam"].OnExcecute -= this.HandleShipTractorBeamCommand;
                 _commands["ship"]["save"].OnExcecute -= this.HandleShipSaveCommand;
+                _commands["spawn"]["ai"].OnExcecute -= this.HandleSpawnAICommand;
             }
 
             _commands = null;
@@ -160,7 +162,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
             using (FileStream file = File.Open($"Ships/{(input["name"] as String)}.vh", FileMode.OpenOrCreate))
                 this.driven.Ship.Export().WriteTo(file);
 
-            return CommandResponse.Success();
+            return CommandResponse.Success($"File saved at Ships/{(input["name"] as String)}.vh");
         }
         #endregion
 
@@ -214,6 +216,34 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
                     }
                 });
             }
+        }
+
+        private CommandResponse HandleSpawnAICommand(ICommand sender, CommandInput input)
+        {
+            this.driven.Actions.Create(NetDeliveryMethod.ReliableOrdered, 10).Write("spawn:ai:request", m =>
+            {
+                var ships = Directory.GetFiles("Ships", "*.vh");
+                var rand = new Random();
+                var position = new Vector2(
+                    input.GetIfContains<Single>("positionX", _sensor.Position.X), 
+                    input.GetIfContains<Single>("positionY", _sensor.Position.Y));
+                var rotation = input.GetIfContains<Single>("rotation", MathHelper.TwoPi * (Single)rand.Next());
+
+                using (var fileStream = input.GetIfContains<FileStream>("name", File.OpenRead(ships[rand.Next(ships.Length)])))
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        fileStream.CopyTo(memoryStream);
+                        var bytes = memoryStream.ToArray();
+                        m.Write(bytes.Length);
+                        m.Write(bytes);
+                        m.Write(position);
+                        m.Write(rotation);
+                    }
+                }
+            });
+
+            return CommandResponse.Success($"Attempting to spawn ai instance.");
         }
         #endregion
     }

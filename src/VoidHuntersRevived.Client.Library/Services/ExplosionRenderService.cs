@@ -10,7 +10,7 @@ using VoidHuntersRevived.Client.Library.Effects;
 using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Client.Library.Utilities.Vertices;
 using VoidHuntersRevived.Library.Entities;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using Guppy.Extensions.Utilities;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;

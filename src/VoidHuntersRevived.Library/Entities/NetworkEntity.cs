@@ -17,7 +17,7 @@ using VoidHuntersRevived.Library.Enums;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.IO;
 using log4net;
-using Guppy.IO.Extensions.log4net;
+using Guppy.Extensions.log4net;
 using Guppy.Events.Delegates;
 using Guppy.Utilities;
 using Guppy.Extensions.System;
@@ -40,7 +40,6 @@ namespace VoidHuntersRevived.Library.Entities
         /// Simple reference to the global game settings.
         /// </summary>
         protected Settings settings { get; private set; }
-        protected ILog log { get; private set; }
         #endregion
 
         #region Public Attributes
@@ -86,7 +85,6 @@ namespace VoidHuntersRevived.Library.Entities
             provider.Service(out _scene);
 
             this.settings = provider.GetService<Settings>();
-            this.log = provider.GetService<ILog>();
 
             if (this.settings.Get<HostType>() == HostType.Remote)
                 this.OnPostUpdate += this.PostUpdateRemote;

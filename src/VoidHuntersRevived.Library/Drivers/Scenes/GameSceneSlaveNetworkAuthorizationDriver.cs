@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Scenes;
-using Guppy.IO.Extensions.log4net;
+using Guppy.Extensions.log4net;
 using System.Linq;
 using Guppy.Lists;
 using VoidHuntersRevived.Library.Entities;
@@ -15,7 +15,7 @@ using Guppy.Network.Extensions.Lidgren;
 using Guppy.Extensions.System;
 using VoidHuntersRevived.Library.Enums;
 using Guppy.Utilities;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 
 namespace VoidHuntersRevived.Library.Drivers.Scenes
 {
