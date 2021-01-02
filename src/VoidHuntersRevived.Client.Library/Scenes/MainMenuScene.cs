@@ -28,6 +28,7 @@ using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
 using VoidHuntersRevived.Library.Extensions.System;
 using VoidHuntersRevived.Library.Scenes;
+using System.Threading;
 
 namespace VoidHuntersRevived.Client.Library.Scenes
 {
@@ -162,6 +163,20 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                     });
                 });
             }
+        }
+
+        protected override void PostInitialize(ServiceProvider provider)
+        {
+            base.PostInitialize(provider);
+
+#if DEBUG
+            // When debugging, just go right to the game.
+            (new Thread(new ThreadStart(() =>
+            {
+                Thread.Sleep(200);
+                _synchronizer.Enqueue(gt => this.HandleConnectClicked(null));
+            }))).Start();
+#endif
         }
 
         protected override void Release()

@@ -115,7 +115,7 @@ namespace VoidHuntersRevived.Library.Configurations
                 Rotation = 0
             };
 
-            
+
         }
         #endregion
 
@@ -226,7 +226,7 @@ namespace VoidHuntersRevived.Library.Configurations
             this.Centeroid = this.Vertices.SelectMany(v => v).Aggregate(Vector2.Zero, (s, v) => s + v) / this.Vertices.SelectMany(v => v).Count();
 
             // Update output hull...
-            if(!_setHull)
+            if (!_setHull)
                 this.SetHull(GiftWrap.GetConvexHull(_allVertices));
 
             return this;
@@ -298,12 +298,12 @@ namespace VoidHuntersRevived.Library.Configurations
 
         #region Helper Methods
         /// <summary>
-        /// Add a side with a length of 1, rotate relative to
-        /// the last node's rotation.
+        /// Add a side with a length of <paramref name="length"/>, rotate relative to
+        /// the last side's rotation.
         /// </summary>
         /// <param name="relativeRotation"></param>
         /// <param name="node"></param>
-        public void AddSide(Single offsetRotation, NodeType node = NodeType.None)
+        public void AddSide(Single offsetRotation, NodeType node = NodeType.None, Single length = 1)
         {
             // Ensure that at least one vertice is defined...
             if (_verticeBuffer.Count == 0)
@@ -314,12 +314,13 @@ namespace VoidHuntersRevived.Library.Configurations
             var last = _verticeBuffer.Last();
 
             // Add a new vertice
-            this.AddVertex(last + Vector2.Transform(Vector2.UnitX, matrix));
+            var side = Vector2.UnitX * length;
+            this.AddVertex(last + Vector2.Transform(side, matrix));
 
             // Add the requested node types
             if (!node.HasFlag(NodeType.None))
             {
-                var nPoint = last + Vector2.Transform(Vector2.UnitX / 2, matrix);
+                var nPoint = last + Vector2.Transform(side / 2, matrix);
                 if (node.HasFlag(NodeType.Male))
                     this.AddNode(nPoint, _rotation - MathHelper.PiOver2, NodeType.Male);
                 if (node.HasFlag(NodeType.Female))
