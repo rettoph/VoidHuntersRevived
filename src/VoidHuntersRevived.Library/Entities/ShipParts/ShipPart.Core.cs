@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// as a fallback. The color value is then lerp'd to read based on the current
         /// <see cref="Health"/>.
         /// </summary>
-        public Color Color => Color.Lerp(Color.Red, this.Chain.Ship?.Color ?? this.Root.Context.DefaultColor, this.Health / this.Context.MaxHealth);
+        public Color Color => Color.Lerp(Color.Red, this.Context.InheritColor ? this.Chain.Ship?.Color ?? this.Root.Context.DefaultColor : this.Context.DefaultColor, this.Health / this.Context.MaxHealth);
         #endregion
 
         #region Lifecycle Methods

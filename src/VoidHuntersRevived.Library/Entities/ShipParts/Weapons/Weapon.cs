@@ -69,6 +69,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         /// if false, we shouldnt fire.
         /// </summary>
         public Boolean TargetInRange { get; private set; }
+
+        public new WeaponContext Context { get; private set; }
         #endregion
 
         #region Events
@@ -191,8 +193,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                     joint.MaxMotorTorque = 2f;
                     joint.MotorSpeed = 0.0f;
                     joint.MotorEnabled = true;
-                    joint.LowerLimit = -(2 / 2);
-                    joint.UpperLimit = (2 / 2);
+                    joint.LowerLimit = -(this.Context.SwivelRange / 2);
+                    joint.UpperLimit = (this.Context.SwivelRange / 2);
                     joint.LimitEnabled = true;
                     joint.Enabled = this.Chain.Ship != default;
 
@@ -291,6 +293,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         }
 
         protected abstract Ammunition Fire(ServiceProvider provider, EntityList entities);
+
+        public override void SetContext(ShipPartContext context)
+        {
+            base.SetContext(context);
+
+            this.Context = context as WeaponContext;
+        }
         #endregion
 
         #region Event Handlers

@@ -196,6 +196,11 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                 smallThruster.Export($"{DefaultShipPartLocation}/thruster.small.vhsp");
             }
             #endregion
+
+            #region Weapons
+            #region Mass Driver
+            #endregion
+            #endregion
             #endregion
         }
 

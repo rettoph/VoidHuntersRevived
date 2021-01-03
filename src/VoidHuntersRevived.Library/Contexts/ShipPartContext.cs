@@ -48,6 +48,11 @@ namespace VoidHuntersRevived.Library.Contexts
         public Color DefaultColor { get; set; } = Color.Orange;
 
         /// <summary>
+        /// When true, the rendered color will copy that of the parent.
+        /// </summary>
+        public Boolean InheritColor { get; set; } = true;
+
+        /// <summary>
         /// The maximum <see cref="ShipPart.Health"/> value
         /// for the defined <see cref="ShipPart"/>.
         /// </summary>
@@ -144,6 +149,7 @@ namespace VoidHuntersRevived.Library.Contexts
         {
             this.MaxHealth = reader.ReadSingle();
             this.DefaultColor = new Color(packedValue: reader.ReadUInt32());
+            this.InheritColor = reader.ReadBoolean();
             this.Shapes.Read(reader);
         }
 
@@ -156,6 +162,7 @@ namespace VoidHuntersRevived.Library.Contexts
         {
             writer.Write(this.MaxHealth);
             writer.Write(this.DefaultColor.PackedValue);
+            writer.Write(this.InheritColor);
             this.Shapes.Write(writer);
         }
         #endregion
