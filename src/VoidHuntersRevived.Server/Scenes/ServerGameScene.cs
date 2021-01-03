@@ -79,6 +79,14 @@ namespace VoidHuntersRevived.Server.Scenes
                 pentagon.Position = rand.NextVector2(0, world.Size.X);
                 pentagon.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
 
+                var vBeam = _shipParts.Create("hull:beam:vertical");
+                vBeam.Position = rand.NextVector2(0, world.Size.X);
+                vBeam.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+
+                var hBeam = _shipParts.Create("hull:beam:horizontal");
+                hBeam.Position = rand.NextVector2(0, world.Size.X);
+                hBeam.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+
                 // 
                 // var hexagon = this.Entities.Create<ShipPart>("entity:ship-part:hull:hexagon");
                 // hexagon.Position = rand.NextVector2(0, world.Size.X);
@@ -146,7 +154,7 @@ namespace VoidHuntersRevived.Server.Scenes
                     player.Ship = this.Entities.Create<Ship>((ship, p2, c) =>
                     {
                         // ship.Import(File.OpenRead("Ships/mosquito.vh"), (new Random()).NextVector2(0, 20));
-                        ship.Bridge = _shipParts.Create("hull:triangle");
+                        ship.Bridge = _shipParts.Create("chassis:mosquito");
                     });
                 });
             });

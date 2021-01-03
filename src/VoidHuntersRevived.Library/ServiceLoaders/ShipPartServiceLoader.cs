@@ -2,6 +2,7 @@
 using Guppy.DependencyInjection;
 using Guppy.Interfaces;
 using Microsoft.Xna.Framework;
+using System;
 using System.IO;
 using System.Linq;
 using tainicom.Aether.Physics2D;
@@ -22,28 +23,136 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             Settings.MaxPolygonVertices = 9;
             Settings.ContinuousPhysics = false;
             Directory.CreateDirectory("ShipParts");
+            String DefaultShipPartLocation = "ShipParts";
+            Boolean RefreshShipParts = false;
+#if DEBUG
+            RefreshShipParts = true;
+#endif
 
             services.AddFactory<ShipPartService>(p => new ShipPartService());
             services.AddScoped<ShipPartService>();
             services.AddSetup<ShipPartService>((shipParts, p, c) =>
             {
-                shipParts.Import("ShipParts");
+                shipParts.ImportAll(DefaultShipPartLocation);
             });
 
             services.AddFactory<RigidShipPart>(p => new RigidShipPart());
             services.AddTransient<RigidShipPart>("entity:ship-part:rigid-ship-part");
 
-            var part = new RigidShipPartContext("hull:pentagon");
-            part.Shapes.TryAdd(builder =>
-            {
-                builder.AddSide(MathHelper.ToRadians(0));
-                builder.AddSide(MathHelper.ToRadians(90));
-                builder.AddSide(MathHelper.ToRadians(150));
-                builder.AddSide(MathHelper.ToRadians(60));
-                builder.AddSide(MathHelper.ToRadians(150));
-            });
-            part.Export("ShipParts/hull_pentagon.vhsp");
-        }
+
+            #region Default ShipPart File Generation
+            #region Hulls
+            #region Triangle
+            if(!File.Exists($"{DefaultShipPartLocation}/hull.triangle.vhsp") || RefreshShipParts)
+            { // Generate the default part...
+                var triangle = new RigidShipPartContext("hull:triangle");
+                triangle.Shapes.AddPolygon(3);
+                triangle.Export($"{DefaultShipPartLocation}/hull.triangle.vhsp");
+            }
+            #endregion
+
+            #region Square
+            if (!File.Exists($"{DefaultShipPartLocation}/hull.square.vhsp") || RefreshShipParts)
+            { // Generate the default part...
+                var square = new RigidShipPartContext("hull:square");
+                square.Shapes.AddPolygon(4);
+                square.Export($"{DefaultShipPartLocation}/hull.square.vhsp");
+            }
+            #endregion
+
+            #region Hexagon
+            if (!File.Exists($"{DefaultShipPartLocation}/hull.hexagon.vhsp") || RefreshShipParts)
+            { // Generate the default part...
+                var hexagon = new RigidShipPartContext("hull:hexagon");
+                hexagon.Shapes.AddPolygon(6);
+                hexagon.Export($"{DefaultShipPartLocation}/hull.hexagon.vhsp");
+            }
+            #endregion
+
+            #region Pentagon
+            if (!File.Exists($"{DefaultShipPartLocation}/hull.pentagon.vhsp") || RefreshShipParts)
+            { // Generate the default part...
+                var pentagon = new RigidShipPartContext("hull:pentagon");
+                pentagon.Shapes.TryAdd(builder =>
+                {
+                    builder.AddSide(MathHelper.ToRadians(0));
+                    builder.AddSide(MathHelper.ToRadians(90));
+                    builder.AddSide(MathHelper.ToRadians(150));
+                    builder.AddSide(MathHelper.ToRadians(60));
+                    builder.AddSide(MathHelper.ToRadians(150));
+                });
+                pentagon.Export($"{DefaultShipPartLocation}/hull.pentagon.vhsp");
+            }
+            #endregion
+
+            #region Vertical Beam
+            if (!File.Exists($"{DefaultShipPartLocation}/hull.beam.vertical.vhsp") || RefreshShipParts)
+            { // Generate the default part...
+                var vBeam = new RigidShipPartContext("hull:beam:vertical");
+                vBeam.Shapes.TryAdd(builder =>
+                {
+                    builder.AddSide(MathHelper.ToRadians(0));
+                    builder.AddSide(MathHelper.ToRadians(90), 3);
+                    builder.AddSide(MathHelper.ToRadians(90));
+                    builder.AddSide(MathHelper.ToRadians(90), 3);
+                });
+                vBeam.Export($"{DefaultShipPartLocation}/hull.beam.vertical.vhsp");
+            }
+            #endregion
+
+            #region Horizontal Beam
+            if (!File.Exists($"{DefaultShipPartLocation}/hull.beam.horizontal.vhsp") || RefreshShipParts)
+            { // Generate the default part...
+                var hBeam = new RigidShipPartContext("hull:beam:horizontal");
+                hBeam.Shapes.MaleConnectionNode = new ConnectionNodeContext()
+                {
+                    Position = new Vector2(-1.5f, 0),
+                    Rotation = MathHelper.PiOver2
+                };
+                hBeam.Shapes.TryAdd(builder =>
+                {
+                    builder.AddSide(MathHelper.ToRadians(0), 3);
+                    builder.AddSide(MathHelper.ToRadians(90));
+                    builder.AddSide(MathHelper.ToRadians(90), 3);
+                    builder.AddSide(MathHelper.ToRadians(90));
+                });
+                hBeam.Export($"{DefaultShipPartLocation}/hull.beam.horizontal.vhsp");
+            }
+            #endregion
+            #endregion
+
+            #region Chassis
+            #region Mosquito
+            if (!File.Exists($"{DefaultShipPartLocation}/chassis.mosquito.vhsp") || RefreshShipParts)
+            { // Generate the default part...
+                var mosquito = new RigidShipPartContext("chassis:mosquito");
+                mosquito.Shapes.TryAdd(builder =>
+                {
+                    builder.AddSide(MathHelper.ToRadians(0), 2, false);
+                    builder.AddSide(MathHelper.ToRadians(120));
+                    builder.AddSide(MathHelper.ToRadians(120));
+                    builder.AddSide(MathHelper.ToRadians(120), 2);
+                    builder.AddSide(MathHelper.ToRadians(120));
+                    builder.AddSide(MathHelper.ToRadians(120));
+                    builder.Rotation = MathHelper.ToRadians(90);
+                });
+
+                mosquito.Shapes.TryAdd(builder =>
+                {
+                    builder.AddSide(MathHelper.ToRadians(0));
+                    builder.AddSide(MathHelper.ToRadians(150));
+                    builder.AddSide(MathHelper.ToRadians(120));
+                    builder.AddSide(MathHelper.ToRadians(120));
+                    builder.AddSide(MathHelper.ToRadians(150));
+                    builder.Translation = new Vector2(0, 0);
+                });
+
+                mosquito.Export($"{DefaultShipPartLocation}/chassis.mosquito.vhsp");
+            }
+            #endregion
+            #endregion
+            #endregion
+            }
 
         public void ConfigureProvider(ServiceProvider provider)
         {

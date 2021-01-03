@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Library.Contexts
         /// works. Just make sure you define the male connection
         /// node in the last shape to be sure it never gets overwritten.
         /// </summary>
-        public ConnectionNodeContext MaleConnectionNode { get; private set; }
+        public ConnectionNodeContext MaleConnectionNode { get; set; }
 
         /// <summary>
         /// A traced outline of the defined <see cref="Vertices"/>.
@@ -63,10 +63,10 @@ namespace VoidHuntersRevived.Library.Contexts
 
             // Update internal values
             this.Centeroid = _shapes.SelectMany(s => s.Vertices).Aggregate(Vector2.Zero, (s, v) => s + v) / _shapes.SelectMany(s => s.Vertices).Count();
-            this.MaleConnectionNode = new ConnectionNodeContext()
+            this.MaleConnectionNode = this.MaleConnectionNode ?? new ConnectionNodeContext()
             {
                 Position = Vector2.UnitX * -0.5f,
-                Rotation = -MathHelper.PiOver2
+                Rotation = MathHelper.PiOver2
             };
 
             // Update output hull...
@@ -90,11 +90,17 @@ namespace VoidHuntersRevived.Library.Contexts
 
             var stepAngle = MathHelper.Pi - (MathHelper.TwoPi / sides);
 
+            this.MaleConnectionNode = this.MaleConnectionNode ?? new ConnectionNodeContext()
+            {
+                Position = Vector2.UnitX * -0.5f,
+                Rotation = -MathHelper.PiOver2
+            };
+
             this.TryAdd(builder =>
             {
                 for (Int32 i = 0; i < sides; i++)
                 {
-                    builder.AddSide(stepAngle, withFemales);
+                    builder.AddSide(stepAngle, 1, withFemales);
                 }
 
                 build?.Invoke(builder);
@@ -119,7 +125,7 @@ namespace VoidHuntersRevived.Library.Contexts
         /// no longer be developed.
         /// </summary>
         /// <param name="vertices"></param>
-        public void SetHull(Vector2[] vertices)
+        public void SetHull(params Vector2[] vertices)
             => this.SetHull(new Vertices(vertices));
         #endregion
 

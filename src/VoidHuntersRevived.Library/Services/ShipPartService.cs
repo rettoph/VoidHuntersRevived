@@ -96,7 +96,7 @@ namespace VoidHuntersRevived.Library.Services
         /// Import all files within the target location.
         /// </summary>
         /// <param name="target"></param>
-        public void Import(String path, String pattern = "*.vhsp")
+        public void ImportAll(String path, String pattern = "*.vhsp")
         {
             foreach(String file in Directory.GetFiles(path, pattern))
                 using(FileStream stream = File.OpenRead(file))

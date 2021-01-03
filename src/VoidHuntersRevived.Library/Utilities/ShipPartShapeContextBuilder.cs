@@ -61,9 +61,9 @@ namespace VoidHuntersRevived.Library.Utilities
         /// to the previously added side.
         /// </summary>
         /// <param name="rotation"></param>
-        /// <param name="includeFemales"></param>
         /// <param name="length"></param>
-        public void AddSide(Single rotation, Boolean includeFemales = true, Single length = 1)
+        /// <param name="includeFemales"></param>
+        public void AddSide(Single rotation, Single length = 1, Boolean includeFemales = true)
         {
             _sides.Add(new SideContext()
             {
@@ -97,14 +97,14 @@ namespace VoidHuntersRevived.Library.Utilities
 
                 if(side.IncludeFemales)
                 { // Calculate the female node positions now.
-                    var count = (Single)Math.Ceiling(side.Length) + 1; // The number of female nodes to be added.
-                    var spacing = side.Length / count; // The distance beween each female node on this side.
+                    var count = (Single)Math.Ceiling(side.Length); // The number of female nodes to be added.
+                    var spacing = side.Length / (count * 2); // The distance beween each female node on this side.
 
-                    for(var i=1; i<count; i++)
+                    for(var i=1; i<count + 1; i++)
                     { // Calculate each node & add it in.
                         females.Add(new ConnectionNodeContext()
                         {
-                            Position = lastPosition + (Vector2.UnitX * (spacing * i)).RotateTo(currentRotation),
+                            Position = lastPosition + (Vector2.UnitX * (spacing * (i * 2 - 1))).RotateTo(currentRotation),
                             Rotation = currentRotation + MathHelper.PiOver2
                         });
                     }
