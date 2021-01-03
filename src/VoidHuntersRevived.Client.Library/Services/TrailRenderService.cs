@@ -16,7 +16,6 @@ using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Client.Library.Effects;
-using VoidHuntersRevived.Client.Library.Effects.Bloom;
 using VoidHuntersRevived.Client.Library.Utilities;
 using VoidHuntersRevived.Client.Library.Utilities.Vertices;
 using VoidHuntersRevived.Library.Entities;

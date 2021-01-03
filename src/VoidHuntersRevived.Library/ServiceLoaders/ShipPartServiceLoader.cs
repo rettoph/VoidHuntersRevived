@@ -38,8 +38,10 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
 
             services.AddFactory<RigidShipPart>(p => new RigidShipPart());
             services.AddFactory<Thruster>(p => new Thruster());
+            services.AddFactory<Gun>(p => new Gun());
             services.AddTransient<RigidShipPart>("entity:ship-part:rigid-ship-part");
             services.AddTransient<Thruster>("entity:ship-part:thruster");
+            services.AddTransient<Gun>("entity:ship-part:weapon:gun");
 
 
             #region Default ShipPart File Generation
@@ -174,7 +176,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             if (!File.Exists($"{DefaultShipPartLocation}/thruster.small.vhsp") || RefreshShipParts)
             { // Generate the default part...
                 var smallThruster = new ThrusterContext("thruster:small");
-                smallThruster.MaxImpulse = Vector2.UnitX * 20f;
+                smallThruster.MaxImpulse = Vector2.UnitX * 7f;
                 smallThruster.Shapes.MaleConnectionNode = new ConnectionNodeContext()
                 {
                     Position = new Vector2(0, 0),

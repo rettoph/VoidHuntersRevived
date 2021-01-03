@@ -11,8 +11,9 @@ namespace VoidHuntersRevived.Library.Contexts
         #region ShipPartContext Implementation
         /// <inheritdoc />
         public override string ShipPartServiceConfiguration => "entity:ship-part:thruster";
+        #endregion
 
-
+        #region Public Properties
         /// <summary>
         /// The maximum force per second 
         /// achievable by the current thruster.

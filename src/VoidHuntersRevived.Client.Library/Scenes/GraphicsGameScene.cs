@@ -50,7 +50,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private SpriteBatch _spriteBatch;
         private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private Camera2D _camera;
-        private GaussianBlurFilter _blur;
 
         private Texture2D[] _backgrounds;
         private Vector2 _viewportSize;
@@ -87,7 +86,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             provider.Service(out _primitiveBatch);
             provider.Service(out _camera);
 
-            _blur = new GaussianBlurFilter(provider);
             _backgrounds = new Texture2D[]
             {
                 provider.GetContent<Texture2D>("sprite:background:1"),
@@ -174,7 +172,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _camera.TryClean(gameTime);
             _graphics.Clear(Color.Transparent);
 
-            _blur.Start();
             _spriteBatch.Begin(samplerState: SamplerState.LinearWrap, blendState: BlendState.AlphaBlend);
 
             for (Int32 i = 0; i < _backgrounds.Length; i++)
@@ -193,8 +190,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             _trails.TryDraw(gameTime);
             _explosions.TryDraw(gameTime);
-
-            _blur.End();
         }
 
         private void DrawMaster(GameTime gameTime)
@@ -231,9 +226,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
         private void CleanEffects()
         {
-            _blur.Resolution = _graphics.Viewport.Bounds.Size;
-            _blur.BlurAmount = 1f;
-            _blur.Passes = 1;
+            // TODO: Clean Effects here?
         }
         #endregion
 
