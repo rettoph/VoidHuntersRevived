@@ -41,6 +41,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aether.Physics2D.NETSTANDAR
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aether.Physics2D.Diagnostics.NETSTANDARD2_0.MG", "libraries\Aether.Physics2D\Physics2D.Diagnostics\Diagnostics\Aether.Physics2D.Diagnostics.NETSTANDARD2_0.MG.csproj", "{64BF497A-733C-404B-9D31-94B9ACC238C1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Builder", "src\clients\VoidHuntersRevived.Builder\VoidHuntersRevived.Builder.csproj", "{C5983130-9C9A-4023-8A93-4C5190CE7A23}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Verbose|Any CPU = Debug_Verbose|Any CPU
@@ -120,6 +122,12 @@ Global
 		{64BF497A-733C-404B-9D31-94B9ACC238C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64BF497A-733C-404B-9D31-94B9ACC238C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64BF497A-733C-404B-9D31-94B9ACC238C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5983130-9C9A-4023-8A93-4C5190CE7A23}.Debug_Verbose|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5983130-9C9A-4023-8A93-4C5190CE7A23}.Debug_Verbose|Any CPU.Build.0 = Debug|Any CPU
+		{C5983130-9C9A-4023-8A93-4C5190CE7A23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5983130-9C9A-4023-8A93-4C5190CE7A23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5983130-9C9A-4023-8A93-4C5190CE7A23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5983130-9C9A-4023-8A93-4C5190CE7A23}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -142,6 +150,7 @@ Global
 		{846EEE2A-9193-41FF-A661-67380DBEBE60} = {1D6E7A76-CA5E-486C-9C2F-A9644FDA47AD}
 		{058BF07F-34FA-48C4-8E4D-D5DB6F3F9B8B} = {846EEE2A-9193-41FF-A661-67380DBEBE60}
 		{64BF497A-733C-404B-9D31-94B9ACC238C1} = {846EEE2A-9193-41FF-A661-67380DBEBE60}
+		{C5983130-9C9A-4023-8A93-4C5190CE7A23} = {CBA9D834-D5F5-4941-B2A1-2BBDDDA6394F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FCB1CA3-2B6C-469F-B569-084FC0B57488}

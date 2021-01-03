@@ -265,13 +265,21 @@ namespace VoidHuntersRevived.Library.Configurations
         /// </summary>
         public void Clear()
         {
-            _verticeBuffer.Clear();
-            _femaleBuffer.Clear();
-            _maleBuffer = null;
+            this.ClearBuffer();
 
             _vertices = new List<Vertices>();
             _females = new List<ConnectionNodeConfiguration>();
             _male = null;
+        }
+
+        /// <summary>
+        /// Clear only the values buffered so far
+        /// </summary>
+        public void ClearBuffer()
+        {
+            _verticeBuffer.Clear();
+            _femaleBuffer.Clear();
+            _maleBuffer = null;
         }
 
         /// <summary>
