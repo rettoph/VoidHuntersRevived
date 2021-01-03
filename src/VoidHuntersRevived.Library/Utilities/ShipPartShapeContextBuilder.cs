@@ -117,9 +117,9 @@ namespace VoidHuntersRevived.Library.Utilities
                 }
             }
 
-            Matrix translation = Matrix.CreateScale(this.Scale) 
-                * Matrix.CreateRotationZ(this.Rotation) 
-                * Matrix.CreateTranslation(this.Translation.ToVector3());
+            Matrix translation = Matrix.CreateRotationZ(this.Rotation) 
+                * Matrix.CreateTranslation(this.Translation.ToVector3())
+                * Matrix.CreateScale(this.Scale);
 
             return new ShipPartShapeContext(
                 vertices: new Vertices(vertices.Select(v => Vector2.Transform(v, translation)).ToArray()),

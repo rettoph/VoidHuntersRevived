@@ -63,7 +63,7 @@ namespace VoidHuntersRevived.Library.Contexts
 
             // Update internal values
             this.Centeroid = _shapes.SelectMany(s => s.Vertices).Aggregate(Vector2.Zero, (s, v) => s + v) / _shapes.SelectMany(s => s.Vertices).Count();
-            this.MaleConnectionNode = this.MaleConnectionNode ?? new ConnectionNodeContext()
+            this.MaleConnectionNode ??= new ConnectionNodeContext()
             {
                 Position = Vector2.UnitX * -0.5f,
                 Rotation = MathHelper.PiOver2
@@ -90,7 +90,7 @@ namespace VoidHuntersRevived.Library.Contexts
 
             var stepAngle = MathHelper.Pi - (MathHelper.TwoPi / sides);
 
-            this.MaleConnectionNode = this.MaleConnectionNode ?? new ConnectionNodeContext()
+            this.MaleConnectionNode ??= new ConnectionNodeContext()
             {
                 Position = Vector2.UnitX * -0.5f,
                 Rotation = -MathHelper.PiOver2
@@ -138,6 +138,12 @@ namespace VoidHuntersRevived.Library.Contexts
                 Rotation = reader.ReadSingle()
             };
 
+            var hulls = reader.ReadInt32();
+            List<Vector2> hull = new List<Vector2>();
+            for (Int32 i=0; i<hulls; i++)
+                hull.Add(new Vector2(reader.ReadSingle(), reader.ReadSingle()));
+            this.SetHull(new Vertices(hull));
+
             var shapes = reader.ReadInt32();
             for (Int32 i = 0; i < shapes; i++)
             {
@@ -148,7 +154,6 @@ namespace VoidHuntersRevived.Library.Contexts
                     builder.Rotation = reader.ReadSingle();
 
                     var sides = reader.ReadInt32();
-
                     for(Int32 ii = 0; ii < sides; ii++)
                     {
                         builder.AddSide(
@@ -165,6 +170,14 @@ namespace VoidHuntersRevived.Library.Contexts
             writer.Write(this.MaleConnectionNode.Position.X);
             writer.Write(this.MaleConnectionNode.Position.Y);
             writer.Write(this.MaleConnectionNode.Rotation);
+
+            writer.Write(this.Hull.Count);
+            foreach (Vector2 hull in this.Hull)
+            {
+                writer.Write(hull.X);
+                writer.Write(hull.Y);
+            }
+                
 
             writer.Write(_shapes.Count);
             foreach (ShipPartShapeContext shape in this)

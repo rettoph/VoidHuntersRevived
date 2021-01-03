@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
 using VoidHuntersRevived.Library.Utilities;
+using VoidHuntersRevived.Library.Contexts;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
 {
@@ -24,11 +25,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         #endregion
 
         #region Public Properties
-        /// <summary>
-        /// The maximum force per second 
-        /// achievable by the current thruster.
-        /// </summary>
-        public virtual Vector2 FullImpulse { get => Vector2.UnitX * 7f; }
+        public new ThrusterContext Context { get; private set; }
 
         /// <summary>
         /// The multipier applied to FullImpulse in order to
@@ -66,7 +63,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         /// <summary>
         /// The current impulse applied by the thruster.
         /// </summary>
-        public Vector2 Impulse => this.FullImpulse * this.ImpulseModifier;
+        public Vector2 Impulse => this.Context.MaxImpulse * this.ImpulseModifier;
 
         /// <summary>
         /// A flags value of all active <see cref="Ship.Direction"/>
@@ -85,7 +82,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         /// </summary>
         public event OnEventDelegate<Thruster, Boolean> OnImpulse;
         #endregion
-
 
         #region Lifecycle Methods
         protected override void Create(ServiceProvider provider)
@@ -170,7 +166,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
                 // The point acceleration is applied
                 var ip = this.LocalCenter;
                 // The impulse to be applied...
-                var i = Vector2.Transform(this.FullImpulse, Matrix.CreateRotationZ(this.LocalRotation));
+                var i = Vector2.Transform(this.Context.MaxImpulse, Matrix.CreateRotationZ(this.LocalRotation));
                 // The point acceleration is targeting
                 var it = ip + i;
 
@@ -211,6 +207,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
                 if (ipitr_lower > 0 && ipitr_upper < MathHelper.Pi)
                     yield return Ship.Direction.Left;
             }
+        }
+
+        public override void SetContext(ShipPartContext context)
+        {
+            base.SetContext(context);
+
+            this.Context = context as ThrusterContext;
         }
         #endregion
 

@@ -15,6 +15,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Contexts;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using Guppy.Extensions.Microsoft.Xna.Framework;
 
 namespace VoidHuntersRevived.Client.Library.Services
 {
@@ -34,6 +35,7 @@ namespace VoidHuntersRevived.Client.Library.Services
         {
             public PrimitivePath Path;
             public PrimitiveShape[] Shapes;
+            public PrimitivePath MaleNode;
         }
         #endregion
 
@@ -77,7 +79,10 @@ namespace VoidHuntersRevived.Client.Library.Services
                 _width = (1 / _camera.Zoom);
 
                 foreach(ShipPartConfigurationPrimitiveData primitives in _primitives.Values)
+                {
                     primitives.Path.Width = _width;
+                    primitives.MaleNode.Width = _width;
+                }
             }
         }
 
@@ -95,10 +100,15 @@ namespace VoidHuntersRevived.Client.Library.Services
                     shipPart.WorldTransformation);
             });
 
-            // Draw part path...
+            // Draw part paths...
             _primitiveBatch.DrawPrimitive(
                 _primitives[shipPart.Context].Path, 
                 Color.Lerp(shipPart.Color, ShipPartRenderService.TransparentWhite, 0.25f), 
+                shipPart.WorldTransformation);
+
+            _primitiveBatch.DrawPrimitive(
+                _primitives[shipPart.Context].MaleNode,
+                Color.Lerp(shipPart.Color, ShipPartRenderService.TransparentWhite, 0.5f),
                 shipPart.WorldTransformation);
         }
         #endregion
@@ -112,7 +122,12 @@ namespace VoidHuntersRevived.Client.Library.Services
             _primitives[shipPart.Context] = new ShipPartConfigurationPrimitiveData()
             {
                 Path = PrimitivePath.Create(_width, shipPart.Context.Shapes.Hull),
-                Shapes = shipPart.Context.Shapes.Select(s => PrimitiveShape.Create(s.Vertices)).ToArray()
+                Shapes = shipPart.Context.Shapes.Select(s => PrimitiveShape.Create(s.Vertices)).ToArray(),
+                MaleNode = PrimitivePath.Create(
+                    _width,
+                    shipPart.MaleConnectionNode.LocalPosition + (Vector2.UnitX * 0.2f).RotateTo(shipPart.MaleConnectionNode.LocalRotation + MathHelper.Pi + MathHelper.PiOver4),
+                    shipPart.MaleConnectionNode.LocalPosition,
+                    shipPart.MaleConnectionNode.LocalPosition + (Vector2.UnitX * 0.2f).RotateTo(shipPart.MaleConnectionNode.LocalRotation + MathHelper.Pi - MathHelper.PiOver4))
             };
         }
         #endregion

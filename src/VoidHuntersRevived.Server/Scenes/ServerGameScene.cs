@@ -87,6 +87,10 @@ namespace VoidHuntersRevived.Server.Scenes
                 hBeam.Position = rand.NextVector2(0, world.Size.X);
                 hBeam.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
 
+                var thruster = _shipParts.Create("thruster:small");
+                thruster.Position = rand.NextVector2(0, world.Size.X);
+                thruster.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+
                 // 
                 // var hexagon = this.Entities.Create<ShipPart>("entity:ship-part:hull:hexagon");
                 // hexagon.Position = rand.NextVector2(0, world.Size.X);

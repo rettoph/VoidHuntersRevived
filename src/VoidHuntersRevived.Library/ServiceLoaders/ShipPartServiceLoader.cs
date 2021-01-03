@@ -37,13 +37,15 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             });
 
             services.AddFactory<RigidShipPart>(p => new RigidShipPart());
+            services.AddFactory<Thruster>(p => new Thruster());
             services.AddTransient<RigidShipPart>("entity:ship-part:rigid-ship-part");
+            services.AddTransient<Thruster>("entity:ship-part:thruster");
 
 
             #region Default ShipPart File Generation
             #region Hulls
             #region Triangle
-            if(!File.Exists($"{DefaultShipPartLocation}/hull.triangle.vhsp") || RefreshShipParts)
+            if (!File.Exists($"{DefaultShipPartLocation}/hull.triangle.vhsp") || RefreshShipParts)
             { // Generate the default part...
                 var triangle = new RigidShipPartContext("hull:triangle");
                 triangle.Shapes.AddPolygon(3);
@@ -126,6 +128,11 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             if (!File.Exists($"{DefaultShipPartLocation}/chassis.mosquito.vhsp") || RefreshShipParts)
             { // Generate the default part...
                 var mosquito = new RigidShipPartContext("chassis:mosquito");
+                mosquito.Shapes.MaleConnectionNode = new ConnectionNodeContext()
+                {
+                    Position = new Vector2(0, 1f),
+                    Rotation = 0
+                };
                 mosquito.Shapes.TryAdd(builder =>
                 {
                     builder.AddSide(MathHelper.ToRadians(0), 2, false);
@@ -134,7 +141,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                     builder.AddSide(MathHelper.ToRadians(120), 2);
                     builder.AddSide(MathHelper.ToRadians(120));
                     builder.AddSide(MathHelper.ToRadians(120));
-                    builder.Rotation = MathHelper.ToRadians(90);
+                    builder.Rotation = MathHelper.ToRadians(180 + 90);
                 });
 
                 mosquito.Shapes.TryAdd(builder =>
@@ -144,14 +151,51 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                     builder.AddSide(MathHelper.ToRadians(120));
                     builder.AddSide(MathHelper.ToRadians(120));
                     builder.AddSide(MathHelper.ToRadians(150));
+                    builder.Rotation = MathHelper.ToRadians(180);
                 });
 
+                mosquito.Shapes.SetHull(
+                    mosquito.Shapes.ElementAt(0).Vertices[1],
+                    mosquito.Shapes.ElementAt(0).Vertices[2],
+                    mosquito.Shapes.ElementAt(0).Vertices[3],
+                    mosquito.Shapes.ElementAt(0).Vertices[4],
+                    mosquito.Shapes.ElementAt(0).Vertices[5],
+                    mosquito.Shapes.ElementAt(0).Vertices[0],
+                    mosquito.Shapes.ElementAt(1).Vertices[1],
+                    mosquito.Shapes.ElementAt(1).Vertices[2],
+                    mosquito.Shapes.ElementAt(1).Vertices[3],
+                    mosquito.Shapes.ElementAt(1).Vertices[4]);
                 mosquito.Export($"{DefaultShipPartLocation}/chassis.mosquito.vhsp");
             }
             #endregion
             #endregion
-            #endregion
+
+            #region Thrusters
+            if (!File.Exists($"{DefaultShipPartLocation}/thruster.small.vhsp") || RefreshShipParts)
+            { // Generate the default part...
+                var smallThruster = new ThrusterContext("thruster:small");
+                smallThruster.MaxImpulse = Vector2.UnitX * 20f;
+                smallThruster.Shapes.MaleConnectionNode = new ConnectionNodeContext()
+                {
+                    Position = new Vector2(0, 0),
+                    Rotation = 0
+                };
+                smallThruster.Shapes.TryAdd(builder =>
+                {
+                    builder.AddSide(MathHelper.ToRadians(0), 3, false);
+                    builder.AddSide(MathHelper.ToRadians(68.199f), 2.693f, false);
+                    builder.AddSide(MathHelper.ToRadians(111.801f), 1, false);
+                    builder.AddSide(MathHelper.ToRadians(111.801f), 2.693f, false);
+
+                    builder.Translation = new Vector2(-1.75f, 1.5f);
+                    builder.Scale = 0.2f;
+                    builder.Rotation = MathHelper.PiOver2;
+                });
+                smallThruster.Export($"{DefaultShipPartLocation}/thruster.small.vhsp");
             }
+            #endregion
+            #endregion
+        }
 
         public void ConfigureProvider(ServiceProvider provider)
         {
