@@ -20,24 +20,6 @@
 /processorParam:TextureFormat=Compressed
 /build:DiagnosticsFont.spritefont
 
-#begin Effects/Bloom.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/Bloom.fx
-
-#begin Effects/GaussianBlur.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/GaussianBlur.fx
-
-#begin Effects/TrailInterpolation.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/TrailInterpolation.fx
-
 #begin Fonts/BiomeBold-Big.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

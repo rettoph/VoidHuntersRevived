@@ -18,9 +18,11 @@ namespace VoidHuntersRevived.Client.Library
         GuppyLoader guppy;
         ClientVoidHuntersRevivedGame game;
 
+#if WINDOWS
         // https://community.monogame.net/t/start-in-maximized-window/12264
         [DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SDL_MaximizeWindow(IntPtr window);
+#endif
 
         public Game1()
         {
@@ -54,8 +56,9 @@ namespace VoidHuntersRevived.Client.Library
 
             base.Initialize();
 
+#if WINDOWS
             SDL_MaximizeWindow(Window.Handle);
-
+#endif
 
             this.game = guppy.ConfigureMonoGame(graphics, this.Content, this.Window)
                 .ConfigureInput()
