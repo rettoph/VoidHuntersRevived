@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VoidHuntersRevived.Library.Configurations;
+using VoidHuntersRevived.Library.Contexts;
 using Microsoft.Xna.Framework;
 using Guppy.Interfaces;
 using VoidHuntersRevived.Library.Entities.Controllers;
@@ -17,6 +17,7 @@ using Guppy.Lists;
 using VoidHuntersRevived.Library.Extensions.Lidgren.Network;
 using tainicom.Aether.Physics2D.Dynamics;
 using Guppy.Extensions.System;
+using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -28,12 +29,12 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
         #region Public Properties
         /// <summary>
-        /// The base <see cref="ShipPartConfiguration"/> values.
+        /// The base <see cref="ShipPartContext"/> values.
         /// This determins vertices, hulls, colors, and more. This 
-        /// should be defined in startup via an <see cref="IServiceLoader"/>
+        /// value should be registered within a <see cref="ShipPartService"/>
         /// instance.
         /// </summary>
-        public ShipPartConfiguration Configuration { get; set; }
+        public ShipPartContext Context { get; private set; }
 
         /// <summary>
         /// Determin whether or not the current <see cref="ShipPart"/>
@@ -54,11 +55,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
         /// <summary>
         /// The current <see cref="Microsoft.Xna.Framework.Color"/>, based on the 
-        /// containing <see cref="Ship.Color"/> or <see cref="ShipPartConfiguration.DefaultColor"/>
+        /// containing <see cref="Ship.Color"/> or <see cref="ShipPartContext.DefaultColor"/>
         /// as a fallback. The color value is then lerp'd to read based on the current
         /// <see cref="Health"/>.
         /// </summary>
-        public Color Color => Color.Lerp(Color.Red, this.Chain.Ship?.Color ?? this.Root.Configuration.DefaultColor, this.Health / this.Configuration.MaxHealth);
+        public Color Color => Color.Lerp(Color.Red, this.Chain.Ship?.Color ?? this.Root.Context.DefaultColor, this.Health / this.Context.MaxHealth);
         #endregion
 
         #region Lifecycle Methods
@@ -67,6 +68,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             base.Create(provider);
 
             this.Transformations_Create(provider);
+            this.Network_Create(provider);
 
             this.OnChainChanged += this.HandleChainChanged;
             this.ValidateCleaning += this.HandleValidateCleaning;
@@ -126,6 +128,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             this.ValidateCleaning -= this.HandleValidateCleaning;
 
             this.Transformations_Dispose();
+            this.Network_Dispose();
+        }
+        #endregion
+
+        #region Methods
+        public virtual void SetContext(ShipPartContext context)
+        {
+            this.Context = context;
         }
         #endregion
 

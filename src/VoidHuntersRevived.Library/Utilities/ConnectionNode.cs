@@ -2,7 +2,7 @@
 using Guppy.DependencyInjection;
 using Microsoft.Xna.Framework;
 using System;
-using VoidHuntersRevived.Library.Configurations;
+using VoidHuntersRevived.Library.Contexts;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Extensions.Aether;
 using Guppy.Events.Delegates;
@@ -158,10 +158,10 @@ namespace VoidHuntersRevived.Library.Utilities
         /// Construct a new connection node & update
         /// </summary>
         /// <param name="provider"></param>
-        /// <param name="configuration"></param>
+        /// <param name="context"></param>
         /// <param name="parent"></param>
         /// <returns></returns>
-        public static ConnectionNode Build(ServiceProvider provider, ConnectionNodeConfiguration configuration, ShipPart parent, Int32 id)
+        public static ConnectionNode Build(ServiceProvider provider, ConnectionNodeContext context, ShipPart parent, Int32 id)
             => provider.GetService<ConnectionNode>((n, p, c) =>
             {
                 // Update the parent
@@ -169,8 +169,8 @@ namespace VoidHuntersRevived.Library.Utilities
                 n.Id = id;
 
                 // Set the position & rotation values
-                n.LocalPosition = configuration.Position;
-                n.LocalRotation = configuration.Rotation;
+                n.LocalPosition = context.Position;
+                n.LocalRotation = context.Rotation;
 
                 // Update the local matrices based on the LocalPosition and LocalRotation values
                 n.LocalRotationMatrix = Matrix.CreateRotationZ(n.LocalRotation);

@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #region Lifecycle Methods
         private void Health_Initialize(ServiceProvider provider)
         {
-            this.Health = this.Configuration.MaxHealth;
+            this.Health = this.Context.MaxHealth;
         }
         #endregion
 

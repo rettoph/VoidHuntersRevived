@@ -23,7 +23,7 @@ using Guppy;
 using Guppy.Lists;
 using Guppy.Network.Utilities.Messages;
 using VoidHuntersRevived.Library.Entities.Controllers;
-using VoidHuntersRevived.Library.Configurations;
+using VoidHuntersRevived.Library.Contexts;
 using VoidHuntersRevived.Library.Entities.Players;
 using tainicom.Aether.Physics2D.Dynamics;
 using tainicom.Aether.Physics2D.Dynamics.Joints;
@@ -311,7 +311,7 @@ namespace VoidHuntersRevived.Library.Entities
                 typeof(IEnumerable<ConnectionNode>),
                 typeof(Matrix),
                 typeof(ServiceFactory),
-                typeof(ShipPartConfiguration),
+                typeof(ShipPartContext),
                 typeof(ShipController),
                 typeof(IList<ConnectionNode>),
                 typeof(ServiceProvider),

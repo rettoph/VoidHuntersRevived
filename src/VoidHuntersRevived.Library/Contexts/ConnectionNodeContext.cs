@@ -3,15 +3,18 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace VoidHuntersRevived.Library.Configurations
+namespace VoidHuntersRevived.Library.Contexts
 {
-    public class ConnectionNodeConfiguration
+    public class ConnectionNodeContext
     {
         public Vector2 Position;
         public Single Rotation;
 
-        public static void Transform(ref ConnectionNodeConfiguration node, Matrix transformation)
+        public static ConnectionNodeContext Transform(ConnectionNodeContext node, Matrix transformation)
         {
+            if (node == default || transformation == default)
+                return node;
+
             var point = Vector2.Transform(node.Position, transformation);
             // Create a new vector 2 that represents the node's rotation target...
             var rotationPoint = node.Position + Vector2.Transform(Vector2.UnitX, Matrix.CreateRotationZ(node.Rotation));
@@ -22,6 +25,8 @@ namespace VoidHuntersRevived.Library.Configurations
 
             node.Position = point;
             node.Rotation = rotation;
+
+            return node;
         }
     }
 }

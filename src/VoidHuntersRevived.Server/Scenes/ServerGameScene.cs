@@ -14,6 +14,7 @@ using Guppy.Network;
 using VoidHuntersRevived.Library.Entities.Players;
 using System.IO;
 using Guppy.Utilities;
+using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Server.Scenes
 {
@@ -21,6 +22,7 @@ namespace VoidHuntersRevived.Server.Scenes
     {
         #region Private Fields
         private Synchronizer _synchronizer;
+        private ShipPartService _shipParts;
         #endregion
 
         #region Lifecycle Methods
@@ -29,6 +31,7 @@ namespace VoidHuntersRevived.Server.Scenes
             base.Initialize(provider);
 
             provider.Service(out _synchronizer);
+            provider.Service(out _shipParts);
 
             this.group.Users.OnAdded += this.HandleUserJoined;
         }
@@ -60,45 +63,54 @@ namespace VoidHuntersRevived.Server.Scenes
             
             for (Int32 i=0; i<50; i++)
             {
-                var triangle = this.Entities.Create<ShipPart>("entity:ship-part:hull:triangle");
+                var triangle = _shipParts.Create("hull:triangle");
                 triangle.Position = rand.NextVector2(0, world.Size.X);
                 triangle.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
-            
-                var square = this.Entities.Create<ShipPart>("entity:ship-part:hull:square");
+
+                var square = _shipParts.Create("hull:square");
                 square.Position = rand.NextVector2(0, world.Size.X);
                 square.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
-            
-                var hexagon = this.Entities.Create<ShipPart>("entity:ship-part:hull:hexagon");
+
+                var hexagon = _shipParts.Create("hull:hexagon");
                 hexagon.Position = rand.NextVector2(0, world.Size.X);
                 hexagon.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
-            
-                var pentagon = this.Entities.Create<ShipPart>("entity:ship-part:hull:pentagon");
+
+                var pentagon = _shipParts.Create("hull:pentagon");
                 pentagon.Position = rand.NextVector2(0, world.Size.X);
                 pentagon.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
-            
-                if (i % 2 == 0)
-                {
-                    var vBeam = this.Entities.Create<ShipPart>("entity:ship-part:hull:beam:vertical");
-                    vBeam.Position = rand.NextVector2(0, world.Size.X);
-                    vBeam.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
-                }
-                else
-                {
-                    var hBeam = this.Entities.Create<ShipPart>("entity:ship-part:hull:beam:horizontal");
-                    hBeam.Position = rand.NextVector2(0, world.Size.X);
-                    hBeam.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
-                }
-            
-                for (Int32 j = 0; j < 10; j++)
-                {
-                    var thruster = this.Entities.Create<ShipPart>("entity:ship-part:weapon:mass-driver");
-                    thruster.Position = rand.NextVector2(0, world.Size.X);
-                    thruster.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
-            
-                    var weapon = this.Entities.Create<ShipPart>("entity:ship-part:thruster:small");
-                    weapon.Position = rand.NextVector2(0, world.Size.X);
-                    weapon.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
-                }
+
+                // 
+                // var hexagon = this.Entities.Create<ShipPart>("entity:ship-part:hull:hexagon");
+                // hexagon.Position = rand.NextVector2(0, world.Size.X);
+                // hexagon.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+                // 
+                // var pentagon = this.Entities.Create<ShipPart>("entity:ship-part:hull:pentagon");
+                // pentagon.Position = rand.NextVector2(0, world.Size.X);
+                // pentagon.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+                // 
+                // if (i % 2 == 0)
+                // {
+                //     var vBeam = this.Entities.Create<ShipPart>("entity:ship-part:hull:beam:vertical");
+                //     vBeam.Position = rand.NextVector2(0, world.Size.X);
+                //     vBeam.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+                // }
+                // else
+                // {
+                //     var hBeam = this.Entities.Create<ShipPart>("entity:ship-part:hull:beam:horizontal");
+                //     hBeam.Position = rand.NextVector2(0, world.Size.X);
+                //     hBeam.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+                // }
+                // 
+                // for (Int32 j = 0; j < 10; j++)
+                // {
+                //     var thruster = this.Entities.Create<ShipPart>("entity:ship-part:weapon:mass-driver");
+                //     thruster.Position = rand.NextVector2(0, world.Size.X);
+                //     thruster.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+                // 
+                //     var weapon = this.Entities.Create<ShipPart>("entity:ship-part:thruster:small");
+                //     weapon.Position = rand.NextVector2(0, world.Size.X);
+                //     weapon.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+                // }
             }
         }
 
@@ -133,7 +145,8 @@ namespace VoidHuntersRevived.Server.Scenes
                     player.User = user;
                     player.Ship = this.Entities.Create<Ship>((ship, p2, c) =>
                     {
-                        ship.Import(File.OpenRead("Ships/mosquito.vh"), (new Random()).NextVector2(0, 20));
+                        // ship.Import(File.OpenRead("Ships/mosquito.vh"), (new Random()).NextVector2(0, 20));
+                        ship.Bridge = _shipParts.Create("hull:triangle");
                     });
                 });
             });

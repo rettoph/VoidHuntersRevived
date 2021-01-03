@@ -10,6 +10,7 @@ using VoidHuntersRevived.Library.Utilities.Farseer;
 using Guppy.Extensions.Microsoft.Xna.Framework;
 using tainicom.Aether.Physics2D.Common;
 using tainicom.Aether.Physics2D.Collision.Shapes;
+using VoidHuntersRevived.Library.Contexts;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -70,11 +71,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
 
             // Create new fixtures for all vertices contained in the configuration
-            foreach(Vertices data in this.Configuration.Vertices)
+            foreach(ShipPartShapeContext shape in this.Context.Shapes)
             {
-                Vertices vertices = new Vertices(data);
+                Vertices vertices = new Vertices(shape.Vertices);
                 vertices.Transform(this.LocalTransformation);
-                fixtures.Enqueue(root.BuildFixture(new PolygonShape(vertices, this.Configuration.Density), this));
+                fixtures.Enqueue(root.BuildFixture(new PolygonShape(vertices, shape.Density), this));
             }
         }
         #endregion
@@ -93,7 +94,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             {
                 this.AddFixtures(this.Root, _rootFixtures);
 
-                _localCenter = this.IsRoot ? base.LocalCenter : Vector2.Transform(this.Configuration.Centeroid, this.LocalTransformation);
+                _localCenter = this.IsRoot ? base.LocalCenter : Vector2.Transform(this.Context.Shapes.Centeroid, this.LocalTransformation);
             }    
         }
         #endregion

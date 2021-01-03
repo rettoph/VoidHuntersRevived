@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Builder.ServiceLoaders
             services.AddTransient<RigidShipPart>("entity:ship-part:dynamic");
             services.AddSetup<RigidShipPart>("entity:ship-part:dynamic", (s, p, c) =>
             {
-                s.Configuration = null;
+                s.Context = null;
             });
 
             services.AddSetup<Settings>((settings, p, c) =>

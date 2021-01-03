@@ -166,7 +166,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                     this.chains.ForEach(chain =>
                     {
                         chain.Root.SetTransformIgnoreContacts(
-                            position: this.Position - Vector2.Transform(chain.Root.Configuration.Centeroid, Matrix.CreateRotationZ(chain.Root.Rotation)),
+                            position: this.Position - Vector2.Transform(chain.Root.Context.Shapes.Centeroid, Matrix.CreateRotationZ(chain.Root.Rotation)),
                             angle: chain.Root.Rotation);
 
                         chain.TryUpdate(gameTime);

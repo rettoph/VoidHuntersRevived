@@ -149,20 +149,23 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             });
 
             _rand = new Random(1);
-            for (Int32 i = 0; i < 8; i++)
-            {
-                this.Entities.Create<ComputerPlayer>((player, p, d) =>
-                {
-                    player.Ship = this.Entities.Create<Ship>((ship, p2, c) =>
-                    {
-                        var ships = Directory.GetFiles("Ships", "*.vh");
-                        ship.Import(
-                            input: File.OpenRead(ships[_rand.Next(ships.Length)]),
-                            position: _rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y),
-                            rotation: MathHelper.TwoPi * (Single)_rand.NextDouble());
-                    });
-                });
-            }
+            // for (Int32 i = 0; i < 1; i++)
+            // {
+            //     this.Entities.Create<ComputerPlayer>((player, p, d) =>
+            //     {
+            //         player.Ship = this.Entities.Create<Ship>((ship, p2, c) =>
+            //         {
+            //             // var ships = Directory.GetFiles("Ships", "*.vh");
+            //             // ship.Import(
+            //             //     input: File.OpenRead(ships[_rand.Next(ships.Length)]),
+            //             //     position: _rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y),
+            //             //     rotation: MathHelper.TwoPi * (Single)_rand.NextDouble());
+            // 
+            //             ship.Bridge = this.Entities.Create<ShipPart>("entity:ship-part:hull:triangle");
+            //             ship.Bridge.Position = _world.Size / 2;
+            //         });
+            //     });
+            // }
         }
 
         protected override void PostInitialize(ServiceProvider provider)
@@ -241,11 +244,11 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         {
             if(sender.Bridge == default && sender.Status == Guppy.Enums.ServiceStatus.Ready)
             {
-                var ships = Directory.GetFiles("Ships", "*.vh");
-                sender.Import(
-                    input: File.OpenRead(ships[_rand.Next(ships.Length)]),
-                    position: _rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y),
-                    rotation: MathHelper.TwoPi * (Single)_rand.NextDouble());
+                // var ships = Directory.GetFiles("Ships", "*.vh");
+                // sender.Import(
+                //     input: File.OpenRead(ships[_rand.Next(ships.Length)]),
+                //     position: _rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y),
+                //     rotation: MathHelper.TwoPi * (Single)_rand.NextDouble());
             }
         }
 

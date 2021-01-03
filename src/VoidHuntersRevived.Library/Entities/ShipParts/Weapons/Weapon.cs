@@ -18,6 +18,7 @@ using VoidHuntersRevived.Library.Extensions.Aether;
 using tainicom.Aether.Physics2D.Common;
 using Guppy.Extensions.System;
 using Guppy.Extensions.Microsoft.Xna.Framework;
+using VoidHuntersRevived.Library.Contexts;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 {
@@ -100,8 +101,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             base.Initialize(provider);
 
             // Create new shapes for the part
-            foreach (Vertices vertices in this.Configuration.Vertices)
-                this.BuildFixture(new PolygonShape(vertices, this.Configuration.Density), this);
+            foreach (ShipPartShapeContext shape in this.Context.Shapes)
+                this.BuildFixture(new PolygonShape(shape.Vertices, shape.Density), this);
 
             // Create new default joints as needed
             this.CleanJoints();

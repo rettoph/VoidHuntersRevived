@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VoidHuntersRevived.Library.Configurations;
+using VoidHuntersRevived.Library.Contexts;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 
@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Client.Library.Services
         #endregion
 
         #region Private Fields
-        private Dictionary<ShipPartConfiguration, ShipPartConfigurationPrimitiveData> _primitives;
+        private Dictionary<ShipPartContext, ShipPartConfigurationPrimitiveData> _primitives;
 
         private Single _configuredZoom;
         private Camera2D _camera;
@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Client.Library.Services
         {
             base.Initialize(provider);
 
-            _primitives = new Dictionary<ShipPartConfiguration, ShipPartConfigurationPrimitiveData>();
+            _primitives = new Dictionary<ShipPartContext, ShipPartConfigurationPrimitiveData>();
 
             provider.Service(out _camera);
             provider.Service(out _primitiveBatch);
@@ -87,7 +87,7 @@ namespace VoidHuntersRevived.Client.Library.Services
         /// <param name="shipPart"></param>
         public void Render(ShipPart shipPart)
         {
-            _primitives[shipPart.Configuration].Shapes.ForEach(shape =>
+            _primitives[shipPart.Context].Shapes.ForEach(shape =>
             { // Draw all part shapes...
                 _primitiveBatch.DrawPrimitive(
                     shape,
@@ -97,7 +97,7 @@ namespace VoidHuntersRevived.Client.Library.Services
 
             // Draw part path...
             _primitiveBatch.DrawPrimitive(
-                _primitives[shipPart.Configuration].Path, 
+                _primitives[shipPart.Context].Path, 
                 Color.Lerp(shipPart.Color, ShipPartRenderService.TransparentWhite, 0.25f), 
                 shipPart.WorldTransformation);
         }
@@ -106,13 +106,13 @@ namespace VoidHuntersRevived.Client.Library.Services
         #region Helper Methods
         public void ValidateConfiguration(ShipPart shipPart)
         {
-            if (_primitives.ContainsKey(shipPart.Configuration))
+            if (_primitives.ContainsKey(shipPart.Context))
                 return;
 
-            _primitives[shipPart.Configuration] = new ShipPartConfigurationPrimitiveData()
+            _primitives[shipPart.Context] = new ShipPartConfigurationPrimitiveData()
             {
-                Path = PrimitivePath.Create(_width, shipPart.Configuration.Hull),
-                Shapes = shipPart.Configuration.Vertices.Select(v => PrimitiveShape.Create(v)).ToArray()
+                Path = PrimitivePath.Create(_width, shipPart.Context.Shapes.Hull),
+                Shapes = shipPart.Context.Shapes.Select(s => PrimitiveShape.Create(s.Vertices)).ToArray()
             };
         }
         #endregion

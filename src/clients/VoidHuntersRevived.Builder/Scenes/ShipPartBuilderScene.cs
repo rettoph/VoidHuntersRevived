@@ -13,7 +13,7 @@ using VoidHuntersRevived.Client.Library.UI;
 using VoidHuntersRevived.Library.Scenes;
 using Guppy.Extensions.DependencyInjection;
 using tainicom.Aether.Physics2D;
-using VoidHuntersRevived.Library.Configurations;
+using VoidHuntersRevived.Library.Contexts;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Library.Entities;
@@ -113,7 +113,7 @@ namespace VoidHuntersRevived.Builder.Scenes
 
                         Directory.CreateDirectory("Exports");
 
-                        using(var file = File.Open($"Exports/export_{_shapes.Count}-shapes_{DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss-tt")}.txt", FileMode.OpenOrCreate))
+                        using(var file = File.Open($"Exports/export_{_shapes.Count}-shapes_{DateTime.Now.ToString("yyyyMM-dd_hh-mm-ss-tt")}.txt", FileMode.OpenOrCreate))
                         {
                             using(StreamWriter writer = new StreamWriter(file))
                             {
@@ -170,7 +170,7 @@ namespace VoidHuntersRevived.Builder.Scenes
         {
             _demo?.TryRelease();
 
-            var config = new ShipPartConfiguration();
+            var config = new ShipPartContext();
             foreach (ShapeDefinition shape in _shapes)
             {
                 try
@@ -181,7 +181,7 @@ namespace VoidHuntersRevived.Builder.Scenes
                         {
                             config.AddSide(
                                 MathHelper.ToRadians(Single.Parse(shape.Sides[i].Angle.Input.Value)),
-                                ShipPartConfiguration.NodeType.None,
+                                ShipPartShapeContext.NodeType.None,
                                 shape.Sides[i].Length.Input.Value == "" ? 0 : Single.Parse(shape.Sides[i].Length.Input.Value));
                         }
                     }
@@ -197,7 +197,7 @@ namespace VoidHuntersRevived.Builder.Scenes
                 }
             }
 
-            config.AddNode(Vector2.Zero, 0, ShipPartConfiguration.NodeType.Male);
+            config.AddNode(Vector2.Zero, 0, ShipPartShapeContext.NodeType.Male);
             config.Flush();
 
 
@@ -206,8 +206,8 @@ namespace VoidHuntersRevived.Builder.Scenes
 
             _demo = this.Entities.Create<ShipPart>("entity:ship-part:dynamic", (demo, p, c) =>
             {
-                demo.Configuration = config;
-                demo.Position = _world.Size / 2;
+                demo.Context = config;
+                demo.Position = _world.Size / 2 - config.Centeroid;
             });
         }
 
