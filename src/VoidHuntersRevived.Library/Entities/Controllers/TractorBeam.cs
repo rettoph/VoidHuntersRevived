@@ -165,6 +165,9 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                 { // There is no available connection node.. just update the position directly...
                     this.chains.ForEach(chain =>
                     {
+                        chain.Root.LinearVelocity = Vector2.Zero;
+                        chain.Root.AngularVelocity = 0f;
+
                         chain.Root.SetTransformIgnoreContacts(
                             position: this.Position - Vector2.Transform(chain.Root.Context.Shapes.Centeroid, Matrix.CreateRotationZ(chain.Root.Rotation)),
                             angle: chain.Root.Rotation);

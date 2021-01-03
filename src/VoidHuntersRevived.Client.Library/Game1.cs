@@ -85,6 +85,13 @@ namespace VoidHuntersRevived.Client.Library
             // TODO: Unload any non ContentManager content here
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            this.game.TryRelease();
+            this.game = null;
+        }
+
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.

@@ -144,7 +144,6 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                     builder.AddSide(MathHelper.ToRadians(120));
                     builder.AddSide(MathHelper.ToRadians(120));
                     builder.AddSide(MathHelper.ToRadians(150));
-                    builder.Translation = new Vector2(0, 0);
                 });
 
                 mosquito.Export($"{DefaultShipPartLocation}/chassis.mosquito.vhsp");

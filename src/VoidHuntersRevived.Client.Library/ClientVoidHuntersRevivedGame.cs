@@ -60,9 +60,9 @@ namespace VoidHuntersRevived.Client.Library
             _commands["toggle"]["debug"].OnExcecute += this.HandleToggleDebugCommand;
         }
 
-        protected override void Release()
+        protected override void PreRelease()
         {
-            base.Release();
+            base.PreRelease();
 
             _commands["toggle"]["debug"].OnExcecute -= this.HandleToggleDebugCommand;
 
