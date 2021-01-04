@@ -32,10 +32,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
         #region Network Methods
         private void ReadContext(NetIncomingMessage im)
-            => this.SetContext(_shipParts[im.ReadUInt32()]);
+            => this.SetContext(_shipParts[im.ReadString()]);
 
         private void WriteContext(NetOutgoingMessage om)
-            => om.Write(this.Context.Id);
+            => om.Write(this.Context.Name);
         #endregion
     }
 }

@@ -91,6 +91,10 @@ namespace VoidHuntersRevived.Server.Scenes
                 thruster.Position = rand.NextVector2(0, world.Size.X);
                 thruster.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
 
+                var weapon = _shipParts.Create("weapon:gun:mass-driver");
+                weapon.Position = rand.NextVector2(0, world.Size.X);
+                weapon.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+
                 // 
                 // var hexagon = this.Entities.Create<ShipPart>("entity:ship-part:hull:hexagon");
                 // hexagon.Position = rand.NextVector2(0, world.Size.X);
@@ -157,8 +161,7 @@ namespace VoidHuntersRevived.Server.Scenes
                     player.User = user;
                     player.Ship = this.Entities.Create<Ship>((ship, p2, c) =>
                     {
-                        // ship.Import(File.OpenRead("Ships/mosquito.vh"), (new Random()).NextVector2(0, 20));
-                        ship.Bridge = _shipParts.Create("chassis:mosquito");
+                        ship.Import(File.OpenRead("Ships/mosquito.vh"), (new Random()).NextVector2(0, 20));
                     });
                 });
             });

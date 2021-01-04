@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Library.Entities
         }
         private ShipPart ImportComponents(BinaryReader input, Vector2 position = default, Single rotation = default)
         {
-            var output = _entities.Create<ShipPart>(input.ReadString(), (sp, p, s) =>
+            var output = _shipParts.Create(input.ReadString(), (sp, p, s) =>
             {
                 sp.Id = Guid.NewGuid();
                 sp.SetTransformIgnoreContacts(position, rotation);
@@ -84,7 +84,7 @@ namespace VoidHuntersRevived.Library.Entities
         }
         private void ExportComponents(ShipPart input, BinaryWriter output)
         {
-            output.Write(input.ServiceConfiguration.Name);
+            output.Write(input.Context.Name);
 
             foreach (ConnectionNode female in input.FemaleConnectionNodes)
             { // Iterate through all females in the input...

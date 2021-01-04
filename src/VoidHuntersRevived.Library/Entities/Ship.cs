@@ -13,6 +13,7 @@ using Guppy.Events.Delegates;
 using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
 using Guppy.Interfaces;
 using Guppy.Enums;
+using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -50,6 +51,8 @@ namespace VoidHuntersRevived.Library.Entities
         /// is invoked.
         /// </summary>
         private IList<ConnectionNode> _openFemaleNodes;
+
+        private ShipPartService _shipParts;
         #endregion
 
         #region Public Properties
@@ -173,6 +176,7 @@ namespace VoidHuntersRevived.Library.Entities
             // Load required services...
             provider.Service(out _controller);
             provider.Service(out _entities);
+            provider.Service(out _shipParts);
 
             // PreInitialize partial classes...
             this.Thrusters_PreInitialize(provider);

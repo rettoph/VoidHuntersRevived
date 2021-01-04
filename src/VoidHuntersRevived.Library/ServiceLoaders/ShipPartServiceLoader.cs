@@ -39,9 +39,11 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddFactory<RigidShipPart>(p => new RigidShipPart());
             services.AddFactory<Thruster>(p => new Thruster());
             services.AddFactory<Gun>(p => new Gun());
+            services.AddFactory<Bullet>(b => new Bullet());
             services.AddTransient<RigidShipPart>("entity:ship-part:rigid-ship-part");
             services.AddTransient<Thruster>("entity:ship-part:thruster");
             services.AddTransient<Gun>("entity:ship-part:weapon:gun");
+            services.AddTransient<Bullet>();
 
 
             #region Default ShipPart File Generation
@@ -199,6 +201,29 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
 
             #region Weapons
             #region Mass Driver
+            if (!File.Exists($"{DefaultShipPartLocation}/weapon.gun.mass-driver.vhsp") || RefreshShipParts)
+            { // Generate the default part...
+                var massDriver = new GunContext("weapon:gun:mass-driver");
+                massDriver.SwivelRange = 2f;
+                massDriver.BulletDamage = 10f;
+                massDriver.Shapes.MaleConnectionNode = new ConnectionNodeContext()
+                {
+                    Position = new Vector2(0, 0),
+                    Rotation = 0
+                };
+                massDriver.Shapes.TryAdd(builder =>
+                {
+                    builder.AddSide(MathHelper.ToRadians(0), 2, false);
+                    builder.AddSide(MathHelper.ToRadians(83.29f), 4.279f, false);
+                    builder.AddSide(MathHelper.ToRadians(96.71f), 1, false);
+                    builder.AddSide(MathHelper.ToRadians(96.71f), 4.2793f, false);
+
+                    builder.Translation = new Vector2(0.25f, -1f);
+                    builder.Scale = 0.2f;
+                    builder.Rotation = -MathHelper.PiOver2;
+                });
+                massDriver.Export($"{DefaultShipPartLocation}/weapon.gun.mass-driver.vhsp");
+            }
             #endregion
             #endregion
             #endregion

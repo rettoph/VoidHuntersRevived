@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -17,6 +18,7 @@ namespace VoidHuntersRevived.Library.Contexts
         #region Constructors
         protected WeaponContext(string name) : base(name)
         {
+            this.DefaultColor = Color.Red;
         }
         #endregion
 

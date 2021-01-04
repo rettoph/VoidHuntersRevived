@@ -1,4 +1,5 @@
-﻿using Guppy.Extensions.System;
+﻿using Guppy.DependencyInjection;
+using Guppy.Extensions.System;
 using Guppy.Lists;
 using Guppy.Utilities.Primitives;
 using Microsoft.Xna.Framework;
@@ -132,10 +133,12 @@ namespace VoidHuntersRevived.Library.Contexts
         /// Create a new instance of the context's defined ShipPart.
         /// </summary>
         /// <returns></returns>
-        public virtual ShipPart Create(EntityList entities)
+        public virtual ShipPart Create(EntityList entities, Action<ShipPart, ServiceProvider, ServiceConfiguration> setup = null)
             => entities.Create<ShipPart>(this.ShipPartServiceConfiguration, (sp, p, c) =>
             {
                 sp.SetContext(this);
+
+                setup?.Invoke(sp, p, c);
             });
         #endregion
 
