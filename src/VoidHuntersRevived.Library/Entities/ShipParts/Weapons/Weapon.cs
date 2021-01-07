@@ -237,9 +237,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                     var diff = angle - joint.JointAngle;
 
                     joint.MotorSpeed = diff * (1000f / 64f);
-                    this.TargetInRange = MathHelper.Clamp(diff, joint.LowerLimit, joint.UpperLimit) == diff;
+                    this.TargetInRange = MathHelper.Clamp(angle, joint.LowerLimit, joint.UpperLimit) == angle;
 
-                    // Console.WriteLine($"Offset: {offset.ToString("0.00")}; Angle: {angle.ToString("0.00")}; JointAngle: {joint.JointAngle.ToString("0.00")}; Diff: {diff.ToString("0.00")}");
+                    // Console.WriteLine($"Angle: {angle.ToString("0.00")}; Diff: {diff.ToString("0.00")}; Lower: {joint.LowerLimit.ToString("0.00")}; Lower: {joint.UpperLimit.ToString("0.00")};");
                 }
             });
         }

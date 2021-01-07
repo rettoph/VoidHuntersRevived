@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Library.Contexts
         /// The maximum force per second 
         /// achievable by the current thruster.
         /// </summary>
-        public virtual Vector2 MaxImpulse { get; set; } = Vector2.UnitX * 7f;
+        public virtual Vector2 MaxImpulse { get; set; } = Vector2.UnitX * 10f;
         #endregion
 
         #region Constructors

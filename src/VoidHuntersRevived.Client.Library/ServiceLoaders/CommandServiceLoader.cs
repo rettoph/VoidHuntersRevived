@@ -101,6 +101,11 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                                 Type = ArgType.FromEnum<TractorBeam.ActionType>()
                             }
                         }
+                    },
+                    new CommandContext()
+                    {
+                        Word = "self-destruct",
+                        Description = "Selft destruct the current ship."
                     }
                 }
             });
@@ -144,7 +149,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                                 Identifier = "name",
                                 Aliases = "n".ToCharArray(),
                                 Description = "The name of the ship to spawn. When empty, a random ship will be used instead.",
-                                Type = new ArgType("File Name", name => File.OpenRead($"Ships/{name}.vh"))
+                                Type = new ArgType("File Name", name => File.OpenRead($"Resources/Ships/{name}.vh"))
                             },
                             new ArgContext()
                             {

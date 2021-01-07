@@ -54,6 +54,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
                 _commands["ship"]["direction"].OnExcecute += this.HandleShipDirectionCommand;
                 _commands["ship"]["tractorbeam"].OnExcecute += this.HandleShipTractorBeamCommand;
                 _commands["ship"]["save"].OnExcecute += this.HandleShipSaveCommand;
+                _commands["ship"]["self-destruct"].OnExcecute += this.HandleShipSelfDestructCommand;
                 _commands["spawn"]["ai"].OnExcecute += this.HandleSpawnAICommand;
 
                 _configured = true;
@@ -159,10 +160,17 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
         {
             Directory.CreateDirectory("Ships");
 
-            using (FileStream file = File.Open($"Ships/{(input["name"] as String)}.vh", FileMode.OpenOrCreate))
+            using (FileStream file = File.Open($"Resources/Ships/{(input["name"] as String)}.vh", FileMode.OpenOrCreate))
                 this.driven.Ship.Export().WriteTo(file);
 
-            return CommandResponse.Success($"File saved at Ships/{(input["name"] as String)}.vh");
+            return CommandResponse.Success($"File saved at Resources/Ships/{(input["name"] as String)}.vh");
+        }
+
+        private CommandResponse HandleShipSelfDestructCommand(ICommand sender, CommandInput input)
+        {
+            this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 0).Write("ship:self-destruct:request", m => { });
+
+            return CommandResponse.Success("Requesting self destruct...");
         }
         #endregion
 
@@ -202,7 +210,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
             {
                 this.driven.Actions.Create(NetDeliveryMethod.ReliableOrdered, 10).Write("ship:spawn:request", m =>
                 {
-                    var ships = Directory.GetFiles("Ships", "*.vh");
+                    var ships = Directory.GetFiles("Resources/Ships", "*.vh");
                     var rand = new Random();
                     using (var fileStream = File.OpenRead(ships[rand.Next(ships.Length)]))
                     {
@@ -222,7 +230,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
         {
             this.driven.Actions.Create(NetDeliveryMethod.ReliableOrdered, 10).Write("spawn:ai:request", m =>
             {
-                var ships = Directory.GetFiles("Ships", "*.vh");
+                var ships = Directory.GetFiles("Resources/Ships", "*.vh");
                 var rand = new Random();
                 var position = new Vector2(
                     input.GetIfContains<Single>("positionX", _sensor.Position.X), 

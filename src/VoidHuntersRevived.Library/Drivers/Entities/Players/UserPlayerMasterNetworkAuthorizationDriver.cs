@@ -46,6 +46,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
             this.driven.Actions.Set("update:ship:firing:request", this.HandleUpdateShipFiringRequestMessage);
             this.driven.Actions.Set("ship:spawn:request", this.HandleShipSpawnRequestMessage);
             this.driven.Actions.Set("spawn:ai:request", this.HandleSpawnAIRequestMessage);
+            this.driven.Actions.Set("ship:self-destruct:request", this.HandleSelfDestructRequest);
         }
 
         protected override void ReleaseRemote(UserPlayer driven)
@@ -106,6 +107,12 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
                         rotation: rotation);
                     });
             });
+        }
+
+        private void HandleSelfDestructRequest(NetIncomingMessage obj)
+        {
+            if (this.driven.Ship?.Bridge != default)
+                this.driven.Ship.Bridge.Health = 0f;
         }
         #endregion
 

@@ -146,7 +146,20 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                 DefaultInput = new InputType(Keys.F12),
                 Commands = new[]
                 {
-                    (state: ButtonState.Pressed, command: "save ship -n=ship"),
+                    (state: ButtonState.Pressed, command: "ship save -n=ship"),
+                }
+            });
+            #endregion
+
+            #region Self Destruct Inputs
+            inputs.Add(new InputCommandContext()
+            {
+                Handle = "self-destruct_ship",
+                DefaultInput = new InputType(Keys.Space),
+                Lockable = true,
+                Commands = new[]
+                {
+                    (state: ButtonState.Pressed, command: "ship self-destruct"),
                 }
             });
             #endregion

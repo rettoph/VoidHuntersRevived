@@ -85,6 +85,7 @@ namespace VoidHuntersRevived.Library.Entities
             provider.Service(out _scene);
 
             this.settings = provider.GetService<Settings>();
+            this.DirtyState = DirtyState.None;
 
             if (this.settings.Get<HostType>() == HostType.Remote)
                 this.OnPostUpdate += this.PostUpdateRemote;

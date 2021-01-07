@@ -8,6 +8,11 @@ namespace VoidHuntersRevived.Library.Enums
     public enum DirtyState
     {
         /// <summary>
+        /// The default dirty state, defined on PreInitialize
+        /// </summary>
+        None,
+
+        /// <summary>
         /// Indicates that the NetworkEntity should be cleaned once.
         /// Once cleaning has been started this flag will be disabled.
         /// </summary>

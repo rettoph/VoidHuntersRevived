@@ -23,8 +23,8 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
         {
             Settings.MaxPolygonVertices = 9;
             Settings.ContinuousPhysics = false;
-            Directory.CreateDirectory("ShipParts");
-            String DefaultShipPartLocation = "ShipParts";
+            Directory.CreateDirectory("Resources/ShipParts");
+            String DefaultShipPartLocation = "Resources/ShipParts";
             Boolean RefreshShipParts = false;
 #if DEBUG
             RefreshShipParts = true;
@@ -264,7 +264,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             if (!File.Exists($"{DefaultShipPartLocation}/thruster.small.vhsp") || RefreshShipParts)
             { // Generate the default part...
                 var smallThruster = new ThrusterContext("thruster:small");
-                smallThruster.MaxImpulse = Vector2.UnitX * 7f;
+                smallThruster.MaxImpulse = Vector2.UnitX * 10f;
                 smallThruster.Shapes.MaleConnectionNode = new ConnectionNodeContext()
                 {
                     Position = new Vector2(0, 0),
