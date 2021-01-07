@@ -9,6 +9,7 @@ using tainicom.Aether.Physics2D;
 using VoidHuntersRevived.Library.Contexts;
 using VoidHuntersRevived.Library.Entities.Ammunitions;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Entities.ShipParts.Armors;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
 using VoidHuntersRevived.Library.Services;
@@ -40,11 +41,12 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddFactory<Thruster>(p => new Thruster());
             services.AddFactory<Gun>(p => new Gun());
             services.AddFactory<Bullet>(b => new Bullet());
+            services.AddFactory<Armor>(b => new Armor());
             services.AddTransient<RigidShipPart>("entity:ship-part:rigid-ship-part");
             services.AddTransient<Thruster>("entity:ship-part:thruster");
             services.AddTransient<Gun>("entity:ship-part:weapon:gun");
             services.AddTransient<Bullet>();
-
+            services.AddTransient<Armor>("entity:ship-part:armor");
 
             #region Default ShipPart File Generation
             #region Hulls
@@ -88,6 +90,24 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                     builder.AddSide(MathHelper.ToRadians(150));
                 });
                 pentagon.Export($"{DefaultShipPartLocation}/hull.pentagon.vhsp");
+            }
+            #endregion
+
+            #region Diamond
+            if (!File.Exists($"{DefaultShipPartLocation}/hull.diamond.vhsp") || RefreshShipParts)
+            { // Generate the default part...
+                var diamond = new RigidShipPartContext("hull:diamond");
+                diamond.Shapes.TryAdd(builder =>
+                {
+                    builder.AddSide(MathHelper.ToRadians(0));
+                    builder.AddSide(MathHelper.ToRadians(150));
+                    builder.AddSide(MathHelper.ToRadians(60));
+                    builder.AddSide(MathHelper.ToRadians(150));
+                    builder.AddSide(MathHelper.ToRadians(150));
+                    builder.AddSide(MathHelper.ToRadians(60));
+                    builder.AddSide(MathHelper.ToRadians(150));
+                });
+                diamond.Export($"{DefaultShipPartLocation}/hull.diamond.vhsp");
             }
             #endregion
 
@@ -172,6 +192,72 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                 mosquito.Export($"{DefaultShipPartLocation}/chassis.mosquito.vhsp");
             }
             #endregion
+
+            #region Pelican
+            if (!File.Exists($"{DefaultShipPartLocation}/chassis.pelican.vhsp") || RefreshShipParts)
+            { // Generate the default part...
+                var pelican = new RigidShipPartContext("chassis:pelican");
+                pelican.Shapes.MaleConnectionNode = new ConnectionNodeContext()
+                {
+                    Position = new Vector2(1f, -0.5f),
+                    Rotation = 0
+                };
+                pelican.Shapes.TryAdd(builder =>
+                {
+                    builder.AddSide(MathHelper.ToRadians(0), 1, false);
+                    builder.AddSide(MathHelper.ToRadians(120));
+                    builder.AddSide(MathHelper.ToRadians(120));
+                    builder.AddSide(MathHelper.ToRadians(120));
+                    builder.AddSide(MathHelper.ToRadians(120));
+                    builder.AddSide(MathHelper.ToRadians(120));
+
+                    builder.Rotation = -MathHelper.PiOver2;
+                    builder.Translation = new Vector2(0, -1);
+                });
+
+                pelican.Shapes.TryAdd(builder =>
+                {
+                    builder.AddSide(MathHelper.ToRadians(0), 1, false);
+                    builder.AddSide(MathHelper.ToRadians(90));
+                    builder.AddSide(MathHelper.ToRadians(90), 1, false);
+                    builder.AddSide(MathHelper.ToRadians(90));
+
+                    builder.Rotation = MathHelper.PiOver2;
+                });
+                pelican.Shapes.TryAdd(builder =>
+                {
+                    builder.AddSide(MathHelper.ToRadians(0), 1, false);
+                    builder.AddSide(MathHelper.ToRadians(120));
+                    builder.AddSide(MathHelper.ToRadians(150), 2);
+                    builder.AddSide(MathHelper.ToRadians(150));
+                    builder.AddSide(MathHelper.ToRadians(120));
+                    builder.AddSide(MathHelper.ToRadians(120));
+                    builder.AddSide(MathHelper.ToRadians(150), 2);
+                    builder.AddSide(MathHelper.ToRadians(150));
+
+                    builder.Rotation = MathHelper.PiOver2;
+                    builder.Translation = new Vector2(1, 0);
+                });
+
+                pelican.Shapes.SetHull(
+                    pelican.Shapes.ElementAt(0).Vertices[1],
+                    pelican.Shapes.ElementAt(0).Vertices[2],
+                    pelican.Shapes.ElementAt(0).Vertices[3],
+                    pelican.Shapes.ElementAt(0).Vertices[4],
+                    pelican.Shapes.ElementAt(0).Vertices[5],
+                    pelican.Shapes.ElementAt(1).Vertices[1],
+                    pelican.Shapes.ElementAt(2).Vertices[1],
+                    pelican.Shapes.ElementAt(2).Vertices[2],
+                    pelican.Shapes.ElementAt(2).Vertices[3],
+                    pelican.Shapes.ElementAt(2).Vertices[4],
+                    pelican.Shapes.ElementAt(2).Vertices[5],
+                    pelican.Shapes.ElementAt(2).Vertices[6],
+                    pelican.Shapes.ElementAt(2).Vertices[7],
+                    pelican.Shapes.ElementAt(1).Vertices[3]);
+
+                pelican.Export($"{DefaultShipPartLocation}/chassis.pelican.vhsp");
+            }
+            #endregion
             #endregion
 
             #region Thrusters
@@ -223,6 +309,81 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                     builder.Rotation = -MathHelper.PiOver2;
                 });
                 massDriver.Export($"{DefaultShipPartLocation}/weapon.gun.mass-driver.vhsp");
+            }
+            #endregion
+            #endregion
+
+            #region Armors
+            #region Plate
+            if (!File.Exists($"{DefaultShipPartLocation}/armor.plate.vhsp") || RefreshShipParts)
+            { // Generate the default part...
+                var armorPlate = new ArmorContext("armor:plate");
+                armorPlate.Shapes.MaleConnectionNode = new ConnectionNodeContext()
+                {
+                    Position = new Vector2(0, 1.5f),
+                    Rotation = 0
+                };
+                armorPlate.Shapes.TryAdd(builder =>
+                {
+                    builder.AddSide(MathHelper.ToRadians(0), 3, false);
+                    builder.AddSide(MathHelper.ToRadians(60f), 1, false);
+                    builder.AddSide(MathHelper.ToRadians(120f), 2, false);
+                    builder.AddSide(MathHelper.ToRadians(120f), 1, false);
+
+                    builder.Rotation = -MathHelper.PiOver2;
+                });
+                armorPlate.Export($"{DefaultShipPartLocation}/armor.plate.vhsp");
+            }
+
+            if (!File.Exists($"{DefaultShipPartLocation}/armor.shield.vhsp") || RefreshShipParts)
+            { // Generate the default part...
+                var armorShield = new ArmorContext("armor:shield");
+                armorShield.Shapes.MaleConnectionNode = new ConnectionNodeContext()
+                {
+                    Position = new Vector2(0, 0),
+                    Rotation = 0
+                };
+                armorShield.Shapes.AddPolygon(4, false, builder =>
+                {
+                    builder.Translation = new Vector2(0, -0.5f);
+                });
+                armorShield.Shapes.TryAdd(builder =>
+                {
+                    builder.AddSide(MathHelper.ToRadians(180), 1, false);
+                    builder.AddSide(MathHelper.ToRadians(150), 1, false);
+                    builder.AddSide(MathHelper.ToRadians(90), 1, false);
+                    builder.AddSide(MathHelper.ToRadians(90), 1, false);
+                    builder.AddSide(MathHelper.ToRadians(150), 1, false);
+                    // builder.AddSide(MathHelper.ToRadians(60));
+
+                    builder.Translation = new Vector2(-1, 0.5f);
+                });
+
+                armorShield.Shapes.TryAdd(builder =>
+                {
+                    builder.AddSide(MathHelper.ToRadians(180), 1, false);
+                    builder.AddSide(MathHelper.ToRadians(150), 1, false);
+                    builder.AddSide(MathHelper.ToRadians(90), 1, false);
+                    builder.AddSide(MathHelper.ToRadians(90), 1, false);
+                    builder.AddSide(MathHelper.ToRadians(150), 1, false);
+                    // builder.AddSide(MathHelper.ToRadians(60));
+
+                    builder.Translation = new Vector2(-1, -0.5f);
+                    builder.Rotation = MathHelper.Pi + MathHelper.PiOver2 + (MathHelper.Pi / 6);
+                });
+
+                armorShield.Shapes.SetHull(
+                    armorShield.Shapes.ElementAt(2).Vertices[4],
+                    armorShield.Shapes.ElementAt(2).Vertices[3],
+                    armorShield.Shapes.ElementAt(2).Vertices[2],
+                    armorShield.Shapes.ElementAt(2).Vertices[1],
+                    armorShield.Shapes.ElementAt(2).Vertices[0],
+                    armorShield.Shapes.ElementAt(1).Vertices[0],
+                    armorShield.Shapes.ElementAt(1).Vertices[4],
+                    armorShield.Shapes.ElementAt(1).Vertices[3],
+                    armorShield.Shapes.ElementAt(1).Vertices[2],
+                    armorShield.Shapes.ElementAt(1).Vertices[1]);
+                armorShield.Export($"{DefaultShipPartLocation}/armor.shield.vhsp");
             }
             #endregion
             #endregion

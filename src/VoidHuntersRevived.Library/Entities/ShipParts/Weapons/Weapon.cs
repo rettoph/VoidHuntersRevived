@@ -104,7 +104,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
             // Create new shapes for the part
             foreach (ShipPartShapeContext shape in this.Context.Shapes)
-                this.BuildFixture(new PolygonShape(shape.Vertices, shape.Density), this);
+                this.BuildFixture(new PolygonShape(shape.Vertices, shape.Density * this.Context.DensityMultiplier), this);
 
             // Create new default joints as needed
             this.CleanJoints();

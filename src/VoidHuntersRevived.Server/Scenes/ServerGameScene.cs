@@ -63,6 +63,14 @@ namespace VoidHuntersRevived.Server.Scenes
             
             for (Int32 i=0; i<50; i++)
             {
+                var armorShield = _shipParts.Create("armor:shield");
+                armorShield.Position = rand.NextVector2(0, world.Size.X);
+                armorShield.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+
+                var armorPlate = _shipParts.Create("armor:plate");
+                armorPlate.Position = rand.NextVector2(0, world.Size.X);
+                armorPlate.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+
                 var triangle = _shipParts.Create("hull:triangle");
                 triangle.Position = rand.NextVector2(0, world.Size.X);
                 triangle.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
@@ -74,6 +82,10 @@ namespace VoidHuntersRevived.Server.Scenes
                 var hexagon = _shipParts.Create("hull:hexagon");
                 hexagon.Position = rand.NextVector2(0, world.Size.X);
                 hexagon.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+
+                var diamond = _shipParts.Create("hull:diamond");
+                diamond.Position = rand.NextVector2(0, world.Size.X);
+                diamond.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
 
                 var pentagon = _shipParts.Create("hull:pentagon");
                 pentagon.Position = rand.NextVector2(0, world.Size.X);
@@ -154,17 +166,24 @@ namespace VoidHuntersRevived.Server.Scenes
         /// <param name="args"></param>
         private void HandleUserJoined(IServiceList<User> sender, User user)
         {
-            _synchronizer.Enqueue(gt =>
+            this.IfOrOnWorld(world =>
             {
-                this.Entities.Create<UserPlayer>((player, p, d) =>
+                _synchronizer.Enqueue(gt =>
                 {
-                    player.User = user;
-                    player.Ship = this.Entities.Create<Ship>((ship, p2, c) =>
+                    this.Entities.Create<UserPlayer>((player, p, d) =>
                     {
-                        ship.Import(File.OpenRead("Ships/mosquito.vh"), (new Random()).NextVector2(0, 20));
+                        player.User = user;
+                        player.Ship = this.Entities.Create<Ship>((ship, p2, c) =>
+                        {
+                            var ships = Directory.GetFiles("Ships", "*.vh");
+                            var rand = new Random();
+                            using (var fileStream = File.OpenRead(ships[rand.Next(ships.Length)]))
+                                ship.Import(fileStream, rand.NextVector2(0, world.Size.X, 0, world.Size.Y));
+                        });
                     });
                 });
             });
+
         }
         #endregion
     }

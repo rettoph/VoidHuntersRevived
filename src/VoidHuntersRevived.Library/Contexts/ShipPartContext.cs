@@ -64,6 +64,12 @@ namespace VoidHuntersRevived.Library.Contexts
         /// when creating a new instance of the defined <see cref="ShipPart"/>
         /// </summary>
         public abstract String ShipPartServiceConfiguration { get; }
+
+        /// <summary>
+        /// A multiplier applied to all <see cref="ShipPartShapeContext.Density"/> 
+        /// values when generating a <see cref="Fixture"/>.
+        /// </summary>
+        public Single DensityMultiplier { get; set; } = 1f;
         #endregion
 
         #region Constructor

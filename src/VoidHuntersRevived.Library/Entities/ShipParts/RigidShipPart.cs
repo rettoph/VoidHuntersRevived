@@ -75,7 +75,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             {
                 Vertices vertices = new Vertices(shape.Vertices);
                 vertices.Transform(this.LocalTransformation);
-                fixtures.Enqueue(root.BuildFixture(new PolygonShape(vertices, shape.Density), this));
+                fixtures.Enqueue(root.BuildFixture(new PolygonShape(vertices, shape.Density * this.Context.DensityMultiplier), this));
             }
         }
         #endregion

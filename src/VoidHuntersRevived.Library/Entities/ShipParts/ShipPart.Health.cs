@@ -45,6 +45,18 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         }
         #endregion
 
+        #region Helper Methods
+
+        /// <summary>
+        /// Attempt to apply the specified amount of damage 
+        /// to the current <see cref="ShipPart"/>. The
+        /// minimum health should always be 0.
+        /// </summary>
+        /// <param name="damage"></param>
+        public virtual void TryDamage(Single damage)
+            => this.Health = Math.Max(0f, this.Health - damage);
+        #endregion
+
         #region Network Methods
         public void ReadHealth(NetIncomingMessage im)
             => this.Health = im.ReadSingle();

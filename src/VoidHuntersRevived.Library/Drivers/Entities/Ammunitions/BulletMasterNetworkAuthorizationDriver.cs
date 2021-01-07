@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Ammunitions
         private void HandleBulletCollision(Ammunition bullet, ShipPart shipPart)
         {
             // Apply the current damage output of the bullet the the hit ship part.
-            shipPart.Health -= Math.Max(0, this.driven.Damage);
+            shipPart.TryDamage(this.driven.Damage);
         }
         #endregion
     }
