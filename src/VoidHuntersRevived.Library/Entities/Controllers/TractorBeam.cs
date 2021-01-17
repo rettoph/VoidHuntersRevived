@@ -169,7 +169,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                         chain.Root.AngularVelocity = 0f;
 
                         chain.Root.SetTransformIgnoreContacts(
-                            position: this.Position - Vector2.Transform(chain.Root.Context.Shapes.Centeroid, Matrix.CreateRotationZ(chain.Root.Rotation)),
+                            position: this.Position - Vector2.Transform(chain.Root.Context.Centeroid, Matrix.CreateRotationZ(chain.Root.Rotation)),
                             angle: chain.Root.Rotation);
 
                         chain.TryUpdate(gameTime);

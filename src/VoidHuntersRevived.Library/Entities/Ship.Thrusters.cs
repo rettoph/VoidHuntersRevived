@@ -1,18 +1,12 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
-using Guppy.Extensions.System.Collections;
-using Guppy.Extensions.Microsoft.Xna.Framework;
 using Guppy.Extensions.System;
 using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
-using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
-using VoidHuntersRevived.Library.Extensions.System.Collections;
-using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.Entities
 {

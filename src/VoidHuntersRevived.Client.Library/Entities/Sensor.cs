@@ -1,13 +1,9 @@
 ﻿using Guppy;
-using Guppy.Lists;
 using Guppy.DependencyInjection;
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using VoidHuntersRevived.Library.Entities;
-using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
-using Guppy.Extensions.DependencyInjection;
+using Guppy.Extensions.Microsoft.Xna.Framework;
 using Guppy.IO.Services;
 using VoidHuntersRevived.Library.Scenes;
 using tainicom.Aether.Physics2D.Dynamics;

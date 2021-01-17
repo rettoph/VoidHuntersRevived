@@ -63,12 +63,15 @@ namespace VoidHuntersRevived.Library.Services
         #endregion
 
         #region API Methods
+        public ShipPart Create(ShipPartContext context, Action<ShipPart, ServiceProvider, ServiceConfiguration> setup = null)
+            => context.Create(_entities, setup);
+
         public ShipPart Create(String name, Action<ShipPart, ServiceProvider, ServiceConfiguration> setup = null)
-            => this.Create<ShipPart>(name, setup);
+            => this.Create(_contexts[name.xxHash()], setup);
 
         public T Create<T>(String name, Action<T, ServiceProvider, ServiceConfiguration> setup = null)
             where T : ShipPart
-                => _contexts[name.xxHash()].Create(_entities, (sp, p, c) => setup?.Invoke(sp as T, p, c)) as T;
+                => this.Create(_contexts[name.xxHash()], (sp, p, c) => setup?.Invoke(sp as T, p, c)) as T;
 
         /// <summary>
         /// Register a new ship part context instance.

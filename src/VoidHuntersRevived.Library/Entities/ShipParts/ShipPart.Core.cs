@@ -118,6 +118,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         protected override void PostRelease()
         {
             base.PostRelease();
+
+            this.Context = null;
         }
 
         protected override void Dispose()

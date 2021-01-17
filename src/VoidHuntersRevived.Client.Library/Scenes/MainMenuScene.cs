@@ -1,32 +1,22 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Extensions.System.Collections;
-using Guppy.Extensions.DependencyInjection;
-using Guppy.IO.Input.Services;
-using Guppy.IO.Services;
 using Guppy.Lists;
 using Guppy.Lists.Interfaces;
 using Guppy.Network;
 using Guppy.Network.Peers;
 using Guppy.UI.Elements;
-using Guppy.UI.Enums;
-using Guppy.UI.Utilities.Units;
 using Guppy.Utilities;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
-using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using VoidHuntersRevived.Client.Library.UI;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
-using VoidHuntersRevived.Library.Extensions.Microsoft.Xna;
-using VoidHuntersRevived.Library.Extensions.System;
 using VoidHuntersRevived.Library.Scenes;
 using System.Threading;
 
@@ -75,64 +65,64 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             base.Initialize(provider);
 
             #region UI
-            this.stage.Content.BackgroundColor[ElementState.Default] = new Color(Color.Black, 125);
-            this.stage.Content.Children.Create<StackContainer>((container, p, c) =>
-            {
-                container.Bounds.X = 0;
-                container.Bounds.Y = 0.05f;
-                container.Alignment = StackAlignment.Vertical;
-                container.Inline = InlineType.Vertical;
-
-                container.Children.Create<HeaderComponent>();
-                _username = container.Children.Create<FormComponent>((username, p, c) =>
-                {
-                    username.Label.Value = "Username";
-                    username.Input.Value = "Rettoph";
-                    username.Bounds.Width = 700;
-                    username.Input.Filter = new Regex("^[a-zA-Z0-9]{0,25}$");
-                });
-                container.Children.Create<StackContainer>((container2, p, c) =>
-                {
-                    container2.Bounds.X = new CustomUnit(c => (c - container2.Bounds.Width.ToPixel(c)) / 2);
-                    container2.Alignment = StackAlignment.Horizontal;
-                    _host = container2.Children.Create<FormComponent>((host, p, c) =>
-                    {
-                        host.Label.Value = "Host";
-                        host.Input.Value = "localhost";
-                        host.Bounds.Width = 550;
-                        host.Input.Filter = new Regex("^[a-zA-Z0-9\\.]{0,100}$");
-                    });
-                    _port = container2.Children.Create<FormComponent>((port, p, c) =>
-                    {
-                        port.Label.Value = "Port";
-                        port.Input.Value = "1337";
-                        port.Bounds.Width = 150;
-                        port.Input.Filter = new Regex("^[0-9]{0,5}$");
-                    });
-                });
-
-                container.Children.Create<Container>((container3, p, c) =>
-                {
-                    container3.Padding.Top = 25;
-                    container3.Inline = InlineType.Vertical;
-
-                    _connect = container3.Children.Create<TextElement>((connect, p, c) =>
-                    {
-                        connect.Color[ElementState.Default] = Color.White;
-                        connect.BackgroundColor[ElementState.Default] = p.GetColor("ui:input:color:2");
-                        connect.BackgroundColor[ElementState.Hovered] = Color.Lerp(p.GetColor("ui:input:color:2"), Color.Black, 0.25f);
-                        connect.BackgroundColor[ElementState.Pressed] = Color.Lerp(p.GetColor("ui:input:color:2"), Color.Black, 0.5f);
-                        connect.Inline = InlineType.None;
-                        connect.Bounds.Width = 680;
-                        connect.Bounds.Height = 45;
-                        connect.Bounds.X = new CustomUnit(c => (c - connect.Bounds.Width.ToPixel(c)) / 2);
-                        connect.Alignment = Alignment.CenterCenter;
-                        connect.Font = p.GetContent<SpriteFont>("font:ui:normal");
-                        connect.Value = "Connect";
-                        connect.OnClicked += this.HandleConnectClicked;
-                    });
-                });
-            });
+            // this.stage.Content.BackgroundColor[ElementState.Default] = new Color(Color.Black, 125);
+            // this.stage.Content.Children.Create<StackContainer>((container, p, c) =>
+            // {
+            //     container.Bounds.X = 0;
+            //     container.Bounds.Y = 0.05f;
+            //     container.Alignment = StackAlignment.Vertical;
+            //     container.Inline = InlineType.Vertical;
+            // 
+            //     container.Children.Create<HeaderComponent>();
+            //     _username = container.Children.Create<FormComponent>((username, p, c) =>
+            //     {
+            //         username.Label.Value = "Username";
+            //         username.Input.Value = "Rettoph";
+            //         username.Bounds.Width = 700;
+            //         username.Input.Filter = new Regex("^[a-zA-Z0-9]{0,25}$");
+            //     });
+            //     container.Children.Create<StackContainer>((container2, p, c) =>
+            //     {
+            //         container2.Bounds.X = new CustomUnit(c => (c - container2.Bounds.Width.ToPixel(c)) / 2);
+            //         container2.Alignment = StackAlignment.Horizontal;
+            //         _host = container2.Children.Create<FormComponent>((host, p, c) =>
+            //         {
+            //             host.Label.Value = "Host";
+            //             host.Input.Value = "localhost";
+            //             host.Bounds.Width = 550;
+            //             host.Input.Filter = new Regex("^[a-zA-Z0-9\\.]{0,100}$");
+            //         });
+            //         _port = container2.Children.Create<FormComponent>((port, p, c) =>
+            //         {
+            //             port.Label.Value = "Port";
+            //             port.Input.Value = "1337";
+            //             port.Bounds.Width = 150;
+            //             port.Input.Filter = new Regex("^[0-9]{0,5}$");
+            //         });
+            //     });
+            // 
+            //     container.Children.Create<Container>((container3, p, c) =>
+            //     {
+            //         container3.Padding.Top = 25;
+            //         container3.Inline = InlineType.Vertical;
+            // 
+            //         _connect = container3.Children.Create<TextElement>((connect, p, c) =>
+            //         {
+            //             connect.Color[ElementState.Default] = Color.White;
+            //             connect.BackgroundColor[ElementState.Default] = p.GetColor("ui:input:color:2");
+            //             connect.BackgroundColor[ElementState.Hovered] = Color.Lerp(p.GetColor("ui:input:color:2"), Color.Black, 0.25f);
+            //             connect.BackgroundColor[ElementState.Pressed] = Color.Lerp(p.GetColor("ui:input:color:2"), Color.Black, 0.5f);
+            //             connect.Inline = InlineType.None;
+            //             connect.Bounds.Width = 680;
+            //             connect.Bounds.Height = 45;
+            //             connect.Bounds.X = new CustomUnit(c => (c - connect.Bounds.Width.ToPixel(c)) / 2);
+            //             connect.Alignment = Alignment.CenterCenter;
+            //             connect.Font = p.GetContent<SpriteFont>("font:ui:normal");
+            //             connect.Value = "Connect";
+            //             connect.OnClicked += this.HandleConnectClicked;
+            //         });
+            //     });
+            // });
             #endregion
 
             this.camera.Zoom = 5f;

@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Library.Entities
         public Boolean Firing
         {
             get => _firing;
-            set => this.OnFiringChanged.InvokeIfChanged(value != _firing, this, ref _firing, value);
+            set => this.OnFiringChanged.InvokeIf(value != _firing, this, ref _firing, value);
         }
 
         /// <summary>

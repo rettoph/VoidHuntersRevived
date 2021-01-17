@@ -5,7 +5,7 @@
 /intermediateDir:./obj/$(Platform)
 /platform:DesktopGL
 /config:
-/profile:Reach
+/profile:HiDef
 /compress:False
 
 #-------------------------------- References --------------------------------#
@@ -15,10 +15,17 @@
 
 #begin DiagnosticsFont.spritefont
 /importer:FontDescriptionImporter
-/processor:LocalizedFontProcessor
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=NoChange
+/build:DiagnosticsFont.spritefont
+
+#begin DiagnosticsFont-Small.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:DiagnosticsFont.spritefont
+/build:DiagnosticsFont-Small.spritefont
 
 #begin Fonts/BiomeBold-Big.spritefont
 /importer:FontDescriptionImporter

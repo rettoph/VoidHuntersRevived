@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Library.Contexts
         #region Constructors
         public ArmorContext(string name) : base(name)
         {
-            this.DensityMultiplier = 3f;
+            this.Density = 3f;
             this.DefaultColor = Color.Gray;
             this.InheritColor = false;
         }

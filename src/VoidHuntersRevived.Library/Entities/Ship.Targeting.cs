@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Library.Entities
         public Vector2 Target
         {
             get => _target;
-            set => this.OnTargetChanged.InvokeIfChanged(_target != value, this, ref _target, value);
+            set => this.OnTargetChanged.InvokeIf(_target != value, this, ref _target, value);
         }
         #endregion
 

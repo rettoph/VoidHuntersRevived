@@ -23,10 +23,11 @@ namespace VoidHuntersRevived.Library.Contexts
             // Convert the new rotation point back into a rotation...
             var rotation = MathHelper.WrapAngle((Single)Math.Atan2(rotationPoint.Y - point.Y, rotationPoint.X - point.X));
 
-            node.Position = point;
-            node.Rotation = rotation;
-
-            return node;
+            return new ConnectionNodeContext()
+            {
+                Position = point,
+                Rotation = rotation
+            };
         }
     }
 }

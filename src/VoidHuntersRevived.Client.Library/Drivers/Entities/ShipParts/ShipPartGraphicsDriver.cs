@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
 
             provider.Service(out _renderer);
 
-            _renderer.ValidateConfiguration(this.driven);
+            _renderer.ValidateContext(this.driven);
 
             this.driven.OnDraw += this.Draw;
         }

@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Library.Scenes
 
             this.settings = provider.GetService<Settings>();
 
-            this.group = provider.GetService<Peer>().Groups.GetOrCreateById(Guid.Empty);
+            this.group = provider.GetService<Peer>()?.Groups?.GetOrCreateById(Guid.Empty);
 
             // Create some default layers.
             // World Components (ShipParts, WorldEntity, Players, ect)
@@ -118,7 +118,7 @@ namespace VoidHuntersRevived.Library.Scenes
 
         private void UpdateLocal(GameTime gameTime)
         {
-            this.group.Clear();
+            this.group?.Clear();
         }
         #endregion
 

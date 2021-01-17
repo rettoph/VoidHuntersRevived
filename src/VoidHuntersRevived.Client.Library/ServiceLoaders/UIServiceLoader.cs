@@ -4,6 +4,7 @@ using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Services;
 using Guppy.UI.Elements;
+using Guppy.UI.Entities;
 using Guppy.UI.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -22,6 +23,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddFactory<HeaderComponent>(p => new HeaderComponent());
             services.AddFactory<FormComponent>(p => new FormComponent());
 
+            services.AddScoped<Stage>("stage:main");
             services.AddTransient<HeaderComponent>();
             services.AddTransient<FormComponent>();
 

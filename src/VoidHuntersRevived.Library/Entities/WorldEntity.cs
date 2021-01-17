@@ -97,7 +97,7 @@ namespace VoidHuntersRevived.Library.Entities
         public Vector2 Size
         {
             get => _size;
-            set => this.OnSizeChanged.InvokeIfChanged(_size != value, this, ref _size, value);
+            set => this.OnSizeChanged.InvokeIf(_size != value, this, ref _size, value);
         }
         #endregion
 

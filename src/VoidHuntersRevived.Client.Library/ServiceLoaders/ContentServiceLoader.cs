@@ -17,7 +17,8 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             // Register Content
             services.AddSetup<ContentService>((content, p, c) =>
             {
-                content.TryRegister("debug:font", "UI/Font");
+                content.TryRegister("debug:font", "DiagnosticsFont", 1);
+                content.TryRegister("debug:font:small", "DiagnosticsFont-Small", 1);
 
                 content.TryRegister("ui:font:header:1", "Fonts/BiomeLight-Big");
                 content.TryRegister("ui:font:header:2", "Fonts/BiomeLight-Small");

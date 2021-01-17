@@ -53,8 +53,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         private void ConnectionNode_Initialize(ServiceProvider provider)
         {
             // Create new connection nodes for the internal element
-            this.MaleConnectionNode = ConnectionNode.Build(provider, this.Context.Shapes.MaleConnectionNode, this, -1);
-            this.FemaleConnectionNodes = this.Context.Shapes.SelectMany(s => s.FemaleConnectionNodes).Select((f, i) =>
+            this.MaleConnectionNode = ConnectionNode.Build(provider, this.Context.MaleConnectionNode, this, -1);
+            this.FemaleConnectionNodes = this.Context.FemaleConnectionNodes.Select((f, i) =>
                 ConnectionNode.Build(provider, f, this, i)).ToArray();
         }
 

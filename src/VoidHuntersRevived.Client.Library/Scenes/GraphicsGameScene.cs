@@ -100,7 +100,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                 l.DrawOrder = 50;
             });
 
-            _stage = this.Entities.Create<Stage>((s, p, d) =>
+            _stage = this.Entities.Create<Stage>("stage:main", (s, p, d) =>
             {
                 s.LayerGroup = 1;
             });

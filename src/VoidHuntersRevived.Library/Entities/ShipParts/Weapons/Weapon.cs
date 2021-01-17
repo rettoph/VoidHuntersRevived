@@ -103,8 +103,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             base.Initialize(provider);
 
             // Create new shapes for the part
-            foreach (ShipPartShapeContext shape in this.Context.Shapes)
-                this.BuildFixture(new PolygonShape(shape.Vertices, shape.Density * this.Context.DensityMultiplier), this);
+            foreach (Vertices shape in this.Context.InnerShapes)
+                this.BuildFixture(new PolygonShape(shape, this.Context.Density), this);
 
             // Create new default joints as needed
             this.CleanJoints();
@@ -240,11 +240,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
                     // Calculate the current different in angle
                     var diff = angle - joint.JointAngle;
-
                     joint.MotorSpeed = diff * (1000f / 64f);
-                    
-
-                    // Console.WriteLine($"Angle: {angle.ToString("0.00")}; Diff: {diff.ToString("0.00")}; Lower: {joint.LowerLimit.ToString("0.00")}; Lower: {joint.UpperLimit.ToString("0.00")};");
                 }
             });
         }

@@ -2,6 +2,7 @@
 using Guppy.Extensions.System;
 using Guppy.Lists;
 using Guppy.Utilities.Primitives;
+using K4os.Hash.xxHash;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Utilities;
+using VoidHuntersRevived.Library.Extensions.System.IO;
 
 namespace VoidHuntersRevived.Library.Contexts
 {
@@ -26,6 +28,14 @@ namespace VoidHuntersRevived.Library.Contexts
     /// </summary>
     public abstract class ShipPartContext
     {
+        #region Abstract Properties
+        /// <summary>
+        /// The name of the service configuration to be used
+        /// when creating a new instance of the defined <see cref="ShipPart"/>.
+        /// </summary>
+        public abstract String ShipPartServiceConfiguration { get; }
+        #endregion
+
         #region Public Properties
         /// <summary>
         /// The cross platform unique key for this context.
@@ -36,10 +46,6 @@ namespace VoidHuntersRevived.Library.Contexts
         /// A unique name linked to this context.
         /// </summary>
         public String Name { get; set; }
-        /// <summary>
-        /// A list of all raw Shape data contained within the ShipPart.
-        /// </summary>
-        public ShipPartShapesContext Shapes { get; private set; }
 
         /// <summary>
         /// The default <see cref="Color"/> to render the 
@@ -60,23 +66,47 @@ namespace VoidHuntersRevived.Library.Contexts
         public Single MaxHealth { get; set; } = 100f;
 
         /// <summary>
-        /// The name of the service configuration to be used
-        /// when creating a new instance of the defined <see cref="ShipPart"/>
+        /// The density of the current defined ShipPart
         /// </summary>
-        public abstract String ShipPartServiceConfiguration { get; }
+        public Single Density { get; set; } = 1f;
 
         /// <summary>
-        /// A multiplier applied to all <see cref="ShipPartShapeContext.Density"/> 
-        /// values when generating a <see cref="Fixture"/>.
+        /// A custom defined centeroid for the current <see cref="Shapes"/>.
         /// </summary>
-        public Single DensityMultiplier { get; set; } = 1f;
+        public Vector2 Centeroid { get; set; }
+
+        /// <summary>
+        /// The *lastmode* defined male connection node.
+        /// Note, male connection nodes can be manually overwritten
+        /// in newer shapes. This is bad practice, but for now it
+        /// works. Just make sure you define the male connection
+        /// node in the last shape to be sure it never gets overwritten.
+        /// </summary>
+        public ConnectionNodeContext MaleConnectionNode { get; set; }
+
+        /// <summary>
+        /// A list of all contained female connection nodes.
+        /// </summary>
+        public ConnectionNodeContext[] FemaleConnectionNodes { get; set; }
+
+        /// <summary>
+        /// All distinct shapes within the current part, multiple may be used in combination
+        /// to create concave shapes.
+        /// </summary>
+        public Vertices[] InnerShapes { get; set; }
+
+        /// <summary>
+        /// A ccollection of traced outline used primarily to render
+        /// the shape. This can be used for adding detail or cleaning
+        /// the default concave to convex outline conversion.
+        /// </summary>
+        public Vertices[] OuterHulls { get; set; }
         #endregion
 
         #region Constructor
         public ShipPartContext(String name)
         {
             this.Name = name;
-            this.Shapes = new ShipPartShapesContext();
         }
         #endregion
 
@@ -159,7 +189,30 @@ namespace VoidHuntersRevived.Library.Contexts
             this.MaxHealth = reader.ReadSingle();
             this.DefaultColor = new Color(packedValue: reader.ReadUInt32());
             this.InheritColor = reader.ReadBoolean();
-            this.Shapes.Read(reader);
+
+            this.Centeroid = reader.ReadVector2();
+            this.MaleConnectionNode = reader.ReadConnectionNodeContext();
+
+            var nodeBuffer = new List<ConnectionNodeContext>();
+            var nodeCount = reader.ReadInt32();
+            for (var i = 0; i < nodeCount; i++)
+                nodeBuffer.Add(reader.ReadConnectionNodeContext());
+            this.FemaleConnectionNodes = nodeBuffer.ToArray();
+            nodeBuffer.Clear();
+
+
+            var vertBuffer = new List<Vertices>();
+            var shapeCount = reader.ReadInt32();
+            for (var i = 0; i < nodeCount; i++)
+                vertBuffer.Add(reader.ReadVertices());
+            this.InnerShapes = vertBuffer.ToArray();
+            vertBuffer.Clear();
+
+            var hullCount = reader.ReadInt32();
+            for (var i = 0; i < nodeCount; i++)
+                vertBuffer.Add(reader.ReadVertices());
+            this.OuterHulls = vertBuffer.ToArray();
+            vertBuffer.Clear();
         }
 
         /// <summary>
@@ -172,7 +225,21 @@ namespace VoidHuntersRevived.Library.Contexts
             writer.Write(this.MaxHealth);
             writer.Write(this.DefaultColor.PackedValue);
             writer.Write(this.InheritColor);
-            this.Shapes.Write(writer);
+
+            writer.Write(this.Centeroid);
+            writer.Write(this.MaleConnectionNode);
+
+            writer.Write(this.FemaleConnectionNodes.Length);
+            foreach (ConnectionNodeContext female in this.FemaleConnectionNodes)
+                writer.Write(female);
+
+            writer.Write(this.InnerShapes.Length);
+            foreach (Vertices shape in this.InnerShapes)
+                writer.Write(shape);
+
+            writer.Write(this.OuterHulls.Length);
+            foreach (Vertices outerHull in this.OuterHulls)
+                writer.Write(outerHull);
         }
         #endregion
     }

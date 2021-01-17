@@ -31,16 +31,16 @@ namespace VoidHuntersRevived.Client.Library.Services
         #endregion
 
         #region Private Structs
-        private struct ShipPartConfigurationPrimitiveData
+        private struct ShipPartContextPrimitiveData
         {
-            public PrimitivePath Path;
-            public PrimitiveShape[] Shapes;
+            public PrimitivePath[] OuterHulls;
+            public PrimitiveShape[] InnerShapes;
             public PrimitivePath MaleNode;
         }
         #endregion
 
         #region Private Fields
-        private Dictionary<ShipPartContext, ShipPartConfigurationPrimitiveData> _primitives;
+        private Dictionary<ShipPartContext, ShipPartContextPrimitiveData> _primitives;
 
         private Single _configuredZoom;
         private Camera2D _camera;
@@ -53,7 +53,7 @@ namespace VoidHuntersRevived.Client.Library.Services
         {
             base.Initialize(provider);
 
-            _primitives = new Dictionary<ShipPartContext, ShipPartConfigurationPrimitiveData>();
+            _primitives = new Dictionary<ShipPartContext, ShipPartContextPrimitiveData>();
 
             provider.Service(out _camera);
             provider.Service(out _primitiveBatch);
@@ -78,9 +78,9 @@ namespace VoidHuntersRevived.Client.Library.Services
                 _configuredZoom = _camera.Zoom;
                 _width = (1 / _camera.Zoom);
 
-                foreach(ShipPartConfigurationPrimitiveData primitives in _primitives.Values)
+                foreach(ShipPartContextPrimitiveData primitives in _primitives.Values)
                 {
-                    primitives.Path.Width = _width;
+                    primitives.OuterHulls.ForEach(hull => hull.Width = _width);
                     primitives.MaleNode.Width = _width;
                 }
             }
@@ -92,20 +92,23 @@ namespace VoidHuntersRevived.Client.Library.Services
         /// <param name="shipPart"></param>
         public void Render(ShipPart shipPart)
         {
-            _primitives[shipPart.Context].Shapes.ForEach(shape =>
-            { // Draw all part shapes...
+            _primitives[shipPart.Context].InnerShapes.ForEach(shape =>
+            { // Draw all inner shapes...
                 _primitiveBatch.DrawPrimitive(
                     shape,
                     Color.Lerp(shipPart.Color, Color.Transparent, 0.25f),
                     shipPart.WorldTransformation);
             });
 
-            // Draw part paths...
-            _primitiveBatch.DrawPrimitive(
-                _primitives[shipPart.Context].Path, 
-                Color.Lerp(shipPart.Color, ShipPartRenderService.TransparentWhite, 0.25f), 
-                shipPart.WorldTransformation);
+            _primitives[shipPart.Context].OuterHulls.ForEach(hull =>
+            { // Draw all outer hulls...
+                _primitiveBatch.DrawPrimitive(
+                    hull,
+                    Color.Lerp(shipPart.Color, ShipPartRenderService.TransparentWhite, 0.25f),
+                    shipPart.WorldTransformation);
+            });
 
+            // Draw part paths...
             _primitiveBatch.DrawPrimitive(
                 _primitives[shipPart.Context].MaleNode,
                 Color.Lerp(shipPart.Color, ShipPartRenderService.TransparentWhite, 0.5f),
@@ -114,21 +117,39 @@ namespace VoidHuntersRevived.Client.Library.Services
         #endregion
 
         #region Helper Methods
-        public void ValidateConfiguration(ShipPart shipPart)
+        /// <summary>
+        /// Create a new <see cref="ShipPartContextPrimitiveData"/> instance
+        /// assuming that the recieved <see cref="ShipPart.Context"/>
+        /// </summary>
+        /// <param name="shipPart"></param>
+        public void ValidateContext(ShipPart shipPart)
         {
             if (_primitives.ContainsKey(shipPart.Context))
                 return;
 
-            _primitives[shipPart.Context] = new ShipPartConfigurationPrimitiveData()
+            _primitives[shipPart.Context] = new ShipPartContextPrimitiveData()
             {
-                Path = PrimitivePath.Create(_width, shipPart.Context.Shapes.Hull),
-                Shapes = shipPart.Context.Shapes.Select(s => PrimitiveShape.Create(s.Vertices)).ToArray(),
+                OuterHulls = shipPart.Context.OuterHulls.Select(h => PrimitivePath.Create(_width, h)).ToArray(),
+                InnerShapes = shipPart.Context.InnerShapes.Select(s => PrimitiveShape.Create(s)).ToArray(),
                 MaleNode = PrimitivePath.Create(
                     _width,
                     shipPart.MaleConnectionNode.LocalPosition + (Vector2.UnitX * 0.2f).RotateTo(shipPart.MaleConnectionNode.LocalRotation + MathHelper.Pi + MathHelper.PiOver4),
                     shipPart.MaleConnectionNode.LocalPosition,
                     shipPart.MaleConnectionNode.LocalPosition + (Vector2.UnitX * 0.2f).RotateTo(shipPart.MaleConnectionNode.LocalRotation + MathHelper.Pi - MathHelper.PiOver4))
             };
+        }
+
+
+        /// <summary>
+        /// Remove the specified <paramref name="shipPart"/>s Context
+        /// from the internal <see cref="ShipPartContextPrimitiveData"/>
+        /// cache. Generally this never needs to be called.
+        /// </summary>
+        /// <param name="shipPart"></param>
+        public void RemoveContext(ShipPart shipPart)
+        {
+            if(shipPart != default && _primitives.ContainsKey(shipPart.Context))
+                _primitives.Remove(shipPart.Context);
         }
         #endregion
     }
