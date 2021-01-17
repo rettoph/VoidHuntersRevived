@@ -2,12 +2,15 @@
 using Guppy.DependencyInjection;
 using Guppy.DependencyInjection.Descriptors;
 using Guppy.Extensions.Utilities;
+using Guppy.IO.Input;
+using Guppy.IO.Services;
 using Guppy.UI.Elements;
 using Guppy.UI.Entities;
 using Guppy.Utilities;
 using Guppy.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +20,7 @@ using VoidHuntersRevived.Builder.Contexts;
 using VoidHuntersRevived.Builder.UI.Pages;
 using VoidHuntersRevived.Client.Library.Services;
 using VoidHuntersRevived.Library.Contexts;
+using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Services;
 
@@ -27,13 +31,15 @@ namespace VoidHuntersRevived.Builder.Services
     /// <see cref="ShipPartContext.FemaleConnectionNodes"/> & <see cref="ShipPartContext.OuterHulls"/>
     /// values.
     /// </summary>
-    public sealed class ShipPartShapesBuilderService : Frameable
+    public class ShipPartShapesBuilderService : ShipPartContextBuilderService
     {
         #region Enums
         public enum ShipPartShapesBuilderStatus
         {
             None,
-            BuildingShape
+            BuildingShape,
+            EditingShape,
+            DraggingShape
         }
         #endregion
 
@@ -48,12 +54,21 @@ namespace VoidHuntersRevived.Builder.Services
         private Synchronizer _synchronizer;
         private ShipPartService _shipParts;
         private ShipPartRenderService _shipPartRenderService;
+        private MouseService _mouse;
+        private WorldEntity _world;
 
         private BasicEffect _effect;
         private ShipPartShapesBuilderStatus _status;
 
         private ShipPart _demo;
         private List<ShapeContext> _shapes;
+        private ShapeContext _editShape;
+        private Vector2 _dragStartMouseWorldPosition;
+        private Vector2 _dragStartTranslation;
+        #endregion
+
+        #region Protected Properties
+        protected Vector2 mouseWorldPosition => _camera.Unproject(_mouse.Position);
         #endregion
 
         #region Lifecycle Methods
@@ -62,7 +77,6 @@ namespace VoidHuntersRevived.Builder.Services
             base.PreInitialize(provider);
 
             provider.Service("stage:main", out _stage);
-            provider.Service(out _builder);
             provider.Service(out _camera);
             provider.Service(out _graphics);
             provider.Service(out _spriteBatch);
@@ -70,6 +84,9 @@ namespace VoidHuntersRevived.Builder.Services
             provider.Service(out _synchronizer);
             provider.Service(out _shipParts);
             provider.Service(out _shipPartRenderService);
+            provider.Service(out _mouse);
+            provider.Service(out _world);
+            provider.Service(out _builder, (b, p, c) => b.shapes = this);
 
             _shapes = new List<ShapeContext>();
             _effect = new BasicEffect(_graphics)
@@ -88,6 +105,7 @@ namespace VoidHuntersRevived.Builder.Services
 
             _page.AddShapeButton.OnClicked += this.HandleAddShapeButtonClicked;
             _builder.OnShapeBuilt += this.HandleShapeBuilt;
+            _mouse.OnButtonStateChanged += this.HandleMouseButtonStateChanged;
         }
 
         protected override void Release()
@@ -105,7 +123,7 @@ namespace VoidHuntersRevived.Builder.Services
             _synchronizer = null;
             _shipParts = null;
             _shipPartRenderService = null;
-
+            _mouse = null;
 
             _shapes = null;
             _effect.Dispose();
@@ -117,6 +135,33 @@ namespace VoidHuntersRevived.Builder.Services
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            if(_status == ShipPartShapesBuilderStatus.DraggingShape)
+            { // We want to transform the current _editShape based on the mouse changes.
+                _editShape.Translation = _dragStartTranslation - _dragStartMouseWorldPosition + this.mouseWorldPosition;
+
+                var editPoints = _editShape.GetInterestPoints();
+                var targetPoints = this.GetInterestPoints(_editShape);
+                (Vector2 edit, Vector2 target, Single distance) nearest = (Vector2.Zero, Vector2.Zero, Single.MaxValue);
+
+                foreach(Vector2 edit in editPoints)
+                {
+                    foreach(Vector2 target in targetPoints)
+                    {
+                        if(Vector2.Distance(edit, target) < nearest.distance)
+                        {
+                            nearest.edit = edit;
+                            nearest.target = target;
+                            nearest.distance = Vector2.Distance(edit, target);
+                        }
+                    }
+                }
+
+                if(nearest.distance < 0.25f)
+                {
+                    _editShape.Translation += nearest.target - nearest.edit;
+                }
+            }
 
             _shipPartRenderService.RemoveContext(_demo);
             _demo?.TryRelease();
@@ -205,6 +250,23 @@ namespace VoidHuntersRevived.Builder.Services
 
             return position;
         }
+
+        /// <summary>
+        /// Check to see if there is a shape under the current
+        /// mouse position. If so, set the value to <see cref="_editShape"/>
+        /// and return true. Otherwise return false.
+        /// </summary>
+        /// <returns></returns>
+        private Boolean TryUpdateEditShape()
+        {
+            var fixture = _world.Live.TestPoint(this.mouseWorldPosition);
+
+            if (fixture == default)
+                return false;
+
+            _editShape = _shapes[fixture.Body.FixtureList.IndexOf(fixture)];
+            return true;
+        }
         #endregion
 
         #region Event handlers
@@ -223,6 +285,38 @@ namespace VoidHuntersRevived.Builder.Services
         {
             _shapes.Add(shape);
             _status = ShipPartShapesBuilderStatus.None;
+        }
+
+        private void HandleMouseButtonStateChanged(InputManager sender, InputArgs args)
+        {
+            _synchronizer.Enqueue(gt =>
+            {
+                switch (_status)
+                {
+                    case ShipPartShapesBuilderStatus.None:
+                    case ShipPartShapesBuilderStatus.EditingShape:
+                        if (args.State == ButtonState.Pressed && this.TryUpdateEditShape())
+                        { // There is a shape being selected!
+                            _status = ShipPartShapesBuilderStatus.DraggingShape;
+                            _dragStartMouseWorldPosition = this.mouseWorldPosition;
+                            _dragStartTranslation = _editShape.Translation;
+                        }
+                        else
+                            _status = ShipPartShapesBuilderStatus.None;
+                        break;
+                    case ShipPartShapesBuilderStatus.DraggingShape:
+                        if (args.State == ButtonState.Released && this.TryUpdateEditShape())
+                        { // There is a shape being selected!
+                            _status = ShipPartShapesBuilderStatus.EditingShape;
+                        }
+                        else
+                            _status = ShipPartShapesBuilderStatus.None;
+                        break;
+                    case ShipPartShapesBuilderStatus.BuildingShape:
+                        // Do nothing.
+                        break;
+                }
+            });
         }
         #endregion
     }

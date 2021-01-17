@@ -4,23 +4,52 @@ using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Builder.Services;
+using VoidHuntersRevived.Builder.UI.Pages;
 using VoidHuntersRevived.Client.Library.Scenes;
+using VoidHuntersRevived.Library.Contexts;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Enums;
+using Guppy.Extensions.System;
+using VoidHuntersRevived.Library.Attributes;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using ServiceProvider = Guppy.DependencyInjection.ServiceProvider;
 
 namespace VoidHuntersRevived.Builder.Scenes
 {
     public class BuilderScene : GraphicsGameScene
     {
         #region Private Fields
-        private ShipPartShapesBuilderService _builder;
+        private ServiceProvider _provider;
+
+        /// <summary>
+        /// The primary context instance currently being constructed.
+        /// </summary>
+        private ShipPartContext _context;
+
+        /// <summary>
+        /// The API referenceable page to insert 
+        /// a builder services UI. Only visible once
+        /// a context type has been selected.
+        /// </summary>
+        private ShipPartContextBuilderPage _builderPage;
+
+        /// <summary>
+        /// The hidden page to render when a user needs to select a new
+        /// context type.
+        /// </summary>
+        private ShipPartContextTypeSelectorPage _contextSelectorPage;
         #endregion
 
         #region Lifecycle Methods
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
+
+            _provider = provider;
 
             this.settings.Set<NetworkAuthorization>(NetworkAuthorization.Master);
             this.settings.Set<HostType>(HostType.Local);
@@ -29,6 +58,11 @@ namespace VoidHuntersRevived.Builder.Scenes
             { // Create an empty world
                 w.Size = new Vector2(Chunk.Size, Chunk.Size);
             });
+
+            _contextSelectorPage = this.stage.Content.Children.Create<ShipPartContextTypeSelectorPage>();
+            _builderPage = this.stage.Content.Children.Create<ShipPartContextBuilderPage>();
+
+            _contextSelectorPage.OnContextTypeSelected += this.HandleContextTypeSelected;
         }
 
         protected override void Initialize(ServiceProvider provider)
@@ -37,8 +71,6 @@ namespace VoidHuntersRevived.Builder.Scenes
 
             this.camera.ZoomTo(100f);
             this.camera.MoveTo((Vector2.One * Chunk.Size) / 2);
-
-            provider.Service(out _builder);
         }
         #endregion
 
@@ -46,15 +78,20 @@ namespace VoidHuntersRevived.Builder.Scenes
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            _builder.TryUpdate(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
+        }
+        #endregion
 
-            _builder.TryDraw(gameTime);
+        #region Event Handlers
+        private void HandleContextTypeSelected(ShipPartContextTypeSelectorPage sender, Type contextType)
+        {
+            _context = ActivatorUtilities.CreateInstance(_provider, contextType, "demo") as ShipPartContext;
+
+            this.stage.Content.Open(_builderPage);
         }
         #endregion
     }

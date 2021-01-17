@@ -11,6 +11,7 @@ using System.Text;
 using VoidHuntersRevived.Builder.UI.Pages;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.UI.Enums;
+using VoidHuntersRevived.Builder.UI;
 
 namespace VoidHuntersRevived.Builder.ServiceLoaders
 {
@@ -19,8 +20,15 @@ namespace VoidHuntersRevived.Builder.ServiceLoaders
     {
         public void RegisterServices(ServiceCollection services)
         {
+            services.AddFactory<ShipPartContextTypeSelectorPage>(p => new ShipPartContextTypeSelectorPage());
+            services.AddFactory<ShipPartContextBuilderPage>(p => new ShipPartContextBuilderPage());
             services.AddFactory<ShipPartShapesBuilderPage>(p => new ShipPartShapesBuilderPage());
-            services.AddScoped<ShipPartShapesBuilderPage>();
+            services.AddFactory<ContextTypeButton>(p => new ContextTypeButton());
+
+            services.AddScoped<ShipPartContextTypeSelectorPage>();
+            services.AddScoped<ShipPartContextBuilderPage>();
+            services.AddTransient<ShipPartShapesBuilderPage>();
+            services.AddTransient<ContextTypeButton>();
 
             services.AddSetup<ColorService>((colors, p, c) =>
             {

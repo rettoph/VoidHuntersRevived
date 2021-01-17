@@ -3,9 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using VoidHuntersRevived.Library.Attributes;
 
 namespace VoidHuntersRevived.Library.Contexts
 {
+    [ShipPartContextAttribute("Thruster", "Represents a basic thruster capable of applying force at a point.")]
     public class ThrusterContext : RigidShipPartContext
     {
         #region ShipPartContext Implementation

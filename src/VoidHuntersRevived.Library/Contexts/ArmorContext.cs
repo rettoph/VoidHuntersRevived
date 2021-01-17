@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Library.Attributes;
 
 namespace VoidHuntersRevived.Library.Contexts
 {
+    [ShipPartContextAttribute("Armor", "Basic armor")]
     public class ArmorContext : RigidShipPartContext
     {
         #region ShipPartContext Implementation

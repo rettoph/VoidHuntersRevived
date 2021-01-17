@@ -22,13 +22,14 @@ using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Contexts;
 using tainicom.Aether.Physics2D.Common;
 using Guppy.Events.Delegates;
+using VoidHuntersRevived.Builder.Enums;
 
 namespace VoidHuntersRevived.Builder.Services
 {
     /// <summary>
     /// A simple helper class used to manage the construction of a single ship.
     /// </summary>
-    public class ShipPartShapeBuilderService : Frameable
+    public class ShipPartShapeBuilderService : ShipPartShapesServiceChildBase
     {
         #region Private Fields
         private ShapeContext _shape;
@@ -36,24 +37,12 @@ namespace VoidHuntersRevived.Builder.Services
         private Vector2 _origin;
 
         private Vector2? _start;
-        private Boolean _lockLength;
-        private Boolean _lockRotation;
-        private Boolean _lockPointSnap;
-
-        private MouseService _mouse;
-        private KeyboardService _keyboard;
-        private Camera2D _camera;
-        private GraphicsDevice _graphics;
-        private SpriteBatch _spriteBatch;
-        private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
-        private Synchronizer _synchronizer;
-        private ShipPartShapesBuilderService _shapes;
 
         private SpriteFont _font;
         #endregion
 
         #region Protected Properties
-        protected Vector2 mouseWorldPosition => _camera.Unproject(_mouse.Position) - _origin;
+        protected override Vector2 mouseWorldPosition => this.camera.Unproject(this.mouse.Position) - _origin;
         private Vector2 lastVertex => _shape.GetVertices().Last();
         #endregion
 
@@ -70,43 +59,17 @@ namespace VoidHuntersRevived.Builder.Services
         {
             base.PreInitialize(provider);
 
-            provider.Service(out _mouse);
-            provider.Service(out _keyboard);
-            provider.Service(out _camera);
-            provider.Service(out _graphics);
-            provider.Service(out _spriteBatch);
-            provider.Service(out _primitiveBatch);
-            provider.Service(out _synchronizer);
-            provider.Service(out _shapes);
-
             _font = provider.GetContent<SpriteFont>("debug:font:small");
-            _lockLength = true;
-            _lockRotation = true;
-            _lockPointSnap = true;
 
-            _mouse.OnButtonStateChanged += this.HandleMouseButtonStateChanged;
-            _keyboard[Keys.LeftShift].OnStateChanged += this.HandleShiftStateChanged;
-            _keyboard[Keys.LeftControl].OnStateChanged += this.HandleControlStateChanged;
-            _keyboard[Keys.LeftAlt].OnStateChanged += this.HandleAltStateChanged;
+
+            this.mouse.OnButtonStateChanged += this.HandleMouseButtonStateChanged;
         }
 
         protected override void Release()
         {
+            this.mouse.OnButtonStateChanged -= this.HandleMouseButtonStateChanged;
+
             base.Release();
-
-            _mouse = null;
-            _keyboard = null;
-            _camera = null;
-            _graphics = null;
-            _spriteBatch = null;
-            _primitiveBatch = null;
-            _synchronizer = null;
-            _shapes = null;
-
-            _mouse.OnButtonStateChanged -= this.HandleMouseButtonStateChanged;
-            _keyboard[Keys.LeftShift].OnStateChanged -= this.HandleShiftStateChanged;
-            _keyboard[Keys.LeftControl].OnStateChanged -= this.HandleControlStateChanged;
-            _keyboard[Keys.LeftAlt].OnStateChanged -= this.HandleAltStateChanged;
         }
         #endregion
 
@@ -122,27 +85,27 @@ namespace VoidHuntersRevived.Builder.Services
                     _shape.Sides[i].Draw(
                         position: _origin + v,
                         worldRotation: _shape.GetWorldRotation(i),
-                        primitiveBatch: _primitiveBatch,
-                        spriteBatch: _spriteBatch,
+                        primitiveBatch: this.primitiveBatch,
+                        spriteBatch: this.spriteBatch,
                         font: _font,
                         color: Color.White,
-                        camera: _camera);
+                        camera: this.camera);
                 });
 
                 if(_start != default)
                     this.CalculateNextSideContext().Draw(
                         position: _origin + this.lastVertex,
                         worldRotation: _shape?.LastWorldRotation ?? 0,
-                        primitiveBatch: _primitiveBatch,
-                        spriteBatch: _spriteBatch,
+                        primitiveBatch: this.primitiveBatch,
+                        spriteBatch: this.spriteBatch,
                         font: _font,
                         color: Color.Gray,
-                        camera: _camera);
+                        camera: this.camera);
 
-                var cursor = _shapes.TryGetClosestInterestPoint(this.mouseWorldPosition);
+                var cursor = this.@lock[LockType.PointSnap] ? this.shapes.TryGetClosestInterestPoint(this.mouseWorldPosition) : this.mouseWorldPosition;
                 var cursorScale = 0.25f;
-                _primitiveBatch.DrawLine(Color.Red, _origin + cursor - Vector2.UnitX * cursorScale, _origin + cursor + Vector2.UnitX * cursorScale);
-                _primitiveBatch.DrawLine(Color.Red, _origin + cursor - Vector2.UnitY * cursorScale, _origin + cursor + Vector2.UnitY * cursorScale);
+                this.primitiveBatch.DrawLine(Color.Red, _origin + cursor - Vector2.UnitX * cursorScale, _origin + cursor + Vector2.UnitX * cursorScale);
+                this.primitiveBatch.DrawLine(Color.Red, _origin + cursor - Vector2.UnitY * cursorScale, _origin + cursor + Vector2.UnitY * cursorScale);
             }
 
         }
@@ -183,8 +146,8 @@ namespace VoidHuntersRevived.Builder.Services
             { // No starting location has been defined yet...
 
                 // Save the current shape's start location!
-                if (_lockPointSnap)
-                    _start = _shapes.TryGetClosestInterestPoint(this.mouseWorldPosition);
+                if (this.@lock[LockType.PointSnap])
+                    _start = this.shapes.TryGetClosestInterestPoint(this.mouseWorldPosition);
                 else
                     _start = this.mouseWorldPosition;
 
@@ -223,8 +186,8 @@ namespace VoidHuntersRevived.Builder.Services
                 return default;
 
             var target = this.mouseWorldPosition;
-            if (_lockPointSnap)
-                target = _shapes.TryGetClosestInterestPoint(target);
+            if (this.@lock[LockType.PointSnap])
+                target = this.shapes.TryGetClosestInterestPoint(target);
 
             var lengthInterval = 1f;
             var length = Vector2.Distance(this.lastVertex, target);
@@ -234,9 +197,9 @@ namespace VoidHuntersRevived.Builder.Services
             rotation = rotation < -MathHelper.PiOver2 ? MathHelper.Pi : rotation;
             rotation = rotation < 0 ? 0 : rotation;
 
-            if(_lockLength)
+            if(this.@lock[LockType.Length])
                 length = (Single)Math.Max(1, Math.Round(length / lengthInterval)) * lengthInterval;
-            if(_lockRotation)
+            if(this.@lock[LockType.Rotation])
                 rotation = (Single)Math.Round(rotation / rotationInterval) * rotationInterval;
 
             return new SideContext()
@@ -253,7 +216,7 @@ namespace VoidHuntersRevived.Builder.Services
             if (args.State == ButtonState.Released)
                 return;
 
-            _synchronizer.Enqueue(gt =>
+            this.synchronizer.Enqueue(gt =>
             {
                 if (_building)
                 { // Only bother listening to mouse inouts if the system is building a shape anyway...
@@ -271,15 +234,6 @@ namespace VoidHuntersRevived.Builder.Services
                 }
             });
         }
-
-        private void HandleShiftStateChanged(InputManager sender, InputArgs args)
-            => _lockRotation = args.State == ButtonState.Released;
-
-        private void HandleControlStateChanged(InputManager sender, InputArgs args)
-            => _lockLength = args.State == ButtonState.Released;
-
-        private void HandleAltStateChanged(InputManager sender, InputArgs args)
-            => _lockPointSnap = args.State == ButtonState.Released;
         #endregion
     }
 }
