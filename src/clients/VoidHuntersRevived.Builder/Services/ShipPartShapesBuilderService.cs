@@ -44,7 +44,6 @@ namespace VoidHuntersRevived.Builder.Services
         #endregion
 
         #region Private Fields
-        private Stage _stage;
         private ShipPartShapesBuilderPage _page;
         private ShipPartShapeBuilderService _builder;
         private Camera2D _camera;
@@ -76,7 +75,6 @@ namespace VoidHuntersRevived.Builder.Services
         {
             base.PreInitialize(provider);
 
-            provider.Service("stage:main", out _stage);
             provider.Service(out _camera);
             provider.Service(out _graphics);
             provider.Service(out _spriteBatch);
@@ -96,7 +94,7 @@ namespace VoidHuntersRevived.Builder.Services
             };
             
             // Create a brand new page for the defined main stage...
-            _page = _stage.Content.Children.Create<ShipPartShapesBuilderPage>();
+            _page = this.pages.Children.Create<ShipPartShapesBuilderPage>();
         }
 
         protected override void Initialize(ServiceProvider provider)
@@ -114,8 +112,8 @@ namespace VoidHuntersRevived.Builder.Services
 
             _page.AddShapeButton.OnClicked -= this.HandleAddShapeButtonClicked;
             _builder.OnShapeBuilt -= this.HandleShapeBuilt;
+            _mouse.OnButtonStateChanged -= this.HandleMouseButtonStateChanged;
 
-            _stage = null;
             _camera = null;
             _graphics = null;
             _spriteBatch = null;
@@ -166,14 +164,12 @@ namespace VoidHuntersRevived.Builder.Services
             _shipPartRenderService.RemoveContext(_demo);
             _demo?.TryRelease();
 
-            var context = new RigidShipPartContext("demo")
-            {
-                InnerShapes = _shapes.Select(s => new Vertices(s.GetVertices())).ToArray(),
-                OuterHulls = _shapes.Select(s => new Vertices(s.GetVertices())).ToArray(),
-                MaleConnectionNode = new ConnectionNodeContext(),
-                FemaleConnectionNodes = new ConnectionNodeContext[0]
-            };
-            _demo = _shipParts.Create(context);
+            this.context.InnerShapes = _shapes.Select(s => new Vertices(s.GetVertices())).ToArray();
+            this.context.OuterHulls = _shapes.Select(s => new Vertices(s.GetVertices())).ToArray();
+            this.context.MaleConnectionNode = new ConnectionNodeContext();
+            this.context.FemaleConnectionNodes = new ConnectionNodeContext[0];
+
+            _demo = _shipParts.Create(this.context);
             _demo.Position = _camera.Position;
 
             _builder.TryUpdate(gameTime);
@@ -266,6 +262,14 @@ namespace VoidHuntersRevived.Builder.Services
 
             _editShape = _shapes[fixture.Body.FixtureList.IndexOf(fixture)];
             return true;
+        }
+
+        protected internal override void Open(ShipPartContext context)
+        {
+            base.Open(context);
+
+            // Open the default API page...
+            this.pages.Open(_page);
         }
         #endregion
 

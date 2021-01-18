@@ -89,11 +89,17 @@ namespace VoidHuntersRevived.Builder.Scenes
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            if(_services != default && _services.Any() && _serviceIndex >= 0 && _serviceIndex < _services.Count())
+                _services[_serviceIndex].TryUpdate(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
+
+            if (_services != default && _services.Any() && _serviceIndex >= 0 && _serviceIndex < _services.Count())
+                _services[_serviceIndex].TryDraw(gameTime);
         }
         #endregion
 
@@ -104,7 +110,14 @@ namespace VoidHuntersRevived.Builder.Scenes
 
             if(_serviceIndex < 0)
             { // We want to open the ContextType selector again.
+                if (_services != default)
+                    _services.ForEach(s => s.TryRelease());
+
                 this.stage.Content.Open(_contextSelectorPage);
+            }
+            else
+            {
+                _services[_serviceIndex].Open(_context);
             }
 
             // Ensure that the navigation buttons are updated.

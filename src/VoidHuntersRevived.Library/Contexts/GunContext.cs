@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using VoidHuntersRevived.Library.Attributes;
 
 namespace VoidHuntersRevived.Library.Contexts
 {
+    [ShipPartContextAttribute("Gun", "Basic gun")]
     public class GunContext : WeaponContext
     {
         #region Public Properties 

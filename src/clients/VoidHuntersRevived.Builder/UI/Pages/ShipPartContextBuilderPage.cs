@@ -20,6 +20,7 @@ namespace VoidHuntersRevived.Builder.UI.Pages
         #region Public Properties
         public TextElement PrevButton { get; private set; }
         public TextElement NextButton { get; private set; }
+        public PageContainer Pages { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -44,6 +45,8 @@ namespace VoidHuntersRevived.Builder.UI.Pages
                 button.Bounds.X = new CustomUnit(c => c - button.Bounds.Width.ToPixel(c) - 15);
                 button.Inline = InlineType.Horizontal;
             });
+
+            this.Pages = this.inner.Children.Create<PageContainer>();
         }
         #endregion
     }

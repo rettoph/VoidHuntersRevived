@@ -37,6 +37,7 @@ namespace VoidHuntersRevived.Builder.UI.Pages
             {
                 message.Bounds.X = new CustomUnit(c => (c - message.Bounds.Width.ToPixel(c)) / 2);
                 message.Color[ElementState.Default] = Color.White;
+                message.Inline = InlineType.Both;
             });
 
             _subMessage = this.inner.Children.Create<TextElement>((subMessage, p, c) =>
@@ -45,6 +46,7 @@ namespace VoidHuntersRevived.Builder.UI.Pages
                 subMessage.Bounds.Y = 20;
                 subMessage.Color[ElementState.Default] = Color.White;
                 subMessage.Font = p.GetContent<SpriteFont>("debug:font:small");
+                subMessage.Inline = InlineType.Both;
             });
 
             this.AddShapeButton = this.inner.Children.Create<TextElement>("ui:button:0", (button, p, c) =>

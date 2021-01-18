@@ -7,7 +7,6 @@ using VoidHuntersRevived.Library.Attributes;
 
 namespace VoidHuntersRevived.Library.Contexts
 {
-    [ShipPartContextAttribute("Weapon", "Basic weapon")]
     public abstract class WeaponContext : ShipPartContext
     {
         #region Public Properties
