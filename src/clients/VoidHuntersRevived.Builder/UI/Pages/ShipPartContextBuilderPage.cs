@@ -17,9 +17,9 @@ namespace VoidHuntersRevived.Builder.UI.Pages
     public class ShipPartContextBuilderPage : SecretContainer<IElement>, IPage
     {
 
-        #region Private Fields
-        private TextElement _prev;
-        private TextElement _next;
+        #region Public Properties
+        public TextElement PrevButton { get; private set; }
+        public TextElement NextButton { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -27,19 +27,23 @@ namespace VoidHuntersRevived.Builder.UI.Pages
         {
             base.PreInitialize(provider);
 
-            // _prev = this.inner.Children.Create<TextElement>("ui:button:0", (button, p, c) =>
-            // {
-            //     button.Value = "< Test";
-            //     button.Bounds.Y = new CustomUnit(c => c - button.Bounds.Height.ToPixel(c) - 15);
-            //     button.Bounds.X = 15;
-            // });
-            // 
-            // _next = this.inner.Children.Create<TextElement>("ui:button:0", (button, p, c) =>
-            // {
-            //     button.Value = "Test >";
-            //     button.Bounds.Y = new CustomUnit(c => c - button.Bounds.Height.ToPixel(c) - 15);
-            //     button.Bounds.X = new CustomUnit(c => c - button.Bounds.Width.ToPixel(c) - 15);
-            // });
+            this.PrevButton = this.inner.Children.Create<TextElement>("ui:button:0", (button, p, c) =>
+            {
+                button.Padding.Left = 7;
+                button.Padding.Right = 7;
+                button.Bounds.Y = new CustomUnit(c => c - button.Bounds.Height.ToPixel(c) - 15);
+                button.Bounds.X = 15;
+                button.Inline = InlineType.Horizontal;
+            });
+
+            this.NextButton = this.inner.Children.Create<TextElement>("ui:button:0", (button, p, c) =>
+            {
+                button.Padding.Left = 7;
+                button.Padding.Right = 7;
+                button.Bounds.Y = new CustomUnit(c => c - button.Bounds.Height.ToPixel(c) - 15);
+                button.Bounds.X = new CustomUnit(c => c - button.Bounds.Width.ToPixel(c) - 15);
+                button.Inline = InlineType.Horizontal;
+            });
         }
         #endregion
     }

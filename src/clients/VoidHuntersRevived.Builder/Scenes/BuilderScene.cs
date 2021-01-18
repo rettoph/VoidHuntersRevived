@@ -17,6 +17,7 @@ using System;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceProvider = Guppy.DependencyInjection.ServiceProvider;
+using Guppy.UI.Elements;
 
 namespace VoidHuntersRevived.Builder.Scenes
 {
@@ -42,6 +43,14 @@ namespace VoidHuntersRevived.Builder.Scenes
         /// context type.
         /// </summary>
         private ShipPartContextTypeSelectorPage _contextSelectorPage;
+
+        /// <summary>
+        /// A list of all services to pageinate through when constructing
+        /// a new context
+        /// </summary>
+        private List<ShipPartContextBuilderService> _services;
+
+        private Int32 _serviceIndex;
         #endregion
 
         #region Lifecycle Methods
@@ -63,6 +72,8 @@ namespace VoidHuntersRevived.Builder.Scenes
             _builderPage = this.stage.Content.Children.Create<ShipPartContextBuilderPage>();
 
             _contextSelectorPage.OnContextTypeSelected += this.HandleContextTypeSelected;
+            _builderPage.NextButton.OnClicked += this.HandleNextButtonClicked;
+            _builderPage.PrevButton.OnClicked += this.HandlePrevButtonClicked;
         }
 
         protected override void Initialize(ServiceProvider provider)
@@ -86,13 +97,49 @@ namespace VoidHuntersRevived.Builder.Scenes
         }
         #endregion
 
+        #region Helper Methods
+        private void OpenService(Int32 delta)
+        {
+            _serviceIndex += delta;
+
+            if(_serviceIndex < 0)
+            { // We want to open the ContextType selector again.
+                this.stage.Content.Open(_contextSelectorPage);
+            }
+
+            // Ensure that the navigation buttons are updated.
+            if (_serviceIndex <= 0)
+                _builderPage.PrevButton.Value = $"< ContextType";
+            else
+                _builderPage.PrevButton.Value = $"< {_services[_serviceIndex - 1].GetType().Name}";
+
+            if (_serviceIndex >= _services.Count - 1)
+                _builderPage.NextButton.Value = $"Save >";
+            else
+                _builderPage.NextButton.Value = $"{_services[_serviceIndex + 1].GetType().Name} >";
+        }
+        #endregion
+
         #region Event Handlers
         private void HandleContextTypeSelected(ShipPartContextTypeSelectorPage sender, Type contextType)
         {
+            _serviceIndex = 0;
             _context = ActivatorUtilities.CreateInstance(_provider, contextType, "demo") as ShipPartContext;
+            _services = AssemblyHelper.Types.GetTypesAssignableFrom<ShipPartContextBuilderService>()
+                .Select(t => _provider.GetService(t) as ShipPartContextBuilderService)
+                .Where(s => s != default)
+                .ToList();
 
             this.stage.Content.Open(_builderPage);
+
+            this.OpenService(0);
         }
+
+        private void HandleNextButtonClicked(Element sender)
+            => this.OpenService(1);
+
+        private void HandlePrevButtonClicked(Element sender)
+            => this.OpenService(-1);
         #endregion
     }
 }
