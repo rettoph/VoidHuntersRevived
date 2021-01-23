@@ -47,14 +47,15 @@ namespace VoidHuntersRevived.Builder.Contexts
             SpriteBatch spriteBatch,
             SpriteFont font,
             Color color,
-            Camera2D camera)
+            Camera2D camera,
+            Single scale = 1)
         {
             var start = position;
-            var end = position + (Vector2.UnitX * this.Length).RotateTo(worldRotation + MathHelper.Pi - this.Rotation);
+            var end = position + (Vector2.UnitX * this.Length * scale).RotateTo(worldRotation + MathHelper.Pi - this.Rotation);
 
             spriteBatch.DrawString(
                 spriteFont: font,
-                text: MathHelper.ToDegrees(this.Rotation).ToString("##0.##°"),
+                text: MathHelper.ToDegrees(this.Rotation).ToString("##0.####°"),
                 position: position,
                 color: color,
                 rotation: 0,
@@ -65,7 +66,7 @@ namespace VoidHuntersRevived.Builder.Contexts
 
             spriteBatch.DrawString(
                 spriteFont: font,
-                text: this.Length.ToString("##0.##"),
+                text: (this.Length * scale).ToString("##0.####"),
                 position: (start + end) / 2,
                 color: color,
                 rotation: 0,

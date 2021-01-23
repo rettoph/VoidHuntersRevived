@@ -37,8 +37,6 @@ namespace VoidHuntersRevived.Builder.Services
         private Vector2 _origin;
 
         private Vector2? _start;
-
-        private SpriteFont _font;
         #endregion
 
         #region Protected Properties
@@ -58,9 +56,6 @@ namespace VoidHuntersRevived.Builder.Services
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
-
-            _font = provider.GetContent<SpriteFont>("debug:font:small");
-
 
             this.mouse.OnButtonStateChanged += this.HandleMouseButtonStateChanged;
         }
@@ -87,7 +82,7 @@ namespace VoidHuntersRevived.Builder.Services
                         worldRotation: _shape.GetWorldRotation(i),
                         primitiveBatch: this.primitiveBatch,
                         spriteBatch: this.spriteBatch,
-                        font: _font,
+                        font: this.font,
                         color: Color.White,
                         camera: this.camera);
                 });
@@ -98,7 +93,7 @@ namespace VoidHuntersRevived.Builder.Services
                         worldRotation: _shape?.LastWorldRotation ?? 0,
                         primitiveBatch: this.primitiveBatch,
                         spriteBatch: this.spriteBatch,
-                        font: _font,
+                        font: this.font,
                         color: Color.Gray,
                         camera: this.camera);
 

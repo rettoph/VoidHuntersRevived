@@ -49,8 +49,10 @@ namespace VoidHuntersRevived.Builder.Scenes
         /// a new context
         /// </summary>
         private List<ShipPartContextBuilderService> _services;
-
         private Int32 _serviceIndex;
+        private ShipPartContextBuilderService _service;
+
+        private Synchronizer _synchronizer;
         #endregion
 
         #region Lifecycle Methods
@@ -59,6 +61,8 @@ namespace VoidHuntersRevived.Builder.Scenes
             base.PreInitialize(provider);
 
             _provider = provider;
+
+            provider.Service(out _synchronizer);
 
             this.settings.Set<NetworkAuthorization>(NetworkAuthorization.Master);
             this.settings.Set<HostType>(HostType.Local);
@@ -90,22 +94,22 @@ namespace VoidHuntersRevived.Builder.Scenes
         {
             base.Update(gameTime);
 
-            if(_services != default && _services.Any() && _serviceIndex >= 0 && _serviceIndex < _services.Count())
-                _services[_serviceIndex].TryUpdate(gameTime);
+            _service?.TryUpdate(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
 
-            if (_services != default && _services.Any() && _serviceIndex >= 0 && _serviceIndex < _services.Count())
-                _services[_serviceIndex].TryDraw(gameTime);
+            _service?.TryDraw(gameTime);
         }
         #endregion
 
         #region Helper Methods
         private void OpenService(Int32 delta)
         {
+
+
             _serviceIndex += delta;
 
             if(_serviceIndex < 0)
@@ -117,7 +121,9 @@ namespace VoidHuntersRevived.Builder.Scenes
             }
             else
             {
-                _services[_serviceIndex].Open(_context);
+                _service?.Close();
+                _service = _services[_serviceIndex];
+                _service.Open(_context);
             }
 
             // Ensure that the navigation buttons are updated.
@@ -149,10 +155,10 @@ namespace VoidHuntersRevived.Builder.Scenes
         }
 
         private void HandleNextButtonClicked(Element sender)
-            => this.OpenService(1);
+            => _synchronizer.Enqueue(gt => this.OpenService(1));
 
         private void HandlePrevButtonClicked(Element sender)
-            => this.OpenService(-1);
+            => _synchronizer.Enqueue(gt => this.OpenService(-1));
         #endregion
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Builder.Services
 {
@@ -27,6 +28,7 @@ namespace VoidHuntersRevived.Builder.Services
         protected Camera2D camera { get; private set; }
         protected MouseService mouse { get; private set; }
         protected virtual Vector2 mouseWorldPosition => this.camera.Unproject(this.mouse.Position);
+        protected SpriteFont font { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -41,6 +43,7 @@ namespace VoidHuntersRevived.Builder.Services
             this.@lock = provider.GetService<LockService>();
             this.camera = provider.GetService<Camera2D>();
             this.mouse = provider.GetService<MouseService>();
+            this.font = provider.GetContent<SpriteFont>("debug:font:small");
         }
 
         protected override void Release()

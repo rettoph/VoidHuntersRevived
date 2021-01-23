@@ -18,13 +18,15 @@ namespace VoidHuntersRevived.Builder.ServiceLoaders
             services.AddGame<BuilderGame>(p => new BuilderGame());
             services.AddScene<BuilderScene>(p => new BuilderScene());
 
+            services.AddFactory<LockService>(p => new LockService());
             services.AddFactory<ShipPartShapesBuilderService>(p => new ShipPartShapesBuilderService());
             services.AddFactory<ShipPartShapeBuilderService>(p => new ShipPartShapeBuilderService());
-            services.AddFactory<LockService>(p => new LockService());
+            services.AddFactory<ShipPartShapeEditorService>(p => new ShipPartShapeEditorService());
 
             services.AddTransient<LockService>();
             services.AddTransient<ShipPartShapesBuilderService>();
             services.AddTransient<ShipPartShapeBuilderService>();
+            services.AddTransient<ShipPartShapeEditorService>();
         }
 
         public void ConfigureProvider(ServiceProvider provider)

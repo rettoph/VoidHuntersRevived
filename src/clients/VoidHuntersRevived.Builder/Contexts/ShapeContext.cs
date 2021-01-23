@@ -24,7 +24,9 @@ namespace VoidHuntersRevived.Builder.Contexts
         #endregion
 
         #region Public Properties
-        public Matrix TransformationMatrix => Matrix.CreateTranslation(this.Translation.X, this.Translation.Y, 0);
+        public Matrix TransformationMatrix => Matrix.CreateScale(this.Scale)
+            * Matrix.CreateRotationZ(this.Rotation)
+            * Matrix.CreateTranslation(this.Translation.X, this.Translation.Y, 0);
 
         public IReadOnlyList<SideContext> Sides => _sides;
 
@@ -118,8 +120,18 @@ namespace VoidHuntersRevived.Builder.Contexts
             return true;
         }
 
+        public void AddSides(IEnumerable<SideContext> sides)
+        {
+            _sides.AddRange(sides);
+        }
+
+        public void ClearSides()
+        {
+            _sides.Clear();
+        }
+
         public Single GetWorldRotation(Int32 index)
-            => MathHelper.WrapAngle(_sides.SkipLast(_sides.Count - index).Select(s => MathHelper.Pi - s.Rotation).TryAggregate((world, side) => world + side, 0));
+            => this.Rotation + MathHelper.WrapAngle(_sides.SkipLast(_sides.Count - index).Select(s => MathHelper.Pi - s.Rotation).TryAggregate((world, side) => world + side, 0));
 
         /// <summary>
         /// Returns all interest points reguarding the current shape.

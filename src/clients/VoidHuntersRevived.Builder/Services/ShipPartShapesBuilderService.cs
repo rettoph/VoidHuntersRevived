@@ -38,14 +38,14 @@ namespace VoidHuntersRevived.Builder.Services
         {
             None,
             BuildingShape,
-            EditingShape,
-            DraggingShape
+            EditingShape
         }
         #endregion
 
         #region Private Fields
         private ShipPartShapesBuilderPage _page;
         private ShipPartShapeBuilderService _builder;
+        private ShipPartShapeEditorService _editor;
         private Camera2D _camera;
         private GraphicsDevice _graphics;
         private SpriteBatch _spriteBatch;
@@ -61,9 +61,10 @@ namespace VoidHuntersRevived.Builder.Services
 
         private ShipPart _demo;
         private List<ShapeContext> _shapes;
-        private ShapeContext _editShape;
-        private Vector2 _dragStartMouseWorldPosition;
-        private Vector2 _dragStartTranslation;
+        #endregion
+
+        #region Public Properties
+        public ShipPartShapesBuilderPage Page => _page;
         #endregion
 
         #region Protected Properties
@@ -85,6 +86,7 @@ namespace VoidHuntersRevived.Builder.Services
             provider.Service(out _mouse);
             provider.Service(out _world);
             provider.Service(out _builder, (b, p, c) => b.shapes = this);
+            provider.Service(out _editor, (e, p, c) => e.shapes = this);
 
             _shapes = new List<ShapeContext>();
             _effect = new BasicEffect(_graphics)
@@ -134,35 +136,11 @@ namespace VoidHuntersRevived.Builder.Services
         {
             base.Update(gameTime);
 
-            if(_status == ShipPartShapesBuilderStatus.DraggingShape)
-            { // We want to transform the current _editShape based on the mouse changes.
-                _editShape.Translation = _dragStartTranslation - _dragStartMouseWorldPosition + this.mouseWorldPosition;
-
-                var editPoints = _editShape.GetInterestPoints();
-                var targetPoints = this.GetInterestPoints(_editShape);
-                (Vector2 edit, Vector2 target, Single distance) nearest = (Vector2.Zero, Vector2.Zero, Single.MaxValue);
-
-                foreach(Vector2 edit in editPoints)
-                {
-                    foreach(Vector2 target in targetPoints)
-                    {
-                        if(Vector2.Distance(edit, target) < nearest.distance)
-                        {
-                            nearest.edit = edit;
-                            nearest.target = target;
-                            nearest.distance = Vector2.Distance(edit, target);
-                        }
-                    }
-                }
-
-                if(nearest.distance < 0.25f)
-                {
-                    _editShape.Translation += nearest.target - nearest.edit;
-                }
+            if (_demo?.Status == Guppy.Enums.ServiceStatus.Ready)
+            {
+                _shipPartRenderService.RemoveContext(_demo);
+                _demo?.TryRelease();
             }
-
-            _shipPartRenderService.RemoveContext(_demo);
-            _demo?.TryRelease();
 
             this.context.InnerShapes = _shapes.Select(s => new Vertices(s.GetVertices())).ToArray();
             this.context.OuterHulls = _shapes.Select(s => new Vertices(s.GetVertices())).ToArray();
@@ -173,6 +151,7 @@ namespace VoidHuntersRevived.Builder.Services
             _demo.Position = _camera.Position;
 
             _builder.TryUpdate(gameTime);
+            _editor.TryUpdate(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -197,6 +176,7 @@ namespace VoidHuntersRevived.Builder.Services
                 });
 
             _builder.TryDraw(gameTime);
+            _editor.TryDraw(gameTime);
             
             _primitiveBatch.End();
             _spriteBatch.End();
@@ -253,15 +233,25 @@ namespace VoidHuntersRevived.Builder.Services
         /// and return true. Otherwise return false.
         /// </summary>
         /// <returns></returns>
-        private Boolean TryUpdateEditShape()
+        private Boolean TryStartEditShape()
+        {
+            var shape = this.TestPointForShape(this.mouseWorldPosition);
+
+            if (shape == default)
+                return false;
+
+            _editor.Start(shape);
+            return true;
+        }
+
+        public ShapeContext TestPointForShape(Vector2 position)
         {
             var fixture = _world.Live.TestPoint(this.mouseWorldPosition);
 
             if (fixture == default)
-                return false;
+                return default;
 
-            _editShape = _shapes[fixture.Body.FixtureList.IndexOf(fixture)];
-            return true;
+            return _shapes[fixture.Body.FixtureList.IndexOf(fixture)];
         }
 
         protected internal override void Open(ShipPartContext context)
@@ -270,6 +260,17 @@ namespace VoidHuntersRevived.Builder.Services
 
             // Open the default API page...
             this.pages.Open(_page);
+        }
+
+        protected internal override void Close()
+        {
+            base.Close();
+
+            if (_demo?.Status == Guppy.Enums.ServiceStatus.Ready)
+            {
+                _shipPartRenderService.RemoveContext(_demo);
+                _demo?.TryRelease();
+            }
         }
         #endregion
 
@@ -299,17 +300,7 @@ namespace VoidHuntersRevived.Builder.Services
                 {
                     case ShipPartShapesBuilderStatus.None:
                     case ShipPartShapesBuilderStatus.EditingShape:
-                        if (args.State == ButtonState.Pressed && this.TryUpdateEditShape())
-                        { // There is a shape being selected!
-                            _status = ShipPartShapesBuilderStatus.DraggingShape;
-                            _dragStartMouseWorldPosition = this.mouseWorldPosition;
-                            _dragStartTranslation = _editShape.Translation;
-                        }
-                        else
-                            _status = ShipPartShapesBuilderStatus.None;
-                        break;
-                    case ShipPartShapesBuilderStatus.DraggingShape:
-                        if (args.State == ButtonState.Released && this.TryUpdateEditShape())
+                        if (args.State == ButtonState.Pressed && this.TryStartEditShape())
                         { // There is a shape being selected!
                             _status = ShipPartShapesBuilderStatus.EditingShape;
                         }

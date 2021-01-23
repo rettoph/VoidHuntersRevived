@@ -24,11 +24,23 @@ namespace VoidHuntersRevived.Builder.ServiceLoaders
             services.AddFactory<ShipPartContextBuilderPage>(p => new ShipPartContextBuilderPage());
             services.AddFactory<ShipPartShapesBuilderPage>(p => new ShipPartShapesBuilderPage());
             services.AddFactory<ContextTypeButton>(p => new ContextTypeButton());
+            services.AddFactory<ShapeEditorMenu>(p => new ShapeEditorMenu());
+            services.AddFactory<SideContextInput>(p => new SideContextInput());
+            services.AddFactory<ShapeTransformationsInput>(p => new ShapeTransformationsInput());
+            services.AddFactory<SimpleInput>(p => new SimpleInput());
+            services.AddFactory<SingleInput>(p => new SingleInput());
+            services.AddFactory<RadianInput>(p => new RadianInput());
 
             services.AddScoped<ShipPartContextTypeSelectorPage>();
             services.AddScoped<ShipPartContextBuilderPage>();
             services.AddTransient<ShipPartShapesBuilderPage>();
             services.AddTransient<ContextTypeButton>();
+            services.AddTransient<ShapeEditorMenu>();
+            services.AddTransient<SideContextInput>();
+            services.AddTransient<ShapeTransformationsInput>();
+            services.AddTransient<SimpleInput>();
+            services.AddTransient<SingleInput>();
+            services.AddTransient<RadianInput>();
 
             services.AddSetup<ColorService>((colors, p, c) =>
             {

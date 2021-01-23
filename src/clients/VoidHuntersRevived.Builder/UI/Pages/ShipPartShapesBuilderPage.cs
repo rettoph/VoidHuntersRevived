@@ -21,6 +21,7 @@ namespace VoidHuntersRevived.Builder.UI.Pages
 
         #region Public Properties
         public TextElement AddShapeButton { get; private set; }
+        public StackContainer Menu { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -52,6 +53,15 @@ namespace VoidHuntersRevived.Builder.UI.Pages
             this.AddShapeButton = this.inner.Children.Create<TextElement>("ui:button:0", (button, p, c) =>
             {
                 button.Value = "Add Shape";
+            });
+
+            this.Menu = this.inner.Children.Create<StackContainer>((stack, p, c) =>
+            {
+                stack.Alignment = StackAlignment.Vertical;
+                stack.Inline = InlineType.None;
+                stack.Bounds.Width = 250;
+                stack.Bounds.Height = new CustomUnit(c => c - 50);
+                stack.Bounds.X = new CustomUnit(c => c - 250);
             });
         }
         #endregion
