@@ -1,5 +1,6 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.IO.Input;
+using Guppy.IO.Services;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -46,6 +47,7 @@ namespace VoidHuntersRevived.Builder.Services
             base.PreInitialize(provider);
 
             this.mouse.OnButtonStateChanged += this.HandleMouseButtonStateChanged;
+            this.mouse.OnScrollWheelValueChanged += this.HandleScrollWheelValueChanged;
         }
 
         protected override void PreRelease()
@@ -53,6 +55,7 @@ namespace VoidHuntersRevived.Builder.Services
             base.PreRelease();
 
             this.mouse.OnButtonStateChanged -= this.HandleMouseButtonStateChanged;
+            this.mouse.OnScrollWheelValueChanged -= this.HandleScrollWheelValueChanged;
         }
         #endregion
 
@@ -89,6 +92,14 @@ namespace VoidHuntersRevived.Builder.Services
         /// <param name="item"></param>
         /// <param name="position"></param>
         protected abstract void Drag(T item, Vector2 position);
+
+        /// <summary>
+        /// Attempt to rotate the current item n number of
+        /// "blocks"
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="count"></param>
+        protected abstract void Rotate(T item, Int32 count);
 
         /// <summary>
         /// Get the recieved item's position.
@@ -138,6 +149,17 @@ namespace VoidHuntersRevived.Builder.Services
                     {
                         this.Stop();
                     }
+                }
+            });
+        }
+
+        private void HandleScrollWheelValueChanged(MouseService sender, ScrollWheelArgs args)
+        {
+            this.synchronizer.Enqueue(gt =>
+            {
+                if (_flags.HasFlag(EditFlags.Editing))
+                {
+                    this.Rotate(this.item, (Int32)(args.Delta / 120));
                 }
             });
         }

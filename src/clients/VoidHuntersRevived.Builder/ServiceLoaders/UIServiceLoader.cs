@@ -25,6 +25,7 @@ namespace VoidHuntersRevived.Builder.ServiceLoaders
             services.AddFactory<ShipPartShapesBuilderPage>(p => new ShipPartShapesBuilderPage());
             services.AddFactory<ContextTypeButton>(p => new ContextTypeButton());
             services.AddFactory<ShapeEditorMenu>(p => new ShapeEditorMenu());
+            services.AddFactory<ConnectionNodeEditorMenu>(p => new ConnectionNodeEditorMenu());
             services.AddFactory<SideContextInput>(p => new SideContextInput());
             services.AddFactory<ShapeTransformationsInput>(p => new ShapeTransformationsInput());
             services.AddFactory<SimpleInput>(p => new SimpleInput());
@@ -36,6 +37,7 @@ namespace VoidHuntersRevived.Builder.ServiceLoaders
             services.AddTransient<ShipPartShapesBuilderPage>();
             services.AddTransient<ContextTypeButton>();
             services.AddTransient<ShapeEditorMenu>();
+            services.AddTransient<ConnectionNodeEditorMenu>();
             services.AddTransient<SideContextInput>();
             services.AddTransient<ShapeTransformationsInput>();
             services.AddTransient<SimpleInput>();

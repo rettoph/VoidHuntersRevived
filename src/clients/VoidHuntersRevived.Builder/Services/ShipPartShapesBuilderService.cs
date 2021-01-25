@@ -24,6 +24,7 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Services;
 using Guppy.Extensions.System.Collections;
+using Guppy.Extensions.Microsoft.Xna.Framework;
 
 namespace VoidHuntersRevived.Builder.Services
 {
@@ -184,6 +185,29 @@ namespace VoidHuntersRevived.Builder.Services
                     y: _camera.Position.X + p.Y, 
                     radius: 0.03f, 
                     segments: 15);
+
+            foreach(ConnectionNodeContext female in _females)
+            {
+                _primitiveBatch.DrawLine(
+                    Color.Yellow,
+                    _camera.Position + female.Position - (Vector2.UnitX * 0.1f).RotateTo(female.Rotation + MathHelper.PiOver2),
+                    _camera.Position + female.Position + (Vector2.UnitX * 0.1f).RotateTo(female.Rotation + MathHelper.PiOver2));
+
+                _primitiveBatch.DrawLine(
+                    Color.Yellow,
+                    _camera.Position + female.Position,
+                    _camera.Position + female.Position + (Vector2.UnitX * 0.3f).RotateTo(female.Rotation + MathHelper.Pi));
+
+                _primitiveBatch.DrawLine(
+                    Color.Yellow,
+                    _camera.Position + female.Position,
+                    _camera.Position + female.Position + (Vector2.UnitX * 0.2f).RotateTo(female.Rotation + MathHelper.Pi + 0.5f));
+
+                _primitiveBatch.DrawLine(
+                    Color.Yellow,
+                    _camera.Position + female.Position,
+                    _camera.Position + female.Position + (Vector2.UnitX * 0.2f).RotateTo(female.Rotation - MathHelper.Pi - 0.5f));
+            }
 
             _builder.TryDraw(gameTime);
             _editor.TryDraw(gameTime);

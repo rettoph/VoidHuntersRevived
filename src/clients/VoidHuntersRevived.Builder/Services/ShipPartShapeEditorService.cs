@@ -118,6 +118,12 @@ namespace VoidHuntersRevived.Builder.Services
             _menu.Transformations.Translation = item.Translation;
         }
 
+        protected override void Rotate(ShapeContext item, int count)
+        {
+            item.Rotation += MathHelper.ToRadians(5 * count);
+            _menu.Transformations.Rotation = item.Rotation;
+        }
+
         /// <inheritdoc />
         protected override Vector2 GetPosition(ShapeContext item)
             => item.Translation;

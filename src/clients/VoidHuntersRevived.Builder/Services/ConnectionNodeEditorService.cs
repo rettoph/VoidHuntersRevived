@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Contexts;
 using Guppy.Extensions.Utilities;
+using VoidHuntersRevived.Builder.UI;
 
 namespace VoidHuntersRevived.Builder.Services
 {
@@ -13,6 +14,10 @@ namespace VoidHuntersRevived.Builder.Services
     /// </summary>
     public class ConnectionNodeEditorService : ShipPartShapesServiceEditorChildBase<ConnectionNodeContext>
     {
+        #region Private Fields
+        private ConnectionNodeEditorMenu _menu;
+        #endregion
+
         #region Lifecycle Methods
         protected override void PreInitialize(ServiceProvider provider)
         {
@@ -21,6 +26,19 @@ namespace VoidHuntersRevived.Builder.Services
         #endregion
 
         #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if (this.flags.HasFlag(EditFlags.Editing))
+            {
+                if (this.flags.HasFlag(EditFlags.Dragging))
+                    _menu.Position = this.item.Position;
+
+                this.item.Position = _menu.Position;
+                this.item.Rotation = _menu.Rotation;
+            }
+        }
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
@@ -30,6 +48,26 @@ namespace VoidHuntersRevived.Builder.Services
                     Color.Cyan,
                     this.camera.Position + this.item.Position,
                     0.1f);
+        }
+        #endregion
+
+        #region Helper Methods
+        public override void Start(ConnectionNodeContext item)
+        {
+            base.Start(item);
+
+            _menu = this.shapes.Page.Menu.Children.Create<ConnectionNodeEditorMenu>((menu, p, c) =>
+            {
+                menu.Position = item.Position;
+                menu.Rotation = item.Rotation;
+            });
+        }
+
+        public override void Stop()
+        {
+            _menu?.TryRelease();
+
+            base.Stop();
         }
 
         protected override void Drag(ConnectionNodeContext item, Vector2 position)
@@ -51,6 +89,12 @@ namespace VoidHuntersRevived.Builder.Services
             }
         }
 
+        protected override void Rotate(ConnectionNodeContext item, int count)
+        {
+            item.Rotation += MathHelper.ToRadians(5 * count);
+            _menu.Rotation = item.Rotation;
+        }
+
         protected override Vector2 GetPosition(ConnectionNodeContext item)
             => item.Position;
 
@@ -58,7 +102,7 @@ namespace VoidHuntersRevived.Builder.Services
             => Vector2.Distance(item.Position, worldPosition) < 0.1f;
 
         protected override bool ShouldStop()
-            => true;
+            => !_menu.State.HasFlag(Guppy.UI.Enums.ElementState.Hovered);
         #endregion
     }
 }
