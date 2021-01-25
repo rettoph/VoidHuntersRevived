@@ -21,6 +21,8 @@ namespace VoidHuntersRevived.Builder.UI.Pages
 
         #region Public Properties
         public TextElement AddShapeButton { get; private set; }
+
+        public TextElement AddFemaleNodeButton { get; private set; }
         public StackContainer Menu { get; private set; }
         #endregion
 
@@ -53,6 +55,12 @@ namespace VoidHuntersRevived.Builder.UI.Pages
             this.AddShapeButton = this.inner.Children.Create<TextElement>("ui:button:0", (button, p, c) =>
             {
                 button.Value = "Add Shape";
+            });
+
+            this.AddFemaleNodeButton = this.inner.Children.Create<TextElement>("ui:button:0", (button, p, c) =>
+            {
+                button.Value = "Add Female Node";
+                button.Bounds.Y = 50;
             });
 
             this.Menu = this.inner.Children.Create<StackContainer>((stack, p, c) =>

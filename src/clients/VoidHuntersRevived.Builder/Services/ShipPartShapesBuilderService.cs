@@ -23,6 +23,7 @@ using VoidHuntersRevived.Library.Contexts;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Services;
+using Guppy.Extensions.System.Collections;
 
 namespace VoidHuntersRevived.Builder.Services
 {
@@ -38,7 +39,7 @@ namespace VoidHuntersRevived.Builder.Services
         {
             None,
             BuildingShape,
-            EditingShape
+            Editing
         }
         #endregion
 
@@ -46,6 +47,7 @@ namespace VoidHuntersRevived.Builder.Services
         private ShipPartShapesBuilderPage _page;
         private ShipPartShapeBuilderService _builder;
         private ShipPartShapeEditorService _editor;
+        private ConnectionNodeEditorService _nodeEditor;
         private Camera2D _camera;
         private GraphicsDevice _graphics;
         private SpriteBatch _spriteBatch;
@@ -61,6 +63,8 @@ namespace VoidHuntersRevived.Builder.Services
 
         private ShipPart _demo;
         private List<ShapeContext> _shapes;
+        private ConnectionNodeContext _male;
+        private List<ConnectionNodeContext> _females;
         #endregion
 
         #region Public Properties
@@ -87,7 +91,10 @@ namespace VoidHuntersRevived.Builder.Services
             provider.Service(out _world);
             provider.Service(out _builder, (b, p, c) => b.shapes = this);
             provider.Service(out _editor, (e, p, c) => e.shapes = this);
+            provider.Service(out _nodeEditor, (e, p, c) => e.shapes = this);
 
+            _male = new ConnectionNodeContext();
+            _females = new List<ConnectionNodeContext>();
             _shapes = new List<ShapeContext>();
             _effect = new BasicEffect(_graphics)
             {
@@ -104,7 +111,8 @@ namespace VoidHuntersRevived.Builder.Services
             base.Initialize(provider);
 
             _page.AddShapeButton.OnClicked += this.HandleAddShapeButtonClicked;
-            _builder.OnShapeBuilt += this.HandleShapeBuilt;
+            _page.AddFemaleNodeButton.OnClicked += this.HandleAddFemaleNodeButtonClicked;
+            _builder.OnShapeCompleted += this.HandleShapeCompleted;
             _mouse.OnButtonStateChanged += this.HandleMouseButtonStateChanged;
         }
 
@@ -113,7 +121,8 @@ namespace VoidHuntersRevived.Builder.Services
             base.Release();
 
             _page.AddShapeButton.OnClicked -= this.HandleAddShapeButtonClicked;
-            _builder.OnShapeBuilt -= this.HandleShapeBuilt;
+            _page.AddFemaleNodeButton.OnClicked -= this.HandleAddFemaleNodeButtonClicked;
+            _builder.OnShapeCompleted -= this.HandleShapeCompleted;
             _mouse.OnButtonStateChanged -= this.HandleMouseButtonStateChanged;
 
             _camera = null;
@@ -125,6 +134,8 @@ namespace VoidHuntersRevived.Builder.Services
             _shipPartRenderService = null;
             _mouse = null;
 
+            _male = null;
+            _females = null;
             _shapes = null;
             _effect.Dispose();
             _page.TryRelease();
@@ -143,15 +154,16 @@ namespace VoidHuntersRevived.Builder.Services
             }
 
             this.context.InnerShapes = _shapes.Select(s => new Vertices(s.GetVertices())).ToArray();
-            this.context.OuterHulls = _shapes.Select(s => new Vertices(s.GetVertices())).ToArray();
-            this.context.MaleConnectionNode = new ConnectionNodeContext();
-            this.context.FemaleConnectionNodes = new ConnectionNodeContext[0];
+            this.context.OuterHulls = new Vertices[0];
+            this.context.MaleConnectionNode = _male;
+            this.context.FemaleConnectionNodes = _females.ToArray();
 
             _demo = _shipParts.Create(this.context);
             _demo.Position = _camera.Position;
 
             _builder.TryUpdate(gameTime);
             _editor.TryUpdate(gameTime);
+            _nodeEditor.TryUpdate(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -165,19 +177,18 @@ namespace VoidHuntersRevived.Builder.Services
             _spriteBatch.Begin(effect: _effect);
             _primitiveBatch.Begin(_camera);
 
-            var width = 0.05f;
             foreach (Vector2 p in this.GetInterestPoints())
-                _primitiveBatch.DrawRectangleF(Color.Red, new System.Drawing.RectangleF()
-                {
-                    Height = width,
-                    Width = width,
-                    X = _camera.Position.X + p.X - width / 2,
-                    Y = _camera.Position.Y + p.Y - width / 2
-                });
+                _primitiveBatch.DrawCircle(
+                    color: Color.Red, 
+                    x: _camera.Position.X + p.X, 
+                    y: _camera.Position.X + p.Y, 
+                    radius: 0.03f, 
+                    segments: 15);
 
             _builder.TryDraw(gameTime);
             _editor.TryDraw(gameTime);
-            
+            _nodeEditor.TryDraw(gameTime);
+
             _primitiveBatch.End();
             _spriteBatch.End();
         }
@@ -203,6 +214,13 @@ namespace VoidHuntersRevived.Builder.Services
                 if(!blacklist.Contains(s))
                     foreach(Vector2 p in s.GetInterestPoints())
                         yield return p;
+
+            if (this.context.MaleConnectionNode != default)
+                yield return this.context.MaleConnectionNode.Position;
+
+            if(this.context.FemaleConnectionNodes != default)
+                foreach (Vector2 pos in this.context.FemaleConnectionNodes.Select(n => n.Position))
+                    yield return pos;
         }
 
         /// <summary>
@@ -228,20 +246,34 @@ namespace VoidHuntersRevived.Builder.Services
         }
 
         /// <summary>
-        /// Check to see if there is a shape under the current
-        /// mouse position. If so, set the value to <see cref="_editShape"/>
-        /// and return true. Otherwise return false.
+        /// Check to see if there is a node or shape under the current
+        /// mouse position. If so, start editing & return true.
         /// </summary>
         /// <returns></returns>
-        private Boolean TryStartEditShape()
+        private Boolean TryStartEditing()
         {
+            // First check for nodes!
+            var node = this.TestPointForConnectionNode(this.mouseWorldPosition);
+
+            if(node != default)
+            {
+                _editor.Stop();
+                _nodeEditor.Start(node);
+                return true;
+            }
+
+            // Next test for a shape.
             var shape = this.TestPointForShape(this.mouseWorldPosition);
 
-            if (shape == default)
-                return false;
+            if(shape != default)
+            {
+                _nodeEditor.Stop();
+                _editor.Start(shape);
+                return true;
+            }
 
-            _editor.Start(shape);
-            return true;
+            // Nothing found, return false.
+            return false;
         }
 
         public ShapeContext TestPointForShape(Vector2 position)
@@ -252,6 +284,21 @@ namespace VoidHuntersRevived.Builder.Services
                 return default;
 
             return _shapes[fixture.Body.FixtureList.IndexOf(fixture)];
+        }
+
+        public ConnectionNodeContext  TestPointForConnectionNode(Vector2 position)
+        {
+            var localPosition = position - _camera.Position;
+            var maxDistance = 0.1f;
+
+            if (Vector2.Distance(_male.Position, localPosition) < maxDistance)
+                return _male;
+
+            foreach(ConnectionNodeContext female in _females)
+                if (Vector2.Distance(female.Position, localPosition) < maxDistance)
+                    return female;
+
+            return default;
         }
 
         protected internal override void Open(ShipPartContext context)
@@ -286,10 +333,14 @@ namespace VoidHuntersRevived.Builder.Services
             _status = ShipPartShapesBuilderStatus.BuildingShape;
         }
 
-        private void HandleShapeBuilt(ShipPartShapeBuilderService sender, ShapeContext shape)
+        private void HandleShapeCompleted(ShipPartShapeBuilderService sender, ShapeContext shape)
         {
-            _shapes.Add(shape);
             _status = ShipPartShapesBuilderStatus.None;
+
+            if (shape.Sides.Count < 2)
+                return;
+
+            _shapes.Add(shape);
         }
 
         private void HandleMouseButtonStateChanged(InputManager sender, InputArgs args)
@@ -299,10 +350,10 @@ namespace VoidHuntersRevived.Builder.Services
                 switch (_status)
                 {
                     case ShipPartShapesBuilderStatus.None:
-                    case ShipPartShapesBuilderStatus.EditingShape:
-                        if (args.State == ButtonState.Pressed && this.TryStartEditShape())
+                    case ShipPartShapesBuilderStatus.Editing:
+                        if (args.State == ButtonState.Pressed && this.TryStartEditing())
                         { // There is a shape being selected!
-                            _status = ShipPartShapesBuilderStatus.EditingShape;
+                            _status = ShipPartShapesBuilderStatus.Editing;
                         }
                         else
                             _status = ShipPartShapesBuilderStatus.None;
@@ -312,6 +363,11 @@ namespace VoidHuntersRevived.Builder.Services
                         break;
                 }
             });
+        }
+
+        private void HandleAddFemaleNodeButtonClicked(Element sender)
+        {
+            _females.Add(new ConnectionNodeContext());
         }
         #endregion
     }

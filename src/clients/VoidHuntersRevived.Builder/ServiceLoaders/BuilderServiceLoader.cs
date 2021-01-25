@@ -22,11 +22,13 @@ namespace VoidHuntersRevived.Builder.ServiceLoaders
             services.AddFactory<ShipPartShapesBuilderService>(p => new ShipPartShapesBuilderService());
             services.AddFactory<ShipPartShapeBuilderService>(p => new ShipPartShapeBuilderService());
             services.AddFactory<ShipPartShapeEditorService>(p => new ShipPartShapeEditorService());
+            services.AddFactory<ConnectionNodeEditorService>(p => new ConnectionNodeEditorService());
 
             services.AddTransient<LockService>();
             services.AddTransient<ShipPartShapesBuilderService>();
             services.AddTransient<ShipPartShapeBuilderService>();
             services.AddTransient<ShipPartShapeEditorService>();
+            services.AddTransient<ConnectionNodeEditorService>();
         }
 
         public void ConfigureProvider(ServiceProvider provider)

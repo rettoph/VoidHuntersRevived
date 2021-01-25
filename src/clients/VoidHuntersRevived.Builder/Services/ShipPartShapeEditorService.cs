@@ -22,42 +22,10 @@ namespace VoidHuntersRevived.Builder.Services
     /// data will  be lost when importing 
     /// pre-existing shape files. This is unavoidable.
     /// </summary>
-    public class ShipPartShapeEditorService : ShipPartShapesServiceChildBase
+    public class ShipPartShapeEditorService : ShipPartShapesServiceEditorChildBase<ShapeContext>
     {
-        #region Private Enums
-        private enum EditFlags
-        {
-            None = 0,
-            Editing = 1,
-            Dragging = 2,
-        }
-        #endregion
-
         #region Private Fields
-        private ShapeContext _shape;
-        private EditFlags _flags;
-
-        private Vector2 _dragStartMouseWorldPosition;
-        private Vector2 _dragStartTranslation;
-
         private ShapeEditorMenu _menu;
-        #endregion
-
-
-        #region Lifecycle Methods
-        protected override void PreInitialize(ServiceProvider provider)
-        {
-            base.PreInitialize(provider);
-
-            this.mouse.OnButtonStateChanged += this.HandleMouseButtonStateChanged;
-        }
-
-        protected override void PreRelease()
-        {
-            base.PreRelease();
-
-            this.mouse.OnButtonStateChanged -= this.HandleMouseButtonStateChanged;
-        }
         #endregion
 
         #region Frame Methods
@@ -65,12 +33,67 @@ namespace VoidHuntersRevived.Builder.Services
         {
             base.Update(gameTime);
 
-            if (_flags.HasFlag(EditFlags.Dragging))
-            { // We want to transform the current _editShape based on the mouse changes.
-                _shape.Translation = _dragStartTranslation - _dragStartMouseWorldPosition + this.mouseWorldPosition;
+            // Update the internal shape properties...
+            if(this.flags.HasFlag(EditFlags.Editing))
+            {
+                this.item.ClearSides();
+                this.item.AddSides(_menu.SideContexts);
 
-                var editPoints = _shape.GetInterestPoints();
-                var targetPoints = this.shapes.GetInterestPoints(_shape);
+                this.item.Translation = _menu.Transformations.Translation;
+                this.item.Rotation = _menu.Transformations.Rotation;
+                this.item.Scale = _menu.Transformations.Scale;
+            }
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            if (this.flags.HasFlag(EditFlags.Editing))
+            {
+                this.item?.GetVertices().SkipLast(1).ForEach((v, i) =>
+                {
+                    this.item.Sides[i].Draw(
+                        position: this.camera.Position + v,
+                        worldRotation: this.item.GetWorldRotation(i),
+                        primitiveBatch: this.primitiveBatch,
+                        spriteBatch: this.spriteBatch,
+                        font: this.font,
+                        color: Color.White,
+                        camera: this.camera,
+                        scale: this.item.Scale);
+                });
+            }
+        }
+        #endregion
+
+        #region API Methods
+        public override void Start(ShapeContext item)
+        {
+            base.Start(item);
+
+            _menu = this.shapes.Page.Menu.Children.Create<ShapeEditorMenu>((menu, p, c) =>
+            {
+                menu.shape = item;
+            });
+        }
+
+        public override void Stop()
+        {
+            base.Stop();
+
+            _menu?.TryRelease();
+        }
+
+        /// <inheritdoc />
+        protected override void Drag(ShapeContext item, Vector2 position)
+        {
+            item.Translation = position;
+
+            if(this.@lock[Enums.LockType.PointSnap])
+            {
+                var editPoints = item.GetInterestPoints();
+                var targetPoints = this.shapes.GetInterestPoints(item);
                 (Vector2 edit, Vector2 target, Single distance) nearest = (Vector2.Zero, Vector2.Zero, Single.MaxValue);
 
                 foreach (Vector2 edit in editPoints)
@@ -88,95 +111,24 @@ namespace VoidHuntersRevived.Builder.Services
 
                 if (nearest.distance < 0.25f)
                 {
-                    _shape.Translation += nearest.target - nearest.edit;
+                    item.Translation += nearest.target - nearest.edit;
                 }
-
-                _menu.Transformations.Translation = _shape.Translation;
             }
 
-            // Update the internal shape properties...
-            if(_flags.HasFlag(EditFlags.Editing))
-            {
-                _shape.ClearSides();
-                _shape.AddSides(_menu.SideContexts);
-
-                _shape.Translation = _menu.Transformations.Translation;
-                _shape.Rotation = _menu.Transformations.Rotation;
-                _shape.Scale = _menu.Transformations.Scale;
-            }
+            _menu.Transformations.Translation = item.Translation;
         }
 
-        protected override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
+        /// <inheritdoc />
+        protected override Vector2 GetPosition(ShapeContext item)
+            => item.Translation;
 
-            if (_flags.HasFlag(EditFlags.Editing))
-            {
-                _shape?.GetVertices().SkipLast(1).ForEach((v, i) =>
-                {
-                    _shape.Sides[i].Draw(
-                        position: this.camera.Position + v,
-                        worldRotation: _shape.GetWorldRotation(i),
-                        primitiveBatch: this.primitiveBatch,
-                        spriteBatch: this.spriteBatch,
-                        font: this.font,
-                        color: Color.White,
-                        camera: this.camera,
-                        scale: _shape.Scale);
-                });
-            }
-        }
-        #endregion
+        /// <inheritdoc />
+        protected override bool ItemUnder(ShapeContext item, Vector2 worldPosition)
+            => this.shapes.TestPointForShape(this.mouseWorldPosition) == item;
 
-        #region API Methods
-        public void Start(ShapeContext shape)
-        {
-            this.Stop();
-
-            _shape = shape;
-            _flags = EditFlags.Editing | EditFlags.Dragging;
-
-            _dragStartMouseWorldPosition = this.mouseWorldPosition;
-            _dragStartTranslation = _shape.Translation;
-
-            _menu = this.shapes.Page.Menu.Children.Create<ShapeEditorMenu>((menu, p, c) =>
-            {
-                menu.shape = _shape;
-            });
-        }
-
-        private void Stop()
-        {
-            _flags = EditFlags.None;
-            _menu?.TryRelease();
-        }
-        #endregion
-
-        #region Event Handlers
-        private void HandleMouseButtonStateChanged(InputManager sender, InputArgs args)
-        {
-            this.synchronizer.Enqueue(gt =>
-            {
-                if (_flags.HasFlag(EditFlags.Editing))
-                {
-                    if (_flags.HasFlag(EditFlags.Dragging) || this.shapes.TestPointForShape(this.mouseWorldPosition) == _shape)
-                    {
-                        if(args.State == ButtonState.Pressed)
-                        {
-                            _flags |= EditFlags.Dragging;
-                        }
-                        else
-                        {
-                            _flags &= ~EditFlags.Dragging;
-                        }
-                    }
-                    else if(!_menu.State.HasFlag(Guppy.UI.Enums.ElementState.Hovered))
-                    {
-                        this.Stop();
-                    }
-                }
-            });
-        }
+        /// <inheritdoc />
+        protected override bool ShouldStop()
+            => !_menu.State.HasFlag(Guppy.UI.Enums.ElementState.Hovered);
         #endregion
     }
 }

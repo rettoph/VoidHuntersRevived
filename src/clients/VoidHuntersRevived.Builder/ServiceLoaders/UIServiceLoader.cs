@@ -62,7 +62,7 @@ namespace VoidHuntersRevived.Builder.ServiceLoaders
             {
                 button.Inline = InlineType.None;
                 button.Alignment = Alignment.CenterCenter;
-                button.Bounds.Width = 150;
+                button.Bounds.Width = 200;
                 button.Bounds.Height = 35;
             });
 

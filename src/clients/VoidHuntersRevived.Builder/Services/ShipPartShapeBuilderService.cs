@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Builder.Services
         #endregion
 
         #region Events
-        public event OnEventDelegate<ShipPartShapeBuilderService, ShapeContext> OnShapeBuilt;
+        public event OnEventDelegate<ShipPartShapeBuilderService, ShapeContext> OnShapeCompleted;
         #endregion
 
         #region Lifecycle Methods
@@ -124,7 +124,7 @@ namespace VoidHuntersRevived.Builder.Services
         /// </summary>
         public void End()
         {
-            this.OnShapeBuilt?.Invoke(this, _shape);
+            this.OnShapeCompleted?.Invoke(this, _shape);
 
             _building = false;
             _shape = null;
@@ -167,6 +167,7 @@ namespace VoidHuntersRevived.Builder.Services
                 return;
 
             _start = null;
+            this.End();
         }
 
         /// <summary>
