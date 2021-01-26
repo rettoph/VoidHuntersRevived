@@ -84,14 +84,16 @@ namespace VoidHuntersRevived.Library.Services
         /// Parse a stream and register the serialized context instance.
         /// </summary>
         /// <param name="stream"></param>
-        public void TryRegister(Stream stream)
+        public ShipPartContext TryRegister(Stream stream)
         {
             using (BinaryReader reader = new BinaryReader(stream))
             {
                 // Extract the context type & create an empty instance.
                 var context = Activator.CreateInstance(_contextTypes[reader.ReadUInt32()], reader.ReadString()) as ShipPartContext;
-                if (context.TryRead(reader))
-                    this.TryRegister(context);
+                context.TryRead(reader);
+                this.TryRegister(context);
+
+                return context;
             }
         }
 

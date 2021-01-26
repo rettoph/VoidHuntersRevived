@@ -37,6 +37,28 @@ namespace VoidHuntersRevived.Builder.Contexts
         public Single LastWorldRotation => this.GetWorldRotation(_sides.Count);
         #endregion
 
+        #region Constructors
+        public ShapeContext()
+        {
+
+        }
+        public ShapeContext(Vertices vertices) : this()
+        {
+            this.Translation = vertices[0];
+
+            for(var i=0; i<vertices.Count; i++)
+            {
+                var start = i == 0 ? vertices[0] - Vector2.UnitX : vertices[i - 1];
+                var vert = vertices[i];
+                var end = vertices[(i + 1) % vertices.Count];
+
+                this.TryAddSide(
+                    length: Vector2.Distance(vert, end),
+                    rotation: vert.Angle(end, start));
+            }
+        }
+        #endregion
+
         #region Methods
         /// <summary>
         /// Calculate the world coordinates of the internally

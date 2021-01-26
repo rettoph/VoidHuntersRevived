@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Builder.Scenes
         /// The hidden page to render when a user needs to select a new
         /// context type.
         /// </summary>
-        private ShipPartContextTypeSelectorPage _contextSelectorPage;
+        private ShipPartContextSelectorPage _contextSelectorPage;
 
         /// <summary>
         /// A list of all services to pageinate through when constructing
@@ -76,10 +76,10 @@ namespace VoidHuntersRevived.Builder.Scenes
                 w.Size = new Vector2(Chunk.Size, Chunk.Size);
             });
 
-            _contextSelectorPage = this.stage.Content.Children.Create<ShipPartContextTypeSelectorPage>();
+            _contextSelectorPage = this.stage.Content.Children.Create<ShipPartContextSelectorPage>();
             _builderPage = this.stage.Content.Children.Create<ShipPartContextBuilderPage>();
 
-            _contextSelectorPage.OnContextTypeSelected += this.HandleContextTypeSelected;
+            _contextSelectorPage.OnContextSelected += this.HandleContextSelected;
             _builderPage.NextButton.OnClicked += this.HandleNextButtonClicked;
             _builderPage.PrevButton.OnClicked += this.HandlePrevButtonClicked;
         }
@@ -147,10 +147,10 @@ namespace VoidHuntersRevived.Builder.Scenes
         #endregion
 
         #region Event Handlers
-        private void HandleContextTypeSelected(ShipPartContextTypeSelectorPage sender, Type contextType)
+        private void HandleContextSelected(ShipPartContextSelectorPage sender, ShipPartContext context)
         {
             _serviceIndex = 0;
-            _context = ActivatorUtilities.CreateInstance(_provider, contextType, "") as ShipPartContext;
+            _context = context;
             _services = AssemblyHelper.Types.GetTypesWithAttribute<ShipPartContextBuilderService, ShipPartContextBuilderServiceAttribute>()
                 .OrderBy(t => t.GetAttribute<ShipPartContextBuilderServiceAttribute>().Order)
                 .Select(t => _provider.GetService(t) as ShipPartContextBuilderService)

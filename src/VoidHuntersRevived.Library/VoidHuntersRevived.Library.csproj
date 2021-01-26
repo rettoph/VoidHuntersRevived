@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Resources\ShipParts\vhr.armor.demo.vhsp" />
     <None Remove="Resources\ShipParts\vhr.hull.beam.horizontal.vhsp" />
     <None Remove="Resources\ShipParts\vhr.hull.beam.vertical.vhsp" />
     <None Remove="Resources\ShipParts\vhr.hull.square.vhsp" />

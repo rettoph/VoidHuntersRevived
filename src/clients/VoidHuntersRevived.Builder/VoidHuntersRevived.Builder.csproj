@@ -1,9 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
     <PublishReadyToRun>false</PublishReadyToRun>
     <TieredCompilation>false</TieredCompilation>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWpf>true</UseWpf>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -28,6 +30,7 @@
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\libraries\Guppy\src\Guppy.Core\Guppy.Core.csproj" />
     <ProjectReference Include="..\..\..\libraries\Guppy\src\Guppy.UI\Guppy.UI.csproj" />
     <ProjectReference Include="..\..\..\libraries\Guppy\src\Guppy\Guppy.csproj" />
     <ProjectReference Include="..\..\VoidHuntersRevived.Client.Library\VoidHuntersRevived.Client.Library.csproj" />

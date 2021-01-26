@@ -26,6 +26,9 @@ using VoidHuntersRevived.Library.Services;
 using Guppy.Extensions.System.Collections;
 using Guppy.Extensions.Microsoft.Xna.Framework;
 using VoidHuntersRevived.Builder.Attributes;
+using Microsoft.Win32;
+using System.IO;
+using System.Threading;
 
 namespace VoidHuntersRevived.Builder.Services
 {
@@ -115,6 +118,7 @@ namespace VoidHuntersRevived.Builder.Services
 
             _page.AddShapeButton.OnClicked += this.HandleAddShapeButtonClicked;
             _page.AddFemaleNodeButton.OnClicked += this.HandleAddFemaleNodeButtonClicked;
+            _page.ImportShapeDataButton.OnClicked += this.HandleImportShapeDataButtonClicked;
             _builder.OnShapeCompleted += this.HandleShapeCompleted;
             _mouse.OnButtonStateChanged += this.HandleMouseButtonStateChanged;
         }
@@ -125,6 +129,7 @@ namespace VoidHuntersRevived.Builder.Services
 
             _page.AddShapeButton.OnClicked -= this.HandleAddShapeButtonClicked;
             _page.AddFemaleNodeButton.OnClicked -= this.HandleAddFemaleNodeButtonClicked;
+            _page.ImportShapeDataButton.OnClicked -= this.HandleImportShapeDataButtonClicked;
             _builder.OnShapeCompleted -= this.HandleShapeCompleted;
             _mouse.OnButtonStateChanged -= this.HandleMouseButtonStateChanged;
 
@@ -331,6 +336,8 @@ namespace VoidHuntersRevived.Builder.Services
         {
             base.Open(context);
 
+            this.ImportContext(context, true);
+
             // Open the default API page...
             this.pages.Open(_page);
         }
@@ -339,11 +346,26 @@ namespace VoidHuntersRevived.Builder.Services
         {
             base.Close();
 
+            _shapes.Clear();
+            _females.Clear();
+
             if (_demo?.Status == Guppy.Enums.ServiceStatus.Ready)
             {
                 _shipPartRenderService.RemoveContext(_demo);
                 _demo?.TryRelease();
             }
+        }
+
+        public void ImportContext(ShipPartContext context, Boolean withMale = false)
+        {
+            // Import the internal context shapes...
+            foreach (Vertices shape in context.InnerShapes)
+                _shapes.Add(new ShapeContext(shape));
+
+            // Import connection node data
+            _females.AddRange(context.FemaleConnectionNodes);
+            if (withMale)
+                _male = context.MaleConnectionNode;
         }
         #endregion
 
@@ -394,6 +416,19 @@ namespace VoidHuntersRevived.Builder.Services
         private void HandleAddFemaleNodeButtonClicked(Element sender)
         {
             _females.Add(new ConnectionNodeContext());
+        }
+
+        private void HandleImportShapeDataButtonClicked(Element sender)
+        {
+            var dialog = new OpenFileDialog();
+            dialog.Filter = "ShipPart files|*.vhsp";
+            dialog.InitialDirectory = $"{Environment.CurrentDirectory}\\Resources\\ShipParts";
+
+            if (dialog.ShowDialog() ?? false)
+            {
+                using (Stream contextStream = dialog.OpenFile())
+                    this.ImportContext(_shipParts.TryRegister(contextStream));
+            }
         }
         #endregion
     }

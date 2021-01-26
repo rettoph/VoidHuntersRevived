@@ -89,25 +89,25 @@ namespace VoidHuntersRevived.Library.Contexts
         /// works. Just make sure you define the male connection
         /// node in the last shape to be sure it never gets overwritten.
         /// </summary>
-        public ConnectionNodeContext MaleConnectionNode { get; set; }
+        public ConnectionNodeContext MaleConnectionNode { get; set; } = new ConnectionNodeContext();
 
         /// <summary>
         /// A list of all contained female connection nodes.
         /// </summary>
-        public ConnectionNodeContext[] FemaleConnectionNodes { get; set; }
+        public ConnectionNodeContext[] FemaleConnectionNodes { get; set; } = new ConnectionNodeContext[0];
 
         /// <summary>
         /// All distinct shapes within the current part, multiple may be used in combination
         /// to create concave shapes.
         /// </summary>
-        public Vertices[] InnerShapes { get; set; }
+        public Vertices[] InnerShapes { get; set; } = new Vertices[0];
 
         /// <summary>
         /// A ccollection of traced outline used primarily to render
         /// the shape. This can be used for adding detail or cleaning
         /// the default concave to convex outline conversion.
         /// </summary>
-        public Vertices[] OuterHulls { get; set; }
+        public Vertices[] OuterHulls { get; set; } = new Vertices[0];
         #endregion
 
         #region Constructor
@@ -125,16 +125,8 @@ namespace VoidHuntersRevived.Library.Contexts
         /// <param name="reader"></param>
         public Boolean TryRead(BinaryReader reader)
         {
-            try
-            {
-                this.Read(reader);
-                return true;
-            }
-            catch(Exception e)
-            {
-                // There was some sort of error deserializing the stream data...
-                return false;
-            }
+            this.Read(reader);
+            return true;
         }
 
         /// <summary>

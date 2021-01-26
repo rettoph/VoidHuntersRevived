@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Builder.ServiceLoaders
     {
         public void RegisterServices(ServiceCollection services)
         {
-            services.AddFactory<ShipPartContextTypeSelectorPage>(p => new ShipPartContextTypeSelectorPage());
+            services.AddFactory<ShipPartContextSelectorPage>(p => new ShipPartContextSelectorPage());
             services.AddFactory<ShipPartContextBuilderPage>(p => new ShipPartContextBuilderPage());
             services.AddFactory<ShipPartShapesBuilderPage>(p => new ShipPartShapesBuilderPage());
             services.AddFactory<ShipPartPropertiesEditorPage>(p => new ShipPartPropertiesEditorPage());
@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Builder.ServiceLoaders
             services.AddFactory<BooleanInput>(p => new BooleanInput());
             services.AddFactory<Vector2Input>(p => new Vector2Input());
 
-            services.AddScoped<ShipPartContextTypeSelectorPage>();
+            services.AddScoped<ShipPartContextSelectorPage>();
             services.AddScoped<ShipPartContextBuilderPage>();
             services.AddTransient<ShipPartShapesBuilderPage>();
             services.AddTransient<ShipPartPropertiesEditorPage>();

@@ -63,9 +63,9 @@ namespace VoidHuntersRevived.Server.Scenes
             
             for (Int32 i=0; i<50; i++)
             {
-                // var armorShield = _shipParts.Create("armor:shield");
-                // armorShield.Position = rand.NextVector2(0, world.Size.X);
-                // armorShield.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+                var armorShield = _shipParts.Create("vhr:armor:demo");
+                armorShield.Position = rand.NextVector2(0, world.Size.X);
+                armorShield.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
                 // 
                 // var armorPlate = _shipParts.Create("armor:plate");
                 // armorPlate.Position = rand.NextVector2(0, world.Size.X);
