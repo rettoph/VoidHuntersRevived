@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Library.UI;
+using VoidHuntersRevived.Client.Library.UI.Pages;
 
 namespace VoidHuntersRevived.Client.Library.ServiceLoaders
 {
@@ -20,12 +21,14 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
     {
         public void RegisterServices(ServiceCollection services)
         {
+            services.AddFactory<MainMenuPage>(p => new MainMenuPage());
             services.AddFactory<HeaderComponent>(p => new HeaderComponent());
             services.AddFactory<FormComponent>(p => new FormComponent());
 
             services.AddScoped<Stage>("stage:main");
             services.AddTransient<HeaderComponent>();
             services.AddTransient<FormComponent>();
+            services.AddTransient<MainMenuPage>();
 
             services.AddSetup<ColorService>((colors, p, c) =>
             {

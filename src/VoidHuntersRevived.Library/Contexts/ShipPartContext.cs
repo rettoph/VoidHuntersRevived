@@ -16,6 +16,7 @@ using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Extensions.System.IO;
+using VoidHuntersRevived.Library.Attributes;
 
 namespace VoidHuntersRevived.Library.Contexts
 {
@@ -45,6 +46,7 @@ namespace VoidHuntersRevived.Library.Contexts
         /// <summary>
         /// A unique name linked to this context.
         /// </summary>
+        [ShipPartContextProperty("Name", "A unique identifier for your part", ShipPartContextPropertyType.String)]
         public String Name { get; set; }
 
         /// <summary>
@@ -52,27 +54,32 @@ namespace VoidHuntersRevived.Library.Contexts
         /// <see cref="ShipPart"/> when not attached to any
         /// <see cref="Ship"/> or <see cref="Chain"/>
         /// </summary>
+        [ShipPartContextProperty("Default Color", "The part's default color when free floating in space.", ShipPartContextPropertyType.Color)]
         public Color DefaultColor { get; set; } = Color.Orange;
 
         /// <summary>
         /// When true, the rendered color will copy that of the parent.
         /// </summary>
+        [ShipPartContextProperty("Inherit Color", "Determins if the current part should inherit its color or not.", ShipPartContextPropertyType.Boolean)]
         public Boolean InheritColor { get; set; } = true;
 
         /// <summary>
         /// The maximum <see cref="ShipPart.Health"/> value
         /// for the defined <see cref="ShipPart"/>.
         /// </summary>
+        [ShipPartContextProperty("Max Health", "The maximum amount of health the current part contains.", ShipPartContextPropertyType.Single)]
         public Single MaxHealth { get; set; } = 100f;
 
         /// <summary>
         /// The density of the current defined ShipPart
         /// </summary>
+        [ShipPartContextProperty("Density", "The current part's density.", ShipPartContextPropertyType.Single)]
         public Single Density { get; set; } = 1f;
 
         /// <summary>
         /// A custom defined centeroid for the current <see cref="Shapes"/>.
         /// </summary>
+        [ShipPartContextProperty("Centeroid", "A custom defined centeroid for the part.", ShipPartContextPropertyType.Vector2)]
         public Vector2 Centeroid { get; set; }
 
         /// <summary>
@@ -203,13 +210,13 @@ namespace VoidHuntersRevived.Library.Contexts
 
             var vertBuffer = new List<Vertices>();
             var shapeCount = reader.ReadInt32();
-            for (var i = 0; i < nodeCount; i++)
+            for (var i = 0; i < shapeCount; i++)
                 vertBuffer.Add(reader.ReadVertices());
             this.InnerShapes = vertBuffer.ToArray();
             vertBuffer.Clear();
 
             var hullCount = reader.ReadInt32();
-            for (var i = 0; i < nodeCount; i++)
+            for (var i = 0; i < hullCount; i++)
                 vertBuffer.Add(reader.ReadVertices());
             this.OuterHulls = vertBuffer.ToArray();
             vertBuffer.Clear();

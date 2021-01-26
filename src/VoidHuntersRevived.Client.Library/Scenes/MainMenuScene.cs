@@ -19,6 +19,8 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Scenes;
 using System.Threading;
+using Guppy.UI.Enums;
+using VoidHuntersRevived.Client.Library.UI.Pages;
 
 namespace VoidHuntersRevived.Client.Library.Scenes
 {
@@ -28,15 +30,11 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private SceneList _scenes;
         private ServiceList<Player> _players;
         private WorldEntity _world;
-        private Random _rand;
         private GraphicsDevice _graphics;
         private Synchronizer _synchronizer;
         private ClientPeer _client;
 
-        private FormComponent _username;
-        private FormComponent _host;
-        private FormComponent _port;
-        private TextElement _connect;
+        private MainMenuPage _page;
         private User _user;
         #endregion
 
@@ -65,64 +63,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             base.Initialize(provider);
 
             #region UI
-            // this.stage.Content.BackgroundColor[ElementState.Default] = new Color(Color.Black, 125);
-            // this.stage.Content.Children.Create<StackContainer>((container, p, c) =>
-            // {
-            //     container.Bounds.X = 0;
-            //     container.Bounds.Y = 0.05f;
-            //     container.Alignment = StackAlignment.Vertical;
-            //     container.Inline = InlineType.Vertical;
-            // 
-            //     container.Children.Create<HeaderComponent>();
-            //     _username = container.Children.Create<FormComponent>((username, p, c) =>
-            //     {
-            //         username.Label.Value = "Username";
-            //         username.Input.Value = "Rettoph";
-            //         username.Bounds.Width = 700;
-            //         username.Input.Filter = new Regex("^[a-zA-Z0-9]{0,25}$");
-            //     });
-            //     container.Children.Create<StackContainer>((container2, p, c) =>
-            //     {
-            //         container2.Bounds.X = new CustomUnit(c => (c - container2.Bounds.Width.ToPixel(c)) / 2);
-            //         container2.Alignment = StackAlignment.Horizontal;
-            //         _host = container2.Children.Create<FormComponent>((host, p, c) =>
-            //         {
-            //             host.Label.Value = "Host";
-            //             host.Input.Value = "localhost";
-            //             host.Bounds.Width = 550;
-            //             host.Input.Filter = new Regex("^[a-zA-Z0-9\\.]{0,100}$");
-            //         });
-            //         _port = container2.Children.Create<FormComponent>((port, p, c) =>
-            //         {
-            //             port.Label.Value = "Port";
-            //             port.Input.Value = "1337";
-            //             port.Bounds.Width = 150;
-            //             port.Input.Filter = new Regex("^[0-9]{0,5}$");
-            //         });
-            //     });
-            // 
-            //     container.Children.Create<Container>((container3, p, c) =>
-            //     {
-            //         container3.Padding.Top = 25;
-            //         container3.Inline = InlineType.Vertical;
-            // 
-            //         _connect = container3.Children.Create<TextElement>((connect, p, c) =>
-            //         {
-            //             connect.Color[ElementState.Default] = Color.White;
-            //             connect.BackgroundColor[ElementState.Default] = p.GetColor("ui:input:color:2");
-            //             connect.BackgroundColor[ElementState.Hovered] = Color.Lerp(p.GetColor("ui:input:color:2"), Color.Black, 0.25f);
-            //             connect.BackgroundColor[ElementState.Pressed] = Color.Lerp(p.GetColor("ui:input:color:2"), Color.Black, 0.5f);
-            //             connect.Inline = InlineType.None;
-            //             connect.Bounds.Width = 680;
-            //             connect.Bounds.Height = 45;
-            //             connect.Bounds.X = new CustomUnit(c => (c - connect.Bounds.Width.ToPixel(c)) / 2);
-            //             connect.Alignment = Alignment.CenterCenter;
-            //             connect.Font = p.GetContent<SpriteFont>("font:ui:normal");
-            //             connect.Value = "Connect";
-            //             connect.OnClicked += this.HandleConnectClicked;
-            //         });
-            //     });
-            // });
+            this.stage.Content.BackgroundColor[ElementState.Default] = new Color(Color.Black, 125);
+            _page = this.stage.Content.Children.Create<MainMenuPage>();
             #endregion
 
             this.camera.Zoom = 5f;
@@ -137,25 +79,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             {
                 w.Size = new Vector2(Chunk.Size * 3, Chunk.Size * 3);
             });
-
-            _rand = new Random(1);
-            // for (Int32 i = 0; i < 1; i++)
-            // {
-            //     this.Entities.Create<ComputerPlayer>((player, p, d) =>
-            //     {
-            //         player.Ship = this.Entities.Create<Ship>((ship, p2, c) =>
-            //         {
-            //             // var ships = Directory.GetFiles("Ships", "*.vh");
-            //             // ship.Import(
-            //             //     input: File.OpenRead(ships[_rand.Next(ships.Length)]),
-            //             //     position: _rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y),
-            //             //     rotation: MathHelper.TwoPi * (Single)_rand.NextDouble());
-            // 
-            //             ship.Bridge = this.Entities.Create<ShipPart>("entity:ship-part:hull:triangle");
-            //             ship.Bridge.Position = _world.Size / 2;
-            //         });
-            //     });
-            // }
         }
 
         protected override void PostInitialize(ServiceProvider provider)
@@ -180,9 +103,11 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             this.settings.Set<HostType>(HostType.Remote);
 
             _players.TryRelease();
-            _connect.OnClicked -= this.HandleConnectClicked;
+            _page.ConnectButton.OnClicked -= this.HandleConnectClicked;
             _players.OnAdded -= this.HandlePlayerAdded;
             _players.OnRemoved -= this.HandlePlayerRemoved;
+
+            _page.TryRelease();
 
             _scenes = null;
             _players = null;
@@ -190,15 +115,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _client = null;
             _user = null;
             _graphics = null;
-
-            _username = null;
-            _host = null;
-            _port = null;
-
-            _username = null;
-            _host = null;
-            _port = null;
-            _connect = null;
+            _page = null;
         }
         #endregion
 
@@ -247,11 +164,11 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             if (_client.ConnectionStatus != NetConnectionStatus.Disconnected)
                 return; // Stop here, we can only try connecting if the status is disconnected.
 
-            _user.Name = _username.Input.Value;
+            _user.Name = _page.Username;
 
             _client.TryConnect(
-                host: _host.Input.Value, 
-                port: Int32.Parse(_port.Input.Value), 
+                host: _page.Host, 
+                port: _page.Port, 
                 user: _user);
         }
 

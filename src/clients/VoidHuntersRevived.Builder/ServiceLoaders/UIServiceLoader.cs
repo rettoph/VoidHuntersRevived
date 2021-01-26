@@ -12,6 +12,7 @@ using VoidHuntersRevived.Builder.UI.Pages;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.UI.Enums;
 using VoidHuntersRevived.Builder.UI;
+using VoidHuntersRevived.Builder.UI.Inputs;
 
 namespace VoidHuntersRevived.Builder.ServiceLoaders
 {
@@ -23,26 +24,36 @@ namespace VoidHuntersRevived.Builder.ServiceLoaders
             services.AddFactory<ShipPartContextTypeSelectorPage>(p => new ShipPartContextTypeSelectorPage());
             services.AddFactory<ShipPartContextBuilderPage>(p => new ShipPartContextBuilderPage());
             services.AddFactory<ShipPartShapesBuilderPage>(p => new ShipPartShapesBuilderPage());
+            services.AddFactory<ShipPartPropertiesEditorPage>(p => new ShipPartPropertiesEditorPage());
             services.AddFactory<ContextTypeButton>(p => new ContextTypeButton());
             services.AddFactory<ShapeEditorMenu>(p => new ShapeEditorMenu());
             services.AddFactory<ConnectionNodeEditorMenu>(p => new ConnectionNodeEditorMenu());
             services.AddFactory<SideContextInput>(p => new SideContextInput());
             services.AddFactory<ShapeTransformationsInput>(p => new ShapeTransformationsInput());
-            services.AddFactory<SimpleInput>(p => new SimpleInput());
+            services.AddFactory<ContextPropertyInput>(p => new ContextPropertyInput());
+            services.AddFactory<StringInput>(p => new StringInput());
             services.AddFactory<SingleInput>(p => new SingleInput());
             services.AddFactory<RadianInput>(p => new RadianInput());
+            services.AddFactory<ColorInput>(p => new ColorInput());
+            services.AddFactory<BooleanInput>(p => new BooleanInput());
+            services.AddFactory<Vector2Input>(p => new Vector2Input());
 
             services.AddScoped<ShipPartContextTypeSelectorPage>();
             services.AddScoped<ShipPartContextBuilderPage>();
             services.AddTransient<ShipPartShapesBuilderPage>();
+            services.AddTransient<ShipPartPropertiesEditorPage>();
             services.AddTransient<ContextTypeButton>();
             services.AddTransient<ShapeEditorMenu>();
             services.AddTransient<ConnectionNodeEditorMenu>();
             services.AddTransient<SideContextInput>();
             services.AddTransient<ShapeTransformationsInput>();
-            services.AddTransient<SimpleInput>();
+            services.AddTransient<ContextPropertyInput>();
+            services.AddTransient<StringInput>();
             services.AddTransient<SingleInput>();
             services.AddTransient<RadianInput>();
+            services.AddTransient<ColorInput>();
+            services.AddTransient<BooleanInput>();
+            services.AddTransient<Vector2Input>();
 
             services.AddSetup<ColorService>((colors, p, c) =>
             {

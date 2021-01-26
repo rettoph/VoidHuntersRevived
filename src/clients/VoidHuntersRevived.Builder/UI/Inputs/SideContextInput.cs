@@ -10,7 +10,7 @@ using VoidHuntersRevived.Builder.Contexts;
 using Microsoft.Xna.Framework;
 using System.Text.RegularExpressions;
 
-namespace VoidHuntersRevived.Builder.UI
+namespace VoidHuntersRevived.Builder.UI.Inputs
 {
     public class SideContextInput : SecretContainer<IElement>
     {

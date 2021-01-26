@@ -35,6 +35,5 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Extensions\" />
-    <Folder Include="Attributes\" />
   </ItemGroup>
 </Project>

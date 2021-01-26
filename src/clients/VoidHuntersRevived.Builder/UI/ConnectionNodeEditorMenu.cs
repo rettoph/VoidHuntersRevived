@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Builder.UI.Inputs;
 
 namespace VoidHuntersRevived.Builder.UI
 {

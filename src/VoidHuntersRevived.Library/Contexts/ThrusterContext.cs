@@ -20,6 +20,7 @@ namespace VoidHuntersRevived.Library.Contexts
         /// The maximum force per second 
         /// achievable by the current thruster.
         /// </summary>
+        [ShipPartContextProperty("Maximum Impulse", "The maximum impulse achieved by this thruster.", ShipPartContextPropertyType.Vector2)]
         public virtual Vector2 MaxImpulse { get; set; } = Vector2.UnitX * 10f;
         #endregion
 

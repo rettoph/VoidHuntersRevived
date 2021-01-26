@@ -4,15 +4,15 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace VoidHuntersRevived.Builder.UI
+namespace VoidHuntersRevived.Builder.UI.Inputs
 {
-    public class SingleInput : SimpleInput
+    public class SingleInput : SimpleInput<Single>
     {
         #region Public Properties
-        public new virtual Single Value
+        public override Single Value
         {
-            get => this.GetValue(base.Value);
-            set => base.Value = value.ToString("#,##0.#####");
+            get => this.GetValue(this.input.Value);
+            set => this.input.Value = value.ToString("#,##0.#####");
         }
 
         public Single DefaultValue { get; set; } = 0f;

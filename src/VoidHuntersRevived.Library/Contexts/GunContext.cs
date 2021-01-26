@@ -17,6 +17,7 @@ namespace VoidHuntersRevived.Library.Contexts
         /// Defines how much damage a bullet fired from this
         /// gun will do
         /// </summary>
+        [ShipPartContextProperty("Bullet Damage", "The amount of damage applied by bullets fired.", ShipPartContextPropertyType.Single)]
         public Single BulletDamage { get; set; } = 10;
         #endregion
 

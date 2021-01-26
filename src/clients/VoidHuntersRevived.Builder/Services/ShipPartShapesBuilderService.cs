@@ -25,6 +25,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Services;
 using Guppy.Extensions.System.Collections;
 using Guppy.Extensions.Microsoft.Xna.Framework;
+using VoidHuntersRevived.Builder.Attributes;
 
 namespace VoidHuntersRevived.Builder.Services
 {
@@ -33,6 +34,7 @@ namespace VoidHuntersRevived.Builder.Services
     /// <see cref="ShipPartContext.FemaleConnectionNodes"/> & <see cref="ShipPartContext.OuterHulls"/>
     /// values.
     /// </summary>
+    [ShipPartContextBuilderService("Shape Designer", 0)]
     public class ShipPartShapesBuilderService : ShipPartContextBuilderService
     {
         #region Enums

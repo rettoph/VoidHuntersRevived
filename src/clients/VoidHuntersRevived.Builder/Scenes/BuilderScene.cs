@@ -11,13 +11,17 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Enums;
 using Guppy.Extensions.System;
+using Guppy.Extensions.System.Reflection;
 using VoidHuntersRevived.Library.Attributes;
 using System.Collections.Generic;
 using System;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
-using ServiceProvider = Guppy.DependencyInjection.ServiceProvider;
 using Guppy.UI.Elements;
+using VoidHuntersRevived.Builder.Attributes;
+
+using ServiceProvider = Guppy.DependencyInjection.ServiceProvider;
+using System.IO;
 
 namespace VoidHuntersRevived.Builder.Scenes
 {
@@ -108,34 +112,37 @@ namespace VoidHuntersRevived.Builder.Scenes
         #region Helper Methods
         private void OpenService(Int32 delta)
         {
-
-
             _serviceIndex += delta;
 
-            if(_serviceIndex < 0)
+            _service?.Close();
+            if (_serviceIndex < 0)
             { // We want to open the ContextType selector again.
                 if (_services != default)
                     _services.ForEach(s => s.TryRelease());
 
                 this.stage.Content.Open(_contextSelectorPage);
             }
+            else if(_serviceIndex >= _services.Count)
+            { // Save & export...
+                _context.Export($"Resources\\ShipParts\\{String.Join(".", _context.Name.Split(Path.GetInvalidFileNameChars()))}.vhsp");
+                this.OpenService(-(_serviceIndex + 1));
+            }
             else
             {
-                _service?.Close();
                 _service = _services[_serviceIndex];
                 _service.Open(_context);
             }
 
             // Ensure that the navigation buttons are updated.
             if (_serviceIndex <= 0)
-                _builderPage.PrevButton.Value = $"< ContextType";
+                _builderPage.PrevButton.Value = $"< Context Types";
             else
-                _builderPage.PrevButton.Value = $"< {_services[_serviceIndex - 1].GetType().Name}";
+                _builderPage.PrevButton.Value = $"< {_services[_serviceIndex - 1].GetType().GetAttribute<ShipPartContextBuilderServiceAttribute>().Title}";
 
             if (_serviceIndex >= _services.Count - 1)
-                _builderPage.NextButton.Value = $"Save >";
+                _builderPage.NextButton.Value = $"Save & Export >";
             else
-                _builderPage.NextButton.Value = $"{_services[_serviceIndex + 1].GetType().Name} >";
+                _builderPage.NextButton.Value = $"{_services[_serviceIndex + 1].GetType().GetAttribute<ShipPartContextBuilderServiceAttribute>().Title} >";
         }
         #endregion
 
@@ -143,8 +150,9 @@ namespace VoidHuntersRevived.Builder.Scenes
         private void HandleContextTypeSelected(ShipPartContextTypeSelectorPage sender, Type contextType)
         {
             _serviceIndex = 0;
-            _context = ActivatorUtilities.CreateInstance(_provider, contextType, "demo") as ShipPartContext;
-            _services = AssemblyHelper.Types.GetTypesAssignableFrom<ShipPartContextBuilderService>()
+            _context = ActivatorUtilities.CreateInstance(_provider, contextType, "") as ShipPartContext;
+            _services = AssemblyHelper.Types.GetTypesWithAttribute<ShipPartContextBuilderService, ShipPartContextBuilderServiceAttribute>()
+                .OrderBy(t => t.GetAttribute<ShipPartContextBuilderServiceAttribute>().Order)
                 .Select(t => _provider.GetService(t) as ShipPartContextBuilderService)
                 .Where(s => s != default)
                 .ToList();

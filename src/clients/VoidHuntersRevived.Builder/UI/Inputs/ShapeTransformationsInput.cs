@@ -9,7 +9,7 @@ using Guppy.Extensions.DependencyInjection;
 using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework;
 
-namespace VoidHuntersRevived.Builder.UI
+namespace VoidHuntersRevived.Builder.UI.Inputs
 {
     public class ShapeTransformationsInput : SecretContainer<IElement>
     {
