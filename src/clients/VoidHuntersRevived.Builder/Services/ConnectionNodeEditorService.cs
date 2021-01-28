@@ -6,6 +6,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Contexts;
 using Guppy.Extensions.Utilities;
 using VoidHuntersRevived.Builder.UI;
+using Guppy.Events.Delegates;
 
 namespace VoidHuntersRevived.Builder.Services
 {
@@ -16,6 +17,10 @@ namespace VoidHuntersRevived.Builder.Services
     {
         #region Private Fields
         private ConnectionNodeEditorMenu _menu;
+        #endregion
+
+        #region Events
+        public OnEventDelegate<ConnectionNodeEditorService, ConnectionNodeContext> OnConnectionNodeDeleted;
         #endregion
 
         #region Lifecycle Methods
@@ -52,22 +57,35 @@ namespace VoidHuntersRevived.Builder.Services
         #endregion
 
         #region Helper Methods
-        public override void Start(ConnectionNodeContext item)
+        public void Start(ConnectionNodeContext item, Boolean deleteable)
         {
             base.Start(item);
 
             _menu = this.shapes.Page.Menu.Children.Create<ConnectionNodeEditorMenu>((menu, p, c) =>
             {
-                menu.Position = item.Position;
-                menu.Rotation = item.Rotation;
+                menu.deleteable = deleteable;
+                menu.OnDelete += this.HandleDelete;
             });
+
+            _menu.Position = item.Position;
+            _menu.Rotation = item.Rotation;
+        }
+
+        public override void Start(ConnectionNodeContext item)
+        {
+            this.Start(item, false);
         }
 
         public override void Stop()
         {
-            _menu?.TryRelease();
-
             base.Stop();
+
+            if (_menu == default)
+                return;
+
+            _menu.OnDelete -= this.HandleDelete;
+            _menu.TryRelease();
+            _menu = null;
         }
 
         protected override void Drag(ConnectionNodeContext item, Vector2 position)
@@ -103,6 +121,14 @@ namespace VoidHuntersRevived.Builder.Services
 
         protected override bool ShouldStop()
             => !_menu.State.HasFlag(Guppy.UI.Enums.ElementState.Hovered);
+        #endregion
+
+        #region Event Handlers
+        private void HandleDelete(ConnectionNodeEditorMenu sender)
+        {
+            this.OnConnectionNodeDeleted?.Invoke(this, this.item);
+            this.Stop();
+        }
         #endregion
     }
 }

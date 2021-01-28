@@ -49,6 +49,7 @@ namespace VoidHuntersRevived.Builder.UI.Inputs
 
             this.inline = InlineType.Both;
             this.Padding.Bottom = 15;
+            this.Padding.Top = 15;
 
             _x = this.inner.Children.Create<SingleInput>((input, p, c) =>
             {
@@ -77,6 +78,16 @@ namespace VoidHuntersRevived.Builder.UI.Inputs
                 input.Bounds.X = 0.5f;
                 input.Bounds.Y = 65;
             });
+        }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _x = null;
+            _y = null;
+            _rotation = null;
+            _scale = null;
         }
         #endregion
     }

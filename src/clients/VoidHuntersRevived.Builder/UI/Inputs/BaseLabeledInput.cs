@@ -52,6 +52,7 @@ namespace VoidHuntersRevived.Builder.UI.Inputs
             {
                 label.Color[ElementState.Default] = p.GetColor("ui:color:1");
                 label.Value = "Label";
+                label.Inline = InlineType.Both;
             });
         }
         #endregion

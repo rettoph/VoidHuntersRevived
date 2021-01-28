@@ -28,6 +28,7 @@ namespace VoidHuntersRevived.Builder.UI
         public IEnumerable<SideContext> SideContexts => _sideInputs.Select(si => si.SideContext);
 
         public ShapeTransformationsInput Transformations => _transformations;
+        public TextElement DeleteButton { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -38,6 +39,12 @@ namespace VoidHuntersRevived.Builder.UI
             _stack = this.inner.Children.Create<StackContainer>((stack, p, c) =>
             {
                 stack.Alignment = StackAlignment.Vertical;
+            });
+
+            this.DeleteButton = _stack.Children.Create<TextElement>("ui:button:0", (delete, p, c) =>
+            {
+                delete.Value = "Delete Shape";
+                delete.Bounds.Width = 1f;
             });
         }
 
@@ -69,6 +76,10 @@ namespace VoidHuntersRevived.Builder.UI
             base.Release();
 
             _sideInputs.Clear();
+
+            _transformations = null;
+            _stack = null;
+            this.DeleteButton = null;
         }
         #endregion
     }

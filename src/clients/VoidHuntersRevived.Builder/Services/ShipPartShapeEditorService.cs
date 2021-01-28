@@ -11,6 +11,8 @@ using System.Text;
 using VoidHuntersRevived.Builder.Contexts;
 using VoidHuntersRevived.Builder.UI;
 using Guppy.Extensions.System.Collections;
+using Guppy.UI.Elements;
+using Guppy.Events.Delegates;
 
 namespace VoidHuntersRevived.Builder.Services
 {
@@ -26,6 +28,10 @@ namespace VoidHuntersRevived.Builder.Services
     {
         #region Private Fields
         private ShapeEditorMenu _menu;
+        #endregion
+
+        #region Event Handlers
+        public event OnEventDelegate<ShipPartShapeEditorService, ShapeContext> OnShapeDeleted;
         #endregion
 
         #region Frame Methods
@@ -75,6 +81,7 @@ namespace VoidHuntersRevived.Builder.Services
             _menu = this.shapes.Page.Menu.Children.Create<ShapeEditorMenu>((menu, p, c) =>
             {
                 menu.shape = item;
+                menu.DeleteButton.OnClicked += this.HandleDeleteButtonClicked;
             });
         }
 
@@ -82,7 +89,12 @@ namespace VoidHuntersRevived.Builder.Services
         {
             base.Stop();
 
-            _menu?.TryRelease();
+            if (_menu == default)
+                return;
+
+            _menu.DeleteButton.OnClicked -= this.HandleDeleteButtonClicked;
+            _menu.TryRelease();
+            _menu = null;
         }
 
         /// <inheritdoc />
@@ -135,6 +147,12 @@ namespace VoidHuntersRevived.Builder.Services
         /// <inheritdoc />
         protected override bool ShouldStop()
             => !_menu.State.HasFlag(Guppy.UI.Enums.ElementState.Hovered);
+
+        private void HandleDeleteButtonClicked(Element sender)
+        {
+            this.OnShapeDeleted?.Invoke(this, this.item);
+            this.Stop();
+        }
         #endregion
     }
 }

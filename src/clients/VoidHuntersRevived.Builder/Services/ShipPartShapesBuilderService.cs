@@ -121,6 +121,8 @@ namespace VoidHuntersRevived.Builder.Services
             _page.ImportShapeDataButton.OnClicked += this.HandleImportShapeDataButtonClicked;
             _builder.OnShapeCompleted += this.HandleShapeCompleted;
             _mouse.OnButtonStateChanged += this.HandleMouseButtonStateChanged;
+            _editor.OnShapeDeleted += this.HandleShapeDeleted;
+            _nodeEditor.OnConnectionNodeDeleted += this.HandleConnectionNodeDeleted;
         }
 
         protected override void Release()
@@ -132,6 +134,8 @@ namespace VoidHuntersRevived.Builder.Services
             _page.ImportShapeDataButton.OnClicked -= this.HandleImportShapeDataButtonClicked;
             _builder.OnShapeCompleted -= this.HandleShapeCompleted;
             _mouse.OnButtonStateChanged -= this.HandleMouseButtonStateChanged;
+            _editor.OnShapeDeleted -= this.HandleShapeDeleted;
+            _nodeEditor.OnConnectionNodeDeleted -= this.HandleConnectionNodeDeleted;
 
             _camera = null;
             _graphics = null;
@@ -284,12 +288,12 @@ namespace VoidHuntersRevived.Builder.Services
         private Boolean TryStartEditing()
         {
             // First check for nodes!
-            var node = this.TestPointForConnectionNode(this.mouseWorldPosition);
+            var nodeData = this.TestPointForConnectionNode(this.mouseWorldPosition);
 
-            if(node != default)
+            if(nodeData != default)
             {
                 _editor.Stop();
-                _nodeEditor.Start(node);
+                _nodeEditor.Start(nodeData.node, nodeData.deletable);
                 return true;
             }
 
@@ -317,17 +321,17 @@ namespace VoidHuntersRevived.Builder.Services
             return _shapes[fixture.Body.FixtureList.IndexOf(fixture)];
         }
 
-        public ConnectionNodeContext  TestPointForConnectionNode(Vector2 position)
+        public (ConnectionNodeContext node, Boolean deletable)  TestPointForConnectionNode(Vector2 position)
         {
             var localPosition = position - _camera.Position;
             var maxDistance = 0.1f;
 
             if (Vector2.Distance(_male.Position, localPosition) < maxDistance)
-                return _male;
+                return (_male, false);
 
             foreach(ConnectionNodeContext female in _females)
                 if (Vector2.Distance(female.Position, localPosition) < maxDistance)
-                    return female;
+                    return (female, true);
 
             return default;
         }
@@ -430,6 +434,12 @@ namespace VoidHuntersRevived.Builder.Services
                     this.ImportContext(_shipParts.TryRegister(contextStream));
             }
         }
+
+        private void HandleShapeDeleted(ShipPartShapeEditorService sender, ShapeContext args)
+            => _shapes.Remove(args);
+
+        private void HandleConnectionNodeDeleted(ConnectionNodeEditorService sender, ConnectionNodeContext args)
+            => _females.Remove(args);
         #endregion
     }
 }
