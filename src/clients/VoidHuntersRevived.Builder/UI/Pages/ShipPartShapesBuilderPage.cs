@@ -24,6 +24,7 @@ namespace VoidHuntersRevived.Builder.UI.Pages
 
         public TextElement AddFemaleNodeButton { get; private set; }
         public TextElement ImportShapeDataButton { get; private set; }
+        public TextElement AddOuterHullButton { get; private set; }
         public StackContainer Menu { get; private set; }
         #endregion
 
@@ -68,6 +69,12 @@ namespace VoidHuntersRevived.Builder.UI.Pages
             {
                 button.Value = "Import Shape Data";
                 button.Bounds.Y = 100;
+            });
+
+            this.AddOuterHullButton = this.inner.Children.Create<TextElement>("ui:button:0", (button, p, c) =>
+            {
+                button.Value = "Add Outer Hull";
+                button.Bounds.Y = 150;
             });
 
             this.Menu = this.inner.Children.Create<StackContainer>((stack, p, c) =>

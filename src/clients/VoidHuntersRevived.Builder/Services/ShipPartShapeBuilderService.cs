@@ -23,6 +23,7 @@ using VoidHuntersRevived.Library.Contexts;
 using tainicom.Aether.Physics2D.Common;
 using Guppy.Events.Delegates;
 using VoidHuntersRevived.Builder.Enums;
+using VoidHuntersRevived.Builder.Utilities;
 
 namespace VoidHuntersRevived.Builder.Services
 {
@@ -32,7 +33,7 @@ namespace VoidHuntersRevived.Builder.Services
     public class ShipPartShapeBuilderService : ShipPartShapesServiceChildBase
     {
         #region Private Fields
-        private ShapeContext _shape;
+        private ShapeContextBuilder _shape;
         private Boolean _building;
         private Vector2 _origin;
 
@@ -45,11 +46,11 @@ namespace VoidHuntersRevived.Builder.Services
         #endregion
 
         #region Public Properties
-        public ShapeContext Shape => _shape;
+        public ShapeContextBuilder Shape => _shape;
         #endregion
 
         #region Events
-        public event OnEventDelegate<ShipPartShapeBuilderService, ShapeContext> OnShapeCompleted;
+        public event OnEventDelegate<ShipPartShapeBuilderService, ShapeContextBuilder> OnShapeCompleted;
         #endregion
 
         #region Lifecycle Methods
@@ -102,7 +103,6 @@ namespace VoidHuntersRevived.Builder.Services
                 this.primitiveBatch.DrawLine(Color.Red, _origin + cursor - Vector2.UnitX * cursorScale, _origin + cursor + Vector2.UnitX * cursorScale);
                 this.primitiveBatch.DrawLine(Color.Red, _origin + cursor - Vector2.UnitY * cursorScale, _origin + cursor + Vector2.UnitY * cursorScale);
             }
-
         }
         #endregion
 
@@ -116,7 +116,7 @@ namespace VoidHuntersRevived.Builder.Services
         {
             _origin = origin;
             _building = true;
-            _shape = new ShapeContext();
+            _shape = new ShapeContextBuilder();
         }
 
         /// <summary>
@@ -139,7 +139,6 @@ namespace VoidHuntersRevived.Builder.Services
         {
             if(_start == default)
             { // No starting location has been defined yet...
-
                 // Save the current shape's start location!
                 if (this.@lock[LockType.PointSnap])
                     _start = this.shapes.TryGetClosestInterestPoint(this.mouseWorldPosition);

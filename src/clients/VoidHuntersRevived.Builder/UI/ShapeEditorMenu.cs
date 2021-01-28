@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Builder.Contexts;
 using VoidHuntersRevived.Builder.UI.Inputs;
+using VoidHuntersRevived.Builder.Utilities;
+using Guppy.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Builder.UI
 {
@@ -17,16 +19,16 @@ namespace VoidHuntersRevived.Builder.UI
         #region Private Fields
         private StackContainer _stack;
         private List<SideContextInput> _sideInputs;
+        private List<Vector2Input> _verticeInputs;
         private ShapeTransformationsInput _transformations;
         #endregion
 
         #region Internal Properties
-        internal ShapeContext shape { get; set; }
+        internal ShapeContextBuilder shape { get; set; }
         #endregion
 
         #region Public Properties
-        public IEnumerable<SideContext> SideContexts => _sideInputs.Select(si => si.SideContext);
-
+        public IEnumerable<SideContext> SideContexts => _sideInputs.Select(si => si.Value);
         public ShapeTransformationsInput Transformations => _transformations;
         public TextElement DeleteButton { get; private set; }
         #endregion
@@ -60,15 +62,40 @@ namespace VoidHuntersRevived.Builder.UI
             });
 
             _sideInputs = new List<SideContextInput>();
-
+            _verticeInputs = new List<Vector2Input>();
             // Create a new row for every single shape side...
+            #region Side Inputs
+            _stack.Children.Create<StackContainer>((labelContainer, p, c) =>
+            {
+                labelContainer.Alignment = StackAlignment.Horizontal;
+                labelContainer.Inline = InlineType.Vertical;
+
+                labelContainer.Children.Create<TextElement>((label, p, c) =>
+                {
+                    label.Color[ElementState.Default] = p.GetColor("ui:color:1");
+                    label.Value = "Side Angles";
+                    label.Bounds.Width = 0.5f;
+                    label.Inline = InlineType.Vertical;
+                });
+
+                labelContainer.Children.Create<TextElement>((label, p, c) =>
+                {
+                    label.Color[ElementState.Default] = p.GetColor("ui:color:1");
+                    label.Value = "Side Lengths";
+                    label.Bounds.Width = 0.5f;
+                    label.Inline = InlineType.Both;
+                });
+            });
+
+
             foreach (SideContext side in this.shape.Sides)
             {
                 _sideInputs.Add(_stack.Children.Create<SideContextInput>((input, p, c) =>
                 {
-                    input.source = side;
+                    input.Value = side;
                 }));
             }
+            #endregion
         }
 
         protected override void Release()

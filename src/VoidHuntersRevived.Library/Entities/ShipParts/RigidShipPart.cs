@@ -71,11 +71,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
 
             // Create new fixtures for all vertices contained in the configuration
-            foreach(Vertices shape in this.Context.InnerShapes)
+            foreach(ShapeContext shape in this.Context.InnerShapes)
             {
-                Vertices vertices = new Vertices(shape);
-                vertices.Transform(this.LocalTransformation);
-                fixtures.Enqueue(root.BuildFixture(new PolygonShape(vertices, this.Context.Density), this));
+                if(shape.Solid)
+                {
+                    Vertices vertices = new Vertices(shape.Vertices);
+                    vertices.Transform(this.LocalTransformation);
+                    fixtures.Enqueue(root.BuildFixture(new PolygonShape(vertices, this.Context.Density), this));
+                }
             }
         }
         #endregion

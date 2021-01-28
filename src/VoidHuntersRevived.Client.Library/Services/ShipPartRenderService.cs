@@ -130,7 +130,7 @@ namespace VoidHuntersRevived.Client.Library.Services
             _primitives[shipPart.Context] = new ShipPartContextPrimitiveData()
             {
                 OuterHulls = shipPart.Context.OuterHulls.Select(h => PrimitivePath.Create(_width, h)).ToArray(),
-                InnerShapes = shipPart.Context.InnerShapes.Select(s => PrimitiveShape.Create(s)).ToArray(),
+                InnerShapes = shipPart.Context.InnerShapes.Select(s => PrimitiveShape.Create(s.Vertices)).ToArray(),
                 MaleNode = PrimitivePath.Create(
                     _width,
                     shipPart.MaleConnectionNode.LocalPosition + (Vector2.UnitX * 0.2f).RotateTo(shipPart.MaleConnectionNode.LocalRotation + MathHelper.Pi + MathHelper.PiOver4),

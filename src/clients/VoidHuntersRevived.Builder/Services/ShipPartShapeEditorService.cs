@@ -13,6 +13,7 @@ using VoidHuntersRevived.Builder.UI;
 using Guppy.Extensions.System.Collections;
 using Guppy.UI.Elements;
 using Guppy.Events.Delegates;
+using VoidHuntersRevived.Builder.Utilities;
 
 namespace VoidHuntersRevived.Builder.Services
 {
@@ -24,14 +25,14 @@ namespace VoidHuntersRevived.Builder.Services
     /// data will  be lost when importing 
     /// pre-existing shape files. This is unavoidable.
     /// </summary>
-    public class ShipPartShapeEditorService : ShipPartShapesServiceEditorChildBase<ShapeContext>
+    public class ShipPartShapeEditorService : ShipPartShapesServiceEditorChildBase<ShapeContextBuilder>
     {
         #region Private Fields
         private ShapeEditorMenu _menu;
         #endregion
 
         #region Event Handlers
-        public event OnEventDelegate<ShipPartShapeEditorService, ShapeContext> OnShapeDeleted;
+        public event OnEventDelegate<ShipPartShapeEditorService, ShapeContextBuilder> OnShapeDeleted;
         #endregion
 
         #region Frame Methods
@@ -74,7 +75,7 @@ namespace VoidHuntersRevived.Builder.Services
         #endregion
 
         #region API Methods
-        public override void Start(ShapeContext item)
+        public override void Start(ShapeContextBuilder item)
         {
             base.Start(item);
 
@@ -98,7 +99,7 @@ namespace VoidHuntersRevived.Builder.Services
         }
 
         /// <inheritdoc />
-        protected override void Drag(ShapeContext item, Vector2 position)
+        protected override void Drag(ShapeContextBuilder item, Vector2 position)
         {
             item.Translation = position;
 
@@ -130,18 +131,18 @@ namespace VoidHuntersRevived.Builder.Services
             _menu.Transformations.Translation = item.Translation;
         }
 
-        protected override void Rotate(ShapeContext item, int count)
+        protected override void Rotate(ShapeContextBuilder item, int count)
         {
             item.Rotation += MathHelper.ToRadians(5 * count);
             _menu.Transformations.Rotation = item.Rotation;
         }
 
         /// <inheritdoc />
-        protected override Vector2 GetPosition(ShapeContext item)
+        protected override Vector2 GetPosition(ShapeContextBuilder item)
             => item.Translation;
 
         /// <inheritdoc />
-        protected override bool ItemUnder(ShapeContext item, Vector2 worldPosition)
+        protected override bool ItemUnder(ShapeContextBuilder item, Vector2 worldPosition)
             => this.shapes.TestPointForShape(this.mouseWorldPosition) == item;
 
         /// <inheritdoc />

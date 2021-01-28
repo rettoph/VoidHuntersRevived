@@ -7,6 +7,7 @@ using Guppy.Extensions.System;
 using Guppy.DependencyInjection;
 using Guppy.UI.Enums;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Events.Delegates;
 
 namespace VoidHuntersRevived.Builder.UI.Inputs
 {
@@ -41,6 +42,10 @@ namespace VoidHuntersRevived.Builder.UI.Inputs
         public abstract T Value { get; set; }
         #endregion
 
+        #region Events
+        public event OnEventDelegate<ILabeledInput, Object> OnValueChanged;
+        #endregion
+
         #region Lifecycle Methods
         protected override void PreInitialize(ServiceProvider provider)
         {
@@ -55,6 +60,18 @@ namespace VoidHuntersRevived.Builder.UI.Inputs
                 label.Inline = InlineType.Both;
             });
         }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            this.label = null;
+        }
+        #endregion
+
+        #region Helper Methods
+        protected void HandleValueChanged(TextElement sender, string args)
+            => this.OnValueChanged?.Invoke(this, this.Value);
         #endregion
     }
 }

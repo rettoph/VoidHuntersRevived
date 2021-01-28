@@ -29,6 +29,20 @@ namespace VoidHuntersRevived.Library.Contexts
     /// </summary>
     public abstract class ShipPartContext
     {
+        #region Enums
+        private enum ShipPartContextProperty : Byte
+        {
+            Start = 0,
+            End = 1,
+            ColorData = 2,
+            HealthData = 3,
+            CenteroidData = 4,
+            NodeData = 5,
+            InnerShapeData = 6,
+            OuterHullData = 7
+        }
+        #endregion
+
         #region Abstract Properties
         /// <summary>
         /// The name of the service configuration to be used
@@ -100,7 +114,7 @@ namespace VoidHuntersRevived.Library.Contexts
         /// All distinct shapes within the current part, multiple may be used in combination
         /// to create concave shapes.
         /// </summary>
-        public Vertices[] InnerShapes { get; set; } = new Vertices[0];
+        public ShapeContext[] InnerShapes { get; set; } = new ShapeContext[0];
 
         /// <summary>
         /// A ccollection of traced outline used primarily to render
@@ -185,33 +199,53 @@ namespace VoidHuntersRevived.Library.Contexts
         /// <param name="reader"></param>
         protected virtual void Read(BinaryReader reader)
         {
-            this.MaxHealth = reader.ReadSingle();
-            this.DefaultColor = new Color(packedValue: reader.ReadUInt32());
-            this.InheritColor = reader.ReadBoolean();
+            ShipPartContextProperty propertyType = (ShipPartContextProperty)reader.ReadByte();
+            if (propertyType == ShipPartContextProperty.Start)
+            {
+                while(propertyType != ShipPartContextProperty.End)
+                {
+                    propertyType = (ShipPartContextProperty)reader.ReadByte();
+                    switch (propertyType)
+                    {
+                        case ShipPartContextProperty.ColorData:
+                            this.DefaultColor = new Color(packedValue: reader.ReadUInt32());
+                            this.InheritColor = reader.ReadBoolean();
+                            break;
+                        case ShipPartContextProperty.HealthData:
+                            this.MaxHealth = reader.ReadSingle();
+                            break;
+                        case ShipPartContextProperty.CenteroidData:
+                            this.Centeroid = reader.ReadVector2();
+                            break;
+                        case ShipPartContextProperty.NodeData:
+                            this.MaleConnectionNode = reader.ReadConnectionNodeContext();
 
-            this.Centeroid = reader.ReadVector2();
-            this.MaleConnectionNode = reader.ReadConnectionNodeContext();
-
-            var nodeBuffer = new List<ConnectionNodeContext>();
-            var nodeCount = reader.ReadInt32();
-            for (var i = 0; i < nodeCount; i++)
-                nodeBuffer.Add(reader.ReadConnectionNodeContext());
-            this.FemaleConnectionNodes = nodeBuffer.ToArray();
-            nodeBuffer.Clear();
-
-
-            var vertBuffer = new List<Vertices>();
-            var shapeCount = reader.ReadInt32();
-            for (var i = 0; i < shapeCount; i++)
-                vertBuffer.Add(reader.ReadVertices());
-            this.InnerShapes = vertBuffer.ToArray();
-            vertBuffer.Clear();
-
-            var hullCount = reader.ReadInt32();
-            for (var i = 0; i < hullCount; i++)
-                vertBuffer.Add(reader.ReadVertices());
-            this.OuterHulls = vertBuffer.ToArray();
-            vertBuffer.Clear();
+                            var nodeBuffer = new List<ConnectionNodeContext>();
+                            var nodeCount = reader.ReadInt32();
+                            for (var i = 0; i < nodeCount; i++)
+                                nodeBuffer.Add(reader.ReadConnectionNodeContext());
+                            this.FemaleConnectionNodes = nodeBuffer.ToArray();
+                            nodeBuffer.Clear();
+                            break;
+                        case ShipPartContextProperty.InnerShapeData:
+                            var shapeBuffer = new List<ShapeContext>();
+                            var shapeCount = reader.ReadInt32();
+                            for (var i = 0; i < shapeCount; i++)
+                                shapeBuffer.Add(new ShapeContext(reader));
+                            this.InnerShapes = shapeBuffer.ToArray();
+                            shapeBuffer.Clear();
+                            break;
+                        case ShipPartContextProperty.OuterHullData:
+                            var hullBuffer = new List<Vertices>();
+                            var hullCount = reader.ReadInt32();
+                            for (var i = 0; i < hullCount; i++)
+                                hullBuffer.Add(reader.ReadVertices());
+                            this.OuterHulls = hullBuffer.ToArray();
+                            hullBuffer.Clear();
+                            break;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -221,24 +255,35 @@ namespace VoidHuntersRevived.Library.Contexts
         /// <param name="writer"></param>
         protected virtual void Write(BinaryWriter writer)
         {
+            writer.Write((Byte)ShipPartContextProperty.Start);
+
+            writer.Write((Byte)ShipPartContextProperty.HealthData);
             writer.Write(this.MaxHealth);
+
+            writer.Write((Byte)ShipPartContextProperty.ColorData);
             writer.Write(this.DefaultColor.PackedValue);
             writer.Write(this.InheritColor);
 
+            writer.Write((Byte)ShipPartContextProperty.CenteroidData);
             writer.Write(this.Centeroid);
-            writer.Write(this.MaleConnectionNode);
 
+            writer.Write((Byte)ShipPartContextProperty.NodeData);
+            writer.Write(this.MaleConnectionNode);
             writer.Write(this.FemaleConnectionNodes.Length);
             foreach (ConnectionNodeContext female in this.FemaleConnectionNodes)
                 writer.Write(female);
 
+            writer.Write((Byte)ShipPartContextProperty.InnerShapeData);
             writer.Write(this.InnerShapes.Length);
-            foreach (Vertices shape in this.InnerShapes)
-                writer.Write(shape);
+            foreach (ShapeContext shape in this.InnerShapes)
+                shape.Write(writer);
 
+            writer.Write((Byte)ShipPartContextProperty.OuterHullData);
             writer.Write(this.OuterHulls.Length);
             foreach (Vertices outerHull in this.OuterHulls)
                 writer.Write(outerHull);
+
+            writer.Write((Byte)ShipPartContextProperty.End);
         }
         #endregion
     }

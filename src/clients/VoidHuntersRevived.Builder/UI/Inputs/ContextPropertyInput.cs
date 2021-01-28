@@ -10,6 +10,7 @@ using Guppy.Extensions.System.Reflection;
 using Guppy.DependencyInjection;
 using Guppy.UI.Enums;
 using Microsoft.Xna.Framework;
+using Guppy.Events.Delegates;
 
 namespace VoidHuntersRevived.Builder.UI.Inputs
 {
@@ -29,6 +30,23 @@ namespace VoidHuntersRevived.Builder.UI.Inputs
         #region Public Properties
         public String Label { get => _input.Label; set => _input.Label = value; }
         public Object Value { get => _input.Value; set => _input.Value = value; }
+
+        public event OnEventDelegate<ILabeledInput, object> OnValueChanged
+        {
+            add
+            {
+                _input.OnValueChanged += value;
+            }
+
+            remove
+            {
+                _input.OnValueChanged -= value;
+            }
+        }
+        #endregion
+
+        #region Events
+
         #endregion
 
         #region Lifecycle Methods

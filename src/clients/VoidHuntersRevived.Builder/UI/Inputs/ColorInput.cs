@@ -50,6 +50,8 @@ namespace VoidHuntersRevived.Builder.UI.Inputs
                 input.Bounds.Y = 25;
                 input.Padding.Left = 7;
                 input.Padding.Right = 7;
+
+                input.OnValueChanged += this.HandleValueChanged;
             });
 
             _g = this.inner.Children.Create<TextInput>((input, p, c) =>
@@ -65,6 +67,8 @@ namespace VoidHuntersRevived.Builder.UI.Inputs
                 input.Bounds.Y = 25;
                 input.Padding.Left = 7;
                 input.Padding.Right = 7;
+
+                input.OnValueChanged += this.HandleValueChanged;
             });
 
             _b = this.inner.Children.Create<TextInput>((input, p, c) =>
@@ -80,6 +84,8 @@ namespace VoidHuntersRevived.Builder.UI.Inputs
                 input.Bounds.Y = 25;
                 input.Padding.Left = 7;
                 input.Padding.Right = 7;
+
+                input.OnValueChanged += this.HandleValueChanged;
             });
 
             _a = this.inner.Children.Create<TextInput>((input, p, c) =>
@@ -95,7 +101,24 @@ namespace VoidHuntersRevived.Builder.UI.Inputs
                 input.Bounds.Y = 25;
                 input.Padding.Left = 7;
                 input.Padding.Right = 7;
+
+                input.OnValueChanged += this.HandleValueChanged;
             });
+        }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _r.OnValueChanged -= this.HandleValueChanged;
+            _g.OnValueChanged -= this.HandleValueChanged;
+            _b.OnValueChanged -= this.HandleValueChanged;
+            _a.OnValueChanged -= this.HandleValueChanged;
+
+            _r = null;
+            _g = null;
+            _b = null;
+            _a = null;
         }
         #endregion
 

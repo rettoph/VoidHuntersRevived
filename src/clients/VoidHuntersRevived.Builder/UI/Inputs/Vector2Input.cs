@@ -46,6 +46,8 @@ namespace VoidHuntersRevived.Builder.UI.Inputs
                 input.Bounds.Y = 25;
                 input.Padding.Left = 7;
                 input.Padding.Right = 7;
+
+                input.OnValueChanged += this.HandleValueChanged;
             });
 
             _y = this.inner.Children.Create<TextInput>((input, p, c) =>
@@ -61,7 +63,20 @@ namespace VoidHuntersRevived.Builder.UI.Inputs
                 input.Bounds.Y = 25;
                 input.Padding.Left = 7;
                 input.Padding.Right = 7;
+
+                input.OnValueChanged += this.HandleValueChanged;
             });
+        }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _x.OnValueChanged -= this.HandleValueChanged;
+            _y.OnValueChanged -= this.HandleValueChanged;
+
+            _x = null;
+            _y = null;
         }
         #endregion
 

@@ -15,13 +15,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Resources\ShipParts\vhr.armor.demo.vhsp" />
-    <None Remove="Resources\ShipParts\vhr.hull.beam.horizontal.vhsp" />
-    <None Remove="Resources\ShipParts\vhr.hull.beam.vertical.vhsp" />
-    <None Remove="Resources\ShipParts\vhr.hull.square.vhsp" />
-  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
@@ -33,6 +26,10 @@
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.IO\Guppy.IO.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy\Guppy.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Resources\ShipParts\" />
   </ItemGroup>
 
 </Project>

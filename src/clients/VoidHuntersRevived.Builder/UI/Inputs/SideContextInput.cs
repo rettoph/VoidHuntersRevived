@@ -9,6 +9,7 @@ using Guppy.Extensions.DependencyInjection;
 using VoidHuntersRevived.Builder.Contexts;
 using Microsoft.Xna.Framework;
 using System.Text.RegularExpressions;
+using Guppy.Events.Delegates;
 
 namespace VoidHuntersRevived.Builder.UI.Inputs
 {
@@ -19,28 +20,35 @@ namespace VoidHuntersRevived.Builder.UI.Inputs
         private TextInput _length;
         #endregion
 
-        #region Internal Fields
-        internal SideContext source;
+        #region Public Fields
+        public SideContext Value
+        {
+            get => new SideContext()
+            {
+                Length = this.GetLength(),
+                Rotation = this.GetRotation()
+            };
+            set
+            {
+                _rotation.Value = MathHelper.ToDegrees(value.Rotation).ToString("##0.####");
+                _length.Value = value.Length.ToString("##0.####");
+            }
+        }
         #endregion
 
-        #region Public Properties
-        public SideContext SideContext => new SideContext()
-        {
-            Rotation = this.GetRotation(),
-            Length = this.GetLength()
-        };
+        #region Events
+        public event OnEventDelegate<TextElement, String> OnValueChanged;
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize(ServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
-            base.Initialize(provider);
+            base.PreInitialize(provider);
 
             this.inline = InlineType.Both;
 
             _rotation = this.inner.Children.Create<TextInput>((input, p, c) =>
             {
-                input.Value = MathHelper.ToDegrees(this.source.Rotation).ToString("##0.####");
                 input.Color[ElementState.Default] = p.GetColor("ui:color:1");
                 input.BorderColor[ElementState.Default] = p.GetColor("ui:color:1");
                 input.BorderWidth[ElementState.Default] = 1;
@@ -51,11 +59,12 @@ namespace VoidHuntersRevived.Builder.UI.Inputs
                 input.Bounds.Height = 35;
                 input.Padding.Left = 7;
                 input.Padding.Right = 7;
+
+                input.OnValueChanged += this.HandleValueChanged;
             });
 
             _length = this.inner.Children.Create<TextInput>((input, p, c) =>
             {
-                input.Value = this.source.Length.ToString("##0.####");
                 input.Color[ElementState.Default] = p.GetColor("ui:color:1");
                 input.BorderColor[ElementState.Default] = p.GetColor("ui:color:1");
                 input.BorderWidth[ElementState.Default] = 1;
@@ -67,7 +76,20 @@ namespace VoidHuntersRevived.Builder.UI.Inputs
                 input.Bounds.X = 0.5f;
                 input.Padding.Left = 7;
                 input.Padding.Right = 7;
+
+                input.OnValueChanged += this.HandleValueChanged;
             });
+        }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _rotation.OnValueChanged -= this.HandleValueChanged;
+            _length.OnValueChanged -= this.HandleValueChanged;
+
+            _rotation = null;
+            _length = null;
         }
         #endregion
 
@@ -89,6 +111,11 @@ namespace VoidHuntersRevived.Builder.UI.Inputs
 
             return 1;
         }
+        #endregion
+
+        #region Event Handlers
+        private void HandleValueChanged(TextElement sender, string args)
+            => this.OnValueChanged?.Invoke(sender, args);
         #endregion
     }
 }

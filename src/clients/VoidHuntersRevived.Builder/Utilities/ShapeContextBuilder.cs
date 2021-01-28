@@ -7,10 +7,12 @@ using System.Linq;
 using tainicom.Aether.Physics2D;
 using Guppy.Events.Delegates;
 using tainicom.Aether.Physics2D.Common;
+using VoidHuntersRevived.Builder.Contexts;
+using VoidHuntersRevived.Library.Contexts;
 
-namespace VoidHuntersRevived.Builder.Contexts
+namespace VoidHuntersRevived.Builder.Utilities
 {
-    public class ShapeContext
+    public class ShapeContextBuilder
     {
         #region Private Fields
         private List<SideContext> _sides = new List<SideContext>();
@@ -19,8 +21,10 @@ namespace VoidHuntersRevived.Builder.Contexts
         #region Public Fields
 
         public Vector2 Translation;
-        public Single Rotation;
-        public Single Scale = 1;
+        public Single Rotation { get; set; }
+        public Single Scale { get; set; } = 1;
+        public Boolean Solid { get; set; }
+        public Boolean Visible { get; set; }
         #endregion
 
         #region Public Properties
@@ -38,28 +42,35 @@ namespace VoidHuntersRevived.Builder.Contexts
         #endregion
 
         #region Constructors
-        public ShapeContext()
+        public ShapeContextBuilder()
         {
 
         }
-        public ShapeContext(Vertices vertices) : this()
+        public ShapeContextBuilder(ShapeContext shape) : this()
         {
-            this.Translation = vertices[0];
+            this.Solid = shape.Solid;
+            this.Visible = shape.Visible;
+            this.Translation = shape.Vertices.ElementAt(0);
 
-            for(var i=0; i<vertices.Count; i++)
+            this.ImportVertices(shape.Vertices);
+        }
+        #endregion
+
+        #region Methods
+        public void ImportVertices(IEnumerable<Vector2> vertices)
+        {
+            for (var i = 0; i < vertices.Count(); i++)
             {
-                var start = i == 0 ? vertices[0] - Vector2.UnitX : vertices[i - 1];
-                var vert = vertices[i];
-                var end = vertices[(i + 1) % vertices.Count];
+                var start = i == 0 ? vertices.ElementAt(0) - Vector2.UnitX : vertices.ElementAt(i - 1);
+                var vert = vertices.ElementAt(i);
+                var end = vertices.ElementAt((i + 1) % vertices.Count());
 
                 this.TryAddSide(
                     length: Vector2.Distance(vert, end),
                     rotation: vert.Angle(end, start));
             }
         }
-        #endregion
 
-        #region Methods
         /// <summary>
         /// Calculate the world coordinates of the internally
         /// defined transformations & sides.
@@ -188,6 +199,16 @@ namespace VoidHuntersRevived.Builder.Contexts
                         yield return start + (Vector2.UnitX * spacing * ii).RotateTo(end.Angle(start));
                 }
             }
+        }
+
+        public ShapeContext BuildShapeContext()
+        {
+            return new ShapeContext()
+            {
+                Solid = this.Solid,
+                Visible = this.Visible,
+                Vertices = new Vertices(this.GetVertices())
+            };
         }
         #endregion
     }

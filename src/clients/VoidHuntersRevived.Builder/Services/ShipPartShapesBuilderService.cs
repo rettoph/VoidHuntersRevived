@@ -29,6 +29,7 @@ using VoidHuntersRevived.Builder.Attributes;
 using Microsoft.Win32;
 using System.IO;
 using System.Threading;
+using VoidHuntersRevived.Builder.Utilities;
 
 namespace VoidHuntersRevived.Builder.Services
 {
@@ -68,7 +69,7 @@ namespace VoidHuntersRevived.Builder.Services
         private ShipPartShapesBuilderStatus _status;
 
         private ShipPart _demo;
-        private List<ShapeContext> _shapes;
+        private List<ShapeContextBuilder> _shapes;
         private ConnectionNodeContext _male;
         private List<ConnectionNodeContext> _females;
         #endregion
@@ -101,7 +102,7 @@ namespace VoidHuntersRevived.Builder.Services
 
             _male = new ConnectionNodeContext();
             _females = new List<ConnectionNodeContext>();
-            _shapes = new List<ShapeContext>();
+            _shapes = new List<ShapeContextBuilder>();
             _effect = new BasicEffect(_graphics)
             {
                 VertexColorEnabled = true,
@@ -165,7 +166,7 @@ namespace VoidHuntersRevived.Builder.Services
                 _demo?.TryRelease();
             }
 
-            this.context.InnerShapes = _shapes.Select(s => new Vertices(s.GetVertices())).ToArray();
+            this.context.InnerShapes = _shapes.Select(s => s.BuildShapeContext()).ToArray();
             this.context.OuterHulls = new Vertices[0];
             this.context.MaleConnectionNode = _male;
             this.context.FemaleConnectionNodes = _females.ToArray();
@@ -237,7 +238,7 @@ namespace VoidHuntersRevived.Builder.Services
         /// </summary>
         /// <param name="blacklist"></param>
         /// <returns></returns>
-        public IEnumerable<Vector2> GetInterestPoints(params ShapeContext[] blacklist)
+        public IEnumerable<Vector2> GetInterestPoints(params ShapeContextBuilder[] blacklist)
         {
             if(_status == ShipPartShapesBuilderStatus.BuildingShape && !blacklist.Contains(_builder.Shape))
             { // Return all verticies within the shape so far!
@@ -245,7 +246,7 @@ namespace VoidHuntersRevived.Builder.Services
                     yield return p;
             }
 
-            foreach (ShapeContext s in _shapes)
+            foreach (ShapeContextBuilder s in _shapes)
                 if(!blacklist.Contains(s))
                     foreach(Vector2 p in s.GetInterestPoints())
                         yield return p;
@@ -267,7 +268,7 @@ namespace VoidHuntersRevived.Builder.Services
         /// <param name="within"></param>
         /// <param name="blacklist"></param>
         /// <returns></returns>
-        public Vector2 TryGetClosestInterestPoint(Vector2 position, Single within = 0.25f, params ShapeContext[] blacklist)
+        public Vector2 TryGetClosestInterestPoint(Vector2 position, Single within = 0.25f, params ShapeContextBuilder[] blacklist)
         {
             var interests = this.GetInterestPoints(blacklist);
             if(interests.Any())
@@ -311,14 +312,14 @@ namespace VoidHuntersRevived.Builder.Services
             return false;
         }
 
-        public ShapeContext TestPointForShape(Vector2 position)
+        public ShapeContextBuilder TestPointForShape(Vector2 position)
         {
-            var fixture = _world.Live.TestPoint(this.mouseWorldPosition);
+            var mouse = this.mouseWorldPosition - _camera.Position;
+            foreach (ShapeContextBuilder shape in _shapes)
+                if (shape.BuildShapeContext().Vertices.PointInPolygon(ref mouse) != -1)
+                    return shape;
 
-            if (fixture == default)
-                return default;
-
-            return _shapes[fixture.Body.FixtureList.IndexOf(fixture)];
+            return default;
         }
 
         public (ConnectionNodeContext node, Boolean deletable)  TestPointForConnectionNode(Vector2 position)
@@ -363,8 +364,8 @@ namespace VoidHuntersRevived.Builder.Services
         public void ImportContext(ShipPartContext context, Boolean withMale = false)
         {
             // Import the internal context shapes...
-            foreach (Vertices shape in context.InnerShapes)
-                _shapes.Add(new ShapeContext(shape));
+            foreach (ShapeContext shape in context.InnerShapes)
+                _shapes.Add(new ShapeContextBuilder(shape));
 
             // Import connection node data
             _females.AddRange(context.FemaleConnectionNodes);
@@ -385,7 +386,7 @@ namespace VoidHuntersRevived.Builder.Services
             _status = ShipPartShapesBuilderStatus.BuildingShape;
         }
 
-        private void HandleShapeCompleted(ShipPartShapeBuilderService sender, ShapeContext shape)
+        private void HandleShapeCompleted(ShipPartShapeBuilderService sender, ShapeContextBuilder shape)
         {
             _status = ShipPartShapesBuilderStatus.None;
 
@@ -435,7 +436,7 @@ namespace VoidHuntersRevived.Builder.Services
             }
         }
 
-        private void HandleShapeDeleted(ShipPartShapeEditorService sender, ShapeContext args)
+        private void HandleShapeDeleted(ShipPartShapeEditorService sender, ShapeContextBuilder args)
             => _shapes.Remove(args);
 
         private void HandleConnectionNodeDeleted(ConnectionNodeEditorService sender, ConnectionNodeContext args)

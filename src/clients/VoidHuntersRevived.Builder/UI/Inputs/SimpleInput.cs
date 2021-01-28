@@ -31,7 +31,18 @@ namespace VoidHuntersRevived.Builder.UI.Inputs
                 input.Bounds.Y = 25;
                 input.Padding.Left = 7;
                 input.Padding.Right = 7;
+
+                input.OnValueChanged += this.HandleValueChanged;
             });
+        }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            input.OnValueChanged -= this.HandleValueChanged;
+
+            this.input = null;
         }
         #endregion
     }
