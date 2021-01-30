@@ -63,6 +63,10 @@ namespace VoidHuntersRevived.Server.Scenes
             
             for (Int32 i=0; i<50; i++)
             {
+                var triangle = _shipParts.Create("vhr:hull:triangle");
+                triangle.Position = rand.NextVector2(0, world.Size.X);
+                triangle.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+
                 var square = _shipParts.Create("vhr:hull:square");
                 square.Position = rand.NextVector2(0, world.Size.X);
                 square.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
@@ -74,6 +78,10 @@ namespace VoidHuntersRevived.Server.Scenes
                 var hexagon = _shipParts.Create("vhr:hull:hexagon");
                 hexagon.Position = rand.NextVector2(0, world.Size.X);
                 hexagon.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+
+                var lattice = _shipParts.Create("vhr:hull:lattice");
+                lattice.Position = rand.NextVector2(0, world.Size.X);
+                lattice.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
 
                 var vBeam = _shipParts.Create("vhr:hull:beam:vertical");
                 vBeam.Position = rand.NextVector2(0, world.Size.X);

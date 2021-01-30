@@ -7,6 +7,7 @@ using VoidHuntersRevived.Library.Entities;
 using Guppy.Network.Extensions.Lidgren;
 using Microsoft.Xna.Framework;
 using System.Net.NetworkInformation;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities
 {

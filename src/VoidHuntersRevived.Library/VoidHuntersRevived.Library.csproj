@@ -25,8 +25,10 @@
     <None Remove="Resources\ShipParts\vhr.hull.beam.horizontal.vhsp" />
     <None Remove="Resources\ShipParts\vhr.hull.beam.vertical.vhsp" />
     <None Remove="Resources\ShipParts\vhr.hull.hexagon.vhsp" />
+    <None Remove="Resources\ShipParts\vhr.hull.lattice.vhsp" />
     <None Remove="Resources\ShipParts\vhr.hull.pentagon.vhsp" />
     <None Remove="Resources\ShipParts\vhr.hull.square.vhsp" />
+    <None Remove="Resources\ShipParts\vhr.hull.triangle.vhsp" />
     <None Remove="Resources\ShipParts\vhr.thruster.small.vhsp" />
     <None Remove="Resources\ShipParts\vhr.weapon.mass-driver.vhsp" />
     <None Remove="Resources\Ships\pelican.vh" />

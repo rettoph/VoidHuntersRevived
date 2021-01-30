@@ -65,6 +65,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             #region UI
             this.stage.Content.BackgroundColor[ElementState.Default] = new Color(Color.Black, 125);
             _page = this.stage.Content.Children.Create<MainMenuPage>();
+            _page.ConnectButton.OnClicked += this.HandleConnectClicked;
             #endregion
 
             this.camera.Zoom = 5f;
@@ -86,12 +87,12 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             base.PostInitialize(provider);
 
 #if DEBUG
-            // When debugging, just go right to the game.
-            (new Thread(new ThreadStart(() =>
-            {
-                Thread.Sleep(200);
-                _synchronizer.Enqueue(gt => this.HandleConnectClicked(null));
-            }))).Start();
+            // // When debugging, just go right to the game.
+            // (new Thread(new ThreadStart(() =>
+            // {
+            //     Thread.Sleep(200);
+            //     _synchronizer.Enqueue(gt => this.HandleConnectClicked(null));
+            // }))).Start();
 #endif
         }
 
