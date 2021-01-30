@@ -149,8 +149,14 @@ namespace VoidHuntersRevived.Server.Scenes
                         player.User = user;
                         player.Ship = this.Entities.Create<Ship>((ship, p2, c) =>
                         {
-                            var ships = Directory.GetFiles("Resources/Ships", "*.vh");
                             var rand = new Random();
+
+                            // var chassis = _shipParts.Create("vhr:chassis:bullfrog");
+                            // chassis.Position = rand.NextVector2(0, world.Size.X);
+                            // chassis.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+                            // ship.Bridge = chassis;
+
+                            var ships = Directory.GetFiles("Resources/Ships", "*.vh");
                             using (var fileStream = File.OpenRead(ships[rand.Next(ships.Length)]))
                                 ship.Import(fileStream, rand.NextVector2(0, world.Size.X, 0, world.Size.Y));
                         });
