@@ -15,6 +15,22 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\ShipParts\vhr.armor.chevron.vhsp" />
+    <None Remove="Resources\ShipParts\vhr.armor.plate.vhsp" />
+    <None Remove="Resources\ShipParts\vhr.armor.shield.vhsp" />
+    <None Remove="Resources\ShipParts\vhr.chassis.mosquito.vhsp" />
+    <None Remove="Resources\ShipParts\vhr.chassis.pelican.vhsp" />
+    <None Remove="Resources\ShipParts\vhr.hull.beam.horizontal.vhsp" />
+    <None Remove="Resources\ShipParts\vhr.hull.beam.vertical.vhsp" />
+    <None Remove="Resources\ShipParts\vhr.hull.hexagon.vhsp" />
+    <None Remove="Resources\ShipParts\vhr.hull.pentagon.vhsp" />
+    <None Remove="Resources\ShipParts\vhr.hull.square.vhsp" />
+    <None Remove="Resources\ShipParts\vhr.thruster.small.vhsp" />
+    <None Remove="Resources\ShipParts\vhr.weapon.mass-driver.vhsp" />
+    <None Remove="Resources\Ships\pelican.vh" />
+  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
@@ -26,10 +42,6 @@
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.IO\Guppy.IO.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy\Guppy.csproj" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="Resources\ShipParts\" />
   </ItemGroup>
 
 </Project>

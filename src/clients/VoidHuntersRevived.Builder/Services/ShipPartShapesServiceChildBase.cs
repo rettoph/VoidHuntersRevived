@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.IO.Input.Services;
+using Guppy.IO.Commands.Services;
 
 namespace VoidHuntersRevived.Builder.Services
 {
@@ -29,6 +31,8 @@ namespace VoidHuntersRevived.Builder.Services
         protected MouseService mouse { get; private set; }
         protected virtual Vector2 mouseWorldPosition => this.camera.Unproject(this.mouse.Position);
         protected SpriteFont font { get; private set; }
+        protected InputCommandService inputCommands { get; private set; }
+        protected CommandService commands { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -44,6 +48,8 @@ namespace VoidHuntersRevived.Builder.Services
             this.camera = provider.GetService<Camera2D>();
             this.mouse = provider.GetService<MouseService>();
             this.font = provider.GetContent<SpriteFont>("debug:font:small");
+            this.inputCommands = provider.GetService<InputCommandService>();
+            this.commands = provider.GetService<CommandService>();
         }
 
         protected override void Release()
@@ -57,6 +63,8 @@ namespace VoidHuntersRevived.Builder.Services
             this.@lock = null;
             this.camera = null;
             this.mouse = null;
+            this.inputCommands = null;
+            this.commands = null;
         }
         #endregion
     }

@@ -43,8 +43,8 @@ namespace VoidHuntersRevived.Library.Contexts
         public void Read(BinaryReader reader)
         {
             this.Vertices = reader.ReadVertices();
-            this.Solid = reader.ReadBoolean();
-            this.Visible = reader.ReadBoolean();
+            this.Solid = reader.ReadBoolean() || true;
+            this.Visible = reader.ReadBoolean() || true;
         }
 
         public void Write(BinaryWriter writer)

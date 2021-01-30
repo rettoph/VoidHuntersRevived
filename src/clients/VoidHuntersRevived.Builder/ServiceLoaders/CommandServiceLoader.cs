@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Builder.ServiceLoaders
         {
             var commands = provider.GetService<CommandService>();
 
-            // Add set commands...
+            // Add lock commands...
             commands.TryAddCommand(new CommandContext()
             {
                 Word = "lock",
@@ -43,6 +43,22 @@ namespace VoidHuntersRevived.Builder.ServiceLoaders
                         DefaultValue = () => 5,
                         Type = ArgType.Boolean,
                         Description = "The target lock value."
+                    }
+                }
+            });
+
+            // Add complete commands...
+            commands.TryAddCommand(new CommandContext()
+            {
+                Word = "complete",
+                Arguments = new ArgContext[]
+                {
+                    new ArgContext()
+                    {
+                        Identifier = "type",
+                        Aliases = "t".ToCharArray(),
+                        Type = ArgType.FromEnum<CompleteType>(),
+                        Description = "The complete type."
                     }
                 }
             });

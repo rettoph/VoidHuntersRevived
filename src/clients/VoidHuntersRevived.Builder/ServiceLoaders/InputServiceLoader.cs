@@ -57,6 +57,18 @@ namespace VoidHuntersRevived.Builder.ServiceLoaders
                 }
             });
             #endregion
+
+            #region Complete Inputs
+            inputs.Add(new InputCommandContext()
+            {
+                Handle = "complete_outer_hull",
+                DefaultInput = new InputType(Keys.Space),
+                Commands = new[]
+                {
+                    (state: ButtonState.Released, command: "complete -t=OuterHull")
+                }
+            });
+            #endregion
         }
     }
 }

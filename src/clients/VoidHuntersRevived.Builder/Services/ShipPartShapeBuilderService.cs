@@ -117,18 +117,24 @@ namespace VoidHuntersRevived.Builder.Services
             _origin = origin;
             _building = true;
             _shape = new ShapeContextBuilder();
+
+            this.shapes.SetMessage(
+                "Click anywhere in space to start shape.",
+                $"{this.inputCommands["lock_rotation"].Input}: Unlock Rotation | {this.inputCommands["lock_length"].Input}: Unlock Length | {this.inputCommands["lock_point_snap"].Input}: Disable Snap");
         }
 
         /// <summary>
         /// Mark the internal shape as complete.
         /// </summary>
-        public void End()
+        public void Stop()
         {
             this.OnShapeCompleted?.Invoke(this, _shape);
 
             _building = false;
             _shape = null;
             _start = null;
+
+            this.shapes.SetMessage("", "");
         }
 
         /// <summary>
@@ -152,7 +158,7 @@ namespace VoidHuntersRevived.Builder.Services
             { // We tried adding a side but it failed?
                 if(_shape.Sides.Count > 1)
                 { // The shapes valid, just finish it i guess hehe
-                    this.End();
+                    this.Stop();
                 }
             }
         }
@@ -166,7 +172,7 @@ namespace VoidHuntersRevived.Builder.Services
                 return;
 
             _start = null;
-            this.End();
+            this.Stop();
         }
 
         /// <summary>
@@ -215,7 +221,7 @@ namespace VoidHuntersRevived.Builder.Services
             {
                 if (_building)
                 { // Only bother listening to mouse inouts if the system is building a shape anyway...
-                    switch (args.Which.CursorButton)
+                    switch (args.Which.MouseButton)
                     {
                         case MouseButton.Left:
                             this.AddVertex();

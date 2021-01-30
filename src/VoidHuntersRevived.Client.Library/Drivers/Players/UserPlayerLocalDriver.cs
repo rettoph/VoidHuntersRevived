@@ -158,7 +158,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
 
         private CommandResponse HandleShipSaveCommand(ICommand sender, CommandInput input)
         {
-            Directory.CreateDirectory("Ships");
+            Directory.CreateDirectory("Resources/Ships");
 
             using (FileStream file = File.Open($"Resources/Ships/{(input["name"] as String)}.vh", FileMode.OpenOrCreate))
                 this.driven.Ship.Export().WriteTo(file);
