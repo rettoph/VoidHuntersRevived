@@ -151,7 +151,7 @@ namespace VoidHuntersRevived.Server.Scenes
                         {
                             var rand = new Random();
 
-                            // var chassis = _shipParts.Create("vhr:chassis:bullfrog");
+                            // var chassis = _shipParts.Create("vhr:chassis:butterfly");
                             // chassis.Position = rand.NextVector2(0, world.Size.X);
                             // chassis.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
                             // ship.Bridge = chassis;
