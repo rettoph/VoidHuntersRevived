@@ -81,13 +81,6 @@ namespace VoidHuntersRevived.Library.Entities
             this.Root = null;
             this.Controller = null;
         }
-
-        protected override void PostRelease()
-        {
-            base.PostRelease();
-
-            this.Root = default;
-        }
         #endregion
 
         #region Frame Methods
@@ -112,7 +105,7 @@ namespace VoidHuntersRevived.Library.Entities
             this.OnShipPartRemoved?.Invoke(this, shipPart);
 
             // There is nothing left in the chain, so self release...
-            if (shipPart == this.Root && into != this)
+            if (shipPart == this.Root && into != this && this.Status == ServiceStatus.Ready)
                 this.TryRelease();
 
             return true;

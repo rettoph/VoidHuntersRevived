@@ -132,6 +132,9 @@ namespace VoidHuntersRevived.Library.Utilities
         /// </summary>
         public void TryPreview(ShipPart shipPart)
         {
+            if (this.Parent.Chain == default || this.Parent.Root == default)
+                return;
+
             shipPart.Do(b =>
             {
                 if (b.World == default)

@@ -386,7 +386,7 @@ namespace VoidHuntersRevived.Builder.Services
                 _shapes.Add(new ShapeContextBuilder(shape));
 
             // Import the outer hull data...
-            _outerHulls.AddRange(context.OuterHulls);
+            // _outerHulls.AddRange(context.OuterHulls);
 
             // Import connection node data
             _females.AddRange(context.FemaleConnectionNodes);

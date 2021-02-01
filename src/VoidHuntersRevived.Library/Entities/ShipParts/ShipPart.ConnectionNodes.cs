@@ -62,6 +62,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             this.MaleConnectionNode.TryRelease();
             this.FemaleConnectionNodes.ForEach(f => f.TryRelease());
+            this.FemaleConnectionNodes = new ConnectionNode[0];
         }
         #endregion
 

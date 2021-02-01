@@ -151,7 +151,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         /// <returns></returns>
         public IEnumerable<Ship.Direction> GetDirections()
         {
-            if (this.Chain.Ship != default)
+            if (this.Chain?.Ship != default)
             {
                 // Each andle of movement has a buffer sone on inclusivity
                 var buffer = 0.01f;

@@ -44,21 +44,19 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             this.MaleConnectionNode.OnDetached += this.Chain_HandleMaleConnectionNodeDetached;
 
             // If the current ship part is not within a chain, create one now.
-            if (this.Chain == default(Chain) && this.IsRoot)
-                Chain.Create(provider, this);
+            Chain.Create(provider, this);
         }
 
         private void Chain_Release()
         {
             _provider = null;
 
+            this.Chain = null;
+
             this.OnChainChanged -= this.Chain_HandleOnChainChanged;
 
             this.MaleConnectionNode.OnAttached -= this.Chain_HandleMaleConnectionNodeAttached;
             this.MaleConnectionNode.OnDetached -= this.Chain_HandleMaleConnectionNodeDetached;
-
-            // Auto release the saved chain.
-            this.Chain = null;
         }
         #endregion
 

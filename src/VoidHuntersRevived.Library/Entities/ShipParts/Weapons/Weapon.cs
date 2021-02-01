@@ -323,12 +323,12 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                     value.Root.OnCollisionCategoriesChanged += weapon.HandleRootCollisionChanged;
                     value.OnShipChanged += weapon.HandleRootShipChanged;
                     value.OnUpdate += weapon.TryUpdate;
-                }
 
-                // Clean default wepaon data
-                weapon.CleanCollision();
-                weapon.CleanUpdate();
-                weapon.CleanJoints();
+                    // Clean default wepaon data
+                    weapon.CleanCollision();
+                    weapon.CleanUpdate();
+                    weapon.CleanJoints();
+                }
             }
         }
 

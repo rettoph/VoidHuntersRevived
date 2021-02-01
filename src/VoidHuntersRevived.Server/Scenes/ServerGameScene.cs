@@ -61,8 +61,20 @@ namespace VoidHuntersRevived.Server.Scenes
                 });
             }
             
-            for (Int32 i=0; i<50; i++)
+            for (Int32 i=0; i<20; i++)
             {
+                var wingLeft = _shipParts.Create("vhr:hull:wing:left");
+                wingLeft.Position = rand.NextVector2(0, world.Size.X);
+                wingLeft.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+
+                var wingRight = _shipParts.Create("vhr:hull:wing:right");
+                wingRight.Position = rand.NextVector2(0, world.Size.X);
+                wingRight.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+
+                var diamond = _shipParts.Create("vhr:hull:diamond");
+                diamond.Position = rand.NextVector2(0, world.Size.X);
+                diamond.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+
                 var triangle = _shipParts.Create("vhr:hull:triangle");
                 triangle.Position = rand.NextVector2(0, world.Size.X);
                 triangle.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
@@ -103,7 +115,7 @@ namespace VoidHuntersRevived.Server.Scenes
                 plate.Position = rand.NextVector2(0, world.Size.X);
                 plate.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
 
-                for (Int32 j = 0; j < 10; j++)
+                for (Int32 j = 0; j < 20; j++)
                 {
                     var thruster = _shipParts.Create("vhr:thruster:small");
                     thruster.Position = rand.NextVector2(0, world.Size.X);
@@ -151,7 +163,7 @@ namespace VoidHuntersRevived.Server.Scenes
                         {
                             var rand = new Random();
 
-                            // var chassis = _shipParts.Create("vhr:chassis:butterfly");
+                            // var chassis = _shipParts.Create("vhr:chassis:squid");
                             // chassis.Position = rand.NextVector2(0, world.Size.X);
                             // chassis.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
                             // ship.Bridge = chassis;
@@ -163,7 +175,6 @@ namespace VoidHuntersRevived.Server.Scenes
                     });
                 });
             });
-
         }
         #endregion
     }

@@ -21,6 +21,8 @@ using VoidHuntersRevived.Library.Scenes;
 using System.Threading;
 using Guppy.UI.Enums;
 using VoidHuntersRevived.Client.Library.UI.Pages;
+using System.IO;
+using VoidHuntersRevived.Library.Extensions.System;
 
 namespace VoidHuntersRevived.Client.Library.Scenes
 {
@@ -80,6 +82,26 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             {
                 w.Size = new Vector2(Chunk.Size * 3, Chunk.Size * 3);
             });
+
+            for(Int32 i=0; i<10; i++)
+            {
+                this.Entities.Create<ComputerPlayer>((player, p, d) =>
+                {
+                    player.Ship = this.Entities.Create<Ship>((ship, p2, c) =>
+                    {
+                        var rand = new Random();
+
+                        // var chassis = _shipParts.Create("vhr:chassis:squid");
+                        // chassis.Position = rand.NextVector2(0, world.Size.X);
+                        // chassis.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+                        // ship.Bridge = chassis;
+
+                        var ships = Directory.GetFiles("Resources/Ships", "*.vh");
+                        using (var fileStream = File.OpenRead(ships[rand.Next(ships.Length)]))
+                            ship.Import(fileStream, rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y));
+                    });
+                });
+            }
         }
 
         protected override void PostInitialize(ServiceProvider provider)
@@ -152,11 +174,13 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         {
             if(sender.Bridge == default && sender.Status == Guppy.Enums.ServiceStatus.Ready)
             {
-                // var ships = Directory.GetFiles("Ships", "*.vh");
-                // sender.Import(
-                //     input: File.OpenRead(ships[_rand.Next(ships.Length)]),
-                //     position: _rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y),
-                //     rotation: MathHelper.TwoPi * (Single)_rand.NextDouble());
+                var _rand = new Random();
+
+                var ships = Directory.GetFiles("Resources/Ships", "*.vh");
+                sender.Import(
+                    input: File.OpenRead(ships[_rand.Next(ships.Length)]),
+                    position: _rand.NextVector2(0, _world.Size.X, 0, _world.Size.Y),
+                    rotation: MathHelper.TwoPi * (Single)_rand.NextDouble());
             }
         }
 
