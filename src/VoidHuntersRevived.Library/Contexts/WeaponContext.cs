@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Library.Contexts
         /// The amount the described weapon can swivel (in radians)
         /// </summary>
         [ShipPartContextProperty("Swivel Range", "The range (in degrees) this weapon can swivel.", ShipPartContextPropertyType.Radian)]
-        public Single SwivelRange { get; set; } = 2;
+        public Single SwivelRange { get; set; } = MathHelper.ToRadians(120);
         #endregion
 
         #region Constructors

@@ -109,26 +109,26 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
         #region Network Methods
         private void WriteUpdateTarget(NetOutgoingMessage om)
-            => om.Write("update:ship:target", m =>
+            => om.Write(VHR.MessageTypes.Ship.UpdateTarget, m =>
             {
                 this.driven.WriteTarget(m);
             });
 
         private void WriteUpdateFiring(NetOutgoingMessage om, Boolean value)
-            => om.Write("update:ship:firing", m =>
+            => om.Write(VHR.MessageTypes.Ship.UpdateFiring, m =>
             {
                 m.Write(value);
             });
 
         private void WriteUpdateDirection(NetOutgoingMessage om, Ship.Direction direction)
-            => om.Write("update:ship:direction", m =>
+            => om.Write(VHR.MessageTypes.Ship.UpdateDirection, m =>
             {
                 this.driven.WriteDirection(m, direction);
             });
 
         private void WriteTractorBeamAction(NetOutgoingMessage om, TractorBeam.Action action)
         {
-            om.Write("ship:tractor-beam:action", m =>
+            om.Write(VHR.MessageTypes.Ship.TractorBeam.Action, m =>
             {
                 this.driven.TractorBeam.WriteAction(m, action);
             });
@@ -136,7 +136,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
         private void WriteUpdateBridge(NetOutgoingMessage om, ShipPart bridge)
         {
-            om.Write("update:ship:bridge", m =>
+            om.Write(VHR.MessageTypes.Ship.UpdateBridge, m =>
             {
                 this.driven.WriteBridge(om);
             });

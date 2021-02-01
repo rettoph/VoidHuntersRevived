@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             this.MaleConnectionNode.OnAttached += this.Chain_HandleMaleConnectionNodeAttached;
             this.MaleConnectionNode.OnDetached += this.Chain_HandleMaleConnectionNodeDetached;
 
-            // If the current ship part is not within a chain, create one now.
+            // Create a default chain to hold the current part...
             Chain.Create(provider, this);
         }
 
@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             _provider = null;
 
-            this.Chain = null;
+            this.Chain?.Remove(this, default);
 
             this.OnChainChanged -= this.Chain_HandleOnChainChanged;
 

@@ -98,7 +98,7 @@ namespace VoidHuntersRevived.Library.Entities
         /// </summary>
         /// <param name="shipPart"></param>
         /// <param name="into"></param>
-        private Boolean Remove(ShipPart shipPart, Chain into)
+        public Boolean Remove(ShipPart shipPart, Chain into)
         {
             // Set the chain to null...
             shipPart.Chain = into;

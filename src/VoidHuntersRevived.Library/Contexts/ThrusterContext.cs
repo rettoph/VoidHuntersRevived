@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Library.Contexts
     {
         #region ShipPartContext Implementation
         /// <inheritdoc />
-        public override string ShipPartServiceConfiguration => "entity:ship-part:thruster";
+        public override string ShipPartServiceConfiguration => VHR.Entities.Thruster;
         #endregion
 
         #region Public Properties

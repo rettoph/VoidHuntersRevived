@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
             provider.Service(out _networkEntities);
             provider.Service(out _players);
 
-            this.driven.Group.Messages.Set("entity:message", this.HandleEntityMessage);
+            this.driven.Group.Messages.Set(VHR.MessageTypes.Scene.Entity, this.HandleEntityMessage);
 
             _entities.OnAdded += this.HandleEntityAdded;
             _networkEntities.OnRemoved += this.HandleNetworkEntityRemoved;
@@ -104,7 +104,7 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
         {
             var connection = _userConnections.Connections[user];
 
-            this.driven.Group.Messages.Create(NetDeliveryMethod.ReliableOrdered, 1, connection).Write("scene:setup", om =>
+            this.driven.Group.Messages.Create(NetDeliveryMethod.ReliableOrdered, 1, connection).Write(VHR.MessageTypes.Scene.Setup, om =>
             { // Send false bit, representing incomplete setup...
                 om.Write(false);
             });
@@ -122,7 +122,7 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
                 });
             });
 
-            this.driven.Group.Messages.Create(NetDeliveryMethod.ReliableOrdered, 1, connection).Write("scene:setup", om =>
+            this.driven.Group.Messages.Create(NetDeliveryMethod.ReliableOrdered, 1, connection).Write(VHR.MessageTypes.Scene.Setup, om =>
             { // Send true bit, representing complete setup...
                 om.Write(true);
             });

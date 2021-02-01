@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Library.Contexts
     {
         #region Public Properties 
         /// <inheritdoc />
-        public override string ShipPartServiceConfiguration => "entity:ship-part:weapon:gun";
+        public override string ShipPartServiceConfiguration => VHR.Entities.Gun;
 
         /// <summary>
         /// Defines how much damage a bullet fired from this

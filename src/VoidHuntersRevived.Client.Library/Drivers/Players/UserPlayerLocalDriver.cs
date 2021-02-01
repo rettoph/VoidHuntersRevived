@@ -21,6 +21,7 @@ using Guppy.Utilities;
 using System.IO;
 using VoidHuntersRevived.Library.Extensions.Lidgren.Network;
 using Guppy.Utilities.Cameras;
+using VoidHuntersRevived.Library;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Players
 {
@@ -168,7 +169,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
 
         private CommandResponse HandleShipSelfDestructCommand(ICommand sender, CommandInput input)
         {
-            this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 0).Write("ship:self-destruct:request", m => { });
+            this.driven.Actions.Create(NetDeliveryMethod.ReliableUnordered, 0).Write(VHR.MessageTypes.Ship.SelfDestructRequest, m => { });
 
             return CommandResponse.Success("Requesting self destruct...");
         }
@@ -176,27 +177,27 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
 
         #region Network Methods
         private void WriteUpdateShipFiringRequest(NetOutgoingMessage om, Boolean value)
-            => om.Write("update:ship:firing:request", m =>
+            => om.Write(VHR.MessageTypes.Ship.UpdateFiringRequest, m =>
             {
                 this.driven.Ship.WriteFiring(m);
             });
 
         private void WriteUpdateShipDirectionRequest(NetOutgoingMessage om, Ship.Direction direction, Boolean value)
-            => om.Write("update:ship:direction:request", m =>
+            => om.Write(VHR.MessageTypes.Ship.UpdateDirectionRequest, m =>
             {
                 m.Write(direction);
                 m.Write(value);
             });
 
         private void WriteUpdateShipTargetRequest(NetOutgoingMessage om)
-            => om.Write("update:ship:target:request", m =>
+            => om.Write(VHR.MessageTypes.Ship.UpdateTargetRequest, m =>
             {
                 this.driven.Ship.WriteTarget(m);
             });
 
         private void WriteShipTractorBeamActionRequest(NetOutgoingMessage om, TractorBeam.Action action)
         {
-            om.Write("ship:tractor-beam:action:request", m =>
+            om.Write(VHR.MessageTypes.Ship.TractorBeam.ActionRequest, m =>
             {
                 this.driven.Ship.TractorBeam.WriteAction(m, action);
             });
@@ -208,7 +209,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
         {
             if(value == default)
             {
-                this.driven.Actions.Create(NetDeliveryMethod.ReliableOrdered, 10).Write("ship:spawn:request", m =>
+                this.driven.Actions.Create(NetDeliveryMethod.ReliableOrdered, 10).Write(VHR.MessageTypes.Ship.SpawnRequest, m =>
                 {
                     var ships = Directory.GetFiles("Resources/Ships", "*.vh");
                     var rand = new Random();
@@ -228,7 +229,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
 
         private CommandResponse HandleSpawnAICommand(ICommand sender, CommandInput input)
         {
-            this.driven.Actions.Create(NetDeliveryMethod.ReliableOrdered, 10).Write("spawn:ai:request", m =>
+            this.driven.Actions.Create(NetDeliveryMethod.ReliableOrdered, 10).Write(VHR.MessageTypes.Ship.SpawnAiRequest, m =>
             {
                 var ships = Directory.GetFiles("Resources/Ships", "*.vh");
                 var rand = new Random();

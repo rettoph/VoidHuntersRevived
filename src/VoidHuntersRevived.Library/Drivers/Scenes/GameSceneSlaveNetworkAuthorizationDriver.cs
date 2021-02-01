@@ -38,8 +38,8 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
 
             _entityMessages = DictionaryHelper.BuildEnumDictionary<MessageType, Queue<NetIncomingMessage>>(t => new Queue<NetIncomingMessage>());
 
-            this.driven.Group.Messages.Set("scene:setup", this.HandleSceneSetupMessage);
-            this.driven.Group.Messages.Set("entity:message", this.HandleEntityMessage);
+            this.driven.Group.Messages.Set(VHR.MessageTypes.Scene.Setup, this.HandleSceneSetupMessage);
+            this.driven.Group.Messages.Set(VHR.MessageTypes.Scene.Entity, this.HandleEntityMessage);
         }
 
         protected override void ReleaseRemote(GameScene driven)
@@ -49,8 +49,8 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
             _logger = null;
             _entities = null;
 
-            this.driven.Group.Messages.Remove("scene:setup");
-            this.driven.Group.Messages.Remove("entity:message");
+            this.driven.Group.Messages.Remove(VHR.MessageTypes.Scene.Setup);
+            this.driven.Group.Messages.Remove(VHR.MessageTypes.Scene.Entity);
 
             this.driven.OnUpdate -= this.Update;
         }

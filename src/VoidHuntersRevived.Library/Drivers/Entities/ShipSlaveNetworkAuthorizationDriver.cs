@@ -11,22 +11,22 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             base.InitializeRemote(driven, provider);
 
-            this.driven.Actions.Set("update:ship:target", this.HandleUpdateTargetMessage);
-            this.driven.Actions.Set("update:ship:firing", this.HandleUpdateFiringMessage);
-            this.driven.Actions.Set("update:ship:direction", this.HandleUpdateDirectionMessage);
-            this.driven.Actions.Set("ship:tractor-beam:action", this.HandleTractorBeamActionMessage);
-            this.driven.Actions.Set("update:ship:bridge", this.HandleUpdateShipBridgeMessage);
+            this.driven.Actions.Set(VHR.MessageTypes.Ship.UpdateTarget, this.HandleUpdateTargetMessage);
+            this.driven.Actions.Set(VHR.MessageTypes.Ship.UpdateFiring, this.HandleUpdateFiringMessage);
+            this.driven.Actions.Set(VHR.MessageTypes.Ship.UpdateBridge, this.HandleUpdateShipBridgeMessage);
+            this.driven.Actions.Set(VHR.MessageTypes.Ship.UpdateDirection, this.HandleUpdateDirectionMessage);
+            this.driven.Actions.Set(VHR.MessageTypes.Ship.TractorBeam.Action, this.HandleTractorBeamActionMessage);
         }
 
         protected override void ReleaseRemote(Ship driven)
         {
             base.ReleaseRemote(driven);
 
-            this.driven.Actions.Remove("update:ship:target");
-            this.driven.Actions.Remove("update:ship:firing");
-            this.driven.Actions.Remove("update:ship:direction");
-            this.driven.Actions.Remove("ship:tractor-beam:action");
-            this.driven.Actions.Remove("update:ship:bridge");
+            this.driven.Actions.Remove(VHR.MessageTypes.Ship.UpdateTarget);
+            this.driven.Actions.Remove(VHR.MessageTypes.Ship.UpdateFiring);
+            this.driven.Actions.Remove(VHR.MessageTypes.Ship.UpdateBridge);
+            this.driven.Actions.Remove(VHR.MessageTypes.Ship.UpdateDirection);
+            this.driven.Actions.Remove(VHR.MessageTypes.Ship.TractorBeam.Action);
         }
         #endregion
 

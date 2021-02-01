@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Library.Contexts
     {
         #region ShipPartContext Implementation
         /// <inheritdoc />
-        public override string ShipPartServiceConfiguration => "entity:ship-part:armor";
+        public override string ShipPartServiceConfiguration => VHR.Entities.Armor;
         #endregion
 
         #region Constructors

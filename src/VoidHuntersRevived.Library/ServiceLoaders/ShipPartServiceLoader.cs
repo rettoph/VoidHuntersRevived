@@ -38,11 +38,11 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddFactory<Gun>(p => new Gun());
             services.AddFactory<Bullet>(b => new Bullet());
             services.AddFactory<Armor>(b => new Armor());
-            services.AddTransient<RigidShipPart>("entity:ship-part:rigid-ship-part");
-            services.AddTransient<Thruster>("entity:ship-part:thruster");
-            services.AddTransient<Gun>("entity:ship-part:weapon:gun");
+            services.AddTransient<RigidShipPart>(VHR.Entities.RigidShipPart);
+            services.AddTransient<Thruster>(VHR.Entities.Thruster);
+            services.AddTransient<Gun>(VHR.Entities.Gun);
             services.AddTransient<Bullet>();
-            services.AddTransient<Armor>("entity:ship-part:armor");
+            services.AddTransient<Armor>(VHR.Entities.Armor);
         }
 
         public void ConfigureProvider(ServiceProvider provider)

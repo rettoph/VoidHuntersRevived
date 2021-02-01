@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
             this.driven.MessageHandlers[MessageType.Setup].OnRead += this.driven.ReadHealth;
             this.driven.MessageHandlers[MessageType.Update].OnRead += this.driven.ReadHealth;
 
-            this.driven.Actions.Set("update:health", this.driven.ReadHealth);
+            this.driven.Actions.Set(VHR.MessageTypes.ShipPart.UpdateHealth, this.driven.ReadHealth);
         }
 
         protected override void ReleaseRemote(ShipPart driven)
@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
             this.driven.MessageHandlers[MessageType.Setup].OnRead -= this.driven.ReadHealth;
             this.driven.MessageHandlers[MessageType.Update].OnRead -= this.driven.ReadHealth;
 
-            this.driven.Actions.Remove("update:health");
+            this.driven.Actions.Remove(VHR.MessageTypes.ShipPart.UpdateHealth);
         }
         #endregion
     }

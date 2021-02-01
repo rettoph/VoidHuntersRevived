@@ -40,13 +40,13 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
             _userConnection = provider.GetService<UserNetConnectionDictionary>().Connections[this.driven.User];
 
             this.driven.Actions.ValidateRead += this.ValidateReadAction;
-            this.driven.Actions.Set("update:ship:target:request", this.HandleUpdateShipTargetRequestMessage);
-            this.driven.Actions.Set("ship:tractor-beam:action:request", this.HandleShipTractorBeamActionRequestMessage);
-            this.driven.Actions.Set("update:ship:direction:request", this.HandleUpdateShipDirectionRequestMessage);
-            this.driven.Actions.Set("update:ship:firing:request", this.HandleUpdateShipFiringRequestMessage);
-            this.driven.Actions.Set("ship:spawn:request", this.HandleShipSpawnRequestMessage);
-            this.driven.Actions.Set("spawn:ai:request", this.HandleSpawnAIRequestMessage);
-            this.driven.Actions.Set("ship:self-destruct:request", this.HandleSelfDestructRequest);
+            this.driven.Actions.Set(VHR.MessageTypes.Ship.UpdateTargetRequest, this.HandleUpdateShipTargetRequestMessage);
+            this.driven.Actions.Set(VHR.MessageTypes.Ship.TractorBeam.ActionRequest, this.HandleShipTractorBeamActionRequestMessage);
+            this.driven.Actions.Set(VHR.MessageTypes.Ship.UpdateDirectionRequest, this.HandleUpdateShipDirectionRequestMessage);
+            this.driven.Actions.Set(VHR.MessageTypes.Ship.UpdateFiringRequest, this.HandleUpdateShipFiringRequestMessage);
+            this.driven.Actions.Set(VHR.MessageTypes.Ship.SpawnRequest, this.HandleShipSpawnRequestMessage);
+            this.driven.Actions.Set(VHR.MessageTypes.Ship.SpawnAiRequest, this.HandleSpawnAIRequestMessage);
+            this.driven.Actions.Set(VHR.MessageTypes.Ship.SelfDestructRequest, this.HandleSelfDestructRequest);
         }
 
         protected override void ReleaseRemote(UserPlayer driven)
@@ -58,11 +58,13 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
             _userConnection = null;
 
             this.driven.Actions.ValidateRead -= this.ValidateReadAction;
-            this.driven.Actions.Remove("update:ship:target:request");
-            this.driven.Actions.Remove("ship:tractor-beam:action:request");
-            this.driven.Actions.Remove("update:ship:direction:request");
-            this.driven.Actions.Remove("update:ship:firing:request");
-            this.driven.Actions.Remove("ship:spawn:request");
+            this.driven.Actions.Remove(VHR.MessageTypes.Ship.UpdateTargetRequest);
+            this.driven.Actions.Remove(VHR.MessageTypes.Ship.TractorBeam.ActionRequest);
+            this.driven.Actions.Remove(VHR.MessageTypes.Ship.UpdateDirectionRequest);
+            this.driven.Actions.Remove(VHR.MessageTypes.Ship.UpdateFiringRequest);
+            this.driven.Actions.Remove(VHR.MessageTypes.Ship.SpawnRequest);
+            this.driven.Actions.Remove(VHR.MessageTypes.Ship.SpawnAiRequest);
+            this.driven.Actions.Remove(VHR.MessageTypes.Ship.SelfDestructRequest);
         }
         #endregion
 

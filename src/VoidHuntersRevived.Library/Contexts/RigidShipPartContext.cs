@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Library.Contexts
     {
         #region ShipPartContext Implementation
         /// <inheritdoc />
-        public override string ShipPartServiceConfiguration => "entity:ship-part:rigid-ship-part";
+        public override string ShipPartServiceConfiguration => VHR.Entities.RigidShipPart;
         #endregion
 
         #region Constructors
