@@ -19,6 +19,11 @@ using Lidgren.Network;
 using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Extensions.Lidgren.Network;
 using Guppy.Lists;
+using tainicom.Aether.Physics2D.Dynamics.Contacts;
+using tainicom.Aether.Physics2D.Collision;
+using tainicom.Aether.Physics2D.Common;
+using tainicom.Aether.Physics2D.Dynamics;
+using tainicom.Aether.Physics2D.Collision.Shapes;
 
 namespace VoidHuntersRevived.Library.Entities.Controllers
 {
@@ -348,7 +353,44 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                 return false;
             else if (target.Parent.Chain.Ship != this.Ship)
                 return false;
-            
+
+            // var transform = new Transform(shipPart.Position, shipPart.Rotation);
+            // var groupA = this.Ship.Bridge.Items()
+            //     .SelectMany(
+            //         sp => sp.live.FixtureList);
+            // var groupB = shipPart.Items()
+            //     .SelectMany(
+            //         sp => sp.live.FixtureList);
+            // 
+            // Manifold manifold = new Manifold();
+            // Vector2 normal;
+            // FixedArray2<Vector2> points;
+            // Transform transformA, transformB;
+            // 
+            // this.logger.Info("---------");
+            // 
+            // foreach (Fixture fixtureA in groupA)
+            // {
+            //     foreach (Fixture fixtureB in groupB)
+            //     {
+            //         transformA = fixtureA.Body.GetTransform();
+            //         transformB = fixtureB.Body.GetTransform();
+            //         Collision.CollidePolygons(
+            //             ref manifold,
+            //             fixtureA.Shape as PolygonShape,
+            //             ref transformA,
+            //             fixtureB.Shape as PolygonShape,
+            //             ref transformB);
+            // 
+            //         var seperation = Vector2.Dot(manifold.Points[1].LocalPoint - manifold.Points[0].LocalPoint, manifold.LocalNormal);
+            // 
+            //         this.logger.Info($"{(seperation * manifold.LocalNormal).Length()}");
+            // 
+            //         if ((seperation * manifold.LocalNormal).Length() > 1f)
+            //             return false;
+            //     }
+            // }
+
             // By default, return true.
             return true;
         }
