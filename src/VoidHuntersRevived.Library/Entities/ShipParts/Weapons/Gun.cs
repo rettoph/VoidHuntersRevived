@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             {
                 b.Damage = this.Context.BulletDamage;
                 b.Position = this.Position;
-                b.Velocity = this.Root.LinearVelocity + Vector2.Transform(Vector2.UnitX * 15f, Matrix.CreateRotationZ(MathHelper.WrapAngle(this.Rotation + MathHelper.Pi)));
+                b.Velocity = this.Root.LinearVelocity + Vector2.Transform(Vector2.UnitX * this.Context.BulletSpeed, Matrix.CreateRotationZ(MathHelper.WrapAngle(this.Rotation + MathHelper.Pi)));
             });
         }
         #endregion

@@ -9,6 +9,15 @@ namespace VoidHuntersRevived.Library.Contexts
 {
     public abstract class WeaponContext : ShipPartContext
     {
+        #region Enums
+        private enum WeaponContextProperty
+        {
+            Start = 0,
+            End = 1,
+            SwivelRange = 2
+        }
+        #endregion
+
         #region Public Properties
         /// <summary>
         /// The amount the described weapon can swivel (in radians)
@@ -29,14 +38,32 @@ namespace VoidHuntersRevived.Library.Contexts
         {
             base.Read(reader);
 
-            this.SwivelRange = reader.ReadSingle();
+            WeaponContextProperty propertyType = (WeaponContextProperty)reader.ReadByte();
+            if (propertyType == WeaponContextProperty.Start)
+            {
+                while (propertyType != WeaponContextProperty.End)
+                {
+                    propertyType = (WeaponContextProperty)reader.ReadByte();
+                    switch (propertyType)
+                    {
+                        case WeaponContextProperty.SwivelRange:
+                            this.SwivelRange = reader.ReadSingle();
+                            break;
+                    }
+                }
+            }
         }
 
         protected override void Write(BinaryWriter writer)
         {
             base.Write(writer);
 
+            writer.Write((Byte)WeaponContextProperty.Start);
+
+            writer.Write((Byte)WeaponContextProperty.SwivelRange);
             writer.Write(this.SwivelRange);
+
+            writer.Write((Byte)WeaponContextProperty.End);
         }
         #endregion
     }

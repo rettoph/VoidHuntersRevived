@@ -11,7 +11,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
     public class Thruster : RigidShipPart
     {
         #region Static Properties
-        public static Single StrengthAcceleration { get; set; } = 1f;
         public static Single ImpulseModifierEpsilon { get; set; } = 0.001f;
         #endregion
 
@@ -113,7 +112,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
                 this.ImpulseModifier = MathHelper.Lerp(
                     value1: this.ImpulseModifier,
                     value2: this.ApplyThrust(this.Root, gameTime) ? 1 : 0,
-                    amount: Thruster.StrengthAcceleration * (Single)gameTime.ElapsedGameTime.TotalSeconds);
+                    amount: this.Context.ImpulseAcceleration * (Single)gameTime.ElapsedGameTime.TotalSeconds);
             }
         }
         #endregion
