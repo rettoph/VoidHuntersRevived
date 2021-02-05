@@ -37,7 +37,10 @@ namespace VoidHuntersRevived.Library.Entities.Players
             {
                 if(_target?.Ship?.Bridge == default || Vector2.Distance(this.Ship.Bridge.WorldCenter, _target.Ship.Bridge.WorldCenter) > 50)
                     _target = this.players
-                        .Where(p => p.Id != this.Id && p.Ship?.Bridge != default(ShipPart) && Vector2.Distance(this.Ship.Bridge.WorldCenter, p.Ship.Bridge.WorldCenter) < 10000)
+                        .Where(
+                            p => p.Id != this.Id && p.Ship?.Bridge != default(ShipPart) 
+                            && Vector2.Distance(this.Ship.Bridge.WorldCenter, p.Ship.Bridge.WorldCenter) < 10000
+                            && p.Team != this.Team)
                         .OrderBy(p => Vector2.Distance(this.Ship.Bridge.WorldCenter, p.Ship.Bridge.WorldCenter))
                     .FirstOrDefault();
 

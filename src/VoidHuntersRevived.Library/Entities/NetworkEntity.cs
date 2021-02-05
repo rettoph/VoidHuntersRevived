@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Public Attributes
-        public MessageManager Actions { get; private set; }
+        public MessageManager Ping { get; private set; }
 
         /// <summary>
         /// Indicates whether or not the current entity should broadcast
@@ -71,10 +71,10 @@ namespace VoidHuntersRevived.Library.Entities
 
             // Create and setup a brand new action delegater instance...
             this.MessageHandlers = DictionaryHelper.BuildEnumDictionary<MessageType, NetworkEntityMessageTypeHandler>(t => new NetworkEntityMessageTypeHandler(t, this));
-            this.Actions = new MessageManager(this.BuildActionMessage);
+            this.Ping = new MessageManager(this.BuildActionMessage);
 
             this.MessageHandlers[MessageType.Create].OnWrite += om => om.Write(this.ServiceConfiguration.Id);
-            this.MessageHandlers[MessageType.Action].OnRead += im => this.Actions.Read(im);
+            this.MessageHandlers[MessageType.Ping].OnRead += im => this.Ping.Read(im);
             this.MessageHandlers[MessageType.Update].OnWrite += im => this.DirtyState &= ~DirtyState.Cleaning;
         }
 
@@ -119,7 +119,7 @@ namespace VoidHuntersRevived.Library.Entities
         private NetOutgoingMessage BuildActionMessage(NetDeliveryMethod method, Int32 sequenceChannel, NetConnection recipient = null)
             => _scene.Group.Messages.Create(method, sequenceChannel, recipient).Then(om =>
             {
-                this.MessageHandlers[MessageType.Action].TryWrite(om);
+                this.MessageHandlers[MessageType.Ping].TryWrite(om);
             });
         #endregion
     }

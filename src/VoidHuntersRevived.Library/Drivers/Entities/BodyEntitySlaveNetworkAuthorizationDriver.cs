@@ -8,6 +8,8 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Extensions.Aether;
+using Guppy.Network.Extensions.Lidgren;
+using tainicom.Aether.Physics2D.Dynamics;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities
 {
@@ -27,6 +29,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             this.driven.OnUpdate += this.Update;
 
             this.driven.MessageHandlers[MessageType.Update].OnRead += this.driven.master.ReadPosition;
+            this.driven.MessageHandlers[MessageType.Setup].OnRead += this.ReadSetup;
         }
 
         protected override void ReleaseRemote(BodyEntity driven)
@@ -38,6 +41,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             this.driven.OnUpdate -= this.Update;
 
             this.driven.MessageHandlers[MessageType.Update].OnRead -= this.driven.master.ReadPosition;
+            this.driven.MessageHandlers[MessageType.Setup].OnRead -= this.ReadSetup;
         }
         #endregion
 
@@ -70,6 +74,14 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
                     this.driven.slave.AngularVelocity = this.driven.master.AngularVelocity;
                 }
             }
+        }
+        #endregion
+
+        #region Network Methods
+        private void ReadSetup(NetIncomingMessage om)
+        {
+            this.driven.CollidesWith = (Category)om.ReadUInt32();
+            this.driven.CollisionCategories = (Category)om.ReadUInt32();
         }
         #endregion
     }

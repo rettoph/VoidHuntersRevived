@@ -10,6 +10,7 @@ using VoidHuntersRevived.Library.Contexts;
 using VoidHuntersRevived.Library.Entities.Ammunitions;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.ShipParts.Armors;
+using VoidHuntersRevived.Library.Entities.ShipParts.Special;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
 using VoidHuntersRevived.Library.Services;
@@ -38,11 +39,13 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddFactory<Gun>(p => new Gun());
             services.AddFactory<Bullet>(b => new Bullet());
             services.AddFactory<Armor>(b => new Armor());
+            services.AddFactory<FighterBay>(b => new FighterBay());
             services.AddTransient<RigidShipPart>(VHR.Entities.RigidShipPart);
             services.AddTransient<Thruster>(VHR.Entities.Thruster);
             services.AddTransient<Gun>(VHR.Entities.Gun);
             services.AddTransient<Bullet>();
             services.AddTransient<Armor>(VHR.Entities.Armor);
+            services.AddTransient<FighterBay>(VHR.Entities.FighterBay);
         }
 
         public void ConfigureProvider(ServiceProvider provider)

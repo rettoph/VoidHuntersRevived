@@ -11,22 +11,22 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             base.InitializeRemote(driven, provider);
 
-            this.driven.Actions.Set(VHR.MessageTypes.Ship.UpdateTarget, this.HandleUpdateTargetMessage);
-            this.driven.Actions.Set(VHR.MessageTypes.Ship.UpdateFiring, this.HandleUpdateFiringMessage);
-            this.driven.Actions.Set(VHR.MessageTypes.Ship.UpdateBridge, this.HandleUpdateShipBridgeMessage);
-            this.driven.Actions.Set(VHR.MessageTypes.Ship.UpdateDirection, this.HandleUpdateDirectionMessage);
-            this.driven.Actions.Set(VHR.MessageTypes.Ship.TractorBeam.Action, this.HandleTractorBeamActionMessage);
+            this.driven.Ping.Set(VHR.Pings.Ship.UpdateTarget, this.HandleUpdateTargetMessage);
+            this.driven.Ping.Set(VHR.Pings.Ship.UpdateFiring, this.HandleUpdateFiringMessage);
+            this.driven.Ping.Set(VHR.Pings.Ship.UpdateBridge, this.HandleUpdateShipBridgeMessage);
+            this.driven.Ping.Set(VHR.Pings.Ship.UpdateDirection, this.HandleUpdateDirectionMessage);
+            this.driven.Ping.Set(VHR.Pings.Ship.TractorBeam.Action, this.HandleTractorBeamActionMessage);
         }
 
         protected override void ReleaseRemote(Ship driven)
         {
             base.ReleaseRemote(driven);
 
-            this.driven.Actions.Remove(VHR.MessageTypes.Ship.UpdateTarget);
-            this.driven.Actions.Remove(VHR.MessageTypes.Ship.UpdateFiring);
-            this.driven.Actions.Remove(VHR.MessageTypes.Ship.UpdateBridge);
-            this.driven.Actions.Remove(VHR.MessageTypes.Ship.UpdateDirection);
-            this.driven.Actions.Remove(VHR.MessageTypes.Ship.TractorBeam.Action);
+            this.driven.Ping.Remove(VHR.Pings.Ship.UpdateTarget);
+            this.driven.Ping.Remove(VHR.Pings.Ship.UpdateFiring);
+            this.driven.Ping.Remove(VHR.Pings.Ship.UpdateBridge);
+            this.driven.Ping.Remove(VHR.Pings.Ship.UpdateDirection);
+            this.driven.Ping.Remove(VHR.Pings.Ship.TractorBeam.Action);
         }
         #endregion
 

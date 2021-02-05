@@ -87,7 +87,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             _targetSendTimer.Update(gameTime, gt =>
             { // Attempt to send the newest target value...
-                this.WriteUpdateTarget(this.driven.Actions.Create(NetDeliveryMethod.Unreliable, 0));
+                this.WriteUpdateTarget(this.driven.Ping.Create(NetDeliveryMethod.Unreliable, 0));
             });
         }
         #endregion
@@ -109,26 +109,26 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
         #region Network Methods
         private void WriteUpdateTarget(NetOutgoingMessage om)
-            => om.Write(VHR.MessageTypes.Ship.UpdateTarget, m =>
+            => om.Write(VHR.Pings.Ship.UpdateTarget, m =>
             {
                 this.driven.WriteTarget(m);
             });
 
         private void WriteUpdateFiring(NetOutgoingMessage om, Boolean value)
-            => om.Write(VHR.MessageTypes.Ship.UpdateFiring, m =>
+            => om.Write(VHR.Pings.Ship.UpdateFiring, m =>
             {
                 m.Write(value);
             });
 
         private void WriteUpdateDirection(NetOutgoingMessage om, Ship.Direction direction)
-            => om.Write(VHR.MessageTypes.Ship.UpdateDirection, m =>
+            => om.Write(VHR.Pings.Ship.UpdateDirection, m =>
             {
                 this.driven.WriteDirection(m, direction);
             });
 
         private void WriteTractorBeamAction(NetOutgoingMessage om, TractorBeam.Action action)
         {
-            om.Write(VHR.MessageTypes.Ship.TractorBeam.Action, m =>
+            om.Write(VHR.Pings.Ship.TractorBeam.Action, m =>
             {
                 this.driven.TractorBeam.WriteAction(m, action);
             });
@@ -136,7 +136,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
         private void WriteUpdateBridge(NetOutgoingMessage om, ShipPart bridge)
         {
-            om.Write(VHR.MessageTypes.Ship.UpdateBridge, m =>
+            om.Write(VHR.Pings.Ship.UpdateBridge, m =>
             {
                 this.driven.WriteBridge(om);
             });
@@ -164,22 +164,22 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
         private void HandleBridgeChanged(Ship sender, ShipPart old, ShipPart value)
             => this.WriteUpdateBridge(
-                    this.driven.Actions.Create(NetDeliveryMethod.ReliableOrdered, 10),
+                    this.driven.Ping.Create(NetDeliveryMethod.ReliableOrdered, 10),
                     value);
 
         private void HandleDirectionChanged(Ship sender, Ship.DirectionState args)
             => this.WriteUpdateDirection(
-                this.driven.Actions.Create(NetDeliveryMethod.Unreliable, 0), 
+                this.driven.Ping.Create(NetDeliveryMethod.Unreliable, 0), 
                 args.Direction);
 
         private void HandleFiringChanged(Ship sender, bool value)
             => this.WriteUpdateFiring(
-                    this.driven.Actions.Create(NetDeliveryMethod.Unreliable, 0),
+                    this.driven.Ping.Create(NetDeliveryMethod.Unreliable, 0),
                     value);
 
         private void HandleTractorBeamAction(TractorBeam sender, TractorBeam.Action action)
             => this.WriteTractorBeamAction(
-                this.driven.Actions.Create(NetDeliveryMethod.Unreliable, 0),
+                this.driven.Ping.Create(NetDeliveryMethod.Unreliable, 0),
                 action);
         #endregion
     }

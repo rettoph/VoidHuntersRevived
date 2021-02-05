@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
         #region Event Handlers
         private void HandleSizeChanged(WorldEntity sender, Vector2 arg)
-            => this.driven.Actions.Create(NetDeliveryMethod.ReliableOrdered, 2).Write(VHR.MessageTypes.World.UpdateSize, m =>
+            => this.driven.Ping.Create(NetDeliveryMethod.ReliableOrdered, 2).Write(VHR.Pings.World.UpdateSize, m =>
             {
                 m.Write(this.driven.Size);
             });

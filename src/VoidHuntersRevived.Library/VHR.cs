@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using tainicom.Aether.Physics2D.Dynamics;
 
 namespace VoidHuntersRevived.Library
 {
@@ -13,9 +14,19 @@ namespace VoidHuntersRevived.Library
             public static readonly String Thruster = "entity:ship-part:thruster";
             public static readonly String Gun = "entity:ship-part:weapon:gun";
             public static readonly String Armor = "entity:ship-part:armor";
+            public static readonly String FighterBay = "entity:ship-part:fighter-bay";
+        }
+        
+        public static class Actions
+        {
+            public static class Ship
+            {
+                public static readonly UInt32 TryLaunchFighters = "action:ship:try-launch-fighters".xxHash();
+                public static readonly UInt32 OnLaunchFighters = "action:ship:on-launch-fighters".xxHash();
+            }
         }
 
-        public static class MessageTypes
+        public static class Pings
         {
             public static class Scene
             {
@@ -43,7 +54,10 @@ namespace VoidHuntersRevived.Library
                 
                 public static readonly UInt32 UpdateFiring = "ship:update:firing".xxHash();
                 public static readonly UInt32 UpdateFiringRequest = "ship:update:firing:request".xxHash();
-                
+
+                public static readonly UInt32 LaunchFighters = "ship:launch-fighters:request".xxHash();
+                public static readonly UInt32 LaunchFightersRequest = "ship:launch-fighters:request".xxHash();
+
                 public static readonly UInt32 UpdateBridge = "ship:update:bridge".xxHash();
 
                 public static readonly UInt32 SpawnRequest = "ship:spawn:request".xxHash();
@@ -58,6 +72,20 @@ namespace VoidHuntersRevived.Library
                     public static readonly UInt32 ActionRequest = "ship:tractor-beam:action:request".xxHash();
                 }
             }
+        }
+
+        public static class Categories
+        {
+            public static readonly Category BorderCollisionCategories = Category.Cat1;
+            public static readonly Category PassiveCollisionCategories = Category.Cat2;
+            public static readonly Category ActiveCollisionCategories = Category.Cat3;
+            public static readonly Category FighterCollisionCategories = Category.Cat4;
+
+
+            public static readonly Category BorderCollidesWith = Categories.PassiveCollisionCategories | Categories.ActiveCollisionCategories | Categories.FighterCollisionCategories;
+            public static readonly Category PassiveCollidesWith = Categories.BorderCollisionCategories;
+            public static readonly Category ActiveCollidesWith = Categories.BorderCollisionCategories | Categories.ActiveCollisionCategories;
+            public static readonly Category FighterCollidesWith = Categories.BorderCollisionCategories | Categories.FighterCollisionCategories;
         }
     }
 }

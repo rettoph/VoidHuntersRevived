@@ -40,6 +40,8 @@ namespace VoidHuntersRevived.Library.Entities.Players
                     _ship.Player = this;
             }
         }
+
+        public Guid Team { get; set; }
         #endregion
 
         #region Lifecycle Methods
@@ -48,6 +50,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
             base.Create(provider);
 
             this.MessageHandlers[MessageType.Create].Add(this.ReadShip, this.WriteShip);
+            this.MessageHandlers[MessageType.Setup].Add(this.ReadTeam, this.WriteTeam);
         }
 
         protected override void PreInitialize(ServiceProvider provider)
@@ -57,6 +60,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
             provider.Service(out _entities);
 
             this.players = provider.GetService<ServiceList<Player>>();
+            this.Team = Guid.NewGuid();
         }
 
         protected override void PostInitialize(ServiceProvider provider)
@@ -86,7 +90,8 @@ namespace VoidHuntersRevived.Library.Entities.Players
         {
             base.Dispose();
 
-            this.MessageHandlers[MessageType.Create].Add(this.ReadShip, this.WriteShip);
+            this.MessageHandlers[MessageType.Create].Remove(this.ReadShip, this.WriteShip);
+            this.MessageHandlers[MessageType.Setup].Remove(this.ReadTeam, this.WriteTeam);
         }
         #endregion
 
@@ -96,6 +101,12 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
         private void WriteShip(NetOutgoingMessage om)
             => om.Write(this.Ship);
+
+        private void ReadTeam(NetIncomingMessage im)
+            => this.Team = im.ReadGuid();
+
+        private void WriteTeam(NetOutgoingMessage om)
+            => om.Write(this.Team);
         #endregion
     }
 }

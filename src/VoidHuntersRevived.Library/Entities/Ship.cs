@@ -156,6 +156,7 @@ namespace VoidHuntersRevived.Library.Entities
 
             // Create partial classes...
             this.Network_Create(provider);
+            this.Actions_Create(provider);
             this.Thrusters_Create(provider);
             this.Weapons_Create(provider);
 
@@ -203,6 +204,7 @@ namespace VoidHuntersRevived.Library.Entities
 
             // Dispose partial classes...
             this.Network_Dispose();
+            this.Actions_Dispose();
             this.Thrusters_Dispose();
             this.Weapons_Dispose();
 

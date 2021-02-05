@@ -16,14 +16,14 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             base.InitializeRemote(driven, provider);
 
-            this.driven.Actions.Set(VHR.MessageTypes.World.UpdateSize, this.driven.ReadSize);
+            this.driven.Ping.Set(VHR.Pings.World.UpdateSize, this.driven.ReadSize);
         }
 
         protected override void ReleaseRemote(WorldEntity driven)
         {
             base.ReleaseRemote(driven);
 
-            this.driven.Actions.Remove(VHR.MessageTypes.World.UpdateSize);
+            this.driven.Ping.Remove(VHR.Pings.World.UpdateSize);
         }
         #endregion
     }

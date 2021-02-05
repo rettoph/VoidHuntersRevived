@@ -321,8 +321,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
                 shipPart.Awake = true;
 
                 // Update the new parts collisions
-                shipPart.CollisionCategories = Categories.PassiveCollisionCategories;
-                shipPart.CollidesWith = Categories.PassiveCollidesWith;
+                shipPart.CollisionCategories = VHR.Categories.PassiveCollisionCategories;
+                shipPart.CollidesWith = VHR.Categories.PassiveCollidesWith;
             }
         }
 

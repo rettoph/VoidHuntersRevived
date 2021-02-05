@@ -105,7 +105,12 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                     new CommandContext()
                     {
                         Word = "self-destruct",
-                        Description = "Selft destruct the current ship."
+                        Description = "Self destruct the current ship."
+                    },
+                    new CommandContext()
+                    {
+                        Word = "launch-fighters",
+                        Description = "Attempt to launch the current ship's fighter bays (if any)."
                     }
                 }
             });

@@ -213,7 +213,7 @@ namespace VoidHuntersRevived.Library.Entities
                 max: data.Position + new Vector2(data.Radius));
             this.live.QueryAABB(fixture =>
             {
-                if ((Categories.BorderCollidesWith & fixture.CollisionCategories) != 0 
+                if ((VHR.Categories.BorderCollidesWith & fixture.CollisionCategories) != 0 
                     && fixture.Tag is ShipPart target && !targets.Contains(target))
                 {
                     targets.Add(target);
@@ -350,8 +350,8 @@ namespace VoidHuntersRevived.Library.Entities
             
             _walls.ForEach(b =>
             { // Setup wall collisions
-                b.SetCollisionCategories(Categories.BorderCollisionCategories);
-                b.SetCollidesWith(Categories.BorderCollidesWith);
+                b.SetCollisionCategories(VHR.Categories.BorderCollisionCategories);
+                b.SetCollidesWith(VHR.Categories.BorderCollidesWith);
 
                 // b.Restitution = 1f;
                 // b.Friction = 0f;

@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
         #region Event Handlers
         private void HandleHealthChanged(ShipPart sender, float old, float value)
         {
-            this.driven.Actions.Create(NetDeliveryMethod.Unreliable, 0).Write(VHR.MessageTypes.ShipPart.UpdateHealth, om =>
+            this.driven.Ping.Create(NetDeliveryMethod.Unreliable, 0).Write(VHR.Pings.ShipPart.UpdateHealth, om =>
             {
                 this.driven.WriteHealth(om);
             });

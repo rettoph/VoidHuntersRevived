@@ -139,6 +139,18 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             });
             #endregion
 
+            #region Special Inputs
+            inputs.Add(new InputCommandContext()
+            {
+                Handle = "launch_fighter_bays",
+                DefaultInput = new InputType(Keys.F),
+                Commands = new[]
+                {
+                    (state: ButtonState.Pressed, command: "ship launch-fighters"),
+                }
+            });
+            #endregion
+
             #region Save Inputs
             inputs.Add(new InputCommandContext()
             {

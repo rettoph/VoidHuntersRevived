@@ -17,12 +17,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Resources\ShipParts\NX01_Enterprise.vhsp" />
     <None Remove="Resources\ShipParts\vhr.armor.chevron.vhsp" />
     <None Remove="Resources\ShipParts\vhr.armor.plate.vhsp" />
     <None Remove="Resources\ShipParts\vhr.armor.shield.vhsp" />
     <None Remove="Resources\ShipParts\vhr.chassis.bullfrog.vhsp" />
     <None Remove="Resources\ShipParts\vhr.chassis.butterfly.vhsp" />
     <None Remove="Resources\ShipParts\vhr.chassis.dragonfly.vhsp" />
+    <None Remove="Resources\ShipParts\vhr.chassis.fighter.vhsp" />
     <None Remove="Resources\ShipParts\vhr.chassis.mosquito.vhsp" />
     <None Remove="Resources\ShipParts\vhr.chassis.pelican.vhsp" />
     <None Remove="Resources\ShipParts\vhr.chassis.squid.vhsp" />
@@ -37,10 +39,14 @@
     <None Remove="Resources\ShipParts\vhr.hull.triangle.vhsp" />
     <None Remove="Resources\ShipParts\vhr.hull.wing.left.vhsp" />
     <None Remove="Resources\ShipParts\vhr.hull.wing.right.vhsp" />
+    <None Remove="Resources\ShipParts\vhr.special.fighter-bay.vhsp" />
     <None Remove="Resources\ShipParts\vhr.thruster.small.vhsp" />
+    <None Remove="Resources\ShipParts\vhr.thruster.tiny.vhsp" />
+    <None Remove="Resources\ShipParts\vhr.weapon.mass-driver.tiny.vhsp" />
     <None Remove="Resources\ShipParts\vhr.weapon.mass-driver.vhsp" />
     <None Remove="Resources\Ships\bullfrog.vh" />
     <None Remove="Resources\Ships\dragonfly.vh" />
+    <None Remove="Resources\Ships\fighter.vh" />
     <None Remove="Resources\Ships\pelican.vh" />
     <None Remove="Resources\Ships\squid.vh" />
     <None Remove="Resources\Ships\wasp.vh" />

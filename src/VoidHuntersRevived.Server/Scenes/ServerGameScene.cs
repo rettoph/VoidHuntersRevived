@@ -115,15 +115,27 @@ namespace VoidHuntersRevived.Server.Scenes
                 plate.Position = rand.NextVector2(0, world.Size.X);
                 plate.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
 
+                var fighterBay = _shipParts.Create("vhr:special:fighter-bay");
+                fighterBay.Position = rand.NextVector2(0, world.Size.X);
+                fighterBay.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+
                 for (Int32 j = 0; j < 20; j++)
                 {
                     var thruster = _shipParts.Create("vhr:thruster:small");
                     thruster.Position = rand.NextVector2(0, world.Size.X);
                     thruster.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
 
+                    var thruster2 = _shipParts.Create("vhr:thruster:tiny");
+                    thruster2.Position = rand.NextVector2(0, world.Size.X);
+                    thruster2.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+
                     var weapon = _shipParts.Create("vhr:weapon:mass-driver");
                     weapon.Position = rand.NextVector2(0, world.Size.X);
                     weapon.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+
+                    var weapon2 = _shipParts.Create("vhr:weapon:mass-driver:tiny");
+                    weapon2.Position = rand.NextVector2(0, world.Size.X);
+                    weapon2.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
                 }
             }
         }
@@ -163,7 +175,7 @@ namespace VoidHuntersRevived.Server.Scenes
                         {
                             var rand = new Random();
 
-                            // var chassis = _shipParts.Create("vhr:chassis:squid");
+                            // var chassis = _shipParts.Create("NX01_Enterprise");
                             // chassis.Position = rand.NextVector2(0, world.Size.X);
                             // chassis.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
                             // ship.Bridge = chassis;

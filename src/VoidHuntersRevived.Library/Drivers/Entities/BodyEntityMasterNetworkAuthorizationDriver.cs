@@ -23,6 +23,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             this.driven.DirtyState |= DirtyState.Filthy;
 
             this.driven.MessageHandlers[MessageType.Update].OnWrite += this.driven.master.WritePosition;
+            this.driven.MessageHandlers[MessageType.Setup].OnWrite += this.WriteSetup;
         }
 
         protected override void ReleaseRemote(BodyEntity driven)
@@ -30,6 +31,15 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             base.ReleaseRemote(driven);
 
             this.driven.MessageHandlers[MessageType.Update].OnWrite -= this.driven.master.WritePosition;
+            this.driven.MessageHandlers[MessageType.Setup].OnWrite -= this.WriteSetup;
+        }
+        #endregion
+
+        #region Network Methods
+        private void WriteSetup(NetOutgoingMessage om)
+        {
+            om.Write((UInt32)this.driven.CollidesWith);
+            om.Write((UInt32)this.driven.CollisionCategories);
         }
         #endregion
     }

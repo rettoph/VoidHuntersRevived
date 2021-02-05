@@ -234,7 +234,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                     // Calculate the angle the joint should be to reach the current target...
                     var angle = MathHelper.WrapAngle((Single)Math.Atan2(offset.Y, offset.X) - this.MaleConnectionNode.GetWordRotation(joint.BodyA));
 
-                    this.TargetInRange = MathHelper.Clamp(angle, joint.LowerLimit, joint.UpperLimit) == angle;
+                    this.TargetInRange = MathHelper.Clamp(angle, joint.LowerLimit - 1, joint.UpperLimit + 1) == angle;
 
                     if (!this.TargetInRange) // Dont bother aiming at all if its out of range
                         return; // This prevents weird buggy looking gun swivels when the mouse is behind the gun

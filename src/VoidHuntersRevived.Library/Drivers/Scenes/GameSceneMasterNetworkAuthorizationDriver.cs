@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
             provider.Service(out _networkEntities);
             provider.Service(out _players);
 
-            this.driven.Group.Messages.Set(VHR.MessageTypes.Scene.Entity, this.HandleEntityMessage);
+            this.driven.Group.Messages.Set(VHR.Pings.Scene.Entity, this.HandleEntityMessage);
 
             _entities.OnAdded += this.HandleEntityAdded;
             _networkEntities.OnRemoved += this.HandleNetworkEntityRemoved;
@@ -104,7 +104,7 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
         {
             var connection = _userConnections.Connections[user];
 
-            this.driven.Group.Messages.Create(NetDeliveryMethod.ReliableOrdered, 1, connection).Write(VHR.MessageTypes.Scene.Setup, om =>
+            this.driven.Group.Messages.Create(NetDeliveryMethod.ReliableOrdered, 1, connection).Write(VHR.Pings.Scene.Setup, om =>
             { // Send false bit, representing incomplete setup...
                 om.Write(false);
             });
@@ -122,7 +122,7 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
                 });
             });
 
-            this.driven.Group.Messages.Create(NetDeliveryMethod.ReliableOrdered, 1, connection).Write(VHR.MessageTypes.Scene.Setup, om =>
+            this.driven.Group.Messages.Create(NetDeliveryMethod.ReliableOrdered, 1, connection).Write(VHR.Pings.Scene.Setup, om =>
             { // Send true bit, representing complete setup...
                 om.Write(true);
             });
@@ -134,8 +134,8 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
         {
             switch((MessageType)im.ReadByte())
             {
-                case MessageType.Action:
-                    _entities.GetById<NetworkEntity>(im.ReadGuid()).MessageHandlers[MessageType.Action].TryRead(im);
+                case MessageType.Ping:
+                    _entities.GetById<NetworkEntity>(im.ReadGuid()).MessageHandlers[MessageType.Ping].TryRead(im);
                     break;
                 default:
                     throw new Exception("Invalid message type recieved.");

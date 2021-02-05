@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Library.Enums
         Setup = 1,
 
         /// <summary>
-        /// Sent as needed, should contain random entity update data.
+        /// Sent as needed, should contain required entity update data.
         /// </summary>
         Update = 2,
 
@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Library.Enums
         /// A micro update that contains chainges for a single attribute or value.
         /// This is managed within the NetworkEntity.Actions instance.
         /// </summary>
-        Action = 3,
+        Ping = 3,
 
         /// <summary>
         /// Sent once, when an entity is to be removed from the game.

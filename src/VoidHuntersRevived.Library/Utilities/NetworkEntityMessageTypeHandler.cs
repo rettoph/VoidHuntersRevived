@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Library.Utilities
 
         public void TryWrite(NetOutgoingMessage om)
         {
-            om.Write(VHR.MessageTypes.Scene.Entity, m =>
+            om.Write(VHR.Pings.Scene.Entity, m =>
             {
                 // The next two lines are manually read within the slave scene driver...
                 m.Write((Byte)_type);

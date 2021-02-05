@@ -73,8 +73,11 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             // Update the new parts collisions
             foreach(ShipPart shipPart in chain.Root.Items())
             {
-                shipPart.CollisionCategories = Categories.ActiveCollisionCategories;
-                shipPart.CollidesWith = Categories.ActiveCollidesWith;
+                if(shipPart.CollisionCategories == VHR.Categories.PassiveCollisionCategories)
+                    shipPart.CollisionCategories = VHR.Categories.ActiveCollisionCategories;
+
+                if (shipPart.CollisionCategories == VHR.Categories.PassiveCollidesWith)
+                    shipPart.CollidesWith = VHR.Categories.ActiveCollidesWith;
             }
         }
         #endregion
