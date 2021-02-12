@@ -36,17 +36,6 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         /// The bullets current velocity (per second).
         /// </summary>
         public Vector2 Velocity { get; internal set; }
-
-        /// <summary>
-        /// The maximum allowed age for this bullet in seconds.
-        /// Once this is surpassed the bullet will be removed.
-        /// </summary>
-        public Double MaxAge { get; set; } = 3f;
-
-        /// <summary>
-        /// The bullets current age, used to determin when to self delete.
-        /// </summary>
-        public Double Age { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -62,9 +51,6 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
             base.Initialize(provider);
 
             provider.Service(out _primitiveBatch);
-
-            // Reset the bullet age.
-            this.Age = 0;
         }
 
         protected override void Release()
@@ -90,25 +76,17 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
             _primitiveBatch.DrawLine(Color.Red, this.Position, this.Position + (this.Velocity * 0.05f));
         }
 
-        protected override void Update(GameTime gameTime)
+        protected override void UpdateCollisions(GameTime gameTime)
         {
-            base.Update(gameTime);
-
-            if((this.Age += gameTime.ElapsedGameTime.TotalSeconds) > this.MaxAge)
-            { // Remove the bullet, its too old.
-                this.TryRelease();
-            }
-            else
-            { // This bullet has more life yet!
-                this.CheckCollisions(
-                    this.Position,
-                    this.Position += this.Velocity * (Single)gameTime.ElapsedGameTime.TotalSeconds);
-            }
+            this.CheckCollisions(
+                start: this.Position,
+                end: this.Position += this.Velocity * (Single)gameTime.ElapsedGameTime.TotalSeconds,
+                gameTime: gameTime);
         }
         #endregion
 
         #region Event Handlers
-        private void HandleCollision(Ammunition sender, ShipPart shipPart)
+        private void HandleCollision(Ammunition sender, CollisionData data)
         {
             // When the bullet collides, we always want to dispose it.
             // Note: Health damage is only applied on the master and is then broadcasted to all slaves.

@@ -133,7 +133,7 @@ namespace VoidHuntersRevived.Server.Scenes
                     weapon.Position = rand.NextVector2(0, world.Size.X);
                     weapon.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
 
-                    var weapon2 = _shipParts.Create("vhr:weapon:mass-driver:tiny");
+                    var weapon2 = _shipParts.Create("vhr:weapon:laser");
                     weapon2.Position = rand.NextVector2(0, world.Size.X);
                     weapon2.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
                 }

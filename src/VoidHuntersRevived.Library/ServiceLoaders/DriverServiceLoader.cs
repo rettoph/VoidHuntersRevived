@@ -64,6 +64,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddAndBindDriver<FighterBay, FighterBayMasterAuthorizationDriver>(p => new FighterBayMasterAuthorizationDriver());
 
             services.AddAndBindDriver<Bullet, BulletMasterNetworkAuthorizationDriver>(p => new BulletMasterNetworkAuthorizationDriver());
+            services.AddAndBindDriver<LaserBeam, LaserBeamMasterNetworkAuthorizationDriver>(p => new LaserBeamMasterNetworkAuthorizationDriver());
         }
 
         public void ConfigureProvider(ServiceProvider provider)

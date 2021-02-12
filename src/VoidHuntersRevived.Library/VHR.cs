@@ -13,6 +13,7 @@ namespace VoidHuntersRevived.Library
             public static readonly String RigidShipPart = "entity:ship-part:rigid-ship-part";
             public static readonly String Thruster = "entity:ship-part:thruster";
             public static readonly String Gun = "entity:ship-part:weapon:gun";
+            public static readonly String Laser = "entity:ship-part:weapon:laser";
             public static readonly String Armor = "entity:ship-part:armor";
             public static readonly String FighterBay = "entity:ship-part:fighter-bay";
         }

@@ -60,11 +60,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         public override Matrix WorldTransformation => Matrix.CreateTranslation(_curRecoil, 0, 0) * Matrix.CreateRotationZ(this.Get<Single>(b => this.GetJoint(b)?.JointAngle ?? 0)) * base.WorldTransformation;
 
         /// <summary>
-        /// The amount (in farseer units) the gun should recoil when fired.
-        /// </summary>
-        public Single Recoil { get; set; } = 0.3f;
-
-        /// <summary>
         /// Indicates that the weapon is currently aiming at the requested target
         /// if false, we shouldnt fire.
         /// </summary>
@@ -92,7 +87,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             base.PreInitialize(provider);
 
             _joints = new Dictionary<Body, RevoluteJoint>();
-            _fireTimer = new ActionTimer(400);
 
             _provider = provider;
             provider.Service(out _entities);
@@ -101,6 +95,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
+
+            _fireTimer = new ActionTimer(this.Context.FireRate);
 
             // Create new shapes for the part
             foreach (ShapeContext shape in this.Context.InnerShapes)
@@ -152,8 +148,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         private void UpdateAim(GameTime gameTime)
         {
             // Update the recoil as needed
-            if (this.Recoil > 0 && _curRecoil < 0.99f)
-                _curRecoil = MathHelper.Lerp(this.Recoil, 0, MathHelper.Min(1f, (Single)((gameTime.TotalGameTime.TotalMilliseconds - _fireTime) / (_fireTimer.Interval / 1.5))));
+            if (this.Context.Recoil > 0 && _curRecoil < 0.99f)
+                _curRecoil = MathHelper.Lerp(this.Context.Recoil, 0, MathHelper.Min(1f, (Single)((gameTime.TotalGameTime.TotalMilliseconds - _fireTime) / (this.Context.FireRate / 1.5))));
 
             this.TryAim(this.Chain.Ship.Target);
         }
@@ -234,7 +230,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                     // Calculate the angle the joint should be to reach the current target...
                     var angle = MathHelper.WrapAngle((Single)Math.Atan2(offset.Y, offset.X) - this.MaleConnectionNode.GetWordRotation(joint.BodyA));
 
-                    this.TargetInRange = MathHelper.Clamp(angle, joint.LowerLimit - 1, joint.UpperLimit + 1) == angle;
+                    this.TargetInRange = MathHelper.Clamp(
+                        value: angle, 
+                        min: joint.LowerLimit - this.Context.MaximumOffsetFireRange, 
+                        max: joint.UpperLimit + this.Context.MaximumOffsetFireRange) == angle;
 
                     if (!this.TargetInRange) // Dont bother aiming at all if its out of range
                         return; // This prevents weird buggy looking gun swivels when the mouse is behind the gun
@@ -286,9 +285,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             _fireTimer.Update(gameTime, v => v && this.ValidateFire.Validate(this, this.Chain.Ship, true), gt =>
             {
                 _fireTime = gameTime.TotalGameTime.TotalMilliseconds;
-                _curRecoil = this.Recoil;
+                _curRecoil = this.Context.Recoil;
                 var ammo = this.Fire(_provider, _entities);
                 ammo.ShooterId = this.Chain.Id;
+                ammo.MaxAge = this.Context.MaximumAmmunitionAge;
 
                 this.OnFire?.Invoke(this, ammo);
             });

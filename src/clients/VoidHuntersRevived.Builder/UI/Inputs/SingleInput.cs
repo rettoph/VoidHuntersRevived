@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Builder.UI.Inputs
         {
             base.Initialize(provider);
 
-            this.input.Filter = new Regex("^[-]{0,1}[0-9\\.]{0,10}$");
+            this.input.Filter = new Regex("^[-]{0,1}[0-9\\.,]{0,10}$");
         }
         #endregion
 

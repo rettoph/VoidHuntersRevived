@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Resources\ShipParts\NX01_Enterprise.vhsp" />
     <None Remove="Resources\ShipParts\vhr.armor.chevron.vhsp" />
     <None Remove="Resources\ShipParts\vhr.armor.plate.vhsp" />
     <None Remove="Resources\ShipParts\vhr.armor.shield.vhsp" />
@@ -42,6 +41,7 @@
     <None Remove="Resources\ShipParts\vhr.special.fighter-bay.vhsp" />
     <None Remove="Resources\ShipParts\vhr.thruster.small.vhsp" />
     <None Remove="Resources\ShipParts\vhr.thruster.tiny.vhsp" />
+    <None Remove="Resources\ShipParts\vhr.weapon.laser.vhsp" />
     <None Remove="Resources\ShipParts\vhr.weapon.mass-driver.tiny.vhsp" />
     <None Remove="Resources\ShipParts\vhr.weapon.mass-driver.vhsp" />
     <None Remove="Resources\Ships\bullfrog.vh" />

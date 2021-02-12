@@ -38,12 +38,17 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddFactory<Thruster>(p => new Thruster());
             services.AddFactory<Gun>(p => new Gun());
             services.AddFactory<Bullet>(b => new Bullet());
+            services.AddFactory<Laser>(p => new Laser());
+            services.AddFactory<LaserBeam>(b => new LaserBeam());
             services.AddFactory<Armor>(b => new Armor());
             services.AddFactory<FighterBay>(b => new FighterBay());
+
             services.AddTransient<RigidShipPart>(VHR.Entities.RigidShipPart);
             services.AddTransient<Thruster>(VHR.Entities.Thruster);
             services.AddTransient<Gun>(VHR.Entities.Gun);
             services.AddTransient<Bullet>();
+            services.AddTransient<Laser>(VHR.Entities.Laser);
+            services.AddTransient<LaserBeam>();
             services.AddTransient<Armor>(VHR.Entities.Armor);
             services.AddTransient<FighterBay>(VHR.Entities.FighterBay);
         }

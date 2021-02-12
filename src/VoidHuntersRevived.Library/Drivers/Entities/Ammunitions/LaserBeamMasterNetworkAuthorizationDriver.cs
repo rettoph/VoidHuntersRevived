@@ -7,17 +7,17 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities.Ammunitions
 {
-    internal sealed class BulletMasterNetworkAuthorizationDriver : MasterNetworkAuthorizationDriver<Bullet>
+    internal sealed class LaserBeamMasterNetworkAuthorizationDriver : MasterNetworkAuthorizationDriver<LaserBeam>
     {
         #region Lifecycle Methods
-        protected override void Initialize(Bullet driven, ServiceProvider provider)
+        protected override void Initialize(LaserBeam driven, ServiceProvider provider)
         {
             base.Initialize(driven, provider);
 
             driven.OnCollision += this.HandleBulletCollision;
         }
 
-        protected override void Release(Bullet driven)
+        protected override void Release(LaserBeam driven)
         {
             base.Release(driven);
 
@@ -29,7 +29,8 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Ammunitions
         private void HandleBulletCollision(Ammunition bullet, Ammunition.CollisionData data)
         {
             // Apply the current damage output of the bullet the the hit ship part.
-            data.Target.TryDamage(this.driven.Damage);
+            data.Target.TryDamage(
+                this.driven.DamagePerSecond * (Single)data.GameTime.ElapsedGameTime.TotalSeconds);
         }
         #endregion
     }
