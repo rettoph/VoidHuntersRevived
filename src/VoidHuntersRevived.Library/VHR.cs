@@ -38,6 +38,7 @@ namespace VoidHuntersRevived.Library
             public static class World
             {
                 public static readonly UInt32 UpdateSize = "world:update:size".xxHash();
+                public static readonly UInt32 CreateExplosion = "world:create:explosion".xxHash();
             }
 
             public static class ShipPart
@@ -87,6 +88,15 @@ namespace VoidHuntersRevived.Library
             public static readonly Category PassiveCollidesWith = Categories.BorderCollisionCategories;
             public static readonly Category ActiveCollidesWith = Categories.BorderCollisionCategories | Categories.ActiveCollisionCategories;
             public static readonly Category FighterCollidesWith = Categories.BorderCollisionCategories | Categories.FighterCollisionCategories;
+        }
+
+        public static class Directories
+        {
+            public static class Resources
+            {
+                public static readonly String ShipParts = "Resources/ShipParts";
+                public static readonly String Ships = "Resources/Ships";
+            }
         }
     }
 }

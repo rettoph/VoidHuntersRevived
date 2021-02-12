@@ -160,7 +160,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
 
         private CommandResponse HandleShipSaveCommand(ICommand sender, CommandInput input)
         {
-            Directory.CreateDirectory("Resources/Ships");
+            Directory.CreateDirectory(VHR.Directories.Resources.Ships);
 
             using (FileStream file = File.Open($"Resources/Ships/{(input["name"] as String)}.vh", FileMode.OpenOrCreate))
                 this.driven.Ship.Export().WriteTo(file);
@@ -219,7 +219,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
             {
                 this.driven.Ping.Create(NetDeliveryMethod.ReliableOrdered, 10).Write(VHR.Pings.Ship.SpawnRequest, m =>
                 {
-                    var ships = Directory.GetFiles("Resources/Ships", "*.vh");
+                    var ships = Directory.GetFiles(VHR.Directories.Resources.Ships, "*.vh");
                     var rand = new Random();
                     using (var fileStream = File.OpenRead(ships[rand.Next(ships.Length)]))
                     {
@@ -239,7 +239,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
         {
             this.driven.Ping.Create(NetDeliveryMethod.ReliableOrdered, 10).Write(VHR.Pings.Ship.SpawnAiRequest, m =>
             {
-                var ships = Directory.GetFiles("Resources/Ships", "*.vh");
+                var ships = Directory.GetFiles(VHR.Directories.Resources.Ships, "*.vh");
                 var rand = new Random();
                 var position = new Vector2(
                     input.GetIfContains<Single>("positionX", _sensor.Position.X), 

@@ -15,6 +15,7 @@ using VoidHuntersRevived.Library.Entities.Players;
 using System.IO;
 using Guppy.Utilities;
 using VoidHuntersRevived.Library.Services;
+using VoidHuntersRevived.Library;
 
 namespace VoidHuntersRevived.Server.Scenes
 {
@@ -61,7 +62,7 @@ namespace VoidHuntersRevived.Server.Scenes
                 });
             }
             
-            for (Int32 i=0; i<20; i++)
+            for (Int32 i=0; i<10; i++)
             {
                 var wingLeft = _shipParts.Create("vhr:hull:wing:left");
                 wingLeft.Position = rand.NextVector2(0, world.Size.X);
@@ -175,12 +176,12 @@ namespace VoidHuntersRevived.Server.Scenes
                         {
                             var rand = new Random();
 
-                            // var chassis = _shipParts.Create("NX01_Enterprise");
+                            // var chassis = _shipParts.Create("vhr:chassis:fighter");
                             // chassis.Position = rand.NextVector2(0, world.Size.X);
                             // chassis.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
                             // ship.Bridge = chassis;
 
-                            var ships = Directory.GetFiles("Resources/Ships", "*.vh");
+                            var ships = Directory.GetFiles(VHR.Directories.Resources.Ships, "*.vh");
                             using (var fileStream = File.OpenRead(ships[rand.Next(ships.Length)]))
                                 ship.Import(fileStream, rand.NextVector2(0, world.Size.X, 0, world.Size.Y));
                         });

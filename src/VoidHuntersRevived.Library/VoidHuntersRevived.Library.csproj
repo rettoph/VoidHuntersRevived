@@ -41,6 +41,7 @@
     <None Remove="Resources\ShipParts\vhr.special.fighter-bay.vhsp" />
     <None Remove="Resources\ShipParts\vhr.thruster.small.vhsp" />
     <None Remove="Resources\ShipParts\vhr.thruster.tiny.vhsp" />
+    <None Remove="Resources\ShipParts\vhr.weapon.laser.tiny.vhsp" />
     <None Remove="Resources\ShipParts\vhr.weapon.laser.vhsp" />
     <None Remove="Resources\ShipParts\vhr.weapon.mass-driver.tiny.vhsp" />
     <None Remove="Resources\ShipParts\vhr.weapon.mass-driver.vhsp" />

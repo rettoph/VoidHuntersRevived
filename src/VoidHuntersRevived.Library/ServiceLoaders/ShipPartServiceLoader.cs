@@ -24,14 +24,13 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
         {
             Settings.MaxPolygonVertices = 9;
             Settings.ContinuousPhysics = false;
-            Directory.CreateDirectory("Resources/ShipParts");
-            String DefaultShipPartLocation = "Resources/ShipParts";
+            Directory.CreateDirectory(VHR.Directories.Resources.ShipParts);
 
             services.AddFactory<ShipPartService>(p => new ShipPartService());
             services.AddScoped<ShipPartService>();
             services.AddSetup<ShipPartService>((shipParts, p, c) =>
             {
-                shipParts.ImportAll(DefaultShipPartLocation);
+                shipParts.ImportAll(VHR.Directories.Resources.ShipParts);
             });
 
             services.AddFactory<RigidShipPart>(p => new RigidShipPart());
