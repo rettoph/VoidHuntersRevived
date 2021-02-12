@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Client.Library.Drivers.Entities;
 using VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers;
 using VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts;
+using VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Special;
 using VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Client.Library.Drivers.Players;
 using VoidHuntersRevived.Client.Library.Effects;
@@ -24,6 +25,7 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Entities.ShipParts.Special;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Layers;
 using VoidHuntersRevived.Library.Scenes;
@@ -84,6 +86,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddAndBindDriver<WorldEntity, WorldEntityGraphicsDriver>(p => new WorldEntityGraphicsDriver());
             services.AddAndBindDriver<ShipPart, ShipPartGraphicsDriver>(p => new ShipPartGraphicsDriver());
             services.AddAndBindDriver<Thruster, ThrusterTrailsDriver>(p => new ThrusterTrailsDriver());
+            services.AddAndBindDriver<ShieldGenerator, ShieldGeneratorGraphicsDriver>(p => new ShieldGeneratorGraphicsDriver());
             services.AddAndBindDriver<UserPlayer, UserPlayerLocalDriver>(
                 factory: p => new UserPlayerLocalDriver(),
                 filter: (up, p) => up.User == p.GetService<ClientPeer>().CurrentUser);

@@ -16,6 +16,7 @@ namespace VoidHuntersRevived.Library
             public static readonly String Laser = "entity:ship-part:weapon:laser";
             public static readonly String Armor = "entity:ship-part:armor";
             public static readonly String FighterBay = "entity:ship-part:fighter-bay";
+            public static readonly String ShieldGenerator = "entity:ship-part:shield-generator";
         }
         
         public static class Actions

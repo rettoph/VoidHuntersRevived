@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
         /// <summary>
         /// The amount of particles to include within each explosion.
         /// </summary>
-        public static Int32 ParticleCount { get; set; } = 15;
+        public static Int32 ParticleCount { get; set; } = 30;
 
         /// <summary>
         /// Used for calculating particle variances.
@@ -73,7 +73,7 @@ namespace VoidHuntersRevived.Client.Library.Utilities
             {
                 this.Vertices[i].Position = explosion.Position;
                 this.Vertices[i].Color = explosion.Color;
-                this.Vertices[i].MaxRadius = explosion.Radius * (1 + (Single)rand.NextDouble() * 0.2f);
+                this.Vertices[i].MaxRadius = explosion.Radius * (1 + (Single)rand.NextDouble() * 0.5f);
                 this.Vertices[i].CreatedTimestamp = this.CreatedTimestamp;
                 this.Vertices[i].Direction = i * step;
                 this.Vertices[i].Alpha = 0f;

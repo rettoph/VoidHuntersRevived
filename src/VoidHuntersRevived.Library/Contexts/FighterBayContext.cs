@@ -6,7 +6,7 @@ using VoidHuntersRevived.Library.Attributes;
 
 namespace VoidHuntersRevived.Library.Contexts
 {
-    [ShipPartContextAttribute("Rigid", "Represents a basic static non moving part.")]
+    [ShipPartContextAttribute("FighterBay", "A piece capable of launching another ship.")]
     public class FighterBayContext : RigidShipPartContext
     {
         #region ShipPartContext Implementation

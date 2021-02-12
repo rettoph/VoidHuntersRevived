@@ -155,7 +155,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
                 _synchronizer.Enqueue(gt => sender.TryRelease());
 
                 // Create an explosion on the bridge (this should kill the bridge)
-                _world.EnqeueExplosion(sender.Position, new Color(sender.Chain.Ship.Color, 0.5f), 10f, 10f);
+                _world.EnqeueExplosion(sender.Position, new Color(sender.Chain.Ship.Color, 0.9f), 10f, 10f);
 
                 // Just in case, manually remove bridge reference.
                 this.driven.Bridge = default;

@@ -147,11 +147,10 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
                     P2 = arg3
                 };
 
-                if (this.ValidateCollision.Validate(this, collisionData, true))
+                if (this.ValidateCollision.Validate(this, collisionData, true) && collisionData.Target.ValidateAmmunitionCollision(collisionData))
                 {
                     _smallestFraction = fraction;
                     _closestCollision = collisionData;
-
                 }
             }
 

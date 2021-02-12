@@ -41,6 +41,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddFactory<LaserBeam>(b => new LaserBeam());
             services.AddFactory<Armor>(b => new Armor());
             services.AddFactory<FighterBay>(b => new FighterBay());
+            services.AddFactory<ShieldGenerator>(b => new ShieldGenerator());
 
             services.AddTransient<RigidShipPart>(VHR.Entities.RigidShipPart);
             services.AddTransient<Thruster>(VHR.Entities.Thruster);
@@ -50,6 +51,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddTransient<LaserBeam>();
             services.AddTransient<Armor>(VHR.Entities.Armor);
             services.AddTransient<FighterBay>(VHR.Entities.FighterBay);
+            services.AddTransient<ShieldGenerator>(VHR.Entities.ShieldGenerator);
         }
 
         public void ConfigureProvider(ServiceProvider provider)

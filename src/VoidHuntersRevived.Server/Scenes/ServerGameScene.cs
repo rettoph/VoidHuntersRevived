@@ -120,6 +120,10 @@ namespace VoidHuntersRevived.Server.Scenes
                 fighterBay.Position = rand.NextVector2(0, world.Size.X);
                 fighterBay.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
 
+                var shieldGenerator = _shipParts.Create("vhr:special:shield-generator");
+                shieldGenerator.Position = rand.NextVector2(0, world.Size.X);
+                shieldGenerator.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+
                 for (Int32 j = 0; j < 20; j++)
                 {
                     var thruster = _shipParts.Create("vhr:thruster:small");
@@ -176,7 +180,7 @@ namespace VoidHuntersRevived.Server.Scenes
                         {
                             var rand = new Random();
 
-                            // var chassis = _shipParts.Create("vhr:chassis:fighter");
+                            // var chassis = _shipParts.Create("vhr:chassis:butterfly");
                             // chassis.Position = rand.NextVector2(0, world.Size.X);
                             // chassis.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
                             // ship.Bridge = chassis;

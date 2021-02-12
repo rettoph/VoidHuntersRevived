@@ -18,6 +18,7 @@ using VoidHuntersRevived.Library.Extensions.Lidgren.Network;
 using tainicom.Aether.Physics2D.Dynamics;
 using Guppy.Extensions.System;
 using VoidHuntersRevived.Library.Services;
+using VoidHuntersRevived.Library.Entities.Ammunitions;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -60,6 +61,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// <see cref="Health"/>.
         /// </summary>
         public Color Color => Color.Lerp(Color.Red, this.Context.InheritColor ? this.Chain.Ship?.Color ?? this.Root.Context.DefaultColor : this.Context.DefaultColor, this.Health / this.Context.MaxHealth);
+        #endregion
+
+        #region Events
+        public event ValidateEventDelegate<ShipPart, Ammunition.CollisionData> OnValidateAmmunitionCollision;
         #endregion
 
         #region Lifecycle Methods
@@ -139,6 +144,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             this.Context = context;
         }
+
+        internal Boolean ValidateAmmunitionCollision(Ammunition.CollisionData data)
+            => this.OnValidateAmmunitionCollision.Validate(this, data, true);
         #endregion
 
         #region Network Methods
