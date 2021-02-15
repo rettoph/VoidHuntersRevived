@@ -86,7 +86,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
             {
                 _shield?.Destroy();
 
-                _shield = this.Root.BuildFixture(new CircleShape(10f, 0.0f)
+                _shield = this.Root.BuildFixture(new CircleShape(this.Context.Radius, 0.0f)
                 {
                     Position = Vector2.Transform(Vector2.Zero, this.LocalTransformation)
                 }, this);

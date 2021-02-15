@@ -70,6 +70,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Special
         #region Frame Methods
         private void Draw(GameTime gameTime)
         {
+            if (this.driven?.Chain.Ship == default)
+                return;
+
             var live = this.driven.Rotation + MathHelper.Pi;
             
             for (var i = 1; i < _strands.Length; i++)
