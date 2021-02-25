@@ -10,6 +10,7 @@ using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Library.Extensions.Aether;
 using tainicom.Aether.Physics2D.Dynamics.Contacts;
 using Guppy.Utilities.Cameras;
+using VoidHuntersRevived.Library;
 
 namespace VoidHuntersRevived.Client.Library.Entities
 {
@@ -45,7 +46,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
 
             _scene.IfOrOnWorld(this.ConfigureAether);
 
-            this.LayerGroup = 10;
+            this.LayerGroup = VHR.LayersContexts.World.Group.GetValue();
         }
 
         protected override void Release()

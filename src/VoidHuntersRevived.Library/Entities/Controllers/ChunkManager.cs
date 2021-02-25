@@ -163,7 +163,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             // Complete setup after world creation.
             provider.GetService<GameScene>().IfOrOnWorld(this.SetupWorld);
 
-            this.UpdateOrder = 110;
+            this.LayerGroup = VHR.LayersContexts.Chunk.Group.GetValue();
         }
 
         protected override void Release()

@@ -125,6 +125,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             this.UpdateOrder = 120;
 
             this.CanAttach += this.DefaultCanAttach;
+
+            this.LayerGroup = VHR.LayersContexts.TractorBeam.Group.GetValue();
         }
 
         protected override void Release()

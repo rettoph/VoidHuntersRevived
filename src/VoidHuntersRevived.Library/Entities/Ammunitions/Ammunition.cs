@@ -63,6 +63,13 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
             this.ValidateCollision += this.HandleValidateCollision;
         }
 
+        protected override void PreInitialize(ServiceProvider provider)
+        {
+            base.PreInitialize(provider);
+
+            this.LayerGroup = VHR.LayersContexts.Ammunition.Group.GetValue();
+        }
+
         protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);

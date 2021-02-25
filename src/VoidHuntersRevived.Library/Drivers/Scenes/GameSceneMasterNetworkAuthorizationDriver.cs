@@ -20,6 +20,7 @@ using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using Guppy.Interfaces;
 
 namespace VoidHuntersRevived.Library.Drivers.Scenes
 {
@@ -148,7 +149,7 @@ namespace VoidHuntersRevived.Library.Drivers.Scenes
         #endregion
 
         #region Event Handlers
-        private void HandleEntityAdded(IServiceList<Entity> sender, Entity entity)
+        private void HandleEntityAdded(IServiceList<IEntity> sender, IEntity entity)
         {
             if (entity is NetworkEntity ne)
                 _creates.Enqueue(ne);

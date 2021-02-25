@@ -2,7 +2,6 @@
 using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
-using Guppy.LayerGroups;
 using Guppy.Lists;
 using Guppy.Network.Peers;
 using Guppy.Utilities;
@@ -90,15 +89,6 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddAndBindDriver<UserPlayer, UserPlayerLocalDriver>(
                 factory: p => new UserPlayerLocalDriver(),
                 filter: (up, p) => up.User == p.GetService<ClientPeer>().CurrentUser);
-
-            services.AddSetup<Ship>((t, p, c) =>
-            {
-                t.LayerGroup = 10;
-            });
-            services.AddSetup<TractorBeam>((t, p, c) =>
-            {
-                t.LayerGroup = 10;
-            });
         }
 
         public void ConfigureProvider(ServiceProvider provider)

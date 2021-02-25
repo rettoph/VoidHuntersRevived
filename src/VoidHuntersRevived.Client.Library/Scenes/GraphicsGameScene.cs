@@ -25,6 +25,8 @@ using VoidHuntersRevived.Client.Library.Services;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Scenes;
+using VoidHuntersRevived.Library.Layers;
+using VoidHuntersRevived.Library;
 
 namespace VoidHuntersRevived.Client.Library.Scenes
 {
@@ -93,16 +95,20 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                 provider.GetContent<Texture2D>("sprite:background:3")
             };
 
-            // Create a ScreenLayer to hold the stage..
+
+            // Create some default layers.
             this.Layers.Create<ScreenLayer>((l, p, c) =>
             {
-                l.Group = new SingleLayerGroup(1);
-                l.DrawOrder = 50;
+                l.SetContext(VHR.LayersContexts.HeadsUpDisplay);
+            });
+            this.Layers.Create<ScreenLayer>((l, p, c) =>
+            {
+                l.SetContext(VHR.LayersContexts.UI);
             });
 
             _stage = this.Entities.Create<Stage>("stage:main", (s, p, d) =>
             {
-                s.LayerGroup = 1;
+                s.LayerGroup = VHR.LayersContexts.UI.Group.GetValue();
             });
         }
 

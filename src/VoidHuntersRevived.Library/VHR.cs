@@ -1,4 +1,6 @@
-﻿using Guppy.Extensions.System;
+﻿using Guppy.Contexts;
+using Guppy.Extensions.System;
+using Guppy.LayerGroups;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -98,6 +100,69 @@ namespace VoidHuntersRevived.Library
                 public static readonly String ShipParts = "Resources/ShipParts";
                 public static readonly String Ships = "Resources/Ships";
             }
+        }
+
+        public static class LayersContexts
+        {
+            public static readonly LayerContext World = new LayerContext()
+            {
+                DrawOrder = 00,
+                Group = new SingleLayerGroup(1)
+            };
+
+            public static readonly LayerContext Player = new LayerContext()
+            {
+                DrawOrder = 10,
+                Group = new SingleLayerGroup(2)
+            };
+
+            public static readonly LayerContext Chunk = new LayerContext()
+            {
+                DrawOrder = 20,
+                Group = new SingleLayerGroup(3)
+            };
+
+            public static readonly LayerContext Trail = new LayerContext()
+            {
+                DrawOrder = 30,
+                Group = new SingleLayerGroup(4)
+            };
+
+            public static readonly LayerContext Ship = new LayerContext()
+            {
+                DrawOrder = 40,
+                Group = new SingleLayerGroup(5)
+            };
+
+            public static readonly LayerContext TractorBeam = new LayerContext()
+            {
+                DrawOrder = 50,
+                Group = new SingleLayerGroup(6)
+            };
+
+            public static readonly LayerContext Explosion = new LayerContext()
+            {
+                DrawOrder = 60,
+                Group = new SingleLayerGroup(7)
+            };
+
+            public static readonly LayerContext Ammunition = new LayerContext()
+            {
+                DrawOrder = 70,
+                Group = new SingleLayerGroup(8)
+            };
+
+            public static readonly LayerContext HeadsUpDisplay = new LayerContext()
+            {
+                DrawOrder = 80,
+                Group = new SingleLayerGroup(9)
+            };
+
+            public static readonly LayerContext UI = new LayerContext()
+            {
+                DrawOrder = 90,
+                Group = new SingleLayerGroup(10)
+            };
         }
     }
 }

@@ -16,6 +16,7 @@ using System.Linq;
 using Guppy.Extensions.System;
 using Guppy.Enums;
 using Guppy.Utilities;
+using Guppy.Interfaces;
 
 namespace VoidHuntersRevived.Library.Scenes
 {
@@ -41,7 +42,6 @@ namespace VoidHuntersRevived.Library.Scenes
         public Group Group => this.group;
         #endregion
 
-
         #region Lifecycle Methods
         protected override void PreInitialize(ServiceProvider provider)
         {
@@ -56,17 +56,48 @@ namespace VoidHuntersRevived.Library.Scenes
 
             this.group = provider.GetService<Peer>()?.Groups?.GetOrCreateById(Guid.Empty);
 
+            #region Layers
             // Create some default layers.
-            // World Components (ShipParts, WorldEntity, Players, ect)
             this.Layers.Create<GameLayer>((l, p, c) =>
             {
-                l.Group = new SingleLayerGroup(0);
+                l.SetContext(VHR.LayersContexts.World);
             });
 
             this.Layers.Create<GameLayer>((l, p, c) =>
             {
-                l.Group = new SingleLayerGroup(10);
+                l.SetContext(VHR.LayersContexts.Player);
             });
+
+            this.Layers.Create<GameLayer>((l, p, c) =>
+            {
+                l.SetContext(VHR.LayersContexts.Chunk);
+            });
+
+            this.Layers.Create<GameLayer>((l, p, c) =>
+            {
+                l.SetContext(VHR.LayersContexts.Trail);
+            });
+
+            this.Layers.Create<GameLayer>((l, p, c) =>
+            {
+                l.SetContext(VHR.LayersContexts.Ship);
+            });
+
+            this.Layers.Create<GameLayer>((l, p, c) =>
+            {
+                l.SetContext(VHR.LayersContexts.TractorBeam);
+            });
+
+            this.Layers.Create<GameLayer>((l, p, c) =>
+            {
+                l.SetContext(VHR.LayersContexts.Explosion);
+            });
+
+            this.Layers.Create<GameLayer>((l, p, c) =>
+            {
+                l.SetContext(VHR.LayersContexts.Ammunition);
+            });
+            #endregion
 
             this.Entities.OnAdded += this.HandleEntityAdded;
         }
@@ -138,7 +169,7 @@ namespace VoidHuntersRevived.Library.Scenes
         #endregion
 
         #region Event Handlers
-        private void HandleEntityAdded(IEnumerable<Entity> sender, Entity arg)
+        private void HandleEntityAdded(IEnumerable<IEntity> sender, IEntity arg)
         {
             if(arg is WorldEntity world)
             {

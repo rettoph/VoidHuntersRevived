@@ -184,6 +184,8 @@ namespace VoidHuntersRevived.Library.Entities
 
             // Create a new tractor beam instance for this ship...
             this.TractorBeam = provider.GetService<EntityList>().Create<TractorBeam>((t, p, c) => t.Ship = this);
+
+            this.LayerGroup = VHR.LayersContexts.Ship.Group.GetValue();
         }
 
         protected override void Release()

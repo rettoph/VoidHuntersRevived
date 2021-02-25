@@ -61,6 +61,8 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
             this.players = provider.GetService<ServiceList<Player>>();
             this.Team = Guid.NewGuid();
+
+            this.LayerGroup = VHR.LayersContexts.Player.Group.GetValue();
         }
 
         protected override void PostInitialize(ServiceProvider provider)

@@ -134,6 +134,8 @@ namespace VoidHuntersRevived.Library.Entities
             this.UpdateOrder = 100;
 
             _commands["world"]["info"].OnExcecute += this.HandleWorldInfoCommand;
+
+            this.LayerGroup = VHR.LayersContexts.World.Group.GetValue();
         }
 
         protected override void Release()
