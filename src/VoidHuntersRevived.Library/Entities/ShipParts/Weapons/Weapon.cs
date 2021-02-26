@@ -345,7 +345,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         }
 
         private static bool HandleValidateFire(Weapon sender, Ship args)
-            => sender.TargetInRange;
+            => sender.TargetInRange && sender.Chain.Ship.TryUseEnergy(sender.Context.FireEnergyCost);
         #endregion
     }
 }

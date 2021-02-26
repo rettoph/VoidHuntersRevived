@@ -18,7 +18,9 @@ namespace VoidHuntersRevived.Library.Contexts
             Recoil = 3,
             FireRate = 4,
             MaximumAmmunitionAge = 5,
-            MaximumOffsetFireRange = 6
+            MaximumOffsetFireRange = 6,
+            FireEnergyCost = 7,
+            ShieldEnergyCost = 8
         }
         #endregion
 
@@ -52,6 +54,18 @@ namespace VoidHuntersRevived.Library.Contexts
         /// </summary>
         [ShipPartContextProperty("MaximumOffsetFireRange", "The amount the weapon can be offset but still fire (in degrees).", ShipPartContextPropertyType.Radian)]
         public Single MaximumOffsetFireRange { get; set; } = MathHelper.ToDegrees(15);
+
+        /// <summary>
+        /// The amount of energy used each time the weapon fires.
+        /// </summary>
+        [ShipPartContextProperty("FireEnergyCost", "The amount of energy used each time the weapon fires.", ShipPartContextPropertyType.Single)]
+        public Single FireEnergyCost { get; set; } = 5;
+
+        /// <summary>
+        /// The amount of energy to deplete from an enemy eergy shield on colission.
+        /// </summary>
+        [ShipPartContextProperty("ShieldEnergyCost", "The amount of energy used each time the weapon fires.", ShipPartContextPropertyType.Single)]
+        public Single ShieldEnergyCost { get; set; } = 5;
         #endregion
 
         #region Constructors
@@ -89,6 +103,12 @@ namespace VoidHuntersRevived.Library.Contexts
                         case WeaponContextProperty.MaximumOffsetFireRange:
                             this.MaximumOffsetFireRange = reader.ReadSingle();
                             break;
+                        case WeaponContextProperty.FireEnergyCost:
+                            this.FireEnergyCost = reader.ReadSingle();
+                            break;
+                        case WeaponContextProperty.ShieldEnergyCost:
+                            this.ShieldEnergyCost = reader.ReadSingle();
+                            break;
                     }
                 }
             }
@@ -114,6 +134,12 @@ namespace VoidHuntersRevived.Library.Contexts
 
             writer.Write((Byte)WeaponContextProperty.MaximumOffsetFireRange);
             writer.Write(this.MaximumOffsetFireRange);
+
+            writer.Write((Byte)WeaponContextProperty.FireEnergyCost);
+            writer.Write(this.FireEnergyCost);
+
+            writer.Write((Byte)WeaponContextProperty.ShieldEnergyCost);
+            writer.Write(this.ShieldEnergyCost);
 
             writer.Write((Byte)WeaponContextProperty.End);
         }

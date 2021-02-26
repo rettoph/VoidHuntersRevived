@@ -38,6 +38,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
         {
             // Configure service factories...
             services.AddFactory<Sensor>(p => new Sensor());
+            services.AddFactory<PlayerNameplate>(p => new PlayerNameplate());
             services.AddFactory<Trail>(p => new Trail());
             services.AddFactory<TrailSegment>(p => new TrailSegment());
             services.AddFactory<TrailRenderService>(p => new TrailRenderService());
@@ -66,6 +67,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
 
             // Configure service lifetimes...
             services.AddScoped<Sensor>();
+            services.AddTransient<PlayerNameplate>();
             services.AddTransient<Trail>();
             services.AddTransient<TrailSegment>();
             services.AddScoped<TrailRenderService>();
@@ -86,6 +88,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddAndBindDriver<ShipPart, ShipPartGraphicsDriver>(p => new ShipPartGraphicsDriver());
             services.AddAndBindDriver<Thruster, ThrusterTrailsDriver>(p => new ThrusterTrailsDriver());
             services.AddAndBindDriver<ShieldGenerator, ShieldGeneratorGraphicsDriver>(p => new ShieldGeneratorGraphicsDriver());
+            services.AddAndBindDriver<Player, PlayerPlayerNameplateDriver>(p => new PlayerPlayerNameplateDriver());
             services.AddAndBindDriver<UserPlayer, UserPlayerLocalDriver>(
                 factory: p => new UserPlayerLocalDriver(),
                 filter: (up, p) => up.User == p.GetService<ClientPeer>().CurrentUser);

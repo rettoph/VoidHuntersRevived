@@ -31,7 +31,10 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Ammunitions
         {
             // Check to see if the ammo hit a shield...
             if (data.Fixture.Tag is ShieldGenerator shield && data.Fixture.IsSensor)
+            {
                 return;
+            }
+                
 
             // Apply the current damage output of the bullet the the hit ship part.
             data.Target.TryDamage(this.driven.DamagePerSecond * (Single)data.GameTime.ElapsedGameTime.TotalSeconds);

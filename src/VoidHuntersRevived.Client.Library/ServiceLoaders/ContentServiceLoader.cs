@@ -29,6 +29,10 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                 content.TryRegister("sprite:background:3", "Sprites/background-3");
 
                 content.TryRegister("sprite:uv", "Sprites/UV");
+                content.TryRegister("sprite:player-nameplate:foreground", "Sprites/player-nameplate-foreground");
+                content.TryRegister("sprite:player-nameplate:background", "Sprites/player-nameplate-background");
+
+                content.TryRegister("font:player:nameplate:1", "Fonts/PlayerNameplate-1");
             });
         }
 
