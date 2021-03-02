@@ -4,9 +4,11 @@ using Guppy.Extensions.System.Collections;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using tainicom.Aether.Physics2D.Collision.Shapes;
 using VoidHuntersRevived.Library.Contexts;
+using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Utilities.Farseer;
 using static VoidHuntersRevived.Library.Entities.Ammunitions.Ammunition;
 
@@ -20,6 +22,19 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
 
         #region Public Properties
         public new ShieldGeneratorContext Context { get; private set; }
+
+        /// <summary>
+        /// Determins whether or not the current shield is
+        /// actually on & powered. Note that just because
+        /// a shield is active doesnt mean its powered.
+        /// </summary>
+        public Boolean Powered => this.Active && (!this.Chain.Ship?.Charging ?? false);
+
+        /// <summary>
+        /// Determins that the current shield would be on
+        /// if possible.
+        /// </summary>
+        public Boolean Active { get; private set; } = true;
         #endregion
 
         #region Lifecycle Methods
@@ -28,7 +43,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
             base.Create(provider);
 
             this.OnChainChanged += this.HandleChainChanged;
-            this.OnValidateAmmunitionCollision += this.HandleValidateAmmunitionCollision;
+
         }
 
         protected override void Release()
@@ -43,7 +58,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
             base.Dispose();
 
             this.OnChainChanged -= this.HandleChainChanged;
-            this.OnValidateAmmunitionCollision -= this.HandleValidateAmmunitionCollision;
         }
         #endregion
 
@@ -54,25 +68,44 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
 
             this.Context = context as ShieldGeneratorContext;
         }
-        #endregion
 
-        #region Event Handlers
-        private bool HandleValidateAmmunitionCollision(ShipPart sender, CollisionData data)
+        public override ShipPartAmmunitionCollisionResult GetAmmunitionCollisionResult(CollisionData collision)
         {
-            if (data.Fixture.IsSensor)
+            if(_shield.List.Contains(collision.Fixture))
             {
+
+                if (!this.Powered) // If the shield isnt powered then dont even calculate anything...
+                    return ShipPartAmmunitionCollisionResult.None;
+                if (this.Chain.Id == collision.Ammunition.ShooterChainId)
+                    return ShipPartAmmunitionCollisionResult.None;
+
                 // https://stackoverflow.com/questions/31647023/determine-if-angle-is-between-2-other-angles
-                var angle = MathHelper.WrapAngle(this.Position.Angle(data.P1));
+                var angle = MathHelper.WrapAngle(this.Position.Angle(collision.P1));
                 var upper = MathHelper.WrapAngle(this.Rotation + (this.Context.Range / 2));
                 var lower = MathHelper.WrapAngle(this.Rotation - (this.Context.Range / 2));
 
-                return Math.Abs(MathHelper.WrapAngle(upper - angle)) < MathHelper.PiOver2
+                var withinShieldBounds =  Math.Abs(MathHelper.WrapAngle(upper - angle)) < MathHelper.PiOver2
                     && Math.Abs(MathHelper.WrapAngle(lower - angle)) < MathHelper.PiOver2;
+                
+                if(withinShieldBounds)
+                {
+                    this.Chain.Ship.TryUseEnergy(
+                        collision.Ammunition.GetShieldEnergyCost(
+                            collision.GameTime));
+
+                    return ShipPartAmmunitionCollisionResult.Stop;
+                }
+                else
+                {
+                    return ShipPartAmmunitionCollisionResult.None;
+                }
             }
 
-            return true;
+            return base.GetAmmunitionCollisionResult(collision);
         }
+        #endregion
 
+        #region Event Handlers
         /// <summary>
         /// When the chain changes, we must restructure the entire
         /// ship part to merge with the root.

@@ -2,9 +2,8 @@
 using Guppy.Events.Delegates;
 using Lidgren.Network;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using VoidHuntersRevived.Library.Entities.Ammunitions;
+using VoidHuntersRevived.Library.Enums;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -46,7 +45,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #endregion
 
         #region Helper Methods
-
         /// <summary>
         /// Attempt to apply the specified amount of damage 
         /// to the current <see cref="ShipPart"/>. The
@@ -55,6 +53,20 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// <param name="damage"></param>
         public virtual void TryDamage(Single damage)
             => this.Health = Math.Max(0f, this.Health - damage);
+
+        public virtual ShipPartAmmunitionCollisionResult GetAmmunitionCollisionResult(Ammunition.CollisionData collision)
+        {
+            if (this.Chain.Ship == default)
+                return ShipPartAmmunitionCollisionResult.None;
+
+            if (collision.Ammunition.ShooterChainId == this.Chain.Id)
+                return ShipPartAmmunitionCollisionResult.None;
+
+            if (this.Health > 0)
+                return ShipPartAmmunitionCollisionResult.DamageAndStop;
+
+            return ShipPartAmmunitionCollisionResult.None;
+        }
         #endregion
 
         #region Network Methods

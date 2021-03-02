@@ -86,7 +86,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
             var healthPercent = this.player.Ship.Bridge.Health / this.player.Ship.Bridge.Context.MaxHealth;
             _healthPercent = MathHelper.Lerp(_healthPercent, healthPercent, (Single)gameTime.ElapsedGameTime.TotalSeconds * 10f);
 
-            var energyPercent = this.player.Ship.GetEnergy() / this.player.Ship.GetMaxEnergy();
+            var energyPercent = this.player.Ship.EnergyPercentage;
             _energyPercent = MathHelper.Lerp(_energyPercent, energyPercent, (Single)gameTime.ElapsedGameTime.TotalSeconds * 10f);
 
             _ship = _worldCamera.Project(this.player.Ship.Bridge.Position);
@@ -113,14 +113,13 @@ namespace VoidHuntersRevived.Client.Library.Entities
 
             var healthbar = new Rectangle((_position - _textureOffset + new Vector2(5, 4)).ToPoint(), new Point((Int32)(104 * _healthPercent), 7));
             _primitiveBatch.DrawRectangle(Color.Lerp(this.player.Ship.Color, Color.Lerp(Color.Red, Color.Green, this.player.Ship.Bridge.Health / this.player.Ship.Bridge.Context.MaxHealth), 0.75f), healthbar);
-            // 
             var energyBar = new Rectangle((_position - _textureOffset + new Vector2(5, 15)).ToPoint(), new Point((Int32)(104 * _energyPercent), 3));
             _primitiveBatch.DrawRectangle(Color.Yellow, energyBar);
             // 
             _primitiveBatch.TryFlushTriangleVertices(true);
 
             _spriteBatch.DrawString(_font, this.player.Name, _position - _nameOffset, this.player.Ship.Color);
-            _spriteBatch.Draw(_foreground, _position - _textureOffset, this.player.Ship.Color);
+            _spriteBatch.Draw(_foreground, _position - _textureOffset, Color.White);
         }
         #endregion
     }

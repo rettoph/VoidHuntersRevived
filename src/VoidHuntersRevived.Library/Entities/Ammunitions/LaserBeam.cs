@@ -57,10 +57,8 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         {
             base.Draw(gameTime);
 
-            this.logger.Info(_count);
-
             _primitiveBatch.DrawLine(
-                this.Laser.Chain.Ship?.Color ?? Color.Green, 
+                this.Laser.Chain.Ship?.Color ?? Color.Transparent, 
                 _start, 
                 _end);
         }
@@ -77,11 +75,19 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         }
         #endregion
 
+        /// <inheritdoc />
+        #region Ammunition Implementation
+        public override float GetShieldEnergyCost(GameTime gameTime)
+        {
+            return this.ShieldEnergyCost * (Single)gameTime.ElapsedGameTime.TotalSeconds;
+        }
+        #endregion
+
         #region Event Handlers
-        private void HandleCollision(Ammunition sender, CollisionData data)
+        private void HandleCollision(Ammunition sender, CollisionDataResult collision)
         {
             _count++;
-            _end = data.P1;
+            _end = collision.Data.P1;
         }
 
         private void HandleLaserReleasing(IService sender)

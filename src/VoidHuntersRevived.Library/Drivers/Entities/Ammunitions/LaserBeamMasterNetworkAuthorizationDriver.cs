@@ -5,6 +5,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Entities.Ammunitions;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.ShipParts.Special;
+using VoidHuntersRevived.Library.Enums;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities.Ammunitions
 {
@@ -27,17 +28,10 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Ammunitions
         #endregion
 
         #region Event Handlers
-        private void HandleBulletCollision(Ammunition bullet, Ammunition.CollisionData data)
+        private void HandleBulletCollision(Ammunition bullet, Ammunition.CollisionDataResult collision)
         {
-            // Check to see if the ammo hit a shield...
-            if (data.Fixture.Tag is ShieldGenerator shield && data.Fixture.IsSensor)
-            {
-                return;
-            }
-                
-
-            // Apply the current damage output of the bullet the the hit ship part.
-            data.Target.TryDamage(this.driven.DamagePerSecond * (Single)data.GameTime.ElapsedGameTime.TotalSeconds);
+            if((collision.Result & ShipPartAmmunitionCollisionResult.Damage) != 0)
+                collision.Data.Target.TryDamage(this.driven.DamagePerSecond * (Single)collision.Data.GameTime.ElapsedGameTime.TotalSeconds);
         }
         #endregion
     }

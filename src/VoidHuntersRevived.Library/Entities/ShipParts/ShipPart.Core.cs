@@ -63,10 +63,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public Color Color => Color.Lerp(Color.Red, this.Context.InheritColor ? this.Chain.Ship?.Color ?? this.Root.Context.DefaultColor : this.Context.DefaultColor, this.Health / this.Context.MaxHealth);
         #endregion
 
-        #region Events
-        public event ValidateEventDelegate<ShipPart, Ammunition.CollisionData> OnValidateAmmunitionCollision;
-        #endregion
-
         #region Lifecycle Methods
         protected override void Create(ServiceProvider provider)
         {
@@ -144,9 +140,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             this.Context = context;
         }
-
-        internal Boolean ValidateAmmunitionCollision(Ammunition.CollisionData data)
-            => this.OnValidateAmmunitionCollision.Validate(this, data, true);
         #endregion
 
         #region Network Methods

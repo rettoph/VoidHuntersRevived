@@ -85,8 +85,16 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         }
         #endregion
 
+        /// <inheritdoc />
+        #region Ammunition Implementation
+        public override float GetShieldEnergyCost(GameTime gameTime)
+        {
+            return this.ShieldEnergyCost;
+        }
+        #endregion
+
         #region Event Handlers
-        private void HandleCollision(Ammunition sender, CollisionData data)
+        private void HandleCollision(Ammunition sender, CollisionDataResult collision)
         {
             // When the bullet collides, we always want to dispose it.
             // Note: Health damage is only applied on the master and is then broadcasted to all slaves.

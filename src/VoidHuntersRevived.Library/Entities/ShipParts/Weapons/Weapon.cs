@@ -287,8 +287,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                 _fireTime = gameTime.TotalGameTime.TotalMilliseconds;
                 _curRecoil = this.Context.Recoil;
                 var ammo = this.Fire(_provider, _entities);
-                ammo.ShooterId = this.Chain.Id;
+                ammo.ShooterChainId = this.Chain.Id;
                 ammo.MaxAge = this.Context.MaximumAmmunitionAge;
+                ammo.ShieldEnergyCost = this.Context.ShieldEnergyCost;
 
                 this.OnFire?.Invoke(this, ammo);
             });
