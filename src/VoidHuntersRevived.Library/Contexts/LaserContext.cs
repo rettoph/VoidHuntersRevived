@@ -14,7 +14,8 @@ namespace VoidHuntersRevived.Library.Contexts
         {
             Start = 0,
             End = 1,
-            DamagePerSecond = 2
+            DamagePerSecond = 2,
+            ShieldDeflectionEnergyCostPerSecond = 3
         }
         #endregion
 
@@ -27,6 +28,12 @@ namespace VoidHuntersRevived.Library.Contexts
         /// </summary>
         [ShipPartContextProperty("Damage Per Second", "The amount of damage applied by the laser beam per second.", ShipPartContextPropertyType.Single)]
         public Single DamagePerSecond { get; set; } = 10f;
+
+        /// <summary>
+        /// The energy cost to deflect this laser with shields per second.
+        /// </summary>
+        [ShipPartContextProperty("Shield Deflection Energy Cost Per Second", "The energy cost to deflect this laser with shields per second.", ShipPartContextPropertyType.Single)]
+        public Single ShieldDeflectionEnergyCostPerSecond { get; internal set; } = 15f;
         #endregion
 
         #region Constrcutor
@@ -51,6 +58,9 @@ namespace VoidHuntersRevived.Library.Contexts
                         case LaserContextProperty.DamagePerSecond:
                             this.DamagePerSecond = reader.ReadSingle();
                             break;
+                        case LaserContextProperty.ShieldDeflectionEnergyCostPerSecond:
+                            this.ShieldDeflectionEnergyCostPerSecond = reader.ReadSingle();
+                            break;
                     }
                 }
             }
@@ -64,6 +74,9 @@ namespace VoidHuntersRevived.Library.Contexts
 
             writer.Write((Byte)LaserContextProperty.DamagePerSecond);
             writer.Write(this.DamagePerSecond);
+
+            writer.Write((Byte)LaserContextProperty.ShieldDeflectionEnergyCostPerSecond);
+            writer.Write(this.ShieldDeflectionEnergyCostPerSecond);
 
             writer.Write((Byte)LaserContextProperty.End);
         }

@@ -31,13 +31,16 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
         #region Weapon Implementation
         /// <inheritdoc />
-        protected override Ammunition Fire(ServiceProvider provider, EntityList entities)
+        protected override Ammunition Fire(ServiceProvider provider, EntityList entities, Action<Ammunition, ServiceProvider, ServiceConfiguration> setup)
         {
             return entities.Create<Bullet>((b, p, d) =>
             {
+                setup(b, p, d);
+
                 b.Damage = this.Context.BulletDamage;
                 b.Position = this.Position;
                 b.Velocity = this.Root.LinearVelocity + Vector2.Transform(Vector2.UnitX * this.Context.BulletSpeed, Matrix.CreateRotationZ(MathHelper.WrapAngle(this.Rotation + MathHelper.Pi)));
+                b.ShieldDeflectionEnergyCost = this.Context.ShieldDeflectionEnergyCost;
             });
         }
         #endregion

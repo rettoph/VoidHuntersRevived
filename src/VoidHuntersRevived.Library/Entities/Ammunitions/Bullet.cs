@@ -36,6 +36,11 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         /// The bullets current velocity (per second).
         /// </summary>
         public Vector2 Velocity { get; internal set; }
+
+        /// <summary>
+        /// The bullet's shield deflection energy cost.
+        /// </summary>
+        public Single ShieldDeflectionEnergyCost { get; internal set; }
         #endregion
 
         #region Lifecycle Methods
@@ -78,23 +83,29 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
 
         protected override void UpdateCollisions(GameTime gameTime)
         {
-            this.CheckCollisions(
+            this.TryApplyCollisions(
                 start: this.Position,
                 end: this.Position += this.Velocity * (Single)gameTime.ElapsedGameTime.TotalSeconds,
                 gameTime: gameTime);
         }
         #endregion
 
-        /// <inheritdoc />
         #region Ammunition Implementation
-        public override float GetShieldEnergyCost(GameTime gameTime)
+        /// <inheritdoc />
+        public override float GetShieldDeflectionEnergyCost(CollisionData data, GameTime gameTime)
         {
-            return this.ShieldEnergyCost;
+            return this.ShieldDeflectionEnergyCost;
+        }
+
+        /// <inheritdoc />
+        public override float GetDamage(CollisionData data, GameTime gameTime)
+        {
+            return this.Damage;
         }
         #endregion
 
         #region Event Handlers
-        private void HandleCollision(Ammunition sender, CollisionDataResult collision)
+        private void HandleCollision(Ammunition sender, CollisionData data)
         {
             // When the bullet collides, we always want to dispose it.
             // Note: Health damage is only applied on the master and is then broadcasted to all slaves.

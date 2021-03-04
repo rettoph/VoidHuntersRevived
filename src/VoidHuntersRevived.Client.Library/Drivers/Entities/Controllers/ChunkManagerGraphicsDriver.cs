@@ -11,7 +11,6 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Extensions.System.Drawing;
 using VoidHuntersRevived.Library.Scenes;
-
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
@@ -50,7 +49,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
             this.driven.OnDraw -= this.Draw;
 
             _camera = null;
-            _primitiveBatch = null;
         }
         #endregion
 
@@ -71,7 +69,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
             // Draw all visible chunks...
             this.driven.GetChunks(bounds).ForEach(c =>
             {
-                // _primitiveBatch.TraceRectangle(ChunkManagerGraphicsDriver.ChunkColor, c.Bounds);
+                _primitiveBatch.TraceRectangle(ChunkManagerGraphicsDriver.ChunkColor, c.Bounds);
                 c.TryDraw(gameTime);
             });
         }

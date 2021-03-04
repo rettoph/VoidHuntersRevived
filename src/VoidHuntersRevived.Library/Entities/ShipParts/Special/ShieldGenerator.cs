@@ -43,7 +43,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
             base.Create(provider);
 
             this.OnChainChanged += this.HandleChainChanged;
-
+            this.OnValidateAmmunitionCollision += this.HandleValidateAmmunitionCollision;
+            this.OnApplyAmmunitionCollision += this.HandleApplyAmmunitionCollision;
+            this.OnValidateAmmunitionCollisionDamage += this.HandleApplyAmmunitionCollisionDamage;
         }
 
         protected override void Release()
@@ -58,6 +60,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
             base.Dispose();
 
             this.OnChainChanged -= this.HandleChainChanged;
+            this.OnValidateAmmunitionCollision -= this.HandleValidateAmmunitionCollision;
+            this.OnApplyAmmunitionCollision -= this.HandleApplyAmmunitionCollision;
+            this.OnValidateAmmunitionCollisionDamage -= this.HandleApplyAmmunitionCollisionDamage;
         }
         #endregion
 
@@ -67,41 +72,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
             base.SetContext(context);
 
             this.Context = context as ShieldGeneratorContext;
-        }
-
-        public override ShipPartAmmunitionCollisionResult GetAmmunitionCollisionResult(CollisionData collision)
-        {
-            if(_shield.List.Contains(collision.Fixture))
-            {
-
-                if (!this.Powered) // If the shield isnt powered then dont even calculate anything...
-                    return ShipPartAmmunitionCollisionResult.None;
-                if (this.Chain.Id == collision.Ammunition.ShooterChainId)
-                    return ShipPartAmmunitionCollisionResult.None;
-
-                // https://stackoverflow.com/questions/31647023/determine-if-angle-is-between-2-other-angles
-                var angle = MathHelper.WrapAngle(this.Position.Angle(collision.P1));
-                var upper = MathHelper.WrapAngle(this.Rotation + (this.Context.Range / 2));
-                var lower = MathHelper.WrapAngle(this.Rotation - (this.Context.Range / 2));
-
-                var withinShieldBounds =  Math.Abs(MathHelper.WrapAngle(upper - angle)) < MathHelper.PiOver2
-                    && Math.Abs(MathHelper.WrapAngle(lower - angle)) < MathHelper.PiOver2;
-                
-                if(withinShieldBounds)
-                {
-                    this.Chain.Ship.TryUseEnergy(
-                        collision.Ammunition.GetShieldEnergyCost(
-                            collision.GameTime));
-
-                    return ShipPartAmmunitionCollisionResult.Stop;
-                }
-                else
-                {
-                    return ShipPartAmmunitionCollisionResult.None;
-                }
-            }
-
-            return base.GetAmmunitionCollisionResult(collision);
         }
         #endregion
 
@@ -126,6 +96,50 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
                 _shield.List.ForEach(f => f.IsSensor = true);
             }
         }
+
+        /// <summary>
+        /// Check to see if the ammunition is hitting the energy shield.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        private bool HandleValidateAmmunitionCollision(ShipPart sender, CollisionData collision)
+        {
+            if (_shield.List.Contains(collision.Fixture))
+            {
+                // Guard clauses for instant no.
+                if (!this.Powered)
+                    return false;
+
+                // https://stackoverflow.com/questions/31647023/determine-if-angle-is-between-2-other-angles
+                var angle = MathHelper.WrapAngle(this.Position.Angle(collision.P1));
+                var upper = MathHelper.WrapAngle(this.Rotation + (this.Context.Range / 2));
+                var lower = MathHelper.WrapAngle(this.Rotation - (this.Context.Range / 2));
+
+                var withinShieldBounds = Math.Abs(MathHelper.WrapAngle(upper - angle)) < MathHelper.PiOver2
+                    && Math.Abs(MathHelper.WrapAngle(lower - angle)) < MathHelper.PiOver2;
+
+                // Determin whether or not the shield was actually hit...
+                if (withinShieldBounds)
+                    return true;
+                else
+                    return false;
+            }
+
+            return true;
+        }
+
+        private void HandleApplyAmmunitionCollision(ShipPart sender, CollisionData data, GameTime gameTime)
+        {
+            if(data.Fixture.IsSensor)
+                this.Chain.Ship.TryUseEnergy(
+                        data.Ammunition.GetShieldDeflectionEnergyCost(
+                            data,
+                            gameTime));
+        }
+
+        private bool HandleApplyAmmunitionCollisionDamage(ShipPart sender, CollisionData data)
+            => !data.Fixture.IsSensor;
         #endregion
     }
 }

@@ -113,13 +113,13 @@ namespace VoidHuntersRevived.Client.Library.Entities
 
             var healthbar = new Rectangle((_position - _textureOffset + new Vector2(5, 4)).ToPoint(), new Point((Int32)(104 * _healthPercent), 7));
             _primitiveBatch.DrawRectangle(Color.Lerp(this.player.Ship.Color, Color.Lerp(Color.Red, Color.Green, this.player.Ship.Bridge.Health / this.player.Ship.Bridge.Context.MaxHealth), 0.75f), healthbar);
-            var energyBar = new Rectangle((_position - _textureOffset + new Vector2(5, 15)).ToPoint(), new Point((Int32)(104 * _energyPercent), 3));
+            var energyBar = new Rectangle((_position - _textureOffset + new Vector2(5, 13)).ToPoint(), new Point((Int32)(104 * _energyPercent), 3));
             _primitiveBatch.DrawRectangle(Color.Yellow, energyBar);
             // 
             _primitiveBatch.TryFlushTriangleVertices(true);
 
             _spriteBatch.DrawString(_font, this.player.Name, _position - _nameOffset, this.player.Ship.Color);
-            _spriteBatch.Draw(_foreground, _position - _textureOffset, Color.White);
+            _spriteBatch.Draw(_foreground, _position - _textureOffset, this.player.Ship.Color);
         }
         #endregion
     }

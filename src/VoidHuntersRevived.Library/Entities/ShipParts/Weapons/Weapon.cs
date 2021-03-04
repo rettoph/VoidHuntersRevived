@@ -286,16 +286,18 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             {
                 _fireTime = gameTime.TotalGameTime.TotalMilliseconds;
                 _curRecoil = this.Context.Recoil;
-                var ammo = this.Fire(_provider, _entities);
-                ammo.ShooterChainId = this.Chain.Id;
-                ammo.MaxAge = this.Context.MaximumAmmunitionAge;
-                ammo.ShieldEnergyCost = this.Context.ShieldEnergyCost;
+                var ammo = this.Fire(_provider, _entities, (ammo, p, c) =>
+                {
+                    ammo.MaxAge = this.Context.MaximumAmmunitionAge;
+                    ammo.Weapon = this;
+                });
+
 
                 this.OnFire?.Invoke(this, ammo);
             });
         }
 
-        protected abstract Ammunition Fire(ServiceProvider provider, EntityList entities);
+        protected abstract Ammunition Fire(ServiceProvider provider, EntityList entities, Action<Ammunition, ServiceProvider, ServiceConfiguration> setup);
 
         public override void SetContext(ShipPartContext context)
         {

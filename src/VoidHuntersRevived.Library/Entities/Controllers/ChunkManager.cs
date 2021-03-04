@@ -54,10 +54,10 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
             internal void TryDraw(GameTime gameTime)
             {
-                if(_lastDraw != gameTime.ElapsedGameTime.TotalMilliseconds)
+                if(_lastDraw != gameTime.TotalGameTime.TotalMilliseconds)
                 {
                     _chain.TryDraw(gameTime);
-                    _lastDraw = gameTime.ElapsedGameTime.TotalMilliseconds;
+                    _lastDraw = gameTime.TotalGameTime.TotalMilliseconds;
                 }
             }
 
@@ -109,7 +109,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         #endregion
 
         #region Private Fields
-        private List<Chunk> _cache;
         private ServiceProvider _provider;
         private WorldEntity _world;
         private EntityList _entities;
@@ -151,7 +150,6 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             base.PreInitialize(provider);
 
-            _cache = new List<Chunk>();
             _chunks = new Dictionary<Chunk.Position, Chunk>();
             _chainChunks = new Dictionary<Chain, ChainChunks>();
             _quarantine = new List<Chain>();
@@ -280,15 +278,14 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         /// <returns></returns>
         public IEnumerable<Chunk> GetChunks(RectangleF bounds)
         {
-            _cache.Clear();
             for (Single x = bounds.Left; x < bounds.Right; x += Chunk.Size)
-                for(Single y = bounds.Top; y < bounds.Bottom; y += Chunk.Size)
+            {
+                for (Single y = bounds.Top; y < bounds.Bottom; y += Chunk.Size)
                 {
                     var p = new Chunk.Position(x, y);
-                    _cache.Add(_chunks[p]);
+                    yield return _chunks[p];
                 }
-
-            return _cache;
+            }
         }
         #endregion
 

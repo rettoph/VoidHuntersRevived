@@ -1,6 +1,7 @@
 ﻿using Guppy;
 using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
+using Guppy.Extensions.System.Collections;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Text;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
 using VoidHuntersRevived.Library.Enums;
 
 namespace VoidHuntersRevived.Library.Entities.Ammunitions
@@ -16,8 +18,7 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
     {
         #region Private Fields
         private WorldEntity _world;
-        private List<CollisionDataResult> _validCollisions;
-        private GameTime _currentGameTime;
+        private List<CollisionData> _discoveredCollisions;
         #endregion
 
         #region Public Classes
@@ -29,44 +30,30 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
             public Vector2 P1;
             public Vector2 P2;
             public Single Fraction;
-            public GameTime GameTime;
-        }
-
-        public class CollisionDataResult
-        {
-            public CollisionData Data;
-            public ShipPartAmmunitionCollisionResult Result;
         }
         #endregion
 
         #region Public Properties
         /// <summary>
-        /// The id of the chain that is responsible
-        /// for firing this ammunition. Used to ignore
-        /// internal collisions.
+        /// The weapon responsible for firing the current
+        /// ammunition.
         /// </summary>
-        public Guid ShooterChainId { get; set; }
+        public Weapon Weapon { get; internal set; }
 
         /// <summary>
         /// The maximum allowed age for this bullet in seconds.
         /// Once this is surpassed the bullet will be removed.
         /// </summary>
-        public Double MaxAge { get; set; } = 3f;
+        public Double MaxAge { get; internal set; } = 3f;
 
         /// <summary>
         /// The bullets current age, used to determin when to self delete.
         /// </summary>
         public Double Age { get; private set; }
-
-        /// <summary>
-        /// Determins how much energy this piece of ammo should
-        /// cost to be deflected by a shield.
-        /// </summary>
-        public float ShieldEnergyCost { get; set; }
         #endregion
 
         #region Events
-        public OnEventDelegate<Ammunition, CollisionDataResult> OnCollision;
+        public OnEventDelegate<Ammunition, CollisionData> OnCollision;
         #endregion
 
         #region Lifecycle Methods
@@ -74,7 +61,7 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         {
             base.PreInitialize(provider);
 
-            _validCollisions = new List<CollisionDataResult>();
+            _discoveredCollisions = new List<CollisionData>();
 
             this.LayerGroup = VHR.LayersContexts.Ammunition.Group.GetValue();
         }
@@ -91,10 +78,13 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
 
         protected override void Release()
         {
-            _world = null;
-            _validCollisions = null;
-
             base.Release();
+
+            _world = null;
+            _discoveredCollisions = null;
+
+            this.Weapon = null;
+
         }
         #endregion
 
@@ -125,26 +115,35 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <param name="gameTime"></param>
-        public void CheckCollisions(Vector2 start, Vector2 end, GameTime gameTime)
+        public void TryApplyCollisions(Vector2 start, Vector2 end, GameTime gameTime)
         {
-            _validCollisions.Clear();
-            _currentGameTime = gameTime;
+            _discoveredCollisions.Clear();
 
             _world.Live.RayCast(
                 this.HandleCollision,
                 start,
                 end);
 
-            if (_validCollisions.Any())
+            if (_discoveredCollisions.Any())
             {
-                foreach(CollisionDataResult collision in _validCollisions.OrderBy(cdr => cdr.Data.Fraction))
+                foreach (CollisionData collision in this.GetValidCollisions(_discoveredCollisions))
                 {
+                    collision.Target.ApplyAmmunitionCollision(collision, gameTime);
                     this.OnCollision?.Invoke(this, collision);
-
-                    if ((collision.Result & ShipPartAmmunitionCollisionResult.Stop) != 0)
-                        break;
                 }
             }
+        }
+
+        /// <summary>
+        /// Return a collection of collisions that should
+        /// actually be applied. Default dunctionality
+        /// will return the first collision only.
+        /// </summary>
+        /// <param name="collisions"></param>
+        /// <returns></returns>
+        protected virtual IEnumerable<CollisionData> GetValidCollisions(IEnumerable<CollisionData> collisions)
+        {
+            yield return collisions.MinBy(collisions => collisions.Fraction);
         }
 
         /// <summary>
@@ -154,7 +153,15 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         /// </summary>
         /// <param name="gameTime"></param>
         /// <returns></returns>
-        public abstract Single GetShieldEnergyCost(GameTime gameTime);
+        public abstract Single GetShieldDeflectionEnergyCost(CollisionData data, GameTime gameTime);
+
+        /// <summary>
+        /// Calculate the amount of damage to applied to a ship part based on the
+        /// frame's elapsed gametime.
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <returns></returns>
+        public abstract Single GetDamage(CollisionData data, GameTime gameTime);
         #endregion
 
         #region Event Handlers
@@ -170,17 +177,10 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
                     P1 = arg2,
                     P2 = arg3,
                     Fraction = fraction,
-                    GameTime = _currentGameTime
                 };
 
-                var collisionDataResult = new CollisionDataResult()
-                {
-                    Data = collisionData,
-                    Result = collisionData.Target.GetAmmunitionCollisionResult(collisionData)
-                };
-
-                if (collisionDataResult.Result != ShipPartAmmunitionCollisionResult.None)
-                    _validCollisions.Add(collisionDataResult);
+                if (collisionData.Target.ValidateAmmunitionCollision(collisionData))
+                    _discoveredCollisions.Add(collisionData);
             }
 
             return 1f;

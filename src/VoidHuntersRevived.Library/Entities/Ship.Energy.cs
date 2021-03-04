@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Events.Delegates;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,18 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Public Properties
-        public Single Energy => _energy;
+        public Single Energy
+        {
+            get => _energy;
+            set => this.OnEnergyChanged.InvokeIf(_energy != value, this, ref _energy, value);
+        }
         public Single MaxEnergy => 100f;
         public Single EnergyPercentage => this.Energy / this.MaxEnergy;
         public Boolean Charging { get; private set; }
+        #endregion
+
+        #region Events
+        public event OnChangedEventDelegate<Ship, Single> OnEnergyChanged;
         #endregion
 
         #region Lifecycle Methods
@@ -27,7 +36,7 @@ namespace VoidHuntersRevived.Library.Entities
 
         private void Energy_PreInitialize(ServiceProvider provider)
         {
-            _energy = this.MaxEnergy;
+            this.Energy = this.MaxEnergy;
             this.Charging = false;
         }
 
@@ -40,13 +49,13 @@ namespace VoidHuntersRevived.Library.Entities
         #region Frame Methods
         private void Energy_Update(GameTime gameTime)
         {
-            if (_energy < this.MaxEnergy)
+            if (this.Energy < this.MaxEnergy)
             {
-                _energy += 50f * (Single)gameTime.ElapsedGameTime.TotalSeconds;
+                this.Energy += 25f * (Single)gameTime.ElapsedGameTime.TotalSeconds;
 
-                if(_energy > this.MaxEnergy)
+                if(this.Energy > this.MaxEnergy)
                 {
-                    _energy = this.MaxEnergy;
+                    this.Energy = this.MaxEnergy;
                     this.Charging = false;
                 }
             }
@@ -57,14 +66,14 @@ namespace VoidHuntersRevived.Library.Entities
         #region Methods
         public Boolean TryUseEnergy(Single amount)
         {
-            if (_energy <= 0 || this.Charging)
+            if (this.Energy <= 0 || this.Charging)
                 return false;
 
-            _energy -= amount;
+            this.Energy -= amount;
 
-            if (_energy <= 0)
+            if (this.Energy <= 0)
             {
-                _energy = -10;
+                this.Energy = -10;
                 this.Charging = true;
             }
 

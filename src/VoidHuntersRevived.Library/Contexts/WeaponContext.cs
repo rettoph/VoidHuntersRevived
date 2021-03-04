@@ -19,8 +19,7 @@ namespace VoidHuntersRevived.Library.Contexts
             FireRate = 4,
             MaximumAmmunitionAge = 5,
             MaximumOffsetFireRange = 6,
-            FireEnergyCost = 7,
-            ShieldEnergyCost = 8
+            FireEnergyCost = 7
         }
         #endregion
 
@@ -60,12 +59,6 @@ namespace VoidHuntersRevived.Library.Contexts
         /// </summary>
         [ShipPartContextProperty("FireEnergyCost", "The amount of energy used each time the weapon fires.", ShipPartContextPropertyType.Single)]
         public Single FireEnergyCost { get; set; } = 5;
-
-        /// <summary>
-        /// The amount of energy to deplete from an enemy eergy shield on colission.
-        /// </summary>
-        [ShipPartContextProperty("ShieldEnergyCost", "The amount of energy used each time the weapon fires.", ShipPartContextPropertyType.Single)]
-        public Single ShieldEnergyCost { get; set; } = 5;
         #endregion
 
         #region Constructors
@@ -106,9 +99,6 @@ namespace VoidHuntersRevived.Library.Contexts
                         case WeaponContextProperty.FireEnergyCost:
                             this.FireEnergyCost = reader.ReadSingle();
                             break;
-                        case WeaponContextProperty.ShieldEnergyCost:
-                            this.ShieldEnergyCost = reader.ReadSingle();
-                            break;
                     }
                 }
             }
@@ -137,9 +127,6 @@ namespace VoidHuntersRevived.Library.Contexts
 
             writer.Write((Byte)WeaponContextProperty.FireEnergyCost);
             writer.Write(this.FireEnergyCost);
-
-            writer.Write((Byte)WeaponContextProperty.ShieldEnergyCost);
-            writer.Write(this.ShieldEnergyCost);
 
             writer.Write((Byte)WeaponContextProperty.End);
         }

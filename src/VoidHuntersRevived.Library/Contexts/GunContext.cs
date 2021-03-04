@@ -15,7 +15,8 @@ namespace VoidHuntersRevived.Library.Contexts
             Start = 0,
             End = 1,
             BulletDamage = 2,
-            BulletSpeed = 3
+            BulletSpeed = 3,
+            ShieldDeflectionEnergyCost = 4
         }
         #endregion
 
@@ -33,8 +34,14 @@ namespace VoidHuntersRevived.Library.Contexts
         /// <summary>
         /// The speed at which a bullet is fired from the described gun.
         /// </summary>
-        [ShipPartContextProperty("Bullet Spped", "The speed at which a bullet is fired from the described gun.", ShipPartContextPropertyType.Single)]
+        [ShipPartContextProperty("Bullet Speed", "The speed at which a bullet is fired from the described gun.", ShipPartContextPropertyType.Single)]
         public Single BulletSpeed { get; set; } = 15f;
+
+        /// <summary>
+        /// The bullet's shield deflection energy cost.
+        /// </summary>
+        [ShipPartContextProperty("Shield Deflection Energy Cost", "The bullet's shield deflection energy cost.", ShipPartContextPropertyType.Single)]
+        public Single ShieldDeflectionEnergyCost { get; internal set; } = 20f;
         #endregion
 
         #region Constructor
@@ -62,6 +69,9 @@ namespace VoidHuntersRevived.Library.Contexts
                         case GunContextProperty.BulletSpeed:
                             this.BulletSpeed = reader.ReadSingle();
                             break;
+                        case GunContextProperty.ShieldDeflectionEnergyCost:
+                            this.ShieldDeflectionEnergyCost = reader.ReadSingle();
+                            break;
                     }
                 }
             }
@@ -78,6 +88,9 @@ namespace VoidHuntersRevived.Library.Contexts
 
             writer.Write((Byte)GunContextProperty.BulletSpeed);
             writer.Write(this.BulletSpeed);
+
+            writer.Write((Byte)GunContextProperty.ShieldDeflectionEnergyCost);
+            writer.Write(this.ShieldDeflectionEnergyCost);
 
             writer.Write((Byte)GunContextProperty.End);
         }

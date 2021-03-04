@@ -1,6 +1,7 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
 using Lidgren.Network;
+using Microsoft.Xna.Framework;
 using System;
 using VoidHuntersRevived.Library.Entities.Ammunitions;
 using VoidHuntersRevived.Library.Enums;
@@ -34,13 +35,28 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #endregion
 
         #region Events
+        public delegate void ApplyAmmunitionCollisionDelegate(ShipPart sender, Ammunition.CollisionData data, GameTime gameTime);
+
         public event OnChangedEventDelegate<ShipPart, Single> OnHealthChanged;
+        public event ValidateEventDelegate<ShipPart, Ammunition.CollisionData> OnValidateAmmunitionCollision;
+        public event ApplyAmmunitionCollisionDelegate OnApplyAmmunitionCollision;
+        public event ValidateEventDelegate<ShipPart, Ammunition.CollisionData> OnValidateAmmunitionCollisionDamage;
         #endregion
 
         #region Lifecycle Methods
+        private void Health_Create(ServiceProvider provider)
+        {
+            this.OnValidateAmmunitionCollision += this.ValidateAmmunitionCollision;
+        }
+
         private void Health_Initialize(ServiceProvider provider)
         {
             this.Health = this.Context.MaxHealth;
+        }
+
+        private void Health_Dispose()
+        {
+            this.OnValidateAmmunitionCollision -= this.ValidateAmmunitionCollision;
         }
         #endregion
 
@@ -51,22 +67,17 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// minimum health should always be 0.
         /// </summary>
         /// <param name="damage"></param>
-        public virtual void TryDamage(Single damage)
+        public virtual void TryApplyDamage(Single damage)
             => this.Health = Math.Max(0f, this.Health - damage);
 
-        public virtual ShipPartAmmunitionCollisionResult GetAmmunitionCollisionResult(Ammunition.CollisionData collision)
-        {
-            if (this.Chain.Ship == default)
-                return ShipPartAmmunitionCollisionResult.None;
+        internal Boolean ValidateAmmunitionCollision(Ammunition.CollisionData data)
+            => this.OnValidateAmmunitionCollision.Validate(this, data, false);
 
-            if (collision.Ammunition.ShooterChainId == this.Chain.Id)
-                return ShipPartAmmunitionCollisionResult.None;
+        internal void ApplyAmmunitionCollision(Ammunition.CollisionData data, GameTime gameTime)
+            => this.OnApplyAmmunitionCollision?.Invoke(this, data, gameTime);
 
-            if (this.Health > 0)
-                return ShipPartAmmunitionCollisionResult.DamageAndStop;
-
-            return ShipPartAmmunitionCollisionResult.None;
-        }
+        internal Boolean ValidateAmmunitionCollisionDamage(Ammunition.CollisionData data)
+            => this.OnValidateAmmunitionCollisionDamage.Validate(this, data, true);
         #endregion
 
         #region Network Methods
@@ -75,6 +86,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
         public void WriteHealth(NetOutgoingMessage om)
             => om.Write(this.Health);
+        #endregion
+
+        #region Event Handlers
+        private bool ValidateAmmunitionCollision(ShipPart sender, Ammunition.CollisionData data)
+        {
+            return this.Chain.Ship != default && data.Ammunition.Weapon != this && data.Target.Health > 0;
+        }
         #endregion
     }
 }

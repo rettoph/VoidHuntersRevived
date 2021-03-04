@@ -25,9 +25,15 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         #endregion
 
         #region Public Properties
-        public Laser Laser { get; set; }
+        /// <summary>
+        /// The amount of damage done by this laser per second.
+        /// </summary>
+        public Single DamagePerSecond { get; internal set; }
 
-        public Single DamagePerSecond { get; set; }
+        /// <summary>
+        /// The energy cost to deflect this weapon with shields per second.
+        /// </summary>
+        public Single ShieldDeflectionEnergyCostPerSecond { get; internal set; }
         #endregion
 
         #region Lifecycle Methods
@@ -38,17 +44,15 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
             provider.Service(out _primitiveBatch);
 
             this.OnCollision += this.HandleCollision;
-            this.Laser.OnStatus[ServiceStatus.Releasing] += this.HandleLaserReleasing;
+            this.Weapon.OnStatus[ServiceStatus.Releasing] += this.HandleLaserReleasing;
         }
 
-        protected override void Release()
+        protected override void PreRelease()
         {
-            base.Release();
+            base.PreRelease();
 
             this.OnCollision -= this.HandleCollision;
-            this.Laser.OnStatus[ServiceStatus.Releasing] -= this.HandleLaserReleasing;
-
-            this.Laser = null;
+            this.Weapon.OnStatus[ServiceStatus.Releasing] -= this.HandleLaserReleasing;
         }
         #endregion
 
@@ -58,17 +62,17 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
             base.Draw(gameTime);
 
             _primitiveBatch.DrawLine(
-                this.Laser.Chain.Ship?.Color ?? Color.Transparent, 
+                this.Weapon.Chain.Ship?.Color ?? Color.Transparent, 
                 _start, 
                 _end);
         }
 
         protected override void UpdateCollisions(GameTime gameTime)
         {
-            _start = this.Laser.Position;
-            _end = this.Laser.Position + 50f.ToVector2().RotateTo(this.Laser.Rotation + MathHelper.Pi);
+            _start = this.Weapon.Position;
+            _end = this.Weapon.Position + 50f.ToVector2().RotateTo(this.Weapon.Rotation + MathHelper.Pi);
             _count = 0;
-            this.CheckCollisions(
+            this.TryApplyCollisions(
                 start: _start,
                 end: _end,
                 gameTime: gameTime);
@@ -77,17 +81,23 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
 
         /// <inheritdoc />
         #region Ammunition Implementation
-        public override float GetShieldEnergyCost(GameTime gameTime)
+        public override float GetShieldDeflectionEnergyCost(CollisionData data, GameTime gameTime)
         {
-            return this.ShieldEnergyCost * (Single)gameTime.ElapsedGameTime.TotalSeconds;
+            return this.ShieldDeflectionEnergyCostPerSecond * (Single)gameTime.ElapsedGameTime.TotalSeconds;
+        }
+
+        /// <inheritdoc />
+        public override float GetDamage(CollisionData data, GameTime gameTime)
+        {
+            return this.DamagePerSecond * (Single)gameTime.ElapsedGameTime.TotalSeconds;
         }
         #endregion
 
         #region Event Handlers
-        private void HandleCollision(Ammunition sender, CollisionDataResult collision)
+        private void HandleCollision(Ammunition sender, CollisionData collision)
         {
             _count++;
-            _end = collision.Data.P1;
+            _end = collision.P1;
         }
 
         private void HandleLaserReleasing(IService sender)

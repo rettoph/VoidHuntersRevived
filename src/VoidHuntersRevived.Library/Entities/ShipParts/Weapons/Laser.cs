@@ -25,12 +25,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 
         #region Weapon Implementation
         /// <inheritdoc />
-        protected override Ammunition Fire(ServiceProvider provider, EntityList entities)
+        protected override Ammunition Fire(ServiceProvider provider, EntityList entities, Action<Ammunition, ServiceProvider, ServiceConfiguration> setup)
         {
             return entities.Create<LaserBeam>((lb, p, d) =>
             {
-                lb.Laser = this;
+                setup(lb, p, d);
+
                 lb.DamagePerSecond = this.Context.DamagePerSecond;
+                lb.ShieldDeflectionEnergyCostPerSecond = this.Context.ShieldDeflectionEnergyCostPerSecond;
             });
         }
         #endregion

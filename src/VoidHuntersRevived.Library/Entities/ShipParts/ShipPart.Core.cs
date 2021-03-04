@@ -70,6 +70,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             this.Transformations_Create(provider);
             this.Network_Create(provider);
+            this.Health_Create(provider);
 
             this.OnChainChanged += this.HandleChainChanged;
             this.ValidateCleaning += this.HandleValidateCleaning;
@@ -132,6 +133,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             this.Transformations_Dispose();
             this.Network_Dispose();
+            this.Health_Dispose();
         }
         #endregion
 

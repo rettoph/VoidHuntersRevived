@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Armors
         #endregion
 
         #region Helper Methods
-        public override void TryDamage(Single damage)
+        public override void TryApplyDamage(Single damage)
         { // There is no damage to apply hehe
             // base.TryDamage(damage);
         }

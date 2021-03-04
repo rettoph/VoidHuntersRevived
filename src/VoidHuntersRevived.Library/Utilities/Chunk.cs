@@ -96,7 +96,7 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         {
             base.Draw(gameTime);
 
-            _chains.ForEach(p => _chunks.chainChunks[p].TryDraw(gameTime));
+            _chains.ForEach(chain => _chunks.chainChunks[chain].TryDraw(gameTime));
         }
         #endregion
 
