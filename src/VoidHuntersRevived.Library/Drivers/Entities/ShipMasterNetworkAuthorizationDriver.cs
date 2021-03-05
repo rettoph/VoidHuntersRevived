@@ -26,7 +26,8 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         private EntityList _entities;
         private Synchronizer _synchronizer;
         private WorldEntity _world;
-        private ActionTimer _targetSendTimer;
+        private ActionTimer _broadcastPingTimer;
+        private Boolean _dirtyEnergy;
         #endregion
 
         #region Lifecycle Methods
@@ -47,13 +48,14 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             base.InitializeRemote(driven, provider);
 
-            _targetSendTimer = new ActionTimer(150);
+            _broadcastPingTimer = new ActionTimer(150);
 
             this.driven.OnUpdate += this.Update;
             this.driven.OnBridgeChanged += this.HandleBridgeChanged;
             this.driven.OnFiringChanged += this.HandleFiringChanged;
             this.driven.OnDirectionChanged += this.HandleDirectionChanged;
             this.driven.TractorBeam.OnAction += this.HandleTractorBeamAction;
+            this.driven.OnEnergyChanged += this.HandleEnergyChanged;
         }
 
         protected override void Release(Ship driven)
@@ -72,22 +74,29 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             base.ReleaseRemote(driven);
 
-            _targetSendTimer = null;
+            _broadcastPingTimer = null;
 
             this.driven.OnUpdate -= this.Update;
             this.driven.OnBridgeChanged -= this.HandleBridgeChanged;
             this.driven.OnFiringChanged -= this.HandleFiringChanged;
             this.driven.OnDirectionChanged -= this.HandleDirectionChanged;
             this.driven.TractorBeam.OnAction -= this.HandleTractorBeamAction;
+            this.driven.OnEnergyChanged -= this.HandleEnergyChanged;
         }
         #endregion
 
         #region Frame Methods
         private void Update(GameTime gameTime)
         {
-            _targetSendTimer.Update(gameTime, gt =>
+            _broadcastPingTimer.Update(gameTime, gt =>
             { // Attempt to send the newest target value...
                 this.WriteUpdateTarget(this.driven.Ping.Create(NetDeliveryMethod.Unreliable, 0));
+
+                if(_dirtyEnergy)
+                {
+                    this.WriteUpdateEnergy(this.driven.Ping.Create(NetDeliveryMethod.Unreliable, 0));
+                    _dirtyEnergy = false;
+                }
             });
         }
         #endregion
@@ -134,11 +143,20 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             });
         }
 
-        private void WriteUpdateBridge(NetOutgoingMessage om, ShipPart bridge)
+        private void WriteUpdateBridge(NetOutgoingMessage om)
         {
             om.Write(VHR.Pings.Ship.UpdateBridge, m =>
             {
                 this.driven.WriteBridge(om);
+            });
+        }
+
+        private void WriteUpdateEnergy(NetOutgoingMessage om)
+        {
+            om.Write(VHR.Pings.Ship.UpdateEnergy, m =>
+            {
+                om.Write(this.driven.Energy);
+                om.Write(this.driven.Charging);
             });
         }
         #endregion
@@ -155,7 +173,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
                 _synchronizer.Enqueue(gt => sender.TryRelease());
 
                 // Create an explosion on the bridge (this should kill the bridge)
-                _world.EnqeueExplosion(sender.Position, new Color(sender.Chain.Ship.Color, 0.9f), 10f, 10f);
+                _world.EnqeueExplosion(sender.Position, new Color(sender.Chain.Ship.Color, 0.9f), 10f, 10f, 25f);
 
                 // Just in case, manually remove bridge reference.
                 this.driven.Bridge = default;
@@ -164,8 +182,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
         private void HandleBridgeChanged(Ship sender, ShipPart old, ShipPart value)
             => this.WriteUpdateBridge(
-                    this.driven.Ping.Create(NetDeliveryMethod.ReliableOrdered, 10),
-                    value);
+                    this.driven.Ping.Create(NetDeliveryMethod.ReliableOrdered, 10));
 
         private void HandleDirectionChanged(Ship sender, Ship.DirectionState args)
             => this.WriteUpdateDirection(
@@ -181,6 +198,9 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             => this.WriteTractorBeamAction(
                 this.driven.Ping.Create(NetDeliveryMethod.Unreliable, 0),
                 action);
+
+        private void HandleEnergyChanged(Ship sender, float old, float value)
+            => _dirtyEnergy = true;
         #endregion
     }
 }

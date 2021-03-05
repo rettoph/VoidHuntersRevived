@@ -117,7 +117,7 @@ namespace VoidHuntersRevived.Library.Utilities
                 var old = this.Target;
 
                 this.Target = null;
-                old.TryDetach(!align);
+                old.TryDetach(false);
 
                 this.OnDetached?.Invoke(this, old);
 

@@ -19,6 +19,7 @@ namespace VoidHuntersRevived.Library
             public static readonly String Armor = "entity:ship-part:armor";
             public static readonly String FighterBay = "entity:ship-part:fighter-bay";
             public static readonly String ShieldGenerator = "entity:ship-part:shield-generator";
+            public static readonly String PowerCell = "entity:ship-part:power-cell";
         }
         
         public static class Actions
@@ -70,7 +71,9 @@ namespace VoidHuntersRevived.Library
                 public static readonly UInt32 SpawnAiRequest = "ship:spawn:ai:request".xxHash();
 
                 public static readonly UInt32 SelfDestructRequest = "ship:self-destruct:request".xxHash();
-                
+
+                public static readonly UInt32 UpdateEnergy = "ship:update:energy".xxHash();
+
                 public static class TractorBeam
                 {
                     public static readonly UInt32 Action = "ship:tractor-beam:action".xxHash();
@@ -100,6 +103,11 @@ namespace VoidHuntersRevived.Library
                 public static readonly String ShipParts = "Resources/ShipParts";
                 public static readonly String Ships = "Resources/Ships";
             }
+        }
+
+        public static class Utilities
+        {
+            public static readonly Single SlaveLerpPerSecond = 1f;
         }
 
         public static class LayersContexts

@@ -115,8 +115,23 @@ namespace VoidHuntersRevived.Client.Library.Entities
             _primitiveBatch.DrawRectangle(Color.Lerp(this.player.Ship.Color, Color.Lerp(Color.Red, Color.Green, this.player.Ship.Bridge.Health / this.player.Ship.Bridge.Context.MaxHealth), 0.75f), healthbar);
             var energyBar = new Rectangle((_position - _textureOffset + new Vector2(5, 13)).ToPoint(), new Point((Int32)(104 * _energyPercent), 3));
             _primitiveBatch.DrawRectangle(Color.Yellow, energyBar);
-            // 
+
+            // We want to add a marker ever 25 energy within the energy bar. This will calculate those lines.
+            var segments = this.player.Ship.MaxEnergy / 25;
+            var size = 104 / segments;
+            for (var i=1; i< segments; i++)
+            {
+                var x = 4 + (i * size);
+
+                _primitiveBatch.DrawLine(
+                    c1: Color.Gray,
+                    p1: _position - _textureOffset + new Vector2(x, 13),
+                    c2: Color.Gray,
+                    p2: _position - _textureOffset + new Vector2(x, 17));
+            }
+
             _primitiveBatch.TryFlushTriangleVertices(true);
+            _primitiveBatch.TryFlushLineVertices(true);
 
             _spriteBatch.DrawString(_font, this.player.Name, _position - _nameOffset, this.player.Ship.Color);
             _spriteBatch.Draw(_foreground, _position - _textureOffset, this.player.Ship.Color);

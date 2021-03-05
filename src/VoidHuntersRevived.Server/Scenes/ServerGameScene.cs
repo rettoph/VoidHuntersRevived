@@ -124,9 +124,9 @@ namespace VoidHuntersRevived.Server.Scenes
                 shieldGenerator.Position = rand.NextVector2(0, world.Size.X);
                 shieldGenerator.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
 
-                var shieldGenerator2 = _shipParts.Create("vhr:special:shield-generator:small");
-                shieldGenerator2.Position = rand.NextVector2(0, world.Size.X);
-                shieldGenerator2.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+                var powercell = _shipParts.Create("vhr:special:power-cell");
+                powercell.Position = rand.NextVector2(0, world.Size.X);
+                powercell.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
 
                 for (Int32 j = 0; j < 20; j++)
                 {

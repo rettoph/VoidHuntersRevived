@@ -39,6 +39,7 @@
     <None Remove="Resources\ShipParts\vhr.hull.wing.left.vhsp" />
     <None Remove="Resources\ShipParts\vhr.hull.wing.right.vhsp" />
     <None Remove="Resources\ShipParts\vhr.special.fighter-bay.vhsp" />
+    <None Remove="Resources\ShipParts\vhr.special.power-cell.vhsp" />
     <None Remove="Resources\ShipParts\vhr.special.shield-generator.small.vhsp" />
     <None Remove="Resources\ShipParts\vhr.special.shield-generator.vhsp" />
     <None Remove="Resources\ShipParts\vhr.thruster.small.vhsp" />

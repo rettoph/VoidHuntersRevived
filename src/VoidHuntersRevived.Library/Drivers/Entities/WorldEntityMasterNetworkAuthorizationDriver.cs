@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             base.InitializeRemote(driven, provider);
 
             this.driven.OnSizeChanged += this.HandleSizeChanged;
-            this.driven.OnExplosionCreated += this.HandleExplosionCreated;
+            this.driven.OnExplosionCreated += this.Remote_HandleExplosionCreated;
         }
 
         protected override void ReleaseRemote(WorldEntity driven)
@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             base.ReleaseRemote(driven);
 
             this.driven.OnSizeChanged -= this.HandleSizeChanged;
-            this.driven.OnExplosionCreated -= this.HandleExplosionCreated;
+            this.driven.OnExplosionCreated -= this.Remote_HandleExplosionCreated;
         }
         #endregion
 
@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
                 m.Write(this.driven.Size);
             });
 
-        private void HandleExplosionCreated(WorldEntity sender, ref WorldEntity.ExplosionData data, IEnumerable<ShipPart> targets, GameTime gameTime)
+        private void Remote_HandleExplosionCreated(WorldEntity sender, ref WorldEntity.ExplosionData data, IEnumerable<ShipPart> targets, GameTime gameTime)
         {
             var d = data;
             this.driven.Ping.Create(NetDeliveryMethod.ReliableOrdered, 2).Write(VHR.Pings.World.CreateExplosion, m =>
@@ -47,6 +47,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
                 m.Write(d.Color);
                 m.Write(d.Radius);
                 m.Write(d.Force);
+                m.Write(d.Damage);
             });
         }
         #endregion

@@ -22,12 +22,6 @@ namespace VoidHuntersRevived.Library.Entities
     {
         #region Static Attributes
         /// <summary>
-        /// The amount a slave body should lerp towards the master
-        /// per second
-        /// </summary>
-        public static Single SlaveLerpStrength { get; set; } = 1f;
-
-        /// <summary>
         /// The threshold that must be surpassed by the position
         /// in order for an instant slave snap to take place.
         /// </summary>

@@ -37,7 +37,8 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
                 position: im.ReadVector2(),
                 color: im.ReadColor(),
                 radius: im.ReadSingle(),
-                force: im.ReadSingle()));
+                force: im.ReadSingle(),
+                damage: im.ReadSingle()));
         }
         #endregion
     }

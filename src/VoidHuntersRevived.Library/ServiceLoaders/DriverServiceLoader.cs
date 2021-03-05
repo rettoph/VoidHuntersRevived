@@ -61,6 +61,8 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddAndBindDriver<ShipPart, ShipPartSlaveNetworkAuthorizationDriver>(p => new ShipPartSlaveNetworkAuthorizationDriver());
             
             services.AddAndBindDriver<FighterBay, FighterBayMasterAuthorizationDriver>(p => new FighterBayMasterAuthorizationDriver());
+
+            services.AddAndBindDriver<PowerCell, PowerCellMasterAuthorizationDriver>(p => new PowerCellMasterAuthorizationDriver());
         }
 
         public void ConfigureProvider(ServiceProvider provider)

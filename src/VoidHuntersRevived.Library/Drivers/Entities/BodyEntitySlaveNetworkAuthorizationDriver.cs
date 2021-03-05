@@ -53,7 +53,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             
             if (rotationDif > 0.0001f || positionDif > 0.001f)
             { // Only proceed with positional lerping if the slave is not already matching the master...
-                var posStrength = MathHelper.Clamp(BodyEntity.SlaveLerpStrength * (Single)gameTime.ElapsedGameTime.TotalSeconds, 0, 1);
+                var posStrength = MathHelper.Clamp(VHR.Utilities.SlaveLerpPerSecond * (Single)gameTime.ElapsedGameTime.TotalSeconds, 0, 1);
                 var velStrength = MathHelper.Lerp(posStrength, 1, 0.75f);
 
                 this.driven.slave.LinearVelocity = Vector2.Lerp(this.driven.slave.LinearVelocity, this.driven.master.LinearVelocity, velStrength);

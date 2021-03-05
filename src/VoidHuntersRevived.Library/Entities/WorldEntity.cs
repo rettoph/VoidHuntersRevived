@@ -48,13 +48,15 @@ namespace VoidHuntersRevived.Library.Entities
             public readonly Color Color;
             public readonly Single Radius;
             public readonly Single Force;
+            public readonly Single Damage;
 
-            public ExplosionData(Vector2 position, Color color, float radius, float force)
+            public ExplosionData(Vector2 position, Color color, float radius, float force, float damage)
             {
                 this.Position = position;
                 this.Color = color;
                 this.Radius = radius;
                 this.Force = force;
+                this.Damage = damage;
             }
         }
         #endregion
@@ -195,8 +197,8 @@ namespace VoidHuntersRevived.Library.Entities
         /// Enqueue an explosion to be created the next frame.
         /// </summary>
         /// <param name="data"></param>
-        public void EnqeueExplosion(Vector2 position, Color color, Single radius, Single force)
-            => this.EnqeueExplosion(new ExplosionData(position, color, radius, force));
+        public void EnqeueExplosion(Vector2 position, Color color, Single radius, Single force, Single damage)
+            => this.EnqeueExplosion(new ExplosionData(position, color, radius, force, damage));
 
         /// <summary>
         /// Create an explosion immidiately. If you dont have
@@ -220,20 +222,18 @@ namespace VoidHuntersRevived.Library.Entities
                 {
                     targets.Add(target);
 
-                    if(target.IsRoot)
-                    { // Apply an impulse on the root piece.
-                        float distance = Vector2.Distance(data.Position, target.Position);
-                        float forcePercent = this.GetPercent(distance, data.Radius);
+                    float distance = Vector2.Distance(data.Position, target.Position);
+                    float forcePercent = this.GetPercent(distance, data.Radius);
 
-                        Vector2 forceVector = data.Position - target.Position;
+                    Vector2 forceVector = data.Position - target.Position;
 
-                        if(distance > 0)
-                            forceVector *= 1f / Math.Max((float)Math.Sqrt(forceVector.X * forceVector.X + forceVector.Y * forceVector.Y), Single.Epsilon);
-                        forceVector *= data.Force * forcePercent;
-                        forceVector *= -1;
+                    if (distance > 0)
+                        forceVector *= 1f / Math.Max((float)Math.Sqrt(forceVector.X * forceVector.X + forceVector.Y * forceVector.Y), Single.Epsilon);
+                    forceVector *= data.Force * forcePercent;
+                    forceVector *= -1;
 
-                        target.ApplyForce(forceVector, data.Position);
-                    }
+                    target.ApplyForce(forceVector, data.Position);
+                    target.TryApplyDamage(data.Damage * forcePercent);
                 }
 
                 return true;
