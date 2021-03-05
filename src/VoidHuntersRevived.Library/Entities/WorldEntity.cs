@@ -41,32 +41,11 @@ namespace VoidHuntersRevived.Library.Entities
         public static Int32 WallWidth { get; } = 10;
         #endregion
 
-        #region Public Structs
-        public struct ExplosionData
-        {
-            public readonly Vector2 Position;
-            public readonly Color Color;
-            public readonly Single Radius;
-            public readonly Single Force;
-            public readonly Single Damage;
-
-            public ExplosionData(Vector2 position, Color color, float radius, float force, float damage)
-            {
-                this.Position = position;
-                this.Color = color;
-                this.Radius = radius;
-                this.Force = force;
-                this.Damage = damage;
-            }
-        }
-        #endregion
-
         #region Private Fields
         private Vector2 _size;
         private Queue<Body> _walls;
         private CommandService _commands;
         private GameScene _scene;
-        private Queue<ExplosionData> _explosions;
         private Synchronizer _synchronizer;
         #endregion
 
@@ -104,10 +83,7 @@ namespace VoidHuntersRevived.Library.Entities
         #endregion
 
         #region Events
-        public delegate void OnExplosionCreatedDelegate(WorldEntity sender, ref ExplosionData data, IEnumerable<ShipPart> targets, GameTime gameTime);
-
         public event OnEventDelegate<WorldEntity, Vector2> OnSizeChanged;
-        public event OnExplosionCreatedDelegate OnExplosionCreated;
         #endregion
 
         #region Lifecycle Methods
@@ -129,7 +105,6 @@ namespace VoidHuntersRevived.Library.Entities
             provider.Service(out _synchronizer);
 
             _walls = new Queue<Body>();
-            _explosions = new Queue<ExplosionData>();
 
             this.Size = new Vector2(128, 128);
 
@@ -175,88 +150,10 @@ namespace VoidHuntersRevived.Library.Entities
         {
             base.Update(gameTime);
 
-            if (_explosions.Any())
-                _synchronizer.Enqueue(this.FlushExplosions);
-
             this.Do(w =>
             {
                 w.Step((Single)gameTime.ElapsedGameTime.TotalSeconds);
             });
-        }
-        #endregion
-
-        #region Helper Methods
-        /// <summary>
-        /// Enqueue an explosion to be created the next frame.
-        /// </summary>
-        /// <param name="data"></param>
-        public void EnqeueExplosion(WorldEntity.ExplosionData data)
-            => _explosions.Enqueue(data);
-
-        /// <summary>
-        /// Enqueue an explosion to be created the next frame.
-        /// </summary>
-        /// <param name="data"></param>
-        public void EnqeueExplosion(Vector2 position, Color color, Single radius, Single force, Single damage)
-            => this.EnqeueExplosion(new ExplosionData(position, color, radius, force, damage));
-
-        /// <summary>
-        /// Create an explosion immidiately. If you dont have
-        /// access to the current <paramref name="gameTime"/> value
-        /// try calling <see cref="EnqeueExplosion(ExplosionData)"/>
-        /// instead.
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="gameTime"></param>
-        public void CreateExplosion(WorldEntity.ExplosionData data, GameTime gameTime)
-        {
-            var targets = new HashSet<ShipPart>();
-
-            var aabb = new AABB(
-                min: data.Position - new Vector2(data.Radius), 
-                max: data.Position + new Vector2(data.Radius));
-            this.live.QueryAABB(fixture =>
-            {
-                if ((VHR.Categories.BorderCollidesWith & fixture.CollisionCategories) != 0 
-                    && fixture.Tag is ShipPart target && !targets.Contains(target))
-                {
-                    targets.Add(target);
-
-                    float distance = Vector2.Distance(data.Position, target.Position);
-                    float forcePercent = this.GetPercent(distance, data.Radius);
-
-                    Vector2 forceVector = data.Position - target.Position;
-
-                    if (distance > 0)
-                        forceVector *= 1f / Math.Max((float)Math.Sqrt(forceVector.X * forceVector.X + forceVector.Y * forceVector.Y), Single.Epsilon);
-                    forceVector *= data.Force * forcePercent;
-                    forceVector *= -1;
-
-                    target.ApplyForce(forceVector, data.Position);
-                    target.TryApplyDamage(data.Damage * forcePercent);
-                }
-
-                return true;
-            }, ref aabb);
-
-            this.OnExplosionCreated?.Invoke(this, ref data, targets, gameTime);
-        }
-
-        private void FlushExplosions(GameTime gameTime)
-        {
-            while (_explosions.Any())
-                this.CreateExplosion(_explosions.Dequeue(), gameTime);
-        }
-
-        private float GetPercent(float distance, float radius)
-        {
-            //(1-(distance/radius))^power-1
-            float percent = (float)Math.Pow(1 - ((distance - radius) / radius), 1) - 1;
-
-            if (float.IsNaN(percent))
-                return 0f;
-
-            return MathUtils.Clamp(percent, 0f, 1f);
         }
         #endregion
 

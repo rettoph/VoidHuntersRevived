@@ -19,7 +19,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
     internal sealed class WorldEntityGraphicsDriver : Driver<WorldEntity>
     {
         #region Private Fields
-        private ExplosionRenderService _explosions;
         private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private Rectangle _bounds;
         #endregion
@@ -30,11 +29,9 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
             base.Initialize(driven, provider);
 
             provider.Service(out _primitiveBatch);
-            provider.Service(out _explosions);
 
             this.driven.OnDraw += this.Draw;
             this.driven.OnSizeChanged += this.HandleSizeChanged;
-            this.driven.OnExplosionCreated += this.HandleExplosionCreated;
 
             this.CleanBounds();
         }
@@ -45,10 +42,8 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
 
             this.driven.OnDraw -= this.Draw;
             this.driven.OnSizeChanged -= this.HandleSizeChanged;
-            this.driven.OnExplosionCreated -= this.HandleExplosionCreated;
 
             _primitiveBatch = null;
-            _explosions = null;
         }
         #endregion
 
@@ -67,9 +62,6 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities
         #region Event Handlers
         private void HandleSizeChanged(WorldEntity sender, Vector2 args)
             => this.CleanBounds();
-
-        private void HandleExplosionCreated(WorldEntity sender, ref WorldEntity.ExplosionData data, IEnumerable<ShipPart> targets, GameTime gameTime)
-            => _explosions.Configure(data, gameTime);
         #endregion
     }
 }

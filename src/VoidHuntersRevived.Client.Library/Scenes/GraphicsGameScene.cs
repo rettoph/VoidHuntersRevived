@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using tainicom.Aether.Physics2D.Diagnostics;
-using VoidHuntersRevived.Client.Library.Effects;
 using VoidHuntersRevived.Client.Library.Enums;
 using VoidHuntersRevived.Client.Library.Services;
 using VoidHuntersRevived.Library.Entities.Controllers;
@@ -40,8 +39,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
     {
         #region Private Fields
         private ShipPartRenderService _shipParts;
-        private TrailRenderService _trails;
-        private ExplosionRenderService _explosions;
         private CommandService _commands;
         private DebugService _debug;
         private ChunkManager _chunks;
@@ -76,8 +73,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             base.PreInitialize(provider);
 
             provider.Service(out _shipParts);
-            provider.Service(out _trails);
-            provider.Service(out _explosions);
             provider.Service(out _commands);
             provider.Service(out _chunks);
             provider.Service(out _debug);
@@ -146,8 +141,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _debug.Lines -= this.RenderDebugLines;
 
             _shipParts = null;
-            _trails = null;
-            _explosions = null;
             _commands = null;
             _chunks = null;
             _debug = null;
@@ -167,8 +160,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             // Update the required services...
             _shipParts.TryUpdate(gameTime);
-            _trails.TryUpdate(gameTime);
-            _explosions.TryUpdate(gameTime);
         }
 
         protected override void PreDraw(GameTime gameTime)
@@ -193,9 +184,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                     layerDepth: 0);
 
             _spriteBatch.End();
-
-            _trails.TryDraw(gameTime);
-            _explosions.TryDraw(gameTime);
         }
 
         private void DrawMaster(GameTime gameTime)
@@ -289,9 +277,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
         private string RenderDebugLines(GameTime gameTime)
         {
-            return $"Entities: {this.Entities.Count().ToString("#,###")}\n"
-                + $"Quarantined: {_chunks.Quarantine.Count().ToString("#,###")}\n"
-                + $"Trails: {_trails.Trails.Count().ToString("#,###")}; Segments: {_trails.Trails.SelectMany(t => t.Segments).Count().ToString("#,###")}";
+            return $"Entities: {this.Entities.Count().ToString("#,##0")}\n"
+                + $"Quarantined: {_chunks.Quarantine.Count().ToString("#,##0")}\n";
         }
         #endregion
     }

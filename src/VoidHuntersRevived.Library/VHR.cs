@@ -42,7 +42,6 @@ namespace VoidHuntersRevived.Library
             public static class World
             {
                 public static readonly UInt32 UpdateSize = "world:update:size".xxHash();
-                public static readonly UInt32 CreateExplosion = "world:create:explosion".xxHash();
             }
 
             public static class ShipPart

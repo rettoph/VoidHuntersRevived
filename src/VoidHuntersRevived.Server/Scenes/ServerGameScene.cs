@@ -189,8 +189,11 @@ namespace VoidHuntersRevived.Server.Scenes
                             // chassis.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
                             // ship.Bridge = chassis;
 
-                            var ships = Directory.GetFiles(VHR.Directories.Resources.Ships, "*.vh");
-                            using (var fileStream = File.OpenRead(ships[rand.Next(ships.Length)]))
+                            // var ships = Directory.GetFiles(VHR.Directories.Resources.Ships, "*.vh");
+                            // using (var fileStream = File.OpenRead(ships[rand.Next(ships.Length)]))
+                            //     ship.Import(fileStream, rand.NextVector2(0, world.Size.X, 0, world.Size.Y));
+
+                            using (var fileStream = File.OpenRead($"{VHR.Directories.Resources.Ships}/ow.vh"))
                                 ship.Import(fileStream, rand.NextVector2(0, world.Size.X, 0, world.Size.Y));
                         });
                     });

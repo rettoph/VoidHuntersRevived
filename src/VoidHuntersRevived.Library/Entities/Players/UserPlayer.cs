@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
         #endregion
 
         #region Public Properties
-        public override String Name => this.User.Name;
+        public override String Name => this.User?.Name ?? "";
 
         public User User
         {

@@ -133,9 +133,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
         {
             if(data.Fixture.IsSensor)
                 this.Chain.Ship.TryUseEnergy(
-                        data.Ammunition.GetShieldDeflectionEnergyCost(
-                            data,
-                            gameTime));
+                    data.Ammunition.GetShieldDeflectionEnergyCost(
+                        data,
+                        gameTime));
         }
 
         private bool HandleApplyAmmunitionCollisionDamage(ShipPart sender, CollisionData data)

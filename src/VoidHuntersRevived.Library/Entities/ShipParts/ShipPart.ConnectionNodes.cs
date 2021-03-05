@@ -61,7 +61,13 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         private void ConnectionNode_PreRelease()
         {
             this.MaleConnectionNode.TryRelease();
-            this.FemaleConnectionNodes.ForEach(f => f.TryRelease());
+            this.FemaleConnectionNodes.ForEach(f =>
+            {
+                if (f.Attached)
+                    f.Target.TryDetach();
+
+                f.TryRelease();
+            });
             this.FemaleConnectionNodes = new ConnectionNode[0];
         }
         #endregion

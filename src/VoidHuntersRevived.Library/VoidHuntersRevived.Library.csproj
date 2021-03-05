@@ -52,6 +52,7 @@
     <None Remove="Resources\Ships\butterfly.vh" />
     <None Remove="Resources\Ships\dragonfly.vh" />
     <None Remove="Resources\Ships\fighter.vh" />
+    <None Remove="Resources\Ships\ow.vh" />
     <None Remove="Resources\Ships\pelican.vh" />
     <None Remove="Resources\Ships\squid.vh" />
     <None Remove="Resources\Ships\wasp.vh" />

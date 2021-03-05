@@ -14,9 +14,9 @@ struct VertexShaderInput
 {
 	float4 Color : COLOR0;
     float2 Position : TEXCOORD0;
-    float MaxRadius : TEXCOORD1;
-    float Direction : TEXCOORD2;
-    float Alpha : TEXCOORD3;
+    float2 Velocity : TEXCOORD1;
+	float Direction : TEXCOORD2;
+    float MaxRadius : TEXCOORD3;
     float CreatedTimestamp : TEXCOORD4;
     float MaxAge : TEXCOORD5;
 };
@@ -29,13 +29,24 @@ struct VertexShaderOutput
 
 VertexShaderOutput MainVS(in VertexShaderInput input)
 {
-	VertexShaderOutput output = (VertexShaderOutput)0;
-
-    float age = (CurrentTimestamp - input.CreatedTimestamp) / input.MaxAge;
-    float2 position2d = input.Position + (float2(cos(input.Direction), sin(input.Direction)) * input.MaxRadius * age);
+	float age = min(input.MaxAge, CurrentTimestamp - input.CreatedTimestamp);
+	float agePercent = age / input.MaxAge;
 	
-    output.Position = mul(float4(position2d, 0, 1), WorldViewProjection);
-    output.Color = input.Color * float4(1, 1, 1, input.Alpha * (1 - age));
+	// Calculate the position of an accelerating body after a certain time.
+	float2 position2D = input.Position + input.Velocity * age + (0.5 * -input.Velocity * pow(age, 2));
+	float4 color = lerp(input.Color, float4(0, 0, 0, 0), agePercent);
+	
+	if (input.MaxRadius > 0)
+	{ // We only need to calculate the outward movement if radius is greater than 0
+		float radius = input.MaxRadius * agePercent;
+		position2D += float2(cos(input.Direction), sin(input.Direction)) * radius;
+		color = float4(0, 0, 0, 0);
+	}
+	
+	VertexShaderOutput output = (VertexShaderOutput) 0;
+
+	output.Position = mul(float4(position2D, 0, 1), WorldViewProjection);
+	output.Color = color;
     
 	return output;
 }

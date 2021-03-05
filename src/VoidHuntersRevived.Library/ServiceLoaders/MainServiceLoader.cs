@@ -28,6 +28,7 @@ using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Layers;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Utilities;
+using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library.ServiceLoaders
 {
@@ -43,6 +44,8 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddFactory<ServiceList<BodyEntity>>(p => new ServiceList<BodyEntity>());
             services.AddFactory<Chunk>(p => new Chunk());
             services.AddFactory<GameLayer>(p => new GameLayer());
+            services.AddFactory<ExplosionLayer>(p => new ExplosionLayer());
+            services.AddFactory<ExplosionService>(p => new ExplosionService());
 
             // Register services...
             services.AddScoped<Settings>();
@@ -51,6 +54,8 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddTransient<ServiceList<BodyEntity>>();
             services.AddTransient<Chunk>();
             services.AddTransient<GameLayer>();
+            services.AddTransient<ExplosionLayer>();
+            services.AddScoped<ExplosionService>();
 
 
             // Register Scenes...
@@ -73,6 +78,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddFactory<ShipController>(p => new ShipController());
             services.AddFactory<TractorBeam>(p => new TractorBeam());
             services.AddFactory<Chain>(p => new Chain());
+            services.AddFactory<Explosion>(p => new Explosion());
 
             services.AddScoped<ChunkManager>();
             services.AddScoped<ServiceList<NetworkEntity>>();
@@ -84,6 +90,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddTransient<ShipController>();
             services.AddTransient<TractorBeam>();
             services.AddTransient<Chain>();
+            services.AddTransient<Explosion>();
 
             services.AddSetup<Entity>((e, p, c) =>
             {

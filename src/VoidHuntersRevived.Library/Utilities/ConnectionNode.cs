@@ -81,7 +81,7 @@ namespace VoidHuntersRevived.Library.Utilities
 
             if(this.Attached)
             { // Auto detach if needed...
-                this.TryDetach(false);
+                this.TryDetach();
             }
         }
         #endregion

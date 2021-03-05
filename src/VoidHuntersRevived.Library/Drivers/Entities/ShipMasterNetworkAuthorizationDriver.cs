@@ -13,6 +13,8 @@ using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Extensions.Lidgren.Network;
+using VoidHuntersRevived.Library.Services;
+using VoidHuntersRevived.Library.Contexts;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities
 {
@@ -23,9 +25,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
     internal sealed class ShipMasterNetworkAuthorizationDriver : MasterNetworkAuthorizationDriver<Ship>
     {
         #region Private Fields
-        private EntityList _entities;
-        private Synchronizer _synchronizer;
-        private WorldEntity _world;
+        private ExplosionService _explosions;
         private ActionTimer _broadcastPingTimer;
         private Boolean _dirtyEnergy;
         #endregion
@@ -35,9 +35,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             base.Initialize(driven, provider);
 
-            provider.Service(out _entities);
-            provider.Service(out _synchronizer);
-            provider.Service(out _world);
+            provider.Service(out _explosions);
 
             this.driven.OnBridgeChanged += this.Health_HandleBridgeChanged;
 
@@ -62,9 +60,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             base.Release(driven);
 
-            _entities = null;
-            _synchronizer = null;
-            _world = null;
+            _explosions = null;
 
             this.driven.OnBridgeChanged -= this.Health_HandleBridgeChanged;
             this.CleanBridge(this.driven.Bridge, default);
@@ -169,11 +165,19 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             if(sender.Health <= 0)
             { // Auto release the bridge
-                // Release the part.
-                _synchronizer.Enqueue(gt => sender.TryRelease());
+                _explosions.Create(new ExplosionContext()
+                {
+                    StartPosition = sender.Position,
+                    StartVelocity = sender.LinearVelocity,
+                    Color = sender.Chain?.Ship.Color ?? sender.Color,
+                    MaxAge = 3f,
+                    MaxDamagePerSecond = 10,
+                    MaxForcePerSecond = 100,
+                    MaxRadius = 40f
+                });
 
-                // Create an explosion on the bridge (this should kill the bridge)
-                _world.EnqeueExplosion(sender.Position, new Color(sender.Chain.Ship.Color, 0.9f), 10f, 10f, 25f);
+                // Release the part.
+                sender.TryRelease();
 
                 // Just in case, manually remove bridge reference.
                 this.driven.Bridge = default;

@@ -47,6 +47,9 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddAndBindDriver<WorldEntity, WorldEntityMasterNetworkAuthorizationDriver>(p => new WorldEntityMasterNetworkAuthorizationDriver());
             services.AddAndBindDriver<WorldEntity, WorldEntitySlaveNetworkAuthorizationDriver>(p => new WorldEntitySlaveNetworkAuthorizationDriver());
 
+            services.AddAndBindDriver<Explosion, ExplosionMasterNetworkAuthorizationDriver>(p => new ExplosionMasterNetworkAuthorizationDriver());
+            services.AddAndBindDriver<Explosion, ExplosionSlaveNetworkAuthorizationDriver>(p => new ExplosionSlaveNetworkAuthorizationDriver());
+
             services.AddAndBindDriver<UserPlayer, UserPlayerMasterNetworkAuthorizationDriver>(p => new UserPlayerMasterNetworkAuthorizationDriver());
 
             services.AddAndBindDriver<Ship, ShipMasterNetworkAuthorizationDriver>(p => new ShipMasterNetworkAuthorizationDriver());
