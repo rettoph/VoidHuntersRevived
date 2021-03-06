@@ -73,7 +73,7 @@ namespace VoidHuntersRevived.Library.Scenes
                 l.SetContext(VHR.LayersContexts.Chunk);
             });
 
-            this.Layers.Create<GameLayer>((l, p, c) =>
+            this.Layers.Create<TrailLayer>((l, p, c) =>
             {
                 l.SetContext(VHR.LayersContexts.Trail);
             });

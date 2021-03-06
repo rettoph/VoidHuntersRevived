@@ -9,16 +9,17 @@
 
 matrix WorldViewProjection;
 float CurrentTimestamp;
-float MaxAge;
-float SpreadSpeed;
 
 struct VertexShaderInput
 {
     float4 Color : COLOR0;
     float2 Position : TEXCOORD0;
-    float SpreadDirection : TEXCOORD1;
-    float CreatedTimestamp : TEXCOORD2;
-    float2 ReverseImpulse : TEXCOORD3;
+    float2 Velocity : TEXCOORD1;
+	float SpreadSpeed : TEXCOORD2;
+	float SpreadDirection : TEXCOORD3;
+	float CreatedTimestamp : TEXCOORD4;
+	float MaxAge : TEXCOORD5;
+	float Center : TEXCOORD6;
 };
 
 struct VertexShaderOutput
@@ -35,15 +36,24 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 	VertexShaderOutput output = (VertexShaderOutput)0;
 
     float age = CurrentTimestamp - input.CreatedTimestamp;
-    float2 spread = float2(cos(input.SpreadDirection), sin(input.SpreadDirection)) * (SpreadSpeed * age);
-    float4 position = mul(float4(input.Position + (input.ReverseImpulse * age) + spread, 0, 1), WorldViewProjection);
-    float4 startPosition = mul(float4(input.Position, 0, 1), WorldViewProjection);
-    
-    output.Position = position;
-    output.Color = input.Color * float4(1, 1, 1, 1 - (age / MaxAge));
-    output.WorldPosition = input.Position + spread;
-    output.StartPosition = input.Position;
-    output.RayLength = length(spread);
+	float agePercent = age / input.MaxAge;
+
+	// Calculate the position of an accelerating body after a certain time.
+	float2 acceleration = -input.Velocity / input.MaxAge;
+	float2 startPosition2D = input.Position + input.Velocity * age + (0.5 * acceleration * pow(age, 2));
+	float2 worldPosition2D = startPosition2D;
+	float2 spread = float2(cos(input.SpreadDirection), sin(input.SpreadDirection)) * (input.SpreadSpeed * age);
+	
+	if (input.Center == 1)
+	{ // Only factor the spread if the vertex is marked not as center
+		worldPosition2D += spread;
+	}
+
+	output.Position = mul(float4(worldPosition2D, 0, 1), WorldViewProjection);
+	output.Color = input.Color * float4(1, 1, 1, 1 - agePercent);
+	output.StartPosition = startPosition2D;
+	output.WorldPosition = worldPosition2D;
+	output.RayLength = length(spread);
 
 	return output;
 }

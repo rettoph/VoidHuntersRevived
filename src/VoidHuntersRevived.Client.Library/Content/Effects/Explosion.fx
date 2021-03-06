@@ -33,7 +33,8 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 	float agePercent = age / input.MaxAge;
 	
 	// Calculate the position of an accelerating body after a certain time.
-	float2 position2D = input.Position + input.Velocity * age + (0.5 * -input.Velocity * pow(age, 2));
+	float2 acceleration = -input.Velocity / input.MaxAge;
+	float2 position2D = input.Position + input.Velocity * age + (0.5 * acceleration * pow(age, 2));
 	float4 color = lerp(input.Color, float4(0, 0, 0, 0), agePercent);
 	
 	if (input.MaxRadius > 0)

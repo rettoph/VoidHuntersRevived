@@ -43,7 +43,19 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddFactory<ShipPartRenderService>(p => new ShipPartRenderService());
             services.AddFactory<GameLayer>(factory: p => new ClientGameLayer(), priority: 1);
             services.AddFactory<ExplosionLayer>(factory: p => new ClientExplosionLayer(), priority: 1);
+            services.AddFactory<TrailLayer>(factory: p => new ClientTrailLayer(), priority: 1);
+            services.AddFactory<TrailService>(p => new TrailService());
+            services.AddFactory<ServiceList<Trail>>(p => new ServiceList<Trail>());
+            services.AddFactory<Trail>(p => new Trail());
             services.AddFactory<RenderTarget2DManager>(p => new RenderTarget2DManager(p.GetService<GraphicsDevice>(), p.GetService<GameWindow>()));
+            services.AddFactory<PrimitiveBatch<VertexTrail, TrailEffect>>(p =>
+            {
+                var graphics = p.GetService<GraphicsDevice>();
+
+                return new PrimitiveBatch<VertexTrail, TrailEffect>(
+                    new TrailEffect(graphics),
+                    graphics);
+            });
             services.AddFactory<PrimitiveBatch<VertexExplosion, ExplosionEffect>>(p =>
             {
                 var graphics = p.GetService<GraphicsDevice>();
@@ -58,7 +70,11 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddTransient<PlayerNameplate>();
             services.AddSingleton<DebugService>();
             services.AddScoped<ShipPartRenderService>();
+            services.AddScoped<TrailService>();
+            services.AddScoped<ServiceList<Trail>>();
+            services.AddTransient<Trail>();
             services.AddTransient<RenderTarget2DManager>();
+            services.AddScoped<PrimitiveBatch<VertexTrail, TrailEffect>>();
             services.AddScoped<PrimitiveBatch<VertexExplosion, ExplosionEffect>>();
 
             services.AddGame<ClientVoidHuntersRevivedGame>(p => new ClientVoidHuntersRevivedGame());
@@ -69,7 +85,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddAndBindDriver<WorldEntity, WorldEntityGraphicsDriver>(p => new WorldEntityGraphicsDriver());
             services.AddAndBindDriver<Explosion, ExplosionGraphicsDriver>(p => new ExplosionGraphicsDriver());
             services.AddAndBindDriver<ShipPart, ShipPartGraphicsDriver>(p => new ShipPartGraphicsDriver());
-            services.AddAndBindDriver<Thruster, ThrusterTrailsDriver>(p => new ThrusterTrailsDriver());
+            services.AddAndBindDriver<Thruster, ThrusterGraphicsDriver>(p => new ThrusterGraphicsDriver());
             services.AddAndBindDriver<ShieldGenerator, ShieldGeneratorGraphicsDriver>(p => new ShieldGeneratorGraphicsDriver());
             services.AddAndBindDriver<Player, PlayerPlayerNameplateDriver>(p => new PlayerPlayerNameplateDriver());
             services.AddAndBindDriver<UserPlayer, UserPlayerLocalDriver>(
