@@ -63,6 +63,9 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddAndBindDriver<ShipPart, ShipPartMasterNetworkAuthorizationDriver>(p => new ShipPartMasterNetworkAuthorizationDriver());
             services.AddAndBindDriver<ShipPart, ShipPartSlaveNetworkAuthorizationDriver>(p => new ShipPartSlaveNetworkAuthorizationDriver());
 
+            services.AddAndBindDriver<SpellCasterPart, SpellCasterPartMasterAuthorizationNetworkDriver>(p => new SpellCasterPartMasterAuthorizationNetworkDriver());
+            services.AddAndBindDriver<SpellCasterPart, SpellCasterPartSlaveAuthorizationNetworkDriver>(p => new SpellCasterPartSlaveAuthorizationNetworkDriver());
+
             services.AddAndBindDriver<PowerCell, PowerCellMasterAuthorizationDriver>(p => new PowerCellMasterAuthorizationDriver());
         }
 

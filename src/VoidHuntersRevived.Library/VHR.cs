@@ -48,7 +48,12 @@ namespace VoidHuntersRevived.Library
             {
                 public static readonly UInt32 UpdateHealth = "ship-part:update:health".xxHash();
             }
-            
+
+            public static class SpellCasterPart
+            {
+                public static readonly UInt32 Cast = "spell-caster-part:cast".xxHash();
+            }
+
             public static class Ship
             {
                 public static readonly UInt32 UpdateTarget = "ship:update:target".xxHash();

@@ -8,16 +8,15 @@ using VoidHuntersRevived.Library.Attributes;
 namespace VoidHuntersRevived.Library.Contexts
 {
     [ShipPartContextAttribute("DroneBay", "A special piece capable of launching another ship.")]
-    public class DroneBayContext : RigidShipPartContext
+    public class DroneBayContext : SpellCasterPartContext
     {
         #region Enums
         private enum DroneBayContextProperty
         {
             Start = 0,
             End = 1,
-            LaunchInterval = 2,
-            DroneMaxAge = 3,
-            DroneType = 4
+            DroneMaxAge = 2,
+            DroneType = 3
         }
         #endregion
 
@@ -27,12 +26,6 @@ namespace VoidHuntersRevived.Library.Contexts
         #endregion
 
         #region Public Properties
-        /// <summary>
-        /// Defines how often this bay is capable of launching its drones.
-        /// </summary>
-        [ShipPartContextProperty("Minimum Launch Interval", "Defines how often this bay is capable of launching its drones in seconds.", ShipPartContextPropertyType.Single)]
-        public Single LaunchInterval { get; set; } = 30f;
-
         /// <summary>
         /// Defines how often this bay is capable of launching its drones.
         /// </summary>
@@ -66,9 +59,6 @@ namespace VoidHuntersRevived.Library.Contexts
                     propertyType = (DroneBayContextProperty)reader.ReadByte();
                     switch (propertyType)
                     {
-                        case DroneBayContextProperty.LaunchInterval:
-                            this.LaunchInterval = reader.ReadSingle();
-                            break;
                         case DroneBayContextProperty.DroneMaxAge:
                             this.DroneMaxAge = reader.ReadSingle();
                             break;
@@ -85,9 +75,6 @@ namespace VoidHuntersRevived.Library.Contexts
             base.Write(writer);
 
             writer.Write((Byte)DroneBayContextProperty.Start);
-
-            writer.Write((Byte)DroneBayContextProperty.LaunchInterval);
-            writer.Write(this.LaunchInterval);
 
             writer.Write((Byte)DroneBayContextProperty.DroneMaxAge);
             writer.Write(this.DroneMaxAge);
