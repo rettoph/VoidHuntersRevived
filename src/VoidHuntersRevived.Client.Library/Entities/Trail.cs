@@ -137,7 +137,7 @@ namespace VoidHuntersRevived.Client.Library.Services
         {
             if (this.Thruster == default)
                 return;
-            this.logger.Info($"Segment! {gameTime.ElapsedGameTime.TotalSeconds}");
+
             _segments.Enqueue(this.BuildSegment(gameTime));
         }
 
