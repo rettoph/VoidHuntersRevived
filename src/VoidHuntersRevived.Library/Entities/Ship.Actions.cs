@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -38,8 +39,8 @@ namespace VoidHuntersRevived.Library.Entities
         /// Helper method to automatically launch fighters. 
         /// The handling is done is a custom helper class.
         /// </summary>
-        public void TryLaunchFighters()
-            => this.Actions.TryInvoke(VHR.Actions.Ship.TryLaunchFighters);
+        public void TryLaunchFighters(GameTime gameTime)
+            => this.Actions.TryInvoke(VHR.Actions.Ship.TryLaunchDrones, gameTime);
         #endregion
     }
 }

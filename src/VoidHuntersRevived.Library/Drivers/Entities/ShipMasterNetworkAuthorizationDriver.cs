@@ -170,10 +170,10 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
                     StartPosition = sender.Position,
                     StartVelocity = sender.LinearVelocity,
                     Color = sender.Chain?.Ship.Color ?? sender.Color,
-                    MaxAge = 3f,
+                    MaxAge = 4f,
                     MaxDamagePerSecond = 10,
-                    MaxForcePerSecond = 100,
-                    MaxRadius = 40f
+                    MaxForcePerSecond = 3000,
+                    MaxRadius = 30f
                 });
 
                 // Release the part.

@@ -44,11 +44,11 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts.Special
                 {
                     StartPosition = sender.Position,
                     StartVelocity = sender.LinearVelocity,
-                    Color = Color.Lerp(sender.Chain.Ship.Color, sender.Context.DefaultColor, 0.5f),
-                    MaxAge = 2f,
+                    Color = Color.Lerp(sender.Chain.Ship.Color, sender.Context.DefaultColor, 0.25f),
+                    MaxAge = 3f,
                     MaxDamagePerSecond = 100,
-                    MaxForcePerSecond = 100,
-                    MaxRadius = 25f
+                    MaxForcePerSecond = 2000,
+                    MaxRadius = 20f
                 });
 
                 sender.TryRelease();

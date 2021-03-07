@@ -1,6 +1,7 @@
 ﻿using Guppy;
 using Guppy.DependencyInjection;
 using Guppy.Utilities;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
     /// <summary>
     /// Handle the fighter bay action request that can be invoked by a ship.
     /// </summary>
-    internal sealed class ShipFighterBayDriver : Driver<Ship>
+    internal sealed class ShipDroneBayDriver : Driver<Ship>
     {
         #region Private Fields
         private Synchronizer _synchronizer;
@@ -27,7 +28,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
             provider.Service(out _synchronizer);
 
-            this.driven.Actions.Add(VHR.Actions.Ship.TryLaunchFighters, this.HandleTryLaunchFightersAction);
+            this.driven.Actions.Add(VHR.Actions.Ship.TryLaunchDrones, this.HandleTryLaunchDronesAction);
         }
 
         protected override void Release(Ship driven)
@@ -37,11 +38,11 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         #endregion
 
         #region Event Handlers
-        private void HandleTryLaunchFightersAction(Ship sender, object args)
+        private void HandleTryLaunchDronesAction(Ship sender, object args)
         {
             foreach (ShipPart shipPart in this.driven.Bridge.Items())
-                if (shipPart is FighterBay fighterBay)
-                    fighterBay.TryLaunch();
+                if (shipPart is DroneBay fighterBay)
+                    fighterBay.TryCast(args as GameTime);
 
             // Invoke the post launch event...
             this.driven.Actions.TryInvoke(VHR.Actions.Ship.OnLaunchFighters);

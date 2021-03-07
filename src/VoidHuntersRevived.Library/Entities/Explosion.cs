@@ -83,6 +83,7 @@ namespace VoidHuntersRevived.Library.Entities
                     forceVector *= this.Context.MaxForcePerSecond * forcePercent;
                     forceVector *= 1 - agePercent;
                     forceVector *= -1;
+                    forceVector *= (Single)gameTime.ElapsedGameTime.TotalSeconds;
 
                     target.ApplyForce(forceVector, this.Context.StartPosition);
                     target.TryApplyDamage(this.Context.MaxDamagePerSecond * forcePercent * (1 - agePercent) * (Single)gameTime.ElapsedGameTime.TotalSeconds);

@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddFactory<Laser>(p => new Laser());
             services.AddFactory<LaserBeam>(b => new LaserBeam());
             services.AddFactory<Armor>(b => new Armor());
-            services.AddFactory<FighterBay>(b => new FighterBay());
+            services.AddFactory<DroneBay>(b => new DroneBay());
             services.AddFactory<ShieldGenerator>(b => new ShieldGenerator());
             services.AddFactory<PowerCell>(b => new PowerCell());
 
@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddTransient<Laser>(VHR.Entities.Laser);
             services.AddTransient<LaserBeam>();
             services.AddTransient<Armor>(VHR.Entities.Armor);
-            services.AddTransient<FighterBay>(VHR.Entities.FighterBay);
+            services.AddTransient<DroneBay>(VHR.Entities.DroneBay);
             services.AddTransient<ShieldGenerator>(VHR.Entities.ShieldGenerator);
             services.AddTransient<PowerCell>(VHR.Entities.PowerCell);
         }

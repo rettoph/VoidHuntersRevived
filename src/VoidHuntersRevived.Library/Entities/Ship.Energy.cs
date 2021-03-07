@@ -129,8 +129,8 @@ namespace VoidHuntersRevived.Library.Entities
                 sender._powerCells.Clear();
                 sender._powerCells.AddRange(sender.Bridge?.Items(c => c is PowerCell).Select(c => c as PowerCell) ?? Enumerable.Empty<PowerCell>());
 
-                sender.MaxEnergy = 100f + sender._powerCells.Sum(pc => pc.Context.EnergyCapacity);
-                sender.EnergyChargePerSecond = 25f + sender._powerCells.Sum(pc => pc.Context.EnergyChargePerSecond);
+                sender.MaxEnergy = 100f + sender._powerCells.Where(pc => pc.Powered).Sum(pc => pc.Context.EnergyCapacity);
+                sender.EnergyChargePerSecond = 25f + sender._powerCells.Where(pc => pc.Powered).Sum(pc => pc.Context.EnergyChargePerSecond);
 
                 sender.Energy = Math.Min(sender.Energy, sender.MaxEnergy);
             }

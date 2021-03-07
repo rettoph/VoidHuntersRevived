@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Library
             public static readonly String Gun = "entity:ship-part:weapon:gun";
             public static readonly String Laser = "entity:ship-part:weapon:laser";
             public static readonly String Armor = "entity:ship-part:armor";
-            public static readonly String FighterBay = "entity:ship-part:fighter-bay";
+            public static readonly String DroneBay = "entity:ship-part:drone-bay";
             public static readonly String ShieldGenerator = "entity:ship-part:shield-generator";
             public static readonly String PowerCell = "entity:ship-part:power-cell";
         }
@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Library
         {
             public static class Ship
             {
-                public static readonly UInt32 TryLaunchFighters = "action:ship:try-launch-fighters".xxHash();
+                public static readonly UInt32 TryLaunchDrones = "action:ship:try-launch-fighters".xxHash();
                 public static readonly UInt32 OnLaunchFighters = "action:ship:on-launch-fighters".xxHash();
             }
         }
@@ -147,28 +147,34 @@ namespace VoidHuntersRevived.Library
                 Group = new SingleLayerGroup(6)
             };
 
-            public static readonly LayerContext Explosion = new LayerContext()
+            public static readonly LayerContext Spell = new LayerContext()
             {
                 DrawOrder = 60,
                 Group = new SingleLayerGroup(7)
             };
 
-            public static readonly LayerContext Ammunition = new LayerContext()
+            public static readonly LayerContext Explosion = new LayerContext()
             {
                 DrawOrder = 70,
                 Group = new SingleLayerGroup(8)
             };
 
-            public static readonly LayerContext HeadsUpDisplay = new LayerContext()
+            public static readonly LayerContext Ammunition = new LayerContext()
             {
                 DrawOrder = 80,
                 Group = new SingleLayerGroup(9)
             };
 
-            public static readonly LayerContext UI = new LayerContext()
+            public static readonly LayerContext HeadsUpDisplay = new LayerContext()
             {
                 DrawOrder = 90,
                 Group = new SingleLayerGroup(10)
+            };
+
+            public static readonly LayerContext UI = new LayerContext()
+            {
+                DrawOrder = 100,
+                Group = new SingleLayerGroup(11)
             };
         }
     }

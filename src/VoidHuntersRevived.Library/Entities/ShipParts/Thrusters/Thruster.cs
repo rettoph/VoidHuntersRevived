@@ -127,7 +127,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         /// <param name="gameTime"></param>
         public Boolean ApplyThrust(ShipPart root, GameTime gameTime)
         {
-            if (this.ActiveDirections != Ship.Direction.None)
+            if (this.ActiveDirections != Ship.Direction.None && this.Health > 0)
             { // Only apply any thrust if the current thruster is active...
                 root.ApplyForce(
                     // Calculate the thrusters position on the recieved body...

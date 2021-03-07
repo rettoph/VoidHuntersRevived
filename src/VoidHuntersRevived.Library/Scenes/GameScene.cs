@@ -88,6 +88,11 @@ namespace VoidHuntersRevived.Library.Scenes
                 l.SetContext(VHR.LayersContexts.TractorBeam);
             });
 
+            this.Layers.Create<GameLayer>((l, p, c) =>
+            {
+                l.SetContext(VHR.LayersContexts.Spell);
+            });
+
             this.Layers.Create<ExplosionLayer>((l, p, c) =>
             {
                 l.SetContext(VHR.LayersContexts.Explosion);

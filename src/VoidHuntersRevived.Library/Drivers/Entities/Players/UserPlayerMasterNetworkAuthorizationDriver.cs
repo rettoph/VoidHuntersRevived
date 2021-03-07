@@ -7,6 +7,7 @@ using Guppy.Lists;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Utilities;
 using Guppy.Network.Utilities.Messages;
+using Guppy.Utilities;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
@@ -28,6 +29,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
         private EntityList _entities;
         private NetConnection _userConnection;
         private WorldEntity _world;
+        private Synchronizer _synchronizer;
         #endregion
 
         #region Lifecycle Methods
@@ -37,6 +39,8 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
 
             provider.Service(out _entities);
             provider.Service(out _world);
+            provider.Service(out _synchronizer);
+
             _userConnection = provider.GetService<UserNetConnectionDictionary>().Connections[this.driven.User];
 
             this.driven.Ping.ValidateRead += this.ValidateReadAction;
@@ -119,7 +123,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
         }
 
         private void HandleLaunchFightersRequest(NetIncomingMessage obj)
-            => this.driven.Ship.TryLaunchFighters();
+            => _synchronizer.Enqueue(gt => this.driven.Ship.TryLaunchFighters(gt));
         #endregion
 
         #region Event Handlers

@@ -54,16 +54,14 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
 
             services.AddAndBindDriver<Ship, ShipMasterNetworkAuthorizationDriver>(p => new ShipMasterNetworkAuthorizationDriver());
             services.AddAndBindDriver<Ship, ShipSlaveNetworkAuthorizationDriver>(p => new ShipSlaveNetworkAuthorizationDriver());
-            services.AddAndBindDriver<Ship, ShipFighterBayMasterNetworkAuthorizationDriver>(p => new ShipFighterBayMasterNetworkAuthorizationDriver());
-            services.AddAndBindDriver<Ship, ShipFighterBayDriver>(p => new ShipFighterBayDriver());
+            services.AddAndBindDriver<Ship, ShipDroneBayMasterNetworkAuthorizationDriver>(p => new ShipDroneBayMasterNetworkAuthorizationDriver());
+            services.AddAndBindDriver<Ship, ShipDroneBayDriver>(p => new ShipDroneBayDriver());
 
             services.AddAndBindDriver<BodyEntity, BodyEntityMasterNetworkAuthorizationDriver>(p => new BodyEntityMasterNetworkAuthorizationDriver());
             services.AddAndBindDriver<BodyEntity, BodyEntitySlaveNetworkAuthorizationDriver>(p => new BodyEntitySlaveNetworkAuthorizationDriver());
 
             services.AddAndBindDriver<ShipPart, ShipPartMasterNetworkAuthorizationDriver>(p => new ShipPartMasterNetworkAuthorizationDriver());
             services.AddAndBindDriver<ShipPart, ShipPartSlaveNetworkAuthorizationDriver>(p => new ShipPartSlaveNetworkAuthorizationDriver());
-            
-            services.AddAndBindDriver<FighterBay, FighterBayMasterAuthorizationDriver>(p => new FighterBayMasterAuthorizationDriver());
 
             services.AddAndBindDriver<PowerCell, PowerCellMasterAuthorizationDriver>(p => new PowerCellMasterAuthorizationDriver());
         }

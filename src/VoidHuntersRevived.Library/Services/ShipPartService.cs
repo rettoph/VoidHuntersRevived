@@ -88,6 +88,7 @@ namespace VoidHuntersRevived.Library.Services
         {
             using (BinaryReader reader = new BinaryReader(stream))
             {
+
                 // Extract the context type & create an empty instance.
                 var context = Activator.CreateInstance(_contextTypes[reader.ReadUInt32()], reader.ReadString()) as ShipPartContext;
                 context.TryRead(reader);

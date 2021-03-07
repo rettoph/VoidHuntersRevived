@@ -120,6 +120,10 @@ namespace VoidHuntersRevived.Server.Scenes
                 fighterBay.Position = rand.NextVector2(0, world.Size.X);
                 fighterBay.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
 
+                var fighterBay2 = _shipParts.Create("vhr:special:fighter-bay:mosquito");
+                fighterBay2.Position = rand.NextVector2(0, world.Size.X);
+                fighterBay2.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
+
                 var shieldGenerator = _shipParts.Create("vhr:special:shield-generator");
                 shieldGenerator.Position = rand.NextVector2(0, world.Size.X);
                 shieldGenerator.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
@@ -189,12 +193,12 @@ namespace VoidHuntersRevived.Server.Scenes
                             // chassis.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
                             // ship.Bridge = chassis;
 
-                            // var ships = Directory.GetFiles(VHR.Directories.Resources.Ships, "*.vh");
-                            // using (var fileStream = File.OpenRead(ships[rand.Next(ships.Length)]))
-                            //     ship.Import(fileStream, rand.NextVector2(0, world.Size.X, 0, world.Size.Y));
-
-                            using (var fileStream = File.OpenRead($"{VHR.Directories.Resources.Ships}/ow.vh"))
+                            var ships = Directory.GetFiles(VHR.Directories.Resources.Ships, "*.vh");
+                            using (var fileStream = File.OpenRead(ships[rand.Next(ships.Length)]))
                                 ship.Import(fileStream, rand.NextVector2(0, world.Size.X, 0, world.Size.Y));
+
+                            // using (var fileStream = File.OpenRead($"{VHR.Directories.Resources.Ships}/tester01.vh"))
+                            //     ship.Import(fileStream, rand.NextVector2(0, world.Size.X, 0, world.Size.Y));
                         });
                     });
                 });

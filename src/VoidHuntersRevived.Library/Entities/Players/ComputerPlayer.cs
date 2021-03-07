@@ -53,12 +53,12 @@ namespace VoidHuntersRevived.Library.Entities.Players
                     var targetRotationDifference = MathHelper.WrapAngle(this.Ship.Bridge.Rotation - targetRotation);
 
                     // Change the rotation
-                    if (targetRotationDifference < -0.2)
+                    if (targetRotationDifference < -0.2 && this.Ship.Bridge.AngularVelocity < -0.5f * targetRotationDifference)
                     { // Turn right...
                         this.Ship.TrySetDirection(Ship.Direction.TurnLeft, false);
                         this.Ship.TrySetDirection(Ship.Direction.TurnRight, true);
                     }
-                    else if (targetRotationDifference > 0.2)
+                    else if (targetRotationDifference > 0.2 && this.Ship.Bridge.AngularVelocity > -0.5f * targetRotationDifference)
                     { // Turn left...
                         this.Ship.TrySetDirection(Ship.Direction.TurnLeft, true);
                         this.Ship.TrySetDirection(Ship.Direction.TurnRight, false);

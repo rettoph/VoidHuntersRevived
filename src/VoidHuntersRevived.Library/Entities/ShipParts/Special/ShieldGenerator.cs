@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
         /// actually on & powered. Note that just because
         /// a shield is active doesnt mean its powered.
         /// </summary>
-        public Boolean Powered => this.Active && (!this.Chain.Ship?.Charging ?? false);
+        public Boolean Powered => this.Active && (!this.Chain.Ship?.Charging ?? false) && this.Health > 0;
 
         /// <summary>
         /// Determins that the current shield would be on

@@ -218,6 +218,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         /// <param name="target"></param>
         public void TryAim(Vector2 target)
         {
+            if (this.Health == 0)
+                return;
+
             this.Do(body =>
             { // Iterate through each internal body...
                 var joint = this.GetJoint(body);
@@ -348,7 +351,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         }
 
         private static bool HandleValidateFire(Weapon sender, Ship args)
-            => sender.TargetInRange && sender.Chain.Ship.TryUseEnergy(sender.Context.FireEnergyCost);
+            => sender.TargetInRange && sender.Health > 0 && sender.Chain.Ship.TryUseEnergy(sender.Context.FireEnergyCost);
         #endregion
     }
 }

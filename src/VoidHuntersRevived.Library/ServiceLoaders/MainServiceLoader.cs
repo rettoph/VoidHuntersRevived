@@ -77,6 +77,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddFactory<Ship>(p => new Ship());
             services.AddFactory<UserPlayer>(p => new UserPlayer());
             services.AddFactory<ComputerPlayer>(p => new ComputerPlayer());
+            services.AddFactory<DronePlayer>(p => new DronePlayer());
             services.AddFactory<ShipController>(p => new ShipController());
             services.AddFactory<TractorBeam>(p => new TractorBeam());
             services.AddFactory<Chain>(p => new Chain());
@@ -89,6 +90,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddTransient<Ship>();
             services.AddTransient<UserPlayer>();
             services.AddTransient<ComputerPlayer>();
+            services.AddTransient<DronePlayer>();
             services.AddTransient<ShipController>();
             services.AddTransient<TractorBeam>();
             services.AddTransient<Chain>();

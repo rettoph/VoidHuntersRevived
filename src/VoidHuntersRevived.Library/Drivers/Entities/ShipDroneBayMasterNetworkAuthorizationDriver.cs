@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
     /// <summary>
     /// Handle the fighter bay action request that can be invoked by a ship.
     /// </summary>
-    internal sealed class ShipFighterBayMasterNetworkAuthorizationDriver : MasterNetworkAuthorizationDriver<Ship>
+    internal sealed class ShipDroneBayMasterNetworkAuthorizationDriver : MasterNetworkAuthorizationDriver<Ship>
     {
         #region Lifecycle Methods
         protected override void InitializeRemote(Ship driven, ServiceProvider provider)
