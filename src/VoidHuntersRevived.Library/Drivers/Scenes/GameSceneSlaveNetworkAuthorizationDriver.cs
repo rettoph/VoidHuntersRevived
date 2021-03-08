@@ -16,6 +16,7 @@ using Guppy.Extensions.System;
 using VoidHuntersRevived.Library.Enums;
 using Guppy.Utilities;
 using Guppy.Extensions.System.Collections;
+using VoidHuntersRevived.Library.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Library.Drivers.Scenes
 {

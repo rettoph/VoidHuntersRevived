@@ -21,6 +21,13 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
             this.driven.OnApplyAmmunitionCollision += this.HandleApplyAmmunitionCollision;
         }
 
+        protected override void Release(ShipPart driven)
+        {
+            this.driven.OnApplyAmmunitionCollision -= this.HandleApplyAmmunitionCollision;
+
+            base.Release(driven);
+        }
+
 
         protected override void InitializeRemote(ShipPart driven, ServiceProvider provider)
         {
@@ -29,15 +36,6 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
             this.driven.MessageHandlers[MessageType.Setup].OnWrite += this.driven.WriteMaleConnectionNode;
             this.driven.MessageHandlers[MessageType.Setup].OnWrite += this.driven.WriteHealth;
             this.driven.MessageHandlers[MessageType.Update].OnWrite += this.driven.WriteHealth;
-
-            this.driven.OnHealthChanged += this.RemoteHandleHealthChanged;
-        }
-
-        protected override void Release(ShipPart driven)
-        {
-            this.driven.OnHealthChanged -= this.RemoteHandleHealthChanged;
-
-            base.Release(driven);
         }
 
         protected override void ReleaseRemote(ShipPart driven)
@@ -47,8 +45,6 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
             this.driven.MessageHandlers[MessageType.Setup].OnWrite -= this.driven.WriteMaleConnectionNode;
             this.driven.MessageHandlers[MessageType.Setup].OnWrite -= this.driven.WriteHealth;
             this.driven.MessageHandlers[MessageType.Update].OnWrite -= this.driven.WriteHealth;
-
-            this.driven.OnHealthChanged -= this.RemoteHandleHealthChanged;
         }
         #endregion
 
@@ -60,15 +56,6 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
                     data.Ammunition.GetDamage(
                         data, 
                         gameTime));
-        }
-
-
-        private void RemoteHandleHealthChanged(ShipPart sender, float old, float value)
-        {
-            this.driven.Ping.Create(NetDeliveryMethod.Unreliable, 0).Write(VHR.Pings.ShipPart.UpdateHealth, om =>
-            {
-                this.driven.WriteHealth(om);
-            });
         }
         #endregion
     }

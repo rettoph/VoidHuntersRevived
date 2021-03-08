@@ -15,6 +15,7 @@ using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Extensions.Lidgren.Network;
 using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Contexts;
+using VoidHuntersRevived.Library.Enums;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities
 {
@@ -26,7 +27,6 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
     {
         #region Private Fields
         private ExplosionService _explosions;
-        private ActionTimer _broadcastPingTimer;
         private Boolean _dirtyEnergy;
         #endregion
 
@@ -37,23 +37,11 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
             provider.Service(out _explosions);
 
+            this.driven.DirtyState |= DirtyState.Filthy;
+
             this.driven.OnBridgeChanged += this.Health_HandleBridgeChanged;
 
             this.CleanBridge(default, this.driven.Bridge);
-        }
-
-        protected override void InitializeRemote(Ship driven, ServiceProvider provider)
-        {
-            base.InitializeRemote(driven, provider);
-
-            _broadcastPingTimer = new ActionTimer(150);
-
-            this.driven.OnUpdate += this.Update;
-            this.driven.OnBridgeChanged += this.HandleBridgeChanged;
-            this.driven.OnFiringChanged += this.HandleFiringChanged;
-            this.driven.OnDirectionChanged += this.HandleDirectionChanged;
-            this.driven.TractorBeam.OnAction += this.HandleTractorBeamAction;
-            this.driven.OnEnergyChanged += this.HandleEnergyChanged;
         }
 
         protected override void Release(Ship driven)
@@ -63,37 +51,32 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             _explosions = null;
 
             this.driven.OnBridgeChanged -= this.Health_HandleBridgeChanged;
+
             this.CleanBridge(this.driven.Bridge, default);
+        }
+
+        protected override void InitializeRemote(Ship driven, ServiceProvider provider)
+        {
+            base.InitializeRemote(driven, provider);
+
+            this.driven.MessageHandlers[MessageType.Update].OnWrite += this.WriteUpdate;
+
+            this.driven.OnBridgeChanged += this.HandleBridgeChanged;
+            this.driven.OnFiringChanged += this.HandleFiringChanged;
+            this.driven.OnDirectionChanged += this.HandleDirectionChanged;
+            this.driven.TractorBeam.OnAction += this.HandleTractorBeamAction;
         }
 
         protected override void ReleaseRemote(Ship driven)
         {
             base.ReleaseRemote(driven);
 
-            _broadcastPingTimer = null;
+            this.driven.MessageHandlers[MessageType.Update].OnWrite -= this.WriteUpdate;
 
-            this.driven.OnUpdate -= this.Update;
             this.driven.OnBridgeChanged -= this.HandleBridgeChanged;
             this.driven.OnFiringChanged -= this.HandleFiringChanged;
             this.driven.OnDirectionChanged -= this.HandleDirectionChanged;
             this.driven.TractorBeam.OnAction -= this.HandleTractorBeamAction;
-            this.driven.OnEnergyChanged -= this.HandleEnergyChanged;
-        }
-        #endregion
-
-        #region Frame Methods
-        private void Update(GameTime gameTime)
-        {
-            _broadcastPingTimer.Update(gameTime, gt =>
-            { // Attempt to send the newest target value...
-                this.WriteUpdateTarget(this.driven.Ping.Create(NetDeliveryMethod.Unreliable, 0));
-
-                if(_dirtyEnergy)
-                {
-                    this.WriteUpdateEnergy(this.driven.Ping.Create(NetDeliveryMethod.Unreliable, 0));
-                    _dirtyEnergy = false;
-                }
-            });
         }
         #endregion
 
@@ -113,11 +96,13 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         #endregion
 
         #region Network Methods
-        private void WriteUpdateTarget(NetOutgoingMessage om)
-            => om.Write(VHR.Pings.Ship.UpdateTarget, m =>
-            {
-                this.driven.WriteTarget(m);
-            });
+        private void WriteUpdate(NetOutgoingMessage om)
+        {
+            this.driven.WriteTarget(om);
+
+            om.Write(this.driven.Energy);
+            om.Write(this.driven.Charging);
+        }
 
         private void WriteUpdateFiring(NetOutgoingMessage om, Boolean value)
             => om.Write(VHR.Pings.Ship.UpdateFiring, m =>
@@ -138,21 +123,11 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
                 this.driven.TractorBeam.WriteAction(m, action);
             });
         }
-
         private void WriteUpdateBridge(NetOutgoingMessage om)
         {
             om.Write(VHR.Pings.Ship.UpdateBridge, m =>
             {
                 this.driven.WriteBridge(om);
-            });
-        }
-
-        private void WriteUpdateEnergy(NetOutgoingMessage om)
-        {
-            om.Write(VHR.Pings.Ship.UpdateEnergy, m =>
-            {
-                om.Write(this.driven.Energy);
-                om.Write(this.driven.Charging);
             });
         }
         #endregion
@@ -202,9 +177,6 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             => this.WriteTractorBeamAction(
                 this.driven.Ping.Create(NetDeliveryMethod.Unreliable, 0),
                 action);
-
-        private void HandleEnergyChanged(Ship sender, float old, float value)
-            => _dirtyEnergy = true;
         #endregion
     }
 }

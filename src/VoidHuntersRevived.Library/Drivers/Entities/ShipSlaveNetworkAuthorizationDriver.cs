@@ -3,6 +3,7 @@ using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Enums;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities
 {
@@ -17,11 +18,11 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             base.InitializeRemote(driven, provider);
 
-            this.driven.Ping.Set(VHR.Pings.Ship.UpdateTarget, this.HandleUpdateTargetMessage);
+            this.driven.MessageHandlers[MessageType.Update].OnRead += this.ReadUpdate;
+
             this.driven.Ping.Set(VHR.Pings.Ship.UpdateFiring, this.HandleUpdateFiringMessage);
             this.driven.Ping.Set(VHR.Pings.Ship.UpdateBridge, this.HandleUpdateShipBridgeMessage);
             this.driven.Ping.Set(VHR.Pings.Ship.UpdateDirection, this.HandleUpdateDirectionMessage);
-            this.driven.Ping.Set(VHR.Pings.Ship.UpdateEnergy, this.HandleUpdateEnergyMessage);
             this.driven.Ping.Set(VHR.Pings.Ship.TractorBeam.Action, this.HandleTractorBeamActionMessage);
 
             this.driven.OnPostUpdate += this.PostUpdate;
@@ -31,11 +32,11 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             base.ReleaseRemote(driven);
 
-            this.driven.Ping.Remove(VHR.Pings.Ship.UpdateTarget);
+            this.driven.MessageHandlers[MessageType.Update].OnRead -= this.ReadUpdate;
+
             this.driven.Ping.Remove(VHR.Pings.Ship.UpdateFiring);
             this.driven.Ping.Remove(VHR.Pings.Ship.UpdateBridge);
             this.driven.Ping.Remove(VHR.Pings.Ship.UpdateDirection);
-            this.driven.Ping.Remove(VHR.Pings.Ship.UpdateEnergy);
             this.driven.Ping.Remove(VHR.Pings.Ship.TractorBeam.Action);
 
             this.driven.OnPostUpdate -= this.PostUpdate;
@@ -49,10 +50,17 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         }
         #endregion
 
-        #region Message Handlers
-        private void HandleUpdateTargetMessage(NetIncomingMessage im)
-            => this.driven.ReadTarget(im);
+        #region Network Methods
+        private void ReadUpdate(NetIncomingMessage im)
+        {
+            this.driven.ReadTarget(im);
 
+            _energyTarget = im.ReadSingle();
+            this.driven.Charging = im.ReadBoolean();
+        }
+        #endregion
+
+        #region Message Handlers
         private void HandleUpdateFiringMessage(NetIncomingMessage im)
             => this.driven.ReadFiring(im);
 
@@ -64,12 +72,6 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
         private void HandleUpdateShipBridgeMessage(NetIncomingMessage im)
             => this.driven.ReadBridge(im);
-
-        private void HandleUpdateEnergyMessage(NetIncomingMessage im)
-        {
-            _energyTarget = im.ReadSingle();
-            this.driven.Charging = im.ReadBoolean();
-        }
         #endregion
     }
 }

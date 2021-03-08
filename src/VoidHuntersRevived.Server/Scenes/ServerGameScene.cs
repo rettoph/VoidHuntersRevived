@@ -193,7 +193,7 @@ namespace VoidHuntersRevived.Server.Scenes
                             //using (var fileStream = File.OpenRead(ships[rand.Next(ships.Length)]))
                             //    ship.Import(fileStream, rand.NextVector2(0, world.Size.X, 0, world.Size.Y));
 
-                           using (var fileStream = File.OpenRead($"{VHR.Directories.Resources.Ships}/squid.vh"))
+                           using (var fileStream = File.OpenRead($"{VHR.Directories.Resources.Ships}/mothership.vh"))
                                ship.Import(fileStream, rand.NextVector2(0, world.Size.X, 0, world.Size.Y));
                         });
                     });

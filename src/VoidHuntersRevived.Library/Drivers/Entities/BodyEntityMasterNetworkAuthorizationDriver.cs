@@ -8,8 +8,6 @@ using System.Text;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Extensions.Aether;
-using VoidHuntersRevived.Library.Utilities;
-using Guppy.Network.Extensions.Lidgren;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities
 {

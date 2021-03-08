@@ -2,13 +2,9 @@
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using VoidHuntersRevived.Library.Entities;
-using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Extensions.Aether;
-using Guppy.Network.Extensions.Lidgren;
 using tainicom.Aether.Physics2D.Dynamics;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities
@@ -37,8 +33,6 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             base.ReleaseRemote(driven);
 
             _client = null;
-
-            this.driven.OnUpdate -= this.Update;
 
             this.driven.MessageHandlers[MessageType.Update].OnRead -= this.driven.master.ReadPosition;
             this.driven.MessageHandlers[MessageType.Setup].OnRead -= this.ReadSetup;

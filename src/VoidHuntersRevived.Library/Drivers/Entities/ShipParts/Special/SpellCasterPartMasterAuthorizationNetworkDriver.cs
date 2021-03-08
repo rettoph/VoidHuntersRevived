@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.ShipParts.Special;
 using Guppy.Network.Extensions.Lidgren;
+using VoidHuntersRevived.Library.Enums;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts.Special
 {

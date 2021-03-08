@@ -60,6 +60,9 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private Boolean _renderMaster;
         private Boolean _renderSlave;
         private Boolean _renderImpulse;
+
+        private Int32[] _messages;
+        private Int32 _messageIndex;
         #endregion
 
         #region Protected Properties
@@ -89,6 +92,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
                 provider.GetContent<Texture2D>("sprite:background:2"),
                 provider.GetContent<Texture2D>("sprite:background:3")
             };
+
+            _messages = new Int32[10];
 
 
             // Create some default layers.
@@ -156,6 +161,17 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         #region Frame Methods
         protected override void Update(GameTime gameTime)
         {
+            var newMessageIndex = (Int32)(gameTime.TotalGameTime.TotalSeconds % _messages.Length);
+
+            if (_messageIndex != newMessageIndex)
+            {
+                _messageIndex = newMessageIndex;
+                _messages[_messageIndex] = 0;
+            }
+
+
+            _messages[_messageIndex] += this.Group?.IncomingMessages.Count() ?? 0;
+
             base.Update(gameTime);
 
             // Update the required services...
@@ -278,7 +294,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private string RenderDebugLines(GameTime gameTime)
         {
             return $"Entities: {this.Entities.Count().ToString("#,##0")}\n"
-                + $"Quarantined: {_chunks.Quarantine.Count().ToString("#,##0")}\n";
+                + $"Quarantined: {_chunks.Quarantine.Count().ToString("#,##0")}\n"
+                + $"Messages Per Second: {_messages.Average().ToString("#,##0.00")}";
         }
         #endregion
     }

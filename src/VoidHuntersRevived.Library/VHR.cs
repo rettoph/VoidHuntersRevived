@@ -44,11 +44,6 @@ namespace VoidHuntersRevived.Library
                 public static readonly UInt32 UpdateSize = "world:update:size".xxHash();
             }
 
-            public static class ShipPart
-            {
-                public static readonly UInt32 UpdateHealth = "ship-part:update:health".xxHash();
-            }
-
             public static class SpellCasterPart
             {
                 public static readonly UInt32 Cast = "spell-caster-part:cast".xxHash();
@@ -56,7 +51,6 @@ namespace VoidHuntersRevived.Library
 
             public static class Ship
             {
-                public static readonly UInt32 UpdateTarget = "ship:update:target".xxHash();
                 public static readonly UInt32 UpdateTargetRequest = "ship:update:target:request".xxHash();
 
                 public static readonly UInt32 UpdateDirection = "ship:update:direction".xxHash();
@@ -75,8 +69,6 @@ namespace VoidHuntersRevived.Library
                 public static readonly UInt32 SpawnAiRequest = "ship:spawn:ai:request".xxHash();
 
                 public static readonly UInt32 SelfDestructRequest = "ship:self-destruct:request".xxHash();
-
-                public static readonly UInt32 UpdateEnergy = "ship:update:energy".xxHash();
 
                 public static class TractorBeam
                 {

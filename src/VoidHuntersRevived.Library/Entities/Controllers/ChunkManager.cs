@@ -189,7 +189,12 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             {
                 chain.TryUpdate(gameTime);
 
-                if(!chain.Root.Awake)
+                if (chain.Root.LinearVelocity.Length() < 0.0001f)
+                    chain.Root.LinearVelocity = Vector2.Zero;
+                if (chain.Root.AngularVelocity < 0.0001f)
+                    chain.Root.AngularVelocity = 0f;
+
+                if (!chain.Root.Awake)
                     _clean.Enqueue(chain);
             });
 

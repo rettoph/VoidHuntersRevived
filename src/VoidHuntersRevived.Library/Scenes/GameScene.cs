@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Library.Scenes
 
             _world = default(WorldEntity);
             _onWorldActions = default(Action<WorldEntity>);
-            _dirtyEntityCleanTimer = new ActionTimer(100);
+            _dirtyEntityCleanTimer = new ActionTimer(120);
             this.dirtyEntities = new Queue<NetworkEntity>();
 
             this.settings = provider.GetService<Settings>();
@@ -143,7 +143,7 @@ namespace VoidHuntersRevived.Library.Scenes
                 { // Attempt to clean all dirty entities as needed...
                     if((_entity = this.dirtyEntities.Dequeue()).Status == ServiceStatus.Ready)
                     {
-                        this.group.Messages.Create(NetDeliveryMethod.Unreliable, 0).Then(om =>
+                        this.group.Messages.Create(NetDeliveryMethod.ReliableUnordered, 0).Then(om =>
                         { // Build a new update message...
                             _entity.MessageHandlers[MessageType.Update].TryWrite(om);
                         });
