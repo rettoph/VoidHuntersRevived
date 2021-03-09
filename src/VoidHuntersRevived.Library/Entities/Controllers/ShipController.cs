@@ -9,6 +9,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.DependencyInjection;
+using Lidgren.Network;
 
 namespace VoidHuntersRevived.Library.Entities.Controllers
 {
@@ -20,6 +21,14 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
     {
         #region Private Fields
         private ChunkManager _chunks;
+        #endregion
+
+        #region Public Properties
+        /// <inheritdoc />
+        public new Int32 DirtyUpdateSequenceChannel => VHR.Network.DirtyUpdateDelivery.Ship.SequenceChannel;
+
+        /// <inheritdoc />
+        public new NetDeliveryMethod DirtyUpdateNetDeliveryMethod => VHR.Network.DirtyUpdateDelivery.Ship.NetDeliveryMethod;
         #endregion
 
         #region Lifecycle Methods

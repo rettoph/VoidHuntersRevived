@@ -20,10 +20,10 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
             this.driven.MessageHandlers[MessageType.Update].OnRead += this.ReadUpdate;
 
-            this.driven.Ping.Set(VHR.Pings.Ship.UpdateFiring, this.HandleUpdateFiringMessage);
-            this.driven.Ping.Set(VHR.Pings.Ship.UpdateBridge, this.HandleUpdateShipBridgeMessage);
-            this.driven.Ping.Set(VHR.Pings.Ship.UpdateDirection, this.HandleUpdateDirectionMessage);
-            this.driven.Ping.Set(VHR.Pings.Ship.TractorBeam.Action, this.HandleTractorBeamActionMessage);
+            this.driven.Ping.Set(VHR.Network.Pings.Ship.UpdateFiring, this.HandleUpdateFiringMessage);
+            this.driven.Ping.Set(VHR.Network.Pings.Ship.UpdateBridge, this.HandleUpdateShipBridgeMessage);
+            this.driven.Ping.Set(VHR.Network.Pings.Ship.UpdateDirection, this.HandleUpdateDirectionMessage);
+            this.driven.Ping.Set(VHR.Network.Pings.Ship.TractorBeam.Action, this.HandleTractorBeamActionMessage);
 
             this.driven.OnPostUpdate += this.PostUpdate;
         }
@@ -34,10 +34,10 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
             this.driven.MessageHandlers[MessageType.Update].OnRead -= this.ReadUpdate;
 
-            this.driven.Ping.Remove(VHR.Pings.Ship.UpdateFiring);
-            this.driven.Ping.Remove(VHR.Pings.Ship.UpdateBridge);
-            this.driven.Ping.Remove(VHR.Pings.Ship.UpdateDirection);
-            this.driven.Ping.Remove(VHR.Pings.Ship.TractorBeam.Action);
+            this.driven.Ping.Remove(VHR.Network.Pings.Ship.UpdateFiring);
+            this.driven.Ping.Remove(VHR.Network.Pings.Ship.UpdateBridge);
+            this.driven.Ping.Remove(VHR.Network.Pings.Ship.UpdateDirection);
+            this.driven.Ping.Remove(VHR.Network.Pings.Ship.TractorBeam.Action);
 
             this.driven.OnPostUpdate -= this.PostUpdate;
         }

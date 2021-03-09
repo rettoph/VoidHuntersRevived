@@ -22,6 +22,7 @@ using VoidHuntersRevived.Builder.Attributes;
 
 using ServiceProvider = Guppy.DependencyInjection.ServiceProvider;
 using System.IO;
+using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Builder.Scenes
 {
@@ -90,6 +91,11 @@ namespace VoidHuntersRevived.Builder.Scenes
 
             this.camera.ZoomTo(100f);
             this.camera.MoveTo((Vector2.One * Chunk.Size) / 2);
+
+            // AUTO SAVE ALL CONTEXTS
+            // var shipParts = provider.GetService<ShipPartService>();
+            // foreach (ShipPartContext context in shipParts.Contexts.Values)
+            //     context.Export($"Resources\\ShipParts\\{String.Join(".", context.Name.Split(Path.GetInvalidFileNameChars()))}.vhsp");
         }
         #endregion
 

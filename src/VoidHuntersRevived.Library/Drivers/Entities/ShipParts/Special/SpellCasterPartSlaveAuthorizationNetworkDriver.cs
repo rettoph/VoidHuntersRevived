@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts.Special
 
             provider.Service(out _synchronizer);
 
-            this.driven.Ping.Set(VHR.Pings.SpellCasterPart.Cast, this.ReadCast);
+            this.driven.Ping.Set(VHR.Network.Pings.SpellCasterPart.Cast, this.ReadCast);
         }
 
         protected override void ReleaseRemote(SpellCasterPart driven)
@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts.Special
 
             _synchronizer = null;
 
-            this.driven.Ping.Remove(VHR.Pings.SpellCasterPart.Cast);
+            this.driven.Ping.Remove(VHR.Network.Pings.SpellCasterPart.Cast);
         }
         #endregion
 

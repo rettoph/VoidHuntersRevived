@@ -52,6 +52,16 @@ namespace VoidHuntersRevived.Library.Entities
         /// sent on the next flush.
         /// </summary>
         public DirtyState DirtyState { get; set; }
+
+        /// <summary>
+        /// The sequence channel to broadcast a dirty update message to.
+        /// </summary>
+        public virtual Int32 DirtyUpdateSequenceChannel => VHR.Network.DirtyUpdateDelivery.Default.SequenceChannel;
+
+        /// <summary>
+        /// The delivery method to broadcast a dirty update message.
+        /// </summary>
+        public virtual NetDeliveryMethod DirtyUpdateNetDeliveryMethod => VHR.Network.DirtyUpdateDelivery.Default.NetDeliveryMethod;
         #endregion
 
         #region Events

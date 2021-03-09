@@ -19,6 +19,7 @@ using tainicom.Aether.Physics2D.Common;
 using Guppy.Extensions.System;
 using Guppy.Extensions.Microsoft.Xna.Framework;
 using VoidHuntersRevived.Library.Contexts;
+using VoidHuntersRevived.Library.Utilities.Farseer;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
 {
@@ -66,6 +67,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         public Boolean TargetInRange { get; private set; }
 
         public new WeaponContext Context { get; private set; }
+        public override Single Rotation => this.IsRoot ? base.Rotation : this.Get(b => _joints[b].JointAngle + this.Root.Rotation + MathHelper.Pi);
         #endregion
 
         #region Events
@@ -97,11 +99,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             base.Initialize(provider);
 
             _fireTimer = new ActionTimer(this.Context.FireRate);
-
-            // Create new shapes for the part
-            foreach (ShapeContext shape in this.Context.InnerShapes)
-                if(shape.Solid)
-                    this.BuildFixture(new PolygonShape(shape.Vertices, this.Context.Density), this);
 
             // Create new default joints as needed
             this.CleanJoints();
@@ -307,6 +304,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
             base.SetContext(context);
 
             this.Context = context as WeaponContext;
+        }
+
+        protected override void BuildInternalFixtures(Queue<FixtureContainer> fixtures)
+        {
+            // Create new shapes for the part
+            foreach (ShapeContext shape in this.Context.InnerShapes)
+                if (shape.Solid)
+                    fixtures.Enqueue(this.BuildFixture(new PolygonShape(shape.Vertices, this.Context.Density), this));
         }
         #endregion
 

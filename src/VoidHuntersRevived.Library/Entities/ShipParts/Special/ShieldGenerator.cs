@@ -14,7 +14,7 @@ using static VoidHuntersRevived.Library.Entities.Ammunitions.Ammunition;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
 {
-    public class ShieldGenerator : RigidShipPart
+    public class ShieldGenerator : ShipPart
     {
         #region Private Fields
         private FixtureContainer _shield;

@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts.Special
 
         #region Event Handlers
         private void HandleCast(SpellCasterPart sender, GameTime args)
-            => this.driven.Ping.Create(NetDeliveryMethod.ReliableUnordered, 0).Write(VHR.Pings.SpellCasterPart.Cast, om =>
+            => this.driven.Ping.Create(NetDeliveryMethod.ReliableUnordered, 0).Write(VHR.Network.Pings.SpellCasterPart.Cast, om =>
             {
                 //
             });

@@ -14,6 +14,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         private ShipPartService _shipParts;
         #endregion
 
+        #region Public Properties
+        /// <inheritdoc />
+        public new Int32 DirtyUpdateSequenceChannel => this.Chain?.Controller.DirtyUpdateSequenceChannel ?? base.DirtyUpdateSequenceChannel;
+
+        /// <inheritdoc />
+        public new NetDeliveryMethod DirtyUpdateNetDeliveryMethod => this.Chain?.Controller.DirtyUpdateNetDeliveryMethod ?? base.DirtyUpdateNetDeliveryMethod;
+        #endregion
+
         #region Lifecycle Methods
         private void Network_Create(ServiceProvider provider)
         {

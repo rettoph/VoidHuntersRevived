@@ -170,14 +170,14 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
 
         private CommandResponse HandleShipSelfDestructCommand(ICommand sender, CommandInput input)
         {
-            this.driven.Ping.Create(NetDeliveryMethod.ReliableUnordered, 0).Write(VHR.Pings.Ship.SelfDestructRequest, m => { });
+            this.driven.Ping.Create(NetDeliveryMethod.ReliableUnordered, 0).Write(VHR.Network.Pings.Ship.SelfDestructRequest, m => { });
 
             return CommandResponse.Success("Requesting self destruct...");
         }
 
         private CommandResponse HandleLaunchFightersCommand(ICommand sender, CommandInput input)
         {
-            this.driven.Ping.Create(NetDeliveryMethod.ReliableUnordered, 0).Write(VHR.Pings.Ship.LaunchFightersRequest, m => { });
+            this.driven.Ping.Create(NetDeliveryMethod.ReliableUnordered, 0).Write(VHR.Network.Pings.Ship.LaunchFightersRequest, m => { });
 
             return CommandResponse.Success("Requesting to launch fighters...");
         }
@@ -185,27 +185,27 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
 
         #region Network Methods
         private void WriteUpdateShipFiringRequest(NetOutgoingMessage om, Boolean value)
-            => om.Write(VHR.Pings.Ship.UpdateFiringRequest, m =>
+            => om.Write(VHR.Network.Pings.Ship.UpdateFiringRequest, m =>
             {
                 this.driven.Ship.WriteFiring(m);
             });
 
         private void WriteUpdateShipDirectionRequest(NetOutgoingMessage om, Ship.Direction direction, Boolean value)
-            => om.Write(VHR.Pings.Ship.UpdateDirectionRequest, m =>
+            => om.Write(VHR.Network.Pings.Ship.UpdateDirectionRequest, m =>
             {
                 m.Write(direction);
                 m.Write(value);
             });
 
         private void WriteUpdateShipTargetRequest(NetOutgoingMessage om)
-            => om.Write(VHR.Pings.Ship.UpdateTargetRequest, m =>
+            => om.Write(VHR.Network.Pings.Ship.UpdateTargetRequest, m =>
             {
                 this.driven.Ship.WriteTarget(m);
             });
 
         private void WriteShipTractorBeamActionRequest(NetOutgoingMessage om, TractorBeam.Action action)
         {
-            om.Write(VHR.Pings.Ship.TractorBeam.ActionRequest, m =>
+            om.Write(VHR.Network.Pings.Ship.TractorBeam.ActionRequest, m =>
             {
                 this.driven.Ship.TractorBeam.WriteAction(m, action);
             });
@@ -217,7 +217,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
         {
             if(value == default)
             {
-                this.driven.Ping.Create(NetDeliveryMethod.ReliableOrdered, 10).Write(VHR.Pings.Ship.SpawnRequest, m =>
+                this.driven.Ping.Create(NetDeliveryMethod.ReliableOrdered, 10).Write(VHR.Network.Pings.Ship.SpawnRequest, m =>
                 {
                     var ships = Directory.GetFiles(VHR.Directories.Resources.Ships, "*.vh");
                     var rand = new Random();
@@ -237,7 +237,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
 
         private CommandResponse HandleSpawnAICommand(ICommand sender, CommandInput input)
         {
-            this.driven.Ping.Create(NetDeliveryMethod.ReliableOrdered, 10).Write(VHR.Pings.Ship.SpawnAiRequest, m =>
+            this.driven.Ping.Create(NetDeliveryMethod.ReliableOrdered, 10).Write(VHR.Network.Pings.Ship.SpawnAiRequest, m =>
             {
                 var ships = Directory.GetFiles(VHR.Directories.Resources.Ships, "*.vh");
                 var rand = new Random();

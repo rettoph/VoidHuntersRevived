@@ -7,7 +7,7 @@ using VoidHuntersRevived.Library.Attributes;
 namespace VoidHuntersRevived.Library.Contexts
 {
     [ShipPartContextAttribute("Power Cell", "A special piece designed to add energy capacity & increase energy charge speed.")]
-    public class PowerCellContext : RigidShipPartContext
+    public class PowerCellContext : ShipPartContext
     {
         #region Enums
         private enum PowerCellContextProperty

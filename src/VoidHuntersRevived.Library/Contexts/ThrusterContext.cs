@@ -9,7 +9,7 @@ using VoidHuntersRevived.Library.Extensions.System.IO;
 namespace VoidHuntersRevived.Library.Contexts
 {
     [ShipPartContextAttribute("Thruster", "Represents a basic thruster capable of applying force at a point.")]
-    public class ThrusterContext : RigidShipPartContext
+    public class ThrusterContext : ShipPartContext
     {
         #region Enums
         private enum ThrusterContextProperty

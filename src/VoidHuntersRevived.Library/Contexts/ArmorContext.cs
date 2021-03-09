@@ -7,7 +7,7 @@ using VoidHuntersRevived.Library.Attributes;
 namespace VoidHuntersRevived.Library.Contexts
 {
     [ShipPartContextAttribute("Armor", "Basic armor")]
-    public class ArmorContext : RigidShipPartContext
+    public class ArmorContext : ShipPartContext
     {
         #region ShipPartContext Implementation
         /// <inheritdoc />

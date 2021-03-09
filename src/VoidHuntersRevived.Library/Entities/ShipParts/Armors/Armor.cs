@@ -5,7 +5,7 @@ using VoidHuntersRevived.Library.Contexts;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Armors
 {
-    public class Armor : RigidShipPart
+    public class Armor : ShipPart
     {
         #region Public Properties
         public new ArmorContext Context { get; private set; }

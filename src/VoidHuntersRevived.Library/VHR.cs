@@ -1,6 +1,7 @@
 ﻿using Guppy.Contexts;
 using Guppy.Extensions.System;
 using Guppy.LayerGroups;
+using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,7 +13,7 @@ namespace VoidHuntersRevived.Library
     {
         public static class Entities
         {
-            public static readonly String RigidShipPart = "entity:ship-part:rigid-ship-part";
+            public static readonly String Hull = "entity:ship-part:hull";
             public static readonly String Thruster = "entity:ship-part:thruster";
             public static readonly String Gun = "entity:ship-part:weapon:gun";
             public static readonly String Laser = "entity:ship-part:weapon:laser";
@@ -31,49 +32,67 @@ namespace VoidHuntersRevived.Library
             }
         }
 
-        public static class Pings
+        public static class Network
         {
-            public static class Scene
+            public static class DirtyUpdateDelivery
             {
-                public static readonly UInt32 Setup = "scene:setup".xxHash();
-                public static readonly UInt32 Entity = "scene:entity".xxHash();
-            }
-
-            public static class World
-            {
-                public static readonly UInt32 UpdateSize = "world:update:size".xxHash();
-            }
-
-            public static class SpellCasterPart
-            {
-                public static readonly UInt32 Cast = "spell-caster-part:cast".xxHash();
-            }
-
-            public static class Ship
-            {
-                public static readonly UInt32 UpdateTargetRequest = "ship:update:target:request".xxHash();
-
-                public static readonly UInt32 UpdateDirection = "ship:update:direction".xxHash();
-                public static readonly UInt32 UpdateDirectionRequest = "ship:update:direction:request".xxHash();
-                
-                public static readonly UInt32 UpdateFiring = "ship:update:firing".xxHash();
-                public static readonly UInt32 UpdateFiringRequest = "ship:update:firing:request".xxHash();
-
-                public static readonly UInt32 LaunchFighters = "ship:launch-fighters:request".xxHash();
-                public static readonly UInt32 LaunchFightersRequest = "ship:launch-fighters:request".xxHash();
-
-                public static readonly UInt32 UpdateBridge = "ship:update:bridge".xxHash();
-
-                public static readonly UInt32 SpawnRequest = "ship:spawn:request".xxHash();
-
-                public static readonly UInt32 SpawnAiRequest = "ship:spawn:ai:request".xxHash();
-
-                public static readonly UInt32 SelfDestructRequest = "ship:self-destruct:request".xxHash();
-
-                public static class TractorBeam
+                public static class Default
                 {
-                    public static readonly UInt32 Action = "ship:tractor-beam:action".xxHash();
-                    public static readonly UInt32 ActionRequest = "ship:tractor-beam:action:request".xxHash();
+                    public static readonly Int32 SequenceChannel = 0;
+                    public static readonly NetDeliveryMethod NetDeliveryMethod = NetDeliveryMethod.ReliableUnordered;
+                }
+
+                public static class Ship
+                {
+                    public static readonly Int32 SequenceChannel = 10;
+                    public static readonly NetDeliveryMethod NetDeliveryMethod = NetDeliveryMethod.ReliableUnordered;
+                }
+            }
+
+            public static class Pings
+            {
+                public static class Scene
+                {
+                    public static readonly UInt32 Setup = "scene:setup".xxHash();
+                    public static readonly UInt32 Entity = "scene:entity".xxHash();
+                }
+
+                public static class World
+                {
+                    public static readonly UInt32 UpdateSize = "world:update:size".xxHash();
+                }
+
+                public static class SpellCasterPart
+                {
+                    public static readonly UInt32 Cast = "spell-caster-part:cast".xxHash();
+                }
+
+                public static class Ship
+                {
+                    public static readonly UInt32 UpdateTargetRequest = "ship:update:target:request".xxHash();
+
+                    public static readonly UInt32 UpdateDirection = "ship:update:direction".xxHash();
+                    public static readonly UInt32 UpdateDirectionRequest = "ship:update:direction:request".xxHash();
+
+                    public static readonly UInt32 UpdateFiring = "ship:update:firing".xxHash();
+                    public static readonly UInt32 UpdateFiringRequest = "ship:update:firing:request".xxHash();
+
+                    public static readonly UInt32 LaunchFighters = "ship:launch-fighters:request".xxHash();
+                    public static readonly UInt32 LaunchFightersRequest = "ship:launch-fighters:request".xxHash();
+
+                    public static readonly UInt32 UpdateBridge = "ship:update:bridge".xxHash();
+
+                    public static readonly UInt32 SpawnRequest = "ship:spawn:request".xxHash();
+
+                    public static readonly UInt32 SpawnAiRequest = "ship:spawn:ai:request".xxHash();
+
+                    public static readonly UInt32 SelfDestructRequest = "ship:self-destruct:request".xxHash();
+
+                    public static class TractorBeam
+                    {
+                        public static readonly UInt32 Action = "ship:tractor-beam:action".xxHash();
+                        public static readonly UInt32 ActionRequest = "ship:tractor-beam:action:request".xxHash();
+                    }
                 }
             }
         }

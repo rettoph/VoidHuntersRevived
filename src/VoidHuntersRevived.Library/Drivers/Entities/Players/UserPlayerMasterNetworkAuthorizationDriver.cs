@@ -44,14 +44,14 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
             _userConnection = provider.GetService<UserNetConnectionDictionary>().Connections[this.driven.User];
 
             this.driven.Ping.ValidateRead += this.ValidateReadAction;
-            this.driven.Ping.Set(VHR.Pings.Ship.UpdateTargetRequest, this.HandleUpdateShipTargetRequestMessage);
-            this.driven.Ping.Set(VHR.Pings.Ship.TractorBeam.ActionRequest, this.HandleShipTractorBeamActionRequestMessage);
-            this.driven.Ping.Set(VHR.Pings.Ship.UpdateDirectionRequest, this.HandleUpdateShipDirectionRequestMessage);
-            this.driven.Ping.Set(VHR.Pings.Ship.UpdateFiringRequest, this.HandleUpdateShipFiringRequestMessage);
-            this.driven.Ping.Set(VHR.Pings.Ship.SpawnRequest, this.HandleShipSpawnRequestMessage);
-            this.driven.Ping.Set(VHR.Pings.Ship.SpawnAiRequest, this.HandleSpawnAIRequestMessage);
-            this.driven.Ping.Set(VHR.Pings.Ship.SelfDestructRequest, this.HandleSelfDestructRequest);
-            this.driven.Ping.Set(VHR.Pings.Ship.LaunchFightersRequest, this.HandleLaunchFightersRequest);
+            this.driven.Ping.Set(VHR.Network.Pings.Ship.UpdateTargetRequest, this.HandleUpdateShipTargetRequestMessage);
+            this.driven.Ping.Set(VHR.Network.Pings.Ship.TractorBeam.ActionRequest, this.HandleShipTractorBeamActionRequestMessage);
+            this.driven.Ping.Set(VHR.Network.Pings.Ship.UpdateDirectionRequest, this.HandleUpdateShipDirectionRequestMessage);
+            this.driven.Ping.Set(VHR.Network.Pings.Ship.UpdateFiringRequest, this.HandleUpdateShipFiringRequestMessage);
+            this.driven.Ping.Set(VHR.Network.Pings.Ship.SpawnRequest, this.HandleShipSpawnRequestMessage);
+            this.driven.Ping.Set(VHR.Network.Pings.Ship.SpawnAiRequest, this.HandleSpawnAIRequestMessage);
+            this.driven.Ping.Set(VHR.Network.Pings.Ship.SelfDestructRequest, this.HandleSelfDestructRequest);
+            this.driven.Ping.Set(VHR.Network.Pings.Ship.LaunchFightersRequest, this.HandleLaunchFightersRequest);
         }
 
         protected override void ReleaseRemote(UserPlayer driven)
@@ -63,13 +63,13 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
             _userConnection = null;
 
             this.driven.Ping.ValidateRead -= this.ValidateReadAction;
-            this.driven.Ping.Remove(VHR.Pings.Ship.UpdateTargetRequest);
-            this.driven.Ping.Remove(VHR.Pings.Ship.TractorBeam.ActionRequest);
-            this.driven.Ping.Remove(VHR.Pings.Ship.UpdateDirectionRequest);
-            this.driven.Ping.Remove(VHR.Pings.Ship.UpdateFiringRequest);
-            this.driven.Ping.Remove(VHR.Pings.Ship.SpawnRequest);
-            this.driven.Ping.Remove(VHR.Pings.Ship.SpawnAiRequest);
-            this.driven.Ping.Remove(VHR.Pings.Ship.SelfDestructRequest);
+            this.driven.Ping.Remove(VHR.Network.Pings.Ship.UpdateTargetRequest);
+            this.driven.Ping.Remove(VHR.Network.Pings.Ship.TractorBeam.ActionRequest);
+            this.driven.Ping.Remove(VHR.Network.Pings.Ship.UpdateDirectionRequest);
+            this.driven.Ping.Remove(VHR.Network.Pings.Ship.UpdateFiringRequest);
+            this.driven.Ping.Remove(VHR.Network.Pings.Ship.SpawnRequest);
+            this.driven.Ping.Remove(VHR.Network.Pings.Ship.SpawnAiRequest);
+            this.driven.Ping.Remove(VHR.Network.Pings.Ship.SelfDestructRequest);
         }
         #endregion
 

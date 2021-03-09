@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                 shipParts.ImportAll(VHR.Directories.Resources.ShipParts);
             });
 
-            services.AddFactory<RigidShipPart>(p => new RigidShipPart());
+            services.AddFactory<Hull>(p => new Hull());
             services.AddFactory<Thruster>(p => new Thruster());
             services.AddFactory<Gun>(p => new Gun());
             services.AddFactory<Bullet>(b => new Bullet());
@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddFactory<ShieldGenerator>(b => new ShieldGenerator());
             services.AddFactory<PowerCell>(b => new PowerCell());
 
-            services.AddTransient<RigidShipPart>(VHR.Entities.RigidShipPart);
+            services.AddTransient<Hull>(VHR.Entities.Hull);
             services.AddTransient<Thruster>(VHR.Entities.Thruster);
             services.AddTransient<Gun>(VHR.Entities.Gun);
             services.AddTransient<Bullet>();

@@ -6,7 +6,7 @@ using VoidHuntersRevived.Library.Attributes;
 
 namespace VoidHuntersRevived.Library.Contexts
 {
-    public abstract class SpellCasterPartContext : RigidShipPartContext
+    public abstract class SpellCasterPartContext : ShipPartContext
     {
         #region Enums
         private enum SpellCasterPartContextContext

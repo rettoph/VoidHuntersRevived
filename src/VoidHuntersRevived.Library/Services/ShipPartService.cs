@@ -44,6 +44,8 @@ namespace VoidHuntersRevived.Library.Services
         #region Public Properties
         public ShipPartContext this[String name] => _contexts[name.xxHash()];
         public ShipPartContext this[UInt32 id] => _contexts[id];
+
+        public IReadOnlyDictionary<UInt32, ShipPartContext> Contexts => _contexts;
         #endregion
 
         #region Lifecycle Methods

@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
     /// Simple rigid part extension used for activatable
     /// components with spells.
     /// </summary>
-    public abstract class SpellCasterPart : RigidShipPart
+    public abstract class SpellCasterPart : ShipPart
     {
         #region Private Fields
         private Single _lastCastTimestamp;

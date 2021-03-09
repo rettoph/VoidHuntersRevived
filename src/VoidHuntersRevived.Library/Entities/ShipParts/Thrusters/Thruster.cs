@@ -8,7 +8,7 @@ using VoidHuntersRevived.Library.Contexts;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
 {
-    public class Thruster : RigidShipPart
+    public class Thruster : ShipPart
     {
         #region Static Properties
         public static Single ImpulseModifierEpsilon { get; set; } = 0.001f;

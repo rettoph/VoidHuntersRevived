@@ -5,7 +5,7 @@ using VoidHuntersRevived.Library.Contexts;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
 {
-    public class PowerCell : RigidShipPart
+    public class PowerCell : ShipPart
     {
         #region Public Properties
         public new PowerCellContext Context { get; private set; }

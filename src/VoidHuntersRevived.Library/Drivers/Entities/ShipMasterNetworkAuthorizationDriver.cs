@@ -105,27 +105,27 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         }
 
         private void WriteUpdateFiring(NetOutgoingMessage om, Boolean value)
-            => om.Write(VHR.Pings.Ship.UpdateFiring, m =>
+            => om.Write(VHR.Network.Pings.Ship.UpdateFiring, m =>
             {
                 m.Write(value);
             });
 
         private void WriteUpdateDirection(NetOutgoingMessage om, Ship.Direction direction)
-            => om.Write(VHR.Pings.Ship.UpdateDirection, m =>
+            => om.Write(VHR.Network.Pings.Ship.UpdateDirection, m =>
             {
                 this.driven.WriteDirection(m, direction);
             });
 
         private void WriteTractorBeamAction(NetOutgoingMessage om, TractorBeam.Action action)
         {
-            om.Write(VHR.Pings.Ship.TractorBeam.Action, m =>
+            om.Write(VHR.Network.Pings.Ship.TractorBeam.Action, m =>
             {
                 this.driven.TractorBeam.WriteAction(m, action);
             });
         }
         private void WriteUpdateBridge(NetOutgoingMessage om)
         {
-            om.Write(VHR.Pings.Ship.UpdateBridge, m =>
+            om.Write(VHR.Network.Pings.Ship.UpdateBridge, m =>
             {
                 this.driven.WriteBridge(om);
             });

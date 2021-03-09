@@ -4,6 +4,7 @@ using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
 using Guppy.Enums;
+using Lidgren.Network;
 
 namespace VoidHuntersRevived.Library.Entities.Controllers
 {
@@ -18,8 +19,20 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
         private HashSet<Chain> _chains;
         #endregion
 
-        #region Protected Attributes
+        #region Protected Properties
         protected IEnumerable<Chain> chains => _chains;
+        #endregion
+
+        #region Public Properties
+        /// <summary>
+        /// The sequence channel to broadcast a dirty update message to.
+        /// </summary>
+        public virtual Int32 DirtyUpdateSequenceChannel => VHR.Network.DirtyUpdateDelivery.Default.SequenceChannel;
+
+        /// <summary>
+        /// The delivery method to broadcast a dirty update message.
+        /// </summary>
+        public virtual NetDeliveryMethod DirtyUpdateNetDeliveryMethod => VHR.Network.DirtyUpdateDelivery.Default.NetDeliveryMethod;
         #endregion
 
         #region Lifecycle Methods

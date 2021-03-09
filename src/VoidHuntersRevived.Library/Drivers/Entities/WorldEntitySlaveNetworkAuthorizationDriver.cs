@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             base.InitializeRemote(driven, provider);
 
-            this.driven.Ping.Set(VHR.Pings.World.UpdateSize, this.driven.ReadSize);
+            this.driven.Ping.Set(VHR.Network.Pings.World.UpdateSize, this.driven.ReadSize);
         }
 
 
@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             base.ReleaseRemote(driven);
 
-            this.driven.Ping.Remove(VHR.Pings.World.UpdateSize);
+            this.driven.Ping.Remove(VHR.Network.Pings.World.UpdateSize);
         }
         #endregion
     }

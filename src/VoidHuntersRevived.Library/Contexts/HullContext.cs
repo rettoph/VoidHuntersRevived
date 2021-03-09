@@ -7,16 +7,16 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Library.Contexts
 {
-    [ShipPartContext("Rigid", "Represents a basic static non moving part.")]
-    public class RigidShipPartContext : ShipPartContext
+    [ShipPartContext("Hull", "Represents a basic static non moving part.")]
+    public class HullContext : ShipPartContext
     {
         #region ShipPartContext Implementation
         /// <inheritdoc />
-        public override string ShipPartServiceConfiguration => VHR.Entities.RigidShipPart;
+        public override string ShipPartServiceConfiguration => VHR.Entities.Hull;
         #endregion
 
         #region Constructors
-        public RigidShipPartContext(string name) : base(name)
+        public HullContext(string name) : base(name)
         {
         }
         #endregion
