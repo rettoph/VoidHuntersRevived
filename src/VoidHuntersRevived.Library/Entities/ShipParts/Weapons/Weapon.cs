@@ -67,7 +67,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         public Boolean TargetInRange { get; private set; }
 
         public new WeaponContext Context { get; private set; }
-        public override Single Rotation => this.IsRoot ? base.Rotation : this.Get(b => _joints[b].JointAngle + this.Root.Rotation + MathHelper.Pi);
+        public override Single Rotation => this.IsRoot ? base.Rotation : base.Rotation + this.Get(b => _joints[b].JointAngle);
         #endregion
 
         #region Events
