@@ -17,7 +17,7 @@ using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library.Entities
 {
-    public partial class Ship : NetworkEntity
+    public partial class Ship : SpellCaster
     {
         #region Private Fields
         /// <summary>
@@ -159,7 +159,7 @@ namespace VoidHuntersRevived.Library.Entities
             this.Actions_Create(provider);
             this.Thrusters_Create(provider);
             this.Weapons_Create(provider);
-            this.Energy_Create(provider);
+            this.Mana_Create(provider);
 
             // Add required event handlers...
             this.OnBridgeChanged += Ship.HandleBridgeChanged;
@@ -182,7 +182,6 @@ namespace VoidHuntersRevived.Library.Entities
 
             // PreInitialize partial classes...
             this.Thrusters_PreInitialize(provider);
-            this.Energy_PreInitialize(provider);
 
             // Create a new tractor beam instance for this ship...
             this.TractorBeam = provider.GetService<EntityList>().Create<TractorBeam>((t, p, c) => t.Ship = this);
@@ -211,7 +210,7 @@ namespace VoidHuntersRevived.Library.Entities
             this.Actions_Dispose();
             this.Thrusters_Dispose();
             this.Weapons_Dispose();
-            this.Energy_Dispose();
+            this.Mana_Dispose();
 
             // Remove required event handlers...
             this.OnBridgeChanged -= Ship.HandleBridgeChanged;

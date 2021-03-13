@@ -1,4 +1,5 @@
 ﻿using Guppy.Contexts;
+using Guppy.DependencyInjection;
 using Guppy.Extensions.System;
 using Guppy.LayerGroups;
 using Lidgren.Network;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using tainicom.Aether.Physics2D.Dynamics;
+using VoidHuntersRevived.Library.Services.SpellCasts;
 
 namespace VoidHuntersRevived.Library
 {
@@ -192,6 +194,11 @@ namespace VoidHuntersRevived.Library
                 DrawOrder = 100,
                 Group = new SingleLayerGroup(11)
             };
+        }
+
+        public static class SpellCasts
+        {
+            public static readonly UInt32 LaunchDronesSpellCast = ServiceConfiguration.GetId<LaunchDroneSpellCast>();
         }
     }
 }

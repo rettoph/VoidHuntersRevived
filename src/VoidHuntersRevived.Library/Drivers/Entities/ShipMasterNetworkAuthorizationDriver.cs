@@ -27,7 +27,6 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
     {
         #region Private Fields
         private ExplosionService _explosions;
-        private Boolean _dirtyEnergy;
         #endregion
 
         #region Lifecycle Methods
@@ -99,9 +98,6 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         private void WriteUpdate(NetOutgoingMessage om)
         {
             this.driven.WriteTarget(om);
-
-            om.Write(this.driven.Energy);
-            om.Write(this.driven.Charging);
         }
 
         private void WriteUpdateFiring(NetOutgoingMessage om, Boolean value)

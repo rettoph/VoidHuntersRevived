@@ -26,13 +26,13 @@ namespace VoidHuntersRevived.Library.Contexts
         /// The amount of energy this power cell gives.
         /// </summary>
         [ShipPartContextProperty("Energy Capacity", "The amount of energy this power cell gives.", ShipPartContextPropertyType.Single)]
-        public Single EnergyCapacity { get; set; } = 25f;
+        public Single ManaCapacity { get; set; } = 25f;
 
         /// <summary>
         /// The energy charge boost given by this power cell.
         /// </summary>
         [ShipPartContextProperty("Energy Charge Per Second", "The energy charge boost given by this power cell.", ShipPartContextPropertyType.Single)]
-        public Single EnergyChargePerSecond { get; set; } = 25f;
+        public Single ManaPerSecond { get; set; } = 25f;
         #endregion
 
         #region Constructor
@@ -55,10 +55,10 @@ namespace VoidHuntersRevived.Library.Contexts
                     switch (propertyType)
                     {
                         case PowerCellContextProperty.EnergyCapacity:
-                            this.EnergyCapacity = reader.ReadSingle();
+                            this.ManaCapacity = reader.ReadSingle();
                             break;
                         case PowerCellContextProperty.EnergyChargePerSecond:
-                            this.EnergyChargePerSecond = reader.ReadSingle();
+                            this.ManaPerSecond = reader.ReadSingle();
                             break;
                     }
                 }
@@ -72,10 +72,10 @@ namespace VoidHuntersRevived.Library.Contexts
             writer.Write((Byte)PowerCellContextProperty.Start);
 
             writer.Write((Byte)PowerCellContextProperty.EnergyCapacity);
-            writer.Write(this.EnergyCapacity);
+            writer.Write(this.ManaCapacity);
 
             writer.Write((Byte)PowerCellContextProperty.EnergyChargePerSecond);
-            writer.Write(this.EnergyChargePerSecond);
+            writer.Write(this.ManaPerSecond);
 
             writer.Write((Byte)PowerCellContextProperty.End);
         }

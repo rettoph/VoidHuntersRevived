@@ -10,17 +10,17 @@ using VoidHuntersRevived.Library.Enums;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts.Special
 {
-    internal sealed class SpellCasterPartMasterAuthorizationNetworkDriver : MasterNetworkAuthorizationDriver<SpellCasterPart>
+    internal sealed class SpellCasterPartMasterAuthorizationNetworkDriver : MasterNetworkAuthorizationDriver<SpellPart>
     {
         #region Lifecycle Methods
-        protected override void InitializeRemote(SpellCasterPart driven, ServiceProvider provider)
+        protected override void InitializeRemote(SpellPart driven, ServiceProvider provider)
         {
             base.InitializeRemote(driven, provider);
 
             this.driven.OnCast += this.HandleCast;
         }
 
-        protected override void ReleaseRemote(SpellCasterPart driven)
+        protected override void ReleaseRemote(SpellPart driven)
         {
             base.ReleaseRemote(driven);
 
@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts.Special
         #endregion
 
         #region Event Handlers
-        private void HandleCast(SpellCasterPart sender, GameTime args)
+        private void HandleCast(SpellPart sender, GameTime args)
             => this.driven.Ping.Create(NetDeliveryMethod.ReliableUnordered, 0).Write(VHR.Network.Pings.SpellCasterPart.Cast, om =>
             {
                 //

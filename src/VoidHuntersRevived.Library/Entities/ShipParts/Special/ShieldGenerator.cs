@@ -132,8 +132,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
         private void HandleApplyAmmunitionCollision(ShipPart sender, CollisionData data, GameTime gameTime)
         {
             if(data.Fixture.IsSensor)
-                this.Chain.Ship.TryUseEnergy(
-                    data.Ammunition.GetShieldDeflectionEnergyCost(
+                this.Chain.Ship.TryConsumeMana(
+                    data.Ammunition.GetShieldDeflectionManaCost(
                         data,
                         gameTime));
         }

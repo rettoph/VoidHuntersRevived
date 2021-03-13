@@ -15,7 +15,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts.Special;
 
 namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Special
 {
-    internal sealed class SpellCasterPartGraphicsDriver : Driver<SpellCasterPart>
+    internal sealed class SpellCasterPartGraphicsDriver : Driver<SpellPart>
     {
         #region Static Fields
         private static readonly Int32 MaxTimerSegments = 25;
@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Special
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize(SpellCasterPart driven, ServiceProvider provider)
+        protected override void Initialize(SpellPart driven, ServiceProvider provider)
         {
             base.Initialize(driven, provider);
 
@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Special
             this.CleanShip(default, this.driven.Chain?.Ship);
         }
 
-        protected override void Release(SpellCasterPart driven)
+        protected override void Release(SpellPart driven)
         {
             base.Release(driven);
 

@@ -86,7 +86,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
             var healthPercent = this.player.Ship.Bridge.Health / this.player.Ship.Bridge.Context.MaxHealth;
             _healthPercent = MathHelper.Lerp(_healthPercent, healthPercent, (Single)gameTime.ElapsedGameTime.TotalSeconds * 10f);
 
-            var energyPercent = this.player.Ship.EnergyPercentage;
+            var energyPercent = this.player.Ship.ManaPercentage;
             _energyPercent = MathHelper.Lerp(_energyPercent, energyPercent, (Single)gameTime.ElapsedGameTime.TotalSeconds * 10f);
 
             _ship = _worldCamera.Project(this.player.Ship.Bridge.Position);
@@ -117,7 +117,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
             _primitiveBatch.DrawRectangle(Color.Yellow, energyBar);
 
             // We want to add a marker ever 25 energy within the energy bar. This will calculate those lines.
-            var segments = this.player.Ship.MaxEnergy / 25;
+            var segments = this.player.Ship.MaxMana / 25;
             var size = 104 / segments;
             for (var i=1; i< segments; i++)
             {

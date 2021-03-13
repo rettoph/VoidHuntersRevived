@@ -9,7 +9,7 @@ using VoidHuntersRevived.Library.Extensions.Services;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
 {
-    public class DroneBay : SpellCasterPart
+    public class DroneBay : SpellPart
     {
         #region Public Properties
         public new DroneBayContext Context { get; private set; }
@@ -24,7 +24,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
         }
 
         protected override void Cast(GameTime gameTime)
-            => this.spells.CastLaunchDrone(
+            => this.spells.TryCastLaunchDrone(
+                    caster: this.Chain.Ship,
+                    manaCost: this.Context.SpellManaCost,
                     position: this.Position,
                     rotation: this.Rotation + MathHelper.Pi,
                     maxAge: this.Context.DroneMaxAge,

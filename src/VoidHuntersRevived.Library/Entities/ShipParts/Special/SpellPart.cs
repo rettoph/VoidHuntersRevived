@@ -14,14 +14,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
     /// Simple rigid part extension used for activatable
     /// components with spells.
     /// </summary>
-    public abstract class SpellCasterPart : ShipPart
+    public abstract class SpellPart : ShipPart
     {
         #region Private Fields
         private Single _lastCastTimestamp;
         #endregion
 
         #region Protected Properties
-        protected SpellService spells { get; private set; }
+        protected SpellCastService spells { get; private set; }
         #endregion
 
         #region Public Properties
@@ -31,8 +31,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
         #endregion
 
         #region Events
-        public event ValidateEventDelegate<SpellCasterPart, GameTime> OnValidateCast;
-        public event OnEventDelegate<SpellCasterPart, GameTime> OnCast;
+        public event ValidateEventDelegate<SpellPart, GameTime> OnValidateCast;
+        public event OnEventDelegate<SpellPart, GameTime> OnCast;
         #endregion
 
         #region Lifecycle Methods
@@ -40,14 +40,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
         {
             base.Create(provider);
 
-            this.OnValidateCast += SpellCasterPart.HandleValidateCast;
+            this.OnValidateCast += SpellPart.HandleValidateCast;
         }
 
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
-            this.spells = provider.GetService<SpellService>();
+            this.spells = provider.GetService<SpellCastService>();
         }
 
         protected override void Release()
@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
         {
             base.Dispose();
 
-            this.OnValidateCast -= SpellCasterPart.HandleValidateCast;
+            this.OnValidateCast -= SpellPart.HandleValidateCast;
         }
         #endregion
 
@@ -87,10 +87,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
         #endregion
 
         #region Event Handlers
-        private static bool HandleValidateCast(SpellCasterPart sender, GameTime gameTime)
+        private static bool HandleValidateCast(SpellPart sender, GameTime gameTime)
             => sender.Health > 0 
                 && (gameTime.TotalGameTime.TotalSeconds - sender._lastCastTimestamp > sender.Context.SpellCooldown || sender._lastCastTimestamp == default)
-                && (sender.Chain?.Ship?.TryUseEnergy(sender.Context.SpellEnergyCost) ?? false);
+                && (sender.Chain?.Ship?.CanConsumeMana(sender.Context.SpellManaCost) ?? false);
         #endregion
     }
 }

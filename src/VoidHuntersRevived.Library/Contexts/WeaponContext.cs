@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Library.Contexts
             FireRate = 4,
             MaximumAmmunitionAge = 5,
             MaximumOffsetFireRange = 6,
-            FireEnergyCost = 7
+            FireManaCost = 7
         }
         #endregion
 
@@ -57,8 +57,8 @@ namespace VoidHuntersRevived.Library.Contexts
         /// <summary>
         /// The amount of energy used each time the weapon fires.
         /// </summary>
-        [ShipPartContextProperty("FireEnergyCost", "The amount of energy used each time the weapon fires.", ShipPartContextPropertyType.Single)]
-        public Single FireEnergyCost { get; set; } = 5;
+        [ShipPartContextProperty("FireManaCost", "The amount of mana used each time the weapon fires.", ShipPartContextPropertyType.Single)]
+        public Single FireManaCost { get; set; } = 5;
         #endregion
 
         #region Constructors
@@ -96,8 +96,8 @@ namespace VoidHuntersRevived.Library.Contexts
                         case WeaponContextProperty.MaximumOffsetFireRange:
                             this.MaximumOffsetFireRange = reader.ReadSingle();
                             break;
-                        case WeaponContextProperty.FireEnergyCost:
-                            this.FireEnergyCost = reader.ReadSingle();
+                        case WeaponContextProperty.FireManaCost:
+                            this.FireManaCost = reader.ReadSingle();
                             break;
                     }
                 }
@@ -125,8 +125,8 @@ namespace VoidHuntersRevived.Library.Contexts
             writer.Write((Byte)WeaponContextProperty.MaximumOffsetFireRange);
             writer.Write(this.MaximumOffsetFireRange);
 
-            writer.Write((Byte)WeaponContextProperty.FireEnergyCost);
-            writer.Write(this.FireEnergyCost);
+            writer.Write((Byte)WeaponContextProperty.FireManaCost);
+            writer.Write(this.FireManaCost);
 
             writer.Write((Byte)WeaponContextProperty.End);
         }

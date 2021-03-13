@@ -92,7 +92,7 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
 
         #region Ammunition Implementation
         /// <inheritdoc />
-        public override float GetShieldDeflectionEnergyCost(CollisionData data, GameTime gameTime)
+        public override float GetShieldDeflectionManaCost(CollisionData data, GameTime gameTime)
         {
             return this.ShieldDeflectionEnergyCost;
         }

@@ -9,10 +9,6 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 {
     internal sealed class ShipSlaveNetworkAuthorizationDriver : SlaveNetworkAuthorizationDriver<Ship>
     {
-        #region Private Fields
-        private Single _energyTarget;
-        #endregion
-
         #region Lifecycle Methods
         protected override void InitializeRemote(Ship driven, ServiceProvider provider)
         {
@@ -24,8 +20,6 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             this.driven.Ping.Set(VHR.Network.Pings.Ship.UpdateBridge, this.HandleUpdateShipBridgeMessage);
             this.driven.Ping.Set(VHR.Network.Pings.Ship.UpdateDirection, this.HandleUpdateDirectionMessage);
             this.driven.Ping.Set(VHR.Network.Pings.Ship.TractorBeam.Action, this.HandleTractorBeamActionMessage);
-
-            this.driven.OnPostUpdate += this.PostUpdate;
         }
 
         protected override void ReleaseRemote(Ship driven)
@@ -38,15 +32,6 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             this.driven.Ping.Remove(VHR.Network.Pings.Ship.UpdateBridge);
             this.driven.Ping.Remove(VHR.Network.Pings.Ship.UpdateDirection);
             this.driven.Ping.Remove(VHR.Network.Pings.Ship.TractorBeam.Action);
-
-            this.driven.OnPostUpdate -= this.PostUpdate;
-        }
-        #endregion
-
-        #region Frame Methods
-        private void PostUpdate(GameTime gameTime)
-        {
-            this.driven.Energy = MathHelper.Lerp(this.driven.Energy, _energyTarget, VHR.Utilities.SlaveLerpPerSecond * (Single)gameTime.ElapsedGameTime.TotalSeconds);
         }
         #endregion
 
@@ -54,9 +39,6 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         private void ReadUpdate(NetIncomingMessage im)
         {
             this.driven.ReadTarget(im);
-
-            _energyTarget = im.ReadSingle();
-            this.driven.Charging = im.ReadBoolean();
         }
         #endregion
 

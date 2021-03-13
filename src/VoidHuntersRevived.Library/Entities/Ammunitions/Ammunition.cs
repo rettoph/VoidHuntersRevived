@@ -153,7 +153,7 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         /// </summary>
         /// <param name="gameTime"></param>
         /// <returns></returns>
-        public abstract Single GetShieldDeflectionEnergyCost(CollisionData data, GameTime gameTime);
+        public abstract Single GetShieldDeflectionManaCost(CollisionData data, GameTime gameTime);
 
         /// <summary>
         /// Calculate the amount of damage to applied to a ship part based on the

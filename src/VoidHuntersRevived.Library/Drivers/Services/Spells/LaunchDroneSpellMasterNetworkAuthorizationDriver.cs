@@ -8,9 +8,9 @@ using System.IO;
 using System.Text;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
-using VoidHuntersRevived.Library.Entities.Spells;
+using VoidHuntersRevived.Library.Services.Spells;
 
-namespace VoidHuntersRevived.Library.Drivers.Entities.Spells
+namespace VoidHuntersRevived.Library.Drivers.Services.Spells
 {
     public class LaunchDroneSpellMasterNetworkAuthorizationDriver : MasterNetworkAuthorizationDriver<LaunchDroneSpell>
     {
@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Spells
 
             provider.Service(out _entities);
 
-            this.driven.OnCast += this.Cast;
+            this.driven.OnInvoke += this.Invoke;
         }
 
         protected override void Release(LaunchDroneSpell driven)
@@ -34,12 +34,12 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Spells
 
             _entities = null;
 
-            this.driven.OnCast -= this.Cast;
+            this.driven.OnInvoke -= this.Invoke;
         }
         #endregion
 
         #region Methods
-        private void Cast(Spell sender)
+        private void Invoke(Spell sender)
         {
             _entities.Create<DronePlayer>((player, p, d) =>
             {

@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Library.Contexts
             Start = 0,
             End = 1,
             SpellCooldown = 2,
-            SpellEnergyCost = 3
+            SpellManaCost = 3
         }
         #endregion
 
@@ -25,12 +25,13 @@ namespace VoidHuntersRevived.Library.Contexts
         [ShipPartContextProperty("Spell Cooldown", "The spell caster's cooldown (in seconds).", ShipPartContextPropertyType.Single)]
 
         public Single SpellCooldown { get; set; }
+
         /// <summary>
         /// The energy cost required for this spellcaster to function.
         /// </summary>
-        [ShipPartContextProperty("Spell Energy Cost", "The energy cost required for this spellcaster to function.", ShipPartContextPropertyType.Single)]
+        [ShipPartContextProperty("Spell Mana Cost", "The mana cost required for this spellcaster to function.", ShipPartContextPropertyType.Single)]
 
-        public Single SpellEnergyCost { get; set; }
+        public Single SpellManaCost { get; set; }
         #endregion
 
         #region Constructors
@@ -55,8 +56,8 @@ namespace VoidHuntersRevived.Library.Contexts
                         case SpellCasterPartContextContext.SpellCooldown:
                             this.SpellCooldown = reader.ReadSingle();
                             break;
-                        case SpellCasterPartContextContext.SpellEnergyCost:
-                            this.SpellEnergyCost = reader.ReadSingle();
+                        case SpellCasterPartContextContext.SpellManaCost:
+                            this.SpellManaCost = reader.ReadSingle();
                             break;
                     }
                 }
@@ -72,8 +73,8 @@ namespace VoidHuntersRevived.Library.Contexts
             writer.Write((Byte)SpellCasterPartContextContext.SpellCooldown);
             writer.Write(this.SpellCooldown);
 
-            writer.Write((Byte)SpellCasterPartContextContext.SpellEnergyCost);
-            writer.Write(this.SpellEnergyCost);
+            writer.Write((Byte)SpellCasterPartContextContext.SpellManaCost);
+            writer.Write(this.SpellManaCost);
 
             writer.Write((Byte)SpellCasterPartContextContext.End);
         }

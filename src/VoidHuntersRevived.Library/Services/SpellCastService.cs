@@ -4,7 +4,9 @@ using Guppy.Lists;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Library.Entities.Spells;
+using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Services.SpellCasts;
+using VoidHuntersRevived.Library.Services.Spells;
 
 namespace VoidHuntersRevived.Library.Services
 {
@@ -16,10 +18,10 @@ namespace VoidHuntersRevived.Library.Services
     /// 
     /// (Extension methods may exist)
     /// </summary>
-    public class SpellService : Service
+    public class SpellCastService : Service
     {
         #region Private Fields
-        private EntityList _entities;
+        private ServiceProvider _provider;
         #endregion
 
         #region Lifecycle Methods
@@ -27,21 +29,20 @@ namespace VoidHuntersRevived.Library.Services
         {
             base.PreInitialize(provider);
 
-            provider.Service(out _entities);
+            _provider = provider;
         }
 
         protected override void Release()
         {
             base.Release();
 
-            _entities = null;
+            _provider = null;
         }
         #endregion
 
         #region API Methods
-        public TSpell Cast<TSpell>(Action<TSpell, ServiceProvider, ServiceConfiguration> setup)
-            where TSpell : Spell
-                => _entities.Create<TSpell>(setup);
+        public Spell TryCast(UInt32 spellCastId, SpellCaster caster, Single manaCost, params Object[] args)
+            => _provider.GetService<SpellCast>(spellCastId).TryCast(caster, args);
         #endregion
     }
 }

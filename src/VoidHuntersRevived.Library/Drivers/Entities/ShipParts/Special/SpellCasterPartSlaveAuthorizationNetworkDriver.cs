@@ -9,14 +9,14 @@ using VoidHuntersRevived.Library.Entities.ShipParts.Special;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts.Special
 {
-    internal sealed class SpellCasterPartSlaveAuthorizationNetworkDriver : SlaveNetworkAuthorizationDriver<SpellCasterPart>
+    internal sealed class SpellCasterPartSlaveAuthorizationNetworkDriver : SlaveNetworkAuthorizationDriver<SpellPart>
     {
         #region Private Fields
         private Synchronizer _synchronizer;
         #endregion
 
         #region Lifecycle Methods
-        protected override void InitializeRemote(SpellCasterPart driven, ServiceProvider provider)
+        protected override void InitializeRemote(SpellPart driven, ServiceProvider provider)
         {
             base.InitializeRemote(driven, provider);
 
@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts.Special
             this.driven.Ping.Set(VHR.Network.Pings.SpellCasterPart.Cast, this.ReadCast);
         }
 
-        protected override void ReleaseRemote(SpellCasterPart driven)
+        protected override void ReleaseRemote(SpellPart driven)
         {
             base.ReleaseRemote(driven);
 
