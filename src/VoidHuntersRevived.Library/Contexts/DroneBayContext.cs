@@ -8,7 +8,7 @@ using VoidHuntersRevived.Library.Attributes;
 namespace VoidHuntersRevived.Library.Contexts
 {
     [ShipPartContextAttribute("DroneBay", "A special piece capable of launching another ship.")]
-    public class DroneBayContext : SpellCasterPartContext
+    public class DroneBayContext : SpellPartContext
     {
         #region Enums
         private enum DroneBayContextProperty

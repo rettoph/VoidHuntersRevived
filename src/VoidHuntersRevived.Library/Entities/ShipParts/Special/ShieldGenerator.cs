@@ -9,8 +9,9 @@ using System.Text;
 using tainicom.Aether.Physics2D.Collision.Shapes;
 using VoidHuntersRevived.Library.Contexts;
 using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Interfaces;
+using VoidHuntersRevived.Library.Services.Spells.AmmunitionSpells;
 using VoidHuntersRevived.Library.Utilities.Farseer;
-using static VoidHuntersRevived.Library.Entities.Ammunitions.Ammunition;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
 {
@@ -45,7 +46,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
             this.OnChainChanged += this.HandleChainChanged;
             this.OnValidateAmmunitionCollision += this.HandleValidateAmmunitionCollision;
             this.OnApplyAmmunitionCollision += this.HandleApplyAmmunitionCollision;
-            this.OnValidateAmmunitionCollisionDamage += this.HandleApplyAmmunitionCollisionDamage;
         }
 
         protected override void Release()
@@ -62,7 +62,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
             this.OnChainChanged -= this.HandleChainChanged;
             this.OnValidateAmmunitionCollision -= this.HandleValidateAmmunitionCollision;
             this.OnApplyAmmunitionCollision -= this.HandleApplyAmmunitionCollision;
-            this.OnValidateAmmunitionCollisionDamage -= this.HandleApplyAmmunitionCollisionDamage;
         }
         #endregion
 
@@ -103,7 +102,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
         /// <param name="sender"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        private bool HandleValidateAmmunitionCollision(ShipPart sender, CollisionData collision)
+        private bool HandleValidateAmmunitionCollision(IAmmunitionSpellTarget sender, AmmunitionSpell.CollisionData collision)
         {
             if (_shield.List.Contains(collision.Fixture))
             {
@@ -129,7 +128,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
             return true;
         }
 
-        private void HandleApplyAmmunitionCollision(ShipPart sender, CollisionData data, GameTime gameTime)
+        private void HandleApplyAmmunitionCollision(IAmmunitionSpellTarget sender, AmmunitionSpell.CollisionData data, GameTime gameTime)
         {
             if(data.Fixture.IsSensor)
                 this.Chain.Ship.TryConsumeMana(
@@ -137,9 +136,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
                         data,
                         gameTime));
         }
-
-        private bool HandleApplyAmmunitionCollisionDamage(ShipPart sender, CollisionData data)
-            => !data.Fixture.IsSensor;
         #endregion
     }
 }

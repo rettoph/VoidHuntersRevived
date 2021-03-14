@@ -9,6 +9,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.ShipParts.Special;
+using VoidHuntersRevived.Library.Entities.ShipParts.SpellParts;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities
 {

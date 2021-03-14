@@ -17,6 +17,9 @@ namespace VoidHuntersRevived.Library.Entities.Players
         /// The maximum age of this drone (in seconds)
         /// </summary>
         public Single MaxAge { get; set; } = 45;
+
+        /// <inheritdoc />
+        public override bool DestroyOnDeath => true;
         #endregion
 
         #region Frame Methods

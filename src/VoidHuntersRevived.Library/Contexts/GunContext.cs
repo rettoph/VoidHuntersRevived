@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Library.Contexts
             End = 1,
             BulletDamage = 2,
             BulletSpeed = 3,
-            ShieldDeflectionEnergyCost = 4
+            EnergyShieldDeflectionCost = 4
         }
         #endregion
 
@@ -40,8 +40,8 @@ namespace VoidHuntersRevived.Library.Contexts
         /// <summary>
         /// The bullet's shield deflection energy cost.
         /// </summary>
-        [ShipPartContextProperty("Shield Deflection Energy Cost", "The bullet's shield deflection energy cost.", ShipPartContextPropertyType.Single)]
-        public Single ShieldDeflectionEnergyCost { get; internal set; } = 20f;
+        [ShipPartContextProperty("Energy Shield Deflection Cost", "The bullet's shield deflection energy cost.", ShipPartContextPropertyType.Single)]
+        public Single EnergyShieldDeflectionCost { get; internal set; } = 20f;
         #endregion
 
         #region Constructor
@@ -69,8 +69,8 @@ namespace VoidHuntersRevived.Library.Contexts
                         case GunContextProperty.BulletSpeed:
                             this.BulletSpeed = reader.ReadSingle();
                             break;
-                        case GunContextProperty.ShieldDeflectionEnergyCost:
-                            this.ShieldDeflectionEnergyCost = reader.ReadSingle();
+                        case GunContextProperty.EnergyShieldDeflectionCost:
+                            this.EnergyShieldDeflectionCost = reader.ReadSingle();
                             break;
                     }
                 }
@@ -89,8 +89,8 @@ namespace VoidHuntersRevived.Library.Contexts
             writer.Write((Byte)GunContextProperty.BulletSpeed);
             writer.Write(this.BulletSpeed);
 
-            writer.Write((Byte)GunContextProperty.ShieldDeflectionEnergyCost);
-            writer.Write(this.ShieldDeflectionEnergyCost);
+            writer.Write((Byte)GunContextProperty.EnergyShieldDeflectionCost);
+            writer.Write(this.EnergyShieldDeflectionCost);
 
             writer.Write((Byte)GunContextProperty.End);
         }

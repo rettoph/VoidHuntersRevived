@@ -42,6 +42,11 @@ namespace VoidHuntersRevived.Library.Entities.Players
         }
 
         public Guid Team { get; set; }
+
+        /// <summary>
+        /// When true, a ship and all its parts will be destroyed on death.
+        /// </summary>
+        public virtual Boolean DestroyOnDeath => false;
         #endregion
 
         #region Lifecycle Methods

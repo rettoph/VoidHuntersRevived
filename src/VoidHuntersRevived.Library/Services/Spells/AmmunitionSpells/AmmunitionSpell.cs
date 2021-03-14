@@ -1,5 +1,4 @@
-﻿using Guppy;
-using Guppy.DependencyInjection;
+﻿using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
 using Guppy.Extensions.System.Collections;
 using Microsoft.Xna.Framework;
@@ -8,13 +7,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using tainicom.Aether.Physics2D.Dynamics;
+using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
-using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
-using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Entities.ShipParts.SpellParts.Weapons;
+using VoidHuntersRevived.Library.Interfaces;
 
-namespace VoidHuntersRevived.Library.Entities.Ammunitions
+namespace VoidHuntersRevived.Library.Services.Spells.AmmunitionSpells
 {
-    public abstract class Ammunition : Entity
+    public abstract class AmmunitionSpell : Spell
     {
         #region Private Fields
         private WorldEntity _world;
@@ -24,8 +24,8 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         #region Public Classes
         public class CollisionData
         {
-            public Ammunition Ammunition;
-            public ShipPart Target;
+            public AmmunitionSpell Ammunition;
+            public IAmmunitionSpellTarget Target;
             public Fixture Fixture;
             public Vector2 P1;
             public Vector2 P2;
@@ -53,7 +53,7 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         #endregion
 
         #region Events
-        public OnEventDelegate<Ammunition, CollisionData> OnCollision;
+        public OnEventDelegate<AmmunitionSpell, CollisionData> OnCollision;
         #endregion
 
         #region Lifecycle Methods
@@ -62,8 +62,6 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
             base.PreInitialize(provider);
 
             _discoveredCollisions = new List<CollisionData>();
-
-            this.LayerGroup = VHR.LayersContexts.Ammunition.Group.GetValue();
         }
 
         protected override void Initialize(ServiceProvider provider)
@@ -167,7 +165,7 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         #region Event Handlers
         private float HandleCollision(Fixture arg1, Vector2 arg2, Vector2 arg3, float fraction)
         {
-            if (arg1.Tag is ShipPart target)
+            if (arg1.Tag is IAmmunitionSpellTarget target)
             {
                 var collisionData = new CollisionData()
                 {

@@ -1,5 +1,6 @@
 ﻿using Guppy;
 using Guppy.DependencyInjection;
+using Guppy.Events.Delegates;
 using Guppy.Lists;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace VoidHuntersRevived.Library.Services.SpellCasts
     public abstract class SpellCast : Service
     {
         #region Protected Properties
-        protected FrameableList<Spell> spells { get; private set; }
+        protected OrderableList<Spell> spells { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -26,7 +27,7 @@ namespace VoidHuntersRevived.Library.Services.SpellCasts
         {
             base.Initialize(provider);
 
-            this.spells = provider.GetService<FrameableList<Spell>>();
+            this.spells = provider.GetService<OrderableList<Spell>>();
         }
 
         protected override void Release()
@@ -38,16 +39,33 @@ namespace VoidHuntersRevived.Library.Services.SpellCasts
         #endregion
 
         #region API Methods
-        public virtual Spell TryCast(SpellCaster caster, params Object[] args)
-            => this.Cast(caster, args);
+        public virtual Spell TryCast(SpellCaster caster, Single manaCost, params Object[] args)
+        {
+            if(this.CanCast(caster, manaCost, args))
+                return this.Cast(caster, manaCost, args);
+
+            // No spell to be returned.
+            return null;
+        }
 
         /// <summary>
         /// Create & return a spell.
         /// </summary>
         /// <param name="caster">The caster responsible for casting this spell.</param>
+        /// <param name="manaCost">The base mana cost for the current spell.</param>
         /// <param name="args">Generic & unknown arguments used internally by the spellcast.</param>
         /// <returns></returns>
-        protected abstract Spell Cast(SpellCaster caster, params Object[] args);
+        protected abstract Spell Cast(SpellCaster caster, Single manaCost, params Object[] args);
+
+        /// <summary>
+        /// Determin whether or nto a spell may be casted. (If not, return null)
+        /// </summary>
+        /// <param name="caster"></param>
+        /// <param name="manaCost"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        protected virtual Boolean CanCast(SpellCaster caster, Single manaCost, params Object[] args)
+            => caster?.TryConsumeMana(manaCost) ?? false;
         #endregion
     }
 }

@@ -3,8 +3,10 @@ using Guppy.Events.Delegates;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
-using VoidHuntersRevived.Library.Entities.Ammunitions;
 using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Interfaces;
+using VoidHuntersRevived.Library.Services.Spells;
+using VoidHuntersRevived.Library.Services.Spells.AmmunitionSpells;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -12,7 +14,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
     /// Partial implementation of <see cref="ShipPart"/>
     /// that manages health and damage related actions.
     /// </summary>
-    public partial class ShipPart
+    public partial class ShipPart : IAmmunitionSpellTarget
     {
         #region Private Fields
         /// <summary>
@@ -35,12 +37,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #endregion
 
         #region Events
-        public delegate void ApplyAmmunitionCollisionDelegate(ShipPart sender, Ammunition.CollisionData data, GameTime gameTime);
-
         public event OnChangedEventDelegate<ShipPart, Single> OnHealthChanged;
-        public event ValidateEventDelegate<ShipPart, Ammunition.CollisionData> OnValidateAmmunitionCollision;
-        public event ApplyAmmunitionCollisionDelegate OnApplyAmmunitionCollision;
-        public event ValidateEventDelegate<ShipPart, Ammunition.CollisionData> OnValidateAmmunitionCollisionDamage;
+
+        public event ValidateEventDelegate<IAmmunitionSpellTarget, AmmunitionSpell.CollisionData> OnValidateAmmunitionCollision;
+        public event IAmmunitionSpellTarget.ApplyAmmunitionCollisionDelegate OnApplyAmmunitionCollision;
         #endregion
 
         #region Lifecycle Methods
@@ -70,14 +70,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public virtual void TryApplyDamage(Single damage)
             => this.Health = Math.Max(0f, this.Health - damage);
 
-        internal Boolean ValidateAmmunitionCollision(Ammunition.CollisionData data)
+        Boolean IAmmunitionSpellTarget.ValidateAmmunitionCollision(AmmunitionSpell.CollisionData data)
             => this.OnValidateAmmunitionCollision.Validate(this, data, false);
 
-        internal void ApplyAmmunitionCollision(Ammunition.CollisionData data, GameTime gameTime)
+        void IAmmunitionSpellTarget.ApplyAmmunitionCollision(AmmunitionSpell.CollisionData data, GameTime gameTime)
             => this.OnApplyAmmunitionCollision?.Invoke(this, data, gameTime);
-
-        internal Boolean ValidateAmmunitionCollisionDamage(Ammunition.CollisionData data)
-            => this.OnValidateAmmunitionCollisionDamage.Validate(this, data, true);
         #endregion
 
         #region Network Methods
@@ -89,9 +86,16 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #endregion
 
         #region Event Handlers
-        private bool ValidateAmmunitionCollision(ShipPart sender, Ammunition.CollisionData data)
+        /// <summary>
+        /// Ensure all ship parts are attached to a ship, not fired by the current part, and have over
+        /// 0 health.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        private bool ValidateAmmunitionCollision(IAmmunitionSpellTarget sender, AmmunitionSpell.CollisionData data)
         {
-            return this.Chain.Ship != default && data.Ammunition.Weapon != this && data.Target.Health > 0;
+            return this.Chain.Ship != default && data.Ammunition.Weapon != this && this.Health > 0;
         }
         #endregion
     }

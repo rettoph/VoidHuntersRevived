@@ -8,7 +8,6 @@ using Guppy.LayerGroups;
 using Guppy.DependencyInjection;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Client.Library.Services;
-using VoidHuntersRevived.Library.Entities.Ammunitions;
 using VoidHuntersRevived.Library.Layers;
 
 namespace VoidHuntersRevived.Client.Library.Scenes

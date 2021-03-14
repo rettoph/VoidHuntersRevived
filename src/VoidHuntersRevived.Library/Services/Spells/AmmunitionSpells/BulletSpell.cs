@@ -1,19 +1,15 @@
 ﻿using Guppy.DependencyInjection;
-using Guppy.Events.Delegates;
-using Guppy.Extensions.DependencyInjection;
 using Guppy.Extensions.Utilities;
 using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
-using VoidHuntersRevived.Library.Entities.ShipParts;
 
-namespace VoidHuntersRevived.Library.Entities.Ammunitions
+namespace VoidHuntersRevived.Library.Services.Spells.AmmunitionSpells
 {
-    public class Bullet : Ammunition
+    public class BulletSpell : AmmunitionSpell
     {
         #region Private Fields
         private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
@@ -40,7 +36,7 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         /// <summary>
         /// The bullet's shield deflection energy cost.
         /// </summary>
-        public Single ShieldDeflectionEnergyCost { get; internal set; }
+        public Single EnergyShieldDeflectionCost { get; internal set; }
         #endregion
 
         #region Lifecycle Methods
@@ -83,6 +79,9 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
 
         protected override void UpdateCollisions(GameTime gameTime)
         {
+            if (gameTime.ElapsedGameTime.TotalSeconds == 0)
+                return;
+
             this.TryApplyCollisions(
                 start: this.Position,
                 end: this.Position += this.Velocity * (Single)gameTime.ElapsedGameTime.TotalSeconds,
@@ -94,7 +93,7 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         /// <inheritdoc />
         public override float GetShieldDeflectionManaCost(CollisionData data, GameTime gameTime)
         {
-            return this.ShieldDeflectionEnergyCost;
+            return this.EnergyShieldDeflectionCost;
         }
 
         /// <inheritdoc />
@@ -105,11 +104,11 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         #endregion
 
         #region Event Handlers
-        private void HandleCollision(Ammunition sender, CollisionData data)
+        private void HandleCollision(AmmunitionSpell sender, CollisionData data)
         {
             // When the bullet collides, we always want to dispose it.
             // Note: Health damage is only applied on the master and is then broadcasted to all slaves.
-            // To see that functionality find the BulletMasterNetworkAuthorizationDriver driver.
+            // To see that functionality find the ShipPartMasterNetworkAuthorizationDriver driver.
             this.TryRelease();
         }
         #endregion

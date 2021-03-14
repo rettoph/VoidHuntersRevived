@@ -7,7 +7,7 @@ using VoidHuntersRevived.Library.Attributes;
 
 namespace VoidHuntersRevived.Library.Contexts
 {
-    public abstract class WeaponContext : ShipPartContext
+    public abstract class WeaponContext : SpellPartContext
     {
         #region Enums
         private enum WeaponContextProperty
@@ -16,10 +16,10 @@ namespace VoidHuntersRevived.Library.Contexts
             End = 1,
             SwivelRange = 2,
             Recoil = 3,
-            FireRate = 4,
+            // FireRate = 4, - Deprecated
             MaximumAmmunitionAge = 5,
             MaximumOffsetFireRange = 6,
-            FireManaCost = 7
+            // FireManaCost = 7 - Deprecated
         }
         #endregion
 
@@ -36,11 +36,6 @@ namespace VoidHuntersRevived.Library.Contexts
         [ShipPartContextProperty("Recoil", "The amount (in farseer units) the gun should recoil when fired.", ShipPartContextPropertyType.Single)]
         public Single Recoil { get; set; } = 0.3f;
 
-        /// <summary>
-        /// The amount (in farseer units) the gun should recoil when fired.
-        /// </summary>
-        [ShipPartContextProperty("Fire Rate", "The speed at which the weapon is fired in milliseconds.", ShipPartContextPropertyType.Single)]
-        public Single FireRate { get; set; } = 400;
 
         /// <summary>
         /// The maximum age (in milliseconds) ammunition may live before being auto disposed.
@@ -53,12 +48,6 @@ namespace VoidHuntersRevived.Library.Contexts
         /// </summary>
         [ShipPartContextProperty("MaximumOffsetFireRange", "The amount the weapon can be offset but still fire (in degrees).", ShipPartContextPropertyType.Radian)]
         public Single MaximumOffsetFireRange { get; set; } = MathHelper.ToDegrees(15);
-
-        /// <summary>
-        /// The amount of energy used each time the weapon fires.
-        /// </summary>
-        [ShipPartContextProperty("FireManaCost", "The amount of mana used each time the weapon fires.", ShipPartContextPropertyType.Single)]
-        public Single FireManaCost { get; set; } = 5;
         #endregion
 
         #region Constructors
@@ -87,17 +76,11 @@ namespace VoidHuntersRevived.Library.Contexts
                         case WeaponContextProperty.Recoil:
                             this.Recoil = reader.ReadSingle();
                             break;
-                        case WeaponContextProperty.FireRate:
-                            this.FireRate = reader.ReadSingle();
-                            break;
                         case WeaponContextProperty.MaximumAmmunitionAge:
                             this.MaximumAmmunitionAge = reader.ReadSingle();
                             break;
                         case WeaponContextProperty.MaximumOffsetFireRange:
                             this.MaximumOffsetFireRange = reader.ReadSingle();
-                            break;
-                        case WeaponContextProperty.FireManaCost:
-                            this.FireManaCost = reader.ReadSingle();
                             break;
                     }
                 }
@@ -116,17 +99,11 @@ namespace VoidHuntersRevived.Library.Contexts
             writer.Write((Byte)WeaponContextProperty.Recoil);
             writer.Write(this.Recoil);
 
-            writer.Write((Byte)WeaponContextProperty.FireRate);
-            writer.Write(this.FireRate);
-
             writer.Write((Byte)WeaponContextProperty.MaximumAmmunitionAge);
             writer.Write(this.MaximumAmmunitionAge);
 
             writer.Write((Byte)WeaponContextProperty.MaximumOffsetFireRange);
             writer.Write(this.MaximumOffsetFireRange);
-
-            writer.Write((Byte)WeaponContextProperty.FireManaCost);
-            writer.Write(this.FireManaCost);
 
             writer.Write((Byte)WeaponContextProperty.End);
         }

@@ -8,7 +8,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Contexts;
 using VoidHuntersRevived.Library.Services;
 
-namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
+namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts
 {
     /// <summary>
     /// Simple rigid part extension used for activatable
@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
         #endregion
 
         #region Public Properties
-        public new SpellCasterPartContext Context { get; private set; }
+        public new SpellPartContext Context { get; private set; }
 
         public Single LastCastTimestamp => _lastCastTimestamp;
         #endregion
@@ -82,7 +82,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
         {
             base.SetContext(context);
 
-            this.Context = context as SpellCasterPartContext;
+            this.Context = context as SpellPartContext;
         }
         #endregion
 
@@ -90,7 +90,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Special
         private static bool HandleValidateCast(SpellPart sender, GameTime gameTime)
             => sender.Health > 0 
                 && (gameTime.TotalGameTime.TotalSeconds - sender._lastCastTimestamp > sender.Context.SpellCooldown || sender._lastCastTimestamp == default)
-                && (sender.Chain?.Ship?.CanConsumeMana(sender.Context.SpellManaCost) ?? false);
+                && sender.Chain != default
+                && sender.Chain.Ship != default
+                && sender.Chain.Ship.CanConsumeMana(sender.Context.SpellManaCost);
         #endregion
     }
 }

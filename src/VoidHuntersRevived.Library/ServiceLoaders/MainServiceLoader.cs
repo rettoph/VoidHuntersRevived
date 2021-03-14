@@ -44,6 +44,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddFactory<ServiceList<BodyEntity>>(p => new ServiceList<BodyEntity>());
             services.AddFactory<Chunk>(p => new Chunk());
             services.AddFactory<GameLayer>(p => new GameLayer());
+            services.AddFactory<SpellLayer>(p => new SpellLayer());
             services.AddFactory<TrailLayer>(p => new TrailLayer());
             services.AddFactory<ExplosionLayer>(p => new ExplosionLayer());
             services.AddFactory<ExplosionService>(p => new ExplosionService());
@@ -55,6 +56,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddTransient<ServiceList<BodyEntity>>();
             services.AddTransient<Chunk>();
             services.AddTransient<GameLayer>();
+            services.AddTransient<SpellLayer>();
             services.AddTransient<TrailLayer>();
             services.AddTransient<ExplosionLayer>();
             services.AddScoped<ExplosionService>();

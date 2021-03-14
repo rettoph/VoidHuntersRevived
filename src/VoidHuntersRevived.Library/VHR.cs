@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Library.Services.SpellCasts;
+using VoidHuntersRevived.Library.Services.SpellCasts.AmmunitionSpellCasts;
 
 namespace VoidHuntersRevived.Library
 {
@@ -36,18 +37,24 @@ namespace VoidHuntersRevived.Library
 
         public static class Network
         {
-            public static class DirtyUpdateDelivery
+            public static class MessageData
             {
-                public static class Default
+                public static class DefaultDirtyUpdate
                 {
                     public static readonly Int32 SequenceChannel = 0;
                     public static readonly NetDeliveryMethod NetDeliveryMethod = NetDeliveryMethod.ReliableUnordered;
                 }
 
-                public static class Ship
+                public static class ShipDirtyUpdate
                 {
                     public static readonly Int32 SequenceChannel = 10;
                     public static readonly NetDeliveryMethod NetDeliveryMethod = NetDeliveryMethod.ReliableUnordered;
+                }
+
+                public static class ShipPartUpdateHealthPing
+                {
+                    public static readonly Int32 SequenceChannel = 15;
+                    public static readonly NetDeliveryMethod NetDeliveryMethod = NetDeliveryMethod.ReliableOrdered;
                 }
             }
 
@@ -62,6 +69,11 @@ namespace VoidHuntersRevived.Library
                 public static class World
                 {
                     public static readonly UInt32 UpdateSize = "world:update:size".xxHash();
+                }
+
+                public static class ShipPart
+                {
+                    public static readonly UInt32 UpdateHealth = "ship-part:update:health".xxHash();
                 }
 
                 public static class SpellCasterPart
@@ -177,28 +189,24 @@ namespace VoidHuntersRevived.Library
                 Group = new SingleLayerGroup(8)
             };
 
-            public static readonly LayerContext Ammunition = new LayerContext()
+            public static readonly LayerContext HeadsUpDisplay = new LayerContext()
             {
                 DrawOrder = 80,
                 Group = new SingleLayerGroup(9)
             };
 
-            public static readonly LayerContext HeadsUpDisplay = new LayerContext()
+            public static readonly LayerContext UI = new LayerContext()
             {
                 DrawOrder = 90,
                 Group = new SingleLayerGroup(10)
-            };
-
-            public static readonly LayerContext UI = new LayerContext()
-            {
-                DrawOrder = 100,
-                Group = new SingleLayerGroup(11)
             };
         }
 
         public static class SpellCasts
         {
             public static readonly UInt32 LaunchDronesSpellCast = ServiceConfiguration.GetId<LaunchDroneSpellCast>();
+            public static readonly UInt32 BulletSpellCast = ServiceConfiguration.GetId<BulletSpellCast>();
+            public static readonly UInt32 LaserBeamSpellCast = ServiceConfiguration.GetId<LaserBeamSpellCast>();
         }
     }
 }

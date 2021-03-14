@@ -15,6 +15,8 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
         {
             base.InitializeRemote(driven, provider);
 
+            this.driven.Ping.Set(VHR.Network.Pings.ShipPart.UpdateHealth, this.driven.ReadHealth);
+
             this.driven.MessageHandlers[MessageType.Setup].OnRead += this.driven.ReadMaleConnectionNode;
             this.driven.MessageHandlers[MessageType.Setup].OnRead += this.driven.ReadHealth;
             this.driven.MessageHandlers[MessageType.Update].OnRead += this.driven.ReadHealth;
@@ -23,6 +25,8 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
         protected override void ReleaseRemote(ShipPart driven)
         {
             base.ReleaseRemote(driven);
+
+            this.driven.Ping.Remove(VHR.Network.Pings.ShipPart.UpdateHealth);
 
             this.driven.MessageHandlers[MessageType.Setup].OnRead -= this.driven.ReadMaleConnectionNode;
             this.driven.MessageHandlers[MessageType.Setup].OnRead -= this.driven.ReadHealth;

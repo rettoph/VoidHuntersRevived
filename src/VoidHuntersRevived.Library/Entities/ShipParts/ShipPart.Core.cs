@@ -18,7 +18,6 @@ using VoidHuntersRevived.Library.Extensions.Lidgren.Network;
 using tainicom.Aether.Physics2D.Dynamics;
 using Guppy.Extensions.System;
 using VoidHuntersRevived.Library.Services;
-using VoidHuntersRevived.Library.Entities.Ammunitions;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {

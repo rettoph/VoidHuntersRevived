@@ -56,12 +56,12 @@ namespace VoidHuntersRevived.Library.Entities
         /// <summary>
         /// The sequence channel to broadcast a dirty update message to.
         /// </summary>
-        public virtual Int32 DirtyUpdateSequenceChannel => VHR.Network.DirtyUpdateDelivery.Default.SequenceChannel;
+        public virtual Int32 DirtyUpdateSequenceChannel => VHR.Network.MessageData.DefaultDirtyUpdate.SequenceChannel;
 
         /// <summary>
         /// The delivery method to broadcast a dirty update message.
         /// </summary>
-        public virtual NetDeliveryMethod DirtyUpdateNetDeliveryMethod => VHR.Network.DirtyUpdateDelivery.Default.NetDeliveryMethod;
+        public virtual NetDeliveryMethod DirtyUpdateNetDeliveryMethod => VHR.Network.MessageData.DefaultDirtyUpdate.NetDeliveryMethod;
         #endregion
 
         #region Events

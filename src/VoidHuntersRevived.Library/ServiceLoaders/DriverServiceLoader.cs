@@ -10,12 +10,13 @@ using VoidHuntersRevived.Library.Drivers.Entities;
 using VoidHuntersRevived.Library.Drivers.Entities.Players;
 using VoidHuntersRevived.Library.Drivers.Entities.ShipParts;
 using VoidHuntersRevived.Library.Drivers.Entities.ShipParts.Special;
+using VoidHuntersRevived.Library.Drivers.Entities.ShipParts.SpellParts;
 using VoidHuntersRevived.Library.Drivers.Scenes;
 using VoidHuntersRevived.Library.Entities;
-using VoidHuntersRevived.Library.Entities.Ammunitions;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.ShipParts.Special;
+using VoidHuntersRevived.Library.Entities.ShipParts.SpellParts;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Utilities;
@@ -63,8 +64,8 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddAndBindDriver<ShipPart, ShipPartMasterNetworkAuthorizationDriver>(p => new ShipPartMasterNetworkAuthorizationDriver());
             services.AddAndBindDriver<ShipPart, ShipPartSlaveNetworkAuthorizationDriver>(p => new ShipPartSlaveNetworkAuthorizationDriver());
 
-            services.AddAndBindDriver<SpellPart, SpellCasterPartMasterAuthorizationNetworkDriver>(p => new SpellCasterPartMasterAuthorizationNetworkDriver());
-            services.AddAndBindDriver<SpellPart, SpellCasterPartSlaveAuthorizationNetworkDriver>(p => new SpellCasterPartSlaveAuthorizationNetworkDriver());
+            services.AddAndBindDriver<SpellPart, SpellPartMasterAuthorizationNetworkDriver>(p => new SpellPartMasterAuthorizationNetworkDriver());
+            services.AddAndBindDriver<SpellPart, SpellPartSlaveAuthorizationNetworkDriver>(p => new SpellPartSlaveAuthorizationNetworkDriver());
 
             services.AddAndBindDriver<PowerCell, PowerCellMasterAuthorizationDriver>(p => new PowerCellMasterAuthorizationDriver());
         }

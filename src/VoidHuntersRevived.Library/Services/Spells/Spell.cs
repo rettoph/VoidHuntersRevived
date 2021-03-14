@@ -10,7 +10,7 @@ using VoidHuntersRevived.Library.Entities;
 
 namespace VoidHuntersRevived.Library.Services.Spells
 {
-    public abstract class Spell : Driven
+    public abstract class Spell : Orderable
     {
         #region Public Properties
         public SpellCaster Caster { get; internal set; }

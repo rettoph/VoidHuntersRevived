@@ -12,7 +12,6 @@ using System.Text;
 using tainicom.Aether.Physics2D.Collision.Shapes;
 using tainicom.Aether.Physics2D.Dynamics;
 using tainicom.Aether.Physics2D.Dynamics.Joints;
-using VoidHuntersRevived.Library.Entities.Ammunitions;
 using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Extensions.Aether;
 using tainicom.Aether.Physics2D.Common;
@@ -21,7 +20,7 @@ using Guppy.Extensions.Microsoft.Xna.Framework;
 using VoidHuntersRevived.Library.Contexts;
 using VoidHuntersRevived.Library.Utilities.Farseer;
 
-namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
+namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts.Weapons
 {
     /// <summary>
     /// The base weapon class, implementing all
@@ -31,7 +30,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
     /// All "shots" from weapons should be maintined
     /// internally.
     /// </summary>
-    public abstract class Weapon : ShipPart
+    public abstract class Weapon : SpellPart
     {
         #region Private Fields
         /// <summary>
@@ -39,15 +38,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         /// </summary>
         private Dictionary<Body, RevoluteJoint> _joints;
 
-        /// <summary>
-        /// Simple timer to manage the weapons fire rate.
-        /// </summary>
-        private ActionTimer _fireTimer;
-
         private ServiceProvider _provider;
         private EntityList _entities;
 
-        private Double _fireTime;
         private Single _curRecoil;
         #endregion
 
@@ -70,17 +63,12 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         public override Single Rotation => this.IsRoot ? base.Rotation : base.Rotation + this.Get(b => _joints[b].JointAngle);
         #endregion
 
-        #region Events
-        public event ValidateEventDelegate<Weapon, Ship> ValidateFire;
-        public event OnEventDelegate<Weapon, Ammunition> OnFire;
-        #endregion
-
         #region Lifecycle Methods
         protected override void Create(ServiceProvider provider)
         {
             base.Create(provider);
 
-            this.ValidateFire += Weapon.HandleValidateFire;
+            this.OnValidateCast += Weapon.HandleValidateCast;
             this.OnChainChanged += Weapon.HandleChainChanged;
         }
 
@@ -97,8 +85,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
-
-            _fireTimer = new ActionTimer(this.Context.FireRate);
 
             // Create new default joints as needed
             this.CleanJoints();
@@ -120,7 +106,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         {
             base.Dispose();
 
-            this.ValidateFire -= Weapon.HandleValidateFire;
+            this.OnValidateCast -= Weapon.HandleValidateCast;
             this.OnChainChanged -= Weapon.HandleChainChanged;
         }
         #endregion
@@ -146,7 +132,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
         {
             // Update the recoil as needed
             if (this.Context.Recoil > 0 && _curRecoil < 0.99f)
-                _curRecoil = MathHelper.Lerp(this.Context.Recoil, 0, MathHelper.Min(1f, (Single)((gameTime.TotalGameTime.TotalMilliseconds - _fireTime) / (this.Context.FireRate / 1.5))));
+                _curRecoil = MathHelper.Lerp(this.Context.Recoil, 0, MathHelper.Min(1f, (Single)((gameTime.TotalGameTime.TotalSeconds - this.LastCastTimestamp) / (this.Context.SpellCooldown / 1.5))));
 
             this.TryAim(this.Chain.Ship.Target);
         }
@@ -280,25 +266,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                 this.OnUpdate += this.UpdatePosition;
         }
 
-        public void TryFire(GameTime gameTime)
-        {
-            _fireTimer.Update(gameTime, v => v && this.ValidateFire.Validate(this, this.Chain.Ship, true), gt =>
-            {
-                _fireTime = gameTime.TotalGameTime.TotalMilliseconds;
-                _curRecoil = this.Context.Recoil;
-                var ammo = this.Fire(_provider, _entities, (ammo, p, c) =>
-                {
-                    ammo.MaxAge = this.Context.MaximumAmmunitionAge;
-                    ammo.Weapon = this;
-                });
-
-
-                this.OnFire?.Invoke(this, ammo);
-            });
-        }
-
-        protected abstract Ammunition Fire(ServiceProvider provider, EntityList entities, Action<Ammunition, ServiceProvider, ServiceConfiguration> setup);
-
         public override void SetContext(ShipPartContext context)
         {
             base.SetContext(context);
@@ -355,8 +322,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Weapons
                 joint.Enabled = value != default;
         }
 
-        private static bool HandleValidateFire(Weapon sender, Ship args)
-            => sender.TargetInRange && sender.Health > 0 && sender.Chain.Ship.TryConsumeMana(sender.Context.FireManaCost);
+        private static bool HandleValidateCast(SpellPart sender, GameTime args)
+            => sender is Weapon weapon && weapon.TargetInRange;
         #endregion
     }
 }

@@ -7,10 +7,11 @@ using System.Text;
 using VoidHuntersRevived.Library.Entities.ShipParts.Special;
 using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Entities.ShipParts.SpellParts;
 
-namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts.Special
+namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts.SpellParts
 {
-    internal sealed class SpellCasterPartMasterAuthorizationNetworkDriver : MasterNetworkAuthorizationDriver<SpellPart>
+    internal sealed class SpellPartMasterAuthorizationNetworkDriver : MasterNetworkAuthorizationDriver<SpellPart>
     {
         #region Lifecycle Methods
         protected override void InitializeRemote(SpellPart driven, ServiceProvider provider)

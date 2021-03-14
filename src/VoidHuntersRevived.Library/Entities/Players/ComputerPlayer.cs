@@ -46,6 +46,10 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
                 if (_target != default(Player))
                 { // Only proceed if the target isnt null...
+
+                    // Attempt to launch fighters...
+                    this.Ship.TryLaunchFighters(gameTime);
+
                     var offset = _target.Ship.Bridge.WorldCenter - this.Ship.Bridge.WorldCenter;
 
                     // Re-position the current ship towards the target player...

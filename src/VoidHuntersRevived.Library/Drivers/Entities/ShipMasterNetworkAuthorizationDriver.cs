@@ -39,6 +39,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             this.driven.DirtyState |= DirtyState.Filthy;
 
             this.driven.OnBridgeChanged += this.Health_HandleBridgeChanged;
+            this.driven.OnUpdate += this.Update;
 
             this.CleanBridge(default, this.driven.Bridge);
         }
@@ -50,6 +51,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             _explosions = null;
 
             this.driven.OnBridgeChanged -= this.Health_HandleBridgeChanged;
+            this.driven.OnUpdate -= this.Update;
 
             this.CleanBridge(this.driven.Bridge, default);
         }
@@ -76,6 +78,16 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
             this.driven.OnFiringChanged -= this.HandleFiringChanged;
             this.driven.OnDirectionChanged -= this.HandleDirectionChanged;
             this.driven.TractorBeam.OnAction -= this.HandleTractorBeamAction;
+        }
+        #endregion
+
+        #region Frame Methods
+        private void Update(GameTime gameTime)
+        {
+            // Only attempt to fire the weapons in a master authorization setting.
+            // This will broadcast the fire request down to the client.
+            if (this.driven.Firing) // Fire the weapon if needed...
+                this.driven.Weapons.ForEach(w => w.TryCast(gameTime));
         }
         #endregion
 
@@ -136,19 +148,28 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             if(sender.Health <= 0)
             { // Auto release the bridge
+                var cbrtMass = (Single)Math.Pow(sender.live.Mass, 1/3);
+
                 _explosions.Create(new ExplosionContext()
                 {
                     StartPosition = sender.Position,
                     StartVelocity = sender.LinearVelocity,
                     Color = sender.Chain?.Ship.Color ?? sender.Color,
-                    MaxAge = 4f,
+                    MaxAge = 1.5f,
                     MaxDamagePerSecond = 10,
-                    MaxForcePerSecond = 3000,
-                    MaxRadius = 30f
+                    MaxForcePerSecond = cbrtMass * 100000,
+                    MaxRadius = MathHelper.Clamp(cbrtMass * 5, 2f, 30f)
                 });
 
-                // Release the part.
-                sender.TryRelease();
+                if(sender.Chain.Ship.Player.DestroyOnDeath)
+                { // Release all parts...
+                    sender.Items().ForEach(i => i.TryRelease());
+                }
+                else
+                {// Release the root part...
+                    sender.TryRelease();
+                }
+                
 
                 // Just in case, manually remove bridge reference.
                 this.driven.Bridge = default;

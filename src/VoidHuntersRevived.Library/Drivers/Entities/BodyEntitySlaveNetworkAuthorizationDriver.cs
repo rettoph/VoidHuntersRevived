@@ -34,6 +34,8 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
 
             _client = null;
 
+            this.driven.OnUpdate -= this.Update;
+
             this.driven.MessageHandlers[MessageType.Update].OnRead -= this.driven.master.ReadPosition;
             this.driven.MessageHandlers[MessageType.Setup].OnRead -= this.ReadSetup;
         }

@@ -6,7 +6,7 @@ using VoidHuntersRevived.Library.Attributes;
 
 namespace VoidHuntersRevived.Library.Contexts
 {
-    public abstract class SpellCasterPartContext : ShipPartContext
+    public abstract class SpellPartContext : ShipPartContext
     {
         #region Enums
         private enum SpellCasterPartContextContext
@@ -14,7 +14,8 @@ namespace VoidHuntersRevived.Library.Contexts
             Start = 0,
             End = 1,
             SpellCooldown = 2,
-            SpellManaCost = 3
+            SpellManaCost = 3,
+            IndicatorRadius = 4
         }
         #endregion
 
@@ -32,10 +33,17 @@ namespace VoidHuntersRevived.Library.Contexts
         [ShipPartContextProperty("Spell Mana Cost", "The mana cost required for this spellcaster to function.", ShipPartContextPropertyType.Single)]
 
         public Single SpellManaCost { get; set; }
+
+        /// <summary>
+        /// The energy cost required for this spellcaster to function.
+        /// </summary>
+        [ShipPartContextProperty("Indicator Radius", "The radius of the client side cooldown indicator.", ShipPartContextPropertyType.Single)]
+
+        public Single IndicatorRadius { get; set; } = 0.15f;
         #endregion
 
         #region Constructors
-        protected SpellCasterPartContext(string name) : base(name)
+        protected SpellPartContext(string name) : base(name)
         {
         }
         #endregion
@@ -59,6 +67,9 @@ namespace VoidHuntersRevived.Library.Contexts
                         case SpellCasterPartContextContext.SpellManaCost:
                             this.SpellManaCost = reader.ReadSingle();
                             break;
+                        case SpellCasterPartContextContext.IndicatorRadius:
+                            this.IndicatorRadius = reader.ReadSingle();
+                            break;
                     }
                 }
             }
@@ -75,6 +86,9 @@ namespace VoidHuntersRevived.Library.Contexts
 
             writer.Write((Byte)SpellCasterPartContextContext.SpellManaCost);
             writer.Write(this.SpellManaCost);
+
+            writer.Write((Byte)SpellCasterPartContextContext.IndicatorRadius);
+            writer.Write(this.IndicatorRadius);
 
             writer.Write((Byte)SpellCasterPartContextContext.End);
         }

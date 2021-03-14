@@ -1,20 +1,18 @@
 ﻿using Guppy.DependencyInjection;
-using Guppy.Extensions.Utilities;
+using Guppy.Enums;
 using Guppy.Extensions.Microsoft.Xna.Framework;
+using Guppy.Extensions.Utilities;
+using Guppy.Interfaces;
 using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
-using VoidHuntersRevived.Library.Entities.ShipParts;
-using Guppy.Interfaces;
-using Guppy.Enums;
 
-namespace VoidHuntersRevived.Library.Entities.Ammunitions
+namespace VoidHuntersRevived.Library.Services.Spells.AmmunitionSpells
 {
-    public class LaserBeam : Ammunition
+    public class LaserBeamSpell : AmmunitionSpell
     {
         #region Private Fields
         private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
@@ -33,7 +31,7 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         /// <summary>
         /// The energy cost to deflect this weapon with shields per second.
         /// </summary>
-        public Single ShieldDeflectionEnergyCostPerSecond { get; internal set; }
+        public Single EnergyShieldDeflectionCostPerSecond { get; internal set; }
         #endregion
 
         #region Lifecycle Methods
@@ -62,8 +60,8 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
             base.Draw(gameTime);
 
             _primitiveBatch.DrawLine(
-                this.Weapon.Chain.Ship?.Color ?? Color.Transparent, 
-                _start, 
+                this.Weapon.Chain.Ship?.Color ?? Color.Transparent,
+                _start,
                 _end);
         }
 
@@ -79,11 +77,12 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         }
         #endregion
 
-        /// <inheritdoc />
+
         #region Ammunition Implementation
+        /// <inheritdoc />
         public override float GetShieldDeflectionManaCost(CollisionData data, GameTime gameTime)
         {
-            return this.ShieldDeflectionEnergyCostPerSecond * (Single)gameTime.ElapsedGameTime.TotalSeconds;
+            return this.EnergyShieldDeflectionCostPerSecond * (Single)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         /// <inheritdoc />
@@ -94,7 +93,7 @@ namespace VoidHuntersRevived.Library.Entities.Ammunitions
         #endregion
 
         #region Event Handlers
-        private void HandleCollision(Ammunition sender, CollisionData collision)
+        private void HandleCollision(AmmunitionSpell sender, CollisionData collision)
         {
             _count++;
             _end = collision.P1;

@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
+using VoidHuntersRevived.Library.Entities.ShipParts.SpellParts.Weapons;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -62,22 +62,12 @@ namespace VoidHuntersRevived.Library.Entities
         #region Lifecycle Methods
         private void Weapons_Create(ServiceProvider provider)
         {
-            this.OnUpdate += this.Weapons_Update;
             this.OnClean += Ship.Weapons_HandleClean;
         }
 
         private void Weapons_Dispose()
         {
-            this.OnUpdate -= this.Weapons_Update;
             this.OnClean -= Ship.Weapons_HandleClean;
-        }
-        #endregion
-
-        #region Frame Methods
-        private void Weapons_Update(GameTime gameTime)
-        {
-            if (this.Firing) // Fire the weapon if needed...
-                _weapons.ForEach(w => w.TryFire(gameTime));
         }
         #endregion
 

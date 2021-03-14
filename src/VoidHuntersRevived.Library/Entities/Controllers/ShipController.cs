@@ -25,10 +25,10 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
         #region Public Properties
         /// <inheritdoc />
-        public new Int32 DirtyUpdateSequenceChannel => VHR.Network.DirtyUpdateDelivery.Ship.SequenceChannel;
+        public new Int32 DirtyUpdateSequenceChannel => VHR.Network.MessageData.ShipDirtyUpdate.SequenceChannel;
 
         /// <inheritdoc />
-        public new NetDeliveryMethod DirtyUpdateNetDeliveryMethod => VHR.Network.DirtyUpdateDelivery.Ship.NetDeliveryMethod;
+        public new NetDeliveryMethod DirtyUpdateNetDeliveryMethod => VHR.Network.MessageData.ShipDirtyUpdate.NetDeliveryMethod;
         #endregion
 
         #region Lifecycle Methods

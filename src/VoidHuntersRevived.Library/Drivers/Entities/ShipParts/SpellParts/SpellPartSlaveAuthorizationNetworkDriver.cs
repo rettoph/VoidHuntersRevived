@@ -6,10 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.ShipParts.Special;
+using VoidHuntersRevived.Library.Entities.ShipParts.SpellParts;
 
-namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts.Special
+namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts.SpellParts
 {
-    internal sealed class SpellCasterPartSlaveAuthorizationNetworkDriver : SlaveNetworkAuthorizationDriver<SpellPart>
+    internal sealed class SpellPartSlaveAuthorizationNetworkDriver : SlaveNetworkAuthorizationDriver<SpellPart>
     {
         #region Private Fields
         private Synchronizer _synchronizer;

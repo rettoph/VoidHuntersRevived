@@ -10,7 +10,7 @@ using VoidHuntersRevived.Library.Utilities;
 using Guppy.Extensions.log4net;
 using Guppy.Lists;
 using Guppy.Events.Delegates;
-using VoidHuntersRevived.Library.Entities.ShipParts.Weapons;
+using VoidHuntersRevived.Library.Entities.ShipParts.SpellParts.Weapons;
 using Guppy.Interfaces;
 using Guppy.Enums;
 using VoidHuntersRevived.Library.Services;
