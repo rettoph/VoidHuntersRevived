@@ -8,7 +8,7 @@ using VoidHuntersRevived.Library.Attributes;
 namespace VoidHuntersRevived.Library.Contexts
 {
     [ShipPartContextAttribute("Shield Generator", "Capable of generating force-field like shields.")]
-    public class ShieldGeneratorContext : ShipPartContext
+    public class ShieldGeneratorContext : SpellPartContext
     {
         #region Enums
         private enum ShieldGeneratorContextProperty

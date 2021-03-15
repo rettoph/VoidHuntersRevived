@@ -14,22 +14,24 @@ namespace VoidHuntersRevived.Library.Utilities.Farseer
         public readonly BodyEntity Root;
         public readonly BodyEntity Owner;
         public readonly Shape Shape;
+        public readonly Object Tag;
 
         public IReadOnlyList<Fixture> List => _fixtures;
 
-        public FixtureContainer(BodyEntity root, BodyEntity owner, Shape shape)
+        public FixtureContainer(BodyEntity root, BodyEntity owner, Shape shape, Object tag = null)
         {
             _fixtures = new List<Fixture>(2);
 
             this.Root = root;
             this.Owner = owner;
             this.Shape = shape;
+            this.Tag = tag ?? owner;
         }
 
         internal void Attach(Body body)
         {
             var fixture = body.CreateFixture(this.Shape);
-            fixture.Tag = this.Owner;
+            fixture.Tag = this.Tag;
 
             // Setup default Fixture properties...
             fixture.CollisionCategories = this.Root.CollisionCategories;

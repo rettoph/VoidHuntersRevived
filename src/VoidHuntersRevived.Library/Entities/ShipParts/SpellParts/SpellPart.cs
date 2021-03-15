@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Enums;
 using Guppy.Events.Delegates;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Contexts;
 using VoidHuntersRevived.Library.Services;
+using VoidHuntersRevived.Library.Services.Spells;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts
 {
@@ -32,6 +34,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts
 
         #region Events
         public event ValidateEventDelegate<SpellPart, GameTime> OnValidateCast;
+        public event ValidateEventDelegate<SpellPart, GameTime> OnRequiredValidateCast;
         public event OnEventDelegate<SpellPart, GameTime> OnCast;
         #endregion
 
@@ -41,11 +44,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts
             base.Create(provider);
 
             this.OnValidateCast += SpellPart.HandleValidateCast;
+            this.OnRequiredValidateCast += SpellPart.HandleRequiredValidateCast;
         }
 
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
+
+            _lastCastTimestamp = default;
 
             this.spells = provider.GetService<SpellCastService>();
         }
@@ -62,21 +68,27 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts
             base.Dispose();
 
             this.OnValidateCast -= SpellPart.HandleValidateCast;
+            this.OnRequiredValidateCast -= SpellPart.HandleRequiredValidateCast;
         }
         #endregion
 
         #region Helper Methods
-        public void TryCast(GameTime gameTime, Boolean force = false)
+        public virtual Spell TryCast(GameTime gameTime, Boolean force = false)
         {
-            if (this.OnValidateCast.Validate(this, gameTime, true) || force)
+            if (this.OnRequiredValidateCast.Validate(this, gameTime, false))
             {
-                _lastCastTimestamp = (Single)gameTime.TotalGameTime.TotalSeconds;
-                this.Cast(gameTime);
-                this.OnCast?.Invoke(this, gameTime);
+                if (this.OnValidateCast.Validate(this, gameTime, false) || (force && this.Status == ServiceStatus.Ready))
+                {
+                    _lastCastTimestamp = (Single)gameTime.TotalGameTime.TotalSeconds;
+                    this.OnCast?.Invoke(this, gameTime);
+                    return this.Cast(gameTime);
+                }
             }
+
+            return default;
         }
 
-        protected abstract void Cast(GameTime gameTime);
+        protected abstract Spell Cast(GameTime gameTime);
 
         public override void SetContext(ShipPartContext context)
         {
@@ -90,9 +102,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts
         private static bool HandleValidateCast(SpellPart sender, GameTime gameTime)
             => sender.Health > 0 
                 && (gameTime.TotalGameTime.TotalSeconds - sender._lastCastTimestamp > sender.Context.SpellCooldown || sender._lastCastTimestamp == default)
-                && sender.Chain != default
-                && sender.Chain.Ship != default
                 && sender.Chain.Ship.CanConsumeMana(sender.Context.SpellManaCost);
+
+        private static bool HandleRequiredValidateCast(SpellPart sender, GameTime args)
+            => sender.Chain?.Ship != default;
         #endregion
     }
 }

@@ -41,6 +41,13 @@ namespace VoidHuntersRevived.Library.Entities
         /// </summary>
         public void TryLaunchFighters(GameTime gameTime)
             => this.Actions.TryInvoke(VHR.Actions.Ship.TryLaunchDrones, gameTime);
+
+        /// <summary>
+        /// Helper method to automatically toggle shield states. 
+        /// The handling is done is a custom helper class.
+        /// </summary>
+        public void TryToggleEnergyShields(GameTime gameTime)
+            => this.Actions.TryInvoke(VHR.Actions.Ship.TryLaunchDrones, gameTime);
         #endregion
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Guppy.Lists;
 using VoidHuntersRevived.Library.Contexts;
 using VoidHuntersRevived.Library.Extensions.Services;
+using VoidHuntersRevived.Library.Services.Spells;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts.Weapons
 {
@@ -31,9 +32,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts.Weapons
 
         #region SpellCaster Implementation
         /// <inheritdoc />
-        protected override void Cast(GameTime gameTime)
-        {
-            this.spells.TryCastBulletSpell(
+        protected override Spell Cast(GameTime gameTime)
+            => this.spells.TryCastBulletSpell(
                 caster: this.Chain.Ship,
                 manaCost: this.Context.SpellManaCost,
                 weapon: this,
@@ -42,7 +42,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts.Weapons
                 position: this.Position,
                 velocity: this.Root.LinearVelocity + Vector2.Transform(Vector2.UnitX * this.Context.BulletSpeed, Matrix.CreateRotationZ(MathHelper.WrapAngle(this.Rotation + MathHelper.Pi))),
                 energyShieldDeflectionCost: this.Context.EnergyShieldDeflectionCost);
-        }
         #endregion
     }
 }

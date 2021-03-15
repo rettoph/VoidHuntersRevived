@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Contexts;
 using VoidHuntersRevived.Library.Extensions.Services;
+using VoidHuntersRevived.Library.Services.Spells;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts.Weapons
 {
@@ -26,16 +27,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts.Weapons
 
         #region SpellCaster Implementation
         /// <inheritdoc />
-        protected override void Cast(GameTime gameTime)
-        {
-            this.spells.TryCastLaserBeamSpell(
-                caster: this.Chain.Ship,
-                manaCost: this.Context.SpellManaCost,
-                weapon: this,
-                maxAge: this.Context.MaximumAmmunitionAge,
-                damagePerSecond: this.Context.DamagePerSecond,
-                energyShieldDeflectionCostPerSecond: this.Context.ShieldDeflectionEnergyCostPerSecond);
-        }
+        protected override Spell Cast(GameTime gameTime)
+            => this.spells.TryCastLaserBeamSpell(
+                    caster: this.Chain.Ship,
+                    manaCost: this.Context.SpellManaCost,
+                    weapon: this,
+                    maxAge: this.Context.MaximumAmmunitionAge,
+                    damagePerSecond: this.Context.DamagePerSecond,
+                    energyShieldDeflectionCostPerSecond: this.Context.ShieldDeflectionEnergyCostPerSecond);
         #endregion
     }
 }

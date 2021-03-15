@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Contexts;
 using VoidHuntersRevived.Library.Extensions.Services;
+using VoidHuntersRevived.Library.Services.Spells;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts
 {
@@ -23,7 +24,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts
             this.Context = context as DroneBayContext;
         }
 
-        protected override void Cast(GameTime gameTime)
+        protected override Spell Cast(GameTime gameTime)
             => this.spells.TryCastLaunchDroneSpell(
                     caster: this.Chain.Ship,
                     manaCost: this.Context.SpellManaCost,

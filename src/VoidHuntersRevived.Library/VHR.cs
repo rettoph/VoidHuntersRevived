@@ -30,8 +30,11 @@ namespace VoidHuntersRevived.Library
         {
             public static class Ship
             {
-                public static readonly UInt32 TryLaunchDrones = "action:ship:try-launch-fighters".xxHash();
-                public static readonly UInt32 OnLaunchFighters = "action:ship:on-launch-fighters".xxHash();
+                public static readonly UInt32 TryLaunchDrones = "action:ship:try-launch-drones".xxHash();
+                public static readonly UInt32 OnLaunchDrones = "action:ship:on-launch-drones".xxHash();
+
+                public static readonly UInt32 TryToggleEnergyShields = "action:ship:try-toggle-energy-shields".xxHash();
+                public static readonly UInt32 OnToggleEnergyShields = "action:ship:on-toggle-energy-shields".xxHash();
             }
         }
 
@@ -207,6 +210,7 @@ namespace VoidHuntersRevived.Library
             public static readonly UInt32 LaunchDronesSpellCast = ServiceConfiguration.GetId<LaunchDroneSpellCast>();
             public static readonly UInt32 BulletSpellCast = ServiceConfiguration.GetId<BulletSpellCast>();
             public static readonly UInt32 LaserBeamSpellCast = ServiceConfiguration.GetId<LaserBeamSpellCast>();
+            public static readonly UInt32 EnergyShieldSpellCast = ServiceConfiguration.GetId<EnergyShieldSpellCast>();
         }
     }
 }

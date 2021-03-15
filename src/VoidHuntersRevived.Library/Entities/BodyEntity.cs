@@ -201,10 +201,10 @@ namespace VoidHuntersRevived.Library.Entities
         /// </summary>
         public void Nudge()
             => this.OnNudged?.Invoke(this);
-        public virtual FixtureContainer BuildFixture(Shape shape)
-            => this.BuildFixture(shape, this);
-        public virtual FixtureContainer BuildFixture(Shape shape, BodyEntity owner)
-            => new FixtureContainer(this, owner, shape).Then(fixture =>
+        public virtual FixtureContainer BuildFixture(Shape shape, Object tag = null)
+            => this.BuildFixture(shape, this, tag);
+        public virtual FixtureContainer BuildFixture(Shape shape, BodyEntity owner, Object tag = null)
+            => new FixtureContainer(this, owner, shape, tag).Then(fixture =>
             {
                 _fixtures.Enqueue(fixture);
 

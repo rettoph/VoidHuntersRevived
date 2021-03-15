@@ -12,8 +12,9 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.ShipParts.Special;
 using Guppy.Extensions.Microsoft.Xna.Framework;
 using Guppy.Extensions.Utilities;
+using VoidHuntersRevived.Library.Entities.ShipParts.SpellParts;
 
-namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Special
+namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.SpellParts
 {
     internal sealed class ShieldGeneratorGraphicsDriver : Driver<ShieldGenerator>
     {
@@ -70,7 +71,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Special
         #region Frame Methods
         private void Draw(GameTime gameTime)
         {
-            if (!this.driven.Powered)
+            if (true)
                 return;
 
             var live = this.driven.Rotation + MathHelper.Pi;

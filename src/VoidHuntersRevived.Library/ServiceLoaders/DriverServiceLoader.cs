@@ -8,6 +8,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Drivers;
 using VoidHuntersRevived.Library.Drivers.Entities;
 using VoidHuntersRevived.Library.Drivers.Entities.Players;
+using VoidHuntersRevived.Library.Drivers.Entities.ShipActionDrivers;
 using VoidHuntersRevived.Library.Drivers.Entities.ShipParts;
 using VoidHuntersRevived.Library.Drivers.Entities.ShipParts.Special;
 using VoidHuntersRevived.Library.Drivers.Entities.ShipParts.SpellParts;
@@ -55,8 +56,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
 
             services.AddAndBindDriver<Ship, ShipMasterNetworkAuthorizationDriver>(p => new ShipMasterNetworkAuthorizationDriver());
             services.AddAndBindDriver<Ship, ShipSlaveNetworkAuthorizationDriver>(p => new ShipSlaveNetworkAuthorizationDriver());
-            services.AddAndBindDriver<Ship, ShipDroneBayMasterNetworkAuthorizationDriver>(p => new ShipDroneBayMasterNetworkAuthorizationDriver());
-            services.AddAndBindDriver<Ship, ShipDroneBayDriver>(p => new ShipDroneBayDriver());
+            services.AddAndBindDriver<Ship, ShipTryLaunchDronesActionDriver>(p => new ShipTryLaunchDronesActionDriver());
 
             services.AddAndBindDriver<BodyEntity, BodyEntityMasterNetworkAuthorizationDriver>(p => new BodyEntityMasterNetworkAuthorizationDriver());
             services.AddAndBindDriver<BodyEntity, BodyEntitySlaveNetworkAuthorizationDriver>(p => new BodyEntitySlaveNetworkAuthorizationDriver());

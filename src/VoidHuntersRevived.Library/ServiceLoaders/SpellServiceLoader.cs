@@ -39,11 +39,13 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddFactory<LaunchDroneSpellCast>(p => new LaunchDroneSpellCast());
             services.AddFactory<BulletSpellCast>(p => new BulletSpellCast());
             services.AddFactory<LaserBeamSpellCast>(p => new LaserBeamSpellCast());
+            services.AddFactory<EnergyShieldSpellCast>(p => new EnergyShieldSpellCast());
             
             // Services...
             services.AddScoped<LaunchDroneSpellCast>();
             services.AddScoped<BulletSpellCast>();
             services.AddScoped<LaserBeamSpellCast>();
+            services.AddScoped<EnergyShieldSpellCast>();
             #endregion
 
             #region Spells
@@ -51,11 +53,13 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddFactory<LaunchDroneSpell>(p => new LaunchDroneSpell());
             services.AddFactory<BulletSpell>(p => new BulletSpell());
             services.AddFactory<LaserBeamSpell>(p => new LaserBeamSpell());
+            services.AddFactory<EnergyShieldSpell>(p => new EnergyShieldSpell());
             
             // Services...
             services.AddTransient<LaunchDroneSpell>();
             services.AddTransient<BulletSpell>();
             services.AddTransient<LaserBeamSpell>();
+            services.AddTransient<EnergyShieldSpell>();
 
             // Drivers
             services.AddAndBindDriver<LaunchDroneSpell, LaunchDroneSpellMasterNetworkAuthorizationDriver>(p => new LaunchDroneSpellMasterNetworkAuthorizationDriver());

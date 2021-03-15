@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Client.Library.Drivers.Entities;
 using VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers;
 using VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts;
-using VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Special;
 using VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.SpellParts;
 using VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Client.Library.Drivers.Players;
