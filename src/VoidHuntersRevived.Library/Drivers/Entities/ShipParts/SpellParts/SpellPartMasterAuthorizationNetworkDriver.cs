@@ -18,14 +18,14 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts.SpellParts
         {
             base.InitializeRemote(driven, provider);
 
-            this.driven.OnCast += this.HandleCast;
+            this.driven.OnPreCast += this.HandleCast;
         }
 
         protected override void ReleaseRemote(SpellPart driven)
         {
             base.ReleaseRemote(driven);
 
-            this.driven.OnCast -= this.HandleCast;
+            this.driven.OnPreCast -= this.HandleCast;
         }
         #endregion
 

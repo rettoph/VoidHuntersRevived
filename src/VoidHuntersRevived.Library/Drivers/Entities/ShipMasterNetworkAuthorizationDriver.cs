@@ -161,7 +161,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
                     MaxRadius = MathHelper.Clamp(cbrtMass * 5, 2f, 30f)
                 });
 
-                if(sender.Chain.Ship.Player.DestroyOnDeath)
+                if (sender.Chain.Ship.Player.DestroyOnDeath)
                 { // Release all parts...
                     sender.Items().ForEach(i => i.TryRelease());
                 }
@@ -169,10 +169,6 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
                 {// Release the root part...
                     sender.TryRelease();
                 }
-                
-
-                // Just in case, manually remove bridge reference.
-                this.driven.Bridge = default;
             }
         }
 

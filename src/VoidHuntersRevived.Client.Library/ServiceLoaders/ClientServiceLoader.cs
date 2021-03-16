@@ -13,6 +13,7 @@ using VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts;
 using VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.SpellParts;
 using VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Client.Library.Drivers.Players;
+using VoidHuntersRevived.Client.Library.Drivers.Services.Spells;
 using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Client.Library.Graphics.Effects;
 using VoidHuntersRevived.Client.Library.Graphics.Vertices;
@@ -29,6 +30,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts.SpellParts;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Layers;
 using VoidHuntersRevived.Library.Scenes;
+using VoidHuntersRevived.Library.Services.Spells;
 
 namespace VoidHuntersRevived.Client.Library.ServiceLoaders
 {
@@ -89,11 +91,13 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             services.AddAndBindDriver<ShipPart, ShipPartGraphicsDriver>(p => new ShipPartGraphicsDriver());
             services.AddAndBindDriver<SpellPart, SpellPartGraphicsDriver>(p => new SpellPartGraphicsDriver());
             services.AddAndBindDriver<Thruster, ThrusterGraphicsDriver>(p => new ThrusterGraphicsDriver());
-            services.AddAndBindDriver<ShieldGenerator, ShieldGeneratorGraphicsDriver>(p => new ShieldGeneratorGraphicsDriver());
             services.AddAndBindDriver<Player, PlayerPlayerNameplateDriver>(p => new PlayerPlayerNameplateDriver());
             services.AddAndBindDriver<UserPlayer, UserPlayerLocalDriver>(
                 factory: p => new UserPlayerLocalDriver(),
                 filter: (up, p) => up.User == p.GetService<ClientPeer>().CurrentUser);
+
+            // Spells
+            services.AddAndBindDriver<EnergyShieldSpell, EnergyShieldSpellGraphicsDriver>(p => new EnergyShieldSpellGraphicsDriver());
         }
 
         public void ConfigureProvider(ServiceProvider provider)

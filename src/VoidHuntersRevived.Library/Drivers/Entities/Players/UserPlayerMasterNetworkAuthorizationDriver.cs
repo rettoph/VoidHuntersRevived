@@ -18,6 +18,7 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Extensions.Entities;
 using VoidHuntersRevived.Library.Extensions.Lidgren.Network;
 using VoidHuntersRevived.Library.Extensions.System;
 
@@ -51,7 +52,8 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
             this.driven.Ping.Set(VHR.Network.Pings.Ship.SpawnRequest, this.HandleShipSpawnRequestMessage);
             this.driven.Ping.Set(VHR.Network.Pings.Ship.SpawnAiRequest, this.HandleSpawnAIRequestMessage);
             this.driven.Ping.Set(VHR.Network.Pings.Ship.SelfDestructRequest, this.HandleSelfDestructRequest);
-            this.driven.Ping.Set(VHR.Network.Pings.Ship.LaunchFightersRequest, this.HandleLaunchFightersRequest);
+            this.driven.Ping.Set(VHR.Network.Pings.Ship.LaunchDronesRequest, this.HandleLaunchDronesRequest);
+            this.driven.Ping.Set(VHR.Network.Pings.Ship.ToggleEnergyShieldsRequest, this.HandleToggleEnergyShieldsRequest);
         }
 
         protected override void ReleaseRemote(UserPlayer driven)
@@ -122,8 +124,11 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
                 this.driven.Ship.Bridge.Health = 0f;
         }
 
-        private void HandleLaunchFightersRequest(NetIncomingMessage obj)
+        private void HandleLaunchDronesRequest(NetIncomingMessage obj)
             => _synchronizer.Enqueue(gt => this.driven.Ship.TryLaunchFighters(gt));
+
+        private void HandleToggleEnergyShieldsRequest(NetIncomingMessage obj)
+            => _synchronizer.Enqueue(gt => this.driven.Ship.TryToggleEnergyShields(gt));
         #endregion
 
         #region Event Handlers

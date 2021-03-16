@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Library.Drivers
     /// <summary>
     /// Simple helper driver that implement InitializeRemote
     /// & ReleaseRemote methods that will only be invoked 
-    /// when the 
+    /// when the driven item connects to a remote peer
     /// </summary>
     /// <typeparam name="TDriven"></typeparam>
     public class RemoteHostDriver<TDriven> : Driver<TDriven>
@@ -19,10 +19,16 @@ namespace VoidHuntersRevived.Library.Drivers
     {
         #region Private Fields
         private Settings _settings;
+
+        private HostType _initialHostType;
+        private NetworkAuthorization _initialNetworkAuthorization;
         #endregion
 
         #region Protected Fields 
         protected Settings settings => _settings;
+
+        protected HostType initialHostType => _initialHostType;
+        protected NetworkAuthorization initialNetworkAuthorization => _initialNetworkAuthorization;
         #endregion
 
         #region Lifecycle Methods
@@ -32,11 +38,14 @@ namespace VoidHuntersRevived.Library.Drivers
 
             provider.Service(out _settings);
 
-            if(settings.Get<HostType>() == HostType.Remote)
-                this.InitializeRemote(driven, provider);
+            _initialHostType = settings.Get<HostType>();
+            _initialNetworkAuthorization = settings.Get<NetworkAuthorization>();
+
+            if (_initialHostType == HostType.Remote)
+                this.InitializeRemote(driven, provider, _initialNetworkAuthorization);
         }
 
-        protected virtual void InitializeRemote(TDriven driven, ServiceProvider provider)
+        protected virtual void InitializeRemote(TDriven driven, ServiceProvider provider, NetworkAuthorization networkAuthorization)
         {
             // 
         }
@@ -45,13 +54,13 @@ namespace VoidHuntersRevived.Library.Drivers
         {
             base.Release(driven);
 
-            if (settings.Get<HostType>() == HostType.Remote)
-                this.ReleaseRemote(driven);
+            if (_initialHostType == HostType.Remote)
+                this.ReleaseRemote(driven, _initialNetworkAuthorization);
 
             _settings = null;
         }
 
-        protected virtual void ReleaseRemote(TDriven driven)
+        protected virtual void ReleaseRemote(TDriven driven, NetworkAuthorization networkAuthorization)
         {
             // 
         }

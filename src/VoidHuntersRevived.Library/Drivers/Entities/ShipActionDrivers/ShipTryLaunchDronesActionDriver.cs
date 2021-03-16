@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.ShipParts.SpellParts;
 
@@ -15,12 +16,15 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipActionDrivers
         #endregion
 
         #region Helper Methods
-        protected override bool TryAction(IEnumerable<DroneBay> parts, GameTime gameTime, params Object[] args)
+        protected override bool TryAction(IEnumerable<DroneBay> parts, GameTime gameTime, ref Byte data)
         {
-            foreach (DroneBay fighterBay in parts)
-                    fighterBay.TryCast(gameTime);
+            Boolean response = false;
 
-            return true;
+            foreach (DroneBay fighterBay in parts)
+                if (fighterBay.TryCast(gameTime) != default)
+                    response = true;
+
+            return response;
         }
         #endregion
     }

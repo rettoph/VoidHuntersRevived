@@ -139,7 +139,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
             });
             #endregion
 
-            #region Special Inputs
+            #region SpellCast Inputs
             inputs.Add(new InputCommandContext()
             {
                 Handle = "launch_fighter_bays",
@@ -147,6 +147,16 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                 Commands = new[]
                 {
                     (state: ButtonState.Pressed, command: "ship launch-fighters"),
+                }
+            });
+
+            inputs.Add(new InputCommandContext()
+            {
+                Handle = "toggle_energy_shields",
+                DefaultInput = new InputType(Keys.C),
+                Commands = new[]
+                {
+                    (state: ButtonState.Pressed, command: "ship toggle-energy-shields"),
                 }
             });
             #endregion

@@ -11,6 +11,7 @@ namespace VoidHuntersRevived.Library.Entities
     {
         #region Private Properties
         private Single _mana;
+        private Boolean _charging;
         #endregion
 
         #region Public Properties
@@ -39,11 +40,16 @@ namespace VoidHuntersRevived.Library.Entities
         /// Whether or not the current <see cref="SpellCaster.Mana"/>
         /// is in a charge state.
         /// </summary>
-        public Boolean Charging { get; set; }
+        public Boolean Charging
+        {
+            get => _charging;
+            set => this.OnChargingChanged.InvokeIf(value != _charging, this, ref _charging, value);
+        }
         #endregion
 
         #region Events
         public OnChangedEventDelegate<SpellCaster, Single> OnManaChanged;
+        public OnChangedEventDelegate<SpellCaster, Boolean> OnChargingChanged;
         #endregion
 
         #region Lifecycle Methods

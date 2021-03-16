@@ -111,6 +111,11 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                     {
                         Word = "launch-fighters",
                         Description = "Attempt to launch the current ship's fighter bays (if any)."
+                    },
+                    new CommandContext()
+                    {
+                        Word = "toggle-energy-shields",
+                        Description = "Attempt to toggle the current ship's energy shields (if any)."
                     }
                 }
             });

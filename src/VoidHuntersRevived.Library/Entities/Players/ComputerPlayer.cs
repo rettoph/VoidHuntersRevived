@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Extensions.Entities;
 
 namespace VoidHuntersRevived.Library.Entities.Players
 {

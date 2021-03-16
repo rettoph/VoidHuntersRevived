@@ -35,7 +35,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts
         #region Events
         public event ValidateEventDelegate<SpellPart, GameTime> OnValidateCast;
         public event ValidateEventDelegate<SpellPart, GameTime> OnRequiredValidateCast;
+        public event OnEventDelegate<SpellPart, GameTime> OnPreCast;
         public event OnEventDelegate<SpellPart, GameTime> OnCast;
+        public event OnEventDelegate<SpellPart, GameTime> OnPostCast;
         #endregion
 
         #region Lifecycle Methods
@@ -80,8 +82,15 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts
                 if (this.OnValidateCast.Validate(this, gameTime, false) || (force && this.Status == ServiceStatus.Ready))
                 {
                     _lastCastTimestamp = (Single)gameTime.TotalGameTime.TotalSeconds;
+
+                    this.OnPreCast?.Invoke(this, gameTime);
+
+                    var spell = this.Cast(gameTime);
+
                     this.OnCast?.Invoke(this, gameTime);
-                    return this.Cast(gameTime);
+                    this.OnPostCast?.Invoke(this, gameTime);
+
+                    return spell;
                 }
             }
 
@@ -101,7 +110,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts
         #region Event Handlers
         private static bool HandleValidateCast(SpellPart sender, GameTime gameTime)
             => sender.Health > 0 
-                && (gameTime.TotalGameTime.TotalSeconds - sender._lastCastTimestamp > sender.Context.SpellCooldown || sender._lastCastTimestamp == default)
+                && (gameTime.TotalGameTime.TotalSeconds - sender._lastCastTimestamp >= sender.Context.SpellCooldown || sender._lastCastTimestamp == default)
                 && sender.Chain.Ship.CanConsumeMana(sender.Context.SpellManaCost);
 
         private static bool HandleRequiredValidateCast(SpellPart sender, GameTime args)

@@ -27,33 +27,33 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts
         {
             base.Create(provider);
 
-            this.OnValidateCast += this.ValidateCast;
+            this.OnRequiredValidateCast += this.HandleRequiredValidateCast;
         }
+
+
 
         protected override void Dispose()
         {
             base.Dispose();
 
-            this.OnValidateCast -= this.ValidateCast;
+            this.OnRequiredValidateCast -= this.HandleRequiredValidateCast;
         }
         #endregion
 
         #region Helper Methods
+        /// <inheritdoc />
         public override Spell TryCast(GameTime gameTime, bool force = false)
         {
-            if (this.Casting) // Auto stop the previous cast, if any.
-                this.StopCast(force);
-
-            return _spell = base.TryCast(gameTime, force);
+            _spell = base.TryCast(gameTime, force) ?? _spell;
+            return _spell;
         }
 
         /// <summary>
         /// Attempt to stop casting (if currently casting)
         /// the current spell.
         /// </summary>
-        /// <param name="force"></param>
         /// <returns></returns>
-        public virtual void StopCast(Boolean force = false)
+        public virtual void StopCast()
         {
             _spell?.TryRelease();
             _spell = null;
@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts
         #endregion
 
         #region Event Handlers
-        private bool ValidateCast(SpellPart sender, GameTime args)
+        private bool HandleRequiredValidateCast(SpellPart sender, GameTime args)
             => !this.Casting;
         #endregion
     }

@@ -57,6 +57,7 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
                 _commands["ship"]["save"].OnExcecute += this.HandleShipSaveCommand;
                 _commands["ship"]["self-destruct"].OnExcecute += this.HandleShipSelfDestructCommand;
                 _commands["ship"]["launch-fighters"].OnExcecute += this.HandleLaunchFightersCommand;
+                _commands["ship"]["toggle-energy-shields"].OnExcecute += this.HandleToggleEnergyShieldsCommand;
                 _commands["spawn"]["ai"].OnExcecute += this.HandleSpawnAICommand;
 
                 _configured = true;
@@ -177,9 +178,16 @@ namespace VoidHuntersRevived.Client.Library.Drivers.Players
 
         private CommandResponse HandleLaunchFightersCommand(ICommand sender, CommandInput input)
         {
-            this.driven.Ping.Create(NetDeliveryMethod.ReliableUnordered, 0).Write(VHR.Network.Pings.Ship.LaunchFightersRequest, m => { });
+            this.driven.Ping.Create(NetDeliveryMethod.ReliableUnordered, 0).Write(VHR.Network.Pings.Ship.LaunchDronesRequest, m => { });
 
             return CommandResponse.Success("Requesting to launch fighters...");
+        }
+
+        private CommandResponse HandleToggleEnergyShieldsCommand(ICommand sender, CommandInput input)
+        {
+            this.driven.Ping.Create(NetDeliveryMethod.ReliableUnordered, 0).Write(VHR.Network.Pings.Ship.ToggleEnergyShieldsRequest, m => { });
+
+            return CommandResponse.Success("Requesting to toggle energy shields...");
         }
         #endregion
 

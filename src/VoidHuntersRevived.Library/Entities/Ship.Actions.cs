@@ -33,21 +33,5 @@ namespace VoidHuntersRevived.Library.Entities
             this.Actions = null;
         }
         #endregion
-
-        #region Helper Methods
-        /// <summary>
-        /// Helper method to automatically launch fighters. 
-        /// The handling is done is a custom helper class.
-        /// </summary>
-        public void TryLaunchFighters(GameTime gameTime)
-            => this.Actions.TryInvoke(VHR.Actions.Ship.TryLaunchDrones, gameTime);
-
-        /// <summary>
-        /// Helper method to automatically toggle shield states. 
-        /// The handling is done is a custom helper class.
-        /// </summary>
-        public void TryToggleEnergyShields(GameTime gameTime)
-            => this.Actions.TryInvoke(VHR.Actions.Ship.TryLaunchDrones, gameTime);
-        #endregion
     }
 }

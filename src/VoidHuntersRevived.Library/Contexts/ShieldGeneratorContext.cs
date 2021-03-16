@@ -23,10 +23,16 @@ namespace VoidHuntersRevived.Library.Contexts
         #region Public Properties
         public override string ShipPartServiceConfiguration => VHR.Entities.ShieldGenerator;
 
-        [ShipPartContextProperty("Radius", "The amount of damage applied by the laser beam per second.", ShipPartContextPropertyType.Single)]
+        /// <summary>
+        /// The size of the shield.
+        /// </summary>
+        [ShipPartContextProperty("Radius", "The size of the shield.", ShipPartContextPropertyType.Single)]
         public Single Radius { get; set; } = 10;
 
-        [ShipPartContextProperty("Range", "The amount of damage applied by the laser beam per second.", ShipPartContextPropertyType.Radian)]
+        /// <summary>
+        /// The 'FOV' of the shield.
+        /// </summary>
+        [ShipPartContextProperty("Range", "The 'FOV' of the shield.", ShipPartContextPropertyType.Radian)]
         public Single Range { get; set; } = MathHelper.ToRadians(90);
         #endregion
 

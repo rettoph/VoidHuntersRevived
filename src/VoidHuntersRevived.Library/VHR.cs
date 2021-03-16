@@ -48,16 +48,28 @@ namespace VoidHuntersRevived.Library
                     public static readonly NetDeliveryMethod NetDeliveryMethod = NetDeliveryMethod.ReliableUnordered;
                 }
 
-                public static class ShipDirtyUpdate
+                public static class ShipPart
                 {
-                    public static readonly Int32 SequenceChannel = 10;
-                    public static readonly NetDeliveryMethod NetDeliveryMethod = NetDeliveryMethod.ReliableUnordered;
+                    public static class UpdateHealthPing
+                    {
+                        public static readonly Int32 SequenceChannel = 15;
+                        public static readonly NetDeliveryMethod NetDeliveryMethod = NetDeliveryMethod.ReliableOrdered;
+                    }
                 }
 
-                public static class ShipPartUpdateHealthPing
+                public static class Ship
                 {
-                    public static readonly Int32 SequenceChannel = 15;
-                    public static readonly NetDeliveryMethod NetDeliveryMethod = NetDeliveryMethod.ReliableOrdered;
+                    public static class DirtyUpdate
+                    {
+                        public static readonly Int32 SequenceChannel = 10;
+                        public static readonly NetDeliveryMethod NetDeliveryMethod = NetDeliveryMethod.ReliableUnordered;
+                    }
+
+                    public static class ActionPing
+                    {
+                        public static readonly Int32 SequenceChannel = 0;
+                        public static readonly NetDeliveryMethod NetDeliveryMethod = NetDeliveryMethod.ReliableUnordered;
+                    }
                 }
             }
 
@@ -86,6 +98,8 @@ namespace VoidHuntersRevived.Library
 
                 public static class Ship
                 {
+                    public static readonly UInt32 Action = "ship:action".xxHash();
+
                     public static readonly UInt32 UpdateTargetRequest = "ship:update:target:request".xxHash();
 
                     public static readonly UInt32 UpdateDirection = "ship:update:direction".xxHash();
@@ -94,8 +108,11 @@ namespace VoidHuntersRevived.Library
                     public static readonly UInt32 UpdateFiring = "ship:update:firing".xxHash();
                     public static readonly UInt32 UpdateFiringRequest = "ship:update:firing:request".xxHash();
 
-                    public static readonly UInt32 LaunchFighters = "ship:launch-fighters:request".xxHash();
-                    public static readonly UInt32 LaunchFightersRequest = "ship:launch-fighters:request".xxHash();
+                    public static readonly UInt32 LaunchDrones = "ship:launch-drones".xxHash();
+                    public static readonly UInt32 LaunchDronesRequest = "ship:launch-drones:request".xxHash();
+
+                    public static readonly UInt32 ToggleEnergyShields = "ship:toggle-energy-shields".xxHash();
+                    public static readonly UInt32 ToggleEnergyShieldsRequest = "ship:toggle-energy-shields:request".xxHash();
 
                     public static readonly UInt32 UpdateBridge = "ship:update:bridge".xxHash();
 

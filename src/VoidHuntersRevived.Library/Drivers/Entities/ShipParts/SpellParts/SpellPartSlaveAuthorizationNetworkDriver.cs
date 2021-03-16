@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts.SpellParts
 
         #region Event Handlers
         private void ReadCast(NetIncomingMessage obj)
-            => _synchronizer.Enqueue(gt => this.driven.TryCast(gt, true));
+            => _synchronizer.Enqueue(gt => this.driven?.TryCast(gt, true));
         #endregion
     }
 }

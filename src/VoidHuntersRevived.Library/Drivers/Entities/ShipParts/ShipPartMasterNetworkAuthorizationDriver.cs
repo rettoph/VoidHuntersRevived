@@ -84,7 +84,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts
                     // Broadcast a health update ONLY if the ship part is not a root piece.
                     // This is done in an effort to minimize the message count, as the root piece
                     // Already recieves packet updates.
-                    this.driven.Ping.Create(VHR.Network.MessageData.ShipPartUpdateHealthPing.NetDeliveryMethod, VHR.Network.MessageData.ShipPartUpdateHealthPing.SequenceChannel).Write(
+                    this.driven.Ping.Create(VHR.Network.MessageData.ShipPart.UpdateHealthPing.NetDeliveryMethod, VHR.Network.MessageData.ShipPart.UpdateHealthPing.SequenceChannel).Write(
                         VHR.Network.Pings.ShipPart.UpdateHealth,
                         this.driven.WriteHealth);
 
