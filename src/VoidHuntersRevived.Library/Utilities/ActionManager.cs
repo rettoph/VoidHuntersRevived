@@ -40,7 +40,8 @@ namespace VoidHuntersRevived.Library.Utilities
         /// <param name="handle"></param>
         /// <param name="gameTime"></param>
         /// <param name="data"></param>
-        public Boolean TryInvoke(UInt32 handle, GameTime gameTime, Byte data = default)
+        /// <param name="force"></param>
+        public Boolean TryInvoke(UInt32 handle, GameTime gameTime, Byte data = default, Boolean force = false)
         {
             if (_handlers.ContainsKey(handle))
                 return _handlers[handle].Validate(_sender, gameTime, data, true);

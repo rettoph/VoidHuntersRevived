@@ -38,9 +38,16 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         #region Frame Methods
         private void PostUpdate(GameTime gameTime)
         {
+            this.driven.Mana = _manaTarget;
+
             this.driven.Mana = Math.Min(
                 this.driven.MaxMana, 
-                MathHelper.Lerp(this.driven.Mana, _manaTarget, VHR.Utilities.SlaveLerpPerSecond * (Single)gameTime.ElapsedGameTime.TotalSeconds));
+                Math.Max(
+                    1, 
+                    MathHelper.Lerp(
+                        this.driven.Mana, 
+                        _manaTarget, 
+                        VHR.Utilities.SlaveLerpPerSecond * (Single)gameTime.ElapsedGameTime.TotalSeconds)));
         }
         #endregion
 

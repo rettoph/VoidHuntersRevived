@@ -15,6 +15,8 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             base.InitializeRemote(driven, provider);
 
+            this.driven.OnManaChanged += this.HandleManaChanged;
+
             this.driven.MessageHandlers[MessageType.Update].OnWrite += this.WriteUpdate;
         }
 
@@ -31,6 +33,23 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
         {
             om.Write(this.driven.Mana);
             om.Write(this.driven.Charging);
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandleManaChanged(SpellCaster sender, float old, float value)
+        {
+            if (this.driven.Mana >= this.driven.MaxMana)
+            {
+                this.driven.Mana = this.driven.MaxMana;
+                this.driven.Charging = false;
+            }
+
+            if (this.driven.Mana <= 0)
+            {
+                this.driven.Charging = true;
+                this.driven.Mana = 0;
+            }
         }
         #endregion
     }

@@ -70,12 +70,6 @@ namespace VoidHuntersRevived.Library.Entities
             if (this.Mana < this.MaxMana || this.Charging)
             {
                 this.Mana += this.ManaPerSecond * (Single)gameTime.ElapsedGameTime.TotalSeconds;
-
-                if (this.Mana > this.MaxMana)
-                {
-                    this.Mana = this.MaxMana;
-                    this.Charging = false;
-                }
             }
         }
         #endregion
@@ -100,12 +94,6 @@ namespace VoidHuntersRevived.Library.Entities
             if(this.CanConsumeMana(mana))
             {
                 this.Mana -= mana;
-
-                if(this.Mana <= 0)
-                {
-                    this.Charging = true;
-                    this.Mana = 0;
-                }
 
                 return true;
             }

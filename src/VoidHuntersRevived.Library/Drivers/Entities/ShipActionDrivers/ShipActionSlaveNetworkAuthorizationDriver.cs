@@ -44,7 +44,8 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipActionDrivers
 
             _synchronizer.Enqueue(gt =>
             {
-                this.driven.Actions.TryInvoke(actionId, gt, data);
+                _logger.Info($"ConSpellPartData Recieved: {data}");
+                this.driven?.Actions.TryInvoke(actionId, gt, data);
             });
         }
         #endregion
