@@ -101,11 +101,11 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipActionDrivers
             {
                 if (value)
                 {
-                    _synchronizer.Enqueue(gt => this.driven.Actions.TryInvoke(this.TryActionId, gt, (Byte)ContinuousSpellPartTargetState.Inactive));
+                    _synchronizer.Enqueue(gt => this.driven?.Actions.TryInvoke(this.TryActionId, gt, (Byte)ContinuousSpellPartTargetState.Inactive));
                 }
                 else
                 {
-                    _synchronizer.Enqueue(gt => this.driven.Actions.TryInvoke(this.TryActionId, gt, (Byte)ContinuousSpellPartTargetState.Active));
+                    _synchronizer.Enqueue(gt => this.driven?.Actions.TryInvoke(this.TryActionId, gt, (Byte)ContinuousSpellPartTargetState.Active));
                 }
             }
         }
