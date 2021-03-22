@@ -16,12 +16,13 @@ namespace VoidHuntersRevived.Library.Extensions.Services
         public static Spell TryCastEnergyShieldSpell(
             this SpellCastService spells,
             SpellCaster caster,
-            Single manaCost,
+            Boolean force,
             ShieldGenerator shieldGenerator)
                 => spells.TryCast(
                     VHR.SpellCasts.EnergyShieldSpellCast,
                     caster,
-                    manaCost,
+                    0, // This is a 0 mana cost spell,
+                    force,
                     shieldGenerator);
         #endregion
 
@@ -30,6 +31,7 @@ namespace VoidHuntersRevived.Library.Extensions.Services
             this SpellCastService spells,
             SpellCaster caster,
             Single manaCost,
+            Boolean force,
             Weapon weapon,
             Single maxAge,
             Single damagePerSecond,
@@ -38,6 +40,7 @@ namespace VoidHuntersRevived.Library.Extensions.Services
                     VHR.SpellCasts.LaserBeamSpellCast,
                     caster,
                     manaCost,
+                    force,
                     weapon,
                     maxAge,
                     damagePerSecond,
@@ -49,6 +52,7 @@ namespace VoidHuntersRevived.Library.Extensions.Services
             this SpellCastService spells,
             SpellCaster caster,
             Single manaCost,
+            Boolean force,
             Weapon weapon,
             Single maxAge,
             Single damage,
@@ -59,6 +63,7 @@ namespace VoidHuntersRevived.Library.Extensions.Services
                     VHR.SpellCasts.BulletSpellCast,
                     caster,
                     manaCost,
+                    force,
                     weapon,
                     maxAge,
                     damage,
@@ -72,6 +77,7 @@ namespace VoidHuntersRevived.Library.Extensions.Services
             this SpellCastService spells, 
             SpellCaster caster,
             Single manaCost,
+            Boolean force,
             Vector2 position, 
             Single rotation, 
             Single maxAge, 
@@ -81,6 +87,7 @@ namespace VoidHuntersRevived.Library.Extensions.Services
                     VHR.SpellCasts.LaunchDronesSpellCast,
                     caster,
                     manaCost,
+                    force,
                     position,
                     rotation,
                     maxAge,

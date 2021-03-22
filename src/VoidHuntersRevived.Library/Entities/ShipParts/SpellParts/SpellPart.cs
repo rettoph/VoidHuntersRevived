@@ -85,7 +85,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts
 
                     this.OnPreCast?.Invoke(this, gameTime);
 
-                    var spell = this.Cast(gameTime);
+                    var spell = this.Cast(gameTime, force);
 
                     this.OnCast?.Invoke(this, gameTime);
                     this.OnPostCast?.Invoke(this, gameTime);
@@ -97,7 +97,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts
             return default;
         }
 
-        protected abstract Spell Cast(GameTime gameTime);
+        protected abstract Spell Cast(GameTime gameTime, Boolean force = false);
 
         public override void SetContext(ShipPartContext context)
         {

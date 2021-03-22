@@ -41,8 +41,8 @@ namespace VoidHuntersRevived.Library.Services
         #endregion
 
         #region API Methods
-        public Spell TryCast(UInt32 spellCastId, SpellCaster caster, Single manaCost, params Object[] args)
-            => _provider.GetService<SpellCast>(spellCastId).TryCast(caster, manaCost, args);
+        public Spell TryCast(UInt32 spellCastId, SpellCaster caster, Single manaCost, Boolean force, params Object[] args)
+            => _provider.GetService<SpellCast>(spellCastId).TryCast(caster, manaCost, force, args);
         #endregion
     }
 }

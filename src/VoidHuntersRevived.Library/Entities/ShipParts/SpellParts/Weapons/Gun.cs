@@ -32,10 +32,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts.Weapons
 
         #region SpellCaster Implementation
         /// <inheritdoc />
-        protected override Spell Cast(GameTime gameTime)
+        protected override Spell Cast(GameTime gameTime, Boolean force = false)
             => this.spells.TryCastBulletSpell(
                 caster: this.Chain.Ship,
                 manaCost: this.Context.SpellManaCost,
+                force: force,
                 weapon: this,
                 maxAge: this.Context.MaximumAmmunitionAge,
                 damage: this.Context.BulletDamage,

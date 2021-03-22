@@ -24,10 +24,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts
             this.Context = context as DroneBayContext;
         }
 
-        protected override Spell Cast(GameTime gameTime)
+        protected override Spell Cast(GameTime gameTime, Boolean force = false)
             => this.spells.TryCastLaunchDroneSpell(
                     caster: this.Chain.Ship,
                     manaCost: this.Context.SpellManaCost,
+                    force: force,
                     position: this.Position,
                     rotation: this.Rotation + MathHelper.Pi,
                     maxAge: this.Context.DroneMaxAge,

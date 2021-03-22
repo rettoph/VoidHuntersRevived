@@ -48,6 +48,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddFactory<TrailLayer>(p => new TrailLayer());
             services.AddFactory<ExplosionLayer>(p => new ExplosionLayer());
             services.AddFactory<ExplosionService>(p => new ExplosionService());
+            services.AddFactory<PingService>(p => new PingService());
 
             // Register services...
             services.AddScoped<Settings>();
@@ -60,6 +61,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.AddTransient<TrailLayer>();
             services.AddTransient<ExplosionLayer>();
             services.AddScoped<ExplosionService>();
+            services.AddScoped<PingService>();
 
 
             // Register Scenes...

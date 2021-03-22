@@ -61,11 +61,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.SpellParts
 
         #region SpellPart Implementation
         /// <inheritdoc />
-        protected override Spell Cast(GameTime gameTime)
+        protected override Spell Cast(GameTime gameTime, Boolean force = false)
             => this.spells.TryCastEnergyShieldSpell(
-                    this.Chain.Ship,
-                    0f, // This is a 0 mana spell
-                    this);
+                    caster: this.Chain.Ship,
+                    force: force,
+                    shieldGenerator: this);
         #endregion
 
         #region Event Handlers

@@ -82,7 +82,7 @@ namespace VoidHuntersRevived.Library.Entities
         /// <param name="mana"></param>
         /// <returns></returns>
         public Boolean CanConsumeMana(Single mana)
-            => !this.Charging;
+            => !this.Charging || mana == 0;
 
         /// <summary>
         /// Attempt to consume the requested amount of mana.

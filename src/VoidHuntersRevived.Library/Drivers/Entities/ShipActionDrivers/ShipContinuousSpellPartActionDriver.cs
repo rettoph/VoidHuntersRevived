@@ -17,6 +17,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipActionDrivers
         #region Private Fields
         private Boolean _active;
         private Synchronizer _synchronizer;
+        private ILog _log;
         #endregion
 
         #region Protected Properties
@@ -30,6 +31,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipActionDrivers
             base.Initialize(driven, provider);
 
             provider.Service(out _synchronizer);
+            provider.Service(out _log);
 
             _active = this.DefaultActiveState;
 
@@ -60,11 +62,11 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipActionDrivers
 
             switch (targetState)
             {
-                case ContinuousSpellPartTargetState.Active:
-                    target = true;
-                    break;
                 case ContinuousSpellPartTargetState.Inactive:
                     target = false;
+                    break;
+                case ContinuousSpellPartTargetState.Active:
+                    target = true;
                     break;
                 case ContinuousSpellPartTargetState.Toggle:
                     target = !_active;

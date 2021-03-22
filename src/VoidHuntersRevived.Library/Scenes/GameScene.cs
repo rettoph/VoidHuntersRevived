@@ -17,6 +17,7 @@ using Guppy.Extensions.System;
 using Guppy.Enums;
 using Guppy.Utilities;
 using Guppy.Interfaces;
+using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library.Scenes
 {
@@ -27,6 +28,7 @@ namespace VoidHuntersRevived.Library.Scenes
         private Action<WorldEntity> _onWorldActions;
         private ActionTimer _dirtyEntityCleanTimer;
         private NetworkEntity _entity;
+        private PingService _pings;
         #endregion
 
         #region Protected Attributes
@@ -55,6 +57,8 @@ namespace VoidHuntersRevived.Library.Scenes
             this.settings = provider.GetService<Settings>();
 
             this.group = provider.GetService<Peer>()?.Groups?.GetOrCreateById(Guid.Empty);
+
+            provider.Service(out _pings);
 
             #region Layers
             // Create some default layers.
@@ -126,6 +130,13 @@ namespace VoidHuntersRevived.Library.Scenes
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
+        }
+
+        protected override void PostUpdate(GameTime gameTime)
+        {
+            base.PostUpdate(gameTime);
+
+            _pings.TryUpdate(gameTime);
         }
 
         private void UpdateRemote(GameTime gameTime)

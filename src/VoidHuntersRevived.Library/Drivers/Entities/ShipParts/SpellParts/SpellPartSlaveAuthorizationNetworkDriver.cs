@@ -1,6 +1,7 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Utilities;
 using Lidgren.Network;
+using log4net;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts.SpellParts
     {
         #region Private Fields
         private Synchronizer _synchronizer;
+        private ILog _log;
         #endregion
 
         #region Lifecycle Methods
@@ -22,6 +24,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts.SpellParts
             base.InitializeRemote(driven, provider);
 
             provider.Service(out _synchronizer);
+            provider.Service(out _log);
 
             this.driven.Ping.Set(VHR.Network.Pings.SpellCasterPart.Cast, this.ReadCast);
         }
@@ -38,7 +41,17 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.ShipParts.SpellParts
 
         #region Event Handlers
         private void ReadCast(NetIncomingMessage obj)
-            => _synchronizer.Enqueue(gt => this.driven?.TryCast(gt, true));
+        {
+            
+
+            _synchronizer.Enqueue(gt =>
+            {
+                if (this.driven is ShieldGenerator)
+                    _log.Info("Casting Shield");
+
+                this.driven?.TryCast(gt, true);
+            });
+        }
         #endregion
     }
 }

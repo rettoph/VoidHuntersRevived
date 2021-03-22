@@ -39,9 +39,9 @@ namespace VoidHuntersRevived.Library.Services.SpellCasts
         #endregion
 
         #region API Methods
-        public virtual Spell TryCast(SpellCaster caster, Single manaCost, params Object[] args)
+        public virtual Spell TryCast(SpellCaster caster, Single manaCost, Boolean force, params Object[] args)
         {
-            if(this.CanCast(caster, manaCost, args))
+            if(this.CanCast(caster, manaCost, args) || force)
                 return this.Cast(caster, manaCost, args);
 
             // No spell to be returned.
