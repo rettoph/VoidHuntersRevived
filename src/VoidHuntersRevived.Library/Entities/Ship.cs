@@ -14,6 +14,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts.SpellParts.Weapons;
 using Guppy.Interfaces;
 using Guppy.Enums;
 using VoidHuntersRevived.Library.Services;
+using tainicom.Aether.Physics2D.Dynamics;
 
 namespace VoidHuntersRevived.Library.Entities
 {
@@ -110,7 +111,7 @@ namespace VoidHuntersRevived.Library.Entities
         /// when at full health. This is gnerally
         /// based on the team value.
         /// </summary>
-        public Color Color => Color.Cyan;
+        public Color Color => this.Player?.Team?.Color ?? Color.White;
 
         /// <summary>
         /// The current Ship's name, if any. This is automatically
@@ -119,6 +120,9 @@ namespace VoidHuntersRevived.Library.Entities
         /// invocations.
         /// </summary>
         public String Title { get; set; } = "Unnamed Ship";
+
+        public Category ShipCollisionCategories { get; set; }
+        public Category ShipCollidesWith { get; set; }
         #endregion
 
         #region Events
@@ -176,7 +180,7 @@ namespace VoidHuntersRevived.Library.Entities
             _weapons = new List<Weapon>();
 
             // Load required services...
-            provider.Service(out _controller);
+            provider.Service(out _controller, (sc, p, c) => sc.Ship = this);
             provider.Service(out _entities);
             provider.Service(out _shipParts);
 
@@ -187,6 +191,9 @@ namespace VoidHuntersRevived.Library.Entities
             this.TractorBeam = provider.GetService<EntityList>().Create<TractorBeam>((t, p, c) => t.Ship = this);
 
             this.LayerGroup = VHR.LayersContexts.Ship.Group.GetValue();
+
+            this.ShipCollisionCategories = VHR.Categories.ActiveCollisionCategories;
+            this.ShipCollidesWith = VHR.Categories.ActiveCollidesWith;
         }
 
         protected override void Release()

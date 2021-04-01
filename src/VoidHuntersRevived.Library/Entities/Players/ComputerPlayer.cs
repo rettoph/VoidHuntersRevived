@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
             if (this.Ship.Bridge != default(ShipPart))
             {
-                if(_target?.Ship?.Bridge == default || Vector2.Distance(this.Ship.Bridge.WorldCenter, _target.Ship.Bridge.WorldCenter) > 50)
+                if(_target?.Ship?.Bridge == default || Vector2.Distance(this.Ship.Bridge.WorldCenter, _target.Ship.Bridge.WorldCenter) > 100)
                     _target = this.players
                         .Where(
                             p => p.Id != this.Id && p.Ship?.Bridge != default(ShipPart) 
@@ -76,12 +76,12 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
                     // Change the velocity
                     var distace = Vector2.Distance(this.Ship.Bridge.WorldCenter, _target.Ship.Bridge.WorldCenter);
-                    if (distace > 25 && Math.Abs(targetRotationDifference) < MathHelper.PiOver4)
+                    if (distace > 35 && Math.Abs(targetRotationDifference) < MathHelper.PiOver4)
                     {
                         this.Ship.TrySetDirection(Ship.Direction.Forward, true);
                         this.Ship.TrySetDirection(Ship.Direction.Backward, false);
                     }
-                    else if (distace < 20 && Math.Abs(targetRotationDifference) < MathHelper.PiOver4)
+                    else if (distace < 30 && Math.Abs(targetRotationDifference) < MathHelper.PiOver4)
                     {
                         this.Ship.TrySetDirection(Ship.Direction.Forward, false);
                         this.Ship.TrySetDirection(Ship.Direction.Backward, true);

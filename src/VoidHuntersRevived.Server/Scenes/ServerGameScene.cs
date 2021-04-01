@@ -16,6 +16,7 @@ using System.IO;
 using Guppy.Utilities;
 using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library;
+using VoidHuntersRevived.Library.Lists;
 
 namespace VoidHuntersRevived.Server.Scenes
 {
@@ -24,6 +25,7 @@ namespace VoidHuntersRevived.Server.Scenes
         #region Private Fields
         private Synchronizer _synchronizer;
         private ShipPartService _shipParts;
+        private TeamList _teams;
         #endregion
 
         #region Lifecycle Methods
@@ -33,6 +35,7 @@ namespace VoidHuntersRevived.Server.Scenes
 
             provider.Service(out _synchronizer);
             provider.Service(out _shipParts);
+            provider.Service(out _teams);
 
             this.group.Users.OnAdded += this.HandleUserJoined;
         }
@@ -50,8 +53,25 @@ namespace VoidHuntersRevived.Server.Scenes
             });
 
             var rand = new Random(1);
-            
-            for(Int32 i=0; i < 0; i++)
+
+            _teams.Create((teams, p, c) =>
+            {
+                teams.Color = new Color(0, 255, 0);
+            });
+            _teams.Create((teams, p, c) =>
+            {
+                teams.Color = new Color(255, 255, 0);
+            });
+            _teams.Create((teams, p, c) =>
+            {
+                teams.Color = new Color(255, 0, 255);
+            });
+            _teams.Create((teams, p, c) =>
+            {
+                teams.Color = new Color(0, 255, 255);
+            });
+
+            for (Int32 i=0; i < 0; i++)
             {
                 this.Entities.Create<ComputerPlayer>((player, p, d) =>
                 {
@@ -176,6 +196,7 @@ namespace VoidHuntersRevived.Server.Scenes
                     this.Entities.Create<UserPlayer>((player, p, d) =>
                     {
                         player.User = user;
+                        player.Team = _teams.GetNextTeam();
                         player.Ship = this.Entities.Create<Ship>((ship, p2, c) =>
                         {
                             var rand = new Random();
@@ -185,12 +206,12 @@ namespace VoidHuntersRevived.Server.Scenes
                             // chassis.Rotation = rand.NextSingle(-MathHelper.Pi, MathHelper.Pi);
                             // ship.Bridge = chassis;
 
-                            //var ships = Directory.GetFiles(VHR.Directories.Resources.Ships, "*.vh");
-                            //using (var fileStream = File.OpenRead(ships[rand.Next(ships.Length)]))
-                            //    ship.Import(fileStream, rand.NextVector2(0, world.Size.X, 0, world.Size.Y));
-
-                           using (var fileStream = File.OpenRead($"{VHR.Directories.Resources.Ships}/mothership.vh"))
+                           var ships = Directory.GetFiles(VHR.Directories.Resources.Ships, "*.vh");
+                           using (var fileStream = File.OpenRead(ships[rand.Next(ships.Length)]))
                                ship.Import(fileStream, rand.NextVector2(0, world.Size.X, 0, world.Size.Y));
+
+                           // using (var fileStream = File.OpenRead($"{VHR.Directories.Resources.Ships}/mothership.vh"))
+                           //     ship.Import(fileStream, rand.NextVector2(0, world.Size.X, 0, world.Size.Y));
                         });
                     });
                 });

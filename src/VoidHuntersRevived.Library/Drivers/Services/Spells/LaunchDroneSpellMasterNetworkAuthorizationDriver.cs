@@ -48,13 +48,16 @@ namespace VoidHuntersRevived.Library.Drivers.Services.Spells
                     player.MaxAge = this.driven.MaxAge;
                     player.Team = this.driven.Team;
 
+                    ship.ShipCollidesWith = VHR.Categories.FighterCollidesWith;
+                    ship.ShipCollidesWith = VHR.Categories.FighterCollisionCategories;
+
                     using (var fileStream = File.OpenRead($"{VHR.Directories.Resources.Ships}/{this.driven.Type}.vh"))
                         ship.Import(fileStream, this.driven.Position, this.driven.Rotation);
 
                     ship.Bridge.ApplyForce(new Vector2(200, 0).RotateTo(this.driven.Rotation), this.driven.Position);
 
-                    ship.Bridge.CollidesWith = VHR.Categories.PassiveCollidesWith;
-                    ship.Bridge.CollisionCategories = VHR.Categories.PassiveCollisionCategories;
+                    // ship.Bridge.CollidesWith = VHR.Categories.PassiveCollidesWith;
+                    // ship.Bridge.CollisionCategories = VHR.Categories.PassiveCollisionCategories;
                 });
             });
 

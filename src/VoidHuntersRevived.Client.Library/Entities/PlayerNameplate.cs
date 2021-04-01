@@ -1,6 +1,7 @@
 ﻿using Guppy;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Extensions.Microsoft.Xna.Framework.Graphics;
 using Guppy.Extensions.Utilities;
 using Guppy.Utilities;
 using Guppy.Utilities.Cameras;
@@ -27,6 +28,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
         private SpriteFont _font;
         private Texture2D _foreground;
         private Texture2D _background;
+        private Texture2D _pixel;
 
         private Vector2 _textureOffset;
         private Vector2 _nameOffset;
@@ -53,6 +55,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
             _font = provider.GetContent<SpriteFont>("font:player:nameplate:1");
             _foreground = provider.GetContent<Texture2D>("sprite:player-nameplate:foreground");
             _background = provider.GetContent<Texture2D>("sprite:player-nameplate:background");
+            _pixel = provider.GetService<GraphicsDevice>().BuildPixel(new Color(0, 0, 0, 100));
 
             this.LayerGroup = VHR.LayersContexts.HeadsUpDisplay.Group.GetValue();
         }
@@ -103,7 +106,7 @@ namespace VoidHuntersRevived.Client.Library.Entities
         {
             base.Draw(gameTime);
 
-            if (this.player.Ship?.Bridge == default)
+            if (this.player.Ship?.Bridge == default || !this.player.DisplayNameplate)
                 return;
 
             _spriteBatch.Draw(_background, _position - _textureOffset, this.player.Ship.Color);
@@ -133,6 +136,9 @@ namespace VoidHuntersRevived.Client.Library.Entities
             _primitiveBatch.TryFlushTriangleVertices(true);
             _primitiveBatch.TryFlushLineVertices(true);
 
+            var position = _position - _nameOffset;
+            var nameSize = _font.MeasureString(this.player.Name);
+            _spriteBatch.Draw(_pixel, new Rectangle((Int32)position.X - 5, (Int32)position.Y - 2, (Int32)nameSize.X + 10, (Int32)nameSize.Y + 4), Color.White);
             _spriteBatch.DrawString(_font, this.player.Name, _position - _nameOffset, this.player.Ship.Color);
             _spriteBatch.Draw(_foreground, _position - _textureOffset, this.player.Ship.Color);
         }

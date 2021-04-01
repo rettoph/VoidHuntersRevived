@@ -82,7 +82,7 @@ namespace VoidHuntersRevived.Library.Extensions.Services
             Single rotation, 
             Single maxAge, 
             String type, 
-            Guid team)
+            Team team)
                 => spells.TryCast(
                     VHR.SpellCasts.LaunchDronesSpellCast,
                     caster,

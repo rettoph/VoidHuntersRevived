@@ -20,6 +20,15 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
         /// <inheritdoc />
         public override bool DestroyOnDeath => true;
+
+        public override Boolean DisplayNameplate => false;
+        #endregion
+
+        #region Lifecycle Methods
+        protected override void Initialize(ServiceProvider provider)
+        {
+            base.Initialize(provider);
+        }
         #endregion
 
         #region Frame Methods

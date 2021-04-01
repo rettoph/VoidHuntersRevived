@@ -95,7 +95,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// <returns></returns>
         private bool ValidateAmmunitionCollision(IAmmunitionSpellTarget sender, AmmunitionSpell.CollisionData data)
         {
-            return this.Chain.Ship != default && data.Ammunition.Weapon != this && this.Health > 0;
+            return this.Chain.Ship != default && data.Ammunition.Weapon != this && this.Health > 0 && data.Ammunition.Weapon.Chain.Ship?.Player?.Team != this.Chain.Ship?.Player?.Team;
         }
         #endregion
     }

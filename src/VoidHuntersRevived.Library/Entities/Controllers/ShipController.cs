@@ -29,6 +29,8 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
 
         /// <inheritdoc />
         public new NetDeliveryMethod DirtyUpdateNetDeliveryMethod => VHR.Network.MessageData.Ship.DirtyUpdate.NetDeliveryMethod;
+
+        public Ship Ship { get; set; }
         #endregion
 
         #region Lifecycle Methods
@@ -83,10 +85,10 @@ namespace VoidHuntersRevived.Library.Entities.Controllers
             foreach(ShipPart shipPart in chain.Root.Items())
             {
                 if(shipPart.CollisionCategories == VHR.Categories.PassiveCollisionCategories)
-                    shipPart.CollisionCategories = VHR.Categories.ActiveCollisionCategories;
+                    shipPart.CollisionCategories = this.Ship.ShipCollisionCategories;
 
-                if (shipPart.CollisionCategories == VHR.Categories.PassiveCollidesWith)
-                    shipPart.CollidesWith = VHR.Categories.ActiveCollidesWith;
+                if (shipPart.CollidesWith == VHR.Categories.PassiveCollidesWith)
+                    shipPart.CollidesWith = this.Ship.ShipCollidesWith;
             }
         }
         #endregion

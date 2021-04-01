@@ -21,6 +21,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Extensions.Entities;
 using VoidHuntersRevived.Library.Extensions.Lidgren.Network;
 using VoidHuntersRevived.Library.Extensions.System;
+using VoidHuntersRevived.Library.Lists;
 
 namespace VoidHuntersRevived.Library.Drivers.Entities.Players
 {
@@ -31,6 +32,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
         private NetConnection _userConnection;
         private WorldEntity _world;
         private Synchronizer _synchronizer;
+        private TeamList _teams;
         #endregion
 
         #region Lifecycle Methods
@@ -41,6 +43,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
             provider.Service(out _entities);
             provider.Service(out _world);
             provider.Service(out _synchronizer);
+            provider.Service(out _teams);
 
             _userConnection = provider.GetService<UserNetConnectionDictionary>().Connections[this.driven.User];
 
@@ -63,6 +66,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
             _entities = null;
             _world = null;
             _userConnection = null;
+            _teams = null;
 
             this.driven.Ping.ValidateRead -= this.ValidateReadAction;
             this.driven.Ping.Remove(VHR.Network.Pings.Ship.UpdateTargetRequest);
@@ -108,6 +112,7 @@ namespace VoidHuntersRevived.Library.Drivers.Entities.Players
 
             _entities.Create<ComputerPlayer>((player, p, d) =>
             {
+                player.Team = _teams.GetNextTeam();
                 player.Ship = _entities.Create<Ship>((ship, p2, c) =>
                 {
                     ship.Import(

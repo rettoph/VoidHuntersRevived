@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Library.Services.SpellCasts
                 spell.Rotation = (Single)args[1];
                 spell.MaxAge = (Single)args[2];
                 spell.Type = (String)args[3];
-                spell.Team = (Guid)args[4];
+                spell.Team = (Team)args[4];
             });
         }
     }

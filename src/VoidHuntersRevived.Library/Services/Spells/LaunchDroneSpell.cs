@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Library.Entities;
 
 namespace VoidHuntersRevived.Library.Services.Spells
 {
@@ -16,7 +17,7 @@ namespace VoidHuntersRevived.Library.Services.Spells
         public Single Rotation { get; internal set; }
         public Single MaxAge { get; internal set; }
         public String Type { get; internal set; }
-        public Guid Team { get; internal set; }
+        public Team Team { get; internal set; }
         #endregion
     }
 }
