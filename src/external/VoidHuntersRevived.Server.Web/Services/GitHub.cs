@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Server.Web.Services
         #endregion
 
         #region API Methods
-        public async Task<Release> GetLatest()
+        public async Task<Release> UpdateLatest()
         {
             var releases = await _client.Repository.Release.GetAll(WebConstants.ProjectOwner, WebConstants.ProjectName);
             var truth = releases.Aggregate((r1, r2) => r1.CreatedAt > r2.CreatedAt ? r1 : r2);
@@ -55,6 +55,12 @@ namespace VoidHuntersRevived.Server.Web.Services
                 _context.Release.Add(latest);
                 _context.SaveChanges();
             }
+
+            return latest;
+        }
+        public async Task<Release> GetLatest()
+        {
+            var latest = _context.Release.Include(r => r.Assets).OrderByDescending(p => p.Id).FirstOrDefault();
 
             return latest;
         }

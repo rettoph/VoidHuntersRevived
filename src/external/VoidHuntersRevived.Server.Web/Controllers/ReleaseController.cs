@@ -27,5 +27,11 @@ namespace VoidHuntersRevived.Server.Web.Controllers
         {
             return Json(await _github.GetLatest());
         }
+
+        [Route("update")]
+        public async Task<IActionResult> Update()
+        {
+            return Json(await _github.UpdateLatest());
+        }
     }
 }
