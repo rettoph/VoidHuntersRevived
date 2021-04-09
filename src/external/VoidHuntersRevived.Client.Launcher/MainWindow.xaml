@@ -1,0 +1,19 @@
+﻿<Window x:Class="VoidHuntersRevived.Client.Launcher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VoidHuntersRevived.Client.Launcher"
+        mc:Ignorable="d"
+        Title="VoidHunters Revived Launcher" Height="90" Width="300"
+        ResizeMode="NoResize">
+    <Grid Background="Black">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="Label" HorizontalAlignment="Center" Text="..." TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White" FontSize="14" FontFamily="Arial"/>
+        <ProgressBar x:Name="Progress" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10,0,10,10" Maximum="1"/>
+
+    </Grid>
+</Window>
