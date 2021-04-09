@@ -87,7 +87,7 @@ namespace VoidHuntersRevived.Client.Launcher
             {
                 this.SetStatus(LauncherStatus.Launching);
             }
-            else if(_release.Version == response.Data.Version)
+            else if(_release?.Version == response.Data.Version)
             {
                 this.SetStatus(LauncherStatus.Launching);
             }
