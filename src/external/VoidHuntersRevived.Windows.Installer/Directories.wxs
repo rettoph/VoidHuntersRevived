@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+
+      <!-- Start Menu Directory -->
+      <Directory Id="ProgramMenuFolder">
+          
+      </Directory>
+      
+      <!-- Program Files Folder -->
+      <?if $(var.Platform)=x64?>
+        <Directory Id="ProgramFiles64Folder">
+          <Directory Id="INSTALLFOLDER" Name="VoidHuntersRevived" />
+        </Directory>
+      <?else?>
+        <Directory Id="ProgramFilesFolder">
+          <Directory Id="INSTALLFOLDER" Name="VoidHuntersRevived" />
+        </Directory>
+      <?endif?>
+
+      <!-- Cache Directory -->
+      <Directory Id="CommonAppDataFolder">
+        <Directory Id="AppCacheFolder" Name="VoidHuntersRevived" />
+      </Directory>
+    </Directory>
+  </Fragment>
+  
+</Wix>

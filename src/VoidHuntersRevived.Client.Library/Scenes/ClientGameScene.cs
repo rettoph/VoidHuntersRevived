@@ -7,10 +7,10 @@ using Guppy.UI.Layers;
 using Guppy.LayerGroups;
 using Guppy.DependencyInjection;
 using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Client.Library.Services;
+using VoidHuntersRevived.Windows.Library.Services;
 using VoidHuntersRevived.Library.Layers;
 
-namespace VoidHuntersRevived.Client.Library.Scenes
+namespace VoidHuntersRevived.Windows.Library.Scenes
 {
     public class ClientGameScene : GraphicsGameScene
     {

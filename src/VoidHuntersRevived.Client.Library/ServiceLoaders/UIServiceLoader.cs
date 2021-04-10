@@ -11,10 +11,10 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Client.Library.UI;
-using VoidHuntersRevived.Client.Library.UI.Pages;
+using VoidHuntersRevived.Windows.Library.UI;
+using VoidHuntersRevived.Windows.Library.UI.Pages;
 
-namespace VoidHuntersRevived.Client.Library.ServiceLoaders
+namespace VoidHuntersRevived.Windows.Library.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class UIServiceLoader : IServiceLoader

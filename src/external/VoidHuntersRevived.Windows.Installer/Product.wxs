@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  
+  <!-- Give product id per platform -->
+  <?if $(var.Platform)=x64?>
+		<?define ProductCode = "{F5AF4022-BCA5-4B9A-B875-3D70F99CD5D8}"?>
+  <?else?>
+		<?define ProductCode = "{FCE992EC-0A0B-4EB4-963F-7E663EC6F4E4}"?>
+  <?endif?>
+  
+  <?define BuildVersion = 0.1.0?>
+  
+  <!-- Define main product -->
+	<Product Id="$(var.ProductCode)" 
+           Name="!(loc.ProductName_$(var.Platform))" 
+           Language="!(loc.Language)" 
+           Version="$(var.BuildVersion)" 
+           Manufacturer="!(loc.Company)" 
+           UpgradeCode="39a6a481-1f11-43b4-81b2-9e88ca3a335f">
+    
+    <!-- Provide Package details -->
+		<Package 
+      InstallerVersion="200" 
+      Compressed="yes" 
+      InstallScope="perMachine"
+      Platform="$(var.Platform)"
+      Manufacturer="!(loc.Company)"
+      Languages="!(loc.Language)"
+      />
+
+    <!-- Downgrade error message -->
+		<MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeErrorMessage)" />
+    
+    <!-- Include .cab file into .msi file -->
+		<MediaTemplate 
+      EmbedCab="yes"
+      />
+
+    <!-- Define main App icon -->
+    <Icon Id="icon.ico" SourceFile="$(var.VoidHuntersRevived.Windows.Launcher.ProjectDir)\favicon.ico"/>
+    <Property Id="APPPRODUCTICON">icon.ico</Property>
+    
+    <!-- Createa a basic UI for the installer -->
+    <!-- <UIRef Id="WixUI_Minimal"/> -->
+    
+    <!-- Define components, shortcutes, files, ect for installer -->
+		<Feature Id="ProductFeature" Title="VoidHuntersRevived.Windows.Installer" Level="1">
+      
+			<ComponentGroupRef Id="PublishedComponents" />
+			<ComponentGroupRef Id="ProductComponents" />
+      
+		</Feature>
+	</Product>
+  
+</Wix>

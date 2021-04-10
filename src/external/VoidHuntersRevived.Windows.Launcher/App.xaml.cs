@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace VoidHuntersRevived.Client.Launcher
+namespace VoidHuntersRevived.Windows.Launcher
 {
     /// <summary>
     /// Interaction logic for App.xaml

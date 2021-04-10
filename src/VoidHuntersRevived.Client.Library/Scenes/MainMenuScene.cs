@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Linq;
-using VoidHuntersRevived.Client.Library.UI;
+using VoidHuntersRevived.Windows.Library.UI;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
@@ -20,11 +20,11 @@ using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Scenes;
 using System.Threading;
 using Guppy.UI.Enums;
-using VoidHuntersRevived.Client.Library.UI.Pages;
+using VoidHuntersRevived.Windows.Library.UI.Pages;
 using System.IO;
 using VoidHuntersRevived.Library.Extensions.System;
 
-namespace VoidHuntersRevived.Client.Library.Scenes
+namespace VoidHuntersRevived.Windows.Library.Scenes
 {
     public class MainMenuScene : GraphicsGameScene
     {

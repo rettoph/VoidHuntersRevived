@@ -11,10 +11,10 @@ using Guppy.IO.Commands.Contexts;
 using VoidHuntersRevived.Library.Entities;
 using System.Linq;
 using VoidHuntersRevived.Library.Entities.Controllers;
-using VoidHuntersRevived.Client.Library.Enums;
+using VoidHuntersRevived.Windows.Library.Enums;
 using System.IO;
 
-namespace VoidHuntersRevived.Client.Library.ServiceLoaders
+namespace VoidHuntersRevived.Windows.Library.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class CommandServiceLoader : IServiceLoader

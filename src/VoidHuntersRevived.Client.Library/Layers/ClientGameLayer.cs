@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Layers;
 
-namespace VoidHuntersRevived.Client.Library.Layers
+namespace VoidHuntersRevived.Windows.Library.Layers
 {
     public class ClientGameLayer : GameLayer
     {

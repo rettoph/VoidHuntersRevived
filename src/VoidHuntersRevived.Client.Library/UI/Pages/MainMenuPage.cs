@@ -11,7 +11,7 @@ using Guppy.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 
-namespace VoidHuntersRevived.Client.Library.UI.Pages
+namespace VoidHuntersRevived.Windows.Library.UI.Pages
 {
     public class MainMenuPage : SecretContainer<IElement>, IPage
     {

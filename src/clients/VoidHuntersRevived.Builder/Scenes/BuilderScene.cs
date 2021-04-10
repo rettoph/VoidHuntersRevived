@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Builder.Services;
 using VoidHuntersRevived.Builder.UI.Pages;
-using VoidHuntersRevived.Client.Library.Scenes;
+using VoidHuntersRevived.Windows.Library.Scenes;
 using VoidHuntersRevived.Library.Contexts;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;

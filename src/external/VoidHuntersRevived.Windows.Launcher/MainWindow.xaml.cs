@@ -19,11 +19,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VoidHuntersRevived.Client.Launcher.Models;
-using VoidHuntersRevived.Client.Launcher.Services;
+using VoidHuntersRevived.Windows.Launcher.Models;
+using VoidHuntersRevived.Windows.Launcher.Services;
 using Path = System.IO.Path;
 
-namespace VoidHuntersRevived.Client.Launcher
+namespace VoidHuntersRevived.Windows.Launcher
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -69,8 +69,8 @@ namespace VoidHuntersRevived.Client.Launcher
 
         private async void Check()
         {
-            if(File.Exists("release.json"))
-                _release = JsonConvert.DeserializeObject<Release>(File.ReadAllText("release.json"));
+            if(File.Exists(LauncherConstants.Release))
+                _release = JsonConvert.DeserializeObject<Release>(File.ReadAllText(LauncherConstants.Release));
 
             this.Label.Text = "Checking for Updates...";
             this.Progress.Value = 0;
@@ -129,8 +129,8 @@ namespace VoidHuntersRevived.Client.Launcher
                             Directory.CreateDirectory(_release.Path);
                             CopyFilesRecursively(new DirectoryInfo(_release.TempPath), new DirectoryInfo(_release.Path));
                             Directory.Delete(_release.TempPath, true);
-                            File.Delete("release.json");
-                            File.WriteAllText("release.json", JsonConvert.SerializeObject(_release));
+                            File.Delete(LauncherConstants.Release);
+                            File.WriteAllText(LauncherConstants.Release, JsonConvert.SerializeObject(_release));
                         }
                         catch(Exception e)
                         {

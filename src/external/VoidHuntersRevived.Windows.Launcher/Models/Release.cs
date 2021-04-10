@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Client.Launcher.Models
+namespace VoidHuntersRevived.Windows.Launcher.Models
 {
     public class Release
     {
@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Client.Launcher.Models
         public DateTime ReleaseDate { get; set; }
         public String Version { get; set; }
         public List<Asset> Assets { get; set; }
-        public String Path => System.IO.Path.Combine(Directory.GetCurrentDirectory(), LauncherConstants.VersionDirectory, this.Version);
-        public String TempPath => System.IO.Path.Combine(Directory.GetCurrentDirectory(), LauncherConstants.VersionDirectory, "temp");
+        public String Path => System.IO.Path.Combine(LauncherConstants.AppDirectory, "Versions", this.Version);
+        public String TempPath => System.IO.Path.Combine(LauncherConstants.AppDirectory, "temp");
     }
 }

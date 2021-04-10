@@ -13,7 +13,7 @@ using VoidHuntersRevived.Library.Extensions.System.Drawing;
 using VoidHuntersRevived.Library.Scenes;
 using Color = Microsoft.Xna.Framework.Color;
 
-namespace VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers
+namespace VoidHuntersRevived.Windows.Library.Drivers.Entities.Controllers
 {
     internal sealed class ChunkManagerGraphicsDriver : Driver<ChunkManager>
     {

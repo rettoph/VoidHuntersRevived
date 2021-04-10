@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Client.Launcher.Models
+namespace VoidHuntersRevived.Windows.Launcher.Models
 {
     public class Asset
     {

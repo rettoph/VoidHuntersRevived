@@ -9,19 +9,19 @@ using VoidHuntersRevived.Library.Scenes;
 using Guppy.Extensions.DependencyInjection;
 using VoidHuntersRevived.Library.Utilities;
 using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Client.Library.Services;
+using VoidHuntersRevived.Windows.Library.Services;
 using Guppy;
 using Microsoft.Xna.Framework.Input;
 using Guppy.IO.Input.Services;
 using Guppy.IO.Commands.Services;
 using Guppy.IO.Commands.Interfaces;
 using Guppy.IO.Commands;
-using VoidHuntersRevived.Client.Library.Enums;
+using VoidHuntersRevived.Windows.Library.Enums;
 using System.Linq;
 using System.Threading;
-using VoidHuntersRevived.Client.Library.Scenes;
+using VoidHuntersRevived.Windows.Library.Scenes;
 
-namespace VoidHuntersRevived.Client.Library
+namespace VoidHuntersRevived.Windows.Library
 {
     public sealed class ClientVoidHuntersRevivedGame : VoidHuntersRevivedGame
     {

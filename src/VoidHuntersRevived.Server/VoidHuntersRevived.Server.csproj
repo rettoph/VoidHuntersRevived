@@ -5,6 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <StartupObject>VoidHuntersRevived.Server.Program</StartupObject>
     <Configurations>Debug;Release;Debug_Verbose</Configurations>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

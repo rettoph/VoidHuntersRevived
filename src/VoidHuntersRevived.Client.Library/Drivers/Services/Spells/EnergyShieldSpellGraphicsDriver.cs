@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Services.Spells;
 
-namespace VoidHuntersRevived.Client.Library.Drivers.Services.Spells
+namespace VoidHuntersRevived.Windows.Library.Drivers.Services.Spells
 {
     internal sealed class EnergyShieldSpellGraphicsDriver : Driver<EnergyShieldSpell>
     {

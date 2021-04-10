@@ -13,7 +13,7 @@ using System.Text;
 using VoidHuntersRevived.Library;
 using VoidHuntersRevived.Library.Entities.Players;
 
-namespace VoidHuntersRevived.Client.Library.Entities
+namespace VoidHuntersRevived.Windows.Library.Entities
 {
     /// <summary>
     /// The primary nameplate rendered over

@@ -1,7 +1,7 @@
-﻿<Application x:Class="VoidHuntersRevived.Client.Launcher.App"
+﻿<Application x:Class="VoidHuntersRevived.Windows.Launcher.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:VoidHuntersRevived.Client.Launcher"
+             xmlns:local="clr-namespace:VoidHuntersRevived.Windows.Launcher"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          

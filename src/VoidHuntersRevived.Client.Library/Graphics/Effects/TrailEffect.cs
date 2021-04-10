@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace VoidHuntersRevived.Client.Library.Graphics.Effects
+namespace VoidHuntersRevived.Windows.Library.Graphics.Effects
 {
     public class TrailEffect : EffectMatricesEffect
     {

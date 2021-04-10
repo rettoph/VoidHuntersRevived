@@ -6,12 +6,12 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Client.Library.Graphics.Effects;
-using VoidHuntersRevived.Client.Library.Graphics.Vertices;
+using VoidHuntersRevived.Windows.Library.Graphics.Effects;
+using VoidHuntersRevived.Windows.Library.Graphics.Vertices;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Extensions.System;
 
-namespace VoidHuntersRevived.Client.Library.Drivers.Entities
+namespace VoidHuntersRevived.Windows.Library.Drivers.Entities
 {
     internal sealed class ExplosionGraphicsDriver : Driver<Explosion>
     {

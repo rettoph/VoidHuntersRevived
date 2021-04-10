@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VoidHuntersRevived.Client.Library.Services
+namespace VoidHuntersRevived.Windows.Library.Services
 {
     public class DebugService : Frameable
     {

@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Client.Launcher.Services
+namespace VoidHuntersRevived.Windows.Launcher.Services
 {
     /// <summary>
     /// Simple class to help determin the runtime identifier to download.

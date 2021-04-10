@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VoidHuntersRevived.Client.Library.Entities;
+using VoidHuntersRevived.Windows.Library.Entities;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
@@ -23,7 +23,7 @@ using VoidHuntersRevived.Library.Extensions.Lidgren.Network;
 using Guppy.Utilities.Cameras;
 using VoidHuntersRevived.Library;
 
-namespace VoidHuntersRevived.Client.Library.Drivers.Players
+namespace VoidHuntersRevived.Windows.Library.Drivers.Players
 {
     internal sealed class UserPlayerLocalDriver : Driver<UserPlayer>
     {

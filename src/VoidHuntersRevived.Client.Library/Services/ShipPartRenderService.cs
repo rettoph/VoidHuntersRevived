@@ -17,7 +17,7 @@ using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using Guppy.Extensions.Microsoft.Xna.Framework;
 
-namespace VoidHuntersRevived.Client.Library.Services
+namespace VoidHuntersRevived.Windows.Library.Services
 {
     /// <summary>
     /// Simple service useful for rendering a ship part

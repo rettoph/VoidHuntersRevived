@@ -1,13 +1,13 @@
 ﻿using Guppy;
 using Guppy.DependencyInjection;
 using System;
-using VoidHuntersRevived.Client.Library.Services;
-using VoidHuntersRevived.Client.Library.Utilities;
+using VoidHuntersRevived.Windows.Library.Services;
+using VoidHuntersRevived.Windows.Library.Utilities;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 
-namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters
+namespace VoidHuntersRevived.Windows.Library.Drivers.Entities.ShipParts.Thrusters
 {
     /// <summary>
     /// Custom driver to manage the creation &

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace VoidHuntersRevived.Client.Launcher
+namespace VoidHuntersRevived.Windows.Launcher
 {
     public enum LauncherStatus
     {

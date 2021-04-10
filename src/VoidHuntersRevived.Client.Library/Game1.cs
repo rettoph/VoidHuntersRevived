@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 
-namespace VoidHuntersRevived.Client.Library
+namespace VoidHuntersRevived.Windows.Library
 {
     public class Game1 : Microsoft.Xna.Framework.Game
     {

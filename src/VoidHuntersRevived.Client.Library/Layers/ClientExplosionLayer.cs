@@ -7,11 +7,11 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Client.Library.Graphics.Effects;
-using VoidHuntersRevived.Client.Library.Graphics.Vertices;
+using VoidHuntersRevived.Windows.Library.Graphics.Effects;
+using VoidHuntersRevived.Windows.Library.Graphics.Vertices;
 using VoidHuntersRevived.Library.Layers;
 
-namespace VoidHuntersRevived.Client.Library.Layers
+namespace VoidHuntersRevived.Windows.Library.Layers
 {
     public class ClientExplosionLayer : ExplosionLayer
     {

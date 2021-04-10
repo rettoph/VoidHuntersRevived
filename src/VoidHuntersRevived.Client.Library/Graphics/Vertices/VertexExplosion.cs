@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using VoidHuntersRevived.Library.Contexts;
 
-namespace VoidHuntersRevived.Client.Library.Graphics.Vertices
+namespace VoidHuntersRevived.Windows.Library.Graphics.Vertices
 {
     /// <summary>
     /// The primary vertex used to mape explosion particles.

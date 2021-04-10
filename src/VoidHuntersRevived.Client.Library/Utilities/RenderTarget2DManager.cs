@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace VoidHuntersRevived.Client.Library.Utilities
+namespace VoidHuntersRevived.Windows.Library.Utilities
 {
     /// <summary>
     /// Simple helper class that can be used as a render target & will

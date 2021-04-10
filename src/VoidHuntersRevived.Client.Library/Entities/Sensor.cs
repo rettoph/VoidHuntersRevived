@@ -12,7 +12,7 @@ using tainicom.Aether.Physics2D.Dynamics.Contacts;
 using Guppy.Utilities.Cameras;
 using VoidHuntersRevived.Library;
 
-namespace VoidHuntersRevived.Client.Library.Entities
+namespace VoidHuntersRevived.Windows.Library.Entities
 {
     /// <summary>
     /// Simple entity used to interact with the farseer world.

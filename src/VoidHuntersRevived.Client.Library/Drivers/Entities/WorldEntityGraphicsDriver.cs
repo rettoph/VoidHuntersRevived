@@ -7,11 +7,11 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Client.Library.Services;
+using VoidHuntersRevived.Windows.Library.Services;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 
-namespace VoidHuntersRevived.Client.Library.Drivers.Entities
+namespace VoidHuntersRevived.Windows.Library.Drivers.Entities
 {
     /// <summary>
     /// Render base world objects...

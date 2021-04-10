@@ -7,20 +7,20 @@ using Guppy.Network.Peers;
 using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using VoidHuntersRevived.Client.Library.Drivers.Entities;
-using VoidHuntersRevived.Client.Library.Drivers.Entities.Controllers;
-using VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts;
-using VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.SpellParts;
-using VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.Thrusters;
-using VoidHuntersRevived.Client.Library.Drivers.Players;
-using VoidHuntersRevived.Client.Library.Drivers.Services.Spells;
-using VoidHuntersRevived.Client.Library.Entities;
-using VoidHuntersRevived.Client.Library.Graphics.Effects;
-using VoidHuntersRevived.Client.Library.Graphics.Vertices;
-using VoidHuntersRevived.Client.Library.Layers;
-using VoidHuntersRevived.Client.Library.Scenes;
-using VoidHuntersRevived.Client.Library.Services;
-using VoidHuntersRevived.Client.Library.Utilities;
+using VoidHuntersRevived.Windows.Library.Drivers.Entities;
+using VoidHuntersRevived.Windows.Library.Drivers.Entities.Controllers;
+using VoidHuntersRevived.Windows.Library.Drivers.Entities.ShipParts;
+using VoidHuntersRevived.Windows.Library.Drivers.Entities.ShipParts.SpellParts;
+using VoidHuntersRevived.Windows.Library.Drivers.Entities.ShipParts.Thrusters;
+using VoidHuntersRevived.Windows.Library.Drivers.Players;
+using VoidHuntersRevived.Windows.Library.Drivers.Services.Spells;
+using VoidHuntersRevived.Windows.Library.Entities;
+using VoidHuntersRevived.Windows.Library.Graphics.Effects;
+using VoidHuntersRevived.Windows.Library.Graphics.Vertices;
+using VoidHuntersRevived.Windows.Library.Layers;
+using VoidHuntersRevived.Windows.Library.Scenes;
+using VoidHuntersRevived.Windows.Library.Services;
+using VoidHuntersRevived.Windows.Library.Utilities;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
@@ -32,7 +32,7 @@ using VoidHuntersRevived.Library.Layers;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Services.Spells;
 
-namespace VoidHuntersRevived.Client.Library.ServiceLoaders
+namespace VoidHuntersRevived.Windows.Library.ServiceLoaders
 {
     [AutoLoad]
     public sealed class ClientServiceLoader : IServiceLoader
