@@ -56,7 +56,7 @@ namespace VoidHuntersRevived.Client.Library.UI
                 });
                 header.Children.Create<TextElement>("ui:label:title:small", (text, p, c) =>
                 {
-                    text.Value = "Alpha 0.2.28";
+                    text.Value = "Alpha 0.1.6";
                     text.Inline = InlineType.Both;
                 });
             });
