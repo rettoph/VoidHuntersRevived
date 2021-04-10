@@ -14,7 +14,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.ShipParts.Special;
 using VoidHuntersRevived.Library.Entities.ShipParts.SpellParts;
 
-namespace VoidHuntersRevived.Windows.Library.Drivers.Entities.ShipParts.SpellParts
+namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts.SpellParts
 {
     internal sealed class SpellPartGraphicsDriver : Driver<SpellPart>
     {

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace VoidHuntersRevived.Windows.Library.Utilities.Events
+namespace VoidHuntersRevived.Client.Library.Utilities.Events
 {
     public class EventManager<TSender, TArgs>
     {

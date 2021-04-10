@@ -4,10 +4,10 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Windows.Library.Services;
+using VoidHuntersRevived.Client.Library.Services;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 
-namespace VoidHuntersRevived.Windows.Library.Drivers.Entities.ShipParts
+namespace VoidHuntersRevived.Client.Library.Drivers.Entities.ShipParts
 {
     /// <summary>
     /// Primary driver responsible for rendering

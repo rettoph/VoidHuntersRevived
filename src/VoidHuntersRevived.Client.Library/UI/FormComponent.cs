@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace VoidHuntersRevived.Windows.Library.UI
+namespace VoidHuntersRevived.Client.Library.UI
 {
     /// <summary>
     /// Simple component that contains a text input & its lael

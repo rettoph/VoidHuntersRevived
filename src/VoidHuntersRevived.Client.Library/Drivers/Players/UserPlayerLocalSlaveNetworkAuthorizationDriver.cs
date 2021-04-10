@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VoidHuntersRevived.Windows.Library.Entities;
+using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
@@ -22,10 +22,11 @@ using System.IO;
 using VoidHuntersRevived.Library.Extensions.Lidgren.Network;
 using Guppy.Utilities.Cameras;
 using VoidHuntersRevived.Library;
+using VoidHuntersRevived.Library.Drivers;
 
-namespace VoidHuntersRevived.Windows.Library.Drivers.Players
+namespace VoidHuntersRevived.Client.Library.Drivers.Players
 {
-    internal sealed class UserPlayerLocalDriver : Driver<UserPlayer>
+    internal sealed class UserPlayerLocalSlaveNetworkAuthorizationDriver : SlaveNetworkAuthorizationDriver<UserPlayer>
     {
         #region Private Fields
         private Boolean _configured;
@@ -36,9 +37,9 @@ namespace VoidHuntersRevived.Windows.Library.Drivers.Players
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize(UserPlayer driven, ServiceProvider provider)
+        protected override void InitializeRemote(UserPlayer driven, ServiceProvider provider)
         {
-            base.Initialize(driven, provider);
+            base.InitializeRemote(driven, provider);
 
             if (provider.GetService<ClientPeer>().CurrentUser == driven.User)
             { // Setup the local user player driver now...
@@ -51,33 +52,36 @@ namespace VoidHuntersRevived.Windows.Library.Drivers.Players
                 this.driven.OnUpdate += this.Update;
                 this.driven.Ship.OnBridgeChanged += this.HandleShipBridgeChanged;
 
-                _commands["ship"]["fire"].OnExcecute += this.HandleShipFireCommand;
-                _commands["ship"]["direction"].OnExcecute += this.HandleShipDirectionCommand;
-                _commands["ship"]["tractorbeam"].OnExcecute += this.HandleShipTractorBeamCommand;
-                _commands["ship"]["save"].OnExcecute += this.HandleShipSaveCommand;
-                _commands["ship"]["self-destruct"].OnExcecute += this.HandleShipSelfDestructCommand;
-                _commands["ship"]["launch-fighters"].OnExcecute += this.HandleLaunchFightersCommand;
-                _commands["ship"]["toggle-energy-shields"].OnExcecute += this.HandleToggleEnergyShieldsCommand;
-                _commands["spawn"]["ai"].OnExcecute += this.HandleSpawnAICommand;
+                _commands["ship"]["fire"].OnExcecute += this.TryHandleShipFireCommand;
+                _commands["ship"]["direction"].OnExcecute += this.TryHandleShipDirectionCommand;
+                _commands["ship"]["tractorbeam"].OnExcecute += this.TryHandleShipTractorBeamCommand;
+                _commands["ship"]["save"].OnExcecute += this.TryHandleShipSaveCommand;
+                _commands["ship"]["self-destruct"].OnExcecute += this.TryHandleShipSelfDestructCommand;
+                _commands["ship"]["launch-fighters"].OnExcecute += this.TryHandleLaunchFightersCommand;
+                _commands["ship"]["toggle-energy-shields"].OnExcecute += this.TryHandleToggleEnergyShieldsCommand;
+                _commands["spawn"]["ai"].OnExcecute += this.TryHandleSpawnAICommand;
 
                 _configured = true;
             }
         }
 
-        protected override void Release(UserPlayer driven)
+        protected override void ReleaseRemote(UserPlayer driven)
         {
-            base.Release(driven);
+            base.ReleaseRemote(driven);
 
             if(_configured)
             {
                 this.driven.OnUpdate -= this.Update;
                 this.driven.Ship.OnBridgeChanged -= this.HandleShipBridgeChanged;
 
-                _commands["ship"]["fire"].OnExcecute -= this.HandleShipFireCommand;
-                _commands["ship"]["direction"].OnExcecute -= this.HandleShipDirectionCommand;
-                _commands["ship"]["tractorbeam"].OnExcecute -= this.HandleShipTractorBeamCommand;
-                _commands["ship"]["save"].OnExcecute -= this.HandleShipSaveCommand;
-                _commands["spawn"]["ai"].OnExcecute -= this.HandleSpawnAICommand;
+                _commands["ship"]["fire"].OnExcecute -= this.TryHandleShipFireCommand;
+                _commands["ship"]["direction"].OnExcecute -= this.TryHandleShipDirectionCommand;
+                _commands["ship"]["tractorbeam"].OnExcecute -= this.TryHandleShipTractorBeamCommand;
+                _commands["ship"]["save"].OnExcecute += this.TryHandleShipSaveCommand;
+                _commands["ship"]["self-destruct"].OnExcecute -= this.TryHandleShipSelfDestructCommand;
+                _commands["ship"]["launch-fighters"].OnExcecute -= this.TryHandleLaunchFightersCommand;
+                _commands["ship"]["toggle-energy-shields"].OnExcecute -= this.TryHandleToggleEnergyShieldsCommand;
+                _commands["spawn"]["ai"].OnExcecute -= this.TryHandleSpawnAICommand;
             }
 
             _commands = null;
@@ -137,7 +141,7 @@ namespace VoidHuntersRevived.Windows.Library.Drivers.Players
         #endregion
 
         #region Command Handlers
-        private CommandResponse HandleShipFireCommand(ICommand sender, CommandInput input)
+        private CommandResponse TryHandleShipFireCommand(ICommand sender, CommandInput input)
         {
             this.TrySetShipFiring((Boolean)input["value"]);
             
@@ -145,21 +149,21 @@ namespace VoidHuntersRevived.Windows.Library.Drivers.Players
             return CommandResponse.Empty;
         }
 
-        private CommandResponse HandleShipTractorBeamCommand(ICommand sender, CommandInput input)
+        private CommandResponse TryHandleShipTractorBeamCommand(ICommand sender, CommandInput input)
         {
             this.TryTractorBeamAction((TractorBeam.ActionType)input["action"]);
 
             return CommandResponse.Empty;
         }
 
-        private CommandResponse HandleShipDirectionCommand(ICommand sender, CommandInput input)
+        private CommandResponse TryHandleShipDirectionCommand(ICommand sender, CommandInput input)
         {
             this.TrySetShipDirection((Ship.Direction)input["direction"], (Boolean)input["value"]);
 
             return CommandResponse.Empty;
         }
 
-        private CommandResponse HandleShipSaveCommand(ICommand sender, CommandInput input)
+        private CommandResponse TryHandleShipSaveCommand(ICommand sender, CommandInput input)
         {
             Directory.CreateDirectory(VHR.Directories.Resources.Ships);
 
@@ -169,21 +173,21 @@ namespace VoidHuntersRevived.Windows.Library.Drivers.Players
             return CommandResponse.Success($"File saved at Resources/Ships/{(input["name"] as String)}.vh");
         }
 
-        private CommandResponse HandleShipSelfDestructCommand(ICommand sender, CommandInput input)
+        private CommandResponse TryHandleShipSelfDestructCommand(ICommand sender, CommandInput input)
         {
             this.driven.Ping.Create(NetDeliveryMethod.ReliableUnordered, 0).Write(VHR.Network.Pings.Ship.SelfDestructRequest, m => { });
 
             return CommandResponse.Success("Requesting self destruct...");
         }
 
-        private CommandResponse HandleLaunchFightersCommand(ICommand sender, CommandInput input)
+        private CommandResponse TryHandleLaunchFightersCommand(ICommand sender, CommandInput input)
         {
             this.driven.Ping.Create(NetDeliveryMethod.ReliableUnordered, 0).Write(VHR.Network.Pings.Ship.LaunchDronesRequest, m => { });
 
             return CommandResponse.Success("Requesting to launch fighters...");
         }
 
-        private CommandResponse HandleToggleEnergyShieldsCommand(ICommand sender, CommandInput input)
+        private CommandResponse TryHandleToggleEnergyShieldsCommand(ICommand sender, CommandInput input)
         {
             this.driven.Ping.Create(NetDeliveryMethod.ReliableUnordered, 0).Write(VHR.Network.Pings.Ship.ToggleEnergyShieldsRequest, m => { });
 
@@ -243,7 +247,7 @@ namespace VoidHuntersRevived.Windows.Library.Drivers.Players
             }
         }
 
-        private CommandResponse HandleSpawnAICommand(ICommand sender, CommandInput input)
+        private CommandResponse TryHandleSpawnAICommand(ICommand sender, CommandInput input)
         {
             this.driven.Ping.Create(NetDeliveryMethod.ReliableOrdered, 10).Write(VHR.Network.Pings.Ship.SpawnAiRequest, m =>
             {

@@ -1,7 +1,7 @@
 ﻿using System;
-using VoidHuntersRevived.Windows.Library;
+using VoidHuntersRevived.Client.Library;
 
-namespace VoidHuntersRevived.Windows.Desktop
+namespace VoidHuntersRevived.Client.Desktop
 {
     public static class Program
     {

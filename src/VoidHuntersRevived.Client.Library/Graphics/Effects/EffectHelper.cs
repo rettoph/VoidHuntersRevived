@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace VoidHuntersRevived.Windows.Library.Graphics.Effects
+namespace VoidHuntersRevived.Client.Library.Graphics.Effects
 {
     public static class EffectHelper
     {

@@ -6,11 +6,11 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Windows.Library.Graphics.Vertices;
+using VoidHuntersRevived.Client.Library.Graphics.Vertices;
 using VoidHuntersRevived.Library;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 
-namespace VoidHuntersRevived.Windows.Library.Services
+namespace VoidHuntersRevived.Client.Library.Services
 {
     /// <summary>
     /// Simple service used to manage TrailSegment's.

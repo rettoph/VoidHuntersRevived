@@ -11,11 +11,23 @@ namespace VoidHuntersRevived.Library.Drivers.Entities
     internal sealed class SpellCasterMasterNetworkAuthorizationDriver : MasterNetworkAuthorizationDriver<SpellCaster>
     {
         #region Lifecycle Methods
+        protected override void Initialize(SpellCaster driven, ServiceProvider provider)
+        {
+            base.Initialize(driven, provider);
+
+            this.driven.OnManaChanged += this.HandleManaChanged;
+        }
+
+        protected override void Release(SpellCaster driven)
+        {
+            base.Release(driven);
+
+            this.driven.OnManaChanged -= this.HandleManaChanged;
+        }
+
         protected override void InitializeRemote(SpellCaster driven, ServiceProvider provider)
         {
             base.InitializeRemote(driven, provider);
-
-            this.driven.OnManaChanged += this.HandleManaChanged;
 
             this.driven.MessageHandlers[MessageType.Update].OnWrite += this.WriteUpdate;
         }

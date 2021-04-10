@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace VoidHuntersRevived.Windows.Library.UI
+namespace VoidHuntersRevived.Client.Library.UI
 {
     public sealed class HeaderComponent : StackContainer
     {

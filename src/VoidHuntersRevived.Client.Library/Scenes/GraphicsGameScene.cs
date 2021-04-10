@@ -19,15 +19,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using tainicom.Aether.Physics2D.Diagnostics;
-using VoidHuntersRevived.Windows.Library.Enums;
-using VoidHuntersRevived.Windows.Library.Services;
+using VoidHuntersRevived.Client.Library.Enums;
+using VoidHuntersRevived.Client.Library.Services;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Layers;
 using VoidHuntersRevived.Library;
 
-namespace VoidHuntersRevived.Windows.Library.Scenes
+namespace VoidHuntersRevived.Client.Library.Scenes
 {
     /// <summary>
     /// An implementation of <see cref="GameScene"/>

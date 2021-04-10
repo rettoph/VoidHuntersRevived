@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Linq;
-using VoidHuntersRevived.Windows.Library.UI;
+using VoidHuntersRevived.Client.Library.UI;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Controllers;
 using VoidHuntersRevived.Library.Entities.Players;
@@ -20,11 +20,11 @@ using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Scenes;
 using System.Threading;
 using Guppy.UI.Enums;
-using VoidHuntersRevived.Windows.Library.UI.Pages;
+using VoidHuntersRevived.Client.Library.UI.Pages;
 using System.IO;
 using VoidHuntersRevived.Library.Extensions.System;
 
-namespace VoidHuntersRevived.Windows.Library.Scenes
+namespace VoidHuntersRevived.Client.Library.Scenes
 {
     public class MainMenuScene : GraphicsGameScene
     {
@@ -68,6 +68,7 @@ namespace VoidHuntersRevived.Windows.Library.Scenes
             this.stage.Content.BackgroundColor[ElementState.Default] = new Color(Color.Black, 125);
             _page = this.stage.Content.Children.Create<MainMenuPage>();
             _page.ConnectButton.OnClicked += this.HandleConnectClicked;
+            _page.SinglePlayerButton.OnClicked += this.HandleSinglePlayerClicked;
             #endregion
 
             this.camera.Zoom = 5f;
@@ -127,6 +128,7 @@ namespace VoidHuntersRevived.Windows.Library.Scenes
 
             _players.TryRelease();
             _page.ConnectButton.OnClicked -= this.HandleConnectClicked;
+            _page.SinglePlayerButton.OnClicked -= this.HandleSinglePlayerClicked;
             _players.OnAdded -= this.HandlePlayerAdded;
             _players.OnRemoved -= this.HandlePlayerRemoved;
 
@@ -210,6 +212,16 @@ namespace VoidHuntersRevived.Windows.Library.Scenes
                     this.TryRelease();
                 });
             }
+        }
+
+        private void HandleSinglePlayerClicked(Element sender)
+        {
+            _synchronizer.Enqueue(gt =>
+            {
+                var scene = _scenes.Create<LocalGameScene>();
+                _scenes.SetScene(scene);
+                this.TryRelease();
+            });
         }
 
         private void HandlePlayerAdded(IServiceList<Player> sender, Player player)

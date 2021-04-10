@@ -12,7 +12,7 @@ using tainicom.Aether.Physics2D.Dynamics.Contacts;
 using Guppy.Utilities.Cameras;
 using VoidHuntersRevived.Library;
 
-namespace VoidHuntersRevived.Windows.Library.Entities
+namespace VoidHuntersRevived.Client.Library.Entities
 {
     /// <summary>
     /// Simple entity used to interact with the farseer world.
@@ -76,7 +76,7 @@ namespace VoidHuntersRevived.Windows.Library.Entities
         {
             _world = world;
 
-            _body = _world.Slave.CreateCircle(3f, 0f);
+            _body = _world.Live.CreateCircle(3f, 0f);
             _body.SetIsSensor(true);
             _body.SleepingAllowed = false;
             _body.BodyType = BodyType.Dynamic;

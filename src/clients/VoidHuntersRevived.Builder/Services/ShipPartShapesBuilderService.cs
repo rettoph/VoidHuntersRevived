@@ -18,7 +18,7 @@ using System.Text;
 using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Builder.Contexts;
 using VoidHuntersRevived.Builder.UI.Pages;
-using VoidHuntersRevived.Windows.Library.Services;
+using VoidHuntersRevived.Client.Library.Services;
 using VoidHuntersRevived.Library.Contexts;
 using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts;

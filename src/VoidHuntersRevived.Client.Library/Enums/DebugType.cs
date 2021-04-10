@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace VoidHuntersRevived.Windows.Library.Enums
+namespace VoidHuntersRevived.Client.Library.Enums
 {
     public enum DebugType
     {

@@ -11,7 +11,7 @@ using Guppy.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 
-namespace VoidHuntersRevived.Windows.Library.UI.Pages
+namespace VoidHuntersRevived.Client.Library.UI.Pages
 {
     public class MainMenuPage : SecretContainer<IElement>, IPage
     {
@@ -26,6 +26,7 @@ namespace VoidHuntersRevived.Windows.Library.UI.Pages
         public String Host => _host.Input.Value;
         public Int32 Port => Int32.Parse(_port.Input.Value);
         public TextElement ConnectButton { get; private set; }
+        public TextElement SinglePlayerButton { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -68,7 +69,7 @@ namespace VoidHuntersRevived.Windows.Library.UI.Pages
                     });
                 });
 
-                container.Children.Create<Container>((container3, p, c) =>
+                container.Children.Create<StackContainer>((container3, p, c) =>
                 {
                     container3.Padding.Top = 25;
                     container3.Inline = InlineType.Vertical;
@@ -86,6 +87,27 @@ namespace VoidHuntersRevived.Windows.Library.UI.Pages
                         connect.Alignment = Alignment.CenterCenter;
                         connect.Font = p.GetContent<SpriteFont>("font:ui:normal");
                         connect.Value = "Connect";
+                    });
+                });
+
+                container.Children.Create<StackContainer>((container4, p, c) =>
+                {
+                    container4.Padding.Top = 25;
+                    container4.Inline = InlineType.Vertical;
+
+                    this.SinglePlayerButton = container4.Children.Create<TextElement>((connect, p, c) =>
+                    {
+                        connect.Color[ElementState.Default] = Color.White;
+                        connect.BackgroundColor[ElementState.Default] = p.GetColor("ui:input:color:2");
+                        connect.BackgroundColor[ElementState.Hovered] = Color.Lerp(p.GetColor("ui:input:color:2"), Color.Black, 0.25f);
+                        connect.BackgroundColor[ElementState.Pressed] = Color.Lerp(p.GetColor("ui:input:color:2"), Color.Black, 0.5f);
+                        connect.Inline = InlineType.None;
+                        connect.Bounds.Width = 680;
+                        connect.Bounds.Height = 45;
+                        connect.Bounds.X = new CustomUnit(c => (c - connect.Bounds.Width.ToPixel(c)) / 2);
+                        connect.Alignment = Alignment.CenterCenter;
+                        connect.Font = p.GetContent<SpriteFont>("font:ui:normal");
+                        connect.Value = "Single Player";
                     });
                 });
             });

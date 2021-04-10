@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions.DependencyInjection;
 
-namespace VoidHuntersRevived.Windows.Library.ServiceLoaders
+namespace VoidHuntersRevived.Client.Library.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class ContentServiceLoader : IServiceLoader

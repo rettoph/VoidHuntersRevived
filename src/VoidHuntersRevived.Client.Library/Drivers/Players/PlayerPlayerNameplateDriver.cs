@@ -4,10 +4,10 @@ using Guppy.Lists;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Windows.Library.Entities;
+using VoidHuntersRevived.Client.Library.Entities;
 using VoidHuntersRevived.Library.Entities.Players;
 
-namespace VoidHuntersRevived.Windows.Library.Drivers.Players
+namespace VoidHuntersRevived.Client.Library.Drivers.Players
 {
     /// <summary>
     /// Simple driver that'll create a PlayerNameplate instance for

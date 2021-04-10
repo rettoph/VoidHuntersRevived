@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace VoidHuntersRevived.Windows.Library.ServiceLoaders
+namespace VoidHuntersRevived.Client.Library.ServiceLoaders
 {
     [AutoLoad(10)]
     internal sealed class InputServiceLoader : IServiceLoader
