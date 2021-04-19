@@ -3,9 +3,16 @@
 	<Fragment>
     <ComponentGroup Id="ProductComponents">
       <ComponentRef Id="MainAppShortcut" />
+      <ComponentRef Id="INSTALLFOLDER_Comp" />
     </ComponentGroup>
 
     <DirectoryRef Id="INSTALLFOLDER" FileSource="publish">
+      <Component Id="INSTALLFOLDER_Comp" DiskId="1" Guid="">
+        <CreateFolder>
+          <Permission User="Everyone" GenericAll="yes" />
+        </CreateFolder>
+      </Component>
+      
       <Component Id="MainAppShortcut" Guid="">
         <!-- Define shortcut -->
         <Shortcut Id="ShortcutMainAppShortcut" 

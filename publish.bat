@@ -1,7 +1,7 @@
 @echo OFF
 
 set rids=win10-x64 win10-x86 linux-x64
-set version=0.1.5
+set version=0.1.6
 
 mkdir build\%version%
 
