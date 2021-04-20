@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Utilities.Server.Web.Services
                     Version = truth.TagName,
                     Assets = truth.Assets.Select(a =>
                     {
-                        var match = Regex.Match(a.Name, "vhr_(.+)_(.+)_(.+)\\.zip");
+                        var match = Regex.Match(a.Name, "vhr_(.+)_(.+)_(.+)\\....");
 
                         return new Asset()
                         {

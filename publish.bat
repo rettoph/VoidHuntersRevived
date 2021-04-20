@@ -1,12 +1,20 @@
-@echo OFF
+@echo ON
 
 set rids=win10-x64 win10-x86 linux-x64
 set version=0.1.6
 
-Rem Build Installers
-dotnet publish "src\installers\VoidHuntersRevived.Installer.Windows" --runtime win-x64 --self-contained true --output "tempinstaller"
-
 mkdir build\%version%
+
+Rem Build Installers
+"%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild" src\installers\VoidHuntersRevived.Installer.Windows\VoidHuntersRevived.Installer.Windows.wixproj /p:Configuration=Release /p:PlatformTarget=x64 /p:OutputPath=%cd%\temp
+move temp\en-us\VoidHuntersRevived.Installer.Windows.msi build\%version%
+rename build\%version%\VoidHuntersRevived.Installer.Windows.msi vhr_0.1.6_installer_win-x64.msi
+rmdir /Q /S temp
+
+"%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild" src\installers\VoidHuntersRevived.Installer.Windows\VoidHuntersRevived.Installer.Windows.wixproj /p:Configuration=Release /p:PlatformTarget=x86 /p:OutputPath=%cd%\temp
+move temp\en-us\VoidHuntersRevived.Installer.Windows.msi build\%version%
+rename build\%version%\VoidHuntersRevived.Installer.Windows.msi vhr_0.1.6_installer_win-x86.msi
+rmdir /Q /S temp
 
 (for %%r in (%rids%) do ( 
    echo %%r
