@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "VoidHuntersRevived.Utilities.Launcher": {
+      "commandName": "Project",
+      "commandLineArgs": "desktop --launch"
+    }
+  }
+}
