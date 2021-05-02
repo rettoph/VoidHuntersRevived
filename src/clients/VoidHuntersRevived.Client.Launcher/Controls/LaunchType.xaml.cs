@@ -54,12 +54,11 @@ namespace VoidHuntersRevived.Client.Launcher.Controls
         private void HandleLaunchClicked(object sender, RoutedEventArgs e)
         {
             this.LaunchButton.IsEnabled = false;
-            this.LaunchButton.Content = "Launching...";
-
             (new Thread(new ThreadStart(() =>
             {
                 if (_shouldUpdate)
                 {
+                    this.LaunchButton.Content = "Updating...";
 
                     var proc = LauncherService.Update(this.Handle);
 
@@ -80,6 +79,7 @@ namespace VoidHuntersRevived.Client.Launcher.Controls
                     }
                 }
 
+                this.LaunchButton.Content = "Launching...";
                 LauncherService.Launch(this.Handle);
 
                 Thread.Sleep(2000);

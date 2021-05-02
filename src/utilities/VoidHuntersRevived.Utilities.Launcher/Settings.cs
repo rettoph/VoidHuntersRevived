@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Utilities.Launcher
     public class Settings
     {
         public static Settings Default { get; private set; }
-        private static String DefaultDirectory => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "rettoph/VoidHuntersRevived/Launcher");
+        private static String DefaultDirectory => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "VoidHuntersRevived/Launcher");
         private static String DefaultPath => Path.Combine(Settings.DefaultDirectory, "settings.json");
 
         static Settings()
@@ -54,9 +54,8 @@ namespace VoidHuntersRevived.Utilities.Launcher
             ("desktop", "VoidHuntersRevived.Client.Desktop"),
             ("builder", "VoidHuntersRevived.Client.Builder"),
             ("server", "VoidHuntersRevived.Server"),
+            ("client-launcher", "VoidHuntersRevived.Client.Launcher")
         }.ToDictionary(keySelector: kvp => kvp.Item1, elementSelector: kvp => kvp.Item2);
-
-        public Release Latest { get; set; }
 
         public void SaveChanged()
         {

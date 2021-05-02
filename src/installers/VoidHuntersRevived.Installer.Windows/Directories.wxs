@@ -25,8 +25,8 @@
       <?endif?>
 
       <!-- Cache Directory -->
-      <Directory Id="CommonAppDataFolder">
-        <Directory Id="AppCacheFolder" Name="VoidHuntersRevived" />
+      <Directory Id="AppDataFolder">
+        <Directory Id="APPCACHEFOLDER" Name="VoidHuntersRevived" />
       </Directory>
       
     </Directory>

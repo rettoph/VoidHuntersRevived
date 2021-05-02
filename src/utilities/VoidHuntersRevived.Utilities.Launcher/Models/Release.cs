@@ -14,6 +14,7 @@ namespace VoidHuntersRevived.Utilities.Launcher.Models
     public class Release
     {
         private Boolean _downloading;
+        private Single _lastProgress;
 
         public Int32 Id { get; set; }
         public DateTime ReleaseDate { get; set; }
@@ -40,6 +41,11 @@ namespace VoidHuntersRevived.Utilities.Launcher.Models
 
                     wc.DownloadProgressChanged += (s, a) =>
                     {
+                        if (_lastProgress == a.ProgressPercentage)
+                            return;
+
+                        _lastProgress = a.ProgressPercentage;
+
                         console.Out.Write($"[Progress] {(Single)a.ProgressPercentage / 100f}\n");
 
                         if (a.ProgressPercentage == 100)

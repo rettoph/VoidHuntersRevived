@@ -4,6 +4,7 @@
     <ComponentGroup Id="ProductComponents">
       <ComponentRef Id="MainAppShortcutComponent" />
       <ComponentRef Id="InstallFolderComponent" />
+      <ComponentRef Id="AppCacheFolderComponent" />
     </ComponentGroup>
 
     <Property Id="INSTALLFOLDER">
@@ -14,7 +15,16 @@
         Name="InstallDir" 
       />
     </Property>
-    
+
+    <Property Id="APPCACHEFOLDER">
+      <RegistrySearch
+        Root="HKCU" Key="Software\rettoph\VoidHuntersRevived"
+        Type="raw"
+        Id="CACHEFOLDER_REGSEARCH"
+        Name="AppCacheDir"
+      />
+    </Property>
+
     <DirectoryRef Id="INSTALLFOLDER" FileSource="publish">
       
       <!-- Manage install directories -->
@@ -40,6 +50,33 @@
         
       </Component>
       
+    </DirectoryRef>
+    
+    <DirectoryRef Id="APPCACHEFOLDER" FileSource="publish">
+
+      <!-- Manage install directories -->
+      <Component Id="AppCacheFolderComponent" DiskId="1" Guid="{926649E1-71C1-4FF8-A51D-8247BCCA9F47}">
+
+        <!-- Create APPCACHEFOLDER directories -->
+        <CreateFolder>
+          <Permission User="Everyone" GenericAll="yes" />
+        </CreateFolder>
+
+        <!-- Remove Folder on Uninstall -->
+        <util:RemoveFolderEx Id="RemoveExAPPCACHEFOLDER" On="uninstall" Property="APPCACHEFOLDER"/>
+        <RemoveFolder Id="RemoveAPPCACHEFOLDER" On="uninstall"/>
+
+        <!-- Registry Value -->
+        <RegistryValue
+          Root="HKCU"
+          Key="Software\rettoph\VoidHuntersRevived"
+          Name="AppCacheDir"
+          Type="string"
+          Value="[APPCACHEFOLDER]"
+          KeyPath="yes"/>
+
+      </Component>
+
     </DirectoryRef>
 
     <DirectoryRef Id="ProgramMenuSubfolder">

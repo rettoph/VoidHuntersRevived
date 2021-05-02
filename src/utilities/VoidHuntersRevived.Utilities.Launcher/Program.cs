@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Utilities.Launcher
             var command = new RootCommand();
             command.AddArgument(new Argument<String>("type", "The application type to launch."));
             command.AddArgument(new Argument<String>("rid", () => RuntimeIdentifierService.Get(), "The local Runtime Identifier. If none is defined one will be determined based on the current system."));
-            command.AddArgument(new Argument<String>("version", () => ReleaseService.GetLatest()?.Version ?? "0.0.0", "The version in question"));
+            command.AddArgument(new Argument<String>("version", () => ReleaseService.GetLatest("server") ?? "0.0.0", "The version in question"));
             command.AddOption(new Option<Boolean>("--update", "Download the requested version."));
             command.AddOption(new Option<Boolean>("--launch", "Whether or not the requested version should be launched."));
             command.AddOption(new Option<Boolean>("--check", "Determin whether or not an update is available."));
@@ -21,6 +21,9 @@ namespace VoidHuntersRevived.Utilities.Launcher
             {
                 try
                 {
+                    if (version == "latest")
+                        version = ReleaseService.GetLatest(type);
+
                     if (update || (launch && !ReleaseService.HasLocal(type, version)))
                         ReleaseService.GetRemote(console, type, version, rid).Download(console);
 
@@ -28,7 +31,7 @@ namespace VoidHuntersRevived.Utilities.Launcher
                         ReleaseService.LaunchLocal(console, type, version);
 
                     if (check)
-                        console.Out.Write((!ReleaseService.HasLocal(type, ReleaseService.GetLatest().Version)).ToString());
+                        console.Out.Write((!ReleaseService.HasLocal(type, ReleaseService.GetLatest(type))).ToString());
                 }
                 catch(Exception e)
                 {

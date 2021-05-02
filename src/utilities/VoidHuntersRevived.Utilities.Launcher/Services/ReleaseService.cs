@@ -14,12 +14,12 @@ namespace VoidHuntersRevived.Utilities.Launcher.Services
     class ReleaseService
     {
         private static RestClient _releaseServer;
-        private static Boolean _checkedLatest;
+        private static Release _remoteLatest;
 
         static ReleaseService()
         {
             _releaseServer = new RestClient(Settings.Default.ReleaseServer);
-            _checkedLatest = false;
+            _remoteLatest = null;
         }
 
         public static Release GetRemote(IConsole console, String type, String version = "latest", String rid = null)
@@ -29,21 +29,12 @@ namespace VoidHuntersRevived.Utilities.Launcher.Services
             return _releaseServer.Execute<Release>(new RestRequest($"{Settings.Default.GetReleaseEndpoint}?type={type}&rid={rid}&version={version}", Method.GET))?.Data;
         }
 
-        public static Release GetLatest()
+        public static String GetLatest(String type)
         {
-            if (!_checkedLatest)
-            {
-                var remoteLatest = _releaseServer.Execute<Release>(new RestRequest(Settings.Default.GetLatestEndpoint, Method.GET))?.Data;
-                if (remoteLatest != default && remoteLatest.Version != Settings.Default.Latest?.Version)
-                {
-                    Settings.Default.Latest = remoteLatest;
-                    Settings.Default.SaveChanged();
+            if (_remoteLatest == default)
+                _remoteLatest = _releaseServer.Execute<Release>(new RestRequest(Settings.Default.GetLatestEndpoint, Method.GET))?.Data;
 
-                    _checkedLatest = true;
-                }
-            }
-
-            return Settings.Default.Latest;
+            return _remoteLatest?.Version ?? ReleaseService.LocalVersions(type).Last();
         }
 
         public static void LaunchLocal(IConsole console, String type, String version = "latest")
@@ -88,6 +79,17 @@ namespace VoidHuntersRevived.Utilities.Launcher.Services
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Return a list of all downloaded versions of a specific type.
+        /// This is 100% based on file names.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static String[] LocalVersions(String type)
+        {
+            return Directory.GetDirectories(Path.Combine(Settings.Default.InstallDirectory, type));
         }
     }
 }
