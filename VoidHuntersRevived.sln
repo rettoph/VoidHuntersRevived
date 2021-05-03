@@ -45,15 +45,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Builder"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "utilities", "utilities", "{B692A3AD-DDD4-42C9-9125-21C351DE55FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Utilities.Launcher", "src\utilities\VoidHuntersRevived.Utilities.Launcher\VoidHuntersRevived.Utilities.Launcher.csproj", "{49CFF7D3-13A7-406F-9041-939EC6388D4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Utilities.Launcher", "src\utilities\VoidHuntersRevived.Utilities.Launcher\VoidHuntersRevived.Utilities.Launcher.csproj", "{49CFF7D3-13A7-406F-9041-939EC6388D4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Client.Launcher", "src\clients\VoidHuntersRevived.Client.Launcher\VoidHuntersRevived.Client.Launcher.csproj", "{CA7E68E8-6F31-4DAE-82C4-5BD7669BA683}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Client.Launcher", "src\clients\VoidHuntersRevived.Client.Launcher\VoidHuntersRevived.Client.Launcher.csproj", "{CA7E68E8-6F31-4DAE-82C4-5BD7669BA683}"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "VoidHuntersRevived.Installer.Windows", "src\installers\VoidHuntersRevived.Installer.Windows\VoidHuntersRevived.Installer.Windows.wixproj", "{BC5DFDCF-16AE-45F8-BB33-B7F229754475}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "installers", "installers", "{0C104D53-33E4-4163-BC15-AF986A770FB0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Utilities.Server.Web", "src\utilities\VoidHuntersRevived.Utilities.Server.Web\VoidHuntersRevived.Utilities.Server.Web.csproj", "{C51B9905-F44E-4A5D-8A65-AED15D599D08}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{74BBE11E-3824-4554-A742-79CBA1636D29}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
