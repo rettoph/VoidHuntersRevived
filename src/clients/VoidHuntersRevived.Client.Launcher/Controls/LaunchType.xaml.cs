@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -11,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using VoidHuntersRevived.Client.Launcher.Models;
 using VoidHuntersRevived.Client.Launcher.Services;
 
 namespace VoidHuntersRevived.Client.Launcher.Controls
@@ -42,11 +44,50 @@ namespace VoidHuntersRevived.Client.Launcher.Controls
             this.Name = name;
             this.Description = description;
 
-            if (LauncherService.CheckUpdate(this.Handle)) 
+            this.LaunchButton.IsEnabled = false;
+
+            (new Thread(new ThreadStart(() =>
             {
-                _shouldUpdate = true;
-                this.LaunchButton.Content = "Update & Launch";
-            }
+                var attempt = 0;
+                Release latest = default;
+
+                while(latest == default && attempt < 5)
+                {
+                    attempt++;
+
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        this.LaunchButton.Content = $"({attempt}) Checking for Updates...";
+                    });
+
+                    latest = LauncherService.Info(this.Handle);
+                }
+
+                if(latest == default)
+                {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        this.LaunchButton.Content = $"Update Server Unavailable";
+                    });
+                }
+                else if (!Directory.Exists(latest?.DownloadPath))
+                {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        _shouldUpdate = true;
+                        this.LaunchButton.Content = "Update & Launch";
+                        this.LaunchButton.IsEnabled = true;
+                    });
+                }
+                else
+                {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        this.LaunchButton.Content = "Launch";
+                        this.LaunchButton.IsEnabled = true;
+                    });
+                }
+            }))).Start();
 
             this.LaunchButton.Click += this.HandleLaunchClicked;
         }
@@ -58,7 +99,10 @@ namespace VoidHuntersRevived.Client.Launcher.Controls
             {
                 if (_shouldUpdate)
                 {
-                    this.LaunchButton.Content = "Updating...";
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        this.LaunchButton.Content = "Updating...";
+                    });
 
                     var proc = LauncherService.Update(this.Handle);
 
@@ -79,9 +123,12 @@ namespace VoidHuntersRevived.Client.Launcher.Controls
                     }
                 }
 
-                this.LaunchButton.Content = "Launching...";
-                LauncherService.Launch(this.Handle);
+                this.Dispatcher.Invoke(() =>
+                {
+                    this.LaunchButton.Content = "Launching...";
+                });
 
+                LauncherService.Launch(this.Handle);
                 Thread.Sleep(2000);
 
                 this.Dispatcher.Invoke(() =>

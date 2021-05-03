@@ -46,8 +46,8 @@ namespace VoidHuntersRevived.Utilities.Launcher
 
 
         public String ReleaseServer { get; set; } = "http://retto.ph";
-        public String GetReleaseEndpoint { get; set; } = "release";
-        public String GetLatestEndpoint { get; set; } = "release/latest";
+        public String GetReleaseEndpoint { get; set; } = "releases";
+        public String GetLatestEndpoint { get; set; } = "releases/latest";
         public String InstallDirectory { get; set; } = Path.Combine(Directory.GetCurrentDirectory(), "data");
 
         public Dictionary<String, String> Executables { get; set; } = new[] {
@@ -57,7 +57,9 @@ namespace VoidHuntersRevived.Utilities.Launcher
             ("client-launcher", "VoidHuntersRevived.Client.Launcher")
         }.ToDictionary(keySelector: kvp => kvp.Item1, elementSelector: kvp => kvp.Item2);
 
-        public void SaveChanged()
+        public HashSet<Release> Releases { get; set; } = new HashSet<Release>();
+
+        public void SaveChanges()
         {
             File.WriteAllText(Settings.DefaultPath, JsonConvert.SerializeObject(this));
         }

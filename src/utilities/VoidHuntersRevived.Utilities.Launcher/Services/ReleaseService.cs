@@ -11,85 +11,50 @@ using VoidHuntersRevived.Utilities.Launcher.Models;
 
 namespace VoidHuntersRevived.Utilities.Launcher.Services
 {
-    class ReleaseService
+    public class ReleaseService
     {
+        private List<Release> Releases { get; set; }
+
+        public readonly String RID;
+        public readonly String Type;
+
         private static RestClient _releaseServer;
-        private static Release _remoteLatest;
+
+        public ReleaseService(String rid, String type)
+        {
+            this.RID = rid;
+            this.Type = type;
+            this.Releases = Settings.Default.Releases
+                .Where(r => r.Type == this.Type && r.RID == this.RID)
+                .OrderBy(r => r.Version)
+                .ToList();
+        }
 
         static ReleaseService()
         {
             _releaseServer = new RestClient(Settings.Default.ReleaseServer);
-            _remoteLatest = null;
         }
 
-        public static Release GetRemote(IConsole console, String type, String version = "latest", String rid = null)
+        public Release TryGetVersion(String version)
         {
-            rid ??= RuntimeIdentifierService.Get();
-
-            return _releaseServer.Execute<Release>(new RestRequest($"{Settings.Default.GetReleaseEndpoint}?type={type}&rid={rid}&version={version}", Method.GET))?.Data;
+            return this.Releases.FirstOrDefault(r => r.Version == version) ?? _releaseServer.Execute<Release>(new RestRequest($"{Settings.Default.GetReleaseEndpoint}/{version}?type={this.Type}&rid={this.RID}", Method.GET))?.Data;
         }
 
-        public static String GetLatest(String type)
+        public static Release TryGetLatest(String rid, String type, Boolean checkRemote = true)
         {
-            if (_remoteLatest == default)
-                _remoteLatest = _releaseServer.Execute<Release>(new RestRequest(Settings.Default.GetLatestEndpoint, Method.GET))?.Data;
-
-            return _remoteLatest?.Version ?? ReleaseService.LocalVersions(type).Last();
-        }
-
-        public static void LaunchLocal(IConsole console, String type, String version = "latest")
-        {   
-            try
+            if(checkRemote)
             {
-                if (version == "latest")
-                    version = Directory.GetDirectories(Path.Combine(Settings.Default.InstallDirectory, type)).OrderByDescending(v => v).First();
-
-                String excecutable = Settings.Default.Executables[type];
-                String path = Path.Combine(Settings.Default.InstallDirectory, type, version);
-
-                console.Out.Write($"Attempting to launch '{Path.Combine(path, excecutable)}'...\n");
-                Process.Start(new ProcessStartInfo()
-                {
-                    FileName = Path.Combine(path, excecutable),
-                    WorkingDirectory = path,
-                    RedirectStandardOutput = false,
-                    CreateNoWindow = false
-                });
-
-                Process.GetCurrentProcess().Kill();
+                var remote = _releaseServer.Execute<Release>(new RestRequest($"{Settings.Default.GetLatestEndpoint}?type={type}&rid={rid}", Method.GET))?.Data;
+                return Settings.Default.Releases.FirstOrDefault(r => r == remote) 
+                    ?? remote 
+                    ?? Settings.Default.Releases.Where(r => r.RID == rid && r.Type == type)
+                            .OrderByDescending(r => r.Version)
+                            .Last();
             }
-            catch(Exception e)
-            {
-                console.Error.Write($"Error attempting to launch {type} - {version}. If the issue persists please try a force update.\n{e.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Determin whether or not the system has the requested version installed.
-        /// </summary>
-        /// <returns></returns>
-        public static Boolean HasLocal(String type, String version)
-        {
-            if (Directory.Exists(Path.Combine(Settings.Default.InstallDirectory, type)))
-            {
-                var directories = Directory.GetDirectories(Path.Combine(Settings.Default.InstallDirectory, type));
-
-
-                return directories.Contains(Path.Combine(Settings.Default.InstallDirectory, type, version));
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Return a list of all downloaded versions of a specific type.
-        /// This is 100% based on file names.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static String[] LocalVersions(String type)
-        {
-            return Directory.GetDirectories(Path.Combine(Settings.Default.InstallDirectory, type));
+            
+            return Settings.Default.Releases.Where(r => r.RID == rid && r.Type == type)
+                .OrderByDescending(r => r.Version)
+                .Last();
         }
     }
 }

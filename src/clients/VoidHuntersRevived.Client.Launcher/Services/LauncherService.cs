@@ -1,8 +1,10 @@
 ﻿using Microsoft.Win32;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using VoidHuntersRevived.Client.Launcher.Models;
 
 namespace VoidHuntersRevived.Client.Launcher.Services
 {
@@ -17,34 +19,38 @@ namespace VoidHuntersRevived.Client.Launcher.Services
             _path = Registry.GetValue("HKEY_CURRENT_USER\\Software\\rettoph\\VoidHuntersRevived", "InstallDir", "undefined").ToString();
         }
 
-        public static Process Run(String args, Boolean useShellExecute = false, Boolean redirectStandardOutput = true, Boolean createNoWindow = true)
+        public static Process Run(String args, Boolean redirect = true)
         {
             return Process.Start(new ProcessStartInfo()
             {
                 FileName = System.IO.Path.Combine(_path, _excecutable),
                 WorkingDirectory = _path,
                 Arguments = args,
-                UseShellExecute = useShellExecute,
-                RedirectStandardOutput = redirectStandardOutput,
-                CreateNoWindow = createNoWindow
+                UseShellExecute = false,
+                RedirectStandardOutput = redirect,
+                RedirectStandardError = redirect
             });
         }
 
-        public static Boolean CheckUpdate(String type)
+        public static Release Info(String type)
         {
-            var proc = LauncherService.Run($"{type} --check");
+            var proc = LauncherService.Run($"{type} --action info");
 
-            return Boolean.Parse(proc.StandardOutput.ReadLine());
+            proc.WaitForExit();
+
+            var output = proc.StandardOutput.ReadToEnd();
+
+            return JsonConvert.DeserializeObject<Release>(output);
         }
 
         public static Process Update(String type)
         {
-            return LauncherService.Run($"{type} --update");
+            return LauncherService.Run($"{type} --action update");
         }
 
         public static Process Launch(String type)
         {
-            return LauncherService.Run($"{type} --launch", false, false, false);
+            return LauncherService.Run($"{type} --action launch", false);
         }
     }
 }

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Release = VoidHuntersRevived.Utilities.Server.Web.Models.Release;
-using Asset = VoidHuntersRevived.Utilities.Server.Web.Models.Asset;
 using VoidHuntersRevived.Utilities.Server.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
@@ -27,65 +26,47 @@ namespace VoidHuntersRevived.Utilities.Server.Web.Services
         #endregion
 
         #region API Methods
-        public async Task<Release> UpdateLatest()
+        public async Task UpdateLatest()
         {
             var releases = await _client.Repository.Release.GetAll(WebConstants.ProjectOwner, WebConstants.ProjectName);
             var truth = releases.Aggregate((r1, r2) => r1.CreatedAt > r2.CreatedAt ? r1 : r2);
 
-            var latest = _context.Release.Include(r => r.Assets).OrderByDescending(p => p.Id).FirstOrDefault();
+            var version = truth.TagName;
+            var updates = false;
 
-            if (latest?.Version != truth.TagName)
+            foreach(var asset in truth.Assets)
             {
-                latest = new Release()
-                {
-                    ReleaseDate = truth.CreatedAt.DateTime,
-                    Version = truth.TagName,
-                    Assets = truth.Assets.Select(a =>
-                    {
-                        var match = Regex.Match(a.Name, "vhr_(.+)_(.+)_(.+)\\....");
+                var match = Regex.Match(asset.Name, "vhr_(.+)_(.+)_(.+)\\....");
+                var rid = match.Groups[3].Value;
+                var type = match.Groups[2].Value;
+                var downloadURL = asset.BrowserDownloadUrl;
 
-                        return new Asset()
-                        {
-                            RID = match.Groups[3].Value,
-                            Type = match.Groups[2].Value,
-                            DownloadURL = a.BrowserDownloadUrl
-                        };
-                    }).ToList()
-                };
-                _context.Release.Add(latest);
-                _context.SaveChanges();
+                if (this.GetRelease(type, rid, version) == default)
+                { // Create a new instance...
+                    _context.Release.Add(new Release()
+                    { 
+                        Version = version,
+                        RID = rid,
+                        Type = type,
+                        DownloadUrl = downloadURL,
+                        CreatedAt = truth.CreatedAt.DateTime
+                    });
+
+                    updates = true;
+                }
             }
 
-            return latest;
+            if (updates)
+                _context.SaveChanges();
         }
-        public async Task<Release> GetRelease(String type, String rid, String version)
+        public Release GetRelease(String type, String rid, String version)
         {
-            Release release = null;
-
             if (version == "latest")
-                release = _context.Release.Include(r => r.Assets).Select(r => new Release()
-                {
-                    Id = r.Id,
-                    ReleaseDate = r.ReleaseDate,
-                    Assets = r.Assets.Where(a => type == a.Type && rid == a.RID).ToList(),
-                    Version = r.Version
-                }).OrderByDescending(p => p.Id).FirstOrDefault();
+                return _context.Release.Where(r => r.RID == rid && r.Type == type)
+                    .OrderByDescending(r => r.Version)
+                    .FirstOrDefault();
             else
-                release = _context.Release.Include(r => r.Assets)
-                    .Where(r => r.Version == version)
-                    .Select(r => new Release() {
-                        Id = r.Id,
-                        ReleaseDate = r.ReleaseDate,
-                        Assets = r.Assets.Where(a => type == a.Type && rid == a.RID).ToList(),
-                        Version = r.Version
-                    }).FirstOrDefault();
-
-            return release;
-        }
-
-        public async Task<Release> GetLatest()
-        {
-            return _context.Release.OrderByDescending(r => r.ReleaseDate).FirstOrDefault();
+                return _context.Release.FirstOrDefault(r => r.Version == version && r.RID == rid && r.Type == type);
         }
         #endregion
     }

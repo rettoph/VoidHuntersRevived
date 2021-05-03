@@ -15,7 +15,6 @@ namespace VoidHuntersRevived.Utilities.Server.Web.Data
         }
 
         public DbSet<Release> Release { get; set; }
-        public DbSet<Asset> Assets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,19 +25,11 @@ namespace VoidHuntersRevived.Utilities.Server.Web.Data
                 builder.ToTable("Releases");
 
                 builder.Property(r => r.Id).IsRequired();
-                builder.Property(r => r.ReleaseDate).IsRequired();
                 builder.Property(r => r.Version).IsRequired();
-            });
-
-            modelBuilder.Entity<Asset>(builder =>
-            {
-                builder.ToTable("Assets");
-
-                builder.Property(a => a.Id).IsRequired();
                 builder.Property(a => a.RID).IsRequired();
                 builder.Property(a => a.Type).IsRequired();
-                builder.Property(a => a.DownloadURL).IsRequired();
-                builder.HasOne(a => a.Release).WithMany(r => r.Assets);
+                builder.Property(a => a.DownloadUrl).IsRequired();
+                builder.Property(r => r.CreatedAt).IsRequired();
             });
         }
     }

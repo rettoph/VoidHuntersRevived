@@ -89,7 +89,7 @@
           Target="[INSTALLFOLDER]\VoidHuntersRevived.Utilities.Launcher.exe"
           Directory="ProgramMenuSubfolder"
           WorkingDirectory="INSTALLFOLDER"
-          Arguments="client-launcher --launch"
+          Arguments="client-launcher --action launch"
           Icon="icon.ico"
         />
 

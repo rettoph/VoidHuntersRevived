@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.CommandLine;
+using System.CommandLine.IO;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -15,78 +18,132 @@ namespace VoidHuntersRevived.Utilities.Launcher.Models
     {
         private Boolean _downloading;
         private Single _lastProgress;
+        private String _downloadPath;
 
         public Int32 Id { get; set; }
-        public DateTime ReleaseDate { get; set; }
         public String Version { get; set; }
-        public List<Asset> Assets { get; set; }
-
-        public void Download(IConsole console)
+        public String RID { get; set; }
+        public String Type { get; set; }
+        public String DownloadUrl { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public String DownloadPath
         {
+            get => _downloadPath ?? Path.Combine(Settings.Default.InstallDirectory, this.Version, this.RID, this.Type);
+            set => _downloadPath = value;
+        }
+        public String Executable => Path.Combine(this.DownloadPath, Settings.Default.Executables[this.Type]);
+
+        [JsonIgnore]
+        public Boolean Downloaded => Directory.Exists(this.DownloadPath);
+
+        public void Launch(IConsole console, Boolean validateDownload = true)
+        {
+            if (validateDownload && !this.Downloaded)
+                this.Download(console);
+
+            try
+            {
+                console.Out.WriteLine($"Attempting to launch '{this.Executable}'...\n");
+                Process.Start(new ProcessStartInfo()
+                {
+                    FileName = this.Executable,
+                    WorkingDirectory = this.DownloadPath,
+                    RedirectStandardOutput = false,
+                    RedirectStandardError = false,
+                    CreateNoWindow = false,
+                    WindowStyle = ProcessWindowStyle.Normal,
+                });
+
+                // Process.GetCurrentProcess().Kill();
+                Environment.Exit(0);
+            }
+            catch (Exception e)
+            {
+                console.Error.WriteLine($"Error attempting to launch {this.Version} - {this.RID} - {this.Type} at '{this.DownloadPath}'. If the issue persists please try a force update.\n{e.Message}");
+            }
+        }
+        public void Download(IConsole console, String path = null)
+        {
+            this.DownloadPath = path ?? this.DownloadPath;
             var tempDirectory = Path.Combine(Settings.Default.InstallDirectory, "temp");
 
             if (Directory.Exists(tempDirectory))
                 Directory.Delete(tempDirectory, true);
 
-            foreach (Asset asset in this.Assets)
+            console.Out.WriteLine($"[Update] Downloading {this.Type} - v{this.Version} to '{this.DownloadPath}'");
+
+            using (WebClient wc = new WebClient())
             {
-                var targetDirectory = Path.Combine(Settings.Default.InstallDirectory, asset.Type, this.Version);
+                var file = Path.Combine(tempDirectory, Path.GetFileName(this.DownloadUrl));
+                Directory.CreateDirectory(tempDirectory);
 
-                console.Out.Write($"[Update] Downloading {asset.Type} - v{this.Version} to '{targetDirectory}'\n");
-
-                using (WebClient wc = new WebClient())
+                wc.DownloadProgressChanged += (s, a) =>
                 {
-                    var file = Path.Combine(tempDirectory, Path.GetFileName(asset.downloadURL));
-                    Directory.CreateDirectory(tempDirectory);
+                    if (_lastProgress == a.ProgressPercentage)
+                        return;
 
-                    wc.DownloadProgressChanged += (s, a) =>
+                    _lastProgress = a.ProgressPercentage;
+
+                    console.Out.WriteLine($"[Progress] {(Single)a.ProgressPercentage / 100f}");
+
+                    if (a.ProgressPercentage == 100)
                     {
-                        if (_lastProgress == a.ProgressPercentage)
-                            return;
-
-                        _lastProgress = a.ProgressPercentage;
-
-                        console.Out.Write($"[Progress] {(Single)a.ProgressPercentage / 100f}\n");
-
-                        if (a.ProgressPercentage == 100)
-                        {
-                            if (Path.GetExtension(file) == ".zip")
-                            { // Unzip...
-                                console.Out.Write($"[Update] Extracting {Path.GetFileName(file)}...\n");
-                                ZipFile.ExtractToDirectory(file, tempDirectory);
-                                File.Delete(file);
-                            }
-
-                            try
-                            {
-                                console.Out.Write($"[Update] Copying to '{targetDirectory}'...\n");
-                                Directory.CreateDirectory(targetDirectory);
-                                CopyFilesRecursively(new DirectoryInfo(tempDirectory), new DirectoryInfo(targetDirectory));
-                                Directory.Delete(tempDirectory, true);
-                            }
-                            catch (Exception e)
-                            {
-                                console.Error.Write($"{e.Message}\n");
-                                Directory.Delete(targetDirectory, true);
-                                Directory.Delete(tempDirectory, true);
-                            }
-                            finally
-                            {
-                                console.Out.Write("[Update] Done.\n");
-                                _downloading = false;
-                            }
+                        if (Path.GetExtension(file) == ".zip")
+                        { // Unzip...
+                            console.Out.WriteLine($"[Update] Extracting {Path.GetFileName(file)}...");
+                            ZipFile.ExtractToDirectory(file, tempDirectory);
+                            File.Delete(file);
                         }
-                    };
 
-                    _downloading = true;
-                    wc.DownloadFileAsync(
-                        new System.Uri(asset.downloadURL),
-                        file
-                    );
+                        try
+                        {
+                            console.Out.WriteLine($"[Update] Copying to '{this.DownloadPath}'...");
+                            Directory.CreateDirectory(this.DownloadPath);
+                            CopyFilesRecursively(new DirectoryInfo(tempDirectory), new DirectoryInfo(this.DownloadPath));
+                            Directory.Delete(tempDirectory, true);
+                        }
+                        catch (Exception e)
+                        {
+                            console.Error.WriteLine($"{e.Message}");
+                            Directory.Delete(this.DownloadPath, true);
+                            Directory.Delete(tempDirectory, true);
+                        }
+                        finally
+                        {
+                            console.Out.WriteLine("[Update] Done.");
+                            _downloading = false;
 
-                    while (_downloading)
-                        Thread.Sleep(100);
+                            Settings.Default.Releases.Add(this);
+                            Settings.Default.SaveChanges();
+                        }
+                    }
+                };
+
+                _downloading = true;
+                wc.DownloadFileAsync(
+                    new System.Uri(this.DownloadUrl),
+                    file
+                );
+
+                while (_downloading)
+                    Thread.Sleep(100);
+            }
+        }
+
+        public void Delete(IConsole console)
+        {
+            try
+            {
+                if (this.Downloaded)
+                {
+                    console.Out.WriteLine($"Deleting '{this.DownloadPath}'...");
+
+                    Directory.Delete(this.DownloadPath, true);
                 }
+            }
+            catch(Exception e)
+            {
+                console.Error.WriteLine($"Error Deleting '{this.DownloadPath}':\n{e.Message}");
             }
         }
 
@@ -97,5 +154,9 @@ namespace VoidHuntersRevived.Utilities.Launcher.Models
             foreach (FileInfo file in source.GetFiles())
                 file.CopyTo(Path.Combine(target.FullName, file.Name), true);
         }
+
+        public Boolean Equals(Release r)
+            => r.Version == this.Version && r.RID == this.RID && r.Type == this.Type;
+
     }
 }

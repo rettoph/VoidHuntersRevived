@@ -12,7 +12,7 @@ using VoidHuntersRevived.Utilities.Server.Web.Services;
 
 namespace VoidHuntersRevived.Utilities.Server.Web.Controllers
 {
-    [Route("release")]
+    [Route("releases")]
     public class ReleaseController : Controller
     {
         private readonly GitHub _github;
@@ -22,21 +22,23 @@ namespace VoidHuntersRevived.Utilities.Server.Web.Controllers
             _github = github;
         }
 
-        public async Task<IActionResult> Index(String type = "", String rid = "", String version = "latest")
-        {
-            return Json(await _github.GetRelease(type, rid, version));
-        }
-
         [Route("update")]
         public async Task<IActionResult> Update()
         {
-            return Json(await _github.UpdateLatest());
+            await _github.UpdateLatest();
+            return Json(true);
         }
 
         [Route("latest")]
-        public async Task<IActionResult> LatestVersion(String type)
+        public async Task<IActionResult> Latest(String type, String rid)
         {
-            return Json(await _github.GetLatest());
+            return Json(_github.GetRelease(type, rid, "latest"));
+        }
+
+        [Route("{version}")]
+        public async Task<IActionResult> Version(String version, String type, String rid)
+        {
+            return Json(_github.GetRelease(type, rid, version));
         }
     }
 }

@@ -12,10 +12,10 @@ namespace VoidHuntersRevived.Utilities.Server.Web.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Int32 Id { get; set; }
-
-        public DateTime ReleaseDate { get; set; }
         public String Version { get; set; }
-
-        public List<Asset> Assets { get; set; }
+        public String RID { get; set; }
+        public String Type { get; set; }
+        public String DownloadUrl { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

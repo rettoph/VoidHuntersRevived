@@ -14,8 +14,11 @@ namespace VoidHuntersRevived.Utilities.Server.Web.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ReleaseDate = table.Column<DateTime>(nullable: false),
-                    Version = table.Column<string>(nullable: false)
+                    Version = table.Column<string>(nullable: false),
+                    RID = table.Column<string>(nullable: false),
+                    Type = table.Column<string>(nullable: false),
+                    DownloadUrl = table.Column<string>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
