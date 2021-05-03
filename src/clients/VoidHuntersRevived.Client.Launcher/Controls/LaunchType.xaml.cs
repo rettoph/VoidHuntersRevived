@@ -145,11 +145,11 @@ namespace VoidHuntersRevived.Client.Launcher.Controls
 
                 Thread.Sleep(2000);
 
-                this.ProgressBar.Visibility = Visibility.Hidden;
-                this.Description = _defaultDescription;
-
                 this.Dispatcher.Invoke(() =>
                 {
+                    this.ProgressBar.Visibility = Visibility.Hidden;
+                    this.Description = _defaultDescription;
+
                     this.LaunchButton.IsEnabled = true;
                     this.LaunchButton.Content = "Launch";
                 });
