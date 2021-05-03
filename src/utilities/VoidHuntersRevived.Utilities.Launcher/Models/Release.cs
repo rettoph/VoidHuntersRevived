@@ -36,14 +36,14 @@ namespace VoidHuntersRevived.Utilities.Launcher.Models
         [JsonIgnore]
         public Boolean Downloaded => Directory.Exists(this.DownloadPath);
 
-        public void Launch(IConsole console, Boolean validateDownload = true)
+        public void Launch(IConsole console, String path = null)
         {
-            if (validateDownload && !this.Downloaded)
-                this.Download(console);
+            if (!this.Downloaded)
+                this.Download(console, path);
 
             try
             {
-                console.Out.WriteLine($"Attempting to launch '{this.Executable}'...\n");
+                console.Out.WriteLine($"[Update] Attempting to launch '{this.Executable}'...\n");
                 Process.Start(new ProcessStartInfo()
                 {
                     FileName = this.Executable,
@@ -59,11 +59,14 @@ namespace VoidHuntersRevived.Utilities.Launcher.Models
             }
             catch (Exception e)
             {
-                console.Error.WriteLine($"Error attempting to launch {this.Version} - {this.RID} - {this.Type} at '{this.DownloadPath}'. If the issue persists please try a force update.\n{e.Message}");
+                console.Error.WriteLine($"[Error] Error attempting to launch {this.Version} - {this.RID} - {this.Type} at '{this.DownloadPath}'. If the issue persists please try a force update.\n{e.Message}");
             }
         }
         public void Download(IConsole console, String path = null)
         {
+            Console.WriteLine(path);
+            Console.WriteLine(this.DownloadPath);
+            Console.WriteLine(path ?? this.DownloadPath);
             this.DownloadPath = path ?? this.DownloadPath;
             var tempDirectory = Path.Combine(Settings.Default.InstallDirectory, "temp");
 
@@ -99,7 +102,7 @@ namespace VoidHuntersRevived.Utilities.Launcher.Models
                         {
                             console.Out.WriteLine($"[Update] Copying to '{this.DownloadPath}'...");
                             Directory.CreateDirectory(this.DownloadPath);
-                            CopyFilesRecursively(new DirectoryInfo(tempDirectory), new DirectoryInfo(this.DownloadPath));
+                            this.CopyFilesRecursive(console, new DirectoryInfo(tempDirectory), new DirectoryInfo(this.DownloadPath));
                             Directory.Delete(tempDirectory, true);
                         }
                         catch (Exception e)
@@ -110,11 +113,12 @@ namespace VoidHuntersRevived.Utilities.Launcher.Models
                         }
                         finally
                         {
-                            console.Out.WriteLine("[Update] Done.");
                             _downloading = false;
 
                             Settings.Default.Releases.Add(this);
                             Settings.Default.SaveChanges();
+
+                            console.Out.WriteLine("[Update] Done.");
                         }
                     }
                 };
@@ -136,27 +140,42 @@ namespace VoidHuntersRevived.Utilities.Launcher.Models
             {
                 if (this.Downloaded)
                 {
-                    console.Out.WriteLine($"Deleting '{this.DownloadPath}'...");
+                    console.Out.WriteLine($"[Update] Deleting '{this.DownloadPath}'...");
 
                     Directory.Delete(this.DownloadPath, true);
                 }
             }
             catch(Exception e)
             {
-                console.Error.WriteLine($"Error Deleting '{this.DownloadPath}':\n{e.Message}");
+                console.Error.WriteLine($"[Error] Error Deleting '{this.DownloadPath}':\n{e.Message}");
             }
         }
 
-        private static void CopyFilesRecursively(DirectoryInfo source, DirectoryInfo target)
+        private void GetFileInfoRecursive(DirectoryInfo source, DirectoryInfo target, List<(FileInfo file, DirectoryInfo target)> files)
         {
             foreach (DirectoryInfo dir in source.GetDirectories())
-                CopyFilesRecursively(dir, target.CreateSubdirectory(dir.Name));
+                this.GetFileInfoRecursive(dir, target.CreateSubdirectory(dir.Name), files);
             foreach (FileInfo file in source.GetFiles())
-                file.CopyTo(Path.Combine(target.FullName, file.Name), true);
+                files.Add((file, target));
+        }
+
+        private void CopyFilesRecursive(IConsole console, DirectoryInfo source, DirectoryInfo target)
+        {
+            var files = new List<(FileInfo file, DirectoryInfo target)>();
+            this.GetFileInfoRecursive(source, target, files);
+
+            for(var i=0; i<files.Count; i++)
+            {
+                var info = files[i];
+
+                console.Out.WriteLine($"[Progress] {(Single)i / (Single)files.Count}");
+                console.Out.WriteLine($"[Update] Copying '{info.file.Name}' to '{info.target.FullName}'...");
+
+                info.file.CopyTo(Path.Combine(info.target.FullName, info.file.Name), true);
+            }
         }
 
         public Boolean Equals(Release r)
             => r.Version == this.Version && r.RID == this.RID && r.Type == this.Type;
-
     }
 }

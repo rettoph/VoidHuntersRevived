@@ -15,18 +15,19 @@ namespace VoidHuntersRevived.Utilities.Launcher
             var command = new RootCommand();
             command.AddArgument(new Argument<String>("type", "The application type to launch."));
             command.AddArgument(new Argument<String>("path", () => null, "An optional path override for download directories."));
-            command.AddArgument(new Argument<String>("version", () => "latest", "The version in question"));
+            command.AddArgument(new Argument<String>("version", () => "latest", "The version in question."));
             command.AddArgument(new Argument<String>("rid", () => RuntimeIdentifierService.Get(), "The local Runtime Identifier. If none is defined one will be determined based on the current system."));
+            command.AddOption(new Option<Boolean>("--remote", () => true, "Determin if the remote server should be queried first."));
             command.AddOption(new Option<LauncherAction>("--action", "The primary action to take place."));
 
-            command.Handler = CommandHandler.Create<String, String, String, String, LauncherAction, IConsole>((type, path, rid, version, action, console) =>
+            command.Handler = CommandHandler.Create<String, String, String, String, Boolean, LauncherAction, IConsole>((type, path, rid, version, remote, action, console) =>
             {
                 try
                 {
                     Release release;
                     if (version == "latest")
                     {
-                        release = ReleaseService.TryGetLatest(rid, type);
+                        release = ReleaseService.TryGetLatest(rid, type, remote);
                     }
                     else
                     {
@@ -37,10 +38,7 @@ namespace VoidHuntersRevived.Utilities.Launcher
                     switch (action)
                     {
                         case LauncherAction.Launch:
-                            release.Launch(console);
-                            break;
-                        case LauncherAction.LaunchLocal:
-                            release.Launch(console, false);
+                            release.Launch(console, path);
                             break;
                         case LauncherAction.Update:
                             release.Download(console, path);

@@ -23,6 +23,7 @@ namespace VoidHuntersRevived.Client.Launcher.Controls
     public partial class LaunchType : UserControl
     {
         private Boolean _shouldUpdate;
+        private Boolean _killOnLaunch;
 
         public String Handle { get; set; }
         public new String Name
@@ -36,9 +37,11 @@ namespace VoidHuntersRevived.Client.Launcher.Controls
             set => this.DescriptionTextBlock.Text = value;
         }
 
-        public LaunchType(String handle, String name, String description)
+        public LaunchType(String handle, String name, String description, Boolean killOnLaunch = false)
         {
             InitializeComponent();
+
+            _killOnLaunch = killOnLaunch;
 
             this.Handle = handle;
             this.Name = name;
@@ -121,6 +124,8 @@ namespace VoidHuntersRevived.Client.Launcher.Controls
                             }
                         });
                     }
+
+                    _shouldUpdate = false;
                 }
 
                 this.Dispatcher.Invoke(() =>
@@ -128,7 +133,12 @@ namespace VoidHuntersRevived.Client.Launcher.Controls
                     this.LaunchButton.Content = "Launching...";
                 });
 
+                Thread.Sleep(100);
                 LauncherService.Launch(this.Handle);
+
+                if (this._killOnLaunch) // Auto kill after launch...
+                    Environment.Exit(0);
+
                 Thread.Sleep(2000);
 
                 this.Dispatcher.Invoke(() =>

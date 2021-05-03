@@ -16,7 +16,8 @@ namespace VoidHuntersRevived.Client.Launcher.Services
         static LauncherService()
         {
             _excecutable = "VoidHuntersRevived.Utilities.Launcher";
-            _path = Registry.GetValue("HKEY_CURRENT_USER\\Software\\rettoph\\VoidHuntersRevived", "InstallDir", "undefined").ToString();
+            _path = Registry.GetValue("HKEY_CURRENT_USER\\Software\\rettoph\\VoidHuntersRevived", "InstallDir", "undefined")?.ToString()
+                ?? "C:\\Users\\Anthony\\source\\repos\\VoidHuntersRevived\\src\\utilities\\VoidHuntersRevived.Utilities.Launcher\\bin\\Debug\\net5.0";
         }
 
         public static Process Run(String args, Boolean redirect = true)
@@ -28,13 +29,13 @@ namespace VoidHuntersRevived.Client.Launcher.Services
                 Arguments = args,
                 UseShellExecute = false,
                 RedirectStandardOutput = redirect,
-                RedirectStandardError = redirect
+                RedirectStandardError = redirect,
             });
         }
 
-        public static Release Info(String type)
+        public static Release Info(String type, Boolean remote = true)
         {
-            var proc = LauncherService.Run($"{type} --action info");
+            var proc = LauncherService.Run($"{type} --action info --remote {remote}");
 
             proc.WaitForExit();
 

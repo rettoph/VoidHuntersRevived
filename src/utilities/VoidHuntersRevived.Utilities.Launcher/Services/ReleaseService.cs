@@ -49,12 +49,13 @@ namespace VoidHuntersRevived.Utilities.Launcher.Services
                     ?? remote 
                     ?? Settings.Default.Releases.Where(r => r.RID == rid && r.Type == type)
                             .OrderByDescending(r => r.Version)
-                            .Last();
+                            .FirstOrDefault();
             }
             
             return Settings.Default.Releases.Where(r => r.RID == rid && r.Type == type)
                 .OrderByDescending(r => r.Version)
-                .Last();
+                .FirstOrDefault()
+                ?? _releaseServer.Execute<Release>(new RestRequest($"{Settings.Default.GetLatestEndpoint}?type={type}&rid={rid}", Method.GET))?.Data;
         }
     }
 }

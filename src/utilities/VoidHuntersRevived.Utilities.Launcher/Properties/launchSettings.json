@@ -2,7 +2,7 @@
   "profiles": {
     "VoidHuntersRevived.Utilities.Launcher": {
       "commandName": "Project",
-      "commandLineArgs": "server --action launch"
+      "commandLineArgs": "client-launcher --remote false --action info"
     }
   }
 }
