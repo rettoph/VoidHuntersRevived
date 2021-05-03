@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Client.Launcher.Services
         {
             _excecutable = "VoidHuntersRevived.Utilities.Launcher";
             _path = Registry.GetValue("HKEY_CURRENT_USER\\Software\\rettoph\\VoidHuntersRevived", "InstallDir", "undefined")?.ToString()
-                ?? "C:\\Users\\Anthony\\source\\repos\\VoidHuntersRevived\\src\\utilities\\VoidHuntersRevived.Utilities.Launcher\\bin\\Debug\\net5.0";
+                ?? "";
         }
 
         public static Process Run(String args, Boolean redirect = true)

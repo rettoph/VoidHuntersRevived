@@ -8,4 +8,10 @@
   <String Id="Language">1033</String>
 
   <String Id="DowngradeErrorMessage">A newer version of [ProductName] is already installed.</String>
+
+  <String Id="LicenseAgreementDlgTitle">{\Font_Title}End-User License Agreement</String>
+  <String Id="LicenseAgreementDlgDescription">{\Font_SubTitle}Please read the following license agreement carefully</String>
+
+  <String Id="InstallDirDlgTitle">{\Font_Title}End-User License Agreement</String>
+  <String Id="InstallDirDlgDescription">{\Font_SubTitle}Click Next to install to the default folder or click Change to choose another.</String>
 </WixLocalization>

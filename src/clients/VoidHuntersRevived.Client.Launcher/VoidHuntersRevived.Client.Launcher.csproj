@@ -4,10 +4,23 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Fonts\Biome W04 Bold.ttf" />
+    <None Remove="Resources\Fonts\Biome W04 Light.ttf" />
+    <None Remove="VoidHuntersRevived.Client.Desktop_AUI6SFMpaH.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Fonts\Biome W04 Bold.ttf" />
+    <Resource Include="Resources\Fonts\Biome W04 Light.ttf" />
+    <Resource Include="Resources\MainBackground.png" />
   </ItemGroup>
 
 </Project>

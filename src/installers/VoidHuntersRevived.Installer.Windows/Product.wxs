@@ -50,6 +50,35 @@
       <ComponentGroupRef Id="ProductComponents" />
 
     </Feature>
+
+    <!-- Configure UI -->
+    <UI>
+      <UIRef Id="WixUI_InstallDir" />
+      
+      <TextStyle Id="Font_Title" FaceName="Tahoma" Size="12" Red="255" Green="255" Blue="255"  />
+      <TextStyle Id="Font_SubTitle" FaceName="Tahoma" Size="8" Red="255" Green="255" Blue="255"  />
+      
+      <Publish Dialog="ExitDialog"
+        Control="Finish"
+        Event="DoAction"
+        Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed
+      </Publish>
+    </UI>
+
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER"/>
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch !(loc.ProductName_$(var.Platform))" />
+    
+    <CustomAction 
+      Id="LaunchApplication" 
+      Impersonate="yes" 
+      Directory="INSTALLFOLDER"
+      ExeCommand="[INSTALLFOLDER]VoidHuntersRevived.Utilities.Launcher.exe client-launcher --remote false --action launch" 
+      Return="asyncNoWait" 
+      />
+  
+    <WixVariable Id="WixUIBannerBmp"  Value="Resources\WixUIBannerBmp.bmp" />
+    <WixVariable Id="WixUIDialogBmp"  Value="Resources\WixUIDialogBmp.bmp" />
+    <WixVariable Id="WixUILicenseRtf" Value="Resources\WixUILicenseRtf.rtf" />
   </Product>
 
 </Wix>

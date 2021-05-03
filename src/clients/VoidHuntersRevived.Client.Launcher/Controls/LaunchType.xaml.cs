@@ -22,6 +22,7 @@ namespace VoidHuntersRevived.Client.Launcher.Controls
     /// </summary>
     public partial class LaunchType : UserControl
     {
+        private String _defaultDescription;
         private Boolean _shouldUpdate;
         private Boolean _killOnLaunch;
 
@@ -41,6 +42,7 @@ namespace VoidHuntersRevived.Client.Launcher.Controls
         {
             InitializeComponent();
 
+            _defaultDescription = description;
             _killOnLaunch = killOnLaunch;
 
             this.Handle = handle;
@@ -48,6 +50,7 @@ namespace VoidHuntersRevived.Client.Launcher.Controls
             this.Description = description;
 
             this.LaunchButton.IsEnabled = false;
+            this.ProgressBar.Visibility = Visibility.Hidden;
 
             (new Thread(new ThreadStart(() =>
             {
@@ -105,6 +108,7 @@ namespace VoidHuntersRevived.Client.Launcher.Controls
                     this.Dispatcher.Invoke(() =>
                     {
                         this.LaunchButton.Content = "Updating...";
+                        this.ProgressBar.Visibility = Visibility.Visible;
                     });
 
                     var proc = LauncherService.Update(this.Handle);
@@ -140,6 +144,9 @@ namespace VoidHuntersRevived.Client.Launcher.Controls
                     Environment.Exit(0);
 
                 Thread.Sleep(2000);
+
+                this.ProgressBar.Visibility = Visibility.Hidden;
+                this.Description = _defaultDescription;
 
                 this.Dispatcher.Invoke(() =>
                 {

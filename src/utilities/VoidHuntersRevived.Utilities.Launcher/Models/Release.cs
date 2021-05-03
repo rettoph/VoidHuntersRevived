@@ -73,7 +73,7 @@ namespace VoidHuntersRevived.Utilities.Launcher.Models
             if (Directory.Exists(tempDirectory))
                 Directory.Delete(tempDirectory, true);
 
-            console.Out.WriteLine($"[Update] Downloading {this.Type} - v{this.Version} to '{this.DownloadPath}'");
+            console.Out.WriteLine($"[Update] Downloading {this.Type} - v{this.Version}...");
 
             using (WebClient wc = new WebClient())
             {
@@ -169,7 +169,7 @@ namespace VoidHuntersRevived.Utilities.Launcher.Models
                 var info = files[i];
 
                 console.Out.WriteLine($"[Progress] {(Single)i / (Single)files.Count}");
-                console.Out.WriteLine($"[Update] Copying '{info.file.Name}' to '{info.target.FullName}'...");
+                console.Out.WriteLine($"[Update] Copying '{info.file.Name}'...");
 
                 info.file.CopyTo(Path.Combine(info.target.FullName, info.file.Name), true);
             }

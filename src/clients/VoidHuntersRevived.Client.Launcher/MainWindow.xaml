@@ -5,8 +5,44 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VoidHuntersRevived.Client.Launcher"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="VoidHunters Revived - Launcher" Height="450" Width="800" Foreground="{x:Null}">
+    <Window.Background>
+        <ImageBrush ImageSource="/Resources/MainBackground.png" Stretch="None"/>
+    </Window.Background>
+    <Window.Resources>
+        <Style x:Key="Biome-Bold">
+            <Setter Property="TextElement.FontFamily" 
+                Value="/Resources/Fonts/#BiomeW04-Bold" />
+        </Style>
+        <Style x:Key="Biome-Light">
+            <Setter Property="TextElement.FontFamily" 
+                Value="/Resources/Fonts/#BiomeW04-Light" />
+        </Style>
+    </Window.Resources>
     <Grid>
-        <StackPanel x:Name="LaunchTypes" Background="Black"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel x:Name="LaunchTypes" Grid.Row="1" Margin="15,15,15,15"/>
+        <Grid HorizontalAlignment="Center">
+            <Label 
+            Content="VoidHunters" 
+            HorizontalAlignment="Left" 
+            VerticalAlignment="Center" 
+            Foreground="White" 
+            FontSize="45"
+            Style="{DynamicResource Biome-Bold}"
+            />
+            <Label 
+            Content="Revived" 
+            HorizontalAlignment="Left" 
+            Margin="306,0,0,0" 
+            VerticalAlignment="Center" 
+            Foreground="#FF008EF1" 
+            FontSize="45"
+            Style="{DynamicResource Biome-Light}"
+            />
+        </Grid>
     </Grid>
 </Window>

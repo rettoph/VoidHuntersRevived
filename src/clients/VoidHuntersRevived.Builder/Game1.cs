@@ -15,12 +15,6 @@ namespace VoidHuntersRevived.Builder
         GuppyLoader guppy;
         BuilderGame game;
 
-#if WINDOWS
-        // https://community.monogame.net/t/start-in-maximized-window/12264
-        [DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void SDL_MaximizeWindow(IntPtr window);
-#endif
-
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -52,10 +46,6 @@ namespace VoidHuntersRevived.Builder
             // TODO: Add your initialization logic here
 
             base.Initialize();
-
-#if WINDOWS
-            SDL_MaximizeWindow(Window.Handle);
-#endif
 
             this.game = guppy.ConfigureMonoGame(graphics, this.Content, this.Window)
                 .ConfigureInput()
