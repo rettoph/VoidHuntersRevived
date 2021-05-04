@@ -8,7 +8,7 @@
   <?define ProductCode = "{FCE992EC-0A0B-4EB4-963F-7E663EC6F4E4}"?>
   <?endif?>
 
-  <?define BuildVersion = 0.1.0?>
+  <?define BuildVersion = 0.1.6?>
 
   <!-- Define main product -->
   <Product Id="$(var.ProductCode)"

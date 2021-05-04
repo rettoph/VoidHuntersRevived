@@ -68,7 +68,7 @@ namespace VoidHuntersRevived.Utilities.Launcher.Models
             Console.WriteLine(this.DownloadPath);
             Console.WriteLine(path ?? this.DownloadPath);
             this.DownloadPath = path ?? this.DownloadPath;
-            var tempDirectory = Path.Combine(Settings.Default.InstallDirectory, "temp");
+            var tempDirectory = Path.Combine(Settings.Default.InstallDirectory, $"temp-{Guid.NewGuid()}");
 
             if (Directory.Exists(tempDirectory))
                 Directory.Delete(tempDirectory, true);
