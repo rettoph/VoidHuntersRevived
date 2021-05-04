@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Utilities.Launcher
 
         public Dictionary<String, String> Executables { get; set; } = new[] {
             ("desktop", "VoidHuntersRevived.Client.Desktop"),
-            ("builder", "VoidHuntersRevived.Client.Builder"),
+            ("builder", "VoidHuntersRevived.Builder"),
             ("server", "VoidHuntersRevived.Server"),
             ("client-launcher", "VoidHuntersRevived.Client.Launcher")
         }.ToDictionary(keySelector: kvp => kvp.Item1, elementSelector: kvp => kvp.Item2);
