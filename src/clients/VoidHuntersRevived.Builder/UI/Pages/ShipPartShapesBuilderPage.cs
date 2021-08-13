@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Builder.UI.Pages
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize(ServiceProvider provider)
+        protected override void Initialize(GuppyServiceProvider provider)
         {
             base.Initialize(provider);
 

@@ -1,10 +1,7 @@
 ﻿using Guppy;
 using Guppy.DependencyInjection;
-using Guppy.Extensions.System.Collections;
-using Guppy.Extensions.DependencyInjection;
 using Guppy.Extensions.Utilities;
 using Guppy.Utilities;
-using Guppy.Utilities.Cameras;
 using Guppy.Utilities.Primitives;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,145 +9,137 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VoidHuntersRevived.Library.Contexts;
-using VoidHuntersRevived.Library.Entities;
+using VoidHuntersRevived.Library.Contexts.ShipParts;
 using VoidHuntersRevived.Library.Entities.ShipParts;
-using Guppy.Extensions.Microsoft.Xna.Framework;
+using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Services;
+using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Client.Library.Services
 {
-    /// <summary>
-    /// Simple service useful for rendering a ship part
-    /// directly to screen with little passing from
-    /// the ship part itself.
-    /// </summary>
     public class ShipPartRenderService : Frameable
     {
-        #region Constants
-        private static Color TransparentWhite = new Color(255, 255, 255, 0);
-        #endregion
-
         #region Private Structs
         private struct ShipPartContextPrimitiveData
         {
-            public PrimitivePath[] OuterHulls;
-            public PrimitiveShape[] InnerShapes;
-            public PrimitivePath MaleNode;
+            public PrimitiveShape[] Shapes;
         }
         #endregion
 
         #region Private Fields
-        private Dictionary<ShipPartContext, ShipPartContextPrimitiveData> _primitives;
+        private Dictionary<UInt32, ShipPartContextPrimitiveData> _primitives;
 
-        private Single _configuredZoom;
-        private Camera2D _camera;
         private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
-        private Single _width = 1;
+        private ShipPartService _shipParts;
+
+        private PrimitivePath _nodePrimitive;
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize(ServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
             base.Initialize(provider);
 
-            _primitives = new Dictionary<ShipPartContext, ShipPartContextPrimitiveData>();
+            _primitives = new Dictionary<UInt32, ShipPartContextPrimitiveData>();
 
-            provider.Service(out _camera);
             provider.Service(out _primitiveBatch);
+            provider.Service(out _shipParts);
+
+            _nodePrimitive = PrimitivePath.Create(0.025f, new Vector2(0.2f, -0.1f), new Vector2(0.025f, 0), new Vector2(0.2f, 0.1f));
+        }
+
+        protected override void Initialize(GuppyServiceProvider provider)
+        {
+            base.Initialize(provider);
+
+            foreach (ShipPartContext context in _shipParts.RegisteredContexts.Values)
+                this.RegisterContextPrimitiveData(context);
+
+            _shipParts.OnContextRegistered += this.HandleContextRegistered;
         }
 
         protected override void Release()
         {
             base.Release();
 
-            _camera = null;
+            _shipParts.OnContextRegistered -= this.HandleContextRegistered;
+        }
+
+        protected override void PostRelease()
+        {
+            base.Release();
+
+            _primitives.Clear();
+
             _primitiveBatch = null;
+            _shipParts = null;
         }
         #endregion
 
         #region Frame Methods
-        protected override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-
-            if(_camera.Zoom != _configuredZoom && Math.Abs(_configuredZoom - _camera.Zoom) / _configuredZoom > 0.005f)
-            {
-                _configuredZoom = _camera.Zoom;
-                _width = (1 / _camera.Zoom);
-
-                foreach(ShipPartContextPrimitiveData primitives in _primitives.Values)
-                {
-                    primitives.OuterHulls.ForEach(hull => hull.Width = _width);
-                    primitives.MaleNode.Width = _width;
-                }
-            }
-        }
-
         /// <summary>
         /// Render the specific ShipPart recieved, if possible.
         /// </summary>
         /// <param name="shipPart"></param>
-        public void Render(ShipPart shipPart)
+        public void Render(ShipPart shipPart, ref Matrix worldTransformation)
         {
-            _primitives[shipPart.Context].InnerShapes.ForEach(shape =>
-            { // Draw all inner shapes...
+            foreach(PrimitiveShape shape in _primitives[shipPart.Context.Id].Shapes)
+            { // Draw all shapes...
                 _primitiveBatch.DrawPrimitive(
                     shape,
-                    Color.Lerp(shipPart.Color, Color.Transparent, 0.25f),
-                    shipPart.WorldTransformation);
-            });
+                    Color.Green,
+                    worldTransformation);
 
-            _primitives[shipPart.Context].OuterHulls.ForEach(hull =>
-            { // Draw all outer hulls...
-                _primitiveBatch.DrawPrimitive(
-                    hull,
-                    Color.Lerp(shipPart.Color, ShipPartRenderService.TransparentWhite, 0.25f),
-                    shipPart.WorldTransformation);
-            });
+                // _primitiveBatch.TryFlushTriangleVertices(true);
 
-            // Draw part paths...
-            _primitiveBatch.DrawPrimitive(
-                _primitives[shipPart.Context].MaleNode,
-                Color.Lerp(shipPart.Color, ShipPartRenderService.TransparentWhite, 0.5f),
-                shipPart.WorldTransformation);
+                foreach(ConnectionNode node in shipPart.ConnectionNodes)
+                {
+                    Color color = default;
+
+                    switch (node.Connection.State)
+                    {
+                        case ConnectionNodeState.Estranged:
+                            color = Color.Red;
+                            break;
+                        case ConnectionNodeState.Parent:
+                            color = Color.Blue;
+                            break;
+                        case ConnectionNodeState.Child:
+                            color = Color.White;
+                            break;
+                    }
+
+                    var nodeWorldTransformation = node.LocalTransformationMatrix * worldTransformation;
+
+                    _primitiveBatch.DrawPrimitive(
+                        _nodePrimitive,
+                        color,
+                        nodeWorldTransformation);
+
+                    // _primitiveBatch.TryFlushLineVertices(true);
+                }
+            }
         }
         #endregion
 
         #region Helper Methods
         /// <summary>
-        /// Create a new <see cref="ShipPartContextPrimitiveData"/> instance
-        /// assuming that the recieved <see cref="ShipPart.Context"/>
+        /// Construct a new <see cref="ShipPartContextPrimitiveData"/> instance based on
+        /// ths given <paramref name="context"/> value.
         /// </summary>
-        /// <param name="shipPart"></param>
-        public void ValidateContext(ShipPart shipPart)
+        /// <param name="context"></param>
+        private void RegisterContextPrimitiveData(ShipPartContext context)
         {
-            if (_primitives.ContainsKey(shipPart.Context))
-                return;
-
-            _primitives[shipPart.Context] = new ShipPartContextPrimitiveData()
+            _primitives[context.Id] = new ShipPartContextPrimitiveData()
             {
-                OuterHulls = shipPart.Context.OuterHulls.Select(h => PrimitivePath.Create(_width, h)).ToArray(),
-                InnerShapes = shipPart.Context.InnerShapes.Select(s => PrimitiveShape.Create(s.Vertices)).ToArray(),
-                MaleNode = PrimitivePath.Create(
-                    _width,
-                    shipPart.MaleConnectionNode.LocalPosition + (Vector2.UnitX * 0.2f).RotateTo(shipPart.MaleConnectionNode.LocalRotation + MathHelper.Pi + MathHelper.PiOver4),
-                    shipPart.MaleConnectionNode.LocalPosition,
-                    shipPart.MaleConnectionNode.LocalPosition + (Vector2.UnitX * 0.2f).RotateTo(shipPart.MaleConnectionNode.LocalRotation + MathHelper.Pi - MathHelper.PiOver4))
+                Shapes = context.Shapes.Select(s => PrimitiveShape.Create(s.Vertices)).ToArray()
             };
         }
+        #endregion
 
-
-        /// <summary>
-        /// Remove the specified <paramref name="shipPart"/>s Context
-        /// from the internal <see cref="ShipPartContextPrimitiveData"/>
-        /// cache. Generally this never needs to be called.
-        /// </summary>
-        /// <param name="shipPart"></param>
-        public void RemoveContext(ShipPart shipPart)
-        {
-            if(shipPart != default && _primitives.ContainsKey(shipPart.Context))
-                _primitives.Remove(shipPart.Context);
-        }
+        #region Event Handlers
+        private void HandleContextRegistered(ShipPartService sender, ShipPartContext args)
+            => this.RegisterContextPrimitiveData(args);
         #endregion
     }
 }

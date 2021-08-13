@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Builder.UI
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
             base.PreInitialize(provider);
 
@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Builder.UI
             });
         }
 
-        protected override void Initialize(ServiceProvider provider)
+        protected override void Initialize(GuppyServiceProvider provider)
         {
             base.Initialize(provider);
 

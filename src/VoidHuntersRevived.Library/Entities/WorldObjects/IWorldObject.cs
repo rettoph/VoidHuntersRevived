@@ -1,0 +1,72 @@
+﻿using Guppy.Events.Delegates;
+using Guppy.Interfaces;
+using Guppy.Network.Enums;
+using Guppy.Network.Interfaces;
+using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using VoidHuntersRevived.Library.Entities.Chunks;
+
+namespace VoidHuntersRevived.Library.Entities.WorldObjects
+{
+    /// <summary>
+    /// World objects represent objects with a physical location.
+    /// The exist within a chunk & may be serialized as needed.
+    /// </summary>
+    public interface IWorldObject : ILayerable, INetworkEntity
+    {
+        #region Public Properties
+        /// <summary>
+        /// The current instance's position.
+        /// </summary>
+        Vector2 Position { get; }
+
+        /// <summary>
+        /// The current instance's rotation.
+        /// </summary>
+        Single Rotation { get; }
+
+        /// <summary>
+        /// The object's current chunk. This will automatically & 
+        /// dynamically be managed via the <see cref="WorldObjectChunkComponent"/>
+        /// </summary>
+        Chunk Chunk { get; internal set; }
+        #endregion
+
+        #region Events
+        event OnChangedEventDelegate<IWorldObject, Chunk> OnChunkChanged;
+
+        /// <summary>
+        /// Invoked by <see cref="TryValidateWorldInfoChanged"/> when the
+        /// <see cref="ValidateWorldInfoChangeDetected"/> event returns a
+        /// true state.
+        /// </summary>
+        event OnEventDelegate<IWorldObject> OnWorldInfoChangeDetected;
+
+        /// <summary>
+        /// Determin whether or not any world info data has changed. This
+        /// should be invoked by <see cref="TryValidateWorldInfoChanged"/>.
+        /// </summary>
+        event ValidateEventDelegate<IWorldObject, GameTime> ValidateWorldInfoChangeDetected;
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Should invoke the <see cref="OnWorldInfoChangeDetected"/> event
+        /// if the internal world data has been updated.
+        /// </summary>
+        /// <returns></returns>
+        void TryValidateWorldInfoChanged(GameTime gameTime);
+
+        /// <summary>
+        /// Attempt to set the <see cref="Position"/> and <see cref="Rotation"/> of the current
+        /// <see cref="IWorldObject"/> utilizing the recieved <paramref name="authorization"/>.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="rotation"></param>
+        /// <param name="authorization">The <see cref="NetworkAuthorization"/> of the incoming transformation request.</param>
+        void TrySetTransformation(Vector2 position, Single rotation, NetworkAuthorization authorization = NetworkAuthorization.Master);
+        #endregion
+    }
+}

@@ -1,78 +1,96 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
-using Guppy.Network;
-using Guppy.Network.Extensions.Lidgren;
-using Guppy.Network.Groups;
-using Lidgren.Network;
+using Guppy.Network.Enums;
+using Guppy.Network.Interfaces;
+using Microsoft.Xna.Framework;
 using System;
-using Guppy.Enums;
-using VoidHuntersRevived.Library.Enums;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using VoidHuntersRevived.Library.Entities.Chunks;
+using VoidHuntersRevived.Library.Entities.WorldObjects;
+using VoidHuntersRevived.Library.Structs;
 
 namespace VoidHuntersRevived.Library.Entities.Players
 {
-    /// <summary>
-    /// Represents a player that is directly controlled
-    /// by a user.
-    /// </summary>
     public class UserPlayer : Player
     {
         #region Private Fields
-        private Group _group;
-        private User _user;
+        private ChunkManager _chunks;
+        private ChunkPosition _currentChunkPosition;
         #endregion
 
         #region Public Properties
-        public override String Name => this.User?.Name ?? "";
-
-        public User User
-        {
-            get => _user;
-            set
-            {
-                if (this.Status >= ServiceStatus.Initializing)
-                    throw new Exception("Unable to update UserPlayer User value once initialization has started.");
-
-                _user = value;
-            }
-        }
+        public IUser User { get; set; }
+        public Int32 ChunkProximityRadius { get; set; } = 3;
         #endregion
 
         #region Lifecycle Methods
-        protected override void Create(ServiceProvider provider)
+        protected override void Create(GuppyServiceProvider provider)
         {
             base.Create(provider);
-
-            this.MessageHandlers[MessageType.Create].Add(this.ReadUser, this.WriteUser);
         }
 
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
             base.PreInitialize(provider);
 
-            provider.Service(out _group);
+            provider.Service(out _chunks);
+            _currentChunkPosition = new ChunkPosition(Vector2.Zero);
         }
 
-        protected override void Release()
+        protected override void PostInitialize(GuppyServiceProvider provider)
         {
-            base.Release();
+            base.PostInitialize(provider);
 
-            _group = null;
+            foreach (Chunk chunk in _chunks.GetChunks(_currentChunkPosition, this.ChunkProximityRadius))
+            {
+                chunk.Pipe.Users.TryAdd(this.User);
+                chunk.TryRegisterDependent(this.Id);
+            }
+                
+        }
+
+        protected override void PreRelease()
+        {
+            base.PreRelease();
+
+            // Deregister any old chunk dependents...
+            foreach (Chunk chunk in _chunks.GetChunks(_currentChunkPosition, this.ChunkProximityRadius))
+            {
+                chunk.Pipe.Users.TryRemove(this.User);
+                chunk.TryDeregisterDependent(this.Id);
+            }
+
+            _chunks = default;
         }
 
         protected override void Dispose()
         {
             base.Dispose();
 
-            this.MessageHandlers[MessageType.Create].Remove(this.ReadUser, this.WriteUser);
+            // this.OnChunkChanged -= this.HandleChunkChanged;
         }
         #endregion
 
-        #region Network Methods
-        private void WriteUser(NetOutgoingMessage om)
-            => om.Write(this.User.Id);
-
-        private void ReadUser(NetIncomingMessage im)
-            => this.User = _group.Users.GetById(im.ReadGuid());
+        #region Event Handlers
+        // private void HandleChunkChanged(IWorldObject sender, Chunk old, Chunk value)
+        // {
+        //     var oldProximityChunks = _chunks.GetChunks(old?.Position, this.ChunkProximityRadius);
+        //     var newProximityChunks = _chunks.GetChunks(value?.Position, this.ChunkProximityRadius);
+        // 
+        //     // Deregister any old chunk dependents...
+        //     foreach (Chunk chunk in oldProximityChunks.Except(newProximityChunks))
+        //     {
+        //         chunk.Pipe.Users.TryRemove(this.User);
+        //     }
+        //         
+        //     // Register any new chunk dependents...
+        //     foreach (Chunk chunk in newProximityChunks.Except(oldProximityChunks))
+        //     {
+        //         chunk.Pipe.Users.TryAdd(this.User);
+        //     }
+        // }
         #endregion
     }
 }

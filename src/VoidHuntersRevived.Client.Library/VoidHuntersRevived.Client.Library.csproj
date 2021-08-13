@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <Configurations>Debug;Release;Debug_Verbose</Configurations>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile />
@@ -38,13 +38,8 @@
     <ProjectReference Include="..\..\libraries\Guppy\libraries\lidgren-network-gen3\Lidgren.Network.MultiTarget\Lidgren.Network.MultiTarget.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Core\Guppy.Core.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
-    <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.UI\Guppy.UI.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy\Guppy.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Library\VoidHuntersRevived.Library.csproj" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="Drivers\Entities\ShipParts\Special\" />
   </ItemGroup>
 
 </Project>

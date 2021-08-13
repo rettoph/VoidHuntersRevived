@@ -21,41 +21,41 @@ namespace VoidHuntersRevived.Builder.ServiceLoaders
     {
         public void RegisterServices(ServiceCollection services)
         {
-            services.AddFactory<ShipPartContextSelectorPage>(p => new ShipPartContextSelectorPage());
-            services.AddFactory<ShipPartContextBuilderPage>(p => new ShipPartContextBuilderPage());
-            services.AddFactory<ShipPartShapesBuilderPage>(p => new ShipPartShapesBuilderPage());
-            services.AddFactory<ShipPartPropertiesEditorPage>(p => new ShipPartPropertiesEditorPage());
-            services.AddFactory<ContextTypeButton>(p => new ContextTypeButton());
-            services.AddFactory<ShapeEditorMenu>(p => new ShapeEditorMenu());
-            services.AddFactory<ConnectionNodeEditorMenu>(p => new ConnectionNodeEditorMenu());
-            services.AddFactory<SideContextInput>(p => new SideContextInput());
-            services.AddFactory<ShapeTransformationsInput>(p => new ShapeTransformationsInput());
-            services.AddFactory<ContextPropertyInput>(p => new ContextPropertyInput());
-            services.AddFactory<StringInput>(p => new StringInput());
-            services.AddFactory<SingleInput>(p => new SingleInput());
-            services.AddFactory<RadianInput>(p => new RadianInput());
-            services.AddFactory<ColorInput>(p => new ColorInput());
-            services.AddFactory<BooleanInput>(p => new BooleanInput());
-            services.AddFactory<Vector2Input>(p => new Vector2Input());
+            services.RegisterTypeFactory<ShipPartContextSelectorPage>(p => new ShipPartContextSelectorPage());
+            services.RegisterTypeFactory<ShipPartContextBuilderPage>(p => new ShipPartContextBuilderPage());
+            services.RegisterTypeFactory<ShipPartShapesBuilderPage>(p => new ShipPartShapesBuilderPage());
+            services.RegisterTypeFactory<ShipPartPropertiesEditorPage>(p => new ShipPartPropertiesEditorPage());
+            services.RegisterTypeFactory<ContextTypeButton>(p => new ContextTypeButton());
+            services.RegisterTypeFactory<ShapeEditorMenu>(p => new ShapeEditorMenu());
+            services.RegisterTypeFactory<ConnectionNodeEditorMenu>(p => new ConnectionNodeEditorMenu());
+            services.RegisterTypeFactory<SideContextInput>(p => new SideContextInput());
+            services.RegisterTypeFactory<ShapeTransformationsInput>(p => new ShapeTransformationsInput());
+            services.RegisterTypeFactory<ContextPropertyInput>(p => new ContextPropertyInput());
+            services.RegisterTypeFactory<StringInput>(p => new StringInput());
+            services.RegisterTypeFactory<SingleInput>(p => new SingleInput());
+            services.RegisterTypeFactory<RadianInput>(p => new RadianInput());
+            services.RegisterTypeFactory<ColorInput>(p => new ColorInput());
+            services.RegisterTypeFactory<BooleanInput>(p => new BooleanInput());
+            services.RegisterTypeFactory<Vector2Input>(p => new Vector2Input());
 
-            services.AddScoped<ShipPartContextSelectorPage>();
-            services.AddScoped<ShipPartContextBuilderPage>();
-            services.AddTransient<ShipPartShapesBuilderPage>();
-            services.AddTransient<ShipPartPropertiesEditorPage>();
-            services.AddTransient<ContextTypeButton>();
-            services.AddTransient<ShapeEditorMenu>();
-            services.AddTransient<ConnectionNodeEditorMenu>();
-            services.AddTransient<SideContextInput>();
-            services.AddTransient<ShapeTransformationsInput>();
-            services.AddTransient<ContextPropertyInput>();
-            services.AddTransient<StringInput>();
-            services.AddTransient<SingleInput>();
-            services.AddTransient<RadianInput>();
-            services.AddTransient<ColorInput>();
-            services.AddTransient<BooleanInput>();
-            services.AddTransient<Vector2Input>();
+            services.RegisterScoped<ShipPartContextSelectorPage>();
+            services.RegisterScoped<ShipPartContextBuilderPage>();
+            services.RegisterTransient<ShipPartShapesBuilderPage>();
+            services.RegisterTransient<ShipPartPropertiesEditorPage>();
+            services.RegisterTransient<ContextTypeButton>();
+            services.RegisterTransient<ShapeEditorMenu>();
+            services.RegisterTransient<ConnectionNodeEditorMenu>();
+            services.RegisterTransient<SideContextInput>();
+            services.RegisterTransient<ShapeTransformationsInput>();
+            services.RegisterTransient<ContextPropertyInput>();
+            services.RegisterTransient<StringInput>();
+            services.RegisterTransient<SingleInput>();
+            services.RegisterTransient<RadianInput>();
+            services.RegisterTransient<ColorInput>();
+            services.RegisterTransient<BooleanInput>();
+            services.RegisterTransient<Vector2Input>();
 
-            services.AddSetup<ColorService>((colors, p, c) =>
+            services.RegisterSetup<ColorService>((colors, p, c) =>
             {
                 var opacity = 0.5f;
                 colors.TryRegister("ui:color:0", new Color(Color.Black, opacity));
@@ -66,12 +66,12 @@ namespace VoidHuntersRevived.Builder.ServiceLoaders
                 colors.TryRegister("ui:color:5", new Color(Color.Lerp(Color.Gray, Color.Black, 0.4f), opacity));
             });
 
-            services.AddSetup<TextElement>((button, p, c) =>
+            services.RegisterSetup<TextElement>((button, p, c) =>
             {
                 button.Font = p.GetContent<SpriteFont>("debug:font");
             });
 
-            services.AddSetup<TextElement>("ui:button", (button, p, c) =>
+            services.RegisterSetup<TextElement>("ui:button", (button, p, c) =>
             {
                 button.Inline = InlineType.None;
                 button.Alignment = Alignment.CenterCenter;
@@ -79,8 +79,8 @@ namespace VoidHuntersRevived.Builder.ServiceLoaders
                 button.Bounds.Height = 35;
             });
 
-            services.AddTransient<TextElement>("ui:button:0");
-            services.AddSetup<TextElement>("ui:button:0", (button, p, c) =>
+            services.RegisterTransient<TextElement>("ui:button:0");
+            services.RegisterSetup<TextElement>("ui:button:0", (button, p, c) =>
             {
                 button.Color[ElementState.Default] = p.GetColor("ui:color:1");
                 button.BorderWidth[ElementState.Default] = 1;
@@ -91,7 +91,7 @@ namespace VoidHuntersRevived.Builder.ServiceLoaders
             });
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(GuppyServiceProvider provider)
         {
             // throw new NotImplementedException();
         }

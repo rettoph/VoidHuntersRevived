@@ -18,24 +18,24 @@ namespace VoidHuntersRevived.Builder.ServiceLoaders
             services.AddGame<BuilderGame>(p => new BuilderGame());
             services.AddScene<BuilderScene>(p => new BuilderScene());
 
-            services.AddFactory<LockService>(p => new LockService());
-            services.AddFactory<ShipPartShapesBuilderService>(p => new ShipPartShapesBuilderService());
-            services.AddFactory<ShipPartShapeBuilderService>(p => new ShipPartShapeBuilderService());
-            services.AddFactory<ShipPartShapeEditorService>(p => new ShipPartShapeEditorService());
-            services.AddFactory<ConnectionNodeEditorService>(p => new ConnectionNodeEditorService());
-            services.AddFactory<ShipPartOuterHullBuilderService>(p => new ShipPartOuterHullBuilderService());
-            services.AddFactory<ShipPartPropertiesEditorService>(p => new ShipPartPropertiesEditorService());
+            services.RegisterTypeFactory<LockService>(p => new LockService());
+            services.RegisterTypeFactory<ShipPartShapesBuilderService>(p => new ShipPartShapesBuilderService());
+            services.RegisterTypeFactory<ShipPartShapeBuilderService>(p => new ShipPartShapeBuilderService());
+            services.RegisterTypeFactory<ShipPartShapeEditorService>(p => new ShipPartShapeEditorService());
+            services.RegisterTypeFactory<ConnectionNodeEditorService>(p => new ConnectionNodeEditorService());
+            services.RegisterTypeFactory<ShipPartOuterHullBuilderService>(p => new ShipPartOuterHullBuilderService());
+            services.RegisterTypeFactory<ShipPartPropertiesEditorService>(p => new ShipPartPropertiesEditorService());
 
-            services.AddTransient<LockService>();
-            services.AddTransient<ShipPartShapesBuilderService>();
-            services.AddTransient<ShipPartShapeBuilderService>();
-            services.AddTransient<ShipPartShapeEditorService>();
-            services.AddTransient<ConnectionNodeEditorService>();
-            services.AddTransient<ShipPartPropertiesEditorService>();
-            services.AddTransient<ShipPartOuterHullBuilderService>();
+            services.RegisterTransient<LockService>();
+            services.RegisterTransient<ShipPartShapesBuilderService>();
+            services.RegisterTransient<ShipPartShapeBuilderService>();
+            services.RegisterTransient<ShipPartShapeEditorService>();
+            services.RegisterTransient<ConnectionNodeEditorService>();
+            services.RegisterTransient<ShipPartPropertiesEditorService>();
+            services.RegisterTransient<ShipPartOuterHullBuilderService>();
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(GuppyServiceProvider provider)
         {
             // throw new NotImplementedException();
         }

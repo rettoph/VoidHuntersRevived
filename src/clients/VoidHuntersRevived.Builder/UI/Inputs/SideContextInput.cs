@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Builder.UI.Inputs
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
             base.PreInitialize(provider);
 

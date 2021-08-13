@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Builder.ServiceLoaders
             // throw new NotImplementedException();
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(GuppyServiceProvider provider)
         {
             var inputs = provider.GetService<InputCommandService>();
 

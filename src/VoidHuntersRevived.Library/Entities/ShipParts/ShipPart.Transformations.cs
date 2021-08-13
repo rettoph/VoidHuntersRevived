@@ -1,10 +1,11 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
-using Guppy.Extensions.log4net;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Library.Entities.WorldObjects;
+using VoidHuntersRevived.Library.Enums;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -28,14 +29,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
         /// <summary>
         /// The ship-parts rotation relative to its 
-        /// current root
+        /// current chain.
         /// </summary>
         public Single LocalRotation { get; private set; } = 0;
-
-        public virtual Matrix WorldTransformation
-        {
-            get => this.LocalTransformation * Matrix.CreateRotationZ(this.Root.Rotation) * Matrix.CreateTranslation(this.Root.Position.X, this.Root.Position.Y, 0);
-        }
         #endregion
 
         #region Events
@@ -43,14 +39,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #endregion
 
         #region Lifecycle Methods
-        private void Transformations_Create(ServiceProvider provider)
+        private void Transformations_Create(GuppyServiceProvider provider)
         {
-            this.OnChainChanged += ShipPart.Transformations_HandleChainChanged;
+            this.OnTreeClean += ShipPart.Transformations_HandleTreeClean;
         }
 
         private void Transformations_Dispose()
         {
-            this.OnChainChanged -= ShipPart.Transformations_HandleChainChanged;
+            this.OnTreeClean -= ShipPart.Transformations_HandleTreeClean;
         }
         #endregion
 
@@ -58,7 +54,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// <summary>
         /// Update the internal translation values.
         /// </summary>
-        protected virtual void UpdateLocalTranslation()
+        protected virtual void CleanLocalTranslation()
         {
             if (this.IsRoot)
             { // If the current part is the root, there is no need to track a translation matrix
@@ -67,23 +63,26 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             }
             else
             { // Calculate the ShipPart's translations based on its parent connection node translations
-                var female = this.MaleConnectionNode.Target;
-                var male = this.MaleConnectionNode;
-
-                this.LocalRotation = MathHelper.WrapAngle(this.Parent.LocalRotation + female.LocalRotation - male.LocalRotation);
-
-                this.LocalTransformation = Matrix.Invert(male.LocalTransformationMatrix)
-                    * female.LocalTransformationMatrix
-                    * this.Parent.LocalTransformation;
+                this.LocalRotation = MathHelper.WrapAngle(
+                    this.ChildConnectionNode.LocalRotation +
+                    this.ChildConnectionNode.Connection.Target.LocalRotation +
+                    this.ChildConnectionNode.Connection.Target.Owner.LocalRotation);
+            
+                this.LocalTransformation = this.ChildConnectionNode.LocalChildTransformationMatrix
+                    * this.ChildConnectionNode.Connection.Target.LocalTransformationMatrix
+                    * this.ChildConnectionNode.Connection.Target.Owner.LocalTransformation;
             }
-
+            
             this.OnTransformationsCleaned?.Invoke(this);
         }
         #endregion
 
         #region Event Handlers
-        private static void Transformations_HandleChainChanged(ShipPart sender, Chain old, Chain value)
-            => sender.UpdateLocalTranslation();
+        private static void Transformations_HandleTreeClean(ShipPart sender, ShipPart source, TreeComponent components)
+        {
+            if((components & TreeComponent.Node) != 0)
+                sender.CleanLocalTranslation();
+        }
         #endregion
     }
 }

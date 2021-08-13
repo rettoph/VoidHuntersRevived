@@ -1,18 +1,8 @@
-﻿using Guppy.DependencyInjection;
-using Guppy.Extensions.System.Collections;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using VoidHuntersRevived.Library.Extensions.Aether;
-using Microsoft.Xna.Framework;
-using Guppy.Extensions.log4net;
-using VoidHuntersRevived.Library.Utilities.Farseer;
-using Guppy.Extensions.Microsoft.Xna.Framework;
-using tainicom.Aether.Physics2D.Common;
-using tainicom.Aether.Physics2D.Collision.Shapes;
-using VoidHuntersRevived.Library.Contexts;
+using System.Text;
 
-namespace VoidHuntersRevived.Library.Entities.ShipParts
+namespace VoidHuntersRevived.Library.Entities.ShipParts.Hulls
 {
     public class Hull : ShipPart
     {

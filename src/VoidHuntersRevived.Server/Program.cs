@@ -5,6 +5,7 @@ using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using Guppy.Extensions.System;
+using VoidHuntersRevived.Library;
 
 namespace VoidHuntersRevived.Server
 {
@@ -12,10 +13,9 @@ namespace VoidHuntersRevived.Server
     {      
         static void Main(string[] args)
         {
-            Console.WriteLine("entity:ship-part:drone-bay".xxHash());
             var game = new GuppyLoader()
                 .Initialize()
-                .BuildGame<ServerVoidHuntersRevivedGame>();
+                .BuildGame<PrimaryGame>();
 
             game.TryStart(false);
         }

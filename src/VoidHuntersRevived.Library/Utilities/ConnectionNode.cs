@@ -1,26 +1,36 @@
 ﻿using Guppy;
 using Guppy.DependencyInjection;
+using Guppy.Events.Delegates;
 using Microsoft.Xna.Framework;
 using System;
-using VoidHuntersRevived.Library.Contexts;
+using System.Collections.Generic;
+using System.Text;
 using VoidHuntersRevived.Library.Entities.ShipParts;
-using VoidHuntersRevived.Library.Extensions.Aether;
-using Guppy.Events.Delegates;
-using tainicom.Aether.Physics2D.Dynamics;
+using Guppy.Extensions.DependencyInjection;
+using VoidHuntersRevived.Library.Entities.WorldObjects;
+using VoidHuntersRevived.Library.Contexts.Utilities;
+using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Structs;
 
 namespace VoidHuntersRevived.Library.Utilities
 {
-    public sealed class ConnectionNode : Service
+    public class ConnectionNode : Service
     {
+        #region Private Fields
+        private ConnectionNodeConnection _connection;
+        #endregion
+
         #region Public Properties
         /// <summary>
-        /// The nodes index within the parent array
+        /// The <see cref="ConnectionNode"/>'s index within the 
+        /// <see cref="ConnectionNode.Owner"/>'s <see cref="ShipPart.ConnectionNodes"/> array
         /// </summary>
-        public new Int32 Id { get; private set; }
+        public Int32 Index { get; private set; }
+
         /// <summary>
-        /// The ShipPart containing the current connection node
+        /// The <see cref="ShipPart"/> containing the current <see cref="ConnectionNode"/>.
         /// </summary>
-        public ShipPart Parent { get; private set; }
+        public ShipPart Owner { get; private set; }
 
         /// <summary>
         /// The rotation relative to the Parent
@@ -34,126 +44,107 @@ namespace VoidHuntersRevived.Library.Utilities
 
         /// <summary>
         /// Matrix representation of the LocalRotation
+        /// when <see cref="State"/> is <see cref="ConnectionNodeState.Parent"/>.
         /// </summary>
         public Matrix LocalRotationMatrix { get; private set; }
 
         /// <summary>
+        /// Matrix representation of the LocalRotation
+        /// when <see cref="State"/> is <see cref="ConnectionNodeState.Child"/>.
+        /// </summary>
+        public Matrix LocalChildRotationMatrix { get; private set; }
+
+        /// <summary>
+        /// Matrix representation of the LocalPosition.
+        /// </summary>
+        public Matrix LocalTranslationMatrix { get; private set; }
+
+        /// <summary>
         /// Matrix representation of the LocalRotation and LocalPosition
+        /// when <see cref="State"/> is <see cref="ConnectionNodeState.Parent"/>.
         /// </summary>
         public Matrix LocalTransformationMatrix { get; private set; }
 
         /// <summary>
-        /// Matrix representation of the LocalPosition
+        /// Matrix representation of the LocalRotation and LocalPosition
+        /// when <see cref="State"/> is <see cref="ConnectionNodeState.Child"/>.
+        /// 
+        /// Basically, the rotation is fliped 180 degrees.
         /// </summary>
-        public Matrix LocalPositionMatrix { get; private set; }
-
-
-        /// <summary>
-        /// The current connection node's target if any.
-        /// </summary>
-        public ConnectionNode Target { get; private set; }
+        public Matrix LocalChildTransformationMatrix { get; private set; }
 
         /// <summary>
-        /// The current attachment state of the node
+        /// The currently defined connection's state & target.
         /// </summary>
-        public Boolean Attached => this.Target != null;
-
-        /// <summary>
-        /// The Node's current posotion relative to the world.
-        /// </summary>
-        public Vector2 WorldPosition => this.GetWorldPosition(this.Parent.Root.live);
-
-        /// <summary>
-        /// The node's current rotation relative to the world.
-        /// </summary>
-        public Single WorldRotation => this.GetWordRotation(this.Parent.Root.live);
+        public ConnectionNodeConnection Connection
+        {
+            get => _connection;
+            set => this.OnConnectionChanged.InvokeIf(_connection != value, this, ref _connection, value);
+        }
         #endregion
 
         #region Events
-        public OnEventDelegate<ConnectionNode, ConnectionNode> OnAttached;
-        public OnEventDelegate<ConnectionNode, ConnectionNode> OnDetached;
+        public OnChangedEventDelegate<ConnectionNode, ConnectionNodeConnection> OnConnectionChanged;
         #endregion
 
         #region Lifecycle Methods
+        protected override void PreInitialize(GuppyServiceProvider provider)
+        {
+            base.PreInitialize(provider);
+
+            this.Connection = ConnectionNodeConnection.DefaultEstranged;
+        }
+
         protected override void Release()
         {
             base.Release();
 
-            if(this.Attached)
-            { // Auto detach if needed...
-                this.TryDetach();
-            }
+            // Ensure any connection are removed.
+            this.TryDetach();
         }
         #endregion
 
         #region Helper Methods
-        public void TryAttach(ConnectionNode target, Boolean align = true)
+        /// <summary>
+        /// Attempt to attach a recieved
+        /// orphan connection node as a child.
+        /// </summary>
+        /// <param name="child"></param>
+        /// <returns></returns>
+        public Boolean TryAttach(ConnectionNode child)
         {
-            if(target != this && target != this.Target)
-            { // Only proceed if the connection is a valid non-existing one
-                // First ensure that there is no pre-existing connection...
-                if (this.Attached)
-                    this.TryDetach(align);
+            // Ensure the current node is an orphan
+            if (this.Connection.State != ConnectionNodeState.Estranged)
+                return false;
 
-                // Create the local attachment
-                this.Target = target;
+            // Ensure the prospective child is also an orphan
+            if (child.Connection.State != ConnectionNodeState.Estranged)
+                return false;
 
-                if (align)
-                    target.TryPreview(this.Parent);
+            // Ensure the child's owner has no child nodes defined already...
+            if (child.Owner.ChildConnectionNode != default)
+                return false;
 
-                // Ensure that the connection runs both ways
-                if (target.Target != this)
-                    target.TryAttach(this, false);
+            // Create the attachment!
+            this.Connection = new ConnectionNodeConnection(ConnectionNodeState.Parent, child);
+            this.Connection.Target.Connection = new ConnectionNodeConnection(ConnectionNodeState.Child, this);
 
-                // Trigger the attachment event...
-                this.OnAttached?.Invoke(this, this.Target);
-            }
-        }
-
-        public void TryDetach(Boolean align = true)
-        {
-            if (this.Attached)
-            { // Only proceed if there is an existing attachment
-                var old = this.Target;
-
-                this.Target = null;
-                old.TryDetach(false);
-
-                this.OnDetached?.Invoke(this, old);
-
-                if(align)
-                    old.TryPreview(this.Parent);
-            }
+            return true;
         }
 
         /// <summary>
-        /// Reposition the input ShipPart as if it were to
-        /// attach to the current node.
+        /// Attempt to sever any existing connection. 
         /// </summary>
-        public void TryPreview(ShipPart shipPart)
+        public Boolean TryDetach()
         {
-            if (this.Parent.Chain == default || this.Parent.Root == default)
-                return;
+            if (this.Connection.State == ConnectionNodeState.Estranged)
+                return false;
 
-            shipPart.Do(b =>
-            {
-                if (b.World == default)
-                    return;
+            this.Connection.Target.Connection = ConnectionNodeConnection.DefaultEstranged;
+            this.Connection = ConnectionNodeConnection.DefaultEstranged;
 
-                var root = this.Parent.Root.GetChild(shipPart.GetParent(b));
-                var rotation = MathHelper.WrapAngle(this.GetWordRotation(root) - shipPart.MaleConnectionNode.LocalRotation);
-
-                b.SetTransformIgnoreContacts(
-                    position: this.GetWorldPosition(root) - Vector2.Transform(shipPart.MaleConnectionNode.LocalPosition, Matrix.CreateRotationZ(rotation)),
-                    angle: rotation);
-            });
+            return true;
         }
-
-        public Vector2 GetWorldPosition(Body root)
-            => root.Position + Vector2.Transform(this.LocalPosition, this.Parent.LocalTransformation * Matrix.CreateRotationZ(root.Rotation));
-
-        public Single GetWordRotation(Body root)
-            => root.Rotation + this.Parent.LocalRotation + this.LocalRotation;
         #endregion
 
         #region Static Methods
@@ -162,25 +153,27 @@ namespace VoidHuntersRevived.Library.Utilities
         /// </summary>
         /// <param name="provider"></param>
         /// <param name="context"></param>
-        /// <param name="parent"></param>
+        /// <param name="owner"></param>
         /// <returns></returns>
-        public static ConnectionNode Build(ServiceProvider provider, ConnectionNodeContext context, ShipPart parent, Int32 id)
+        public static ConnectionNode Build(GuppyServiceProvider provider, ConnectionNodeDto context, ShipPart owner, Int32 index)
             => provider.GetService<ConnectionNode>((n, p, c) =>
             {
                 // Update the parent
-                n.Parent = parent;
-                n.Id = id;
+                n.Owner = owner;
+                n.Index = index;
 
                 // Set the position & rotation values
                 n.LocalPosition = context.Position;
                 n.LocalRotation = context.Rotation;
 
                 // Update the local matrices based on the LocalPosition and LocalRotation values
+                n.LocalTranslationMatrix = Matrix.CreateTranslation(n.LocalPosition.X, n.LocalPosition.Y, 0);
                 n.LocalRotationMatrix = Matrix.CreateRotationZ(n.LocalRotation);
-                n.LocalPositionMatrix = Matrix.CreateTranslation(n.LocalPosition.X, n.LocalPosition.Y, 0);
+                n.LocalChildRotationMatrix = Matrix.CreateRotationZ(n.LocalRotation + MathHelper.Pi);
 
                 // A onestep transformation, first move to the rotation position then translate by position offset.
-                n.LocalTransformationMatrix = n.LocalRotationMatrix * n.LocalPositionMatrix;
+                n.LocalTransformationMatrix = n.LocalRotationMatrix * n.LocalTranslationMatrix;
+                n.LocalChildTransformationMatrix = Matrix.Invert(n.LocalChildRotationMatrix * n.LocalTranslationMatrix);
             });
         #endregion
     }

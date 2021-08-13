@@ -86,7 +86,7 @@ namespace VoidHuntersRevived.Builder.Services
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
             base.PreInitialize(provider);
 
@@ -118,7 +118,7 @@ namespace VoidHuntersRevived.Builder.Services
             _page = this.pages.Children.Create<ShipPartShapesBuilderPage>();
         }
 
-        protected override void Initialize(ServiceProvider provider)
+        protected override void Initialize(GuppyServiceProvider provider)
         {
             base.Initialize(provider);
 
@@ -187,7 +187,7 @@ namespace VoidHuntersRevived.Builder.Services
             this.context.FemaleConnectionNodes = _females.ToArray();
 
             _demo = _shipParts.Create(this.context);
-            _demo.Position = _camera.Position;
+            _demo.WorldPosition = _camera.Position;
 
             _shapeBuilder.TryUpdate(gameTime);
             _shapeEditor.TryUpdate(gameTime);

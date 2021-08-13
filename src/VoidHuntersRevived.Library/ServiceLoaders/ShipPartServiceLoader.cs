@@ -1,58 +1,85 @@
 ﻿using Guppy.Attributes;
 using Guppy.DependencyInjection;
+using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
-using System.IO;
-using System.Linq;
-using tainicom.Aether.Physics2D;
-using VoidHuntersRevived.Library.Contexts;
+using System.Collections.Generic;
+using System.Text;
+using tainicom.Aether.Physics2D.Common;
+using VoidHuntersRevived.Library.Contexts.ShipParts;
+using VoidHuntersRevived.Library.Contexts.Utilities;
+using VoidHuntersRevived.Library.Dtos.Utilities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
-using VoidHuntersRevived.Library.Entities.ShipParts.Armors;
-using VoidHuntersRevived.Library.Entities.ShipParts.Special;
-using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
-using VoidHuntersRevived.Library.Entities.ShipParts.SpellParts.Weapons;
+using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using VoidHuntersRevived.Library.Services;
-using VoidHuntersRevived.Library.Entities.ShipParts.SpellParts;
+using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class ShipPartServiceLoader : IServiceLoader
     {
-        public void RegisterServices(ServiceCollection services)
+        public void RegisterServices(GuppyServiceCollection services)
         {
-            Settings.MaxPolygonVertices = 9;
-            Settings.ContinuousPhysics = false;
-            Directory.CreateDirectory(VHR.Directories.Resources.ShipParts);
+            #region Services
+            services.RegisterTypeFactory<ConnectionNode>(p => new ConnectionNode());
 
-            services.AddFactory<ShipPartService>(p => new ShipPartService());
-            services.AddScoped<ShipPartService>();
-            services.AddSetup<ShipPartService>((shipParts, p, c) =>
+            services.RegisterTransient<ConnectionNode>();
+            #endregion
+
+            #region Entities
+            services.RegisterTypeFactory<Hull>(p => new Hull());
+
+            services.RegisterTransient(Constants.ServiceConfigurationKeys.ShipParts.Hull, typeof(Hull));
+            #endregion
+
+            services.RegisterSetup<ShipPartService>((shipParts, p, c) =>
             {
-                shipParts.ImportAll(VHR.Directories.Resources.ShipParts);
+                shipParts.RegisterContext(new HullContext()
+                {
+                    Name = "ship-part:hull:square",
+                    Shapes = new[]
+                    {
+                        new ShapeDto()
+                        {
+                            Vertices = new Vertices()
+                            {
+                                new Vector2(0, 0),
+                                new Vector2(1, 0),
+                                new Vector2(1, 1),
+                                new Vector2(0, 1)
+                            }
+                        }
+                    },
+                    ConnectionNodes = new[]
+                    {
+                        new ConnectionNodeDto()
+                        {
+                            Position = new Vector2(0, 0.5f),
+                            Rotation = MathHelper.PiOver2 * 0
+                        },
+                        new ConnectionNodeDto()
+                        {
+                            Position = new Vector2(0.5f, 0),
+                            Rotation = MathHelper.PiOver2 * 1
+                        },
+                        new ConnectionNodeDto()
+                        {
+                            Position = new Vector2(1, 0.5f),
+                            Rotation = MathHelper.PiOver2 * 2
+                        },
+                        new ConnectionNodeDto()
+                        {
+                            Position = new Vector2(0.5f, 1),
+                            Rotation = MathHelper.PiOver2 * 3
+                        }
+                    }
+                });
             });
-
-            services.AddFactory<Hull>(p => new Hull());
-            services.AddFactory<Thruster>(p => new Thruster());
-            services.AddFactory<Gun>(p => new Gun());
-            services.AddFactory<Laser>(p => new Laser());
-            services.AddFactory<Armor>(b => new Armor());
-            services.AddFactory<DroneBay>(b => new DroneBay());
-            services.AddFactory<ShieldGenerator>(b => new ShieldGenerator());
-            services.AddFactory<PowerCell>(b => new PowerCell());
-
-            services.AddTransient<Hull>(VHR.Entities.Hull);
-            services.AddTransient<Thruster>(VHR.Entities.Thruster);
-            services.AddTransient<Gun>(VHR.Entities.Gun);
-            services.AddTransient<Laser>(VHR.Entities.Laser);
-            services.AddTransient<Armor>(VHR.Entities.Armor);
-            services.AddTransient<DroneBay>(VHR.Entities.DroneBay);
-            services.AddTransient<ShieldGenerator>(VHR.Entities.ShieldGenerator);
-            services.AddTransient<PowerCell>(VHR.Entities.PowerCell);
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(GuppyServiceProvider provider)
         {
             // throw new NotImplementedException();
         }

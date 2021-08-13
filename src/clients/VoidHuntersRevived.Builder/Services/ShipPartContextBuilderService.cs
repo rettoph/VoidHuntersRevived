@@ -1,6 +1,5 @@
 ﻿using Guppy;
 using Guppy.DependencyInjection;
-using Guppy.UI.Elements;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -28,7 +27,7 @@ namespace VoidHuntersRevived.Builder.Services
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
             base.PreInitialize(provider);
 

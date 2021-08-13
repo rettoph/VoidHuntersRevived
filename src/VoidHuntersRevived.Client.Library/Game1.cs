@@ -1,14 +1,21 @@
 ﻿using Guppy;
 using Guppy.Extensions;
+using Guppy.IO.Extensions;
 using Guppy.Network.Extensions;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
+using VoidHuntersRevived.Library;
+using VoidHuntersRevived.Library.Contexts.ShipParts;
+using VoidHuntersRevived.Library.Utilities.Json;
 
 namespace VoidHuntersRevived.Client.Library
 {
@@ -17,7 +24,7 @@ namespace VoidHuntersRevived.Client.Library
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         GuppyLoader guppy;
-        ClientVoidHuntersRevivedGame game;
+        PrimaryGame game;
 
 #if WINDOWS
         // https://community.monogame.net/t/start-in-maximized-window/12264
@@ -57,15 +64,15 @@ namespace VoidHuntersRevived.Client.Library
 
             base.Initialize();
 
+            this.game = guppy
+                .ConfigureMonoGame(this.graphics, this.Content, this.Window)
+                .ConfigureTerminal()
+                .Initialize()
+                .BuildGame<PrimaryGame>();
+
 #if WINDOWS
             SDL_MaximizeWindow(Window.Handle);
 #endif
-
-            this.game = guppy.ConfigureMonoGame(graphics, this.Content, this.Window)
-                .ConfigureInput()
-                .ConfigureTerminal("DiagnosticsFont")
-                .Initialize()
-                .BuildGame<ClientVoidHuntersRevivedGame>();
         }
 
         /// <summary>
@@ -92,8 +99,6 @@ namespace VoidHuntersRevived.Client.Library
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            this.game.TryRelease();
-            this.game = null;
         }
 
         /// <summary>
@@ -115,10 +120,9 @@ namespace VoidHuntersRevived.Client.Library
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            // TODO: Add your drawing code here
-            game.TryDraw(gameTime);
-
             base.Draw(gameTime);
+
+            game.TryDraw(gameTime);
         }
     }
 }
