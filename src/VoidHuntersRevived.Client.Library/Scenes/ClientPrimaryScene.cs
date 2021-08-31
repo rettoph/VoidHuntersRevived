@@ -17,6 +17,8 @@ using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Services;
+using tainicom.Aether.Physics2D.Diagnostics;
+using VoidHuntersRevived.Client.Library.Entities.Aether;
 
 namespace VoidHuntersRevived.Client.Library.Scenes
 {
@@ -25,7 +27,8 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         #region Private Fields
         private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private Camera2D _camera;
-        Mouse _mouse;
+        private Mouse _mouse;
+        private AetherDebugView _debugView;
         #endregion
 
         #region Lifecycle Methods
@@ -36,6 +39,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             provider.Service(out _primitiveBatch);
             provider.Service(out _camera);
             provider.Service(out _mouse);
+            provider.Service(out _debugView);
 
             _camera.MinZoom = 0.25f;
             _camera.MaxZoom = 400f;
@@ -56,6 +60,13 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             _camera.TryClean(gameTime);
             _primitiveBatch.Begin(_camera, BlendState.AlphaBlend);
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            _debugView.TryDraw(gameTime);
         }
 
         protected override void PostDraw(GameTime gameTime)

@@ -18,12 +18,10 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
         {
             services.RegisterSetup<Broadcasts>((broadcasts, provider, _) =>
             {
-                Settings settings = provider.GetService<Settings>();
-
-                switch (settings.Get<NetworkAuthorization>())
+                switch (provider.Settings.Get<NetworkAuthorization>())
                 {
                     case NetworkAuthorization.Master:
-                        broadcasts.Register(Constants.Messages.WorldObject.WorldInfoPing, Constants.Intervals.PingPositionInterval);
+                        broadcasts.Register(Constants.Messages.WorldObject.WorldInfoPing, Constants.Intervals.WorldInfoPingInterval);
                         break;
                 }
             });

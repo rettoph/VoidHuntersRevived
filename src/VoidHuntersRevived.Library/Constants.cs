@@ -2,6 +2,9 @@
 using Guppy.DependencyInjection;
 using Guppy.Extensions.System;
 using Guppy.LayerGroups;
+using Guppy.Network.Contexts;
+using Lidgren.Network;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -73,14 +76,39 @@ namespace VoidHuntersRevived.Library
             }
         }
 
+        public static class MessageContexts
+        {
+            public static class WorldObject
+            {
+                public readonly static NetOutgoingMessageContext WorldInfoPingMessageContext = new NetOutgoingMessageContext()
+                {
+                    Method = NetDeliveryMethod.UnreliableSequenced,
+                    SequenceChannel = 1
+                };
+            }
+        }
+
         public static class Intervals
         {
-            public static readonly double PingPositionInterval = 150;
+            public static readonly double WorldInfoPingInterval = 150;
         }
 
         public static class PipeIds
         {
             public static readonly Guid PlayersPipeId = new Guid(new Byte[16] { (Byte)PipeType.Players, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+        }
+
+        public static class LerpStrengths
+        {
+            public static readonly Single SlaveBodyLerpStrength = 1f / 16f;
+        }
+
+        public static class Thresholds
+        {
+            public static readonly Single SlaveBodyPositionSnapThreshold = 5f;
+            public static readonly Single SlaveBodyRotationSnapThreshold = MathHelper.PiOver2;
+            public static readonly Single SlaveBodyPositionDifferenceTheshold = 0.001f;
+            public static readonly Single SlaveBodyRotationDifferenceTheshold = 0.0001f;
         }
     }
 }

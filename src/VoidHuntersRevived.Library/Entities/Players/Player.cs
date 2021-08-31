@@ -24,7 +24,13 @@ namespace VoidHuntersRevived.Library.Entities.Players
         public Ship Ship
         {
             get => _ship;
-            set => this.OnShipChanged.InvokeIf(_ship != value, this, ref _ship, value);
+            set
+            {
+                this.OnShipChanged.InvokeIf(_ship != value, this, ref _ship, value);
+
+                if (value != default && value.Player != this)
+                    value.Player = this;
+            }
         }
         #endregion
 

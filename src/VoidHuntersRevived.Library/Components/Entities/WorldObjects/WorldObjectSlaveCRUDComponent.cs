@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Library.Extensions.Entities.WorldObjects;
 
 namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
 {
@@ -41,7 +40,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
 
         private void ReadWorldInfoPingMessage(MessageTypeManager sender, NetIncomingMessage im)
         {
-            this.Entity.ReadTransformation(im);
+            this.Entity.ReadWorldInfo(im);
         }
         #endregion
     }

@@ -31,7 +31,6 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
         #endregion
 
         #region Frame Methods
-
         private void PostUpdate(GameTime gameTime)
             => this.Entity.TryValidateWorldInfoChanged(gameTime);
         #endregion

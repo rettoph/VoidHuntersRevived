@@ -2,10 +2,9 @@
 using Guppy.Interfaces;
 using Guppy.Network.Enums;
 using Guppy.Network.Interfaces;
+using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using VoidHuntersRevived.Library.Entities.Chunks;
 
 namespace VoidHuntersRevived.Library.Entities.WorldObjects
@@ -58,15 +57,12 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
         /// </summary>
         /// <returns></returns>
         void TryValidateWorldInfoChanged(GameTime gameTime);
+        #endregion
 
-        /// <summary>
-        /// Attempt to set the <see cref="Position"/> and <see cref="Rotation"/> of the current
-        /// <see cref="IWorldObject"/> utilizing the recieved <paramref name="authorization"/>.
-        /// </summary>
-        /// <param name="position"></param>
-        /// <param name="rotation"></param>
-        /// <param name="authorization">The <see cref="NetworkAuthorization"/> of the incoming transformation request.</param>
-        void TrySetTransformation(Vector2 position, Single rotation, NetworkAuthorization authorization = NetworkAuthorization.Master);
+        #region Network Methods
+        public void WriteWorldInfo(NetOutgoingMessage om);
+
+        public void ReadWorldInfo(NetIncomingMessage im);
         #endregion
     }
 }

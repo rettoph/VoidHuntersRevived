@@ -21,7 +21,13 @@ namespace VoidHuntersRevived.Library.Entities.Ships
         public Player Player
         {
             get => _player;
-            set => this.OnPlayerChanged.InvokeIf(_player != value, this, ref _player, value);
+            set
+            {
+                this.OnPlayerChanged.InvokeIf(_player != value, this, ref _player, value);
+
+                if (value != default && value.Ship != this)
+                    value.Ship = this;
+            }
         }
 
         public Chain Chain
@@ -33,6 +39,7 @@ namespace VoidHuntersRevived.Library.Entities.Ships
                     throw new Exception("Unable to update Ship.Chain after initialization.");
 
                 _chain = value;
+                this.OnChainSet?.Invoke(this, value);
             }
         }
 
@@ -45,6 +52,7 @@ namespace VoidHuntersRevived.Library.Entities.Ships
 
         #region Events
         public event OnChangedEventDelegate<Ship, Player> OnPlayerChanged;
+        public event OnEventDelegate<Ship, Chain> OnChainSet;
 
         public override event OnChangedEventDelegate<INetworkEntity, IPipe> OnPipeChanged
         {

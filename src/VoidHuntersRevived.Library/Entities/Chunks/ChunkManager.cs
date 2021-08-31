@@ -5,6 +5,7 @@ using Guppy.Extensions.DependencyInjection;
 using Guppy.Lists;
 using Guppy.Lists.Delegates;
 using Guppy.Lists.Interfaces;
+using Guppy.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -80,18 +81,25 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
         #endregion
 
         #region Helper Methods
+        public Chunk GetChunk(Vector2 worldPosition)
+        {
+            return this.GetChunk(new ChunkPosition(worldPosition));
+        }
         public Chunk GetChunk(ChunkPosition position)
         {
             return _chunks.GetOrCreateById<Chunk>(position.Id);
         }
 
-        public IEnumerable<Chunk> GetChunks(ChunkPosition position, Int32 radius = 1)
+        public IEnumerable<Chunk> GetChunks(ChunkPosition? position, Int32 radius = 1)
         {
-            for (Int32 x = -radius; x <= radius; x++)
+            if (position != default)
             {
-                for (Int32 y = -radius; y <= radius; y++)
+                for (Int32 x = -radius; x <= radius; x++)
                 {
-                    yield return _chunks.GetOrCreateById<Chunk>((new ChunkPosition(position.X + x, position.Y + y)).Id);
+                    for (Int32 y = -radius; y <= radius; y++)
+                    {
+                        yield return _chunks.GetOrCreateById<Chunk>((new ChunkPosition(position.Value.X + x, position.Value.Y + y)).Id);
+                    }
                 }
             }
         }

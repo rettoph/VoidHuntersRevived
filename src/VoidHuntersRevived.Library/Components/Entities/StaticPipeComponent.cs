@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Library.Components.Entities
         #region Event Handlers
         private void HandleStaticPipeEntityInitializing(IService sender, ServiceStatus old, ServiceStatus value)
         {
-            this.GetPipe(_provider, _provider.GetService<PrimaryScene>()).NetworkEntities.TryAdd(this.Entity);
+            this.Entity.Pipe = this.GetPipe(_provider, _provider.GetService<PrimaryScene>());
             _provider = default;
 
             this.Entity.OnStatus[ServiceStatus.Initializing] += this.HandleStaticPipeEntityInitializing;

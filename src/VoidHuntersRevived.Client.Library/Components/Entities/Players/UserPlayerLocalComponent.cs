@@ -46,13 +46,23 @@ namespace VoidHuntersRevived.Client.Library.Components.Entities.Players
             if(_client.CurrentUser == this.Entity.User)
             {
                 this.Entity.OnStatus[ServiceStatus.Releasing] += this.HandleEntityReleasing;
+                this.Entity.OnUpdate += this.Update;
             }
         }
 
         private void HandleEntityReleasing(IService sender, ServiceStatus old, ServiceStatus value)
         {
             this.Entity.OnStatus[ServiceStatus.Releasing] -= this.HandleEntityReleasing;
+            this.Entity.OnUpdate -= this.Update;
         }
         #endregion
+
+        private void Update(GameTime gameTime)
+        {
+            if (this.Entity.Ship == default)
+                return;
+
+            _camera.MoveTo(this.Entity.Ship.Chain.Position);
+        }
     }
 }

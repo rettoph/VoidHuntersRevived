@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.Chunks;
+using VoidHuntersRevived.Library.Entities.Ships;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Structs;
 
@@ -17,12 +18,11 @@ namespace VoidHuntersRevived.Library.Entities.Players
     {
         #region Private Fields
         private ChunkManager _chunks;
-        private ChunkPosition _currentChunkPosition;
         #endregion
 
         #region Public Properties
         public IUser User { get; set; }
-        public Int32 ChunkProximityRadius { get; set; } = 3;
+        public Int32 ChunkProximityRadius { get; set; } = 5;
         #endregion
 
         #region Lifecycle Methods
@@ -36,31 +36,16 @@ namespace VoidHuntersRevived.Library.Entities.Players
             base.PreInitialize(provider);
 
             provider.Service(out _chunks);
-            _currentChunkPosition = new ChunkPosition(Vector2.Zero);
+
+            this.OnShipChanged += this.HandleShipChanged;
         }
-
-        protected override void PostInitialize(GuppyServiceProvider provider)
-        {
-            base.PostInitialize(provider);
-
-            foreach (Chunk chunk in _chunks.GetChunks(_currentChunkPosition, this.ChunkProximityRadius))
-            {
-                chunk.Pipe.Users.TryAdd(this.User);
-                chunk.TryRegisterDependent(this.Id);
-            }
-                
-        }
-
-        protected override void PreRelease()
+        protected override void Release()
         {
             base.PreRelease();
 
-            // Deregister any old chunk dependents...
-            foreach (Chunk chunk in _chunks.GetChunks(_currentChunkPosition, this.ChunkProximityRadius))
-            {
-                chunk.Pipe.Users.TryRemove(this.User);
-                chunk.TryDeregisterDependent(this.Id);
-            }
+            this.Ship = default;
+
+            this.OnShipChanged -= this.HandleShipChanged;
 
             _chunks = default;
         }
@@ -73,24 +58,49 @@ namespace VoidHuntersRevived.Library.Entities.Players
         }
         #endregion
 
+        #region Helper Methods
+        private void CleanChunkDependents(Chunk old, Chunk value)
+        {
+            IEnumerable<Chunk> oldProximityChunks = _chunks.GetChunks(old?.Position, this.ChunkProximityRadius);
+            IEnumerable<Chunk> newProximityChunks = _chunks.GetChunks(value?.Position, this.ChunkProximityRadius);
+
+            // Deregister any old chunk dependents...
+            foreach (Chunk chunk in oldProximityChunks.Except(newProximityChunks))
+            {
+                chunk.Pipe.Users.TryRemove(this.User);
+                chunk.TryDeregisterDependent(this.Id);
+            }
+
+
+            // Register any new chunk dependents...
+            foreach (Chunk chunk in newProximityChunks.Except(oldProximityChunks))
+            {
+                chunk.Pipe.Users.TryAdd(this.User);
+                chunk.TryRegisterDependent(this.Id);
+            }
+        }
+        #endregion
+
         #region Event Handlers
-        // private void HandleChunkChanged(IWorldObject sender, Chunk old, Chunk value)
-        // {
-        //     var oldProximityChunks = _chunks.GetChunks(old?.Position, this.ChunkProximityRadius);
-        //     var newProximityChunks = _chunks.GetChunks(value?.Position, this.ChunkProximityRadius);
-        // 
-        //     // Deregister any old chunk dependents...
-        //     foreach (Chunk chunk in oldProximityChunks.Except(newProximityChunks))
-        //     {
-        //         chunk.Pipe.Users.TryRemove(this.User);
-        //     }
-        //         
-        //     // Register any new chunk dependents...
-        //     foreach (Chunk chunk in newProximityChunks.Except(oldProximityChunks))
-        //     {
-        //         chunk.Pipe.Users.TryAdd(this.User);
-        //     }
-        // }
+        private void HandleShipChanged(Player sender, Ship old, Ship value)
+        {
+            if(old != default)
+            {
+                old.Chain.OnChunkChanged -= this.HandlePlayerShipChainChunkChained;
+            }
+            
+            if(value != default)
+            {
+                value.Chain.OnChunkChanged += this.HandlePlayerShipChainChunkChained;
+            }
+
+            this.CleanChunkDependents(old?.Chain.Chunk, value?.Chain.Chunk);
+        }
+
+        private void HandlePlayerShipChainChunkChained(IWorldObject sender, Chunk old, Chunk value)
+        {
+            this.CleanChunkDependents(old, value);
+        }
         #endregion
     }
 }

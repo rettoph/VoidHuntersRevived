@@ -3,6 +3,8 @@ using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
 using Guppy.Network;
 using Guppy.Network.Enums;
+using Guppy.Network.Extensions.Lidgren;
+using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -51,9 +53,18 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
                 this.OnWorldInfoChangeDetected?.Invoke(this);
             }
         }
+        #endregion
 
-        /// <inheritdoc />
-        public abstract void TrySetTransformation(Vector2 position, Single rotation, NetworkAuthorization authorization = NetworkAuthorization.Master);
+        #region Network Methods
+        void IWorldObject.WriteWorldInfo(NetOutgoingMessage om)
+            => this.WriteWorldInfo(om);
+
+        void IWorldObject.ReadWorldInfo(NetIncomingMessage im)
+            => this.ReadWorldInfo(im);
+
+        protected abstract void WriteWorldInfo(NetOutgoingMessage om);
+
+        protected abstract void ReadWorldInfo(NetIncomingMessage im);
         #endregion
     }
 }

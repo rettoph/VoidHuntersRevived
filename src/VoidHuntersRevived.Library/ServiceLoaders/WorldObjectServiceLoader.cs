@@ -29,6 +29,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.RegisterTypeFactory<WorldObjectCleanWorldInfoComponent>(p => new WorldObjectCleanWorldInfoComponent());
             services.RegisterTypeFactory<WorldObjectMasterCRUDComponent>(p => new WorldObjectMasterCRUDComponent());
             services.RegisterTypeFactory<WorldObjectSlaveCRUDComponent>(p => new WorldObjectSlaveCRUDComponent());
+            services.RegisterTypeFactory<AetherBodyWorldObjectMasterValidateWorldInfoChangeDetectedComponent>(p => new AetherBodyWorldObjectMasterValidateWorldInfoChangeDetectedComponent());
             services.RegisterTypeFactory<ChainMasterCRUDComponent>(p => new ChainMasterCRUDComponent());
             services.RegisterTypeFactory<ChainSlaveCRUDComponent>(p => new ChainSlaveCRUDComponent());
 
@@ -36,6 +37,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.RegisterTransient<WorldObjectCleanWorldInfoComponent>();
             services.RegisterTransient<WorldObjectMasterCRUDComponent>();
             services.RegisterTransient<WorldObjectSlaveCRUDComponent>();
+            services.RegisterTransient<AetherBodyWorldObjectMasterValidateWorldInfoChangeDetectedComponent>();
             services.RegisterTransient<ChainMasterCRUDComponent>();
             services.RegisterTransient<ChainSlaveCRUDComponent>();
 
@@ -43,6 +45,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.RegisterComponent<WorldObjectCleanWorldInfoComponent, IWorldObject>();
             services.RegisterComponent<WorldObjectMasterCRUDComponent, IWorldObject>();
             services.RegisterComponent<WorldObjectSlaveCRUDComponent, IWorldObject>();
+            services.RegisterComponent<AetherBodyWorldObjectMasterValidateWorldInfoChangeDetectedComponent, AetherBodyWorldObject>();
             services.RegisterComponent<ChainMasterCRUDComponent, Chain>();
             services.RegisterComponent<ChainSlaveCRUDComponent, Chain>();
             #endregion

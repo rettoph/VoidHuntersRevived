@@ -47,20 +47,27 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
             {
                 base.Id = value;
                 this.Position = new ChunkPosition(value);
+                this.Bounds = new Rectangle(
+                    x: this.Position.X * Chunk.Size,
+                    y: this.Position.Y * Chunk.Size,
+                    width: Chunk.Size,
+                    height: Chunk.Size);
+
                 this.OnPositionSet?.Invoke(this, this.Position);
             }
         }
 
         public UInt16 Dependents { get; private set; }
 
-        public Vector2 WorldPosition => new Vector2(
-            x: this.Position.X * Chunk.Size,
-            y: this.Position.Y * Chunk.Size);
-
         /// <summary>
         /// A list of all children linked to the current Chunk.
         /// </summary>
         public ServiceList<IWorldObject> Children { get; private set; }
+
+        /// <summary>
+        /// The chunk's current bounds.
+        /// </summary>
+        public Rectangle Bounds { get; private set;  }
         #endregion
 
         #region Events
@@ -97,6 +104,7 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
             this.Children = provider.GetService<ServiceList<IWorldObject>>();
 
             this.Children.OnAdded += this.HandleChildAdded;
+            this.Children.OnAdded += this.HandleChildRemoved;
 
             this.OnChildrenSet?.Invoke(this, this.Children);
         }
@@ -125,6 +133,7 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
             base.PostRelease();
 
             this.Children.OnAdded -= this.HandleChildAdded;
+            this.Children.OnAdded -= this.HandleChildRemoved;
 
             this.Children.TryRelease();
             this.Children = default;
@@ -182,7 +191,13 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
             // Remove the child from its old chunk...
             worldObject.Chunk?.Children.TryRemove(worldObject);
 
-            // Update the entities chunk...
+            // Update the entity's chunk...
+            worldObject.Chunk = this;
+        }
+
+        private void HandleChildRemoved(IServiceList<IWorldObject> sender, IWorldObject worldObject)
+        {
+            // Update the entity's chunk...
             worldObject.Chunk = this;
         }
     }

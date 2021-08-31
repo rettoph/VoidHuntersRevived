@@ -40,6 +40,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         #region Network Methods
         private void WriteCreateMessage(MessageTypeManager sender, NetOutgoingMessage om)
         {
+            om.Write(this.Entity.Chain.Id);
             this.Entity.Messages[Constants.Messages.Ship.PlayerChanged].TryWrite(om);
         }
 

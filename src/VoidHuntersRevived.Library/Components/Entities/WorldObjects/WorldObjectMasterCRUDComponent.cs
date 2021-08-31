@@ -12,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
-using VoidHuntersRevived.Library.Extensions.Entities.WorldObjects;
 
 namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
 {
@@ -59,7 +58,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
 
         private void WriteWorldInfoPingMessage(MessageTypeManager sender, NetOutgoingMessage om)
         {
-            this.Entity.WriteTransformation(om);
+            this.Entity.WriteWorldInfo(om);
         }
         #endregion
 

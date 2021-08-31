@@ -37,9 +37,9 @@ namespace VoidHuntersRevived.Library.Services
 
         #region Creation Methods
         public Chain Create(ShipPart shipPart = default, Vector2 position = default)
-            => _provider.GetService<Chain>(Constants.ServiceConfigurationKeys.Chain, (chain, p, sc) =>
+            => _provider.GetService<Chain>(Constants.ServiceConfigurationKeys.Chain, (chain, _, _) =>
             {
-                chain.TrySetTransformation(position, 0, NetworkAuthorization.Master);
+                chain.Body.Instances[NetworkAuthorization.Master].SetTransformIgnoreContacts(ref position, 0);
 
                 chain.Root = shipPart;
             });

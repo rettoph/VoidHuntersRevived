@@ -29,8 +29,8 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
 
             this.Entity.OnStatus[ServiceStatus.Initializing] += this.HandleEntityInitializing;
             this.Entity.OnStatus[ServiceStatus.Releasing] += this.HandleEntityReleasing;
+            this.Entity.OnPostUpdate += this.PostUpdate;
         }
-
 
         protected override void Release()
         {
@@ -38,44 +38,49 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
 
             this.Entity.OnStatus[ServiceStatus.Initializing] -= this.HandleEntityInitializing;
             this.Entity.OnStatus[ServiceStatus.Releasing] -= this.HandleEntityReleasing;
+            this.Entity.OnPostUpdate -= this.PostUpdate;
 
             _chunks = default;
         }
         #endregion
 
         #region Helper Methods
+        /// <summary>
+        /// Check to see if the item is still residing within its current chunk.
+        /// </summary>
         private void CleanChunk()
         {
-            ChunkPosition chunkPosition = new ChunkPosition(this.Entity.Position);
-
-            // TODO: Remove this null check somehow
-            if (this.Entity.Chunk?.Id != chunkPosition.Id)
+            if (!this.Entity.Chunk.Bounds.Contains(this.Entity.Position))
             {
-                Chunk chunk = _chunks.GetChunk(chunkPosition);
+                Chunk chunk = _chunks.GetChunk(this.Entity.Position);
                 chunk.Children.TryAdd(this.Entity);
             }
+        }
+        #endregion
+
+        #region Frame Methods
+        private void PostUpdate(GameTime gameTime)
+        {
+            this.CleanChunk();
         }
         #endregion
 
         #region Event Handlers
         private void HandleEntityInitializing(IService sender, ServiceStatus old, ServiceStatus value)
         {
-            this.Entity.OnWorldInfoChangeDetected += this.HandleWorldObjectWorldInfoChangeChanged;
             this.Entity.OnChunkChanged += this.HandleWorldObjectChunkChanged;
 
-            this.CleanChunk();
+            // Automatically add the current entity into its appropriate chunk.
+            _chunks.GetChunk(this.Entity.Position).Children.TryAdd(this.Entity);
         }
 
         private void HandleEntityReleasing(IService sender, ServiceStatus old, ServiceStatus value)
         {
-            this.Entity.OnWorldInfoChangeDetected -= this.HandleWorldObjectWorldInfoChangeChanged;
             this.Entity.OnChunkChanged -= this.HandleWorldObjectChunkChanged;
 
+            this.Entity.Chunk?.Children.TryRemove(this.Entity);
             this.Entity.Chunk = default;
         }
-
-        private void HandleWorldObjectWorldInfoChangeChanged(IWorldObject sender)
-            => this.CleanChunk();
 
 
         private void HandleWorldObjectChunkChanged(IWorldObject sender, Chunk old, Chunk value)

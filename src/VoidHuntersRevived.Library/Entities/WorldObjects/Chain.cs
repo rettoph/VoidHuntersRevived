@@ -18,6 +18,7 @@ using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Enums;
 using Guppy.Network.Enums;
+using VoidHuntersRevived.Library.Entities.Aether;
 
 namespace VoidHuntersRevived.Library.Entities.WorldObjects
 {
@@ -26,20 +27,13 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
     /// It acts as the link between a virtual ShipPart & the physical
     /// 2d world.
     /// </summary>
-    public class Chain : WorldObject
+    public class Chain : AetherBodyWorldObject
     {
         #region Private Fields
         private ShipPart _root;
-
-        private Vector2 _position;
-        private Single _rotation;
         #endregion
 
         #region Public Properties
-        public override Vector2 Position => _position;
-
-        public override Single Rotation => _rotation;
-
         public ShipPart Root
         {
             get => _root;
@@ -64,7 +58,6 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
             base.Initialize(provider);
 
             this.LayerGroup = Constants.LayersContexts.Chains.Group.GetValue();
-            this.ValidateWorldInfoChangeDetected += this.HandleValidateWorldInfoChangeDetected;
         }
 
         protected override void PostInitialize(GuppyServiceProvider provider)
@@ -84,7 +77,6 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
             base.Release();
 
             this.Root.OnChainChanged -= this.HandleRootChainChanged;
-            this.ValidateWorldInfoChangeDetected -= this.HandleValidateWorldInfoChangeDetected;
 
             // Only remove the root's reference to the chain
             // If it is still the root piece.
@@ -111,14 +103,6 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
         }
         #endregion
 
-        #region Helper Methods
-        public override void TrySetTransformation(Vector2 position, float rotation, NetworkAuthorization authorization = NetworkAuthorization.Master)
-        {
-            _position = position;
-            _rotation = rotation;
-        }
-        #endregion
-
         #region Network Methods
         public void WriteAll(NetOutgoingMessage om, ShipPartService shipPartService)
         {
@@ -136,9 +120,6 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
         {
             this.TryRelease();
         }
-
-        private bool HandleValidateWorldInfoChangeDetected(IWorldObject sender, GameTime args)
-            => true;
         #endregion
     }
 }

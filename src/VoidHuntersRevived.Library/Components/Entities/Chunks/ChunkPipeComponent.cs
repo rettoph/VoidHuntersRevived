@@ -44,9 +44,9 @@ namespace VoidHuntersRevived.Library.Components.Entities.Chunks
         #endregion
 
         #region Event Handlers
-        private void HandleChunkChildAdded(IServiceList<IWorldObject> sender, IWorldObject args)
+        private void HandleChunkChildAdded(IServiceList<IWorldObject> sender, IWorldObject worldObject)
         {
-            this.Entity.Pipe.NetworkEntities.TryAdd(args);
+            worldObject.Pipe = this.Entity.Pipe;
         }
 
         private void HandleChunkPositionSet(Chunk sender, ChunkPosition args)
@@ -62,6 +62,10 @@ namespace VoidHuntersRevived.Library.Components.Entities.Chunks
         private void HandleChunkReleasing(IService sender, ServiceStatus old, ServiceStatus value)
         {
             this.Entity.Children.OnAdded -= this.HandleChunkChildAdded;
+
+            this.Entity.Pipe?.TryRelease();
+
+            this.Entity.Pipe = default;
         }
         #endregion
     }

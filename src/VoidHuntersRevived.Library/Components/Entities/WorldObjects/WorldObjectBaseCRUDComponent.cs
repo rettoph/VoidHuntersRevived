@@ -17,7 +17,14 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
 
             this.Entity.Messages.Add(
                 messageType: Constants.Messages.WorldObject.WorldInfoPing,
-                defaultContext: Guppy.Network.Constants.MessageContexts.InternalUnreliableDefault);
+                defaultContext: Constants.MessageContexts.WorldObject.WorldInfoPingMessageContext);
+        }
+
+        protected override void ReleaseRemote(NetworkAuthorization networkAuthorization)
+        {
+            base.ReleaseRemote(networkAuthorization);
+
+            this.Entity.Pipe = default;
         }
         #endregion
     }

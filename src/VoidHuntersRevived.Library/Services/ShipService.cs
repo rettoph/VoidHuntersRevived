@@ -1,4 +1,5 @@
-﻿using Guppy.DependencyInjection;
+﻿using Guppy;
+using Guppy.DependencyInjection;
 using Guppy.Lists;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using VoidHuntersRevived.Library.Entities.WorldObjects;
 
 namespace VoidHuntersRevived.Library.Services
 {
-    public class ShipService : ServiceList<Ship>
+    public class ShipService : Service
     {
         #region Private Fields
         private GuppyServiceProvider _provider;
@@ -33,7 +34,7 @@ namespace VoidHuntersRevived.Library.Services
 
         public Ship Create(Chain chain, Player player = default)
         {
-            return this.Create<Ship>(_provider, Constants.ServiceConfigurationKeys.Ship, (ship, _, _) =>
+            return _provider.GetService<Ship>(Constants.ServiceConfigurationKeys.Ship, (ship, _, _) =>
             {
                 ship.Chain = chain;
                 ship.Player = player;
