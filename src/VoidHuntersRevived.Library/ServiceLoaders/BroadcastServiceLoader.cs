@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                 switch (provider.Settings.Get<NetworkAuthorization>())
                 {
                     case NetworkAuthorization.Master:
-                        broadcasts.Register(Constants.Messages.WorldObject.WorldInfoPing, Constants.Intervals.WorldInfoPingInterval);
+                        broadcasts.Register(Constants.Messages.WorldObject.WorldInfoPing, Constants.Intervals.WorldInfoPingBroadcastInterval);
                         break;
                 }
             });

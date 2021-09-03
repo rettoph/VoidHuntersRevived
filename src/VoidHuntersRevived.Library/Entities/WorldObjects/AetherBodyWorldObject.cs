@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Library.Entities.Aether;
 using VoidHuntersRevived.Library.Extensions.Aether;
 
@@ -30,8 +31,14 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
             base.PreInitialize(provider);
 
             // Setup the chain's body.
-            this.Body = provider.GetService<AetherWorld>().CreateBody();
-            this.Body.Tag = this;
+            this.Body = provider.GetService<AetherWorld>().CreateBody((body, _, _) =>
+            {
+                body.Tag = this;
+                body.BodyType = BodyType.Dynamic;
+                body.LinearDamping = 0.2f;
+                body.AngularDamping = 0.1f;
+                body.IgnoreGravity = true;
+            });
         }
 
         protected override void Initialize(GuppyServiceProvider provider)

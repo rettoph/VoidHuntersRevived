@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using tainicom.Aether.Physics2D.Collision.Shapes;
 using VoidHuntersRevived.Library.Contexts.ShipParts;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
@@ -132,7 +133,16 @@ namespace VoidHuntersRevived.Client.Library.Services
         {
             _primitives[context.Id] = new ShipPartContextPrimitiveData()
             {
-                Shapes = context.Shapes.Select(s => PrimitiveShape.Create(s.Vertices)).ToArray()
+                Shapes = context.Shapes.Select(s =>
+                {
+                    switch(s.ShapeType)
+                    {
+                        case ShapeType.Polygon:
+                            return PrimitiveShape.Create((s as PolygonShape).Vertices);
+                        default:
+                            throw new ArgumentOutOfRangeException($"Unable to create PrimitiveShape for {s.ShapeType}");
+                    }
+                }).ToArray()
             };
         }
         #endregion

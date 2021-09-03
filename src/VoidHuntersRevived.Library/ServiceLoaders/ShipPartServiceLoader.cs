@@ -5,7 +5,9 @@ using Guppy.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using tainicom.Aether.Physics2D.Collision.Shapes;
 using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Library.Contexts.ShipParts;
 using VoidHuntersRevived.Library.Contexts.Utilities;
@@ -41,16 +43,15 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                     Name = "ship-part:hull:square",
                     Shapes = new[]
                     {
-                        new ShapeDto()
-                        {
-                            Vertices = new Vertices()
+                        new PolygonShape(
+                            vertices: new Vertices()
                             {
                                 new Vector2(0, 0),
                                 new Vector2(1, 0),
                                 new Vector2(1, 1),
                                 new Vector2(0, 1)
-                            }
-                        }
+                            },
+                            density: 1f)
                     },
                     ConnectionNodes = new[]
                     {

@@ -9,7 +9,7 @@ using VoidHuntersRevived.Library.Entities.WorldObjects;
 namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
 {
     /// <summary>
-    /// Simple driver used to automatically invoke <see cref="IWorldObject.TryValidateWorldInfoChanged(GameTime)"/>
+    /// Simple driver used to automatically invoke <see cref="IWorldObject.TryValidateWorldInfoDirty(GameTime)"/>
     /// every frame.
     /// </summary>
     internal sealed class WorldObjectCleanWorldInfoComponent : Component<IWorldObject>
@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
 
         #region Frame Methods
         private void PostUpdate(GameTime gameTime)
-            => this.Entity.TryValidateWorldInfoChanged(gameTime);
+            => this.Entity.TryValidateWorldInfoDirty(gameTime);
         #endregion
     }
 }

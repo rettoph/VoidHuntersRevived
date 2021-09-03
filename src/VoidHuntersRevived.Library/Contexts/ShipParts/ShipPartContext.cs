@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
+using tainicom.Aether.Physics2D.Collision.Shapes;
 using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Library.Contexts.Utilities;
 using VoidHuntersRevived.Library.Dtos.Utilities;
@@ -47,7 +48,7 @@ namespace VoidHuntersRevived.Library.Contexts.ShipParts
         /// <summary>
         /// Defines the shapes of the ShipPart
         /// </summary>
-        public ShapeDto[] Shapes { get; set; } = new ShapeDto[0];
+        public Shape[] Shapes { get; set; } = new Shape[0];
 
         /// <summary>
         /// All connection nodes within the current part.

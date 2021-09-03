@@ -14,6 +14,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using VoidHuntersRevived.Library.Entities.Ships;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Components.Entities.WorldObjects;
 
 namespace VoidHuntersRevived.Library
 {
@@ -90,7 +91,19 @@ namespace VoidHuntersRevived.Library
 
         public static class Intervals
         {
-            public static readonly double WorldInfoPingInterval = 150;
+            public static readonly Double WorldInfoPingBroadcastInterval = 50;
+
+            /// <summary>
+            /// The minimum amount of time before <see cref="AetherBodyWorldObjectMasterValidateWorldInfoChangeDetectedComponent"/>
+            /// will bother checking for a change.
+            /// </summary>
+            public static readonly Double AetherBodyWorldObjectCleanIntervalMinimum = 150;
+
+            /// <summary>
+            /// The maximum amount of time before <see cref="AetherBodyWorldObjectMasterValidateWorldInfoChangeDetectedComponent"/>
+            /// will broadcast the defined entity reguardless of dirty state.
+            /// </summary>
+            public static readonly Double AetherBodyWorldObjectCleanIntervalMaximum = 250;
         }
 
         public static class PipeIds
@@ -100,7 +113,7 @@ namespace VoidHuntersRevived.Library
 
         public static class LerpStrengths
         {
-            public static readonly Single SlaveBodyLerpStrength = 1f / 16f;
+            public static readonly Single SlaveBodyLerpStrength = 1f;
         }
 
         public static class Thresholds
@@ -109,6 +122,9 @@ namespace VoidHuntersRevived.Library
             public static readonly Single SlaveBodyRotationSnapThreshold = MathHelper.PiOver2;
             public static readonly Single SlaveBodyPositionDifferenceTheshold = 0.001f;
             public static readonly Single SlaveBodyRotationDifferenceTheshold = 0.0001f;
+
+            public static readonly Single MasterBodyAngularVelocityDifferenceTheshold = 0.001f;
+            public static readonly Single MasterBodyLinearVelocityDifferenceTheshold = 0.0001f;
         }
     }
 }

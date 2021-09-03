@@ -15,6 +15,8 @@ using Lidgren.Network;
 using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Json.JsonConverters;
+using VoidHuntersRevived.Library.Json.JsonConverters.Utilities;
 
 namespace VoidHuntersRevived.Library.Services
 {
@@ -60,7 +62,12 @@ namespace VoidHuntersRevived.Library.Services
 
             this.JsonSerializerOptions = new JsonSerializerOptions()
             {
-                Converters = { new ShipPartContextJsonConverter() },
+                Converters = {
+                    new ShipPartContextJsonConverter(),
+                    new ShapeJsonConverter(),
+                    new ConnectionNodeDtoJsonConverter(),
+                    new Vector2JsonConverter()
+                },
                 WriteIndented = true
             };
         }
@@ -114,7 +121,7 @@ namespace VoidHuntersRevived.Library.Services
         /// </summary>
         /// <param name="contextJson"></param>
         public void RegisterJsonContext(String contextJson)
-            => JsonSerializer.Deserialize<ShipPartContext>(contextJson, this.JsonSerializerOptions);
+            => this.RegisterContext(this.DeserializeContext(contextJson));
 
         /// <summary>
         /// Attempt to parse a recieved JSON file & 
@@ -140,6 +147,14 @@ namespace VoidHuntersRevived.Library.Services
         /// <param name="pathToDirectory"></param>
         public void RegisterDirectoryContexts(String pathToDirectory)
             => this.RegisterFileContexts(Directory.GetFiles(pathToDirectory, "*.vhsp"));
+        #endregion
+
+        #region
+        public ShipPartContext DeserializeContext(String contextJson)
+            => JsonSerializer.Deserialize<ShipPartContext>(contextJson, this.JsonSerializerOptions);
+
+        public String SerializeContext(ShipPartContext context)
+            => JsonSerializer.Serialize<ShipPartContext>(context, this.JsonSerializerOptions);
         #endregion
 
         #region Network Methods

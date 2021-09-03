@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -101,6 +102,13 @@ namespace VoidHuntersRevived.Client.Library
             base.Dispose(disposing);
         }
 
+        protected override void OnExiting(object sender, EventArgs args)
+        {
+            base.OnExiting(sender, args);
+
+            Environment.Exit(0);
+        }
+
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -110,6 +118,7 @@ namespace VoidHuntersRevived.Client.Library
         {
             // TODO: Add your update logic here
             base.Update(gameTime);
+            Console.WriteLine(gameTime.ElapsedGameTime.TotalMilliseconds);
 
             game.TryUpdate(gameTime);
         }

@@ -31,6 +31,7 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
     {
         #region Private Fields
         private ShipPart _root;
+        private Vector2 _old;
         #endregion
 
         #region Public Properties
@@ -100,6 +101,21 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
             // This should case a cascade draw call of the
             // entire chain's parts.
             this.Root.TryDrawAt(gameTime, ref worldTransformation);
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            
+            if(_old.X > this.Body.LocalInstance.LinearVelocity.X)
+            {
+
+            }
+
+            this.log.Info($"{this.Body.LocalInstance.LinearVelocity}, {this.Body.LocalInstance.IslandIndex}");
+
+            _old = this.Body.LocalInstance.LinearVelocity;
         }
         #endregion
 

@@ -27,6 +27,25 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         private Dictionary<NetworkAuthorization, TAetherObject> _instances;
 
         /// <summary>
+        /// <para>Represents all platform instances.</para>
+        /// 
+        /// <para>
+        /// When <see cref="NetworkAuthorization"/> is <see cref="NetworkAuthorization.Master"/>, this will contain
+        /// only the <see cref="NetworkAuthorization.Master"/> instance. This is because platform actions taken on the
+        /// server should only effect the server instance. The slave instance is used as a reference to know what has
+        /// been broadcasted.
+        /// </para>
+        /// 
+        /// <para>
+        /// When <see cref="NetworkAuthorization"/> is <see cref="NetworkAuthorization.Slave"/>, this will contain
+        /// the <see cref="NetworkAuthorization.Master"/> and <see cref="NetworkAuthorization.Master"/> instance.
+        /// This is because platform actions taken on the client should alter the server instances in an effort to
+        /// "predict" incoming server data.
+        /// </para>
+        /// </summary>
+        private TAetherObject[] _platformInstances;
+
+        /// <summary>
         /// Represents the current <see cref="NetworkAuthorization"/>'s Aether
         /// object representation.
         /// </summary>
@@ -39,6 +58,25 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         /// grouped by their respective <see cref="NetworkAuthorization"/> value.
         /// </summary>
         public IReadOnlyDictionary<NetworkAuthorization, TAetherObject> Instances => _instances;
+
+        /// <summary>
+        /// <para>Represents all platform instances.</para>
+        /// 
+        /// <para>
+        /// When <see cref="NetworkAuthorization"/> is <see cref="NetworkAuthorization.Master"/>, this will contain
+        /// only the <see cref="NetworkAuthorization.Master"/> instance. This is because platform actions taken on the
+        /// server should only effect the server instance. The slave instance is used as a reference to know what has
+        /// been broadcasted.
+        /// </para>
+        /// 
+        /// <para>
+        /// When <see cref="NetworkAuthorization"/> is <see cref="NetworkAuthorization.Slave"/>, this will contain
+        /// the <see cref="NetworkAuthorization.Master"/> and <see cref="NetworkAuthorization.Master"/> instance.
+        /// This is because platform actions taken on the client should alter the server instances in an effort to
+        /// "predict" incoming server data.
+        /// </para>
+        /// </summary>
+        public TAetherObject[] PlatformInstances => _platformInstances;
 
         /// <summary>
         /// Represents the current <see cref="NetworkAuthorization"/>'s Aether
@@ -58,7 +96,7 @@ namespace VoidHuntersRevived.Library.Entities.Aether
             base.PostRelease();
 
             _instances.Clear();
-            _localInstance = default;
+            _platformInstances = default;
         }
         #endregion
 
@@ -84,7 +122,24 @@ namespace VoidHuntersRevived.Library.Entities.Aether
                 { NetworkAuthorization.Slave, this.BuildInstance(provider, NetworkAuthorization.Slave) }
             };
 
-            _localInstance = _instances[provider.Settings.Get<NetworkAuthorization>()];
+            switch(provider.Settings.Get<NetworkAuthorization>())
+            {
+                case NetworkAuthorization.Master:
+                    _localInstance = _instances[NetworkAuthorization.Master];
+                    _platformInstances = new TAetherObject[]
+                    {
+                        _instances[NetworkAuthorization.Master]
+                    };
+                    break;
+                case NetworkAuthorization.Slave:
+                    _localInstance = _instances[NetworkAuthorization.Slave];
+                    _platformInstances = new TAetherObject[]
+                    {
+                        _instances[NetworkAuthorization.Master],
+                        _instances[NetworkAuthorization.Slave]
+                    };
+                    break;
+            }
         }
 
         /// <summary>
@@ -94,6 +149,16 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         protected void Do(Action<TAetherObject> action)
         {
             foreach (TAetherObject instance in _instances.Values)
+                action(instance);
+        }
+
+        /// <summary>
+        /// Preform an action on every internal <see cref="PlatformInstances"/>.
+        /// </summary>
+        /// <param name="action"></param>
+        protected void DoPlaftorm(Action<TAetherObject> action)
+        {
+            foreach (TAetherObject instance in _platformInstances)
                 action(instance);
         }
         #endregion

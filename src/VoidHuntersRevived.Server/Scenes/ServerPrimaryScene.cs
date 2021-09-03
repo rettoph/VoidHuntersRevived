@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Library.Entities.Chunks;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
@@ -42,27 +43,27 @@ namespace VoidHuntersRevived.Server.Scenes
 
             this.Channel.Users.OnAdded += this.HandleUserJoined;
 
-            // provider.GetService<ChunkManager>().OnChunkAdded += (_, chunk) =>
-            // {
-            //     var chain = _chains.Create(
-            //         contextName: "ship-part:hull:square",
-            //         position: chunk.Bounds.Center.ToVector2());
-            // 
-            //     ShipPart child;
-            //     Boolean result;
-            // 
-            //     child = provider.GetService<ShipPartService>().Create("ship-part:hull:square");
-            //     result = chain.Root.ConnectionNodes[0].TryAttach(child.ConnectionNodes[3]);
-            // 
-            //     child = provider.GetService<ShipPartService>().Create("ship-part:hull:square");
-            //     result = chain.Root.ConnectionNodes[1].TryAttach(child.ConnectionNodes[2]);
-            // 
-            //     child = provider.GetService<ShipPartService>().Create("ship-part:hull:square");
-            //     result = chain.Root.ConnectionNodes[2].TryAttach(child.ConnectionNodes[1]);
-            // 
-            //     child = provider.GetService<ShipPartService>().Create("ship-part:hull:square");
-            //     result = chain.Root.ConnectionNodes[3].TryAttach(child.ConnectionNodes[0]);
-            // };
+            provider.GetService<ChunkManager>().OnChunkAdded += (_, chunk) =>
+            {
+                var chain = _chains.Create(
+                    contextName: "ship-part:hull:square",
+                    position: chunk.Bounds.Center.ToVector2());
+            
+                ShipPart child;
+                Boolean result;
+            
+                child = provider.GetService<ShipPartService>().Create("ship-part:hull:square");
+                result = chain.Root.ConnectionNodes[0].TryAttach(child.ConnectionNodes[3]);
+            
+                child = provider.GetService<ShipPartService>().Create("ship-part:hull:square");
+                result = chain.Root.ConnectionNodes[1].TryAttach(child.ConnectionNodes[2]);
+            
+                child = provider.GetService<ShipPartService>().Create("ship-part:hull:square");
+                result = chain.Root.ConnectionNodes[2].TryAttach(child.ConnectionNodes[1]);
+            
+                child = provider.GetService<ShipPartService>().Create("ship-part:hull:square");
+                result = chain.Root.ConnectionNodes[3].TryAttach(child.ConnectionNodes[0]);
+            };
         }
 
         protected override void Release()
@@ -91,7 +92,7 @@ namespace VoidHuntersRevived.Server.Scenes
                 contextName: "ship-part:hull:square",
                 position: Vector2.Zero);
 
-            _ships.Create(chain, _players.CreateUserPlayer(user));
+            var ship = _ships.Create(chain, _players.CreateUserPlayer(user));
         }
 
         private void HandleUserConnected(IServiceList<IUser> sender, IUser args)

@@ -1,10 +1,14 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.DependencyInjection.ServiceConfigurations;
 using Guppy.Extensions.System;
+using Guppy.Lists;
 using Guppy.Network.Enums;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using tainicom.Aether.Physics2D.Collision.Shapes;
+using tainicom.Aether.Physics2D.Common;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Library.Extensions.Aether;
 
@@ -12,6 +16,10 @@ namespace VoidHuntersRevived.Library.Entities.Aether
 {
     public class AetherBody : BaseAetherWrapper<Body>
     {
+        #region Private Fields
+        private FactoryServiceList<AetherFixture> _fixtures;
+        #endregion
+
         #region Public Properties
         /// <summary>
         /// The owning <see cref="AetherWorld"/> instance. This will autmatically be defined
@@ -26,9 +34,36 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         {
             set => this.Do(body => body.Tag = value);
         }
+
+        public BodyType BodyType
+        {
+            set => this.Do(body => body.BodyType = value);
+        }
+
+        public Single AngularDamping
+        {
+            set => this.Do(body => body.AngularDamping = value);
+        }
+
+        public Single LinearDamping
+        {
+            set => this.Do(body => body.LinearDamping = value);
+        }
+
+        public Boolean IgnoreGravity
+        {
+            set => this.Do(body => body.IgnoreGravity = value);
+        }
         #endregion
 
         #region Lifecycle Methods
+        protected override void PreInitialize(GuppyServiceProvider provider)
+        {
+            base.PreInitialize(provider);
+
+            provider.Service(out _fixtures);
+        }
+
         protected override void Initialize(GuppyServiceProvider provider)
         {
             base.Initialize(provider);
@@ -39,29 +74,56 @@ namespace VoidHuntersRevived.Library.Entities.Aether
 
         protected override void PostRelease()
         {
-            this.Do(body => body.TryRemove());
-
             base.PostRelease();
+
+            _fixtures.TryRelease();
+            _fixtures = default;
+
+            this.Do(body => body.TryRemove());
         }
         #endregion
 
         #region Helper Methods
         protected override Body BuildInstance(GuppyServiceProvider provider, NetworkAuthorization authorization)
-            => this.World.Instances[authorization].CreateBody().Then(body =>
+            => this.World.Instances[authorization].CreateBody();
+        #endregion
+
+        #region CreateFixture Methods
+        /// <summary>
+        /// Create a new AetherBody instance linked to this world.
+        /// </summary>
+        /// <param name="shape"></param>
+        /// <param name="tag"></param>
+        /// <returns></returns>
+        public AetherFixture CreateFixture(Shape shape, Object tag)
+        {
+            return _fixtures.Create((fixture, provider, _) =>
             {
-                body.CreateRectangle(1f, 1f, 0.5f, Vector2.Zero);
-                body.LinearVelocity = Vector2.UnitX * 0.1f;
-                body.BodyType = BodyType.Dynamic;
-                body.LinearDamping = 0.5f;
+                fixture.Body = this;
+                fixture.Shape = shape;
+                fixture.BuildAetherInstances(provider);
+
+                fixture.Tag = tag;
             });
+        }
 
         /// <summary>
-        /// Set the <see cref="Body.Tag"/> value for every internal
-        /// <see cref="Body"/> instance.
+        /// Create a new AetherBody instance linked to this world.
         /// </summary>
-        /// <param name="tag"></param>
-        public void SetTag(Object tag)
-            => this.Do(body => body.Tag = tag);
+        /// <param name="shape"></param>
+        /// <param name="setup"></param>
+        /// <returns></returns>
+        public AetherFixture CreateFixture(Shape shape, Action<AetherFixture, GuppyServiceProvider, IServiceConfiguration> setup)
+        {
+            return _fixtures.Create((fixture, provider, configuration) =>
+            {
+                fixture.Body = this;
+                fixture.Shape = shape;
+                fixture.BuildAetherInstances(provider);
+
+                setup(fixture, provider, configuration);
+            });
+        }
         #endregion
     }
 }

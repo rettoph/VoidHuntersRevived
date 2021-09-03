@@ -4,7 +4,7 @@ using System.Text;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Hulls
 {
-    public class Hull : ShipPart
+    public class Hull : RigidShipPart
     {
     }
 }

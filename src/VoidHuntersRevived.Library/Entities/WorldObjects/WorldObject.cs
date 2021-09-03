@@ -17,6 +17,7 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
     {
         #region Private Fields
         private Chunk _chunk;
+        private Boolean _worldInfoDirty;
         #endregion
 
         #region Public Properties
@@ -32,25 +33,31 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
             get => _chunk;
             set => this.OnChunkChanged.InvokeIf(_chunk != value, this, ref _chunk, value);
         }
+
+        public Boolean WorldInfoDirty
+        {
+            get => _worldInfoDirty;
+            set => this.OnWorldInfoDirtyChanged.InvokeIf(_worldInfoDirty != value, this, ref _worldInfoDirty, value);
+        }
         #endregion
 
         #region Events
         public event OnChangedEventDelegate<IWorldObject, Chunk> OnChunkChanged;
 
         /// <inheritdoc />
-        public event OnEventDelegate<IWorldObject> OnWorldInfoChangeDetected;
+        public event OnEventDelegate<IWorldObject, Boolean> OnWorldInfoDirtyChanged;
 
         /// <inheritdoc />
-        public event ValidateEventDelegate<IWorldObject, GameTime> ValidateWorldInfoChangeDetected;
+        public event ValidateEventDelegate<IWorldObject, GameTime> ValidateWorldInfoDirty;
         #endregion
 
         #region Helper Methods
         /// <inheritdoc />
-        void IWorldObject.TryValidateWorldInfoChanged(GameTime gameTime)
+        void IWorldObject.TryValidateWorldInfoDirty(GameTime gameTime)
         {
-            if(this.ValidateWorldInfoChangeDetected.Validate(this, gameTime, false))
+            if(!_worldInfoDirty && this.ValidateWorldInfoDirty.Validate(this, gameTime, false))
             {
-                this.OnWorldInfoChangeDetected?.Invoke(this);
+                this.WorldInfoDirty = true;
             }
         }
         #endregion

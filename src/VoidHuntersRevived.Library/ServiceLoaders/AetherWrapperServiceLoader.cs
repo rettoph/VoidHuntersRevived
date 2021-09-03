@@ -22,11 +22,13 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
         {
             services.RegisterTypeFactory<AetherWorld>(p => new AetherWorld());
             services.RegisterTypeFactory<AetherBody>(p => new AetherBody());
+            services.RegisterTypeFactory<AetherFixture>(p => new AetherFixture());
             services.RegisterTypeFactory<FactoryServiceList<AetherBody>>(p => new FactoryServiceList<AetherBody>());
             services.RegisterTypeFactory<FactoryServiceList<AetherFixture>>(p => new FactoryServiceList<AetherFixture>());
 
             services.RegisterScoped<AetherWorld>();
             services.RegisterTransient<AetherBody>();
+            services.RegisterTransient<AetherFixture>();
             services.RegisterTransient<FactoryServiceList<AetherBody>>();
             services.RegisterTransient<FactoryServiceList<AetherFixture>>();
 

@@ -1,5 +1,6 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.DependencyInjection.ServiceConfigurations;
+using Guppy.Extensions.System;
 using Guppy.Lists;
 using Guppy.Network.Enums;
 using Microsoft.Xna.Framework;
@@ -25,6 +26,14 @@ namespace VoidHuntersRevived.Library.Entities.Aether
 
             this.BuildAetherInstances(provider);
         }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _bodies.TryRelease();
+            _bodies = default;
+        }
         #endregion
 
         #region Frame Methods
@@ -38,7 +47,7 @@ namespace VoidHuntersRevived.Library.Entities.Aether
 
         #region Helper Methods
         protected override World BuildInstance(GuppyServiceProvider provider, NetworkAuthorization authorization)
-            => new World(Vector2.UnitY * 9.8f);
+            => new World(Vector2.Zero);
         #endregion
 
         #region CreateBody Methods
@@ -46,12 +55,14 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         /// Create a new AetherBody instance linked to this world.
         /// </summary>
         /// <returns></returns>
-        public AetherBody CreateBody()
+        public AetherBody CreateBody(Object tag)
         {
             return _bodies.Create((body, provider, _) =>
             {
                 body.World = this;
                 body.BuildAetherInstances(provider);
+
+                body.Tag = tag;
             });
         }
 

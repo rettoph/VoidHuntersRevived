@@ -20,7 +20,6 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
     {
         #region Private Fields
         private Broadcast _broadcast;
-        private Boolean _dirtyWorldInfo;
         #endregion
 
         #region Lifecycle Methods
@@ -28,10 +27,9 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
         {
             base.InitializeRemote(provider, networkAuthorization);
 
-            _dirtyWorldInfo = false;
             _broadcast = provider.GetBroadcast(Constants.Messages.WorldObject.WorldInfoPing);
 
-            this.Entity.OnWorldInfoChangeDetected += this.HandleWorldInfoChangeDetected;
+            this.Entity.OnWorldInfoDirtyChanged += this.HandleWorldInfoChangeDetected;
 
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnWrite += this.WriteCreateMessage;
             this.Entity.Messages[Constants.Messages.WorldObject.WorldInfoPing].OnWrite += this.WriteWorldInfoPingMessage;
@@ -44,7 +42,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
             this.Entity.Messages[Constants.Messages.WorldObject.WorldInfoPing].OnWrite -= this.WriteWorldInfoPingMessage;
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnWrite -= this.WriteCreateMessage;
 
-            this.Entity.OnWorldInfoChangeDetected -= this.HandleWorldInfoChangeDetected;
+            this.Entity.OnWorldInfoDirtyChanged -= this.HandleWorldInfoChangeDetected;
 
             _broadcast = default;
         }
@@ -65,16 +63,13 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
         #region Event Handlers
         private void CleanWorldObjectWorldInfo(NetOutgoingMessage om)
         {
-            _dirtyWorldInfo = false;
+            this.Entity.WorldInfoDirty = false;
         }
 
-        private void HandleWorldInfoChangeDetected(IWorldObject sender)
+        private void HandleWorldInfoChangeDetected(IWorldObject sender, Boolean dirty)
         {
-            if (_dirtyWorldInfo)
-                return;
-
-            _dirtyWorldInfo = true;
-            _broadcast.Enqueue(this.Entity, this.CleanWorldObjectWorldInfo);
+            if (dirty)
+                _broadcast.Enqueue(this.Entity, this.CleanWorldObjectWorldInfo);
         }
         #endregion
     }

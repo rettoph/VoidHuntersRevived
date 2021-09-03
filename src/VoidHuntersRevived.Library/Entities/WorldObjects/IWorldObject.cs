@@ -31,32 +31,38 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
         /// dynamically be managed via the <see cref="WorldObjectChunkComponent"/>
         /// </summary>
         Chunk Chunk { get; internal set; }
+
+        /// <summary>
+        /// Indicates the current IWorldObject's world info is in a dirty state.
+        /// This is only relevant for networking purposes.
+        /// </summary>
+        public Boolean WorldInfoDirty { get; set; }
         #endregion
 
         #region Events
         event OnChangedEventDelegate<IWorldObject, Chunk> OnChunkChanged;
 
         /// <summary>
-        /// Invoked by <see cref="TryValidateWorldInfoChanged"/> when the
-        /// <see cref="ValidateWorldInfoChangeDetected"/> event returns a
+        /// Invoked by <see cref="TryValidateWorldInfoDirty"/> when the
+        /// <see cref="ValidateWorldInfoDirty"/> event returns a
         /// true state.
         /// </summary>
-        event OnEventDelegate<IWorldObject> OnWorldInfoChangeDetected;
+        event OnEventDelegate<IWorldObject, Boolean> OnWorldInfoDirtyChanged;
 
         /// <summary>
         /// Determin whether or not any world info data has changed. This
-        /// should be invoked by <see cref="TryValidateWorldInfoChanged"/>.
+        /// should be invoked by <see cref="TryValidateWorldInfoDirty"/>.
         /// </summary>
-        event ValidateEventDelegate<IWorldObject, GameTime> ValidateWorldInfoChangeDetected;
+        event ValidateEventDelegate<IWorldObject, GameTime> ValidateWorldInfoDirty;
         #endregion
 
         #region Methods
         /// <summary>
-        /// Should invoke the <see cref="OnWorldInfoChangeDetected"/> event
+        /// Should invoke the <see cref="OnWorldInfoDirtyChanged"/> event
         /// if the internal world data has been updated.
         /// </summary>
         /// <returns></returns>
-        void TryValidateWorldInfoChanged(GameTime gameTime);
+        void TryValidateWorldInfoDirty(GameTime gameTime);
         #endregion
 
         #region Network Methods
