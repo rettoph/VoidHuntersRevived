@@ -16,7 +16,7 @@ using VoidHuntersRevived.Library.Scenes;
 namespace VoidHuntersRevived.Library.Components.Entities.Players
 {
     [NetworkAuthorizationRequired(NetworkAuthorization.Slave)]
-    internal sealed class UserPlayerSlaveCRUDComponent : RemoteHostComponent<UserPlayer>
+    internal sealed class UserPlayerSlaveCRUDComponent : UserPlayerBaseCRUDComponent
     {
         #region Private Fields
         private PrimaryScene _scene;

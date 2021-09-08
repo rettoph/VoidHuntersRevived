@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         #region Private Fields
         private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private Camera2D _camera;
-        private Mouse _mouse;
+        private MouseService _mouse;
         private AetherDebugView _debugView;
         #endregion
 

@@ -26,7 +26,10 @@
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Core\Guppy.Core.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.IO\Guppy.IO.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
-    <ProjectReference Include="..\..\libraries\Guppy\src\Guppy\Guppy.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Entities\Spells\" />
   </ItemGroup>
 
 </Project>

@@ -15,6 +15,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Entities.Chunks;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
+using VoidHuntersRevived.Library.Interfaces;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Structs;
 

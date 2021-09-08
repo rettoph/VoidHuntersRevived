@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.Chunks;
+using VoidHuntersRevived.Library.Interfaces;
 
 namespace VoidHuntersRevived.Library.Entities.WorldObjects
 {

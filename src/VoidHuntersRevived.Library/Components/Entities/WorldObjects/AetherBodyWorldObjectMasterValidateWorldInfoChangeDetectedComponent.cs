@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Extensions.Aether;
+using VoidHuntersRevived.Library.Interfaces;
 
 namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
 {
@@ -51,15 +52,15 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
             }
 
             var linearVelocityDif = Vector2.Distance(
-            this.Entity.Body.Instances[NetworkAuthorization.Master].LinearVelocity,
-            this.Entity.Body.Instances[NetworkAuthorization.Slave].LinearVelocity);
+                this.Entity.Body.Instances[NetworkAuthorization.Master].LinearVelocity,
+                this.Entity.Body.Instances[NetworkAuthorization.Slave].LinearVelocity);
 
             var angularVelocityDif = MathHelper.Distance(
                 this.Entity.Body.Instances[NetworkAuthorization.Master].AngularVelocity,
                 this.Entity.Body.Instances[NetworkAuthorization.Slave].AngularVelocity);
 
             if (angularVelocityDif > Constants.Thresholds.MasterBodyAngularVelocityDifferenceTheshold || linearVelocityDif > Constants.Thresholds.MasterBodyLinearVelocityDifferenceTheshold)
-            { // Instant snap if the difference is to great
+            {
                 return true;
             }
             else

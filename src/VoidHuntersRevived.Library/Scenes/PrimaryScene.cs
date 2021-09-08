@@ -27,6 +27,7 @@ namespace VoidHuntersRevived.Library.Scenes
 
             this.Layers.Create<Layer>((l, p, c) => l.SetContext(Constants.LayersContexts.Chunks));
             this.Layers.Create<Layer>((l, p, c) => l.SetContext(Constants.LayersContexts.Players));
+            this.Layers.Create<Layer>((l, p, c) => l.SetContext(Constants.LayersContexts.Ships));
             this.Layers.Create<Layer>((l, p, c) => l.SetContext(Constants.LayersContexts.Chains));
         }
 

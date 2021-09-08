@@ -9,6 +9,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Components;
 using VoidHuntersRevived.Library.Components.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
+using VoidHuntersRevived.Library.Interfaces;
 using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library.ServiceLoaders

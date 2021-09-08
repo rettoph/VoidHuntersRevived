@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using tainicom.Aether.Physics2D.Collision.Shapes;
+using tainicom.Aether.Physics2D.Common;
 
 namespace VoidHuntersRevived.Library.Extensions.Aether
 {
@@ -16,18 +17,17 @@ namespace VoidHuntersRevived.Library.Extensions.Aether
         /// <returns>A clone of the shape</returns>
         public static Shape Clone(this Shape shape, Matrix transformation)
         {
-            Shape clone = shape.Clone();
-
-            if(clone is PolygonShape polygon)
+            if(shape is PolygonShape polygon)
             {
-                polygon.Vertices.Transform(ref transformation);
+                Vertices vertices = polygon.Vertices.Clone();
+                vertices.Transform(ref transformation);
+
+                return new PolygonShape(vertices, shape.Density);
             }
             else
             {
-                throw new ArgumentOutOfRangeException($"Unable to clone {clone.ShapeType} at this time.");
+                throw new ArgumentOutOfRangeException($"Unable to clone {shape.ShapeType} at this time.");
             }
-
-            return clone;
         }
     }
 }

@@ -118,7 +118,6 @@ namespace VoidHuntersRevived.Client.Library
         {
             // TODO: Add your update logic here
             base.Update(gameTime);
-            Console.WriteLine(gameTime.ElapsedGameTime.TotalMilliseconds);
 
             game.TryUpdate(gameTime);
         }

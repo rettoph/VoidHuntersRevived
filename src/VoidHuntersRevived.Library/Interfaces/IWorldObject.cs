@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using System;
 using VoidHuntersRevived.Library.Entities.Chunks;
 
-namespace VoidHuntersRevived.Library.Entities.WorldObjects
+namespace VoidHuntersRevived.Library.Interfaces
 {
     /// <summary>
     /// World objects represent objects with a physical location.

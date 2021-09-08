@@ -1,5 +1,7 @@
-﻿using Guppy.Enums;
+﻿using Guppy.DependencyInjection;
+using Guppy.Enums;
 using Guppy.Events.Delegates;
+using Guppy.Extensions.System;
 using Guppy.Network;
 using Guppy.Network.Interfaces;
 using System;
@@ -7,10 +9,13 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
+using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Interfaces;
+using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library.Entities.Ships
 {
-    public class Ship : NetworkEntity
+    public class Ship : NetworkLayerable
     {
         #region Private Fields
         private Player _player;
@@ -58,6 +63,20 @@ namespace VoidHuntersRevived.Library.Entities.Ships
         {
             add => this.Chain.OnPipeChanged += value;
             remove => this.Chain.OnPipeChanged -= value;
+        }
+        #endregion
+
+        #region Lifecycle Methods
+        protected override void PreInitialize(GuppyServiceProvider provider)
+        {
+            base.PreInitialize(provider);
+
+            this.LayerGroup = Constants.LayersContexts.Ships.Group.GetValue();
+        }
+
+        protected override void Initialize(GuppyServiceProvider provider)
+        {
+            base.Initialize(provider);
         }
         #endregion
     }

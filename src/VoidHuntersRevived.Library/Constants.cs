@@ -48,9 +48,14 @@ namespace VoidHuntersRevived.Library
                 Group = new SingleLayerGroup(1)
             };
 
-            public static readonly LayerContext Chains = new LayerContext()
+            public static readonly LayerContext Ships = new LayerContext()
             {
                 Group = new SingleLayerGroup(2)
+            };
+
+            public static readonly LayerContext Chains = new LayerContext()
+            {
+                Group = new SingleLayerGroup(3)
             };
         }
 
@@ -74,6 +79,11 @@ namespace VoidHuntersRevived.Library
             public static class Ship
             {
                 public static readonly UInt32 PlayerChanged = "vhr:ship:player:changed".xxHash();
+            }
+
+            public static class UserPlayer
+            {
+                public static readonly UInt32 RequestDirectionChanged = "vhr:user-player:direction:changed".xxHash();
             }
         }
 

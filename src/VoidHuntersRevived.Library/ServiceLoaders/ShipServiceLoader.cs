@@ -33,12 +33,15 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             #region Components
             services.RegisterTypeFactory<ShipMasterCRUDComponent>(p => new ShipMasterCRUDComponent());
             services.RegisterTypeFactory<ShipSlaveCRUDComponent>(p => new ShipSlaveCRUDComponent());
+            services.RegisterTypeFactory<ShipDirectionComponent>(p => new ShipDirectionComponent());
 
             services.RegisterTransient<ShipMasterCRUDComponent>();
             services.RegisterTransient<ShipSlaveCRUDComponent>();
+            services.RegisterTransient<ShipDirectionComponent>();
 
             services.RegisterComponent<ShipMasterCRUDComponent, Ship>();
             services.RegisterComponent<ShipSlaveCRUDComponent, Ship>();
+            services.RegisterComponent<ShipDirectionComponent, Ship>();
             #endregion
         }
 
