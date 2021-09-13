@@ -26,9 +26,11 @@ namespace VoidHuntersRevived.Client.Library.Scenes
     {
         #region Private Fields
         private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
+        private SpriteBatch _spriteBatch;
         private Camera2D _camera;
         private MouseService _mouse;
         private AetherDebugView _debugView;
+        BasicEffect _effect;
         #endregion
 
         #region Lifecycle Methods
@@ -37,9 +39,16 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             base.Initialize(provider);
 
             provider.Service(out _primitiveBatch);
+            provider.Service(out _spriteBatch);
             provider.Service(out _camera);
             provider.Service(out _mouse);
             provider.Service(out _debugView);
+
+            _effect = new BasicEffect(provider.GetService<GraphicsDevice>())
+            {
+                TextureEnabled = true,
+                VertexColorEnabled = true
+            };
 
             _camera.MinZoom = 0.25f;
             _camera.MaxZoom = 400f;
@@ -60,6 +69,12 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             _camera.TryClean(gameTime);
             _primitiveBatch.Begin(_camera, BlendState.AlphaBlend);
+
+            _effect.Projection = _camera.Projection;
+            _effect.World = _camera.World;
+            _effect.View = _camera.View;
+
+            _spriteBatch.Begin(effect: _effect);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -74,6 +89,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             base.PostDraw(gameTime);
 
             _primitiveBatch.End();
+            _spriteBatch.End();
         }
 
         protected override void Update(GameTime gameTime)

@@ -21,17 +21,17 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
     internal sealed class UserPlayerMasterCRUDComponent : UserPlayerBaseCRUDComponent
     {
         #region Lifecycle Methods
-        protected override void InitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
+        protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
         {
-            base.InitializeRemote(provider, networkAuthorization);
+            base.PreInitializeRemote(provider, networkAuthorization);
 
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnWrite += this.WriteCreateMessage;
             this.Entity.Messages[Constants.Messages.UserPlayer.RequestDirectionChanged].OnRead += this.ReadRequestDirectionChangedMessage;
         }
 
-        protected override void ReleaseRemote(NetworkAuthorization networkAuthorization)
+        protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)
         {
-            base.ReleaseRemote(networkAuthorization);
+            base.PostReleaseRemote(networkAuthorization);
 
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnWrite -= this.WriteCreateMessage;
         }

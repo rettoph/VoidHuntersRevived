@@ -42,32 +42,20 @@ namespace VoidHuntersRevived.Client.Library.Components.Entities.Players
 
             _commands.Get<Command>("ship set direction").Handler = CommandHandler.Create<Direction, Boolean, IConsole>(this.ShipSetDirectionHandler);
 
-            this.Entity.OnStatus[ServiceStatus.Initializing] += this.HandleEntityInitializing;
+            if (_client.CurrentUser == this.Entity.User)
+            {
+                this.Entity.OnUpdate += this.Update;
+            }
         }
 
         protected override void Release()
         {
             base.Release();
 
-            this.Entity.OnStatus[ServiceStatus.Initializing] += this.HandleEntityInitializing;
+            this.Entity.OnUpdate -= this.Update;
 
             _client = default;
             _camera = default;
-        }
-
-        private void HandleEntityInitializing(IService sender, ServiceStatus old, ServiceStatus value)
-        {
-            if(_client.CurrentUser == this.Entity.User)
-            {
-                this.Entity.OnStatus[ServiceStatus.Releasing] += this.HandleEntityReleasing;
-                this.Entity.OnUpdate += this.Update;
-            }
-        }
-
-        private void HandleEntityReleasing(IService sender, ServiceStatus old, ServiceStatus value)
-        {
-            this.Entity.OnStatus[ServiceStatus.Releasing] -= this.HandleEntityReleasing;
-            this.Entity.OnUpdate -= this.Update;
         }
         #endregion
 

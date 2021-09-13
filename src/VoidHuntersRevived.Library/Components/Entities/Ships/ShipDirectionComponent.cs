@@ -33,11 +33,18 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
-            base.Initialize(provider);
+            base.PreInitialize(provider);
 
             this.Entity.OnUpdate += this.Update;
+        }
+
+        protected override void PostRelease()
+        {
+            base.PostRelease();
+
+            this.Entity.OnUpdate -= this.Update;
         }
         #endregion
 

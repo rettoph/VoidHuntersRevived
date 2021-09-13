@@ -12,18 +12,18 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
     internal class WorldObjectBaseCRUDComponent : RemoteHostComponent<IWorldObject>
     {
         #region Lifecycle Methods
-        protected override void InitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
+        protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
         {
-            base.InitializeRemote(provider, networkAuthorization);
+            base.PreInitializeRemote(provider, networkAuthorization);
 
             this.Entity.Messages.Add(
                 messageType: Constants.Messages.WorldObject.WorldInfoPing,
                 defaultContext: Constants.MessageContexts.WorldObject.WorldInfoPingMessageContext);
         }
 
-        protected override void ReleaseRemote(NetworkAuthorization networkAuthorization)
+        protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)
         {
-            base.ReleaseRemote(networkAuthorization);
+            base.PostReleaseRemote(networkAuthorization);
 
             this.Entity.Pipe = default;
         }

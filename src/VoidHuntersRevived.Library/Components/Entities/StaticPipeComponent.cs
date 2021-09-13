@@ -19,29 +19,23 @@ namespace VoidHuntersRevived.Library.Components.Entities
     public abstract class StaticPipeComponent<TNetworkEntity> : RemoteHostComponent<TNetworkEntity>
         where TNetworkEntity : class, INetworkEntity
     {
-        #region Private Fields
-        private GuppyServiceProvider _provider;
-        #endregion
-
         #region Lifeycycle Methods
-        protected override void InitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
+        protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
         {
-            base.InitializeRemote(provider, networkAuthorization);
+            base.PreInitializeRemote(provider, networkAuthorization);
 
-            _provider = provider;
+            this.Entity.Pipe = this.GetPipe(provider, provider.GetService<PrimaryScene>());
 
-            this.Entity.OnStatus[ServiceStatus.Initializing] += this.HandleStaticPipeEntityInitializing;
+            this.Entity.OnPipeChanged += this.HandleStaticPipeEntityPipeChanged;
         }
 
-
-        protected override void ReleaseRemote(NetworkAuthorization networkAuthorization)
+        protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)
         {
-            base.ReleaseRemote(networkAuthorization);
+            base.PostReleaseRemote(networkAuthorization);
 
-            this.Entity.OnStatus[ServiceStatus.Initializing] -= this.HandleStaticPipeEntityInitializing;
             this.Entity.OnPipeChanged -= this.HandleStaticPipeEntityPipeChanged;
 
-            _provider = default;
+            this.Entity.Pipe = default;
         }
         #endregion
 
@@ -50,13 +44,6 @@ namespace VoidHuntersRevived.Library.Components.Entities
         #endregion
 
         #region Event Handlers
-        private void HandleStaticPipeEntityInitializing(IService sender, ServiceStatus old, ServiceStatus value)
-        {
-            this.Entity.Pipe = this.GetPipe(_provider, _provider.GetService<PrimaryScene>());
-            _provider = default;
-
-            this.Entity.OnStatus[ServiceStatus.Initializing] += this.HandleStaticPipeEntityInitializing;
-        }
 
         private void HandleStaticPipeEntityPipeChanged(INetworkEntity sender, IPipe old, IPipe value)
         {

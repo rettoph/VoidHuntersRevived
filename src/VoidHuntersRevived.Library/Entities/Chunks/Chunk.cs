@@ -105,7 +105,7 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
             this.Children = provider.GetService<ServiceList<IWorldObject>>();
 
             this.Children.OnAdded += this.HandleChildAdded;
-            this.Children.OnAdded += this.HandleChildRemoved;
+            this.Children.OnRemoved += this.HandleChildRemoved;
 
             this.OnChildrenSet?.Invoke(this, this.Children);
         }
@@ -127,6 +127,11 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
             _synchronizer = default;
 
             _dependents.Clear();
+
+            while (this.Children.Any())
+            {
+                this.Children.First().TryRelease();
+            }
         }
 
         protected override void PostRelease()
@@ -134,10 +139,10 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
             base.PostRelease();
 
             this.Children.OnAdded -= this.HandleChildAdded;
-            this.Children.OnAdded -= this.HandleChildRemoved;
+            this.Children.OnRemoved -= this.HandleChildRemoved;
 
             this.Children.TryRelease();
-            this.Children = default;
+            // this.Children = default;
         }
 
         protected override void Dispose()
@@ -199,7 +204,7 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
         private void HandleChildRemoved(IServiceList<IWorldObject> sender, IWorldObject worldObject)
         {
             // Update the entity's chunk...
-            worldObject.Chunk = this;
+            worldObject.Chunk = default;
         }
     }
 }

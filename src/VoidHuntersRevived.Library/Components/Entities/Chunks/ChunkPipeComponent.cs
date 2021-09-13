@@ -23,24 +23,27 @@ namespace VoidHuntersRevived.Library.Components.Entities.Chunks
         #endregion
 
         #region Lifecycle Methods
-        protected override void InitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
+        protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
         {
-            base.InitializeRemote(provider, networkAuthorization);
+            base.PreInitializeRemote(provider, networkAuthorization);
 
             provider.Service(out _scene);
 
             this.Entity.OnPositionSet += this.HandleChunkPositionSet;
             this.Entity.OnChildrenSet += this.HandleChunkChildrenSet;
-            this.Entity.OnStatus[ServiceStatus.Releasing] += this.HandleChunkReleasing;
         }
 
-        protected override void ReleaseRemote(NetworkAuthorization networkAuthorization)
+        protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)
         {
-            base.ReleaseRemote(networkAuthorization);
+            base.PostReleaseRemote(networkAuthorization);
 
             this.Entity.OnPositionSet -= this.HandleChunkPositionSet;
             this.Entity.OnChildrenSet -= this.HandleChunkChildrenSet;
-            this.Entity.OnStatus[ServiceStatus.Releasing] -= this.HandleChunkReleasing;
+            this.Entity.Children.OnAdded -= this.HandleChunkChildAdded;
+            this.Entity.Children.OnRemoved -= this.HandleChunkChildRemoved;
+
+            this.Entity.Pipe?.TryRelease();
+            this.Entity.Pipe = default;
         }
         #endregion
 
@@ -48,6 +51,11 @@ namespace VoidHuntersRevived.Library.Components.Entities.Chunks
         private void HandleChunkChildAdded(IServiceList<IWorldObject> sender, IWorldObject worldObject)
         {
             worldObject.Pipe = this.Entity.Pipe;
+        }
+
+        private void HandleChunkChildRemoved(IServiceList<IWorldObject> sender, IWorldObject worldObject)
+        {
+            worldObject.Pipe = default;
         }
 
         private void HandleChunkPositionSet(Chunk sender, ChunkPosition args)
@@ -58,15 +66,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Chunks
         private void HandleChunkChildrenSet(Chunk sender, ServiceList<IWorldObject> args)
         {
             this.Entity.Children.OnAdded += this.HandleChunkChildAdded;
-        }
-
-        private void HandleChunkReleasing(IService sender, ServiceStatus old, ServiceStatus value)
-        {
-            this.Entity.Children.OnAdded -= this.HandleChunkChildAdded;
-
-            this.Entity.Pipe?.TryRelease();
-
-            this.Entity.Pipe = default;
+            this.Entity.Children.OnRemoved += this.HandleChunkChildRemoved;
         }
         #endregion
     }

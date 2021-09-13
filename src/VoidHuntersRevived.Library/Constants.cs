@@ -23,7 +23,6 @@ namespace VoidHuntersRevived.Library
         public static class ServiceConfigurationKeys
         {
             public static readonly ServiceConfigurationKey Chain = ServiceConfigurationKey.From<Chain>();
-            public static readonly ServiceConfigurationKey Ship = ServiceConfigurationKey.From<Ship>();
 
             public static class ShipParts
             {

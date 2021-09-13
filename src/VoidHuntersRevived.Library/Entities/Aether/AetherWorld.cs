@@ -1,6 +1,7 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.DependencyInjection.ServiceConfigurations;
 using Guppy.Extensions.System;
+using Guppy.Extensions.System.Collections;
 using Guppy.Lists;
 using Guppy.Network.Enums;
 using Microsoft.Xna.Framework;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using tainicom.Aether.Physics2D.Dynamics;
+using VoidHuntersRevived.Library.Entities.Chunks;
 
 namespace VoidHuntersRevived.Library.Entities.Aether
 {
@@ -15,6 +17,8 @@ namespace VoidHuntersRevived.Library.Entities.Aether
     {
         #region Private Fields
         private FactoryServiceList<AetherBody> _bodies;
+        private ChunkManager _chunks;
+        private IEnumerable<Chunk> _spawnChunks;
         #endregion
 
         #region Lifecycle Methods
@@ -23,13 +27,32 @@ namespace VoidHuntersRevived.Library.Entities.Aether
             base.PreInitialize(provider);
 
             provider.Service(out _bodies);
+            provider.Service(out _chunks);
 
             this.BuildAetherInstances(provider);
+        }
+
+        protected override void Initialize(GuppyServiceProvider provider)
+        {
+            base.Initialize(provider);
+
+            _spawnChunks = _chunks.GetChunks(Vector2.Zero, 1);
+            _spawnChunks.ForEach(chunk => chunk.TryRegisterDependent(this.Id));
         }
 
         protected override void Release()
         {
             base.Release();
+
+            _spawnChunks.ForEach(chunk => chunk.TryRegisterDependent(this.Id));
+            _spawnChunks = default;
+        }
+
+        protected override void PostRelease()
+        {
+            base.PostRelease();
+
+            _chunks = default;
 
             _bodies.TryRelease();
             _bodies = default;

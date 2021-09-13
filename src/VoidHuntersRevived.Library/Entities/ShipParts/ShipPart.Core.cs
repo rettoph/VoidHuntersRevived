@@ -43,6 +43,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             base.Initialize(provider);
 
             this.Tree_Initialize(provider);
+
+            this.OnChainChanged += this.HandleChainChanged;
         }
 
         protected override void PostInitialize(GuppyServiceProvider provider)
@@ -58,6 +60,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             this.Transformations_Dispose();
             this.Tree_Release();
+
+            this.OnChainChanged -= this.HandleChainChanged;
+            this.TryDestroyCorporealForm();
         }
 
         protected override void Dispose()
@@ -73,6 +78,27 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #region Helper Methods
         internal virtual void SetContext(ShipPartContext context)
             => this.Context = context;
+
+        /// <summary>
+        /// Attempt to build any physical world
+        /// fixtures, bodies, joints, ect using
+        /// the given Chain instance.
+        /// </summary>
+        /// <param name="chain"></param>
+        protected virtual void TryCreateCorporealForm(Chain chain)
+        {
+
+        }
+
+        /// <summary>
+        /// Attempt to destroy any existing physical 
+        /// world fixtures, bodies, joints, ect.
+        /// </summary>
+        /// <param name="chain"></param>
+        protected virtual void TryDestroyCorporealForm()
+        {
+
+        }
         #endregion
 
         #region Frame Methods
@@ -85,6 +111,40 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             foreach (ConnectionNode node in this.ConnectionNodes)
                 if (node.Connection.State == ConnectionNodeState.Parent)
                     node.Connection.Target.Owner.TryDrawAt(gameTime, ref chainWorldTransformation);
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandleChainChanged(ShipPart sender, Chain old, Chain value)
+        {
+            if(old != default)
+            {
+                if(old.Corporeal)
+                    this.TryDestroyCorporealForm();
+
+                old.OnCorporealChanged -= this.HandleChainCorporealChanged;
+            }
+            
+
+            if (value != default)
+            {
+                if(value.Corporeal)
+                    this.TryCreateCorporealForm(value);
+
+                value.OnCorporealChanged += this.HandleChainCorporealChanged;
+            }
+        }
+
+        private void HandleChainCorporealChanged(AetherBodyWorldObject sender, bool corpreal)
+        {
+            if(corpreal)
+            {
+                this.TryCreateCorporealForm(sender as Chain);
+            }
+            else
+            {
+                this.TryDestroyCorporealForm();
+            }
         }
         #endregion
     }

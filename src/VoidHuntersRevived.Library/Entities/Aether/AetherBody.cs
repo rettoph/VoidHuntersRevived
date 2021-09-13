@@ -126,7 +126,7 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         }
         #endregion
 
-        #region Helper Methods
+        #region Body Methods
         /// <summary>
         /// Apply an impulse at a point. This immediately modifies the velocity.
         /// This wakes up the body.

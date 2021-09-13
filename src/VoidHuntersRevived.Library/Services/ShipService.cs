@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Library.Services
 
         public Ship Create(Chain chain, Player player = default)
         {
-            return _provider.GetService<Ship>(Constants.ServiceConfigurationKeys.Ship, (ship, _, _) =>
+            return _provider.GetService<Ship>((ship, _, _) =>
             {
                 ship.Chain = chain;
                 ship.Player = player;

@@ -25,9 +25,9 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         #endregion
 
         #region Lifecycle Methods
-        protected override void InitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
+        protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
         {
-            base.InitializeRemote(provider, networkAuthorization);
+            base.PreInitializeRemote(provider, networkAuthorization);
 
             provider.Service(out _players);
             provider.Service(out _networkEntities);
@@ -36,9 +36,9 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
             this.Entity.Messages[Constants.Messages.Ship.PlayerChanged].OnRead += this.ReadPlayerChangedMessage;
         }
 
-        protected override void Release()
+        protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)
         {
-            base.Release();
+            base.PostReleaseRemote(networkAuthorization);
 
             _players = default;
             _networkEntities = default;

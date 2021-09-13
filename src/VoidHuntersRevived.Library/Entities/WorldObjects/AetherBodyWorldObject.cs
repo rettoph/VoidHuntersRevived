@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Events.Delegates;
 using Guppy.Network.Enums;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
@@ -17,12 +18,26 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
     /// </summary>
     public abstract class AetherBodyWorldObject : WorldObject
     {
+        #region Private Fields
+        private Boolean _corpreal;
+        #endregion
+
         #region Public Properties
         public override Vector2 Position => this.Body.LocalInstance.Position;
 
         public override Single Rotation => this.Body.LocalInstance.Rotation;
 
         public AetherBody Body { get; private set; }
+
+        public Boolean Corporeal
+        {
+            get => _corpreal;
+            set => this.OnCorporealChanged.InvokeIf(_corpreal != value, this, ref _corpreal, value);
+        }
+        #endregion
+
+        #region Events
+        public OnEventDelegate<AetherBodyWorldObject, Boolean> OnCorporealChanged;
         #endregion
 
         #region Lifecycle Methods

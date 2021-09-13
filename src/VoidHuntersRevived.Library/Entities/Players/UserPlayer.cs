@@ -19,6 +19,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
     {
         #region Private Fields
         private ChunkManager _chunks;
+        private IEnumerable<Chunk> _proximityChunks;
         #endregion
 
         #region Public Properties
@@ -62,11 +63,11 @@ namespace VoidHuntersRevived.Library.Entities.Players
         #region Helper Methods
         private void CleanChunkDependents(Chunk old, Chunk value)
         {
-            IEnumerable<Chunk> oldProximityChunks = _chunks.GetChunks(old?.Position, this.ChunkProximityRadius);
-            IEnumerable<Chunk> newProximityChunks = _chunks.GetChunks(value?.Position, this.ChunkProximityRadius);
+            IEnumerable<Chunk> oldProximityChunks = _proximityChunks ?? _chunks.GetChunks(old?.Position, this.ChunkProximityRadius);
+            _proximityChunks = _chunks.GetChunks(value?.Position, this.ChunkProximityRadius);
 
             // Deregister any old chunk dependents...
-            foreach (Chunk chunk in oldProximityChunks.Except(newProximityChunks))
+            foreach (Chunk chunk in oldProximityChunks.Except(_proximityChunks))
             {
                 chunk.Pipe.Users.TryRemove(this.User);
                 chunk.TryDeregisterDependent(this.Id);
@@ -74,7 +75,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
 
             // Register any new chunk dependents...
-            foreach (Chunk chunk in newProximityChunks.Except(oldProximityChunks))
+            foreach (Chunk chunk in _proximityChunks.Except(oldProximityChunks))
             {
                 chunk.Pipe.Users.TryAdd(this.User);
                 chunk.TryRegisterDependent(this.Id);

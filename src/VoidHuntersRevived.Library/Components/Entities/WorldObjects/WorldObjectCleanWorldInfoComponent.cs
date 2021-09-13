@@ -16,16 +16,16 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
     internal sealed class WorldObjectCleanWorldInfoComponent : Component<IWorldObject>
     {
         #region Lifecycle Methods
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
-            base.Initialize(provider);
+            base.PreInitialize(provider);
 
             this.Entity.OnPostUpdate += this.PostUpdate;
         }
 
-        protected override void Release()
+        protected override void PostRelease()
         {
-            base.Release();
+            base.PostRelease();
 
             this.Entity.OnPostUpdate -= this.PostUpdate;
         }

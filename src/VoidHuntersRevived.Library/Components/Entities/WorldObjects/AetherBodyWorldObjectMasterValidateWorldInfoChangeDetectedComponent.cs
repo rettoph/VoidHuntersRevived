@@ -23,17 +23,17 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
         private Double _millisecondsSinceLastWorldInfoClean;
         #endregion
 
-        protected override void InitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
+        protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
         {
-            base.InitializeRemote(provider, networkAuthorization);
+            base.PreInitializeRemote(provider, networkAuthorization);
 
             this.Entity.ValidateWorldInfoDirty += this.HandleValidateWorldInfoChangeDetected;
             this.Entity.OnWorldInfoDirtyChanged += this.HandleWorldInfoDirtyChanged;
         }
 
-        protected override void ReleaseRemote(NetworkAuthorization networkAuthorization)
+        protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)
         {
-            base.ReleaseRemote(networkAuthorization);
+            base.PostReleaseRemote(networkAuthorization);
 
             this.Entity.ValidateWorldInfoDirty -= this.HandleValidateWorldInfoChangeDetected;
             this.Entity.OnWorldInfoDirtyChanged -= this.HandleWorldInfoDirtyChanged;

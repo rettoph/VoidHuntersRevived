@@ -19,17 +19,17 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
     internal sealed class ChainSlaveCRUDComponent : ChainBaseCRUDComponent
     {
         #region Lifecycle Methods
-        protected override void InitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
+        protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
         {
-            base.InitializeRemote(provider, networkAuthorization);
+            base.PreInitializeRemote(provider, networkAuthorization);
 
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnRead += this.ReadCreateMessage;
             this.Entity.Messages[Constants.Messages.Chain.ShipPartAttached].OnRead += this.ReadShipPartAttachedMessage;
         }
 
-        protected override void ReleaseRemote(NetworkAuthorization networkAuthorization)
+        protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)
         {
-            base.ReleaseRemote(networkAuthorization);
+            base.PostReleaseRemote(networkAuthorization);
 
             this.Entity.Messages[Constants.Messages.Chain.ShipPartAttached].OnRead -= this.ReadShipPartAttachedMessage;
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnRead -= this.ReadCreateMessage;

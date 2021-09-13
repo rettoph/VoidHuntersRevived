@@ -4,6 +4,7 @@ using Guppy.Events.Delegates;
 using Guppy.Extensions.System;
 using Guppy.Network;
 using Guppy.Network.Interfaces;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -44,6 +45,8 @@ namespace VoidHuntersRevived.Library.Entities.Ships
                     throw new Exception("Unable to update Ship.Chain after initialization.");
 
                 _chain = value;
+                _chain.Corporeal = true;
+
                 this.OnChainSet?.Invoke(this, value);
             }
         }

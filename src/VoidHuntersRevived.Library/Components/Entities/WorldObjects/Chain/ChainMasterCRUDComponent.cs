@@ -20,22 +20,21 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
     internal sealed class ChainMasterCRUDComponent : ChainBaseCRUDComponent
     {
         #region Lifecycle Methods
-        protected override void InitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
+        protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
         {
-            base.InitializeRemote(provider, networkAuthorization);
+            base.PreInitializeRemote(provider, networkAuthorization);
 
             this.Entity.OnRootSet += this.HandleChainRootSet;
-            this.Entity.OnStatus[ServiceStatus.Releasing] += this.HandleChainReleasing;
 
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnWrite += this.WriteCreateMessage;
         }
 
-        protected override void Release()
+        protected override void PostReleaseRemote(NetworkAuthorization authorization)
         {
-            base.Release();
+            base.PostReleaseRemote(authorization);
 
             this.Entity.OnRootSet -= this.HandleChainRootSet;
-            this.Entity.OnStatus[ServiceStatus.Releasing] -= this.HandleChainReleasing;
+            this.Entity.Root.PostTreeClean -= this.HandleChainRootPostTreeClean;
 
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnWrite -= this.WriteCreateMessage;
         }
@@ -68,11 +67,6 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
         private void HandleChainRootSet(Chain sender, ShipPart args)
         {
             this.Entity.Root.PostTreeClean += this.HandleChainRootPostTreeClean;
-        }
-
-        private void HandleChainReleasing(IService sender, ServiceStatus old, ServiceStatus value)
-        {
-            this.Entity.Root.PostTreeClean -= this.HandleChainRootPostTreeClean;
         }
 
         private void HandleChainRootPostTreeClean(ShipPart sender, ShipPart source, TreeComponent components)

@@ -11,6 +11,7 @@ using VoidHuntersRevived.Library.Components.Entities.Ships;
 using VoidHuntersRevived.Library.Contexts.ShipParts;
 using VoidHuntersRevived.Library.Contexts.Utilities;
 using VoidHuntersRevived.Library.Dtos.Utilities;
+using VoidHuntersRevived.Library.Entities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using VoidHuntersRevived.Library.Entities.Ships;
@@ -28,7 +29,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.RegisterTypeFactory<Ship>(p => new Ship());
 
             services.RegisterScoped<ShipService>();
-            services.RegisterTransient(Constants.ServiceConfigurationKeys.Ship, typeof(Ship));
+            services.RegisterTransient<Ship>();
 
             #region Components
             services.RegisterTypeFactory<ShipMasterCRUDComponent>(p => new ShipMasterCRUDComponent());

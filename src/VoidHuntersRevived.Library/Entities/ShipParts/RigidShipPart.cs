@@ -27,30 +27,15 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             base.Initialize(provider);
 
             _fixtures = new Queue<AetherFixture>();
-
-            this.OnChainChanged += this.HandleChainChanged;
-        }
-
-        protected override void Release()
-        {
-            base.Release();
-
-            this.DestroyFixtures();
         }
         #endregion
 
 
         #region Helper Methods
-        private void DestroyFixtures()
+        protected override void TryCreateCorporealForm(Chain chain)
         {
-            while (_fixtures.Any())
-            {
-                _fixtures.Dequeue().TryRelease();
-            }
-        }
+            base.TryCreateCorporealForm(chain);
 
-        private void CreateFixtures(Chain chain)
-        {
             foreach (Shape shape in this.Context.Shapes)
             {
                 _fixtures.Enqueue(
@@ -59,15 +44,15 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                         this));
             }
         }
-        #endregion
 
-        #region Event Handlers
-        private void HandleChainChanged(ShipPart sender, Chain old, Chain value)
+        protected override void TryDestroyCorporealForm()
         {
-            this.DestroyFixtures();
+            base.TryDestroyCorporealForm();
 
-            if (value != default)
-                this.CreateFixtures(value);
+            while (_fixtures.Any())
+            {
+                _fixtures.Dequeue().TryRelease();
+            }
         }
         #endregion
     }

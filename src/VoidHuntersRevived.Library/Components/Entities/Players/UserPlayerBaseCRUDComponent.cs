@@ -18,9 +18,9 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
     internal class UserPlayerBaseCRUDComponent : RemoteHostComponent<UserPlayer>
     {
         #region Lifecycle Methods
-        protected override void InitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
+        protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
         {
-            base.InitializeRemote(provider, networkAuthorization);
+            base.PreInitializeRemote(provider, networkAuthorization);
 
             this.Entity.Messages.Add(
                 messageType: Constants.Messages.UserPlayer.RequestDirectionChanged,

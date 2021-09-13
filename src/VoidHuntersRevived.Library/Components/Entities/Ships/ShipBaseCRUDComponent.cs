@@ -13,16 +13,11 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
     internal class ShipBaseCRUDComponent : RemoteHostComponent<Ship>
     {
         #region Lifecycle Methods
-        protected override void InitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
+        protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
         {
-            base.InitializeRemote(provider, networkAuthorization);
+            base.PreInitializeRemote(provider, networkAuthorization);
 
             this.Entity.Messages.Add(Constants.Messages.Ship.PlayerChanged, Guppy.Network.Constants.MessageContexts.InternalUnreliableDefault);
-        }
-
-        protected override void Release()
-        {
-            base.Release();
         }
         #endregion
     }

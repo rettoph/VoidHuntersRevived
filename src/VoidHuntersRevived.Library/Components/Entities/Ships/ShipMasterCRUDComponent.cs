@@ -17,18 +17,18 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
     internal sealed class ShipMasterCRUDComponent : ShipBaseCRUDComponent
     {
         #region Lifecycle Methods
-        protected override void InitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
+        protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
         {
-            base.InitializeRemote(provider, networkAuthorization);
+            base.PreInitializeRemote(provider, networkAuthorization);
 
             this.Entity.OnPlayerChanged += this.HandleShipPlayerChanged;
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnWrite += this.WriteCreateMessage;
             this.Entity.Messages[Constants.Messages.Ship.PlayerChanged].OnWrite += this.WritePlayerChangedMessage;
         }
 
-        protected override void Release()
+        protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)
         {
-            base.Release();
+            base.PostReleaseRemote(networkAuthorization);
 
             this.Entity.OnPlayerChanged -= this.HandleShipPlayerChanged;
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnWrite -= this.WriteCreateMessage;

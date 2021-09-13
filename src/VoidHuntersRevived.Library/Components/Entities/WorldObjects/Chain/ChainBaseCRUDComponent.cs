@@ -23,9 +23,9 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
         #endregion
 
         #region Lifecycle Methods
-        protected override void InitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
+        protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
         {
-            base.InitializeRemote(provider, networkAuthorization);
+            base.PreInitializeRemote(provider, networkAuthorization);
 
             this.shipPartService = provider.GetService<ShipPartService>();
 
@@ -34,9 +34,9 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
                 defaultContext: Guppy.Network.Constants.MessageContexts.InternalReliableDefault);
         }
 
-        protected override void Release()
+        protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)
         {
-            base.Release();
+            base.PostReleaseRemote(networkAuthorization);
 
             this.shipPartService = default;
         }

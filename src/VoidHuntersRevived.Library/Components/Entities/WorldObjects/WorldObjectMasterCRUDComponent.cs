@@ -24,9 +24,9 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
         #endregion
 
         #region Lifecycle Methods
-        protected override void InitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
+        protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
         {
-            base.InitializeRemote(provider, networkAuthorization);
+            base.PreInitializeRemote(provider, networkAuthorization);
 
             _broadcast = provider.GetBroadcast(Constants.Messages.WorldObject.WorldInfoPing);
 
@@ -36,9 +36,9 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
             this.Entity.Messages[Constants.Messages.WorldObject.WorldInfoPing].OnWrite += this.WriteWorldInfoPingMessage;
         }
 
-        protected override void ReleaseRemote(NetworkAuthorization networkAuthorization)
+        protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)
         {
-            base.ReleaseRemote(networkAuthorization);
+            base.PostReleaseRemote(networkAuthorization);
 
             this.Entity.Messages[Constants.Messages.WorldObject.WorldInfoPing].OnWrite -= this.WriteWorldInfoPingMessage;
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnWrite -= this.WriteCreateMessage;
@@ -70,7 +70,10 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
         private void HandleWorldInfoChangeDetected(IWorldObject sender, Boolean dirty)
         {
             if (dirty)
+            {
                 _broadcast.Enqueue(this.Entity, this.CleanWorldObjectWorldInfo);
+            }
+                
         }
         #endregion
     }
