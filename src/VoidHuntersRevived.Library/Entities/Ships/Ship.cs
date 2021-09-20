@@ -2,6 +2,7 @@
 using Guppy.Enums;
 using Guppy.Events.Delegates;
 using Guppy.Extensions.System;
+using Guppy.Interfaces;
 using Guppy.Network;
 using Guppy.Network.Interfaces;
 using Microsoft.Xna.Framework;
@@ -41,13 +42,10 @@ namespace VoidHuntersRevived.Library.Entities.Ships
             get => _chain;
             set
             {
-                if (this.Status != ServiceStatus.PreInitializing)
+                if (this.Status != ServiceStatus.PreInitializing && this.Status != ServiceStatus.Releasing)
                     throw new Exception("Unable to update Ship.Chain after initialization.");
 
                 _chain = value;
-                _chain.Corporeal = true;
-
-                this.OnChainSet?.Invoke(this, value);
             }
         }
 
@@ -60,7 +58,6 @@ namespace VoidHuntersRevived.Library.Entities.Ships
 
         #region Events
         public event OnChangedEventDelegate<Ship, Player> OnPlayerChanged;
-        public event OnEventDelegate<Ship, Chain> OnChainSet;
 
         public override event OnChangedEventDelegate<INetworkEntity, IPipe> OnPipeChanged
         {
@@ -80,6 +77,27 @@ namespace VoidHuntersRevived.Library.Entities.Ships
         protected override void Initialize(GuppyServiceProvider provider)
         {
             base.Initialize(provider);
+
+            this.Chain.Corporeal = true;
+            this.Chain.OnStatusChanged += this.HandleChainStatusChanged;
+        }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            this.Chain.OnStatusChanged -= this.HandleChainStatusChanged;
+            this.Chain = default;
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandleChainStatusChanged(IService sender, ServiceStatus old, ServiceStatus value)
+        {
+            if(value == ServiceStatus.PreReleasing)
+            {
+                this.TryRelease();
+            }
         }
         #endregion
     }

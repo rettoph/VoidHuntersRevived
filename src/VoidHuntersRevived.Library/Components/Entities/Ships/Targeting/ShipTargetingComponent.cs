@@ -1,14 +1,22 @@
 ﻿using Guppy;
+using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
+using Guppy.Network.Attributes;
+using Guppy.Network.Components;
+using Guppy.Network.Enums;
+using Guppy.Network.Extensions.DependencyInjection;
+using Guppy.Network.Utilities;
+using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.Ships;
+using Guppy.Network.Extensions.Lidgren;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
 {
-    public sealed class ShipTargetingComponent : Component<Ship>
+    public abstract class ShipTargetingComponent : RemoteHostComponent<Ship>
     {
         #region Private Fields
         private Vector2 _target;
@@ -31,6 +39,20 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         /// is updated.
         /// </summary>
         public event OnEventDelegate<Ship, Vector2> OnTargetChanged;
+        #endregion
+
+        #region Lifecycle Methods
+        protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
+        {
+            base.PreInitializeRemote(provider, networkAuthorization);
+
+            this.Entity.Messages.Add(Constants.Messages.Ship.TargetChanged, Guppy.Network.Constants.MessageContexts.InternalUnreliableDefault);
+        }
+
+        protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)
+        {
+            base.PostReleaseRemote(networkAuthorization);
+        }
         #endregion
     }
 }

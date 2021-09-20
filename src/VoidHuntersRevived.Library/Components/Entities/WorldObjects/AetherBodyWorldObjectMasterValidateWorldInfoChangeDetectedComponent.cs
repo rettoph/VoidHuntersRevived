@@ -55,18 +55,21 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
                 this.Entity.Body.Instances[NetworkAuthorization.Master].LinearVelocity,
                 this.Entity.Body.Instances[NetworkAuthorization.Slave].LinearVelocity);
 
+            if(linearVelocityDif > Constants.Thresholds.MasterBodyLinearVelocityDifferenceTheshold)
+            {
+                return true;
+            }
+
             var angularVelocityDif = MathHelper.Distance(
                 this.Entity.Body.Instances[NetworkAuthorization.Master].AngularVelocity,
                 this.Entity.Body.Instances[NetworkAuthorization.Slave].AngularVelocity);
 
-            if (angularVelocityDif > Constants.Thresholds.MasterBodyAngularVelocityDifferenceTheshold || linearVelocityDif > Constants.Thresholds.MasterBodyLinearVelocityDifferenceTheshold)
+            if (angularVelocityDif > Constants.Thresholds.MasterBodyAngularVelocityDifferenceTheshold)
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         private void HandleWorldInfoDirtyChanged(IWorldObject sender, bool dirty)

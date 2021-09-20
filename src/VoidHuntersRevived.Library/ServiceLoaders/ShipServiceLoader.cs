@@ -32,17 +32,35 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.RegisterTransient<Ship>();
 
             #region Components
+            // Factories
             services.RegisterTypeFactory<ShipMasterCRUDComponent>(p => new ShipMasterCRUDComponent());
             services.RegisterTypeFactory<ShipSlaveCRUDComponent>(p => new ShipSlaveCRUDComponent());
-            services.RegisterTypeFactory<ShipDirectionComponent>(p => new ShipDirectionComponent());
 
+            services.RegisterTypeFactory<ShipDirectionMasterCRUDComponent>(p => new ShipDirectionMasterCRUDComponent());
+            services.RegisterTypeFactory<ShipDirectionSlaveCRUDComponent>(p => new ShipDirectionSlaveCRUDComponent());
+
+            services.RegisterTypeFactory<ShipTargetingMasterCRUDComponent>(p => new ShipTargetingMasterCRUDComponent());
+            services.RegisterTypeFactory<ShipTargetingSlaveCrudComponent>(p => new ShipTargetingSlaveCrudComponent());
+
+            // Services
             services.RegisterTransient<ShipMasterCRUDComponent>();
             services.RegisterTransient<ShipSlaveCRUDComponent>();
-            services.RegisterTransient<ShipDirectionComponent>();
 
+            services.RegisterTransient<ShipDirectionMasterCRUDComponent>(ServiceConfigurationKey.From<ShipDirectionComponent>());
+            services.RegisterTransient<ShipDirectionSlaveCRUDComponent>(ServiceConfigurationKey.From<ShipDirectionComponent>());
+
+            services.RegisterTransient<ShipTargetingMasterCRUDComponent>(ServiceConfigurationKey.From<ShipTargetingComponent>());
+            services.RegisterTransient<ShipTargetingSlaveCrudComponent>(ServiceConfigurationKey.From<ShipTargetingComponent>());
+
+            // Components
             services.RegisterComponent<ShipMasterCRUDComponent, Ship>();
             services.RegisterComponent<ShipSlaveCRUDComponent, Ship>();
-            services.RegisterComponent<ShipDirectionComponent, Ship>();
+
+            services.RegisterComponent<ShipDirectionMasterCRUDComponent, Ship>();
+            services.RegisterComponent<ShipDirectionSlaveCRUDComponent, Ship>();
+
+            services.RegisterComponent<ShipTargetingMasterCRUDComponent, Ship>();
+            services.RegisterComponent<ShipTargetingSlaveCrudComponent, Ship>();
             #endregion
         }
 

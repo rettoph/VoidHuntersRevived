@@ -24,7 +24,8 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
         #region Public Properties
         public IUser User { get; set; }
-        public Int32 ChunkProximityRadius { get; set; } = 5;
+        public Int32 ChunkProximityRadius { get; set; } = 1;
+        public Boolean ChunkLoader { get; set; }
         #endregion
 
         #region Lifecycle Methods
@@ -40,6 +41,8 @@ namespace VoidHuntersRevived.Library.Entities.Players
             provider.Service(out _chunks);
 
             this.OnShipChanged += this.HandleShipChanged;
+
+            this.ChunkLoader = true;
         }
         protected override void Release()
         {
@@ -63,6 +66,9 @@ namespace VoidHuntersRevived.Library.Entities.Players
         #region Helper Methods
         private void CleanChunkDependents(Chunk old, Chunk value)
         {
+            if (!this.ChunkLoader)
+                return;
+
             IEnumerable<Chunk> oldProximityChunks = _proximityChunks ?? _chunks.GetChunks(old?.Position, this.ChunkProximityRadius);
             _proximityChunks = _chunks.GetChunks(value?.Position, this.ChunkProximityRadius);
 
@@ -72,7 +78,6 @@ namespace VoidHuntersRevived.Library.Entities.Players
                 chunk.Pipe.Users.TryRemove(this.User);
                 chunk.TryDeregisterDependent(this.Id);
             }
-
 
             // Register any new chunk dependents...
             foreach (Chunk chunk in _proximityChunks.Except(oldProximityChunks))

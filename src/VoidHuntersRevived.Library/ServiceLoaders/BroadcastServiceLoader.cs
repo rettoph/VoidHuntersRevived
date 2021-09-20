@@ -18,10 +18,14 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
         {
             services.RegisterSetup<Broadcasts>((broadcasts, provider, _) =>
             {
+                if (provider.Settings.Get<HostType>() != HostType.Remote)
+                    return;
+
                 switch (provider.Settings.Get<NetworkAuthorization>())
                 {
                     case NetworkAuthorization.Master:
                         broadcasts.Register(Constants.Messages.WorldObject.WorldInfoPing, Constants.Intervals.WorldInfoPingBroadcastInterval);
+                        broadcasts.Register(Constants.Messages.Ship.TargetChanged, Constants.Intervals.ShipTargetPingBroadcastInterval);
                         break;
                 }
             });

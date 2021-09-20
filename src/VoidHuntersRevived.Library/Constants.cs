@@ -78,6 +78,8 @@ namespace VoidHuntersRevived.Library
             public static class Ship
             {
                 public static readonly UInt32 PlayerChanged = "vhr:ship:player:changed".xxHash();
+                public static readonly UInt32 TargetChanged = "vhr:ship:target:changed".xxHash();
+                public static readonly UInt32 DirectionChanged = "vhr:ship:direction:changed".xxHash();
             }
 
             public static class UserPlayer
@@ -101,6 +103,7 @@ namespace VoidHuntersRevived.Library
         public static class Intervals
         {
             public static readonly Double WorldInfoPingBroadcastInterval = 50;
+            public static readonly Double ShipTargetPingBroadcastInterval = 75;
 
             /// <summary>
             /// The minimum amount of time before <see cref="AetherBodyWorldObjectMasterValidateWorldInfoChangeDetectedComponent"/>

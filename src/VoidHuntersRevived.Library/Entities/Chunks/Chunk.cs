@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
     {
         #region Static Properties
         public static Int32 Size { get; } = 64;
-        public static Double MaxDependentlessThreshold { get; } = 5;
+        public static Double MaxDependentlessThreshold { get; } = 500;
         #endregion
 
         #region Privage Fields
@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
         /// <summary>
         /// The amount of time in seconds the current chunk has gone without any dependents.
         /// </summary>
-        private Double _dependentlessTimespan;
+        private Double _dependentlessMilliseconds;
         #endregion
 
         #region Public Properties
@@ -115,7 +115,7 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
             base.Initialize(provider);
 
             this.Dependents = 0;
-            _dependentlessTimespan = 0;
+            _dependentlessMilliseconds = 0;
 
             provider.Service(out _synchronizer);
         }
@@ -160,10 +160,10 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
 
             if(this.Dependents == 0)
             {
-                if (_dependentlessTimespan > Chunk.MaxDependentlessThreshold)
+                if (_dependentlessMilliseconds > Chunk.MaxDependentlessThreshold)
                     _synchronizer.Enqueue(gt => this.TryRelease());
                 else
-                    _dependentlessTimespan += gameTime.ElapsedGameTime.TotalSeconds;
+                    _dependentlessMilliseconds += gameTime.ElapsedGameTime.TotalMilliseconds;
             }
         }
         #endregion
@@ -184,7 +184,7 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
             if (_dependents.Remove(id))
             {
                 this.Dependents--;
-                _dependentlessTimespan = 0;
+                _dependentlessMilliseconds = 0;
 
                 return true;
             }

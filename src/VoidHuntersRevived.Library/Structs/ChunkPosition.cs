@@ -33,6 +33,7 @@ namespace VoidHuntersRevived.Library.Structs
         {
             _pipeType = PipeType.Chunk;
 
+            this.Id = default;
             this.X = (Int32)Math.Floor(x / Chunk.Size);
             this.Y = (Int32)Math.Floor(y / Chunk.Size);
         }
@@ -71,6 +72,7 @@ namespace VoidHuntersRevived.Library.Structs
         {
             _pipeType = PipeType.Chunk;
 
+            this.Id = default;
             this.X = x;
             this.Y = y;
         }

@@ -20,6 +20,7 @@ using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Interfaces;
 using Guppy.Network.Extensions.Lidgren;
+using VoidHuntersRevived.Library.Entities.Ships;
 
 namespace VoidHuntersRevived.Client.Library.Components.Entities.Players
 {
@@ -29,6 +30,7 @@ namespace VoidHuntersRevived.Client.Library.Components.Entities.Players
         private Camera2D _camera;
         private ClientPeer _client;
         private CommandService _commands;
+        private MouseService _mouse;
         #endregion
 
         #region Lifecycle Methods
@@ -39,12 +41,17 @@ namespace VoidHuntersRevived.Client.Library.Components.Entities.Players
             provider.Service(out _camera);
             provider.Service(out _client);
             provider.Service(out _commands);
-
-            _commands.Get<Command>("ship set direction").Handler = CommandHandler.Create<Direction, Boolean, IConsole>(this.ShipSetDirectionHandler);
+            provider.Service(out _mouse);
 
             if (_client.CurrentUser == this.Entity.User)
             {
+                _commands.Get<Command>("ship set direction").Handler = CommandHandler.Create<Direction, Boolean, IConsole>(this.ShipSetDirectionHandler);
+
                 this.Entity.OnUpdate += this.Update;
+            }
+            else
+            {
+                this.Entity.ChunkLoader = false;
             }
         }
 
@@ -66,6 +73,8 @@ namespace VoidHuntersRevived.Client.Library.Components.Entities.Players
                 return;
 
             _camera.MoveTo(this.Entity.Ship.Chain.Position);
+
+            this.Entity.Ship.Components.Get<ShipTargetingComponent>().Target = _camera.Unproject(_mouse.Position);
         }
         #endregion
 

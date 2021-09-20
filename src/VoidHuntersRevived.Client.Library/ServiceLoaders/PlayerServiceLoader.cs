@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.DependencyInjection;
 using Guppy.Interfaces;
+using Guppy.Network.Peers;
 using System;
 using System.Collections.Generic;
 using System.Text;

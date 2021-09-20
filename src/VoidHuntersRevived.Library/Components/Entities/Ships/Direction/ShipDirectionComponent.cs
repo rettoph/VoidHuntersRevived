@@ -2,6 +2,8 @@
 using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
 using Guppy.Extensions.System.Collections;
+using Guppy.Network.Components;
+using Guppy.Network.Enums;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -12,7 +14,7 @@ using VoidHuntersRevived.Library.Structs;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
 {
-    public sealed class ShipDirectionComponent : Component<Ship>
+    public abstract class ShipDirectionComponent : RemoteHostComponent<Ship>
     {
         #region Public Attributes
         /// <summary>
@@ -38,6 +40,13 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
             base.PreInitialize(provider);
 
             this.Entity.OnUpdate += this.Update;
+        }
+
+        protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
+        {
+            base.PreInitializeRemote(provider, networkAuthorization);
+
+            this.Entity.Messages.Add(Constants.Messages.Ship.DirectionChanged, Guppy.Network.Constants.MessageContexts.InternalUnreliableDefault);
         }
 
         protected override void PostRelease()
