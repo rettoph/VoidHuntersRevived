@@ -25,6 +25,10 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
             this.Entity.Messages.Add(
                 messageType: Constants.Messages.UserPlayer.RequestDirectionChanged,
                 defaultContext: Guppy.Network.Constants.MessageContexts.InternalReliableSecondary);
+
+            this.Entity.Messages.Add(
+                messageType: Constants.Messages.UserPlayer.RequestTractorBeamAction,
+                defaultContext: Guppy.Network.Constants.MessageContexts.InternalReliableSecondary);
         }
         #endregion
     }

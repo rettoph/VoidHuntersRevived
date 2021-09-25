@@ -91,6 +91,18 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                         (state: ButtonState.Released, command: "ship set direction Left false")
                     }
                 });
+
+                inputs.Add(new InputCommandContext()
+                {
+                    Handle = "tractorbeam_action",
+                    DefaultInput = new InputButton(MouseButton.Right),
+                    Lockable = false,
+                    Commands = new[]
+    {
+                        (state: ButtonState.Pressed, command: "ship tractorbeam Select"),
+                        (state: ButtonState.Released, command: "ship tractorbeam Attach")
+                    }
+                });
                 #endregion
             });
         }

@@ -55,7 +55,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
             ConnectionNode parentNode = parent.ConnectionNodes[parentNodeIndex];
 
             // Load child data
-            ShipPart child = this.shipPartService.ReadTree(im);
+            ShipPart child = this.shipPartService.ReadShipPart(im, Enums.ShipPartSerializationFlags.CreateTree);
             Int32 childNodeIndex = im.ReadInt32();
             ConnectionNode childNode = child.ConnectionNodes[childNodeIndex];
 

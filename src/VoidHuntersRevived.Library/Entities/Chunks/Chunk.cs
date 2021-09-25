@@ -24,8 +24,15 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
     public class Chunk : Frameable
     {
         #region Static Properties
-        public static Int32 Size { get; } = 64;
-        public static Double MaxDependentlessThreshold { get; } = 500;
+        /// <summary>
+        /// The constant size of a Chunk in Aether units.
+        /// </summary>
+        public static readonly Int32 Size = 64;
+
+        /// <summary>
+        /// The maximum amount of time a chunk can exist without any children before it will self-dispose.
+        /// </summary>
+        public static readonly Double MaxDependentlessThreshold = 500;
         #endregion
 
         #region Privage Fields

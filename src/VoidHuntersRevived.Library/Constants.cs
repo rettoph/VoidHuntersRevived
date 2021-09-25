@@ -15,6 +15,7 @@ using VoidHuntersRevived.Library.Entities.Ships;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Components.Entities.WorldObjects;
+using tainicom.Aether.Physics2D.Dynamics;
 
 namespace VoidHuntersRevived.Library
 {
@@ -85,6 +86,7 @@ namespace VoidHuntersRevived.Library
             public static class UserPlayer
             {
                 public static readonly UInt32 RequestDirectionChanged = "vhr:user-player:direction:changed".xxHash();
+                public static readonly UInt32 RequestTractorBeamAction = "vhr:user-player:tractor-beam:action".xxHash();
             }
         }
 
@@ -103,7 +105,7 @@ namespace VoidHuntersRevived.Library
         public static class Intervals
         {
             public static readonly Double WorldInfoPingBroadcastInterval = 50;
-            public static readonly Double ShipTargetPingBroadcastInterval = 75;
+            public static readonly Double ShipTargetPingBroadcastInterval = 100;
 
             /// <summary>
             /// The minimum amount of time before <see cref="AetherBodyWorldObjectMasterValidateWorldInfoChangeDetectedComponent"/>
@@ -137,6 +139,21 @@ namespace VoidHuntersRevived.Library
 
             public static readonly Single MasterBodyAngularVelocityDifferenceTheshold = 0.001f;
             public static readonly Single MasterBodyLinearVelocityDifferenceTheshold = 0.0001f;
+        }
+
+        public static class CollisionCategories
+        {
+            public const Category ImpenetrableCollidesWith = Category.All;
+            public const Category ImpenetrableCollisionCategories = Category.Cat1;
+            public const Int16 ImpenetrableCollisionGroup = 0;
+
+            public const Category CorporealCollidesWith = CollisionCategories.ImpenetrableCollisionCategories | CollisionCategories.CorporealCollisionCategories;
+            public const Category CorporealCollisionCategories = Category.Cat2;
+            public const Int16 CorporealCollisionGroup = 0;
+
+            public const Category NonCorporealCollidesWith = CollisionCategories.ImpenetrableCollisionCategories;
+            public const Category NonCorporealCollisionCategories = Category.Cat3;
+            public const Int16 NonCorporealCollisionGroup = -1;
         }
     }
 }

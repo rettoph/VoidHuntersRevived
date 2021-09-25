@@ -94,8 +94,7 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
             base.Draw(gameTime);
 
             // Createa a new matrix representation of the chain's current world position.
-            Matrix worldTransformation = Matrix.CreateRotationZ(this.Rotation) 
-                * Matrix.CreateTranslation(this.Position.X, this.Position.Y, 0);
+            Matrix worldTransformation = this.GetWorldTransformation();
 
             // Auto invoke the Root's draw method.
             // This should case a cascade draw call of the
@@ -109,15 +108,27 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
         }
         #endregion
 
+        #region Helper Methods
+        /// <summary>
+        /// Calculate the Chain's current WorldMatric based
+        /// <see cref="WorldObject.Rotation"/> and <see cref="WorldObject.Position"/>
+        /// </summary>
+        /// <returns></returns>
+        public Matrix GetWorldTransformation()
+        {
+            return Matrix.CreateRotationZ(this.Rotation) * Matrix.CreateTranslation(this.Position.X, this.Position.Y, 0);
+        }
+        #endregion
+
         #region Network Methods
         public void WriteAll(NetOutgoingMessage om, ShipPartService shipPartService)
         {
-            shipPartService.WriteTree(this.Root, om);
+            shipPartService.WriteShipPart(this.Root, om, ShipPartSerializationFlags.CreateTree);
         }
 
         public void ReadAll(NetIncomingMessage im, ShipPartService shipPartService)
         {
-            this.Root = shipPartService.ReadTree(im);
+            this.Root = shipPartService.ReadShipPart(im, ShipPartSerializationFlags.CreateTree);
         }
         #endregion
 

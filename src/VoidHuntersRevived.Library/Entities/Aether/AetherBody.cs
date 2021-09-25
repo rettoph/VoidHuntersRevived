@@ -134,6 +134,9 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         /// <param name="impulse">The world impulse vector, usually in N-seconds or kg-m/s.</param>
         public void ApplyLinearImpulse(Vector2 impulse)
             => this.DoPlaftorm(b => b.ApplyLinearImpulse(impulse));
+
+        public void SetTransformIgnoreContacts(Vector2 position, Single angle)
+            => this.DoPlaftorm(b => b.SetTransformIgnoreContacts(ref position, angle));
         #endregion
     }
 }

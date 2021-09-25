@@ -62,7 +62,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             this.Tree_Release();
 
             this.OnChainChanged -= this.HandleChainChanged;
-            this.TryDestroyCorporealForm();
+            this.TryDestroyAetherForm();
         }
 
         protected override void Dispose()
@@ -80,14 +80,14 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             => this.Context = context;
 
         /// <summary>
-        /// Attempt to build any physical world
+        /// Attempt to build any aether world
         /// fixtures, bodies, joints, ect using
         /// the given Chain instance.
         /// </summary>
         /// <param name="chain"></param>
-        protected virtual void TryCreateCorporealForm(Chain chain)
+        protected virtual void TryCreateAetherForm(Chain chain)
         {
-
+            // 
         }
 
         /// <summary>
@@ -95,16 +95,48 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// world fixtures, bodies, joints, ect.
         /// </summary>
         /// <param name="chain"></param>
-        protected virtual void TryDestroyCorporealForm()
+        protected virtual void TryDestroyAetherForm()
         {
-
+            // 
         }
+
+        /// <summary>
+        /// Update internal values to signify the Part's 
+        /// coporeal status.
+        /// </summary>
+        /// <param name="corporeal"></param>
+        protected virtual void TryUpdateCorporealState(Boolean corporeal)
+        {
+            // 
+        }
+
+        public Matrix GetWorldMatrix(ref Matrix chainWorldTransformation)
+        {
+            return this.LocalTransformation * chainWorldTransformation;
+        }
+        public Matrix GetWorldMatrix()
+        {
+            Matrix chainWorldTransformation = this.Chain.GetWorldTransformation();
+            return this.GetWorldMatrix(ref chainWorldTransformation);
+        }
+
+        public Vector2 GetWorldPoint(Vector2 localPoint, ref Matrix chainWorldTransformation)
+            => Vector2.Transform(localPoint, this.GetWorldMatrix(ref chainWorldTransformation));
+
+        public Vector2 GetWorldPoint(Vector2 localPoint)
+            => Vector2.Transform(localPoint, this.GetWorldMatrix());
+
+        public Vector2 GetWorldPosition(ref Matrix chainWorldTransformation)
+            => this.GetWorldPoint(Vector2.Zero, ref chainWorldTransformation);
+
+        public Vector2 GetWorldPosition()
+            => this.GetWorldPoint(Vector2.Zero);
         #endregion
 
         #region Frame Methods
         public void TryDrawAt(GameTime gameTime, ref Matrix chainWorldTransformation)
         {
-            Matrix worldTransformation = this.LocalTransformation * chainWorldTransformation;
+            Matrix worldTransformation = this.GetWorldMatrix(ref chainWorldTransformation);
 
             this.OnDrawAt.Invoke(gameTime, ref worldTransformation);
 
@@ -119,8 +151,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             if(old != default)
             {
-                if(old.Corporeal)
-                    this.TryDestroyCorporealForm();
+                this.TryDestroyAetherForm();
 
                 old.OnCorporealChanged -= this.HandleChainCorporealChanged;
             }
@@ -128,8 +159,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             if (value != default)
             {
-                if(value.Corporeal)
-                    this.TryCreateCorporealForm(value);
+                this.TryCreateAetherForm(value);
+                this.TryUpdateCorporealState(value.Corporeal);
 
                 value.OnCorporealChanged += this.HandleChainCorporealChanged;
             }
@@ -137,14 +168,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
         private void HandleChainCorporealChanged(AetherBodyWorldObject sender, bool corpreal)
         {
-            if(corpreal)
-            {
-                this.TryCreateCorporealForm(sender as Chain);
-            }
-            else
-            {
-                this.TryDestroyCorporealForm();
-            }
+            this.TryUpdateCorporealState(corpreal);
         }
         #endregion
     }

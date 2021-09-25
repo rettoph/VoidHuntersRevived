@@ -42,6 +42,9 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.RegisterTypeFactory<ShipTargetingMasterCRUDComponent>(p => new ShipTargetingMasterCRUDComponent());
             services.RegisterTypeFactory<ShipTargetingSlaveCrudComponent>(p => new ShipTargetingSlaveCrudComponent());
 
+            services.RegisterTypeFactory<ShipTractorBeamMasterCRUDComponent>(p => new ShipTractorBeamMasterCRUDComponent());
+            services.RegisterTypeFactory<ShipTractorBeamSlaveCRUDComponent>(p => new ShipTractorBeamSlaveCRUDComponent());
+
             // Services
             services.RegisterTransient<ShipMasterCRUDComponent>();
             services.RegisterTransient<ShipSlaveCRUDComponent>();
@@ -52,6 +55,9 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.RegisterTransient<ShipTargetingMasterCRUDComponent>(ServiceConfigurationKey.From<ShipTargetingComponent>());
             services.RegisterTransient<ShipTargetingSlaveCrudComponent>(ServiceConfigurationKey.From<ShipTargetingComponent>());
 
+            services.RegisterTransient<ShipTractorBeamMasterCRUDComponent>(ServiceConfigurationKey.From<ShipTractorBeamComponent>());
+            services.RegisterTransient<ShipTractorBeamSlaveCRUDComponent>(ServiceConfigurationKey.From<ShipTractorBeamComponent>());
+
             // Components
             services.RegisterComponent<ShipMasterCRUDComponent, Ship>();
             services.RegisterComponent<ShipSlaveCRUDComponent, Ship>();
@@ -61,6 +67,9 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
 
             services.RegisterComponent<ShipTargetingMasterCRUDComponent, Ship>();
             services.RegisterComponent<ShipTargetingSlaveCrudComponent, Ship>();
+
+            services.RegisterComponent<ShipTractorBeamMasterCRUDComponent, Ship>();
+            services.RegisterComponent<ShipTractorBeamSlaveCRUDComponent, Ship>();
             #endregion
         }
 

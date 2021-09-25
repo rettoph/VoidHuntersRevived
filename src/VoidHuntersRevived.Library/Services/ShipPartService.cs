@@ -158,93 +158,100 @@ namespace VoidHuntersRevived.Library.Services
         #endregion
 
         #region Network Methods
-        public void WriteTree(ShipPart shipPart, NetOutgoingMessage om)
+        public void WriteShipPart(ShipPart shipPart, NetOutgoingMessage om, ShipPartSerializationFlags flags)
         {
             om.Write(shipPart.Context.Id);
             om.Write(shipPart.Id);
 
-            #region WriteAll
-            // Notice we include a position value. This is
-            // So the reader can skip the WriteAll data if needed.
-            Int32 startPosition = om.LengthBits;
-            om.Write(startPosition);
-
-            shipPart.WriteCreate(om);
-
-            om.WriteAt(startPosition, om.LengthBits);
-            #endregion
-
-            #region Write Children
-            // Iterate through each parent connection node & broadcast all internal data.
-            foreach (ConnectionNode node in shipPart.ConnectionNodes)
+            if(flags.HasFlag(ShipPartSerializationFlags.Create))
             {
-                if (node.Connection.State == ConnectionNodeState.Parent)
-                {
-                    om.Write((Byte)ConnectionNodeState.Parent);
+                // Notice we include a position value. This is
+                // So the reader can skip the WriteAll data if needed.
+                // The Create data is only utilized if no instance is discovered
+                // on the recieving peer.
+                Int32 startPosition = om.LengthBits;
+                om.Write(startPosition);
 
-                    this.WriteTree(node.Connection.Target.Owner, om);
+                shipPart.WriteCreate(om);
 
-                    om.Write(node.Index);
-                    om.Write(node.Connection.Target.Index);
-                }
-                else if (node.Connection.State == ConnectionNodeState.Estranged)
-                {
-                    om.Write((Byte)ConnectionNodeState.Estranged);
-                    om.Write(node.Index);
-                }
+                om.WriteAt(startPosition, om.LengthBits);
             }
 
-            // For the purposes of reading node data we use the child marker to signify a complete node message.
-            om.Write((Byte)ConnectionNodeState.Child);
-            #endregion
+            if (flags.HasFlag(ShipPartSerializationFlags.Tree))
+            {
+                // Iterate through each parent connection node & broadcast all internal data.
+                foreach (ConnectionNode node in shipPart.ConnectionNodes)
+                {
+                    if (node.Connection.State == ConnectionNodeState.Parent)
+                    {
+                        om.Write((Byte)ConnectionNodeState.Parent);
+
+                        this.WriteShipPart(node.Connection.Target.Owner, om, flags);
+
+                        om.Write(node.Index);
+                        om.Write(node.Connection.Target.Index);
+                    }
+                    else if (node.Connection.State == ConnectionNodeState.Estranged)
+                    {
+                        om.Write((Byte)ConnectionNodeState.Estranged);
+                        om.Write(node.Index);
+                    }
+                }
+
+                // For the purposes of reading node data we use the child marker to signify a complete node message.
+                om.Write((Byte)ConnectionNodeState.Child);
+            }
         }
 
-        public ShipPart ReadTree(NetIncomingMessage im)
+        public ShipPart ReadShipPart(NetIncomingMessage im, ShipPartSerializationFlags flags)
         {
             UInt32 contextId = im.ReadUInt32();
             Guid shipPartId = im.ReadGuid();
-            Int64 endPosition = im.ReadInt32();
-
             ShipPart parent = this.GetById(shipPartId);
 
-            #region ReadAll
-            if (parent == default)
-            {
-                parent = this.Create(contextId, shipPartId);
-                parent.ReadCreate(im);
-            }
-            else
-            {
-                // Skip the ReadAll data
-                im.Position = endPosition;
-            }
-            #endregion
 
-            #region Read Children
-            ConnectionNodeState state;
-            while ((state = (ConnectionNodeState)im.ReadByte()) != ConnectionNodeState.Child)
+            if (flags.HasFlag(ShipPartSerializationFlags.Create))
             {
-                switch(state)
+                Int64 endPosition = im.ReadInt32();
+
+                if (parent == default)
                 {
-                    case ConnectionNodeState.Parent:
-                        ShipPart child = this.ReadTree(im);
-
-                        Int32 parentNodeIndex = im.ReadInt32();
-                        ConnectionNode parentNode = parent.ConnectionNodes[parentNodeIndex];
-
-                        Int32 childNodeIndex = im.ReadInt32();
-                        ConnectionNode childNode = child.ConnectionNodes[childNodeIndex];
-
-                        parentNode.TryAttach(childNode);
-                        break;
-                    case ConnectionNodeState.Estranged:
-                        Int32 estrangedNodeIndex = im.ReadInt32();
-                        ConnectionNode estrangedNode = parent.ConnectionNodes[estrangedNodeIndex];
-                        estrangedNode.TryDetach();
-                        break;
+                    parent = this.Create(contextId, shipPartId);
+                    parent.ReadCreate(im);
+                }
+                else
+                {
+                    // Skip the ReadAll data
+                    im.Position = endPosition;
                 }
             }
-            #endregion
+
+            if(flags.HasFlag(ShipPartSerializationFlags.Tree))
+            {
+                ConnectionNodeState state;
+                while ((state = (ConnectionNodeState)im.ReadByte()) != ConnectionNodeState.Child)
+                {
+                    switch (state)
+                    {
+                        case ConnectionNodeState.Parent:
+                            ShipPart child = this.ReadShipPart(im, flags);
+
+                            Int32 parentNodeIndex = im.ReadInt32();
+                            ConnectionNode parentNode = parent.ConnectionNodes[parentNodeIndex];
+
+                            Int32 childNodeIndex = im.ReadInt32();
+                            ConnectionNode childNode = child.ConnectionNodes[childNodeIndex];
+
+                            parentNode.TryAttach(childNode);
+                            break;
+                        case ConnectionNodeState.Estranged:
+                            Int32 estrangedNodeIndex = im.ReadInt32();
+                            ConnectionNode estrangedNode = parent.ConnectionNodes[estrangedNodeIndex];
+                            estrangedNode.TryDetach();
+                            break;
+                    }
+                }
+            }
 
             return parent;
         }

@@ -39,7 +39,27 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         }
         #endregion
 
+        #region BaseAetherWrapper Implementation
         protected override Fixture BuildInstance(GuppyServiceProvider provider, NetworkAuthorization authorization)
             => this.Body.Instances[authorization].CreateFixture(this.Shape);
+        #endregion
+
+        #region Helper Methods
+        /// <summary>
+        /// Update internal fixture data.
+        /// </summary>
+        /// <param name="collidesWith">The collision mask bits. This states the categories that this fixture would accept for collision.</param>
+        /// <param name="collisionCategories">The collision categories this fixture is a part of.</param>
+        /// <param name="collisionGroup">Collision groups allow a certain group of objects to never collide (negative) or always collide (positive). Zero means no collision group. Non-zero group filtering always wins against the mask bits.</param>
+        public void SetCollisionData(Category collidesWith = Category.All, Category collisionCategories = Category.Cat1, Int16 collisionGroup = 0)
+        {
+            this.Do(fixture =>
+            {
+                fixture.CollidesWith = collidesWith;
+                fixture.CollisionCategories = collisionCategories;
+                fixture.CollisionGroup = 0;
+            });
+        }
+        #endregion
     }
 }

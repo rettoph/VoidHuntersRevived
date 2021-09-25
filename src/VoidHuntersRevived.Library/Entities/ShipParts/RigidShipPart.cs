@@ -32,9 +32,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
 
         #region Helper Methods
-        protected override void TryCreateCorporealForm(Chain chain)
+        protected override void TryCreateAetherForm(Chain chain)
         {
-            base.TryCreateCorporealForm(chain);
+            base.TryCreateAetherForm(chain);
 
             foreach (Shape shape in this.Context.Shapes)
             {
@@ -45,13 +45,39 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             }
         }
 
-        protected override void TryDestroyCorporealForm()
+        protected override void TryDestroyAetherForm()
         {
-            base.TryDestroyCorporealForm();
+            base.TryDestroyAetherForm();
 
             while (_fixtures.Any())
             {
                 _fixtures.Dequeue().TryRelease();
+            }
+        }
+
+        protected override void TryUpdateCorporealState(bool corporeal)
+        {
+            base.TryUpdateCorporealState(corporeal);
+
+            if(corporeal)
+            {
+                foreach(AetherFixture fixture in _fixtures)
+                {
+                    fixture.SetCollisionData(
+                        collidesWith: Constants.CollisionCategories.CorporealCollidesWith,
+                        collisionCategories: Constants.CollisionCategories.CorporealCollisionCategories,
+                        collisionGroup: Constants.CollisionCategories.CorporealCollisionGroup);
+                }
+            }
+            else
+            {
+                foreach (AetherFixture fixture in _fixtures)
+                {
+                    fixture.SetCollisionData(
+                        collidesWith: Constants.CollisionCategories.NonCorporealCollidesWith,
+                        collisionCategories: Constants.CollisionCategories.NonCorporealCollisionCategories,
+                        collisionGroup: Constants.CollisionCategories.NonCorporealCollisionGroup);
+                }
             }
         }
         #endregion

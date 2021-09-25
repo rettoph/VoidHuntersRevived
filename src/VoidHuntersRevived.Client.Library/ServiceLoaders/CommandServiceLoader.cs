@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.CommandLine.Services;
 using Guppy.DependencyInjection;
+using Guppy.Extensions.System;
 using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,12 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                             new Argument<Direction>("direction"),
                             new Argument("value"),
                         }
+                    },
+                    new Command("tractorbeam")
+                    {
+                        new Argument<TractorBeamActionType>("action"),
+                        new Option<Single?>("--x", () => default, "Defaults to current mouse X position"),
+                        new Option<Int32?>("--y", () => default, "Defaults to current mouse Y position")
                     }
                 });
             });
