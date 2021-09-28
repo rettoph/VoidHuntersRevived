@@ -16,7 +16,7 @@ using Guppy.Network.Extensions.Lidgren;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
 {
-    public abstract class ShipTargetingComponent : RemoteHostComponent<Ship>
+    public abstract class ShipTargetingComponent : NetworkComponent<Ship>
     {
         #region Private Fields
         private Vector2 _target;

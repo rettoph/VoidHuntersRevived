@@ -27,14 +27,23 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.RegisterTypeFactory<PlayerPipeComponent>(p => new PlayerPipeComponent());
             services.RegisterTypeFactory<UserPlayerMasterCRUDComponent>(p => new UserPlayerMasterCRUDComponent());
             services.RegisterTypeFactory<UserPlayerSlaveCRUDComponent>(p => new UserPlayerSlaveCRUDComponent());
+            services.RegisterTypeFactory<UserPlayerCurrentUserDirectionComponent>(p => new UserPlayerCurrentUserDirectionComponent());
+            services.RegisterTypeFactory<UserPlayerCurrentUserTractorBeamComponent>(p => new UserPlayerCurrentUserTractorBeamComponent());
+            services.RegisterTypeFactory<UserPlayerCurrentUserTargetingComponent>(p => new UserPlayerCurrentUserTargetingComponent());
 
             services.RegisterTransient<PlayerPipeComponent>();
             services.RegisterTransient<UserPlayerMasterCRUDComponent>();
             services.RegisterTransient<UserPlayerSlaveCRUDComponent>();
+            services.RegisterTransient<UserPlayerCurrentUserDirectionComponent>();
+            services.RegisterTransient<UserPlayerCurrentUserTractorBeamComponent>();
+            services.RegisterTransient<UserPlayerCurrentUserTargetingComponent>();
 
             services.RegisterComponent<PlayerPipeComponent, Player>();
             services.RegisterComponent<UserPlayerMasterCRUDComponent, UserPlayer>();
             services.RegisterComponent<UserPlayerSlaveCRUDComponent, UserPlayer>();
+            services.RegisterComponent<UserPlayerCurrentUserDirectionComponent, UserPlayer>();
+            services.RegisterComponent<UserPlayerCurrentUserTractorBeamComponent, UserPlayer>();
+            services.RegisterComponent<UserPlayerCurrentUserTargetingComponent, UserPlayer>();
             #endregion
         }
 

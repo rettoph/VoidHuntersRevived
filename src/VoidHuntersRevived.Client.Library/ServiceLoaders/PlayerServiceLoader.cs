@@ -15,11 +15,11 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
     {
         public void RegisterServices(GuppyServiceCollection services)
         {
-            services.RegisterTypeFactory<UserPlayerLocalComponent>(p => new UserPlayerLocalComponent());
+            services.RegisterTypeFactory<UserPlayerCurrentUserCameraComponent>(p => new UserPlayerCurrentUserCameraComponent());
 
-            services.RegisterTransient<UserPlayerLocalComponent>();
+            services.RegisterTransient<UserPlayerCurrentUserCameraComponent>();
 
-            services.RegisterComponent<UserPlayerLocalComponent, UserPlayer>();
+            services.RegisterComponent<UserPlayerCurrentUserCameraComponent, UserPlayer>();
         }
 
         public void ConfigureProvider(GuppyServiceProvider provider)

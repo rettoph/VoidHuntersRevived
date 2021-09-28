@@ -16,7 +16,7 @@ using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
 {
-    internal class ChainBaseCRUDComponent : RemoteHostComponent<Chain>
+    internal class ChainBaseCRUDComponent : NetworkComponent<Chain>
     {
         #region Protected Properties Fields
         protected ShipPartService shipPartService { get; private set; }

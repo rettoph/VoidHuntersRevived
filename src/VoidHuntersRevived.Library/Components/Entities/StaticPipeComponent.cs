@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Library.Components.Entities
     /// <see cref="INetworkEntity.Pipe"/> value on initialization.
     /// </summary>
     /// <typeparam name="TNetworkEntity"></typeparam>
-    public abstract class StaticPipeComponent<TNetworkEntity> : RemoteHostComponent<TNetworkEntity>
+    public abstract class StaticPipeComponent<TNetworkEntity> : NetworkComponent<TNetworkEntity>
         where TNetworkEntity : class, INetworkEntity
     {
         #region Lifeycycle Methods

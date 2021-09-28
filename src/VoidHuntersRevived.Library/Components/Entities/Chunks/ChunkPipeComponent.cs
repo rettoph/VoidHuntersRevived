@@ -16,7 +16,7 @@ using VoidHuntersRevived.Library.Structs;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Chunks
 {
-    internal sealed class ChunkPipeComponent : RemoteHostComponent<Chunk>
+    internal sealed class ChunkPipeComponent : NetworkComponent<Chunk>
     {
         #region Private Fields
         private PrimaryScene _scene;

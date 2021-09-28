@@ -11,6 +11,9 @@ using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library.ServiceLoaders
 {
+    /// <summary>
+    /// Create default broadcasts.
+    /// </summary>
     [AutoLoad]
     internal sealed class BroadcastServiceLoader : IServiceLoader
     {
@@ -26,6 +29,9 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                     case NetworkAuthorization.Master:
                         broadcasts.Register(Constants.Messages.WorldObject.WorldInfoPing, Constants.Intervals.WorldInfoPingBroadcastInterval);
                         broadcasts.Register(Constants.Messages.Ship.TargetChanged, Constants.Intervals.ShipTargetPingBroadcastInterval);
+                        break;
+                    case NetworkAuthorization.Slave:
+                        broadcasts.Register(Constants.Messages.UserPlayer.RequestTargetChangedAction, Constants.Intervals.ShipTargetPingBroadcastInterval);
                         break;
                 }
             });

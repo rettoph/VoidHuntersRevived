@@ -19,7 +19,7 @@ using VoidHuntersRevived.Library.Extensions.Aether;
 namespace VoidHuntersRevived.Library.Components.Entities.Players
 {
     [NetworkAuthorizationRequired(NetworkAuthorization.Slave)]
-    internal sealed class AetherBodySlaveLerpComponent : RemoteHostComponent<AetherBody>
+    internal sealed class AetherBodySlaveLerpComponent : NetworkComponent<AetherBody>
     {
         #region Lifecycle Methods
         protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)

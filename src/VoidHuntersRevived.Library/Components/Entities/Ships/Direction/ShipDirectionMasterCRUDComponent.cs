@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
             this.Entity.Messages[Constants.Messages.Ship.DirectionChanged].Create(om =>
             {
                 om.Write(args.Direction);
-                om.Write(args.Value);
+                om.Write(args.State);
             }, this.Entity.Pipe);
         }
     }

@@ -13,14 +13,14 @@ namespace VoidHuntersRevived.Library.Structs
     public struct DirectionState
     {
         /// <summary>
-        /// The direction flag whose <see cref="Value"/> is defined.
+        /// The direction flag whose <see cref="State"/> is defined.
         /// </summary>
         public readonly Direction Direction;
 
         /// <summary>
         /// The state of the current <see cref="Direction"/>.
         /// </summary>
-        public readonly Boolean Value;
+        public readonly Boolean State;
 
         #region Constructor
         /// <summary>
@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Library.Structs
         public DirectionState(Direction direction, bool state)
         {
             this.Direction = direction;
-            this.Value = state;
+            this.State = state;
         }
         #endregion
     }

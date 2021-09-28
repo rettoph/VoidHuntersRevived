@@ -1,6 +1,8 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Events.Delegates;
 using Guppy.Extensions.Microsoft.Xna.Framework;
 using Guppy.Network.Components;
+using Guppy.Network.Enums;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -10,15 +12,23 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.Ships;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Structs;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
 {
-    public abstract class ShipTractorBeamComponent : RemoteHostComponent<Ship>
+    public abstract class ShipTractorBeamComponent : NetworkComponent<Ship>
     {
+        #region Static Fields
         public static readonly Single MaxRange = Chunk.Size;
         private static readonly Vector2 MaxRangeVector = new Vector2(ShipTractorBeamComponent.MaxRange, 0);
+        #endregion
 
+        #region Protected Properties
+        protected ShipPartService shipParts { get; private set; }
+        #endregion
+
+        #region Public Properties
         /// <summary>
         /// The Ship's TractorBeam Target differes from <see cref="ShipTargetingComponent.Target"/>
         /// because TractorBeam has a <see cref="MaxRange"/>.
@@ -29,6 +39,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         /// The current TractorBeam's target, if any.
         /// </summary>
         public Chain Target { get; private set; }
+        #endregion
 
         #region Lifecycle Methods
         protected override void PreInitialize(GuppyServiceProvider provider)
@@ -40,6 +51,22 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         {
             base.PostRelease();
         }
+
+        protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
+        {
+            base.PreInitializeRemote(provider, networkAuthorization);
+
+            this.shipParts = provider.GetService<ShipPartService>();
+
+            this.Entity.Messages.Add(Constants.Messages.Ship.TractorBeamAction, Guppy.Network.Constants.MessageContexts.InternalUnreliableDefault);
+        }
+
+        protected override void ReleaseRemote(NetworkAuthorization networkAuthorization)
+        {
+            base.ReleaseRemote(networkAuthorization);
+
+            this.shipParts = default;
+        }
         #endregion
 
         #region Frame Methods
@@ -47,6 +74,10 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         {
             throw new NotImplementedException();
         }
+        #endregion
+
+        #region Events
+        public OnEventDelegate<ShipTractorBeamComponent, TractorBeamAction> OnAction;
         #endregion
 
         #region Methods
@@ -59,6 +90,9 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
                 TractorBeamActionType.Deselect => this.TryDeselect(action),
                 _ => action
             };
+
+            if(action.Type != TractorBeamActionType.None)
+                this.OnAction?.Invoke(this, action);
 
             return response;
         }
@@ -107,6 +141,9 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
 
         private Boolean CanSelect(ShipPart target)
         {
+            if (this.Target != default)
+                return false;
+
             if (target?.Chain == default)
                 return false;
 

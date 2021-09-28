@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Interfaces;
 using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.Structs

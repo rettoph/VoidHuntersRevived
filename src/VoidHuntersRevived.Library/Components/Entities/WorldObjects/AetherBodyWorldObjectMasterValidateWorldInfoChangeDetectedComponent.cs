@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
     /// be broadcasted.
     /// </summary>
     [NetworkAuthorizationRequired(NetworkAuthorization.Master)]
-    internal class AetherBodyWorldObjectMasterValidateWorldInfoChangeDetectedComponent : RemoteHostComponent<AetherBodyWorldObject>
+    internal class AetherBodyWorldObjectMasterValidateWorldInfoChangeDetectedComponent : NetworkComponent<AetherBodyWorldObject>
     {
         #region Private Fields
         private Double _millisecondsSinceLastWorldInfoClean;

@@ -9,7 +9,7 @@ using System.CommandLine;
 using System.Text;
 using VoidHuntersRevived.Library.Enums;
 
-namespace VoidHuntersRevived.Client.Library.ServiceLoaders
+namespace VoidHuntersRevived.Library.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class CommandServiceLoader : IServiceLoader
@@ -25,14 +25,14 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                         new Command("direction")
                         {
                             new Argument<Direction>("direction"),
-                            new Argument("value"),
+                            new Argument("state"),
                         }
                     },
                     new Command("tractorbeam")
                     {
                         new Argument<TractorBeamActionType>("action"),
                         new Option<Single?>("--x", () => default, "Defaults to current mouse X position"),
-                        new Option<Int32?>("--y", () => default, "Defaults to current mouse Y position")
+                        new Option<Single?>("--y", () => default, "Defaults to current mouse Y position")
                     }
                 });
             });

@@ -10,7 +10,7 @@ using VoidHuntersRevived.Library.Entities.WorldObjects;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
 {
-    internal class ShipBaseCRUDComponent : RemoteHostComponent<Ship>
+    internal class ShipBaseCRUDComponent : NetworkComponent<Ship>
     {
         #region Lifecycle Methods
         protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)

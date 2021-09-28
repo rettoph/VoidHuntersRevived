@@ -14,7 +14,7 @@ using VoidHuntersRevived.Library.Structs;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
 {
-    public abstract class ShipDirectionComponent : RemoteHostComponent<Ship>
+    public abstract class ShipDirectionComponent : NetworkComponent<Ship>
     {
         #region Public Attributes
         /// <summary>
@@ -110,9 +110,9 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
             if ((args.Direction & (args.Direction - 1)) != 0)
                 throw new Exception("Unable to set multiple directions at once.");
 
-            if (args.Value && (this.ActiveDirections & args.Direction) == 0)
+            if (args.State && (this.ActiveDirections & args.Direction) == 0)
                 this.ActiveDirections |= args.Direction;
-            else if (!args.Value && (this.ActiveDirections & args.Direction) != 0)
+            else if (!args.State && (this.ActiveDirections & args.Direction) != 0)
                 this.ActiveDirections &= ~args.Direction;
             else
                 return false;

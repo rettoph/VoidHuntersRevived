@@ -15,20 +15,20 @@ using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Players
 {
-    internal class UserPlayerBaseCRUDComponent : RemoteHostComponent<UserPlayer>
+    internal class UserPlayerBaseCRUDComponent : NetworkComponent<UserPlayer>
     {
         #region Lifecycle Methods
         protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
         {
             base.PreInitializeRemote(provider, networkAuthorization);
 
-            this.Entity.Messages.Add(
-                messageType: Constants.Messages.UserPlayer.RequestDirectionChanged,
-                defaultContext: Guppy.Network.Constants.MessageContexts.InternalReliableSecondary);
-
-            this.Entity.Messages.Add(
-                messageType: Constants.Messages.UserPlayer.RequestTractorBeamAction,
-                defaultContext: Guppy.Network.Constants.MessageContexts.InternalReliableSecondary);
+            // this.Entity.Messages.Add(
+            //     messageType: Constants.Messages.UserPlayer.RequestDirectionChanged,
+            //     defaultContext: Guppy.Network.Constants.MessageContexts.InternalReliableSecondary);
+            // 
+            // this.Entity.Messages.Add(
+            //     messageType: Constants.Messages.UserPlayer.RequestTractorBeamAction,
+            //     defaultContext: Guppy.Network.Constants.MessageContexts.InternalReliableSecondary);
         }
         #endregion
     }

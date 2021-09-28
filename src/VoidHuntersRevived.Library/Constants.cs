@@ -81,12 +81,14 @@ namespace VoidHuntersRevived.Library
                 public static readonly UInt32 PlayerChanged = "vhr:ship:player:changed".xxHash();
                 public static readonly UInt32 TargetChanged = "vhr:ship:target:changed".xxHash();
                 public static readonly UInt32 DirectionChanged = "vhr:ship:direction:changed".xxHash();
+                public static readonly UInt32 TractorBeamAction = "vhr:ship:tractor-beam:action".xxHash();
             }
 
             public static class UserPlayer
             {
-                public static readonly UInt32 RequestDirectionChanged = "vhr:user-player:direction:changed".xxHash();
-                public static readonly UInt32 RequestTractorBeamAction = "vhr:user-player:tractor-beam:action".xxHash();
+                public static readonly UInt32 RequestDirectionChanged = "vhr:user-player:request:direction:changed".xxHash();
+                public static readonly UInt32 RequestTractorBeamAction = "vhr:user-player:request:tractor-beam:action".xxHash();
+                public static readonly UInt32 RequestTargetChangedAction = "vhr:user-player:request:target:changed".xxHash();
             }
         }
 

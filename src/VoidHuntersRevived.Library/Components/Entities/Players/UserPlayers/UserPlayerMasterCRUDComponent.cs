@@ -35,8 +35,8 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
             provider.Service(out _shipParts);
 
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnWrite += this.WriteCreateMessage;
-            this.Entity.Messages[Constants.Messages.UserPlayer.RequestDirectionChanged].OnRead += this.ReadRequestDirectionChangedMessage;
-            this.Entity.Messages[Constants.Messages.UserPlayer.RequestTractorBeamAction].OnRead += this.ReadRequestTractorBeamActionMessage;
+            // this.Entity.Messages[Constants.Messages.UserPlayer.RequestDirectionChanged].OnRead += this.ReadRequestDirectionChangedMessage;
+            // this.Entity.Messages[Constants.Messages.UserPlayer.RequestTractorBeamAction].OnRead += this.ReadRequestTractorBeamActionMessage;
         }
 
         protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)

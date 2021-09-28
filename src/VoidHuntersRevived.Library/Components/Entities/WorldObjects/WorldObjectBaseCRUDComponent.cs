@@ -9,7 +9,7 @@ using VoidHuntersRevived.Library.Interfaces;
 
 namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
 {
-    internal class WorldObjectBaseCRUDComponent : RemoteHostComponent<IWorldObject>
+    internal class WorldObjectBaseCRUDComponent : NetworkComponent<IWorldObject>
     {
         #region Lifecycle Methods
         protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
