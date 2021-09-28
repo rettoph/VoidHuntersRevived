@@ -98,6 +98,10 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
         #region Frame Methods
         private void Update(GameTime gameTime)
         {
+            // TODO: Optimize this
+            if (this.Entity.Ship == default)
+                return;
+
             this.Entity.Ship.Components.Get<ShipTargetingComponent>().Target = _camera.Unproject(_mouse.Position);
         }
         #endregion

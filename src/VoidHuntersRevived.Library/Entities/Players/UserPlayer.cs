@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
 
         #region Public Properties
         public IUser User { get; set; }
-        public Int32 ChunkProximityRadius { get; set; } = 1;
+        public Int32 ChunkProximityRadius { get; set; } = 5;
         public Boolean ChunkLoader { get; set; }
         #endregion
 

@@ -1,6 +1,8 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Enums;
 using Guppy.Events.Delegates;
 using Guppy.Extensions.Microsoft.Xna.Framework;
+using Guppy.Interfaces;
 using Guppy.Network.Components;
 using Guppy.Network.Enums;
 using Microsoft.Xna.Framework;
@@ -22,6 +24,10 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         #region Static Fields
         public static readonly Single MaxRange = Chunk.Size;
         private static readonly Vector2 MaxRangeVector = new Vector2(ShipTractorBeamComponent.MaxRange, 0);
+        #endregion
+
+        #region Private Fields
+        private ShipTargetingComponent _targeting;
         #endregion
 
         #region Protected Properties
@@ -94,6 +100,8 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
             if(action.Type != TractorBeamActionType.None)
                 this.OnAction?.Invoke(this, action);
 
+            this.log.Info($"Attempted TractorBeam Action {action.Type} and recieved {response.Type}.");
+
             return response;
         }
 
@@ -108,8 +116,11 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
                 action.TargetPart.ChildConnectionNode?.TryDetach();
 
                 // Save the internal target part.
+                _targeting = this.Entity.Components.Get<ShipTargetingComponent>();
+                _targeting.OnTargetChanged += this.HandleShipTargetingComponentTargetChanged;
+
                 this.Target = action.TargetPart.Chain;
-                this.Entity.Components.Get<ShipTargetingComponent>().OnTargetChanged += this.HandleShipTargetingComponentTargetChanged;
+                this.Target.OnStatusChanged += this.HandleTargetStatusChanged;
 
                 return action;
             }
@@ -120,17 +131,27 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         private TractorBeamAction TryDeselect(TractorBeamAction action)
         {
             if (!action.Type.HasFlag(TractorBeamActionType.Deselect))
-                throw new ArgumentException($"Unable to create deselection, Invalid ActionType({action.Type}) recieved.");
-
-            this.Entity.Components.Get<ShipTargetingComponent>().OnTargetChanged -= this.HandleShipTargetingComponentTargetChanged;
-            this.Target = default;
-
-            if (action.Type.HasFlag(TractorBeamActionType.Attach))
             {
-                return this.TryAttach(action);
+                throw new ArgumentException($"Unable to create deselection, Invalid ActionType({action.Type}) recieved.");
             }
 
-            return action;
+            if(this.CanDeselect(action.TargetPart))
+            {
+                this.Target.OnStatusChanged -= this.HandleTargetStatusChanged;
+                this.Target = default;
+
+                _targeting.OnTargetChanged -= this.HandleShipTargetingComponentTargetChanged;
+                _targeting = default;
+
+                if (action.Type.HasFlag(TractorBeamActionType.Attach))
+                {
+                    return this.TryAttach(action);
+                }
+
+                return action;
+            }
+
+            return default;
         }
 
         private TractorBeamAction TryAttach(TractorBeamAction action)
@@ -148,6 +169,14 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
                 return false;
 
             if (target.Chain.Corporeal && this.Entity.Chain != target.Chain)
+                return false;
+
+            return true;
+        }
+
+        private Boolean CanDeselect(ShipPart target)
+        {
+            if (this.Target == default)
                 return false;
 
             return true;
@@ -177,6 +206,14 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
 
             this.Position = this.GetValidTractorbeamPosition(target);
             this.Target.Body.SetTransformIgnoreContacts(this.Position, 0);
+        }
+
+        private void HandleTargetStatusChanged(IService sender, ServiceStatus old, ServiceStatus value)
+        {
+            if(value == ServiceStatus.PreReleasing)
+            {
+                this.TryAction(new TractorBeamAction(type: TractorBeamActionType.Deselect));
+            }
         }
         #endregion
     }
