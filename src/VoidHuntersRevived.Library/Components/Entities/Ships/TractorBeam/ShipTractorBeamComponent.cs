@@ -28,6 +28,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
 
         #region Private Fields
         private ShipTargetingComponent _targeting;
+        private ChainService _chains;
         #endregion
 
         #region Protected Properties
@@ -51,11 +52,15 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         protected override void PreInitialize(GuppyServiceProvider provider)
         {
             base.PreInitialize(provider);
+
+            provider.Service(out _chains);
         }
 
         protected override void PostRelease()
         {
             base.PostRelease();
+
+            _chains = default;
         }
 
         protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
@@ -110,19 +115,18 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
             if (action.Type != TractorBeamActionType.Select)
                 throw new ArgumentException($"Unable to create selection, Invalid ActionType({action.Type}) recieved.");
 
-            if(this.CanSelect(action.TargetPart))
+            if(this.CanSelect(action.TargetPart, out ShipPart selectable))
             {
-                // Ensure the part is detached before doing anything.
-                action.TargetPart.ChildConnectionNode?.TryDetach();
-
                 // Save the internal target part.
                 _targeting = this.Entity.Components.Get<ShipTargetingComponent>();
                 _targeting.OnTargetChanged += this.HandleShipTargetingComponentTargetChanged;
 
-                this.Target = action.TargetPart.Chain;
+                this.Target = selectable.Chain;
                 this.Target.OnStatusChanged += this.HandleTargetStatusChanged;
 
-                return action;
+                return new TractorBeamAction(
+                    type: TractorBeamActionType.Select,
+                    targetShipPart: selectable);
             }
 
             return default;
@@ -160,18 +164,51 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
             return action;
         }
 
-        private Boolean CanSelect(ShipPart target)
+        /// <summary>
+        /// Determin whether or not a part can be selected.
+        /// If needed the returned output will contain mutated data
+        /// to ensure the root piece is always selected unless its an internal
+        /// chain.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="selectable"></param>
+        /// <returns></returns>
+        private Boolean CanSelect(ShipPart target, out ShipPart selectable)
         {
-            if (this.Target != default)
+            Boolean FailureResponse(out ShipPart selectable)
+            {
+                selectable = default;
                 return false;
+            }
+
+            if(this.Target != default)
+            {
+                return FailureResponse(out selectable);
+            }
 
             if (target?.Chain == default)
-                return false;
+            {
+                return FailureResponse(out selectable);
+            }
 
-            if (target.Chain.Corporeal && this.Entity.Chain != target.Chain)
-                return false;
+            if (!target.Chain.Corporeal)
+            {
+                selectable = target.Root;
+                return true;
+            }
 
-            return true;
+            if(target.Chain == this.Entity.Chain && !target.IsRoot)
+            {
+                // If this condition is met we are attempting to disconnect a piece from the current ship. That process is done here.
+                target.ChildConnectionNode?.TryDetach();
+                _chains.Create(target);
+
+                selectable = target;
+                return true;
+            }
+
+
+            return FailureResponse(out selectable); ;
         }
 
         private Boolean CanDeselect(ShipPart target)

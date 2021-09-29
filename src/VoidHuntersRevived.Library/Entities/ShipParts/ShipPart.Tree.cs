@@ -13,11 +13,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
     public partial class ShipPart
     {
-        #region Private Fields
-        private ShipPart _root;
-        private ShipPart _parent;
-        #endregion
-
         #region Public Properties
         /// <summary>
         /// Each ShipPart may only have a single <see cref="ConnectionNode"/> with a
@@ -105,6 +100,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             };
 
             this.ConnectionNodes = new ConnectionNode[0];
+            this.ChildConnectionNode = default;
         }
 
         private void Tree_Dispose()

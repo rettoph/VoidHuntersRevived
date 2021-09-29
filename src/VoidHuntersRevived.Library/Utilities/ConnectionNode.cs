@@ -99,6 +99,10 @@ namespace VoidHuntersRevived.Library.Utilities
         {
             base.Release();
 
+            // Cascade the releasing downward.
+            if (this.Connection.State != ConnectionNodeState.Estranged)
+                this.Connection.Target.Owner.TryRelease();
+
             // Ensure any connection are removed.
             this.TryDetach();
         }

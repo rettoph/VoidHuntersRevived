@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         {
             this.Entity.Components.Get<ShipTargetingComponent>().Target = im.ReadVector2();
 
-            TractorBeamAction action = im.ReadTractorBeamAction(this.shipParts, ShipPartSerializationFlags.CreateTree);
+            TractorBeamAction action = im.ReadTractorBeamAction(this.shipParts, ShipPartSerializationFlags.None);
             this.TryAction(action);
         }
     }

@@ -60,6 +60,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             this.Transformations_Dispose();
             this.Tree_Release();
+            this.Chain_Release();
 
             this.OnChainChanged -= this.HandleChainChanged;
             this.TryDestroyAetherForm();

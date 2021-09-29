@@ -12,7 +12,12 @@ namespace VoidHuntersRevived.Library.Extensions.Aether
     {
         #region Remove Methods
         public static void TryRemove(this Body body)
-            => body?.World?.Remove(body);
+        {
+            if(body?.World == default)
+                return;
+
+            body.World.Remove(body);
+        }
         #endregion
 
         #region Transform Methods

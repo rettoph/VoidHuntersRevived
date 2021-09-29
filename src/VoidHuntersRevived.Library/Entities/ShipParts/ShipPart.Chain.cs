@@ -40,6 +40,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             this.OnChainChanged += this.Chain_HandleChainChanged;
         }
 
+        private void Chain_Release()
+        {
+            this.Chain = default;
+        }
+
         private void Chain_Dispose()
         {
             this.OnChainChanged -= this.Chain_HandleChainChanged;

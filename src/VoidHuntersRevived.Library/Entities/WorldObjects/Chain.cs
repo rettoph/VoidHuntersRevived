@@ -19,6 +19,7 @@ using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Enums;
 using Guppy.Network.Enums;
 using VoidHuntersRevived.Library.Entities.Aether;
+using System.Linq;
 
 namespace VoidHuntersRevived.Library.Entities.WorldObjects
 {
@@ -79,10 +80,7 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
 
             this.Root.OnChainChanged -= this.HandleRootChainChanged;
 
-            // Only remove the root's reference to the chain
-            // If it is still the root piece.
-            if (this.Root.Chain == this)
-                this.Root.Chain = default;
+            this.Root.TryRelease();
 
             _root = default;
         }

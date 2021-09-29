@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
             this.Entity.Messages[Constants.Messages.Ship.TractorBeamAction].Create(om =>
             {
                 om.Write(this.Entity.Components.Get<ShipTargetingComponent>().Target);
-                om.Write(args, this.shipParts, ShipPartSerializationFlags.CreateTree);
+                om.Write(args, this.shipParts, ShipPartSerializationFlags.None);
             }, this.Entity.Pipe);
         }
         #endregion
