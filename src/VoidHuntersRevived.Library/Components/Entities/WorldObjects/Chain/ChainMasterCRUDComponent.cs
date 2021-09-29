@@ -24,17 +24,30 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
         {
             base.PreInitializeRemote(provider, networkAuthorization);
 
-            this.Entity.OnRootSet += this.HandleChainRootSet;
-
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnWrite += this.WriteCreateMessage;
+        }
+
+        protected override void InitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
+        {
+            base.InitializeRemote(provider, networkAuthorization);
+
+            this.log.Info($"Setting {this.Id} ({this.Entity.Root.Id})");
+
+            this.Entity.Root.PostTreeClean += this.HandleChainRootPostTreeClean;
+        }
+
+        protected override void ReleaseRemote(NetworkAuthorization networkAuthorization)
+        {
+            base.ReleaseRemote(networkAuthorization);
+
+            this.log.Info($"Releasing {this.Id} ({this.Entity.Root.Id})");
+
+            this.Entity.Root.PostTreeClean -= this.HandleChainRootPostTreeClean;
         }
 
         protected override void PostReleaseRemote(NetworkAuthorization authorization)
         {
             base.PostReleaseRemote(authorization);
-
-            this.Entity.OnRootSet -= this.HandleChainRootSet;
-            this.Entity.Root.PostTreeClean -= this.HandleChainRootPostTreeClean;
 
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnWrite -= this.WriteCreateMessage;
         }
@@ -64,20 +77,17 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
         #endregion
 
         #region Event Handlers
-        private void HandleChainRootSet(Chain sender, ShipPart args)
-        {
-            this.Entity.Root.PostTreeClean += this.HandleChainRootPostTreeClean;
-        }
-
         private void HandleChainRootPostTreeClean(ShipPart sender, ShipPart source, TreeComponent components)
         {
-            if((components & TreeComponent.Parent) != 0)
+            this.log.Info($"Broadcasting {this.Id} ({this.Entity.Root?.Id})");
+
+            if ((components & TreeComponent.Parent) != 0)
             {
                 if(source.IsRoot)
                 { // The source was REMOVED from the chain
                     throw new NotImplementedException();
                 }
-                else
+                else if(!source.IsRoot && source.Chain == this.Entity)
                 { // The source was ADDED to the chain
                     this.WriteShipPartAttachedMessage(
                         shipPart: source, 

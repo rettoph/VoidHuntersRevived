@@ -17,6 +17,8 @@ using Guppy.DependencyInjection;
 using Guppy.Network.Enums;
 using Guppy.Network.Utilities;
 using Guppy.Network.Extensions.Lidgren;
+using VoidHuntersRevived.Library.Utilities;
+using System.Linq;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Players
 {
@@ -104,11 +106,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
             {
                 if (fixture.Tag is ShipPart shipPart)
                 {
-                    if (target == default)
-                    {
-                        target = shipPart;
-                    }
-                    else if ((distance = Vector2.Distance(targetPosition, shipPart.GetWorldPosition())) < targetDistance)
+                    if ((distance = Vector2.Distance(targetPosition, shipPart.GetWorldPosition())) < targetDistance)
                     {
                         targetDistance = distance;
                         target = shipPart;
@@ -119,6 +117,19 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
             }, ref aabb);
 
             return target;
+        }
+
+        private ConnectionNode GetConnectionNodeTarget(Vector2 targetPosition)
+        {
+            ConnectionNode closestEstrangedNode = this.Entity.Ship.Chain.Root
+                .GetChildren()
+                .SelectMany(sp => sp.ConnectionNodes)
+                .Where(cn => cn.Connection.State == ConnectionNodeState.Estranged)
+                .Where(cn => Vector2.Distance(targetPosition, cn.Owner.GetWorldPoint(cn.LocalPosition)) < 1f)
+                .OrderBy(cn => Vector2.Distance(targetPosition, cn.Owner.GetWorldPoint(cn.LocalPosition)))
+                .FirstOrDefault();
+
+            return closestEstrangedNode;
         }
         #endregion
 
@@ -160,7 +171,8 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
                 TractorBeamActionType.Deselect => new TractorBeamAction(
                     type: TractorBeamActionType.Deselect),
                 TractorBeamActionType.Attach => new TractorBeamAction(
-                    type: TractorBeamActionType.Attach),
+                    type: TractorBeamActionType.Attach,
+                    targetNode: this.GetConnectionNodeTarget(targetPosition)),
                 _ => throw new ArgumentOutOfRangeException(nameof(action))
             };
 

@@ -8,6 +8,7 @@ using Guppy.Network.Enums;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.Chunks;
 using VoidHuntersRevived.Library.Entities.ShipParts;
@@ -16,6 +17,7 @@ using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Structs;
+using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
 {
@@ -141,6 +143,8 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
 
             if(this.CanDeselect(action.TargetPart))
             {
+                ConnectionNode childNode = this.Target.Root.ConnectionNodes.FirstOrDefault();
+
                 this.Target.OnStatusChanged -= this.HandleTargetStatusChanged;
                 this.Target = default;
 
@@ -149,18 +153,23 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
 
                 if (action.Type.HasFlag(TractorBeamActionType.Attach))
                 {
-                    return this.TryAttach(action);
+                    return this.TryAttach(action, childNode);
                 }
 
-                return action;
+                return new TractorBeamAction(
+                    type: TractorBeamActionType.Deselect);
             }
 
             return default;
         }
 
-        private TractorBeamAction TryAttach(TractorBeamAction action)
+        private TractorBeamAction TryAttach(TractorBeamAction action, ConnectionNode child)
         {
-            // throw new NotImplementedException();
+            if(this.CanAttach(action.TargetNode, child))
+            {
+                action.TargetNode.TryAttach(child);
+            }
+
             return action;
         }
 
@@ -215,6 +224,21 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         {
             if (this.Target == default)
                 return false;
+
+            return true;
+        }
+
+        private Boolean CanAttach(ConnectionNode parent, ConnectionNode child)
+        {
+            if(parent?.Connection.State != ConnectionNodeState.Estranged)
+            {
+                return false;
+            }
+
+            if (child?.Connection.State != ConnectionNodeState.Estranged)
+            {
+                return false;
+            }
 
             return true;
         }

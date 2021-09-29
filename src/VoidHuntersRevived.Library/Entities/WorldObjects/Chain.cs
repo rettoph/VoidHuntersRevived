@@ -38,19 +38,14 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
         public ShipPart Root
         {
             get => _root;
-            set
+            internal set
             {
-                if (this.Status == ServiceStatus.Ready)
-                    throw new InvalidOperationException("Unable to update Chain.Root after initialization.");
+                if (this.Status != ServiceStatus.PreInitializing && this.Status != ServiceStatus.PostReleasing)
+                    throw new InvalidOperationException($"Unable to update {nameof(Chain)}::{nameof(this.Root)} unless {nameof(this.Status)} is {nameof(ServiceStatus.PreInitializing)} or {nameof(ServiceStatus.PostReleasing)}.");
 
                 _root = value;
-                this.OnRootSet?.Invoke(this, _root);
             }
         }
-        #endregion
-
-        #region Events
-        internal event OnEventDelegate<Chain, ShipPart> OnRootSet;
         #endregion
 
         #region Lifecycle Methods
@@ -67,7 +62,7 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
             base.PostInitialize(provider);
 
             if(this.Root == default)
-                throw new InvalidOperationException("Invalid Chain.Root value.");
+                throw new ArgumentOutOfRangeException(nameof(this.Root));
 
             // Update the roots internal Chain reference.
             this.Root.Chain = this;
@@ -79,10 +74,19 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
             base.Release();
 
             this.Root.OnChainChanged -= this.HandleRootChainChanged;
+        }
 
-            this.Root.TryRelease();
+        protected override void PostRelease()
+        {
+            base.PostRelease();
 
-            _root = default;
+            // Only release the root piece if it is still bound to the chain
+            if (this.Root.Chain == this)
+            {
+                this.Root.TryRelease();
+            }
+
+            this.Root = default;
         }
         #endregion
 

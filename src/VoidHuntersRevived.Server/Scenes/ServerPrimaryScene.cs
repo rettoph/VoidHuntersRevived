@@ -52,17 +52,17 @@ namespace VoidHuntersRevived.Server.Scenes
                 ShipPart child;
                 Boolean result;
             
-                child = provider.GetService<ShipPartService>().Create("ship-part:hull:square");
-                result = chain.Root.ConnectionNodes[0].TryAttach(child.ConnectionNodes[3]);
-            
-                child = provider.GetService<ShipPartService>().Create("ship-part:hull:square");
-                result = chain.Root.ConnectionNodes[1].TryAttach(child.ConnectionNodes[2]);
-            
-                child = provider.GetService<ShipPartService>().Create("ship-part:hull:square");
-                result = chain.Root.ConnectionNodes[2].TryAttach(child.ConnectionNodes[1]);
-            
-                child = provider.GetService<ShipPartService>().Create("ship-part:hull:square");
-                result = chain.Root.ConnectionNodes[3].TryAttach(child.ConnectionNodes[0]);
+                // child = provider.GetService<ShipPartService>().Create("ship-part:hull:square");
+                // result = chain.Root.ConnectionNodes[0].TryAttach(child.ConnectionNodes[3]);
+                // 
+                // child = provider.GetService<ShipPartService>().Create("ship-part:hull:square");
+                // result = chain.Root.ConnectionNodes[1].TryAttach(child.ConnectionNodes[2]);
+                // 
+                // child = provider.GetService<ShipPartService>().Create("ship-part:hull:square");
+                // result = chain.Root.ConnectionNodes[2].TryAttach(child.ConnectionNodes[1]);
+                // 
+                // child = provider.GetService<ShipPartService>().Create("ship-part:hull:square");
+                // result = chain.Root.ConnectionNodes[3].TryAttach(child.ConnectionNodes[0]);
             };
         }
 
