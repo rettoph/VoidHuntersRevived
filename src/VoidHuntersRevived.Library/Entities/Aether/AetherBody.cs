@@ -34,26 +34,6 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         {
             set => this.Do(body => body.Tag = value);
         }
-
-        public BodyType BodyType
-        {
-            set => this.Do(body => body.BodyType = value);
-        }
-
-        public Single AngularDamping
-        {
-            set => this.Do(body => body.AngularDamping = value);
-        }
-
-        public Single LinearDamping
-        {
-            set => this.Do(body => body.LinearDamping = value);
-        }
-
-        public Boolean IgnoreGravity
-        {
-            set => this.Do(body => body.IgnoreGravity = value);
-        }
         #endregion
 
         #region Lifecycle Methods
@@ -74,12 +54,12 @@ namespace VoidHuntersRevived.Library.Entities.Aether
 
         protected override void PostRelease()
         {
-            base.PostRelease();
-
             _fixtures.TryRelease();
             _fixtures = default;
 
             this.Do(body => body.TryRemove());
+
+            base.PostRelease();
         }
         #endregion
 

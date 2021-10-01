@@ -35,13 +35,13 @@ namespace VoidHuntersRevived.Library
         protected override void Initialize(GuppyServiceProvider provider)
         {
             base.Initialize(provider);
+
+            this.Peer.StartAsync(50);
         }
 
         protected override void PostInitialize(GuppyServiceProvider provider)
         {
             base.PostInitialize(provider);
-
-            this.Peer.Start();
 
             this.Scenes.Create<PrimaryScene>();
         }
@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Library
         {
             base.PreUpdate(gameTime);
 
-            this.Peer.TryUpdate();
+            // this.Peer.TryUpdate();
         }
         #endregion
     }

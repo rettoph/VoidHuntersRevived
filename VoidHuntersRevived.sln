@@ -64,6 +64,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Network.Core", "libra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.CommandLine", "libraries\Guppy\src\Guppy.CommandLine\Guppy.CommandLine.csproj", "{F92E8F3D-3C51-4EC7-9092-919BC8B6BA3F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guppy.Threading", "libraries\Guppy\src\Guppy.Threading\Guppy.Threading.csproj", "{CC3281DD-6399-45B3-A9C8-D7638C2299CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Verbose|Any CPU = Debug_Verbose|Any CPU
@@ -415,6 +417,24 @@ Global
 		{F92E8F3D-3C51-4EC7-9092-919BC8B6BA3F}.Release|x64.Build.0 = Release|Any CPU
 		{F92E8F3D-3C51-4EC7-9092-919BC8B6BA3F}.Release|x86.ActiveCfg = Release|Any CPU
 		{F92E8F3D-3C51-4EC7-9092-919BC8B6BA3F}.Release|x86.Build.0 = Release|Any CPU
+		{CC3281DD-6399-45B3-A9C8-D7638C2299CC}.Debug_Verbose|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC3281DD-6399-45B3-A9C8-D7638C2299CC}.Debug_Verbose|Any CPU.Build.0 = Debug|Any CPU
+		{CC3281DD-6399-45B3-A9C8-D7638C2299CC}.Debug_Verbose|x64.ActiveCfg = Debug|Any CPU
+		{CC3281DD-6399-45B3-A9C8-D7638C2299CC}.Debug_Verbose|x64.Build.0 = Debug|Any CPU
+		{CC3281DD-6399-45B3-A9C8-D7638C2299CC}.Debug_Verbose|x86.ActiveCfg = Debug|Any CPU
+		{CC3281DD-6399-45B3-A9C8-D7638C2299CC}.Debug_Verbose|x86.Build.0 = Debug|Any CPU
+		{CC3281DD-6399-45B3-A9C8-D7638C2299CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC3281DD-6399-45B3-A9C8-D7638C2299CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC3281DD-6399-45B3-A9C8-D7638C2299CC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CC3281DD-6399-45B3-A9C8-D7638C2299CC}.Debug|x64.Build.0 = Debug|Any CPU
+		{CC3281DD-6399-45B3-A9C8-D7638C2299CC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CC3281DD-6399-45B3-A9C8-D7638C2299CC}.Debug|x86.Build.0 = Debug|Any CPU
+		{CC3281DD-6399-45B3-A9C8-D7638C2299CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC3281DD-6399-45B3-A9C8-D7638C2299CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC3281DD-6399-45B3-A9C8-D7638C2299CC}.Release|x64.ActiveCfg = Release|Any CPU
+		{CC3281DD-6399-45B3-A9C8-D7638C2299CC}.Release|x64.Build.0 = Release|Any CPU
+		{CC3281DD-6399-45B3-A9C8-D7638C2299CC}.Release|x86.ActiveCfg = Release|Any CPU
+		{CC3281DD-6399-45B3-A9C8-D7638C2299CC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -446,6 +466,7 @@ Global
 		{C51B9905-F44E-4A5D-8A65-AED15D599D08} = {B692A3AD-DDD4-42C9-9125-21C351DE55FD}
 		{147FC080-FB18-45DD-A371-AA01484351C6} = {DA5CAD48-BEB9-4316-814A-820EA2A21081}
 		{F92E8F3D-3C51-4EC7-9092-919BC8B6BA3F} = {DA5CAD48-BEB9-4316-814A-820EA2A21081}
+		{CC3281DD-6399-45B3-A9C8-D7638C2299CC} = {DA5CAD48-BEB9-4316-814A-820EA2A21081}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FCB1CA3-2B6C-469F-B569-084FC0B57488}

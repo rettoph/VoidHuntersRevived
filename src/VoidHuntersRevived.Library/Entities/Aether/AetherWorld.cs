@@ -52,9 +52,9 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         {
             base.PostRelease();
 
-            _chunks = default;
-
             _bodies.TryRelease();
+
+            _chunks = default;
             _bodies = default;
         }
         #endregion

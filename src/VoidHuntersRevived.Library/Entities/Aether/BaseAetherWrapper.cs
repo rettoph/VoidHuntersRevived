@@ -86,6 +86,11 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         #endregion
 
         #region Lifecycle Methods
+        protected override void PreInitialize(GuppyServiceProvider provider)
+        {
+            base.PreInitialize(provider);
+        }
+
         protected override void Initialize(GuppyServiceProvider provider)
         {
             base.Initialize(provider);
@@ -122,13 +127,13 @@ namespace VoidHuntersRevived.Library.Entities.Aether
                 { NetworkAuthorization.Slave, this.BuildInstance(provider, NetworkAuthorization.Slave) }
             };
 
-            switch(provider.Settings.Get<NetworkAuthorization>())
+            switch (provider.Settings.Get<NetworkAuthorization>())
             {
                 case NetworkAuthorization.Master:
                     _localInstance = _instances[NetworkAuthorization.Master];
                     _platformInstances = new TAetherObject[]
                     {
-                        _instances[NetworkAuthorization.Master]
+                            _instances[NetworkAuthorization.Master]
                     };
                     break;
                 case NetworkAuthorization.Slave:
@@ -143,10 +148,10 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         }
 
         /// <summary>
-        /// Preform an action on every internal <see cref="TAetherObject"/> instance.
+        /// Perform an action on every internal <see cref="TAetherObject"/> instance.
         /// </summary>
         /// <param name="action"></param>
-        protected void Do(Action<TAetherObject> action)
+        public void Do(Action<TAetherObject> action)
         {
             foreach (TAetherObject instance in _instances.Values)
                 action(instance);

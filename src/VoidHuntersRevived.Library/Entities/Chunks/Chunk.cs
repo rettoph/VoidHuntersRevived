@@ -6,6 +6,7 @@ using Guppy.Lists;
 using Guppy.Lists.Interfaces;
 using Guppy.Network.Interfaces;
 using Guppy.Network.Scenes;
+using Guppy.Threading.Utilities;
 using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using System;
@@ -37,7 +38,7 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
 
         #region Privage Fields
         private HashSet<Guid> _dependents;
-        private Synchronizer _synchronizer;
+        private ThreadQueue _updateThread;
 
         /// <summary>
         /// The amount of time in seconds the current chunk has gone without any dependents.
@@ -124,14 +125,14 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
             this.Dependents = 0;
             _dependentlessMilliseconds = 0;
 
-            provider.Service(out _synchronizer);
+            provider.Service(Guppy.Constants.ServiceConfigurationKeys.SceneUpdateThreadQueue, out _updateThread);
         }
 
         protected override void Release()
         {
             base.Release();
 
-            _synchronizer = default;
+            _updateThread = default;
 
             _dependents.Clear();
 
@@ -168,7 +169,7 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
             if(this.Dependents == 0)
             {
                 if (_dependentlessMilliseconds > Chunk.MaxDependentlessThreshold)
-                    _synchronizer.Enqueue(gt => this.TryRelease());
+                    _updateThread.Enqueue(gt => this.TryRelease());
                 else
                     _dependentlessMilliseconds += gameTime.ElapsedGameTime.TotalMilliseconds;
             }

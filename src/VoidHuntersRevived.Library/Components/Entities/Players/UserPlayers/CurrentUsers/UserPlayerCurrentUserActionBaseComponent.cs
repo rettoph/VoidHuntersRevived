@@ -153,8 +153,10 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
         /// <param name="request"></param>
         private void HandleRemoteCurrentUserSlaveActionRequest(UserPlayerCurrentUserActionBaseComponent<TAction> sender, TAction request)
         {
-            NetOutgoingMessage om = this.Entity.Messages[this.ActionRequestMessageType].Create(this.Entity.Pipe);
-            this.WriteCurrentUserActionRequestMessage(om, request);
+            this.Entity.Messages[this.ActionRequestMessageType].Create(om =>
+            {
+                this.WriteCurrentUserActionRequestMessage(om, request);
+            }, this.Entity.Pipe);
         }
         #endregion
     }

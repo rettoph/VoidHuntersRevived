@@ -89,9 +89,12 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
                 }
                 else if(!source.IsRoot && source.Chain == this.Entity)
                 { // The source was ADDED to the chain
-                    this.WriteShipPartAttachedMessage(
-                        shipPart: source, 
-                        om: this.Entity.Messages[Constants.Messages.Chain.ShipPartAttached].Create(this.Entity.Pipe));
+                    this.Entity.Messages[Constants.Messages.Chain.ShipPartAttached].Create(om =>
+                    {
+                        this.WriteShipPartAttachedMessage(
+                            shipPart: source,
+                            om: om);
+                    }, this.Entity.Pipe);
                 }
             }
         }

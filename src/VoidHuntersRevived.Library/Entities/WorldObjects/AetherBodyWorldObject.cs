@@ -1,6 +1,8 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
 using Guppy.Network.Enums;
+using Guppy.Network.Extensions.Lidgren;
+using Guppy.Threading.Utilities;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
@@ -48,11 +50,14 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
             // Setup the chain's body.
             this.Body = provider.GetService<AetherWorld>().CreateBody((body, _, _) =>
             {
-                body.Tag = this;
-                body.BodyType = BodyType.Dynamic;
-                body.LinearDamping = 0.2f;
-                body.AngularDamping = 0.1f;
-                body.IgnoreGravity = true;
+                body.Do(b =>
+                {
+                    b.Tag = this;
+                    b.BodyType = BodyType.Dynamic;
+                    b.LinearDamping = 0.2f;
+                    b.AngularDamping = 0.1f;
+                    b.IgnoreGravity = true;
+                });
             });
         }
 
@@ -72,6 +77,7 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
             base.PostRelease();
 
             this.Body.TryRelease();
+
             this.Body = default;
         }
         #endregion

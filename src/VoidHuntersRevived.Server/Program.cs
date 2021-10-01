@@ -9,19 +9,24 @@ using VoidHuntersRevived.Library;
 using tainicom.Aether.Physics2D.Dynamics;
 using System.Threading;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Server
 {
     class Program
     {      
-        static void Main(string[] args)
+        public static void Main(string[] args)
+        {
+            MainAsync(args).GetAwaiter().GetResult();
+        }
+
+        private static async Task MainAsync(string[] args)
         {
             var game = new GuppyLoader()
                 .Initialize()
                 .BuildGame<PrimaryGame>();
-           
 
-            game.TryStart(false);
+            await game.TryStartAsync(false);
         }
     }
 }

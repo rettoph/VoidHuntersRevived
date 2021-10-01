@@ -43,6 +43,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             provider.Service(out _camera);
             provider.Service(out _mouse);
             provider.Service(out _debugView);
+            
 
             _effect = new BasicEffect(provider.GetService<GraphicsDevice>())
             {
@@ -59,6 +60,14 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             {
                 _camera.ZoomBy((Single)Math.Pow(1.5, d.Delta / 120));
             };
+        }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            // TODO: RELEASE INTERNAL RESOURCES
+            throw new NotImplementedException();
         }
         #endregion
 
