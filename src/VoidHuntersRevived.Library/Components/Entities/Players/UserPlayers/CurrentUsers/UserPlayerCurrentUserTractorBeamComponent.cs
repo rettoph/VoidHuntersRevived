@@ -19,6 +19,7 @@ using Guppy.Network.Utilities;
 using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Utilities;
 using System.Linq;
+using Guppy.Threading.Utilities;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Players
 {
@@ -76,6 +77,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
         #region UserPlayerCurrentUserBaseComponent<TractorBeamAction> Implementation
         protected override Boolean TryDoActionRequest(TractorBeamAction request, out TractorBeamAction response)
         {
+            this.log.Info("UserPlayerCurrentUserTractorBeamComponent::TryDoActionRequest => TryAction()");
             response = this.Entity.Ship?.Components.Get<ShipTractorBeamComponent>().TryAction(request) ?? default;
 
             return response.Type != TractorBeamActionType.None;
@@ -89,47 +91,6 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
         protected override void WriteCurrentUserActionRequestMessage(NetOutgoingMessage om, TractorBeamAction request)
         {
             om.Write(request, _shipParts, ShipPartSerializationFlags.None);
-        }
-        #endregion
-
-        #region Helper Methods
-        private ShipPart GetShipPartTarget(Vector2 targetPosition)
-        {
-            // Sweep the world for any valid/selectable ShipParts.
-            AABB aabb = new AABB(
-                min: targetPosition - (Vector2.One * 2.5f),
-                max: targetPosition + (Vector2.One * 2.5f));
-            ShipPart target = default;
-            Single targetDistance = Single.MaxValue, distance;
-
-            _world.LocalInstance.QueryAABB(fixture =>
-            {
-                if (fixture.Tag is ShipPart shipPart)
-                {
-                    if ((distance = Vector2.Distance(targetPosition, shipPart.GetWorldPosition())) < targetDistance)
-                    {
-                        targetDistance = distance;
-                        target = shipPart;
-                    }
-                }
-
-                return true;
-            }, ref aabb);
-
-            return target;
-        }
-
-        private ConnectionNode GetConnectionNodeTarget(Vector2 targetPosition)
-        {
-            ConnectionNode closestEstrangedNode = this.Entity.Ship.Chain.Root
-                .GetChildren()
-                .SelectMany(sp => sp.ConnectionNodes)
-                .Where(cn => cn.Connection.State == ConnectionNodeState.Estranged)
-                .Where(cn => Vector2.Distance(targetPosition, cn.Owner.GetWorldPoint(cn.LocalPosition)) < 1f)
-                .OrderBy(cn => Vector2.Distance(targetPosition, cn.Owner.GetWorldPoint(cn.LocalPosition)))
-                .FirstOrDefault();
-
-            return closestEstrangedNode;
         }
         #endregion
 
@@ -167,12 +128,12 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
             {
                 TractorBeamActionType.Select => new TractorBeamAction(
                     type: TractorBeamActionType.Select,
-                    targetShipPart: this.GetShipPartTarget(targetPosition)),
+                    targetShipPart: this.Entity.Ship.Components.Get<ShipTractorBeamComponent>().GetShipPartTarget(targetPosition)),
                 TractorBeamActionType.Deselect => new TractorBeamAction(
                     type: TractorBeamActionType.Deselect),
                 TractorBeamActionType.Attach => new TractorBeamAction(
                     type: TractorBeamActionType.Attach,
-                    targetNode: this.GetConnectionNodeTarget(targetPosition)),
+                    targetNode: this.Entity.Ship.Components.Get<ShipTractorBeamComponent>().GetConnectionNodeTarget(targetPosition)),
                 _ => throw new ArgumentOutOfRangeException(nameof(action))
             };
 

@@ -1,5 +1,6 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Extensions.System;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -54,6 +55,12 @@ namespace VoidHuntersRevived.Library.Contexts.ShipParts
         /// All connection nodes within the current part.
         /// </summary>
         public ConnectionNodeDto[] ConnectionNodes { get; set; } = new ConnectionNodeDto[0];
+
+        /// <summary>
+        /// A custom "center" for the current part. This is where
+        /// the tractor beam will select a piece.
+        /// </summary>
+        public Vector2 Centeroid { get; set; } = Vector2.Zero;
         #endregion
     }
 }

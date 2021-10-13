@@ -96,7 +96,7 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
             base.Draw(gameTime);
 
             // Createa a new matrix representation of the chain's current world position.
-            Matrix worldTransformation = this.GetWorldTransformation();
+            Matrix worldTransformation = this.CalculateWorldTransformation();
 
             // Auto invoke the Root's draw method.
             // This should case a cascade draw call of the
@@ -112,11 +112,11 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
 
         #region Helper Methods
         /// <summary>
-        /// Calculate the Chain's current WorldMatric based
+        /// Calculate the Chain's current WorldMatric based on
         /// <see cref="WorldObject.Rotation"/> and <see cref="WorldObject.Position"/>
         /// </summary>
         /// <returns></returns>
-        public Matrix GetWorldTransformation()
+        public Matrix CalculateWorldTransformation()
         {
             return Matrix.CreateRotationZ(this.Rotation) * Matrix.CreateTranslation(this.Position.X, this.Position.Y, 0);
         }

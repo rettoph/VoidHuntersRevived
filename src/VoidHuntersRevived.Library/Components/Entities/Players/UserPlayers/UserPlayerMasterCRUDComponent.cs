@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
         {
             base.PreInitializeRemote(provider, networkAuthorization);
 
-            provider.Service(out _shipParts);
+            // provider.Service(out _shipParts);
 
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnWrite += this.WriteCreateMessage;
             // this.Entity.Messages[Constants.Messages.UserPlayer.RequestDirectionChanged].OnRead += this.ReadRequestDirectionChangedMessage;
@@ -44,6 +44,8 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
             base.PostReleaseRemote(networkAuthorization);
 
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnWrite -= this.WriteCreateMessage;
+
+            // _shipParts = default;
         }
         #endregion
 
@@ -53,18 +55,18 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
             om.Write(this.Entity.User.Id);
         }
 
-        private void ReadRequestDirectionChangedMessage(MessageTypeManager sender, NetIncomingMessage im)
-        {
-            this.Entity.Ship?.Components.Get<ShipDirectionComponent>().TrySetDirection(
-                direction: im.ReadEnum<Direction>(),
-                value: im.ReadBoolean());
-        }
-
-        private void ReadRequestTractorBeamActionMessage(MessageTypeManager sender, NetIncomingMessage im)
-        {
-            this.Entity.Ship?.Components.Get<ShipTractorBeamComponent>().TryAction(
-                action: im.ReadTractorBeamAction(_shipParts, ShipPartSerializationFlags.None));
-        }
+        // private void ReadRequestDirectionChangedMessage(MessageTypeManager sender, NetIncomingMessage im)
+        // {
+        //     this.Entity.Ship?.Components.Get<ShipDirectionComponent>().TrySetDirection(
+        //         direction: im.ReadEnum<Direction>(),
+        //         value: im.ReadBoolean());
+        // }
+        // 
+        // private void ReadRequestTractorBeamActionMessage(MessageTypeManager sender, NetIncomingMessage im)
+        // {
+        //     this.Entity.Ship?.Components.Get<ShipTractorBeamComponent>().TryAction(
+        //         action: im.ReadTractorBeamAction(_shipParts, ShipPartSerializationFlags.None));
+        // }
         #endregion
     }
 }

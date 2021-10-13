@@ -3,6 +3,7 @@ using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Utilities;
+using Guppy.Threading.Utilities;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
@@ -16,9 +17,13 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
     [NetworkAuthorizationRequired(NetworkAuthorization.Slave)]
     internal sealed class ShipTractorBeamSlaveCRUDComponent : ShipTractorBeamComponent
     {
+        private ThreadQueue _mainThread;
+
         protected override void InitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
         {
             base.InitializeRemote(provider, networkAuthorization);
+
+            provider.Service(out _mainThread);
 
             this.Entity.Messages[Constants.Messages.Ship.TractorBeamAction].OnRead += this.ReadShipTractorBeamActionMessage;
         }
@@ -28,14 +33,21 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
             base.ReleaseRemote(networkAuthorization);
 
             this.Entity.Messages[Constants.Messages.Ship.TractorBeamAction].OnRead -= this.ReadShipTractorBeamActionMessage;
+
+            _mainThread = default;
         }
 
         private void ReadShipTractorBeamActionMessage(MessageTypeManager sender, NetIncomingMessage im)
         {
-            this.Entity.Components.Get<ShipTargetingComponent>().Target = im.ReadVector2();
+            _mainThread.Enqueue(_ =>
+            {
+                this.log.Info("ShipTractorBeamSlaveCRUDComponent::ReadShipTractorBeamActionMessage => TryAction()");
 
-            TractorBeamAction action = im.ReadTractorBeamAction(this.shipParts, ShipPartSerializationFlags.None);
-            this.TryAction(action);
+                this.Entity.Components.Get<ShipTargetingComponent>().Target = im.ReadVector2();
+
+                TractorBeamAction action = im.ReadTractorBeamAction(this.shipParts, ShipPartSerializationFlags.None);
+                this.TryAction(action);
+            });
         }
     }
 }

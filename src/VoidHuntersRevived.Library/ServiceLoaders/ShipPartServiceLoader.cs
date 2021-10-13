@@ -42,41 +42,27 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                 shipParts.RegisterContext(new HullContext()
                 {
                     Name = "ship-part:hull:square",
+                    Centeroid = PolygonHelper.GetCenteroid(4),
                     Shapes = new[]
                     {
                         new PolygonShape(
-                            vertices: new Vertices()
-                            {
-                                new Vector2(0, 0),
-                                new Vector2(1, 0),
-                                new Vector2(1, 1),
-                                new Vector2(0, 1),
-                            },
+                            vertices: PolygonHelper.GetVertices(4),
                             density: 1f)
                     },
-                    ConnectionNodes = new[]
+                    ConnectionNodes = PolygonHelper.GetConnectionNodes(4)
+                });
+
+                shipParts.RegisterContext(new HullContext()
+                {
+                    Name = "ship-part:hull:triangle",
+                    Centeroid = PolygonHelper.GetCenteroid(3),
+                    Shapes = new[]
                     {
-                        new ConnectionNodeDto()
-                        {
-                            Position = new Vector2(0, 0.5f),
-                            Rotation = MathHelper.PiOver2 * 0
-                        },
-                        new ConnectionNodeDto()
-                        {
-                            Position = new Vector2(0.5f, 0),
-                            Rotation = MathHelper.PiOver2 * 1
-                        },
-                        new ConnectionNodeDto()
-                        {
-                            Position = new Vector2(1, 0.5f),
-                            Rotation = MathHelper.PiOver2 * 2
-                        },
-                        new ConnectionNodeDto()
-                        {
-                            Position = new Vector2(0.5f, 1),
-                            Rotation = MathHelper.PiOver2 * 3
-                        }
-                    }
+                        new PolygonShape(
+                            vertices: PolygonHelper.GetVertices(3),
+                            density: 1f)
+                    },
+                    ConnectionNodes = PolygonHelper.GetConnectionNodes(3)
                 });
             });
         }

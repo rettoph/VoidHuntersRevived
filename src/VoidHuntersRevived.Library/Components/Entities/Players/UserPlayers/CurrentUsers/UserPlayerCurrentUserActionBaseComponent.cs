@@ -6,6 +6,7 @@ using Guppy.Network.Contexts;
 using Guppy.Network.Enums;
 using Guppy.Network.Interfaces;
 using Guppy.Network.Utilities;
+using Guppy.Threading.Utilities;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,10 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
 {
     public abstract class UserPlayerCurrentUserActionBaseComponent<TAction> : UserPlayerCurrentUserBaseComponent
     {
+        #region Private Fields
+        private ThreadQueue _mainThread;
+        #endregion
+
         #region Public Properties
         /// <summary>
         /// Describes the unique message identifier when a CurrentUser must make an action request.
@@ -35,6 +40,13 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
         #endregion
 
         #region Lifecycle Methods
+        protected override void PreInitialize(GuppyServiceProvider provider)
+        {
+            base.PreInitialize(provider);
+
+            provider.Service(out _mainThread);
+        }
+
         protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
         {
             base.PreInitializeRemote(provider, networkAuthorization);
@@ -78,6 +90,18 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
             if (networkAuthorization == NetworkAuthorization.Master)
                 this.Entity.Messages[this.ActionRequestMessageType].OnRead -= this.ReadCurrentUserMasterActionRequestMessage;
         }
+
+        protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)
+        {
+            base.PostReleaseRemote(networkAuthorization);
+        }
+
+        protected override void PostRelease()
+        {
+            base.PostRelease();
+
+            _mainThread = default;
+        }
         #endregion
 
         #region Helper Methods
@@ -87,16 +111,15 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        protected virtual Boolean TryDoActionRequest(TAction request)
+        protected void TryDoActionRequest(TAction request)
         {
-            if (this.TryDoActionRequest(request, out TAction response))
+            _mainThread.Enqueue(_ =>
             {
-                this.OnActionRequest?.Invoke(this, response);
-
-                return true;
-            }
-
-            return false;
+                if (this.TryDoActionRequest(request, out TAction response))
+                {
+                    this.OnActionRequest?.Invoke(this, response);
+                }
+            });
         }
 
         /// <summary>

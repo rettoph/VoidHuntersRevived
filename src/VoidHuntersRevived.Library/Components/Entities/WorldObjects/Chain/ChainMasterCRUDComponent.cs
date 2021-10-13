@@ -31,16 +31,12 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
         {
             base.InitializeRemote(provider, networkAuthorization);
 
-            this.log.Info($"Setting {this.Id} ({this.Entity.Root.Id})");
-
             this.Entity.Root.PostTreeClean += this.HandleChainRootPostTreeClean;
         }
 
         protected override void ReleaseRemote(NetworkAuthorization networkAuthorization)
         {
             base.ReleaseRemote(networkAuthorization);
-
-            this.log.Info($"Releasing {this.Id} ({this.Entity.Root.Id})");
 
             this.Entity.Root.PostTreeClean -= this.HandleChainRootPostTreeClean;
         }
@@ -79,8 +75,6 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
         #region Event Handlers
         private void HandleChainRootPostTreeClean(ShipPart sender, ShipPart source, TreeComponent components)
         {
-            this.log.Info($"Broadcasting {this.Id} ({this.Entity.Root?.Id})");
-
             if ((components & TreeComponent.Parent) != 0)
             {
                 if(source.IsRoot)

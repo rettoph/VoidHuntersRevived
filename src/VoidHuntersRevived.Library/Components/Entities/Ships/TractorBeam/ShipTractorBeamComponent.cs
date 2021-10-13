@@ -1,15 +1,19 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Enums;
 using Guppy.Events.Delegates;
+using Guppy.Extensions.log4net;
 using Guppy.Extensions.Microsoft.Xna.Framework;
 using Guppy.Interfaces;
 using Guppy.Network.Components;
 using Guppy.Network.Enums;
+using Guppy.Threading.Utilities;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using tainicom.Aether.Physics2D.Collision;
+using VoidHuntersRevived.Library.Entities.Aether;
 using VoidHuntersRevived.Library.Entities.Chunks;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.Ships;
@@ -31,6 +35,9 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         #region Private Fields
         private ShipTargetingComponent _targeting;
         private ChainService _chains;
+        private AetherWorld _world;
+        private ThreadQueue _mainThread;
+        private Single _rotation;
         #endregion
 
         #region Protected Properties
@@ -47,7 +54,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         /// <summary>
         /// The current TractorBeam's target, if any.
         /// </summary>
-        public Chain Target { get; private set; }
+        public ShipPart Target { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -55,14 +62,25 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         {
             base.PreInitialize(provider);
 
+            _targeting = this.Entity.Components.Get<ShipTargetingComponent>();
+
             provider.Service(out _chains);
+            provider.Service(out _world);
+            provider.Service(out _mainThread);
+
+            _targeting.OnTargetChanged += this.HandleShipTargetChanged;
         }
 
         protected override void PostRelease()
         {
             base.PostRelease();
 
+            _targeting.OnTargetChanged -= this.HandleShipTargetChanged;
+
+            _targeting = default;
             _chains = default;
+            _world = default;
+            _mainThread = default;
         }
 
         protected override void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
@@ -83,9 +101,40 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         #endregion
 
         #region Frame Methods
-        private void Update(GameTime gameTime)
+        private void UpdateTarget(GameTime gameTime)
         {
-            throw new NotImplementedException();
+            if (this.Entity.Chain is null || this.Target is null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            // If there is no chain then there is no physical representation of the ShipPart. Deselect this noncorporeal thing
+            if(this.Target.Chain is null)
+            {
+                this.log.Warn($"{nameof(ShipTractorBeamComponent)}::{nameof(UpdateTarget)} - TractorBeam Target chain is null. Auto deselecting.");
+                this.TryAction(new TractorBeamAction(type: TractorBeamActionType.Deselect));
+
+                return;
+            }
+
+            ConnectionNode potentialParent = this.GetConnectionNodeTarget(this.Position);
+
+            if (potentialParent is null)
+            {
+                this.Target.Chain.Body.SetTransformIgnoreContacts(this.Position, this.Target.Chain.Rotation);
+            }
+            else
+            {
+                Matrix potentialTransformation = ShipPart.CalculateLocalTransformation(
+                    child: this.Target.Root.ConnectionNodes[0],
+                    parent: potentialParent) * this.Entity.Chain.CalculateWorldTransformation();
+
+                Single potentialRotation = ShipPart.CalculateLocalRotation(
+                    child: this.Target.Root.ConnectionNodes[0],
+                    parent: potentialParent) + this.Entity.Chain.Rotation;
+
+                this.Target.Chain.Body.SetTransformIgnoreContacts(Vector2.Transform(Vector2.Zero, potentialTransformation), potentialRotation);
+            }
         }
         #endregion
 
@@ -119,12 +168,10 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
 
             if(this.CanSelect(action.TargetPart, out ShipPart selectable))
             {
-                // Save the internal target part.
-                _targeting = this.Entity.Components.Get<ShipTargetingComponent>();
-                _targeting.OnTargetChanged += this.HandleShipTargetingComponentTargetChanged;
-
-                this.Target = selectable.Chain;
+                this.Target = selectable;
                 this.Target.OnStatusChanged += this.HandleTargetStatusChanged;
+
+                this.Entity.OnUpdate += this.UpdateTarget;
 
                 return new TractorBeamAction(
                     type: TractorBeamActionType.Select,
@@ -145,11 +192,10 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
             {
                 ConnectionNode childNode = this.Target.Root.ConnectionNodes.FirstOrDefault();
 
+                this.Entity.OnUpdate -= this.UpdateTarget;
+
                 this.Target.OnStatusChanged -= this.HandleTargetStatusChanged;
                 this.Target = default;
-
-                _targeting.OnTargetChanged -= this.HandleShipTargetingComponentTargetChanged;
-                _targeting = default;
 
                 if (action.Type.HasFlag(TractorBeamActionType.Attach))
                 {
@@ -257,23 +303,70 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
                 return this.Entity.Chain.Position + ShipTractorBeamComponent.MaxRangeVector.RotateTo(angle);
             }
         }
+
+        public ShipPart GetShipPartTarget(Vector2? position = default)
+        {
+            position ??= this.Position;
+
+            // Sweep the world for any valid/selectable ShipParts.
+            AABB aabb = new AABB(
+                min: position.Value - (Vector2.One * 2.5f),
+                max: position.Value + (Vector2.One * 2.5f));
+            ShipPart target = default;
+            Single targetDistance = Single.MaxValue, distance;
+
+            _world.LocalInstance.QueryAABB(fixture =>
+            {
+                if (fixture.Tag is ShipPart shipPart)
+                {
+                    Vector2 worldCenteroid = shipPart.CalculateWorldPoint(shipPart.Context.Centeroid);
+
+                    distance = Vector2.Distance(position.Value, worldCenteroid);
+
+                    if (distance < targetDistance)
+                    {
+                        targetDistance = distance;
+                        target = shipPart;
+                    }
+                }
+
+                return true;
+            }, ref aabb);
+
+            return target;
+        }
+
+        public ConnectionNode GetConnectionNodeTarget(Vector2? position = default)
+        {
+            position ??= this.Position;
+
+            ConnectionNode closestEstrangedNode = this.Entity.Chain.Root
+                .GetChildren()
+                .SelectMany(sp => sp.ConnectionNodes)
+                .Where(cn => cn.Connection.State == ConnectionNodeState.Estranged)
+                .Where(cn => Vector2.Distance(position.Value, cn.Owner.CalculateWorldPoint(cn.LocalPosition)) < 1f)
+                .OrderBy(cn => Vector2.Distance(position.Value, cn.Owner.CalculateWorldPoint(cn.LocalPosition)))
+                .FirstOrDefault();
+
+            return closestEstrangedNode;
+        }
         #endregion
 
         #region Event Handlers
-        private void HandleShipTargetingComponentTargetChanged(Ship sender, Vector2 target)
+        private void HandleShipTargetChanged(Ship sender, Vector2 target)
         {
-            if (this.Entity.Chain == default)
-                return;
-
             this.Position = this.GetValidTractorbeamPosition(target);
-            this.Target.Body.SetTransformIgnoreContacts(this.Position, 0);
         }
 
         private void HandleTargetStatusChanged(IService sender, ServiceStatus old, ServiceStatus value)
         {
-            if(value == ServiceStatus.PreReleasing)
+            if(value == ServiceStatus.PreReleasing && sender is Chain oldChain)
             {
-                this.TryAction(new TractorBeamAction(type: TractorBeamActionType.Deselect));
+                _mainThread.Enqueue(gt =>
+                {
+                    this.log.Info($"{nameof(ShipTractorBeamComponent)}::{nameof(HandleTargetStatusChanged)} => TractorBeam Target is releasing.");
+                    this.TryAction(new TractorBeamAction(type: TractorBeamActionType.Deselect));
+                });
             }
         }
         #endregion

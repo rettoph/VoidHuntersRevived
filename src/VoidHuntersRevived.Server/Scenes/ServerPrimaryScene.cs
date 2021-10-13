@@ -52,7 +52,11 @@ namespace VoidHuntersRevived.Server.Scenes
                 var chain = _chains.Create(
                     contextName: "ship-part:hull:square",
                     position: chunk.Bounds.Center.ToVector2());
-            
+
+                var chain2 = _chains.Create(
+                    contextName: "ship-part:hull:triangle",
+                    position: chunk.Bounds.Center.ToVector2() + new Vector2(5, 3));
+
                 ShipPart child;
                 Boolean result;
             

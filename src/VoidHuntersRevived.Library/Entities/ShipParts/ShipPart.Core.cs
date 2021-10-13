@@ -58,7 +58,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             base.Release();
 
-            this.Transformations_Dispose();
             this.Tree_Release();
             this.Chain_Release();
 
@@ -110,34 +109,12 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             // 
         }
-
-        public Matrix GetWorldMatrix(ref Matrix chainWorldTransformation)
-        {
-            return this.LocalTransformation * chainWorldTransformation;
-        }
-        public Matrix GetWorldMatrix()
-        {
-            Matrix chainWorldTransformation = this.Chain.GetWorldTransformation();
-            return this.GetWorldMatrix(ref chainWorldTransformation);
-        }
-
-        public Vector2 GetWorldPoint(Vector2 localPoint, ref Matrix chainWorldTransformation)
-            => Vector2.Transform(localPoint, this.GetWorldMatrix(ref chainWorldTransformation));
-
-        public Vector2 GetWorldPoint(Vector2 localPoint)
-            => Vector2.Transform(localPoint, this.GetWorldMatrix());
-
-        public Vector2 GetWorldPosition(ref Matrix chainWorldTransformation)
-            => this.GetWorldPoint(Vector2.Zero, ref chainWorldTransformation);
-
-        public Vector2 GetWorldPosition()
-            => this.GetWorldPoint(Vector2.Zero);
         #endregion
 
         #region Frame Methods
         public void TryDrawAt(GameTime gameTime, ref Matrix chainWorldTransformation)
         {
-            Matrix worldTransformation = this.GetWorldMatrix(ref chainWorldTransformation);
+            Matrix worldTransformation = this.CalculateWorldTransformation(ref chainWorldTransformation);
 
             this.OnDrawAt.Invoke(gameTime, ref worldTransformation);
 

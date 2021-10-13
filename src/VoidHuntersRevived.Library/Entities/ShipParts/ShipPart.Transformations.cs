@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -63,17 +64,84 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             }
             else
             { // Calculate the ShipPart's translations based on its parent connection node translations
-                this.LocalRotation = MathHelper.WrapAngle(
-                    this.ChildConnectionNode.LocalRotation +
-                    this.ChildConnectionNode.Connection.Target.LocalRotation +
-                    this.ChildConnectionNode.Connection.Target.Owner.LocalRotation);
-            
-                this.LocalTransformation = this.ChildConnectionNode.LocalChildTransformationMatrix
-                    * this.ChildConnectionNode.Connection.Target.LocalTransformationMatrix
-                    * this.ChildConnectionNode.Connection.Target.Owner.LocalTransformation;
+                this.LocalRotation = ShipPart.CalculateLocalRotation(
+                    child: this.ChildConnectionNode,
+                    parent: this.ChildConnectionNode.Connection.Target);
+
+                this.LocalTransformation = ShipPart.CalculateLocalTransformation(
+                    child: this.ChildConnectionNode, 
+                    parent: this.ChildConnectionNode.Connection.Target);
             }
             
             this.OnTransformationsCleaned?.Invoke(this);
+        }
+
+        /// <summary>
+        /// Generate a <see cref="Matrix"/> to calculate the <see cref="ShipPart"/> world
+        /// data.
+        /// </summary>
+        /// <param name="chainWorldTransformation">A custom owning world matrix</param>
+        /// <returns></returns>
+        public Matrix CalculateWorldTransformation(ref Matrix chainWorldTransformation)
+        {
+            return this.LocalTransformation * chainWorldTransformation;
+        }
+
+        /// <summary>
+        /// Generate a <see cref="Matrix"/> to calculate the <see cref="ShipPart"/> world
+        /// data.
+        /// </summary>
+        /// <param name="chainWorldTransformation">A custom owning world matrix</param>
+        /// <returns></returns>
+        public Matrix CalculateWorldTransformation(Matrix chainWorldTransformation)
+        {
+            return this.CalculateWorldTransformation(ref chainWorldTransformation);
+        }
+
+        /// <summary>
+        /// Generate a <see cref="Matrix"/> to calculate the <see cref="ShipPart"/> world
+        /// data. Automatically use the current <see cref="Chain"/> (if any) for the 
+        /// chainWorldMatrix
+        /// </summary>
+        /// <returns></returns>
+        public Matrix CalculateWorldTransformation()
+        {
+            return this.CalculateWorldTransformation(this.Chain.CalculateWorldTransformation());
+        }
+
+        /// <summary>
+        /// Convert a local point into a world point.
+        /// </summary>
+        /// <param name="localPoint"></param>
+        /// <param name="chainWorldTransformation"></param>
+        /// <returns></returns>
+        public Vector2 CalculateWorldPoint(Vector2 localPoint, ref Matrix chainWorldTransformation)
+        {
+            return Vector2.Transform(
+                position: localPoint,
+                matrix: this.CalculateWorldTransformation(chainWorldTransformation));
+        }
+
+        /// <summary>
+        /// Convert a local point into a world point.
+        /// </summary>
+        /// <param name="localPoint"></param>
+        /// <param name="chainWorldTransformation"></param>
+        /// <returns></returns>
+        public Vector2 CalculateWorldPoint(Vector2 localPoint, Matrix chainWorldTransformation)
+        {
+            return this.CalculateWorldPoint(localPoint, ref chainWorldTransformation);
+        }
+
+        /// <summary>
+        /// Convert a local point into a world point.
+        /// </summary>
+        /// <param name="localPoint"></param>
+        /// <param name="chainWorldTransformation"></param>
+        /// <returns></returns>
+        public Vector2 CalculateWorldPoint(Vector2 localPoint)
+        {
+            return this.CalculateWorldPoint(localPoint, this.Chain.CalculateWorldTransformation());
         }
         #endregion
 
@@ -82,6 +150,23 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             if((components & TreeComponent.Node) != 0)
                 sender.CleanLocalTranslation();
+        }
+        #endregion
+
+        #region Static Methods
+        public static Single CalculateLocalRotation(ConnectionNode child, ConnectionNode parent)
+        {
+            return MathHelper.WrapAngle(
+                    child.LocalRotation +
+                    parent.LocalRotation +
+                    parent.Owner.LocalRotation);
+        }
+
+        public static Matrix CalculateLocalTransformation(ConnectionNode child, ConnectionNode parent)
+        {
+            return child.LocalChildTransformationMatrix
+                    * parent.LocalTransformationMatrix
+                    * parent.Owner.LocalTransformation;
         }
         #endregion
     }
