@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using tainicom.Aether.Physics2D.Collision.Shapes;
+using VoidHuntersRevived.Library.Contexts.ShipParts;
 using VoidHuntersRevived.Library.Dtos.Utilities;
 using VoidHuntersRevived.Library.Entities.Aether;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
@@ -15,7 +16,8 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
     /// A <see cref="ShipPart"/> that will automatically create a
     /// Fixture its current <see cref="Chain"/>'s Body.
     /// </summary>
-    public class RigidShipPart : ShipPart
+    public class RigidShipPart<TShipPartContext> : ShipPart<TShipPartContext>
+        where TShipPartContext : ShipPartContext
     {
         #region Private Fields
         private Queue<AetherFixture> _fixtures;

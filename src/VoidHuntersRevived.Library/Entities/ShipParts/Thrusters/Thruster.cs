@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Contexts.ShipParts;
 
-namespace VoidHuntersRevived.Library.Entities.ShipParts.Hulls
+namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
 {
-    public class Hull : RigidShipPart<HullContext>
+    public class Thruster : RigidShipPart<ShipPartContext>
     {
     }
 }

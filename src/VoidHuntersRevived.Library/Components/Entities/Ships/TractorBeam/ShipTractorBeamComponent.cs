@@ -125,15 +125,9 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
             }
             else
             {
-                Matrix potentialTransformation = ShipPart.CalculateLocalTransformation(
-                    child: this.Target.Root.ConnectionNodes[0],
-                    parent: potentialParent) * this.Entity.Chain.CalculateWorldTransformation();
+                this.SetPreviewPosition(this.Target, potentialParent);
 
-                Single potentialRotation = ShipPart.CalculateLocalRotation(
-                    child: this.Target.Root.ConnectionNodes[0],
-                    parent: potentialParent) + this.Entity.Chain.Rotation;
-
-                this.Target.Chain.Body.SetTransformIgnoreContacts(Vector2.Transform(Vector2.Zero, potentialTransformation), potentialRotation);
+                _rotation += 1 * (Single)gameTime.ElapsedGameTime.TotalSeconds;
             }
         }
         #endregion
@@ -143,6 +137,26 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         #endregion
 
         #region Methods
+        private void GetPreviewPosition(ShipPart target, ConnectionNode parent, out Vector2 position, out Single rotation)
+        {
+            rotation = ShipPart.CalculateLocalRotation(
+                child: target.ConnectionNodes.Last(),
+                parent: parent) + this.Entity.Chain.Rotation;
+
+            Matrix potentialTransformation = ShipPart.CalculateLocalTransformation(
+                child: target.ConnectionNodes.Last(),
+                parent: parent) * this.Entity.Chain.CalculateWorldTransformation();
+
+            position = Vector2.Transform(Vector2.Zero, potentialTransformation);
+        }
+
+        private void SetPreviewPosition(ShipPart target, ConnectionNode parent)
+        {
+            this.GetPreviewPosition(target, parent, out Vector2 position, out Single rotation);
+
+            target.Chain.Body.SetTransformIgnoreContacts(position, rotation);
+        }
+
         public TractorBeamAction TryAction(TractorBeamAction action)
         {
             TractorBeamAction response = action.Type switch
@@ -168,6 +182,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
 
             if(this.CanSelect(action.TargetPart, out ShipPart selectable))
             {
+                _rotation = 0;
                 this.Target = selectable;
                 this.Target.OnStatusChanged += this.HandleTargetStatusChanged;
 
@@ -190,7 +205,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
 
             if(this.CanDeselect(action.TargetPart))
             {
-                ConnectionNode childNode = this.Target.Root.ConnectionNodes.FirstOrDefault();
+                ConnectionNode childNode = this.Target.Root.ConnectionNodes.LastOrDefault();
 
                 this.Entity.OnUpdate -= this.UpdateTarget;
 
@@ -254,9 +269,11 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
 
             if(target.Chain == this.Entity.Chain && !target.IsRoot)
             {
+                this.GetPreviewPosition(target, target.ChildConnectionNode.Connection.Target, out Vector2 position, out Single rotation);
+
                 // If this condition is met we are attempting to disconnect a piece from the current ship. That process is done here.
                 target.ChildConnectionNode?.TryDetach();
-                _chains.Create(target);
+                _chains.Create(target, position, rotation);
 
                 selectable = target;
                 return true;

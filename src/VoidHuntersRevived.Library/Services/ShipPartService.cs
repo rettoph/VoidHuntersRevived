@@ -17,6 +17,12 @@ using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Json.JsonConverters;
 using VoidHuntersRevived.Library.Json.JsonConverters.Utilities;
+using tainicom.Aether.Physics2D.Collision.Shapes;
+using Microsoft.Xna.Framework;
+using tainicom.Aether.Physics2D.Common;
+using VoidHuntersRevived.Library.Extensions.Aether;
+using tainicom.Aether.Physics2D.Common.ConvexHull;
+using Path = System.IO.Path;
 
 namespace VoidHuntersRevived.Library.Services
 {
@@ -111,8 +117,11 @@ namespace VoidHuntersRevived.Library.Services
         /// <param name="context"></param>
         public void RegisterContext(ShipPartContext context)
         {
-            _contexts[context.Id] = context;
-            this.OnContextRegistered?.Invoke(this, context);
+            if(this.ValidateContext(context))
+            {
+                _contexts[context.Id] = context;
+                this.OnContextRegistered?.Invoke(this, context);
+            }
         }
 
         /// <summary>
@@ -149,12 +158,75 @@ namespace VoidHuntersRevived.Library.Services
             => this.RegisterFileContexts(Directory.GetFiles(pathToDirectory, "*.vhsp"));
         #endregion
 
+        #region Validation Methods
+        private Boolean ValidateContext(ShipPartContext context)
+        {
+            foreach (Shape shape in context.Shapes)
+            {
+                String err;
+                Boolean shapeValid = shape switch
+                {
+                    PolygonShape polygon => this.ValidatePolygonShape(polygon, out err),
+                    _ => throw new ArgumentOutOfRangeException(""),
+                };
+
+                if (!shapeValid)
+                {
+                    throw new Exception($"Error validating ShipPartContext('{context.Name}') => {err}");
+                }
+            }
+
+            return true;
+        }
+
+        private Boolean ValidatePolygonShape(PolygonShape polygon, out String error)
+        {
+            Vertices vertices = polygon.Vertices.Clone();
+
+            if (vertices.Count <= 3)
+                vertices.ForceCounterClockWise();
+            else
+                vertices = GiftWrap.GetConvexHull(vertices);
+
+            // Ensure the vertices still match
+            for (Int32 i = 0; i < vertices.Count; i++)
+            {
+                if (vertices[i] != polygon.Vertices[i])
+                {
+                    error = "PolygonShape vertices are not properly gift-wrapped.";
+                    return false;
+                }
+            }
+
+            error = default;
+            return true;
+        }
+        #endregion
+
         #region
         public ShipPartContext DeserializeContext(String contextJson)
             => JsonSerializer.Deserialize<ShipPartContext>(contextJson, this.JsonSerializerOptions);
 
         public String SerializeContext(ShipPartContext context)
             => JsonSerializer.Serialize<ShipPartContext>(context, this.JsonSerializerOptions);
+
+        public void ExportAll(String path)
+        {
+            foreach(ShipPartContext context in this.RegisteredContexts.Values)
+            {
+                this.Export(context, path);
+            }
+        }
+
+        public void Export(ShipPartContext context, String path)
+        {
+            Directory.CreateDirectory(path);
+
+            String json = this.SerializeContext(context);
+            String filename = $"{String.Join('.', context.Name.Split(Path.GetInvalidFileNameChars()))}.vhsp";
+
+            File.WriteAllText(Path.Combine(path, filename), json);
+        }
         #endregion
 
         #region Network Methods

@@ -57,6 +57,10 @@ namespace VoidHuntersRevived.Server.Scenes
                     contextName: "ship-part:hull:triangle",
                     position: chunk.Bounds.Center.ToVector2() + new Vector2(5, 3));
 
+                var chain3 = _chains.Create(
+                    contextName: "ship-part:hull:thruster",
+                    position: chunk.Bounds.Center.ToVector2() + new Vector2(4, 3));
+
                 ShipPart child;
                 Boolean result;
             

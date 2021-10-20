@@ -1,6 +1,7 @@
 ﻿using Guppy;
 using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
+using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -149,5 +150,28 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             this.TryUpdateCorporealState(corpreal);
         }
         #endregion
+    }
+
+    /// <summary>
+    /// A ShipPart with a built in internal generic context.
+    /// </summary>
+    /// <typeparam name="TShipPartContext"></typeparam>
+    public abstract class ShipPart<TShipPartContext> : ShipPart
+        where TShipPartContext : ShipPartContext
+    {
+        /// <summary>
+        /// The current ShipPart's context. This defines re-usable global
+        /// ShipPart data.
+        /// </summary>
+        public new TShipPartContext Context { get; private set; }
+
+        internal override void SetContext(ShipPartContext context)
+        {
+            ExceptionHelper.ValidateAssignableFrom<TShipPartContext>(context.GetType());
+
+            base.SetContext(context);
+
+            this.Context = context as TShipPartContext;
+        }
     }
 }

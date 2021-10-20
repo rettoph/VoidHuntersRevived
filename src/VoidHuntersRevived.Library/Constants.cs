@@ -16,6 +16,7 @@ using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Components.Entities.WorldObjects;
 using tainicom.Aether.Physics2D.Dynamics;
+using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 
 namespace VoidHuntersRevived.Library
 {
@@ -28,6 +29,7 @@ namespace VoidHuntersRevived.Library
             public static class ShipParts
             {
                 public static readonly ServiceConfigurationKey Hull = ServiceConfigurationKey.From<Hull>();
+                public static readonly ServiceConfigurationKey Thruster = ServiceConfigurationKey.From<Thruster>();
             }
 
             public static class Players

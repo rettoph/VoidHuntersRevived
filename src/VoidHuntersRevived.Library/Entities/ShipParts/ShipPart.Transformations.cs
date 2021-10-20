@@ -157,6 +157,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         public static Single CalculateLocalRotation(ConnectionNode child, ConnectionNode parent)
         {
             return MathHelper.WrapAngle(
+                    MathHelper.Pi -
                     child.LocalRotation +
                     parent.LocalRotation +
                     parent.Owner.LocalRotation);

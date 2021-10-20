@@ -4,9 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using VoidHuntersRevived.Library.Attributes;
 using VoidHuntersRevived.Library.Contexts.ShipParts;
 using VoidHuntersRevived.Library.Extensions.System.Text.Json;
 
@@ -26,16 +28,16 @@ namespace VoidHuntersRevived.Library.Json.JsonConverters.Contexts.ShipParts
         /// <summary>
         /// A private list of all possible types the current converter might return.
         /// </summary>
-        private static Dictionary<UInt32, Type> ShipPartDtoTypes;
+        private static Dictionary<String, Type> ShipPartDtoTypes;
         #endregion
 
         #region Constructors
         static ShipPartContextJsonConverter()
         {
             ShipPartContextJsonConverter.ShipPartDtoTypes = AssemblyHelper.Types
-                .GetTypesAssignableFrom<ShipPartContext>()
+                .GetTypesWithAttribute<ShipPartContext, ShipPartContextTypeAttribute > ()
                 .ToDictionary(
-                    keySelector: t => t.AssemblyQualifiedName.xxHash(),
+                    keySelector: t => t.GetCustomAttribute<ShipPartContextTypeAttribute>().Name,
                     elementSelector: t => t);
         }
         #endregion
@@ -54,7 +56,7 @@ namespace VoidHuntersRevived.Library.Json.JsonConverters.Contexts.ShipParts
             reader.CheckProperty(Properties.ShipPartType);
             reader.Read();
 
-            Type dtoType = ShipPartContextJsonConverter.ShipPartDtoTypes[reader.ReadUInt32()];
+            Type dtoType = ShipPartContextJsonConverter.ShipPartDtoTypes[reader.ReadString()];
 
             reader.CheckProperty(Properties.ShipPartData);
             reader.Read();
@@ -71,7 +73,7 @@ namespace VoidHuntersRevived.Library.Json.JsonConverters.Contexts.ShipParts
         {
             writer.WriteStartObject();
 
-            writer.WriteNumber(Properties.ShipPartType, value.GetType().AssemblyQualifiedName.xxHash());
+            writer.WriteString(Properties.ShipPartType, value.GetType().GetCustomAttribute<ShipPartContextTypeAttribute>().Name);
 
             writer.WritePropertyName(Properties.ShipPartData);
             this.InnerWrite(writer, value, value.GetType(), options);

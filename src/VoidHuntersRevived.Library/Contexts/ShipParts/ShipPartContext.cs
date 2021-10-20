@@ -44,6 +44,7 @@ namespace VoidHuntersRevived.Library.Contexts.ShipParts
         /// <summary>
         /// A unique name linked to this context instance.
         /// </summary>
+        [JsonPropertyOrder(-1)]
         public String Name { get; set; }
 
         /// <summary>
