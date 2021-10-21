@@ -22,73 +22,73 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                 #region Ship Movement Inputs
                 inputs.Add(new InputCommandContext()
                 {
-                    Handle = "set_direction_forward",
+                    Handle = "thrust_forward",
                     DefaultInput = new InputButton(Keys.W),
                     Lockable = false,
                     Commands = new[]
                     {
-                        (state: ButtonState.Pressed, command: "ship set direction Forward true"),
-                        (state: ButtonState.Released, command: "ship set direction Forward false")
+                        (state: ButtonState.Pressed, command: "ship thrust Forward true"),
+                        (state: ButtonState.Released, command: "ship thrust Forward false")
                     }
                 });
 
                 inputs.Add(new InputCommandContext()
                 {
-                    Handle = "set_direction_turn_right",
+                    Handle = "thrust_turn_right",
                     DefaultInput = new InputButton(Keys.D),
                     Lockable = false,
                     Commands = new[]
                     {
-                        (state: ButtonState.Pressed, command: "ship set direction TurnRight true"),
-                        (state: ButtonState.Released, command: "ship set direction TurnRight false")
+                        (state: ButtonState.Pressed, command: "ship thrust TurnRight true"),
+                        (state: ButtonState.Released, command: "ship thrust TurnRight false")
                     }
                 });
 
                 inputs.Add(new InputCommandContext()
                 {
-                    Handle = "set_direction_backward",
+                    Handle = "thrust_backward",
                     DefaultInput = new InputButton(Keys.S),
                     Lockable = false,
                     Commands = new[]
                     {
-                        (state: ButtonState.Pressed, command: "ship set direction Backward true"),
-                        (state: ButtonState.Released, command: "ship set direction Backward false")
+                        (state: ButtonState.Pressed, command: "ship thrust Backward true"),
+                        (state: ButtonState.Released, command: "ship thrust Backward false")
                     }
                 });
 
                 inputs.Add(new InputCommandContext()
                 {
-                    Handle = "set_direction_turn_left",
+                    Handle = "thrust_turn_left",
                     DefaultInput = new InputButton(Keys.A),
                     Lockable = false,
                     Commands = new[]
                     {
-                        (state: ButtonState.Pressed, command: "ship set direction TurnLeft true"),
-                        (state: ButtonState.Released, command: "ship set direction TurnLeft false")
+                        (state: ButtonState.Pressed, command: "ship thrust TurnLeft true"),
+                        (state: ButtonState.Released, command: "ship thrust TurnLeft false")
                     }
                 });
 
                 inputs.Add(new InputCommandContext()
                 {
-                    Handle = "set_direction_right",
+                    Handle = "thrust_right",
                     DefaultInput = new InputButton(Keys.E),
                     Lockable = false,
                     Commands = new[]
                     {
-                        (state: ButtonState.Pressed, command: "ship set direction Right true"),
-                        (state: ButtonState.Released, command: "ship set direction Right false")
+                        (state: ButtonState.Pressed, command: "ship thrust Right true"),
+                        (state: ButtonState.Released, command: "ship thrust Right false")
                     }
                 });
 
                 inputs.Add(new InputCommandContext()
                 {
-                    Handle = "set_direction_left",
+                    Handle = "thrust_left",
                     DefaultInput = new InputButton(Keys.Q),
                     Lockable = false,
                     Commands = new[]
                     {
-                        (state: ButtonState.Pressed, command: "ship set direction Left true"),
-                        (state: ButtonState.Released, command: "ship set direction Left false")
+                        (state: ButtonState.Pressed, command: "ship thrust Left true"),
+                        (state: ButtonState.Released, command: "ship thrust Left false")
                     }
                 });
 

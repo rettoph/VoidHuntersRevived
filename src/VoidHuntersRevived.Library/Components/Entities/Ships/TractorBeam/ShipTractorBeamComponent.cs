@@ -103,32 +103,9 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         #region Frame Methods
         private void UpdateTarget(GameTime gameTime)
         {
-            if (this.Entity.Chain is null || this.Target is null)
-            {
-                throw new InvalidOperationException();
-            }
-
-            // If there is no chain then there is no physical representation of the ShipPart. Deselect this noncorporeal thing
-            if(this.Target.Chain is null)
-            {
-                this.log.Warn($"{nameof(ShipTractorBeamComponent)}::{nameof(UpdateTarget)} - TractorBeam Target chain is null. Auto deselecting.");
-                this.TryAction(new TractorBeamAction(type: TractorBeamActionType.Deselect));
-
-                return;
-            }
-
             ConnectionNode potentialParent = this.GetConnectionNodeTarget(this.Position);
 
-            if (potentialParent is null)
-            {
-                this.Target.Chain.Body.SetTransformIgnoreContacts(this.Position, this.Target.Chain.Rotation);
-            }
-            else
-            {
-                this.SetPreviewPosition(this.Target, potentialParent);
-
-                _rotation += 1 * (Single)gameTime.ElapsedGameTime.TotalSeconds;
-            }
+            this.SetTargetPosition(this.Target, potentialParent);
         }
         #endregion
 
@@ -140,11 +117,11 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         private void GetPreviewPosition(ShipPart target, ConnectionNode parent, out Vector2 position, out Single rotation)
         {
             rotation = ShipPart.CalculateLocalRotation(
-                child: target.ConnectionNodes.Last(),
+                child: target.ConnectionNodes[0],
                 parent: parent) + this.Entity.Chain.Rotation;
 
             Matrix potentialTransformation = ShipPart.CalculateLocalTransformation(
-                child: target.ConnectionNodes.Last(),
+                child: target.ConnectionNodes[0],
                 parent: parent) * this.Entity.Chain.CalculateWorldTransformation();
 
             position = Vector2.Transform(Vector2.Zero, potentialTransformation);
@@ -155,6 +132,37 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
             this.GetPreviewPosition(target, parent, out Vector2 position, out Single rotation);
 
             target.Chain.Body.SetTransformIgnoreContacts(position, rotation);
+        }
+
+        private void SetTargetPosition(ShipPart target, ConnectionNode potentialParent)
+        {
+            if (this.Entity.Chain is null)
+            {
+                this.log.Warn($"{nameof(ShipTractorBeamComponent)}::{nameof(SetTargetPosition)} - {nameof(this.Entity)}.{nameof(this.Entity.Chain)} is null. Unable to update position.");
+
+                return;
+            }
+            else if (target is null)
+            {
+                this.log.Warn($"{nameof(ShipTractorBeamComponent)}::{nameof(SetTargetPosition)} - {nameof(target)} is null. Unable to update position.");
+
+                return;
+            }
+            else if (target.Chain is null)
+            {
+                this.log.Warn($"{nameof(ShipTractorBeamComponent)}::{nameof(SetTargetPosition)} - {nameof(target)}.{nameof(target.Chain)} is null. Unable to update position.");
+
+                return;
+            }
+
+            if (potentialParent is null)
+            {
+                target.Chain.Body.SetTransformIgnoreContacts(this.Position, target.Chain.Rotation);
+            }
+            else
+            {
+                this.SetPreviewPosition(target, potentialParent);
+            }
         }
 
         public TractorBeamAction TryAction(TractorBeamAction action)
@@ -205,9 +213,11 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
 
             if(this.CanDeselect(action.TargetPart))
             {
-                ConnectionNode childNode = this.Target.Root.ConnectionNodes.LastOrDefault();
+                ConnectionNode childNode = this.Target.Root.ConnectionNodes.ElementAtOrDefault(0);
 
                 this.Entity.OnUpdate -= this.UpdateTarget;
+
+                this.SetTargetPosition(this.Target, default);
 
                 this.Target.OnStatusChanged -= this.HandleTargetStatusChanged;
                 this.Target = default;

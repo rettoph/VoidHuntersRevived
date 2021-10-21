@@ -13,17 +13,17 @@ using VoidHuntersRevived.Library.Structs;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Players
 {
-    internal sealed class UserPlayerCurrentUserDirectionComponent : UserPlayerCurrentUserCommandActionBaseComponent<DirectionState>
+    internal sealed class UserPlayerCurrentUserThrustComponent : UserPlayerCurrentUserCommandActionBaseComponent<DirectionState>
     {
         public override UInt32 ActionRequestMessageType => Constants.Messages.UserPlayer.RequestDirectionChanged;
 
-        public override String CurrentUserCommandInput => "ship set direction";
+        public override String CurrentUserCommandInput => "ship thrust";
 
         public override ICommandHandler CurrentUserCommandHandler => CommandHandler.Create<Direction, Boolean, IConsole>(this.HandleSetDirectionCommand);
 
         protected override Boolean TryDoActionRequest(DirectionState request, out DirectionState response)
         {
-            if (this.Entity.Ship?.Components.Get<ShipDirectionComponent>().TrySetDirection(request) ?? false)
+            if (this.Entity.Ship?.Components.Get<ShipThrustComponent>().TrySetDirection(request) ?? false)
             {
                 response = request;
                 return true;

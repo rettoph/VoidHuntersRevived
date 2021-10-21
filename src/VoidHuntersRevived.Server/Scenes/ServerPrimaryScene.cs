@@ -28,6 +28,7 @@ namespace VoidHuntersRevived.Server.Scenes
         private ChainService _chains;
         private PlayerService _players;
         private ShipService _ships;
+        private ShipPartService _shipParts;
 
         private ThreadQueue _updateThread;
         #endregion
@@ -42,6 +43,7 @@ namespace VoidHuntersRevived.Server.Scenes
             provider.Service(out _ships);
             provider.Service(out _chains);
             provider.Service(out _updateThread);
+            provider.Service(out _shipParts);
 
             _server.Users.OnAdded += this.HandleUserConnected;
 
@@ -49,20 +51,20 @@ namespace VoidHuntersRevived.Server.Scenes
 
             provider.GetService<ChunkManager>().OnChunkAdded += (_, chunk) =>
             {
-                var chain = _chains.Create(
-                    contextName: "ship-part:hull:square",
-                    position: chunk.Bounds.Center.ToVector2());
-
-                var chain2 = _chains.Create(
-                    contextName: "ship-part:hull:triangle",
-                    position: chunk.Bounds.Center.ToVector2() + new Vector2(5, 3));
-
-                var chain3 = _chains.Create(
-                    contextName: "ship-part:hull:thruster",
-                    position: chunk.Bounds.Center.ToVector2() + new Vector2(4, 3));
-
-                ShipPart child;
-                Boolean result;
+                // var chain = _chains.Create(
+                //     contextName: "ship-part:hull:square",
+                //     position: chunk.Bounds.Center.ToVector2());
+                // 
+                // var chain2 = _chains.Create(
+                //     contextName: "ship-part:hull:triangle",
+                //     position: chunk.Bounds.Center.ToVector2() + new Vector2(5, 3));
+                // 
+                // var chain3 = _chains.Create(
+                //     contextName: "ship-part:hull:thruster",
+                //     position: chunk.Bounds.Center.ToVector2() + new Vector2(4, 3));
+                // 
+                // ShipPart child;
+                // Boolean result;
             
                 // child = provider.GetService<ShipPartService>().Create("ship-part:hull:square");
                 // result = chain.Root.ConnectionNodes[0].TryAttach(child.ConnectionNodes[3]);
@@ -101,9 +103,21 @@ namespace VoidHuntersRevived.Server.Scenes
 
             _updateThread.Enqueue(_ =>
             {
+                ShipPart oldPart, newPart;
+
+                oldPart = _shipParts.Create("ship-part:hull:square");
+
+                for (int i = 0; i < 20; i++)
+                {
+                    newPart = _shipParts.Create("ship-part:hull:square");
+                    oldPart.ConnectionNodes[2].TryAttach(newPart.ConnectionNodes[0]);
+
+                    oldPart = newPart;
+                }
+
                 // Create a new player instance linked to the user.
                 var chain = _chains.Create(
-                    contextName: "ship-part:hull:square",
+                    shipPart: oldPart.Root,
                     position: Vector2.Zero);
 
                 var ship = _ships.Create(chain, _players.CreateUserPlayer(user));

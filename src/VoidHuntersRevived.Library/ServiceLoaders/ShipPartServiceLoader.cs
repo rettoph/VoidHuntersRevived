@@ -49,17 +49,32 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                 shipParts.RegisterContext(new ThrusterContext()
                 {
                     Name = "ship-part:hull:thruster",
+                    Color = Constants.Colors.ShipPartThrusterColor,
                     Centeroid = new Vector2(-0.3f, 0f),
                     Shapes = new[]
                     {
-                        new PolygonShape(
-                            vertices: new Vertices(new Vector2[] {
-                                new Vector2(0f, -0.15f),
-                                new Vector2(0f, 0.15f),
-                                new Vector2(-0.3f, 0.25f),
-                                new Vector2(-0.3f, -0.25f)
-                            }),
-                            density: 1f)
+                        new ShapeDto()
+                        {
+                            Data = new PolygonShape(
+                                vertices: new Vertices(new Vector2[] {
+                                    new Vector2(0f, -0.15f),
+                                    new Vector2(0f, 0.15f),
+                                    new Vector2(-0.3f, 0.25f),
+                                    new Vector2(-0.3f, -0.25f)
+                                }),
+                                density: 1f)
+                        }
+                        
+                    },
+                    Paths = new[]
+                    {
+                        new Vector2[] {
+                            new Vector2(0f, -0.15f),
+                            new Vector2(0f, 0.15f),
+                            new Vector2(-0.3f, 0.25f),
+                            new Vector2(-0.3f, -0.25f),
+                            new Vector2(0f, -0.15f)
+                        }
                     },
                     ConnectionNodes = new ConnectionNodeDto[]
                     {
@@ -74,12 +89,20 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                 shipParts.RegisterContext(new HullContext()
                 {
                     Name = "ship-part:hull:square",
+                    Color = Constants.Colors.ShipPartHullColor,
                     Centeroid = PolygonHelper.GetCenteroid(4),
                     Shapes = new[]
                     {
-                        new PolygonShape(
-                            vertices: PolygonHelper.GetVertices(4),
-                            density: 1f)
+                        new ShapeDto()
+                        {
+                            Data = new PolygonShape(
+                                vertices: PolygonHelper.GetVertices(4),
+                                density: 1f)
+                        }
+                    },
+                    Paths = new[]
+                    {
+                        PolygonHelper.GetPath(4)
                     },
                     ConnectionNodes = PolygonHelper.GetConnectionNodes(4)
                 });
@@ -87,12 +110,20 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                 shipParts.RegisterContext(new HullContext()
                 {
                     Name = "ship-part:hull:triangle",
+                    Color = Constants.Colors.ShipPartHullColor,
                     Centeroid = PolygonHelper.GetCenteroid(3),
                     Shapes = new[]
                     {
-                        new PolygonShape(
-                            vertices: PolygonHelper.GetVertices(3),
-                            density: 1f)
+                        new ShapeDto()
+                        {
+                            Data = new PolygonShape(
+                                vertices: PolygonHelper.GetVertices(3),
+                                density: 1f)
+                        }
+                    },
+                    Paths = new[]
+                    {
+                        PolygonHelper.GetPath(3)
                     },
                     ConnectionNodes = PolygonHelper.GetConnectionNodes(3)
                 });

@@ -20,13 +20,10 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             {
                 commands.Get().AddCommand(new Command("ship")
                 {
-                    new Command("set")
+                    new Command("thrust")
                     {
-                        new Command("direction")
-                        {
-                            new Argument<Direction>("direction"),
-                            new Argument("state"),
-                        }
+                        new Argument<Direction>("direction"),
+                        new Argument("state"),
                     },
                     new Command("tractorbeam")
                     {

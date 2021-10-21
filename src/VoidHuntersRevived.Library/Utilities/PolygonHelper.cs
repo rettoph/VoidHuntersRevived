@@ -34,6 +34,16 @@ namespace VoidHuntersRevived.Library.Utilities
             return new Vertices(PolygonHelper.VertexAngleData(sides).Select(va => va.vertex));
         }
 
+        public static Vector2[] GetPath(Int32 sides)
+        {
+            List<Vector2> vertices = new List<Vector2>();
+
+            vertices.AddRange(PolygonHelper.VertexAngleData(sides).Select(va => va.vertex));
+            vertices.Add(vertices.First());
+
+            return vertices.ToArray();
+        }
+
         public static ConnectionNodeDto[] GetConnectionNodes(Int32 sides)
         {
             return PolygonHelper.VertexAngleData(sides).Select(va =>

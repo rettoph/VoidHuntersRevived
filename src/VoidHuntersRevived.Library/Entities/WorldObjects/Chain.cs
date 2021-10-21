@@ -46,6 +46,8 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
                 _root = value;
             }
         }
+
+        public Color? Color { get; set; }
         #endregion
 
         #region Lifecycle Methods
@@ -125,12 +127,12 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
         #region Network Methods
         public void WriteAll(NetOutgoingMessage om, ShipPartService shipPartService)
         {
-            shipPartService.WriteShipPart(this.Root, om, ShipPartSerializationFlags.CreateTree);
+            shipPartService.TryWriteShipPart(this.Root, om, ShipPartSerializationFlags.CreateTree);
         }
 
         public void ReadAll(NetIncomingMessage im, ShipPartService shipPartService)
         {
-            this.Root = shipPartService.ReadShipPart(im, ShipPartSerializationFlags.CreateTree);
+            this.Root = shipPartService.TryReadShipPart(im, ShipPartSerializationFlags.CreateTree);
         }
         #endregion
 

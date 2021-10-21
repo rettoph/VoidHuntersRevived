@@ -23,6 +23,8 @@ using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Library.Extensions.Aether;
 using tainicom.Aether.Physics2D.Common.ConvexHull;
 using Path = System.IO.Path;
+using VoidHuntersRevived.Library.Dtos.Utilities;
+using System.Linq;
 
 namespace VoidHuntersRevived.Library.Services
 {
@@ -161,10 +163,10 @@ namespace VoidHuntersRevived.Library.Services
         #region Validation Methods
         private Boolean ValidateContext(ShipPartContext context)
         {
-            foreach (Shape shape in context.Shapes)
+            foreach (ShapeDto shape in context.Shapes)
             {
                 String err;
-                Boolean shapeValid = shape switch
+                Boolean shapeValid = shape.Data switch
                 {
                     PolygonShape polygon => this.ValidatePolygonShape(polygon, out err),
                     _ => throw new ArgumentOutOfRangeException(""),
@@ -230,12 +232,26 @@ namespace VoidHuntersRevived.Library.Services
         #endregion
 
         #region Network Methods
-        public void WriteShipPart(ShipPart shipPart, NetOutgoingMessage om, ShipPartSerializationFlags flags)
+        public void TryWriteShipPart(ShipPart shipPart, NetOutgoingMessage om, ShipPartSerializationFlags flags)
+        {
+            this.log.Info($"{nameof(ShipPartService)}::{nameof(TryWriteShipPart)} => flags: {flags}, shipPartId: {shipPart.Id}, children: {shipPart.GetChildren().Count()}");
+
+            this.WriteShipPart(shipPart, om, flags);
+        }
+
+        public ShipPart TryReadShipPart(NetIncomingMessage im, ShipPartSerializationFlags flags)
+        {
+            ShipPart parent = this.ReadShipPart(im, flags);
+
+            return parent;
+        }
+
+        private void WriteShipPart(ShipPart shipPart, NetOutgoingMessage om, ShipPartSerializationFlags flags)
         {
             om.Write(shipPart.Context.Id);
             om.Write(shipPart.Id);
 
-            if(flags.HasFlag(ShipPartSerializationFlags.Create))
+            if (flags.HasFlag(ShipPartSerializationFlags.Create))
             {
                 // Notice we include a position value. This is
                 // So the reader can skip the WriteAll data if needed.
@@ -275,7 +291,7 @@ namespace VoidHuntersRevived.Library.Services
             }
         }
 
-        public ShipPart ReadShipPart(NetIncomingMessage im, ShipPartSerializationFlags flags)
+        private ShipPart ReadShipPart(NetIncomingMessage im, ShipPartSerializationFlags flags)
         {
             UInt32 contextId = im.ReadUInt32();
             Guid shipPartId = im.ReadGuid();

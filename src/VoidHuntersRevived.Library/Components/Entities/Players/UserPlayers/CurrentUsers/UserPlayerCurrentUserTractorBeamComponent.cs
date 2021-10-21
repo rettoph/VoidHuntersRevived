@@ -77,7 +77,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
         #region UserPlayerCurrentUserBaseComponent<TractorBeamAction> Implementation
         protected override Boolean TryDoActionRequest(TractorBeamAction request, out TractorBeamAction response)
         {
-            this.log.Info("UserPlayerCurrentUserTractorBeamComponent::TryDoActionRequest => TryAction()");
+            this.log.Info($"{nameof(UserPlayerCurrentUserTractorBeamComponent)}::{nameof(TryDoActionRequest)} => {nameof(ShipTractorBeamComponent)}::{nameof(ShipTractorBeamComponent.TryAction)}");
             response = this.Entity.Ship?.Components.Get<ShipTractorBeamComponent>().TryAction(request) ?? default;
 
             return response.Type != TractorBeamActionType.None;
@@ -85,11 +85,13 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
 
         protected override TractorBeamAction ReadCurrentUserActionRequestMessage(NetIncomingMessage im)
         {
+            this.Entity.Ship.Components.Get<ShipTargetingComponent>().Target = im.ReadVector2();
             return im.ReadTractorBeamAction(_shipParts, ShipPartSerializationFlags.None);
         }
 
         protected override void WriteCurrentUserActionRequestMessage(NetOutgoingMessage om, TractorBeamAction request)
         {
+            om.Write(this.Entity.Ship.Components.Get<ShipTargetingComponent>().Target);
             om.Write(request, _shipParts, ShipPartSerializationFlags.None);
         }
         #endregion

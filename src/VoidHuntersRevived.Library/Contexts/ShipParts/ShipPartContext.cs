@@ -48,9 +48,25 @@ namespace VoidHuntersRevived.Library.Contexts.ShipParts
         public String Name { get; set; }
 
         /// <summary>
+        /// The color key used to render the shape when free-floating in space.
+        /// </summary>
+        public String Color { get; set; }
+
+        /// <summary>
+        /// Determins if the shape should utilize an inherited color when
+        /// applicable.
+        /// </summary>
+        public Boolean InheritColor { get; set; } = true;
+
+        /// <summary>
         /// Defines the shapes of the ShipPart
         /// </summary>
-        public Shape[] Shapes { get; set; } = new Shape[0];
+        public ShapeDto[] Shapes { get; set; } = new ShapeDto[0];
+
+        /// <summary>
+        /// Defines paths of the ShipPart.
+        /// </summary>
+        public Vector2[][] Paths { get; set; } = new Vector2[0][];
 
         /// <summary>
         /// All connection nodes within the current part.

@@ -75,6 +75,15 @@ namespace VoidHuntersRevived.Library.Extensions.System.Text.Json
             return value;
         }
 
+        public static Byte ReadByte(ref this Utf8JsonReader reader)
+        {
+            reader.CheckToken(JsonTokenType.Number);
+            Byte value = reader.GetByte();
+            reader.Read();
+
+            return value;
+        }
+
         public static Single ReadSingle(ref this Utf8JsonReader reader)
         {
             reader.CheckToken(JsonTokenType.Number);

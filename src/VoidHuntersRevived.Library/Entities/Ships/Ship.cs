@@ -78,6 +78,8 @@ namespace VoidHuntersRevived.Library.Entities.Ships
         {
             base.Initialize(provider);
 
+            this.Chain.Color = Color.Cyan;
+
             this.Chain.Corporeal = true;
             this.Chain.OnStatusChanged += this.HandleChainStatusChanged;
         }
@@ -85,6 +87,8 @@ namespace VoidHuntersRevived.Library.Entities.Ships
         protected override void Release()
         {
             base.Release();
+
+            this.Chain.Color = default;
 
             this.Chain.OnStatusChanged -= this.HandleChainStatusChanged;
             this.Chain = default;

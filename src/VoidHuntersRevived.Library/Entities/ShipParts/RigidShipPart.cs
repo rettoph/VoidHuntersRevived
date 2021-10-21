@@ -8,6 +8,7 @@ using VoidHuntersRevived.Library.Contexts.ShipParts;
 using VoidHuntersRevived.Library.Dtos.Utilities;
 using VoidHuntersRevived.Library.Entities.Aether;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
+using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Extensions.Aether;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
@@ -38,12 +39,15 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             base.TryCreateAetherForm(chain);
 
-            foreach (Shape shape in this.Context.Shapes)
+            foreach (ShapeDto shape in this.Context.Shapes)
             {
-                _fixtures.Enqueue(
+                if(shape.IsCorporeal)
+                {
+                    _fixtures.Enqueue(
                     chain.Body.CreateFixture(
-                        shape.Clone(this.LocalTransformation),
+                        shape.Data.Clone(this.LocalTransformation),
                         this));
+                }
             }
         }
 

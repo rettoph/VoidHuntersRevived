@@ -44,11 +44,11 @@ namespace VoidHuntersRevived.Library.Services
                 chain.Root = shipPart;
             });
 
-        public Chain Create(String contextName, Vector2 position = default)
-            => this.Create(_shipParts.Create(contextName), position);
+        public Chain Create(String contextName, Vector2 position = default, Single rotation = default)
+            => this.Create(_shipParts.Create(contextName), position, rotation);
 
-        public Chain Create(UInt32 contextId, Vector2 position = default)
-            => this.Create(_shipParts.Create(contextId), position);
+        public Chain Create(UInt32 contextId, Vector2 position = default, Single rotation = default)
+            => this.Create(_shipParts.Create(contextId), position, rotation);
         #endregion
     }
 }

@@ -22,6 +22,12 @@ namespace VoidHuntersRevived.Library
 {
     public static class Constants
     {
+        public static class Colors
+        {
+            public const String ShipPartHullColor = "color:ship-part:hull";
+            public const String ShipPartThrusterColor = "color:ship-part:thruster";
+        }
+
         public static class ServiceConfigurationKeys
         {
             public static readonly ServiceConfigurationKey Chain = ServiceConfigurationKey.From<Chain>();

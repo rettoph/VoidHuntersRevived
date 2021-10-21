@@ -18,7 +18,7 @@ using VoidHuntersRevived.Library.Structs;
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
 {
     [NetworkAuthorizationRequired(NetworkAuthorization.Master)]
-    internal sealed class ShipDirectionMasterCRUDComponent : ShipDirectionComponent
+    internal sealed class ShipThrustMasterCRUDComponent : ShipThrustComponent
     {
         protected override void InitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
         {
@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
             this.OnDirectionChanged -= this.HandleShipDirectionChanged;
         }
 
-        private void HandleShipDirectionChanged(ShipDirectionComponent sender, DirectionState args)
+        private void HandleShipDirectionChanged(ShipThrustComponent sender, DirectionState args)
         {
             this.Entity.Messages[Constants.Messages.Ship.DirectionChanged].Create(om =>
             {

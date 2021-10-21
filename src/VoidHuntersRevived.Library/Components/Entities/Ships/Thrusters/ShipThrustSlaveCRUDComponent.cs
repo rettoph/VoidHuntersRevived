@@ -19,7 +19,7 @@ using VoidHuntersRevived.Library.Enums;
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
 {
     [NetworkAuthorizationRequired(NetworkAuthorization.Slave)]
-    internal sealed class ShipDirectionSlaveCRUDComponent : ShipDirectionComponent
+    internal sealed class ShipThrustSlaveCRUDComponent : ShipThrustComponent
     {
         protected override void InitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
         {

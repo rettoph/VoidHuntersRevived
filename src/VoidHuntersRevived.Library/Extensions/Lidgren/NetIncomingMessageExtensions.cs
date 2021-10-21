@@ -21,12 +21,12 @@ namespace VoidHuntersRevived.Library.Extensions.Lidgren
 
             if(im.ReadExists())
             {
-                targetShipPart = shipParts.ReadShipPart(im, flags);
+                targetShipPart = shipParts.TryReadShipPart(im, flags);
             }
 
             if(im.ReadExists())
             {
-                targetNode = shipParts.ReadShipPart(im, flags).ConnectionNodes[im.ReadInt32()];
+                targetNode = shipParts.TryReadShipPart(im, flags).ConnectionNodes[im.ReadInt32()];
             }
 
             return new TractorBeamAction(

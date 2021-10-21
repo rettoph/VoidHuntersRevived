@@ -36,8 +36,8 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.RegisterTypeFactory<ShipMasterCRUDComponent>(p => new ShipMasterCRUDComponent());
             services.RegisterTypeFactory<ShipSlaveCRUDComponent>(p => new ShipSlaveCRUDComponent());
 
-            services.RegisterTypeFactory<ShipDirectionMasterCRUDComponent>(p => new ShipDirectionMasterCRUDComponent());
-            services.RegisterTypeFactory<ShipDirectionSlaveCRUDComponent>(p => new ShipDirectionSlaveCRUDComponent());
+            services.RegisterTypeFactory<ShipThrustMasterCRUDComponent>(p => new ShipThrustMasterCRUDComponent());
+            services.RegisterTypeFactory<ShipThrustSlaveCRUDComponent>(p => new ShipThrustSlaveCRUDComponent());
 
             services.RegisterTypeFactory<ShipTargetingMasterCRUDComponent>(p => new ShipTargetingMasterCRUDComponent());
             services.RegisterTypeFactory<ShipTargetingSlaveCrudComponent>(p => new ShipTargetingSlaveCrudComponent());
@@ -49,8 +49,8 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.RegisterTransient<ShipMasterCRUDComponent>();
             services.RegisterTransient<ShipSlaveCRUDComponent>();
 
-            services.RegisterTransient<ShipDirectionMasterCRUDComponent>(ServiceConfigurationKey.From<ShipDirectionComponent>());
-            services.RegisterTransient<ShipDirectionSlaveCRUDComponent>(ServiceConfigurationKey.From<ShipDirectionComponent>());
+            services.RegisterTransient<ShipThrustMasterCRUDComponent>(ServiceConfigurationKey.From<ShipThrustComponent>());
+            services.RegisterTransient<ShipThrustSlaveCRUDComponent>(ServiceConfigurationKey.From<ShipThrustComponent>());
 
             services.RegisterTransient<ShipTargetingMasterCRUDComponent>(ServiceConfigurationKey.From<ShipTargetingComponent>());
             services.RegisterTransient<ShipTargetingSlaveCrudComponent>(ServiceConfigurationKey.From<ShipTargetingComponent>());
@@ -62,8 +62,8 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.RegisterComponent<ShipMasterCRUDComponent, Ship>();
             services.RegisterComponent<ShipSlaveCRUDComponent, Ship>();
 
-            services.RegisterComponent<ShipDirectionMasterCRUDComponent, Ship>();
-            services.RegisterComponent<ShipDirectionSlaveCRUDComponent, Ship>();
+            services.RegisterComponent<ShipThrustMasterCRUDComponent, Ship>();
+            services.RegisterComponent<ShipThrustSlaveCRUDComponent, Ship>();
 
             services.RegisterComponent<ShipTargetingMasterCRUDComponent, Ship>();
             services.RegisterComponent<ShipTargetingSlaveCrudComponent, Ship>();

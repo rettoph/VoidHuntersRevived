@@ -17,12 +17,12 @@ namespace VoidHuntersRevived.Library.Extensions.Lidgren
 
             if (om.WriteExists(action.TargetPart))
             {
-                shipParts.WriteShipPart(action.TargetPart, om, flags);
+                shipParts.TryWriteShipPart(action.TargetPart, om, flags);
             }
 
             if (om.WriteExists(action.TargetNode))
             {
-                shipParts.WriteShipPart(action.TargetNode.Owner, om, flags);
+                shipParts.TryWriteShipPart(action.TargetNode.Owner, om, flags);
                 om.Write(action.TargetNode.Index);
             }
         }

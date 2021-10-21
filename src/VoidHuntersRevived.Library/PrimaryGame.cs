@@ -7,6 +7,7 @@ using Guppy.Interfaces;
 using Guppy.Lists;
 using Guppy.Network.Interfaces;
 using Guppy.Network.Peers;
+using Guppy.Network.Structs;
 using Guppy.Utilities;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
@@ -37,6 +38,9 @@ namespace VoidHuntersRevived.Library
             base.Initialize(provider);
 
             this.Peer.StartAsync(50);
+
+            this.Peer.DiagnosticInterval = 1000;
+            this.Peer.OnDiagnosticInterval += this.HandlePeerDiagnosticInterval;
         }
 
         protected override void PostInitialize(GuppyServiceProvider provider)
@@ -55,5 +59,10 @@ namespace VoidHuntersRevived.Library
             // this.Peer.TryUpdate();
         }
         #endregion
+
+        private void HandlePeerDiagnosticInterval(IPeer sender, DiagnosticIntervalData args)
+        {
+            this.log.Debug($"Peer DiagnosticInterval => {args}");
+        }
     }
 }

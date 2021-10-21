@@ -14,7 +14,7 @@ using VoidHuntersRevived.Library.Structs;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
 {
-    public abstract class ShipDirectionComponent : NetworkComponent<Ship>
+    public abstract class ShipThrustComponent : NetworkComponent<Ship>
     {
         #region Public Attributes
         /// <summary>
@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         /// 
         /// This will contain the changed direction and its new state.
         /// </summary>
-        public event OnEventDelegate<ShipDirectionComponent, DirectionState> OnDirectionChanged;
+        public event OnEventDelegate<ShipThrustComponent, DirectionState> OnDirectionChanged;
         #endregion
 
         #region Lifecycle Methods

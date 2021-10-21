@@ -41,8 +41,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         {
             _mainThread.Enqueue(_ =>
             {
-                this.log.Info("ShipTractorBeamSlaveCRUDComponent::ReadShipTractorBeamActionMessage => TryAction()");
-
+                this.log.Info($"{nameof(ShipTractorBeamSlaveCRUDComponent)}::{nameof(ReadShipTractorBeamActionMessage)} => {nameof(ShipTractorBeamComponent)}::{nameof(ShipTractorBeamComponent.TryAction)}");
                 this.Entity.Components.Get<ShipTargetingComponent>().Target = im.ReadVector2();
 
                 TractorBeamAction action = im.ReadTractorBeamAction(this.shipParts, ShipPartSerializationFlags.None);

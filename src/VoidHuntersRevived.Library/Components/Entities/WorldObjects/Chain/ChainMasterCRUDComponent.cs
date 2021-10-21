@@ -67,7 +67,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
             om.Write(shipPart.ChildConnectionNode.Connection.Target.Index);
 
             // Write child data...
-            this.shipPartService.WriteShipPart(shipPart, om, ShipPartSerializationFlags.CreateTree);
+            this.shipPartService.TryWriteShipPart(shipPart, om, ShipPartSerializationFlags.CreateTree);
             om.Write(shipPart.ChildConnectionNode.Index);
         }
         #endregion

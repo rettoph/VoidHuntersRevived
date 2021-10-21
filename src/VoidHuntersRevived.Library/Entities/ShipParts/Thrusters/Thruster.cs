@@ -5,7 +5,7 @@ using VoidHuntersRevived.Library.Contexts.ShipParts;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
 {
-    public class Thruster : RigidShipPart<ShipPartContext>
+    public class Thruster : RigidShipPart<ThrusterContext>
     {
     }
 }
