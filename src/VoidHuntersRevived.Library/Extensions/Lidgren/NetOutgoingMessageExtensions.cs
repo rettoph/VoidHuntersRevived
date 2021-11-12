@@ -15,6 +15,11 @@ namespace VoidHuntersRevived.Library.Extensions.Lidgren
         {
             om.Write<TractorBeamActionType>(action.Type);
 
+            if (om.WriteExists(action.TargetPartChainId))
+            {
+                om.Write(action.TargetPartChainId.Value);
+            }
+
             if (om.WriteExists(action.TargetPart))
             {
                 shipParts.TryWriteShipPart(action.TargetPart, om, flags);

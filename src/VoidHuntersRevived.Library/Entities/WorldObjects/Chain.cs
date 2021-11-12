@@ -57,6 +57,8 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
 
             this.LayerGroup = Constants.LayersContexts.Chains.Group.GetValue();
             this.Corporeal = false; // Chains are non-corporeal by default.
+
+            this.log.Info($"Initializing new Chain {this.Id}");
         }
 
         protected override void PostInitialize(GuppyServiceProvider provider)

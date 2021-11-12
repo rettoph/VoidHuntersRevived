@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                 config.UseMessageRecycling = true;
                 config.ConnectionTimeout = 30;
 
-                config.EnableMessageType(NetIncomingMessageType.VerboseDebugMessage);
+                // config.EnableMessageType(NetIncomingMessageType.VerboseDebugMessage);
             });
         }
 

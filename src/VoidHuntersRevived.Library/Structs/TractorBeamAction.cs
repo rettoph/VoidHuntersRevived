@@ -27,6 +27,11 @@ namespace VoidHuntersRevived.Library.Structs
         public readonly ShipPart TargetPart;
 
         /// <summary>
+        /// The requested or created <see cref="TargetPart"/>'s <see cref="Chain"/>. Only defined when applicable.
+        /// </summary>
+        public readonly Guid? TargetPartChainId;
+
+        /// <summary>
         /// The <see cref="ConnectionNode"/>, if any, this <see cref="ActionType"/> is to be
         /// preformed on. This is generally used to defined which node
         /// the <see cref="TargetPart"/> wishes to attach to when
@@ -34,10 +39,11 @@ namespace VoidHuntersRevived.Library.Structs
         /// </summary>
         public ConnectionNode TargetNode;
 
-        public TractorBeamAction(TractorBeamActionType type = TractorBeamActionType.None, ShipPart targetShipPart = default, ConnectionNode targetNode = default)
+        public TractorBeamAction(TractorBeamActionType type = TractorBeamActionType.None, ShipPart targetShipPart = default, ConnectionNode targetNode = default, Guid? targetShipPartChainId = default)
         {
             this.Type = type;
             this.TargetPart = targetShipPart;
+            this.TargetPartChainId = targetShipPartChainId;
             this.TargetNode = targetNode;
         }
     }

@@ -243,6 +243,8 @@ namespace VoidHuntersRevived.Library.Services
         {
             ShipPart parent = this.ReadShipPart(im, flags);
 
+            this.log.Info($"{nameof(ShipPartService)}::{nameof(TryReadShipPart)} => flags: {flags}, shipPartId: {parent.Id}, children: {parent.GetChildren().Count()}");
+
             return parent;
         }
 

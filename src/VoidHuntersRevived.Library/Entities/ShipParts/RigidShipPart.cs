@@ -1,9 +1,11 @@
 ﻿using Guppy.DependencyInjection;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using tainicom.Aether.Physics2D.Collision.Shapes;
+using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Library.Contexts.ShipParts;
 using VoidHuntersRevived.Library.Dtos.Utilities;
 using VoidHuntersRevived.Library.Entities.Aether;
@@ -85,6 +87,27 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                         collisionGroup: Constants.CollisionCategories.NonCorporealCollisionGroup);
                 }
             }
+        }
+
+        public override string ToAetherString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine($"Local Position: {Vector2.Transform(Vector2.Zero, this.LocalTransformation)}");
+
+            foreach(AetherFixture afixture in _fixtures)
+            {
+                foreach(Fixture fixture in afixture.Instances.Values)
+                {
+                    if(fixture.Tag is ShipPart shipPart)
+                    {
+                        sb.AppendLine("Tag.Id: " + shipPart.Id);
+                    }
+                    
+                }
+            }
+
+            return sb.ToString();
         }
         #endregion
     }

@@ -79,9 +79,9 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
             {
                 if(source.IsRoot)
                 { // The source was REMOVED from the chain
-                    throw new NotImplementedException();
+                    //throw new NotImplementedException();
                 }
-                else if(!source.IsRoot && source.Chain == this.Entity)
+                else if(!source.IsRoot && source.Root == this.Entity.Root)
                 { // The source was ADDED to the chain
                     this.Entity.Messages[Constants.Messages.Chain.ShipPartAttached].Create(om =>
                     {

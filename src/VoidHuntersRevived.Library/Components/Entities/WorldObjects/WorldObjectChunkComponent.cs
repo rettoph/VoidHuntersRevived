@@ -28,6 +28,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
 
             provider.Service(out _chunks);
 
+            this.Entity.OnChunkChanged += this.HandleChunkChanged;
             this.Entity.OnPostUpdate += this.PostUpdate;
         }
 
@@ -36,7 +37,14 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
             base.Initialize(provider);
 
             // Automatically add the current entity into its appropriate chunk.
-            _chunks.GetChunk(this.Entity.Position).Children.TryAdd(this.Entity);
+            this.Entity.Chunk = _chunks.GetChunk(this.Entity.Position);
+        }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            this.Entity.Chunk = default;
         }
 
         protected override void PostRelease()
@@ -44,6 +52,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
             base.PostRelease();
 
             this.Entity.OnPostUpdate -= this.PostUpdate;
+            this.Entity.OnChunkChanged -= this.HandleChunkChanged;
 
             _chunks = default;
         }
@@ -58,7 +67,8 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
             if (!this.Entity.Chunk.Bounds.Contains(this.Entity.Position))
             {
                 Chunk chunk = _chunks.GetChunk(this.Entity.Position);
-                chunk.Children.TryAdd(this.Entity);
+
+                this.Entity.Chunk = chunk;
             }
         }
         #endregion
@@ -67,6 +77,22 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
         private void PostUpdate(GameTime gameTime)
         {
             this.CleanChunk();
+        }
+        #endregion
+
+        #region Event Handler 
+        private void HandleChunkChanged(IWorldObject sender, Chunk old, Chunk value)
+        {
+            if(old is not null)
+            {
+                old.Children.TryRemove(this.Entity);
+            }
+            
+            if(value is not null)
+            {
+                this.Entity.Pipe = value.Pipe;
+                value.Children.TryAdd(this.Entity);
+            }
         }
         #endregion
     }

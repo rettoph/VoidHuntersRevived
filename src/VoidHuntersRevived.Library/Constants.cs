@@ -22,6 +22,8 @@ namespace VoidHuntersRevived.Library
 {
     public static class Constants
     {
+        public static Boolean IsServer { get; set; } = false;
+
         public static class Colors
         {
             public const String ShipPartHullColor = "color:ship-part:hull";

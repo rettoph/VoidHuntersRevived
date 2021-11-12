@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
         {
             services.RegisterSetup<ILog>((l, p, s) =>
             {
-                l.SetLevel(Level.Debug);
+                l.SetLevel(Level.Verbose);
                 l.ConfigureTerminalAppender(
                     p,
                     (Level.Fatal, Color.Red),

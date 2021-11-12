@@ -77,7 +77,6 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
         #region UserPlayerCurrentUserBaseComponent<TractorBeamAction> Implementation
         protected override Boolean TryDoActionRequest(TractorBeamAction request, out TractorBeamAction response)
         {
-            this.log.Info($"{nameof(UserPlayerCurrentUserTractorBeamComponent)}::{nameof(TryDoActionRequest)} => {nameof(ShipTractorBeamComponent)}::{nameof(ShipTractorBeamComponent.TryAction)}");
             response = this.Entity.Ship?.Components.Get<ShipTractorBeamComponent>().TryAction(request) ?? default;
 
             return response.Type != TractorBeamActionType.None;

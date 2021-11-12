@@ -130,8 +130,7 @@ namespace VoidHuntersRevived.Library.Utilities
                 return false;
 
             // Create the attachment!
-            this.Connection = new ConnectionNodeConnection(ConnectionNodeState.Parent, child);
-            this.Connection.Target.Connection = new ConnectionNodeConnection(ConnectionNodeState.Child, this);
+            ConnectionNode.LinkNodes(child, this);
 
             return true;
         }
@@ -144,10 +143,32 @@ namespace VoidHuntersRevived.Library.Utilities
             if (this.Connection.State == ConnectionNodeState.Estranged)
                 return false;
 
-            this.Connection.Target.Connection = ConnectionNodeConnection.DefaultEstranged;
-            this.Connection = ConnectionNodeConnection.DefaultEstranged;
+            if(this.Connection.State == ConnectionNodeState.Child)
+            {
+                ConnectionNode.SeverNodes(this, this.Connection.Target);
+            }
+            else if(this.Connection.Target.Connection.State == ConnectionNodeState.Child)
+            {
+                ConnectionNode.SeverNodes(this.Connection.Target, this);
+            }
+            else
+            {
+                throw new InvalidOperationException("No Child connection detected.");
+            }
 
             return true;
+        }
+
+        private static void SeverNodes(ConnectionNode child, ConnectionNode parent)
+        {
+            child.Connection = ConnectionNodeConnection.DefaultEstranged;
+            parent.Connection = ConnectionNodeConnection.DefaultEstranged;
+        }
+
+        private static void LinkNodes(ConnectionNode child, ConnectionNode parent)
+        {
+            parent.Connection = new ConnectionNodeConnection(ConnectionNodeState.Parent, child);
+            child.Connection = new ConnectionNodeConnection(ConnectionNodeState.Child, parent);
         }
         #endregion
 

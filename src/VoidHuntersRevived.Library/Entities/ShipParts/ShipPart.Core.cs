@@ -110,6 +110,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             // 
         }
+
+        public virtual String ToAetherString()
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
         #region Frame Methods

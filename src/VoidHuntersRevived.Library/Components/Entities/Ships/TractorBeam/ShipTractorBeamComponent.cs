@@ -178,7 +178,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
             if(action.Type != TractorBeamActionType.None)
                 this.OnAction?.Invoke(this, action);
 
-            this.log.Info($"Attempted TractorBeam Action {action.Type} and recieved {response.Type}.");
+            this.log.Verbose($"Attempted TractorBeam Action {action.Type} and recieved {response.Type}.");
 
             return response;
         }
@@ -188,20 +188,35 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
             if (action.Type != TractorBeamActionType.Select)
                 throw new ArgumentException($"Unable to create selection, Invalid ActionType({action.Type}) recieved.");
 
-            if(this.CanSelect(action.TargetPart, out ShipPart selectable))
+            switch (this.CanSelect(action.TargetPart, out ShipPart selectable))
             {
-                _rotation = 0;
-                this.Target = selectable;
-                this.Target.OnStatusChanged += this.HandleTargetStatusChanged;
+                case CanSelectResponse.No:
+                    return default;
+                case CanSelectResponse.Yes:
+                    return this.Select(selectable);
+                case CanSelectResponse.YesAfterDetach:
+                    this.GetPreviewPosition(selectable, selectable.ChildConnectionNode.Connection.Target, out Vector2 position, out Single rotation);
+                    selectable.ChildConnectionNode.TryDetach();
+                    _chains.Create(selectable, position, rotation, action.TargetPartChainId);
 
-                this.Entity.OnUpdate += this.UpdateTarget;
-
-                return new TractorBeamAction(
-                    type: TractorBeamActionType.Select,
-                    targetShipPart: selectable);
+                    return this.Select(selectable);
             }
 
             return default;
+        }
+
+        private TractorBeamAction Select(ShipPart target)
+        {
+            _rotation = 0;
+            this.Target = target;
+            this.Target.OnStatusChanged += this.HandleTargetStatusChanged;
+
+            this.Entity.OnUpdate += this.UpdateTarget;
+
+            return new TractorBeamAction(
+                type: TractorBeamActionType.Select,
+                targetShipPart: target,
+                targetShipPartChainId: target.Chain?.Id);
         }
 
         private TractorBeamAction TryDeselect(TractorBeamAction action)
@@ -253,12 +268,12 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         /// <param name="target"></param>
         /// <param name="selectable"></param>
         /// <returns></returns>
-        private Boolean CanSelect(ShipPart target, out ShipPart selectable)
+        private CanSelectResponse CanSelect(ShipPart target, out ShipPart selectable)
         {
-            Boolean FailureResponse(out ShipPart selectable)
+            CanSelectResponse FailureResponse(out ShipPart selectable)
             {
                 selectable = default;
-                return false;
+                return CanSelectResponse.No;
             }
 
             if(this.Target != default)
@@ -274,23 +289,16 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
             if (!target.Chain.Corporeal)
             {
                 selectable = target.Root;
-                return true;
+                return CanSelectResponse.Yes;
             }
 
             if(target.Chain == this.Entity.Chain && !target.IsRoot)
             {
-                this.GetPreviewPosition(target, target.ChildConnectionNode.Connection.Target, out Vector2 position, out Single rotation);
-
-                // If this condition is met we are attempting to disconnect a piece from the current ship. That process is done here.
-                target.ChildConnectionNode?.TryDetach();
-                _chains.Create(target, position, rotation);
-
                 selectable = target;
-                return true;
+                return CanSelectResponse.YesAfterDetach;
             }
 
-
-            return FailureResponse(out selectable); ;
+            return FailureResponse(out selectable);
         }
 
         private Boolean CanDeselect(ShipPart target)

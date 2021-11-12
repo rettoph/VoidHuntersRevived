@@ -58,13 +58,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{74BBE11E-3824-4554-A742-79CBA1636D29}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Network.Core", "libraries\Guppy\src\Guppy.Network.Core\Guppy.Network.Core.csproj", "{147FC080-FB18-45DD-A371-AA01484351C6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.CommandLine", "libraries\Guppy\src\Guppy.CommandLine\Guppy.CommandLine.csproj", "{F92E8F3D-3C51-4EC7-9092-919BC8B6BA3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guppy.Threading", "libraries\Guppy\src\Guppy.Threading\Guppy.Threading.csproj", "{CC3281DD-6399-45B3-A9C8-D7638C2299CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Threading", "libraries\Guppy\src\Guppy.Threading\Guppy.Threading.csproj", "{CC3281DD-6399-45B3-A9C8-D7638C2299CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

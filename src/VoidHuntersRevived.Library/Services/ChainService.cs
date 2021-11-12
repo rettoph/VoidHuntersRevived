@@ -1,5 +1,6 @@
 ﻿using Guppy;
 using Guppy.DependencyInjection;
+using Guppy.Lists;
 using Guppy.Network.Enums;
 using Microsoft.Xna.Framework;
 using System;
@@ -17,10 +18,9 @@ namespace VoidHuntersRevived.Library.Services
     /// in place of the ShipPartService, unless chainless
     /// ShipParts are specifically requested.
     /// </summary>
-    public class ChainService : Service
+    public class ChainService : FactoryServiceList<Chain>
     {
         #region Private Fields
-        private GuppyServiceProvider _provider;
         private ShipPartService _shipParts;
         #endregion
 
@@ -29,26 +29,35 @@ namespace VoidHuntersRevived.Library.Services
         {
             base.PreInitialize(provider);
 
-            _provider = provider;
-
             provider.Service(out _shipParts);
         }
         #endregion
 
-        #region Creation Methods
-        public Chain Create(ShipPart shipPart = default, Vector2 position = default, Single rotation = default)
-            => _provider.GetService<Chain>(Constants.ServiceConfigurationKeys.Chain, (chain, _, _) =>
+        #region Create Methods
+        public Chain Create(ShipPart shipPart = default, Vector2 position = default, Single rotation = default, Guid? id = default)
+            => this.Create<Chain>(this.provider, Constants.ServiceConfigurationKeys.Chain, (chain, _, _) =>
             {
                 chain.Body.Instances[NetworkAuthorization.Master].SetTransformIgnoreContacts(ref position, rotation);
 
                 chain.Root = shipPart;
-            });
+            }, id);
 
-        public Chain Create(String contextName, Vector2 position = default, Single rotation = default)
-            => this.Create(_shipParts.Create(contextName), position, rotation);
+        public Chain Create(String contextName, Vector2 position = default, Single rotation = default, Guid? id = default)
+            => this.Create(_shipParts.Create(contextName), position, rotation, id);
 
-        public Chain Create(UInt32 contextId, Vector2 position = default, Single rotation = default)
-            => this.Create(_shipParts.Create(contextId), position, rotation);
+        public Chain Create(UInt32 contextId, Vector2 position = default, Single rotation = default, Guid? id = default)
+            => this.Create(_shipParts.Create(contextId), position, rotation, id);
+        #endregion
+
+        #region GetOrCreate Methods
+        public Chain GetOrCreateById(Guid id, ShipPart shipPart = default, Vector2 position = default, Single rotation = default)
+                => this.GetById<Chain>(id) ?? this.Create(shipPart, position, rotation, id);
+
+        public Chain GetOrCreateById(Guid id, String contextName, Vector2 position = default, Single rotation = default)
+            => this.GetById<Chain>(id) ?? this.Create(contextName, position, rotation, id);
+
+        public Chain GetOrCreateById(Guid id, UInt32 contextId, Vector2 position = default, Single rotation = default)
+            => this.GetById<Chain>(id) ?? this.Create(contextId, position, rotation, id);
         #endregion
     }
 }

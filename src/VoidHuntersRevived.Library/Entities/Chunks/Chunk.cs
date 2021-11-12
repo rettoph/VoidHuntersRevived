@@ -87,15 +87,6 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
         /// is defined.
         /// </summary>
         internal event OnEventDelegate<Chunk, ChunkPosition> OnPositionSet;
-
-        /// <summary>
-        /// Internal helper method invoked immediately after
-        /// the <see cref="Children"/> value is set.
-        /// 
-        /// This is used by <see cref="Components.Entities.Chunks.ChunkPipeComponent"/>
-        /// to setup required event listeners.
-        /// </summary>
-        internal event OnEventDelegate<Chunk, ServiceList<IWorldObject>> OnChildrenSet;
         #endregion
 
         #region Lifecycle Methods
@@ -111,11 +102,6 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
             base.PreInitialize(provider);
 
             this.Children = provider.GetService<ServiceList<IWorldObject>>();
-
-            this.Children.OnAdded += this.HandleChildAdded;
-            this.Children.OnRemoved += this.HandleChildRemoved;
-
-            this.OnChildrenSet?.Invoke(this, this.Children);
         }
 
         protected override void Initialize(GuppyServiceProvider provider)
@@ -145,9 +131,6 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
         protected override void PostRelease()
         {
             base.PostRelease();
-
-            this.Children.OnAdded -= this.HandleChildAdded;
-            this.Children.OnRemoved -= this.HandleChildRemoved;
 
             this.Children.TryRelease();
             // this.Children = default;
@@ -198,21 +181,6 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
             }
 
             return false;
-        }
-
-        private void HandleChildAdded(IServiceList<IWorldObject> sender, IWorldObject worldObject)
-        {
-            // Remove the child from its old chunk...
-            worldObject.Chunk?.Children.TryRemove(worldObject);
-
-            // Update the entity's chunk...
-            worldObject.Chunk = this;
-        }
-
-        private void HandleChildRemoved(IServiceList<IWorldObject> sender, IWorldObject worldObject)
-        {
-            // Update the entity's chunk...
-            worldObject.Chunk = default;
         }
     }
 }

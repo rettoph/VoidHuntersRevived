@@ -7,6 +7,7 @@ using Guppy.Threading.Utilities;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Extensions.Lidgren;
@@ -41,10 +42,10 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         {
             _mainThread.Enqueue(_ =>
             {
-                this.log.Info($"{nameof(ShipTractorBeamSlaveCRUDComponent)}::{nameof(ReadShipTractorBeamActionMessage)} => {nameof(ShipTractorBeamComponent)}::{nameof(ShipTractorBeamComponent.TryAction)}");
                 this.Entity.Components.Get<ShipTargetingComponent>().Target = im.ReadVector2();
 
                 TractorBeamAction action = im.ReadTractorBeamAction(this.shipParts, ShipPartSerializationFlags.None);
+
                 this.TryAction(action);
             });
         }

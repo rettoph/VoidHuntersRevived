@@ -16,10 +16,17 @@ namespace VoidHuntersRevived.Library.Extensions.Lidgren
         public static TractorBeamAction ReadTractorBeamAction(this NetIncomingMessage im, ShipPartService shipParts, ShipPartSerializationFlags flags)
         {
             TractorBeamActionType type = im.ReadEnum<TractorBeamActionType>();
+
+            Guid? targetShipPartChainId = default;
             ShipPart targetShipPart = default;
             ConnectionNode targetNode = default;
 
-            if(im.ReadExists())
+            if (im.ReadExists())
+            {
+                targetShipPartChainId = im.ReadGuid();
+            }
+
+            if (im.ReadExists())
             {
                 targetShipPart = shipParts.TryReadShipPart(im, flags);
             }
@@ -31,6 +38,7 @@ namespace VoidHuntersRevived.Library.Extensions.Lidgren
 
             return new TractorBeamAction(
                 type: type,
+                targetShipPartChainId: targetShipPartChainId,
                 targetShipPart: targetShipPart,
                 targetNode: targetNode);
         }

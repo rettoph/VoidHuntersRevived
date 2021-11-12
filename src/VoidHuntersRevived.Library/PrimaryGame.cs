@@ -39,8 +39,7 @@ namespace VoidHuntersRevived.Library
 
             this.Peer.StartAsync(50);
 
-            this.Peer.DiagnosticInterval = 1000;
-            this.Peer.OnDiagnosticInterval += this.HandlePeerDiagnosticInterval;
+            // this.Peer.DiagnosticInterval = 1000;
         }
 
         protected override void PostInitialize(GuppyServiceProvider provider)
@@ -59,10 +58,5 @@ namespace VoidHuntersRevived.Library
             // this.Peer.TryUpdate();
         }
         #endregion
-
-        private void HandlePeerDiagnosticInterval(IPeer sender, DiagnosticIntervalData args)
-        {
-            this.log.Debug($"Peer DiagnosticInterval => {args}");
-        }
     }
 }

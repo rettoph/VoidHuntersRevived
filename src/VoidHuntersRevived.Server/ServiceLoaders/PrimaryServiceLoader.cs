@@ -19,6 +19,8 @@ namespace VoidHuntersRevived.Server.ServiceLoaders
     {
         public void RegisterServices(GuppyServiceCollection services)
         {
+            Constants.IsServer = true;
+
             services.RegisterTypeFactory<PrimaryGame>(p => new ServerPrimaryGame());
             services.RegisterTypeFactory<PrimaryScene>(p => new ServerPrimaryScene());
 

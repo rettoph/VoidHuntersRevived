@@ -36,10 +36,29 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
                 defaultContext: Guppy.Network.Constants.MessageContexts.InternalUnreliableDefault);
 
             if (networkAuthorization == NetworkAuthorization.Master)
+            {
                 this.Entity.Messages[Constants.Messages.UserPlayer.RequestTargetChangedAction].OnRead += this.ReadCurrentUserRequestTargetChangedActionMessage;
 
+                this.Entity.OnShipChanged += this.HandleShipChanged;
+            }
+                
+
             if(networkAuthorization == NetworkAuthorization.Slave)
+            {
                 this.Entity.Messages[Constants.Messages.UserPlayer.RequestTargetChangedAction].OnWrite += this.WriteCurrentUserRequestTargetChangedActionMessage;
+            }
+        }
+
+        protected override void ReleaseRemote(NetworkAuthorization networkAuthorization)
+        {
+            base.ReleaseRemote(networkAuthorization);
+
+            if (networkAuthorization == NetworkAuthorization.Master)
+            {
+                this.HandleShipChanged(default, this.Entity.Ship, default);
+
+                this.Entity.OnShipChanged -= this.HandleShipChanged;
+            }
         }
 
         protected override void InitializeCurrentUser(GuppyServiceProvider provider)
@@ -52,7 +71,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
             _dirty = false;
 
             this.Entity.OnUpdate += this.Update;
-            this.Entity.OnShipChanged += this.HandleShipChanged;
+            this.Entity.OnShipChanged += this.HandleCurrentUserShipChanged;
         }
 
         protected override void ReleaseCurrentUser()
@@ -73,9 +92,9 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
             {
                 _broadcast = provider.GetBroadcast(Constants.Messages.UserPlayer.RequestTargetChangedAction);
 
-                this.Entity.OnShipChanged += this.HandleShipChanged;
+                this.Entity.OnShipChanged += this.HandleCurrentUserShipChanged;
 
-                this.HandleShipChanged(default, default, this.Entity.Ship);
+                this.HandleCurrentUserShipChanged(default, default, this.Entity.Ship);
             }
                 
         }
@@ -86,9 +105,9 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
 
             if (networkAuthorization == NetworkAuthorization.Slave)
             {
-                this.HandleShipChanged(default, this.Entity.Ship, default);
+                this.HandleCurrentUserShipChanged(default, this.Entity.Ship, default);
 
-                this.Entity.OnShipChanged -= this.HandleShipChanged;
+                this.Entity.OnShipChanged -= this.HandleCurrentUserShipChanged;
 
                 _broadcast = default;
             }
@@ -137,7 +156,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
         #endregion
 
         #region Events
-        private void HandleShipChanged(Player sender, Ship old, Ship value)
+        private void HandleCurrentUserShipChanged(Player sender, Ship old, Ship value)
         {
             // Unbind from the old ship...
             if(old != default)
@@ -145,14 +164,19 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
                 _targeting.OnTargetChanged -= this.HandleTargetChanged;
             }
 
-            // Update internal references to n ew ship...
-            _targeting = value?.Components.Get<ShipTargetingComponent>();
+            this.HandleShipChanged(sender, old, value);
 
             // Bind to new ship...
             if (value != default)
             {
                 _targeting.OnTargetChanged += this.HandleTargetChanged;
             }
+        }
+
+        private void HandleShipChanged(Player sender, Ship old, Ship value)
+        {
+            // Update internal references to n ew ship...
+            _targeting = value?.Components.Get<ShipTargetingComponent>();
         }
 
         private void HandleTargetChanged(Ship sender, Vector2 args)

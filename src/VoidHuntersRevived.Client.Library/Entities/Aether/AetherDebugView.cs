@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Client.Library.Entities.Aether
         {
             base.Draw(gameTime);
 
-            // this.Do(debugView => debugView.RenderDebugData(_camera.Projection, _camera.View));
+            this.Do(debugView => debugView.RenderDebugData(_camera.Projection, _camera.View));
         }
     }
 }
