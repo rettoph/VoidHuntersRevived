@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.Ships;
 using Guppy.Network.Extensions.Lidgren;
+using VoidHuntersRevived.Library.Globals.Constants;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
 {
@@ -25,7 +26,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
             base.PreInitializeRemote(provider, networkAuthorization);
 
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnRead += this.ReadCreateMessage;
-            this.Entity.Messages[Constants.Messages.Ship.TargetChanged].OnRead += this.ReadShipTargetChangedMessage;
+            this.Entity.Messages[Messages.Ship.TargetChanged].OnRead += this.ReadShipTargetChangedMessage;
         }
 
         protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)
@@ -33,14 +34,14 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
             base.PostReleaseRemote(networkAuthorization);
 
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnRead += this.ReadCreateMessage;
-            this.Entity.Messages[Constants.Messages.Ship.TargetChanged].OnRead -= this.ReadShipTargetChangedMessage;
+            this.Entity.Messages[Messages.Ship.TargetChanged].OnRead -= this.ReadShipTargetChangedMessage;
         }
         #endregion
 
         #region Network Methods
         private void ReadCreateMessage(MessageTypeManager sender, NetIncomingMessage im)
         {
-            this.Entity.Messages[Constants.Messages.Ship.TargetChanged].TryRead(im);
+            this.Entity.Messages[Messages.Ship.TargetChanged].TryRead(im);
         }
 
         private void ReadShipTargetChangedMessage(MessageTypeManager sender, NetIncomingMessage im)

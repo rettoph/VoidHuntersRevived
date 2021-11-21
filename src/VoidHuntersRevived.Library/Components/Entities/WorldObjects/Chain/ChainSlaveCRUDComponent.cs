@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
+using VoidHuntersRevived.Library.Globals.Constants;
 using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Utilities;
 
@@ -24,14 +25,14 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
             base.PreInitializeRemote(provider, networkAuthorization);
 
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnRead += this.ReadCreateMessage;
-            this.Entity.Messages[Constants.Messages.Chain.ShipPartAttached].OnRead += this.ReadShipPartAttachedMessage;
+            this.Entity.Messages[Messages.Chain.ShipPartAttached].OnRead += this.ReadShipPartAttachedMessage;
         }
 
         protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)
         {
             base.PostReleaseRemote(networkAuthorization);
 
-            this.Entity.Messages[Constants.Messages.Chain.ShipPartAttached].OnRead -= this.ReadShipPartAttachedMessage;
+            this.Entity.Messages[Messages.Chain.ShipPartAttached].OnRead -= this.ReadShipPartAttachedMessage;
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnRead -= this.ReadCreateMessage;
         }
         #endregion

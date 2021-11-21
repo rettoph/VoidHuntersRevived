@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Library.Globals.Constants;
 
 namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
 {
@@ -20,7 +21,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
             base.PreInitializeRemote(provider, networkAuthorization);
 
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnRead += this.ReadCreateMessage;
-            this.Entity.Messages[Constants.Messages.WorldObject.WorldInfoPing].OnRead += this.ReadWorldInfoPingMessage;
+            this.Entity.Messages[Messages.WorldObject.WorldInfoPing].OnRead += this.ReadWorldInfoPingMessage;
         }
 
         protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)
@@ -28,14 +29,14 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
             base.PostReleaseRemote(networkAuthorization);
 
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnRead += this.ReadCreateMessage;
-            this.Entity.Messages[Constants.Messages.WorldObject.WorldInfoPing].OnRead -= this.ReadWorldInfoPingMessage;
+            this.Entity.Messages[Messages.WorldObject.WorldInfoPing].OnRead -= this.ReadWorldInfoPingMessage;
         }
         #endregion
 
         #region Network Methods
         private void ReadCreateMessage(MessageTypeManager sender, NetIncomingMessage im)
         {
-            this.Entity.Messages[Constants.Messages.WorldObject.WorldInfoPing].TryRead(im);
+            this.Entity.Messages[Messages.WorldObject.WorldInfoPing].TryRead(im);
         }
 
         private void ReadWorldInfoPingMessage(MessageTypeManager sender, NetIncomingMessage im)

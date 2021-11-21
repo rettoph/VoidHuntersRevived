@@ -12,6 +12,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Globals.Constants;
 using VoidHuntersRevived.Library.Interfaces;
 using VoidHuntersRevived.Library.Services;
 
@@ -71,7 +72,7 @@ namespace VoidHuntersRevived.Library.Entities.Ships
         {
             base.PreInitialize(provider);
 
-            this.LayerGroup = Constants.LayersContexts.Ships.Group.GetValue();
+            this.LayerGroup = LayersContexts.Ships.Group.GetValue();
         }
 
         protected override void Initialize(GuppyServiceProvider provider)

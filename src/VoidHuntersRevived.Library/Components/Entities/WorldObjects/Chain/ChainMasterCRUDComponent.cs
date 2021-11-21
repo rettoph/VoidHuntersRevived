@@ -13,6 +13,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Enums;
 using Guppy.Network.Extensions.Lidgren;
+using VoidHuntersRevived.Library.Globals.Constants;
 
 namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
 {
@@ -83,7 +84,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
                 }
                 else if(!source.IsRoot && source.Root == this.Entity.Root)
                 { // The source was ADDED to the chain
-                    this.Entity.Messages[Constants.Messages.Chain.ShipPartAttached].Create(om =>
+                    this.Entity.Messages[Messages.Chain.ShipPartAttached].Create(om =>
                     {
                         this.WriteShipPartAttachedMessage(
                             shipPart: source,

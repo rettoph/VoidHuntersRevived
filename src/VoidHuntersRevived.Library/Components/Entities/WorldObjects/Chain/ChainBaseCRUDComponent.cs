@@ -12,6 +12,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Globals.Constants;
 using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
@@ -30,7 +31,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
             this.shipPartService = provider.GetService<ShipPartService>();
 
             this.Entity.Messages.Add(
-                messageType: Constants.Messages.Chain.ShipPartAttached, 
+                messageType: Messages.Chain.ShipPartAttached, 
                 defaultContext: Guppy.Network.Constants.MessageContexts.InternalReliableDefault);
         }
 

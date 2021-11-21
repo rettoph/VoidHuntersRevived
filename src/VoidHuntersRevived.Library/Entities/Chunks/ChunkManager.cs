@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VoidHuntersRevived.Library.Globals.Constants;
 using VoidHuntersRevived.Library.Structs;
 
 namespace VoidHuntersRevived.Library.Entities.Chunks
@@ -44,7 +45,7 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
         {
             base.Create(provider);
 
-            this.LayerGroup = Constants.LayersContexts.Chunks.Group.GetValue();
+            this.LayerGroup = LayersContexts.Chunks.Group.GetValue();
         }
 
         protected override void Initialize(GuppyServiceProvider provider)

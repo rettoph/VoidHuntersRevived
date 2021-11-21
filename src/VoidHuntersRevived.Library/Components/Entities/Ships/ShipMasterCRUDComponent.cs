@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.Ships;
+using VoidHuntersRevived.Library.Globals.Constants;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
 {
@@ -23,7 +24,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
 
             this.Entity.OnPlayerChanged += this.HandleShipPlayerChanged;
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnWrite += this.WriteCreateMessage;
-            this.Entity.Messages[Constants.Messages.Ship.PlayerChanged].OnWrite += this.WritePlayerChangedMessage;
+            this.Entity.Messages[Messages.Ship.PlayerChanged].OnWrite += this.WritePlayerChangedMessage;
         }
 
         protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)
@@ -32,7 +33,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
 
             this.Entity.OnPlayerChanged -= this.HandleShipPlayerChanged;
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnWrite -= this.WriteCreateMessage;
-            this.Entity.Messages[Constants.Messages.Ship.PlayerChanged].OnWrite -= this.WritePlayerChangedMessage;
+            this.Entity.Messages[Messages.Ship.PlayerChanged].OnWrite -= this.WritePlayerChangedMessage;
         }
         #endregion
 
@@ -41,7 +42,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         private void WriteCreateMessage(MessageTypeManager sender, NetOutgoingMessage om)
         {
             om.Write(this.Entity.Chain.Id);
-            this.Entity.Messages[Constants.Messages.Ship.PlayerChanged].TryWrite(om);
+            this.Entity.Messages[Messages.Ship.PlayerChanged].TryWrite(om);
         }
 
         private void WritePlayerChangedMessage(MessageTypeManager sender, NetOutgoingMessage om)
@@ -56,7 +57,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         #region Event Handlers
         private void HandleShipPlayerChanged(Ship sender, Player old, Player value)
         {
-            this.Entity.Messages[Constants.Messages.Ship.PlayerChanged].Create(this.Entity.Pipe);
+            this.Entity.Messages[Messages.Ship.PlayerChanged].Create(this.Entity.Pipe);
         }
         #endregion
     }

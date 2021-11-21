@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.Ships;
 using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Globals.Constants;
 using VoidHuntersRevived.Library.Structs;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
@@ -46,7 +47,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         {
             base.PreInitializeRemote(provider, networkAuthorization);
 
-            this.Entity.Messages.Add(Constants.Messages.Ship.DirectionChanged, Guppy.Network.Constants.MessageContexts.InternalUnreliableDefault);
+            this.Entity.Messages.Add(Messages.Ship.DirectionChanged, Guppy.Network.Constants.MessageContexts.InternalUnreliableDefault);
         }
 
         protected override void PostRelease()

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using VoidHuntersRevived.Library.Components.Entities.Players;
 using VoidHuntersRevived.Library.Entities.Players;
+using VoidHuntersRevived.Library.Globals.Constants;
 using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library.ServiceLoaders
@@ -21,7 +22,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.RegisterTypeFactory<UserPlayer>(p => new UserPlayer());
 
             services.RegisterScoped<PlayerService>();
-            services.RegisterTransient(Constants.ServiceConfigurationKeys.Players.UserPlayer, typeof(UserPlayer));
+            services.RegisterTransient(ServiceConfigurationKeys.Players.UserPlayer, typeof(UserPlayer));
 
             #region Components
             services.RegisterTypeFactory<PlayerPipeComponent>(p => new PlayerPipeComponent());

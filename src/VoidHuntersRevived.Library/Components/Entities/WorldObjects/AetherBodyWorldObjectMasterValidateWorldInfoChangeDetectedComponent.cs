@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Extensions.Aether;
+using VoidHuntersRevived.Library.Globals.Constants;
 using VoidHuntersRevived.Library.Interfaces;
 
 namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
@@ -41,12 +42,12 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
 
         private bool HandleValidateWorldInfoChangeDetected(IWorldObject sender, GameTime args)
         {
-            if ((_millisecondsSinceLastWorldInfoClean += args.ElapsedGameTime.TotalMilliseconds) < Constants.Intervals.AetherBodyWorldObjectCleanIntervalMinimum)
+            if ((_millisecondsSinceLastWorldInfoClean += args.ElapsedGameTime.TotalMilliseconds) < Intervals.AetherBodyWorldObjectCleanIntervalMinimum)
             {
                 return false;
             }
 
-            if(_millisecondsSinceLastWorldInfoClean > Constants.Intervals.AetherBodyWorldObjectCleanIntervalMaximum)
+            if(_millisecondsSinceLastWorldInfoClean > Intervals.AetherBodyWorldObjectCleanIntervalMaximum)
             {
                 return true;
             }
@@ -55,7 +56,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
                 this.Entity.Body.Instances[NetworkAuthorization.Master].LinearVelocity,
                 this.Entity.Body.Instances[NetworkAuthorization.Slave].LinearVelocity);
 
-            if(linearVelocityDif > Constants.Thresholds.MasterBodyLinearVelocityDifferenceTheshold)
+            if(linearVelocityDif > Thresholds.MasterBodyLinearVelocityDifferenceTheshold)
             {
                 return true;
             }
@@ -64,7 +65,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
                 this.Entity.Body.Instances[NetworkAuthorization.Master].AngularVelocity,
                 this.Entity.Body.Instances[NetworkAuthorization.Slave].AngularVelocity);
 
-            if (angularVelocityDif > Constants.Thresholds.MasterBodyAngularVelocityDifferenceTheshold)
+            if (angularVelocityDif > Thresholds.MasterBodyAngularVelocityDifferenceTheshold)
             {
                 return true;
             }

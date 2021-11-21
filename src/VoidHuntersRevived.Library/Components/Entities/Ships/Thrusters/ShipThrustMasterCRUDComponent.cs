@@ -14,6 +14,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Entities.Ships;
 using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Structs;
+using VoidHuntersRevived.Library.Globals.Constants;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
 {
@@ -36,7 +37,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
 
         private void HandleShipDirectionChanged(ShipThrustComponent sender, DirectionState args)
         {
-            this.Entity.Messages[Constants.Messages.Ship.DirectionChanged].Create(om =>
+            this.Entity.Messages[Messages.Ship.DirectionChanged].Create(om =>
             {
                 om.Write(args.Direction);
                 om.Write(args.State);

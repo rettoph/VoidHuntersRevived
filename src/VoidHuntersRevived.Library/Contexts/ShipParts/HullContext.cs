@@ -5,12 +5,13 @@ using System.Text;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Library.Attributes;
 using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
+using VoidHuntersRevived.Library.Globals.Constants;
 
 namespace VoidHuntersRevived.Library.Contexts.ShipParts
 {
     [ShipPartContextType("Hull")]
     public class HullContext : ShipPartContext
     {
-        protected override ServiceConfigurationKey shipPartServiceConfigurationKey => Constants.ServiceConfigurationKeys.ShipParts.Hull;
+        protected override ServiceConfigurationKey shipPartServiceConfigurationKey => ServiceConfigurationKeys.ShipParts.Hull;
     }
 }

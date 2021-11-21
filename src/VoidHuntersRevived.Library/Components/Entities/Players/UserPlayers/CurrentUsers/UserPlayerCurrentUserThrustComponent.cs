@@ -10,12 +10,13 @@ using VoidHuntersRevived.Library.Components.Entities.Ships;
 using VoidHuntersRevived.Library.Enums;
 using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Structs;
+using VoidHuntersRevived.Library.Globals.Constants;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Players
 {
     internal sealed class UserPlayerCurrentUserThrustComponent : UserPlayerCurrentUserCommandActionBaseComponent<DirectionState>
     {
-        public override UInt32 ActionRequestMessageType => Constants.Messages.UserPlayer.RequestDirectionChanged;
+        public override UInt32 ActionRequestMessageType => Messages.UserPlayer.RequestDirectionChanged;
 
         public override String CurrentUserCommandInput => "ship thrust";
 

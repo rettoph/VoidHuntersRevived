@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
+using VoidHuntersRevived.Library.Globals.Constants;
 using VoidHuntersRevived.Library.Interfaces;
 
 namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
@@ -17,8 +18,8 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
             base.PreInitializeRemote(provider, networkAuthorization);
 
             this.Entity.Messages.Add(
-                messageType: Constants.Messages.WorldObject.WorldInfoPing,
-                defaultContext: Constants.MessageContexts.WorldObject.WorldInfoPingMessageContext);
+                messageType: Messages.WorldObject.WorldInfoPing,
+                defaultContext: MessageContexts.WorldObject.WorldInfoPingMessageContext);
         }
 
         protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)

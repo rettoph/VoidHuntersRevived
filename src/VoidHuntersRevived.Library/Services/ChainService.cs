@@ -9,6 +9,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Contexts.ShipParts;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
+using VoidHuntersRevived.Library.Globals.Constants;
 
 namespace VoidHuntersRevived.Library.Services
 {
@@ -35,7 +36,7 @@ namespace VoidHuntersRevived.Library.Services
 
         #region Create Methods
         public Chain Create(ShipPart shipPart = default, Vector2 position = default, Single rotation = default, Guid? id = default)
-            => this.Create<Chain>(this.provider, Constants.ServiceConfigurationKeys.Chain, (chain, _, _) =>
+            => this.Create<Chain>(this.provider, ServiceConfigurationKeys.Chain, (chain, _, _) =>
             {
                 chain.Body.Instances[NetworkAuthorization.Master].SetTransformIgnoreContacts(ref position, rotation);
 

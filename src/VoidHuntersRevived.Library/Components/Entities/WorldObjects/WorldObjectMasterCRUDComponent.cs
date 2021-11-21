@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
+using VoidHuntersRevived.Library.Globals.Constants;
 using VoidHuntersRevived.Library.Interfaces;
 
 namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
@@ -28,19 +29,19 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
         {
             base.PreInitializeRemote(provider, networkAuthorization);
 
-            _broadcast = provider.GetBroadcast(Constants.Messages.WorldObject.WorldInfoPing);
+            _broadcast = provider.GetBroadcast(Messages.WorldObject.WorldInfoPing);
 
             this.Entity.OnWorldInfoDirtyChanged += this.HandleWorldInfoChangeDetected;
 
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnWrite += this.WriteCreateMessage;
-            this.Entity.Messages[Constants.Messages.WorldObject.WorldInfoPing].OnWrite += this.WriteWorldInfoPingMessage;
+            this.Entity.Messages[Messages.WorldObject.WorldInfoPing].OnWrite += this.WriteWorldInfoPingMessage;
         }
 
         protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)
         {
             base.PostReleaseRemote(networkAuthorization);
 
-            this.Entity.Messages[Constants.Messages.WorldObject.WorldInfoPing].OnWrite -= this.WriteWorldInfoPingMessage;
+            this.Entity.Messages[Messages.WorldObject.WorldInfoPing].OnWrite -= this.WriteWorldInfoPingMessage;
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnWrite -= this.WriteCreateMessage;
 
             this.Entity.OnWorldInfoDirtyChanged -= this.HandleWorldInfoChangeDetected;
@@ -52,7 +53,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
         #region Network Methods
         private void WriteCreateMessage(MessageTypeManager sender, NetOutgoingMessage im)
         {
-            this.Entity.Messages[Constants.Messages.WorldObject.WorldInfoPing].TryWrite(im);
+            this.Entity.Messages[Messages.WorldObject.WorldInfoPing].TryWrite(im);
         }
 
         private void WriteWorldInfoPingMessage(MessageTypeManager sender, NetOutgoingMessage om)

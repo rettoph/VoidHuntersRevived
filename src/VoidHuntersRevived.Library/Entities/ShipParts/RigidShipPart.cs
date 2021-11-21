@@ -12,6 +12,7 @@ using VoidHuntersRevived.Library.Entities.Aether;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Extensions.Aether;
+using VoidHuntersRevived.Library.Globals.Constants;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
@@ -34,7 +35,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             _fixtures = new Queue<AetherFixture>();
         }
         #endregion
-
 
         #region Helper Methods
         protected override void TryCreateAetherForm(Chain chain)
@@ -72,9 +72,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 foreach(AetherFixture fixture in _fixtures)
                 {
                     fixture.SetCollisionData(
-                        collidesWith: Constants.CollisionCategories.CorporealCollidesWith,
-                        collisionCategories: Constants.CollisionCategories.CorporealCollisionCategories,
-                        collisionGroup: Constants.CollisionCategories.CorporealCollisionGroup);
+                        collidesWith: CollisionCategories.CorporealCollidesWith,
+                        collisionCategories: CollisionCategories.CorporealCollisionCategories,
+                        collisionGroup: CollisionCategories.CorporealCollisionGroup);
                 }
             }
             else
@@ -82,9 +82,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 foreach (AetherFixture fixture in _fixtures)
                 {
                     fixture.SetCollisionData(
-                        collidesWith: Constants.CollisionCategories.NonCorporealCollidesWith,
-                        collisionCategories: Constants.CollisionCategories.NonCorporealCollisionCategories,
-                        collisionGroup: Constants.CollisionCategories.NonCorporealCollisionGroup);
+                        collidesWith: CollisionCategories.NonCorporealCollidesWith,
+                        collisionCategories: CollisionCategories.NonCorporealCollisionCategories,
+                        collisionGroup: CollisionCategories.NonCorporealCollisionGroup);
                 }
             }
         }

@@ -13,6 +13,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Components.Entities.Ships;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.Ships;
+using VoidHuntersRevived.Library.Globals.Constants;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Players
 {
@@ -32,12 +33,12 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
             base.InitializeRemote(provider, networkAuthorization);
 
             this.Entity.Messages.Add(
-                messageType: Constants.Messages.UserPlayer.RequestTargetChangedAction,
+                messageType: Messages.UserPlayer.RequestTargetChangedAction,
                 defaultContext: Guppy.Network.Constants.MessageContexts.InternalUnreliableDefault);
 
             if (networkAuthorization == NetworkAuthorization.Master)
             {
-                this.Entity.Messages[Constants.Messages.UserPlayer.RequestTargetChangedAction].OnRead += this.ReadCurrentUserRequestTargetChangedActionMessage;
+                this.Entity.Messages[Messages.UserPlayer.RequestTargetChangedAction].OnRead += this.ReadCurrentUserRequestTargetChangedActionMessage;
 
                 this.Entity.OnShipChanged += this.HandleShipChanged;
             }
@@ -45,7 +46,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
 
             if(networkAuthorization == NetworkAuthorization.Slave)
             {
-                this.Entity.Messages[Constants.Messages.UserPlayer.RequestTargetChangedAction].OnWrite += this.WriteCurrentUserRequestTargetChangedActionMessage;
+                this.Entity.Messages[Messages.UserPlayer.RequestTargetChangedAction].OnWrite += this.WriteCurrentUserRequestTargetChangedActionMessage;
             }
         }
 
@@ -90,7 +91,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
 
             if(networkAuthorization == NetworkAuthorization.Slave)
             {
-                _broadcast = provider.GetBroadcast(Constants.Messages.UserPlayer.RequestTargetChangedAction);
+                _broadcast = provider.GetBroadcast(Messages.UserPlayer.RequestTargetChangedAction);
 
                 this.Entity.OnShipChanged += this.HandleCurrentUserShipChanged;
 

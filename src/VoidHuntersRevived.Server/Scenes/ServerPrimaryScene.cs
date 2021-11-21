@@ -16,6 +16,7 @@ using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.Ships;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
+using VoidHuntersRevived.Library.Globals.Constants;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Services;
 
@@ -99,7 +100,7 @@ namespace VoidHuntersRevived.Server.Scenes
         #region Event Handlers
         private void HandleUserJoined(IServiceList<IUser> sender, IUser user)
         {
-            this.Channel.Pipes.GetOrCreateById(VoidHuntersRevived.Library.Constants.PipeIds.PlayersPipeId).Users.TryAdd(user);
+            this.Channel.Pipes.GetOrCreateById(PipeIds.PlayersPipeId).Users.TryAdd(user);
 
             _updateThread.Enqueue(_ =>
             {

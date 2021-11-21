@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.Ships;
 using Guppy.Network.Extensions.Lidgren;
+using VoidHuntersRevived.Library.Globals.Constants;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
 {
@@ -30,19 +31,19 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         {
             base.PreInitializeRemote(provider, networkAuthorization);
 
-            _broadcast = provider.GetBroadcast(Constants.Messages.Ship.TargetChanged);
+            _broadcast = provider.GetBroadcast(Messages.Ship.TargetChanged);
 
             this.OnTargetChanged += this.HandleTargetChanged;
 
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnWrite += this.WriteCreateMessage;
-            this.Entity.Messages[Constants.Messages.Ship.TargetChanged].OnWrite += this.WriteShipTargetChangedMessage;
+            this.Entity.Messages[Messages.Ship.TargetChanged].OnWrite += this.WriteShipTargetChangedMessage;
         }
 
         protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)
         {
             base.PostReleaseRemote(networkAuthorization);
 
-            this.Entity.Messages[Constants.Messages.Ship.TargetChanged].OnWrite -= this.WriteShipTargetChangedMessage;
+            this.Entity.Messages[Messages.Ship.TargetChanged].OnWrite -= this.WriteShipTargetChangedMessage;
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnWrite -= this.WriteCreateMessage;
 
             this.OnTargetChanged -= this.HandleTargetChanged;
@@ -54,7 +55,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         #region Network Methods
         private void WriteCreateMessage(MessageTypeManager sender, NetOutgoingMessage im)
         {
-            this.Entity.Messages[Constants.Messages.Ship.TargetChanged].TryWrite(im);
+            this.Entity.Messages[Messages.Ship.TargetChanged].TryWrite(im);
         }
 
         private void WriteShipTargetChangedMessage(MessageTypeManager sender, NetOutgoingMessage om)

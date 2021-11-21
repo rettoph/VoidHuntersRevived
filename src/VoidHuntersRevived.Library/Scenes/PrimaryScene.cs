@@ -11,6 +11,7 @@ using Guppy.Network.Scenes;
 using Guppy.Network.Peers;
 using Guppy.Utilities;
 using VoidHuntersRevived.Library.Entities.Aether;
+using VoidHuntersRevived.Library.Globals.Constants;
 
 namespace VoidHuntersRevived.Library.Scenes
 {
@@ -25,10 +26,10 @@ namespace VoidHuntersRevived.Library.Scenes
         {
             base.PreInitialize(provider);
 
-            this.Layers.Create<Layer>((l, p, c) => l.SetContext(Constants.LayersContexts.Chunks));
-            this.Layers.Create<Layer>((l, p, c) => l.SetContext(Constants.LayersContexts.Players));
-            this.Layers.Create<Layer>((l, p, c) => l.SetContext(Constants.LayersContexts.Ships));
-            this.Layers.Create<Layer>((l, p, c) => l.SetContext(Constants.LayersContexts.Chains));
+            this.Layers.Create<Layer>((l, p, c) => l.SetContext(LayersContexts.Chunks));
+            this.Layers.Create<Layer>((l, p, c) => l.SetContext(LayersContexts.Players));
+            this.Layers.Create<Layer>((l, p, c) => l.SetContext(LayersContexts.Ships));
+            this.Layers.Create<Layer>((l, p, c) => l.SetContext(LayersContexts.Chains));
         }
 
         protected override void Initialize(GuppyServiceProvider provider)
@@ -63,7 +64,7 @@ namespace VoidHuntersRevived.Library.Scenes
 
         #region NetworkScene Implementation
         protected override IChannel GetChannel(Peer peer)
-            => peer.Channels.GetById(Constants.Channels.MainChannel);
+            => peer.Channels.GetById(Channels.MainChannel);
         #endregion
     }
 }

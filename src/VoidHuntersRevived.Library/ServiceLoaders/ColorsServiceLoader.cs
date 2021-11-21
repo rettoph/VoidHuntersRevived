@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Library.Globals.Constants;
 
 namespace VoidHuntersRevived.Library.ServiceLoaders
 {
@@ -16,8 +17,8 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
         {
             services.RegisterSetup<ColorService>((colors, _, _) =>
             {
-                colors.TryRegister(Constants.Colors.ShipPartHullColor, Color.Orange);
-                colors.TryRegister(Constants.Colors.ShipPartThrusterColor, Color.Green);
+                colors.TryRegister(Colors.ShipPartHullColor, Color.Orange);
+                colors.TryRegister(Colors.ShipPartThrusterColor, Color.Green);
             });
         }
 

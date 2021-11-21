@@ -20,6 +20,7 @@ using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Utilities;
 using System.Linq;
 using Guppy.Threading.Utilities;
+using VoidHuntersRevived.Library.Globals.Constants;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Players
 {
@@ -31,7 +32,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
         #endregion
 
         #region Public Properties
-        public override UInt32 ActionRequestMessageType => Constants.Messages.UserPlayer.RequestTractorBeamAction;
+        public override UInt32 ActionRequestMessageType => Messages.UserPlayer.RequestTractorBeamAction;
 
         public override String CurrentUserCommandInput => "ship tractorbeam";
 

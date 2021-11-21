@@ -12,6 +12,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.Ships;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
+using VoidHuntersRevived.Library.Globals.Constants;
 using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
@@ -33,7 +34,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
             provider.Service(out _networkEntities);
 
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnRead += this.ReadCreateMessage;
-            this.Entity.Messages[Constants.Messages.Ship.PlayerChanged].OnRead += this.ReadPlayerChangedMessage;
+            this.Entity.Messages[Messages.Ship.PlayerChanged].OnRead += this.ReadPlayerChangedMessage;
         }
 
         protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)
@@ -44,7 +45,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
             _networkEntities = default;
 
             this.Entity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnRead -= this.ReadCreateMessage;
-            this.Entity.Messages[Constants.Messages.Ship.PlayerChanged].OnRead -= this.ReadPlayerChangedMessage;
+            this.Entity.Messages[Messages.Ship.PlayerChanged].OnRead -= this.ReadPlayerChangedMessage;
         }
         #endregion
 
@@ -52,7 +53,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         private void ReadCreateMessage(MessageTypeManager sender, NetIncomingMessage im)
         {
             this.Entity.Chain = _networkEntities.GetById<Chain>(im.ReadGuid());
-            this.Entity.Messages[Constants.Messages.Ship.PlayerChanged].TryRead(im);
+            this.Entity.Messages[Messages.Ship.PlayerChanged].TryRead(im);
         }
 
         private void ReadPlayerChangedMessage(MessageTypeManager sender, NetIncomingMessage im)

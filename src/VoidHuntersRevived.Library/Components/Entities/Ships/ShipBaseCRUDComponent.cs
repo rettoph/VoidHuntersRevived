@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.Ships;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
+using VoidHuntersRevived.Library.Globals.Constants;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
 {
@@ -17,7 +18,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         {
             base.PreInitializeRemote(provider, networkAuthorization);
 
-            this.Entity.Messages.Add(Constants.Messages.Ship.PlayerChanged, Guppy.Network.Constants.MessageContexts.InternalUnreliableDefault);
+            this.Entity.Messages.Add(Messages.Ship.PlayerChanged, Guppy.Network.Constants.MessageContexts.InternalUnreliableDefault);
         }
         #endregion
     }

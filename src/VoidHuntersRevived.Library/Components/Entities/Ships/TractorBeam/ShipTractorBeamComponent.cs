@@ -19,6 +19,7 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.Ships;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Globals.Constants;
 using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Structs;
 using VoidHuntersRevived.Library.Utilities;
@@ -89,7 +90,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
 
             this.shipParts = provider.GetService<ShipPartService>();
 
-            this.Entity.Messages.Add(Constants.Messages.Ship.TractorBeamAction, Guppy.Network.Constants.MessageContexts.InternalUnreliableDefault);
+            this.Entity.Messages.Add(Messages.Ship.TractorBeamAction, Guppy.Network.Constants.MessageContexts.InternalUnreliableDefault);
         }
 
         protected override void ReleaseRemote(NetworkAuthorization networkAuthorization)

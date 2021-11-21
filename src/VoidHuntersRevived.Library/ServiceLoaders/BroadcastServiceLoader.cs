@@ -7,6 +7,7 @@ using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Library.Globals.Constants;
 using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library.ServiceLoaders
@@ -27,11 +28,11 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                 switch (provider.Settings.Get<NetworkAuthorization>())
                 {
                     case NetworkAuthorization.Master:
-                        broadcasts.Register(Constants.Messages.WorldObject.WorldInfoPing, Constants.Intervals.WorldInfoPingBroadcastInterval);
-                        broadcasts.Register(Constants.Messages.Ship.TargetChanged, Constants.Intervals.ShipTargetPingBroadcastInterval);
+                        broadcasts.Register(Messages.WorldObject.WorldInfoPing, Intervals.WorldInfoPingBroadcastInterval);
+                        broadcasts.Register(Messages.Ship.TargetChanged, Intervals.ShipTargetPingBroadcastInterval);
                         break;
                     case NetworkAuthorization.Slave:
-                        broadcasts.Register(Constants.Messages.UserPlayer.RequestTargetChangedAction, Constants.Intervals.ShipTargetPingBroadcastInterval);
+                        broadcasts.Register(Messages.UserPlayer.RequestTargetChangedAction, Intervals.ShipTargetPingBroadcastInterval);
                         break;
                 }
             });

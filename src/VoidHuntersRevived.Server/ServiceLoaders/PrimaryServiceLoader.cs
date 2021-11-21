@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library;
+using VoidHuntersRevived.Library.Globals;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Server.Scenes;
 
@@ -19,7 +20,7 @@ namespace VoidHuntersRevived.Server.ServiceLoaders
     {
         public void RegisterServices(GuppyServiceCollection services)
         {
-            Constants.IsServer = true;
+            PeerData.IsServer = true;
 
             services.RegisterTypeFactory<PrimaryGame>(p => new ServerPrimaryGame());
             services.RegisterTypeFactory<PrimaryScene>(p => new ServerPrimaryScene());

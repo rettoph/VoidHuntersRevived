@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.Players;
+using VoidHuntersRevived.Library.Globals.Constants;
 using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Library.Services
@@ -35,7 +36,7 @@ namespace VoidHuntersRevived.Library.Services
 
         public UserPlayer CreateUserPlayer(IUser user)
         {
-            return this.Create<UserPlayer>(_provider, Constants.ServiceConfigurationKeys.Players.UserPlayer, (player, _, _) =>
+            return this.Create<UserPlayer>(_provider, ServiceConfigurationKeys.Players.UserPlayer, (player, _, _) =>
             {
                 player.User = user;
             });

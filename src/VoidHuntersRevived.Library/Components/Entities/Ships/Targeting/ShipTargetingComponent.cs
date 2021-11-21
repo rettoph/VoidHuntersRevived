@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.Ships;
 using Guppy.Network.Extensions.Lidgren;
+using VoidHuntersRevived.Library.Globals.Constants;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
 {
@@ -46,7 +47,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         {
             base.PreInitializeRemote(provider, networkAuthorization);
 
-            this.Entity.Messages.Add(Constants.Messages.Ship.TargetChanged, Guppy.Network.Constants.MessageContexts.InternalUnreliableDefault);
+            this.Entity.Messages.Add(Messages.Ship.TargetChanged, Guppy.Network.Constants.MessageContexts.InternalUnreliableDefault);
         }
 
         protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)

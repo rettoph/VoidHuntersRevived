@@ -17,6 +17,7 @@ using VoidHuntersRevived.Library.Dtos.Utilities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
+using VoidHuntersRevived.Library.Globals.Constants;
 using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Utilities;
 
@@ -40,8 +41,8 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.RegisterTypeFactory<Hull>(p => new Hull());
             services.RegisterTypeFactory<Thruster>(p => new Thruster());
 
-            services.RegisterTransient(Constants.ServiceConfigurationKeys.ShipParts.Hull, typeof(Hull));
-            services.RegisterTransient(Constants.ServiceConfigurationKeys.ShipParts.Thruster, typeof(Thruster));
+            services.RegisterTransient(ServiceConfigurationKeys.ShipParts.Hull, typeof(Hull));
+            services.RegisterTransient(ServiceConfigurationKeys.ShipParts.Thruster, typeof(Thruster));
             #endregion
 
             services.RegisterSetup<ShipPartService>((shipParts, p, c) =>
@@ -49,7 +50,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                 shipParts.RegisterContext(new ThrusterContext()
                 {
                     Name = "ship-part:hull:thruster",
-                    Color = Constants.Colors.ShipPartThrusterColor,
+                    Color = Colors.ShipPartThrusterColor,
                     Centeroid = new Vector2(-0.3f, 0f),
                     Shapes = new[]
                     {
@@ -89,7 +90,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                 shipParts.RegisterContext(new HullContext()
                 {
                     Name = "ship-part:hull:square",
-                    Color = Constants.Colors.ShipPartHullColor,
+                    Color = Colors.ShipPartHullColor,
                     Centeroid = PolygonHelper.GetCenteroid(4),
                     Shapes = new[]
                     {
@@ -110,7 +111,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                 shipParts.RegisterContext(new HullContext()
                 {
                     Name = "ship-part:hull:triangle",
-                    Color = Constants.Colors.ShipPartHullColor,
+                    Color = Colors.ShipPartHullColor,
                     Centeroid = PolygonHelper.GetCenteroid(3),
                     Shapes = new[]
                     {

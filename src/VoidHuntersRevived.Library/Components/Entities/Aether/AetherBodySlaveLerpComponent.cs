@@ -15,6 +15,7 @@ using VoidHuntersRevived.Library.Entities.Aether;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Extensions.Aether;
+using VoidHuntersRevived.Library.Globals.Constants;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Players
 {
@@ -48,7 +49,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
                 this.Entity.Instances[NetworkAuthorization.Slave].Rotation, 
                 this.Entity.Instances[NetworkAuthorization.Master].Rotation);
 
-            if (rotationDif > Constants.Thresholds.SlaveBodyRotationSnapThreshold || positionDif > Constants.Thresholds.SlaveBodyPositionSnapThreshold)
+            if (rotationDif > Thresholds.SlaveBodyRotationSnapThreshold || positionDif > Thresholds.SlaveBodyPositionSnapThreshold)
             { // Instant snap if the difference is to great
                 this.Entity.Instances[NetworkAuthorization.Slave].SetTransformIgnoreContacts(
                     this.Entity.Instances[NetworkAuthorization.Master].Position,
@@ -57,9 +58,9 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
                 this.Entity.Instances[NetworkAuthorization.Slave].AngularVelocity = this.Entity.Instances[NetworkAuthorization.Master].AngularVelocity;
                 this.Entity.Instances[NetworkAuthorization.Slave].LinearVelocity = this.Entity.Instances[NetworkAuthorization.Master].LinearVelocity;
             }
-            else if (rotationDif > Constants.Thresholds.SlaveBodyRotationDifferenceTheshold || positionDif > Constants.Thresholds.SlaveBodyPositionDifferenceTheshold)
+            else if (rotationDif > Thresholds.SlaveBodyRotationDifferenceTheshold || positionDif > Thresholds.SlaveBodyPositionDifferenceTheshold)
             { // Only proceed with positional lerping if the slave is not already matching the master...
-                var posStrength = MathHelper.Clamp(Constants.LerpStrengths.SlaveBodyLerpStrength * (Single)gameTime.ElapsedGameTime.TotalSeconds, 0, 1);
+                var posStrength = MathHelper.Clamp(LerpStrengths.SlaveBodyLerpStrength * (Single)gameTime.ElapsedGameTime.TotalSeconds, 0, 1);
                 var velStrength = MathHelper.Lerp(posStrength, 1, 0.75f);
 
                 this.Entity.Instances[NetworkAuthorization.Slave].LinearVelocity = Vector2.Lerp(

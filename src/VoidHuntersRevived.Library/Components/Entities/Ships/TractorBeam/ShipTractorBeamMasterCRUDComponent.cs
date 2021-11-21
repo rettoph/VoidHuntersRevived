@@ -9,6 +9,7 @@ using VoidHuntersRevived.Library.Structs;
 using VoidHuntersRevived.Library.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Enums;
 using Guppy.Network.Extensions.Lidgren;
+using VoidHuntersRevived.Library.Globals.Constants;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
 {
@@ -34,7 +35,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         #region Event Handlers
         private void HandleShipTractorBeamAction(ShipTractorBeamComponent sender, TractorBeamAction args)
         {
-            this.Entity.Messages[Constants.Messages.Ship.TractorBeamAction].Create(om =>
+            this.Entity.Messages[Messages.Ship.TractorBeamAction].Create(om =>
             {
                 om.Write(this.Entity.Components.Get<ShipTargetingComponent>().Target);
                 om.Write(args, this.shipParts, ShipPartSerializationFlags.None);

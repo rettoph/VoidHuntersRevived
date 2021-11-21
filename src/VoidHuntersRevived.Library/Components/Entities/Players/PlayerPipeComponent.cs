@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.Players;
+using VoidHuntersRevived.Library.Globals.Constants;
 using VoidHuntersRevived.Library.Scenes;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Players
@@ -13,6 +14,6 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
     internal sealed class PlayerPipeComponent : StaticPipeComponent<Player>
     {
         protected override IPipe GetPipe(GuppyServiceProvider provider, PrimaryScene scene)
-            => scene.Channel.Pipes.GetOrCreateById(Constants.PipeIds.PlayersPipeId);
+            => scene.Channel.Pipes.GetOrCreateById(PipeIds.PlayersPipeId);
     }
 }

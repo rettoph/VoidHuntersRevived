@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Text;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Extensions.Lidgren;
+using VoidHuntersRevived.Library.Globals.Constants;
 using VoidHuntersRevived.Library.Structs;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
@@ -26,14 +27,14 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
 
             provider.Service(out _mainThread);
 
-            this.Entity.Messages[Constants.Messages.Ship.TractorBeamAction].OnRead += this.ReadShipTractorBeamActionMessage;
+            this.Entity.Messages[Messages.Ship.TractorBeamAction].OnRead += this.ReadShipTractorBeamActionMessage;
         }
 
         protected override void ReleaseRemote(NetworkAuthorization networkAuthorization)
         {
             base.ReleaseRemote(networkAuthorization);
 
-            this.Entity.Messages[Constants.Messages.Ship.TractorBeamAction].OnRead -= this.ReadShipTractorBeamActionMessage;
+            this.Entity.Messages[Messages.Ship.TractorBeamAction].OnRead -= this.ReadShipTractorBeamActionMessage;
 
             _mainThread = default;
         }

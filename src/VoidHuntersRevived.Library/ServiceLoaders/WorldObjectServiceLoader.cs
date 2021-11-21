@@ -9,6 +9,7 @@ using System.Text;
 using VoidHuntersRevived.Library.Components;
 using VoidHuntersRevived.Library.Components.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
+using VoidHuntersRevived.Library.Globals.Constants;
 using VoidHuntersRevived.Library.Interfaces;
 using VoidHuntersRevived.Library.Services;
 
@@ -23,7 +24,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.RegisterTypeFactory<Chain>(p => new Chain());
 
             services.RegisterTransient<ServiceList<IWorldObject>>();
-            services.RegisterTransient(Constants.ServiceConfigurationKeys.Chain);
+            services.RegisterTransient(ServiceConfigurationKeys.Chain);
 
             #region Components
             services.RegisterTypeFactory<WorldObjectChunkComponent>(p => new WorldObjectChunkComponent());

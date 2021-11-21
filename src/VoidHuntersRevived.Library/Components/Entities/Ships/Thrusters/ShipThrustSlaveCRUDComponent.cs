@@ -15,6 +15,7 @@ using VoidHuntersRevived.Library.Entities.Ships;
 using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Structs;
 using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Globals.Constants;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
 {
@@ -25,14 +26,14 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         {
             base.InitializeRemote(provider, networkAuthorization);
 
-            this.Entity.Messages[Constants.Messages.Ship.DirectionChanged].OnRead += this.ReadDirectionChangedMessage;
+            this.Entity.Messages[Messages.Ship.DirectionChanged].OnRead += this.ReadDirectionChangedMessage;
         }
 
         protected override void ReleaseRemote(NetworkAuthorization networkAuthorization)
         {
             base.ReleaseRemote(networkAuthorization);
 
-            this.Entity.Messages[Constants.Messages.Ship.DirectionChanged].OnRead -= this.ReadDirectionChangedMessage;
+            this.Entity.Messages[Messages.Ship.DirectionChanged].OnRead -= this.ReadDirectionChangedMessage;
         }
 
         private void ReadDirectionChangedMessage(MessageTypeManager sender, NetIncomingMessage args)

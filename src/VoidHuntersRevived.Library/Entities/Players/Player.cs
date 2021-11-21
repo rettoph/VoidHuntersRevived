@@ -11,6 +11,7 @@ using VoidHuntersRevived.Library.Entities.WorldObjects;
 using Guppy.Network;
 using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Entities.Ships;
+using VoidHuntersRevived.Library.Globals.Constants;
 
 namespace VoidHuntersRevived.Library.Entities.Players
 {
@@ -43,7 +44,7 @@ namespace VoidHuntersRevived.Library.Entities.Players
         {
             base.Create(provider);
 
-            this.LayerGroup = Constants.LayersContexts.Players.Group.GetValue();
+            this.LayerGroup = LayersContexts.Players.Group.GetValue();
         }
 
         protected override void Initialize(GuppyServiceProvider provider)
