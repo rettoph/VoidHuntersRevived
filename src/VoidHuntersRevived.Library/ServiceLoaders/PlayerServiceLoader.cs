@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
     [AutoLoad]
     internal sealed class PlayerServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<PlayerService>(p => new PlayerService());
             services.RegisterTypeFactory<UserPlayer>(p => new UserPlayer());

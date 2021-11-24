@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Entities.Ships;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Globals.Constants;
@@ -15,7 +16,7 @@ using VoidHuntersRevived.Library.Structs;
 
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
 {
-    public abstract class ShipThrustComponent : NetworkComponent<Ship>
+    public abstract class ShipThrustersComponent : ShipShipPartsComponent<Thruster>
     {
         #region Public Attributes
         /// <summary>
@@ -32,7 +33,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Ships
         /// 
         /// This will contain the changed direction and its new state.
         /// </summary>
-        public event OnEventDelegate<ShipThrustComponent, DirectionState> OnDirectionChanged;
+        public event OnEventDelegate<ShipThrustersComponent, DirectionState> OnDirectionChanged;
         #endregion
 
         #region Lifecycle Methods

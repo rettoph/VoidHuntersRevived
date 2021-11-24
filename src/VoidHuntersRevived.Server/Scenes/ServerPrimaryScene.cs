@@ -50,34 +50,16 @@ namespace VoidHuntersRevived.Server.Scenes
 
             this.Channel.Users.OnAdded += this.HandleUserJoined;
 
+            var rand = new Random();
+
             provider.GetService<ChunkManager>().OnChunkAdded += (_, chunk) =>
             {
-                // var chain = _chains.Create(
-                //     contextName: "ship-part:hull:square",
-                //     position: chunk.Bounds.Center.ToVector2());
-                // 
-                // var chain2 = _chains.Create(
-                //     contextName: "ship-part:hull:triangle",
-                //     position: chunk.Bounds.Center.ToVector2() + new Vector2(5, 3));
-                // 
-                // var chain3 = _chains.Create(
-                //     contextName: "ship-part:hull:thruster",
-                //     position: chunk.Bounds.Center.ToVector2() + new Vector2(4, 3));
-                // 
-                // ShipPart child;
-                // Boolean result;
-            
-                // child = provider.GetService<ShipPartService>().Create("ship-part:hull:square");
-                // result = chain.Root.ConnectionNodes[0].TryAttach(child.ConnectionNodes[3]);
-                // 
-                // child = provider.GetService<ShipPartService>().Create("ship-part:hull:square");
-                // result = chain.Root.ConnectionNodes[1].TryAttach(child.ConnectionNodes[2]);
-                // 
-                // child = provider.GetService<ShipPartService>().Create("ship-part:hull:square");
-                // result = chain.Root.ConnectionNodes[2].TryAttach(child.ConnectionNodes[1]);
-                // 
-                // child = provider.GetService<ShipPartService>().Create("ship-part:hull:square");
-                // result = chain.Root.ConnectionNodes[3].TryAttach(child.ConnectionNodes[0]);
+                for(var i=0; i<40; i++)
+                {
+                    var chain = _chains.Create(
+                        contextName: "ship-part:hull:square",
+                        position: chunk.Bounds.Center.ToVector2() + rand.NextVector2(-(Chunk.Size / 2), (Chunk.Size / 2)));
+                }
             };
         }
 
@@ -108,13 +90,13 @@ namespace VoidHuntersRevived.Server.Scenes
 
                 oldPart = _shipParts.Create("ship-part:hull:square");
 
-                for (int i = 0; i < 20; i++)
-                {
-                    newPart = _shipParts.Create("ship-part:hull:square");
-                    oldPart.ConnectionNodes[2].TryAttach(newPart.ConnectionNodes[0]);
-
-                    oldPart = newPart;
-                }
+                //for (int i = 0; i < 20; i++)
+                //{
+                //    newPart = _shipParts.Create("ship-part:hull:square");
+                //    oldPart.ConnectionNodes[2].TryAttach(newPart.ConnectionNodes[0]);
+                //
+                //    oldPart = newPart;
+                //}
 
                 // Create a new player instance linked to the user.
                 var chain = _chains.Create(

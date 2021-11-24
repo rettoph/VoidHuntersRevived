@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
     [AutoLoad]
     internal class AetherServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<AetherDebugView>(p => new AetherDebugView());
 

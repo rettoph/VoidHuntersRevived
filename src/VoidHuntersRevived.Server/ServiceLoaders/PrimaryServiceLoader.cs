@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Server.ServiceLoaders
     [AutoLoad]
     internal sealed class PrimaryServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             PeerData.IsServer = true;
 

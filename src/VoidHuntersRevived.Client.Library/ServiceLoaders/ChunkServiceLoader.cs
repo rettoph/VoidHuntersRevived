@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
     [AutoLoad]
     internal sealed class ChunkServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<ChunkDrawComponent>(p => new ChunkDrawComponent());
 

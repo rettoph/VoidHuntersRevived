@@ -47,7 +47,6 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
         {
             base.PreInitialize(provider);
 
-            // Setup the chain's body.
             this.Body = provider.GetService<AetherWorld>().CreateBody((body, _, _) =>
             {
                 body.Do(b =>

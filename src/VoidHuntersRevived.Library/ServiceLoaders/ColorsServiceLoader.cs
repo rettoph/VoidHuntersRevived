@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
     [AutoLoad]
     public class ColorsServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterSetup<ColorService>((colors, _, _) =>
             {

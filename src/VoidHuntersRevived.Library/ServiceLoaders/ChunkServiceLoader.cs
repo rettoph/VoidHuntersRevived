@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
     [AutoLoad]
     internal sealed class ChunkServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<Chunk>(p => new Chunk(), 5000);
             services.RegisterTypeFactory<ChunkManager>(p => new ChunkManager());

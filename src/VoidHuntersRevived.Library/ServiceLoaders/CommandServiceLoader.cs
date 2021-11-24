@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
     [AutoLoad]
     internal sealed class CommandServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterSetup<CommandService>((commands, _, _) =>
             {

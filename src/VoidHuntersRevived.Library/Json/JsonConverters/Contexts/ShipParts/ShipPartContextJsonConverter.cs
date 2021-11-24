@@ -1,4 +1,5 @@
-﻿using Guppy.Extensions.System;
+﻿using Guppy;
+using Guppy.Extensions.System;
 using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
@@ -34,11 +35,14 @@ namespace VoidHuntersRevived.Library.Json.JsonConverters.Contexts.ShipParts
         #region Constructors
         static ShipPartContextJsonConverter()
         {
-            ShipPartContextJsonConverter.ShipPartDtoTypes = AssemblyHelper.Types
-                .GetTypesWithAttribute<ShipPartContext, ShipPartContextTypeAttribute > ()
-                .ToDictionary(
-                    keySelector: t => t.GetCustomAttribute<ShipPartContextTypeAttribute>().Name,
-                    elementSelector: t => t);
+            using(AssemblyHelper assemblyHelper = new AssemblyHelper(withAssembliesReferencing: new[] { typeof(ShipPartContextTypeAttribute).Assembly }))
+            {
+                ShipPartContextJsonConverter.ShipPartDtoTypes = assemblyHelper.Types
+                    .GetTypesWithAttribute<ShipPartContext, ShipPartContextTypeAttribute>()
+                    .ToDictionary(
+                        keySelector: t => t.GetCustomAttribute<ShipPartContextTypeAttribute>().Name,
+                        elementSelector: t => t);
+            }
         }
         #endregion
 

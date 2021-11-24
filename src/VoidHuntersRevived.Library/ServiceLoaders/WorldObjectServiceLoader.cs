@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
     [AutoLoad]
     internal sealed class WorldObjectServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<ServiceList<IWorldObject>>(p => new ServiceList<IWorldObject>());
             services.RegisterTypeFactory<Chain>(p => new Chain());

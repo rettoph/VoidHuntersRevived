@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
     [AutoLoad]
     internal sealed class InputServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterSetup<InputCommandService>((inputs, _, _) =>
             {

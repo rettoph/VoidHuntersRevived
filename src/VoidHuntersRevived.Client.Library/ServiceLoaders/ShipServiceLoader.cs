@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
     [AutoLoad]
     internal sealed class ShipServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<ShipTractorBeamDrawComponent>(p => new ShipTractorBeamDrawComponent());
             services.RegisterTransient<ShipTractorBeamDrawComponent>();

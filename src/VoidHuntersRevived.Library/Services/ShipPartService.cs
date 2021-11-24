@@ -234,16 +234,12 @@ namespace VoidHuntersRevived.Library.Services
         #region Network Methods
         public void TryWriteShipPart(ShipPart shipPart, NetOutgoingMessage om, ShipPartSerializationFlags flags)
         {
-            this.log.Info($"{nameof(ShipPartService)}::{nameof(TryWriteShipPart)} => flags: {flags}, shipPartId: {shipPart.Id}, children: {shipPart.GetChildren().Count()}");
-
             this.WriteShipPart(shipPart, om, flags);
         }
 
         public ShipPart TryReadShipPart(NetIncomingMessage im, ShipPartSerializationFlags flags)
         {
             ShipPart parent = this.ReadShipPart(im, flags);
-
-            this.log.Info($"{nameof(ShipPartService)}::{nameof(TryReadShipPart)} => flags: {flags}, shipPartId: {parent.Id}, children: {parent.GetChildren().Count()}");
 
             return parent;
         }

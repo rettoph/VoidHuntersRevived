@@ -4,6 +4,7 @@ using Guppy.Extensions.System;
 using Guppy.Extensions.System.Collections;
 using Guppy.Lists;
 using Guppy.Network.Enums;
+using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,10 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         private FactoryServiceList<AetherBody> _bodies;
         private ChunkManager _chunks;
         private IEnumerable<Chunk> _spawnChunks;
+        #endregion
+
+        #region Public Properties
+        public Dictionary<NetworkAuthorization, Factory<Body>> BodyFactories { get; set; }
         #endregion
 
         #region Lifecycle Methods
@@ -38,6 +43,18 @@ namespace VoidHuntersRevived.Library.Entities.Aether
 
             _spawnChunks = _chunks.GetChunks(Vector2.Zero, 1);
             _spawnChunks.ForEach(chunk => chunk.TryRegisterDependent(this.Id));
+
+
+            Factory<Body> BodyFactoryFactory(World world)
+            {
+                return new Factory<Body>(() => world.CreateBody(), 500);
+            };
+
+            this.BodyFactories = new Dictionary<NetworkAuthorization, Factory<Body>>()
+            {
+                { NetworkAuthorization.Master, BodyFactoryFactory(this.Instances[NetworkAuthorization.Master]) },
+                { NetworkAuthorization.Slave, BodyFactoryFactory(this.Instances[NetworkAuthorization.Slave]) },
+            };
         }
 
         protected override void Release()

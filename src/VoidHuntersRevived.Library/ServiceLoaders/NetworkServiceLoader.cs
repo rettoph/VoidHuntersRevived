@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
     [AutoLoad]
     internal sealed class NetworkServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<NetPeerConfiguration>(method: p => new NetPeerConfiguration("vhr"), priority: 1);
 

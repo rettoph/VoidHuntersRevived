@@ -158,13 +158,23 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         }
 
         /// <summary>
-        /// Preform an action on every internal <see cref="PlatformInstances"/>.
+        /// Perform an action on every internal <see cref="PlatformInstances"/>.
         /// </summary>
         /// <param name="action"></param>
         protected void DoPlaftorm(Action<TAetherObject> action)
         {
             foreach (TAetherObject instance in _platformInstances)
                 action(instance);
+        }
+
+        /// <summary>
+        /// Perform an action on every internal <see cref="TAetherObject"/> instance.
+        /// </summary>
+        /// <param name="action"></param>
+        public void Do(Action<NetworkAuthorization, TAetherObject> action)
+        {
+            foreach (var kvp in _instances)
+                action(kvp.Key, kvp.Value);
         }
         #endregion
     }

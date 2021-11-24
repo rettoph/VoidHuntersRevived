@@ -21,6 +21,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// ShipPart data.
         /// </summary>
         public ShipPartContext Context { get; private set; }
+
+        /// <summary>
+        /// The <see cref="ShipPartContext.Centeroid"/>, transformed by <see cref="LocalTransformation"/>.
+        /// </summary>
+        public Vector2 LocalCenter => Vector2.Transform(this.Context.Centeroid, this.LocalTransformation);
         #endregion
 
         #region Events
@@ -172,7 +177,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
         internal override void SetContext(ShipPartContext context)
         {
-            ExceptionHelper.ValidateAssignableFrom<TShipPartContext>(context.GetType());
+            typeof(TShipPartContext).ValidateAssignableFrom(context.GetType());
 
             base.SetContext(context);
 

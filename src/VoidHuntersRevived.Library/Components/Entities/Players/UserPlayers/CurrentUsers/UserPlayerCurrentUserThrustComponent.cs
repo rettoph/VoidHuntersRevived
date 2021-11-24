@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.Players
 
         protected override Boolean TryDoActionRequest(DirectionState request, out DirectionState response)
         {
-            if (this.Entity.Ship?.Components.Get<ShipThrustComponent>().TrySetDirection(request) ?? false)
+            if (this.Entity.Ship?.Components.Get<ShipThrustersComponent>().TrySetDirection(request) ?? false)
             {
                 response = request;
                 return true;

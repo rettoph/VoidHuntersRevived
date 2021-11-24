@@ -40,6 +40,11 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
             get => _worldInfoDirty;
             set => this.OnWorldInfoDirtyChanged.InvokeIf(_worldInfoDirty != value, this, ref _worldInfoDirty, value);
         }
+
+        /// <summary>
+        /// When true, the world object will not be passed through the network.
+        /// </summary>
+        public Boolean Sleeping { get; set; } = false;
         #endregion
 
         #region Events

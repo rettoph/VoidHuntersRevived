@@ -34,6 +34,18 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         {
             set => this.Do(body => body.Tag = value);
         }
+
+        /// <summary>
+        /// Get the local position of the center of mass.
+        /// Warning: This property is readonly during callbacks.
+        /// </summary>
+        /// <value>The local position.</value>
+        /// <exception cref="System.InvalidOperationException">Thrown when the world is Locked/Stepping.</exception>
+        public Vector2 LocalCenter
+        {
+            get => this.LocalInstance.LocalCenter;
+            set => this.LocalInstance.LocalCenter = value;
+        }
         #endregion
 
         #region Lifecycle Methods
@@ -57,7 +69,7 @@ namespace VoidHuntersRevived.Library.Entities.Aether
             _fixtures.TryRelease();
             _fixtures = default;
 
-            this.Do(body => body.TryRemove());
+            this.Do((auth, body) => this.World.BodyFactories[auth].TryReturnToPool(body));
 
             base.PostRelease();
         }
@@ -65,7 +77,7 @@ namespace VoidHuntersRevived.Library.Entities.Aether
 
         #region Helper Methods
         protected override Body BuildInstance(GuppyServiceProvider provider, NetworkAuthorization authorization)
-            => this.World.Instances[authorization].CreateBody();
+            => this.World.BodyFactories[authorization].Create();
         #endregion
 
         #region CreateFixture Methods

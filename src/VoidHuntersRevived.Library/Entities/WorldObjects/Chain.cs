@@ -21,6 +21,7 @@ using Guppy.Network.Enums;
 using VoidHuntersRevived.Library.Entities.Aether;
 using System.Linq;
 using VoidHuntersRevived.Library.Globals.Constants;
+using tainicom.Aether.Physics2D.Dynamics;
 
 namespace VoidHuntersRevived.Library.Entities.WorldObjects
 {
@@ -54,12 +55,12 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
         #region Lifecycle Methods
         protected override void Initialize(GuppyServiceProvider provider)
         {
+            this.Sleeping = true;
+
             base.Initialize(provider);
 
             this.LayerGroup = LayersContexts.Chains.Group.GetValue();
             this.Corporeal = false; // Chains are non-corporeal by default.
-
-            this.log.Info($"Initializing new Chain {this.Id}");
         }
 
         protected override void PostInitialize(GuppyServiceProvider provider)

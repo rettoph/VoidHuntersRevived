@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
     [AutoLoad]
     internal sealed class PlayerServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<UserPlayerCurrentUserCameraComponent>(p => new UserPlayerCurrentUserCameraComponent());
 

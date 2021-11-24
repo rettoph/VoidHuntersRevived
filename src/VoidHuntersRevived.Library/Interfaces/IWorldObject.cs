@@ -36,7 +36,13 @@ namespace VoidHuntersRevived.Library.Interfaces
         /// Indicates the current IWorldObject's world info is in a dirty state.
         /// This is only relevant for networking purposes.
         /// </summary>
-        public Boolean WorldInfoDirty { get; set; }
+        Boolean WorldInfoDirty { get; set; }
+
+        /// <summary>
+        /// Indicates the current IWorldObject should be
+        /// brroadcasted through the network when dirty.
+        /// </summary>
+        Boolean Sleeping { get; set; }
         #endregion
 
         #region Events

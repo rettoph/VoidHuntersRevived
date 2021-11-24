@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
     [AutoLoad]
     internal sealed class SpellsServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<SpellService>(p => new SpellService());
             services.RegisterTypeFactory<FactoryServiceList<ISpell>>(p => new FactoryServiceList<ISpell>());

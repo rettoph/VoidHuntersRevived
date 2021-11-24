@@ -2,7 +2,6 @@
 using Guppy.Enums;
 using Guppy.Events.Delegates;
 using Guppy.Extensions.log4net;
-using Guppy.Extensions.Microsoft.Xna.Framework;
 using Guppy.Interfaces;
 using Guppy.Network.Components;
 using Guppy.Network.Enums;

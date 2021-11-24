@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
     [AutoLoad]
     internal sealed class AetherWrapperServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<AetherWorld>(p => new AetherWorld());
             services.RegisterTypeFactory<AetherBody>(p => new AetherBody());

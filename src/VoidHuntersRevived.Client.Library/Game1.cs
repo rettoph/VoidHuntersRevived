@@ -1,4 +1,5 @@
 ﻿using Guppy;
+using Guppy.Attributes;
 using Guppy.Extensions;
 using Guppy.Extensions.System;
 using Guppy.IO.Extensions;
@@ -10,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
@@ -17,7 +20,6 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using VoidHuntersRevived.Library;
 using VoidHuntersRevived.Library.Contexts.ShipParts;
-using VoidHuntersRevived.Library.Utilities.Json;
 
 namespace VoidHuntersRevived.Client.Library
 {
@@ -25,7 +27,6 @@ namespace VoidHuntersRevived.Client.Library
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        GuppyLoader guppy;
         PrimaryGame game;
 
 #if WINDOWS
@@ -38,7 +39,6 @@ namespace VoidHuntersRevived.Client.Library
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            guppy = new GuppyLoader();
 
             this.IsMouseVisible = true;
             this.Window.AllowUserResizing = true;
@@ -66,11 +66,14 @@ namespace VoidHuntersRevived.Client.Library
 
             base.Initialize();
 
-            this.game = guppy
-                .ConfigureMonoGame(this.graphics, this.Content, this.Window)
-                .ConfigureTerminal()
-                .Initialize()
-                .BuildGame<PrimaryGame>();
+            using (GuppyLoader guppy = new GuppyLoader(withAssembliesReferencing: new[] { typeof(PrimaryGame).Assembly, typeof(Game1).Assembly }))
+            {
+                this.game = guppy
+                    .ConfigureMonoGame(this.graphics, this.Content, this.Window)
+                    .ConfigureTerminal()
+                    .Initialize()
+                    .BuildGame<PrimaryGame>();
+            }
 
 #if WINDOWS
             SDL_MaximizeWindow(Window.Handle);

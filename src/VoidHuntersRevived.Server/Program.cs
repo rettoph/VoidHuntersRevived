@@ -22,9 +22,14 @@ namespace VoidHuntersRevived.Server
 
         private static async Task MainAsync(string[] args)
         {
-            var game = new GuppyLoader()
-                .Initialize()
-                .BuildGame<PrimaryGame>();
+            PrimaryGame game = default;
+
+            using (GuppyLoader guppy = new GuppyLoader(withAssembliesReferencing: new[] { typeof(PrimaryGame).Assembly }))
+            {
+                game = new GuppyLoader()
+                    .Initialize()
+                    .BuildGame<PrimaryGame>();
+            }
 
             await game.TryStartAsync(false);
         }

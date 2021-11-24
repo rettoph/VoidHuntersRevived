@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
     [AutoLoad]
     internal sealed class ShipServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<ShipService>(p => new ShipService());
             services.RegisterTypeFactory<Ship>(p => new Ship());
@@ -36,8 +36,8 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.RegisterTypeFactory<ShipMasterCRUDComponent>(p => new ShipMasterCRUDComponent());
             services.RegisterTypeFactory<ShipSlaveCRUDComponent>(p => new ShipSlaveCRUDComponent());
 
-            services.RegisterTypeFactory<ShipThrustMasterCRUDComponent>(p => new ShipThrustMasterCRUDComponent());
-            services.RegisterTypeFactory<ShipThrustSlaveCRUDComponent>(p => new ShipThrustSlaveCRUDComponent());
+            services.RegisterTypeFactory<ShipThrustersMasterCRUDComponent>(p => new ShipThrustersMasterCRUDComponent());
+            services.RegisterTypeFactory<ShipThrustersSlaveCRUDComponent>(p => new ShipThrustersSlaveCRUDComponent());
 
             services.RegisterTypeFactory<ShipTargetingMasterCRUDComponent>(p => new ShipTargetingMasterCRUDComponent());
             services.RegisterTypeFactory<ShipTargetingSlaveCrudComponent>(p => new ShipTargetingSlaveCrudComponent());
@@ -49,8 +49,8 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.RegisterTransient<ShipMasterCRUDComponent>();
             services.RegisterTransient<ShipSlaveCRUDComponent>();
 
-            services.RegisterTransient<ShipThrustMasterCRUDComponent>(ServiceConfigurationKey.From<ShipThrustComponent>());
-            services.RegisterTransient<ShipThrustSlaveCRUDComponent>(ServiceConfigurationKey.From<ShipThrustComponent>());
+            services.RegisterTransient<ShipThrustersMasterCRUDComponent>(ServiceConfigurationKey.From<ShipThrustersComponent>());
+            services.RegisterTransient<ShipThrustersSlaveCRUDComponent>(ServiceConfigurationKey.From<ShipThrustersComponent>());
 
             services.RegisterTransient<ShipTargetingMasterCRUDComponent>(ServiceConfigurationKey.From<ShipTargetingComponent>());
             services.RegisterTransient<ShipTargetingSlaveCrudComponent>(ServiceConfigurationKey.From<ShipTargetingComponent>());
@@ -62,8 +62,8 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             services.RegisterComponent<ShipMasterCRUDComponent, Ship>();
             services.RegisterComponent<ShipSlaveCRUDComponent, Ship>();
 
-            services.RegisterComponent<ShipThrustMasterCRUDComponent, Ship>();
-            services.RegisterComponent<ShipThrustSlaveCRUDComponent, Ship>();
+            services.RegisterComponent<ShipThrustersMasterCRUDComponent, Ship>();
+            services.RegisterComponent<ShipThrustersSlaveCRUDComponent, Ship>();
 
             services.RegisterComponent<ShipTargetingMasterCRUDComponent, Ship>();
             services.RegisterComponent<ShipTargetingSlaveCrudComponent, Ship>();

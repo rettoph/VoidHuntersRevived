@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
     [AutoLoad]
     internal sealed class PrimaryServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<PrimaryGame>(p => new ClientPrimaryGame());
             services.RegisterTypeFactory<PrimaryScene>(p => new ClientPrimaryScene());

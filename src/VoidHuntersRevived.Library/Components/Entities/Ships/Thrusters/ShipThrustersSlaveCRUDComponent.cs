@@ -20,7 +20,7 @@ using VoidHuntersRevived.Library.Globals.Constants;
 namespace VoidHuntersRevived.Library.Components.Entities.Ships
 {
     [NetworkAuthorizationRequired(NetworkAuthorization.Slave)]
-    internal sealed class ShipThrustSlaveCRUDComponent : ShipThrustComponent
+    internal sealed class ShipThrustersSlaveCRUDComponent : ShipThrustersComponent
     {
         protected override void InitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
         {

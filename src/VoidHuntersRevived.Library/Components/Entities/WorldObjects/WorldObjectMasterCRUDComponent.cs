@@ -70,7 +70,7 @@ namespace VoidHuntersRevived.Library.Components.Entities.WorldObjects
 
         private void HandleWorldInfoChangeDetected(IWorldObject sender, Boolean dirty)
         {
-            if (dirty)
+            if (dirty && !this.Entity.Sleeping)
             {
                 _broadcast.Enqueue(this.Entity, this.CleanWorldObjectWorldInfo);
             }

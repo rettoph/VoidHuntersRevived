@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Server.ServiceLoaders
     [AutoLoad]
     internal sealed class log4netServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterSetup<ILog>((l, p, s) =>
             {
