@@ -18,6 +18,7 @@ using VoidHuntersRevived.Library.Services;
 using tainicom.Aether.Physics2D.Diagnostics;
 using VoidHuntersRevived.Client.Library.Entities.Aether;
 using VoidHuntersRevived.Client.Library.Services;
+using VoidHuntersRevived.Client.Library.Graphics.Services;
 
 namespace VoidHuntersRevived.Client.Library.Scenes
 {
@@ -30,7 +31,9 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         private MouseService _mouse;
         private AetherDebugView _debugView;
         private BasicEffect _effect;
+
         private ShipPartRenderService _shipPartRenderService;
+        private TrailService _trails;
         #endregion
 
         #region Lifecycle Methods
@@ -44,6 +47,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             provider.Service(out _mouse);
             provider.Service(out _debugView);
             provider.Service(out _shipPartRenderService);
+            provider.Service(out _trails);
             
 
             _effect = new BasicEffect(provider.GetService<GraphicsDevice>())
@@ -83,7 +87,10 @@ namespace VoidHuntersRevived.Client.Library.Scenes
 
             _spriteBatch.Begin(effect: _effect);
 
+            _trails.TryDraw(gameTime);
+
             base.Draw(gameTime);
+
 
             _debugView.TryDraw(gameTime);
 
@@ -97,6 +104,13 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             base.PreUpdate(gameTime);
 
             _shipPartRenderService.Clean();
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            _trails.TryUpdate(gameTime);
         }
         #endregion
     }

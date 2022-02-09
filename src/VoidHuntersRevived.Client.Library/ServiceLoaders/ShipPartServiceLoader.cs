@@ -6,6 +6,7 @@ using System;
 using VoidHuntersRevived.Client.Library.Components.ShipParts;
 using VoidHuntersRevived.Client.Library.Services;
 using VoidHuntersRevived.Library.Entities.ShipParts;
+using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 
 namespace VoidHuntersRevived.Client.Library.ServiceLoaders
 {
@@ -25,6 +26,16 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
                     service.RegisterTypeFactory(factory =>
                     {
                         factory.SetDefaultConstructor<ShipPartDrawComponent>();
+                    });
+                });
+
+            services.RegisterComponent<ThrusterDrawComponent>()
+                .SetAssignableEntityType<Thruster>()
+                .RegisterService(service =>
+                {
+                    service.RegisterTypeFactory(factory =>
+                    {
+                        factory.SetDefaultConstructor<ThrusterDrawComponent>();
                     });
                 });
         }

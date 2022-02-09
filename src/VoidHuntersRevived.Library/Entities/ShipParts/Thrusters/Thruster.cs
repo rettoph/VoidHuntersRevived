@@ -11,11 +11,26 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
 {
     public class Thruster : RigidShipPart<ThrusterContext>
     {
+        #region Private FIelds
+        private Boolean _powered;
+        #endregion
+
         #region Public Properties
         /// <summary>
-        /// Determins wether or not <see cref="CurrentThrust"/> should be increasing each frame.
+        /// Determins wether or not thrust should be applied each frame
         /// </summary>
-        public Boolean Powered { get; private set; }
+        public Boolean Powered
+        {
+            get => _powered;
+            set => this.OnPoweredChanged.InvokeIf(value != _powered, this, ref _powered, value);
+        }
+        #endregion
+
+        #region Event
+        /// <summary>
+        /// Invoked when the <see cref="Powered"/> value is updated.
+        /// </summary>
+        public event OnEventDelegate<Thruster, Boolean> OnPoweredChanged;
         #endregion
 
         #region Lifecycle Methods
@@ -65,7 +80,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
             if(this.Chain is not null)
             {
                 // Each andle of movement has a buffer zone on inclusivity
-                var buffer = 0.01f;
+                var buffer = 0.05f;
 
                 // The chain's center of mass
                 var com = this.Chain.Body.LocalCenter;
@@ -89,12 +104,15 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
                 var ipitr_lower = ipitr - buffer;
                 var ipitr_upper = ipitr + buffer;
 
+                var ript_lower = ript - buffer;
+                var ript_upper = ript + buffer;
+
                 // Check if the thruster moves the chain forward...
                 if ((ipitr_upper < MathHelper.PiOver2 && ipitr_lower > -MathHelper.PiOver2))
                     flags |= Direction.Forward;
 
                 // Check if the thruster turns the chain right...
-                if (ript > 0)
+                if (ript_lower > 0 && ript_upper < MathHelper.Pi)
                     flags |= Direction.TurnRight;
 
                 // Check if the thruster moves the chain backward...
@@ -102,11 +120,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
                     flags |= Direction.Backward;
 
                 // Check if the thruster turns the chain left...
-                if (ript < 0)
+                if (ript_lower > -MathHelper.Pi && ript_upper < 0)
                     flags |= Direction.TurnLeft;
 
                 // Check if the thruster moves the chain right...
-                if (ipitr_lower < 0 && ript > -MathHelper.Pi)
+                if (ipitr_lower > -MathHelper.Pi && ipitr_upper < 0)
                     flags |= Direction.Right;
 
                 // Check if the thruster moves the chain left...

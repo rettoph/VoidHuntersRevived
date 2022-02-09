@@ -11,11 +11,13 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 
 :promptProfile
-ECHO Enter desired profile...
+ECHO Enter desired profile or press enter for default (OpenGL)...
 ECHO See 'mgfxc /help' for more info.
+set profile=OpenGL
 set /p profile=
 
 :build
+echo Using Profile: %profile%
 FOR /f %%i in ('@findstr /i "\/Platform:" Content.mgcb') DO SET platform=%%i
 SET platform=%platform:/Platform:=%
 if not exist "Effects\Compiled" mkdir Effects\Compiled
@@ -23,5 +25,3 @@ if not exist "Effects\Compiled" mkdir Effects\Compiled
 FOR %%I IN (Effects\*.fx) DO (
 	mgfxc %%I Effects\Compiled\%%~nI.mgfx /Profile:%profile%
 )
-
-:eof
