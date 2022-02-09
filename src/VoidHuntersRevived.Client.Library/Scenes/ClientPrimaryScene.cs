@@ -73,13 +73,6 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         #endregion
 
         #region Frame Methods
-        protected override void PreDraw(GameTime gameTime)
-        {
-            base.PreDraw(gameTime);
-
-
-        }
-
         protected override void Draw(GameTime gameTime)
         {
             _primitiveBatch.Begin(_camera, BlendState.AlphaBlend);
@@ -98,23 +91,12 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _spriteBatch.End();
         }
 
-        protected override void PostDraw(GameTime gameTime)
-        {
-            base.PostDraw(gameTime);
-
-
-        }
 
         protected override void PreUpdate(GameTime gameTime)
         {
             base.PreUpdate(gameTime);
 
             _shipPartRenderService.Clean();
-        }
-
-        protected override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
         }
         #endregion
     }

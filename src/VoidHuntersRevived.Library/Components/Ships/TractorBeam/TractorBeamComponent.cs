@@ -211,7 +211,7 @@ namespace VoidHuntersRevived.Library.Components.Ships
 
             Matrix potentialTransformation = ShipPart.CalculateLocalTransformation(
                 child: target.ConnectionNodes[0],
-                parent: parent) * this.Entity.Chain.CalculateWorldTransformation();
+                parent: parent) * this.Entity.Chain.WorldTransformation;
 
             position = Vector2.Transform(Vector2.Zero, potentialTransformation);
         }
@@ -328,7 +328,7 @@ namespace VoidHuntersRevived.Library.Components.Ships
                 _chains.Create(request.TargetPart, position, rotation);
             }
 
-            this.Entity.OnUpdate += this.UpdateTarget;
+            this.Entity.OnPostUpdate += this.UpdateTarget;
 
             return TractorBeamState.Select(request.TargetPart, request.RequestHost);
         }
@@ -352,7 +352,7 @@ namespace VoidHuntersRevived.Library.Components.Ships
 
             request.DestinationNode?.TryAttach(request.TargetPart.ConnectionNodes.FirstOrDefault());
 
-            this.Entity.OnUpdate -= this.UpdateTarget;
+            this.Entity.OnPostUpdate -= this.UpdateTarget;
 
             return TractorBeamState.Deselect(request.TargetPart, request.DestinationNode, request.RequestHost);
         }

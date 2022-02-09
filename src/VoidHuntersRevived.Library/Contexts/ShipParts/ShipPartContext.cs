@@ -8,7 +8,6 @@ using System.Text.Json.Serialization;
 using tainicom.Aether.Physics2D.Collision.Shapes;
 using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Library.Contexts.Utilities;
-using VoidHuntersRevived.Library.Contexts.Utilities;
 
 namespace VoidHuntersRevived.Library.Contexts.ShipParts
 {

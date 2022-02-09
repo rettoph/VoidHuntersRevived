@@ -106,7 +106,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// <returns></returns>
         public Matrix CalculateWorldTransformation()
         {
-            return this.CalculateWorldTransformation(this.Chain.CalculateWorldTransformation());
+            return this.CalculateWorldTransformation(this.Chain.WorldTransformation);
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// <returns></returns>
         public Vector2 CalculateWorldPoint(Vector2 localPoint)
         {
-            return this.CalculateWorldPoint(localPoint, this.Chain.CalculateWorldTransformation());
+            return this.CalculateWorldPoint(localPoint, this.Chain.WorldTransformation);
         }
         #endregion
 

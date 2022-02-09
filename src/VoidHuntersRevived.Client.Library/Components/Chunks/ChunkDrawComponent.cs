@@ -10,27 +10,46 @@ using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Client.Library.Messages.Commands;
 using VoidHuntersRevived.Library.Entities.Chunks;
+using VoidHuntersRevived.Library.Interfaces;
 
 namespace VoidHuntersRevived.Client.Library.Components.Chunks
 {
     internal sealed class ChunkDrawComponent : FrameableDrawComponent<Chunk>,
         IDataProcessor<ToggleRenderChunkDebugViewCommand>
     {
+        private Boolean _gridVisible;
         private SpriteFont _font;
-        private Camera2D _camera;
         private CommandService _commands;
+
+        public Boolean GridVisible
+        {
+            get => _gridVisible;
+            set
+            {
+                if(_gridVisible == value)
+                {
+                    return;
+                }
+
+                if (_gridVisible = value)
+                {
+                    this.Entity.OnPostDraw += this.DrawGrid;
+                }
+                else
+                {
+                    this.Entity.OnPostDraw -= this.DrawGrid;
+                }
+            }
+        }
 
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
-            provider.Service(out _camera);
             provider.Service(out _commands);
 
             _commands.RegisterProcessor<ToggleRenderChunkDebugViewCommand>(this);
             _font = provider.GetContent<SpriteFont>("guppy:font:debug");
-
-            this.Visible = false;
         }
 
         protected override void Uninitialize()
@@ -44,6 +63,16 @@ namespace VoidHuntersRevived.Client.Library.Components.Chunks
         {
             base.Draw(gameTime);
 
+            this.camera.Frustum.Intersects(ref this.Entity.BoundingBox, out bool contains);
+
+            if (contains)
+            {
+                this.Entity.Children.TryDraw(gameTime);
+            }
+        }
+
+        private void DrawGrid(GameTime gameTime)
+        {
             this.spriteBatch.DrawString(
                 _font, 
                 $"({this.Entity.Position.X}, {this.Entity.Position.Y})", 
@@ -51,7 +80,7 @@ namespace VoidHuntersRevived.Client.Library.Components.Chunks
                 Color.Red, 
                 0f, 
                 Vector2.Zero, 
-                1f / _camera.Zoom, 
+                1f / this.camera.Zoom, 
                 SpriteEffects.None, 
                 0);
             
@@ -64,7 +93,7 @@ namespace VoidHuntersRevived.Client.Library.Components.Chunks
 
         bool IDataProcessor<ToggleRenderChunkDebugViewCommand>.Process(ToggleRenderChunkDebugViewCommand data)
         {
-            this.Visible = !this.Visible;
+            this.GridVisible = !this.GridVisible;
 
             return true;
         }

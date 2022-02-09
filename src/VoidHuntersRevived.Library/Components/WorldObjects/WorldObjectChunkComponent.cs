@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Library.Components.WorldObjects
 
         #region Helper Methods
         /// <summary>
-        /// Check to see if the item is still residing within its current chunk.
+        /// Check to see if the item should be placed into a new chunk
         /// </summary>
         private void CleanChunk()
         {

@@ -57,11 +57,9 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
         /// <summary>
         /// The chunk's current bounds.
         /// </summary>
-        public Rectangle Bounds => new Rectangle(
-            x: this.Position.X * Chunk.Size,
-            y: this.Position.Y * Chunk.Size,
-            width: Chunk.Size,
-            height: Chunk.Size);
+        public Rectangle Bounds;
+
+        public BoundingBox BoundingBox;
         #endregion
 
         #region Lifecycle Methods
@@ -82,6 +80,24 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
 
             this.Dependents = 0;
             _dependentlessMilliseconds = 0;
+
+            this.Bounds = new Rectangle(
+                x: this.Position.X * Chunk.Size,
+                y: this.Position.Y * Chunk.Size,
+                width: Chunk.Size,
+                height: Chunk.Size);
+
+            this.BoundingBox = new BoundingBox()
+            {
+                Min = new Vector3(
+                x: this.Position.X * Chunk.Size,
+                y: this.Position.Y * Chunk.Size,
+                z: 0),
+                Max = new Vector3(
+                x: (this.Position.X * Chunk.Size) + Chunk.Size,
+                y: (this.Position.Y * Chunk.Size) + Chunk.Size,
+                z: 0),
+            };
         }
 
         protected override void Uninitialize()
@@ -101,13 +117,6 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
         #endregion
 
         #region Frame Methods
-        protected override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-
-            this.Children.TryDraw(gameTime);
-        }
-
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);

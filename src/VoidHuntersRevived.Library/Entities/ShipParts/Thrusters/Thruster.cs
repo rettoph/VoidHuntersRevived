@@ -40,14 +40,16 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
         private void Update(GameTime gameTime)
         {
             // Apply thrust to the internal fixture...
-            if (this.Powered)
+            if (!this.Powered)
             {
-                this.Chain.Body.ApplyForce(
-                    // Calculate the thrusters position on the recieved body...
-                    forceGetter: b => this.Context.Thrust.RotateTo(b.Rotation + this.LocalRotation),
-                    // Calculate the thrust's world force relative to the recieved body...
-                    pointGetter: b => b.Position + Vector2.Transform(Vector2.Zero, this.LocalTransformation * Matrix.CreateRotationZ(b.Rotation)));
+                return;
             }
+
+            this.Chain.Body.ApplyForce(
+                // Calculate the thrusters position on the recieved body...
+                forceGetter: b => this.Context.Thrust.RotateTo(b.Rotation + this.LocalRotation),
+                // Calculate the thrust's world force relative to the recieved body...
+                pointGetter: b => b.Position + Vector2.Transform(Vector2.Zero, this.LocalTransformation * Matrix.CreateRotationZ(b.Rotation)));
         }
         #endregion
         /// <summary>

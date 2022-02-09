@@ -50,6 +50,8 @@ namespace VoidHuntersRevived.Client.Library.Entities.Aether
             this.BuildAetherInstances(provider);
 
             _commands.RegisterProcessor<ToggleAetherDebugViewCommand>(this);
+
+            this.Visible = false;
         }
 
         protected override void Uninitialize()
@@ -73,21 +75,17 @@ namespace VoidHuntersRevived.Client.Library.Entities.Aether
             });
         }
 
-        private void DrawAether(GameTime gameTime)
+        protected override void Draw(GameTime gameTime)
         {
+            base.Draw(gameTime);
+
             this.Do(debugView => debugView.RenderDebugData(_camera.Projection, _camera.View));
         }
 
         bool IDataProcessor<ToggleAetherDebugViewCommand>.Process(ToggleAetherDebugViewCommand data)
         {
-            if(_visible = !_visible)
-            {
-                this.OnDraw += DrawAether;
-            }
-            else
-            {
-                this.OnDraw -= DrawAether;
-            }
+            this.Visible = !this.Visible;
+
             return true;
         }
     }

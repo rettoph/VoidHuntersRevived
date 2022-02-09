@@ -1,6 +1,5 @@
 ﻿using Guppy.EntityComponent;
 using Guppy.EntityComponent.DependencyInjection;
-using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Network.Attributes;
 using Guppy.Network.Components;
 using Guppy.Network.Enums;

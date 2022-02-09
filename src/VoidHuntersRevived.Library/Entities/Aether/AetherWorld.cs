@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         #region Private Fields
         private FactoryServiceList<AetherBody> _bodies;
         private ChunkManager _chunks;
-        private IEnumerable<Chunk> _spawnChunks;
+        //private IEnumerable<Chunk> _spawnChunks;
         #endregion
 
         #region Lifecycle Methods

@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Client.Library.Components.Ships
                     Color.White,
                     targetPart.CalculateWorldPoint(
                         targetPart.Context.Centeroid,
-                        targetPart.Chain.CalculateWorldTransformation()),
+                        targetPart.Chain.WorldTransformation),
                     1f,
                     25);
             }
