@@ -1,7 +1,6 @@
 ﻿using Guppy;
-using Guppy.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Extensions.System.Collections;
-using Guppy.Extensions.Utilities;
 using Guppy.Services;
 using Guppy.Utilities;
 using Guppy.Utilities.Cameras;
@@ -14,7 +13,7 @@ using System.Linq;
 using System.Text;
 using tainicom.Aether.Physics2D.Collision.Shapes;
 using VoidHuntersRevived.Library.Contexts.ShipParts;
-using VoidHuntersRevived.Library.Dtos.Utilities;
+using VoidHuntersRevived.Library.Contexts.Utilities;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Services;
@@ -57,7 +56,7 @@ namespace VoidHuntersRevived.Client.Library.Services
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.Initialize(provider);
 
@@ -72,7 +71,7 @@ namespace VoidHuntersRevived.Client.Library.Services
             _nodePrimitive = PrimitivePath.Create(0.025f, new Vector2(0.075f, 0), new Vector2(0, 0));
         }
 
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
 
@@ -82,23 +81,11 @@ namespace VoidHuntersRevived.Client.Library.Services
             _shipParts.OnContextRegistered += this.HandleContextRegistered;
         }
 
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
+            base.Uninitialize();
 
             _shipParts.OnContextRegistered -= this.HandleContextRegistered;
-        }
-
-        protected override void PostRelease()
-        {
-            base.Release();
-
-            _primitives.Clear();
-
-            _primitiveBatch = null;
-            _shipParts = null;
-            _colors = null;
-            _camera = null;
         }
         #endregion
 
@@ -110,9 +97,10 @@ namespace VoidHuntersRevived.Client.Library.Services
         public void Render(ShipPart shipPart, ref Matrix worldTransformation)
         {
             ShipPartContextPrimitiveData primitiveData = _primitives[shipPart.Context.Id];
+            ShipPartContextPrimitiveData rootPrimitiveData = _primitives[shipPart.Root.Context.Id];
 
-            Color shapeColor = primitiveData.DefaultShapeColor;
-            Color pathColor = primitiveData.DefaultPathColor;
+            Color shapeColor = rootPrimitiveData.DefaultShapeColor;
+            Color pathColor = rootPrimitiveData.DefaultPathColor;
 
             if(primitiveData.InheritColor && shipPart.Chain.Color.HasValue)
             {

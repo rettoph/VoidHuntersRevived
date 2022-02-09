@@ -1,41 +1,53 @@
 ﻿using Guppy.Attributes;
-using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Interfaces;
-using Guppy.Lists;
+using Guppy.EntityComponent.Lists;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.Chunks;
-using VoidHuntersRevived.Library.Components.Entities.Chunks;
+using VoidHuntersRevived.Library.Components.Chunks;
+using Guppy.EntityComponent.DependencyInjection.Builders;
+using Guppy.ServiceLoaders;
 
 namespace VoidHuntersRevived.Library.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class ChunkServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
-            services.RegisterTypeFactory<Chunk>(p => new Chunk(), 5000);
-            services.RegisterTypeFactory<ChunkManager>(p => new ChunkManager());
-            services.RegisterTypeFactory<FrameableList<Chunk>>(p => new FrameableList<Chunk>());
+            services.RegisterEntity<Chunk>()
+                .RegisterService(service =>
+                {
+                    service.SetLifetime(ServiceLifetime.Transient)
+                        .RegisterTypeFactory(factory => factory.SetDefaultConstructor<Chunk>());
+                })
+                .RegisterComponent<ChunkPipeComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory => factory.SetDefaultConstructor<ChunkPipeComponent>());
+                    });
+                });
 
-            services.RegisterTransient<Chunk>();
-            services.RegisterScoped<ChunkManager>();
-            services.RegisterScoped<FrameableList<Chunk>>();
+            services.RegisterEntity<ChunkManager>()
+                .RegisterService(service =>
+                {
+                    service.SetLifetime(ServiceLifetime.Scoped)
+                        .RegisterTypeFactory(factory => factory.SetDefaultConstructor<ChunkManager>());
+                })
+                .RegisterComponent<ChunkManagerMasterPopulationComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory => factory.SetDefaultConstructor<ChunkManagerMasterPopulationComponent>());
+                    });
+                });
 
-            #region Components
-            services.RegisterTypeFactory<ChunkPipeComponent>(p => new ChunkPipeComponent());
-
-            services.RegisterTransient<ChunkPipeComponent>();
-
-            services.RegisterComponent<ChunkPipeComponent, Chunk>();
-            #endregion
-        }
-
-        public void ConfigureProvider(GuppyServiceProvider provider)
-        {
-            // throw new NotImplementedException();
+            services.RegisterService<FrameableList<Chunk>>()
+                .SetLifetime(ServiceLifetime.Scoped)
+                .RegisterTypeFactory(factory => factory.SetDefaultConstructor<FrameableList<Chunk>>());
         }
     }
 }

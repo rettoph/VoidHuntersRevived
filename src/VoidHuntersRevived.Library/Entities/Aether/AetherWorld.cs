@@ -1,16 +1,12 @@
-﻿using Guppy.DependencyInjection;
-using Guppy.DependencyInjection.ServiceConfigurations;
-using Guppy.Extensions.System;
-using Guppy.Extensions.System.Collections;
-using Guppy.Lists;
+﻿using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.Lists;
 using Guppy.Network.Enums;
-using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Library.Entities.Chunks;
+using Minnow.General;
 
 namespace VoidHuntersRevived.Library.Entities.Aether
 {
@@ -22,12 +18,8 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         private IEnumerable<Chunk> _spawnChunks;
         #endregion
 
-        #region Public Properties
-        public Dictionary<NetworkAuthorization, Factory<Body>> BodyFactories { get; set; }
-        #endregion
-
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
@@ -37,42 +29,31 @@ namespace VoidHuntersRevived.Library.Entities.Aether
             this.BuildAetherInstances(provider);
         }
 
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
-
-            _spawnChunks = _chunks.GetChunks(Vector2.Zero, 1);
-            _spawnChunks.ForEach(chunk => chunk.TryRegisterDependent(this.Id));
-
-
-            Factory<Body> BodyFactoryFactory(World world)
-            {
-                return new Factory<Body>(() => world.CreateBody(), 500);
-            };
-
-            this.BodyFactories = new Dictionary<NetworkAuthorization, Factory<Body>>()
-            {
-                { NetworkAuthorization.Master, BodyFactoryFactory(this.Instances[NetworkAuthorization.Master]) },
-                { NetworkAuthorization.Slave, BodyFactoryFactory(this.Instances[NetworkAuthorization.Slave]) },
-            };
         }
 
-        protected override void Release()
+        protected override void PostInitialize(ServiceProvider provider)
         {
-            base.Release();
+            base.PostInitialize(provider);
 
-            _spawnChunks.ForEach(chunk => chunk.TryRegisterDependent(this.Id));
-            _spawnChunks = default;
+            // _spawnChunks = _chunks.GetChunks(Vector2.Zero, 10);
+            // _spawnChunks.ForEach(chunk => chunk.TryRegisterDependent(this.Id));
         }
 
-        protected override void PostRelease()
+        protected override void PreUninitialize()
         {
-            base.PostRelease();
+            base.PreUninitialize();
 
-            _bodies.TryRelease();
+            // _spawnChunks.ForEach(chunk => chunk.TryRegisterDependent(this.Id));
+        }
 
-            _chunks = default;
-            _bodies = default;
+        protected override void PostUninitialize()
+        {
+            base.PostUninitialize();
+
+            _bodies.Dispose();
         }
         #endregion
 
@@ -86,7 +67,7 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         #endregion
 
         #region Helper Methods
-        protected override World BuildInstance(GuppyServiceProvider provider, NetworkAuthorization authorization)
+        protected override World BuildInstance(ServiceProvider provider, NetworkAuthorization authorization)
             => new World(Vector2.Zero);
         #endregion
 
@@ -111,7 +92,7 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         /// </summary>
         /// <param name="setup"></param>
         /// <returns></returns>
-        public AetherBody CreateBody(Action<AetherBody, GuppyServiceProvider, IServiceConfiguration> setup)
+        public AetherBody CreateBody(Action<AetherBody, ServiceProvider, ServiceConfiguration> setup)
         {
             return _bodies.Create((body, provider, configuration) =>
             {

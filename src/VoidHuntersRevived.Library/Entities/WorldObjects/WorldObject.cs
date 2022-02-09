@@ -1,10 +1,10 @@
 ﻿using Guppy;
-using Guppy.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Events.Delegates;
+using Guppy.Interfaces;
 using Guppy.Network;
 using Guppy.Network.Enums;
-using Guppy.Network.Extensions.Lidgren;
-using Lidgren.Network;
+using Guppy.Network.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -14,11 +14,12 @@ using VoidHuntersRevived.Library.Interfaces;
 
 namespace VoidHuntersRevived.Library.Entities.WorldObjects
 {
-    public abstract class WorldObject : NetworkLayerable, IWorldObject
+    public abstract class WorldObject : MagicNetworkEntity, IWorldObject
     {
         #region Private Fields
         private Chunk _chunk;
-        private Boolean _worldInfoDirty;
+        private Boolean _sleeping;
+        private Boolean _dirty;
         #endregion
 
         #region Public Properties
@@ -34,50 +35,55 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
             get => _chunk;
             set => this.OnChunkChanged.InvokeIf(_chunk != value, this, ref _chunk, value);
         }
-
-        public Boolean WorldInfoDirty
-        {
-            get => _worldInfoDirty;
-            set => this.OnWorldInfoDirtyChanged.InvokeIf(_worldInfoDirty != value, this, ref _worldInfoDirty, value);
-        }
-
-        /// <summary>
-        /// When true, the world object will not be passed through the network.
-        /// </summary>
-        public Boolean Sleeping { get; set; } = false;
         #endregion
 
         #region Events
         public event OnChangedEventDelegate<IWorldObject, Chunk> OnChunkChanged;
 
-        /// <inheritdoc />
-        public event OnEventDelegate<IWorldObject, Boolean> OnWorldInfoDirtyChanged;
-
-        /// <inheritdoc />
-        public event ValidateEventDelegate<IWorldObject, GameTime> ValidateWorldInfoDirty;
+        public event Step OnPreDraw;
+        public event Step OnDraw;
+        public event Step OnPostDraw;
+        public event Step OnPreUpdate;
+        public event Step OnUpdate;
+        public event Step OnPostUpdate;
         #endregion
 
         #region Helper Methods
-        /// <inheritdoc />
-        void IWorldObject.TryValidateWorldInfoDirty(GameTime gameTime)
+        public abstract void SetTransform(Vector2 position, Single rotation);
+        #endregion
+
+        #region Frame Methods
+        public void TryDraw(GameTime gameTime)
         {
-            if(!_worldInfoDirty && this.ValidateWorldInfoDirty.Validate(this, gameTime, false))
-            {
-                this.WorldInfoDirty = true;
-            }
+            this.OnPreDraw?.Invoke(gameTime);
+            
+            this.Draw(gameTime);
+
+            this.OnDraw?.Invoke(gameTime);
+            this.OnPostDraw?.Invoke(gameTime);
+        }
+
+        public void TryUpdate(GameTime gameTime)
+        {
+            this.OnPreUpdate?.Invoke(gameTime);
+
+            this.Update(gameTime);
+
+            this.OnUpdate?.Invoke(gameTime);
+            this.OnPostUpdate?.Invoke(gameTime);
+        }
+
+        protected virtual void Draw(GameTime gameTime)
+        {
+            //
+        }
+
+        protected virtual void Update(GameTime gameTime)
+        {
+            //
         }
         #endregion
 
-        #region Network Methods
-        void IWorldObject.WriteWorldInfo(NetOutgoingMessage om)
-            => this.WriteWorldInfo(om);
 
-        void IWorldObject.ReadWorldInfo(NetIncomingMessage im)
-            => this.ReadWorldInfo(im);
-
-        protected abstract void WriteWorldInfo(NetOutgoingMessage om);
-
-        protected abstract void ReadWorldInfo(NetIncomingMessage im);
-        #endregion
     }
 }

@@ -1,11 +1,12 @@
 ﻿using Guppy.Attributes;
-using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection.Builders;
 using Guppy.Interfaces;
+using Guppy.ServiceLoaders;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VoidHuntersRevived.Client.Library.Components.Entities.Chunks;
+using VoidHuntersRevived.Client.Library.Components.Chunks;
 using VoidHuntersRevived.Library.Entities.Chunks;
 
 namespace VoidHuntersRevived.Client.Library.ServiceLoaders
@@ -13,18 +14,17 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
     [AutoLoad]
     internal sealed class ChunkServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
-            services.RegisterTypeFactory<ChunkDrawComponent>(p => new ChunkDrawComponent());
-
-            services.RegisterTransient<ChunkDrawComponent>();
-
-            services.RegisterComponent<ChunkDrawComponent, Chunk>();
-        }
-
-        public void ConfigureProvider(GuppyServiceProvider provider)
-        {
-            // throw new NotImplementedException();
+            services.RegisterComponent<ChunkDrawComponent>()
+                .SetAssignableEntityType<Chunk>()
+                .RegisterService(service =>
+                {
+                    service.RegisterTypeFactory(factory =>
+                    {
+                        factory.SetDefaultConstructor<ChunkDrawComponent>();
+                    });
+                });
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Guppy;
-using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
+using Guppy.EntityComponent;
+using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.Interfaces;
 using Guppy.Interfaces;
 using Guppy.Utilities;
 using Guppy.Utilities.Cameras;
@@ -29,22 +30,13 @@ namespace VoidHuntersRevived.Client.Library.Components
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
             provider.Service(out _primitiveBatch);
             provider.Service(out _spriteBatch);
             provider.Service(out _camera);
-        }
-
-        protected override void PostRelease()
-        {
-            base.PostRelease();
-
-            _primitiveBatch = default;
-            _spriteBatch = default;
-            _camera = default;
         }
         #endregion
     }

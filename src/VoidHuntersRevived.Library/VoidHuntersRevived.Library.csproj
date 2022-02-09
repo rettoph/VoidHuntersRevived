@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <LangVersion>9.0</LangVersion>
+	<TargetFramework>net6.0</TargetFramework>
+	<LangVersion>10.0</LangVersion>
     <Configurations>Debug;Release;Debug_Verbose</Configurations>
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
@@ -22,13 +22,13 @@
   
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\Aether.Physics2D\Physics2D\Aether.Physics2D.NETSTANDARD2_0.MG.csproj" />
-    <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Core\Guppy.Core.csproj" />
+    <ProjectReference Include="..\..\libraries\Guppy\libraries\Minnow\src\Minnow.Delegates\Minnow.Delegates.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.IO\Guppy.IO.csproj" />
-    <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
+    <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network.Core\Guppy.Network.Core.csproj" />
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="Entities\Spells\" />
+    <Folder Include="Components\ShipParts\" />
   </ItemGroup>
 
 </Project>

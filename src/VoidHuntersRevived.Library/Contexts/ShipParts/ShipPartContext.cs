@@ -1,4 +1,4 @@
-﻿using Guppy.DependencyInjection;
+﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Extensions.System;
 using Microsoft.Xna.Framework;
 using System;
@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 using tainicom.Aether.Physics2D.Collision.Shapes;
 using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Library.Contexts.Utilities;
-using VoidHuntersRevived.Library.Dtos.Utilities;
+using VoidHuntersRevived.Library.Contexts.Utilities;
 
 namespace VoidHuntersRevived.Library.Contexts.ShipParts
 {
@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Library.Contexts.ShipParts
         /// The service configuration key to be used
         /// when creating a new instance of the defined <see cref="ShipPart"/>.
         /// </summary>
-        protected abstract ServiceConfigurationKey shipPartServiceConfigurationKey { get; }
+        protected abstract String shipPartServiceConfigurationName { get; }
         #endregion
 
         #region Public Properties
@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Library.Contexts.ShipParts
         /// when creating a new instance of the defined <see cref="ShipPart"/>.
         /// </summary>
         [JsonIgnore]
-        public ServiceConfigurationKey ShipPartServiceConfigurationKey => this.shipPartServiceConfigurationKey;
+        public String ShipPartServiceConfigurationKey => this.shipPartServiceConfigurationName;
 
         /// <summary>
         /// The cross platform unique key for this context.
@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Library.Contexts.ShipParts
         /// <summary>
         /// Defines the shapes of the ShipPart
         /// </summary>
-        public ShapeDto[] Shapes { get; set; } = new ShapeDto[0];
+        public ShapeContext[] Shapes { get; set; } = new ShapeContext[0];
 
         /// <summary>
         /// Defines paths of the ShipPart.
@@ -71,7 +71,7 @@ namespace VoidHuntersRevived.Library.Contexts.ShipParts
         /// <summary>
         /// All connection nodes within the current part.
         /// </summary>
-        public ConnectionNodeDto[] ConnectionNodes { get; set; } = new ConnectionNodeDto[0];
+        public ConnectionNodeContext[] ConnectionNodes { get; set; } = new ConnectionNodeContext[0];
 
         /// <summary>
         /// A custom "center" for the current part. This is where

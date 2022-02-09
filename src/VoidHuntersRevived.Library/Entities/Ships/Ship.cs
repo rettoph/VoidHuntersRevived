@@ -1,5 +1,6 @@
-﻿using Guppy.DependencyInjection;
-using Guppy.Enums;
+﻿using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.Enums;
+using Guppy.EntityComponent.Interfaces;
 using Guppy.Events.Delegates;
 using Guppy.Extensions.System;
 using Guppy.Interfaces;
@@ -18,7 +19,7 @@ using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library.Entities.Ships
 {
-    public class Ship : NetworkLayerable
+    public class Ship : MagicNetworkLayerable
     {
         #region Private Fields
         private Player _player;
@@ -43,24 +44,27 @@ namespace VoidHuntersRevived.Library.Entities.Ships
             get => _chain;
             set
             {
-                if (this.Status != ServiceStatus.PreInitializing && this.Status != ServiceStatus.Releasing)
+                if (this.Status != ServiceStatus.Initializing)
                     throw new Exception("Unable to update Ship.Chain after initialization.");
 
                 _chain = value;
             }
         }
 
-        public override IPipe Pipe
+        public override Pipe Pipe
         {
             get => this.Chain.Pipe;
-            protected set => throw new NotImplementedException();
+            protected set
+            {
+                // Nothing to see here
+            }
         }
         #endregion
 
         #region Events
         public event OnChangedEventDelegate<Ship, Player> OnPlayerChanged;
 
-        public override event OnChangedEventDelegate<INetworkEntity, IPipe> OnPipeChanged
+        public override event OnChangedEventDelegate<IMagicNetworkEntity, Pipe> OnPipeChanged
         {
             add => this.Chain.OnPipeChanged += value;
             remove => this.Chain.OnPipeChanged -= value;
@@ -68,14 +72,14 @@ namespace VoidHuntersRevived.Library.Entities.Ships
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
             this.LayerGroup = LayersContexts.Ships.Group.GetValue();
         }
 
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
 
@@ -85,23 +89,20 @@ namespace VoidHuntersRevived.Library.Entities.Ships
             this.Chain.OnStatusChanged += this.HandleChainStatusChanged;
         }
 
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
-
-            this.Chain.Color = default;
+            base.Uninitialize();
 
             this.Chain.OnStatusChanged -= this.HandleChainStatusChanged;
-            this.Chain = default;
         }
         #endregion
 
         #region Event Handlers
         private void HandleChainStatusChanged(IService sender, ServiceStatus old, ServiceStatus value)
         {
-            if(value == ServiceStatus.PreReleasing)
+            if(value == ServiceStatus.Uninitializing)
             {
-                this.TryRelease();
+                this.Dispose();
             }
         }
         #endregion

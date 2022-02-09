@@ -1,9 +1,5 @@
-﻿using Guppy;
-using Guppy.DependencyInjection;
-using Guppy.Lists;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Guppy.EntityComponent;
+using Guppy.EntityComponent.DependencyInjection;
 using VoidHuntersRevived.Library.Entities.Players;
 using VoidHuntersRevived.Library.Entities.Ships;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
@@ -13,25 +9,19 @@ namespace VoidHuntersRevived.Library.Services
     public class ShipService : Service
     {
         #region Private Fields
-        private GuppyServiceProvider _provider;
+        private ServiceProvider _provider;
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
 
             _provider = provider;
         }
-
-        protected override void Release()
-        {
-            base.Release();
-
-            _provider = default;
-        }
         #endregion
 
+        #region Helper Methods
         public Ship Create(Chain chain, Player player = default)
         {
             return _provider.GetService<Ship>((ship, _, _) =>
@@ -40,5 +30,6 @@ namespace VoidHuntersRevived.Library.Services
                 ship.Player = player;
             });
         }
+        #endregion
     }
 }

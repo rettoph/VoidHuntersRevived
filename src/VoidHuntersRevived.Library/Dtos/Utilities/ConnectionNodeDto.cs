@@ -1,33 +1,19 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Messages.Network;
+using VoidHuntersRevived.Library.Messages.Network.Packets;
 
-namespace VoidHuntersRevived.Library.Contexts.Utilities
+namespace VoidHuntersRevived.Library.Dtos.Utilities
 {
     public class ConnectionNodeDto
     {
-        public Vector2 Position;
-        public Single Rotation;
-
-        public static ConnectionNodeDto Transform(ConnectionNodeDto node, Matrix transformation)
-        {
-            if (node == default || transformation == default)
-                return node;
-
-            var point = Vector2.Transform(node.Position, transformation);
-            // Create a new vector 2 that represents the node's rotation target...
-            var rotationPoint = node.Position + Vector2.Transform(Vector2.UnitX, Matrix.CreateRotationZ(node.Rotation));
-            // Transform the rotation reference point...
-            rotationPoint = Vector2.Transform(rotationPoint, transformation);
-            // Convert the new rotation point back into a rotation...
-            var rotation = MathHelper.WrapAngle((Single)Math.Atan2(rotationPoint.Y - point.Y, rotationPoint.X - point.X));
-
-            return new ConnectionNodeDto()
-            {
-                Position = point,
-                Rotation = rotation
-            };
-        }
+        public Byte Index { get; set; }
+        public ConnectionNodeState State { get; set; }
+        public Byte? TargetNodeIndex { get; set; }
+        public ShipPartPacket TargetNodeOwner { get; set; }
     }
 }

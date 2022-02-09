@@ -6,13 +6,11 @@ using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Contexts.ShipParts;
 using System.Text.Json;
 using System.IO;
-using Guppy.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection;
 using VoidHuntersRevived.Library.Json.JsonConverters.Contexts.ShipParts;
 using Guppy.Extensions.System;
 using Guppy.Events.Delegates;
-using Guppy.Lists;
-using Lidgren.Network;
-using Guppy.Network.Extensions.Lidgren;
+using Guppy.EntityComponent.Lists;
 using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Json.JsonConverters;
@@ -22,9 +20,16 @@ using Microsoft.Xna.Framework;
 using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Library.Extensions.Aether;
 using tainicom.Aether.Physics2D.Common.ConvexHull;
-using Path = System.IO.Path;
-using VoidHuntersRevived.Library.Dtos.Utilities;
+using VoidHuntersRevived.Library.Contexts.Utilities;
 using System.Linq;
+using LiteNetLib.Utils;
+using Path = System.IO.Path;
+using VoidHuntersRevived.Library.Messages.Network.Packets;
+using Guppy.EntityComponent;
+using Guppy.Network.Services;
+using VoidHuntersRevived.Library.Dtos.Utilities;
+using VoidHuntersRevived.Library.Structs;
+using Minnow.System.Helpers;
 
 namespace VoidHuntersRevived.Library.Services
 {
@@ -34,11 +39,12 @@ namespace VoidHuntersRevived.Library.Services
     /// <see cref="ShipPartContext"/>s. New Dto's
     /// should be registered on startup.
     /// </summary>
-    public class ShipPartService : ServiceList<ShipPart>
+    public class ShipPartService : Service
     {
         #region Private Fields
+        private ServiceProvider _provider;
         private Dictionary<UInt32, ShipPartContext> _contexts;
-        private GuppyServiceProvider _provider;
+        private NetworkEntityService _networkEntities;
         #endregion
 
         #region Public Properties
@@ -61,12 +67,14 @@ namespace VoidHuntersRevived.Library.Services
         #endregion
 
         #region Initialization Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
             _provider = provider;
             _contexts = new Dictionary<UInt32, ShipPartContext>();
+
+            provider.Service(out _networkEntities);
 
             this.JsonSerializerOptions = new JsonSerializerOptions()
             {
@@ -90,14 +98,33 @@ namespace VoidHuntersRevived.Library.Services
         /// <param name="contextId"></param>
         /// <param name="id">The service id, if any</param>
         /// <returns></returns>
-        public ShipPart Create(UInt32 contextId, Guid? id = default)
+        private ShipPart Create(UInt32 contextId, UInt16 networkId)
         {
             ShipPartContext context = _contexts[contextId];
 
-            return this.Create<ShipPart>(_provider, context.ShipPartServiceConfigurationKey, (sp, p, c) =>
+            return _provider.GetService<ShipPart>(context.ShipPartServiceConfigurationKey, (sp, p, c) =>
             {
                 sp.SetContext(context);
-            }, id);
+                sp.NetworkId = networkId;
+            });
+        }
+
+        /// <summary>
+        /// Create a fresh new <see cref="ShipPart"/> instance from the
+        /// recieved context id, assuming that a context with that id has
+        /// been registered.
+        /// </summary>
+        /// <param name="contextId"></param>
+        /// <param name="id">The service id, if any</param>
+        /// <returns></returns>
+        public ShipPart Create(UInt32 contextId)
+        {
+            ShipPartContext context = _contexts[contextId];
+
+            return _provider.GetService<ShipPart>(context.ShipPartServiceConfigurationKey, (sp, p, c) =>
+            {
+                sp.SetContext(context);
+            });
         }
 
         /// <summary>
@@ -108,8 +135,8 @@ namespace VoidHuntersRevived.Library.Services
         /// <param name="contextName"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ShipPart Create(String contextName, Guid? id = default)
-            => this.Create(contextName.xxHash(), id);
+        public ShipPart Create(String contextName)
+            => this.Create(contextName.xxHash());
         #endregion
 
         #region Registration Methods
@@ -163,7 +190,7 @@ namespace VoidHuntersRevived.Library.Services
         #region Validation Methods
         private Boolean ValidateContext(ShipPartContext context)
         {
-            foreach (ShapeDto shape in context.Shapes)
+            foreach (ShapeContext shape in context.Shapes)
             {
                 String err;
                 Boolean shapeValid = shape.Data switch
@@ -205,7 +232,7 @@ namespace VoidHuntersRevived.Library.Services
         }
         #endregion
 
-        #region
+        #region I/O Methods
         public ShipPartContext DeserializeContext(String contextJson)
             => JsonSerializer.Deserialize<ShipPartContext>(contextJson, this.JsonSerializerOptions);
 
@@ -231,115 +258,89 @@ namespace VoidHuntersRevived.Library.Services
         }
         #endregion
 
-        #region Network Methods
-        public void TryWriteShipPart(ShipPart shipPart, NetOutgoingMessage om, ShipPartSerializationFlags flags)
+        #region Helper Methods
+        /// <summary>
+        /// Get the defined ship part, or create it if possible.
+        /// </summary>
+        /// <param name="packet"></param>
+        /// <returns></returns>
+        public Boolean TryGet(ShipPartPacket packet, out ShipPart shipPart)
         {
-            this.WriteShipPart(shipPart, om, flags);
-        }
-
-        public ShipPart TryReadShipPart(NetIncomingMessage im, ShipPartSerializationFlags flags)
-        {
-            ShipPart parent = this.ReadShipPart(im, flags);
-
-            return parent;
-        }
-
-        private void WriteShipPart(ShipPart shipPart, NetOutgoingMessage om, ShipPartSerializationFlags flags)
-        {
-            om.Write(shipPart.Context.Id);
-            om.Write(shipPart.Id);
-
-            if (flags.HasFlag(ShipPartSerializationFlags.Create))
+            if(packet is null)
             {
-                // Notice we include a position value. This is
-                // So the reader can skip the WriteAll data if needed.
-                // The Create data is only utilized if no instance is discovered
-                // on the recieving peer.
-                Int32 startPosition = om.LengthBits;
-                om.Write(startPosition);
-
-                shipPart.WriteCreate(om);
-
-                om.WriteAt(startPosition, om.LengthBits);
+                return MethodHelper.FailResponse(out shipPart);
             }
 
-            if (flags.HasFlag(ShipPartSerializationFlags.Tree))
+            // Create the target if possible...
+            if (!this.TryGetByNetworkId(packet.NetworkId, out shipPart))
             {
-                // Iterate through each parent connection node & broadcast all internal data.
-                foreach (ConnectionNode node in shipPart.ConnectionNodes)
+                if ((packet.SerializationFlags & ShipPartSerializationFlags.Create) != 0)
                 {
-                    if (node.Connection.State == ConnectionNodeState.Parent)
-                    {
-                        om.Write((Byte)ConnectionNodeState.Parent);
-
-                        this.WriteShipPart(node.Connection.Target.Owner, om, flags);
-
-                        om.Write(node.Index);
-                        om.Write(node.Connection.Target.Index);
-                    }
-                    else if (node.Connection.State == ConnectionNodeState.Estranged)
-                    {
-                        om.Write((Byte)ConnectionNodeState.Estranged);
-                        om.Write(node.Index);
-                    }
-                }
-
-                // For the purposes of reading node data we use the child marker to signify a complete node message.
-                om.Write((Byte)ConnectionNodeState.Child);
-            }
-        }
-
-        private ShipPart ReadShipPart(NetIncomingMessage im, ShipPartSerializationFlags flags)
-        {
-            UInt32 contextId = im.ReadUInt32();
-            Guid shipPartId = im.ReadGuid();
-            ShipPart parent = this.GetById(shipPartId);
-
-
-            if (flags.HasFlag(ShipPartSerializationFlags.Create))
-            {
-                Int64 endPosition = im.ReadInt32();
-
-                if (parent == default)
-                {
-                    parent = this.Create(contextId, shipPartId);
-                    parent.ReadCreate(im);
+                    shipPart = this.Create(packet.ContextId.Value, packet.NetworkId);
                 }
                 else
                 {
-                    // Skip the ReadAll data
-                    im.Position = endPosition;
+                    return MethodHelper.FailResponse(out shipPart);
                 }
             }
 
-            if(flags.HasFlag(ShipPartSerializationFlags.Tree))
+            if ((packet.SerializationFlags & ShipPartSerializationFlags.Tree) != 0)
             {
-                ConnectionNodeState state;
-                while ((state = (ConnectionNodeState)im.ReadByte()) != ConnectionNodeState.Child)
+                foreach(ConnectionNodeDto node in packet.Children)
                 {
-                    switch (state)
+                    switch (node.State)
                     {
-                        case ConnectionNodeState.Parent:
-                            ShipPart child = this.ReadShipPart(im, flags);
-
-                            Int32 parentNodeIndex = im.ReadInt32();
-                            ConnectionNode parentNode = parent.ConnectionNodes[parentNodeIndex];
-
-                            Int32 childNodeIndex = im.ReadInt32();
-                            ConnectionNode childNode = child.ConnectionNodes[childNodeIndex];
-
-                            parentNode.TryAttach(childNode);
-                            break;
                         case ConnectionNodeState.Estranged:
-                            Int32 estrangedNodeIndex = im.ReadInt32();
-                            ConnectionNode estrangedNode = parent.ConnectionNodes[estrangedNodeIndex];
+                            ConnectionNode estrangedNode = shipPart.ConnectionNodes[node.Index];
                             estrangedNode.TryDetach();
                             break;
+                        case ConnectionNodeState.Parent:
+                            if (this.TryGet(node.TargetNodeOwner, out ShipPart child))
+                            {
+                                ConnectionNode parentNode = shipPart.ConnectionNodes[node.Index];
+                                ConnectionNode childNode = child.ConnectionNodes[node.TargetNodeIndex.Value];
+                                parentNode.TryAttach(childNode);
+                            }
+                            break;
+                        case ConnectionNodeState.Child:
+                            throw new NotImplementedException();
                     }
                 }
             }
 
-            return parent;
+            return true;
+        }
+
+        public Boolean TryGetByNetworkId(UInt16? networkId, out ShipPart shipPart)
+        {
+            if(!networkId.HasValue)
+            {
+                shipPart = default;
+                return false;
+            }
+
+            return _networkEntities.TryGetByNetworkId(networkId.Value, out shipPart);
+        }
+
+        public Boolean TryGetConnectionNodeByNetworkId(ConnectionNodeNetworkId? networkId, out ConnectionNode node)
+        {
+            Boolean FailResponse(out ConnectionNode node)
+            {
+                node = default;
+                return false;
+            }
+
+            if(!networkId.HasValue)
+            {
+                return FailResponse(out node);
+            }
+
+            if(!this.TryGetByNetworkId(networkId.Value.OwnerNetworkId, out ShipPart owner))
+            {
+                return FailResponse(out node);
+            }
+
+            return owner.ConnectionNodes.TryGetElementAt(networkId.Value.Index, out node);
         }
         #endregion
     }

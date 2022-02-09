@@ -1,54 +1,60 @@
 ﻿using Guppy;
-using Guppy.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.Players;
-using Guppy.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Guppy.Network.Interfaces;
-using Guppy.Network.Scenes;
-using Guppy.Network.Peers;
 using Guppy.Utilities;
 using VoidHuntersRevived.Library.Entities.Aether;
 using VoidHuntersRevived.Library.Globals.Constants;
+using Guppy.Network;
 
 namespace VoidHuntersRevived.Library.Scenes
 {
-    public class PrimaryScene : NetworkScene
+    public class PrimaryScene : Scene
     {
         #region Private Fields
         private AetherWorld _world;
         #endregion
 
+        #region Public Properties
+        public Room Room { get; private set; }
+        #endregion
+
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
+
+            this.Room = provider.GetService<Peer>().Rooms.GetById(0);
+            this.Room.TryBindToScope(provider);
 
             this.Layers.Create<Layer>((l, p, c) => l.SetContext(LayersContexts.Chunks));
             this.Layers.Create<Layer>((l, p, c) => l.SetContext(LayersContexts.Players));
             this.Layers.Create<Layer>((l, p, c) => l.SetContext(LayersContexts.Ships));
             this.Layers.Create<Layer>((l, p, c) => l.SetContext(LayersContexts.Chains));
-        }
-
-        protected override void Initialize(GuppyServiceProvider provider)
-        {
-            base.Initialize(provider);
 
             provider.Service(out _world);
         }
 
-        protected override void Release()
+        protected override void PostUninitialize()
         {
-            base.Release();
+            base.PostUninitialize();
 
-            _world.TryRelease();
-            _world = default;
+            _world.Dispose();
+
+            this.Room.TryUnbindToScope();
         }
         #endregion
 
         #region Frame Methods
+        protected override void PreUpdate(GameTime gameTime)
+        {
+            base.PreUpdate(gameTime);
+        }
+
         protected override void PostUpdate(GameTime gameTime)
         {
             base.PostUpdate(gameTime);
@@ -60,11 +66,6 @@ namespace VoidHuntersRevived.Library.Scenes
         {
             base.Update(gameTime);
         }
-        #endregion
-
-        #region NetworkScene Implementation
-        protected override IChannel GetChannel(Peer peer)
-            => peer.Channels.GetById(Channels.MainChannel);
         #endregion
     }
 }

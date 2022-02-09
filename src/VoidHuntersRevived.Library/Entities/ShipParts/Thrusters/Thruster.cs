@@ -1,27 +1,68 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Guppy.EntityComponent.DependencyInjection;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Contexts.ShipParts;
+using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Enums;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
 {
     public class Thruster : RigidShipPart<ThrusterContext>
     {
+        #region Public Properties
+        /// <summary>
+        /// Determins wether or not <see cref="CurrentThrust"/> should be increasing each frame.
+        /// </summary>
+        public Boolean Powered { get; private set; }
+        #endregion
+
+        #region Lifecycle Methods
+        protected override void Initialize(ServiceProvider provider)
+        {
+            base.Initialize(provider);
+
+            this.CleanChain(default, this.Chain);
+            this.OnChainChanged += this.HandleChainChanged;
+        }
+
+        protected override void Uninitialize()
+        {
+            base.Uninitialize();
+
+            this.OnChainChanged -= this.HandleChainChanged;
+            this.CleanChain(this.Chain, default);
+        }
+        #endregion
+
+        #region Frame Methods
+        private void Update(GameTime gameTime)
+        {
+            // Apply thrust to the internal fixture...
+            if (this.Powered)
+            {
+                this.Chain.Body.ApplyForce(
+                    // Calculate the thrusters position on the recieved body...
+                    forceGetter: b => this.Context.Thrust.RotateTo(b.Rotation + this.LocalRotation),
+                    // Calculate the thrust's world force relative to the recieved body...
+                    pointGetter: b => b.Position + Vector2.Transform(Vector2.Zero, this.LocalTransformation * Matrix.CreateRotationZ(b.Rotation)));
+            }
+        }
+        #endregion
         /// <summary>
         /// Return a <see cref="Direction"/>
         /// flags that the current <see cref="Thruster"/> will 
         /// move its owning <see cref="Chain"/>, if any.
         /// </summary>
         /// <returns></returns>
-        public Direction GetDirections()
+        internal void UpdatePowered(Direction activeDirections)
         {
             Direction flags = Direction.None;
 
             if(this.Chain is not null)
             {
-                // Each andle of movement has a buffer sone on inclusivity
+                // Each andle of movement has a buffer zone on inclusivity
                 var buffer = 0.01f;
 
                 // The chain's center of mass
@@ -29,7 +70,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
                 // The point acceleration is applied
                 var ip = this.LocalCenter;
                 // The impulse to be applied...
-                var i = Vector2.Transform(this.Context.MaximumThrust, Matrix.CreateRotationZ(this.LocalRotation));
+                var i = Vector2.Transform(this.Context.Thrust, Matrix.CreateRotationZ(this.LocalRotation));
                 // The point acceleration is targeting
                 var it = ip + i;
 
@@ -71,7 +112,29 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts.Thrusters
                     flags |= Direction.Left;
             }
 
-            return flags;
+            // If any directional flags are considered "active" mark the curretn thruster as powered.
+            this.Powered = (flags & activeDirections) != 0;
+        }
+
+
+        private void CleanChain(Chain old, Chain value)
+        {
+            this.Powered = false;
+
+            if (old is not null)
+            {
+                old.OnUpdate -= this.Update;
+            }
+
+            if (value is not null)
+            {
+                value.OnUpdate += this.Update;
+            }
+        }
+
+        private void HandleChainChanged(ShipPart sender, Chain old, Chain value)
+        {
+            this.CleanChain(old, value);
         }
     }
 }

@@ -1,81 +1,218 @@
 ﻿using Guppy.Attributes;
-using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
-using Guppy.Interfaces;
-using Microsoft.Xna.Framework;
+using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection.Builders;
+using Guppy.Network.Builders;
+using Guppy.ServiceLoaders;
+using LiteNetLib;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using tainicom.Aether.Physics2D.Common;
-using VoidHuntersRevived.Library.Components.Entities.Ships;
-using VoidHuntersRevived.Library.Contexts.ShipParts;
-using VoidHuntersRevived.Library.Contexts.Utilities;
-using VoidHuntersRevived.Library.Dtos.Utilities;
-using VoidHuntersRevived.Library.Entities;
-using VoidHuntersRevived.Library.Entities.ShipParts;
-using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
+using VoidHuntersRevived.Library.Components.Ships;
 using VoidHuntersRevived.Library.Entities.Ships;
+using VoidHuntersRevived.Library.MessageProcessors;
+using VoidHuntersRevived.Library.Messages.Network;
+using VoidHuntersRevived.Library.Messages.Network.Packets;
 using VoidHuntersRevived.Library.Services;
-using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.ServiceLoaders
 {
     [AutoLoad]
-    internal sealed class ShipServiceLoader : IServiceLoader
+    internal sealed class ShipServiceLoader : IServiceLoader, INetworkLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
+        public void ConfigureNetwork(NetworkProviderBuilder network)
         {
-            services.RegisterTypeFactory<ShipService>(p => new ShipService());
-            services.RegisterTypeFactory<Ship>(p => new Ship());
+            network.RegisterNetworkEntityMessage<ShipDirectionChangedMessage>()
+                .SetDeliveryMethod(DeliveryMethod.ReliableSequenced);
 
-            services.RegisterScoped<ShipService>();
-            services.RegisterTransient<Ship>();
+            network.RegisterNetworkEntityMessage<ShipTargetMessage>()
+                .SetDeliveryMethod(DeliveryMethod.Unreliable);
 
-            #region Components
-            // Factories
-            services.RegisterTypeFactory<ShipMasterCRUDComponent>(p => new ShipMasterCRUDComponent());
-            services.RegisterTypeFactory<ShipSlaveCRUDComponent>(p => new ShipSlaveCRUDComponent());
+            network.RegisterNetworkEntityMessage<ShipTractorBeamStateChangedMessage>()
+                .SetDeliveryMethod(DeliveryMethod.ReliableOrdered);
 
-            services.RegisterTypeFactory<ShipThrustersMasterCRUDComponent>(p => new ShipThrustersMasterCRUDComponent());
-            services.RegisterTypeFactory<ShipThrustersSlaveCRUDComponent>(p => new ShipThrustersSlaveCRUDComponent());
-
-            services.RegisterTypeFactory<ShipTargetingMasterCRUDComponent>(p => new ShipTargetingMasterCRUDComponent());
-            services.RegisterTypeFactory<ShipTargetingSlaveCrudComponent>(p => new ShipTargetingSlaveCrudComponent());
-
-            services.RegisterTypeFactory<ShipTractorBeamMasterCRUDComponent>(p => new ShipTractorBeamMasterCRUDComponent());
-            services.RegisterTypeFactory<ShipTractorBeamSlaveCRUDComponent>(p => new ShipTractorBeamSlaveCRUDComponent());
-
-            // Services
-            services.RegisterTransient<ShipMasterCRUDComponent>();
-            services.RegisterTransient<ShipSlaveCRUDComponent>();
-
-            services.RegisterTransient<ShipThrustersMasterCRUDComponent>(ServiceConfigurationKey.From<ShipThrustersComponent>());
-            services.RegisterTransient<ShipThrustersSlaveCRUDComponent>(ServiceConfigurationKey.From<ShipThrustersComponent>());
-
-            services.RegisterTransient<ShipTargetingMasterCRUDComponent>(ServiceConfigurationKey.From<ShipTargetingComponent>());
-            services.RegisterTransient<ShipTargetingSlaveCrudComponent>(ServiceConfigurationKey.From<ShipTargetingComponent>());
-
-            services.RegisterTransient<ShipTractorBeamMasterCRUDComponent>(ServiceConfigurationKey.From<ShipTractorBeamComponent>());
-            services.RegisterTransient<ShipTractorBeamSlaveCRUDComponent>(ServiceConfigurationKey.From<ShipTractorBeamComponent>());
-
-            // Components
-            services.RegisterComponent<ShipMasterCRUDComponent, Ship>();
-            services.RegisterComponent<ShipSlaveCRUDComponent, Ship>();
-
-            services.RegisterComponent<ShipThrustersMasterCRUDComponent, Ship>();
-            services.RegisterComponent<ShipThrustersSlaveCRUDComponent, Ship>();
-
-            services.RegisterComponent<ShipTargetingMasterCRUDComponent, Ship>();
-            services.RegisterComponent<ShipTargetingSlaveCrudComponent, Ship>();
-
-            services.RegisterComponent<ShipTractorBeamMasterCRUDComponent, Ship>();
-            services.RegisterComponent<ShipTractorBeamSlaveCRUDComponent, Ship>();
-            #endregion
+            network.RegisterDataType<ShipCreatePacket>()
+                .SetReader(ShipCreatePacket.Read)
+                .SetWriter(ShipCreatePacket.Write);
         }
 
-        public void ConfigureProvider(GuppyServiceProvider provider)
+        public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
-            // throw new NotImplementedException();
+            services.RegisterService<ShipService>()
+                .SetLifetime(ServiceLifetime.Scoped)
+                .RegisterTypeFactory(factory => factory.SetDefaultConstructor<ShipService>());
+
+            services.RegisterService<TractorBeamRequestProcessor>()
+                .SetLifetime(ServiceLifetime.Scoped)
+                .RegisterTypeFactory(factory => factory.SetDefaultConstructor<TractorBeamRequestProcessor>());
+
+            services.RegisterService<DirectionRequestProcessor>()
+                .SetLifetime(ServiceLifetime.Scoped)
+                .RegisterTypeFactory(factory => factory.SetDefaultConstructor<DirectionRequestProcessor>());
+
+            services.RegisterEntity<Ship>()
+                .RegisterService(service =>
+                {
+                    service.SetLifetime(ServiceLifetime.Transient)
+                        .RegisterTypeFactory(factory => factory.SetDefaultConstructor<Ship>());
+                })
+                .RegisterComponent<ShipMasterCRUDComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<ShipMasterCRUDComponent>();
+                        });
+                    });
+                })
+                .RegisterComponent<ShipSlaveCRUDComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<ShipSlaveCRUDComponent>();
+                        });
+                    });
+                })
+                .RegisterComponent<TargetComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<TargetComponent>();
+                        });
+                    });
+                })
+                .RegisterComponent<TargetRemoteMasterComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<TargetRemoteMasterComponent>();
+                        });
+                    });
+                })
+                .RegisterComponent<TargetRemoteSlaveComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<TargetRemoteSlaveComponent>();
+                        });
+                    });
+                })
+                .RegisterComponent<DirectionComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<DirectionComponent>();
+                        });
+                    });
+                })
+                .RegisterComponent<DirectionRemoteMasterComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<DirectionRemoteMasterComponent>();
+                        });
+                    });
+                })
+                .RegisterComponent<DirectionRemoteSlaveComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<DirectionRemoteSlaveComponent>();
+                        });
+                    });
+                })
+                .RegisterComponent<TractorBeamComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<TractorBeamComponent>();
+                        });
+                    });
+                })
+                .RegisterComponent<TractorBeamRemoteMasterComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<TractorBeamRemoteMasterComponent>();
+                        });
+                    });
+                })
+                .RegisterComponent<TractorBeamRemoteSlaveComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<TractorBeamRemoteSlaveComponent>();
+                        });
+                    });
+                });
+                // .RegisterComponent<ShipThrustersSlaveCRUDComponent>(component =>
+                // {
+                //     component.RegisterService(service =>
+                //     {
+                //         service.RegisterTypeFactory(factory =>
+                //         {
+                //             factory.SetDefaultConstructor<ShipThrustersSlaveCRUDComponent>();
+                //         });
+                //     });
+                // })
+                // .RegisterComponent<ShipTargetingMasterCRUDComponent>(component =>
+                // {
+                //     component.RegisterService(service =>
+                //     {
+                //         service.RegisterTypeFactory(factory =>
+                //         {
+                //             factory.SetDefaultConstructor<ShipTargetingMasterCRUDComponent>();
+                //         });
+                //     });
+                // })
+                // .RegisterComponent<ShipTargetingSlaveCrudComponent>(component =>
+                // {
+                //     component.RegisterService(service =>
+                //     {
+                //         service.RegisterTypeFactory(factory =>
+                //         {
+                //             factory.SetDefaultConstructor<ShipTargetingSlaveCrudComponent>();
+                //         });
+                //     });
+                // });
+                // .RegisterComponent<ShipTractorBeamMasterCRUDComponent>(component =>
+                // {
+                //     component.RegisterService(service =>
+                //     {
+                //         service.RegisterTypeFactory(factory =>
+                //         {
+                //             factory.SetDefaultConstructor<ShipTractorBeamMasterCRUDComponent>();
+                //         });
+                //     });
+                // })
+                // .RegisterComponent<ShipTractorBeamSlaveCRUDComponent>(component =>
+                // {
+                //     component.RegisterService(service =>
+                //     {
+                //         service.RegisterTypeFactory(factory =>
+                //         {
+                //             factory.SetDefaultConstructor<ShipTractorBeamSlaveCRUDComponent>();
+                //         });
+                //     });
+                // });
         }
     }
 }

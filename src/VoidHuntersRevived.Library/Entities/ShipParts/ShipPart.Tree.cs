@@ -1,4 +1,4 @@
-﻿using Guppy.DependencyInjection;
+﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Events.Delegates;
 using System;
 using System.Collections.Generic;
@@ -66,15 +66,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #endregion
 
         #region Lifecycle Methods
-        private void Tree_Create(GuppyServiceProvider provider)
-        {
-
-        }
-
-        private void Tree_Initialize(GuppyServiceProvider provider)
+        private void Tree_Initialize(ServiceProvider provider)
         {
             // Construct an array of ConnectionNodes based on the defined ShipPart context.
-            Int32 nodeIndex = 0;
+            Byte nodeIndex = 0;
             this.ConnectionNodes = this.Context.ConnectionNodes.Select(nodeDto =>
             {
                 ConnectionNode node = ConnectionNode.Build(provider, nodeDto, this, nodeIndex++);
@@ -85,26 +80,22 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
             }).ToArray();
         }
 
-        private void Tree_PostInitialize(GuppyServiceProvider provider)
+        private void Tree_PostInitialize(ServiceProvider provider)
         {
             this.CleanTree(TreeComponent.Node);
         }
 
-        private void Tree_Release()
+        private void Tree_Uninitialize()
         {
             foreach (ConnectionNode node in this.ConnectionNodes)
             {
                 node.OnConnectionChanged -= this.HandleConnectionNodeConnectionChanged;
 
-                node.TryRelease();
+                node.Dispose();
             };
 
             this.ConnectionNodes = new ConnectionNode[0];
             this.ChildConnectionNode = default;
-        }
-
-        private void Tree_Dispose()
-        {
         }
         #endregion
 
@@ -125,6 +116,10 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 if (this.ChildConnectionNode != default)
                     throw new Exception("Unable to create mutiple child ConnectionNodes within a single ShipPart.");
 
+                if(sender.Connection.Target.Owner.Id == this.Id)
+                {
+
+                }
                 // Update the child connection node value.
                 this.ChildConnectionNode = sender;
                 this.CleanTree(TreeComponent.Node | TreeComponent.Parent | TreeComponent.Children);

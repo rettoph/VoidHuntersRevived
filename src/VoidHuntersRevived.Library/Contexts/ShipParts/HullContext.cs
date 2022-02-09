@@ -1,4 +1,4 @@
-﻿using Guppy.DependencyInjection;
+﻿using Guppy.EntityComponent.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,6 +12,6 @@ namespace VoidHuntersRevived.Library.Contexts.ShipParts
     [ShipPartContextType("Hull")]
     public class HullContext : ShipPartContext
     {
-        protected override ServiceConfigurationKey shipPartServiceConfigurationKey => ServiceConfigurationKeys.ShipParts.Hull;
+        protected override String shipPartServiceConfigurationName => typeof(Hull).FullName;
     }
 }

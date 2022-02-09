@@ -1,17 +1,12 @@
-﻿using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
+﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Network.Enums;
-using Guppy.Network.Interfaces;
-using Microsoft.Xna.Framework;
+using Guppy.Network.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VoidHuntersRevived.Library.Entities.Chunks;
 using VoidHuntersRevived.Library.Entities.Ships;
-using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Interfaces;
-using VoidHuntersRevived.Library.Structs;
 
 namespace VoidHuntersRevived.Library.Entities.Players
 {
@@ -23,43 +18,43 @@ namespace VoidHuntersRevived.Library.Entities.Players
         #endregion
 
         #region Public Properties
-        public IUser User { get; set; }
-        public Int32 ChunkProximityRadius { get; set; } = 2;
-        public Boolean ChunkLoader { get; set; }
+        public User User { get; internal set; }
+        public Int32 ChunkProximityRadius { get; set; } = 4;
+        public Boolean ChunkLoader { get; private set; }
+        public Boolean IsCurrentUser => this.User?.IsCurrentUser ?? true;
         #endregion
 
         #region Lifecycle Methods
-        protected override void Create(GuppyServiceProvider provider)
-        {
-            base.Create(provider);
-        }
-
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
             provider.Service(out _chunks);
 
             this.OnShipChanged += this.HandleShipChanged;
-
-            this.ChunkLoader = true;
         }
-        protected override void Release()
-        {
-            base.PreRelease();
 
-            this.Ship = default;
+        protected override void Initialize(ServiceProvider provider)
+        {
+            base.Initialize(provider);
+
+            this.Pipe.Users.TryAdd(this.User);
+
+            this.ChunkLoader = this.IsCurrentUser || provider.Settings.Get<NetworkAuthorization>() == NetworkAuthorization.Master;
+        }
+
+        protected override void Uninitialize()
+        {
+            base.Uninitialize();
+
+            this.Pipe.Users.TryRemove(this.User);
+        }
+
+        protected override void PostUninitialize()
+        {
+            base.PostUninitialize();
 
             this.OnShipChanged -= this.HandleShipChanged;
-
-            _chunks = default;
-        }
-
-        protected override void Dispose()
-        {
-            base.Dispose();
-
-            // this.OnChunkChanged -= this.HandleChunkChanged;
         }
         #endregion
 

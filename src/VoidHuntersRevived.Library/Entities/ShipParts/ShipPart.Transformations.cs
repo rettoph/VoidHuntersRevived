@@ -1,4 +1,4 @@
-﻿using Guppy.DependencyInjection;
+﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Events.Delegates;
 using Microsoft.Xna.Framework;
 using System;
@@ -40,12 +40,12 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #endregion
 
         #region Lifecycle Methods
-        private void Transformations_Create(GuppyServiceProvider provider)
+        private void Transformations_Initialize(ServiceProvider provider)
         {
             this.OnTreeClean += ShipPart.Transformations_HandleTreeClean;
         }
 
-        private void Transformations_Dispose()
+        private void Transformations_Uninitialize()
         {
             this.OnTreeClean -= ShipPart.Transformations_HandleTreeClean;
         }

@@ -1,5 +1,5 @@
 ﻿using Guppy;
-using Guppy.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Utilities;
 using System;
 using System.Collections.Generic;

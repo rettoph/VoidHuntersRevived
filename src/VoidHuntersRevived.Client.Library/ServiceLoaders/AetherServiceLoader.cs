@@ -1,6 +1,8 @@
 ﻿using Guppy.Attributes;
-using Guppy.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection.Builders;
 using Guppy.Interfaces;
+using Guppy.ServiceLoaders;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,16 +13,11 @@ namespace VoidHuntersRevived.Client.Library.ServiceLoaders
     [AutoLoad]
     internal class AetherServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
-            services.RegisterTypeFactory<AetherDebugView>(p => new AetherDebugView());
-
-            services.RegisterScoped<AetherDebugView>();
-        }
-
-        public void ConfigureProvider(GuppyServiceProvider provider)
-        {
-            // throw new NotImplementedException();
+            services.RegisterService<AetherDebugView>()
+                .SetLifetime(ServiceLifetime.Scoped)
+                .RegisterTypeFactory(factory => factory.SetDefaultConstructor<AetherDebugView>());
         }
     }
 }

@@ -1,49 +1,57 @@
 ﻿using Guppy.Attributes;
-using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Interfaces;
-using Guppy.Lists;
+using Guppy.EntityComponent.Lists;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Components;
-using VoidHuntersRevived.Library.Components.Entities.Players;
-using VoidHuntersRevived.Library.Components.Entities.WorldObjects;
+using VoidHuntersRevived.Library.Components.Players;
+using VoidHuntersRevived.Library.Components.WorldObjects;
 using VoidHuntersRevived.Library.Entities.Aether;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Services;
+using Guppy.ServiceLoaders;
+using Guppy.EntityComponent.DependencyInjection.Builders;
+using VoidHuntersRevived.Library.Components.Aether;
 
 namespace VoidHuntersRevived.Library.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class AetherWrapperServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
-            services.RegisterTypeFactory<AetherWorld>(p => new AetherWorld());
-            services.RegisterTypeFactory<AetherBody>(p => new AetherBody());
-            services.RegisterTypeFactory<AetherFixture>(p => new AetherFixture());
-            services.RegisterTypeFactory<FactoryServiceList<AetherBody>>(p => new FactoryServiceList<AetherBody>());
-            services.RegisterTypeFactory<FactoryServiceList<AetherFixture>>(p => new FactoryServiceList<AetherFixture>());
 
-            services.RegisterScoped<AetherWorld>();
-            services.RegisterTransient<AetherBody>();
-            services.RegisterTransient<AetherFixture>();
-            services.RegisterTransient<FactoryServiceList<AetherBody>>();
-            services.RegisterTransient<FactoryServiceList<AetherFixture>>();
+            services.RegisterService<AetherWorld>()
+                .SetLifetime(ServiceLifetime.Scoped)
+                .RegisterTypeFactory(factory => factory.SetDefaultConstructor<AetherWorld>());
 
-            #region Components
-            services.RegisterTypeFactory<AetherBodySlaveLerpComponent>(p => new AetherBodySlaveLerpComponent());
+            services.RegisterEntity<AetherBody>()
+                .RegisterService(service =>
+                {
+                    service.SetLifetime(ServiceLifetime.Transient)
+                        .RegisterTypeFactory(factory => factory.SetDefaultConstructor<AetherBody>());
+                })
+                .RegisterComponent<AetherBodySlaveLerpComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory => factory.SetDefaultConstructor<AetherBodySlaveLerpComponent>());
+                    });
+                });
 
-            services.RegisterTransient<AetherBodySlaveLerpComponent>();
+            services.RegisterService<AetherFixture>()
+                .SetLifetime(ServiceLifetime.Transient)
+                .RegisterTypeFactory(factory => factory.SetDefaultConstructor<AetherFixture>());
 
-            services.RegisterComponent<AetherBodySlaveLerpComponent, AetherBody>();
-            #endregion
-        }
+            services.RegisterService<FactoryServiceList<AetherBody>>()
+                .SetLifetime(ServiceLifetime.Transient)
+                .RegisterTypeFactory(factory => factory.SetDefaultConstructor<FactoryServiceList<AetherBody>>());
 
-        public void ConfigureProvider(GuppyServiceProvider provider)
-        {
-            // throw new NotImplementedException();
+            services.RegisterService<FactoryServiceList<AetherFixture>>()
+                .SetLifetime(ServiceLifetime.Transient)
+                .RegisterTypeFactory(factory => factory.SetDefaultConstructor<FactoryServiceList<AetherFixture>>());
         }
     }
 }

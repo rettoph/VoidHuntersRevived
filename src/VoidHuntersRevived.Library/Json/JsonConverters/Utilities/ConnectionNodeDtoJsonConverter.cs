@@ -10,7 +10,7 @@ using VoidHuntersRevived.Library.Extensions.System.Text.Json;
 
 namespace VoidHuntersRevived.Library.Json.JsonConverters.Utilities
 {
-    internal class ConnectionNodeDtoJsonConverter : JsonConverter<ConnectionNodeDto>
+    internal class ConnectionNodeDtoJsonConverter : JsonConverter<ConnectionNodeContext>
     {
         private enum Properties
         {
@@ -20,12 +20,12 @@ namespace VoidHuntersRevived.Library.Json.JsonConverters.Utilities
 
         public override bool CanConvert(Type typeToConvert)
         {
-            return typeToConvert == typeof(ConnectionNodeDto);
+            return typeToConvert == typeof(ConnectionNodeContext);
         }
 
-        public override ConnectionNodeDto Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override ConnectionNodeContext Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            ConnectionNodeDto value = new ConnectionNodeDto();
+            ConnectionNodeContext value = new ConnectionNodeContext();
 
             reader.CheckToken(JsonTokenType.StartObject);
             reader.Read();
@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Library.Json.JsonConverters.Utilities
             return value;
         }
 
-        public override void Write(Utf8JsonWriter writer, ConnectionNodeDto value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, ConnectionNodeContext value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
 

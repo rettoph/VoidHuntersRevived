@@ -1,7 +1,5 @@
 ﻿using Guppy;
 using Guppy.Extensions;
-using Guppy.Network.Extensions;
-using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using Guppy.Extensions.System;

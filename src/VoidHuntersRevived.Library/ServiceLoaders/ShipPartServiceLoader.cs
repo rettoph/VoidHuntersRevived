@@ -1,8 +1,10 @@
 ﻿using Guppy.Attributes;
-using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection.Builders;
 using Guppy.Extensions.System;
 using Guppy.Interfaces;
+using Guppy.Network.Builders;
+using Guppy.ServiceLoaders;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -13,48 +15,55 @@ using tainicom.Aether.Physics2D.Collision.Shapes;
 using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Library.Contexts.ShipParts;
 using VoidHuntersRevived.Library.Contexts.Utilities;
-using VoidHuntersRevived.Library.Dtos.Utilities;
-using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.ShipParts.Hulls;
 using VoidHuntersRevived.Library.Entities.ShipParts.Thrusters;
 using VoidHuntersRevived.Library.Globals.Constants;
+using VoidHuntersRevived.Library.Messages.Network;
+using VoidHuntersRevived.Library.Messages.Network.Packets;
 using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.ServiceLoaders
 {
     [AutoLoad]
-    internal sealed class ShipPartServiceLoader : IServiceLoader
+    internal sealed class ShipPartServiceLoader : IServiceLoader, INetworkLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
+        public void ConfigureNetwork(NetworkProviderBuilder network)
+        {
+            network.RegisterDataType<ShipPartPacket>()
+                .SetReader(ShipPartPacket.Read)
+                .SetWriter(ShipPartPacket.Write);
+        }
+
+        public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
             // Do not gift wrap polygons with the engine
             Settings.UseConvexHullPolygons = false;
 
-            #region Services
-            services.RegisterTypeFactory<ConnectionNode>(p => new ConnectionNode());
+            services.RegisterService<ConnectionNode>()
+                .SetLifetime(ServiceLifetime.Transient)
+                .RegisterTypeFactory(factory => factory.SetDefaultConstructor<ConnectionNode>());
 
-            services.RegisterTransient<ConnectionNode>();
-            #endregion
+            services.RegisterService<Hull>()
+                .SetLifetime(ServiceLifetime.Transient)
+                .RegisterTypeFactory(factory => factory.SetDefaultConstructor<Hull>());
 
-            #region Entities
-            services.RegisterTypeFactory<Hull>(p => new Hull());
-            services.RegisterTypeFactory<Thruster>(p => new Thruster());
+            services.RegisterService<Thruster>()
+                .SetLifetime(ServiceLifetime.Transient)
+                .RegisterTypeFactory(factory => factory.SetDefaultConstructor<Thruster>());
 
-            services.RegisterTransient(ServiceConfigurationKeys.ShipParts.Hull, typeof(Hull));
-            services.RegisterTransient(ServiceConfigurationKeys.ShipParts.Thruster, typeof(Thruster));
-            #endregion
-
-            services.RegisterSetup<ShipPartService>((shipParts, p, c) =>
+            services.RegisterSetup<ShipPartService>()
+                .SetMethod((shipParts, p, c) =>
             {
                 shipParts.RegisterContext(new ThrusterContext()
                 {
-                    Name = "ship-part:hull:thruster",
+                    Name = ShipParts.Thruster,
                     Color = Colors.ShipPartThrusterColor,
                     Centeroid = new Vector2(-0.3f, 0f),
+                    Thrust = Vector2.UnitX * 20,
                     Shapes = new[]
                     {
-                        new ShapeDto()
+                        new ShapeContext()
                         {
                             Data = new PolygonShape(
                                 vertices: new Vertices(new Vector2[] {
@@ -77,9 +86,9 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
                             new Vector2(0f, -0.15f)
                         }
                     },
-                    ConnectionNodes = new ConnectionNodeDto[]
+                    ConnectionNodes = new ConnectionNodeContext[]
                     {
-                        new ConnectionNodeDto()
+                        new ConnectionNodeContext()
                         {
                             Position = new Vector2(-0.1f, 0f),
                             Rotation = MathHelper.Pi
@@ -89,12 +98,12 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
 
                 shipParts.RegisterContext(new HullContext()
                 {
-                    Name = "ship-part:hull:square",
+                    Name = ShipParts.HullSquare,
                     Color = Colors.ShipPartHullColor,
                     Centeroid = PolygonHelper.GetCenteroid(4),
                     Shapes = new[]
                     {
-                        new ShapeDto()
+                        new ShapeContext()
                         {
                             Data = new PolygonShape(
                                 vertices: PolygonHelper.GetVertices(4),
@@ -110,12 +119,12 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
 
                 shipParts.RegisterContext(new HullContext()
                 {
-                    Name = "ship-part:hull:triangle",
+                    Name = ShipParts.HullTriangle,
                     Color = Colors.ShipPartHullColor,
                     Centeroid = PolygonHelper.GetCenteroid(3),
                     Shapes = new[]
                     {
-                        new ShapeDto()
+                        new ShapeContext()
                         {
                             Data = new PolygonShape(
                                 vertices: PolygonHelper.GetVertices(3),
@@ -131,11 +140,6 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
 
                 shipParts.ExportAll("export");
             });
-        }
-
-        public void ConfigureProvider(GuppyServiceProvider provider)
-        {
-            // throw new NotImplementedException();
         }
     }
 }

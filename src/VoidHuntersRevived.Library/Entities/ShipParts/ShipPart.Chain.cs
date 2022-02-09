@@ -1,4 +1,4 @@
-﻿using Guppy.DependencyInjection;
+﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Events.Delegates;
 using System;
 using System.Collections.Generic;
@@ -34,19 +34,16 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #endregion
 
         #region Lifecycle Methods
-        private void Chain_Create(GuppyServiceProvider provider)
+        private void Chain_Initialize(ServiceProvider provider)
         {
             this.PostTreeClean += this.Chain_HandlePostTreeCleaned;
             this.OnChainChanged += this.Chain_HandleChainChanged;
         }
 
-        private void Chain_Release()
+        private void Chain_Uninitialize()
         {
             this.Chain = default;
-        }
 
-        private void Chain_Dispose()
-        {
             this.OnChainChanged -= this.Chain_HandleChainChanged;
             this.PostTreeClean -= this.Chain_HandlePostTreeCleaned;
         }

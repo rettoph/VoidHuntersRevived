@@ -1,9 +1,7 @@
-﻿using Guppy.DependencyInjection;
+﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Events.Delegates;
 using Guppy.Network.Enums;
-using Guppy.Network.Extensions.Lidgren;
 using Guppy.Threading.Utilities;
-using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -43,7 +41,7 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
@@ -60,24 +58,16 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
             });
         }
 
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
         }
 
-
-        protected override void Release()
+        protected override void PostUninitialize()
         {
-            base.Release();
-        }
+            base.PostUninitialize();
 
-        protected override void PostRelease()
-        {
-            base.PostRelease();
-
-            this.Body.TryRelease();
-
-            this.Body = default;
+            this.Body.Dispose();
         }
         #endregion
 
@@ -97,15 +87,10 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
         }
         #endregion
 
-        #region Network Methods
-        protected override void WriteWorldInfo(NetOutgoingMessage om)
+        #region Helper Methods
+        public override void SetTransform(Vector2 position, Single rotation)
         {
-            this.Body.Instances[NetworkAuthorization.Master].WriteWorldInfo(om);
-        }
-
-        protected override void ReadWorldInfo(NetIncomingMessage im)
-        {
-            this.Body.Instances[NetworkAuthorization.Master].ReadWorldInfo(im);
+            this.Body.Instances[NetworkAuthorization.Master].SetTransformIgnoreContacts(ref position, rotation);
         }
         #endregion
     }

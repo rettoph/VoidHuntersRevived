@@ -2,16 +2,19 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+	<TargetFramework>net6.0</TargetFramework>
+	<LangVersion>10.0</LangVersion>
     <StartupObject>VoidHuntersRevived.Server.Program</StartupObject>
     <Configurations>Debug;Release;Debug_Verbose</Configurations>
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\Guppy\libraries\lidgren-network-gen3\Lidgren.Network.MultiTarget\Lidgren.Network.MultiTarget.csproj" />
-    <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Core\Guppy.Core.csproj" />
-    <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy\Guppy.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Library\VoidHuntersRevived.Library.csproj" />
   </ItemGroup>

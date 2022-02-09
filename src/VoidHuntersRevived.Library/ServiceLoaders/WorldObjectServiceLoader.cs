@@ -1,61 +1,111 @@
 ﻿using Guppy.Attributes;
-using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
-using Guppy.Interfaces;
-using Guppy.Lists;
+using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.Lists;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using VoidHuntersRevived.Library.Components;
-using VoidHuntersRevived.Library.Components.Entities.WorldObjects;
+using VoidHuntersRevived.Library.Components.WorldObjects;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
-using VoidHuntersRevived.Library.Globals.Constants;
 using VoidHuntersRevived.Library.Interfaces;
-using VoidHuntersRevived.Library.Services;
+using Guppy.EntityComponent.DependencyInjection.Builders;
+using Guppy.ServiceLoaders;
+using Guppy.Network.Builders;
+using VoidHuntersRevived.Library.Messages.Network.Packets;
+using VoidHuntersRevived.Library.Messages.Network;
+using LiteNetLib;
 
 namespace VoidHuntersRevived.Library.ServiceLoaders
 {
     [AutoLoad]
-    internal sealed class WorldObjectServiceLoader : IServiceLoader
+    internal sealed class WorldObjectServiceLoader : IServiceLoader, INetworkLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
+        public void ConfigureNetwork(NetworkProviderBuilder network)
         {
-            services.RegisterTypeFactory<ServiceList<IWorldObject>>(p => new ServiceList<IWorldObject>());
-            services.RegisterTypeFactory<Chain>(p => new Chain());
+            network.RegisterNetworkEntityMessage<WorldObjectPositionPing>()
+                .SetDeliveryMethod(DeliveryMethod.Unreliable);
 
-            services.RegisterTransient<ServiceList<IWorldObject>>();
-            services.RegisterTransient(ServiceConfigurationKeys.Chain);
+            network.RegisterDataType<WorldObjectPositionPacket>()
+                .SetReader(WorldObjectPositionPacket.Read)
+                .SetWriter(WorldObjectPositionPacket.Write);
 
-            #region Components
-            services.RegisterTypeFactory<WorldObjectChunkComponent>(p => new WorldObjectChunkComponent());
-            services.RegisterTypeFactory<WorldObjectCleanWorldInfoComponent>(p => new WorldObjectCleanWorldInfoComponent());
-            services.RegisterTypeFactory<WorldObjectMasterCRUDComponent>(p => new WorldObjectMasterCRUDComponent());
-            services.RegisterTypeFactory<WorldObjectSlaveCRUDComponent>(p => new WorldObjectSlaveCRUDComponent());
-            services.RegisterTypeFactory<AetherBodyWorldObjectMasterValidateWorldInfoChangeDetectedComponent>(p => new AetherBodyWorldObjectMasterValidateWorldInfoChangeDetectedComponent());
-            services.RegisterTypeFactory<ChainMasterCRUDComponent>(p => new ChainMasterCRUDComponent());
-            services.RegisterTypeFactory<ChainSlaveCRUDComponent>(p => new ChainSlaveCRUDComponent());
-
-            services.RegisterTransient<WorldObjectChunkComponent>();
-            services.RegisterTransient<WorldObjectCleanWorldInfoComponent>();
-            services.RegisterTransient<WorldObjectMasterCRUDComponent>();
-            services.RegisterTransient<WorldObjectSlaveCRUDComponent>();
-            services.RegisterTransient<AetherBodyWorldObjectMasterValidateWorldInfoChangeDetectedComponent>();
-            services.RegisterTransient<ChainMasterCRUDComponent>();
-            services.RegisterTransient<ChainSlaveCRUDComponent>();
-
-            services.RegisterComponent<WorldObjectChunkComponent, IWorldObject>();
-            services.RegisterComponent<WorldObjectCleanWorldInfoComponent, IWorldObject>();
-            services.RegisterComponent<WorldObjectMasterCRUDComponent, IWorldObject>();
-            services.RegisterComponent<WorldObjectSlaveCRUDComponent, IWorldObject>();
-            services.RegisterComponent<AetherBodyWorldObjectMasterValidateWorldInfoChangeDetectedComponent, AetherBodyWorldObject>();
-            services.RegisterComponent<ChainMasterCRUDComponent, Chain>();
-            services.RegisterComponent<ChainSlaveCRUDComponent, Chain>();
-            #endregion
+            network.RegisterDataType<AetherBodyWorldObjectVelocityPacket>()
+                .SetReader(AetherBodyWorldObjectVelocityPacket.Read)
+                .SetWriter(AetherBodyWorldObjectVelocityPacket.Write);
         }
 
-        public void ConfigureProvider(GuppyServiceProvider provider)
+        public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
-            // throw new NotImplementedException();
+            services.RegisterService<FrameableList<IWorldObject>>()
+                .SetLifetime(ServiceLifetime.Transient)
+                .RegisterTypeFactory(factory => factory.SetDefaultConstructor<FrameableList<IWorldObject>>());
+
+            services.RegisterEntity<Chain>()
+                .RegisterService(service =>
+                {
+                    service.SetLifetime(ServiceLifetime.Transient)
+                        .RegisterTypeFactory(factory => factory.SetDefaultConstructor<Chain>());
+                })
+                .RegisterComponent<ChainMasterCRUDComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory => factory.SetDefaultConstructor<ChainMasterCRUDComponent>());
+                    });
+                })
+                .RegisterComponent<ChainSlaveCRUDComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory => factory.SetDefaultConstructor<ChainSlaveCRUDComponent>());
+                    });
+                });
+
+            services.RegisterEntity<IWorldObject>()
+                .RegisterComponent<WorldObjectChunkComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory => factory.SetDefaultConstructor<WorldObjectChunkComponent>());
+                    });
+                })
+                .RegisterComponent<WorldObjectMasterCRUDComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory => factory.SetDefaultConstructor<WorldObjectMasterCRUDComponent>());
+                    });
+                })
+                .RegisterComponent<WorldObjectSlaveCRUDComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory => factory.SetDefaultConstructor<WorldObjectSlaveCRUDComponent>());
+                    });
+                });
+
+            services.RegisterEntity<AetherBodyWorldObject>()
+                .RegisterComponent<AetherBodyWorldObjectMasterValidateWorldInfoChangeDetectedComponent>(component =>
+                {
+                    component.SetAssignableEntityType<AetherBodyWorldObject>()
+                        .RegisterService(service =>
+                        {
+                            service.RegisterTypeFactory(factory => factory.SetDefaultConstructor<AetherBodyWorldObjectMasterValidateWorldInfoChangeDetectedComponent>());
+                        });
+                })
+                .RegisterComponent<AetherWorldObjectRemoteMasterComponent>(component =>
+                {
+                    component.SetAssignableEntityType<AetherBodyWorldObject>()
+                        .RegisterService(service =>
+                        {
+                            service.RegisterTypeFactory(factory => factory.SetDefaultConstructor<AetherWorldObjectRemoteMasterComponent>());
+                        });
+                })
+                .RegisterComponent<AetherWorldObjectRemoteSlaveComponent>(component =>
+                {
+                    component.SetAssignableEntityType<AetherBodyWorldObject>()
+                        .RegisterService(service =>
+                        {
+                            service.RegisterTypeFactory(factory => factory.SetDefaultConstructor<AetherWorldObjectRemoteSlaveComponent>());
+                        });
+                });                
         }
     }
 }

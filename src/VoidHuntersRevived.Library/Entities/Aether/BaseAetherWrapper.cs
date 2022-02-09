@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Guppy;
-using Guppy.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Network.Enums;
 using Guppy.Utilities;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
@@ -60,25 +60,6 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         public IReadOnlyDictionary<NetworkAuthorization, TAetherObject> Instances => _instances;
 
         /// <summary>
-        /// <para>Represents all platform instances.</para>
-        /// 
-        /// <para>
-        /// When <see cref="NetworkAuthorization"/> is <see cref="NetworkAuthorization.Master"/>, this will contain
-        /// only the <see cref="NetworkAuthorization.Master"/> instance. This is because platform actions taken on the
-        /// server should only effect the server instance. The slave instance is used as a reference to know what has
-        /// been broadcasted.
-        /// </para>
-        /// 
-        /// <para>
-        /// When <see cref="NetworkAuthorization"/> is <see cref="NetworkAuthorization.Slave"/>, this will contain
-        /// the <see cref="NetworkAuthorization.Master"/> and <see cref="NetworkAuthorization.Master"/> instance.
-        /// This is because platform actions taken on the client should alter the server instances in an effort to
-        /// "predict" incoming server data.
-        /// </para>
-        /// </summary>
-        public TAetherObject[] PlatformInstances => _platformInstances;
-
-        /// <summary>
         /// Represents the current <see cref="NetworkAuthorization"/>'s Aether
         /// object representation.
         /// </summary>
@@ -86,22 +67,14 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
         }
 
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
-        }
-
-        protected override void PostRelease()
-        {
-            base.PostRelease();
-
-            _instances.Clear();
-            _platformInstances = default;
         }
         #endregion
 
@@ -112,14 +85,14 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         /// </summary>
         /// <param name="provider"></param>
         /// <returns></returns>
-        protected abstract TAetherObject BuildInstance(GuppyServiceProvider provider, NetworkAuthorization authorization);
+        protected abstract TAetherObject BuildInstance(ServiceProvider provider, NetworkAuthorization authorization);
 
         /// <summary>
         /// Construct the internal aether <see cref="TAetherObject"/> instances.
         /// This should be called by any owning implementation class.
         /// </summary>
         /// <param name="provider"></param>
-        protected internal void BuildAetherInstances(GuppyServiceProvider provider)
+        protected internal void BuildAetherInstances(ServiceProvider provider)
         {
             _instances = new Dictionary<NetworkAuthorization, TAetherObject>(2)
             {
@@ -133,7 +106,7 @@ namespace VoidHuntersRevived.Library.Entities.Aether
                     _localInstance = _instances[NetworkAuthorization.Master];
                     _platformInstances = new TAetherObject[]
                     {
-                            _instances[NetworkAuthorization.Master]
+                        _instances[NetworkAuthorization.Master]
                     };
                     break;
                 case NetworkAuthorization.Slave:
@@ -154,16 +127,6 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         public void Do(Action<TAetherObject> action)
         {
             foreach (TAetherObject instance in _instances.Values)
-                action(instance);
-        }
-
-        /// <summary>
-        /// Perform an action on every internal <see cref="PlatformInstances"/>.
-        /// </summary>
-        /// <param name="action"></param>
-        protected void DoPlaftorm(Action<TAetherObject> action)
-        {
-            foreach (TAetherObject instance in _platformInstances)
                 action(instance);
         }
 

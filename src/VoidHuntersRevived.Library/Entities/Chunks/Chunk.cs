@@ -1,24 +1,15 @@
 ﻿using Guppy;
-using Guppy.DependencyInjection;
-using Guppy.Events.Delegates;
-using Guppy.Extensions.DependencyInjection;
-using Guppy.Lists;
-using Guppy.Lists.Interfaces;
-using Guppy.Network.Interfaces;
-using Guppy.Network.Scenes;
-using Guppy.Threading.Utilities;
-using Guppy.Utilities;
+using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.Lists;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using VoidHuntersRevived.Library.Entities.Chunks;
-using VoidHuntersRevived.Library.Entities.Players;
-using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Interfaces;
-using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Structs;
+using Guppy.Network;
+using Guppy.Threading.Utilities;
+using Guppy.Messages;
 
 namespace VoidHuntersRevived.Library.Entities.Chunks
 {
@@ -38,32 +29,22 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
 
         #region Privage Fields
         private HashSet<Guid> _dependents;
-        private ThreadQueue _updateThread;
 
         /// <summary>
         /// The amount of time in seconds the current chunk has gone without any dependents.
         /// </summary>
         private Double _dependentlessMilliseconds;
+
+        private MessageBus _messageBus;
         #endregion
 
         #region Public Properties
-        public IPipe Pipe { get; internal set; }
-        public ChunkPosition Position { get; private set; }
+        public Pipe Pipe { get; internal set; }
+        public ChunkPosition Position { get; internal set; }
         public override Guid Id
         {
             get => this.Position.Id;
-            set
-            {
-                base.Id = value;
-                this.Position = new ChunkPosition(value);
-                this.Bounds = new Rectangle(
-                    x: this.Position.X * Chunk.Size,
-                    y: this.Position.Y * Chunk.Size,
-                    width: Chunk.Size,
-                    height: Chunk.Size);
-
-                this.OnPositionSet?.Invoke(this, this.Position);
-            }
+            protected set => throw new NotImplementedException();
         }
 
         public UInt16 Dependents { get; private set; }
@@ -71,80 +52,62 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
         /// <summary>
         /// A list of all children linked to the current Chunk.
         /// </summary>
-        public ServiceList<IWorldObject> Children { get; private set; }
+        public FrameableList<IWorldObject> Children { get; private set; }
 
         /// <summary>
         /// The chunk's current bounds.
         /// </summary>
-        public Rectangle Bounds { get; private set;  }
-        #endregion
-
-        #region Events
-        /// <summary>
-        /// Internal helper method used to push the position set event to
-        /// the <see cref="Components.Entities.Chunks.ChunkPipeComponent"/>.
-        /// This will update the internal <see cref="Pipe"/> value when an id
-        /// is defined.
-        /// </summary>
-        internal event OnEventDelegate<Chunk, ChunkPosition> OnPositionSet;
+        public Rectangle Bounds => new Rectangle(
+            x: this.Position.X * Chunk.Size,
+            y: this.Position.Y * Chunk.Size,
+            width: Chunk.Size,
+            height: Chunk.Size);
         #endregion
 
         #region Lifecycle Methods
-        protected override void Create(GuppyServiceProvider provider)
-        {
-            base.Create(provider);
-
-            _dependents = new HashSet<Guid>();
-        }
-
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
-            this.Children = provider.GetService<ServiceList<IWorldObject>>();
+            _dependents = new HashSet<Guid>();
+
+            this.Children = provider.GetService<FrameableList<IWorldObject>>();
+
+            provider.Service(out _messageBus);
         }
 
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
 
             this.Dependents = 0;
             _dependentlessMilliseconds = 0;
-
-            provider.Service(Guppy.Constants.ServiceConfigurationKeys.SceneUpdateThreadQueue, out _updateThread);
         }
 
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
-
-            _updateThread = default;
+            base.Uninitialize();
 
             _dependents.Clear();
-
-            while (this.Children.Any())
-            {
-                this.Children.First().TryRelease();
-            }
+            this.Children.Dispose(true);
         }
 
-        protected override void PostRelease()
+        protected override void PostUninitialize()
         {
-            base.PostRelease();
+            base.PostUninitialize();
 
-            this.Children.TryRelease();
-            // this.Children = default;
-        }
-
-        protected override void Dispose()
-        {
-            base.Dispose();
-
-            _dependents = default;
+            this.Children.Dispose();
         }
         #endregion
 
         #region Frame Methods
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            this.Children.TryDraw(gameTime);
+        }
+
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
@@ -152,10 +115,17 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
             if(this.Dependents == 0)
             {
                 if (_dependentlessMilliseconds > Chunk.MaxDependentlessThreshold)
-                    _updateThread.Enqueue(gt => this.TryRelease());
+                {
+                    this.Dispose();
+                    return;
+                }
                 else
+                {
                     _dependentlessMilliseconds += gameTime.ElapsedGameTime.TotalMilliseconds;
+                }
             }
+
+            this.Children.TryUpdate(gameTime);
         }
         #endregion
 

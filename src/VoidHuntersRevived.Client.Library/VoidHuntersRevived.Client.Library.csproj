@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <LangVersion>9.0</LangVersion>
+	<TargetFramework>net6.0</TargetFramework>
+	<LangVersion>10.0</LangVersion>
     <Configurations>Debug;Release;Debug_Verbose</Configurations>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile />
@@ -20,6 +20,7 @@
   <ItemGroup>
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,9 +36,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\Aether.Physics2D\Physics2D.Diagnostics\Diagnostics\Aether.Physics2D.Diagnostics.NETSTANDARD2_0.MG.csproj" />
     <ProjectReference Include="..\..\libraries\Aether.Physics2D\Physics2D\Aether.Physics2D.NETSTANDARD2_0.MG.csproj" />
-    <ProjectReference Include="..\..\libraries\Guppy\libraries\lidgren-network-gen3\Lidgren.Network.MultiTarget\Lidgren.Network.MultiTarget.csproj" />
-    <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Core\Guppy.Core.csproj" />
-    <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
+    <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.IO\Guppy.IO.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy\Guppy.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Library\VoidHuntersRevived.Library.csproj" />
   </ItemGroup>

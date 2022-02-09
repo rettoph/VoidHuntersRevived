@@ -1,7 +1,6 @@
-﻿using Guppy.DependencyInjection;
-using Guppy.DependencyInjection.ServiceConfigurations;
+﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Extensions.System;
-using Guppy.Lists;
+using Guppy.EntityComponent.Lists;
 using Guppy.Network.Enums;
 using Microsoft.Xna.Framework;
 using System;
@@ -49,14 +48,14 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
             provider.Service(out _fixtures);
         }
 
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
 
@@ -64,20 +63,19 @@ namespace VoidHuntersRevived.Library.Entities.Aether
                 throw new Exception("Improperly constructed AetherBody detected. Please ensure you call AetherWorld.CreateBody.");
         }
 
-        protected override void PostRelease()
+        protected override void PostUninitialize()
         {
-            _fixtures.TryRelease();
-            _fixtures = default;
+            _fixtures.Dispose();
 
-            this.Do((auth, body) => this.World.BodyFactories[auth].TryReturnToPool(body));
+            this.Do((auth, body) => body.TryRemove());
 
-            base.PostRelease();
+            base.PostUninitialize();
         }
         #endregion
 
         #region Helper Methods
-        protected override Body BuildInstance(GuppyServiceProvider provider, NetworkAuthorization authorization)
-            => this.World.BodyFactories[authorization].Create();
+        protected override Body BuildInstance(ServiceProvider provider, NetworkAuthorization authorization)
+            => this.World.Instances[authorization].CreateBody();
         #endregion
 
         #region CreateFixture Methods
@@ -105,7 +103,7 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         /// <param name="shape"></param>
         /// <param name="setup"></param>
         /// <returns></returns>
-        public AetherFixture CreateFixture(Shape shape, Action<AetherFixture, GuppyServiceProvider, IServiceConfiguration> setup)
+        public AetherFixture CreateFixture(Shape shape, Action<AetherFixture, ServiceProvider, ServiceConfiguration> setup)
         {
             return _fixtures.Create((fixture, provider, configuration) =>
             {
@@ -125,10 +123,43 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         /// </summary>
         /// <param name="impulse">The world impulse vector, usually in N-seconds or kg-m/s.</param>
         public void ApplyLinearImpulse(Vector2 impulse)
-            => this.DoPlaftorm(b => b.ApplyLinearImpulse(impulse));
+            => this.Do(b => b.ApplyLinearImpulse(impulse));
+
+        /// <summary>
+        /// Apply a force at a world point. If the force is not
+        /// applied at the center of mass, it will generate a torque and
+        /// affect the angular velocity. This wakes up the body.
+        /// </summary>
+        /// <param name="force">The world force vector, usually in Newtons (N).</param>
+        /// <param name="point">The world position of the point of application.</param>
+        public virtual void ApplyForce(Vector2 force, Vector2 point)
+            => this.Do(b => b.ApplyForce(ref force, ref point));
+
+        /// <summary>
+        /// Apply a force at a world point. If the force is not
+        /// applied at the center of mass, it will generate a torque and
+        /// affect the angular velocity. This wakes up the body.
+        /// </summary>
+        /// <param name="force">The world force vector, usually in Newtons (N).</param>
+        /// <param name="pointGetter">The world position of the point of application.</param>
+        public virtual void ApplyForce(Vector2 force, Func<Body, Vector2> pointGetter)
+            => this.Do(b => b.ApplyForce(force, pointGetter(b)));
+
+        /// <summary>
+        /// Apply a force at a world point. If the force is not
+        /// applied at the center of mass, it will generate a torque and
+        /// affect the angular velocity. This wakes up the body.
+        /// </summary>
+        /// <param name="forceGetter">The world force vector, usually in Newtons (N).</param>
+        /// <param name="pointGetter">The world position of the point of application.</param>
+        public virtual void ApplyForce(Func<Body, Vector2> forceGetter, Func<Body, Vector2> pointGetter)
+            => this.Do(b =>
+            {
+                b.ApplyForce(forceGetter(b), pointGetter(b));
+            });
 
         public void SetTransformIgnoreContacts(Vector2 position, Single angle)
-            => this.DoPlaftorm(b => b.SetTransformIgnoreContacts(ref position, angle));
+            => this.Do(b => b.SetTransformIgnoreContacts(ref position, angle));
         #endregion
     }
 }

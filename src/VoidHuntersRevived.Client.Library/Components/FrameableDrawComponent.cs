@@ -1,4 +1,4 @@
-﻿using Guppy.DependencyInjection;
+﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,19 +12,39 @@ namespace VoidHuntersRevived.Client.Library.Components
         where TFrameable : class, IFrameable
         where TVertexType : struct, IVertexType
     {
+        private Boolean _visible;
+        public Boolean Visible {
+            get => _visible;
+            set
+            {
+                if(_visible == value)
+                {
+                    return;
+                }
+
+                if(_visible = value)
+                {
+                    this.Entity.OnDraw += this.Draw;
+                }
+                else
+                {
+                    this.Entity.OnDraw -= this.Draw;
+                }
+            }
+        }
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
-            this.Entity.OnDraw += this.Draw;
+            this.Visible = true;
         }
 
-        protected override void PostRelease()
+        protected override void PostUninitialize()
         {
-            base.PostRelease();
+            base.PostUninitialize();
 
-            this.Entity.OnDraw -= this.Draw;
+            this.Visible = false;
         }
         #endregion
 

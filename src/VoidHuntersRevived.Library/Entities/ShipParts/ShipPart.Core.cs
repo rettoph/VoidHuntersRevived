@@ -1,6 +1,8 @@
 ﻿using Guppy;
-using Guppy.DependencyInjection;
+using Guppy.EntityComponent;
+using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Events.Delegates;
+using Guppy.Network;
 using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using System;
@@ -13,7 +15,7 @@ using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.Entities.ShipParts
 {
-    public abstract partial class ShipPart : Entity
+    public abstract partial class ShipPart : NetworkEntity
     {
         #region Public Properties
         /// <summary>
@@ -35,49 +37,35 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #endregion
 
         #region Lifecycle Methods
-        protected override void Create(GuppyServiceProvider provider)
-        {
-            base.Create(provider);
-
-            this.Tree_Create(provider);
-            this.Transformations_Create(provider);
-            this.Chain_Create(provider);
-        }
-
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
 
+            this.Chain_Initialize(provider);
+            this.Transformations_Initialize(provider);
             this.Tree_Initialize(provider);
 
             this.OnChainChanged += this.HandleChainChanged;
         }
 
-        protected override void PostInitialize(GuppyServiceProvider provider)
+        protected override void PostInitialize(ServiceProvider provider)
         {
             base.PostInitialize(provider);
 
             this.Tree_PostInitialize(provider);
         }
 
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
-
-            this.Tree_Release();
-            this.Chain_Release();
+            base.Uninitialize();
 
             this.OnChainChanged -= this.HandleChainChanged;
+
+            this.Tree_Uninitialize();
+            this.Transformations_Uninitialize();
+            this.Chain_Uninitialize();
+
             this.TryDestroyAetherForm();
-        }
-
-        protected override void Dispose()
-        {
-            base.Dispose();
-
-            this.Chain_Dispose();
-            this.Transformations_Dispose();
-            this.Tree_Dispose();
         }
         #endregion
 
@@ -115,11 +103,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             // 
         }
-
-        public virtual String ToAetherString()
-        {
-            throw new NotImplementedException();
-        }
         #endregion
 
         #region Frame Methods
@@ -144,7 +127,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
                 old.OnCorporealChanged -= this.HandleChainCorporealChanged;
             }
-            
 
             if (value != default)
             {

@@ -1,6 +1,8 @@
 ﻿using Guppy.Attributes;
-using Guppy.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection.Builders;
 using Guppy.Interfaces;
+using Guppy.ServiceLoaders;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,18 +13,15 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
     [AutoLoad]
     internal sealed class ServiceServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
-            services.RegisterTypeFactory<ShipPartService>(p => new ShipPartService());
-            services.RegisterTypeFactory<ChainService>(p => new ChainService());
+            services.RegisterService<ShipPartService>()
+                .SetLifetime(ServiceLifetime.Scoped)
+                .RegisterTypeFactory(factory => factory.SetDefaultConstructor<ShipPartService>());
 
-            services.RegisterScoped<ShipPartService>();
-            services.RegisterScoped<ChainService>();
-        }
-
-        public void ConfigureProvider(GuppyServiceProvider provider)
-        {
-            // throw new NotImplementedException();
+            services.RegisterService<ChainService>()
+                .SetLifetime(ServiceLifetime.Scoped)
+                .RegisterTypeFactory(factory => factory.SetDefaultConstructor<ChainService>());
         }
     }
 }

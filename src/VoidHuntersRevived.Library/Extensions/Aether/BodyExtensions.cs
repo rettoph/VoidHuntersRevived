@@ -1,6 +1,4 @@
-﻿using Guppy.Network.Extensions.Lidgren;
-using Lidgren.Network;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -31,24 +29,6 @@ namespace VoidHuntersRevived.Library.Extensions.Aether
             body.SetTransformIgnoreContacts(target.Position, target.Rotation);
             body.LinearVelocity = target.LinearVelocity;
             body.AngularVelocity = target.AngularVelocity;
-        }
-        #endregion
-
-        #region Network Methods
-        public static void WriteWorldInfo(this Body body, NetOutgoingMessage om)
-        {
-            om.Write(body.Position);
-            om.Write(body.Rotation);
-            om.Write(body.LinearVelocity);
-            om.Write(body.AngularVelocity);
-        }
-
-        public static void ReadWorldInfo(this Body body, NetIncomingMessage im)
-        {
-            body.SetTransformIgnoreContacts(im.ReadVector2(), im.ReadSingle());
-
-            body.LinearVelocity = im.ReadVector2();
-            body.AngularVelocity = im.ReadSingle();
         }
         #endregion
     }

@@ -1,6 +1,4 @@
-﻿using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
-using Guppy.Extensions.Utilities;
+﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.IO.Services;
 using Guppy.Utilities;
 using Guppy.Utilities.Cameras;
@@ -36,7 +34,7 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
 
@@ -65,9 +63,9 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             };
         }
 
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
+            base.Uninitialize();
 
             // TODO: RELEASE INTERNAL RESOURCES
             throw new NotImplementedException();
@@ -79,7 +77,11 @@ namespace VoidHuntersRevived.Client.Library.Scenes
         {
             base.PreDraw(gameTime);
 
-            _camera.TryClean(gameTime);
+
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
             _primitiveBatch.Begin(_camera, BlendState.AlphaBlend);
 
             _effect.Projection = _camera.Projection;
@@ -87,21 +89,20 @@ namespace VoidHuntersRevived.Client.Library.Scenes
             _effect.View = _camera.View;
 
             _spriteBatch.Begin(effect: _effect);
-        }
 
-        protected override void Draw(GameTime gameTime)
-        {
             base.Draw(gameTime);
 
             _debugView.TryDraw(gameTime);
+
+            _primitiveBatch.End();
+            _spriteBatch.End();
         }
 
         protected override void PostDraw(GameTime gameTime)
         {
             base.PostDraw(gameTime);
 
-            _primitiveBatch.End();
-            _spriteBatch.End();
+
         }
 
         protected override void PreUpdate(GameTime gameTime)

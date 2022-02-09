@@ -1,4 +1,4 @@
-﻿using Guppy.DependencyInjection;
+﻿using Guppy.EntityComponent.DependencyInjection;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Text;
 using tainicom.Aether.Physics2D.Collision.Shapes;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Library.Contexts.ShipParts;
-using VoidHuntersRevived.Library.Dtos.Utilities;
+using VoidHuntersRevived.Library.Contexts.Utilities;
 using VoidHuntersRevived.Library.Entities.Aether;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Enums;
@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
 
@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         {
             base.TryCreateAetherForm(chain);
 
-            foreach (ShapeDto shape in this.Context.Shapes)
+            foreach (ShapeContext shape in this.Context.Shapes)
             {
                 if(shape.IsCorporeal)
                 {
@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
 
             while (_fixtures.Any())
             {
-                _fixtures.Dequeue().TryRelease();
+                _fixtures.Dequeue().Dispose();
             }
         }
 
@@ -87,27 +87,6 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                         collisionGroup: CollisionCategories.NonCorporealCollisionGroup);
                 }
             }
-        }
-
-        public override string ToAetherString()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            sb.AppendLine($"Local Position: {Vector2.Transform(Vector2.Zero, this.LocalTransformation)}");
-
-            foreach(AetherFixture afixture in _fixtures)
-            {
-                foreach(Fixture fixture in afixture.Instances.Values)
-                {
-                    if(fixture.Tag is ShipPart shipPart)
-                    {
-                        sb.AppendLine("Tag.Id: " + shipPart.Id);
-                    }
-                    
-                }
-            }
-
-            return sb.ToString();
         }
         #endregion
     }

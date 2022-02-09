@@ -1,12 +1,15 @@
-﻿using Guppy.DependencyInjection;
+﻿using Guppy.EntityComponent.DependencyInjection;
+using Guppy.Network;
 using Guppy.Network.Interfaces;
-using Guppy.Network.Peers;
 using Guppy.Network.Security;
+using Guppy.Network.Security.Enums;
+using Guppy.Network.Security.Structs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using VoidHuntersRevived.Library;
 
 namespace VoidHuntersRevived.Client.Library
@@ -19,11 +22,11 @@ namespace VoidHuntersRevived.Client.Library
 
         #region Public Properties
         public ClientPeer Client { get; private set; }
-        public override IPeer Peer => this.Client;
+        public override Peer Peer => this.Client;
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
@@ -32,11 +35,12 @@ namespace VoidHuntersRevived.Client.Library
             this.Client = provider.GetService<ClientPeer>();
         }
 
-        protected override void PostInitialize(GuppyServiceProvider provider)
+        protected override void PostInitialize(ServiceProvider provider)
         {
             base.PostInitialize(provider);
 
-            this.Client.TryConnect("localhost", 1337, new Claim("username", "Rettoph"));
+            this.Client.TryStart();
+            this.Client.TryConnect("localhost", 1337, new[] { new Claim("username", "Rettoph", ClaimType.Public) });
         }
         #endregion
 
@@ -46,6 +50,15 @@ namespace VoidHuntersRevived.Client.Library
             _graphics.Clear(Color.Black);
 
             base.Draw(gameTime);
+
+            this.Scenes.TryDraw(gameTime);
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            this.Scenes.TryUpdate(gameTime);
         }
         #endregion
     }

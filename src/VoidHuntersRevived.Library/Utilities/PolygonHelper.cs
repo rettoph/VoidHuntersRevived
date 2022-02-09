@@ -44,11 +44,11 @@ namespace VoidHuntersRevived.Library.Utilities
             return vertices.ToArray();
         }
 
-        public static ConnectionNodeDto[] GetConnectionNodes(Int32 sides)
+        public static ConnectionNodeContext[] GetConnectionNodes(Int32 sides)
         {
             return PolygonHelper.VertexAngleData(sides).Select(va =>
             {
-                return new ConnectionNodeDto()
+                return new ConnectionNodeContext()
                 {
                     Position = va.vertex - new Vector2(
                         x: (Single)Math.Cos(va.angle) * 0.5f,

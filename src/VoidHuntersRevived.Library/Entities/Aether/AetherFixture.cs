@@ -1,4 +1,4 @@
-﻿using Guppy.DependencyInjection;
+﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Network.Enums;
 using System;
 using System.Collections.Generic;
@@ -26,21 +26,21 @@ namespace VoidHuntersRevived.Library.Entities.Aether
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
         }
 
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
+            base.Uninitialize();
 
-            this.Do(fixture => fixture.TryRemove());
+            this.Do(fixture => fixture?.TryRemove());
         }
         #endregion
 
         #region BaseAetherWrapper Implementation
-        protected override Fixture BuildInstance(GuppyServiceProvider provider, NetworkAuthorization authorization)
+        protected override Fixture BuildInstance(ServiceProvider provider, NetworkAuthorization authorization)
             => this.Body.Instances[authorization].CreateFixture(this.Shape);
         #endregion
 

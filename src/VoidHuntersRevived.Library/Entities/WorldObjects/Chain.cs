@@ -1,6 +1,4 @@
-﻿using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
-using Guppy.Extensions.Utilities;
+﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Utilities;
 using Guppy.Utilities.Cameras;
 using Microsoft.Xna.Framework;
@@ -9,12 +7,9 @@ using System;
 using System.Text;
 using Guppy.Extensions.System;
 using VoidHuntersRevived.Library.Entities.ShipParts;
-using Guppy.Enums;
 using Guppy.Events.Delegates;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Lidgren.Network;
-using Guppy.Network.Extensions.Lidgren;
 using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Enums;
 using Guppy.Network.Enums;
@@ -22,6 +17,7 @@ using VoidHuntersRevived.Library.Entities.Aether;
 using System.Linq;
 using VoidHuntersRevived.Library.Globals.Constants;
 using tainicom.Aether.Physics2D.Dynamics;
+using Guppy.EntityComponent.Enums;
 
 namespace VoidHuntersRevived.Library.Entities.WorldObjects
 {
@@ -42,8 +38,8 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
             get => _root;
             internal set
             {
-                if (this.Status != ServiceStatus.PreInitializing && this.Status != ServiceStatus.PostReleasing)
-                    throw new InvalidOperationException($"Unable to update {nameof(Chain)}::{nameof(this.Root)} unless {nameof(this.Status)} is {nameof(ServiceStatus.PreInitializing)} or {nameof(ServiceStatus.PostReleasing)}.");
+                if (this.Status != ServiceStatus.Initializing)
+                    throw new InvalidOperationException($"Unable to update {nameof(Chain)}::{nameof(this.Root)} unless {nameof(this.Status)} is {nameof(ServiceStatus.Initializing)}.");
 
                 _root = value;
             }
@@ -53,46 +49,44 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
-            this.Sleeping = true;
-
             base.Initialize(provider);
 
-            this.LayerGroup = LayersContexts.Chains.Group.GetValue();
+            // this.LayerGroup = LayersContexts.Chains.Group.GetValue();
             this.Corporeal = false; // Chains are non-corporeal by default.
         }
 
-        protected override void PostInitialize(GuppyServiceProvider provider)
+        protected override void PostInitialize(ServiceProvider provider)
         {
             base.PostInitialize(provider);
 
-            if(this.Root == default)
+            if (this.Root == default)
+            {
                 throw new ArgumentOutOfRangeException(nameof(this.Root));
+            }
 
             // Update the roots internal Chain reference.
             this.Root.Chain = this;
             this.Root.OnChainChanged += this.HandleRootChainChanged;
         }
 
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
+            base.Uninitialize();
 
             this.Root.OnChainChanged -= this.HandleRootChainChanged;
         }
 
-        protected override void PostRelease()
+        protected override void PostUninitialize()
         {
-            base.PostRelease();
+            base.PostUninitialize();
 
             // Only release the root piece if it is still bound to the chain
             if (this.Root.Chain == this)
             {
-                this.Root.TryRelease();
+                this.Root.Dispose();
             }
-
-            this.Root = default;
         }
         #endregion
 
@@ -128,22 +122,10 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
         }
         #endregion
 
-        #region Network Methods
-        public void WriteAll(NetOutgoingMessage om, ShipPartService shipPartService)
-        {
-            shipPartService.TryWriteShipPart(this.Root, om, ShipPartSerializationFlags.CreateTree);
-        }
-
-        public void ReadAll(NetIncomingMessage im, ShipPartService shipPartService)
-        {
-            this.Root = shipPartService.TryReadShipPart(im, ShipPartSerializationFlags.CreateTree);
-        }
-        #endregion
-
         #region Event Handlers
         private void HandleRootChainChanged(ShipPart sender, Chain old, Chain value)
         {
-            this.TryRelease();
+            this.Dispose();
         }
         #endregion
     }

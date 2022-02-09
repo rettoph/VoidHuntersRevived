@@ -1,7 +1,9 @@
 ﻿using Guppy;
-using Guppy.DependencyInjection;
-using Guppy.Lists;
+using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.Lists;
+using Guppy.EntityComponent.Lists;
 using Guppy.Network.Interfaces;
+using Guppy.Network.Security;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,30 +15,9 @@ namespace VoidHuntersRevived.Library.Services
 {
     public class PlayerService : ServiceList<Player>
     {
-        #region Private Fields
-        private GuppyServiceProvider _provider;
-        #endregion
-
-        #region Lifecycle Methods
-        protected override void Initialize(GuppyServiceProvider provider)
+        public UserPlayer CreateUserPlayer(User user)
         {
-            base.Initialize(provider);
-
-            _provider = provider;
-        }
-
-        protected override void Release()
-        {
-            base.Release();
-
-            _provider = default;
-        }
-        #endregion
-
-
-        public UserPlayer CreateUserPlayer(IUser user)
-        {
-            return this.Create<UserPlayer>(_provider, ServiceConfigurationKeys.Players.UserPlayer, (player, _, _) =>
+            return this.Create<UserPlayer>((player, _, _) =>
             {
                 player.User = user;
             });

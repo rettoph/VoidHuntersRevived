@@ -3,8 +3,6 @@ using Guppy.Attributes;
 using Guppy.Extensions;
 using Guppy.Extensions.System;
 using Guppy.IO.Extensions;
-using Guppy.Network.Extensions;
-using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;

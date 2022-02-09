@@ -6,6 +6,6 @@ namespace VoidHuntersRevived.Library.Globals.Constants
 {
     public static class LerpStrengths
     {
-        public const Single SlaveBodyLerpStrength = 1f;
+        public const Single SlaveBodyLerpStrength = 0.5f;
     }
 }

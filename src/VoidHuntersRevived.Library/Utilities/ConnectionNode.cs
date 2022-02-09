@@ -1,16 +1,16 @@
 ﻿using Guppy;
-using Guppy.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Events.Delegates;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Entities.ShipParts;
-using Guppy.Extensions.DependencyInjection;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Contexts.Utilities;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Structs;
+using Guppy.EntityComponent;
 
 namespace VoidHuntersRevived.Library.Utilities
 {
@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Library.Utilities
         /// The <see cref="ConnectionNode"/>'s index within the 
         /// <see cref="ConnectionNode.Owner"/>'s <see cref="ShipPart.ConnectionNodes"/> array
         /// </summary>
-        public Int32 Index { get; private set; }
+        public Byte Index { get; private set; }
 
         /// <summary>
         /// The <see cref="ShipPart"/> containing the current <see cref="ConnectionNode"/>.
@@ -81,6 +81,13 @@ namespace VoidHuntersRevived.Library.Utilities
             get => _connection;
             set => this.OnConnectionChanged.InvokeIf(_connection != value, this, ref _connection, value);
         }
+
+        /// <summary>
+        /// The network id of the current ConnectionNode. 
+        /// This will allow us to pinpoinnt the exact instance across a network
+        /// with minimum data.
+        /// </summary>
+        public ConnectionNodeNetworkId NetworkId => new ConnectionNodeNetworkId(this.Owner.NetworkId, this.Index);
         #endregion
 
         #region Events
@@ -88,20 +95,20 @@ namespace VoidHuntersRevived.Library.Utilities
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
             this.Connection = ConnectionNodeConnection.DefaultEstranged;
         }
 
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
+            base.Uninitialize();
 
             // Cascade the releasing downward.
             if (this.Connection.State != ConnectionNodeState.Estranged)
-                this.Connection.Target.Owner.TryRelease();
+                this.Connection.Target.Owner.Dispose();
 
             // Ensure any connection are removed.
             this.TryDetach();
@@ -122,11 +129,15 @@ namespace VoidHuntersRevived.Library.Utilities
                 return false;
 
             // Ensure the prospective child is also an orphan
-            if (child.Connection.State != ConnectionNodeState.Estranged)
+            if (child?.Connection.State != ConnectionNodeState.Estranged)
                 return false;
 
             // Ensure the child's owner has no child nodes defined already...
             if (child.Owner.ChildConnectionNode != default)
+                return false;
+
+            // Ensure the child and pareent are not on the same part
+            if (child.Owner.Id == this.Owner.Id)
                 return false;
 
             // Create the attachment!
@@ -180,7 +191,7 @@ namespace VoidHuntersRevived.Library.Utilities
         /// <param name="context"></param>
         /// <param name="owner"></param>
         /// <returns></returns>
-        public static ConnectionNode Build(GuppyServiceProvider provider, ConnectionNodeDto context, ShipPart owner, Int32 index)
+        public static ConnectionNode Build(ServiceProvider provider, ConnectionNodeContext context, ShipPart owner, Byte index)
             => provider.GetService<ConnectionNode>((n, p, c) =>
             {
                 // Update the parent

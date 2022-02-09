@@ -6,7 +6,12 @@ namespace VoidHuntersRevived.Library.Globals.Constants
 {
     public static class Intervals
     {
-        public static readonly Double WorldInfoPingBroadcastInterval = 50;
+        public const Double MinimumShipTargetPingInterval = 50;
+        public const Double MaximumShipTargetPingInterval = 250;
+
+        public const Double MinimumWorldInfoPingInterval = 50;
+        public const Double MaximumWorldInfoPingInterval = 250;
+
         public static readonly Double ShipTargetPingBroadcastInterval = 100;
 
         /// <summary>

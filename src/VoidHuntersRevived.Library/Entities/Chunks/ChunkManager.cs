@@ -1,18 +1,12 @@
 ﻿using Guppy;
-using Guppy.DependencyInjection;
-using Guppy.Events.Delegates;
-using Guppy.Extensions.DependencyInjection;
-using Guppy.Lists;
-using Guppy.Lists.Delegates;
-using Guppy.Lists.Interfaces;
-using Guppy.Utilities.Cameras;
+using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.Lists;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VoidHuntersRevived.Library.Globals.Constants;
 using VoidHuntersRevived.Library.Structs;
+using Guppy.EntityComponent.Lists.Interfaces;
 
 namespace VoidHuntersRevived.Library.Entities.Chunks
 {
@@ -41,27 +35,25 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
         #endregion
 
         #region Lifecycle Methods
-        protected override void Create(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
-            base.Create(provider);
+            base.PreInitialize(provider);
 
             this.LayerGroup = LayersContexts.Chunks.Group.GetValue();
         }
 
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
 
             provider.Service(out _chunks);
         }
 
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
+            base.Uninitialize();
 
-            _chunks.TryRelease();
-
-            _chunks = default;
+            _chunks.Dispose();
         }
         #endregion
 
@@ -88,7 +80,16 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
         }
         public Chunk GetChunk(ChunkPosition position)
         {
-            return _chunks.GetOrCreateById<Chunk>(position.Id);
+            if(_chunks.TryGetById(position.Id, out Chunk chunk))
+            {
+                return chunk;
+            }
+
+            // We need to create & return a new chunk here
+            return _chunks.Create((chunk, _, _) =>
+            {
+                chunk.Position = position;
+            });
         }
 
         public IEnumerable<Chunk> GetChunks(ChunkPosition? position, Int32 radius = 1)
@@ -99,7 +100,7 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
                 {
                     for (Int32 y = -radius; y <= radius; y++)
                     {
-                        yield return _chunks.GetOrCreateById<Chunk>((new ChunkPosition(position.Value.X + x, position.Value.Y + y)).Id);
+                        yield return this.GetChunk(new ChunkPosition(position.Value.X + x, position.Value.Y + y));
                     }
                 }
             }
