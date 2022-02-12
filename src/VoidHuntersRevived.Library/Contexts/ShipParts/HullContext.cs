@@ -12,6 +12,6 @@ namespace VoidHuntersRevived.Library.Contexts.ShipParts
     [ShipPartContextType("Hull")]
     public class HullContext : ShipPartContext
     {
-        protected override String shipPartServiceConfigurationName => typeof(Hull).FullName;
+        protected override Type shipPartServiceConfigurationType => typeof(Hull);
     }
 }

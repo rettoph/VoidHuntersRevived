@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VoidHuntersRevived.Library.Contexts.ShipParts;
+using VoidHuntersRevived.Library.Entities.Aether;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Utilities;
@@ -28,6 +29,11 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
         /// The <see cref="ShipPartContext.Centeroid"/>, transformed by <see cref="LocalTransformation"/>.
         /// </summary>
         public Vector2 LocalCenter => Vector2.Transform(this.Context.Centeroid, this.LocalTransformation);
+
+        /// <summary>
+        /// The current part's main body.
+        /// </summary>
+        public virtual AetherBody Body => this.Chain?.Body;
         #endregion
 
         #region Events

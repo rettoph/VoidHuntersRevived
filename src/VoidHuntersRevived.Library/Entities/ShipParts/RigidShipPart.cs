@@ -46,9 +46,9 @@ namespace VoidHuntersRevived.Library.Entities.ShipParts
                 if(shape.IsCorporeal)
                 {
                     _fixtures.Enqueue(
-                    chain.Body.CreateFixture(
-                        shape.Data.Clone(this.LocalTransformation),
-                        this));
+                        this.Body.CreateFixture(
+                            shape.Data.Clone(this.LocalTransformation),
+                            this));
                 }
             }
         }

@@ -8,7 +8,7 @@ namespace VoidHuntersRevived.Library.Contexts.ShipParts
     [ShipPartContextType("Thruster")]
     public class ThrusterContext : ShipPartContext
     {
-        protected override String shipPartServiceConfigurationName => typeof(Thruster).FullName;
+        protected override Type shipPartServiceConfigurationType => typeof(Thruster);
 
         public Vector2 Thrust { get; set; }
     }

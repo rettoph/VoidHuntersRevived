@@ -102,7 +102,7 @@ namespace VoidHuntersRevived.Library.Services
         {
             ShipPartContext context = _contexts[contextId];
 
-            return _provider.GetService<ShipPart>(context.ShipPartServiceConfigurationKey, (sp, p, c) =>
+            return _provider.GetService<ShipPart>(context.ShipPartServiceConfigurationType, (sp, p, c) =>
             {
                 sp.SetContext(context);
                 sp.NetworkId = networkId;
@@ -121,7 +121,7 @@ namespace VoidHuntersRevived.Library.Services
         {
             ShipPartContext context = _contexts[contextId];
 
-            return _provider.GetService<ShipPart>(context.ShipPartServiceConfigurationKey, (sp, p, c) =>
+            return _provider.GetService<ShipPart>(context.ShipPartServiceConfigurationType, (sp, p, c) =>
             {
                 sp.SetContext(context);
             });

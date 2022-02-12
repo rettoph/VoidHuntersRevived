@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Server.Scenes
             provider.Service(out _shipParts);
             provider.Service(out _bus);
 
-            _bus.ConfigureMessageTypes(Int32.MinValue, typeof(UserJoinedMessage));
+            _bus.GetQueue(Int32.MinValue).RegisterType<UserJoinedMessage>();
             _bus.RegisterProcessor<UserJoinedMessage>(this);
 
             this.Room.Users.OnEvent += this.HandleUserListEvent;

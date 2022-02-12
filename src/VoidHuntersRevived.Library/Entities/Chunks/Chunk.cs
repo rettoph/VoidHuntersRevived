@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
         /// <summary>
         /// The maximum amount of time a chunk can exist without any children before it will self-dispose.
         /// </summary>
-        public static readonly Double MaxDependentlessThreshold = 500;
+        public static readonly Double MaxDependentlessThreshold = 5000;
         #endregion
 
         #region Privage Fields

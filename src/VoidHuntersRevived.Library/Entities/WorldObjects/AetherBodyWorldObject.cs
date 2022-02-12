@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Library.Entities.WorldObjects
                     b.Tag = this;
                     b.BodyType = BodyType.Dynamic;
                     b.LinearDamping = 0.2f;
-                    b.AngularDamping = 0.1f;
+                    b.AngularDamping = 0.5f;
                     b.IgnoreGravity = true;
                 });
             });

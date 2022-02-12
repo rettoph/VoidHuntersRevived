@@ -10,6 +10,8 @@ using Guppy.Utilities;
 using VoidHuntersRevived.Library.Entities.Aether;
 using VoidHuntersRevived.Library.Globals.Constants;
 using Guppy.Network;
+using Guppy.Network.Services;
+using Guppy.Threading.Utilities;
 
 namespace VoidHuntersRevived.Library.Scenes
 {
@@ -17,6 +19,8 @@ namespace VoidHuntersRevived.Library.Scenes
     {
         #region Private Fields
         private AetherWorld _world;
+        private NetworkEntityService _networkEntities;
+        private MessageBus _bus;
         #endregion
 
         #region Public Properties
@@ -37,6 +41,14 @@ namespace VoidHuntersRevived.Library.Scenes
             this.Layers.Create<Layer>((l, p, c) => l.SetContext(LayersContexts.Chains));
 
             provider.Service(out _world);
+            provider.Service(out _networkEntities);
+            provider.Service(out _bus);
+
+            _bus.GetQueue(Guppy.Network.Constants.Queues.CreateNetworkEntityMessageQueue)
+                .SetMaximumMessagesPerSecond(100);
+
+            _bus.GetQueue(Guppy.Network.Constants.Queues.DisposeNetworkEntityMessageQueue)
+                .SetMaximumMessagesPerSecond(100);
         }
 
         protected override void PostUninitialize()
@@ -60,11 +72,6 @@ namespace VoidHuntersRevived.Library.Scenes
             base.PostUpdate(gameTime);
 
             _world.TryUpdate(gameTime);
-        }
-
-        protected override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
         }
         #endregion
     }

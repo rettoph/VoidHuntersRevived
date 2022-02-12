@@ -41,6 +41,9 @@ namespace VoidHuntersRevived.Library.Services
                 chain.Body.Instances[NetworkAuthorization.Master].SetTransformIgnoreContacts(ref position, rotation);
 
                 chain.Root = shipPart;
+
+                // Auto mark the chain as asleep
+                chain.Body.Do(b => b.Awake = false);
             });
 
         public Chain Create(String contextName, Vector2 position = default, Single rotation = default)

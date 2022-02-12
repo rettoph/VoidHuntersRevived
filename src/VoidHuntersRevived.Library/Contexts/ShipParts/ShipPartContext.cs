@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Library.Contexts.ShipParts
         /// The service configuration key to be used
         /// when creating a new instance of the defined <see cref="ShipPart"/>.
         /// </summary>
-        protected abstract String shipPartServiceConfigurationName { get; }
+        protected abstract Type shipPartServiceConfigurationType { get; }
         #endregion
 
         #region Public Properties
@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Library.Contexts.ShipParts
         /// when creating a new instance of the defined <see cref="ShipPart"/>.
         /// </summary>
         [JsonIgnore]
-        public String ShipPartServiceConfigurationKey => this.shipPartServiceConfigurationName;
+        public Type ShipPartServiceConfigurationType => this.shipPartServiceConfigurationType;
 
         /// <summary>
         /// The cross platform unique key for this context.

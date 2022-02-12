@@ -20,7 +20,8 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
         public void ConfigureNetwork(NetworkProviderBuilder network)
         {
             network.RegisterNetworkEntityMessage<WorldObjectPositionPing>()
-                .SetDeliveryMethod(DeliveryMethod.Unreliable);
+                .SetDeliveryMethod(DeliveryMethod.Sequenced)
+                .SetSequenceChannel(Globals.Constants.SequenceChannels.WorldObjectPositionPingSequenceChannel);
 
             network.RegisterDataType<WorldObjectPositionPacket>()
                 .SetReader(WorldObjectPositionPacket.Read)

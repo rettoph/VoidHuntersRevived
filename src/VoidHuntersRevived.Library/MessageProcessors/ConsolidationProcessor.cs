@@ -52,12 +52,12 @@ namespace VoidHuntersRevived.Library.MessageProcessors
 
             _transientProcessors = new Dictionary<Guid, TTransientProcessor>();
 
-            _bus.ConfigureMessageTypes(this.MessageQueue, typeof(TConsolidableMessage));
+            _bus.GetQueue(this.MessageQueue).RegisterType<TConsolidableMessage>();
             _bus.RegisterProcessor<TConsolidableMessage>(this);
 
             Debug.Assert(
                 this.ServiceConfiguration.Lifetime == ServiceLifetime.Scoped,
-                $"{this.GetType().GetPrettyName()} - {nameof(ServiceLifetime)} of {nameof(ServiceLifetime.Scoped)} expected. Service {this.ServiceConfiguration.Name} is set to {this.ServiceConfiguration.Lifetime}."
+                $"{this.GetType().GetPrettyName()} - {nameof(ServiceLifetime)} of {nameof(ServiceLifetime.Scoped)} expected. Service {this.ServiceConfiguration.Type.GetPrettyName()} is set to {this.ServiceConfiguration.Lifetime}."
             );
         }
 
