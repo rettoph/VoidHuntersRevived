@@ -97,6 +97,11 @@ namespace VoidHuntersRevived.Library.Structs
             return false;
         }
 
+        public Double Distance(ChunkPosition position)
+        {
+            return Math.Sqrt(Math.Pow(this.X - position.X, 2) + Math.Pow(this.Y - position.Y, 2));
+        }
+
         public override int GetHashCode()
         {
             int hashCode = 1809447997;

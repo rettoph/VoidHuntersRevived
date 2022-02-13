@@ -10,6 +10,6 @@ namespace VoidHuntersRevived.Library.MessageProcessors
 {
     public sealed class DirectionRequestProcessor : ConsolidationProcessor<DirectionRequest, DirectionComponent>
     {
-        public override Int32 MessageQueue => Globals.Constants.MessageQueues.DirectionRequestQueue;
+        public override Int32 MessagePriority => Globals.Constants.MessageQueues.DirectionRequestQueue;
     }
 }

@@ -28,8 +28,8 @@ namespace VoidHuntersRevived.Library.Components.Chunks
 
             this.Entity.OnChunkAdded += (_, chunk) =>
             {
-                int total = Random.Shared.Next(0, 10);
-                total = 01;
+                int total = Random.Shared.Next(1, 3);
+                //total = 01;
 
                 for (var i = 0; i < total; i++)
                 {

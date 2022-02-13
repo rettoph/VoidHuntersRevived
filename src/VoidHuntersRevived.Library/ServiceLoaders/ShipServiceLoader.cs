@@ -28,6 +28,9 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
             network.RegisterNetworkEntityMessage<ShipTractorBeamStateChangedMessage>()
                 .SetDeliveryMethod(DeliveryMethod.ReliableOrdered);
 
+            network.RegisterNetworkEntityMessage<ShipPlayerChangedMessage>()
+                .SetDeliveryMethod(DeliveryMethod.ReliableOrdered);
+
             network.RegisterDataType<ShipCreatePacket>()
                 .SetReader(ShipCreatePacket.Read)
                 .SetWriter(ShipCreatePacket.Write);

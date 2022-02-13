@@ -13,12 +13,15 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VoidHuntersRevived.Library.Entities.Aether;
+using VoidHuntersRevived.Library.Entities.Chunks;
 using VoidHuntersRevived.Library.Entities.ShipParts;
 using VoidHuntersRevived.Library.Entities.WorldObjects;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Globals.Constants;
 using VoidHuntersRevived.Library.Scenes;
 using VoidHuntersRevived.Library.Services;
+using VoidHuntersRevived.Library.Structs;
 using VoidHuntersRevived.Library.Utilities;
 using VoidHuntersRevived.Server.Messages;
 
@@ -33,6 +36,7 @@ namespace VoidHuntersRevived.Server.Scenes
         private ShipService _ships;
         private ShipPartService _shipParts;
         private MessageBus _bus;
+        private ChunkManager _chunks;
         #endregion
 
         #region Lifecycle Methods
@@ -50,6 +54,7 @@ namespace VoidHuntersRevived.Server.Scenes
             provider.Service(out _chains);
             provider.Service(out _shipParts);
             provider.Service(out _bus);
+            provider.Service(out _chunks);
 
             _bus.GetQueue(Int32.MinValue).RegisterType<UserJoinedMessage>();
             _bus.RegisterProcessor<UserJoinedMessage>(this);

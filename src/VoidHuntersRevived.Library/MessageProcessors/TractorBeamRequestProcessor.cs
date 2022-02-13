@@ -16,6 +16,6 @@ namespace VoidHuntersRevived.Library.MessageProcessors
     /// </summary>
     public sealed class TractorBeamRequestProcessor : ConsolidationProcessor<TractorBeamStateRequest, TractorBeamComponent>
     {
-        public override int MessageQueue => Globals.Constants.MessageQueues.TractorBeamRequestQueue;
+        public override int MessagePriority => Globals.Constants.MessageQueues.TractorBeamRequestQueue;
     }
 }

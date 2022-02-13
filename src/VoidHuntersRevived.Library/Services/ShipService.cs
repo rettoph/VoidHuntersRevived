@@ -24,11 +24,14 @@ namespace VoidHuntersRevived.Library.Services
         #region Helper Methods
         public Ship Create(Chain chain, Player player = default)
         {
-            return _provider.GetService<Ship>((ship, _, _) =>
+            Ship ship = _provider.GetService<Ship>((ship, _, _) =>
             {
                 ship.Chain = chain;
-                ship.Player = player;
             });
+
+            ship.Player = player;
+
+            return ship;
         }
         #endregion
     }

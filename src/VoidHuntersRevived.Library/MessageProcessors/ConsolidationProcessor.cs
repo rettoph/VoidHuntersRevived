@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Library.MessageProcessors
         #endregion
 
         #region Public Properties
-        public abstract Int32 MessageQueue { get; }
+        public abstract Int32 MessagePriority { get; }
         #endregion
 
         #region Lifecycle Methods
@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Library.MessageProcessors
 
             _transientProcessors = new Dictionary<Guid, TTransientProcessor>();
 
-            _bus.GetQueue(this.MessageQueue).RegisterType<TConsolidableMessage>();
+            _bus.GetQueue(this.MessagePriority).RegisterType<TConsolidableMessage>();
             _bus.RegisterProcessor<TConsolidableMessage>(this);
 
             Debug.Assert(

@@ -21,6 +21,7 @@ namespace VoidHuntersRevived.Library.ServiceLoaders
         {
             network.RegisterNetworkEntityMessage<WorldObjectPositionPing>()
                 .SetDeliveryMethod(DeliveryMethod.Sequenced)
+                .SetOutgoingPriority(-1000)
                 .SetSequenceChannel(Globals.Constants.SequenceChannels.WorldObjectPositionPingSequenceChannel);
 
             network.RegisterDataType<WorldObjectPositionPacket>()

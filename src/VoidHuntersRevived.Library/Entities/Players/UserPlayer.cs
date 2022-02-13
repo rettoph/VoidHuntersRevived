@@ -68,14 +68,14 @@ namespace VoidHuntersRevived.Library.Entities.Players
             _proximityChunks = _chunks.GetChunks(value?.Position, this.ChunkProximityRadius);
 
             // Deregister any old chunk dependents...
-            foreach (Chunk chunk in oldProximityChunks.Except(_proximityChunks))
+            foreach (Chunk chunk in oldProximityChunks.Except(_proximityChunks).OrderByDescending(chunk => chunk.Position.Distance(value.Position)))
             {
                 chunk.Pipe.Users.TryRemove(this.User);
                 chunk.TryDeregisterDependent(this.Id);
             }
 
             // Register any new chunk dependents...
-            foreach (Chunk chunk in _proximityChunks.Except(oldProximityChunks))
+            foreach (Chunk chunk in _proximityChunks.Except(oldProximityChunks).OrderBy(chunk => chunk.Position.Distance(value.Position)))
             {
                 chunk.Pipe.Users.TryAdd(this.User);
                 chunk.TryRegisterDependent(this.Id);

@@ -43,12 +43,6 @@ namespace VoidHuntersRevived.Library.Scenes
             provider.Service(out _world);
             provider.Service(out _networkEntities);
             provider.Service(out _bus);
-
-            _bus.GetQueue(Guppy.Network.Constants.Queues.CreateNetworkEntityMessageQueue)
-                .SetMaximumMessagesPerSecond(100);
-
-            _bus.GetQueue(Guppy.Network.Constants.Queues.DisposeNetworkEntityMessageQueue)
-                .SetMaximumMessagesPerSecond(100);
         }
 
         protected override void PostUninitialize()

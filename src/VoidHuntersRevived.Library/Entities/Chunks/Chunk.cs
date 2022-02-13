@@ -10,6 +10,7 @@ using VoidHuntersRevived.Library.Structs;
 using Guppy.Network;
 using Guppy.Threading.Utilities;
 using Guppy.Messages;
+using Guppy.EntityComponent.Lists.Interfaces;
 
 namespace VoidHuntersRevived.Library.Entities.Chunks
 {
@@ -105,6 +106,7 @@ namespace VoidHuntersRevived.Library.Entities.Chunks
             base.Uninitialize();
 
             _dependents.Clear();
+
             this.Children.Dispose(true);
         }
 
