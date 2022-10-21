@@ -1,3 +1,0 @@
-﻿Thruster math is hard...
-
-Ill write an explination here someday hopefully.

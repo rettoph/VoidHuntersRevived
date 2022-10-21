@@ -1,31 +1,22 @@
 ﻿using Guppy;
-using Guppy.Attributes;
-using Guppy.Extensions;
-using Guppy.Extensions.System;
-using Guppy.IO.Extensions;
+using Guppy.Common;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading;
+using System.Threading.Tasks;
 using VoidHuntersRevived.Library;
-using VoidHuntersRevived.Library.Contexts.ShipParts;
 
 namespace VoidHuntersRevived.Client.Library
 {
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        PrimaryGame game;
+        private IScoped<ClientMainGuppy> _guppy;
 
 #if WINDOWS
         // https://community.monogame.net/t/start-in-maximized-window/12264
@@ -64,18 +55,17 @@ namespace VoidHuntersRevived.Client.Library
 
             base.Initialize();
 
-            using (GuppyLoader guppy = new GuppyLoader(withAssembliesReferencing: new[] { typeof(PrimaryGame).Assembly, typeof(Game1).Assembly }))
-            {
-                this.game = guppy
-                    .ConfigureMonoGame(this.graphics, this.Content, this.Window)
-                    .ConfigureTerminal()
-                    .Initialize()
-                    .BuildGame<PrimaryGame>();
-            }
-
 #if WINDOWS
             SDL_MaximizeWindow(Window.Handle);
 #endif
+            _guppy = new GuppyEngine(new[] { typeof(MainGuppy).Assembly, typeof(ClientMainGuppy).Assembly })
+                .ConfigureMonoGame(this, this.graphics, this.Content, this.Window)
+                .ConfigureECS()
+                .ConfigureNetwork(1)
+                .ConfigureResources()
+                .ConfigureUI()
+                .Build()
+                .Create<ClientMainGuppy>();
         }
 
         /// <summary>
@@ -84,9 +74,6 @@ namespace VoidHuntersRevived.Client.Library
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-
             // TODO: use this.Content to load your game content here
         }
 
@@ -121,7 +108,7 @@ namespace VoidHuntersRevived.Client.Library
             // TODO: Add your update logic here
             base.Update(gameTime);
 
-            game.TryUpdate(gameTime);
+            _guppy.Instance.Update(gameTime);
         }
 
         /// <summary>
@@ -132,7 +119,9 @@ namespace VoidHuntersRevived.Client.Library
         {
             base.Draw(gameTime);
 
-            game.TryDraw(gameTime);
+            this.GraphicsDevice.Clear(Color.Black);
+
+            _guppy.Instance.Draw(gameTime);
         }
     }
 }

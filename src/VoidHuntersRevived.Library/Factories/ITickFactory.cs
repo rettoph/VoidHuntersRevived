@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using VoidHuntersRevived.Library.Models;
+
+namespace VoidHuntersRevived.Library.Factories
+{
+    public interface ITickFactory
+    {
+        void Enqueue(ITickData data);
+
+        Tick Create(uint id);
+    }
+}

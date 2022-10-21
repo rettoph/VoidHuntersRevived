@@ -1,0 +1,60 @@
+﻿using Guppy.Common;
+using Guppy.ECS.Attributes;
+using Guppy.Network;
+using Guppy.Network.Enums;
+using Guppy.Network.Identity;
+using Guppy.Network.Identity.Services;
+using Microsoft.Xna.Framework;
+using MonoGame.Extended.Entities;
+using MonoGame.Extended.Entities.Systems;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using VoidHuntersRevived.Library.Attributes;
+using VoidHuntersRevived.Library.Enums;
+using VoidHuntersRevived.Library.Factories;
+using VoidHuntersRevived.Library.Models;
+using VoidHuntersRevived.Library.Services;
+
+namespace VoidHuntersRevived.Library.Systems
+{
+    [GuppySystem(typeof(GameGuppy))]
+    [NetAuthorizationSystem(NetAuthorization.Slave)]
+    internal sealed class SlaveTickSystem : ISystem, ISubscriber<Tick>
+    {
+        private NetScope _netScope;
+        private IBus _bus;
+        private ITickService _ticks;
+        private ITickFactory _tickFactory;
+
+        public SlaveTickSystem(
+            NetScope netScope,
+            IBus bus,
+            ITickService ticks,
+            ITickFactory tickFactory)
+        {
+            _netScope = netScope;
+            _bus = bus;
+            _ticks = ticks;
+            _tickFactory = tickFactory;
+        }
+
+        public void Initialize(World world)
+        {
+            _bus.Subscribe(this);
+        }
+
+        public void Dispose()
+        {
+            _bus.Unsubscribe(this);
+        }
+
+
+        public void Process(in Tick tick)
+        {
+        }
+    }
+}

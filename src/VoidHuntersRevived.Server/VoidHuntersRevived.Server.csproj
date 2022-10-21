@@ -3,9 +3,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
 	<TargetFramework>net6.0</TargetFramework>
-	<LangVersion>10.0</LangVersion>
-    <StartupObject>VoidHuntersRevived.Server.Program</StartupObject>
-    <Configurations>Debug;Release;Debug_Verbose</Configurations>
+    <StartupObject></StartupObject>
+    <Configurations>Debug;Release</Configurations>
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
