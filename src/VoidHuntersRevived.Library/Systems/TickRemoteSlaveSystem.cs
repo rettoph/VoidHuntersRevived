@@ -1,4 +1,5 @@
-﻿using Guppy.Common;
+﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.ECS.Attributes;
 using Guppy.Network;
 using Guppy.Network.Enums;
@@ -16,21 +17,22 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Attributes;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Factories;
-using VoidHuntersRevived.Library.Models;
+using VoidHuntersRevived.Library.Messages;
 using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library.Systems
 {
+    [AutoLoad]
     [GuppySystem(typeof(GameGuppy))]
     [NetAuthorizationSystem(NetAuthorization.Slave)]
-    internal sealed class SlaveTickSystem : ISystem, ISubscriber<Tick>
+    internal sealed class TickRemoteSlaveSystem : ISystem, ISubscriber<Tick>
     {
         private NetScope _netScope;
         private IBus _bus;
         private ITickService _ticks;
         private ITickFactory _tickFactory;
 
-        public SlaveTickSystem(
+        public TickRemoteSlaveSystem(
             NetScope netScope,
             IBus bus,
             ITickService ticks,

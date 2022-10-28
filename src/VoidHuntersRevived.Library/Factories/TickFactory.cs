@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Library.Models;
+using VoidHuntersRevived.Library.Messages;
 
 namespace VoidHuntersRevived.Library.Factories
 {
@@ -23,6 +23,11 @@ namespace VoidHuntersRevived.Library.Factories
 
         public Tick Create(uint id)
         {
+            if(_datum.Count == 0)
+            {
+                return new Tick(id, Enumerable.Empty<ITickData>());
+            }
+
             var tick = new Tick(id, _datum);
             _datum = new List<ITickData>();
 

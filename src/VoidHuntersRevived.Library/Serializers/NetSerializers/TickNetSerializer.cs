@@ -10,9 +10,9 @@ using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Enums;
-using VoidHuntersRevived.Library.Models;
+using VoidHuntersRevived.Library.Messages;
 
-namespace VoidHuntersRevived.Library.Serialization.NetSerializers
+namespace VoidHuntersRevived.Library.Serializers.NetSerializers
 {
     [AutoLoad]
     internal sealed class TickNetSerializer : NetSerializer<Tick>
@@ -28,6 +28,12 @@ namespace VoidHuntersRevived.Library.Serialization.NetSerializers
         {
             var id = _buffer.DecompressId(reader.GetByte());
             var count = reader.GetByte();
+
+            if(count == 0)
+            {
+                return new Tick(id, Enumerable.Empty<ITickData>());
+            }
+
             var items = new List<ITickData>(count);
 
             for (var i = 0; i < count; i++)

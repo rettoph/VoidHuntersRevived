@@ -8,7 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Constants;
-using VoidHuntersRevived.Library.Models;
+using VoidHuntersRevived.Library.Messages;
+using VoidHuntersRevived.Library.Messages.Inputs;
 
 namespace VoidHuntersRevived.Library.Loaders
 {
@@ -19,6 +20,7 @@ namespace VoidHuntersRevived.Library.Loaders
         {
             services.AddNetMessageType<Tick>(DeliveryMethod.ReliableUnordered, NetMessageTypeConstants.DefaultOutgoingChannel);
             services.AddNetMessageType<GameState>(DeliveryMethod.ReliableOrdered, NetMessageTypeConstants.DefaultOutgoingChannel);
+            services.AddNetMessageType<DirectionInput>(DeliveryMethod.ReliableSequenced, NetMessageTypeConstants.DefaultOutgoingChannel);
         }
     }
 }

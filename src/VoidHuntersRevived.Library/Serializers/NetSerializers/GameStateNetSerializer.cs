@@ -10,9 +10,9 @@ using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Enums;
-using VoidHuntersRevived.Library.Models;
+using VoidHuntersRevived.Library.Messages;
 
-namespace VoidHuntersRevived.Library.Serialization.NetSerializers
+namespace VoidHuntersRevived.Library.Serializers.NetSerializers
 {
     [AutoLoad]
     internal sealed class GameStateNetSerializer : NetSerializer<GameState>

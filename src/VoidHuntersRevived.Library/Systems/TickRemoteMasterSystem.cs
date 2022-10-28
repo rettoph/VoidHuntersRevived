@@ -1,9 +1,13 @@
-﻿using Guppy.Common;
+﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.ECS.Attributes;
 using Guppy.Network;
 using Guppy.Network.Enums;
+using Guppy.Network.Extensions.Identity;
 using Guppy.Network.Identity;
+using Guppy.Network.Identity.Enums;
 using Guppy.Network.Identity.Services;
+using Guppy.Network.Messages;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
@@ -15,21 +19,22 @@ using System.Threading;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Attributes;
 using VoidHuntersRevived.Library.Factories;
-using VoidHuntersRevived.Library.Models;
+using VoidHuntersRevived.Library.Messages;
 using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library.Systems
 {
+    [AutoLoad]
     [GuppySystem(typeof(GameGuppy))]
     [NetAuthorizationSystem(NetAuthorization.Master)]
-    internal sealed class MasterTickSystem : ISystem, ISubscriber<Tick>
+    internal sealed class TickRemoteMasterSystem : ISystem, ISubscriber<Tick>
     {
         private NetScope _netScope;
         private IBus _bus;
         private ITickService _ticks;
         private ITickFactory _tickFactory;
 
-        public MasterTickSystem(
+        public TickRemoteMasterSystem(
             NetScope netScope,
             IBus bus,
             ITickService ticks,
@@ -60,8 +65,9 @@ namespace VoidHuntersRevived.Library.Systems
                 return;
             }
 
-            // var userPlayerJoinedAction = UnexpectedUserPlayerAction.CreateUserPlayerJoined(newUser.Id);
-            // _tickFactory.Enqueue(userPlayerJoinedAction);
+            // Enqueue a new user joined action for the new user.
+            _tickFactory.Enqueue(new UserPilot(
+                user: newUser.CreateAction(UserAction.Actions.UserJoined, ClaimAccessibility.Public)));
 
             // Send the current game state to the new user
             _netScope.Create<GameState>(new GameState()

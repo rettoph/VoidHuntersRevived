@@ -13,7 +13,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Constants;
-using VoidHuntersRevived.Library.Models;
+using VoidHuntersRevived.Library.Messages;
 using VoidHuntersRevived.Library.Providers;
 
 namespace VoidHuntersRevived.Library.Services
@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Library.Services
         {
 
             _history = new List<Tick>();
-            _provider = providers.First();
+            _provider = providers.Instance;
             _bus = bus;
         }
 
@@ -46,11 +46,14 @@ namespace VoidHuntersRevived.Library.Services
             {
                 this.Current = _provider.Next();
 
-                Console.WriteLine($"Tick: {this.Current.Id}");
-
                 _history.Add(this.Current);
 
                 _bus.Publish(this.Current);
+
+                foreach(ITickData data in this.Current)
+                {
+                    _bus.Publish(data);
+                }
             }
         }
     }

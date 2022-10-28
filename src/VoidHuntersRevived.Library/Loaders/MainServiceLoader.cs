@@ -24,9 +24,6 @@ namespace VoidHuntersRevived.Library.Loaders
                     .AddScoped<ITickFactory, TickFactory>()
                     .AddScoped<TickBuffer>();
 
-            services.AddSystem<MasterTickSystem>(0)
-                    .AddSystem<SlaveTickSystem>(0);
-
             services.AddScoped<LocalTickProvider>()
                     .AddScoped<RemoteTickProvider>()
                     .AddFilter<ITickProvider, LocalTickProvider>(NetAuthorizationFilter(NetAuthorization.Master), 0)

@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Enums;
 
-namespace VoidHuntersRevived.Library.Models
+namespace VoidHuntersRevived.Library.Messages
 {
     public class Tick : Message, IEnumerable<ITickData>, IMessage
     {

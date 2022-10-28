@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using tainicom.Aether.Physics2D;
 using VoidHuntersRevived.Library.Constants;
 using VoidHuntersRevived.Library.Factories;
-using VoidHuntersRevived.Library.Models;
+using VoidHuntersRevived.Library.Messages;
 
 namespace VoidHuntersRevived.Library.Providers
 {

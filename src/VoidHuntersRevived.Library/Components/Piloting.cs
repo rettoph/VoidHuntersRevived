@@ -5,9 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Enums;
 
-namespace VoidHuntersRevived.Library.Models
+namespace VoidHuntersRevived.Library.Components
 {
-    public interface ITickData
+    public class Piloting
     {
+        public Direction Direction = Direction.None;
+        public int PilotableId;
     }
 }

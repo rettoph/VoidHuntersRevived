@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.MonoGame.Services;
 using Guppy.Network;
 using Microsoft.Extensions.DependencyInjection;
 using MonoGame.Extended.Entities;
@@ -12,10 +13,22 @@ using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Client.Library
 {
-    public sealed class ClientGameGuppy : GameGuppy
+    public sealed class ClientGameGuppy : GameGuppy, IDisposable
     {
-        public ClientGameGuppy(World world, NetScope netScope, ITickService ticks, IBus bus) : base(world, netScope, ticks, bus)
+        private readonly IInputService _inputs;
+        private readonly IBus _bus;
+
+        public ClientGameGuppy(World world, NetScope netScope, ITickService ticks, IBus bus, IInputService inputs) : base(world, netScope, ticks, bus)
         {
+            _inputs = inputs;
+            _bus = bus;
+
+            _inputs.Subscribe(_bus);
+        }
+
+        public void Dispose()
+        {
+            _inputs.Unsubscribe(_bus);
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Library.Models;
+using VoidHuntersRevived.Library.Messages;
 
 namespace VoidHuntersRevived.Library.Providers
 {
@@ -56,8 +56,6 @@ namespace VoidHuntersRevived.Library.Providers
         {
             var tick = message.Body;
             _buffer.Enqueue(message.Body);
-
-            Console.WriteLine($"Recieved Tick {tick.Id}, Waiting for {_buffer.NextId}.");
         }
 
         void ISubscriber<INetIncomingMessage<GameState>>.Process(in INetIncomingMessage<GameState> message)

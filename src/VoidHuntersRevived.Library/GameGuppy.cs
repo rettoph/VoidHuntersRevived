@@ -1,5 +1,6 @@
 ﻿using Guppy.Common;
 using Guppy.MonoGame;
+using Guppy.MonoGame.Services;
 using Guppy.Network;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;

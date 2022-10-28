@@ -27,8 +27,6 @@ namespace VoidHuntersRevived.Client.Library
             ClientPeer client,
             World world) : base(client, world)
         {
-            Thread.Sleep(2000);
-
             _guppies = guppies;
             _client = client;
 

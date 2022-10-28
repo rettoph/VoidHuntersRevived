@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Library.Models
+namespace VoidHuntersRevived.Library.Messages
 {
     /// <summary>
     /// Simple message containing the required current world data
