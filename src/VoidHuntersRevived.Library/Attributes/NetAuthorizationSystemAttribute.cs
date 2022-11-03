@@ -10,7 +10,7 @@ using VoidHuntersRevived.Library.Filters;
 
 namespace VoidHuntersRevived.Library.Attributes
 {
-    public sealed class NetAuthorizationSystemAttribute : FilterAttribute
+    public sealed class NetAuthorizationSystemAttribute : InitializableAttribute
     {
         public readonly NetAuthorization RequiredAuth;
 

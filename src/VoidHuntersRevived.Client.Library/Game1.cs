@@ -17,8 +17,8 @@ namespace VoidHuntersRevived.Client.Library
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
-        private IScoped<ClientMainGuppy> _guppy;
-        private IGlobal<World> _globals;
+        private IScoped<ClientMainGuppy>? _guppy;
+        private IGlobal<World>? _globals;
 
 #if WINDOWS
         // https://community.monogame.net/t/start-in-maximized-window/12264
@@ -60,16 +60,19 @@ namespace VoidHuntersRevived.Client.Library
 #if WINDOWS
             SDL_MaximizeWindow(Window.Handle);
 #endif
-            _guppy = new GuppyEngine(new[] { typeof(MainGuppy).Assembly, typeof(ClientMainGuppy).Assembly })
-                .ConfigureMonoGame(this, this.graphics, this.Content, this.Window)
-                .ConfigureECS()
-                .ConfigureNetwork(1)
-                .ConfigureResources()
-                .ConfigureUI()
-                .Build()
-                .Create<ClientMainGuppy>();
+            Task.Run(() =>
+            {
+                _guppy = new GuppyEngine(new[] { typeof(MainGuppy).Assembly, typeof(ClientMainGuppy).Assembly })
+                    .ConfigureMonoGame(this, this.graphics, this.Content, this.Window)
+                    .ConfigureECS()
+                    .ConfigureNetwork(1)
+                    .ConfigureResources()
+                    .ConfigureUI()
+                    .Build()
+                    .Create<ClientMainGuppy>();
 
-            _globals = _guppy.Scope.ServiceProvider.GetRequiredService<IGlobal<World>>();
+                _globals = _guppy.Scope.ServiceProvider.GetRequiredService<IGlobal<World>>();
+            });
         }
 
         /// <summary>
@@ -112,9 +115,9 @@ namespace VoidHuntersRevived.Client.Library
             // TODO: Add your update logic here
             base.Update(gameTime);
 
-            _globals.Instance.Update(gameTime);
+            _globals?.Instance.Update(gameTime);
 
-            _guppy.Instance.Update(gameTime);
+            _guppy?.Instance.Update(gameTime);
         }
 
         /// <summary>
@@ -127,9 +130,9 @@ namespace VoidHuntersRevived.Client.Library
 
             this.GraphicsDevice.Clear(Color.Black);
 
-            _globals.Instance.Draw(gameTime);
+            _globals?.Instance.Draw(gameTime);
 
-            _guppy.Instance.Draw(gameTime);
+            _guppy?.Instance.Draw(gameTime);
         }
     }
 }

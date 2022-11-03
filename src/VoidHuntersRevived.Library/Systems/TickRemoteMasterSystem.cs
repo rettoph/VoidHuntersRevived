@@ -28,10 +28,10 @@ namespace VoidHuntersRevived.Library.Systems
     [NetAuthorizationSystem(NetAuthorization.Master)]
     internal sealed class TickRemoteMasterSystem : ISystem, ISubscriber<Tick>
     {
-        private NetScope _netScope;
-        private IBus _bus;
-        private ITickService _ticks;
-        private ITickFactory _tickFactory;
+        private readonly NetScope _netScope;
+        private readonly IBus _bus;
+        private readonly ITickService _ticks;
+        private readonly ITickFactory _tickFactory;
 
         public TickRemoteMasterSystem(
             NetScope netScope,
@@ -60,6 +60,11 @@ namespace VoidHuntersRevived.Library.Systems
         private void HandleUserJoined(IUserService sender, User newUser)
         {
             if(newUser.NetPeer is null)
+            {
+                return;
+            }
+
+            if(_ticks.Current is null)
             {
                 return;
             }

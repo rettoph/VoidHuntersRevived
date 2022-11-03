@@ -18,9 +18,9 @@ namespace VoidHuntersRevived.Client.Library
 {
     internal sealed class ClientMainGuppy : MainGuppy
     {
-        private ClientPeer _client;
-        private IGuppyProvider _guppies;
-        private IScoped<GameGuppy> _game;
+        private readonly ClientPeer _client;
+        private readonly IGuppyProvider _guppies;
+        private readonly IScoped<GameGuppy> _game;
 
         public ClientMainGuppy(
             IGuppyProvider guppies,

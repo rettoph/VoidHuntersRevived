@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Library.Services
     {
         public IEnumerable<Tick> History { get; }
 
-        public Tick Current { get; }
+        public Tick? Current { get; }
 
         void Update(GameTime gameTime);
     }

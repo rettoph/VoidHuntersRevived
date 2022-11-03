@@ -1,4 +1,5 @@
-﻿using Guppy.Common;
+﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.Common.Collections;
 using Guppy.Network;
 using Guppy.Network.Enums;
@@ -12,28 +13,18 @@ using VoidHuntersRevived.Library.Messages;
 
 namespace VoidHuntersRevived.Library.Providers
 {
-    internal sealed class RemoteTickProvider : ITickProvider, IDisposable,
+    [AutoSubscribe]
+    internal sealed class RemoteTickProvider : ITickProvider,
         ISubscriber<INetIncomingMessage<Tick>>,
         ISubscriber<INetIncomingMessage<GameState>>
     {
-        private IBus _bus;
-        private TickBuffer _buffer;
+        private readonly TickBuffer _buffer;
         private Tick _next;
 
-        public RemoteTickProvider(TickBuffer buffer, IBus bus)
+        public RemoteTickProvider(TickBuffer buffer)
         {
-            _bus = bus;
             _buffer = buffer;
             _next = Tick.Default;
-
-            _bus.Subscribe<INetIncomingMessage<Tick>>(this);
-            _bus.Subscribe<INetIncomingMessage<GameState>>(this);
-        }
-
-        public void Dispose()
-        {
-            _bus.Unsubscribe<INetIncomingMessage<Tick>>(this);
-            _bus.Unsubscribe<INetIncomingMessage<GameState>>(this);
         }
 
         public void Update(GameTime gameTime)
@@ -55,7 +46,7 @@ namespace VoidHuntersRevived.Library.Providers
         void ISubscriber<INetIncomingMessage<Tick>>.Process(in INetIncomingMessage<Tick> message)
         {
             var tick = message.Body;
-            _buffer.Enqueue(message.Body);
+            _buffer.Enqueue(tick);
         }
 
         void ISubscriber<INetIncomingMessage<GameState>>.Process(in INetIncomingMessage<GameState> message)
