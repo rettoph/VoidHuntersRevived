@@ -3,6 +3,7 @@ using Guppy.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace VoidHuntersRevived.Client.Library
     {
         GraphicsDeviceManager graphics;
         private IScoped<ClientMainGuppy> _guppy;
+        private IGlobal<World> _globals;
 
 #if WINDOWS
         // https://community.monogame.net/t/start-in-maximized-window/12264
@@ -66,6 +68,8 @@ namespace VoidHuntersRevived.Client.Library
                 .ConfigureUI()
                 .Build()
                 .Create<ClientMainGuppy>();
+
+            _globals = _guppy.Scope.ServiceProvider.GetRequiredService<IGlobal<World>>();
         }
 
         /// <summary>
@@ -108,6 +112,8 @@ namespace VoidHuntersRevived.Client.Library
             // TODO: Add your update logic here
             base.Update(gameTime);
 
+            _globals.Instance.Update(gameTime);
+
             _guppy.Instance.Update(gameTime);
         }
 
@@ -120,6 +126,8 @@ namespace VoidHuntersRevived.Client.Library
             base.Draw(gameTime);
 
             this.GraphicsDevice.Clear(Color.Black);
+
+            _globals.Instance.Draw(gameTime);
 
             _guppy.Instance.Draw(gameTime);
         }

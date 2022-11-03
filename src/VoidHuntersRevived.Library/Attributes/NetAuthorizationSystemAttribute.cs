@@ -1,5 +1,6 @@
-﻿using Guppy.ECS.Attributes;
+﻿using Guppy.Attributes;
 using Guppy.Network.Enums;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using VoidHuntersRevived.Library.Filters;
 
 namespace VoidHuntersRevived.Library.Attributes
 {
-    public sealed class NetAuthorizationSystemAttribute : SystemFilterAttribute
+    public sealed class NetAuthorizationSystemAttribute : FilterAttribute
     {
         public readonly NetAuthorization RequiredAuth;
 
@@ -18,9 +19,11 @@ namespace VoidHuntersRevived.Library.Attributes
             this.RequiredAuth = requiredAuth;
         }
 
-        protected override object GetInstance(Type classType, Type returnType)
+        public override void Initialize(IServiceCollection services, Type classType)
         {
-            return NetAuthorizationSystemFilter.GetInstance(this.RequiredAuth);
+            base.Initialize(services, classType);
+
+            services.AddFilter(new NetAuthorizationFilter(this.RequiredAuth, classType));
         }
     }
 }

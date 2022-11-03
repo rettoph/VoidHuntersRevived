@@ -1,6 +1,5 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
-using Guppy.ECS.Attributes;
 using Guppy.Network;
 using Guppy.Network.Enums;
 using Guppy.Network.Identity.Providers;
@@ -17,7 +16,7 @@ using VoidHuntersRevived.Library.Messages.Inputs;
 namespace VoidHuntersRevived.Library.Systems
 {
     [AutoLoad]
-    [GuppySystem(typeof(GameGuppy))]
+    [GuppyFilter(typeof(GameGuppy))]
     [NetAuthorizationSystem(NetAuthorization.Slave)]
     internal sealed class CurrentUserRemoteSlaveSystem : ISystem, ISubscriber<DirectionInput>
     {

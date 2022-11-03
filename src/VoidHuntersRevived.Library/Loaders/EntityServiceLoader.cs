@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Library.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<UserPilotMap>();
+            services.AddScoped<PilotIdMap>();
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
-using Guppy.ECS.Attributes;
 using Guppy.Network;
 using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Identity;
@@ -25,7 +24,7 @@ using VoidHuntersRevived.Library.Services;
 namespace VoidHuntersRevived.Library.Systems
 {
     [AutoLoad]
-    [GuppySystem(typeof(GameGuppy))]
+    [GuppyFilter(typeof(GameGuppy))]
     [NetAuthorizationSystem(NetAuthorization.Master)]
     internal sealed class TickRemoteMasterSystem : ISystem, ISubscriber<Tick>
     {

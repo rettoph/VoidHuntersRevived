@@ -1,6 +1,5 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
-using Guppy.ECS.Attributes;
 using Guppy.Network.Enums;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Providers;
@@ -17,24 +16,28 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Attributes;
 using VoidHuntersRevived.Library.Components;
 using VoidHuntersRevived.Library.Helpers;
+using VoidHuntersRevived.Library.Mappers;
 using VoidHuntersRevived.Library.Messages;
 
 namespace VoidHuntersRevived.Library.Systems
 {
     [AutoLoad]
-    [GuppySystem(typeof(GameGuppy))]
+    [GuppyFilter(typeof(GameGuppy))]
     internal sealed class UserPilotSystem : EntitySystem, ISubscriber<UserPilot>
     {
-        private IBus _bus;
-        private IUserProvider _users;
+        private readonly IBus _bus;
+        private readonly IUserProvider _users;
         private World _world;
+        private ComponentMapper<User> _userMapper;
+        private readonly PilotIdMap _pilotMap;
 
-
-        public UserPilotSystem(IBus bus, IUserProvider users) : base(Aspect.All(typeof(User), typeof(Piloting)))
+        public UserPilotSystem(PilotIdMap userPilotMap, IBus bus, IUserProvider users) : base(Aspect.All(typeof(User), typeof(Piloting)))
         {
             _bus = bus;
             _users = users;
             _world = default!;
+            _userMapper = default!;
+            _pilotMap = userPilotMap;
         }
 
         public override void Initialize(World world)
@@ -47,11 +50,35 @@ namespace VoidHuntersRevived.Library.Systems
         public override void Initialize(IComponentMapperService mapperService)
         {
             _bus.Subscribe(this);
+
+            _userMapper = mapperService.GetMapper<User>();
         }
 
         ~UserPilotSystem()
         {
             _bus.Unsubscribe(this);
+        }
+
+        protected override void OnEntityAdded(int entityId)
+        {
+            base.OnEntityAdded(entityId);
+
+            if(this.subscription.IsInterested(entityId))
+            {
+                var user = _userMapper.Get(entityId);
+
+                _pilotMap.Add(entityId, user.Id);
+            }
+        }
+
+        protected override void OnEntityRemoved(int entityId)
+        {
+            base.OnEntityRemoved(entityId);
+
+            if(this.subscription.IsInterested(entityId))
+            {
+                _pilotMap.RemoveByEntityId(entityId);
+            }
         }
 
         public void Process(in UserPilot message)

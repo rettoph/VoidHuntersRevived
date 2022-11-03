@@ -17,11 +17,12 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
   </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\Aether.Physics2D\Physics2D\Aether.Physics2D.NETSTANDARD2_0.MG.csproj" />
+    <ProjectReference Include="..\..\libraries\Guppy\libraries\MonoGame.Extended\src\cs\MonoGame.Extended.Entities\MonoGame.Extended.Entities.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.MonoGame\Guppy.MonoGame.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
   </ItemGroup>

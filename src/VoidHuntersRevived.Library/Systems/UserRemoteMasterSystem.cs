@@ -1,6 +1,5 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
-using Guppy.ECS.Attributes;
 using Guppy.Network;
 using Guppy.Network.Enums;
 using MonoGame.Extended.Entities;
@@ -11,21 +10,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Attributes;
+using VoidHuntersRevived.Library.Factories;
+using VoidHuntersRevived.Library.Mappers;
 using VoidHuntersRevived.Library.Messages.Inputs;
 
 namespace VoidHuntersRevived.Library.Systems
 {
     [AutoLoad]
-    [GuppySystem(typeof(GameGuppy))]
+    [GuppyFilter(typeof(GameGuppy))]
     [NetAuthorizationSystem(NetAuthorization.Master)]
     internal sealed class UserRemoteMasterSystem : ISystem,
         ISubscriber<INetIncomingMessage<DirectionInput>>
     {
-        private IBus _bus;
+        private readonly PilotIdMap _userPilotMap;
+        private readonly IBus _bus;
+        private readonly ITickFactory _tickFactory;
 
-        public UserRemoteMasterSystem(IBus bus)
+        public UserRemoteMasterSystem(PilotIdMap userPilotMap, IBus bus, ITickFactory tickFactory)
         {
             _bus = bus;
+            _tickFactory = tickFactory;
+            _userPilotMap = userPilotMap;
         }
 
         public void Initialize(World world)
@@ -40,7 +45,15 @@ namespace VoidHuntersRevived.Library.Systems
 
         public void Process(in INetIncomingMessage<DirectionInput> message)
         {
-            throw new NotImplementedException();
+            if(message.Peer is null)
+            {
+                return;
+            }
+
+            _tickFactory.Enqueue(new PilotDirectionInput(
+                pilotId: _userPilotMap.GetNetIdFromUserId(message.Peer.Id),
+                which: message.Body.Which,
+                value: message.Body.Value));
         }
     }
 }
