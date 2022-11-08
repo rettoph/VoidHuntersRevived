@@ -30,8 +30,9 @@ namespace VoidHuntersRevived.Server
         public ServerMainGuppy(
             IGuppyProvider guppies,
             ISettingProvider settings,
+            IGameComponentService components,
             ServerPeer server,
-            World world) : base(server, world)
+            World world) : base(server, world, components)
         {
             _guppies = guppies;
 

@@ -16,7 +16,6 @@ using VoidHuntersRevived.Library.Messages.Inputs;
 
 namespace VoidHuntersRevived.Library.Systems
 {
-    [AutoLoad]
     [GuppyFilter(typeof(GameGuppy))]
     [NetAuthorizationSystem(NetAuthorization.Master)]
     internal sealed class UserRemoteMasterSystem : ISystem,

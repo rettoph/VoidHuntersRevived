@@ -1,4 +1,5 @@
-﻿using Guppy.Common;
+﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.MonoGame;
 using Guppy.MonoGame.Services;
 using Guppy.Network;
@@ -10,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Library.Messages;
 using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library
@@ -27,13 +29,15 @@ namespace VoidHuntersRevived.Library
             World world,
             NetScope netScope,
             ITickService ticks,
-            IBus bus) : base(world)
+            IBus bus,
+            IGameComponentService components) : base(components)
         {
             _ticks = ticks;
             _bus = bus;
 
             this.NetScope = netScope;
 
+            _bus.Initialize();
             this.NetScope.Start(0);
         }
 
@@ -48,7 +52,7 @@ namespace VoidHuntersRevived.Library
 
             _ticks.Update(gameTime);
 
-            base.Update(gameTime);
+            // base.Update(gameTime);
         }
     }
 }

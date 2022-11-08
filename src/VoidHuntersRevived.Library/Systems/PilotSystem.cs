@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.Common.Extensions;
+using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using System;
@@ -14,42 +15,47 @@ using VoidHuntersRevived.Library.Messages.Inputs;
 
 namespace VoidHuntersRevived.Library.Systems
 {
-    [AutoLoad]
+    [AutoSubscribe]
     [GuppyFilter(typeof(GameGuppy))]
     internal sealed class PilotSystem : EntitySystem, ISubscriber<PilotDirectionInput>
     {
-        private IBus _bus;
         private PilotIdMap _pilotMap;
-        private ComponentMapper<Piloting> _pilotingMapper;
+        private ComponentMapper<Piloting> _pilotings;
+        private ComponentMapper<Pilotable> _pilotables;
 
-        public PilotSystem(PilotIdMap pilotIdMap, IBus bus) : base(Aspect.All(typeof(Piloting)))
+        public PilotSystem(PilotIdMap pilotIdMap) : base(Aspect.All(typeof(Piloting)))
         {
-            _bus = bus;
             _pilotMap = pilotIdMap;
-            _pilotingMapper = default!;
-
-            _bus.SubscribeAll(this);
-        }
-
-        ~PilotSystem()
-        {
-            _bus.Unsubscribe(this);
+            _pilotings = default!;
+            _pilotables = default!;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
         {
-            _pilotingMapper = mapperService.GetMapper<Piloting>();
+            _pilotings = mapperService.GetMapper<Piloting>();
+            _pilotables = mapperService.GetMapper<Pilotable>();
         }
 
         public void Process(in PilotDirectionInput message)
         {
-            var entityId = _pilotMap.GetEntityId(message.PilotId);
+            var pilotId = _pilotMap.GetEntityId(message.PilotId);
 
-            var piloting = _pilotingMapper.Get(entityId);
+            var piloting = _pilotings.Get(pilotId);
 
-            piloting.SetDirection(message);
+            if (piloting.PilotableId is null)
+            {
+                return;
+            }
 
-            Console.WriteLine(piloting.Direction);
+            var pilotable = _pilotables.Get(piloting.PilotableId.Value);
+
+            if(pilotable is null)
+            {
+                piloting.PilotableId = null;
+                return;
+            }
+
+            pilotable.SetDirection(message);
         }
     }
 }

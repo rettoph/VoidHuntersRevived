@@ -6,6 +6,7 @@ using Guppy.Network.Identity.Providers;
 using Guppy.Network.Identity.Services;
 using Guppy.Network.Messages;
 using Guppy.Network.Peers;
+using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using System;
@@ -21,23 +22,30 @@ using VoidHuntersRevived.Library.Messages;
 
 namespace VoidHuntersRevived.Library.Systems
 {
-    [AutoLoad]
     [GuppyFilter(typeof(GameGuppy))]
     internal sealed class UserPilotSystem : EntitySystem, ISubscriber<UserPilot>
     {
         private readonly IBus _bus;
-        private readonly IUserProvider _users;
+        private readonly IUserProvider _userProvider;
         private World _world;
-        private ComponentMapper<User> _userMapper;
+        private ComponentMapper<User> _users;
+        private ComponentMapper<Piloting> _pilotings;
         private readonly PilotIdMap _pilotMap;
+        private readonly AetherWorld _aether;
 
-        public UserPilotSystem(PilotIdMap userPilotMap, IBus bus, IUserProvider users) : base(Aspect.All(typeof(User), typeof(Piloting)))
+        public UserPilotSystem(
+            PilotIdMap userPilotMap,
+            AetherWorld aether,
+            IBus bus, 
+            IUserProvider userProvider) : base(Aspect.All(typeof(User), typeof(Piloting)))
         {
             _bus = bus;
-            _users = users;
+            _userProvider = userProvider;
             _world = default!;
-            _userMapper = default!;
+            _users = default!;
+            _pilotings = default!;
             _pilotMap = userPilotMap;
+            _aether = aether;
         }
 
         public override void Initialize(World world)
@@ -51,7 +59,8 @@ namespace VoidHuntersRevived.Library.Systems
         {
             _bus.Subscribe(this);
 
-            _userMapper = mapperService.GetMapper<User>();
+            _users = mapperService.GetMapper<User>();
+            _pilotings = mapperService.GetMapper<Piloting>();
         }
 
         ~UserPilotSystem()
@@ -65,7 +74,7 @@ namespace VoidHuntersRevived.Library.Systems
 
             if(this.subscription.IsInterested(entityId))
             {
-                var user = _userMapper.Get(entityId);
+                var user = _users.Get(entityId);
 
                 _pilotMap.Add(entityId, user.Id);
             }
@@ -82,13 +91,17 @@ namespace VoidHuntersRevived.Library.Systems
         }
 
         public void Process(in UserPilot message)
+        
         {
-            var user = _users.UpdateOrCreate(message.User.Id, message.User.Claims);
+            var user = _userProvider.UpdateOrCreate(message.User.Id, message.User.Claims);
 
             switch (message.User.Action)
             {
                 case UserAction.Actions.UserJoined:
                     var pilot = EntityHelper.Pilots.CreateUserPilot(_world, user);
+                    var ship = EntityHelper.Rootables.CreateShip(_world, _aether.CreateRectangle(1, 1, 1, Vector2.Zero, 0, AetherBodyType.Dynamic));
+
+                    _pilotings.Get(pilot).PilotableId = ship.Id;
                     break;
                 default:
                     throw new Exception();

@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Server
 {
     public sealed class ServerGameGuppy : GameGuppy
     {
-        public ServerGameGuppy(World world, NetScope netScope, ITickService ticks, IBus bus) : base(world, netScope, ticks, bus)
+        public ServerGameGuppy(World world, NetScope netScope, ITickService ticks, IBus bus, IGameComponentService components) : base(world, netScope, ticks, bus, components)
         {
         }
     }

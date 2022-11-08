@@ -10,11 +10,10 @@ namespace VoidHuntersRevived.Library.Mappers
 {
     public sealed class PilotIdMap
     {
-        private Queue<INetId> _availableIds;
         private INetId _current;
-
-        private Map<INetId, int> _entityIds;
-        private Map<INetId, int> _userIds;
+        private readonly Queue<INetId> _availableIds;
+        private readonly Map<INetId, int> _entityIds;
+        private readonly Map<INetId, int> _userIds;
 
         public PilotIdMap()
         {

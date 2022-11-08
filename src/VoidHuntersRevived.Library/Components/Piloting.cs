@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guppy.ECS.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,22 +11,6 @@ namespace VoidHuntersRevived.Library.Components
 {
     public class Piloting
     {
-        public Direction Direction = Direction.None;
-        public int PilotableId;
-
-        public void SetDirection(DirectionInput input)
-        {
-            if (input.Value && (this.Direction & input.Which) == 0)
-            {
-                this.Direction |= input.Which;
-                return;
-            }
-                
-            if (!input.Value && (this.Direction & input.Which) != 0)
-            {
-                this.Direction &= ~input.Which;
-                return;
-            }
-        }
+        public int? PilotableId;
     }
 }

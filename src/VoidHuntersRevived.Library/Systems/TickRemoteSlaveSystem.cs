@@ -21,7 +21,6 @@ using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library.Systems
 {
-    [AutoLoad]
     [GuppyFilter(typeof(GameGuppy))]
     [NetAuthorizationSystem(NetAuthorization.Slave)]
     internal sealed class TickRemoteSlaveSystem : ISystem, ISubscriber<Tick>

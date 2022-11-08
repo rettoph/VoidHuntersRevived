@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using System;
+using System.Threading;
 using VoidHuntersRevived.Client.Library;
 
 namespace VoidHuntersRevived.Client.Desktop
@@ -9,6 +10,8 @@ namespace VoidHuntersRevived.Client.Desktop
         [STAThread]
         static void Main()
         {
+            Thread.Sleep(10000);
+
             using (var game = new Game1())
                 game.Run();
         }

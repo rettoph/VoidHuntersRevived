@@ -23,37 +23,32 @@ using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library.Systems
 {
-    [AutoLoad]
+    [AutoSubscribe]
     [GuppyFilter(typeof(GameGuppy))]
     [NetAuthorizationSystem(NetAuthorization.Master)]
     internal sealed class TickRemoteMasterSystem : ISystem, ISubscriber<Tick>
     {
         private readonly NetScope _netScope;
-        private readonly IBus _bus;
         private readonly ITickService _ticks;
         private readonly ITickFactory _tickFactory;
 
         public TickRemoteMasterSystem(
             NetScope netScope,
-            IBus bus,
             ITickService ticks,
             ITickFactory tickFactory)
         {
             _netScope = netScope;
-            _bus = bus;
             _ticks = ticks;
             _tickFactory = tickFactory;
         }
 
         public void Initialize(World world)
         {
-            _bus.Subscribe(this);
             _netScope.Users.OnUserJoined += this.HandleUserJoined;
         }
 
         public void Dispose()
         {
-            _bus.Unsubscribe(this);
             _netScope.Users.OnUserJoined -= this.HandleUserJoined;
         }
 
@@ -74,10 +69,12 @@ namespace VoidHuntersRevived.Library.Systems
                 user: newUser.CreateAction(UserAction.Actions.UserJoined, ClaimAccessibility.Public)));
 
             // Send the current game state to the new user
-            _netScope.Create<GameState>(new GameState()
-            {
-                NextTickId = _ticks.Current.Id + 1
-            }).AddRecipient(newUser.NetPeer).Enqueue();
+            _netScope.Create<GameState>(
+                body: new GameState(
+                    nextTickId: _ticks.Current.Id + 1,
+                    history: _ticks.History
+                )
+            ).AddRecipient(newUser.NetPeer).Enqueue();
         }
 
         public void Process(in Tick tick)

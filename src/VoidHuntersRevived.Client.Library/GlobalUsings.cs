@@ -1,0 +1,1 @@
+﻿global using AetherWorld = tainicom.Aether.Physics2D.Dynamics.World;

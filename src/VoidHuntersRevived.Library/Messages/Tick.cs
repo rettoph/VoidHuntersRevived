@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Library.Messages
 
         public const uint MinimumValidId = 1;
 
-        public static readonly Tick Default = new Tick(0, Enumerable.Empty<ITickData>());
+        public static readonly Tick Default = Empty(0);
 
         public readonly uint Id;
 
@@ -27,6 +27,11 @@ namespace VoidHuntersRevived.Library.Messages
             this.Id = id;
 
             _datum = datum;
+        }
+
+        public static Tick Empty(uint id)
+        {
+            return new Tick(id, Enumerable.Empty<ITickData>());
         }
 
         public IEnumerator<ITickData> GetEnumerator()

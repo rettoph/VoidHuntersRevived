@@ -18,7 +18,8 @@ namespace VoidHuntersRevived.Library
 
         protected MainGuppy(
             Peer peer,
-            World world) : base(world)
+            World world,
+            IGameComponentService components) : base(components)
         {
             _peer = peer;
         }

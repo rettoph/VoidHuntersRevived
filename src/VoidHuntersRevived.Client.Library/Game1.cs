@@ -1,5 +1,6 @@
 ﻿using Guppy;
 using Guppy.Common;
+using Guppy.MonoGame.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,7 +19,7 @@ namespace VoidHuntersRevived.Client.Library
     {
         GraphicsDeviceManager graphics;
         private IScoped<ClientMainGuppy>? _guppy;
-        private IGlobal<World>? _globals;
+        private IGlobal<IGameComponentService>? _globals;
 
 #if WINDOWS
         // https://community.monogame.net/t/start-in-maximized-window/12264
@@ -68,10 +69,11 @@ namespace VoidHuntersRevived.Client.Library
                     .ConfigureNetwork(1)
                     .ConfigureResources()
                     .ConfigureUI()
+                    .ConfigureNetworkUI()
                     .Build()
-                    .Create<ClientMainGuppy>();
+                    .GetRequiredService<IScoped<ClientMainGuppy>>();
 
-                _globals = _guppy.Scope.ServiceProvider.GetRequiredService<IGlobal<World>>();
+                _globals = _guppy.Scope.ServiceProvider.GetRequiredService<IGlobal<IGameComponentService>>();
             });
         }
 

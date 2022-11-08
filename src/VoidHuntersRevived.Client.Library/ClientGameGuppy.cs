@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Client.Library
         private readonly IInputService _inputs;
         private readonly IBus _bus;
 
-        public ClientGameGuppy(World world, NetScope netScope, ITickService ticks, IBus bus, IInputService inputs) : base(world, netScope, ticks, bus)
+        public ClientGameGuppy(World world, NetScope netScope, ITickService ticks, IBus bus, IInputService inputs, IGameComponentService components) : base(world, netScope, ticks, bus, components)
         {
             _inputs = inputs;
             _bus = bus;

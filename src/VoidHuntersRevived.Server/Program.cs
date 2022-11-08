@@ -1,6 +1,7 @@
 ﻿using Guppy;
 using Guppy.Common;
 using Guppy.MonoGame.Helpers;
+using Guppy.MonoGame.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
@@ -16,9 +17,9 @@ var guppy = new GuppyEngine(new[] { typeof(MainGuppy).Assembly, typeof(ServerMai
     .ConfigureNetwork(1)
     .ConfigureResources()
     .Build()
-    .Create<ServerMainGuppy>();
+    .GetRequiredService<IScoped<ServerMainGuppy>>();
 
-var globals = guppy.Scope.ServiceProvider.GetRequiredService<IGlobal<World>>();
+var globals = guppy.Scope.ServiceProvider.GetRequiredService<IGlobal<IGameComponentService>>();
 
 var source = new CancellationTokenSource();
 
