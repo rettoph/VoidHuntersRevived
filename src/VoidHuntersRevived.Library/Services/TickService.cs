@@ -1,9 +1,11 @@
-﻿using Guppy.Common;
+﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.MonoGame.Utilities;
 using Guppy.Network.Enums;
 using Guppy.Resources;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Timers;
 using System;
@@ -18,11 +20,11 @@ using VoidHuntersRevived.Library.Providers;
 
 namespace VoidHuntersRevived.Library.Services
 {
-    internal sealed class TickService : ITickService
+    internal sealed class TickService : SimpleGameComponent, ITickService
     {
-        private ITickProvider _provider;
-        private IList<Tick> _history;
-        private IBus _bus;
+        private readonly ITickProvider _provider;
+        private readonly IList<Tick> _history;
+        private readonly IBus _bus;
 
         public IEnumerable<Tick> History => _history;
 
@@ -34,11 +36,11 @@ namespace VoidHuntersRevived.Library.Services
         {
 
             _history = new List<Tick>();
-            _provider = providers.Instance;
+            _provider = providers.Instance ?? throw new Exception();
             _bus = bus;
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             _provider.Update(gameTime);
 

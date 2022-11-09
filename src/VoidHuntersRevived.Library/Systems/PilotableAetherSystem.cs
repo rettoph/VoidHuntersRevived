@@ -14,12 +14,12 @@ using VoidHuntersRevived.Library.Enums;
 namespace VoidHuntersRevived.Library.Systems
 {
     [GuppyFilter(typeof(GameGuppy))]
-    internal sealed class PilotableAetherSystem : EntityTickSystem
+    internal sealed class PilotableAetherSystem : EntityProcessingSystem
     {
         private ComponentMapper<Pilotable> _pilotables;
         private ComponentMapper<AetherBody> _bodies;
 
-        public PilotableAetherSystem(ISettingProvider settings) : base(settings, Aspect.All(typeof(AetherBody), typeof(Pilotable)))
+        public PilotableAetherSystem() : base(Aspect.All(typeof(AetherBody), typeof(Pilotable)))
         {
             _pilotables = default!;
             _bodies = default!;
@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Library.Systems
             _bodies = mapperService.GetMapper<AetherBody>();
         }
 
-        public override void Process(float elapsedTime, int entityId)
+        public override void Process(GameTime gameTime, int entityId)
         {
             var pilotable = _pilotables.Get(entityId);
             
@@ -63,7 +63,7 @@ namespace VoidHuntersRevived.Library.Systems
                 impulse += Vector2.UnitX;
             }
 
-            impulse *= elapsedTime;
+            impulse *= (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             body.ApplyLinearImpulse(impulse);
         }

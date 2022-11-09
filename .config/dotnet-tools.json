@@ -7,6 +7,12 @@
       "commands": [
         "mgcb"
       ]
+    },
+    "dotnet-suggest": {
+      "version": "1.1.327201",
+      "commands": [
+        "dotnet-suggest"
+      ]
     }
   }
 }

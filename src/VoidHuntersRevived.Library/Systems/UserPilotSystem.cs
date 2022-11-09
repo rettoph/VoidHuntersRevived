@@ -91,7 +91,6 @@ namespace VoidHuntersRevived.Library.Systems
         }
 
         public void Process(in UserPilot message)
-        
         {
             var user = _userProvider.UpdateOrCreate(message.User.Id, message.User.Claims);
 

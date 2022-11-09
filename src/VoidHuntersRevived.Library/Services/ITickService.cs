@@ -1,4 +1,6 @@
-﻿using Guppy.Network.Enums;
+﻿using Guppy.Attributes;
+using Guppy.Common;
+using Guppy.Network.Enums;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -9,12 +11,11 @@ using VoidHuntersRevived.Library.Messages;
 
 namespace VoidHuntersRevived.Library.Services
 {
-    public interface ITickService
+    [GuppyFilter(typeof(GameGuppy))]
+    public interface ITickService : IGameComponent, IUpdateable
     {
         public IEnumerable<Tick> History { get; }
 
         public Tick? Current { get; }
-
-        void Update(GameTime gameTime);
     }
 }

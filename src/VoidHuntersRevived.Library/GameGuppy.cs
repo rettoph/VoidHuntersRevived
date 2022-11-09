@@ -18,26 +18,14 @@ namespace VoidHuntersRevived.Library
 {
     public class GameGuppy : FrameableGuppy
     {
-        private readonly ITickService _ticks;
-        private readonly IBus _bus;
-
         public readonly NetScope NetScope;
 
-        public IBus Bus => _bus;
-
         public GameGuppy(
-            World world,
             NetScope netScope,
-            ITickService ticks,
-            IBus bus,
             IGameComponentService components) : base(components)
         {
-            _ticks = ticks;
-            _bus = bus;
-
             this.NetScope = netScope;
 
-            _bus.Initialize();
             this.NetScope.Start(0);
         }
 
@@ -48,11 +36,7 @@ namespace VoidHuntersRevived.Library
 
         public override void Update(GameTime gameTime)
         {
-            _bus.Flush();
-
-            _ticks.Update(gameTime);
-
-            // base.Update(gameTime);
+            base.Update(gameTime);
         }
     }
 }

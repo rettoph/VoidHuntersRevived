@@ -1,10 +1,12 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
+using Guppy.Filters;
 using Guppy.Loaders;
 using Guppy.Network.Enums;
 using Guppy.Resources.Filters;
 using Guppy.Resources.Providers;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +26,7 @@ namespace VoidHuntersRevived.Library.Loaders
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<ITickService, TickService>()
+                    .AddAlias<IGameComponent, ITickService>()
                     .AddScoped<ITickFactory, TickFactory>()
                     .AddScoped<TickBuffer>();
 
