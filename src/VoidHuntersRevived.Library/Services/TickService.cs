@@ -44,18 +44,25 @@ namespace VoidHuntersRevived.Library.Services
         {
             _provider.Update(gameTime);
 
-            while(_provider.Ready())
+            while (_provider.Next(out var next))
             {
-                this.Current = _provider.Next();
+                this.Publish(next);
+            }
+        }
 
-                _history.Add(this.Current);
 
-                _bus.Publish(this.Current);
 
-                foreach(ITickData data in this.Current)
-                {
-                    _bus.Publish(data);
-                }
+        private void Publish(Tick tick)
+        {
+            this.Current = tick;
+
+            _history.Add(this.Current);
+
+            _bus.Publish(this.Current);
+
+            foreach (ITickData data in this.Current)
+            {
+                _bus.Publish(data);
             }
         }
     }

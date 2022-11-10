@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -20,9 +21,9 @@ namespace VoidHuntersRevived.Library.Providers
     internal sealed class LocalTickProvider : ITickProvider
     {
         private uint _id;
-        private GuppyTimer _timer;
-        private ISetting<int> _tickSpeed;
-        private ITickFactory _factory;
+        private readonly GuppyTimer _timer;
+        private readonly ISetting<int> _tickSpeed;
+        private readonly ITickFactory _factory;
 
         public LocalTickProvider(ISettingProvider settings, ITickFactory factory)
         {
@@ -37,14 +38,16 @@ namespace VoidHuntersRevived.Library.Providers
             _timer.Update(gameTime);
         }
 
-        public bool Ready()
+        public bool Next([MaybeNullWhen(false)] out Tick next)
         {
-            return _timer.Step(out _);
-        }
+            if(_timer.Step(out _))
+            {
+                next = _factory.Create(++_id);
+                return true;
+            }
 
-        public Tick Next()
-        {
-            return _factory.Create(++_id);
+            next = null;
+            return false;
         }
     }
 }

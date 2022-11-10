@@ -8,6 +8,7 @@ namespace VoidHuntersRevived.Library.Constants
 {
     public static class SettingConstants
     {
-        public static string TickSpeed = "tick_speed";
+        public const string TickSpeed = "tick_speed";
+        public const string WorldStepsPerTick = "world_steps_per_tick";
     }
 }

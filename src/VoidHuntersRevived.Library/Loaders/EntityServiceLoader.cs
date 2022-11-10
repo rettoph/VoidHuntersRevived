@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Library.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSystem<AetherUpdateSystem>()
+            services
                 .AddSystem<TickRemoteMasterSystem>()
                 .AddSystem<TickRemoteSlaveSystem>()
                 .AddSystem<PilotSystem>()

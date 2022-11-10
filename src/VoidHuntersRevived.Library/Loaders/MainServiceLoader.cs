@@ -14,6 +14,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Factories;
+using VoidHuntersRevived.Library.GameComponents;
 using VoidHuntersRevived.Library.Providers;
 using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Systems;
@@ -25,6 +26,8 @@ namespace VoidHuntersRevived.Library.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddGameComponent<AetherGameComponent>();
+
             services.AddScoped<ITickService, TickService>()
                     .AddAlias<IGameComponent, ITickService>()
                     .AddScoped<ITickFactory, TickFactory>()

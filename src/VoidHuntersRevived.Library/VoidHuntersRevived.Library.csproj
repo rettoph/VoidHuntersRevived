@@ -26,9 +26,5 @@
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.MonoGame\Guppy.MonoGame.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="GameComponents\" />
-  </ItemGroup>
 
 </Project>

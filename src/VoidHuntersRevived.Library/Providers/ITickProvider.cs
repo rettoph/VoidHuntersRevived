@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,8 +14,6 @@ namespace VoidHuntersRevived.Library.Providers
     {
         void Update(GameTime gameTime);
 
-        bool Ready();
-
-        Tick Next();
+        bool Next([MaybeNullWhen(false)] out Tick next);
     }
 }
