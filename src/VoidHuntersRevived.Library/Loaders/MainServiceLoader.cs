@@ -28,16 +28,25 @@ namespace VoidHuntersRevived.Library.Loaders
         {
             services.AddGameComponent<AetherGameComponent>();
 
+            services.AddScoped<IStepService, StepService>()
+                    .AddAlias<IGameComponent, IStepService>();
+
+            services.AddScoped<StepLocalProvider>()
+                    .AddScoped<StepRemoteProvider>()
+                    .AddAliases(Alias.ForMany<IStepProvider>(typeof(StepLocalProvider), typeof(StepRemoteProvider)))
+                    .AddFilter(new SettingFilter<NetAuthorization, StepLocalProvider>(NetAuthorization.Master))
+                    .AddFilter(new SettingFilter<NetAuthorization, StepRemoteProvider>(NetAuthorization.Slave));
+
             services.AddScoped<ITickService, TickService>()
                     .AddAlias<IGameComponent, ITickService>()
                     .AddScoped<ITickFactory, TickFactory>()
                     .AddScoped<TickBuffer>();
 
-            services.AddScoped<LocalTickProvider>()
-                    .AddScoped<RemoteTickProvider>()
-                    .AddAliases(Alias.ForMany<ITickProvider>(typeof(LocalTickProvider), typeof(RemoteTickProvider)))
-                    .AddFilter(new SettingFilter<NetAuthorization, LocalTickProvider>(NetAuthorization.Master))
-                    .AddFilter(new SettingFilter<NetAuthorization, RemoteTickProvider>(NetAuthorization.Slave));
+            services.AddScoped<TickLocalProvider>()
+                    .AddScoped<TickRemoteProvider>()
+                    .AddAliases(Alias.ForMany<ITickProvider>(typeof(TickLocalProvider), typeof(TickRemoteProvider)))
+                    .AddFilter(new SettingFilter<NetAuthorization, TickLocalProvider>(NetAuthorization.Master))
+                    .AddFilter(new SettingFilter<NetAuthorization, TickRemoteProvider>(NetAuthorization.Slave));
         }
     }
 }

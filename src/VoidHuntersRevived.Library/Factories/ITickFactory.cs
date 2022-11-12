@@ -11,6 +11,6 @@ namespace VoidHuntersRevived.Library.Factories
     {
         void Enqueue(ITickData data);
 
-        Tick Create(uint id);
+        Tick Create(int id);
     }
 }

@@ -21,19 +21,21 @@ namespace VoidHuntersRevived.Library.Subscribers
     internal sealed class WorldTickSubscriber : ISubscriber<Tick>
     {
         private readonly ECSWorld _world;
-        private readonly ISetting<int> _tickSpeed;
-        private GameTime _gameTime;
+        private readonly ISetting<TimeSpan> _stepInterval;
+        private readonly ISetting<int> _stepsPerTick;
+        private readonly GameTime _gameTime;
 
         public WorldTickSubscriber(ECSWorld world, ISettingProvider settings)
         {
             _world = world;
-            _tickSpeed = settings.Get<int>(SettingConstants.TickSpeed);
+            _stepInterval = settings.Get<TimeSpan>(SettingConstants.StepInterval);
+            _stepsPerTick = settings.Get<int>(SettingConstants.StepsPerTick);
             _gameTime = new GameTime(TimeSpan.Zero, TimeSpan.Zero);
         }
 
         public void Process(in Tick message)
         {
-            _gameTime.ElapsedGameTime = TimeSpan.FromMilliseconds(_tickSpeed.Value);
+            _gameTime.ElapsedGameTime = _stepInterval.Value * _stepsPerTick.Value;
             _gameTime.TotalGameTime += _gameTime.ElapsedGameTime;
 
             _world.Update(_gameTime);

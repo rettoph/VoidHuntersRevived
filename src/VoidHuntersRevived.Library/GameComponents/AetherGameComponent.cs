@@ -19,67 +19,23 @@ using VoidHuntersRevived.Library.Messages;
 namespace VoidHuntersRevived.Library.GameComponents
 {
     [AutoSubscribe]
-    internal sealed class AetherGameComponent : SimpleGameComponent, ISubscriber<AetherStep>, ISubscriber<Tick>
+    internal sealed class AetherGameComponent : IGameComponent, ISubscriber<Step>
     {
-        private int _aetherStepsSinceTick;
-        private readonly IBus _bus;
-        private readonly ISetting<int> _worldStepsPerTick;
-        private readonly ISetting<int> _tickSpeed;
-        private readonly GuppyTimer _aetherStepTimer;
-        private readonly AetherStep _aetherStep;
         private readonly AetherWorld _aether;
 
-        public AetherGameComponent(AetherWorld aether, ISettingProvider settings, IBus bus)
+        public AetherGameComponent(AetherWorld aether)
         {
-            _bus = bus;
             _aether = aether;
-            _worldStepsPerTick = settings.Get<int>(SettingConstants.WorldStepsPerTick);
-            _tickSpeed = settings.Get<int>(SettingConstants.TickSpeed);
-            _aetherStepsSinceTick = 0;
-            _aetherStepTimer = new GuppyTimer()
-            {
-                // Calculated by the tick speed divided by the number of steps per tick. the .99 multiplier is to
-                // make the world run slightly fast, but not perceptibly so.
-                Interval = TimeSpan.FromMilliseconds(_tickSpeed.Value) / _worldStepsPerTick.Value * 0.99f
-            };
-            _aetherStep = new AetherStep(_aetherStepTimer.Interval);
-
-            _aether.CreateRectangle(10, 1, 1, new Vector2(0, 2), 0, AetherBodyType.Static);
         }
 
-        public override void Update(GameTime gameTime)
+        public void Initialize()
         {
-            _aetherStepTimer.Update(gameTime);
-
-            while (_aetherStepTimer.Step(out _))
-            {
-                if (_aetherStepsSinceTick < _worldStepsPerTick.Value)
-                {
-                    _bus.Publish(_aetherStep);
-                }
-            }
+            // throw new NotImplementedException();
         }
 
-        public void Process(in AetherStep message)
+        public void Process(in Step message)
         {
-            this.Step(in message.Interval);
-        }
-
-        public void Process(in Tick message)
-        {
-            while (_aetherStepsSinceTick < _worldStepsPerTick.Value)
-            {
-                this.Step(in _aetherStep.Interval);
-            }
-
-            _aetherStepsSinceTick = 0;
-            _aetherStepTimer.ElapsedTime = TimeSpan.Zero;
-        }
-
-        private void Step(in TimeSpan interval)
-        {
-            _aether.Step(interval);
-            _aetherStepsSinceTick++;
+            _aether.Step(message.Interval);
         }
     }
 }

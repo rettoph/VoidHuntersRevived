@@ -12,10 +12,10 @@ namespace VoidHuntersRevived.Library.Messages
     /// </summary>
     public class GameState
     {
-        public uint NextTickId;
+        public int NextTickId;
         public IEnumerable<Tick> History;
 
-        public GameState(uint nextTickId, IEnumerable<Tick> history)
+        public GameState(int nextTickId, IEnumerable<Tick> history)
         {
             this.NextTickId = nextTickId;
             this.History = history;

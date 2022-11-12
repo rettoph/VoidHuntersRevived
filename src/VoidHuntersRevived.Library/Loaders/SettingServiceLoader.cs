@@ -16,8 +16,8 @@ namespace VoidHuntersRevived.Library.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSetting<int>(SettingConstants.TickSpeed, 68, false);
-            services.AddSetting<int>(SettingConstants.WorldStepsPerTick, 4, false);
+            services.AddSetting<TimeSpan>(SettingConstants.StepInterval, TimeSpan.FromMilliseconds(20), false);
+            services.AddSetting<int>(SettingConstants.StepsPerTick, 5, false);
         }
     }
 }

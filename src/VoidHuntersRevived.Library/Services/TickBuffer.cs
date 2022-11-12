@@ -9,17 +9,19 @@ namespace VoidHuntersRevived.Library
 {
     internal class TickBuffer
     {
-        public const uint Length = 256;
+        public const int Length = 256;
 
         private Tick[] _buffer;
 
-        private uint _nextId;
+        private int _nextId;
 
-        public uint NextId
+        public int NextId
         {
             get => _nextId;
             set => _nextId = value;
         }
+
+        public int LastEnqueuedId { get; private set; }
 
         public TickBuffer()
         {
@@ -31,10 +33,7 @@ namespace VoidHuntersRevived.Library
 
         public bool TryPop(out Tick tick)
         {
-            uint index = _nextId % TickBuffer.Length;
-            tick = _buffer[index];
-
-            if(tick.Id == _nextId)
+            if(this.TryGet(_nextId, out tick))
             {
                 _nextId++;
                 return true;
@@ -43,12 +42,26 @@ namespace VoidHuntersRevived.Library
             return false;
         }
 
+        public bool TryGet(int id, out Tick tick)
+        {
+            int index = _nextId % TickBuffer.Length;
+            tick = _buffer[index];
+
+            if (tick.Id == id)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public void Enqueue(Tick tick)
         {
-            uint index = tick.Id % TickBuffer.Length;
+            int index = tick.Id % TickBuffer.Length;
 
             if(this.TryEnqueue(ref _buffer[index], tick))
             {
+                this.LastEnqueuedId = tick.Id;
                 return;
             }
 
@@ -76,14 +89,14 @@ namespace VoidHuntersRevived.Library
             return true;
         }
 
-        public uint DecompressId(byte compressed)
+        public int DecompressId(byte compressed)
         {
             var offset = this.NextId / byte.MaxValue * byte.MaxValue;
 
             return offset + compressed;
         }
 
-        public byte CompressId(uint id)
+        public byte CompressId(int id)
         {
             return (byte)(id % byte.MaxValue);
         }

@@ -1,4 +1,6 @@
-﻿using Guppy.MonoGame.Utilities;
+﻿using Guppy.Attributes;
+using Guppy.Common;
+using Guppy.MonoGame.Utilities;
 using Guppy.Network.Enums;
 using Guppy.Resources;
 using Guppy.Resources.Providers;
@@ -18,36 +20,37 @@ using VoidHuntersRevived.Library.Messages;
 
 namespace VoidHuntersRevived.Library.Providers
 {
-    internal sealed class LocalTickProvider : ITickProvider
+    [AutoSubscribe]
+    internal sealed class TickLocalProvider : ITickProvider, ISubscriber<Step>
     {
-        private uint _id;
-        private readonly GuppyTimer _timer;
-        private readonly ISetting<int> _tickSpeed;
+        private int _id;
+        private int _steps;
+        private readonly ISetting<int> _stepsPerTick;
         private readonly ITickFactory _factory;
 
-        public LocalTickProvider(ISettingProvider settings, ITickFactory factory)
+        public TickLocalProvider(ISettingProvider settings, ITickFactory factory)
         {
-            _tickSpeed = settings.Get<int>(SettingConstants.TickSpeed);
-            _timer = new GuppyTimer(TimeSpan.FromMilliseconds(_tickSpeed.Value));
-            _id = Tick.MinimumValidId;
+            _stepsPerTick = settings.Get<int>(SettingConstants.StepsPerTick);
+            _id = Tick.MinimumValidId - 1;
             _factory = factory;
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            _timer.Update(gameTime);
         }
 
         public bool Next([MaybeNullWhen(false)] out Tick next)
         {
-            if(_timer.Step(out _))
+            if(_steps >= _stepsPerTick.Value)
             {
                 next = _factory.Create(++_id);
+                _steps -= _stepsPerTick.Value;
                 return true;
             }
 
             next = null;
             return false;
+        }
+
+        public void Process(in Step message)
+        {
+            _steps++;
         }
     }
 }

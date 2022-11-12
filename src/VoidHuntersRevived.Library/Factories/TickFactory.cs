@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Library.Factories
             _datum.Add(data);
         }
 
-        public Tick Create(uint id)
+        public Tick Create(int id)
         {
             if(_datum.Count == 0)
             {

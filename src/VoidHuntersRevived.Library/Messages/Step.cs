@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Library.Messages
 {
-    public class AetherStep : Message
+    public class Step : Message, IMessage
     {
         public readonly TimeSpan Interval;
 
-        public AetherStep(TimeSpan interval)
+        public Step(TimeSpan interval)
         {
             this.Interval = interval;
         }

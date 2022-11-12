@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Library.Serializers.NetSerializers
     {
         public override GameState Deserialize(NetDataReader reader, INetSerializerProvider serializers)
         {
-            var nextTickId = reader.GetUInt();
+            var nextTickId = reader.GetInt();
 
             var count = reader.GetInt();
             var history = new List<Tick>(count);

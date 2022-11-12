@@ -42,15 +42,11 @@ namespace VoidHuntersRevived.Library.Services
 
         public override void Update(GameTime gameTime)
         {
-            _provider.Update(gameTime);
-
             while (_provider.Next(out var next))
             {
                 this.Publish(next);
             }
         }
-
-
 
         private void Publish(Tick tick)
         {

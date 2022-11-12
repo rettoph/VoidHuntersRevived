@@ -16,20 +16,20 @@ namespace VoidHuntersRevived.Library.Messages
     {
         private IEnumerable<ITickData> _datum;
 
-        public const uint MinimumValidId = 1;
+        public const int MinimumValidId = 1;
 
         public static readonly Tick Default = Empty(0);
 
-        public readonly uint Id;
+        public readonly int Id;
 
-        internal Tick(uint id, IEnumerable<ITickData> datum)
+        internal Tick(int id, IEnumerable<ITickData> datum)
         {
             this.Id = id;
 
             _datum = datum;
         }
 
-        public static Tick Empty(uint id)
+        public static Tick Empty(int id)
         {
             return new Tick(id, Enumerable.Empty<ITickData>());
         }

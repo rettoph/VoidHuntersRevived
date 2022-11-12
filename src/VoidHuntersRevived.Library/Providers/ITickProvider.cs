@@ -12,8 +12,6 @@ namespace VoidHuntersRevived.Library.Providers
 {
     public interface ITickProvider
     {
-        void Update(GameTime gameTime);
-
         bool Next([MaybeNullWhen(false)] out Tick next);
     }
 }

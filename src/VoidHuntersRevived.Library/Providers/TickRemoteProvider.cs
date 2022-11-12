@@ -15,22 +15,17 @@ using VoidHuntersRevived.Library.Messages;
 namespace VoidHuntersRevived.Library.Providers
 {
     [AutoSubscribe]
-    internal sealed class RemoteTickProvider : ITickProvider,
+    internal sealed class TickRemoteProvider : ITickProvider,
         ISubscriber<INetIncomingMessage<Tick>>,
         ISubscriber<INetIncomingMessage<GameState>>
     {
         private readonly TickBuffer _buffer;
         private Tick _next;
 
-        public RemoteTickProvider(TickBuffer buffer)
+        public TickRemoteProvider(TickBuffer buffer)
         {
             _buffer = buffer;
             _next = Tick.Default;
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            //
         }
 
         public bool Next([MaybeNullWhen(false)] out Tick next)
