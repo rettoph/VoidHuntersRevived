@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Library.Serializers.NetSerializers
     [AutoLoad]
     internal sealed class PilotDirectionInputSerializer : NetSerializer<PilotDirectionInput>
     {
-        public override PilotDirectionInput Deserialize(NetDataReader reader, INetSerializerProvider serializers)
+        public override PilotDirectionInput Deserialize(NetDataReader reader)
         {
             return new PilotDirectionInput(
                 pilotId: NetId.Byte.Read(reader),
@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Library.Serializers.NetSerializers
                 value: reader.GetBool());
         }
 
-        public override void Serialize(NetDataWriter writer, INetSerializerProvider serializers, in PilotDirectionInput instance)
+        public override void Serialize(NetDataWriter writer, in PilotDirectionInput instance)
         {
             instance.PilotId.Write(writer);
             writer.Put(instance.Which);

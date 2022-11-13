@@ -24,6 +24,7 @@ namespace VoidHuntersRevived.Library.Loaders
                 .AddSystem<TickRemoteSlaveSystem>()
                 .AddSystem<PilotSystem>()
                 .AddSystem<UserPilotSystem>()
+                .AddSystem<UserPilotRemoteMasterSystem>()
                 .AddSystem<CurrentUserRemoteSlaveSystem>()
                 .AddSystem<UserRemoteMasterSystem>()
                 .AddSystem<PilotableAetherSystem>();

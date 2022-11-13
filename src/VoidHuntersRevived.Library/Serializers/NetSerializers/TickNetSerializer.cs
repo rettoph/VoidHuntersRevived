@@ -17,16 +17,18 @@ namespace VoidHuntersRevived.Library.Serializers.NetSerializers
     [AutoLoad]
     internal sealed class TickNetSerializer : NetSerializer<Tick>
     {
-        private TickBuffer _buffer;
+        private INetSerializerProvider _serializers = default!;
 
-        public TickNetSerializer(TickBuffer buffer)
+        public override void Initialize(INetSerializerProvider serializers)
         {
-            _buffer = buffer;
+            base.Initialize(serializers);
+
+            _serializers = serializers;
         }
 
-        public override Tick Deserialize(NetDataReader reader, INetSerializerProvider serializers)
+        public override Tick Deserialize(NetDataReader reader)
         {
-            var id = _buffer.DecompressId(reader.GetByte());
+            var id = reader.GetInt();
             var count = reader.GetByte();
 
             if(count == 0)
@@ -38,7 +40,7 @@ namespace VoidHuntersRevived.Library.Serializers.NetSerializers
 
             for (var i = 0; i < count; i++)
             {
-                if(serializers.Deserialize(reader) is ITickData data)
+                if(_serializers.Deserialize(reader) is ITickData data)
                 {
                     items.Add(data);
                 }
@@ -49,9 +51,9 @@ namespace VoidHuntersRevived.Library.Serializers.NetSerializers
             return instance;
         }
 
-        public override void Serialize(NetDataWriter writer, INetSerializerProvider serializers, in Tick instance)
+        public override void Serialize(NetDataWriter writer, in Tick instance)
         {
-            writer.Put(_buffer.CompressId(instance.Id));
+            writer.Put(instance.Id);
 
             var count = (byte)instance.Count();
 
@@ -59,7 +61,7 @@ namespace VoidHuntersRevived.Library.Serializers.NetSerializers
 
             foreach (ITickData data in instance)
             {
-                serializers.Serialize(writer, data);
+                _serializers.Serialize(writer, data);
             }
         }
     }

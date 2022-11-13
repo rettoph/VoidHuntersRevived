@@ -20,12 +20,10 @@ namespace VoidHuntersRevived.Library.Providers
         ISubscriber<INetIncomingMessage<GameState>>
     {
         private readonly TickBuffer _buffer;
-        private Tick _next;
 
         public TickRemoteProvider(TickBuffer buffer)
         {
             _buffer = buffer;
-            _next = Tick.Default;
         }
 
         public bool Next([MaybeNullWhen(false)] out Tick next)

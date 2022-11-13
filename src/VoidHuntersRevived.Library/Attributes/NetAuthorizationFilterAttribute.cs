@@ -10,11 +10,11 @@ using VoidHuntersRevived.Library.Filters;
 
 namespace VoidHuntersRevived.Library.Attributes
 {
-    public sealed class NetAuthorizationSystemAttribute : InitializableAttribute
+    public sealed class NetAuthorizationFilterAttribute : InitializableAttribute
     {
         public readonly NetAuthorization RequiredAuth;
 
-        public NetAuthorizationSystemAttribute(NetAuthorization requiredAuth)
+        public NetAuthorizationFilterAttribute(NetAuthorization requiredAuth)
         {
             this.RequiredAuth = requiredAuth;
         }

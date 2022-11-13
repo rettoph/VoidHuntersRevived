@@ -22,7 +22,7 @@ using VoidHuntersRevived.Library.Services;
 namespace VoidHuntersRevived.Library.Systems
 {
     [GuppyFilter(typeof(GameGuppy))]
-    [NetAuthorizationSystem(NetAuthorization.Slave)]
+    [NetAuthorizationFilter(NetAuthorization.Slave)]
     internal sealed class TickRemoteSlaveSystem : ISystem, ISubscriber<Tick>
     {
         private NetScope _netScope;

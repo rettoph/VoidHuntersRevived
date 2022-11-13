@@ -15,16 +15,25 @@ namespace VoidHuntersRevived.Library.Serializers.NetSerializers
     [AutoLoad]
     internal sealed class UserPilotNetSerializer : NetSerializer<UserPilot>
     {
-        public override UserPilot Deserialize(NetDataReader reader, INetSerializerProvider serializers)
+        private INetSerializer<UserAction> _userActionSerializer = default!;
+
+        public override void Initialize(INetSerializerProvider serializers)
         {
-            var user = serializers.Deserialize<UserAction>(reader);
+            base.Initialize(serializers);
+
+            _userActionSerializer = serializers.Get<UserAction>();
+        }
+
+        public override UserPilot Deserialize(NetDataReader reader)
+        {
+            var user = _userActionSerializer.Deserialize(reader);
 
             return new UserPilot(user);
         }
 
-        public override void Serialize(NetDataWriter writer, INetSerializerProvider serializers, in UserPilot instance)
+        public override void Serialize(NetDataWriter writer, in UserPilot instance)
         {
-            serializers.Serialize(writer, false, instance.User);
+            _userActionSerializer.Serialize(writer, instance.User);
         }
     }
 }

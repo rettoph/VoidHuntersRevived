@@ -16,7 +16,7 @@ using VoidHuntersRevived.Library.Messages.Inputs;
 namespace VoidHuntersRevived.Library.Systems
 {
     [GuppyFilter(typeof(GameGuppy))]
-    [NetAuthorizationSystem(NetAuthorization.Slave)]
+    [NetAuthorizationFilter(NetAuthorization.Slave)]
     internal sealed class CurrentUserRemoteSlaveSystem : ISystem, ISubscriber<DirectionInput>
     {
         private IBus _bus;

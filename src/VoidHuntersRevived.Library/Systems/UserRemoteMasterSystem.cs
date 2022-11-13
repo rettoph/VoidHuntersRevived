@@ -17,7 +17,7 @@ using VoidHuntersRevived.Library.Messages.Inputs;
 namespace VoidHuntersRevived.Library.Systems
 {
     [GuppyFilter(typeof(GameGuppy))]
-    [NetAuthorizationSystem(NetAuthorization.Master)]
+    [NetAuthorizationFilter(NetAuthorization.Master)]
     internal sealed class UserRemoteMasterSystem : ISystem,
         ISubscriber<INetIncomingMessage<DirectionInput>>
     {

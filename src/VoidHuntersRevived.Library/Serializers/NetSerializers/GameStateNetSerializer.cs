@@ -17,7 +17,16 @@ namespace VoidHuntersRevived.Library.Serializers.NetSerializers
     [AutoLoad]
     internal sealed class GameStateNetSerializer : NetSerializer<GameState>
     {
-        public override GameState Deserialize(NetDataReader reader, INetSerializerProvider serializers)
+        private INetSerializer<Tick> _tickSerializer = default!;
+
+        public override void Initialize(INetSerializerProvider provider)
+        {
+            base.Initialize(provider);
+
+            _tickSerializer = provider.Get<Tick>();
+        }
+
+        public override GameState Deserialize(NetDataReader reader)
         {
             var nextTickId = reader.GetInt();
 
@@ -26,7 +35,7 @@ namespace VoidHuntersRevived.Library.Serializers.NetSerializers
 
             for (var i=0; i<count; i++)
             {
-                history.Add(serializers.Deserialize<Tick>(reader));
+                history.Add(_tickSerializer.Deserialize(reader));
             }
 
             return new GameState(
@@ -34,7 +43,7 @@ namespace VoidHuntersRevived.Library.Serializers.NetSerializers
                 history: history);
         }
 
-        public override void Serialize(NetDataWriter writer, INetSerializerProvider serializers, in GameState instance)
+        public override void Serialize(NetDataWriter writer, in GameState instance)
         {
             writer.Put(instance.NextTickId);
 
@@ -45,13 +54,13 @@ namespace VoidHuntersRevived.Library.Serializers.NetSerializers
             int count = 0;
             foreach(Tick tick in instance.History)
             {
-                if(tick.Count() == 0)
+                if(!tick.Any())
                 {
                     continue;
                 }
 
                 count++;
-                serializers.Serialize<Tick>(writer, false, in tick);
+                _tickSerializer.Serialize(writer, in tick);
             }
 
             var endPosition = writer.Length;

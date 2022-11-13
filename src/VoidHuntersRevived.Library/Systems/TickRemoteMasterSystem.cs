@@ -25,56 +25,24 @@ namespace VoidHuntersRevived.Library.Systems
 {
     [AutoSubscribe]
     [GuppyFilter(typeof(GameGuppy))]
-    [NetAuthorizationSystem(NetAuthorization.Master)]
+    [NetAuthorizationFilter(NetAuthorization.Master)]
     internal sealed class TickRemoteMasterSystem : ISystem, ISubscriber<Tick>
     {
         private readonly NetScope _netScope;
-        private readonly ITickService _ticks;
-        private readonly ITickFactory _tickFactory;
 
-        public TickRemoteMasterSystem(
-            NetScope netScope,
-            ITickService ticks,
-            ITickFactory tickFactory)
+        public TickRemoteMasterSystem(NetScope netScope)
         {
             _netScope = netScope;
-            _ticks = ticks;
-            _tickFactory = tickFactory;
         }
 
-        public void Initialize(World world)
+        public void Initialize(ECSWorld world)
         {
-            _netScope.Users.OnUserJoined += this.HandleUserJoined;
+            // throw new NotImplementedException();
         }
 
         public void Dispose()
         {
-            _netScope.Users.OnUserJoined -= this.HandleUserJoined;
-        }
-
-        private void HandleUserJoined(IUserService sender, User newUser)
-        {
-            if(newUser.NetPeer is null)
-            {
-                return;
-            }
-
-            if(_ticks.Current is null)
-            {
-                return;
-            }
-
-            // Enqueue a new user joined action for the new user.
-            _tickFactory.Enqueue(new UserPilot(
-                user: newUser.CreateAction(UserAction.Actions.UserJoined, ClaimAccessibility.Public)));
-
-            // Send the current game state to the new user
-            _netScope.Create<GameState>(
-                body: new GameState(
-                    nextTickId: _ticks.Current.Id + 1,
-                    history: _ticks.History
-                )
-            ).AddRecipient(newUser.NetPeer).Enqueue();
+            // throw new NotImplementedException();
         }
 
         public void Process(in Tick tick)

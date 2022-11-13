@@ -15,14 +15,14 @@ namespace VoidHuntersRevived.Library.Serializers.NetSerializers
     [AutoLoad]
     internal sealed class DirectionInputSerializer : NetSerializer<DirectionInput>
     {
-        public override DirectionInput Deserialize(NetDataReader reader, INetSerializerProvider serializers)
+        public override DirectionInput Deserialize(NetDataReader reader)
         {
             return new DirectionInput(
                 which: reader.GetEnum<Direction>(),
                 value: reader.GetBool());
         }
 
-        public override void Serialize(NetDataWriter writer, INetSerializerProvider serializers, in DirectionInput instance)
+        public override void Serialize(NetDataWriter writer, in DirectionInput instance)
         {
             writer.Put(instance.Which);
             writer.Put(instance.Value);

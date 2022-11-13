@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Library
     {
         public const int Length = 256;
 
-        private Tick[] _buffer;
+        private readonly Tick[] _buffer;
 
         private int _nextId;
 
@@ -87,18 +87,6 @@ namespace VoidHuntersRevived.Library
 
             reference = tick;
             return true;
-        }
-
-        public int DecompressId(byte compressed)
-        {
-            var offset = this.NextId / byte.MaxValue * byte.MaxValue;
-
-            return offset + compressed;
-        }
-
-        public byte CompressId(int id)
-        {
-            return (byte)(id % byte.MaxValue);
         }
     }
 }

@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Library.Providers
             // step delay every time this method is called, so it is constantly
             // chasing the target step.
             float offset = _currentStep - _targetStep;
-            var multiplier = this.RealTimeIntervalMultiplier(offset);
+            var multiplier = this.CalculateRealTimeIntervalMultiplier(offset);
             var interval = _stepInterval.Value * multiplier;
 
             if (_realTimeSinceStep > interval)
@@ -70,7 +70,7 @@ namespace VoidHuntersRevived.Library.Providers
             return false;
         }
 
-        private float RealTimeIntervalMultiplier(float offset)
+        private float CalculateRealTimeIntervalMultiplier(float offset)
         {
             float amount = ((offset / _stepsPerTick.Value) * 0.25f) + 0.5f;
             float result = MathHelper.SmoothStep(0.75f, 1.25f, amount);
