@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
+using Guppy.Common.Collections;
 using Guppy.MonoGame.Utilities;
 using Guppy.Network.Enums;
 using Guppy.Resources;
@@ -20,37 +21,28 @@ using VoidHuntersRevived.Library.Messages;
 
 namespace VoidHuntersRevived.Library.Providers
 {
-    [AutoSubscribe]
-    internal sealed class TickLocalProvider : ITickProvider, ISubscriber<Step>
+    internal sealed class TickLocalProvider : ITickProvider
     {
-        private int _id;
-        private int _steps;
-        private readonly ISetting<int> _stepsPerTick;
+        private int _currentId;
         private readonly ITickFactory _factory;
 
-        public TickLocalProvider(ISettingProvider settings, ITickFactory factory)
+        public int CurrentId
         {
-            _stepsPerTick = settings.Get<int>(SettingConstants.StepsPerTick);
-            _id = Tick.MinimumValidId - 1;
+            get => _currentId;
+            set => throw new InvalidOperationException();
+        }
+
+        public int LastId => _currentId;
+
+        public TickLocalProvider(ITickFactory factory)
+        {
             _factory = factory;
         }
 
         public bool Next([MaybeNullWhen(false)] out Tick next)
         {
-            if(_steps >= _stepsPerTick.Value)
-            {
-                next = _factory.Create(++_id);
-                _steps -= _stepsPerTick.Value;
-                return true;
-            }
-
-            next = null;
-            return false;
-        }
-
-        public void Process(in Step message)
-        {
-            _steps++;
+            next = _factory.Create(++_currentId);
+            return true;
         }
     }
 }

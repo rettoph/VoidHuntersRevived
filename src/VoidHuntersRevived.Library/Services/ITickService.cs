@@ -8,14 +8,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Messages;
+using VoidHuntersRevived.Library.Providers;
 
 namespace VoidHuntersRevived.Library.Services
 {
     [GuppyFilter(typeof(GameGuppy))]
-    public interface ITickService : IGameComponent, IUpdateable
+    public interface ITickService
     {
-        public IEnumerable<Tick> History { get; }
+        IList<Tick> History { get; }
 
-        public Tick? Current { get; }
+        Tick? Current { get; }
+
+        int LastId { get; }
+
+        bool Next();
     }
 }

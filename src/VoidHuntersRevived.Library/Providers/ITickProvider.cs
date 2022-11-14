@@ -12,6 +12,9 @@ namespace VoidHuntersRevived.Library.Providers
 {
     public interface ITickProvider
     {
+        int CurrentId { get; set; }
+        int LastId { get; }
+
         bool Next([MaybeNullWhen(false)] out Tick next);
     }
 }

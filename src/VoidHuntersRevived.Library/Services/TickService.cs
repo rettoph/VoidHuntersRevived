@@ -20,15 +20,17 @@ using VoidHuntersRevived.Library.Providers;
 
 namespace VoidHuntersRevived.Library.Services
 {
-    internal sealed class TickService : SimpleGameComponent, ITickService
+    internal sealed class TickService : ITickService
     {
         private readonly ITickProvider _provider;
         private readonly IList<Tick> _history;
         private readonly IBus _bus;
 
-        public IEnumerable<Tick> History => _history;
+        public IList<Tick> History => _history;
 
         public Tick? Current { get; private set; }
+
+        public int LastId => _provider.LastId;
 
         public TickService(
             IBus bus,
@@ -40,19 +42,26 @@ namespace VoidHuntersRevived.Library.Services
             _bus = bus;
         }
 
-        public override void Update(GameTime gameTime)
+        public bool Next()
         {
-            while (_provider.Next(out var next))
+            if (_provider.Next(out var next))
             {
                 this.Publish(next);
+
+                return true;
             }
+
+            return false;
         }
 
         private void Publish(Tick tick)
         {
             this.Current = tick;
 
-            _history.Add(this.Current);
+            if(this.Current.Any())
+            {
+                _history.Add(this.Current);
+            }
 
             _bus.Publish(this.Current);
 

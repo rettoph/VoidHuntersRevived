@@ -12,13 +12,26 @@ namespace VoidHuntersRevived.Library.Messages
     /// </summary>
     public class GameState
     {
-        public int NextTickId;
-        public IEnumerable<Tick> History;
+        public readonly GameStateType Type;
+        public readonly int LastHistoricTickId;
 
-        public GameState(int nextTickId, IEnumerable<Tick> history)
+        private GameState(GameStateType type, int lastHistoricTickId)
         {
-            this.NextTickId = nextTickId;
-            this.History = history;
+            this.Type = type;
+            this.LastHistoricTickId = lastHistoricTickId;
         }
+
+        public static readonly GameState End = new GameState(GameStateType.End, default);
+
+        public static GameState Begin(int lastHistoricTickId)
+        {
+            return new GameState(GameStateType.Begin, lastHistoricTickId);
+        }
+    }
+
+    public enum GameStateType : byte
+    {
+        Begin,
+        End
     }
 }

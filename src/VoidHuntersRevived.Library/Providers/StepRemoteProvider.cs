@@ -20,16 +20,13 @@ namespace VoidHuntersRevived.Library.Providers
         private int _lastTickBufferState;
         private TimeSpan _realTimeSinceStep;
         private readonly ITickService _ticks;
-        private readonly TickBuffer _tickBuffer;
         private readonly ISetting<TimeSpan> _stepInterval;
         private readonly ISetting<int> _stepsPerTick;
 
         public StepRemoteProvider(
-            TickBuffer tickBuffer,
             ITickService ticks,
             ISettingProvider settings)
         {
-            _tickBuffer = tickBuffer;
             _ticks = ticks;
             _stepInterval = settings.Get<TimeSpan>(SettingConstants.StepInterval);
             _stepsPerTick = settings.Get<int>(SettingConstants.StepsPerTick);
@@ -42,7 +39,7 @@ namespace VoidHuntersRevived.Library.Providers
             this.UpdateTargetStep();
         }
 
-        public bool Ready()
+        public bool Next()
         {
             // There is a constant flux between target step and current step.
             // The 'real time' delay is calculated based on the offset between
@@ -51,7 +48,7 @@ namespace VoidHuntersRevived.Library.Providers
             // step delay every time this method is called, so it is constantly
             // chasing the target step.
             float offset = _currentStep - _targetStep;
-            var multiplier = this.CalculateRealTimeIntervalMultiplier(offset);
+            var multiplier = this.RealTimeIntervalMultiplier(offset);
             var interval = _stepInterval.Value * multiplier;
 
             if (_realTimeSinceStep > interval)
@@ -70,7 +67,7 @@ namespace VoidHuntersRevived.Library.Providers
             return false;
         }
 
-        private float CalculateRealTimeIntervalMultiplier(float offset)
+        private float RealTimeIntervalMultiplier(float offset)
         {
             float amount = ((offset / _stepsPerTick.Value) * 0.25f) + 0.5f;
             float result = MathHelper.SmoothStep(0.75f, 1.25f, amount);
@@ -84,24 +81,16 @@ namespace VoidHuntersRevived.Library.Providers
         /// for the last cached in-order id calculating the 
         /// would be step for that tick.
         /// </summary>
-        /// <exception cref="NotImplementedException"></exception>
         private void UpdateTargetStep()
         {
-            if(_lastTickBufferState == _tickBuffer.LastEnqueuedId)
+            if(_lastTickBufferState == _ticks.LastId)
             {
                 return;
             }
 
-            var id = _ticks.Current?.Id ?? 0;
-
-            while (_tickBuffer.TryGet(id, out _))
-            {
-                id++;
-            }
-
-            _targetStep = id * _stepsPerTick.Value;
+            _lastTickBufferState = _ticks.LastId;
+            _targetStep = _lastTickBufferState * _stepsPerTick.Value;
             _maximumTargetStep = _targetStep + _stepsPerTick.Value - 1;
-            _lastTickBufferState = _tickBuffer.LastEnqueuedId;
         }
     }
 }

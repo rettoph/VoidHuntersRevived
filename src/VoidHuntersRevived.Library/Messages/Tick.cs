@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Library.Messages
 {
     public class Tick : Message, IEnumerable<ITickData>, IMessage
     {
-        private IEnumerable<ITickData> _datum;
+        private readonly IEnumerable<ITickData> _datum;
 
         public const int MinimumValidId = 1;
 

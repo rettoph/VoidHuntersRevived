@@ -18,6 +18,7 @@ namespace VoidHuntersRevived.Server
     {
         public ServerGameGuppy(NetScope netScope, IGameComponentService components) : base(netScope, components)
         {
+            Console.WriteLine("Server Running!");
         }
     }
 }

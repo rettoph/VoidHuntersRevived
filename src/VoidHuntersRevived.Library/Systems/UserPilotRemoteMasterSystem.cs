@@ -17,6 +17,7 @@ using MonoGame.Extended.Entities;
 using Guppy.Attributes;
 using Guppy.Network.Enums;
 using VoidHuntersRevived.Library.Attributes;
+using LiteNetLib;
 
 namespace VoidHuntersRevived.Library.Systems
 {
@@ -60,18 +61,38 @@ namespace VoidHuntersRevived.Library.Systems
                 return;
             }
 
+            Console.WriteLine("User Connected");
+
             // Enqueue a new user joined action for the new user.
             _tickFactory.Enqueue(new UserPilot(
                 user: newUser.CreateAction(
-                    action: UserAction.Actions.UserJoined, 
+                    action: UserAction.Actions.UserJoined,
                     accessibility: ClaimAccessibility.Public)));
+
+            var lastHistoricTickId = _ticks.Current.Id;
 
             // Send the current game state to the new user
             _netScope.Create<GameState>(
-                body: new GameState(
-                    nextTickId: _ticks.Current.Id + 1,
-                    history: _ticks.History
-                )
+                body: GameState.Begin(lastHistoricTickId)
+            ).AddRecipient(newUser.NetPeer).Enqueue();
+
+            for (var i = 0; i < _ticks.History.Count; i++)
+            {
+                var tick = _ticks.History[i];
+
+                if (tick.Id > lastHistoricTickId)
+                {
+                    break;
+                }
+
+                _netScope.Create<Tick>(tick)
+                    .AddRecipient(newUser.NetPeer)
+                    .SetDeliveryMethod(DeliveryMethod.ReliableOrdered)
+                    .Enqueue();
+            }
+
+            _netScope.Create<GameState>(
+                body: GameState.End
             ).AddRecipient(newUser.NetPeer).Enqueue();
         }
     }

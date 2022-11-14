@@ -11,6 +11,6 @@ namespace VoidHuntersRevived.Library.Providers
     {
         void Update(GameTime gameTime);
 
-        bool Ready();
+        bool Next();
     }
 }

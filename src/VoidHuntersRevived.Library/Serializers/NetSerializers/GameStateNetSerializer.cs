@@ -17,56 +17,26 @@ namespace VoidHuntersRevived.Library.Serializers.NetSerializers
     [AutoLoad]
     internal sealed class GameStateNetSerializer : NetSerializer<GameState>
     {
-        private INetSerializer<Tick> _tickSerializer = default!;
-
-        public override void Initialize(INetSerializerProvider provider)
-        {
-            base.Initialize(provider);
-
-            _tickSerializer = provider.Get<Tick>();
-        }
-
         public override GameState Deserialize(NetDataReader reader)
         {
-            var nextTickId = reader.GetInt();
+            GameStateType type = reader.GetEnum<GameStateType>();
 
-            var count = reader.GetInt();
-            var history = new List<Tick>(count);
-
-            for (var i=0; i<count; i++)
+            if(type == GameStateType.Begin)
             {
-                history.Add(_tickSerializer.Deserialize(reader));
+                return GameState.Begin(reader.GetInt());
             }
 
-            return new GameState(
-                nextTickId: nextTickId, 
-                history: history);
+            return GameState.End;
         }
 
         public override void Serialize(NetDataWriter writer, in GameState instance)
         {
-            writer.Put(instance.NextTickId);
+            writer.Put(instance.Type);
 
-            // writer a placeholder uint that will contain the tick history count
-            var poition = writer.Length;
-            writer.Put(int.MinValue);
-
-            int count = 0;
-            foreach(Tick tick in instance.History)
+            if(instance.Type == GameStateType.Begin)
             {
-                if(!tick.Any())
-                {
-                    continue;
-                }
-
-                count++;
-                _tickSerializer.Serialize(writer, in tick);
+                writer.Put(instance.LastHistoricTickId);
             }
-
-            var endPosition = writer.Length;
-            writer.SetPosition(poition);
-            writer.Put(count);
-            writer.SetPosition(endPosition);
         }
     }
 }

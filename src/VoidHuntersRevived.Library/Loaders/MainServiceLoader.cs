@@ -38,9 +38,7 @@ namespace VoidHuntersRevived.Library.Loaders
                     .AddFilter(new SettingFilter<NetAuthorization, StepRemoteProvider>(NetAuthorization.Slave));
 
             services.AddScoped<ITickService, TickService>()
-                    .AddAlias<IGameComponent, ITickService>()
-                    .AddScoped<ITickFactory, TickFactory>()
-                    .AddScoped<TickBuffer>();
+                    .AddScoped<ITickFactory, TickFactory>();
 
             services.AddScoped<TickLocalProvider>()
                     .AddScoped<TickRemoteProvider>()
