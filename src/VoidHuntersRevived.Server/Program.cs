@@ -2,6 +2,7 @@
 using Guppy.Common;
 using Guppy.MonoGame.Helpers;
 using Guppy.MonoGame.Services;
+using Guppy.MonoGame.Strategies.PublishStrategies;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
@@ -12,7 +13,7 @@ using VoidHuntersRevived.Library;
 using VoidHuntersRevived.Server;
 
 var guppy = new GuppyEngine(new[] { typeof(MainGuppy).Assembly, typeof(ServerMainGuppy).Assembly })
-    .ConfigureGame()
+    .ConfigureGame<LastGuppyPublishStrategy>()
     .ConfigureECS()
     .ConfigureNetwork(1)
     .ConfigureResources()

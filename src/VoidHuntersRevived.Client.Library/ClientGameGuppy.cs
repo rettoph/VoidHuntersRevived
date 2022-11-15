@@ -17,21 +17,14 @@ namespace VoidHuntersRevived.Client.Library
     public sealed class ClientGameGuppy : GameGuppy, IDisposable
     {
         private readonly World _world;
-        private readonly IInputService _inputs;
-        private readonly IBus _bus;
 
-        public ClientGameGuppy(World world, NetScope netScope, IBus bus, IInputService inputs, IGameComponentService components) : base(netScope, components)
+        public ClientGameGuppy(World world, NetScope netScope, IGameComponentService components) : base(netScope, components)
         {
             _world = world;
-            _inputs = inputs;
-            _bus = bus;
-
-            _inputs.Subscribe(_bus);
         }
 
         public void Dispose()
         {
-            _inputs.Unsubscribe(_bus);
         }
 
         public override void Draw(GameTime gameTime)

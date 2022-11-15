@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Library.Loaders
 
             services.AddScoped<StepLocalProvider>()
                     .AddScoped<StepRemoteProvider>()
-                    .AddAliases(Alias.ForMany<IStepProvider>(typeof(StepLocalProvider), typeof(StepRemoteProvider)))
+                    .AddAliases(Alias.ManyFor<IStepProvider>(typeof(StepLocalProvider), typeof(StepRemoteProvider)))
                     .AddFilter(new SettingFilter<NetAuthorization, StepLocalProvider>(NetAuthorization.Master))
                     .AddFilter(new SettingFilter<NetAuthorization, StepRemoteProvider>(NetAuthorization.Slave));
 
@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Library.Loaders
 
             services.AddScoped<TickLocalProvider>()
                     .AddScoped<TickRemoteProvider>()
-                    .AddAliases(Alias.ForMany<ITickProvider>(typeof(TickLocalProvider), typeof(TickRemoteProvider)))
+                    .AddAliases(Alias.ManyFor<ITickProvider>(typeof(TickLocalProvider), typeof(TickRemoteProvider)))
                     .AddFilter(new SettingFilter<NetAuthorization, TickLocalProvider>(NetAuthorization.Master))
                     .AddFilter(new SettingFilter<NetAuthorization, TickRemoteProvider>(NetAuthorization.Slave));
         }

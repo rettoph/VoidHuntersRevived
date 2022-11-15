@@ -63,15 +63,15 @@ namespace VoidHuntersRevived.Library.Services
         /// <returns></returns>
         private bool TryTick()
         {
-            if (_stepsSinceTick >= _stepsPerTick.Value)
+            if (_stepsSinceTick < _stepsPerTick.Value)
             {
-                if(_ticks.Next())
-                {
-                    _stepsSinceTick = 0;
-                    return true;
-                }
-
                 return false;
+            }
+
+            if (_ticks.Next())
+            {
+                _stepsSinceTick = 0;
+                return true;
             }
 
             return true;

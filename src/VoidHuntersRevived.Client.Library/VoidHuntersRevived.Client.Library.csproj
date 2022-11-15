@@ -41,9 +41,5 @@
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy\Guppy.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Library\VoidHuntersRevived.Library.csproj" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="Debuggers\" />
-  </ItemGroup>
 
 </Project>

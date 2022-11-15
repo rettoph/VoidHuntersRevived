@@ -1,6 +1,7 @@
 ﻿using Guppy;
 using Guppy.Common;
 using Guppy.MonoGame.Services;
+using Guppy.MonoGame.Strategies.PublishStrategies;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,6 +19,7 @@ namespace VoidHuntersRevived.Client.Library
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
+        private IServiceProvider? _provider;
         private IScoped<ClientMainGuppy>? _guppy;
         private IGlobal<IGameComponentService>? _globals;
 
@@ -63,17 +65,14 @@ namespace VoidHuntersRevived.Client.Library
 #endif
             Task.Run(() =>
             {
-                _guppy = new GuppyEngine(new[] { typeof(MainGuppy).Assembly, typeof(ClientMainGuppy).Assembly })
-                    .ConfigureMonoGame(this, this.graphics, this.Content, this.Window)
+                _provider = new GuppyEngine(new[] { typeof(MainGuppy).Assembly, typeof(ClientMainGuppy).Assembly })
+                    .ConfigureMonoGame<LastGuppyPublishStrategy>(this, this.graphics, this.Content, this.Window)
                     .ConfigureECS()
                     .ConfigureNetwork(1)
                     .ConfigureResources()
                     .ConfigureUI()
                     .ConfigureNetworkUI()
-                    .Build()
-                    .GetRequiredService<IScoped<ClientMainGuppy>>();
-
-                _globals = _guppy.Scope.ServiceProvider.GetRequiredService<IGlobal<IGameComponentService>>();
+                    .Build();
             });
         }
 
@@ -116,6 +115,9 @@ namespace VoidHuntersRevived.Client.Library
         {
             // TODO: Add your update logic here
             base.Update(gameTime);
+
+            _guppy ??= _provider?.GetRequiredService<IScoped<ClientMainGuppy>>();
+            _globals ??= _provider?.GetRequiredService<IGlobal<IGameComponentService>>();
 
             _globals?.Instance.Update(gameTime);
 

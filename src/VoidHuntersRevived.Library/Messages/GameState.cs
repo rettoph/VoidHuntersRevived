@@ -31,6 +31,7 @@ namespace VoidHuntersRevived.Library.Messages
 
     public enum GameStateType : byte
     {
+        None,
         Begin,
         End
     }

@@ -1,4 +1,5 @@
 ﻿using Guppy;
+using Guppy.Common;
 using Guppy.MonoGame;
 using Guppy.MonoGame.Services;
 using Guppy.Network.Peers;
@@ -14,11 +15,10 @@ namespace VoidHuntersRevived.Library
 {
     public abstract class MainGuppy : FrameableGuppy
     {
-        private Peer _peer;
+        private readonly Peer _peer;
 
         protected MainGuppy(
             Peer peer,
-            World world,
             IGameComponentService components) : base(components)
         {
             _peer = peer;

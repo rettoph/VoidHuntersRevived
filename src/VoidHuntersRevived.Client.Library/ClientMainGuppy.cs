@@ -25,8 +25,7 @@ namespace VoidHuntersRevived.Client.Library
         public ClientMainGuppy(
             IGuppyProvider guppies,
             IGameComponentService components,
-            ClientPeer client,
-            World world) : base(client, world, components)
+            ClientPeer client) : base(client, components)
         {
             _guppies = guppies;
             _client = client;
