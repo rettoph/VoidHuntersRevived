@@ -2,6 +2,7 @@
 using Guppy.MonoGame;
 using Guppy.MonoGame.Providers;
 using Guppy.MonoGame.Services;
+using Guppy.Network.Identity.Claims;
 using Guppy.Network.Peers;
 using Guppy.Providers;
 using Microsoft.Xna.Framework;
@@ -32,7 +33,7 @@ namespace VoidHuntersRevived.Client.Library
 
             _client.Start();
 
-            _client.Connect("localhost", 1337);
+            _client.Connect("localhost", 1337, Claim.Public("username", "Rettoph"), Claim.Protected("age", 24));
 
             _game = _guppies.Create<ClientGameGuppy>();
         }
