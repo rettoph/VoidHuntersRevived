@@ -21,8 +21,10 @@ namespace VoidHuntersRevived.Library.Services
         private readonly IBus _bus;
         private readonly ISetting<TimeSpan> _stepInterval;
         private readonly ISetting<int> _stepsPerTick;
+        private readonly ISetting<int> _maximumStepsPerFrame;
         private readonly Step _step;
         private int _stepsSinceTick;
+        private int _stepsThisFrame;
 
         public StepService(
             IBus bus,
@@ -35,6 +37,7 @@ namespace VoidHuntersRevived.Library.Services
             _ticks = ticks;
             _stepInterval = settings.Get<TimeSpan>(SettingConstants.StepInterval);
             _stepsPerTick = settings.Get<int>(SettingConstants.StepsPerTick);
+            _maximumStepsPerFrame = settings.Get<int>(SettingConstants.MaximumStepsPerFrame);
             _step = new Step(_stepInterval.Value);
         }
 
@@ -44,12 +47,19 @@ namespace VoidHuntersRevived.Library.Services
 
             this.TryTick();
 
+            _stepsThisFrame = 0;
             while (_provider.Next())
             {
                 _bus.Publish(_step);
                 _stepsSinceTick++;
+                _stepsThisFrame++;
 
                 if (this.TryTick() == false)
+                {
+                    break;
+                }
+
+                if(_stepsThisFrame >= _maximumStepsPerFrame.Value)
                 {
                     break;
                 }

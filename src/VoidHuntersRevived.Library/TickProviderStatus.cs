@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Library.Enums
+namespace VoidHuntersRevived.Library
 {
-    [Flags]
-    public enum TickFlags : byte
+    public enum TickProviderStatus
     {
-        None = 0,
-        UserPlayerJoined = 1,
+        Historical,
+        Realtime
     }
 }

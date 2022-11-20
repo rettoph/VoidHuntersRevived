@@ -41,6 +41,13 @@ namespace VoidHuntersRevived.Library.Providers
 
         public bool Next()
         {
+            if(_ticks.Provider.Status == TickProviderStatus.Historical && _currentStep / _stepsPerTick .Value < _ticks.Provider.AvailableId)
+            {
+                _currentStep++;
+                _realTimeSinceStep = TimeSpan.Zero;
+                return true;
+            }
+
             // There is a constant flux between target step and current step.
             // The 'real time' delay is calculated based on the offset between
             // the target and current. The game time constant is then multiplied
@@ -70,7 +77,7 @@ namespace VoidHuntersRevived.Library.Providers
         private float RealTimeIntervalMultiplier(float offset)
         {
             float amount = ((offset / _stepsPerTick.Value) * 0.25f) + 0.5f;
-            float result = MathHelper.SmoothStep(0.75f, 1.25f, amount);
+            float result = MathHelper.SmoothStep(0.75f, 200f, amount);
 
             return result;
         }
@@ -83,12 +90,12 @@ namespace VoidHuntersRevived.Library.Providers
         /// </summary>
         private void UpdateTargetStep()
         {
-            if(_lastTickBufferState == _ticks.LastId)
+            if(_lastTickBufferState == _ticks.Provider.AvailableId)
             {
                 return;
             }
 
-            _lastTickBufferState = _ticks.LastId;
+            _lastTickBufferState = _ticks.Provider.AvailableId;
             _targetStep = _lastTickBufferState * _stepsPerTick.Value;
             _maximumTargetStep = _targetStep + _stepsPerTick.Value - 1;
         }

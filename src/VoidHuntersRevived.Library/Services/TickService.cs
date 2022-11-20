@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Library.Services
 
         public Tick? Current { get; private set; }
 
-        public int LastId => _provider.LastId;
+        public ITickProvider Provider => _provider;
 
         public TickService(
             IBus bus,

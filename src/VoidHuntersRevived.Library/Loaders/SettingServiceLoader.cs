@@ -18,6 +18,7 @@ namespace VoidHuntersRevived.Library.Loaders
         {
             services.AddSetting<TimeSpan>(SettingConstants.StepInterval, TimeSpan.FromMilliseconds(20), false);
             services.AddSetting<int>(SettingConstants.StepsPerTick, 5, false);
+            services.AddSetting<int>(SettingConstants.MaximumStepsPerFrame, 5, false);
         }
     }
 }

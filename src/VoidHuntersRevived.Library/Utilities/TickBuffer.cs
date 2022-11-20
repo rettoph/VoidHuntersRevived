@@ -111,6 +111,26 @@ namespace VoidHuntersRevived.Library.Utilities
             set => _currentId = value;
         }
 
+        public Tick? this[int index]
+        {
+            get
+            {
+                Node? result = _head;
+
+                for(int i=0; i<index; i++)
+                {
+                    if (result is null)
+                    {
+                        break;
+                    }
+
+                    result = result.Child;
+                }
+
+                return result?.Data;
+            }
+        }
+
         public TickBuffer(int currentId)
         {
             _currentId = currentId;
@@ -166,7 +186,10 @@ namespace VoidHuntersRevived.Library.Utilities
 
         private void UpdateTail()
         {
-            _tail ??= _head;
+            if(_tail is null || _tail.Data.Id < _head?.Data.Id)
+            {
+                _tail = _head;
+            }
 
             _tail = _tail?.GetTail();
         }

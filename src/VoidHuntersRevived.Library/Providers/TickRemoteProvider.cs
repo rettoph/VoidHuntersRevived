@@ -28,14 +28,18 @@ namespace VoidHuntersRevived.Library.Providers
         private GameStateType _gameStateType;
         private int _lastHistoricTickId;
 
-        public int CurrentId { get; set; }
+        public int CurrentId => _buffer.CurrentId;
 
-        public int LastId { get; private set; }
+        public int AvailableId { get; private set; }
+
+        public TickProviderStatus Status { get; private set; }
 
         public TickRemoteProvider()
         {
             _buffer = new TickBuffer(Tick.MinimumValidId - 1);
             _next = this.NextHistoric;
+
+            this.Status = TickProviderStatus.Historical;
         }
 
         public bool Next([MaybeNullWhen(false)] out Tick next)
@@ -63,6 +67,7 @@ namespace VoidHuntersRevived.Library.Providers
             if(_buffer.CurrentId == _lastHistoricTickId)
             {
                 _next = _buffer.TryPop;
+                this.Status = TickProviderStatus.Realtime;
                 return _buffer.TryPop(out next);
             }
 
@@ -78,13 +83,9 @@ namespace VoidHuntersRevived.Library.Providers
 
         void ISubscriber<INetIncomingMessage<Tick>>.Process(in INetIncomingMessage<Tick> message)
         {
-            if(message.DeliveryMethod == DeliveryMethod.ReliableOrdered)
-            {
-                return;
-            }
             _buffer.Enqueue(message.Body);
 
-            this.LastId = _buffer.Tail?.Id ?? this.LastId;
+            this.AvailableId = _buffer.Tail?.Id ?? this.AvailableId;
         }
 
         void ISubscriber<INetIncomingMessage<GameState>>.Process(in INetIncomingMessage<GameState> message)

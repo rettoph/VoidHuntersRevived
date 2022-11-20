@@ -12,8 +12,15 @@ namespace VoidHuntersRevived.Library.Providers
 {
     public interface ITickProvider
     {
-        int CurrentId { get; set; }
-        int LastId { get; }
+        int CurrentId { get; }
+
+        /// <summary>
+        /// Should represent the highest tick ready and available to
+        /// be processed.
+        /// </summary>
+        int AvailableId { get; }
+
+        TickProviderStatus Status { get; }
 
         bool Next([MaybeNullWhen(false)] out Tick next);
     }

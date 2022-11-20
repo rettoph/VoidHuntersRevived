@@ -2,7 +2,6 @@
 using Guppy.Common;
 using Guppy.MonoGame.UI;
 using Guppy.MonoGame.UI.Constants;
-using Guppy.MonoGame.UI.Elements;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Providers;
 using ImGuiNET;
@@ -13,51 +12,82 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library;
+using VoidHuntersRevived.Library.Messages;
 using VoidHuntersRevived.Library.Providers;
+using VoidHuntersRevived.Library.Services;
 using Num = System.Numerics;
 
 namespace VoidHuntersRevived.Client.Library.Debuggers
 {
+    [AutoSubscribe]
     [GuppyFilter(typeof(ClientGameGuppy))]
-    internal sealed class WorldDebugger : IImGuiDebugger
+    internal sealed class WorldDebugger : IImGuiDebugger, ISubscriber<Tick>
     {
-        private IStepProvider _steps;
-        private ITickProvider _ticks;
-        private Num.Vector4 _textColor;
-        private ImFontPtr _font;
-        private ImFontPtr _fontHeader;
-        private Window _window;
+        private IStepService _steps;
+        private ITickService _ticks;
+        private bool _open;
 
-        public WorldDebugger(IFiltered<IStepProvider> steps, IFiltered<ITickProvider> ticks)
+        public string Label { get; }
+
+        public bool Open
         {
-            _steps = steps.Instance ?? throw new ArgumentNullException();
-            _ticks = ticks.Instance ?? throw new ArgumentNullException();
-            _textColor = Color.White.ToNumericsVector4();
-            _window = new Window("World Data");
+            get => _open;
+            set => _open = value;
+        }
+
+        public WorldDebugger(IStepService steps, ITickService ticks)
+        {
+            _steps = steps;
+            _ticks = ticks;
+            _open = false;
+
+            this.Label = "World";
         }
 
         public void Initialize(ImGuiBatch imGuiBatch)
         {
-            _fontHeader = imGuiBatch.Fonts[ImGuiFontConstants.DiagnosticsFontHeader].Ptr;
-            _font = imGuiBatch.Fonts[ImGuiFontConstants.DiagnosticsFont].Ptr;
-
-            _window.AddStyleVar(ImGuiStyleVar.WindowMinSize, new Num.Vector2(400, 0));
-
-            _window.Font = imGuiBatch.Fonts[ImGuiFontConstants.DiagnosticsFontHeader];
         }
 
         public void Draw(GameTime gameTime)
         {
-            ImGui.PushStyleColor(ImGuiCol.Text, _textColor);
+            if(ImGui.Begin("World", ref _open))
+            {
+                ImGui.BeginTable("data", 2);
 
-            _window.Draw(gameTime);
+                ImGui.TableNextColumn();
+                ImGui.Text($"ITickProvider Status");
 
-            ImGui.PopStyleColor();
+                ImGui.TableNextColumn();
+                ImGui.Text(_ticks.Provider.Status.ToString());
+
+                ImGui.TableNextColumn();
+                ImGui.Text("ITickProvider CurrentId");
+
+                ImGui.TableNextColumn();
+                ImGui.Text(_ticks.Provider.CurrentId.ToString("#,###,##0"));
+
+                ImGui.TableNextColumn();
+                ImGui.Text("ITickProvider AvailableId");
+
+                ImGui.TableNextColumn();
+                ImGui.Text(_ticks.Provider.AvailableId.ToString("#,###,##0"));
+
+                ImGui.EndTable();
+            }
+            ImGui.End();
         }
 
         public void Update(GameTime gameTime)
         {
-            // throw new NotImplementedException();
+        }
+
+        public void Process(in Tick message)
+        {
+            // Only track ticks with data
+            if (!message.Any())
+            {
+                return;
+            }
         }
     }
 }

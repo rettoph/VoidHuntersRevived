@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
+using Guppy.Common.Collections;
 using Guppy.Network.Enums;
 using Microsoft.Xna.Framework;
 using System;
@@ -16,10 +17,9 @@ namespace VoidHuntersRevived.Library.Services
     public interface ITickService
     {
         IList<Tick> History { get; }
-
         Tick? Current { get; }
 
-        int LastId { get; }
+        public ITickProvider Provider { get; }
 
         bool Next();
     }

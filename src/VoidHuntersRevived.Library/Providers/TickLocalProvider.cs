@@ -26,17 +26,17 @@ namespace VoidHuntersRevived.Library.Providers
         private int _currentId;
         private readonly ITickFactory _factory;
 
-        public int CurrentId
-        {
-            get => _currentId;
-            set => throw new InvalidOperationException();
-        }
+        public int CurrentId => _currentId;
 
-        public int LastId => _currentId;
+        public int AvailableId => _currentId;
+
+        public TickProviderStatus Status { get; }
 
         public TickLocalProvider(ITickFactory factory)
         {
             _factory = factory;
+
+            this.Status = TickProviderStatus.Realtime;
         }
 
         public bool Next([MaybeNullWhen(false)] out Tick next)
