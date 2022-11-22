@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Library.Mappers
 {
-    public sealed class PilotIdMap
+    public abstract class PilotIdMap<TNetId>
+        where TNetId : INetId
     {
         private INetId _current;
         private readonly Queue<INetId> _availableIds;
@@ -20,7 +21,7 @@ namespace VoidHuntersRevived.Library.Mappers
             _availableIds = new Queue<INetId>();
             _entityIds = new Map<INetId, int>();
             _userIds = new Map<INetId, int>();
-            _current = NetId.Create<byte>(0);
+            _current = TNetId.Zero;
         }
 
         public INetId Add(int entityId)
@@ -94,5 +95,10 @@ namespace VoidHuntersRevived.Library.Mappers
 
             return _current;
         }
+    }
+
+    public sealed class PilotIdMap : PilotIdMap<NetId.Byte>
+    {
+
     }
 }

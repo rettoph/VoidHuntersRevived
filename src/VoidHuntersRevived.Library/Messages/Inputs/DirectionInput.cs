@@ -10,8 +10,8 @@ namespace VoidHuntersRevived.Library.Messages.Inputs
 {
     public class DirectionInput : Message
     {
-        public readonly Direction Which;
-        public readonly bool Value;
+        public Direction Which { get; }
+        public bool Value { get; }
 
         public DirectionInput(Direction which, bool value)
         {

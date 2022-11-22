@@ -4,12 +4,16 @@ using Guppy.MonoGame.UI;
 using Guppy.MonoGame.UI.Constants;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Providers;
+using Guppy.Resources.Serialization.Json;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library;
 using VoidHuntersRevived.Library.Messages;
@@ -25,6 +29,7 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
     {
         private IStepService _steps;
         private ITickService _ticks;
+        private IJsonSerializer _json;
         private bool _open;
 
         public string Label { get; }
@@ -35,10 +40,11 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
             set => _open = value;
         }
 
-        public WorldDebugger(IStepService steps, ITickService ticks)
+        public WorldDebugger(IStepService steps, ITickService ticks, IJsonSerializer json)
         {
             _steps = steps;
             _ticks = ticks;
+            _json = json;
             _open = false;
 
             this.Label = "World";
@@ -52,6 +58,11 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
         {
             if(ImGui.Begin("World", ref _open))
             {
+                if(ImGui.Button("Save Historical Data"))
+                {
+                    this.SaveReplayData();
+                }
+
                 ImGui.BeginTable("data", 2);
 
                 ImGui.TableNextColumn();
@@ -77,6 +88,13 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
             ImGui.End();
         }
 
+        private void SaveReplayData()
+        {
+            string jsonString = _json.Serialize(_ticks.History);
+
+            File.WriteAllText("replay.vhr", jsonString);
+        }
+
         public void Update(GameTime gameTime)
         {
         }
@@ -84,7 +102,7 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
         public void Process(in Tick message)
         {
             // Only track ticks with data
-            if (!message.Any())
+            if (!message.Data.Any())
             {
                 return;
             }

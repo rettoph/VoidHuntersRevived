@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Library.Messages.Inputs
 {
     public class PilotDirectionInput : DirectionInput, ITickData
     {
-        public readonly INetId PilotId;
+        public INetId PilotId { get; }
 
         public PilotDirectionInput(INetId pilotId, Direction which, bool value) : base(which, value)
         {

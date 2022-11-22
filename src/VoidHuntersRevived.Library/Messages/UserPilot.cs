@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Library.Messages
 {
     public class UserPilot : Message, ITickData
     {
-        public UserAction User;
+        public UserAction User { get; }
 
         public UserPilot(UserAction user)
         {

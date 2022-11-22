@@ -7,40 +7,33 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Library.Messages
 {
-    public class Tick : Message, IEnumerable<ITickData>, IMessage
+    public class Tick : Message, IMessage
     {
-        private readonly IEnumerable<ITickData> _datum;
+        private readonly IEnumerable<ITickData> _data;
 
         public const int MinimumValidId = 1;
 
         public static readonly Tick Default = Empty(0);
 
-        public readonly int Id;
+        public int Id { get; }
+
+        public IEnumerable<ITickData> Data => _data;
 
         internal Tick(int id, IEnumerable<ITickData> datum)
         {
             this.Id = id;
 
-            _datum = datum;
+            _data = datum;
         }
 
         public static Tick Empty(int id)
         {
             return new Tick(id, Enumerable.Empty<ITickData>());
-        }
-
-        public IEnumerator<ITickData> GetEnumerator()
-        {
-            return _datum.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
         }
     }
 }

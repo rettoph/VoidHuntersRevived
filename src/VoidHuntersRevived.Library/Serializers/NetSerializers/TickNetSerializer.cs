@@ -54,11 +54,11 @@ namespace VoidHuntersRevived.Library.Serializers.NetSerializers
         {
             writer.Put(instance.Id);
 
-            var count = (byte)instance.Count();
+            var count = (byte)instance.Data.Count();
 
             writer.Put(count);
 
-            foreach (ITickData data in instance)
+            foreach (ITickData data in instance.Data)
             {
                 _serializers.Serialize(writer, data);
             }

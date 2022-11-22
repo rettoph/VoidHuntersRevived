@@ -5,6 +5,7 @@ using Guppy.Loaders;
 using Guppy.Network.Enums;
 using Guppy.Resources.Filters;
 using Guppy.Resources.Providers;
+using Guppy.Resources.Serialization.Json.Converters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using System;
@@ -12,9 +13,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Factories;
 using VoidHuntersRevived.Library.GameComponents;
+using VoidHuntersRevived.Library.Messages;
 using VoidHuntersRevived.Library.Providers;
 using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Systems;
@@ -45,6 +48,8 @@ namespace VoidHuntersRevived.Library.Loaders
                     .AddAliases(Alias.ManyFor<ITickProvider>(typeof(TickLocalProvider), typeof(TickRemoteProvider)))
                     .AddFilter(new SettingFilter<NetAuthorization, TickLocalProvider>(NetAuthorization.Master))
                     .AddFilter(new SettingFilter<NetAuthorization, TickRemoteProvider>(NetAuthorization.Slave));
+
+            services.AddSingleton<JsonConverter, PolymorphicJsonConverter<ITickData>>();
         }
     }
 }

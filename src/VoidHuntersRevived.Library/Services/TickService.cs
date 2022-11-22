@@ -58,14 +58,14 @@ namespace VoidHuntersRevived.Library.Services
         {
             this.Current = tick;
 
-            if(this.Current.Any())
+            if(this.Current.Data.Any())
             {
                 _history.Add(this.Current);
             }
 
             _bus.Publish(this.Current);
 
-            foreach (ITickData data in this.Current)
+            foreach (ITickData data in this.Current.Data)
             {
                 _bus.Publish(data);
             }
