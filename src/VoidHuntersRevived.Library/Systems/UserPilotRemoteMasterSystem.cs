@@ -56,11 +56,6 @@ namespace VoidHuntersRevived.Library.Systems
                 return;
             }
 
-            if (_ticks.Current is null)
-            {
-                return;
-            }
-
             Console.WriteLine("User Connected");
 
             // Enqueue a new user joined action for the new user.
@@ -69,7 +64,7 @@ namespace VoidHuntersRevived.Library.Systems
                     action: UserAction.Actions.UserJoined,
                     accessibility: ClaimAccessibility.Public)));
 
-            var lastHistoricTickId = _ticks.Current.Id;
+            var lastHistoricTickId = _ticks.Current?.Id ?? Tick.MaximumInvalidId;
 
             // Send the current game state to the new user
             _netScope.Create<GameState>(

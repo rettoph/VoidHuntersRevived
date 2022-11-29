@@ -38,8 +38,6 @@ namespace VoidHuntersRevived.Library.Systems
 
         public void Process(in PilotDirectionInput message)
         {
-            Console.WriteLine($"Direction Input: {message.Which}, {message.Value}");
-
             var pilotId = _pilotMap.GetEntityId(message.PilotId);
 
             var piloting = _pilotings.Get(pilotId);

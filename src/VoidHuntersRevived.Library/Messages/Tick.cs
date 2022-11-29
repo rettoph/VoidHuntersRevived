@@ -17,8 +17,7 @@ namespace VoidHuntersRevived.Library.Messages
         private readonly IEnumerable<ITickData> _data;
 
         public const int MinimumValidId = 1;
-
-        public static readonly Tick Default = Empty(0);
+        public const int MaximumInvalidId = MinimumValidId - 1;
 
         public int Id { get; }
 

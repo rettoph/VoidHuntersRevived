@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Library.Providers
 
         public TickRemoteProvider()
         {
-            _buffer = new TickBuffer(Tick.MinimumValidId - 1);
+            _buffer = new TickBuffer(Tick.MaximumInvalidId);
             _next = this.NextHistoric;
 
             this.Status = TickProviderStatus.Historical;

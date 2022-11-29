@@ -37,11 +37,15 @@ namespace VoidHuntersRevived.Library.Providers
             _factory = factory;
 
             this.Status = TickProviderStatus.Realtime;
+
+            _currentId = Tick.MinimumValidId;
         }
 
         public bool Next([MaybeNullWhen(false)] out Tick next)
         {
-            next = _factory.Create(++_currentId);
+            next = _factory.Create(_currentId);
+            _currentId++;
+
             return true;
         }
     }

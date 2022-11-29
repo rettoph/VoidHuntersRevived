@@ -17,48 +17,52 @@ namespace VoidHuntersRevived.Library.Providers
         private int _currentStep;
         private int _targetStep;
         private int _maximumTargetStep;
-        private int _lastTickBufferState;
+        private int _lastAvailableTickId;
         private TimeSpan _realTimeSinceStep;
+        private TimeSpan _currentInterval;
+        private TimeSpan _targetInterval;
+        private readonly TimeSpan _currentDelta;
+        private readonly TimeSpan _targetDelta;
+        private readonly TimeSpan _interval;
+        private readonly int _stepsPerTick;
         private readonly ITickService _ticks;
-        private readonly ISetting<TimeSpan> _stepInterval;
-        private readonly ISetting<int> _stepsPerTick;
+
+        private int CurrenTickId => _currentStep / _stepsPerTick;
+
+        public TimeSpan CurrentInterval => _currentInterval;
+        public TimeSpan TargetInterval => _targetInterval;
 
         public StepRemoteProvider(
             ITickService ticks,
             ISettingProvider settings)
         {
             _ticks = ticks;
-            _stepInterval = settings.Get<TimeSpan>(SettingConstants.StepInterval);
-            _stepsPerTick = settings.Get<int>(SettingConstants.StepsPerTick);
+            _interval = settings.Get<TimeSpan>(SettingConstants.StepInterval).Value;
+            _stepsPerTick = settings.Get<int>(SettingConstants.StepsPerTick).Value;
+
+            _currentInterval = _interval;
+            _targetInterval = _interval;
+            _currentDelta = _interval * 0.01f;
+            _targetDelta = _interval * 0.5f;
         }
 
         public void Update(GameTime gameTime)
         {
             _realTimeSinceStep += gameTime.ElapsedGameTime;
 
-            this.UpdateTargetStep();
+            this.UpdateTarget();
         }
 
         public bool Next()
         {
-            if(_ticks.Provider.Status == TickProviderStatus.Historical && _currentStep / _stepsPerTick .Value < _ticks.Provider.AvailableId)
+            if(_ticks.Provider.Status == TickProviderStatus.Historical && this.CurrenTickId < _lastAvailableTickId)
             {
                 _currentStep++;
                 _realTimeSinceStep = TimeSpan.Zero;
                 return true;
             }
 
-            // There is a constant flux between target step and current step.
-            // The 'real time' delay is calculated based on the offset between
-            // the target and current. The game time constant is then multiplied
-            // by the calculated offset. This slightly changes the real world
-            // step delay every time this method is called, so it is constantly
-            // chasing the target step.
-            float offset = _currentStep - _targetStep;
-            var multiplier = this.RealTimeIntervalMultiplier(offset);
-            var interval = _stepInterval.Value * multiplier;
-
-            if (_realTimeSinceStep > interval)
+            if (_realTimeSinceStep >= _currentInterval)
             {
                 if(_currentStep == _maximumTargetStep)
                 {
@@ -66,7 +70,8 @@ namespace VoidHuntersRevived.Library.Providers
                 }
 
                 _currentStep++;
-                _realTimeSinceStep -= interval;
+                _realTimeSinceStep -= _currentInterval;
+                this.UpdateInterval();
 
                 return true;
             }
@@ -74,30 +79,61 @@ namespace VoidHuntersRevived.Library.Providers
             return false;
         }
 
-        private float RealTimeIntervalMultiplier(float offset)
-        {
-            float amount = ((offset / _stepsPerTick.Value) * 0.25f) + 0.5f;
-            float result = MathHelper.SmoothStep(0.75f, 200f, amount);
-
-            return result;
-        }
-
         /// <summary>
-        /// Every step we will sychronize the target step.
+        /// Every update we will sychronize the target step.
         /// This is simply done by checking the tick buffer
         /// for the last cached in-order id calculating the 
         /// would be step for that tick.
         /// </summary>
-        private void UpdateTargetStep()
+        private void UpdateTarget()
         {
-            if(_lastTickBufferState == _ticks.Provider.AvailableId)
+            if(_lastAvailableTickId == _ticks.Provider.AvailableId)
             {
                 return;
             }
 
-            _lastTickBufferState = _ticks.Provider.AvailableId;
-            _targetStep = _lastTickBufferState * _stepsPerTick.Value;
-            _maximumTargetStep = _targetStep + _stepsPerTick.Value - 1;
+            _lastAvailableTickId = _ticks.Provider.AvailableId;
+            _targetStep = _lastAvailableTickId * _stepsPerTick;
+            _maximumTargetStep = _targetStep + _stepsPerTick - 1;
+        }
+
+        /// <summary>
+        /// There is a constant flux between target step and current step.
+        /// The 'real time' delay is calculated based on the offset between
+        /// the target and current. The game time constant is then multiplied
+        /// by the calculated offset. This slightly changes the real world
+        /// step delay every time this method is called, so it is constantly
+        /// chasing the target step.
+        /// </summary>
+        /// <param name="radius"></param>
+        /// <param name="currentStep"></param>
+        /// <param name="targetStep"></param>
+        /// <param name="interval"></param>
+        private void UpdateInterval()
+        {
+            if(_currentStep == _targetStep)
+            {
+                return;
+            }
+
+            float multiplier = _currentStep - _targetStep;
+            multiplier /= _stepsPerTick;
+            multiplier = Math.Clamp(multiplier, -1f, 1f);
+
+            _targetInterval = _targetDelta * multiplier;
+            _targetInterval += _interval;
+
+            if(_currentInterval < _targetInterval)
+            {
+                _currentInterval += _currentDelta;
+                return;
+            }
+
+            if (_currentInterval > _targetInterval)
+            {
+                _currentInterval -= _currentDelta;
+                return;
+            }
         }
     }
 }
