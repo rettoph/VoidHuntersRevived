@@ -26,9 +26,7 @@ namespace VoidHuntersRevived.Client.Library.Loaders
             services.AddSystem<AetherDebugSystem>();
 
             services.AddScoped<WorldDebugger>()
-                .AddAlias<IDebugger, WorldDebugger>()
-                .AddScoped<FpsDebugger>()
-                .AddAlias<IDebugger, FpsDebugger>();
+                .AddAlias<IDebugger, WorldDebugger>();
         }
     }
 }

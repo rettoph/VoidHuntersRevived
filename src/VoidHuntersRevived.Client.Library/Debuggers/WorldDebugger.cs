@@ -3,6 +3,7 @@ using Guppy.Common;
 using Guppy.Common.Collections;
 using Guppy.MonoGame.UI;
 using Guppy.MonoGame.UI.Constants;
+using Guppy.MonoGame.UI.Debuggers;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Providers;
 using Guppy.Resources.Providers;
@@ -28,7 +29,7 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
 {
     [AutoSubscribe]
     [GuppyFilter(typeof(ClientGameGuppy))]
-    internal sealed class WorldDebugger : IImGuiDebugger, ISubscriber<Tick>, ISubscriber<Step>
+    internal sealed class WorldDebugger : SimpleDebugger, IImGuiDebugger, ISubscriber<Tick>, ISubscriber<Step>
     {
         private const int StepBufferSize = 256;
 
@@ -40,22 +41,14 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
         private StepRemoteProvider _steps;
         private ITickService _ticks;
         private IJsonSerializer _json;
-        private bool _open;
 
-        public string Label { get; }
-
-        public bool Open
-        {
-            get => _open;
-            set => _open = value;
-        }
+        public string ButtonLabel { get; }
 
         public WorldDebugger(StepRemoteProvider steps, ITickService ticks, IJsonSerializer json, ISettingProvider settings)
         {
             _steps = steps;
             _ticks = ticks;
             _json = json;
-            _open = false;
             _currentStepIntervalBuffer = new Buffer<double>(StepBufferSize);
             _targetStepIntervalBuffer = new Buffer<double>(StepBufferSize);
             _intervalBuffer = new double[StepBufferSize];
@@ -64,16 +57,18 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
             Array.Fill(_targetStepIntervalBuffer.Items, settings.Get<TimeSpan>(SettingConstants.StepInterval).Value.TotalMilliseconds);
             Array.Fill(_intervalBuffer, settings.Get<TimeSpan>(SettingConstants.StepInterval).Value.TotalMilliseconds);
 
-            this.Label = "World";
+            this.ButtonLabel = "World";
+            this.IsEnabled = false;
+            this.Visible = false;
         }
 
         public void Initialize(ImGuiBatch imGuiBatch)
         {
         }
 
-        public void Draw(GameTime gameTime)
+        public override void Draw(GameTime gameTime)
         {
-            if(ImGui.Begin("World", ref _open, ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse))
+            if(ImGui.Begin("World", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse))
             {
                 if(ImGui.Button("Save Historical Data"))
                 {
@@ -123,7 +118,7 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
             File.WriteAllText("replay.vhr", jsonString);
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             //
         }
@@ -144,6 +139,11 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
 
             _stepMaxValue = Math.Max(_stepMaxValue, _steps.TargetInterval.TotalMilliseconds + 10);
             _stepMinValue = Math.Min(_stepMinValue, _steps.TargetInterval.TotalMilliseconds - 10);
+        }
+
+        public void Toggle()
+        {
+            this.Visible = !this.Visible;
         }
     }
 }
