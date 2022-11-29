@@ -1,4 +1,5 @@
-﻿using Guppy.Resources;
+﻿using Guppy.Common.Helpers;
+using Guppy.Resources;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using System;
@@ -21,7 +22,7 @@ namespace VoidHuntersRevived.Library.Providers
         private TimeSpan _realTimeSinceStep;
         private TimeSpan _currentInterval;
         private TimeSpan _targetInterval;
-        private readonly TimeSpan _currentDelta;
+        private readonly double _currentDelta;
         private readonly TimeSpan _targetDelta;
         private readonly TimeSpan _interval;
         private readonly int _stepsPerTick;
@@ -31,6 +32,9 @@ namespace VoidHuntersRevived.Library.Providers
 
         public TimeSpan CurrentInterval => _currentInterval;
         public TimeSpan TargetInterval => _targetInterval;
+
+        public int Current => _currentStep;
+        public int Target => _targetStep;
 
         public StepRemoteProvider(
             ITickService ticks,
@@ -42,7 +46,7 @@ namespace VoidHuntersRevived.Library.Providers
 
             _currentInterval = _interval;
             _targetInterval = _interval;
-            _currentDelta = _interval * 0.01f;
+            _currentDelta = 0.01f;
             _targetDelta = _interval * 0.5f;
         }
 
@@ -123,17 +127,10 @@ namespace VoidHuntersRevived.Library.Providers
             _targetInterval = _targetDelta * multiplier;
             _targetInterval += _interval;
 
-            if(_currentInterval < _targetInterval)
-            {
-                _currentInterval += _currentDelta;
-                return;
-            }
-
-            if (_currentInterval > _targetInterval)
-            {
-                _currentInterval -= _currentDelta;
-                return;
-            }
+            // each step we want to get _currentDelta% closer to the target
+            var difference = _targetInterval - _currentInterval;
+            difference *= _currentDelta;
+            _currentInterval += difference;
         }
     }
 }

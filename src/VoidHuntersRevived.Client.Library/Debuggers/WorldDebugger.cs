@@ -2,24 +2,15 @@
 using Guppy.Common;
 using Guppy.Common.Collections;
 using Guppy.MonoGame.UI;
-using Guppy.MonoGame.UI.Constants;
 using Guppy.MonoGame.UI.Debuggers;
-using Guppy.Network.Identity;
-using Guppy.Network.Identity.Providers;
 using Guppy.Resources.Providers;
 using Guppy.Resources.Serialization.Json;
 using ImGuiNET;
 using ImPlotNET;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Library;
 using VoidHuntersRevived.Library.Constants;
 using VoidHuntersRevived.Library.Messages;
 using VoidHuntersRevived.Library.Providers;
@@ -33,14 +24,18 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
     {
         private const int StepBufferSize = 256;
 
-        private double _stepMaxValue;
-        private double _stepMinValue;
-        private double[] _intervalBuffer;
-        private Buffer<double> _currentStepIntervalBuffer;
-        private Buffer<double> _targetStepIntervalBuffer;
-        private StepRemoteProvider _steps;
-        private ITickService _ticks;
-        private IJsonSerializer _json;
+        private double _stepDifference;
+        private double _stepDifferenceAverage;
+        private double _stepDifferenceSum;
+
+        private readonly double[] _intervalBuffer;
+        private readonly Buffer<double> _currentStepIntervalBuffer;
+        private readonly Buffer<double> _targetStepIntervalBuffer;
+        private readonly Buffer<double> _stepDifferenceBuffer;
+        private readonly Buffer<double> _stepDifferenceAverageBuffer;
+        private readonly StepRemoteProvider _steps;
+        private readonly ITickService _ticks;
+        private readonly IJsonSerializer _json;
 
         public string ButtonLabel { get; }
 
@@ -51,6 +46,8 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
             _json = json;
             _currentStepIntervalBuffer = new Buffer<double>(StepBufferSize);
             _targetStepIntervalBuffer = new Buffer<double>(StepBufferSize);
+            _stepDifferenceBuffer = new Buffer<double>(StepBufferSize);
+            _stepDifferenceAverageBuffer = new Buffer<double>(StepBufferSize);
             _intervalBuffer = new double[StepBufferSize];
 
             Array.Fill(_currentStepIntervalBuffer.Items, settings.Get<TimeSpan>(SettingConstants.StepInterval).Value.TotalMilliseconds);
@@ -78,32 +75,65 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
                 ImGui.BeginTable("data", 2);
 
                 ImGui.TableNextColumn();
-                ImGui.Text($"ITickProvider Status");
+                ImGui.Text($"Tick Status");
 
                 ImGui.TableNextColumn();
                 ImGui.Text(_ticks.Provider.Status.ToString());
 
                 ImGui.TableNextColumn();
-                ImGui.Text("ITickProvider CurrentId");
+                ImGui.Text("Current Tick");
 
                 ImGui.TableNextColumn();
                 ImGui.Text(_ticks.Provider.CurrentId.ToString("#,###,##0"));
 
                 ImGui.TableNextColumn();
-                ImGui.Text("ITickProvider AvailableId");
+                ImGui.Text("Available Tick");
 
                 ImGui.TableNextColumn();
                 ImGui.Text(_ticks.Provider.AvailableId.ToString("#,###,##0"));
+
+                ImGui.TableNextColumn();
+                ImGui.Text("Current Step");
+
+                ImGui.TableNextColumn();
+                ImGui.Text(_steps.Current.ToString("#,###,##0"));
+
+                ImGui.TableNextColumn();
+                ImGui.Text("Target Step");
+
+                ImGui.TableNextColumn();
+                ImGui.Text(_steps.Target.ToString("#,###,##0"));
+
+                ImGui.TableNextColumn();
+                ImGui.Text("Step Difference");
+
+                ImGui.TableNextColumn();
+                ImGui.Text(_stepDifference.ToString(" 0;-#; 0"));
+
+                ImGui.TableNextColumn();
+                ImGui.Text("Step Difference Average");
+
+                ImGui.TableNextColumn();
+                ImGui.Text(_stepDifferenceAverage.ToString(" 0;-#; 0"));
 
 
                 ImGui.EndTable();
 
                 ImPlot.SetNextAxesToFit();
-                if (ImPlot.BeginPlot("Step Data", Num.Vector2.Zero))
+                if (ImPlot.BeginPlot("Step Difference (Target - Current)", Num.Vector2.Zero))
                 {
-                    ImPlot.PlotLine("Setting Step", ref _intervalBuffer[0], StepBufferSize);
-                    ImPlot.PlotLine("Target Step", ref _targetStepIntervalBuffer.Items[0], StepBufferSize);
-                    ImPlot.PlotLine("Current Step", ref _currentStepIntervalBuffer.Items[0], StepBufferSize);
+                    ImPlot.PlotLine("Difference", ref _stepDifferenceBuffer.Items[0], StepBufferSize);
+                    ImPlot.PlotLine("Average", ref _stepDifferenceAverageBuffer.Items[0], StepBufferSize);
+
+                    ImPlot.EndPlot();
+                }
+
+                ImPlot.SetNextAxesToFit();
+                if (ImPlot.BeginPlot("Step Interval (Milliseconds)", Num.Vector2.Zero))
+                {
+                    ImPlot.PlotLine("Setting", ref _intervalBuffer[0], StepBufferSize);
+                    ImPlot.PlotLine("Target", ref _targetStepIntervalBuffer.Items[0], StepBufferSize);
+                    ImPlot.PlotLine("Current", ref _currentStepIntervalBuffer.Items[0], StepBufferSize);
 
                     ImPlot.EndPlot();
                 }
@@ -134,11 +164,19 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
 
         public void Process(in Step message)
         {
+            // Update interval buffers
             _currentStepIntervalBuffer.Add(_steps.CurrentInterval.TotalMilliseconds);
             _targetStepIntervalBuffer.Add(_steps.TargetInterval.TotalMilliseconds);
 
-            _stepMaxValue = Math.Max(_stepMaxValue, _steps.TargetInterval.TotalMilliseconds + 10);
-            _stepMinValue = Math.Min(_stepMinValue, _steps.TargetInterval.TotalMilliseconds - 10);
+            // Update buffers
+            _stepDifference = _steps.Target - _steps.Current;
+
+            _stepDifferenceBuffer.Add(_stepDifference, out var oldStepDifference);
+
+            _stepDifferenceSum += _stepDifference - oldStepDifference;
+            _stepDifferenceAverage = _stepDifferenceSum / _stepDifferenceAverageBuffer.Length;
+
+            _stepDifferenceAverageBuffer.Add(_stepDifferenceAverage);
         }
 
         public void Toggle()
