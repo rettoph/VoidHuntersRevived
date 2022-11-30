@@ -19,7 +19,8 @@ namespace VoidHuntersRevived.Library.Providers
     [AutoSubscribe]
     internal sealed class TickRemoteProvider : ITickProvider,
         ISubscriber<INetIncomingMessage<Tick>>,
-        ISubscriber<INetIncomingMessage<GameState>>
+        ISubscriber<INetIncomingMessage<GameState>>,
+        ISubscriber<ToggleSimulatedLag>
     {
         private delegate bool NextDelegate([MaybeNullWhen(false)] out Tick next);
 
@@ -27,6 +28,7 @@ namespace VoidHuntersRevived.Library.Providers
         private NextDelegate _next;
         private GameStateType _gameStateType;
         private int _lastHistoricTickId;
+        private bool _lagging;
 
         public int CurrentId => _buffer.CurrentId;
 
@@ -85,6 +87,11 @@ namespace VoidHuntersRevived.Library.Providers
         {
             _buffer.Enqueue(message.Body);
 
+            if (_lagging)
+            {
+                return;
+            }
+
             this.AvailableId = _buffer.Tail?.Id ?? this.AvailableId;
         }
 
@@ -95,6 +102,16 @@ namespace VoidHuntersRevived.Library.Providers
             if (_gameStateType == GameStateType.Begin)
             {
                 _lastHistoricTickId = message.Body.LastHistoricTickId;
+            }
+        }
+
+        public void Process(in ToggleSimulatedLag message)
+        {
+            _lagging = !_lagging;
+
+            if(!_lagging)
+            {
+                this.AvailableId = _buffer.Tail?.Id ?? this.AvailableId;
             }
         }
     }

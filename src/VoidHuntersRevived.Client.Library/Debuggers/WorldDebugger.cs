@@ -36,14 +36,16 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
         private readonly StepRemoteProvider _steps;
         private readonly ITickService _ticks;
         private readonly IJsonSerializer _json;
+        private readonly Lazy<IBus> _bus;
 
         public string ButtonLabel { get; }
 
-        public WorldDebugger(StepRemoteProvider steps, ITickService ticks, IJsonSerializer json, ISettingProvider settings)
+        public WorldDebugger(StepRemoteProvider steps, Lazy<IBus> bus, ITickService ticks, IJsonSerializer json, ISettingProvider settings)
         {
             _steps = steps;
             _ticks = ticks;
             _json = json;
+            _bus = bus;
             _currentStepIntervalBuffer = new Buffer<double>(StepBufferSize);
             _targetStepIntervalBuffer = new Buffer<double>(StepBufferSize);
             _stepDifferenceBuffer = new Buffer<double>(StepBufferSize);
@@ -70,6 +72,11 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
                 if(ImGui.Button("Save Historical Data"))
                 {
                     this.SaveReplayData();
+                }
+
+                if (ImGui.Button("Toggle Simulated Lag"))
+                {
+                    this._bus.Value.Publish(new ToggleSimulatedLag());
                 }
 
                 ImGui.BeginTable("data", 2);
@@ -131,7 +138,6 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
                 ImPlot.SetNextAxesToFit();
                 if (ImPlot.BeginPlot("Step Interval (Milliseconds)", Num.Vector2.Zero))
                 {
-                    ImPlot.PlotLine("Setting", ref _intervalBuffer[0], StepBufferSize);
                     ImPlot.PlotLine("Target", ref _targetStepIntervalBuffer.Items[0], StepBufferSize);
                     ImPlot.PlotLine("Current", ref _currentStepIntervalBuffer.Items[0], StepBufferSize);
 

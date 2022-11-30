@@ -10,6 +10,5 @@ namespace VoidHuntersRevived.Library.Constants
     {
         public const string StepInterval = "step_interval";
         public const string StepsPerTick = "steps_per_tick";
-        public const string MaximumStepsPerFrame = "maximum_steps_per_frame";
     }
 }

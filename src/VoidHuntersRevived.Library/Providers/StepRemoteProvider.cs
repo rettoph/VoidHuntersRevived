@@ -1,20 +1,19 @@
-﻿using Guppy.Common.Helpers;
-using Guppy.Resources;
+﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using tainicom.Aether.Physics2D.Common.PhysicsLogic;
 using VoidHuntersRevived.Library.Constants;
+using VoidHuntersRevived.Library.Messages;
 using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library.Providers
 {
     internal sealed class StepRemoteProvider : IStepProvider
     {
+        private const double TargetStrength = 0.02f;
+        private const double IntervalStrength = 0.01f;
+
         private int _currentStep;
         private int _targetStep;
         private int _maximumTargetStep;
@@ -22,8 +21,6 @@ namespace VoidHuntersRevived.Library.Providers
         private TimeSpan _realTimeSinceStep;
         private TimeSpan _currentInterval;
         private TimeSpan _targetInterval;
-        private readonly double _currentDelta;
-        private readonly TimeSpan _targetDelta;
         private readonly TimeSpan _interval;
         private readonly int _stepsPerTick;
         private readonly ITickService _ticks;
@@ -46,13 +43,14 @@ namespace VoidHuntersRevived.Library.Providers
 
             _currentInterval = _interval;
             _targetInterval = _interval;
-            _currentDelta = 0.01f;
-            _targetDelta = _interval * 0.5f;
         }
 
         public void Update(GameTime gameTime)
         {
-            _realTimeSinceStep += gameTime.ElapsedGameTime;
+            if(_realTimeSinceStep < _currentInterval)
+            {
+                _realTimeSinceStep += gameTime.ElapsedGameTime;
+            }
 
             this.UpdateTarget();
         }
@@ -120,16 +118,21 @@ namespace VoidHuntersRevived.Library.Providers
                 return;
             }
 
-            float multiplier = _currentStep - _targetStep;
+            float multiplier = _targetStep - _currentStep;
+            multiplier = _stepsPerTick - multiplier;
             multiplier /= _stepsPerTick;
-            multiplier = Math.Clamp(multiplier, -1f, 1f);
+            multiplier = Math.Clamp(multiplier, 0.25f, 4f);
 
-            _targetInterval = _targetDelta * multiplier;
-            _targetInterval += _interval;
+            _targetInterval = _interval * multiplier;
 
-            // each step we want to get _currentDelta% closer to the target
-            var difference = _targetInterval - _currentInterval;
-            difference *= _currentDelta;
+            // "lerp" towards the target
+            TimeSpan difference = _targetInterval - _currentInterval;
+            difference *= TargetStrength;
+            _currentInterval += difference;
+
+            // "lerp" towards the rigid interval
+            difference = _interval - _currentInterval;
+            difference *= IntervalStrength;
             _currentInterval += difference;
         }
     }
