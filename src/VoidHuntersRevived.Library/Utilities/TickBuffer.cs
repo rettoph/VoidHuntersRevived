@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -79,13 +80,13 @@ namespace VoidHuntersRevived.Library.Utilities
                     return true;
                 }
 
-                if (child.Data.Id == this.Child.Data.Id)
+                if (child.Data.Id == this.Data.Id)
                 {
-                    this.Child.Data = child.Data;
+                    this.Data = child.Data;
                     return true;
                 }
 
-                if (child.Data.Id == this.Data.Id + 1)
+                if (child.Data.Id < this.Child.Data.Id)
                 {
                     var old = this.Child;
                     this.Child = child;
@@ -104,6 +105,7 @@ namespace VoidHuntersRevived.Library.Utilities
 
         public Tick? Head => _head?.Data;
         public Tick? Tail => _tail?.Data;
+        public Tick? Latest { get; private set; }
 
         public int CurrentId
         {
@@ -164,9 +166,10 @@ namespace VoidHuntersRevived.Library.Utilities
 
         public void Enqueue(Tick tick)
         {
-            if(_head is null)
+            var node = new Node(tick);
+            if (_head is null)
             {
-                _head = new Node(tick);
+                _head = node;
                 this.UpdateTail();
                 return;
             }
@@ -174,14 +177,15 @@ namespace VoidHuntersRevived.Library.Utilities
             if(tick.Id < _head.Data.Id)
             {
                 var old = _head;
-                _head = new Node(tick);
+                _head = node;
                 _head.Add(old);
                 this.UpdateTail();
                 return;
             }
 
-            _head.Add(new Node(tick));
+            _head.Add(node);
             this.UpdateTail();
+            this.Latest = tick;
         }
 
         private void UpdateTail()

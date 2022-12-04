@@ -8,6 +8,7 @@ using Guppy.Resources.Providers;
 using Guppy.Resources.Serialization.Json.Converters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,6 +51,14 @@ namespace VoidHuntersRevived.Library.Loaders
                     .AddFilter(new SettingFilter<NetAuthorization, TickRemoteProvider>(NetAuthorization.Slave));
 
             services.AddSingleton<JsonConverter, PolymorphicJsonConverter<ITickData>>();
+
+            services.Configure<LoggerConfiguration>(config =>
+            {
+                config.MinimumLevel.Is(Serilog.Events.LogEventLevel.Verbose);
+
+                config.WriteTo.File($"logs/log_{DateTime.Now.ToString("yyyy-dd-M")}.txt")
+                      .WriteTo.Console();
+            });
         }
     }
 }

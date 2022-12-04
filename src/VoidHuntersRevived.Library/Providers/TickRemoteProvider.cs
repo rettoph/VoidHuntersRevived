@@ -5,6 +5,7 @@ using Guppy.Network;
 using Guppy.Network.Enums;
 using LiteNetLib;
 using Microsoft.Xna.Framework;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -24,6 +25,7 @@ namespace VoidHuntersRevived.Library.Providers
     {
         private delegate bool NextDelegate([MaybeNullWhen(false)] out Tick next);
 
+        private readonly ILogger _log;
         private readonly TickBuffer _buffer;
         private NextDelegate _next;
         private GameStateType _gameStateType;
@@ -36,10 +38,11 @@ namespace VoidHuntersRevived.Library.Providers
 
         public TickProviderStatus Status { get; private set; }
 
-        public TickRemoteProvider()
+        public TickRemoteProvider(ILogger log)
         {
             _buffer = new TickBuffer(Tick.MaximumInvalidId);
             _next = this.NextHistoric;
+            _log = log;
 
             this.Status = TickProviderStatus.Historical;
         }
