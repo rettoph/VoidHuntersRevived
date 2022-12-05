@@ -21,8 +21,8 @@ namespace VoidHuntersRevived.Client.Library
 
 
         // https://community.monogame.net/t/start-in-maximized-window/12264
-        [DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void SDL_MaximizeWindow(IntPtr window);
+        // [DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
+        // public static extern void SDL_MaximizeWindow(IntPtr window);
 
 
         public Game1()
