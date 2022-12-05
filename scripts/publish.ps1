@@ -1,9 +1,9 @@
 ﻿Param(
-    [Configuration]$configuration=[Configuration]::Release,
-    [RuntimeIdentifier]$rid=[RuntimeIdentifier]::win_x64,
+    $configuration = "Release",
+    $rid = "win_x64",
     [bool]$selfContained = $true,
-    [bool]$singleFile = $true,
-    [bool]$cleanup = $true
+    [bool]$singleFile = $false,
+    [bool]$cleanup = $false
 )
 
 Import-Module -Name ($PSScriptRoot + "\shared\source-utils.ps1") -Force
