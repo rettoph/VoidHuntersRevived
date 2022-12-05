@@ -38,14 +38,14 @@ function PublishVoidHunters()
     (
         [Parameter(Mandatory=$true)][Project]$project, 
         [Configuration]$configuration = [Configuration]::Debug,
-        [RuntimeIdentifier]$rids = [RuntimeIdentifier]::win_x64,
+        [RuntimeIdentifier]$runtime = [RuntimeIdentifier]::win_x64,
         [bool]$selfContained = $false,
         [bool]$singleFile = $false,
         [bool]$cleanup = $false
     )
 
     $path = GetProjectPath $project
-    $rid = RuntimeIdentifierString $rids
+    $rid = RuntimeIdentifierString $runtime
     $output = $PSScriptRoot + "\..\..\publish\" + $rid + "\" + $project
 
     Remove-Item $output\* -Recurse -Force
