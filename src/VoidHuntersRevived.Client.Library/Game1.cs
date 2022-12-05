@@ -5,12 +5,8 @@ using Guppy.MonoGame.Strategies.PublishStrategies;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Entities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library;
 
@@ -23,11 +19,11 @@ namespace VoidHuntersRevived.Client.Library
         private IScoped<ClientMainGuppy>? _guppy;
         private IGlobal<IGameComponentService>? _globals;
 
-#if WINDOWS
+
         // https://community.monogame.net/t/start-in-maximized-window/12264
         [DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SDL_MaximizeWindow(IntPtr window);
-#endif
+
 
         public Game1()
         {
@@ -56,13 +52,10 @@ namespace VoidHuntersRevived.Client.Library
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
 
-#if WINDOWS
-            SDL_MaximizeWindow(Window.Handle);
-#endif
+            // SDL_MaximizeWindow(this.Window.Handle);
+
             Task.Run(() =>
             {
                 _provider = new GuppyEngine(new[] { typeof(MainGuppy).Assembly, typeof(ClientMainGuppy).Assembly })
