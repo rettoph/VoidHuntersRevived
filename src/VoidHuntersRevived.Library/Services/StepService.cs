@@ -18,65 +18,30 @@ namespace VoidHuntersRevived.Library.Services
     [GuppyFilter(typeof(GameGuppy))]
     internal sealed class StepService : SimpleGameComponent, IStepService
     {
+        private readonly GameState _state;
         private readonly IStepProvider _provider;
         private readonly ITickService _ticks;
-        private readonly IBus _bus;
-        private readonly ISetting<TimeSpan> _stepInterval;
-        private readonly ISetting<int> _stepsPerTick;
-        private readonly Step _step;
-        private int _stepsSinceTick;
 
         public StepService(
-            IBus bus,
-            ISettingProvider settings,
+            GameState state,
             ITickService ticks,
             IFiltered<IStepProvider> providers)
         {
-            _bus = bus;
+            _state = state;
             _provider = providers.Instance ?? throw new Exception();
             _ticks = ticks;
-            _stepInterval = settings.Get<TimeSpan>(SettingConstants.StepInterval);
-            _stepsPerTick = settings.Get<int>(SettingConstants.StepsPerTick);
-            _step = new Step(_stepInterval.Value);
         }
 
         public override void Update(GameTime gameTime)
         {
             _provider.Update(gameTime);
 
-            this.TryTick();
+            _ticks.TryTick();
 
-            while (_provider.Next())
+            while (_provider.ShouldStep() && _state.TryStep())
             {
-                _bus.Publish(_step);
-                _stepsSinceTick++;
-
-                if (this.TryTick() == false)
-                {
-                    break;
-                }
+                _ticks.TryTick();
             }
-        }
-
-        /// <summary>
-        /// False means <see cref="ITickService.Next"/> returned false.
-        /// True means that it either returned true, or did not run at all
-        /// </summary>
-        /// <returns></returns>
-        private bool TryTick()
-        {
-            if (_stepsSinceTick < _stepsPerTick.Value)
-            {
-                return false;
-            }
-
-            if (_ticks.Next())
-            {
-                _stepsSinceTick = 0;
-                return true;
-            }
-
-            return true;
         }
     }
 }

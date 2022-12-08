@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Library.Messages
+namespace VoidHuntersRevived.Library
 {
     public class Step : Message, IMessage
     {
@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Library.Messages
 
         public Step(TimeSpan interval)
         {
-            this.Interval = interval;
+            Interval = interval;
         }
     }
 }

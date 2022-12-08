@@ -7,7 +7,13 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Library.Messages
 {
-    public interface ITickData : IMessage
+    public sealed class GameStateTick : Message
     {
+        public readonly Tick Tick;
+
+        public GameStateTick(Tick tick)
+        {
+            this.Tick = tick;
+        }
     }
 }

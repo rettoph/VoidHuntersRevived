@@ -10,18 +10,21 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Library.Messages
+namespace VoidHuntersRevived.Library
 {
     public class Tick : Message, IMessage
     {
-        private readonly IEnumerable<ITickData> _data;
-
         public const int MinimumValidId = 1;
         public const int MaximumInvalidId = MinimumValidId - 1;
+
+        private readonly IEnumerable<ITickData> _data;
+        private int? _count;
 
         public int Id { get; }
 
         public IEnumerable<ITickData> Data => _data;
+
+        public int Count => _count ??= _data.Count();
 
         internal Tick(int id, IEnumerable<ITickData> datum)
         {

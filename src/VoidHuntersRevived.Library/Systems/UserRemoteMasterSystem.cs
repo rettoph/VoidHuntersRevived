@@ -16,30 +16,29 @@ using VoidHuntersRevived.Library.Messages.Inputs;
 
 namespace VoidHuntersRevived.Library.Systems
 {
+    [AutoSubscribe]
     [GuppyFilter(typeof(GameGuppy))]
     [NetAuthorizationFilter(NetAuthorization.Master)]
     internal sealed class UserRemoteMasterSystem : ISystem,
         ISubscriber<INetIncomingMessage<DirectionInput>>
     {
         private readonly PilotIdMap _userPilotMap;
-        private readonly IBus _bus;
         private readonly ITickFactory _tickFactory;
 
-        public UserRemoteMasterSystem(PilotIdMap userPilotMap, IBus bus, ITickFactory tickFactory)
+        public UserRemoteMasterSystem(PilotIdMap userPilotMap, ITickFactory tickFactory)
         {
-            _bus = bus;
             _tickFactory = tickFactory;
             _userPilotMap = userPilotMap;
         }
 
         public void Initialize(World world)
         {
-            _bus.Subscribe(this);
+            //
         }
 
         public void Dispose()
         {
-            _bus.Unsubscribe(this);
+            // 
         }
 
         public void Process(in INetIncomingMessage<DirectionInput> message)

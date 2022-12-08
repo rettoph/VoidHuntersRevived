@@ -16,6 +16,7 @@ using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D;
 using VoidHuntersRevived.Library.Constants;
+using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Factories;
 using VoidHuntersRevived.Library.Messages;
 
@@ -23,28 +24,24 @@ namespace VoidHuntersRevived.Library.Providers
 {
     internal sealed class TickLocalProvider : ITickProvider
     {
-        private int _currentId;
+        private readonly GameState _state;
         private readonly ITickFactory _factory;
 
-        public int CurrentId => _currentId;
-
-        public int AvailableId => _currentId;
+        public int AvailableId => _state.NextTickId;
 
         public TickProviderStatus Status { get; }
 
-        public TickLocalProvider(ITickFactory factory)
+        public TickLocalProvider(GameState state, ITickFactory factory)
         {
+            _state = state;
             _factory = factory;
 
             this.Status = TickProviderStatus.Realtime;
-
-            _currentId = Tick.MinimumValidId;
         }
 
-        public bool Next([MaybeNullWhen(false)] out Tick next)
+        public bool TryGetNextTick([MaybeNullWhen(false)] out Tick next)
         {
-            next = _factory.Create(_currentId);
-            _currentId++;
+            next = _factory.Create(_state.NextTickId);
 
             return true;
         }

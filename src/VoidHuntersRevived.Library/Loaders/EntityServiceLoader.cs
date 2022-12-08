@@ -27,7 +27,8 @@ namespace VoidHuntersRevived.Library.Loaders
                 .AddSystem<UserPilotRemoteMasterSystem>()
                 .AddSystem<CurrentUserRemoteSlaveSystem>()
                 .AddSystem<UserRemoteMasterSystem>()
-                .AddSystem<PilotableAetherSystem>();
+                .AddSystem<PilotableAetherSystem>()
+                .AddSystem<GameStateRemoteSlaveSystem>();
 
             services.AddComponentType<Piloting>()
                 .AddComponentType<User>()

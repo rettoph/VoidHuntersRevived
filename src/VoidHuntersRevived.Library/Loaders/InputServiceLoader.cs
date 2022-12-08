@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Constants;
+using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Messages.Inputs;
 
 namespace VoidHuntersRevived.Library.Loaders

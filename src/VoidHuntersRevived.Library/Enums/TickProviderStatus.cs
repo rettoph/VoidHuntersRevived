@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Library
+namespace VoidHuntersRevived.Library.Enums
 {
-    [Flags]
-    public enum PlayerActions
+    public enum TickProviderStatus
     {
-        Direction = 1,
-        Target = 2
+        Historical,
+        Realtime
     }
 }

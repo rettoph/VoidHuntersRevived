@@ -4,6 +4,7 @@ using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using System;
 using VoidHuntersRevived.Library.Constants;
+using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Messages;
 using VoidHuntersRevived.Library.Services;
 
@@ -23,6 +24,7 @@ namespace VoidHuntersRevived.Library.Providers
         private TimeSpan _targetInterval;
         private readonly TimeSpan _interval;
         private readonly int _stepsPerTick;
+        private readonly GameState _state;
         private readonly ITickService _ticks;
 
         private int CurrenTickId => _currentStep / _stepsPerTick;
@@ -34,9 +36,11 @@ namespace VoidHuntersRevived.Library.Providers
         public int Target => _targetStep;
 
         public StepRemoteProvider(
+            GameState state,
             ITickService ticks,
             ISettingProvider settings)
         {
+            _state = state;
             _ticks = ticks;
             _interval = settings.Get<TimeSpan>(SettingConstants.StepInterval).Value;
             _stepsPerTick = settings.Get<int>(SettingConstants.StepsPerTick).Value;
@@ -55,13 +59,11 @@ namespace VoidHuntersRevived.Library.Providers
             this.UpdateTarget();
         }
 
-        public bool Next()
+        public bool ShouldStep()
         {
-            if(_ticks.Provider.Status == TickProviderStatus.Historical && this.CurrenTickId < _lastAvailableTickId)
+            if(_state.Reading)
             {
-                _currentStep++;
-                _realTimeSinceStep = TimeSpan.Zero;
-                return true;
+                return false;
             }
 
             if (_realTimeSinceStep >= _currentInterval)
@@ -89,12 +91,12 @@ namespace VoidHuntersRevived.Library.Providers
         /// </summary>
         private void UpdateTarget()
         {
-            if(_lastAvailableTickId == _ticks.Provider.AvailableId)
+            if(_lastAvailableTickId == _ticks.AvailableId)
             {
                 return;
             }
 
-            _lastAvailableTickId = _ticks.Provider.AvailableId;
+            _lastAvailableTickId = _ticks.AvailableId;
             _targetStep = _lastAvailableTickId * _stepsPerTick;
             _maximumTargetStep = _targetStep + _stepsPerTick - 1;
         }

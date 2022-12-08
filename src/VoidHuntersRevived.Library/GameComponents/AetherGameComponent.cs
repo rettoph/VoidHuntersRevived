@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 using tainicom.Aether.Physics2D;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Library.Constants;
-using VoidHuntersRevived.Library.Messages;
 
 namespace VoidHuntersRevived.Library.GameComponents
 {

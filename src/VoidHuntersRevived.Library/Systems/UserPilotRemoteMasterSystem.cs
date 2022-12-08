@@ -18,6 +18,7 @@ using Guppy.Attributes;
 using Guppy.Network.Enums;
 using VoidHuntersRevived.Library.Attributes;
 using LiteNetLib;
+using Serilog;
 
 namespace VoidHuntersRevived.Library.Systems
 {
@@ -26,17 +27,20 @@ namespace VoidHuntersRevived.Library.Systems
     internal sealed class UserPilotRemoteMasterSystem : ISystem
     {
         private readonly NetScope _netScope;
-        private readonly ITickService _ticks;
         private readonly ITickFactory _tickFactory;
+        private readonly GameState _state;
+        private readonly ILogger _log;
 
         public UserPilotRemoteMasterSystem(
             NetScope netScope,
-            ITickService ticks,
-            ITickFactory tickFactory)
+            GameState state,
+            ITickFactory tickFactory,
+            ILogger log)
         {
             _netScope = netScope;
-            _ticks = ticks;
+            _state = state;
             _tickFactory = tickFactory;
+            _log = log;
         }
 
         public void Initialize(World world)
@@ -56,39 +60,36 @@ namespace VoidHuntersRevived.Library.Systems
                 return;
             }
 
-            Console.WriteLine("User Connected");
-
             // Enqueue a new user joined action for the new user.
             _tickFactory.Enqueue(new UserPilot(
                 user: newUser.CreateAction(
                     action: UserAction.Actions.UserJoined,
                     accessibility: ClaimAccessibility.Public)));
 
-            var lastHistoricTickId = _ticks.Current?.Id ?? Tick.MaximumInvalidId;
+            var lastTickId = _state.LastTickId;
 
-            // Send the current game state to the new user
-            _netScope.Create<GameState>(
-                body: GameState.Begin(lastHistoricTickId)
-            ).AddRecipient(newUser.NetPeer).Enqueue();
+            _log.Verbose($"New User Connected - Sending GameState at TickId: {lastTickId}");
 
-            for (var i = 0; i < _ticks.History.Count; i++)
+            for (var i = 0; i < _state.History.Count; i++)
             {
-                var tick = _ticks.History[i];
-
-                if (tick.Id > lastHistoricTickId)
+                var tick = _state.History[i];
+            
+                if (tick.Id > lastTickId)
                 {
                     break;
                 }
 
-                _netScope.Create<Tick>(tick)
+                _log.Verbose($"Sending TickId: {tick.Id}");
+
+                var om = _netScope.Create<GameStateTick>(new GameStateTick(tick))
                     .AddRecipient(newUser.NetPeer)
-                    .SetDeliveryMethod(DeliveryMethod.ReliableOrdered)
                     .Enqueue();
             }
 
-            _netScope.Create<GameState>(
-                body: GameState.End
-            ).AddRecipient(newUser.NetPeer).Enqueue();
+            _log.Verbose($"Sending GameStateEnd: {lastTickId}");
+            _netScope.Create(new GameStateEnd(lastTickId))
+                .AddRecipient(newUser.NetPeer)
+                .Enqueue();
         }
     }
 }

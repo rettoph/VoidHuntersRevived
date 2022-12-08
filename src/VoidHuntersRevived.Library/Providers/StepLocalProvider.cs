@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Library.Providers
             _timer.Update(gameTime);
         }
 
-        public bool Next()
+        public bool ShouldStep()
         {
             return _timer.Step(out _);
         }

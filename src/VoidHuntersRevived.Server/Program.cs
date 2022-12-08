@@ -15,7 +15,7 @@ using VoidHuntersRevived.Server;
 var guppy = new GuppyEngine(new[] { typeof(MainGuppy).Assembly, typeof(ServerMainGuppy).Assembly })
     .ConfigureGame<LastGuppyPublishStrategy>()
     .ConfigureECS()
-    .ConfigureNetwork(1)
+    .ConfigureNetwork(3)
     .ConfigureResources()
     .Build()
     .GetRequiredService<IScoped<ServerMainGuppy>>();

@@ -15,6 +15,10 @@ namespace VoidHuntersRevived.Library.Utilities
         [DebuggerDisplay("Id: {Data.Id}")]
         private sealed class Node
         {
+            public int Id => this.Data.Id;
+            public int ParentId => this.Id - 1;
+            public int ChildId => this.Id + 1;
+
             public Tick Data { get; private set; }
             public Node? Child { get; private set; }
 
@@ -48,7 +52,7 @@ namespace VoidHuntersRevived.Library.Utilities
                 Node parent = this;
                 Node tick = this.Child;
 
-                while (tick.IsReady(parent.Data.Id))
+                while (parent.ChildId == tick.Id)
                 {
                     if (tick.Child is null)
                     {
@@ -60,16 +64,6 @@ namespace VoidHuntersRevived.Library.Utilities
                 }
 
                 return parent ?? tick;
-            }
-
-            public bool IsReady(int parentId)
-            {
-                if (parentId == this.Data.Id - 1)
-                {
-                    return true;
-                }
-
-                return false;
             }
 
             private bool TryAdd(Node child)
@@ -101,17 +95,9 @@ namespace VoidHuntersRevived.Library.Utilities
         private Node? _head;
         private Node? _tail;
 
-        private int _currentId;
-
         public Tick? Head => _head?.Data;
         public Tick? Tail => _tail?.Data;
         public Tick? Latest { get; private set; }
-
-        public int CurrentId
-        {
-            get => _currentId;
-            set => _currentId = value;
-        }
 
         public Tick? this[int index]
         {
@@ -133,12 +119,11 @@ namespace VoidHuntersRevived.Library.Utilities
             }
         }
 
-        public TickBuffer(int currentId)
+        public TickBuffer()
         {
-            _currentId = currentId;
         }
 
-        public bool TryPop([MaybeNullWhen(false)] out Tick tick)
+        public bool TryPop(int id, [MaybeNullWhen(false)] out Tick tick)
         {
             if(_head is null)
             {
@@ -146,10 +131,9 @@ namespace VoidHuntersRevived.Library.Utilities
                 return false;
             }
 
-            if (_head.IsReady(_currentId))
+            if (_head.Id == id)
             {
                 tick = _head.Data;
-                _currentId = _head.Data.Id;
                 _head = _head.Child;
 
                 if(_head is null)
@@ -158,6 +142,13 @@ namespace VoidHuntersRevived.Library.Utilities
                 }
 
                 return true;
+            }
+
+            if(_head.Id < id)
+            { // Sometimes we double send a message, this should fix that.
+                _head = _head.Child; 
+
+                return this.TryPop(id, out tick);
             }
 
             tick = null;
@@ -174,7 +165,7 @@ namespace VoidHuntersRevived.Library.Utilities
                 return;
             }
 
-            if(tick.Id < _head.Data.Id)
+            if(tick.Id < _head.Id)
             {
                 var old = _head;
                 _head = node;
@@ -190,7 +181,7 @@ namespace VoidHuntersRevived.Library.Utilities
 
         private void UpdateTail()
         {
-            if(_tail is null || _tail.Data.Id < _head?.Data.Id)
+            if(_tail is null || _tail.Id < _head?.Id)
             {
                 _tail = _head;
             }

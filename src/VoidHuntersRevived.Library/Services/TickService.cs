@@ -22,53 +22,29 @@ namespace VoidHuntersRevived.Library.Services
 {
     internal sealed class TickService : ITickService
     {
+        private readonly GameState _state;
         private readonly ITickProvider _provider;
-        private readonly IList<Tick> _history;
-        private readonly IBus _bus;
 
-        public IList<Tick> History => _history;
-
-        public Tick? Current { get; private set; }
-
-        public ITickProvider Provider => _provider;
+        public int AvailableId => _provider.AvailableId;
 
         public TickService(
-            IBus bus,
+            GameState state,
             IFiltered<ITickProvider> providers)
         {
-
-            _history = new List<Tick>();
+            _state = state;
             _provider = providers.Instance ?? throw new Exception();
-            _bus = bus;
         }
 
-        public bool Next()
+        public bool TryTick()
         {
-            if (_provider.Next(out var next))
+            if (_state.CanTick() && _provider.TryGetNextTick(out var next))
             {
-                this.Publish(next);
+                _state.TryTick(next);
 
                 return true;
             }
 
             return false;
-        }
-
-        private void Publish(Tick tick)
-        {
-            this.Current = tick;
-
-            if(this.Current.Data.Any())
-            {
-                _history.Add(this.Current);
-            }
-
-            _bus.Publish(this.Current);
-
-            foreach (ITickData data in this.Current.Data)
-            {
-                _bus.Publish(data);
-            }
         }
     }
 }

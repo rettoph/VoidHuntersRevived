@@ -35,6 +35,8 @@ namespace VoidHuntersRevived.Library.Loaders
             services.AddScoped<IStepService, StepService>()
                     .AddAlias<IGameComponent, IStepService>();
 
+            services.AddScoped<GameState>();
+
             services.AddScoped<StepLocalProvider>()
                     .AddScoped<StepRemoteProvider>()
                     .AddAliases(Alias.ManyFor<IStepProvider>(typeof(StepLocalProvider), typeof(StepRemoteProvider)))

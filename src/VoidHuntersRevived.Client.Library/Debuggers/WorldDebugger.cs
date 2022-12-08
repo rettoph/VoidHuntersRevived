@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.IO;
 using System.Linq;
+using VoidHuntersRevived.Library;
 using VoidHuntersRevived.Library.Constants;
 using VoidHuntersRevived.Library.Messages;
 using VoidHuntersRevived.Library.Providers;
@@ -34,14 +35,16 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
         private readonly Buffer<double> _stepDifferenceBuffer;
         private readonly Buffer<double> _stepDifferenceAverageBuffer;
         private readonly StepRemoteProvider _steps;
+        private readonly GameState _state;
         private readonly ITickService _ticks;
         private readonly IJsonSerializer _json;
         private readonly Lazy<IBus> _bus;
 
         public string ButtonLabel { get; }
 
-        public WorldDebugger(StepRemoteProvider steps, Lazy<IBus> bus, ITickService ticks, IJsonSerializer json, ISettingProvider settings)
+        public WorldDebugger(GameState state, StepRemoteProvider steps, Lazy<IBus> bus, ITickService ticks, IJsonSerializer json, ISettingProvider settings)
         {
+            _state = state;
             _steps = steps;
             _ticks = ticks;
             _json = json;
@@ -82,22 +85,16 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
                 ImGui.BeginTable("data", 2);
 
                 ImGui.TableNextColumn();
-                ImGui.Text($"Tick Status");
+                ImGui.Text("Last Tick");
 
                 ImGui.TableNextColumn();
-                ImGui.Text(_ticks.Provider.Status.ToString());
-
-                ImGui.TableNextColumn();
-                ImGui.Text("Current Tick");
-
-                ImGui.TableNextColumn();
-                ImGui.Text(_ticks.Provider.CurrentId.ToString("#,###,##0"));
+                ImGui.Text(_state.LastTickId.ToString("#,###,##0"));
 
                 ImGui.TableNextColumn();
                 ImGui.Text("Available Tick");
 
                 ImGui.TableNextColumn();
-                ImGui.Text(_ticks.Provider.AvailableId.ToString("#,###,##0"));
+                ImGui.Text(_ticks.AvailableId.ToString("#,###,##0"));
 
                 ImGui.TableNextColumn();
                 ImGui.Text("Current Step");
@@ -149,7 +146,7 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
 
         private void SaveReplayData()
         {
-            string jsonString = _json.Serialize(_ticks.History);
+            string jsonString = _json.Serialize(_state.History);
 
             File.WriteAllText("replay.vhr", jsonString);
         }

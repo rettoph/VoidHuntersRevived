@@ -16,11 +16,12 @@ namespace VoidHuntersRevived.Library.Services
     [GuppyFilter(typeof(GameGuppy))]
     public interface ITickService
     {
-        IList<Tick> History { get; }
-        Tick? Current { get; }
+        /// <summary>
+        /// Should represent the highest tick ready and available to
+        /// be processed.
+        /// </summary>
+        int AvailableId { get; }
 
-        public ITickProvider Provider { get; }
-
-        bool Next();
+        bool TryTick();
     }
 }

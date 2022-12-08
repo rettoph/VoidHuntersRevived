@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Client.Library
 {
     public class Game1 : Microsoft.Xna.Framework.Game
     {
-        GraphicsDeviceManager graphics;
+        private readonly GraphicsDeviceManager _graphics;
         private IServiceProvider? _provider;
         private IScoped<ClientMainGuppy>? _guppy;
         private IGlobal<IGameComponentService>? _globals;
@@ -27,21 +27,21 @@ namespace VoidHuntersRevived.Client.Library
 
         public Game1()
         {
-            graphics = new GraphicsDeviceManager(this);
+            _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
             this.IsMouseVisible = true;
             this.Window.AllowUserResizing = true;
             this.IsFixedTimeStep = false;
 
-            this.graphics.PreparingDeviceSettings += (s, e) =>
+            _graphics.PreparingDeviceSettings += (s, e) =>
             {
                 e.GraphicsDeviceInformation.PresentationParameters.PresentationInterval = PresentInterval.Immediate;
                 e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
             };
-            this.graphics.SynchronizeWithVerticalRetrace = false;
-            this.graphics.GraphicsProfile = GraphicsProfile.HiDef;
-            this.graphics.ApplyChanges();
+            _graphics.SynchronizeWithVerticalRetrace = false;
+            _graphics.GraphicsProfile = GraphicsProfile.HiDef;
+            _graphics.ApplyChanges();
         }
 
         /// <summary>
@@ -59,9 +59,9 @@ namespace VoidHuntersRevived.Client.Library
             Task.Run(() =>
             {
                 _provider = new GuppyEngine(new[] { typeof(MainGuppy).Assembly, typeof(ClientMainGuppy).Assembly })
-                    .ConfigureMonoGame<LastGuppyPublishStrategy>(this, this.graphics, this.Content, this.Window)
+                    .ConfigureMonoGame<LastGuppyPublishStrategy>(this, _graphics, this.Content, this.Window)
                     .ConfigureECS()
-                    .ConfigureNetwork(1)
+                    .ConfigureNetwork(3)
                     .ConfigureResources()
                     .ConfigureUI()
                     .ConfigureNetworkUI()
