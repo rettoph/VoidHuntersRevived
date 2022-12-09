@@ -158,5 +158,17 @@ namespace VoidHuntersRevived.Library
             this.Reading = false;
             _log.Verbose($"{nameof(GameState)}::{nameof(EndRead)} - Read up to TickId: {this.LastTickId}");
         }
+
+        public void Read(IList<Tick> history)
+        {
+            this.BeginRead();
+            
+            foreach(Tick tick in history)
+            {
+                this.Read(tick);
+            }
+
+            this.EndRead();
+        }
     }
 }

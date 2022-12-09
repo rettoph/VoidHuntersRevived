@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Messages;
 
-namespace VoidHuntersRevived.Library.Serializers.NetSerializers
+namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 {
     [AutoLoad]
     internal sealed class UserPilotNetSerializer : NetSerializer<UserPilot>

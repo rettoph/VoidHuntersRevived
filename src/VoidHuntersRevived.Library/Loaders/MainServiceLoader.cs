@@ -20,6 +20,7 @@ using VoidHuntersRevived.Library.Factories;
 using VoidHuntersRevived.Library.GameComponents;
 using VoidHuntersRevived.Library.Messages;
 using VoidHuntersRevived.Library.Providers;
+using VoidHuntersRevived.Library.Serialization.Json.Converters;
 using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Systems;
 
@@ -52,7 +53,8 @@ namespace VoidHuntersRevived.Library.Loaders
                     .AddFilter(new SettingFilter<NetAuthorization, TickLocalProvider>(NetAuthorization.Master))
                     .AddFilter(new SettingFilter<NetAuthorization, TickRemoteProvider>(NetAuthorization.Slave));
 
-            services.AddSingleton<JsonConverter, PolymorphicJsonConverter<ITickData>>();
+            services.AddSingleton<JsonConverter, PolymorphicJsonConverter<ITickData>>()
+                    .AddSingleton<JsonConverter, TickJsonConverter>();
 
             services.Configure<LoggerConfiguration>(config =>
             {

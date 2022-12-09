@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Messages.Inputs;
 
-namespace VoidHuntersRevived.Library.Serializers.NetSerializers
+namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 {
     [AutoLoad]
     internal sealed class DirectionInputSerializer : NetSerializer<DirectionInput>
