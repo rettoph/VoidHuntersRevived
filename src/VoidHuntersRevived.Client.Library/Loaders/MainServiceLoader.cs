@@ -3,13 +3,10 @@ using Guppy.Loaders;
 using Guppy.MonoGame;
 using Guppy.MonoGame.Utilities.Cameras;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MonoGame.Extended.Entities.Systems;
 using VoidHuntersRevived.Client.Library.Debuggers;
 using VoidHuntersRevived.Client.Library.Systems;
+using Guppy.Common.DependencyInjection;
 
 namespace VoidHuntersRevived.Client.Library.Loaders
 {
@@ -23,10 +20,16 @@ namespace VoidHuntersRevived.Client.Library.Loaders
 
             services.AddScoped<Camera2D>();
 
-            services.AddSystem<AetherDebugSystem>();
+            services.ConfigureCollection(manager =>
+            {
+                manager.GetService<AetherDebugSystem>()
+                    .SetLifetime(ServiceLifetime.Scoped)
+                    .AddAlias<ISystem>();
 
-            services.AddScoped<WorldDebugger>()
-                .AddAlias<IDebugger, WorldDebugger>();
+                manager.GetService<WorldDebugger>()
+                    .SetLifetime(ServiceLifetime.Scoped)
+                    .AddAlias<IDebugger>();
+            });
         }
     }
 }

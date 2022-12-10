@@ -19,22 +19,21 @@ namespace VoidHuntersRevived.Library.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services
-                .AddSystem<TickRemoteMasterSystem>()
-                .AddSystem<TickRemoteSlaveSystem>()
-                .AddSystem<PilotSystem>()
-                .AddSystem<UserPilotSystem>()
-                .AddSystem<UserPilotRemoteMasterSystem>()
-                .AddSystem<CurrentUserRemoteSlaveSystem>()
-                .AddSystem<UserRemoteMasterSystem>()
-                .AddSystem<PilotableAetherSystem>()
-                .AddSystem<GameStateRemoteSlaveSystem>();
+            services.AddSystem<TickRemoteMasterSystem>()
+                    .AddSystem<TickRemoteSlaveSystem>()
+                    .AddSystem<PilotSystem>()
+                    .AddSystem<UserPilotSystem>()
+                    .AddSystem<UserPilotRemoteMasterSystem>()
+                    .AddSystem<CurrentUserRemoteSlaveSystem>()
+                    .AddSystem<UserRemoteMasterSystem>()
+                    .AddSystem<PilotableAetherSystem>()
+                    .AddSystem<GameStateRemoteSlaveSystem>();
 
             services.AddComponentType<Piloting>()
-                .AddComponentType<User>()
-                .AddComponentType<Rootable>()
-                .AddComponentType<Body>()
-                .AddComponentType<Pilotable>();
+                    .AddComponentType<User>()
+                    .AddComponentType<Rootable>()
+                    .AddComponentType<Body>()
+                    .AddComponentType<Pilotable>();
 
             services.AddScoped<PilotIdMap>();
         }
