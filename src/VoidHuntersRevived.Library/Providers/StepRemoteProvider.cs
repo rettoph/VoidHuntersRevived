@@ -27,8 +27,6 @@ namespace VoidHuntersRevived.Library.Providers
         private readonly GameState _state;
         private readonly ITickService _ticks;
 
-        private int CurrenTickId => _currentStep / _stepsPerTick;
-
         public TimeSpan CurrentInterval => _currentInterval;
         public TimeSpan TargetInterval => _targetInterval;
 

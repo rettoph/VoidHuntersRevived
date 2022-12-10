@@ -1,15 +1,15 @@
 $SourcePath = $PSScriptRoot + "\..\..\src\"
 
-enum Project
+enum VoidHuntersProject
 {
     Client
     Server
 }
 
-function GetProjectPath
+function GetVoidHuntersProjectPath
 {
     Param(
-        [Project]$project
+        [VoidHuntersProject]$project
     )
 
     if($project -eq [Project]::Client)
