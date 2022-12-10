@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
+using Guppy.Common.DependencyInjection;
 using Guppy.Filters;
 using Guppy.Loaders;
 using Guppy.Network.Enums;
@@ -31,25 +32,34 @@ namespace VoidHuntersRevived.Library.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddGameComponent<AetherGameComponent>();
+            services.AddScopedService<AetherGameComponent>()
+                .AddAlias<IGameComponent>();
 
-            services.AddScoped<IStepService, StepService>()
-                    .AddAlias<IGameComponent, IStepService>();
+            services.AddScopedService<IStepService, StepService>()
+                .AddAlias<IGameComponent>();
 
             services.AddScoped<GameState>();
 
-            services.AddScoped<StepLocalProvider>()
-                    .AddScoped<StepRemoteProvider>()
-                    .AddAliases(Alias.ManyFor<IStepProvider>(typeof(StepLocalProvider), typeof(StepRemoteProvider)))
-                    .AddFilter(new SettingFilter<NetAuthorization, StepLocalProvider>(NetAuthorization.Master))
+            services.AddScopedService<StepLocalProvider>()
+                .AddAlias<IStepProvider>();
+
+            services.AddScopedService<StepRemoteProvider>()
+                .AddAlias<IStepProvider>();
+
+            services.AddFilter(new SettingFilter<NetAuthorization, StepLocalProvider>(NetAuthorization.Master))
                     .AddFilter(new SettingFilter<NetAuthorization, StepRemoteProvider>(NetAuthorization.Slave));
 
             services.AddScoped<ITickService, TickService>()
                     .AddScoped<ITickFactory, TickFactory>();
 
-            services.AddScoped<TickLocalProvider>()
-                    .AddScoped<TickRemoteProvider>()
-                    .AddAliases(Alias.ManyFor<ITickProvider>(typeof(TickLocalProvider), typeof(TickRemoteProvider)))
+            services.ConfigureCollection(manager =>
+                    {
+                        manager.AddScoped<TickLocalProvider>()
+                            .AddAlias<ITickProvider>();
+
+                        manager.AddScoped<TickRemoteProvider>()
+                            .AddAlias<ITickProvider>();
+                    })
                     .AddFilter(new SettingFilter<NetAuthorization, TickLocalProvider>(NetAuthorization.Master))
                     .AddFilter(new SettingFilter<NetAuthorization, TickRemoteProvider>(NetAuthorization.Slave));
 
