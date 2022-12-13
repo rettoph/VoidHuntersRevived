@@ -22,6 +22,9 @@ namespace VoidHuntersRevived.Library
         public int LastTickId { get; private set; }
         public int NextTickId { get; private set; }
 
+        public int StepsSinceTick => _stepsSinceTick;
+        public int LastStep { get; set; }
+
 
         public IList<Tick> History => _history;
 
@@ -48,6 +51,7 @@ namespace VoidHuntersRevived.Library
 
             _bus.Publish(_step);
             _stepsSinceTick += 1;
+            this.LastStep++;
 
             return true;
         }

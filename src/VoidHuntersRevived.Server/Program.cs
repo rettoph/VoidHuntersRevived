@@ -7,10 +7,19 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using System;
+using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library;
 using VoidHuntersRevived.Server;
+
+var test = new ServiceCollection();
+
+test.AddSingleton<object>(p => null);
+
+var p = test.BuildServiceProvider();
+
+var instance = p.GetRequiredService<System.Collections.Generic.IEnumerable<object>>();
 
 var guppy = new GuppyEngine(new[] { typeof(MainGuppy).Assembly, typeof(ServerMainGuppy).Assembly })
     .ConfigureGame<LastGuppyPublishStrategy>()

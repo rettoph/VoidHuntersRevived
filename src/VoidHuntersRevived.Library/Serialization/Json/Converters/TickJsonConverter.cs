@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Library.Serialization.Json.Converters
         public override Tick? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             int id = default;
-            List<ITickData> datum = new List<ITickData>();
+            List<ITickData> datum = new();
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -49,7 +49,14 @@ namespace VoidHuntersRevived.Library.Serialization.Json.Converters
 
         public override void Write(Utf8JsonWriter writer, Tick value, JsonSerializerOptions options)
         {
-            throw new NotImplementedException();
+            writer.WriteStartObject();
+
+            writer.WriteNumber(Properties.Id, value.Id);
+
+            writer.WritePropertyName(Properties.Data);
+            JsonSerializer.Serialize<IEnumerable<ITickData>>(writer, value.Data, options);
+
+            writer.WriteEndObject();
         }
     }
 }

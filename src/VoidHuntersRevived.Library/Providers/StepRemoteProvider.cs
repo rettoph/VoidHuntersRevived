@@ -15,7 +15,6 @@ namespace VoidHuntersRevived.Library.Providers
         private const double TargetStrength = 0.02f;
         private const double IntervalStrength = 0.01f;
 
-        private int _currentStep;
         private int _targetStep;
         private int _maximumTargetStep;
         private int _lastAvailableTickId;
@@ -30,8 +29,7 @@ namespace VoidHuntersRevived.Library.Providers
         public TimeSpan CurrentInterval => _currentInterval;
         public TimeSpan TargetInterval => _targetInterval;
 
-        public int Current => _currentStep;
-        public int Target => _targetStep;
+        public int TargetStep => _targetStep;
 
         public StepRemoteProvider(
             GameState state,
@@ -66,12 +64,11 @@ namespace VoidHuntersRevived.Library.Providers
 
             if (_realTimeSinceStep >= _currentInterval)
             {
-                if(_currentStep == _maximumTargetStep)
+                if(_state.LastStep == _maximumTargetStep)
                 {
                     return false;
                 }
 
-                _currentStep++;
                 _realTimeSinceStep -= _currentInterval;
                 this.UpdateInterval();
 
@@ -113,12 +110,12 @@ namespace VoidHuntersRevived.Library.Providers
         /// <param name="interval"></param>
         private void UpdateInterval()
         {
-            if(_currentStep == _targetStep)
+            if(_state.LastStep == _targetStep)
             {
                 return;
             }
 
-            float multiplier = _targetStep - _currentStep;
+            float multiplier = _targetStep - _state.LastStep;
             multiplier = _stepsPerTick - multiplier;
             multiplier /= _stepsPerTick;
             multiplier = Math.Clamp(multiplier, 0.25f, 4f);

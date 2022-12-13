@@ -97,16 +97,16 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
                 ImGui.Text(_ticks.AvailableId.ToString("#,###,##0"));
 
                 ImGui.TableNextColumn();
-                ImGui.Text("Current Step");
+                ImGui.Text("Last Step");
 
                 ImGui.TableNextColumn();
-                ImGui.Text(_steps.Current.ToString("#,###,##0"));
+                ImGui.Text(_state.LastStep.ToString("#,###,##0"));
 
                 ImGui.TableNextColumn();
                 ImGui.Text("Target Step");
 
                 ImGui.TableNextColumn();
-                ImGui.Text(_steps.Target.ToString("#,###,##0"));
+                ImGui.Text(_steps.TargetStep.ToString("#,###,##0"));
 
                 ImGui.TableNextColumn();
                 ImGui.Text("Step Difference");
@@ -172,7 +172,7 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
             _targetStepIntervalBuffer.Add(_steps.TargetInterval.TotalMilliseconds);
 
             // Update buffers
-            _stepDifference = _steps.Target - _steps.Current;
+            _stepDifference = _steps.TargetStep - _state.LastStep;
 
             _stepDifferenceBuffer.Add(_stepDifference, out var oldStepDifference);
 
