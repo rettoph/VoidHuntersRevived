@@ -65,6 +65,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImPlot.NET", "libraries\Gup
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.MonoGame.UI", "libraries\Guppy\src\Guppy.MonoGame.UI\Guppy.MonoGame.UI.csproj", "{BDF1CE97-F40D-465C-B3D4-62705FD854A8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{F38772AD-EAEE-4F89-B8CF-239B92DC5714}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\refresh-modules.ps1 = scripts\refresh-modules.ps1
+		scripts\reset.bat = scripts\reset.bat
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "modules", "modules", "{033AEBDD-D6AE-40DD-BB38-8667A78674D8}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\modules\publish-module.ps1 = scripts\modules\publish-module.ps1
+		scripts\modules\source-module.ps1 = scripts\modules\source-module.ps1
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -334,6 +346,7 @@ Global
 		{22001B88-06B8-4150-A833-E0CAC3C12803} = {17E8A268-2B56-42BB-BEE6-D516967F66F6}
 		{C3BE2750-E404-4ED7-A89A-92EAEC71CDC5} = {AA6D4DDD-0C5B-4F34-A6F7-7735858C326F}
 		{BDF1CE97-F40D-465C-B3D4-62705FD854A8} = {DA5CAD48-BEB9-4316-814A-820EA2A21081}
+		{033AEBDD-D6AE-40DD-BB38-8667A78674D8} = {F38772AD-EAEE-4F89-B8CF-239B92DC5714}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FCB1CA3-2B6C-469F-B569-084FC0B57488}

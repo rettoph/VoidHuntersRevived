@@ -12,12 +12,12 @@ function GetVoidHuntersProjectPath
         [VoidHuntersProject]$project
     )
 
-    if($project -eq [Project]::Client)
+    if($project -eq [VoidHuntersProject]::Client)
     {
         return $SourcePath + "clients\VoidHuntersRevived.Client.Desktop"
     }
 
-    if($project -eq [Project]::Server)
+    if($project -eq [VoidHuntersProject]::Server)
     {
         return $SourcePath + "VoidHuntersRevived.Server"
     }
