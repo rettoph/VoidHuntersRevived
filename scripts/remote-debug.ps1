@@ -16,7 +16,7 @@ $configFile = $PSScriptRoot + "\remote-debug.config.json"
 if((Test-Path -Path $configFile -PathType Leaf))
 {   
     $config = Get-Content $configFile | ConvertFrom-Json
-    "Loaded " + $configPath
+    Write-Information "Loaded config from: $($configFile)"
 }
 else 
 {
@@ -39,7 +39,7 @@ else
     New-Item $configFile
     Set-Content $configFile ($config | ConvertTo-Json)
 
-    "No valid configuration file found. Please update the one at " + $configPath
+    Write-Information "No valid configuration file found. Please update the one at $($configPath)"
 
     Exit
 }
@@ -69,9 +69,12 @@ if((Test-SFTPPath -SessionId $sftp.SessionId -Path $destination) -eq 0)
 # Upload dirty files
 "$($stopwatch.Elapsed.ToString("m\:ss\.ff")): Preparing for upload..."
 $files = Get-ChildItem $path -Recurse -Include "*" -Force
+
 $cacheFile = $PSScriptRoot + "\remote-debug.cache.json"
 [hashtable]$cache = Get-Content $cacheFile | ConvertFrom-Json -AsHashtable
 [hashtable]$newCache = @{}
+Write-Information "Loaded cache: $($cacheFile)"
+
 function RemoteDestination($local)
 {
     if($local -eq $null)
@@ -83,8 +86,8 @@ function RemoteDestination($local)
 }
 function CheckCacheDirty($target)
 {
-    $key = $target.path.GetHashCode().ToString()
-    $hash = $cache.$key
+    $key = $target.path
+    $hash = $cache[$key]
     
     if($hash -eq $null)
     {
@@ -101,22 +104,28 @@ function CleanFile($file)
     {
         $target = @{
             path = RemoteDestination($file.FullName);
-            directory = RemoteDestination($file.DirectoryName);
         }
 
-        $target.hash = $target.directory -eq $null ? $null : (Get-FileHash $file.FullName).Hash
-
-        if($file.GetType() -eq [System.IO.DirectoryInfo] -and (Test-SFTPPath -SessionId $sftp.SessionId -Path $target.path) -ne $true)
+        if($file.GetType() -eq [System.IO.DirectoryInfo])
         {
+            if((Test-SFTPPath -SessionId $sftp.SessionId -Path $target.path) -eq $true)
+            {
+                return $null
+            }
+
             Write-Information "Creating folder: '$($target.path)'"
             New-SFTPItem -SessionId $sftp.SessionId -Path $target.path -ItemType Directory
+            return $null
         }
 
+        $target.hash = (Get-FileHash $file.FullName).Hash
 
         $dirty = CheckCacheDirty($target)
 
-        if(($dirty -eq 1) -and ($file.GetType() -eq [System.IO.FileInfo]))
+        if($dirty -eq 1)
         {
+            $target.directory = RemoteDestination($file.DirectoryName)
+
             Write-Information "Uploading file: '$($target.path)'"
             Set-SFTPItem -SessionId $sftp.SessionId -Destination $target.directory -Path $file.FullName -Force
         }
@@ -128,7 +137,7 @@ function CleanFile($file)
         Write-Error "An error occured uploading file: '$($file.FullName)'"
         Write-Error $_
 
-        return null
+        return $null
     }
 }
 
@@ -139,11 +148,10 @@ foreach ($file in $files)
 
     if($target -ne $null -and $target.hash -ne $null)
     {
-        $newCache[$target.path.GetHashCode().ToString()] = $target.hash
+        $newCache[$target.path] = $target.hash
     }
 }
 
-"$($stopwatch.Elapsed.ToString("m\:ss\.ff")): Updating cache file..."
 Set-Content $cacheFile (ConvertTo-Json $newCache)
 
 # Start process...
