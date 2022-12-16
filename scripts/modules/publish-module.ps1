@@ -59,5 +59,5 @@ function Publish-VoidHunters()
         Remove-Item $directory\*.xml -Recurse -Force
     }
 
-    return $directory
+    return Resolve-Path $directory
 }

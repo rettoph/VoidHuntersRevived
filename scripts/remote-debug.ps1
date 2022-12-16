@@ -1,4 +1,10 @@
-﻿# Load required modules
+﻿#Requires -Version 6.0
+
+$InformationPreference = 'Continue'
+
+$stopwatch =  [system.diagnostics.stopwatch]::StartNew()
+
+# Load required modules
 Import-Module -Name ($PSScriptRoot + "\modules\publish-module.ps1") -Force
 if((Get-Module -ListAvailable -Name SomeModule) -eq 0)
 {
@@ -19,13 +25,14 @@ else
             Host = "";
             Username = "";
             Password = "";
-            RelativeFolder = "/VoidHuntersRevived";
+            Folder = "/home/anthony/VoidHuntersRevived";
+            Launch = "VoidHuntersRevived.Server";
         };
         Build = @{
             Project = "Server";
             Configuration = "Debug";
-            Runtime = "linux_arm64"
-            SelfContained = 1
+            Runtime = "linux_arm64";
+            SelfContained = 1;
         }
     }
 
@@ -38,46 +45,115 @@ else
 }
 
 # Build locally...
-"Building Project: '" + $config.Build.Project + "' - " + $config.Build.Runtime
+"$($stopwatch.Elapsed.ToString("m\:ss\.ff")): Building Project: '" + $config.Build.Project + "' - " + $config.Build.Runtime
 $path = Publish-VoidHunters -project $config.Build.Project -configuration $config.Build.Configuration -runtime $config.Build.Runtime -selfContained $config.Build.SelfContained
-$leaf = Split-Path $path -Leaf
 
 # Connect to server...
-"Establishing connection with " + $config.Remote.Host
+"$($stopwatch.Elapsed.ToString("m\:ss\.ff")): Establishing connection with " + $config.Remote.Host
 $password = ConvertTo-SecureString $config.Remote.Password -AsPlainText -Force
 $credentials = New-Object System.Management.Automation.PSCredential ($config.Remote.Username, $password)
 $sftp = New-SFTPSession -ComputerName $config.Remote.Host -Credential $credentials
 $ssh = New-SSHSession -ComputerName $config.Remote.Host -Credential $credentials
-$destination = (Get-SFTPLocation -SessionId $sftp.SessionId) + $config.Remote.RelativeFolder
+$destination = $config.Remote.Folder
 
-"Killing any running tmux session..."
+"$($stopwatch.Elapsed.ToString("m\:ss\.ff")): Killing any running tmux session..."
 Invoke-SSHCommand -SessionId $ssh.SessionId -Command "tmux kill-session -t VoidHuntersRevived" | Out-Null
 
-# Ensure VoidHuntersRevived folder exists...
+# Ensure target folder exists...
 if((Test-SFTPPath -SessionId $sftp.SessionId -Path $destination) -eq 0)
 {
     "Creating $destination directory..."
     New-SFTPItem -SessionId $sftp.SessionId -Path $destination -ItemType Directory
 }
 
-# Delete any old code...
-# TODO: Only upload & overwrite new code somehow?
-if((Test-SFTPPath -SessionId $sftp.SessionId -Path $destination/$leaf))
+# Upload dirty files
+"$($stopwatch.Elapsed.ToString("m\:ss\.ff")): Preparing for upload..."
+$files = Get-ChildItem $path -Recurse -Include "*" -Force
+$cacheFile = $PSScriptRoot + "\remote-debug.cache.json"
+[hashtable]$cache = Get-Content $cacheFile | ConvertFrom-Json -AsHashtable
+[hashtable]$newCache = @{}
+function RemoteDestination($local)
 {
-    "Deleting old version..."
-    Remove-SFTPItem -SessionId $sftp.SessionId -Path $destination/$leaf -Force
+    if($local -eq $null)
+    {
+        return $null
+    }
+
+    return $local.Replace("$path", "$destination").Replace("\", "/")
+}
+function CheckCacheDirty($target)
+{
+    $key = $target.path.GetHashCode().ToString()
+    $hash = $cache.$key
+    
+    if($hash -eq $null)
+    {
+        return $true
+    }
+
+    $dirty = $hash -ne $target.hash
+
+    return $dirty
+}
+function CleanFile($file)
+{
+    try
+    {
+        $target = @{
+            path = RemoteDestination($file.FullName);
+            directory = RemoteDestination($file.DirectoryName);
+        }
+
+        $target.hash = $target.directory -eq $null ? $null : (Get-FileHash $file.FullName).Hash
+
+        if($file.GetType() -eq [System.IO.DirectoryInfo] -and (Test-SFTPPath -SessionId $sftp.SessionId -Path $target.path) -ne $true)
+        {
+            Write-Information "Creating folder: '$($target.path)'"
+            New-SFTPItem -SessionId $sftp.SessionId -Path $target.path -ItemType Directory
+        }
+
+
+        $dirty = CheckCacheDirty($target)
+
+        if(($dirty -eq 1) -and ($file.GetType() -eq [System.IO.FileInfo]))
+        {
+            Write-Information "Uploading file: '$($target.path)'"
+            Set-SFTPItem -SessionId $sftp.SessionId -Destination $target.directory -Path $file.FullName -Force
+        }
+
+        return $target
+    }
+    catch
+    {
+        Write-Error "An error occured uploading file: '$($file.FullName)'"
+        Write-Error $_
+
+        return null
+    }
 }
 
-# Upload...
-"Uploading files..."
-Set-SFTPItem -SessionId $sftp.SessionId -Destination $destination -Path $path -Force
+"$($stopwatch.Elapsed.ToString("m\:ss\.ff")): Uploading files..."
+foreach ($file in $files)
+{
+    $target = CleanFile($file)
+
+    if($target -ne $null -and $target.hash -ne $null)
+    {
+        $newCache[$target.path.GetHashCode().ToString()] = $target.hash
+    }
+}
+
+"$($stopwatch.Elapsed.ToString("m\:ss\.ff")): Updating cache file..."
+Set-Content $cacheFile (ConvertTo-Json $newCache)
 
 # Start process...
-"Starting process via tmux"
-Invoke-SSHCommand -SessionId $ssh.SessionId -Command "sudo chmod +x $destination/$leaf/VoidHuntersRevived.Server" | Out-Null
-Invoke-SSHCommand -SessionId $ssh.SessionId -Command "tmux new-session -d -s VoidHuntersRevived 'cd $destination/$leaf && ./VoidHuntersRevived.Server'" | Out-Null
+"$($stopwatch.Elapsed.ToString("m\:ss\.ff")): Starting process via tmux..."
+Invoke-SSHCommand -SessionId $ssh.SessionId -Command "sudo chmod +x $destination/$($config.Remote.Launch)" | Out-Null
+Invoke-SSHCommand -SessionId $ssh.SessionId -Command "tmux new-session -d -s VoidHuntersRevived 'cd $destination && ./$($config.Remote.Launch)'" | Out-Null
 
 # Disconnect from server...
-"Closing connection..."
+"$($stopwatch.Elapsed.ToString("m\:ss\.ff")): Closing connection..."
 Remove-SSHSession -SessionId $ssh.SessionId | Out-Null
 Remove-SFTPSession -SFTPSession $sftp | Out-Null
+
+"Done. Total Elapsed Time: " + $stopwatch.Elapsed.ToString("m\:ss\.ff")

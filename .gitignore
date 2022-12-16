@@ -265,3 +265,5 @@ __pycache__/
 *.pyc
 /.mgstats
 /scripts/remote-debug.config.json
+/scripts/.vscode
+/scripts/remote-debug.cache.json
