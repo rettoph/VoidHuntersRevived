@@ -1,28 +1,62 @@
-﻿#Install-Module -Name Posh-SSH
+﻿# Load required modules
 Import-Module -Name ($PSScriptRoot + "\modules\publish-module.ps1") -Force
+if((Get-Module -ListAvailable -Name SomeModule) -eq 0)
+{
+    Install-Module -Name Posh-SSH
+}
+
+# Check config...
+$configFile = $PSScriptRoot + "\remote-debug.config.json"
+if((Test-Path -Path $configFile -PathType Leaf))
+{   
+    $config = Get-Content $configFile | ConvertFrom-Json
+    "Loaded " + $configPath
+}
+else 
+{
+    $config = @{
+        Remote = @{
+            Host = "";
+            Username = "";
+            Password = "";
+            RelativeFolder = "/VoidHuntersRevived";
+        };
+        Build = @{
+            Project = "Server";
+            Configuration = "Debug";
+            Runtime = "linux_arm64"
+            SelfContained = 1
+        }
+    }
+
+    New-Item $configFile
+    Set-Content $configFile ($config | ConvertTo-Json)
+
+    "No valid configuration file found. Please update the one at " + $configPath
+
+    Exit
+}
 
 # Build locally...
-Write-Output "Building Project..."
-$path = Publish-VoidHunters -project Server -configuration Debug -runtime linux_arm64 -selfContained 1
+"Building Project: '" + $config.Build.Project + "' - " + $config.Build.Runtime
+$path = Publish-VoidHunters -project $config.Build.Project -configuration $config.Build.Configuration -runtime $config.Build.Runtime -selfContained $config.Build.SelfContained
 $leaf = Split-Path $path -Leaf
 
 # Connect to server...
-Write-Output "Creating new SFTP session..."
-$password = ConvertTo-SecureString "password" -AsPlainText -Force
-$credentials = New-Object System.Management.Automation.PSCredential ("anthony", $password)
-$sftp = New-SFTPSession -ComputerName 192.168.0.11 -Credential $credentials
-$destination = (Get-SFTPLocation -SessionId $sftp.SessionId) + '/VoidHuntersRevived'
+"Establishing connection with " + $config.Remote.Host
+$password = ConvertTo-SecureString $config.Remote.Password -AsPlainText -Force
+$credentials = New-Object System.Management.Automation.PSCredential ($config.Remote.Username, $password)
+$sftp = New-SFTPSession -ComputerName $config.Remote.Host -Credential $credentials
+$ssh = New-SSHSession -ComputerName $config.Remote.Host -Credential $credentials
+$destination = (Get-SFTPLocation -SessionId $sftp.SessionId) + $config.Remote.RelativeFolder
 
-Write-Output "Creating new SSH session..."
-$ssh = New-SSHSession -ComputerName 192.168.0.11 -Credential $credentials
-
-Write-Output "Killing any running tmux session..."
+"Killing any running tmux session..."
 Invoke-SSHCommand -SessionId $ssh.SessionId -Command "tmux kill-session -t VoidHuntersRevived" | Out-Null
 
 # Ensure VoidHuntersRevived folder exists...
 if((Test-SFTPPath -SessionId $sftp.SessionId -Path $destination) -eq 0)
 {
-    Write-Output "Creating $destination directory..."
+    "Creating $destination directory..."
     New-SFTPItem -SessionId $sftp.SessionId -Path $destination -ItemType Directory
 }
 
@@ -30,22 +64,20 @@ if((Test-SFTPPath -SessionId $sftp.SessionId -Path $destination) -eq 0)
 # TODO: Only upload & overwrite new code somehow?
 if((Test-SFTPPath -SessionId $sftp.SessionId -Path $destination/$leaf))
 {
-    Write-Output "Deleting old version..."
+    "Deleting old version..."
     Remove-SFTPItem -SessionId $sftp.SessionId -Path $destination/$leaf -Force
 }
 
 # Upload...
-Write-Output "Uploading files..."
+"Uploading files..."
 Set-SFTPItem -SessionId $sftp.SessionId -Destination $destination -Path $path -Force
 
-# Disconnect from server...
-Write-Output "Closing SFTP session..."
-Remove-SFTPSession -SFTPSession $sftp | Out-Null
-
 # Start process...
-Write-Output "Starting process via tmux"
+"Starting process via tmux"
 Invoke-SSHCommand -SessionId $ssh.SessionId -Command "sudo chmod +x $destination/$leaf/VoidHuntersRevived.Server" | Out-Null
 Invoke-SSHCommand -SessionId $ssh.SessionId -Command "tmux new-session -d -s VoidHuntersRevived 'cd $destination/$leaf && ./VoidHuntersRevived.Server'" | Out-Null
 
-Write-Output "Closing SSH session..."
+# Disconnect from server...
+"Closing connection..."
 Remove-SSHSession -SessionId $ssh.SessionId | Out-Null
+Remove-SFTPSession -SFTPSession $sftp | Out-Null

@@ -264,3 +264,4 @@ paket-files/
 __pycache__/
 *.pyc
 /.mgstats
+/scripts/remote-debug.config.json

@@ -68,6 +68,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{F38772AD-EAEE-4F89-B8CF-239B92DC5714}"
 	ProjectSection(SolutionItems) = preProject
 		scripts\refresh-modules.ps1 = scripts\refresh-modules.ps1
+		scripts\remote-debug.ps1 = scripts\remote-debug.ps1
 		scripts\reset.bat = scripts\reset.bat
 	EndProjectSection
 EndProject
