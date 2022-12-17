@@ -77,7 +77,7 @@ Write-Information "Loaded cache: $($cacheFile)"
 
 function RemoteDestination($local)
 {
-    if($local -eq $null)
+    if($null -eq $local)
     {
         return $null
     }
@@ -86,10 +86,15 @@ function RemoteDestination($local)
 }
 function CheckCacheDirty($target)
 {
+    if($null -eq $cache)
+    {
+        return $true
+    }
+
     $key = $target.path
     $hash = $cache[$key]
     
-    if($hash -eq $null)
+    if($null -eq $hash)
     {
         return $true
     }
@@ -100,45 +105,35 @@ function CheckCacheDirty($target)
 }
 function CleanFile($file)
 {
-    try
+    $target = @{
+        path = RemoteDestination($file.FullName);
+    }
+
+    if($file.GetType() -eq [System.IO.DirectoryInfo])
     {
-        $target = @{
-            path = RemoteDestination($file.FullName);
-        }
-
-        if($file.GetType() -eq [System.IO.DirectoryInfo])
+        if((Test-SFTPPath -SessionId $sftp.SessionId -Path $target.path) -eq $true)
         {
-            if((Test-SFTPPath -SessionId $sftp.SessionId -Path $target.path) -eq $true)
-            {
-                return $null
-            }
-
-            Write-Information "Creating folder: '$($target.path)'"
-            New-SFTPItem -SessionId $sftp.SessionId -Path $target.path -ItemType Directory
             return $null
         }
 
-        $target.hash = (Get-FileHash $file.FullName).Hash
-
-        $dirty = CheckCacheDirty($target)
-
-        if($dirty -eq 1)
-        {
-            $target.directory = RemoteDestination($file.DirectoryName)
-
-            Write-Information "Uploading file: '$($target.path)'"
-            Set-SFTPItem -SessionId $sftp.SessionId -Destination $target.directory -Path $file.FullName -Force
-        }
-
-        return $target
-    }
-    catch
-    {
-        Write-Error "An error occured uploading file: '$($file.FullName)'"
-        Write-Error $_
-
+        Write-Information "Creating folder: '$($target.path)'"
+        New-SFTPItem -SessionId $sftp.SessionId -Path $target.path -ItemType Directory
         return $null
     }
+
+    $target.hash = (Get-FileHash $file.FullName).Hash
+
+    $dirty = CheckCacheDirty($target)
+
+    if($dirty -eq 1)
+    {
+        $target.directory = RemoteDestination($file.DirectoryName)
+
+        Write-Information "Uploading file: '$($target.path)'"
+        Set-SFTPItem -SessionId $sftp.SessionId -Destination $target.directory -Path $file.FullName -Force
+    }
+
+    return $target
 }
 
 "$($stopwatch.Elapsed.ToString("m\:ss\.ff")): Uploading files..."
@@ -146,7 +141,7 @@ foreach ($file in $files)
 {
     $target = CleanFile($file)
 
-    if($target -ne $null -and $target.hash -ne $null)
+    if($null -ne $target -and $null -ne $target.hash)
     {
         $newCache[$target.path] = $target.hash
     }
