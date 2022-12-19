@@ -1,0 +1,79 @@
+﻿using Guppy.Attributes;
+using Guppy.Common;
+using Guppy.MonoGame.Utilities.Cameras;
+using Guppy.Network.Peers;
+using Microsoft.Xna.Framework;
+using MonoGame.Extended;
+using MonoGame.Extended.Entities;
+using MonoGame.Extended.Entities.Systems;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using tainicom.Aether.Physics2D.Dynamics;
+using VoidHuntersRevived.Library;
+using VoidHuntersRevived.Library.Components;
+using VoidHuntersRevived.Library.Mappers;
+using static VoidHuntersRevived.Library.Helpers.EntityHelper;
+
+namespace VoidHuntersRevived.Client.Library.Systems
+{
+    [AutoSubscribe]
+    [AutoLoad]
+    [GuppyFilter(typeof(GameGuppy))]
+    internal sealed class LocalCurrentUserSystem : EntitySystem, ISubscriber<Step>
+    {
+        private readonly PilotIdMap _pilotIdMap;
+        private readonly ClientPeer _client;
+        private readonly Camera2D _camera;
+        private ComponentMapper<Piloting> _pilots;
+        private ComponentMapper<Body> _bodies;
+
+        public LocalCurrentUserSystem(ClientPeer client,
+            PilotIdMap pilotIdMap,
+            Camera2D camera) : base(Aspect.All(typeof(Piloting)))
+        {
+            _client = client;
+            _pilotIdMap = pilotIdMap;
+            _camera = camera;
+            _pilots = default!;
+            _bodies = default!;
+        }
+
+        public override void Initialize(IComponentMapperService mapperService)
+        {
+            _pilots = mapperService.GetMapper<Piloting>();
+            _bodies = mapperService.GetMapper<Body>();
+        }
+
+        public void Process(in Step message)
+        {
+            var currentUserId = _client.Users.Current?.Id;
+            if (currentUserId is null)
+            {
+                return;
+            }
+
+            if (!_pilotIdMap.TryGetEntityIdFromUserId(currentUserId.Value, out var pilotEntityId))
+            {
+                return;
+            }
+
+            var piloting = _pilots.Get(pilotEntityId);
+            if (piloting.PilotableId is null)
+            {
+                return;
+            }
+
+            var body = _bodies.Get(piloting.PilotableId.Value);
+            if (body is null)
+            {
+                return;
+            }
+
+            _camera.MoveTo(body.Position);
+        }
+
+    }
+}

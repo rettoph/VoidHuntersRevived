@@ -2,6 +2,7 @@
 using Guppy.Network;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -82,6 +83,17 @@ namespace VoidHuntersRevived.Library.Mappers
         public int GetUserId(INetId id)
         {
             return _userIds[id];
+        }
+
+        public bool TryGetEntityIdFromUserId(int userId, [MaybeNullWhen(false)] out int entityId)
+        {
+            if(_userIds.TryGet(userId, out INetId? netId))
+            {
+                return _entityIds.TryGet(netId, out entityId);
+            }
+
+            entityId = default;
+            return false;
         }
 
         private INetId GetNextNetId()

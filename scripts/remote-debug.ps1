@@ -32,7 +32,7 @@ else
             Project = "Server";
             Configuration = "Debug";
             Runtime = "linux_arm64";
-            SelfContained = 1;
+            SelfContained = 0;
         }
     }
 
