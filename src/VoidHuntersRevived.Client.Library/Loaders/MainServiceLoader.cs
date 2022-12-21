@@ -10,7 +10,7 @@ using Guppy.Common.DependencyInjection;
 
 namespace VoidHuntersRevived.Client.Library.Loaders
 {
-    [AutoLoad]
+    [AutoLoad(0)]
     internal sealed class MainServiceLoader : IServiceLoader
     {
         public void ConfigureServices(IServiceCollection services)
@@ -24,11 +24,15 @@ namespace VoidHuntersRevived.Client.Library.Loaders
             {
                 manager.GetService<AetherDebugSystem>()
                     .SetLifetime(ServiceLifetime.Scoped)
-                    .AddAlias<ISystem>();
+                    .AddInterfaceAliases();
 
                 manager.GetService<WorldDebugger>()
                     .SetLifetime(ServiceLifetime.Scoped)
-                    .AddAlias<IDebugger>();
+                    .AddInterfaceAliases();
+
+                manager.AddService<LocalCurrentUserSystem>()
+                    .SetLifetime(ServiceLifetime.Scoped)
+                    .AddInterfaceAliases();
             });
         }
     }

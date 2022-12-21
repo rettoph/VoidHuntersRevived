@@ -19,10 +19,8 @@ using static VoidHuntersRevived.Library.Helpers.EntityHelper;
 
 namespace VoidHuntersRevived.Client.Library.Systems
 {
-    [AutoSubscribe]
-    [AutoLoad]
     [GuppyFilter(typeof(GameGuppy))]
-    internal sealed class LocalCurrentUserSystem : EntitySystem, ISubscriber<Step>
+    internal sealed class LocalCurrentUserSystem : EntitySystem, ISubscriber<Step>, ISortable, IDrawSystem
     {
         private readonly PilotIdMap _pilotIdMap;
         private readonly ClientPeer _client;
@@ -39,6 +37,26 @@ namespace VoidHuntersRevived.Client.Library.Systems
             _camera = camera;
             _pilots = default!;
             _bodies = default!;
+        }
+
+        public void Draw(GameTime gameTime)
+        {
+            _camera.Update(gameTime);
+        }
+
+        public int GetOrder(Type enumerableType)
+        {
+            if(enumerableType == typeof(ISystem))
+            {
+                return int.MinValue;
+            }
+
+            if(enumerableType == typeof(ISubscriber))
+            {
+                return int.MaxValue;
+            }
+
+            return 0;
         }
 
         public override void Initialize(IComponentMapperService mapperService)

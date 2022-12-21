@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
+using Guppy.Loaders;
 using Guppy.MonoGame;
 using Guppy.MonoGame.Utilities.Cameras;
 using Microsoft.Xna.Framework;
@@ -20,10 +21,6 @@ using VoidHuntersRevived.Library.Messages;
 
 namespace VoidHuntersRevived.Client.Library.Systems
 {
-#if DEBUG
-    [AutoSubscribe]
-#endif
-    [AutoLoad]
     [GuppyFilter(typeof(GameGuppy))]
     internal sealed class AetherDebugSystem : DrawSystem, ISubscriber<Tick>, ISubscriber<BodyPosition>
     {
@@ -63,8 +60,6 @@ namespace VoidHuntersRevived.Client.Library.Systems
 
         public override void Draw(GameTime gameTime)
         {
-            _camera.Update(gameTime);
-
             _debug.RenderDebugData(_camera.Projection, _camera.View);
 
 #if DEBUG

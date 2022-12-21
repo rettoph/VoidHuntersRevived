@@ -13,7 +13,7 @@ using VoidHuntersRevived.Library.Messages;
 
 namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 {
-    [AutoLoad]
+    [AutoLoad(0)]
     internal sealed class GameStateEndNetSerializer : NetSerializer<GameStateEnd>
     {
         public override GameStateEnd Deserialize(NetDataReader reader)

@@ -11,7 +11,7 @@ using VoidHuntersRevived.Library.Constants;
 
 namespace VoidHuntersRevived.Library.Loaders
 {
-    [AutoLoad]
+    [AutoLoad(0)]
     internal sealed class SettingServiceLoader : IServiceLoader
     {
         public void ConfigureServices(IServiceCollection services)

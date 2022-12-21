@@ -17,7 +17,6 @@ using VoidHuntersRevived.Library.Constants;
 
 namespace VoidHuntersRevived.Library.GameComponents
 {
-    [AutoSubscribe]
     internal sealed class AetherGameComponent : IGameComponent, ISubscriber<Step>
     {
         private readonly AetherWorld _aether;

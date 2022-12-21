@@ -10,7 +10,7 @@ using VoidHuntersRevived.Client.Library.Services;
 
 namespace VoidHuntersRevived.Client.Library.Loaders
 {
-    [AutoLoad]
+    [AutoLoad(0)]
     internal sealed class DebugServiceLoader : IServiceLoader
     {
         public void ConfigureServices(IServiceCollection services)

@@ -15,7 +15,6 @@ using VoidHuntersRevived.Library.Messages.Inputs;
 
 namespace VoidHuntersRevived.Library.Systems
 {
-    [AutoSubscribe]
     [GuppyFilter(typeof(GameGuppy))]
     internal sealed class PilotSystem : EntitySystem, ISubscriber<PilotDirectionInput>
     {

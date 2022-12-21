@@ -12,7 +12,7 @@ using VoidHuntersRevived.Library.Messages;
 
 namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 {
-    [AutoLoad]
+    [AutoLoad(0)]
     internal sealed class UserPilotNetSerializer : NetSerializer<UserPilot>
     {
         private INetSerializer<UserAction> _userActionSerializer = default!;

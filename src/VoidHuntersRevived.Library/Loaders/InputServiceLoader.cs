@@ -13,7 +13,7 @@ using VoidHuntersRevived.Library.Messages.Inputs;
 
 namespace VoidHuntersRevived.Library.Loaders
 {
-    [AutoLoad]
+    [AutoLoad(0)]
     internal sealed class InputServiceLoader : IServiceLoader
     {
         public void ConfigureServices(IServiceCollection services)

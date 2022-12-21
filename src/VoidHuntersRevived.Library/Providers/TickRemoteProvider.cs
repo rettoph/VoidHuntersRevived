@@ -18,7 +18,6 @@ using VoidHuntersRevived.Library.Utilities;
 
 namespace VoidHuntersRevived.Library.Providers
 {
-    [AutoSubscribe]
     internal sealed class TickRemoteProvider : ITickProvider,
         ISubscriber<INetIncomingMessage<Tick>>,
         ISubscriber<ToggleSimulatedLag>

@@ -12,7 +12,7 @@ using VoidHuntersRevived.Library.Messages.Inputs;
 
 namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 {
-    [AutoLoad]
+    [AutoLoad(0)]
     internal sealed class PilotDirectionInputSerializer : NetSerializer<PilotDirectionInput>
     {
         public override PilotDirectionInput Deserialize(NetDataReader reader)

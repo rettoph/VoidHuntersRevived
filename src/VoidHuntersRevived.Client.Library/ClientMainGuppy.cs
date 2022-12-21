@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Client.Library
 
             _client.Start();
 
-            _client.Connect("192.168.0.11", 1337, Claim.Public("username", "Rettoph"), Claim.Protected("age", 24));
+            _client.Connect("localhost", 1337, Claim.Public("username", "Rettoph"), Claim.Protected("age", 24));
 
             _game = _guppies.Create<ClientGameGuppy>();
         }

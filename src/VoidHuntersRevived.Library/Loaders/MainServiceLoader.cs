@@ -27,24 +27,28 @@ using VoidHuntersRevived.Library.Systems;
 
 namespace VoidHuntersRevived.Library.Loaders
 {
-    [AutoLoad]
+    [AutoLoad(0)]
     internal sealed class MainServiceLoader : IServiceLoader
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScopedService<AetherGameComponent>()
-                .AddAlias<IGameComponent>();
+            services.ConfigureCollection(manager =>
+            {
+                manager.AddScoped<AetherGameComponent>()
+                    .AddAlias<IGameComponent>()
+                    .AddAlias<ISubscriber>();
 
-            services.AddScopedService<IStepService, StepService>()
-                .AddAlias<IGameComponent>();
+                manager.AddScoped<StepService>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<StepLocalProvider>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<StepRemoteProvider>()
+                    .AddInterfaceAliases();
+            });
 
             services.AddScoped<GameState>();
-
-            services.AddScopedService<StepLocalProvider>()
-                .AddAlias<IStepProvider>();
-
-            services.AddScopedService<StepRemoteProvider>()
-                .AddAlias<IStepProvider>();
 
             services.AddFilter(new SettingFilter<NetAuthorization, StepLocalProvider>(NetAuthorization.Master))
                     .AddFilter(new SettingFilter<NetAuthorization, StepRemoteProvider>(NetAuthorization.Slave));
@@ -55,10 +59,10 @@ namespace VoidHuntersRevived.Library.Loaders
             services.ConfigureCollection(manager =>
                     {
                         manager.AddScoped<TickLocalProvider>()
-                            .AddAlias<ITickProvider>();
+                            .AddInterfaceAliases();
 
                         manager.AddScoped<TickRemoteProvider>()
-                            .AddAlias<ITickProvider>();
+                            .AddInterfaceAliases();
                     })
                     .AddFilter(new SettingFilter<NetAuthorization, TickLocalProvider>(NetAuthorization.Master))
                     .AddFilter(new SettingFilter<NetAuthorization, TickRemoteProvider>(NetAuthorization.Slave));

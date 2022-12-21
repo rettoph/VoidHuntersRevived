@@ -23,7 +23,6 @@ using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library.Systems
 {
-    [AutoSubscribe]
     [GuppyFilter(typeof(GameGuppy))]
     [NetAuthorizationFilter(NetAuthorization.Master)]
     internal sealed class TickRemoteMasterSystem : ISystem, ISubscriber<Tick>

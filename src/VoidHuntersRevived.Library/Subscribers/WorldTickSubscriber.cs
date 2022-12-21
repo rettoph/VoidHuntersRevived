@@ -16,7 +16,6 @@ using VoidHuntersRevived.Library.Messages;
 
 namespace VoidHuntersRevived.Library.Subscribers
 {
-    [AutoSubscribe]
     [GuppyFilter(typeof(GameGuppy))]
     internal sealed class WorldTickSubscriber : ISubscriber<Tick>
     {

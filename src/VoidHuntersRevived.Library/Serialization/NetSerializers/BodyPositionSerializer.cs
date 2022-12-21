@@ -12,7 +12,7 @@ using VoidHuntersRevived.Library.Messages.Inputs;
 
 namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 {
-    [AutoLoad]
+    [AutoLoad(0)]
     internal class BodyPositionSerializer : NetSerializer<BodyPosition>
     {
         public override BodyPosition Deserialize(NetDataReader reader)

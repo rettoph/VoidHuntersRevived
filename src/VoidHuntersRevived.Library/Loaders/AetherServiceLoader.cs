@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Library.Loaders
 {
-    [AutoLoad]
+    [AutoLoad(0)]
     internal sealed class AetherServiceLoader : IServiceLoader
     {
         public void ConfigureServices(IServiceCollection services)

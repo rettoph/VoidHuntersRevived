@@ -19,7 +19,6 @@ using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Client.Library.Debuggers
 {
-    [AutoSubscribe]
     [GuppyFilter(typeof(ClientGameGuppy))]
     internal sealed class WorldDebugger : SimpleDebugger, IImGuiDebugger, ISubscriber<Tick>, ISubscriber<Step>
     {

@@ -13,7 +13,7 @@ using VoidHuntersRevived.Library.Messages;
 
 namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 {
-    [AutoLoad]
+    [AutoLoad(0)]
     internal sealed class GameStateTickNetSerializer : NetSerializer<GameStateTick>
     {
         private INetSerializer<Tick> _serializer = default!;

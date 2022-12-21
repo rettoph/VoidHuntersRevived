@@ -25,7 +25,6 @@ namespace VoidHuntersRevived.Library.Systems
     [GuppyFilter(typeof(GameGuppy))]
     internal sealed class UserPilotSystem : EntitySystem, ISubscriber<UserPilot>
     {
-        private readonly IBus _bus;
         private readonly IUserProvider _userProvider;
         private World _world;
         private ComponentMapper<User> _users;
@@ -36,10 +35,8 @@ namespace VoidHuntersRevived.Library.Systems
         public UserPilotSystem(
             PilotIdMap userPilotMap,
             AetherWorld aether,
-            IBus bus, 
             IUserProvider userProvider) : base(Aspect.All(typeof(User), typeof(Piloting)))
         {
-            _bus = bus;
             _userProvider = userProvider;
             _world = default!;
             _users = default!;
@@ -57,15 +54,8 @@ namespace VoidHuntersRevived.Library.Systems
 
         public override void Initialize(IComponentMapperService mapperService)
         {
-            _bus.Subscribe(this);
-
             _users = mapperService.GetMapper<User>();
             _pilotings = mapperService.GetMapper<Piloting>();
-        }
-
-        ~UserPilotSystem()
-        {
-            _bus.Unsubscribe(this);
         }
 
         protected override void OnEntityAdded(int entityId)

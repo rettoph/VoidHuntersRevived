@@ -14,7 +14,6 @@ using VoidHuntersRevived.Library.Messages;
 
 namespace VoidHuntersRevived.Library.Systems
 {
-    [AutoSubscribe]
     [GuppyFilter(typeof(GameGuppy))]
     [NetAuthorizationFilter(NetAuthorization.Master)]
     internal sealed class AetherDebugRemoteMasterSystem : ISystem, ISubscriber<Tick>
