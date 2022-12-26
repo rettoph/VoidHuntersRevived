@@ -37,6 +37,8 @@ namespace VoidHuntersRevived.Library.Systems
 
         public void Process(in Tick message)
         {
+            return;
+
             foreach (var body in _aether.BodyList)
             {
                 _tickFactory.Enqueue(new BodyPosition(body.GetHashCode(), body.Position));

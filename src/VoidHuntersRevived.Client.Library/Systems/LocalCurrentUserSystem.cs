@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
+using MonoGame.Extended.Timers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,7 @@ namespace VoidHuntersRevived.Client.Library.Systems
         private readonly Camera2D _camera;
         private ComponentMapper<Piloting> _pilots;
         private ComponentMapper<Body> _bodies;
+        private GameTime _gameTime;
 
         public LocalCurrentUserSystem(ClientPeer client,
             PilotIdMap pilotIdMap,
@@ -37,6 +39,9 @@ namespace VoidHuntersRevived.Client.Library.Systems
             _camera = camera;
             _pilots = default!;
             _bodies = default!;
+            _gameTime = new GameTime();
+
+            _camera.Zoom = 100;
         }
 
         public void Draw(GameTime gameTime)
@@ -90,7 +95,11 @@ namespace VoidHuntersRevived.Client.Library.Systems
                 return;
             }
 
-            _camera.MoveTo(body.Position);
+            _camera.TargetPosition = body.Position;
+            _camera.TargetVelocity = body.LinearVelocity;
+
+            _gameTime.ElapsedGameTime += message.Interval;
+            _gameTime.TotalGameTime += message.Interval;
         }
 
     }

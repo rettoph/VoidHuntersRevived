@@ -152,7 +152,7 @@ Set-Content $cacheFile (ConvertTo-Json $newCache)
 # Start process...
 "$($stopwatch.Elapsed.ToString("m\:ss\.ff")): Starting process via tmux..."
 Invoke-SSHCommand -SessionId $ssh.SessionId -Command "sudo chmod +x $destination/$($config.Remote.Launch)" | Out-Null
-Invoke-SSHCommand -SessionId $ssh.SessionId -Command "tmux new-session -d -s VoidHuntersRevived 'cd $destination && ./$($config.Remote.Launch)'" | Out-Null
+Invoke-SSHCommand -SessionId $ssh.SessionId -Command "tmux new-session -d -s VoidHuntersRevived 'cd $destination && ./$($config.Remote.Launch) |& tee ~/tmux.log'" | Out-Null
 
 # Disconnect from server...
 "$($stopwatch.Elapsed.ToString("m\:ss\.ff")): Closing connection..."

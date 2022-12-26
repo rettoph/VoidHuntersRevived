@@ -55,18 +55,15 @@ namespace VoidHuntersRevived.Client.Library.Systems
             base.Initialize(world);
 
             _debug.LoadContent(_graphics, _content);
-            _camera.ZoomTo(100);
         }
 
         public override void Draw(GameTime gameTime)
         {
             _debug.RenderDebugData(_camera.Projection, _camera.View);
 
-#if DEBUG
             _primitiveBatch.Begin(_camera);
-            _bodyPositionDebugService.Value.Draw(_primitiveBatch);
+            // _bodyPositionDebugService.Value.Draw(_primitiveBatch);
             _primitiveBatch.End();
-#endif
         }
 
         public void Process(in Tick message)

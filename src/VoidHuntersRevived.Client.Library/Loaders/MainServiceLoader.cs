@@ -7,6 +7,7 @@ using MonoGame.Extended.Entities.Systems;
 using VoidHuntersRevived.Client.Library.Debuggers;
 using VoidHuntersRevived.Client.Library.Systems;
 using Guppy.Common.DependencyInjection;
+using Guppy.Common;
 
 namespace VoidHuntersRevived.Client.Library.Loaders
 {
@@ -32,7 +33,11 @@ namespace VoidHuntersRevived.Client.Library.Loaders
 
                 manager.AddService<LocalCurrentUserSystem>()
                     .SetLifetime(ServiceLifetime.Scoped)
-                    .AddInterfaceAliases();
+                    .AddAlias<ISubscriber>()
+                    .AddAlias<ISystem>(x =>
+                    {
+                        x.SetOrder(int.MinValue);
+                    });
             });
         }
     }
