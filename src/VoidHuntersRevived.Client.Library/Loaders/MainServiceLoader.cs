@@ -25,19 +25,18 @@ namespace VoidHuntersRevived.Client.Library.Loaders
             {
                 manager.GetService<AetherDebugSystem>()
                     .SetLifetime(ServiceLifetime.Scoped)
-                    .AddInterfaceAliases();
-
-                manager.GetService<WorldDebugger>()
-                    .SetLifetime(ServiceLifetime.Scoped)
-                    .AddInterfaceAliases();
+                    .AddAlias<ISystem>();
 
                 manager.AddService<LocalCurrentUserSystem>()
                     .SetLifetime(ServiceLifetime.Scoped)
-                    .AddAlias<ISubscriber>()
                     .AddAlias<ISystem>(x =>
                     {
                         x.SetOrder(int.MinValue);
                     });
+
+                manager.GetService<WorldDebugger>()
+                    .SetLifetime(ServiceLifetime.Scoped)
+                    .AddInterfaceAliases();
             });
         }
     }

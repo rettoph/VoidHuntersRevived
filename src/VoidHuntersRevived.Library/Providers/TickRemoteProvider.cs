@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Library.Providers
         ISubscriber<INetIncomingMessage<Tick>>,
         ISubscriber<ToggleSimulatedLag>
     {
-        private readonly GameState _state;
+        private readonly SimulationState _state;
         private readonly TickBuffer _buffer;
         private bool _lagging;
 
@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Library.Providers
 
         public TickProviderStatus Status { get; private set; }
 
-        public TickRemoteProvider(GameState state)
+        public TickRemoteProvider(SimulationState state)
         {
             _state = state;
             _buffer = new TickBuffer();

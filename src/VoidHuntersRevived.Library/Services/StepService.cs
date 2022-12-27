@@ -18,12 +18,12 @@ namespace VoidHuntersRevived.Library.Services
     [GuppyFilter(typeof(GameGuppy))]
     internal sealed class StepService : SimpleGameComponent, IStepService
     {
-        private readonly GameState _state;
+        private readonly SimulationState _state;
         private readonly IStepProvider _provider;
         private readonly ITickService _ticks;
 
         public StepService(
-            GameState state,
+            SimulationState state,
             ITickService ticks,
             IFiltered<IStepProvider> providers)
         {

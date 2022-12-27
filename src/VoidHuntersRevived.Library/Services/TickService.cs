@@ -22,13 +22,13 @@ namespace VoidHuntersRevived.Library.Services
 {
     internal sealed class TickService : ITickService
     {
-        private readonly GameState _state;
+        private readonly SimulationState _state;
         private readonly ITickProvider _provider;
 
         public int AvailableId => _provider.AvailableId;
 
         public TickService(
-            GameState state,
+            SimulationState state,
             IFiltered<ITickProvider> providers)
         {
             _state = state;

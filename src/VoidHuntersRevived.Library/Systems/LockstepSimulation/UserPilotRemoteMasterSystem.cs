@@ -20,20 +20,19 @@ using VoidHuntersRevived.Library.Attributes;
 using LiteNetLib;
 using Serilog;
 
-namespace VoidHuntersRevived.Library.Systems
+namespace VoidHuntersRevived.Library.Systems.LockstepSimulation
 {
-    [GuppyFilter(typeof(GameGuppy))]
     [NetAuthorizationFilter(NetAuthorization.Master)]
-    internal sealed class UserPilotRemoteMasterSystem : ISystem
+    internal sealed class UserPilotRemoteMasterSystem : ISystem, ILockstepSimulationSystem
     {
         private readonly NetScope _netScope;
         private readonly ITickFactory _tickFactory;
-        private readonly GameState _state;
+        private readonly SimulationState _state;
         private readonly ILogger _log;
 
         public UserPilotRemoteMasterSystem(
             NetScope netScope,
-            GameState state,
+            SimulationState state,
             ITickFactory tickFactory,
             ILogger log)
         {
@@ -45,12 +44,12 @@ namespace VoidHuntersRevived.Library.Systems
 
         public void Initialize(World world)
         {
-            _netScope.Users.OnUserJoined += this.HandleUserJoined;
+            _netScope.Users.OnUserJoined += HandleUserJoined;
         }
 
         public void Dispose()
         {
-            _netScope.Users.OnUserJoined -= this.HandleUserJoined;
+            _netScope.Users.OnUserJoined -= HandleUserJoined;
         }
 
         private void HandleUserJoined(IUserService sender, User newUser)
@@ -73,7 +72,7 @@ namespace VoidHuntersRevived.Library.Systems
             for (var i = 0; i < _state.History.Count; i++)
             {
                 var tick = _state.History[i];
-            
+
                 if (tick.Id > lastTickId)
                 {
                     break;
@@ -81,13 +80,13 @@ namespace VoidHuntersRevived.Library.Systems
 
                 _log.Verbose($"Sending TickId: {tick.Id}");
 
-                var om = _netScope.Create<GameStateTick>(new GameStateTick(tick))
+                var om = _netScope.Create(new SimulationStateTick(tick))
                     .AddRecipient(newUser.NetPeer)
                     .Enqueue();
             }
 
             _log.Verbose($"Sending GameStateEnd: {lastTickId}");
-            _netScope.Create(new GameStateEnd(lastTickId))
+            _netScope.Create(new SimulationStateEnd(lastTickId))
                 .AddRecipient(newUser.NetPeer)
                 .Enqueue();
         }

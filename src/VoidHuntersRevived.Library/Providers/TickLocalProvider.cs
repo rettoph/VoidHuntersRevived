@@ -24,14 +24,14 @@ namespace VoidHuntersRevived.Library.Providers
 {
     internal sealed class TickLocalProvider : ITickProvider
     {
-        private readonly GameState _state;
+        private readonly SimulationState _state;
         private readonly ITickFactory _factory;
 
         public int AvailableId => _state.NextTickId;
 
         public TickProviderStatus Status { get; }
 
-        public TickLocalProvider(GameState state, ITickFactory factory)
+        public TickLocalProvider(SimulationState state, ITickFactory factory)
         {
             _state = state;
             _factory = factory;

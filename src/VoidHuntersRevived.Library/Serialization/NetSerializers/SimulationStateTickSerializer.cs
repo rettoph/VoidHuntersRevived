@@ -14,7 +14,7 @@ using VoidHuntersRevived.Library.Messages;
 namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 {
     [AutoLoad(0)]
-    internal sealed class GameStateTickNetSerializer : NetSerializer<GameStateTick>
+    internal sealed class SimulationStateTickNetSerializer : NetSerializer<SimulationStateTick>
     {
         private INetSerializer<Tick> _serializer = default!;
 
@@ -25,12 +25,12 @@ namespace VoidHuntersRevived.Library.Serialization.NetSerializers
             _serializer = serializers.Get<Tick>();
         }
 
-        public override GameStateTick Deserialize(NetDataReader reader)
+        public override SimulationStateTick Deserialize(NetDataReader reader)
         {
-            return new GameStateTick(_serializer.Deserialize(reader));
+            return new SimulationStateTick(_serializer.Deserialize(reader));
         }
 
-        public override void Serialize(NetDataWriter writer, in GameStateTick instance)
+        public override void Serialize(NetDataWriter writer, in SimulationStateTick instance)
         {
             _serializer.Serialize(writer, in instance.Tick);
         }

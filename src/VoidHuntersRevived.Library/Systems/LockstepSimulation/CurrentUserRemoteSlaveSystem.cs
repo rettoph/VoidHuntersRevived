@@ -13,11 +13,10 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Attributes;
 using VoidHuntersRevived.Library.Messages.Inputs;
 
-namespace VoidHuntersRevived.Library.Systems
+namespace VoidHuntersRevived.Library.Systems.LockstepSimulation
 {
-    [GuppyFilter(typeof(GameGuppy))]
     [NetAuthorizationFilter(NetAuthorization.Slave)]
-    internal sealed class CurrentUserRemoteSlaveSystem : ISystem, ISubscriber<DirectionInput>
+    internal sealed class CurrentUserRemoteSlaveSystem : ISystem, ILockstepSimulationSystem, ISubscriber<DirectionInput>
     {
         private IBus _bus;
         private NetScope _scope;
@@ -40,7 +39,7 @@ namespace VoidHuntersRevived.Library.Systems
 
         public void Process(in DirectionInput message)
         {
-            _scope.Create<DirectionInput>(in message).Enqueue();
+            _scope.Create(in message).Enqueue();
         }
     }
 }

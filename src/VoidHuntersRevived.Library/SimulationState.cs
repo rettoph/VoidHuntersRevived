@@ -10,7 +10,7 @@ using VoidHuntersRevived.Library.Constants;
 
 namespace VoidHuntersRevived.Library
 {
-    public class GameState
+    public class SimulationState
     {
         private int _stepsSinceTick;
         private readonly int _stepsPerTick;
@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Library
         public bool Reading { get; private set; }
 
 
-        public GameState(IBus bus, ISettingProvider settings, ILogger log)
+        public SimulationState(IBus bus, ISettingProvider settings, ILogger log)
         {
             _log = log;
             _bus = bus;
@@ -70,13 +70,13 @@ namespace VoidHuntersRevived.Library
         {
             if(!this.CanTick())
             {
-                _log.Verbose($"{nameof(GameState)}::{nameof(TryTick)} - Unable to Tick. This should be checked first.");
+                _log.Verbose($"{nameof(SimulationState)}::{nameof(TryTick)} - Unable to Tick. This should be checked first.");
                 return false;
             }
 
             if (tick.Id != this.NextTickId)
             {
-                _log.Verbose($"{nameof(GameState)}::{nameof(TryTick)} - Incorrect tick recieved. Expected {this.NextTickId} but got {tick.Id}.");
+                _log.Verbose($"{nameof(SimulationState)}::{nameof(TryTick)} - Incorrect tick recieved. Expected {this.NextTickId} but got {tick.Id}.");
                 return false;
             }
 
@@ -88,11 +88,6 @@ namespace VoidHuntersRevived.Library
             { // Only cache historical ticks if something actually happened
                 _history.Add(tick);
                 _bus.Publish(tick);
-
-                foreach (ITickData data in tick.Data)
-                {
-                    _bus.Publish(data);
-                }
             }
 
             _stepsSinceTick = 0;
@@ -122,7 +117,7 @@ namespace VoidHuntersRevived.Library
             this.Reset();
             this.Reading = true;
 
-            _log.Verbose($"{nameof(GameState)}::{nameof(BeginRead)}");
+            _log.Verbose($"{nameof(SimulationState)}::{nameof(BeginRead)}");
         }
 
         public void Read(Tick tick)
@@ -132,7 +127,7 @@ namespace VoidHuntersRevived.Library
                 throw new Exception();
             }
 
-            _log.Verbose($"{nameof(GameState)}::{nameof(Read)} - Reading TickId: {tick.Id}");
+            _log.Verbose($"{nameof(SimulationState)}::{nameof(Read)} - Reading TickId: {tick.Id}");
 
             while(this.LastTickId < tick.Id)
             {
@@ -160,7 +155,7 @@ namespace VoidHuntersRevived.Library
             }
 
             this.Reading = false;
-            _log.Verbose($"{nameof(GameState)}::{nameof(EndRead)} - Read up to TickId: {this.LastTickId}");
+            _log.Verbose($"{nameof(SimulationState)}::{nameof(EndRead)} - Read up to TickId: {this.LastTickId}");
         }
 
         public void Read(IList<Tick> history)

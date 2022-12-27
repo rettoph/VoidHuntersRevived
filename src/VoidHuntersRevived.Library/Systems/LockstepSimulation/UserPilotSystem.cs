@@ -20,10 +20,9 @@ using VoidHuntersRevived.Library.Helpers;
 using VoidHuntersRevived.Library.Mappers;
 using VoidHuntersRevived.Library.Messages;
 
-namespace VoidHuntersRevived.Library.Systems
+namespace VoidHuntersRevived.Library.Systems.LockstepSimulation
 {
-    [GuppyFilter(typeof(GameGuppy))]
-    internal sealed class UserPilotSystem : EntitySystem, ISubscriber<UserPilot>
+    internal sealed class UserPilotSystem : EntitySystem, ILockstepSimulationSystem, ISubscriber<UserPilot>
     {
         private readonly IUserProvider _userProvider;
         private World _world;
@@ -62,7 +61,7 @@ namespace VoidHuntersRevived.Library.Systems
         {
             base.OnEntityAdded(entityId);
 
-            if(this.subscription.IsInterested(entityId))
+            if (subscription.IsInterested(entityId))
             {
                 var user = _users.Get(entityId);
 
@@ -74,7 +73,7 @@ namespace VoidHuntersRevived.Library.Systems
         {
             base.OnEntityRemoved(entityId);
 
-            if(this.subscription.IsInterested(entityId))
+            if (subscription.IsInterested(entityId))
             {
                 _pilotMap.RemoveByEntityId(entityId);
             }

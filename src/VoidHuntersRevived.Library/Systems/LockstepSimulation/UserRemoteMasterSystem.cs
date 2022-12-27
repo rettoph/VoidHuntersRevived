@@ -14,11 +14,10 @@ using VoidHuntersRevived.Library.Factories;
 using VoidHuntersRevived.Library.Mappers;
 using VoidHuntersRevived.Library.Messages.Inputs;
 
-namespace VoidHuntersRevived.Library.Systems
+namespace VoidHuntersRevived.Library.Systems.LockstepSimulation
 {
-    [GuppyFilter(typeof(GameGuppy))]
     [NetAuthorizationFilter(NetAuthorization.Master)]
-    internal sealed class UserRemoteMasterSystem : ISystem,
+    internal sealed class UserRemoteMasterSystem : ISystem, ILockstepSimulationSystem,
         ISubscriber<INetIncomingMessage<DirectionInput>>
     {
         private readonly PilotIdMap _userPilotMap;
@@ -42,7 +41,7 @@ namespace VoidHuntersRevived.Library.Systems
 
         public void Process(in INetIncomingMessage<DirectionInput> message)
         {
-            if(message.Peer is null)
+            if (message.Peer is null)
             {
                 return;
             }

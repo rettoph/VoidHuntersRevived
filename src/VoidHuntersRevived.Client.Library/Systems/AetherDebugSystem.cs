@@ -18,11 +18,13 @@ using tainicom.Aether.Physics2D.Diagnostics;
 using VoidHuntersRevived.Client.Library.Services;
 using VoidHuntersRevived.Library;
 using VoidHuntersRevived.Library.Messages;
+using VoidHuntersRevived.Library.Systems;
 
 namespace VoidHuntersRevived.Client.Library.Systems
 {
-    [GuppyFilter(typeof(GameGuppy))]
-    internal sealed class AetherDebugSystem : DrawSystem, ISubscriber<Tick>, ISubscriber<BodyPosition>
+    internal sealed class AetherDebugSystem : DrawSystem, ILockstepSimulationSystem, 
+        ISubscriber<Tick>, 
+        ISubscriber<BodyPosition>
     {
         private readonly AetherWorld _aether;
         private readonly DebugView _debug;

@@ -10,17 +10,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library;
+using VoidHuntersRevived.Library.Games;
 using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Client.Library
 {
     public sealed class ClientGameGuppy : GameGuppy, IDisposable
     {
-        private readonly World _world;
-
-        public ClientGameGuppy(World world, NetScope netScope, IGameComponentService components) : base(netScope, components)
+        public ClientGameGuppy(NetScope netScope, LockstepSimulation lockstepSimulation, IGameComponentService components) : base(netScope, lockstepSimulation, components)
         {
-            _world = world;
         }
 
         public void Dispose()
@@ -31,7 +29,7 @@ namespace VoidHuntersRevived.Client.Library
         {
             base.Draw(gameTime);
 
-            _world.Draw(gameTime);
+            this.LockstepSimulation.World.Draw(gameTime);
         }
     }
 }

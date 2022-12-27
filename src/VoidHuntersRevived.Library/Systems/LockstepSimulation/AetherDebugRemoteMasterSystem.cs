@@ -12,11 +12,10 @@ using VoidHuntersRevived.Library.Attributes;
 using VoidHuntersRevived.Library.Factories;
 using VoidHuntersRevived.Library.Messages;
 
-namespace VoidHuntersRevived.Library.Systems
+namespace VoidHuntersRevived.Library.Systems.LockstepSimulation
 {
-    [GuppyFilter(typeof(GameGuppy))]
     [NetAuthorizationFilter(NetAuthorization.Master)]
-    internal sealed class AetherDebugRemoteMasterSystem : ISystem, ISubscriber<Tick>
+    internal sealed class AetherDebugRemoteMasterSystem : ISystem, ILockstepSimulationSystem, ISubscriber<Tick>
     {
         private readonly ITickFactory _tickFactory;
         private AetherWorld _aether;
@@ -27,7 +26,7 @@ namespace VoidHuntersRevived.Library.Systems
             _tickFactory = tickFactory;
         }
 
-        public void Initialize(ECSWorld world)
+        public void Initialize(World world)
         {
         }
 

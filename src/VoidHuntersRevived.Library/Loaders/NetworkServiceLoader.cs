@@ -19,8 +19,8 @@ namespace VoidHuntersRevived.Library.Loaders
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddNetMessageType<DirectionInput>(DeliveryMethod.ReliableSequenced, NetMessageTypeConstants.DefaultOutgoingChannel);
-            services.AddNetMessageType<GameStateTick>(DeliveryMethod.ReliableOrdered, NetMessageTypeConstants.GameStateOutgoingChannel);
-            services.AddNetMessageType<GameStateEnd>(DeliveryMethod.ReliableOrdered, NetMessageTypeConstants.GameStateOutgoingChannel);
+            services.AddNetMessageType<SimulationStateTick>(DeliveryMethod.ReliableOrdered, NetMessageTypeConstants.GameStateOutgoingChannel);
+            services.AddNetMessageType<SimulationStateEnd>(DeliveryMethod.ReliableOrdered, NetMessageTypeConstants.GameStateOutgoingChannel);
             services.AddNetMessageType<Tick>(DeliveryMethod.ReliableUnordered, NetMessageTypeConstants.TickOutgoingChannel);
         }
     }

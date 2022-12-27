@@ -8,7 +8,7 @@ using VoidHuntersRevived.Library.Enums;
 
 namespace VoidHuntersRevived.Library.Messages.Inputs
 {
-    public class PilotDirectionInput : DirectionInput, ITickData
+    public class PilotDirectionInput : DirectionInput, ISimulationEvent
     {
         public INetId PilotId { get; }
 

@@ -34,14 +34,14 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
         private readonly Buffer<double> _stepDifferenceBuffer;
         private readonly Buffer<double> _stepDifferenceAverageBuffer;
         private readonly StepRemoteProvider _steps;
-        private readonly GameState _state;
+        private readonly SimulationState _state;
         private readonly ITickService _ticks;
         private readonly IJsonSerializer _json;
         private readonly Lazy<IBus> _bus;
 
         public string ButtonLabel { get; }
 
-        public WorldDebugger(GameState state, StepRemoteProvider steps, Lazy<IBus> bus, ITickService ticks, IJsonSerializer json, ISettingProvider settings)
+        public WorldDebugger(SimulationState state, StepRemoteProvider steps, Lazy<IBus> bus, ITickService ticks, IJsonSerializer json, ISettingProvider settings)
         {
             _state = state;
             _steps = steps;
@@ -158,7 +158,7 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
         public void Process(in Tick message)
         {
             // Only track ticks with data
-            if (!message.Data.Any())
+            if (!message.Events.Any())
             {
                 return;
             }

@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Library.Serialization.Json.Converters
         public override Tick? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             int id = default;
-            List<ITickData> datum = new();
+            List<ISimulationEvent> datum = new();
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Library.Serialization.Json.Converters
                         break;
                     case Properties.Data:
                         datum.AddRange(
-                            collection : JsonSerializer.Deserialize<IEnumerable<ITickData>>(ref reader, options) ?? Enumerable.Empty<ITickData>()
+                            collection : JsonSerializer.Deserialize<IEnumerable<ISimulationEvent>>(ref reader, options) ?? Enumerable.Empty<ISimulationEvent>()
                         );
 
                         reader.Read();
@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Library.Serialization.Json.Converters
             writer.WriteNumber(Properties.Id, value.Id);
 
             writer.WritePropertyName(Properties.Data);
-            JsonSerializer.Serialize<IEnumerable<ITickData>>(writer, value.Data, options);
+            JsonSerializer.Serialize<IEnumerable<ISimulationEvent>>(writer, value.Events, options);
 
             writer.WriteEndObject();
         }

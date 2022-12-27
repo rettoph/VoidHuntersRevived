@@ -21,11 +21,10 @@ using VoidHuntersRevived.Library.Factories;
 using VoidHuntersRevived.Library.Messages;
 using VoidHuntersRevived.Library.Services;
 
-namespace VoidHuntersRevived.Library.Systems
+namespace VoidHuntersRevived.Library.Systems.LockstepSimulation
 {
-    [GuppyFilter(typeof(GameGuppy))]
     [NetAuthorizationFilter(NetAuthorization.Master)]
-    internal sealed class TickRemoteMasterSystem : ISystem, ISubscriber<Tick>
+    internal sealed class TickRemoteMasterSystem : ISystem, ILockstepSimulationSystem, ISubscriber<Tick>
     {
         private readonly NetScope _netScope;
 
@@ -34,7 +33,7 @@ namespace VoidHuntersRevived.Library.Systems
             _netScope = netScope;
         }
 
-        public void Initialize(ECSWorld world)
+        public void Initialize(World world)
         {
             // throw new NotImplementedException();
         }
@@ -46,7 +45,7 @@ namespace VoidHuntersRevived.Library.Systems
 
         public void Process(in Tick tick)
         {
-            _netScope.Create<Tick>(in tick)
+            _netScope.Create(in tick)
                 .AddRecipients(_netScope.Users.Peers)
                 .Enqueue();
         }

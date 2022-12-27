@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Library.Messages
 {
-    public class UserPilot : Message, ITickData
+    public class UserPilot : Message, ISimulationEvent
     {
         public UserAction User { get; }
 

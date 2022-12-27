@@ -9,14 +9,14 @@ namespace VoidHuntersRevived.Library.Factories
 {
     internal sealed class TickFactory : ITickFactory
     {
-        private IList<ITickData> _datum;
+        private IList<ISimulationEvent> _datum;
 
         public TickFactory()
         {
-            _datum = new List<ITickData>();
+            _datum = new List<ISimulationEvent>();
         }
 
-        public void Enqueue(ITickData data)
+        public void Enqueue(ISimulationEvent data)
         {
             _datum.Add(data);
         }
@@ -25,11 +25,11 @@ namespace VoidHuntersRevived.Library.Factories
         {
             if(_datum.Count == 0)
             {
-                return new Tick(id, Enumerable.Empty<ITickData>());
+                return new Tick(id, Enumerable.Empty<ISimulationEvent>());
             }
 
             var tick = new Tick(id, _datum);
-            _datum = new List<ITickData>();
+            _datum = new List<ISimulationEvent>();
 
             return tick;
         }

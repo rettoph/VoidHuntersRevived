@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Library.Factories
 {
     public interface ITickFactory
     {
-        void Enqueue(ITickData data);
+        void Enqueue(ISimulationEvent data);
 
         Tick Create(int id);
     }

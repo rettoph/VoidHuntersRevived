@@ -14,14 +14,14 @@ using VoidHuntersRevived.Library.Messages;
 namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 {
     [AutoLoad(0)]
-    internal sealed class GameStateEndNetSerializer : NetSerializer<GameStateEnd>
+    internal sealed class SimulationStateEndNetSerializer : NetSerializer<SimulationStateEnd>
     {
-        public override GameStateEnd Deserialize(NetDataReader reader)
+        public override SimulationStateEnd Deserialize(NetDataReader reader)
         {
-            return new GameStateEnd(reader.GetInt());
+            return new SimulationStateEnd(reader.GetInt());
         }
 
-        public override void Serialize(NetDataWriter writer, in GameStateEnd instance)
+        public override void Serialize(NetDataWriter writer, in SimulationStateEnd instance)
         {
             writer.Put(instance.LastTickId);
         }

@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Library.Providers
         private TimeSpan _targetInterval;
         private readonly TimeSpan _interval;
         private readonly int _stepsPerTick;
-        private readonly GameState _state;
+        private readonly SimulationState _state;
         private readonly ITickService _ticks;
 
         public TimeSpan CurrentInterval => _currentInterval;
@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Library.Providers
         public int TargetStep => _targetStep;
 
         public StepRemoteProvider(
-            GameState state,
+            SimulationState state,
             ITickService ticks,
             ISettingProvider settings)
         {

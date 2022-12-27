@@ -18,11 +18,12 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Factories;
-using VoidHuntersRevived.Library.GameComponents;
+using VoidHuntersRevived.Library.Games;
 using VoidHuntersRevived.Library.Messages;
 using VoidHuntersRevived.Library.Providers;
 using VoidHuntersRevived.Library.Serialization.Json.Converters;
 using VoidHuntersRevived.Library.Services;
+using VoidHuntersRevived.Library.Subscribers;
 using VoidHuntersRevived.Library.Systems;
 
 namespace VoidHuntersRevived.Library.Loaders
@@ -34,8 +35,12 @@ namespace VoidHuntersRevived.Library.Loaders
         {
             services.ConfigureCollection(manager =>
             {
-                manager.AddScoped<AetherGameComponent>()
-                    .AddAlias<IGameComponent>()
+                services.AddService<SimulationStateRemoteSlaveSubscriber>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<PredictiveSimulation>();
+
+                manager.AddScoped<LockstepSimulation>()
                     .AddAlias<ISubscriber>();
 
                 manager.AddScoped<StepService>()
@@ -48,7 +53,7 @@ namespace VoidHuntersRevived.Library.Loaders
                     .AddInterfaceAliases();
             });
 
-            services.AddScoped<GameState>();
+            services.AddScoped<SimulationState>();
 
             services.AddFilter(new SettingFilter<NetAuthorization, StepLocalProvider>(NetAuthorization.Master))
                     .AddFilter(new SettingFilter<NetAuthorization, StepRemoteProvider>(NetAuthorization.Slave));
@@ -67,7 +72,7 @@ namespace VoidHuntersRevived.Library.Loaders
                     .AddFilter(new SettingFilter<NetAuthorization, TickLocalProvider>(NetAuthorization.Master))
                     .AddFilter(new SettingFilter<NetAuthorization, TickRemoteProvider>(NetAuthorization.Slave));
 
-            services.AddSingleton<JsonConverter, PolymorphicJsonConverter<ITickData>>()
+            services.AddSingleton<JsonConverter, PolymorphicJsonConverter<ISimulationEvent>>()
                     .AddSingleton<JsonConverter, TickJsonConverter>();
 
             services.Configure<LoggerConfiguration>(config =>

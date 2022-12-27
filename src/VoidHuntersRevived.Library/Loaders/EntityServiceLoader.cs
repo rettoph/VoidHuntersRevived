@@ -12,8 +12,8 @@ using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Library.Components;
 using VoidHuntersRevived.Library.Mappers;
-using VoidHuntersRevived.Library.Subscribers;
 using VoidHuntersRevived.Library.Systems;
+using VoidHuntersRevived.Library.Systems.LockstepSimulation;
 
 namespace VoidHuntersRevived.Library.Loaders
 {
@@ -22,8 +22,6 @@ namespace VoidHuntersRevived.Library.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<ISubscriber, WorldTickSubscriber>();
-
             services.AddService<TickRemoteMasterSystem>()
                 .SetLifetime(ServiceLifetime.Scoped)
                 .AddInterfaceAliases();
@@ -56,7 +54,7 @@ namespace VoidHuntersRevived.Library.Loaders
                 .SetLifetime(ServiceLifetime.Scoped)
                 .AddInterfaceAliases();
 
-            services.AddService<GameStateRemoteSlaveSystem>()
+            services.AddService<AetherSystem>()
                 .SetLifetime(ServiceLifetime.Scoped)
                 .AddInterfaceAliases();
 

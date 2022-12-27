@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Library
 {
-    public interface ITickData : IMessage
+    public interface ISimulationEvent : IMessage
     {
     }
 }

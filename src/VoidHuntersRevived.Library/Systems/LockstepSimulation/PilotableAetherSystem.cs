@@ -11,10 +11,9 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Components;
 using VoidHuntersRevived.Library.Enums;
 
-namespace VoidHuntersRevived.Library.Systems
+namespace VoidHuntersRevived.Library.Systems.LockstepSimulation
 {
-    [GuppyFilter(typeof(GameGuppy))]
-    internal sealed class PilotableAetherSystem : EntityProcessingSystem
+    internal sealed class PilotableAetherSystem : EntityProcessingSystem, ILockstepSimulationSystem
     {
         private ComponentMapper<Pilotable> _pilotables;
         private ComponentMapper<AetherBody> _bodies;
@@ -34,8 +33,8 @@ namespace VoidHuntersRevived.Library.Systems
         public override void Process(GameTime gameTime, int entityId)
         {
             var pilotable = _pilotables.Get(entityId);
-            
-            if(pilotable.Direction == Direction.None)
+
+            if (pilotable.Direction == Direction.None)
             {
                 return;
             }
@@ -43,7 +42,7 @@ namespace VoidHuntersRevived.Library.Systems
             var body = _bodies.Get(entityId);
             var impulse = Vector2.Zero;
 
-            if(pilotable.Direction.HasFlag(Direction.Forward))
+            if (pilotable.Direction.HasFlag(Direction.Forward))
             {
                 impulse -= Vector2.UnitY;
             }

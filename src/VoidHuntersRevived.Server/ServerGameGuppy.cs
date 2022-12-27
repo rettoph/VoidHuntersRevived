@@ -12,13 +12,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library;
+using VoidHuntersRevived.Library.Games;
 using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Server
 {
     public sealed class ServerGameGuppy : GameGuppy
     {
-        public ServerGameGuppy(GameState state, NetScope netScope, IJsonSerializer serializer, IGameComponentService components) : base(netScope, components)
+        public ServerGameGuppy(SimulationState state, NetScope netScope, LockstepSimulation lockstepSimulation, IJsonSerializer serializer, IGameComponentService components) : base(netScope, lockstepSimulation, components)
         {
             Console.WriteLine("Server Running!");
 

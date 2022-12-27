@@ -17,25 +17,25 @@ namespace VoidHuntersRevived.Library
         public const int MinimumValidId = 1;
         public const int MaximumInvalidId = MinimumValidId - 1;
 
-        private readonly IEnumerable<ITickData> _data;
+        private readonly IEnumerable<ISimulationEvent> _events;
         private int? _count;
 
         public int Id { get; }
 
-        public IEnumerable<ITickData> Data => _data;
+        public IEnumerable<ISimulationEvent> Events => _events;
 
-        public int Count => _count ??= _data.Count();
+        public int Count => _count ??= _events.Count();
 
-        internal Tick(int id, IEnumerable<ITickData> datum)
+        internal Tick(int id, IEnumerable<ISimulationEvent> datum)
         {
             this.Id = id;
 
-            _data = datum;
+            _events = datum;
         }
 
         public static Tick Empty(int id)
         {
-            return new Tick(id, Enumerable.Empty<ITickData>());
+            return new Tick(id, Enumerable.Empty<ISimulationEvent>());
         }
     }
 }

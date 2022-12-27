@@ -16,12 +16,13 @@ using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Library;
 using VoidHuntersRevived.Library.Components;
 using VoidHuntersRevived.Library.Mappers;
+using VoidHuntersRevived.Library.Systems;
 using static VoidHuntersRevived.Library.Helpers.EntityHelper;
 
 namespace VoidHuntersRevived.Client.Library.Systems
 {
-    [GuppyFilter(typeof(GameGuppy))]
-    internal sealed class LocalCurrentUserSystem : EntitySystem, ISubscriber<Step>, ISortable, IDrawSystem
+    internal sealed class LocalCurrentUserSystem : EntitySystem, ILockstepSimulationSystem,
+        ISubscriber<Step>, ISortable, IDrawSystem
     {
         private readonly PilotIdMap _pilotIdMap;
         private readonly ClientPeer _client;

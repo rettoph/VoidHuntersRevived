@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Library.Messages
 {
-    public sealed class GameStateEnd : Message
+    public sealed class SimulationStateTick : Message
     {
-        public readonly int LastTickId;
+        public readonly Tick Tick;
 
-        public GameStateEnd(int lastTickId)
+        public SimulationStateTick(Tick tick)
         {
-            this.LastTickId = lastTickId;
+            this.Tick = tick;
         }
     }
 }

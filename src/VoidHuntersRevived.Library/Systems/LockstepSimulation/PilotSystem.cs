@@ -13,10 +13,9 @@ using VoidHuntersRevived.Library.Components;
 using VoidHuntersRevived.Library.Mappers;
 using VoidHuntersRevived.Library.Messages.Inputs;
 
-namespace VoidHuntersRevived.Library.Systems
+namespace VoidHuntersRevived.Library.Systems.LockstepSimulation
 {
-    [GuppyFilter(typeof(GameGuppy))]
-    internal sealed class PilotSystem : EntitySystem, ISubscriber<PilotDirectionInput>
+    internal sealed class PilotSystem : EntitySystem, ILockstepSimulationSystem, ISubscriber<PilotDirectionInput>
     {
         private PilotIdMap _pilotMap;
         private ComponentMapper<Piloting> _pilotings;
@@ -48,7 +47,7 @@ namespace VoidHuntersRevived.Library.Systems
 
             var pilotable = _pilotables.Get(piloting.PilotableId.Value);
 
-            if(pilotable is null)
+            if (pilotable is null)
             {
                 piloting.PilotableId = null;
                 return;

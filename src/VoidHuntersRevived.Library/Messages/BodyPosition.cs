@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Library.Messages
 {
-    public sealed class BodyPosition : Message, ITickData
+    public sealed class BodyPosition : Message, ISimulationEvent
     {
         public readonly int Id;
         public readonly Vector2 Position;

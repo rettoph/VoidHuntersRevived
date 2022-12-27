@@ -1,5 +1,10 @@
-﻿using Guppy.Common;
+﻿using Guppy.Attributes;
+using Guppy.Common;
+using Guppy.Common.Extensions;
 using Guppy.Common.Implementations;
+using Guppy.Common.Providers;
+using Guppy.ECS.Providers;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,12 +13,24 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Library.Simulations
 {
-    public abstract class Simulation
+    [GuppyFilter<GameGuppy>()]
+    public abstract class Simulation : Broker
     {
-        public readonly IBus Bus;
+        public World World { get; }
+        public abstract SimulationType Type { get; }
+        public abstract AetherWorld Aether { get; }
 
-        protected Simulation()
+        protected Simulation(IWorldProvider worldProvider, IFilteredProvider filteredProvider)
         {
+            object? configuration = this.Type;
+
+            this.World = worldProvider.Get(configuration);
+
+            var subscribers = filteredProvider.Instances<ISubscriber>(configuration);
+            foreach(ISubscriber subscriber in subscribers)
+            {
+                this.SubscribeAll(subscriber);
+            }
         }
     }
 }

@@ -18,11 +18,10 @@ using VoidHuntersRevived.Library.Factories;
 using VoidHuntersRevived.Library.Messages;
 using VoidHuntersRevived.Library.Services;
 
-namespace VoidHuntersRevived.Library.Systems
+namespace VoidHuntersRevived.Library.Systems.LockstepSimulation
 {
-    [GuppyFilter(typeof(GameGuppy))]
     [NetAuthorizationFilter(NetAuthorization.Slave)]
-    internal sealed class TickRemoteSlaveSystem : ISystem, ISubscriber<Tick>
+    internal sealed class TickRemoteSlaveSystem : ISystem, ILockstepSimulationSystem, ISubscriber<Tick>
     {
         private NetScope _netScope;
         private IBus _bus;

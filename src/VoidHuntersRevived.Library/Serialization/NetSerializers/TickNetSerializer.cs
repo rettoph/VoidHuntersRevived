@@ -32,14 +32,14 @@ namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 
             if(count == 0)
             {
-                return new Tick(id, Enumerable.Empty<ITickData>());
+                return new Tick(id, Enumerable.Empty<ISimulationEvent>());
             }
 
-            var items = new List<ITickData>(count);
+            var items = new List<ISimulationEvent>(count);
 
             for (var i = 0; i < count; i++)
             {
-                if(_serializers.Deserialize(reader) is ITickData data)
+                if(_serializers.Deserialize(reader) is ISimulationEvent data)
                 {
                     items.Add(data);
                 }
@@ -54,11 +54,11 @@ namespace VoidHuntersRevived.Library.Serialization.NetSerializers
         {
             writer.Put(instance.Id);
 
-            var count = (byte)instance.Data.Count();
+            var count = (byte)instance.Events.Count();
 
             writer.Put(count);
 
-            foreach (ITickData data in instance.Data)
+            foreach (ISimulationEvent data in instance.Events)
             {
                 _serializers.Serialize(writer, data);
             }
