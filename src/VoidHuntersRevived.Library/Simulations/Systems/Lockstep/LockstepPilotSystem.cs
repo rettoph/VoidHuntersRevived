@@ -11,17 +11,17 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Components;
 using VoidHuntersRevived.Library.Mappers;
-using VoidHuntersRevived.Library.Messages.Inputs;
+using VoidHuntersRevived.Library.Simulations.EventData.Inputs;
 
-namespace VoidHuntersRevived.Library.Systems.LockstepSimulation
+namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
 {
-    internal sealed class PilotSystem : EntitySystem, ILockstepSimulationSystem, ISubscriber<PilotDirectionInput>
+    internal sealed class LockstepPilotSystem : EntitySystem, ILockstepSimulationSystem, ISubscriber<PilotDirectionInput>
     {
         private PilotIdMap _pilotMap;
         private ComponentMapper<Piloting> _pilotings;
         private ComponentMapper<Pilotable> _pilotables;
 
-        public PilotSystem(PilotIdMap pilotIdMap) : base(Aspect.All(typeof(Piloting)))
+        public LockstepPilotSystem(PilotIdMap pilotIdMap) : base(Aspect.All(typeof(Piloting)))
         {
             _pilotMap = pilotIdMap;
             _pilotings = default!;

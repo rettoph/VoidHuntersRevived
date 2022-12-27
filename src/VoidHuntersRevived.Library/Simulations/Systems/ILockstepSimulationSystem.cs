@@ -6,9 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Simulations;
 
-namespace VoidHuntersRevived.Library.Systems
+namespace VoidHuntersRevived.Library.Simulations.Systems
 {
-    [ConfigurationFilter(SimulationType.Lockstep)]
     [GuppyFilter<GameGuppy>()]
     public interface ILockstepSimulationSystem
     {

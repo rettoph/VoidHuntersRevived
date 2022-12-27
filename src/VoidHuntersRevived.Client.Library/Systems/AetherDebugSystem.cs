@@ -16,9 +16,10 @@ using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Diagnostics;
 using VoidHuntersRevived.Client.Library.Services;
-using VoidHuntersRevived.Library;
+using VoidHuntersRevived.Library.Games;
 using VoidHuntersRevived.Library.Messages;
-using VoidHuntersRevived.Library.Systems;
+using VoidHuntersRevived.Library.Simulations.EventTypes;
+using VoidHuntersRevived.Library.Simulations.Systems;
 
 namespace VoidHuntersRevived.Client.Library.Systems
 {
@@ -26,7 +27,7 @@ namespace VoidHuntersRevived.Client.Library.Systems
         ISubscriber<Tick>, 
         ISubscriber<BodyPosition>
     {
-        private readonly AetherWorld _aether;
+        private readonly LockstepSimulation _lockstep;
         private readonly DebugView _debug;
         private readonly GraphicsDevice _graphics;
         private readonly ContentManager _content;
@@ -36,20 +37,20 @@ namespace VoidHuntersRevived.Client.Library.Systems
 
         public AetherDebugSystem(
             Camera2D camera, 
-            AetherWorld aether, 
+            LockstepSimulation lockstep, 
             GraphicsDevice graphics, 
             ContentManager content,
             PrimitiveBatch<VertexPositionColor> primitiveBatch,
             Lazy<AetherBodyPositionDebugService> bodyPositionDebugService)
         {
             _camera = camera;
-            _aether = aether;
+            _lockstep = lockstep;
             _graphics = graphics;
             _content = content;
             _primitiveBatch = primitiveBatch;
             _bodyPositionDebugService = bodyPositionDebugService;
 
-            _debug = new DebugView(_aether);
+            _debug = new DebugView(_lockstep.Aether);
         }
 
         public override void Initialize(World world)
@@ -64,13 +65,13 @@ namespace VoidHuntersRevived.Client.Library.Systems
             _debug.RenderDebugData(_camera.Projection, _camera.View);
 
             _primitiveBatch.Begin(_camera);
-            // _bodyPositionDebugService.Value.Draw(_primitiveBatch);
+            _bodyPositionDebugService.Value.Draw(_primitiveBatch);
             _primitiveBatch.End();
         }
 
         public void Process(in Tick message)
         {
-            foreach(var body in _aether.BodyList)
+            foreach(var body in _lockstep.Aether.BodyList)
             {
                 _bodyPositionDebugService.Value.AddPosition(true, body.GetHashCode(), body.Position);
             }

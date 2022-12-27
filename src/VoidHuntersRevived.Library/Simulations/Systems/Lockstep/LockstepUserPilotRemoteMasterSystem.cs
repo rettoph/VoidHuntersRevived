@@ -20,17 +20,17 @@ using VoidHuntersRevived.Library.Attributes;
 using LiteNetLib;
 using Serilog;
 
-namespace VoidHuntersRevived.Library.Systems.LockstepSimulation
+namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
 {
     [NetAuthorizationFilter(NetAuthorization.Master)]
-    internal sealed class UserPilotRemoteMasterSystem : ISystem, ILockstepSimulationSystem
+    internal sealed class LockstepUserPilotRemoteMasterSystem : ISystem, ILockstepSimulationSystem
     {
         private readonly NetScope _netScope;
         private readonly ITickFactory _tickFactory;
         private readonly SimulationState _state;
         private readonly ILogger _log;
 
-        public UserPilotRemoteMasterSystem(
+        public LockstepUserPilotRemoteMasterSystem(
             NetScope netScope,
             SimulationState state,
             ITickFactory tickFactory,

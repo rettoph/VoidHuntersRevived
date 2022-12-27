@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Enums;
-using VoidHuntersRevived.Library.Messages.Inputs;
+using VoidHuntersRevived.Library.Simulations.EventData.Inputs;
 
 namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 {

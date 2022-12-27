@@ -12,18 +12,19 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Attributes;
 using VoidHuntersRevived.Library.Factories;
 using VoidHuntersRevived.Library.Mappers;
-using VoidHuntersRevived.Library.Messages.Inputs;
+using VoidHuntersRevived.Library.Simulations.EventData;
+using VoidHuntersRevived.Library.Simulations.EventData.Inputs;
 
-namespace VoidHuntersRevived.Library.Systems.LockstepSimulation
+namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
 {
     [NetAuthorizationFilter(NetAuthorization.Master)]
-    internal sealed class UserRemoteMasterSystem : ISystem, ILockstepSimulationSystem,
+    internal sealed class LockstepUserRemoteMasterSystem : ISystem, ILockstepSimulationSystem,
         ISubscriber<INetIncomingMessage<DirectionInput>>
     {
         private readonly PilotIdMap _userPilotMap;
         private readonly ITickFactory _tickFactory;
 
-        public UserRemoteMasterSystem(PilotIdMap userPilotMap, ITickFactory tickFactory)
+        public LockstepUserRemoteMasterSystem(PilotIdMap userPilotMap, ITickFactory tickFactory)
         {
             _tickFactory = tickFactory;
             _userPilotMap = userPilotMap;

@@ -23,8 +23,8 @@ using VoidHuntersRevived.Library.Messages;
 using VoidHuntersRevived.Library.Providers;
 using VoidHuntersRevived.Library.Serialization.Json.Converters;
 using VoidHuntersRevived.Library.Services;
+using VoidHuntersRevived.Library.Simulations.EventData;
 using VoidHuntersRevived.Library.Subscribers;
-using VoidHuntersRevived.Library.Systems;
 
 namespace VoidHuntersRevived.Library.Loaders
 {
@@ -39,9 +39,7 @@ namespace VoidHuntersRevived.Library.Loaders
                     .AddInterfaceAliases();
 
                 manager.AddScoped<PredictiveSimulation>();
-
-                manager.AddScoped<LockstepSimulation>()
-                    .AddAlias<ISubscriber>();
+                manager.AddScoped<LockstepSimulation>();
 
                 manager.AddScoped<StepService>()
                     .AddInterfaceAliases();
@@ -72,7 +70,7 @@ namespace VoidHuntersRevived.Library.Loaders
                     .AddFilter(new SettingFilter<NetAuthorization, TickLocalProvider>(NetAuthorization.Master))
                     .AddFilter(new SettingFilter<NetAuthorization, TickRemoteProvider>(NetAuthorization.Slave));
 
-            services.AddSingleton<JsonConverter, PolymorphicJsonConverter<ISimulationEvent>>()
+            services.AddSingleton<JsonConverter, PolymorphicJsonConverter<ISimulationEventData>>()
                     .AddSingleton<JsonConverter, TickJsonConverter>();
 
             services.Configure<LoggerConfiguration>(config =>

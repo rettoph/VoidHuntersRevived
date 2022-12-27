@@ -10,6 +10,7 @@ using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Messages;
+using VoidHuntersRevived.Library.Simulations.EventTypes;
 
 namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 {

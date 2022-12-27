@@ -16,24 +16,25 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Attributes;
 using VoidHuntersRevived.Library.Components;
+using VoidHuntersRevived.Library.Games;
 using VoidHuntersRevived.Library.Helpers;
 using VoidHuntersRevived.Library.Mappers;
 using VoidHuntersRevived.Library.Messages;
 
-namespace VoidHuntersRevived.Library.Systems.LockstepSimulation
+namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
 {
-    internal sealed class UserPilotSystem : EntitySystem, ILockstepSimulationSystem, ISubscriber<UserPilot>
+    internal sealed class LockstepUserPilotSystem : EntitySystem, ILockstepSimulationSystem, ISubscriber<UserPilot>
     {
         private readonly IUserProvider _userProvider;
         private World _world;
         private ComponentMapper<User> _users;
         private ComponentMapper<Piloting> _pilotings;
         private readonly PilotIdMap _pilotMap;
-        private readonly AetherWorld _aether;
+        private readonly LockstepSimulation _simulation;
 
-        public UserPilotSystem(
+        public LockstepUserPilotSystem(
             PilotIdMap userPilotMap,
-            AetherWorld aether,
+            LockstepSimulation simulation,
             IUserProvider userProvider) : base(Aspect.All(typeof(User), typeof(Piloting)))
         {
             _userProvider = userProvider;
@@ -41,7 +42,7 @@ namespace VoidHuntersRevived.Library.Systems.LockstepSimulation
             _users = default!;
             _pilotings = default!;
             _pilotMap = userPilotMap;
-            _aether = aether;
+            _simulation = simulation;
         }
 
         public override void Initialize(World world)
@@ -87,7 +88,7 @@ namespace VoidHuntersRevived.Library.Systems.LockstepSimulation
             {
                 case UserAction.Actions.UserJoined:
                     var pilot = EntityHelper.Pilots.CreateUserPilot(_world, user);
-                    var ship = EntityHelper.Rootables.CreateShip(_world, _aether.CreateRectangle(1, 1, 1, Vector2.Zero, 0, AetherBodyType.Dynamic));
+                    var ship = EntityHelper.Rootables.CreateShip(_world, _simulation.Aether.CreateRectangle(1, 1, 1, Vector2.Zero, 0, AetherBodyType.Dynamic));
 
                     _pilotings.Get(pilot).PilotableId = ship.Id;
                     break;

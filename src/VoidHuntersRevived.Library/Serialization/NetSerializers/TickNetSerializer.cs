@@ -10,6 +10,8 @@ using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Messages;
+using VoidHuntersRevived.Library.Simulations.EventData;
+using VoidHuntersRevived.Library.Simulations.EventTypes;
 
 namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 {
@@ -32,14 +34,14 @@ namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 
             if(count == 0)
             {
-                return new Tick(id, Enumerable.Empty<ISimulationEvent>());
+                return new Tick(id, Enumerable.Empty<ISimulationEventData>());
             }
 
-            var items = new List<ISimulationEvent>(count);
+            var items = new List<ISimulationEventData>(count);
 
             for (var i = 0; i < count; i++)
             {
-                if(_serializers.Deserialize(reader) is ISimulationEvent data)
+                if(_serializers.Deserialize(reader) is ISimulationEventData data)
                 {
                     items.Add(data);
                 }
@@ -54,11 +56,11 @@ namespace VoidHuntersRevived.Library.Serialization.NetSerializers
         {
             writer.Put(instance.Id);
 
-            var count = (byte)instance.Events.Count();
+            var count = (byte)instance.EventData.Count();
 
             writer.Put(count);
 
-            foreach (ISimulationEvent data in instance.Events)
+            foreach (ISimulationEventData data in instance.EventData)
             {
                 _serializers.Serialize(writer, data);
             }

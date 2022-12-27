@@ -1,10 +1,13 @@
-﻿using Guppy.Common.Providers;
+﻿using Guppy.Common;
+using Guppy.Common.Providers;
 using Guppy.ECS.Providers;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Library.Constants;
 using VoidHuntersRevived.Library.Simulations;
 
 namespace VoidHuntersRevived.Library.Games
@@ -15,7 +18,7 @@ namespace VoidHuntersRevived.Library.Games
 
         public override AetherWorld Aether => throw new NotImplementedException();
 
-        public PredictiveSimulation(IWorldProvider worldProvider, IFilteredProvider filteredProvider) : base(worldProvider, filteredProvider)
+        public PredictiveSimulation() : base()
         {
         }
     }

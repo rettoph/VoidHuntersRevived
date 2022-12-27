@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Constants;
 using VoidHuntersRevived.Library.Enums;
-using VoidHuntersRevived.Library.Messages.Inputs;
+using VoidHuntersRevived.Library.Simulations.EventData.Inputs;
 
 namespace VoidHuntersRevived.Library.Loaders
 {

@@ -16,7 +16,7 @@ using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Library;
 using VoidHuntersRevived.Library.Components;
 using VoidHuntersRevived.Library.Mappers;
-using VoidHuntersRevived.Library.Systems;
+using VoidHuntersRevived.Library.Simulations.Systems;
 using static VoidHuntersRevived.Library.Helpers.EntityHelper;
 
 namespace VoidHuntersRevived.Client.Library.Systems
@@ -40,13 +40,14 @@ namespace VoidHuntersRevived.Client.Library.Systems
             _camera = camera;
             _pilots = default!;
             _bodies = default!;
-            _gameTime = new GameTime();
 
             _camera.Zoom = 100;
         }
 
         public void Draw(GameTime gameTime)
         {
+            this.UpdateCameraTargets(gameTime);
+
             _camera.Update(gameTime);
         }
 
@@ -73,6 +74,11 @@ namespace VoidHuntersRevived.Client.Library.Systems
 
         public void Process(in Step message)
         {
+            this.UpdateCameraTargets(message);
+        }
+
+        private void UpdateCameraTargets(GameTime gameTime)
+        {
             var currentUserId = _client.Users.Current?.Id;
             if (currentUserId is null)
             {
@@ -98,10 +104,6 @@ namespace VoidHuntersRevived.Client.Library.Systems
 
             _camera.TargetPosition = body.Position;
             _camera.TargetVelocity = body.LinearVelocity;
-
-            _gameTime.ElapsedGameTime += message.Interval;
-            _gameTime.TotalGameTime += message.Interval;
         }
-
     }
 }

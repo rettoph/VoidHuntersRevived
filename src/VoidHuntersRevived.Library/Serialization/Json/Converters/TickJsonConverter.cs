@@ -6,6 +6,8 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Library.Simulations.EventData;
+using VoidHuntersRevived.Library.Simulations.EventTypes;
 
 namespace VoidHuntersRevived.Library.Serialization.Json.Converters
 {
@@ -20,7 +22,7 @@ namespace VoidHuntersRevived.Library.Serialization.Json.Converters
         public override Tick? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             int id = default;
-            List<ISimulationEvent> datum = new();
+            List<ISimulationEventData> datum = new();
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -34,7 +36,7 @@ namespace VoidHuntersRevived.Library.Serialization.Json.Converters
                         break;
                     case Properties.Data:
                         datum.AddRange(
-                            collection : JsonSerializer.Deserialize<IEnumerable<ISimulationEvent>>(ref reader, options) ?? Enumerable.Empty<ISimulationEvent>()
+                            collection : JsonSerializer.Deserialize<IEnumerable<ISimulationEventData>>(ref reader, options) ?? Enumerable.Empty<ISimulationEventData>()
                         );
 
                         reader.Read();
@@ -54,7 +56,7 @@ namespace VoidHuntersRevived.Library.Serialization.Json.Converters
             writer.WriteNumber(Properties.Id, value.Id);
 
             writer.WritePropertyName(Properties.Data);
-            JsonSerializer.Serialize<IEnumerable<ISimulationEvent>>(writer, value.Events, options);
+            JsonSerializer.Serialize<IEnumerable<ISimulationEventData>>(writer, value.EventData, options);
 
             writer.WriteEndObject();
         }

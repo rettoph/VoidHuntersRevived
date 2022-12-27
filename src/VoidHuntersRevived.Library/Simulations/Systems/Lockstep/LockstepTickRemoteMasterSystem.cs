@@ -2,8 +2,11 @@
 using Guppy.Common;
 using Guppy.Network;
 using Guppy.Network.Enums;
+using Guppy.Network.Extensions.Identity;
 using Guppy.Network.Identity;
+using Guppy.Network.Identity.Enums;
 using Guppy.Network.Identity.Services;
+using Guppy.Network.Messages;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
@@ -17,42 +20,35 @@ using VoidHuntersRevived.Library.Attributes;
 using VoidHuntersRevived.Library.Factories;
 using VoidHuntersRevived.Library.Messages;
 using VoidHuntersRevived.Library.Services;
+using VoidHuntersRevived.Library.Simulations.EventTypes;
 
-namespace VoidHuntersRevived.Library.Systems.LockstepSimulation
+namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
 {
-    [NetAuthorizationFilter(NetAuthorization.Slave)]
-    internal sealed class TickRemoteSlaveSystem : ISystem, ILockstepSimulationSystem, ISubscriber<Tick>
+    [NetAuthorizationFilter(NetAuthorization.Master)]
+    internal sealed class LockstepTickRemoteMasterSystem : ISystem, ILockstepSimulationSystem, ISubscriber<Tick>
     {
-        private NetScope _netScope;
-        private IBus _bus;
-        private ITickService _ticks;
-        private ITickFactory _tickFactory;
+        private readonly NetScope _netScope;
 
-        public TickRemoteSlaveSystem(
-            NetScope netScope,
-            IBus bus,
-            ITickService ticks,
-            ITickFactory tickFactory)
+        public LockstepTickRemoteMasterSystem(NetScope netScope)
         {
             _netScope = netScope;
-            _bus = bus;
-            _ticks = ticks;
-            _tickFactory = tickFactory;
         }
 
         public void Initialize(World world)
         {
-            _bus.Subscribe(this);
+            // throw new NotImplementedException();
         }
 
         public void Dispose()
         {
-            _bus.Unsubscribe(this);
+            // throw new NotImplementedException();
         }
-
 
         public void Process(in Tick tick)
         {
+            _netScope.Create(in tick)
+                .AddRecipients(_netScope.Users.Peers)
+                .Enqueue();
         }
     }
 }

@@ -15,21 +15,10 @@ using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Client.Library
 {
-    public sealed class ClientGameGuppy : GameGuppy, IDisposable
+    public sealed class ClientGameGuppy : GameGuppy
     {
-        public ClientGameGuppy(NetScope netScope, LockstepSimulation lockstepSimulation, IGameComponentService components) : base(netScope, lockstepSimulation, components)
+        public ClientGameGuppy(World world, NetScope netScope, LockstepSimulation lockstepSimulation, IGameComponentService components) : base(world, netScope, lockstepSimulation, components)
         {
-        }
-
-        public void Dispose()
-        {
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-
-            this.LockstepSimulation.World.Draw(gameTime);
         }
     }
 }

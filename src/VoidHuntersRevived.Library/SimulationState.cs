@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Constants;
+using VoidHuntersRevived.Library.Simulations.EventData;
+using VoidHuntersRevived.Library.Simulations.EventTypes;
 
 namespace VoidHuntersRevived.Library
 {
@@ -49,7 +51,7 @@ namespace VoidHuntersRevived.Library
                 return false;
             }
 
-            _bus.Publish(_step);
+            _bus.Publish(_step.Increment());
             _stepsSinceTick += 1;
             this.LastStep++;
 
@@ -88,6 +90,11 @@ namespace VoidHuntersRevived.Library
             { // Only cache historical ticks if something actually happened
                 _history.Add(tick);
                 _bus.Publish(tick);
+
+                foreach(ISimulationEventData eventData in tick.EventData)
+                {
+                    _bus.Publish(eventData);
+                }
             }
 
             _stepsSinceTick = 0;

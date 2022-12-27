@@ -10,19 +10,21 @@ using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Library.Attributes;
 using VoidHuntersRevived.Library.Factories;
+using VoidHuntersRevived.Library.Games;
 using VoidHuntersRevived.Library.Messages;
+using VoidHuntersRevived.Library.Simulations.EventTypes;
 
-namespace VoidHuntersRevived.Library.Systems.LockstepSimulation
+namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
 {
     [NetAuthorizationFilter(NetAuthorization.Master)]
-    internal sealed class AetherDebugRemoteMasterSystem : ISystem, ILockstepSimulationSystem, ISubscriber<Tick>
+    internal sealed class LockstepAetherDebugRemoteMasterSystem : ISystem, ILockstepSimulationSystem, ISubscriber<Tick>
     {
         private readonly ITickFactory _tickFactory;
-        private AetherWorld _aether;
+        private LockstepSimulation _simulation;
 
-        public AetherDebugRemoteMasterSystem(AetherWorld aether, ITickFactory tickFactory)
+        public LockstepAetherDebugRemoteMasterSystem(LockstepSimulation simulation, ITickFactory tickFactory)
         {
-            _aether = aether;
+            _simulation = simulation;
             _tickFactory = tickFactory;
         }
 
@@ -36,9 +38,7 @@ namespace VoidHuntersRevived.Library.Systems.LockstepSimulation
 
         public void Process(in Tick message)
         {
-            return;
-
-            foreach (var body in _aether.BodyList)
+            foreach (var body in _simulation.Aether.BodyList)
             {
                 _tickFactory.Enqueue(new BodyPosition(body.GetHashCode(), body.Position));
             }

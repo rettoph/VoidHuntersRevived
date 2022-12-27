@@ -19,6 +19,7 @@ using VoidHuntersRevived.Library.Constants;
 using VoidHuntersRevived.Library.Enums;
 using VoidHuntersRevived.Library.Factories;
 using VoidHuntersRevived.Library.Messages;
+using VoidHuntersRevived.Library.Simulations.EventTypes;
 
 namespace VoidHuntersRevived.Library.Providers
 {

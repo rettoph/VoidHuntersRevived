@@ -25,10 +25,11 @@ namespace VoidHuntersRevived.Client.Library.Loaders
             {
                 manager.GetService<AetherDebugSystem>()
                     .SetLifetime(ServiceLifetime.Scoped)
-                    .AddAlias<ISystem>();
+                    .AddInterfaceAliases();
 
                 manager.AddService<LocalCurrentUserSystem>()
                     .SetLifetime(ServiceLifetime.Scoped)
+                    .AddAlias<ISubscriber>()
                     .AddAlias<ISystem>(x =>
                     {
                         x.SetOrder(int.MinValue);

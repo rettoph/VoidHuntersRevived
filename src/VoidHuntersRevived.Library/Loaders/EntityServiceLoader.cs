@@ -12,8 +12,7 @@ using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Library.Components;
 using VoidHuntersRevived.Library.Mappers;
-using VoidHuntersRevived.Library.Systems;
-using VoidHuntersRevived.Library.Systems.LockstepSimulation;
+using VoidHuntersRevived.Library.Simulations.Systems.Lockstep;
 
 namespace VoidHuntersRevived.Library.Loaders
 {
@@ -22,43 +21,43 @@ namespace VoidHuntersRevived.Library.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddService<TickRemoteMasterSystem>()
+            services.AddService<LockstepTickRemoteMasterSystem>()
                 .SetLifetime(ServiceLifetime.Scoped)
                 .AddInterfaceAliases();
 
-            services.AddService<TickRemoteSlaveSystem>()
+            services.AddService<LockstepTickRemoteSlaveSystem>()
                 .SetLifetime(ServiceLifetime.Scoped)
                 .AddInterfaceAliases();
 
-            services.AddService<PilotSystem>()
+            services.AddService<LockstepPilotSystem>()
                 .SetLifetime(ServiceLifetime.Scoped)
                 .AddInterfaceAliases();
 
-            services.AddService<UserPilotSystem>()
+            services.AddService<LockstepUserPilotSystem>()
                 .SetLifetime(ServiceLifetime.Scoped)
                 .AddInterfaceAliases();
 
-            services.AddService<UserPilotRemoteMasterSystem>()
+            services.AddService<LockstepUserPilotRemoteMasterSystem>()
                 .SetLifetime(ServiceLifetime.Scoped)
                 .AddInterfaceAliases();
 
-            services.AddService<CurrentUserRemoteSlaveSystem>()
+            services.AddService<LockstepCurrentUserRemoteSlaveSystem>()
                 .SetLifetime(ServiceLifetime.Scoped)
                 .AddInterfaceAliases();
 
-            services.AddService<UserRemoteMasterSystem>()
+            services.AddService<LockstepUserRemoteMasterSystem>()
                 .SetLifetime(ServiceLifetime.Scoped)
                 .AddInterfaceAliases();
 
-            services.AddService<PilotableAetherSystem>()
+            services.AddService<LockstepPilotableAetherSystem>()
                 .SetLifetime(ServiceLifetime.Scoped)
                 .AddInterfaceAliases();
 
-            services.AddService<AetherSystem>()
+            services.AddService<LockstepAetherSystem>()
                 .SetLifetime(ServiceLifetime.Scoped)
                 .AddInterfaceAliases();
 
-            services.AddService<AetherDebugRemoteMasterSystem>()
+            services.AddService<LockstepAetherDebugRemoteMasterSystem>()
                 .SetLifetime(ServiceLifetime.Scoped)
                 .AddInterfaceAliases();
 

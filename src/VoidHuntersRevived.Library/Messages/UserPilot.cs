@@ -6,10 +6,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Library.Simulations.EventData;
 
 namespace VoidHuntersRevived.Library.Messages
 {
-    public class UserPilot : Message, ISimulationEvent
+    public class UserPilot : Message, ISimulationEventData
     {
         public UserAction User { get; }
 

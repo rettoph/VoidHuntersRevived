@@ -16,6 +16,7 @@ using VoidHuntersRevived.Library.Constants;
 using VoidHuntersRevived.Library.Messages;
 using VoidHuntersRevived.Library.Providers;
 using VoidHuntersRevived.Library.Services;
+using VoidHuntersRevived.Library.Simulations.EventTypes;
 
 namespace VoidHuntersRevived.Client.Library.Debuggers
 {
@@ -158,7 +159,7 @@ namespace VoidHuntersRevived.Client.Library.Debuggers
         public void Process(in Tick message)
         {
             // Only track ticks with data
-            if (!message.Events.Any())
+            if (!message.EventData.Any())
             {
                 return;
             }

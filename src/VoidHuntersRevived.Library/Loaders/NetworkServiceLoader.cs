@@ -9,7 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Constants;
 using VoidHuntersRevived.Library.Messages;
-using VoidHuntersRevived.Library.Messages.Inputs;
+using VoidHuntersRevived.Library.Simulations.EventData.Inputs;
+using VoidHuntersRevived.Library.Simulations.EventTypes;
 
 namespace VoidHuntersRevived.Library.Loaders
 {

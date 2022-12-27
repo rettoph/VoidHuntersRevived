@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Components;
 using VoidHuntersRevived.Library.Enums;
 
-namespace VoidHuntersRevived.Library.Systems.LockstepSimulation
+namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
 {
-    internal sealed class PilotableAetherSystem : EntityProcessingSystem, ILockstepSimulationSystem
+    internal sealed class LockstepPilotableAetherSystem : LockstepEntityProcessingSystem, ILockstepSimulationSystem
     {
         private ComponentMapper<Pilotable> _pilotables;
         private ComponentMapper<AetherBody> _bodies;
 
-        public PilotableAetherSystem() : base(Aspect.All(typeof(AetherBody), typeof(Pilotable)))
+        public LockstepPilotableAetherSystem() : base(Aspect.All(typeof(AetherBody), typeof(Pilotable)))
         {
             _pilotables = default!;
             _bodies = default!;

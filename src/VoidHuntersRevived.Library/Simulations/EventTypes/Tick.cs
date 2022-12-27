@@ -9,33 +9,25 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Library.Simulations.EventData;
 
-namespace VoidHuntersRevived.Library
+namespace VoidHuntersRevived.Library.Simulations.EventTypes
 {
-    public class Tick : Message, IMessage
+    public class Tick : EventType
     {
         public const int MinimumValidId = 1;
         public const int MaximumInvalidId = MinimumValidId - 1;
 
-        private readonly IEnumerable<ISimulationEvent> _events;
-        private int? _count;
-
         public int Id { get; }
 
-        public IEnumerable<ISimulationEvent> Events => _events;
-
-        public int Count => _count ??= _events.Count();
-
-        internal Tick(int id, IEnumerable<ISimulationEvent> datum)
+        internal Tick(int id, IEnumerable<ISimulationEventData> eventData) : base(eventData)
         {
-            this.Id = id;
-
-            _events = datum;
+            Id = id;
         }
 
         public static Tick Empty(int id)
         {
-            return new Tick(id, Enumerable.Empty<ISimulationEvent>());
+            return new Tick(id, Enumerable.Empty<ISimulationEventData>());
         }
     }
 }

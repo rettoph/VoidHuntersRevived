@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Enums;
 
-namespace VoidHuntersRevived.Library.Messages.Inputs
+namespace VoidHuntersRevived.Library.Simulations.EventData.Inputs
 {
-    public class PilotDirectionInput : DirectionInput, ISimulationEvent
+    public class PilotDirectionInput : DirectionInput, ISimulationEventData
     {
         public INetId PilotId { get; }
 

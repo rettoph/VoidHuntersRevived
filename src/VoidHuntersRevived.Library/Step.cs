@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,13 +8,21 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Library
 {
-    public class Step : Message, IMessage
+    public class Step : GameTime, IMessage
     {
-        public readonly TimeSpan Interval;
+        public Type Type { get; } = typeof(Step);
 
         public Step(TimeSpan interval)
         {
-            Interval = interval;
+            this.ElapsedGameTime = interval;
+            this.TotalGameTime = TimeSpan.Zero;
+        }
+
+        internal Step Increment()
+        {
+            this.TotalGameTime += this.ElapsedGameTime;
+
+            return this;
         }
     }
 }

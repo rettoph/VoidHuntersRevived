@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Library.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<AetherWorld>(p => new AetherWorld(Vector2.Zero));
+            // services.AddScoped<AetherWorld>(p => new AetherWorld(Vector2.Zero));
         }
     }
 }

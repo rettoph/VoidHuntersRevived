@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Library
+namespace VoidHuntersRevived.Library.Simulations.EventData
 {
-    public interface ISimulationEvent : IMessage
+    public interface ISimulationEventData : IMessage
     {
     }
 }

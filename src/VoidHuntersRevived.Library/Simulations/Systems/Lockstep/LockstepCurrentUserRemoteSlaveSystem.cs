@@ -11,17 +11,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Attributes;
-using VoidHuntersRevived.Library.Messages.Inputs;
+using VoidHuntersRevived.Library.Simulations.EventData.Inputs;
 
-namespace VoidHuntersRevived.Library.Systems.LockstepSimulation
+namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
 {
     [NetAuthorizationFilter(NetAuthorization.Slave)]
-    internal sealed class CurrentUserRemoteSlaveSystem : ISystem, ILockstepSimulationSystem, ISubscriber<DirectionInput>
+    internal sealed class LockstepCurrentUserRemoteSlaveSystem : ISystem, ILockstepSimulationSystem, ISubscriber<DirectionInput>
     {
-        private IBus _bus;
-        private NetScope _scope;
+        private readonly IBus _bus;
+        private readonly NetScope _scope;
 
-        public CurrentUserRemoteSlaveSystem(NetScope scope, IBus bus)
+        public LockstepCurrentUserRemoteSlaveSystem(NetScope scope, IBus bus)
         {
             _scope = scope;
             _bus = bus;
@@ -34,6 +34,8 @@ namespace VoidHuntersRevived.Library.Systems.LockstepSimulation
 
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
+
             _bus.Unsubscribe(this);
         }
 

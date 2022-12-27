@@ -19,14 +19,17 @@ namespace VoidHuntersRevived.Library
 {
     public class GameGuppy : FrameableGuppy
     {
+        public readonly World World;
         public readonly NetScope NetScope;
         public readonly LockstepSimulation LockstepSimulation;
 
         public GameGuppy(
+            World world,
             NetScope netScope,
             LockstepSimulation lockstepSimulation,
             IGameComponentService components) : base(components)
         {
+            this.World = world;
             this.NetScope = netScope;
             this.LockstepSimulation = lockstepSimulation;
 
@@ -36,11 +39,15 @@ namespace VoidHuntersRevived.Library
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
+
+            this.World.Draw(gameTime);
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            this.World.Update(gameTime);
         }
     }
 }
