@@ -28,5 +28,10 @@ namespace VoidHuntersRevived.Library.Games
         public LockstepSimulation()
         {
         }
+
+        protected override void Update(GameTime gameTime)
+        {
+            // throw new NotImplementedException();
+        }
     }
 }

@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Library;
 using VoidHuntersRevived.Library.Games;
 using VoidHuntersRevived.Library.Services;
+using VoidHuntersRevived.Library.Simulations;
 using VoidHuntersRevived.Library.Simulations.EventTypes;
 
 namespace VoidHuntersRevived.Server
@@ -21,12 +22,13 @@ namespace VoidHuntersRevived.Server
     public sealed class ServerGameGuppy : GameGuppy
     {
         public ServerGameGuppy(
-            World world, 
+            Lazy<World> world, 
+            Lazy<IBus> bus,
             SimulationState state, 
-            NetScope netScope, 
-            LockstepSimulation lockstepSimulation, 
+            NetScope netScope,
+            ISimulationService simulations,
             IJsonSerializer serializer, 
-            IGameComponentService components) : base(world, netScope, lockstepSimulation, components)
+            IGameComponentService components) : base(world, bus, netScope, simulations, components)
         {
             Console.WriteLine("Server Running!");
 

@@ -12,13 +12,25 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Library;
 using VoidHuntersRevived.Library.Games;
 using VoidHuntersRevived.Library.Services;
+using VoidHuntersRevived.Library.Simulations;
 
 namespace VoidHuntersRevived.Client.Library
 {
     public sealed class ClientGameGuppy : GameGuppy
     {
-        public ClientGameGuppy(World world, NetScope netScope, LockstepSimulation lockstepSimulation, IGameComponentService components) : base(world, netScope, lockstepSimulation, components)
+        protected override SimulationType SimulationFlags => base.SimulationFlags | SimulationType.Predictive;
+        public ClientGameGuppy(
+            Lazy<World> world, 
+            Lazy<IBus> bus, 
+            NetScope netScope,
+            ISimulationService simulations,
+            IGameComponentService components) : base(world, bus, netScope, simulations, components)
         {
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
         }
     }
 }

@@ -14,24 +14,33 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Games;
 using VoidHuntersRevived.Library.Messages;
 using VoidHuntersRevived.Library.Services;
+using VoidHuntersRevived.Library.Simulations;
 
 namespace VoidHuntersRevived.Library
 {
     public class GameGuppy : FrameableGuppy
     {
+        protected virtual SimulationType SimulationFlags => SimulationType.Lockstep;
         public readonly World World;
         public readonly NetScope NetScope;
-        public readonly LockstepSimulation LockstepSimulation;
+        public readonly IBus Bus;
+        public readonly ISimulationService Simulations;
 
         public GameGuppy(
-            World world,
+            Lazy<World> world,
+            Lazy<IBus> bus,
             NetScope netScope,
-            LockstepSimulation lockstepSimulation,
+            ISimulationService simulations,
             IGameComponentService components) : base(components)
         {
-            this.World = world;
             this.NetScope = netScope;
-            this.LockstepSimulation = lockstepSimulation;
+            this.Simulations = simulations;
+
+            this.Simulations.Initialize(this.SimulationFlags);
+            this.World = world.Value;
+            this.Bus = bus.Value;
+
+            this.Bus.Initialize();
 
             this.NetScope.Start(0);
         }
@@ -47,7 +56,11 @@ namespace VoidHuntersRevived.Library
         {
             base.Update(gameTime);
 
+            this.Bus.Flush();
+
             this.World.Update(gameTime);
+
+            this.Simulations.Update(gameTime);
         }
     }
 }

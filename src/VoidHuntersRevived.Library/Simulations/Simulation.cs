@@ -14,10 +14,16 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Library.Simulations
 {
-    [GuppyFilter<GameGuppy>()]
-    public abstract class Simulation
+    public abstract class Simulation : ISimulation
     {
         public abstract SimulationType Type { get; }
         public abstract AetherWorld Aether { get; }
+
+        protected abstract void Update(GameTime gameTime);
+
+        void ISimulation.Update(GameTime gameTime)
+        {
+            this.Update(gameTime);
+        }
     }
 }

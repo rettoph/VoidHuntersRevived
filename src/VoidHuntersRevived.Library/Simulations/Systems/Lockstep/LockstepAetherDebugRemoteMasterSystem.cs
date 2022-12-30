@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
     internal sealed class LockstepAetherDebugRemoteMasterSystem : ISystem, ILockstepSimulationSystem, ISubscriber<Tick>
     {
         private readonly ITickFactory _tickFactory;
-        private LockstepSimulation _simulation;
+        private readonly LockstepSimulation _simulation;
 
         public LockstepAetherDebugRemoteMasterSystem(LockstepSimulation simulation, ITickFactory tickFactory)
         {

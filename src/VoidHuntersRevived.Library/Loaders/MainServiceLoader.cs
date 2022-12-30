@@ -24,7 +24,6 @@ using VoidHuntersRevived.Library.Providers;
 using VoidHuntersRevived.Library.Serialization.Json.Converters;
 using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Simulations.EventData;
-using VoidHuntersRevived.Library.Subscribers;
 
 namespace VoidHuntersRevived.Library.Loaders
 {
@@ -33,26 +32,6 @@ namespace VoidHuntersRevived.Library.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.ConfigureCollection(manager =>
-            {
-                services.AddService<SimulationStateRemoteSlaveSubscriber>()
-                    .AddInterfaceAliases();
-
-                manager.AddScoped<PredictiveSimulation>();
-                manager.AddScoped<LockstepSimulation>();
-
-                manager.AddScoped<StepService>()
-                    .AddInterfaceAliases();
-
-                manager.AddScoped<StepLocalProvider>()
-                    .AddInterfaceAliases();
-
-                manager.AddScoped<StepRemoteProvider>()
-                    .AddInterfaceAliases();
-            });
-
-            services.AddScoped<SimulationState>();
-
             services.AddFilter(new SettingFilter<NetAuthorization, StepLocalProvider>(NetAuthorization.Master))
                     .AddFilter(new SettingFilter<NetAuthorization, StepRemoteProvider>(NetAuthorization.Slave));
 

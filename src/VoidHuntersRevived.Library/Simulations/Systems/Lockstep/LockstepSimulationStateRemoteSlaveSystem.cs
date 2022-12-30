@@ -11,21 +11,30 @@ using VoidHuntersRevived.Library.Attributes;
 using VoidHuntersRevived.Library.Messages;
 using VoidHuntersRevived.Library.Simulations.EventTypes;
 
-namespace VoidHuntersRevived.Library.Subscribers
+namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
 {
-    [GuppyFilter<GameGuppy>()]
     [NetAuthorizationFilter(NetAuthorization.Slave)]
-    internal sealed class SimulationStateRemoteSlaveSubscriber : 
+    internal sealed class LockstepSimulationStateRemoteSlaveSystem : ILockstepSimulationSystem,
         ISubscriber<INetIncomingMessage<SimulationStateTick>>,
         ISubscriber<INetIncomingMessage<SimulationStateEnd>>
     {
         private readonly SimulationState _state;
 
-        public SimulationStateRemoteSlaveSubscriber(SimulationState state)
+        public LockstepSimulationStateRemoteSlaveSystem(SimulationState state)
         {
             _state = state;
 
             _state.BeginRead();
+        }
+
+        public void Initialize(World world)
+        {
+            // throw new NotImplementedException();
+        }
+
+        public void Dispose()
+        {
+            // throw new NotImplementedException();
         }
 
         public void Process(in INetIncomingMessage<SimulationStateTick> message)

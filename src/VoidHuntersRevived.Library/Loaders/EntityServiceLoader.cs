@@ -21,46 +21,6 @@ namespace VoidHuntersRevived.Library.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddService<LockstepTickRemoteMasterSystem>()
-                .SetLifetime(ServiceLifetime.Scoped)
-                .AddInterfaceAliases();
-
-            services.AddService<LockstepTickRemoteSlaveSystem>()
-                .SetLifetime(ServiceLifetime.Scoped)
-                .AddInterfaceAliases();
-
-            services.AddService<LockstepPilotSystem>()
-                .SetLifetime(ServiceLifetime.Scoped)
-                .AddInterfaceAliases();
-
-            services.AddService<LockstepUserPilotSystem>()
-                .SetLifetime(ServiceLifetime.Scoped)
-                .AddInterfaceAliases();
-
-            services.AddService<LockstepUserPilotRemoteMasterSystem>()
-                .SetLifetime(ServiceLifetime.Scoped)
-                .AddInterfaceAliases();
-
-            services.AddService<LockstepCurrentUserRemoteSlaveSystem>()
-                .SetLifetime(ServiceLifetime.Scoped)
-                .AddInterfaceAliases();
-
-            services.AddService<LockstepUserRemoteMasterSystem>()
-                .SetLifetime(ServiceLifetime.Scoped)
-                .AddInterfaceAliases();
-
-            services.AddService<LockstepPilotableAetherSystem>()
-                .SetLifetime(ServiceLifetime.Scoped)
-                .AddInterfaceAliases();
-
-            services.AddService<LockstepAetherSystem>()
-                .SetLifetime(ServiceLifetime.Scoped)
-                .AddInterfaceAliases();
-
-            services.AddService<LockstepAetherDebugRemoteMasterSystem>()
-                .SetLifetime(ServiceLifetime.Scoped)
-                .AddInterfaceAliases();
-
             services.AddScoped<PilotIdMap>();
         }
     }

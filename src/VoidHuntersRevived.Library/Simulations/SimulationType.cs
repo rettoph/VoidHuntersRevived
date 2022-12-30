@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Library.Simulations
 {
+    [Flags]
     public enum SimulationType
     {
-        Predictive,
-        Lockstep
+        None = 0,
+        Predictive = 1,
+        Lockstep = 2
     }
 }
