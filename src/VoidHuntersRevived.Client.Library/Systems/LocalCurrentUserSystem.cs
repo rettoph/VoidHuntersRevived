@@ -16,6 +16,7 @@ using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Library;
 using VoidHuntersRevived.Library.Components;
 using VoidHuntersRevived.Library.Mappers;
+using VoidHuntersRevived.Library.Simulations;
 using VoidHuntersRevived.Library.Simulations.Systems;
 using static VoidHuntersRevived.Library.Helpers.EntityHelper;
 
@@ -24,19 +25,21 @@ namespace VoidHuntersRevived.Client.Library.Systems
     internal sealed class LocalCurrentUserSystem : EntitySystem, ILockstepSimulationSystem,
         ISubscriber<Step>, ISortable, IDrawSystem
     {
-        private readonly PilotIdMap _pilotIdMap;
+        private readonly SimulationEntityMapper _simulationEntityMapper;
+        private readonly UserSimulationEntityMapper _userSimulationEntityMapper;
         private readonly ClientPeer _client;
         private readonly Camera2D _camera;
         private ComponentMapper<Piloting> _pilots;
         private ComponentMapper<Body> _bodies;
-        private GameTime _gameTime;
 
         public LocalCurrentUserSystem(ClientPeer client,
-            PilotIdMap pilotIdMap,
+            SimulationEntityMapper entitysimulationMapper,
+            UserSimulationEntityMapper userSimulationEntityMapper,
             Camera2D camera) : base(Aspect.All(typeof(Piloting)))
         {
             _client = client;
-            _pilotIdMap = pilotIdMap;
+            _simulationEntityMapper = entitysimulationMapper;
+            _userSimulationEntityMapper = userSimulationEntityMapper;
             _camera = camera;
             _pilots = default!;
             _bodies = default!;
@@ -85,7 +88,12 @@ namespace VoidHuntersRevived.Client.Library.Systems
                 return;
             }
 
-            if (!_pilotIdMap.TryGetEntityIdFromUserId(currentUserId.Value, out var pilotEntityId))
+            if (!_userSimulationEntityMapper.TryGetId(currentUserId.Value, out var pilotId))
+            {
+                return;
+            }
+
+            if(!_simulationEntityMapper.TryGetEntityId(pilotId, SimulationType.Lockstep, out var pilotEntityId))
             {
                 return;
             }

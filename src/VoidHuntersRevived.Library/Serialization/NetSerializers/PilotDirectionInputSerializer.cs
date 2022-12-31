@@ -18,14 +18,14 @@ namespace VoidHuntersRevived.Library.Serialization.NetSerializers
         public override PilotDirectionInput Deserialize(NetDataReader reader)
         {
             return new PilotDirectionInput(
-                pilotId: NetId.Byte.Read(reader),
+                pilotId: reader.GetUShort(),
                 which: reader.GetEnum<Direction>(),
                 value: reader.GetBool());
         }
 
         public override void Serialize(NetDataWriter writer, in PilotDirectionInput instance)
         {
-            instance.PilotId.Write(writer);
+            writer.Put(instance.PilotId);
             writer.Put(instance.Which);
             writer.Put(instance.Value);
         }

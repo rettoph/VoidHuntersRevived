@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Network;
+using Guppy.Network.Identity;
 using Guppy.Network.Messages;
 using Guppy.Network.Providers;
 using LiteNetLib.Utils;
@@ -26,13 +27,15 @@ namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 
         public override UserPilot Deserialize(NetDataReader reader)
         {
+            var pilotId = reader.GetUShort();
             var user = _userActionSerializer.Deserialize(reader);
 
-            return new UserPilot(user);
+            return new UserPilot(pilotId, user);
         }
 
         public override void Serialize(NetDataWriter writer, in UserPilot instance)
         {
+            writer.Put(instance.PilotId);
             _userActionSerializer.Serialize(writer, instance.User);
         }
     }

@@ -29,6 +29,7 @@ namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
         private readonly ITickFactory _tickFactory;
         private readonly SimulationState _state;
         private readonly ILogger _log;
+        private ushort _id = 1;
 
         public LockstepUserPilotRemoteMasterSystem(
             NetScope netScope,
@@ -61,6 +62,7 @@ namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
 
             // Enqueue a new user joined action for the new user.
             _tickFactory.Enqueue(new UserPilot(
+                pilotId: _id++,
                 user: newUser.CreateAction(
                     action: UserAction.Actions.UserJoined,
                     accessibility: ClaimAccessibility.Public)));

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Games;
+using VoidHuntersRevived.Library.Mappers;
 using VoidHuntersRevived.Library.Providers;
 using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Simulations.Systems.Lockstep;
@@ -22,7 +23,9 @@ namespace VoidHuntersRevived.Library.Loaders
             services.AddScoped<ISimulationService, SimulationService>()
                     .AddScoped<PredictiveSimulation>()
                     .AddScoped<LockstepSimulation>()
-                    .AddScoped<SimulationState>();
+                    .AddScoped<SimulationState>()
+                    .AddScoped<SimulationEntityMapper>()
+                    .AddScoped<UserSimulationEntityMapper>();
 
 
             services.ConfigureCollection(manager =>

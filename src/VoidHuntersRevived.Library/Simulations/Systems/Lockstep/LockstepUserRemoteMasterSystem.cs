@@ -21,13 +21,13 @@ namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
     internal sealed class LockstepUserRemoteMasterSystem : ISystem, ILockstepSimulationSystem,
         ISubscriber<INetIncomingMessage<DirectionInput>>
     {
-        private readonly PilotIdMap _userPilotMap;
+        private readonly UserSimulationEntityMapper _userSimulationEntityMapper;
         private readonly ITickFactory _tickFactory;
 
-        public LockstepUserRemoteMasterSystem(PilotIdMap userPilotMap, ITickFactory tickFactory)
+        public LockstepUserRemoteMasterSystem(UserSimulationEntityMapper userSimulationEntityMapper, ITickFactory tickFactory)
         {
             _tickFactory = tickFactory;
-            _userPilotMap = userPilotMap;
+            _userSimulationEntityMapper = userSimulationEntityMapper;
         }
 
         public void Initialize(World world)
@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
             }
 
             _tickFactory.Enqueue(new PilotDirectionInput(
-                pilotId: _userPilotMap.GetNetIdFromUserId(message.Peer.Id),
+                pilotId: (ushort)_userSimulationEntityMapper.GetId(message.Peer.Id),
                 which: message.Body.Which,
                 value: message.Body.Value));
         }

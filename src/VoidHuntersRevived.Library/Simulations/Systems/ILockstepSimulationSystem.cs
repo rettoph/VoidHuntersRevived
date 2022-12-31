@@ -5,11 +5,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Library.Attributes;
 using VoidHuntersRevived.Library.Simulations;
 
 namespace VoidHuntersRevived.Library.Simulations.Systems
 {
     [GuppyFilter<GameGuppy>()]
+    [SimulationFilter(SimulationType.Lockstep)]
     public interface ILockstepSimulationSystem : ISystem
     {
     }
