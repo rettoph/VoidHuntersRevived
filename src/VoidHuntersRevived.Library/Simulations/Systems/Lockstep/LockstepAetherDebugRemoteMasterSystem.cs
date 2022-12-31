@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
         {
             foreach (var body in _simulations[SimulationType.Lockstep].Aether.BodyList)
             {
-                _tickFactory.Enqueue(new BodyPosition(body.GetHashCode(), body.Position));
+                _tickFactory.Enqueue(new BodyPosition(body.GetHashCode(), body.Position, SimulationType.Lockstep));
             }
         }
     }

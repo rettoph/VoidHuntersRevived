@@ -30,7 +30,8 @@ namespace VoidHuntersRevived.Client.Library.Systems
         ISubscriber<BodyPosition>
     {
         private readonly ISimulationService _simulations;
-        private DebugView _debug;
+        private DebugView _debugLockstep;
+        private DebugView _debugPredictive;
         private readonly GraphicsDevice _graphics;
         private readonly ContentManager _content;
         private readonly Camera2D _camera;
@@ -51,20 +52,25 @@ namespace VoidHuntersRevived.Client.Library.Systems
             _content = content;
             _primitiveBatch = primitiveBatch;
             _bodyPositionDebugService = bodyPositionDebugService;
-            _debug = default!;
+            _debugLockstep = default!;
+            _debugPredictive = default!;
         }
 
         public override void Initialize(World world)
         {
             base.Initialize(world);
 
-            _debug = new DebugView(_simulations[SimulationType.Lockstep].Aether);
-            _debug.LoadContent(_graphics, _content);
+            _debugLockstep = new DebugView(_simulations[SimulationType.Lockstep].Aether);
+            _debugLockstep.LoadContent(_graphics, _content);
+
+            _debugPredictive = new DebugView(_simulations[SimulationType.Predictive].Aether);
+            _debugPredictive.LoadContent(_graphics, _content);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            _debug.RenderDebugData(_camera.Projection, _camera.View);
+            // _debugLockstep.RenderDebugData(_camera.Projection, _camera.View);
+            _debugPredictive.RenderDebugData(_camera.Projection, _camera.View);
 
             _primitiveBatch.Begin(_camera);
             _bodyPositionDebugService.Value.Draw(_primitiveBatch);
@@ -73,7 +79,7 @@ namespace VoidHuntersRevived.Client.Library.Systems
 
         public void Process(in Tick message)
         {
-            foreach(var body in _simulations[SimulationType.Lockstep].Aether.BodyList)
+            foreach(var body in _simulations[SimulationType.Predictive].Aether.BodyList)
             {
                 _bodyPositionDebugService.Value.AddPosition(true, body.GetHashCode(), body.Position);
             }

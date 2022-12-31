@@ -6,11 +6,13 @@ using Guppy.Resources;
 using Guppy.Resources.Providers;
 using Microsoft.Extensions.Options;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Library.Components;
 using VoidHuntersRevived.Library.Constants;
 using VoidHuntersRevived.Library.Maps;
 using VoidHuntersRevived.Library.Messages;
@@ -27,13 +29,22 @@ namespace VoidHuntersRevived.Library.Games
 
         public override AetherWorld Aether { get; } = new AetherWorld(Vector2.Zero);
 
-        public LockstepSimulation(Lazy<World> world, SimulatedEntityIdService simulatedEntities) : base(world, simulatedEntities)
+        public LockstepSimulation(SimulatedEntityIdService simulatedEntities) : base(simulatedEntities)
         {
         }
 
         protected override void Update(GameTime gameTime)
         {
             // throw new NotImplementedException();
+        }
+
+        public override Entity CreateEntity()
+        {
+            var entity = base.CreateEntity();
+
+            entity.Attach(Lockstepped.Instance);
+
+            return entity;
         }
     }
 }

@@ -8,6 +8,7 @@ namespace VoidHuntersRevived.Library.Enums
 {
     public enum SimulatedIdType : byte
     {
-        Pilot = 0
+        Pilot = 0,
+        Ship = 1
     }
 }

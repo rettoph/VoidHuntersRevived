@@ -91,7 +91,7 @@ namespace VoidHuntersRevived.Client.Library.Systems
                 return;
             }
 
-            if (!_simulations[SimulationType.Lockstep].TryGetEntityId(pilotId, out var pilotEntityId))
+            if (!_simulations[SimulationType.Predictive].TryGetEntityId(pilotId, out var pilotEntityId))
             {
                 return;
             }

@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
         private ComponentMapper<Pilotable> _pilotables;
         private ComponentMapper<AetherBody> _bodies;
 
-        public LockstepPilotableAetherSystem() : base(Aspect.All(typeof(AetherBody), typeof(Pilotable)))
+        public LockstepPilotableAetherSystem() : base(Aspect.All(typeof(AetherBody), typeof(Pilotable), typeof(Lockstepped)))
         {
             _pilotables = default!;
             _bodies = default!;

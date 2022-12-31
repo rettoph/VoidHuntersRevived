@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Messages;
+using VoidHuntersRevived.Library.Simulations;
 
 namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 {
@@ -22,7 +23,8 @@ namespace VoidHuntersRevived.Library.Serialization.NetSerializers
                 {
                     X = reader.GetFloat(),
                     Y = reader.GetFloat(),
-                });
+                },
+                simulation: reader.GetEnum<SimulationType>());
         }
 
         public override void Serialize(NetDataWriter writer, in BodyPosition instance)
@@ -31,6 +33,8 @@ namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 
             writer.Put(instance.Position.X);
             writer.Put(instance.Position.Y);
+
+            writer.Put(instance.Simulation);
         }
     }
 }

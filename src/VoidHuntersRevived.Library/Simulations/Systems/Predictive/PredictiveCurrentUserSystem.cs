@@ -1,7 +1,5 @@
-﻿using Guppy.Attributes;
-using Guppy.Common;
-using Guppy.Common.Extensions;
-using Microsoft.Xna.Framework;
+﻿using Guppy.Common;
+using Guppy.Network.Peers;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using System;
@@ -10,20 +8,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Components;
-using VoidHuntersRevived.Library.Maps;
 using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Simulations.EventData.Inputs;
 
-namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
+namespace VoidHuntersRevived.Library.Simulations.Systems.Predictive
 {
-    internal sealed class LockstepPilotSystem : EntitySystem, ILockstepSimulationSystem, ISubscriber<PilotDirectionInput>
+    internal sealed class PredictiveCurrentUserSystem : EntitySystem, IPredictiveSimulationSystem,
+        ISubscriber<DirectionInput>
     {
-        private ISimulationService _simulations;
+        private readonly Peer _peer;
+        private readonly ISimulationService _simulations;
         private ComponentMapper<Piloting> _pilotings;
         private ComponentMapper<Pilotable> _pilotables;
 
-        public LockstepPilotSystem(ISimulationService simulations) : base(Aspect.All(typeof(Piloting)))
+        public PredictiveCurrentUserSystem(
+            Peer peer, 
+            ISimulationService simulations) : base(Aspect.All(typeof(AetherBody), typeof(Pilotable)).Exclude(typeof(Lockstepped)))
         {
+            _peer = peer;
             _simulations = simulations;
             _pilotings = default!;
             _pilotables = default!;
@@ -35,10 +37,25 @@ namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
             _pilotables = mapperService.GetMapper<Pilotable>();
         }
 
-        public void Process(in PilotDirectionInput message)
+        /// <summary>
+        /// "predict" the server will update the current user's
+        /// direction.
+        /// </summary>
+        /// <param name="message"></param>
+        public void Process(in DirectionInput message)
         {
-            var pilotId = _simulations[SimulationType.Lockstep].GetEntityId(message.PilotId);
-            var piloting = _pilotings.Get(pilotId);
+            if(_peer.Users.Current is null)
+            {
+                return;
+            }
+
+            if(!_simulations.UserIdMap.TryGet(_peer.Users.Current.Id, out var pilotId))
+            {
+                return;
+            }
+
+            var pilotEntityId = _simulations[SimulationType.Predictive].GetEntityId(pilotId);
+            var piloting = _pilotings.Get(pilotEntityId);
 
             if (piloting.PilotableId is null)
             {

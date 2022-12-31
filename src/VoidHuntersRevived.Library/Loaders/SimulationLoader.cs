@@ -12,6 +12,8 @@ using VoidHuntersRevived.Library.Maps;
 using VoidHuntersRevived.Library.Providers;
 using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Simulations.Systems.Lockstep;
+using VoidHuntersRevived.Library.Simulations.Systems.Predictive;
+using VoidHuntersRevived.Library.Simulations.Systems.Shared;
 
 namespace VoidHuntersRevived.Library.Loaders
 {
@@ -39,16 +41,19 @@ namespace VoidHuntersRevived.Library.Loaders
                 manager.AddScoped<StepRemoteProvider>()
                     .AddInterfaceAliases();
 
+                // --- Shared Systems ---
+                manager.AddScoped<PilotSystem>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<UserPilotSystem>()
+                    .AddInterfaceAliases();
+
+
+                // -- Lockstep Systems ---
                 manager.AddScoped<LockstepTickRemoteMasterSystem>()
                     .AddInterfaceAliases();
 
                 manager.AddScoped<LockstepTickRemoteSlaveSystem>()
-                    .AddInterfaceAliases();
-
-                manager.AddScoped<LockstepPilotSystem>()
-                    .AddInterfaceAliases();
-
-                manager.AddScoped<LockstepUserPilotSystem>()
                     .AddInterfaceAliases();
 
                 manager.AddScoped<LockstepUserPilotRemoteMasterSystem>()
@@ -70,6 +75,13 @@ namespace VoidHuntersRevived.Library.Loaders
                     .AddInterfaceAliases();
 
                 manager.AddScoped<LockstepSimulationStateRemoteSlaveSystem>()
+                    .AddInterfaceAliases();
+
+                // --- Predictive Systems ---
+                manager.AddScoped<PredictivePilotableAetherSystem>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<PredictiveCurrentUserSystem>()
                     .AddInterfaceAliases();
             });
         }

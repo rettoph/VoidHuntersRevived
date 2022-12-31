@@ -16,7 +16,8 @@ using VoidHuntersRevived.Library.Simulations.EventData.Inputs;
 namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
 {
     [NetAuthorizationFilter(NetAuthorization.Slave)]
-    internal sealed class LockstepCurrentUserRemoteSlaveSystem : ISystem, ILockstepSimulationSystem, ISubscriber<DirectionInput>
+    internal sealed class LockstepCurrentUserRemoteSlaveSystem : ISystem, ILockstepSimulationSystem, 
+        ISubscriber<DirectionInput>
     {
         private readonly IBus _bus;
         private readonly NetScope _scope;

@@ -32,7 +32,6 @@
   
   <ItemGroup>
     <Folder Include="Messages\Inputs\" />
-    <Folder Include="Simulations\Systems\Predictive\" />
     <Folder Include="Subscribers\" />
   </ItemGroup>
 

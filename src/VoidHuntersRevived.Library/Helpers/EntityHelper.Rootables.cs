@@ -12,37 +12,21 @@ namespace VoidHuntersRevived.Library.Helpers
     {
         public static class Rootables
         {
-            public static Entity CreateShip(World world, AetherBody body)
+            public static Entity MakeShip(Entity entity, AetherBody body)
             {
-                var entity = world.CreateEntity();
-
-                EntityHelper.Rootables.MakeShip(entity, body);
-
-                return entity;
-            }
-
-            public static void MakeShip(Entity entity, AetherBody body)
-            {
-                EntityHelper.Rootables.MakeRootable(entity, body);
-
                 entity.Attach<Pilotable>(new Pilotable());
+
+                return EntityHelper.Rootables.MakeRootable(entity, body);
             }
 
-            public static Entity CreateRootable(World world, AetherBody body)
-            {
-                var entity = world.CreateEntity();
-
-                EntityHelper.Rootables.MakeRootable(entity, body);
-
-                return entity;
-            }
-
-            public static void MakeRootable(Entity entity, AetherBody body)
+            public static Entity MakeRootable(Entity entity, AetherBody body)
             {
                 entity.Attach<Rootable>(new Rootable());
                 entity.Attach<AetherBody>(body);
 
                 body.Tag = entity;
+
+                return entity;
             }
         }
     }

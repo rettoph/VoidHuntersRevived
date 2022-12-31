@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Library.Components
 {
-    public sealed class Lockstepable
+    public sealed class Lockstepped
     {
-        public static readonly Lockstepable Instance = new Lockstepable();
-        private Lockstepable()
+        public static readonly Lockstepped Instance = new Lockstepped();
+        private Lockstepped()
         {
 
         }

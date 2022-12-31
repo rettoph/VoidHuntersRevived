@@ -31,6 +31,18 @@ namespace VoidHuntersRevived.Library.Services
             return entityId != SimulatedEntityMap.EmptyEntityId;
         }
 
+        public bool TryGetEntityId(SimulationType from, int fromEntityId, SimulationType to, out int toEntityId)
+        {
+            if (_entityIds[from].TryGetValue(fromEntityId, out var map))
+            {
+                toEntityId = map[to];
+                return true;
+            }
+
+            toEntityId = default;
+            return false;
+        }
+
         public int GetEntityId(SimulatedId id, SimulationType type)
         {
             var simulationEntityIdMap = this.Get(id);

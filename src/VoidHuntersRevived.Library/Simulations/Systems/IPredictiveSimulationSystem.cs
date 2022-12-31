@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using MonoGame.Extended.Entities.Systems;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace VoidHuntersRevived.Library.Simulations.Systems
 {
     [GuppyFilter<GameGuppy>()]
     [SimulationFilter(SimulationType.Predictive)]
-    public interface IPredictiveSimulationSystem
+    public interface IPredictiveSimulationSystem : ISystem
     {
     }
 }

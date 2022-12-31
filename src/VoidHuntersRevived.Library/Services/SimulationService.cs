@@ -53,6 +53,11 @@ namespace VoidHuntersRevived.Library.Services
                 _instances.Add(SimulationType.Predictive, _provider.GetRequiredService<PredictiveSimulation>());
             }
 
+            foreach(var instance in _instances.Values)
+            {
+                instance.Initialize(_provider);
+            }
+
             _initialized = true;
         }
 

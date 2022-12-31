@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Library.Games
 
         public override AetherWorld Aether { get; } = new AetherWorld(Vector2.Zero);
 
-        public PredictiveSimulation(Lazy<World> world, SimulatedEntityIdService simulatedEntities) : base(world, simulatedEntities)
+        public PredictiveSimulation(SimulatedEntityIdService simulatedEntities) : base(simulatedEntities)
         {
         }
 
