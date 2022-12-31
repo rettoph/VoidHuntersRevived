@@ -11,7 +11,8 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Attributes;
 using VoidHuntersRevived.Library.Factories;
-using VoidHuntersRevived.Library.Mappers;
+using VoidHuntersRevived.Library.Maps;
+using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Simulations.EventData;
 using VoidHuntersRevived.Library.Simulations.EventData.Inputs;
 
@@ -21,13 +22,13 @@ namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
     internal sealed class LockstepUserRemoteMasterSystem : ISystem, ILockstepSimulationSystem,
         ISubscriber<INetIncomingMessage<DirectionInput>>
     {
-        private readonly UserSimulationEntityMapper _userSimulationEntityMapper;
+        private readonly ISimulationService _simulations;
         private readonly ITickFactory _tickFactory;
 
-        public LockstepUserRemoteMasterSystem(UserSimulationEntityMapper userSimulationEntityMapper, ITickFactory tickFactory)
+        public LockstepUserRemoteMasterSystem(ISimulationService simulations, ITickFactory tickFactory)
         {
             _tickFactory = tickFactory;
-            _userSimulationEntityMapper = userSimulationEntityMapper;
+            _simulations = simulations;
         }
 
         public void Initialize(World world)
@@ -48,7 +49,7 @@ namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
             }
 
             _tickFactory.Enqueue(new PilotDirectionInput(
-                pilotId: (ushort)_userSimulationEntityMapper.GetId(message.Peer.Id),
+                pilotId: _simulations.UserIdMap.Get(message.Peer.Id),
                 which: message.Body.Which,
                 value: message.Body.Value));
         }

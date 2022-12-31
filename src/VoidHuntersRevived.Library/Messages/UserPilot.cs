@@ -12,10 +12,10 @@ namespace VoidHuntersRevived.Library.Messages
 {
     public class UserPilot : Message, ISimulationEventData
     {
-        public ushort PilotId { get; }
+        public SimulatedId PilotId { get; }
         public UserAction User { get; }
 
-        public UserPilot(ushort pilotId, UserAction user)
+        public UserPilot(SimulatedId pilotId, UserAction user)
         {
             this.PilotId = pilotId;
             this.User = user;

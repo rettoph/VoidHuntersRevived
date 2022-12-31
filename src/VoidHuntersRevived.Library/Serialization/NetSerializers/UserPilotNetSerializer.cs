@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 
         public override UserPilot Deserialize(NetDataReader reader)
         {
-            var pilotId = reader.GetUShort();
+            var pilotId = SimulatedId.Pilot(reader.GetUShort());
             var user = _userActionSerializer.Deserialize(reader);
 
             return new UserPilot(pilotId, user);
@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 
         public override void Serialize(NetDataWriter writer, in UserPilot instance)
         {
-            writer.Put(instance.PilotId);
+            writer.Put(instance.PilotId.Data);
             _userActionSerializer.Serialize(writer, instance.User);
         }
     }

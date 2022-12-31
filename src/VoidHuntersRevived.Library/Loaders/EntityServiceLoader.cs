@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Library.Components;
-using VoidHuntersRevived.Library.Mappers;
+using VoidHuntersRevived.Library.Maps;
 using VoidHuntersRevived.Library.Simulations.Systems.Lockstep;
 
 namespace VoidHuntersRevived.Library.Loaders

@@ -7,31 +7,31 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Simulations;
 
-namespace VoidHuntersRevived.Library.Mappers
+namespace VoidHuntersRevived.Library.Services
 {
-    public sealed partial class SimulationEntityMapper
+    public sealed partial class SimulatedEntityIdService
     {
-        private IDictionary<int, SimulationEntityMap> _ids;
-        private IDictionary<SimulationType, IDictionary<int, SimulationEntityMap>> _entityIds;
+        private IDictionary<SimulatedId, SimulatedEntityMap> _ids;
+        private IDictionary<SimulationType, IDictionary<int, SimulatedEntityMap>> _entityIds;
 
-        public SimulationEntityMapper()
+        public SimulatedEntityIdService()
         {
             
-            _ids = new Dictionary<int, SimulationEntityMap>();
-            _entityIds = EnumHelper.ToDictionary<SimulationType, IDictionary<int, SimulationEntityMap>>(
-                x => new Dictionary<int, SimulationEntityMap>(),
+            _ids = new Dictionary<SimulatedId, SimulatedEntityMap>();
+            _entityIds = EnumHelper.ToDictionary<SimulationType, IDictionary<int, SimulatedEntityMap>>(
+                x => new Dictionary<int, SimulatedEntityMap>(),
                 SimulationType.None);
         }
 
-        public bool TryGetEntityId(int id, SimulationType type, out int entityId)
+        public bool TryGetEntityId(SimulatedId id, SimulationType type, out int entityId)
         {
             var simulationEntityIdMap = this.Get(id);
             entityId = simulationEntityIdMap[type];
 
-            return entityId != SimulationEntityMap.EmptyEntityId;
+            return entityId != SimulatedEntityMap.EmptyEntityId;
         }
 
-        public int GetEntityId(int id, SimulationType type)
+        public int GetEntityId(SimulatedId id, SimulationType type)
         {
             var simulationEntityIdMap = this.Get(id);
             var entityId = simulationEntityIdMap[type];
@@ -44,24 +44,24 @@ namespace VoidHuntersRevived.Library.Mappers
             return _entityIds[from][entityId][to];
         }
         
-        public int GetId(SimulationType type, int entityId)
+        public SimulatedId GetId(SimulationType type, int entityId)
         {
             return _entityIds[type][entityId].Id;
         }
 
-        public void Set(int id, SimulationType type, int entityId)
+        public void Set(SimulatedId id, SimulationType type, int entityId)
         {
             var simulationEntityIdMap = this.Get(id);
             var currentSimulationId = simulationEntityIdMap[type];
 
-            if (entityId == SimulationEntityMap.EmptyEntityId)
+            if (entityId == SimulatedEntityMap.EmptyEntityId)
             {
                 this.Remove(type, currentSimulationId);
                 return;
             }
 
             var typeDictionary = _entityIds[type];
-            if (currentSimulationId != SimulationEntityMap.EmptyEntityId)
+            if (currentSimulationId != SimulatedEntityMap.EmptyEntityId)
             {
                 typeDictionary.Remove(currentSimulationId);
             }
@@ -70,7 +70,7 @@ namespace VoidHuntersRevived.Library.Mappers
             typeDictionary.Add(entityId, simulationEntityIdMap);
         }
 
-        public void Remove(int id, SimulationType type)
+        public void Remove(SimulatedId id, SimulationType type)
         {
             var simulationEntityId = this.Get(id);
 
@@ -85,7 +85,7 @@ namespace VoidHuntersRevived.Library.Mappers
             }
 
             // Reset simulation id.
-            simulationEntityId[type] = SimulationEntityMap.EmptyEntityId;
+            simulationEntityId[type] = SimulatedEntityMap.EmptyEntityId;
 
             if(!simulationEntityId.Empty)
             {
@@ -97,11 +97,11 @@ namespace VoidHuntersRevived.Library.Mappers
             _ids.Remove(simulationEntityId.Id);
         }
 
-        private SimulationEntityMap Get(int id)
+        private SimulatedEntityMap Get(SimulatedId id)
         {
             if (!_ids.TryGetValue(id, out var entityId))
             {
-                entityId = new SimulationEntityMap(id);
+                entityId = new SimulatedEntityMap(id);
                 _ids[id] = entityId;
             }
 

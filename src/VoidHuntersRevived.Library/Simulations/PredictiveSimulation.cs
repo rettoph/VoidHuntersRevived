@@ -9,17 +9,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Constants;
+using VoidHuntersRevived.Library.Maps;
+using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Simulations;
 
 namespace VoidHuntersRevived.Library.Games
 {
-    public sealed class PredictiveSimulation : Simulation
+    internal sealed class PredictiveSimulation : Simulation
     {
         public override SimulationType Type => SimulationType.Predictive;
 
         public override AetherWorld Aether { get; } = new AetherWorld(Vector2.Zero);
 
-        public PredictiveSimulation() : base()
+        public PredictiveSimulation(Lazy<World> world, SimulatedEntityIdService simulatedEntities) : base(world, simulatedEntities)
         {
         }
 

@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Components;
-using VoidHuntersRevived.Library.Mappers;
+using VoidHuntersRevived.Library.Maps;
 using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Simulations.EventData.Inputs;
 
@@ -18,13 +18,13 @@ namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
 {
     internal sealed class LockstepPilotSystem : EntitySystem, ILockstepSimulationSystem, ISubscriber<PilotDirectionInput>
     {
-        private SimulationEntityMapper _simulationEntityMapper;
+        private ISimulationService _simulations;
         private ComponentMapper<Piloting> _pilotings;
         private ComponentMapper<Pilotable> _pilotables;
 
-        public LockstepPilotSystem(SimulationEntityMapper simulationEntityMapper) : base(Aspect.All(typeof(Piloting)))
+        public LockstepPilotSystem(ISimulationService simulations) : base(Aspect.All(typeof(Piloting)))
         {
-            _simulationEntityMapper = simulationEntityMapper;
+            _simulations = simulations;
             _pilotings = default!;
             _pilotables = default!;
         }
@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
 
         public void Process(in PilotDirectionInput message)
         {
-            var pilotId = _simulationEntityMapper.GetEntityId(message.PilotId, SimulationType.Lockstep);
+            var pilotId = _simulations[SimulationType.Lockstep].GetEntityId(message.PilotId);
             var piloting = _pilotings.Get(pilotId);
 
             if (piloting.PilotableId is null)

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Library.Mappers;
+using VoidHuntersRevived.Library.Maps;
 using VoidHuntersRevived.Library.Simulations;
 
 namespace VoidHuntersRevived.Library.Services
@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Library.Services
     {
         SimulationType Flags { get; }
 
-        SimulationEntityMapper EntityMapper { get; }
+        UserIdSimulatedIdMap UserIdMap { get; }
 
         IEnumerable<ISimulation> Instances { get; }
 

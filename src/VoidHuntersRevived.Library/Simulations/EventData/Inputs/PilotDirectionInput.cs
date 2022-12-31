@@ -10,9 +10,9 @@ namespace VoidHuntersRevived.Library.Simulations.EventData.Inputs
 {
     public class PilotDirectionInput : DirectionInput, ISimulationEventData
     {
-        public ushort PilotId { get; }
+        public SimulatedId PilotId { get; }
 
-        public PilotDirectionInput(ushort pilotId, Direction which, bool value) : base(which, value)
+        public PilotDirectionInput(SimulatedId pilotId, Direction which, bool value) : base(which, value)
         {
             this.PilotId = pilotId;
         }

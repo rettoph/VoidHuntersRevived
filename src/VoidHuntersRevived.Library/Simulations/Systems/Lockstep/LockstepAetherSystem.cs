@@ -7,21 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Games;
+using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
 {
     internal sealed class LockstepAetherSystem : LockstepUpdateSystem
     {
-        private readonly LockstepSimulation _simulation;
+        private readonly ISimulationService _simulations;
 
-        public LockstepAetherSystem(LockstepSimulation simulation)
+        public LockstepAetherSystem(ISimulationService simulations)
         {
-            _simulation = simulation;
+            _simulations = simulations;
         }
 
         protected override void Update(GameTime gameTime)
         {
-            _simulation.Aether.Step(gameTime.ElapsedGameTime);
+            _simulations[SimulationType.Lockstep].Aether.Step(gameTime.ElapsedGameTime);
         }
     }
 }

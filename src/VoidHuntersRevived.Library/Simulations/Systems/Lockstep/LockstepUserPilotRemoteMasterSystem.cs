@@ -62,7 +62,7 @@ namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
 
             // Enqueue a new user joined action for the new user.
             _tickFactory.Enqueue(new UserPilot(
-                pilotId: _id++,
+                pilotId: SimulatedId.Pilot(_id++),
                 user: newUser.CreateAction(
                     action: UserAction.Actions.UserJoined,
                     accessibility: ClaimAccessibility.Public)));

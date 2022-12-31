@@ -15,7 +15,8 @@ using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Library;
 using VoidHuntersRevived.Library.Components;
-using VoidHuntersRevived.Library.Mappers;
+using VoidHuntersRevived.Library.Maps;
+using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Simulations;
 using VoidHuntersRevived.Library.Simulations.Systems;
 using static VoidHuntersRevived.Library.Helpers.EntityHelper;
@@ -25,21 +26,18 @@ namespace VoidHuntersRevived.Client.Library.Systems
     internal sealed class LocalCurrentUserSystem : EntitySystem, ILockstepSimulationSystem,
         ISubscriber<Step>, ISortable, IDrawSystem
     {
-        private readonly SimulationEntityMapper _simulationEntityMapper;
-        private readonly UserSimulationEntityMapper _userSimulationEntityMapper;
+        private readonly ISimulationService _simulations;
         private readonly ClientPeer _client;
         private readonly Camera2D _camera;
         private ComponentMapper<Piloting> _pilots;
         private ComponentMapper<Body> _bodies;
 
         public LocalCurrentUserSystem(ClientPeer client,
-            SimulationEntityMapper entitysimulationMapper,
-            UserSimulationEntityMapper userSimulationEntityMapper,
+            ISimulationService simulations,
             Camera2D camera) : base(Aspect.All(typeof(Piloting)))
         {
             _client = client;
-            _simulationEntityMapper = entitysimulationMapper;
-            _userSimulationEntityMapper = userSimulationEntityMapper;
+            _simulations = simulations;
             _camera = camera;
             _pilots = default!;
             _bodies = default!;
@@ -88,12 +86,12 @@ namespace VoidHuntersRevived.Client.Library.Systems
                 return;
             }
 
-            if (!_userSimulationEntityMapper.TryGetId(currentUserId.Value, out var pilotId))
+            if (!_simulations.UserIdMap.TryGet(currentUserId.Value, out var pilotId))
             {
                 return;
             }
 
-            if(!_simulationEntityMapper.TryGetEntityId(pilotId, SimulationType.Lockstep, out var pilotEntityId))
+            if (!_simulations[SimulationType.Lockstep].TryGetEntityId(pilotId, out var pilotEntityId))
             {
                 return;
             }

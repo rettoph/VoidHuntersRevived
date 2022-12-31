@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Library.Games;
-using VoidHuntersRevived.Library.Mappers;
+using VoidHuntersRevived.Library.Maps;
 using VoidHuntersRevived.Library.Simulations;
 
 namespace VoidHuntersRevived.Library.Services
@@ -19,19 +19,19 @@ namespace VoidHuntersRevived.Library.Services
 
         public SimulationType Flags { get; private set; }
 
-        public SimulationEntityMapper EntityMapper { get; }
+        public UserIdSimulatedIdMap UserIdMap { get; private set; }
 
         public IEnumerable<ISimulation> Instances => _instances.Values;
 
         public ISimulation this[SimulationType type] => _instances[type];
 
-        public SimulationService(SimulationEntityMapper mapper, IServiceProvider provider)
+        public SimulationService(UserIdSimulatedIdMap userIdMap, IServiceProvider provider)
         {
             _provider = provider;
             _instances = new Dictionary<SimulationType, ISimulation>();
 
             this.Flags = SimulationType.None;
-            this.EntityMapper = mapper;
+            this.UserIdMap = userIdMap;
         }
 
         public void Initialize(SimulationType flags)

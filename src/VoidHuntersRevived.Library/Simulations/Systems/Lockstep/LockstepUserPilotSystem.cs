@@ -18,8 +18,9 @@ using VoidHuntersRevived.Library.Attributes;
 using VoidHuntersRevived.Library.Components;
 using VoidHuntersRevived.Library.Games;
 using VoidHuntersRevived.Library.Helpers;
-using VoidHuntersRevived.Library.Mappers;
+using VoidHuntersRevived.Library.Maps;
 using VoidHuntersRevived.Library.Messages;
+using VoidHuntersRevived.Library.Services;
 
 namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
 {
@@ -29,23 +30,17 @@ namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
         private World _world;
         private ComponentMapper<User> _users;
         private ComponentMapper<Piloting> _pilotings;
-        private readonly SimulationEntityMapper _simulationEntityMapper;
-        private readonly UserSimulationEntityMapper _userSimulationEntityMapper;
-        private readonly LockstepSimulation _simulation;
+        private readonly ISimulationService _simulations;
 
         public LockstepUserPilotSystem(
-            SimulationEntityMapper simulationEntityMapper,
-            UserSimulationEntityMapper userSimulationEntityMapper,
-            LockstepSimulation simulation,
+            ISimulationService simulations,
             IUserProvider userProvider) : base(Aspect.All(typeof(User), typeof(Piloting)))
         {
             _userProvider = userProvider;
             _world = default!;
             _users = default!;
             _pilotings = default!;
-            _simulationEntityMapper = simulationEntityMapper;
-            _userSimulationEntityMapper = userSimulationEntityMapper;
-            _simulation = simulation;
+            _simulations = simulations;
         }
 
         public override void Initialize(World world)
@@ -69,8 +64,8 @@ namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
             {
                 var user = _users.Get(entityId);
 
-                var pilotId = _simulationEntityMapper.GetId(SimulationType.Lockstep, entityId);
-                _userSimulationEntityMapper.Add(user.Id, pilotId);
+                var pilotId = _simulations[SimulationType.Lockstep].GetId(entityId);
+                _simulations.UserIdMap.Add(user.Id, pilotId);
             }
         }
 
@@ -80,8 +75,8 @@ namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
 
             if (subscription.IsInterested(entityId))
             {
-                var pilotId = _simulationEntityMapper.GetId(SimulationType.Lockstep, entityId);
-                _userSimulationEntityMapper.RemoveById(pilotId);
+                var pilotId = _simulations[SimulationType.Lockstep].GetId(entityId);
+                _simulations.UserIdMap.Remove(pilotId);
             }
         }
 
@@ -92,11 +87,13 @@ namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
             switch (message.User.Action)
             {
                 case UserAction.Actions.UserJoined:
-                    var pilot = EntityHelper.Pilots.CreateUserPilot(_world, user);
-                    var ship = EntityHelper.Rootables.CreateShip(_world, _simulation.Aether.CreateRectangle(1, 1, 1, Vector2.Zero, 0, AetherBodyType.Dynamic));
+                    var pilot = EntityHelper.Pilots.MakeUserPilot(
+                        entity: _simulations[SimulationType.Lockstep].GetEntity(message.PilotId), 
+                        user: user);
+
+                    var ship = EntityHelper.Rootables.CreateShip(_world, _simulations[SimulationType.Lockstep].Aether.CreateRectangle(1, 1, 1, Vector2.Zero, 0, AetherBodyType.Dynamic));
 
                     _pilotings.Get(pilot).PilotableId = ship.Id;
-                    _simulationEntityMapper.Set(message.PilotId, SimulationType.Lockstep, pilot.Id);
                     break;
                 default:
                     throw new Exception();

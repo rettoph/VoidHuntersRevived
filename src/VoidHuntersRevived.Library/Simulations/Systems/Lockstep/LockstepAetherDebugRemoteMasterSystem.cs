@@ -12,6 +12,7 @@ using VoidHuntersRevived.Library.Attributes;
 using VoidHuntersRevived.Library.Factories;
 using VoidHuntersRevived.Library.Games;
 using VoidHuntersRevived.Library.Messages;
+using VoidHuntersRevived.Library.Services;
 using VoidHuntersRevived.Library.Simulations.EventTypes;
 
 namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
@@ -20,11 +21,11 @@ namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
     internal sealed class LockstepAetherDebugRemoteMasterSystem : ISystem, ILockstepSimulationSystem, ISubscriber<Tick>
     {
         private readonly ITickFactory _tickFactory;
-        private readonly LockstepSimulation _simulation;
+        private readonly ISimulationService _simulations;
 
-        public LockstepAetherDebugRemoteMasterSystem(LockstepSimulation simulation, ITickFactory tickFactory)
+        public LockstepAetherDebugRemoteMasterSystem(ISimulationService simulations, ITickFactory tickFactory)
         {
-            _simulation = simulation;
+            _simulations = simulations;
             _tickFactory = tickFactory;
         }
 
@@ -38,7 +39,7 @@ namespace VoidHuntersRevived.Library.Simulations.Systems.Lockstep
 
         public void Process(in Tick message)
         {
-            foreach (var body in _simulation.Aether.BodyList)
+            foreach (var body in _simulations[SimulationType.Lockstep].Aether.BodyList)
             {
                 _tickFactory.Enqueue(new BodyPosition(body.GetHashCode(), body.Position));
             }
