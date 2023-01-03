@@ -1,0 +1,37 @@
+﻿using Guppy.Common;
+using Guppy.Network.Attributes;
+using Guppy.Network.Enums;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using VoidHuntersRevived.Library.Common;
+using VoidHuntersRevived.Library.Simulations.Lockstep.Factories;
+
+namespace VoidHuntersRevived.Library.Simulations.Lockstep.Providers
+{
+    [PeerTypeFilter(PeerType.Server)]
+    internal sealed class ServerTickProvider : ITickProvider
+    {
+        private readonly State _state;
+        private readonly ITickFactory _factory;
+
+        public int AvailableId => _state.NextTickId;
+
+
+        public ServerTickProvider(State state, IFiltered<ITickFactory> factory)
+        {
+            _state = state;
+            _factory = factory.Instance ?? throw new ArgumentNullException();
+        }
+
+        public bool TryGetNextTick([MaybeNullWhen(false)] out Tick next)
+        {
+            next = _factory.Create(_state.NextTickId);
+
+            return true;
+        }
+    }
+}

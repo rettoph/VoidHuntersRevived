@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "VoidHuntersRevived.Utilities.Launcher": {
-      "commandName": "Project",
-      "commandLineArgs": "client-launcher --remote false --action info"
-    }
-  }
-}

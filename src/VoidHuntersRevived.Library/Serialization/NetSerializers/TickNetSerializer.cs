@@ -1,21 +1,14 @@
 ﻿using Guppy.Attributes;
 using Guppy.Network;
-using Guppy.Network.Definitions;
 using Guppy.Network.Providers;
 using LiteNetLib.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Library.Messages;
-using VoidHuntersRevived.Library.Simulations.EventData;
-using VoidHuntersRevived.Library.Simulations.EventTypes;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Library.Common;
+using VoidHuntersRevived.Library.Simulations.Lockstep;
 
 namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 {
-    [AutoLoad(0)]
+    [AutoLoad]
     internal sealed class TickNetSerializer : NetSerializer<Tick>
     {
         private INetSerializerProvider _serializers = default!;
@@ -34,20 +27,20 @@ namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 
             if(count == 0)
             {
-                return new Tick(id, Enumerable.Empty<ISimulationEventData>());
+                return Tick.Empty(id);
             }
 
-            var items = new List<ISimulationEventData>(count);
+            var items = new ISimulationData[count];
 
             for (var i = 0; i < count; i++)
             {
-                if(_serializers.Deserialize(reader) is ISimulationEventData data)
+                if(_serializers.Deserialize(reader) is ISimulationData data)
                 {
-                    items.Add(data);
+                    items[i] = data;
                 }
             }
 
-            var instance = new Tick(id, items);
+            var instance = Tick.Create(id, items);
 
             return instance;
         }
@@ -56,11 +49,11 @@ namespace VoidHuntersRevived.Library.Serialization.NetSerializers
         {
             writer.Put(instance.Id);
 
-            var count = (byte)instance.EventData.Count();
+            var count = (byte)instance.Count;
 
             writer.Put(count);
 
-            foreach (ISimulationEventData data in instance.EventData)
+            foreach (ISimulationData data in instance.Data)
             {
                 _serializers.Serialize(writer, data);
             }
