@@ -17,19 +17,23 @@ using VoidHuntersRevived.Common.Simulations.Systems;
 
 namespace VoidHuntersRevived.Common.Simulations
 {
-    public abstract class Simulation : ISimulation
+    public abstract class Simulation<TEntityComponent> : ISimulation
+        where TEntityComponent : class, new()
     {
         private IBus _bus;
         private World _world;
         private IUpdateSimulationSystem[] _updateSystems;
         private ISynchronizationSystem[] _synchronizeSystems;
         private readonly IParallelService _simulatedEntities;
+        private readonly TEntityComponent _entityComponent;
 
         public readonly SimulationType Type;
         public readonly Aether Aether;
+        public readonly Type EntityComponentType;
 
         SimulationType ISimulation.Type => this.Type;
         Aether ISimulation.Aether => this.Aether;
+        Type ISimulation.EntityComponentType => this.EntityComponentType;
 
         protected Simulation(SimulationType type, IParallelService simulatedEntities)
         {
@@ -38,9 +42,11 @@ namespace VoidHuntersRevived.Common.Simulations
             _bus = default!;
             _updateSystems = Array.Empty<IUpdateSimulationSystem>();
             _synchronizeSystems = Array.Empty<ISynchronizationSystem>();
+            _entityComponent = new TEntityComponent();
 
             this.Type = type;
             this.Aether = new Aether(Vector2.Zero);
+            this.EntityComponentType = typeof(TEntityComponent);
         }
 
         public virtual void Initialize(IServiceProvider provider)
@@ -133,6 +139,8 @@ namespace VoidHuntersRevived.Common.Simulations
         public virtual Entity CreateEntity(ParallelKey key)
         {
             var entity = _world.CreateEntity();
+            entity.Attach(_entityComponent);
+
             _simulatedEntities.Set(key, this.Type, entity.Id);
 
             return entity;
@@ -160,35 +168,38 @@ namespace VoidHuntersRevived.Common.Simulations
 
         public virtual void PublishEvent(PeerType source, ISimulationData data)
         {
-            _bus.Publish(GetSimulationEvent(source, data, this));
+            _bus.Publish(EventFactory.GetSimulationEvent(source, data, this));
         }
 
-        private static Dictionary<Type, Func<PeerType, ISimulationData, ISimulation, ISimulationEvent>> _eventFactories = new();
-        private static MethodInfo _eventFactoryMethod = typeof(Simulation).GetMethod(nameof(SimulationEventFactory), BindingFlags.Static | BindingFlags.NonPublic) ?? throw new UnreachableException();
-
-        private static ISimulationEvent GetSimulationEvent(PeerType source, ISimulationData data, ISimulation simulation)
+        private static class EventFactory
         {
-            var type = data.GetType();
-            if(!_eventFactories.TryGetValue(type, out var factory))
-            {
-                var method = _eventFactoryMethod.MakeGenericMethod(type);
-                factory = (Func<PeerType, ISimulationData, ISimulation, ISimulationEvent>)(method.Invoke(null, Array.Empty<object>()) ?? throw new UnreachableException());
+            private static Dictionary<Type, Func<PeerType, ISimulationData, ISimulation, ISimulationEvent>> _eventFactories = new();
+            private static MethodInfo _eventFactoryMethod = typeof(EventFactory).GetMethod(nameof(SimulationEventFactory), BindingFlags.Static | BindingFlags.NonPublic) ?? throw new UnreachableException();
 
-                _eventFactories.Add(type, factory);
+            public static ISimulationEvent GetSimulationEvent(PeerType source, ISimulationData data, ISimulation simulation)
+            {
+                var type = data.GetType();
+                if (!_eventFactories.TryGetValue(type, out var factory))
+                {
+                    var method = _eventFactoryMethod.MakeGenericMethod(type);
+                    factory = (Func<PeerType, ISimulationData, ISimulation, ISimulationEvent>)(method.Invoke(null, Array.Empty<object>()) ?? throw new UnreachableException());
+
+                    _eventFactories.Add(type, factory);
+                }
+
+                return factory(source, data, simulation);
             }
 
-            return factory(source, data, simulation);
-        }
-
-        private static Func<PeerType, ISimulationData, ISimulation, ISimulationEvent> SimulationEventFactory<TData>()
-            where TData : ISimulationData
-        {
-            ISimulationEvent Factory(PeerType source, ISimulationData data, ISimulation simulation)
+            private static Func<PeerType, ISimulationData, ISimulation, ISimulationEvent> SimulationEventFactory<TData>()
+                where TData : ISimulationData
             {
-                return new SimulationEvent<TData>(source, (TData)data, simulation);
-            }
+                ISimulationEvent Factory(PeerType source, ISimulationData data, ISimulation simulation)
+                {
+                    return new SimulationEvent<TData>(source, (TData)data, simulation);
+                }
 
-            return Factory;
+                return Factory;
+            }
         }
     }
 }

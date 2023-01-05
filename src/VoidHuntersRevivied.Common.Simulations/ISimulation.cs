@@ -15,6 +15,7 @@ namespace VoidHuntersRevived.Common.Simulations
     {
         SimulationType Type { get; }
         Aether Aether { get; }
+        Type EntityComponentType { get; }
 
         void Initialize(IServiceProvider provider);
 

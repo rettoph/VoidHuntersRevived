@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Common.Simulations.Services
 
         ISimulation this[SimulationType type] { get; }
 
-        void Initialize(params SimulationType[] simulationTypes);
+        void Initialize(SimulationType simulationTypeFlags);
 
         void Update(GameTime gameTime);
 

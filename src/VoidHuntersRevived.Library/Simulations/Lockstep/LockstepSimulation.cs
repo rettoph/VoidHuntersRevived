@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep
 {
     [GuppyFilter<GameGuppy>()]
     [SimulationTypeFilter(SimulationType.Lockstep)]
-    internal sealed class LockstepSimulation : Simulation, ISimulation,
+    internal sealed class LockstepSimulation : Simulation<Common.Simulations.Components.Lockstep>, ISimulation,
         ISubscriber<Tick>,
         ISubscriber<Step>
     {

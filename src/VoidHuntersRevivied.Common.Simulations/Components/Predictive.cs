@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Common.Components
+namespace VoidHuntersRevived.Common.Simulations.Components
 {
     public sealed class Predictive
     {

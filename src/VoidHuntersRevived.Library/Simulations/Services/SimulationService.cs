@@ -37,12 +37,15 @@ namespace VoidHuntersRevived.Library.Simulations.Services
             this.Flags = 0;
         }
 
-        public void Initialize(params SimulationType[] simulationTypes)
+        public void Initialize(SimulationType simulationTypeFlags)
         {
             if (_initialized)
             {
                 throw new InvalidOperationException();
             }
+
+
+            this.Flags = simulationTypeFlags;
 
             var simulations = _provider.GetRequiredService<IFiltered<ISimulation>>().Instances;
             foreach (var simulation in simulations)
@@ -50,8 +53,6 @@ namespace VoidHuntersRevived.Library.Simulations.Services
                 _simulations.Add(simulation.Type, simulation);
                 _list.Add(simulation);
                 _types.Add(simulation.Type);
-
-                this.Flags |= simulation.Type;
             }
 
             foreach(var simulation in simulations)

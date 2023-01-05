@@ -6,7 +6,7 @@ using VoidHuntersRevived.Common.Simulations.Services;
 namespace VoidHuntersRevived.Library.Simulations.Predictive
 {
     [SimulationTypeFilter(SimulationType.Predictive)]
-    internal sealed class PredictiveSimulation : Simulation
+    internal sealed class PredictiveSimulation : Simulation<Common.Simulations.Components.Predictive>
     {
         public PredictiveSimulation(IParallelService simulatedEntities) : base(SimulationType.Predictive, simulatedEntities)
         {

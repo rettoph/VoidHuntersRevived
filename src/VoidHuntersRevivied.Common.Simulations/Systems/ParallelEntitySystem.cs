@@ -32,13 +32,12 @@ namespace VoidHuntersRevived.Common.Simulations.Systems
         {
             _world = world;
 
-            throw new NotImplementedException();
-            // foreach(ISimulation simulation in this.simulations.Instances)
-            // {
-            //     var aspect = _aspectBuilder.Clone().All(type.EntityComponentType).Build(_world);
-            //     var subscription = new EntitySubscription(_world, aspect);
-            //     _subscriptions.Add(type, subscription);
-            // }
+            foreach(ISimulation simulation in this.simulations.Instances)
+            {
+                var aspect = _aspectBuilder.Clone().All(simulation.EntityComponentType).Build(_world);
+                var subscription = new EntitySubscription(_world, aspect);
+                _subscriptions.Add(simulation.Type, subscription);
+            }
 
             this.Initialize(world.ComponentMapper);
         }

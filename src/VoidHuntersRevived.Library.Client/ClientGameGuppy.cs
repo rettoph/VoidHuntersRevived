@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Library.Client
 
             this.Peer.Bind(this.NetScope, 0);
 
-            this.Simulations.Initialize(SimulationType.Lockstep, SimulationType.Predictive);
+            this.Simulations.Initialize(SimulationType.Lockstep | SimulationType.Predictive);
 
             base.Initialize(provider);
 
