@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep.Services
             IFiltered<ITickProvider> providers)
         {
             _state = state;
-            _provider = providers.Instance ?? throw new ArgumentNullException();
+            _provider = providers.Instance;
         }
 
         public bool TryTick()

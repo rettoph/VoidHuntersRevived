@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep.Services
             IFiltered<IStepProvider> providers)
         {
             _state = state;
-            _provider = providers.Instance ?? throw new Exception();
+            _provider = providers.Instance;
             _ticks = ticks;
         }
 

@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Common.Simulations.Filters
             this.SimulationType = simulationType;
         }
 
-        public override bool Invoke(IServiceProvider provider, IServiceConfiguration service)
+        public override bool Invoke(IServiceProvider provider, object service)
         {
             var simulations = provider.GetRequiredService<ISimulationService>();
 

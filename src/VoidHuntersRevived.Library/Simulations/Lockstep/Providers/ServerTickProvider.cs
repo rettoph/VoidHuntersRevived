@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep.Providers
         public ServerTickProvider(State state, IFiltered<ITickFactory> factory)
         {
             _state = state;
-            _factory = factory.Instance ?? throw new ArgumentNullException();
+            _factory = factory.Instance;
         }
 
         public bool TryGetNextTick([MaybeNullWhen(false)] out Tick next)
