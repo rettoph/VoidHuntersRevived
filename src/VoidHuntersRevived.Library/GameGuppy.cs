@@ -9,11 +9,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace VoidHuntersRevived.Library
 {
     public abstract class GameGuppy : FrameableGuppy
     {
+        private World _world;
+
         public readonly Peer Peer;
         public readonly NetScope NetScope;
         public readonly ISimulationService Simulations;
@@ -23,9 +26,18 @@ namespace VoidHuntersRevived.Library
             NetScope netScope,
             ISimulationService simulations)
         {
+            _world = default!;
+
             this.Peer = peer;
             this.NetScope = netScope;
             this.Simulations = simulations;
+        }
+
+        public override void Initialize(IServiceProvider provider)
+        {
+            base.Initialize(provider);
+
+            _world = provider.GetRequiredService<World>();
         }
 
         public override void Update(GameTime gameTime)
@@ -35,6 +47,15 @@ namespace VoidHuntersRevived.Library
             this.Peer.Flush();
 
             this.Simulations.Update(gameTime);
+
+            _world.Update(gameTime);
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            _world.Draw(gameTime);
         }
     }
 }

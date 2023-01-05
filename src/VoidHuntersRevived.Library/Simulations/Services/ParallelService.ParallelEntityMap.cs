@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guppy.Network.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,14 +9,13 @@ using VoidHuntersRevived.Library.Simulations;
 
 namespace VoidHuntersRevived.Library.Simulations.Services
 {
-    internal sealed partial class SimulatedService
+    internal sealed partial class ParallelService
     {
-        public class SimulatedEntityMap
+        public class ParallelEntityMap
         {
             public static readonly int EmptyEntityId = int.MinValue;
-            public static readonly SimulationType[] MappableSimulationTypes = Enum.GetValues<SimulationType>().ToArray();
 
-            public readonly SimulatedId Id;
+            public ParallelKey Key;
 
             private IDictionary<SimulationType, int> _entityIds;
 
@@ -41,11 +41,13 @@ namespace VoidHuntersRevived.Library.Simulations.Services
                 }
             }
 
-            public SimulatedEntityMap(SimulatedId id)
+            public ParallelEntityMap(ParallelKey key)
             {
-                _entityIds = MappableSimulationTypes.ToDictionary(x => x, x => EmptyEntityId);
-                
-                this.Id = id;
+                _entityIds = SimulationType.Instances.ToDictionary(
+                    keySelector: x => x, 
+                    elementSelector: x => EmptyEntityId);
+
+                this.Key = key;
             }
         }
     }

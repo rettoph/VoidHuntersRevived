@@ -2,6 +2,7 @@
 using Guppy.Network.Identity.Claims;
 using Guppy.Network.Identity.Enums;
 using Guppy.Network.Peers;
+using MonoGame.Extended.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace VoidHuntersRevived.Library.Client
 
             this.Peer.Bind(this.NetScope, 0);
 
-            this.Simulations.Initialize(SimulationType.Lockstep | SimulationType.Predictive);
+            this.Simulations.Initialize(SimulationType.Lockstep, SimulationType.Predictive);
 
             base.Initialize(provider);
 

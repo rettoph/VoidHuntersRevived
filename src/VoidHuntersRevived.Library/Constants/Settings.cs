@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Library.Constants
 {
-    public static class SettingConstants
+    public static class Settings
     {
         public const string StepInterval = "step_interval";
         public const string StepsPerTick = "steps_per_tick";

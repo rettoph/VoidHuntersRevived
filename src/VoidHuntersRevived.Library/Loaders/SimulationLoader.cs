@@ -5,22 +5,13 @@ using Guppy.Common.DependencyInjection.Interfaces;
 using Guppy.Loaders;
 using LiteNetLib;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Services;
 using VoidHuntersRevived.Library.Common;
 using VoidHuntersRevived.Library.Constants;
-using VoidHuntersRevived.Library.Simulations.Lockstep;
-using VoidHuntersRevived.Library.Simulations.Lockstep.Factories;
-using VoidHuntersRevived.Library.Simulations.Lockstep.Providers;
-using VoidHuntersRevived.Library.Simulations.Lockstep.Services;
 using VoidHuntersRevived.Library.Simulations.Predictive;
 using VoidHuntersRevived.Library.Simulations.Services;
 using VoidHuntersRevived.Library.Simulations.Systems;
-using Lockstep = VoidHuntersRevived.Library.Simulations.Lockstep.Systems;
 
 namespace VoidHuntersRevived.Library.Loaders
 {
@@ -29,15 +20,21 @@ namespace VoidHuntersRevived.Library.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSetting<TimeSpan>(SettingConstants.StepInterval, TimeSpan.FromMilliseconds(20), false);
-            services.AddSetting<int>(SettingConstants.StepsPerTick, 3, false);
+            services.AddSetting<TimeSpan>(Settings.StepInterval, TimeSpan.FromMilliseconds(20), false);
+            services.AddSetting<int>(Settings.StepsPerTick, 3, false);
 
             services.AddScoped<ISimulationService, SimulationService>()
-                    .AddScoped<ISimulatedService, SimulatedService>();
+                    .AddScoped<IParallelService, ParallelService>();
 
             services.ConfigureCollection(manager =>
             {
                 manager.AddScoped<AetherSystem>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<PilotingSystem>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<PilotableSystem>()
                     .AddInterfaceAliases();
 
                 manager.AddScoped<UserPilotSystem>()
@@ -50,53 +47,55 @@ namespace VoidHuntersRevived.Library.Loaders
 
         private void ConfigureLockstep(IServiceCollection services, IServiceCollectionManager manager)
         {
-            manager.AddScoped<LockstepSimulation>()
+            manager.AddScoped<Lockstep.LockstepSimulation>()
                 .AddInterfaceAliases();
 
-            manager.AddScoped<ServerLockstepEventPublishingService>()
-                .AddAlias<ILockstepEventPublishingService>();
+            manager.AddScoped<Lockstep.Services.ServerLockstepEventPublishingService>()
+                .AddAlias<Lockstep.Services.ILockstepEventPublishingService>()
+                .AddAlias<ISubscriber>();
 
-            manager.AddScoped<ClientLockstepEventPublishingService>()
-                .AddAlias<ILockstepEventPublishingService>();
+            manager.AddScoped<Lockstep.Services.ClientLockstepEventPublishingService>()
+                .AddAlias<Lockstep.Services.ILockstepEventPublishingService>();
 
             manager.AddScoped<State>();
 
-            manager.AddScoped<ClientTickFactory>()
-                .AddAlias<ITickFactory>();
+            manager.AddScoped<Lockstep.Factories.ClientTickFactory>()
+                .AddAlias<Lockstep.Factories.ITickFactory>();
 
-            manager.AddScoped<ServerTickFactory>()
-                .AddAlias<ITickFactory>();
+            manager.AddScoped<Lockstep.Factories.ServerTickFactory>()
+                .AddAlias<Lockstep.Factories.ITickFactory>();
 
-            manager.AddScoped<ClientTickProvider>()
-                .AddAlias<ITickProvider>()
+            manager.AddScoped<Lockstep.Providers.ClientTickProvider>()
+                .AddAlias<Lockstep.Providers.ITickProvider>()
                 .AddAlias<ISubscriber>();
 
-            manager.AddScoped<ServerTickProvider>()
-                .AddAlias<ITickProvider>();
+            manager.AddScoped<Lockstep.Providers.ServerTickProvider>()
+                .AddAlias<Lockstep.Providers.ITickProvider>();
 
-            services.AddScoped<ITickService, TickService>();
+            services.AddScoped<Lockstep.Services.ITickService, Lockstep.Services.TickService>();
 
-            manager.AddScoped<ClientStepProvider>()
-                .AddAlias<IStepProvider>();
+            manager.AddScoped<Lockstep.Providers.ClientStepProvider>()
+                .AddAlias<Lockstep.Providers.IStepProvider>();
 
-            manager.AddScoped<ServerStepProvider>()
-                .AddAlias<IStepProvider>();
+            manager.AddScoped<Lockstep.Providers.ServerStepProvider>()
+                .AddAlias<Lockstep.Providers.IStepProvider>();
 
-            services.AddScoped<IStepService, StepService>();
+            services.AddScoped<Lockstep.Services.IStepService, Lockstep.Services.StepService>();
 
-            manager.AddScoped<Lockstep.TickServerSystem>()
+            manager.AddScoped<Lockstep.Systems.TickServerSystem>()
                 .AddInterfaceAliases();
 
-            manager.AddScoped<Lockstep.UserServerSystem>()
+            manager.AddScoped<Lockstep.Systems.UserServerSystem>()
                 .AddInterfaceAliases();
 
             services.AddNetMessageType<Tick>(DeliveryMethod.ReliableUnordered, 0);
+            services.AddNetMessageType<Lockstep.ClientRequest>(DeliveryMethod.ReliableUnordered, 0);
         }
 
         private void ConfigurePredictive(IServiceCollection services, IServiceCollectionManager manager)
         {
-            // manager.AddScoped<PredictiveSimulation>()
-            //     .AddInterfaceAliases();
+            manager.AddScoped<PredictiveSimulation>()
+                .AddInterfaceAliases();
         }
     }
 }

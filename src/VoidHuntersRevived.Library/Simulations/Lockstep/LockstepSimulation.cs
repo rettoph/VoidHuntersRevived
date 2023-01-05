@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Attributes;
+using VoidHuntersRevived.Common.Constants;
 using VoidHuntersRevived.Common.Services;
 using VoidHuntersRevived.Common.Systems;
 using VoidHuntersRevived.Library.Common;
@@ -23,7 +24,7 @@ using VoidHuntersRevived.Library.Simulations.Lockstep.Services;
 namespace VoidHuntersRevived.Library.Simulations.Lockstep
 {
     [GuppyFilter<GameGuppy>()]
-    [SimulationTypeFilter(SimulationType.Lockstep)]
+    [SimulationTypeFilter(SimulationTypes.Lockstep)]
     internal sealed class LockstepSimulation : Simulation, ISimulation,
         ISubscriber<Tick>,
         ISubscriber<Step>
@@ -36,7 +37,7 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep
             ISimulationService simulations, 
             IStepService steps, 
             IFiltered<ILockstepEventPublishingService> publisher, 
-            ISimulatedService simulatedEntities) : base(SimulationType.Lockstep, simulatedEntities)
+            IParallelService simulatedEntities) : base(SimulationType.Lockstep, simulatedEntities)
         {
             _simulations = simulations;
             _steps = steps;

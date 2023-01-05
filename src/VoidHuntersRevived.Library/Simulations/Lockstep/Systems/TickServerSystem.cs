@@ -9,13 +9,14 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Attributes;
+using VoidHuntersRevived.Common.Constants;
 using VoidHuntersRevived.Common.Systems;
 using VoidHuntersRevived.Library.Common;
 
 namespace VoidHuntersRevived.Library.Simulations.Lockstep.Systems
 {
     [PeerTypeFilter(PeerType.Server)]
-    [SimulationTypeFilter(SimulationType.Lockstep)]
+    [SimulationTypeFilter(SimulationTypes.Lockstep)]
     internal sealed class TickServerSystem : BasicSystem,
         ISubscriber<Tick>
     {

@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Common
+namespace VoidHuntersRevived.Common.Components
 {
-    public enum SimulatedType
+    public sealed class Lockstep
     {
-        Pilot,
-        Ship
     }
 }

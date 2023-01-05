@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Network.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,8 @@ using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Library.Simulations.Events
 {
-    public class UserJoined : ISimulationData
+    public class PlayerAction : ISimulationData
     {
+        public required UserAction UserAction { get; init; }
     }
 }

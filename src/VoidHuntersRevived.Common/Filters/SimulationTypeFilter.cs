@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Common.Filters
         {
             var simulations = provider.GetRequiredService<ISimulationService>();
 
-            return simulations.Flags.HasFlag(this.SimulationType);
+            return simulations.Contains(this.SimulationType);
         }
     }
 }

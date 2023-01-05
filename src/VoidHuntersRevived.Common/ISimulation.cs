@@ -18,25 +18,23 @@ namespace VoidHuntersRevived.Common
 
         void Initialize(IServiceProvider provider);
 
-        bool TryGetEntityId(SimulatedId id, [MaybeNullWhen(false)] out int entityId);
+        bool TryGetEntityId(ParallelKey key, [MaybeNullWhen(false)] out int id);
 
-        int GetEntityId(SimulatedId id);
+        int GetEntityId(ParallelKey key);
 
-        bool TryGetEntityId(int entityId, SimulationType to, [MaybeNullWhen(false)] out int toEntityId);
+        bool TryGetEntityId(int id, SimulationType toType, [MaybeNullWhen(false)] out int toId);
 
-        int GetEntityId(int entityId, SimulationType to);
+        int GetEntityId(int id, SimulationType to);
 
-        bool GetEntity(SimulatedId id, [MaybeNullWhen(false)] out Entity entity);
+        bool TryGetEntity(ParallelKey key, [MaybeNullWhen(false)] out Entity entity);
 
-        Entity GetEntity(SimulatedId id);
+        Entity GetEntity(ParallelKey key);
 
-        void RemoveEntity(SimulatedId id);
-
-        SimulatedId GetId(int entityId);
+        void RemoveEntity(int id);
 
         void Update(GameTime gameTime);
 
-        Entity CreateEntity(SimulatedId id);
+        Entity CreateEntity(ParallelKey key);
 
         void PublishEvent(PeerType source, ISimulationData data);
     }

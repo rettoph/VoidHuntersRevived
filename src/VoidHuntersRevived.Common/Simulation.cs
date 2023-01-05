@@ -22,7 +22,8 @@ namespace VoidHuntersRevived.Common
         private IBus _bus;
         private World _world;
         private IUpdateSimulationSystem[] _updateSystems;
-        private readonly ISimulatedService _simulatedEntities;
+        private ISynchronizationSystem[] _synchronizeSystems;
+        private readonly IParallelService _simulatedEntities;
 
         public readonly SimulationType Type;
         public readonly Aether Aether;
@@ -30,12 +31,13 @@ namespace VoidHuntersRevived.Common
         SimulationType ISimulation.Type => this.Type;
         Aether ISimulation.Aether => this.Aether;
 
-        protected Simulation(SimulationType type, ISimulatedService simulatedEntities)
+        protected Simulation(SimulationType type, IParallelService simulatedEntities)
         {
             _simulatedEntities = simulatedEntities;
             _world = default!;
             _bus = default!;
             _updateSystems = Array.Empty<IUpdateSimulationSystem>();
+            _synchronizeSystems = Array.Empty<ISynchronizationSystem>();
 
             this.Type = type;
             this.Aether = new Aether(Vector2.Zero);
@@ -46,6 +48,7 @@ namespace VoidHuntersRevived.Common
             _world = provider.GetRequiredService<World>();
             _bus = provider.GetRequiredService<IBus>();
             _updateSystems = provider.GetRequiredService<IFiltered<IUpdateSimulationSystem>>().Instances.ToArray();
+            _synchronizeSystems = provider.GetRequiredService<IFiltered<ISynchronizationSystem>>().Instances.ToArray();
         }
 
         protected virtual void UpdateSystems(GameTime gameTime)
@@ -56,38 +59,46 @@ namespace VoidHuntersRevived.Common
             }
         }
 
-        public bool TryGetEntityId(SimulatedId id, [MaybeNullWhen(false)] out int entityId)
+        protected virtual void SynchronizeSystems(GameTime gameTime)
         {
-            return _simulatedEntities.TryGetEntityId(id, this.Type, out entityId);
+            foreach (ISynchronizationSystem synchronizeSystem in _synchronizeSystems)
+            {
+                synchronizeSystem.Synchronize(this, gameTime);
+            }
         }
 
-        public int GetEntityId(SimulatedId id)
+        public bool TryGetEntityId(ParallelKey key, [MaybeNullWhen(false)] out int id)
         {
-            if (_simulatedEntities.TryGetEntityId(id, this.Type, out var entityId))
+            return _simulatedEntities.TryGetEntityIdFromKey(key, this.Type, out id);
+        }
+
+        public int GetEntityId(ParallelKey key)
+        {
+            if (_simulatedEntities.TryGetEntityIdFromKey(key, this.Type, out var id))
             {
-                return entityId;
+                return id;
             }
 
-            var entity = this.CreateEntity(id);
+            var entity = this.CreateEntity(key);
 
             return entity.Id;
         }
 
-        public bool TryGetEntityId(int entityId, SimulationType to, [MaybeNullWhen(false)] out int toEntityId)
+        public bool TryGetEntityId(int id, SimulationType toType, [MaybeNullWhen(false)] out int toId)
         {
-            return _simulatedEntities.TryGetEntityId(this.Type, entityId, to, out toEntityId);
+            return _simulatedEntities.TryGetEntityId(id, toType, out toId);
         }
 
-        public int GetEntityId(int entityId, SimulationType to)
+        public int GetEntityId(int id, SimulationType to)
         {
-            return _simulatedEntities.GetEntityId(this.Type, entityId, to);
+            return _simulatedEntities.GetId(id, to);
         }
 
-        public bool GetEntity(SimulatedId id, [MaybeNullWhen(false)] out Entity entity)
+        public bool TryGetEntity(ParallelKey key, [MaybeNullWhen(false)] out Entity entity)
         {
-            if (_simulatedEntities.TryGetEntityId(id, this.Type, out var entityId))
+            if (_simulatedEntities.TryGetEntityIdFromKey(key, this.Type, out var id))
             {
-                entity = _world.GetEntity(entityId);
+                entity = _world.GetEntity(id);
                 return true;
             }
 
@@ -95,26 +106,21 @@ namespace VoidHuntersRevived.Common
             return false;
         }
 
-        public Entity GetEntity(SimulatedId id)
+        public Entity GetEntity(ParallelKey key)
         {
-            if (_simulatedEntities.TryGetEntityId(id, this.Type, out var entityId))
+            if (_simulatedEntities.TryGetEntityIdFromKey(key, this.Type, out var entityId))
             {
                 return _world.GetEntity(entityId);
             }
 
-            var entity = this.CreateEntity(id);
+            var entity = this.CreateEntity(key);
 
             return entity;
         }
 
-        public void RemoveEntity(SimulatedId id)
+        public void RemoveEntity(int id)
         {
-            _simulatedEntities.Remove(id, this.Type);
-        }
-
-        public SimulatedId GetId(int entityId)
-        {
-            return _simulatedEntities.GetId(this.Type, entityId);
+            _simulatedEntities.Remove(this.Type, id);
         }
 
         protected abstract void Update(GameTime gameTime);
@@ -124,12 +130,12 @@ namespace VoidHuntersRevived.Common
             this.Update(gameTime);
         }
 
-        public virtual Entity CreateEntity(SimulatedId id)
+        public virtual Entity CreateEntity(ParallelKey key)
         {
             var entity = _world.CreateEntity();
-            _simulatedEntities.Set(id, this.Type, entity.Id);
+            _simulatedEntities.Set(key, this.Type, entity.Id);
 
-            return entity;
+            return this.Type.AttachComponent(entity); ;
         }
 
         private sealed class SimulationEvent<TData> : Message<ISimulationEvent<TData>>, ISimulationEvent<TData>

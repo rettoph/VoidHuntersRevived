@@ -43,8 +43,8 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep.Providers
         {
             _state = state;
             _ticks = ticks.Instance ?? throw new ArgumentNullException();
-            _interval = settings.Get<TimeSpan>(SettingConstants.StepInterval).Value;
-            _stepsPerTick = settings.Get<int>(SettingConstants.StepsPerTick).Value;
+            _interval = settings.Get<TimeSpan>(Settings.StepInterval).Value;
+            _stepsPerTick = settings.Get<int>(Settings.StepsPerTick).Value;
 
             _currentInterval = _interval;
             _targetInterval = _interval;

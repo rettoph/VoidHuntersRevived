@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep.Providers
 
         public ServerStepProvider(ISettingProvider settings)
         {
-            _timer = new GuppyTimer(settings.Get<TimeSpan>(SettingConstants.StepInterval).Value);
+            _timer = new GuppyTimer(settings.Get<TimeSpan>(Settings.StepInterval).Value);
         }
 
         public void Update(GameTime gameTime)

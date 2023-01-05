@@ -58,17 +58,34 @@ namespace VoidHuntersRevived.Library.Client
         {
             base.Initialize();
 
+            _provider = new GuppyEngine(new[] { typeof(GameGuppy).Assembly, typeof(ClientGameGuppy).Assembly })
+                        .ConfigureMonoGame<LastGuppyPublishStrategy>(this, _graphics, this.Content, this.Window)
+                        .ConfigureECS()
+                        .ConfigureNetwork()
+                        .ConfigureResources()
+                        .ConfigureUI()
+                        .ConfigureNetworkUI()
+                        .Build();
+
+            return;
             // SDL_MaximizeWindow(this.Window.Handle);
             Task.Run(() =>
             {
-                _provider = new GuppyEngine(new[] { typeof(GameGuppy).Assembly, typeof(ClientGameGuppy).Assembly })
-                    .ConfigureMonoGame<LastGuppyPublishStrategy>(this, _graphics, this.Content, this.Window)
-                    .ConfigureECS()
-                    .ConfigureNetwork()
-                    .ConfigureResources()
-                    .ConfigureUI()
-                    .ConfigureNetworkUI()
-                    .Build();
+                try
+                {
+                    _provider = new GuppyEngine(new[] { typeof(GameGuppy).Assembly, typeof(ClientGameGuppy).Assembly })
+                        .ConfigureMonoGame<LastGuppyPublishStrategy>(this, _graphics, this.Content, this.Window)
+                        .ConfigureECS()
+                        .ConfigureNetwork()
+                        .ConfigureResources()
+                        .ConfigureUI()
+                        .ConfigureNetworkUI()
+                        .Build();
+                }
+                catch (Exception ex)
+                {
+
+                }
             });
         }
 

@@ -13,9 +13,9 @@ namespace VoidHuntersRevived.Common.Attributes
     {
         public readonly SimulationType SimulationType;
 
-        public SimulationTypeFilterAttribute(SimulationType simulationType)
+        public SimulationTypeFilterAttribute(string simulationTypeName)
         {
-            this.SimulationType = simulationType;
+            this.SimulationType = SimulationType.GetByName(simulationTypeName);
         }
 
         public override void Initialize(IServiceCollection services, Type classType)
