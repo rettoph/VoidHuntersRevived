@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Messages;
+using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Systems;
 
 namespace VoidHuntersRevived.Library.Simulations.Systems

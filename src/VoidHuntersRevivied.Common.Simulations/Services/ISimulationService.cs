@@ -4,16 +4,12 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Common.Services
+namespace VoidHuntersRevived.Common.Simulations.Services
 {
     public interface ISimulationService
     {
-        ReadOnlyCollection<SimulationType> Types { get; }
-
+        public SimulationType Flags { get; }
         ReadOnlyCollection<ISimulation> Instances { get; }
 
         ISimulation this[SimulationType type] { get; }
@@ -23,6 +19,5 @@ namespace VoidHuntersRevived.Common.Services
         void Update(GameTime gameTime);
 
         void PublishEvent(PeerType source, ISimulationData data);
-        bool Contains(SimulationType type);
     }
 }

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Library.Common
+namespace VoidHuntersRevived.Common.Simulations.Lockstep
 {
     public class Step : GameTime, IMessage
     {

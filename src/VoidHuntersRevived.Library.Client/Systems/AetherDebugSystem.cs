@@ -3,21 +3,14 @@ using Guppy.MonoGame;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Services;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Library.Common;
 using MonoGame.Extended.Entities.Systems;
 using tainicom.Aether.Physics2D.Diagnostics;
 using MonoGame.Extended.Entities;
 using Guppy.Network;
 using Guppy.Network.Enums;
-using Guppy.Network.Peers;
-using VoidHuntersRevived.Common.Constants;
+using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Library.Client.Systems
 {
@@ -57,11 +50,11 @@ namespace VoidHuntersRevived.Library.Client.Systems
                 var color = 
                 _debugViews[i] = new DebugView(_simulations.Instances[i].Aether)
                 {
-                    DefaultShapeColor = (_simulations.Instances[i].Type.Name, _netScope.Peer?.Type) switch
+                    DefaultShapeColor = (_simulations.Instances[i].Type, _netScope.Peer?.Type) switch
                     {
-                        (SimulationTypes.Lockstep, PeerType.Server) => Color.Green,
-                        (SimulationTypes.Lockstep, PeerType.Client) => Color.Yellow,
-                        (SimulationTypes.Predictive, PeerType.Client) => Color.Pink,
+                        (SimulationType.Lockstep, PeerType.Server) => Color.Green,
+                        (SimulationType.Lockstep, PeerType.Client) => Color.Yellow,
+                        (SimulationType.Predictive, PeerType.Client) => Color.Pink,
                         _ => Color.White
                     }
                 };

@@ -1,18 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using MonoGame.Extended.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Attributes;
-using VoidHuntersRevived.Common.Constants;
-using VoidHuntersRevived.Common.Services;
+using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Attributes;
+using VoidHuntersRevived.Common.Simulations.Services;
 
 namespace VoidHuntersRevived.Library.Simulations.Predictive
 {
-    [SimulationTypeFilter(SimulationTypes.Predictive)]
+    [SimulationTypeFilter(SimulationType.Predictive)]
     internal sealed class PredictiveSimulation : Simulation
     {
         public PredictiveSimulation(IParallelService simulatedEntities) : base(SimulationType.Predictive, simulatedEntities)

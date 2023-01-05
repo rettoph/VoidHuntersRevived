@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Common
+namespace VoidHuntersRevived.Common.Simulations
 {
     public interface ISimulationEvent : IMessage
     {

@@ -6,10 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Common.Systems
+namespace VoidHuntersRevived.Common.Simulations.Systems
 {
-    public interface IUpdateSimulationSystem : ISystem
+    public interface ISynchronizationSystem : ISystem
     {
-        void Update(ISimulation simulation, GameTime gameTime);
+        void Synchronize(ISimulation simulation, GameTime gameTime);
     }
 }

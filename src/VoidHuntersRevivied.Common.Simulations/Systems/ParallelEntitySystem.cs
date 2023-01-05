@@ -1,16 +1,9 @@
-﻿using MonoGame.Extended.Collections;
-using MonoGame.Extended.Entities;
-using System;
-using System.Collections.Generic;
+﻿using MonoGame.Extended.Entities;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using tainicom.Aether.Physics2D.Dynamics;
-using VoidHuntersRevived.Common.Components;
-using VoidHuntersRevived.Common.Services;
+using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Common.Systems;
 
-namespace VoidHuntersRevived.Common.Systems
+namespace VoidHuntersRevived.Common.Simulations.Systems
 {
     public abstract class ParallelEntitySystem : BasicSystem
     {
@@ -39,12 +32,13 @@ namespace VoidHuntersRevived.Common.Systems
         {
             _world = world;
 
-            foreach(SimulationType type in this.simulations.Types)
-            {
-                var aspect = _aspectBuilder.Clone().All(type.EntityComponentType).Build(_world);
-                var subscription = new EntitySubscription(_world, aspect);
-                _subscriptions.Add(type, subscription);
-            }
+            throw new NotImplementedException();
+            // foreach(ISimulation simulation in this.simulations.Instances)
+            // {
+            //     var aspect = _aspectBuilder.Clone().All(type.EntityComponentType).Build(_world);
+            //     var subscription = new EntitySubscription(_world, aspect);
+            //     _subscriptions.Add(type, subscription);
+            // }
 
             this.Initialize(world.ComponentMapper);
         }

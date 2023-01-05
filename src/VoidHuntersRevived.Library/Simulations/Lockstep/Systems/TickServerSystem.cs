@@ -2,21 +2,15 @@
 using Guppy.Network;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Attributes;
-using VoidHuntersRevived.Common.Constants;
+using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Attributes;
+using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Systems;
-using VoidHuntersRevived.Library.Common;
 
 namespace VoidHuntersRevived.Library.Simulations.Lockstep.Systems
 {
     [PeerTypeFilter(PeerType.Server)]
-    [SimulationTypeFilter(SimulationTypes.Lockstep)]
+    [SimulationTypeFilter(SimulationType.Lockstep)]
     internal sealed class TickServerSystem : BasicSystem,
         ISubscriber<Tick>
     {

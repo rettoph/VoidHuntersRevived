@@ -1,11 +1,5 @@
-﻿using Guppy.Network.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Library.Simulations;
+﻿using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Library.Simulations.Services
 {
@@ -43,7 +37,7 @@ namespace VoidHuntersRevived.Library.Simulations.Services
 
             public ParallelEntityMap(ParallelKey key)
             {
-                _entityIds = SimulationType.Instances.ToDictionary(
+                _entityIds = Enum.GetValues<SimulationType>().ToDictionary(
                     keySelector: x => x, 
                     elementSelector: x => EmptyEntityId);
 

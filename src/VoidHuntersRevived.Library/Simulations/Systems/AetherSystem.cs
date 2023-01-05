@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Common.Systems;
 
 namespace VoidHuntersRevived.Library.Simulations.Systems

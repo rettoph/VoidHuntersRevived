@@ -1,6 +1,7 @@
 ﻿using Guppy.Common.Helpers;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Services;
+using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Services;
 
 namespace VoidHuntersRevived.Library.Simulations.Services
 {

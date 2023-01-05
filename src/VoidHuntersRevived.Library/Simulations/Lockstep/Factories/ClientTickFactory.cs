@@ -1,12 +1,7 @@
 ﻿using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Library.Common;
+using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Lockstep;
 
 namespace VoidHuntersRevived.Library.Simulations.Lockstep.Factories
 {

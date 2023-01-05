@@ -12,10 +12,10 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Services;
-using VoidHuntersRevived.Common.Systems;
+using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Common.Simulations.Systems;
 
-namespace VoidHuntersRevived.Common
+namespace VoidHuntersRevived.Common.Simulations
 {
     public abstract class Simulation : ISimulation
     {
@@ -135,7 +135,7 @@ namespace VoidHuntersRevived.Common
             var entity = _world.CreateEntity();
             _simulatedEntities.Set(key, this.Type, entity.Id);
 
-            return this.Type.AttachComponent(entity); ;
+            return entity;
         }
 
         private sealed class SimulationEvent<TData> : Message<ISimulationEvent<TData>>, ISimulationEvent<TData>

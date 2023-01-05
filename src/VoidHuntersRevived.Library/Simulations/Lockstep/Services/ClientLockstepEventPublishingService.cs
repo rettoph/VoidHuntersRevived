@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Library.Simulations.Lockstep.Factories;
 
 namespace VoidHuntersRevived.Library.Simulations.Lockstep.Services

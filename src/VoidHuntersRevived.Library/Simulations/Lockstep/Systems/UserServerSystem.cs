@@ -7,23 +7,16 @@ using Guppy.Network.Identity;
 using Guppy.Network.Identity.Enums;
 using Guppy.Network.Identity.Services;
 using Guppy.Network.Messages;
-using MonoGame.Extended.Entities.Systems;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Attributes;
-using VoidHuntersRevived.Common.Constants;
-using VoidHuntersRevived.Common.Services;
+using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Attributes;
+using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Systems;
 using VoidHuntersRevived.Library.Simulations.Events;
 
 namespace VoidHuntersRevived.Library.Simulations.Lockstep.Systems
 {
     [PeerTypeFilter(PeerType.Server)]
-    [SimulationTypeFilter(SimulationTypes.Lockstep)]
+    [SimulationTypeFilter(SimulationType.Lockstep)]
     internal sealed class UserServerSystem : BasicSystem
     {
         private readonly NetScope _scope;

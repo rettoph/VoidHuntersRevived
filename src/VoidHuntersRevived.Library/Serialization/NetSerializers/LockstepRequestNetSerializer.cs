@@ -3,7 +3,7 @@ using Guppy.Network;
 using Guppy.Network.Providers;
 using LiteNetLib.Utils;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Library.Common;
+using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 {

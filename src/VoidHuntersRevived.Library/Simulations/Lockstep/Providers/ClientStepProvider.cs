@@ -8,9 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Library.Common;
+using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Library.Constants;
-using VoidHuntersRevived.Library.Simulations.Lockstep.Services;
 
 namespace VoidHuntersRevived.Library.Simulations.Lockstep.Providers
 {

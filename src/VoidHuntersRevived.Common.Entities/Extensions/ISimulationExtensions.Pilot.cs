@@ -1,5 +1,6 @@
 ﻿using MonoGame.Extended.Entities;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Common.Entities.Extensions
 {

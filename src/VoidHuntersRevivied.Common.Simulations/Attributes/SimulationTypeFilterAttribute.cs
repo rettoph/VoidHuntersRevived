@@ -5,17 +5,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Filters;
+using VoidHuntersRevived.Common.Simulations.Filters;
 
-namespace VoidHuntersRevived.Common.Attributes
+namespace VoidHuntersRevived.Common.Simulations.Attributes
 {
     public sealed class SimulationTypeFilterAttribute : InitializableAttribute
     {
         public readonly SimulationType SimulationType;
 
-        public SimulationTypeFilterAttribute(string simulationTypeName)
+        public SimulationTypeFilterAttribute(SimulationType simulationType)
         {
-            this.SimulationType = SimulationType.GetByName(simulationTypeName);
+            this.SimulationType = simulationType;
         }
 
         public override void Initialize(IServiceCollection services, Type classType)

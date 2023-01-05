@@ -2,9 +2,8 @@
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Providers;
 using Guppy.Network.Peers;
-using MonoGame.Extended.Entities;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Services;
+using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Services;
 
 namespace VoidHuntersRevived.Library.Server
 {

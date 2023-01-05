@@ -1,14 +1,6 @@
 ﻿using Guppy.MonoGame.Utilities.Cameras;
-using Guppy.Network.Peers;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Services;
 
 namespace VoidHuntersRevived.Library.Client.Systems
 {

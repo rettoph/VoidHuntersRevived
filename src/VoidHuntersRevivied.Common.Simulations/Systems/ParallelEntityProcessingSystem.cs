@@ -1,17 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using MonoGame.Extended.Collections;
 using MonoGame.Extended.Entities;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using tainicom.Aether.Physics2D.Dynamics;
-using VoidHuntersRevived.Common.Components;
-using VoidHuntersRevived.Common.Services;
+using VoidHuntersRevived.Common.Simulations.Services;
 
-namespace VoidHuntersRevived.Common.Systems
+namespace VoidHuntersRevived.Common.Simulations.Systems
 {
     public abstract class ParallelEntityProcessingSystem : ParallelEntitySystem, IUpdateSimulationSystem
     {

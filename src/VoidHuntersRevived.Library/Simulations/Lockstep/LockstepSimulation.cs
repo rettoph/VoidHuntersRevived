@@ -4,27 +4,16 @@ using Guppy.Network;
 using Guppy.Network.Enums;
 using LiteNetLib;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended.Entities;
-using MonoGame.Extended.Entities.Systems;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Attributes;
-using VoidHuntersRevived.Common.Constants;
-using VoidHuntersRevived.Common.Services;
-using VoidHuntersRevived.Common.Systems;
-using VoidHuntersRevived.Library.Common;
-using VoidHuntersRevived.Library.Simulations.Lockstep.Factories;
+using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Attributes;
+using VoidHuntersRevived.Common.Simulations.Lockstep;
+using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Library.Simulations.Lockstep.Services;
 
 namespace VoidHuntersRevived.Library.Simulations.Lockstep
 {
     [GuppyFilter<GameGuppy>()]
-    [SimulationTypeFilter(SimulationTypes.Lockstep)]
+    [SimulationTypeFilter(SimulationType.Lockstep)]
     internal sealed class LockstepSimulation : Simulation, ISimulation,
         ISubscriber<Tick>,
         ISubscriber<Step>

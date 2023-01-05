@@ -1,14 +1,9 @@
 ﻿using Guppy.Common;
 using Guppy.Resources.Providers;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Constants;
 
-namespace VoidHuntersRevived.Library.Common
+namespace VoidHuntersRevived.Common.Simulations.Lockstep
 {
     public sealed class State
     {

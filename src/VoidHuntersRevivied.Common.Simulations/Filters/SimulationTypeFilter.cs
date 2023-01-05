@@ -1,14 +1,9 @@
 ﻿using Guppy.Common.DependencyInjection.Interfaces;
 using Guppy.Common.Filters;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Services;
+using VoidHuntersRevived.Common.Simulations.Services;
 
-namespace VoidHuntersRevived.Common.Filters
+namespace VoidHuntersRevived.Common.Simulations.Filters
 {
     public sealed class SimulationTypeFilter : SimpleFilter
     {
@@ -23,7 +18,7 @@ namespace VoidHuntersRevived.Common.Filters
         {
             var simulations = provider.GetRequiredService<ISimulationService>();
 
-            return simulations.Contains(this.SimulationType);
+            return simulations.Flags.HasFlag(this.SimulationType);
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Library.Simulations.Lockstep.Factories;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
