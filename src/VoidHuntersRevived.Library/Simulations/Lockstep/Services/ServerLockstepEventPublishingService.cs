@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep.Services
         ISubscriber<INetIncomingMessage<ClientRequest>>
     {
         private readonly ITickFactory _factory;
-        private Action<PeerType, ISimulationData> _publisher;
+        private Action<SimulationType, ISimulationData> _publisher;
 
         public ServerLockstepEventPublishingService(IFiltered<ITickFactory> factory)
         {
@@ -27,23 +27,23 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep.Services
             _publisher = default!;
         }
 
-        public void Initialize(Action<PeerType, ISimulationData> publisher)
+        public void Initialize(Action<SimulationType, ISimulationData> publisher)
         {
             _publisher = publisher;
         }
 
-        public void Publish(PeerType source, ISimulationData data)
+        public void Publish(SimulationType source, ISimulationData data)
         {
-            // If we are currently on the server then all client sourced
+            // If we are currently on the server then all predictive sourced
             // data should be enqueued and await publishing within the
             // tick.
-            if(source == PeerType.Client)
+            if(source != SimulationType.Lockstep)
             {
                 _factory.Enqueue(data);
                 return;
             }
 
-            // If the source is the server, that means we are free to publish.
+            // If the source is lockstep, that means we are free to publish.
             _publisher.Invoke(source, data);
         }
 

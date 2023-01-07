@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep
             _steps.Update(gameTime);
         }
 
-        public override void PublishEvent(PeerType source, ISimulationData data)
+        public override void PublishEvent(SimulationType source, ISimulationData data)
         {
             _publisher.Publish(source, data);
         }
@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep
                 // At this point in time the data has successfully
                 // been converted into lockstep server data,
                 // publish it as so.
-                _simulations.PublishEvent(PeerType.Server, data);
+                _simulations.PublishEvent(SimulationType.Lockstep, data);
             }
         }
 

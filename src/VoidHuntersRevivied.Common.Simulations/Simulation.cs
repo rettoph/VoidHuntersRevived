@@ -149,7 +149,7 @@ namespace VoidHuntersRevived.Common.Simulations
         private sealed class SimulationEvent<TData> : Message<ISimulationEvent<TData>>, ISimulationEvent<TData>
             where TData : notnull, ISimulationData
         {
-            public PeerType Source { get; }
+            public SimulationType Source { get; }
 
             public TData Data { get; }
 
@@ -158,7 +158,7 @@ namespace VoidHuntersRevived.Common.Simulations
             object ISimulationEvent.Data => this.Data;
 
 
-            public SimulationEvent(PeerType source, TData data, ISimulation simulation)
+            public SimulationEvent(SimulationType source, TData data, ISimulation simulation)
             {
                 this.Source = source;
                 this.Data = data;
@@ -166,23 +166,23 @@ namespace VoidHuntersRevived.Common.Simulations
             }
         }
 
-        public virtual void PublishEvent(PeerType source, ISimulationData data)
+        public virtual void PublishEvent(SimulationType source, ISimulationData data)
         {
             _bus.Publish(EventFactory.GetSimulationEvent(source, data, this));
         }
 
         private static class EventFactory
         {
-            private static Dictionary<Type, Func<PeerType, ISimulationData, ISimulation, ISimulationEvent>> _eventFactories = new();
+            private static Dictionary<Type, Func<SimulationType, ISimulationData, ISimulation, ISimulationEvent>> _eventFactories = new();
             private static MethodInfo _eventFactoryMethod = typeof(EventFactory).GetMethod(nameof(SimulationEventFactory), BindingFlags.Static | BindingFlags.NonPublic) ?? throw new UnreachableException();
 
-            public static ISimulationEvent GetSimulationEvent(PeerType source, ISimulationData data, ISimulation simulation)
+            public static ISimulationEvent GetSimulationEvent(SimulationType source, ISimulationData data, ISimulation simulation)
             {
                 var type = data.GetType();
                 if (!_eventFactories.TryGetValue(type, out var factory))
                 {
                     var method = _eventFactoryMethod.MakeGenericMethod(type);
-                    factory = (Func<PeerType, ISimulationData, ISimulation, ISimulationEvent>)(method.Invoke(null, Array.Empty<object>()) ?? throw new UnreachableException());
+                    factory = (Func<SimulationType, ISimulationData, ISimulation, ISimulationEvent>)(method.Invoke(null, Array.Empty<object>()) ?? throw new UnreachableException());
 
                     _eventFactories.Add(type, factory);
                 }
@@ -190,10 +190,10 @@ namespace VoidHuntersRevived.Common.Simulations
                 return factory(source, data, simulation);
             }
 
-            private static Func<PeerType, ISimulationData, ISimulation, ISimulationEvent> SimulationEventFactory<TData>()
+            private static Func<SimulationType, ISimulationData, ISimulation, ISimulationEvent> SimulationEventFactory<TData>()
                 where TData : ISimulationData
             {
-                ISimulationEvent Factory(PeerType source, ISimulationData data, ISimulation simulation)
+                ISimulationEvent Factory(SimulationType source, ISimulationData data, ISimulation simulation)
                 {
                     return new SimulationEvent<TData>(source, (TData)data, simulation);
                 }

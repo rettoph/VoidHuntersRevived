@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep.Systems
         private void HandleUserJoined(IUserService sender, User args)
         {
             _simulations.PublishEvent(
-                source: PeerType.Client, 
+                source: SimulationType.Predictive, 
                 data: new PlayerAction()
                 {
                    UserAction = args.CreateAction(UserAction.Actions.UserJoined, ClaimAccessibility.Public)

@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep.Services
     [PeerTypeFilter(PeerType.Client)]
     internal sealed class ClientLockstepEventPublishingService : ILockstepEventPublishingService
     {
-        private Action<PeerType, ISimulationData> _publisher;
+        private Action<SimulationType, ISimulationData> _publisher;
         private NetScope _netScope;
 
         public ClientLockstepEventPublishingService(NetScope netScope)
@@ -24,23 +24,23 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep.Services
             _netScope = netScope;
         }
 
-        public void Initialize(Action<PeerType, ISimulationData> publisher)
+        public void Initialize(Action<SimulationType, ISimulationData> publisher)
         {
             _publisher = publisher;
         }
 
-        public void Publish(PeerType source, ISimulationData data)
+        public void Publish(SimulationType source, ISimulationData data)
         {
-            // If we are currently on the client and recieve a client
+            // If we are currently on the client and recieve a predictive
             // event then we should request it from the server.
             // Wait for verification from the server before publishing it.
-            if (source == PeerType.Client)
+            if (source == SimulationType.Predictive)
             {
                 this.RequestEvent(data);
                 return;
             }
 
-            // If the source is the server, that means we are free to publish.
+            // If the source is lockstep, that means we are free to publish.
             _publisher.Invoke(source, data);
         }
 

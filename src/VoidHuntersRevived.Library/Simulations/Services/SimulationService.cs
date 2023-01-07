@@ -71,7 +71,7 @@ namespace VoidHuntersRevived.Library.Simulations.Services
             }
         }
 
-        public void PublishEvent(PeerType source, ISimulationData data)
+        public void PublishEvent(SimulationType source, ISimulationData data)
         {
             foreach(ISimulation simulation in _simulations.Values)
             {

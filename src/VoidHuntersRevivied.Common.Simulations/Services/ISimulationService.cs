@@ -18,6 +18,6 @@ namespace VoidHuntersRevived.Common.Simulations.Services
 
         void Update(GameTime gameTime);
 
-        void PublishEvent(PeerType source, ISimulationData data);
+        void PublishEvent(SimulationType source, ISimulationData data);
     }
 }

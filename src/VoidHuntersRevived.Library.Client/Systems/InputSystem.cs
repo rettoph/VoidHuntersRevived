@@ -3,6 +3,7 @@ using Guppy.Network;
 using Guppy.Network.Enums;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Messages;
+using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Systems;
 using VoidHuntersRevived.Library.Constants;
@@ -30,7 +31,7 @@ namespace VoidHuntersRevived.Library.Client.Systems
                 return;
             }
 
-            _simulations.PublishEvent(PeerType.Client, new SetPilotingDirection(
+            _simulations.PublishEvent(SimulationType.Predictive, new SetPilotingDirection(
                 pilotKey: ParallelKey.From(ParallelTypes.Pilot, _netScope.Peer.Users.Current.Id),
                 which: message.Which,
                 value: message.Value));

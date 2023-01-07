@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Common.Simulations
 {
     public interface ISimulationEvent : IMessage
     {
-        PeerType Source { get; }
+        SimulationType Source { get; }
         ISimulation Simulation { get; }
         object Data { get; }
     }

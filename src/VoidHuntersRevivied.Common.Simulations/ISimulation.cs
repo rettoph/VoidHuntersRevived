@@ -37,6 +37,6 @@ namespace VoidHuntersRevived.Common.Simulations
 
         Entity CreateEntity(ParallelKey key);
 
-        void PublishEvent(PeerType source, ISimulationData data);
+        void PublishEvent(SimulationType source, ISimulationData data);
     }
 }
