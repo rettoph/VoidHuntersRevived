@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
+using Serilog;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
 
@@ -15,9 +17,11 @@ namespace VoidHuntersRevived.Library.Simulations.Systems
     {
         private ComponentMapper<Pilotable> _pilotables;
         private ComponentMapper<Body> _bodies;
+        private ILogger _logger;
 
-        public PilotableSystem(ISimulationService simulations) : base(simulations, Aspect.All(typeof(Pilotable)))
+        public PilotableSystem(ILogger logger, ISimulationService simulations) : base(simulations, Aspect.All(typeof(Pilotable)))
         {
+            _logger = logger;
             _pilotables = default!;
             _bodies = default!;
         }
@@ -28,10 +32,16 @@ namespace VoidHuntersRevived.Library.Simulations.Systems
             _bodies = mapperService.GetMapper<Body>();
         }
 
+        public override void Update(ISimulation simulation, GameTime gameTime)
+        {
+            base.Update(simulation, gameTime);
+        }
+
         protected override void Process(ISimulation simulation, GameTime gameTime, int entityId)
         {
             var pilotable = _pilotables.Get(entityId);
-            if(pilotable is null || pilotable.Direction == Direction.None)
+
+            if (pilotable is null || pilotable.Direction == Direction.None)
             {
                 return;
             }

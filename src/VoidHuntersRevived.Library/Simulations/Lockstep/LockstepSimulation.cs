@@ -4,10 +4,12 @@ using Guppy.Network;
 using Guppy.Network.Enums;
 using LiteNetLib;
 using Microsoft.Xna.Framework;
+using Serilog;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Library.Simulations.Lockstep.Providers;
 using VoidHuntersRevived.Library.Simulations.Lockstep.Services;
 
 namespace VoidHuntersRevived.Library.Simulations.Lockstep
@@ -16,21 +18,28 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep
     [SimulationTypeFilter(SimulationType.Lockstep)]
     internal sealed class LockstepSimulation : Simulation<Common.Simulations.Components.Lockstep>, ISimulation,
         ISubscriber<Tick>,
-        ISubscriber<Step>
+        ISubscriber<Step>,
+        IDisposable
     {
-        private ILockstepEventPublishingService _publisher;
-        private IStepService _steps;
-        private ISimulationService _simulations;
+        private readonly ISimulationStateProvider _simulationStates;
+        private readonly ILockstepEventPublishingService _publisher;
+        private readonly IStepService _steps;
+        private readonly ISimulationService _simulations;
+        private readonly ILogger _logger;
 
         public LockstepSimulation(
+            ISimulationStateProvider simulationStates,
             ISimulationService simulations, 
             IStepService steps, 
             IFiltered<ILockstepEventPublishingService> publisher, 
-            IParallelService simulatedEntities) : base(SimulationType.Lockstep, simulatedEntities)
+            IParallelService simulatedEntities,
+            ILogger logger) : base(SimulationType.Lockstep, simulatedEntities)
         {
+            _simulationStates = simulationStates;
             _simulations = simulations;
             _steps = steps;
             _publisher = publisher.Instance ?? throw new ArgumentNullException();
+            _logger = logger;
         }
 
         public override void Initialize(IServiceProvider provider)
@@ -38,6 +47,12 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep
             base.Initialize(provider);
 
             _publisher.Initialize(base.PublishEvent);
+            _simulationStates.Add(this, provider);
+        }
+
+        public void Dispose()
+        {
+            _simulationStates.Remove(this);
         }
 
         protected override void Update(GameTime gameTime)
@@ -52,11 +67,11 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep
 
         public void Process(in Tick message)
         {
-            foreach(ISimulationData data in message.Data)
+            foreach (ISimulationData data in message.Data)
             {
                 // At this point in time the data has successfully
                 // been converted into lockstep server data,
-                // publish it as so.
+                // publish it so.
                 _simulations.PublishEvent(SimulationType.Lockstep, data);
             }
         }

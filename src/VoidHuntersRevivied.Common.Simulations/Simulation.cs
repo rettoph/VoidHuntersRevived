@@ -140,6 +140,7 @@ namespace VoidHuntersRevived.Common.Simulations
         {
             var entity = _world.CreateEntity();
             entity.Attach(_entityComponent);
+            entity.Attach<ISimulation>(this);
 
             _simulatedEntities.Set(key, this.Type, entity.Id);
 

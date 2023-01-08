@@ -1,5 +1,6 @@
 ﻿using Guppy.Common;
 using Guppy.Resources.Providers;
+using Microsoft.Xna.Framework.Input;
 using Serilog;
 using VoidHuntersRevived.Common.Constants;
 
@@ -39,12 +40,17 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
 
         public bool TryStep()
         {
-            if (_stepsSinceTick >= _stepsPerTick)
+            if(_stepsSinceTick > _stepsPerTick)
+            {
+                throw new InvalidOperationException();
+            }
+
+            if (_stepsSinceTick == _stepsPerTick)
             {
                 return false;
             }
 
-            _bus.Publish(_step.Increment());
+            _bus.Enqueue(_step.Increment());
             _stepsSinceTick += 1;
             this.LastStep++;
 
@@ -53,12 +59,12 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
 
         public bool CanTick()
         {
-            if (_stepsSinceTick != _stepsPerTick)
+            if (_stepsSinceTick == _stepsPerTick)
             {
-                return false;
+                return true;
             }
 
-            return true;
+            return false;
         }
 
         public bool TryTick(Tick tick)
@@ -80,7 +86,7 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
                 _history.Add(tick);
             }
 
-            _bus.Publish(tick);
+            _bus.Enqueue(tick);
 
             _stepsSinceTick = 0;
             this.LastTickId = this.NextTickId++;
@@ -92,7 +98,7 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
         {
             _history.Clear();
 
-            this.LastTickId = 0;
+            this.LastTickId = -1;
             this.NextTickId = 0;
             _stepsSinceTick = 0;
 
@@ -139,11 +145,16 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
             }
         }
 
-        public void EndRead()
+        public void EndRead(int? lastId = null)
         {
             if (!this.Reading)
             {
                 throw new Exception();
+            }
+
+            if(lastId is not null && this.LastTickId < lastId.Value)
+            {
+                this.Read(Tick.Empty(lastId.Value));
             }
 
             this.Reading = false;

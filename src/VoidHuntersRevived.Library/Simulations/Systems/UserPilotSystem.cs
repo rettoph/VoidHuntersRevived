@@ -3,6 +3,8 @@ using Guppy.Common;
 using Guppy.Network;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Providers;
+using Serilog;
+using Serilog.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,10 +25,12 @@ namespace VoidHuntersRevived.Library.Simulations.Systems
         ISubscriber<ISimulationEvent<PlayerAction>>
     {
         private readonly NetScope _scope;
+        private readonly ILogger _logger;
 
-        public UserPilotSystem(NetScope scope)
+        public UserPilotSystem(NetScope scope, ILogger logger)
         {
             _scope = scope;
+            _logger = logger;
         }
 
         public void Process(in ISimulationEvent<PlayerAction> message)
@@ -52,7 +56,7 @@ namespace VoidHuntersRevived.Library.Simulations.Systems
             }
 
             var pilot = simulation.CreatePilot(ParallelKey.From(ParallelTypes.Pilot, user.Id));
-            var ship = simulation.CreateShip(ParallelKey.From(ParallelTypes.Ship, user));
+            var ship = simulation.CreateShip(ParallelKey.From(ParallelTypes.Ship, user.Id));
 
             // Bind the pilot to the new pilotable ship
             pilot.Get<Piloting>().Pilotable = ship.Get<Pilotable>();

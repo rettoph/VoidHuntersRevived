@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Library.Simulations.Lockstep.Factories;
+using VoidHuntersRevived.Library.Simulations.Lockstep.Messages;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Library.Simulations.Lockstep.Services
@@ -34,17 +35,19 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep.Services
 
         public void Publish(SimulationType source, ISimulationData data)
         {
-            // If we are currently on the server then all predictive sourced
-            // data should be enqueued and await publishing within the
-            // tick.
-            if(source != SimulationType.Lockstep)
+            // Any data sourced fromm the lockstep simulation is assumed to be
+            // trustworthy.
+            if (source == SimulationType.Lockstep)
             {
-                _factory.Enqueue(data);
+                _publisher.Invoke(source, data);
+
                 return;
             }
 
-            // If the source is lockstep, that means we are free to publish.
-            _publisher.Invoke(source, data);
+            // If data came from a source other than lockstep
+            // we should enqueue it into the current tick to
+            // be properly processed down the line.
+            _factory.Enqueue(data);
         }
 
         public void Process(in INetIncomingMessage<ClientRequest> message)

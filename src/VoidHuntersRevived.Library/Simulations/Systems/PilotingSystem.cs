@@ -1,7 +1,9 @@
 ﻿using Guppy.Common;
 using Guppy.MonoGame;
+using Guppy.Network;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +11,10 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Common.Entities.Messages;
 using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Systems;
 
 namespace VoidHuntersRevived.Library.Simulations.Systems
@@ -19,9 +23,15 @@ namespace VoidHuntersRevived.Library.Simulations.Systems
         ISubscriber<ISimulationEvent<SetPilotingDirection>>
     {
         private ComponentMapper<Piloting> _pilotings;
+        private State _state;
+        private NetScope _scope;
+        private ILogger _logger;
 
-        public PilotingSystem() : base(Aspect.All(typeof(Piloting)))
+        public PilotingSystem(ILogger logger, NetScope scope, State state) : base(Aspect.All(typeof(Piloting)))
         {
+            _logger = logger;
+            _scope = scope;
+            _state = state;
             _pilotings = default!;
         }
 

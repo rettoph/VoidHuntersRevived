@@ -49,14 +49,17 @@ namespace VoidHuntersRevived.Library.Loaders
             manager.AddScoped<Lockstep.LockstepSimulation>()
                 .AddInterfaceAliases();
 
+            manager.AddSingleton<Lockstep.Providers.ISimulationStateProvider>()
+                .SetImplementationType<Lockstep.Providers.SimulationStateProvider>();
+
+            manager.AddScoped<State>();
+
             manager.AddScoped<Lockstep.Services.ServerLockstepEventPublishingService>()
                 .AddAlias<Lockstep.Services.ILockstepEventPublishingService>()
                 .AddAlias<ISubscriber>();
 
             manager.AddScoped<Lockstep.Services.ClientLockstepEventPublishingService>()
                 .AddAlias<Lockstep.Services.ILockstepEventPublishingService>();
-
-            manager.AddScoped<State>();
 
             manager.AddScoped<Lockstep.Factories.ClientTickFactory>()
                 .AddAlias<Lockstep.Factories.ITickFactory>();
@@ -84,11 +87,17 @@ namespace VoidHuntersRevived.Library.Loaders
             manager.AddScoped<Lockstep.Systems.TickServerSystem>()
                 .AddInterfaceAliases();
 
+            manager.AddScoped<Lockstep.Systems.StateSystem>()
+                .AddInterfaceAliases();
+
             manager.AddScoped<Lockstep.Systems.UserServerSystem>()
                 .AddInterfaceAliases();
 
             services.AddNetMessageType<Tick>(DeliveryMethod.ReliableUnordered, 0);
-            services.AddNetMessageType<Lockstep.ClientRequest>(DeliveryMethod.ReliableUnordered, 0);
+            services.AddNetMessageType<Lockstep.Messages.ClientRequest>(DeliveryMethod.ReliableUnordered, 0);
+            services.AddNetMessageType<Lockstep.Messages.StateBegin>(DeliveryMethod.ReliableUnordered, 0);
+            services.AddNetMessageType<Lockstep.Messages.StateTick>(DeliveryMethod.ReliableUnordered, 0);
+            services.AddNetMessageType<Lockstep.Messages.StateEnd>(DeliveryMethod.ReliableUnordered, 0);
         }
 
         private void ConfigurePredictive(IServiceCollection services, IServiceCollectionManager manager)

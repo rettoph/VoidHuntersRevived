@@ -4,11 +4,12 @@ using Guppy.Network.Providers;
 using LiteNetLib.Utils;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Library.Simulations.Lockstep.Messages;
 
 namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 {
     [AutoLoad]
-    internal sealed class LockstepRequestNetSerializer : NetSerializer<Lockstep.ClientRequest>
+    internal sealed class LockstepRequestNetSerializer : NetSerializer<ClientRequest>
     {
         private INetSerializerProvider _serializers = default!;
 
@@ -19,12 +20,12 @@ namespace VoidHuntersRevived.Library.Serialization.NetSerializers
             _serializers = serializers;
         }
 
-        public override Lockstep.ClientRequest Deserialize(NetDataReader reader)
+        public override ClientRequest Deserialize(NetDataReader reader)
         {
-            return new Lockstep.ClientRequest((ISimulationData)_serializers.Deserialize(reader));
+            return new ClientRequest((ISimulationData)_serializers.Deserialize(reader));
         }
 
-        public override void Serialize(NetDataWriter writer, in Lockstep.ClientRequest instance)
+        public override void Serialize(NetDataWriter writer, in ClientRequest instance)
         {
             _serializers.Serialize(writer, instance.Data);
         }

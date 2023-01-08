@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Library.Simulations.Lockstep.Factories;
+using VoidHuntersRevived.Library.Simulations.Lockstep.Messages;
 
 namespace VoidHuntersRevived.Library.Simulations.Lockstep.Services
 {
@@ -31,17 +32,18 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep.Services
 
         public void Publish(SimulationType source, ISimulationData data)
         {
-            // If we are currently on the client and recieve a predictive
-            // event then we should request it from the server.
-            // Wait for verification from the server before publishing it.
-            if (source == SimulationType.Predictive)
+            // Any data sourced fromm the lockstep simulation is assumed to be
+            // trustworthy.
+            if (source == SimulationType.Lockstep)
             {
-                this.RequestEvent(data);
+                _publisher.Invoke(source, data);
+                
                 return;
             }
 
-            // If the source is lockstep, that means we are free to publish.
-            _publisher.Invoke(source, data);
+            // If the data came from another source we should
+            // request it directly from the server.
+            this.RequestEvent(data);
         }
 
         private void RequestEvent(ISimulationData data)
