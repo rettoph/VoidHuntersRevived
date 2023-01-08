@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Simulations.Systems
 {
-    public interface ISynchronizationSystem : ISystem
+    public interface ISimulationUpdateSystem : ISystem
     {
-        void Synchronize(ISimulation simulation, GameTime gameTime);
+        void Update(ISimulation simulation, GameTime gameTime);
     }
 }

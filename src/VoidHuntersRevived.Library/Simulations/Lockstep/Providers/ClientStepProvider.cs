@@ -96,7 +96,7 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep.Providers
             }
 
             _lastAvailableTickId = _ticks.AvailableId;
-            _targetStep = _lastAvailableTickId * _stepsPerTick;
+            _targetStep = (_lastAvailableTickId * _stepsPerTick) + (_stepsPerTick / 2);
             _maximumTargetStep = _targetStep + _stepsPerTick - 1;
         }
 

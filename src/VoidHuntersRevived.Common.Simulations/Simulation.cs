@@ -22,8 +22,7 @@ namespace VoidHuntersRevived.Common.Simulations
     {
         private IBus _bus;
         private World _world;
-        private IUpdateSimulationSystem[] _updateSystems;
-        private ISynchronizationSystem[] _synchronizeSystems;
+        private ISimulationUpdateSystem[] _updateSystems;
         private readonly IParallelService _simulatedEntities;
         private readonly TEntityComponent _entityComponent;
 
@@ -40,8 +39,7 @@ namespace VoidHuntersRevived.Common.Simulations
             _simulatedEntities = simulatedEntities;
             _world = default!;
             _bus = default!;
-            _updateSystems = Array.Empty<IUpdateSimulationSystem>();
-            _synchronizeSystems = Array.Empty<ISynchronizationSystem>();
+            _updateSystems = Array.Empty<ISimulationUpdateSystem>();
             _entityComponent = new TEntityComponent();
 
             this.Type = type;
@@ -53,23 +51,14 @@ namespace VoidHuntersRevived.Common.Simulations
         {
             _world = provider.GetRequiredService<World>();
             _bus = provider.GetRequiredService<IBus>();
-            _updateSystems = provider.GetRequiredService<IFiltered<IUpdateSimulationSystem>>().Instances.ToArray();
-            _synchronizeSystems = provider.GetRequiredService<IFiltered<ISynchronizationSystem>>().Instances.ToArray();
+            _updateSystems = provider.GetRequiredService<IFiltered<ISimulationUpdateSystem>>().Instances.ToArray();
         }
 
         protected virtual void UpdateSystems(GameTime gameTime)
         {
-            foreach (IUpdateSimulationSystem updateSystem in _updateSystems)
+            foreach (ISimulationUpdateSystem updateSystem in _updateSystems)
             {
                 updateSystem.Update(this, gameTime);
-            }
-        }
-
-        protected virtual void SynchronizeSystems(GameTime gameTime)
-        {
-            foreach (ISynchronizationSystem synchronizeSystem in _synchronizeSystems)
-            {
-                synchronizeSystem.Synchronize(this, gameTime);
             }
         }
 

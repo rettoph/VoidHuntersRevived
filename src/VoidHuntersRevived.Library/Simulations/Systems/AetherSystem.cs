@@ -11,7 +11,7 @@ using VoidHuntersRevived.Common.Systems;
 
 namespace VoidHuntersRevived.Library.Simulations.Systems
 {
-    internal sealed class AetherSystem : BasicSystem, IUpdateSimulationSystem
+    internal sealed class AetherSystem : BasicSystem, ISimulationUpdateSystem
     {
         public void Update(ISimulation simulation, GameTime gameTime)
         {

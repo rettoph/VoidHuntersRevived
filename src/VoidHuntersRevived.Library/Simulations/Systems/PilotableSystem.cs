@@ -12,8 +12,8 @@ using VoidHuntersRevived.Common.Simulations.Systems;
 namespace VoidHuntersRevived.Library.Simulations.Systems
 {
     internal sealed class PilotableSystem : ParallelEntityProcessingSystem, 
-        IUpdateSimulationSystem,
-        ISynchronizationSystem
+        ISimulationUpdateSystem,
+        IPredictiveSynchronizationSystem
     {
         private ComponentMapper<Pilotable> _pilotables;
         private ComponentMapper<Body> _bodies;
@@ -30,11 +30,6 @@ namespace VoidHuntersRevived.Library.Simulations.Systems
         {
             _pilotables = mapperService.GetMapper<Pilotable>();
             _bodies = mapperService.GetMapper<Body>();
-        }
-
-        public override void Update(ISimulation simulation, GameTime gameTime)
-        {
-            base.Update(simulation, gameTime);
         }
 
         protected override void Process(ISimulation simulation, GameTime gameTime, int entityId)
@@ -79,9 +74,9 @@ namespace VoidHuntersRevived.Library.Simulations.Systems
             body.ApplyLinearImpulse(impulse);
         }
 
-        public void Synchronize(ISimulation simulation, GameTime gameTime)
+        public void Synchronize(ISimulation simulation, GameTime gameTime, float damping)
         {
-            foreach(int entityId in this.Entities[simulation.Type].ActiveEntities)
+            foreach (int entityId in this.Entities[simulation.Type].ActiveEntities)
             {
                 var lockstepEntityId = simulation.GetEntityId(entityId, SimulationType.Lockstep);
 
@@ -100,14 +95,12 @@ namespace VoidHuntersRevived.Library.Simulations.Systems
                     return;
                 }
 
-                var lerpStrength = 1f * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
                 body.SetTransformIgnoreContacts(
-                    position: Vector2.Lerp(body.Position, lockstepBody.Position, lerpStrength),
-                    angle: MathHelper.Lerp(body.Rotation, lockstepBody.Rotation, lerpStrength));
+                    position: Vector2.Lerp(body.Position, lockstepBody.Position, damping),
+                    angle: MathHelper.Lerp(body.Rotation, lockstepBody.Rotation, damping));
 
-                body.LinearVelocity = Vector2.Lerp(body.LinearVelocity, lockstepBody.LinearVelocity, lerpStrength);
-                body.AngularVelocity = MathHelper.Lerp(body.AngularVelocity, lockstepBody.AngularVelocity, lerpStrength);
+                body.LinearVelocity = Vector2.Lerp(body.LinearVelocity, lockstepBody.LinearVelocity, damping);
+                body.AngularVelocity = MathHelper.Lerp(body.AngularVelocity, lockstepBody.AngularVelocity, damping);
             }
         }
     }

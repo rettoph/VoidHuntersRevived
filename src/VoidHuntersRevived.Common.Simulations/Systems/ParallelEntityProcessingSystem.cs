@@ -4,7 +4,7 @@ using VoidHuntersRevived.Common.Simulations.Services;
 
 namespace VoidHuntersRevived.Common.Simulations.Systems
 {
-    public abstract class ParallelEntityProcessingSystem : ParallelEntitySystem, IUpdateSimulationSystem
+    public abstract class ParallelEntityProcessingSystem : ParallelEntitySystem, ISimulationUpdateSystem
     {
         protected ParallelEntityProcessingSystem(ISimulationService simulations, AspectBuilder aspectBuilder) : base(simulations, aspectBuilder)
         {
