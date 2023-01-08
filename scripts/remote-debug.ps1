@@ -26,7 +26,7 @@ else
             Username = "";
             Password = "";
             Folder = "/home/anthony/VoidHuntersRevived";
-            Launch = "VoidHuntersRevived.Server";
+            Launch = "VoidHuntersRevived.Application.Server";
         };
         Build = @{
             Project = "Server";

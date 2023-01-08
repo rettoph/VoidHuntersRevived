@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Library.Client
 
             base.Initialize(provider);
 
-            this.Client.Connect("localhost", 1337, Claim.Create("username", "Rettoph", ClaimAccessibility.Public));
+            this.Client.Connect("192.168.0.11", 1337, Claim.Create("username", "Rettoph", ClaimAccessibility.Public));
         }
     }
 }
