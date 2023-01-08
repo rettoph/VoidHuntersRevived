@@ -10,7 +10,7 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Library.Simulations.Events
 {
-    public class PlayerAction : ISimulationData
+    public class PlayerAction : ISimulationInputData
     {
         public required UserAction UserAction { get; init; }
     }

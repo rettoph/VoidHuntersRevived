@@ -9,7 +9,7 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Common.Entities.Messages
 {
-    public class SetPilotingDirection : Message<SetPilotingDirection>, ISimulationData
+    public class SetPilotingDirection : Message<SetPilotingDirection>, ISimulationInputData
     {
         /// <summary>
         /// When null attempt to load the concept of a "current pilot"

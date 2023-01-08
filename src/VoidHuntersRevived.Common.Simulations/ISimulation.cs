@@ -1,5 +1,4 @@
-﻿using Guppy.Network.Enums;
-using LiteNetLib;
+﻿using LiteNetLib;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using System;
@@ -37,6 +36,6 @@ namespace VoidHuntersRevived.Common.Simulations
 
         Entity CreateEntity(ParallelKey key);
 
-        void PublishEvent(SimulationType source, ISimulationData data);
+        void Input(ISimulationInputData data, Confidence confidence);
     }
 }

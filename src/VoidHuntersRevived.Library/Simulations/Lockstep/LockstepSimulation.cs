@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep
         {
             base.Initialize(provider);
 
-            _publisher.Initialize(base.PublishEvent);
+            _publisher.Initialize(base.Input);
             _simulationStates.Add(this, provider);
         }
 
@@ -60,19 +60,19 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep
             _steps.Update(gameTime);
         }
 
-        public override void PublishEvent(SimulationType source, ISimulationData data)
+        public override void Input(ISimulationInputData data, Confidence confidence)
         {
-            _publisher.Publish(source, data);
+            _publisher.Publish(data, confidence);
         }
 
         public void Process(in Tick message)
         {
-            foreach (ISimulationData data in message.Data)
+            foreach (ISimulationInputData data in message.Data)
             {
                 // At this point in time the data has successfully
                 // been converted into lockstep server data,
                 // publish it so.
-                _simulations.PublishEvent(SimulationType.Lockstep, data);
+                _simulations.Input(data, Confidence.Certain);
             }
         }
 

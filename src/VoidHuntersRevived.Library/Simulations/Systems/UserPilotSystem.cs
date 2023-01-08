@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Library.Simulations.Systems
 {
     [GuppyFilter<GameGuppy>()]
     internal sealed class UserPilotSystem : BasicSystem,
-        ISubscriber<ISimulationEvent<PlayerAction>>
+        ISubscriber<ISimulationInput<PlayerAction>>
     {
         private readonly NetScope _scope;
         private readonly ILogger _logger;
@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Library.Simulations.Systems
             _logger = logger;
         }
 
-        public void Process(in ISimulationEvent<PlayerAction> message)
+        public void Process(in ISimulationInput<PlayerAction> message)
         {
             var user = _scope.Peer!.Users.UpdateOrCreate(message.Data.UserAction.Id, message.Data.UserAction.Claims);
 

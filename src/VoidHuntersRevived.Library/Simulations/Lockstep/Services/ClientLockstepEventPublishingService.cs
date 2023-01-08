@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep.Services
     [PeerTypeFilter(PeerType.Client)]
     internal sealed class ClientLockstepEventPublishingService : ILockstepEventPublishingService
     {
-        private Action<SimulationType, ISimulationData> _publisher;
+        private Action<ISimulationInputData, Confidence> _publisher;
         private NetScope _netScope;
 
         public ClientLockstepEventPublishingService(NetScope netScope)
@@ -25,28 +25,27 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep.Services
             _netScope = netScope;
         }
 
-        public void Initialize(Action<SimulationType, ISimulationData> publisher)
+        public void Initialize(Action<ISimulationInputData, Confidence> publisher)
         {
             _publisher = publisher;
         }
 
-        public void Publish(SimulationType source, ISimulationData data)
+        public void Publish(ISimulationInputData data, Confidence confidence)
         {
-            // Any data sourced fromm the lockstep simulation is assumed to be
-            // trustworthy.
-            if (source == SimulationType.Lockstep)
+            // If we are confident about the event we can publish it now
+            if (confidence == Confidence.Certain)
             {
-                _publisher.Invoke(source, data);
+                _publisher.Invoke(data, confidence);
                 
                 return;
             }
 
-            // If the data came from another source we should
-            // request it directly from the server.
+            // If we are not confident about the event we should
+            // request it from the server
             this.RequestEvent(data);
         }
 
-        private void RequestEvent(ISimulationData data)
+        private void RequestEvent(ISimulationInputData data)
         {
             var message =_netScope.Messages.Create<ClientRequest>(new(data));
             message.Enqueue();

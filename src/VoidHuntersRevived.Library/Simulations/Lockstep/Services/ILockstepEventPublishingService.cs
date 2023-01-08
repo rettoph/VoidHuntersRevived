@@ -5,8 +5,8 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep.Services
 {
     public interface ILockstepEventPublishingService
     {
-        void Initialize(Action<SimulationType, ISimulationData> publisher);
+        void Initialize(Action<ISimulationInputData, Confidence> publisher);
 
-        void Publish(SimulationType source, ISimulationData data);
+        void Publish(ISimulationInputData data, Confidence confidence);
     }
 }

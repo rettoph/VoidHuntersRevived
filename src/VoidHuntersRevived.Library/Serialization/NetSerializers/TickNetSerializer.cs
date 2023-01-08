@@ -30,11 +30,11 @@ namespace VoidHuntersRevived.Library.Serialization.NetSerializers
                 return Tick.Empty(id);
             }
 
-            var items = new ISimulationData[count];
+            var items = new ISimulationInputData[count];
 
             for (var i = 0; i < count; i++)
             {
-                if(_serializers.Deserialize(reader) is ISimulationData data)
+                if(_serializers.Deserialize(reader) is ISimulationInputData data)
                 {
                     items[i] = data;
                 }
@@ -53,7 +53,7 @@ namespace VoidHuntersRevived.Library.Serialization.NetSerializers
 
             writer.Put(count);
 
-            foreach (ISimulationData data in instance.Data)
+            foreach (ISimulationInputData data in instance.Data)
             {
                 _serializers.Serialize(writer, data);
             }

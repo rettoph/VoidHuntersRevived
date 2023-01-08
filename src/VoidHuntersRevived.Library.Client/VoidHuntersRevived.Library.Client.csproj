@@ -44,7 +44,6 @@
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Library.Server\VoidHuntersRevived.Library.Server.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Library\VoidHuntersRevived.Library.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevivied.Common.Simulations\VoidHuntersRevivied.Common.Simulations.csproj" />
   </ItemGroup>
 
 </Project>

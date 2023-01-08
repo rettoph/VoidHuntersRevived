@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep.Services
         ISubscriber<INetIncomingMessage<ClientRequest>>
     {
         private readonly ITickFactory _factory;
-        private Action<SimulationType, ISimulationData> _publisher;
+        private Action<ISimulationInputData, Confidence> _publisher;
 
         public ServerLockstepEventPublishingService(IFiltered<ITickFactory> factory)
         {
@@ -28,25 +28,23 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep.Services
             _publisher = default!;
         }
 
-        public void Initialize(Action<SimulationType, ISimulationData> publisher)
+        public void Initialize(Action<ISimulationInputData, Confidence> publisher)
         {
             _publisher = publisher;
         }
 
-        public void Publish(SimulationType source, ISimulationData data)
+        public void Publish(ISimulationInputData data, Confidence confidence)
         {
-            // Any data sourced fromm the lockstep simulation is assumed to be
-            // trustworthy.
-            if (source == SimulationType.Lockstep)
+            // If we are confident about the event we can publish it now
+            if (confidence == Confidence.Certain)
             {
-                _publisher.Invoke(source, data);
+                _publisher.Invoke(data, confidence);
 
                 return;
             }
 
-            // If data came from a source other than lockstep
-            // we should enqueue it into the current tick to
-            // be properly processed down the line.
+            // events of unknown confidence should be enqueued
+            // to be confidently published later
             _factory.Enqueue(data);
         }
 
