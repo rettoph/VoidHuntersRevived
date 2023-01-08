@@ -1,4 +1,5 @@
-﻿using LiteNetLib;
+﻿using Guppy.Network;
+using LiteNetLib;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using System;
@@ -15,6 +16,7 @@ namespace VoidHuntersRevived.Common.Simulations
         SimulationType Type { get; }
         Aether Aether { get; }
         Type EntityComponentType { get; }
+        NetScope NetScope { get; }
 
         void Initialize(IServiceProvider provider);
 

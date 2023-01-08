@@ -17,29 +17,34 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep
     [GuppyFilter<GameGuppy>()]
     [SimulationTypeFilter(SimulationType.Lockstep)]
     internal sealed class LockstepSimulation : Simulation<Common.Simulations.Components.Lockstep>, ISimulation,
+        ILockstepSimulation,
         ISubscriber<Tick>,
         ISubscriber<Step>,
         IDisposable
     {
-        private readonly ISimulationStateProvider _simulationStates;
         private readonly ILockstepEventPublishingService _publisher;
         private readonly IStepService _steps;
         private readonly ISimulationService _simulations;
         private readonly ILogger _logger;
 
+        public State State { get; }
+
         public LockstepSimulation(
-            ISimulationStateProvider simulationStates,
+            State state,
+            NetScope netScope,
             ISimulationService simulations, 
             IStepService steps, 
             IFiltered<ILockstepEventPublishingService> publisher, 
             IParallelService simulatedEntities,
-            ILogger logger) : base(SimulationType.Lockstep, simulatedEntities)
+            IGlobalSimulationService globalSimulationService,
+            ILogger logger) : base(SimulationType.Lockstep, netScope, simulatedEntities, globalSimulationService)
         {
-            _simulationStates = simulationStates;
             _simulations = simulations;
             _steps = steps;
             _publisher = publisher.Instance ?? throw new ArgumentNullException();
             _logger = logger;
+
+            this.State = state;
         }
 
         public override void Initialize(IServiceProvider provider)
@@ -47,12 +52,10 @@ namespace VoidHuntersRevived.Library.Simulations.Lockstep
             base.Initialize(provider);
 
             _publisher.Initialize(base.Input);
-            _simulationStates.Add(this, provider);
         }
 
         public void Dispose()
         {
-            _simulationStates.Remove(this);
         }
 
         protected override void Update(GameTime gameTime)

@@ -26,13 +26,14 @@ namespace VoidHuntersRevived.Library.Client.Loaders
                 manager.AddScoped<CameraSystem>()
                     .AddInterfaceAliases();
 
-                manager.AddScoped<AetherDebugSystem>()
-                    .AddInterfaceAliases();
-
-                manager.AddScoped<Camera2D>()
+                manager.AddSingleton<Camera2D>()
                     .AddAlias<Camera>();
 
                 services.AddService<LockstepStateDebugger>()
+                    .SetLifetime(ServiceLifetime.Scoped)
+                    .AddAlias<IDebugger>();
+
+                services.AddService<AetherDebugger>()
                     .SetLifetime(ServiceLifetime.Scoped)
                     .AddAlias<IDebugger>();
             });

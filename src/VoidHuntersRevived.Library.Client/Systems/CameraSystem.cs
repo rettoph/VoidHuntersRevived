@@ -13,6 +13,7 @@ using VoidHuntersRevived.Library.Constants;
 
 namespace VoidHuntersRevived.Library.Client.Systems
 {
+    [GuppyFilter<ClientGameGuppy>()]
     internal sealed class CameraSystem : DrawSystem
     {
         private readonly Camera2D _camera;
@@ -39,13 +40,18 @@ namespace VoidHuntersRevived.Library.Client.Systems
 
         public override void Draw(GameTime gameTime)
         {
-            // this.UpdateCameraTargets(gameTime);
+            this.UpdateCameraTargets(gameTime);
 
             _camera.Update(gameTime);
         }
 
         private void UpdateCameraTargets(GameTime gameTime)
         {
+            if(!_simulations.Flags.HasFlag(SimulationType.Predictive))
+            {
+                return;
+            }
+
             var currentUserId = _scope.Peer!.Users.Current?.Id;
             if (currentUserId is null)
             {

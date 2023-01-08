@@ -22,7 +22,8 @@ namespace VoidHuntersRevived.Library.Loaders
             services.AddSetting<TimeSpan>(Settings.StepInterval, TimeSpan.FromMilliseconds(20), false);
             services.AddSetting<int>(Settings.StepsPerTick, 3, false);
 
-            services.AddScoped<ISimulationService, SimulationService>()
+            services.AddSingleton<IGlobalSimulationService, GlobalSimulationService>()
+                    .AddScoped<ISimulationService, SimulationService>()
                     .AddScoped<IParallelService, ParallelService>();
 
             services.ConfigureCollection(manager =>
@@ -48,9 +49,6 @@ namespace VoidHuntersRevived.Library.Loaders
         {
             manager.AddScoped<Lockstep.LockstepSimulation>()
                 .AddInterfaceAliases();
-
-            manager.AddSingleton<Lockstep.Providers.ISimulationStateProvider>()
-                .SetImplementationType<Lockstep.Providers.SimulationStateProvider>();
 
             manager.AddScoped<State>();
 

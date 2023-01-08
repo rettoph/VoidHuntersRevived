@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Network;
 using Guppy.Network.Enums;
 using LiteNetLib;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,7 +18,7 @@ using VoidHuntersRevived.Common.Simulations.Systems;
 
 namespace VoidHuntersRevived.Common.Simulations
 {
-    public abstract class Simulation<TEntityComponent> : ISimulation
+    public abstract class Simulation<TEntityComponent> : ISimulation, IDisposable
         where TEntityComponent : class, new()
     {
         private IBus _bus;
@@ -25,26 +26,35 @@ namespace VoidHuntersRevived.Common.Simulations
         private ISimulationUpdateSystem[] _updateSystems;
         private readonly IParallelService _simulatedEntities;
         private readonly TEntityComponent _entityComponent;
+        private readonly IGlobalSimulationService _globalsSmulationService;
 
         public readonly SimulationType Type;
         public readonly Aether Aether;
         public readonly Type EntityComponentType;
+        public readonly NetScope NetScope;
 
         SimulationType ISimulation.Type => this.Type;
         Aether ISimulation.Aether => this.Aether;
         Type ISimulation.EntityComponentType => this.EntityComponentType;
+        NetScope ISimulation.NetScope => this.NetScope;
 
-        protected Simulation(SimulationType type, IParallelService simulatedEntities)
+        protected Simulation(
+            SimulationType type,
+            NetScope netScope,
+            IParallelService simulatedEntities,
+            IGlobalSimulationService globalSimulationService)
         {
             _simulatedEntities = simulatedEntities;
             _world = default!;
             _bus = default!;
             _updateSystems = Array.Empty<ISimulationUpdateSystem>();
             _entityComponent = new TEntityComponent();
+            _globalsSmulationService = globalSimulationService;
 
             this.Type = type;
             this.Aether = new Aether(Vector2.Zero);
             this.EntityComponentType = typeof(TEntityComponent);
+            this.NetScope = netScope;
         }
 
         public virtual void Initialize(IServiceProvider provider)
@@ -52,6 +62,13 @@ namespace VoidHuntersRevived.Common.Simulations
             _world = provider.GetRequiredService<World>();
             _bus = provider.GetRequiredService<IBus>();
             _updateSystems = provider.GetRequiredService<IFiltered<ISimulationUpdateSystem>>().Instances.ToArray();
+
+            _globalsSmulationService.Add(this);
+        }
+
+        public void Dispose()
+        {
+            _globalsSmulationService.Remove(this);
         }
 
         protected virtual void UpdateSystems(GameTime gameTime)

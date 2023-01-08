@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Network;
 using Guppy.Resources.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
@@ -16,7 +17,7 @@ namespace VoidHuntersRevived.Library.Simulations.Predictive
     {
         private IPredictiveSynchronizationSystem[] _synchronizeSystems;
 
-        public PredictiveSimulation(IParallelService simulatedEntities) : base(SimulationType.Predictive, simulatedEntities)
+        public PredictiveSimulation(NetScope netScope, IParallelService simulatedEntities, IGlobalSimulationService globalSimulationService) : base(SimulationType.Predictive, netScope, simulatedEntities, globalSimulationService)
         {
             _synchronizeSystems = Array.Empty<IPredictiveSynchronizationSystem>();
         }

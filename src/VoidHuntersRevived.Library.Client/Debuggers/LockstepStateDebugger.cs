@@ -14,22 +14,23 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using System.Reflection;
 using Guppy.MonoGame.UI.Services;
+using VoidHuntersRevived.Common.Simulations.Services;
 
 namespace VoidHuntersRevived.Library.Client.Debuggers
 {
     internal sealed class LockstepStateDebugger : SimpleDebugger, IImGuiDebugger
     {
-        private readonly ISimulationStateProvider _simulationStates;
+        private readonly IGlobalSimulationService _simulations;
         private readonly IImguiObjectViewer _objectViewer;
 
         public string ButtonLabel => "Lockstep State";
 
-        public LockstepStateDebugger(ISimulationStateProvider simulationStates, IImguiObjectViewer objectViewer)
+        public LockstepStateDebugger(IGlobalSimulationService simulations, IImguiObjectViewer objectViewer)
         {
             _objectViewer= objectViewer;
-            _simulationStates = simulationStates;
+            _simulations = simulations;
 
-            this.IsEnabled = true;
+            this.IsEnabled = false;
             this.Visible = this.IsEnabled;
         }
 
@@ -45,17 +46,17 @@ namespace VoidHuntersRevived.Library.Client.Debuggers
 
         public override void Draw(GameTime gameTime)
         {
-            foreach (var data in _simulationStates.Items)
+            foreach (var data in _simulations.Instances.WhereAs<ISimulation, ILockstepSimulation>())
             {
                 this.DrawData(data);
             }
         }
 
-        private void DrawData(ISimulationStateProvider.LockstepData data)
+        private void DrawData(ILockstepSimulation simulation)
         {
-            if (ImGui.Begin("Lockstep State - " + data.Scope.Peer!.Type.ToString(), ImGuiWindowFlags.NoCollapse))
+            if (ImGui.Begin("Lockstep State - " + simulation.NetScope.Peer!.Type.ToString(), ImGuiWindowFlags.NoCollapse))
             {
-                foreach (Tick tick in data.State.History)
+                foreach (Tick tick in simulation.State.History)
                 {
                     this.DrawTick(tick);
                 }
