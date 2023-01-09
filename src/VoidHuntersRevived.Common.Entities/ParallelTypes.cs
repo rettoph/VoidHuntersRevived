@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Domain.Constants
+namespace VoidHuntersRevived.Common.Entities
 {
     public static class ParallelTypes
     {

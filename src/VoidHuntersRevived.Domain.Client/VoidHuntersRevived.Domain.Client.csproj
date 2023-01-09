@@ -7,6 +7,7 @@
     <AssemblyOriginatorKeyFile />
     <Platforms>AnyCPU;x64</Platforms>
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -42,7 +43,21 @@
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\Aether.Physics2D\Physics2D.Diagnostics\Diagnostics\Aether.Physics2D.Diagnostics.NETSTANDARD2_0.MG.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Domain.Entities\VoidHuntersRevived.Domain.Entities.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Server\VoidHuntersRevived.Domain.Server.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Domain.Simulations\VoidHuntersRevived.Domain.Simulations.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="MonoGame.Extended.Entities.World">
+      <Alias>World</Alias>
+    </Using>
+    <Using Include="System.Numerics">
+      <Alias>Num</Alias>
+    </Using>
+    <Using Include="tainicom.Aether.Physics2D.Dynamics.World">
+      <Alias>Aether</Alias>
+    </Using>
   </ItemGroup>
 
 </Project>

@@ -1,17 +1,19 @@
-﻿using Guppy.Common;
+﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.Network;
 using Guppy.Resources.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
-using VoidHuntersRevived.Domain.Constants;
 
 namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
+    [GuppyFilter<IGameGuppy>()]
     [SimulationTypeFilter(SimulationType.Predictive)]
     internal sealed class PredictiveSimulation : Simulation<Common.Simulations.Components.Predictive>
     {

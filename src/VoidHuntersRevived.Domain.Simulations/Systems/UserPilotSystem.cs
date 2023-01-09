@@ -15,13 +15,13 @@ using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Domain.Entities.Extensions;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Systems;
-using VoidHuntersRevived.Domain.Constants;
 using VoidHuntersRevived.Domain.Simulations.Events;
 using VoidHuntersRevived.Domain.Entities.Components;
+using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
-    [GuppyFilter<GameGuppy>()]
+    [GuppyFilter<IGameGuppy>()]
     internal sealed class UserPilotSystem : BasicSystem,
         ISubscriber<ISimulationInput<PlayerAction>>
     {

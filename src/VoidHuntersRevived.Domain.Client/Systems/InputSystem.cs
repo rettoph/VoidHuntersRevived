@@ -6,7 +6,7 @@ using VoidHuntersRevived.Domain.Entities.Messages;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Systems;
-using VoidHuntersRevived.Domain.Constants;
+using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {

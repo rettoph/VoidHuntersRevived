@@ -9,12 +9,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities.Enums;
 using VoidHuntersRevived.Domain.Entities.Messages;
-using VoidHuntersRevived.Domain.Constants;
-using VoidHuntersRevived.Domain.Simulations.Events;
 
-namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
+namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
 {
     [AutoLoad]
     internal sealed class SetPilotingDirectionNetSerializer : NetSerializer<SetPilotingDirection>

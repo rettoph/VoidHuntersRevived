@@ -15,4 +15,10 @@
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Resources\Guppy.Resources.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Using Include="MonoGame.Extended.Entities.World">
+      <Alias>World</Alias>
+    </Using>
+  </ItemGroup>
+
 </Project>

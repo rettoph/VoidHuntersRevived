@@ -9,7 +9,6 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
-using VoidHuntersRevived.Domain.Constants;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {

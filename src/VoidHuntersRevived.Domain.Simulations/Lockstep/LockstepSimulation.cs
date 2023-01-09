@@ -5,6 +5,7 @@ using Guppy.Network.Enums;
 using LiteNetLib;
 using Microsoft.Xna.Framework;
 using Serilog;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
@@ -14,7 +15,7 @@ using VoidHuntersRevived.Domain.Simulations.Lockstep.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
-    [GuppyFilter<GameGuppy>()]
+    [GuppyFilter<IGameGuppy>()]
     [SimulationTypeFilter(SimulationType.Lockstep)]
     internal sealed class LockstepSimulation : Simulation<Common.Simulations.Components.Lockstep>, ISimulation,
         ILockstepSimulation,
@@ -52,10 +53,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             base.Initialize(provider);
 
             _publisher.Initialize(base.Input);
-        }
-
-        public void Dispose()
-        {
         }
 
         protected override void Update(GameTime gameTime)

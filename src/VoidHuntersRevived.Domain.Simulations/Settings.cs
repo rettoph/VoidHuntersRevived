@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Domain.Constants
+namespace VoidHuntersRevived.Domain.Simulations
 {
     public static class Settings
     {

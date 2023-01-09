@@ -10,10 +10,11 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Extensions.DependencyInjection;
 using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain
 {
-    public abstract class GameGuppy : FrameableGuppy
+    public abstract class GameGuppy : FrameableGuppy, IGameGuppy
     {
         private World _world;
 
