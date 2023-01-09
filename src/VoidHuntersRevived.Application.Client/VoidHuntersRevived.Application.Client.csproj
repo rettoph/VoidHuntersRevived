@@ -13,6 +13,6 @@
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\VoidHuntersRevived.Library.Client\VoidHuntersRevived.Library.Client.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Domain.Client\VoidHuntersRevived.Domain.Client.csproj" />
   </ItemGroup>
 </Project>

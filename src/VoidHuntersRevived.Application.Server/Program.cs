@@ -4,8 +4,8 @@ using Guppy.MonoGame.Services;
 using Guppy.MonoGame.Strategies.PublishStrategies;
 using Guppy;
 using Microsoft.Extensions.DependencyInjection;
-using VoidHuntersRevived.Library;
-using VoidHuntersRevived.Library.Server;
+using VoidHuntersRevived.Domain;
+using VoidHuntersRevived.Domain.Server;
 using Guppy.Providers;
 
 var guppy = new GuppyEngine(new[] { typeof(GameGuppy).Assembly, typeof(ServerGameGuppy).Assembly })
