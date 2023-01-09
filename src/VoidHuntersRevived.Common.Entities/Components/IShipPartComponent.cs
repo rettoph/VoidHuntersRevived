@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Entities.Components
 {
-    public interface IShipPart
+    public interface IShipPartComponent
     {
     }
 }
