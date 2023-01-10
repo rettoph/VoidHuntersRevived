@@ -4,17 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Domain.Entities.Enums;
 
 namespace VoidHuntersRevived.Domain.Entities.Components
 {
-    public class Piloting
+    public class AetherLeaf
     {
-        public Pilotable Pilotable;
+        public readonly Entity Entity;
+        public readonly AetherTree Tree;
 
-        public Piloting(Entity pilotable)
+        internal AetherLeaf(Entity entity, AetherTree tree)
         {
-            this.Pilotable = pilotable.Get<Pilotable>();
+            this.Entity = entity;
+            this.Tree = tree;
         }
     }
 }

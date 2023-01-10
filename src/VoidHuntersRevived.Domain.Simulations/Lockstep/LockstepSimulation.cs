@@ -32,13 +32,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public LockstepSimulation(
             State state,
-            NetScope netScope,
             ISimulationService simulations, 
             IStepService steps, 
             IFiltered<ILockstepEventPublishingService> publisher, 
             IParallelService simulatedEntities,
             IGlobalSimulationService globalSimulationService,
-            ILogger logger) : base(SimulationType.Lockstep, netScope, simulatedEntities, globalSimulationService)
+            ILogger logger) : base(SimulationType.Lockstep, simulatedEntities, globalSimulationService)
         {
             _simulations = simulations;
             _steps = steps;

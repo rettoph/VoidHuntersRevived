@@ -19,7 +19,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
     {
         private IPredictiveSynchronizationSystem[] _synchronizeSystems;
 
-        public PredictiveSimulation(NetScope netScope, IParallelService simulatedEntities, IGlobalSimulationService globalSimulationService) : base(SimulationType.Predictive, netScope, simulatedEntities, globalSimulationService)
+        public PredictiveSimulation(
+            IParallelService simulatedEntities, 
+            IGlobalSimulationService globalSimulationService) : base(SimulationType.Predictive, simulatedEntities, globalSimulationService)
         {
             _synchronizeSystems = Array.Empty<IPredictiveSynchronizationSystem>();
         }

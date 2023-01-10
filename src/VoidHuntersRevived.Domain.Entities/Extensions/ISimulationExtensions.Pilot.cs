@@ -7,12 +7,9 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
 {
     public static partial class ISimulationExtensions
     {
-        public static Entity CreatePilot(this ISimulation simulation, ParallelKey key)
+        public static Entity CreatePilot(this ISimulation simulation, ParallelKey key, Entity pilotable)
         {
-            var pilot = simulation.CreateEntity(key);
-            pilot.Attach(new Piloting());
-
-            return pilot;
+            return simulation.CreateEntity(key).MakePilot(pilotable);
         }
     }
 }

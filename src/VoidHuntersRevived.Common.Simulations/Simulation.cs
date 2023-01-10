@@ -31,16 +31,15 @@ namespace VoidHuntersRevived.Common.Simulations
         public readonly SimulationType Type;
         public readonly Aether Aether;
         public readonly Type EntityComponentType;
-        public readonly NetScope NetScope;
+        public IServiceProvider Provider;
 
         SimulationType ISimulation.Type => this.Type;
         Aether ISimulation.Aether => this.Aether;
         Type ISimulation.EntityComponentType => this.EntityComponentType;
-        NetScope ISimulation.NetScope => this.NetScope;
+        IServiceProvider ISimulation.Provider => this.Provider;
 
         protected Simulation(
             SimulationType type,
-            NetScope netScope,
             IParallelService simulatedEntities,
             IGlobalSimulationService globalSimulationService)
         {
@@ -54,14 +53,16 @@ namespace VoidHuntersRevived.Common.Simulations
             this.Type = type;
             this.Aether = new Aether(Vector2.Zero);
             this.EntityComponentType = typeof(TEntityComponent);
-            this.NetScope = netScope;
+            this.Provider = default!;
         }
 
         public virtual void Initialize(IServiceProvider provider)
         {
-            _world = provider.GetRequiredService<World>();
-            _bus = provider.GetRequiredService<IBus>();
-            _updateSystems = provider.GetRequiredService<IFiltered<ISimulationUpdateSystem>>().Instances.ToArray();
+            this.Provider = provider;
+
+            _world = this.Provider.GetRequiredService<World>();
+            _bus = this.Provider.GetRequiredService<IBus>();
+            _updateSystems = this.Provider.GetRequiredService<IFiltered<ISimulationUpdateSystem>>().Instances.ToArray();
 
             _globalsSmulationService.Add(this);
         }

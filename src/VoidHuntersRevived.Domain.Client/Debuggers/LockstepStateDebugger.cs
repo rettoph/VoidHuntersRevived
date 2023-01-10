@@ -14,6 +14,8 @@ using VoidHuntersRevived.Common.Simulations.Lockstep;
 using System.Reflection;
 using Guppy.MonoGame.UI.Services;
 using VoidHuntersRevived.Common.Simulations.Services;
+using Microsoft.Extensions.DependencyInjection;
+using VoidHuntersRevived.Domain.Simulations.Extensions;
 
 namespace VoidHuntersRevived.Domain.Client.Debuggers
 {
@@ -53,7 +55,7 @@ namespace VoidHuntersRevived.Domain.Client.Debuggers
 
         private void DrawData(ILockstepSimulation simulation)
         {
-            if (ImGui.Begin("Lockstep State - " + simulation.NetScope.Peer!.Type.ToString(), ImGuiWindowFlags.NoCollapse))
+            if (ImGui.Begin("Lockstep State - " + simulation.NetScope().Peer!.Type.ToString(), ImGuiWindowFlags.NoCollapse))
             {
                 foreach (Tick tick in simulation.State.History)
                 {

@@ -14,4 +14,10 @@
     <ProjectReference Include="..\VoidHuntersRevived.Common.Simulations\VoidHuntersRevived.Common.Simulations.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Using Include="tainicom.Aether.Physics2D.Dynamics.World">
+      <Alias>Aether</Alias>
+    </Using>
+  </ItemGroup>
+
 </Project>

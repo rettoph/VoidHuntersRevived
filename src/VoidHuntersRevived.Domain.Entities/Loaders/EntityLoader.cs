@@ -26,9 +26,6 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
             {
                 manager.AddScoped<ShipPartConfigurationService>()
                     .AddInterfaceAliases();
-
-                manager.AddScoped<ShipPartService>()
-                    .AddInterfaceAliases();
             });
         }
     }

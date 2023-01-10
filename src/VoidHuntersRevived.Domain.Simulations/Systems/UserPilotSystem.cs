@@ -56,11 +56,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
                 _scope.Users.Add(user);
             }
 
-            var pilot = simulation.CreatePilot(ParallelKey.From(ParallelTypes.Pilot, user.Id));
-            var ship = simulation.CreateShip(ParallelKey.From(ParallelTypes.Ship, user.Id));
-
-            // Bind the pilot to the new pilotable ship
-            pilot.Get<Piloting>().Pilotable = ship.Get<Pilotable>();
+            var ship = simulation.CreateShip(ParallelKey.From(ParallelTypes.Ship, user.Id), "hull:square");
+            var pilot = simulation.CreatePilot(ParallelKey.From(ParallelTypes.Pilot, user.Id), ship);
         }
     }
 }

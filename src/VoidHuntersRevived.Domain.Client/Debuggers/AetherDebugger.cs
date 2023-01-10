@@ -5,6 +5,7 @@ using Guppy.MonoGame.Utilities.Cameras;
 using Guppy.Network;
 using Guppy.Network.Enums;
 using ImGuiNET;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Diagnostics;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Domain.Simulations.Extensions;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Client.Debuggers
@@ -113,7 +115,7 @@ namespace VoidHuntersRevived.Domain.Client.Debuggers
             {
                 foreach(DebugData data in _data)
                 {
-                    var header = $"{data.Simulation.NetScope.Peer!.Type} - {data.Simulation.Type}";
+                    var header = $"{data.Simulation.NetScope().Peer!.Type} - {data.Simulation.Type}";
                     if(ImGui.CollapsingHeader(header))
                     {
                         ImGui.PushID($"{header}_toggle");
