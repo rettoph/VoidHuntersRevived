@@ -10,7 +10,7 @@ using VoidHuntersRevived.Domain.Entities.Enums;
 
 namespace VoidHuntersRevived.Domain.Entities.Messages
 {
-    public class SetPilotingDirection : Message<SetPilotingDirection>, ISimulationInputData
+    public class SetPilotingDirection : Message<SetPilotingDirection>, ISimulationData
     {
         /// <summary>
         /// When null attempt to load the concept of a "current pilot"

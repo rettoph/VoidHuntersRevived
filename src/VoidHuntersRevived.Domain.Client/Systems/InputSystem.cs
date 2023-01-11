@@ -31,8 +31,8 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 return;
             }
 
-            _simulations.Input(
-                confidence: Confidence.Unknown, 
+            _simulations.PublishEvent(
+                confidence: Confidence.Stochastic, 
                 data: new SetPilotingDirection(
                     pilotKey: ParallelKey.From(ParallelTypes.Pilot, _netScope.Peer.Users.Current.Id),
                     which: message.Which,

@@ -16,29 +16,29 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Services
 {
     [PeerTypeFilter(PeerType.Server)]
-    internal sealed class ServerLockstepEventPublishingService : ILockstepEventPublishingService,
+    internal sealed class ServerLockstepEventService : ILockstepEventService,
         ISubscriber<INetIncomingMessage<ClientRequest>>
     {
         private readonly ITickFactory _factory;
-        private Action<ISimulationInputData, Confidence> _publisher;
+        private Action<ISimulationData, Confidence> _publisher;
 
-        public ServerLockstepEventPublishingService(IFiltered<ITickFactory> factory)
+        public ServerLockstepEventService(IFiltered<ITickFactory> factory)
         {
             _factory = factory.Instance ?? throw new ArgumentNullException();
             _publisher = default!;
         }
 
-        public void Initialize(Action<ISimulationInputData, Confidence> publisher)
+        public void Initialize(Action<ISimulationData, Confidence> publisher)
         {
             _publisher = publisher;
         }
 
-        public void Publish(ISimulationInputData data, Confidence confidence)
+        public void Publish(ISimulationData data, Confidence type)
         {
             // If we are confident about the event we can publish it now
-            if (confidence == Confidence.Certain)
+            if (type == Confidence.Deterministic)
             {
-                _publisher.Invoke(data, confidence);
+                _publisher.Invoke(data, type);
 
                 return;
             }
@@ -50,6 +50,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Services
 
         public void Process(in INetIncomingMessage<ClientRequest> message)
         {
+            // ClientRequest messages can be added to the factory
+            // to be processed next tick
             _factory.Enqueue(message.Body.Data);
         }
     }

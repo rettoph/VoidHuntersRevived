@@ -15,7 +15,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
     [GuppyFilter<IGameGuppy>()]
     [SimulationTypeFilter(SimulationType.Predictive)]
-    internal sealed class PredictiveSimulation : Simulation<Common.Simulations.Components.Predictive>
+    internal sealed class PredictiveSimulation : Simulation<Common.Simulations.Components.Predictive>,
+        ISubscriber<Tick>
     {
         private IPredictiveSynchronizationSystem[] _synchronizeSystems;
 
@@ -42,6 +43,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             foreach (IPredictiveSynchronizationSystem synchronizeSystem in _synchronizeSystems)
             {
                 synchronizeSystem.Synchronize(this, gameTime, damping);
+            }
+        }
+
+        public void Process(in Tick message)
+        {
+            foreach(ISimulationData data in message.Data)
+            {
+                this.PublishEvent(data, Confidence.Deterministic);
             }
         }
     }

@@ -68,7 +68,7 @@ namespace VoidHuntersRevived.Domain.Client.Debuggers
         {
             if (ImGui.CollapsingHeader($"{tick.Id} ({tick.Count})"))
             {
-                foreach (ISimulationInputData simulationData in tick.Data)
+                foreach (ISimulationData simulationData in tick.Data)
                 {
                     _objectViewer.Render(simulationData);
                 }

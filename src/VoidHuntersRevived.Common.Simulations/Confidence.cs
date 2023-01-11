@@ -8,7 +8,7 @@ namespace VoidHuntersRevived.Common.Simulations
 {
     public enum Confidence
     {
-        Unknown,
-        Certain
+        Stochastic,
+        Deterministic
     }
 }

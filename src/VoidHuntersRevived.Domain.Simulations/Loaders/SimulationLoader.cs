@@ -59,12 +59,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
 
             manager.AddScoped<State>();
 
-            manager.AddScoped<ServerLockstepEventPublishingService>()
-                .AddAlias<ILockstepEventPublishingService>()
-                .AddAlias<ISubscriber>();
+            manager.AddScoped<ServerLockstepEventService>()
+                .AddInterfaceAliases();
 
-            manager.AddScoped<ClientLockstepEventPublishingService>()
-                .AddAlias<ILockstepEventPublishingService>();
+            manager.AddScoped<ClientLockstepEventService>()
+                .AddInterfaceAliases();
 
             manager.AddScoped<ClientTickFactory>()
                 .AddAlias<ITickFactory>();

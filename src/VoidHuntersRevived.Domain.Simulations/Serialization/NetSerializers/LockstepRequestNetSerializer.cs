@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
 
         public override ClientRequest Deserialize(NetDataReader reader)
         {
-            return new ClientRequest((ISimulationInputData)_serializers.Deserialize(reader));
+            return new ClientRequest((ISimulationData)_serializers.Deserialize(reader));
         }
 
         public override void Serialize(NetDataWriter writer, in ClientRequest instance)

@@ -8,44 +8,45 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Domain.Simulations.Lockstep.Factories;
 using VoidHuntersRevived.Domain.Simulations.Lockstep.Messages;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Services
 {
     [PeerTypeFilter(PeerType.Client)]
-    internal sealed class ClientLockstepEventPublishingService : ILockstepEventPublishingService
+    internal sealed class ClientLockstepEventService : ILockstepEventService
     {
-        private Action<ISimulationInputData, Confidence> _publisher;
+        private Action<ISimulationData, Confidence> _publisher;
         private NetScope _netScope;
 
-        public ClientLockstepEventPublishingService(NetScope netScope)
+        public ClientLockstepEventService(NetScope netScope, ISimulationService simulations)
         {
             _publisher = default!;
             _netScope = netScope;
         }
 
-        public void Initialize(Action<ISimulationInputData, Confidence> publisher)
+        public void Initialize(Action<ISimulationData, Confidence> publisher)
         {
             _publisher = publisher;
         }
 
-        public void Publish(ISimulationInputData data, Confidence confidence)
+        public void Publish(ISimulationData data, Confidence type)
         {
-            // If we are confident about the event we can publish it now
-            if (confidence == Confidence.Certain)
+            // If we are not very confident about the event 
+            // we should send a request to the server
+            if (type == Confidence.Stochastic)
             {
-                _publisher.Invoke(data, confidence);
-                
+                this.RequestEvent(data);
                 return;
             }
 
-            // If we are not confident about the event we should
-            // request it from the server
-            this.RequestEvent(data);
+            // Any other event we *should* be able to trust
+            // and publish immidiately
+            _publisher.Invoke(data, type);
         }
 
-        private void RequestEvent(ISimulationInputData data)
+        private void RequestEvent(ISimulationData data)
         {
             var message =_netScope.Messages.Create<ClientRequest>(new(data));
             message.Enqueue();

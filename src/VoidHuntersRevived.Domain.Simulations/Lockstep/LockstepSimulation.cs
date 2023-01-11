@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         ISubscriber<Step>,
         IDisposable
     {
-        private readonly ILockstepEventPublishingService _publisher;
+        private readonly ILockstepEventService _publisher;
         private readonly IStepService _steps;
         private readonly ISimulationService _simulations;
         private readonly ILogger _logger;
@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             State state,
             ISimulationService simulations, 
             IStepService steps, 
-            IFiltered<ILockstepEventPublishingService> publisher, 
+            IFiltered<ILockstepEventService> publisher, 
             IParallelService simulatedEntities,
             IGlobalSimulationService globalSimulationService,
             ILogger logger) : base(SimulationType.Lockstep, simulatedEntities, globalSimulationService)
@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         {
             base.Initialize(provider);
 
-            _publisher.Initialize(base.Input);
+            _publisher.Initialize(base.PublishEvent);
         }
 
         protected override void Update(GameTime gameTime)
@@ -59,19 +59,18 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _steps.Update(gameTime);
         }
 
-        public override void Input(ISimulationInputData data, Confidence confidence)
+        public override void PublishEvent(ISimulationData data, Confidence confidence)
         {
             _publisher.Publish(data, confidence);
         }
 
         public void Process(in Tick message)
         {
-            foreach (ISimulationInputData data in message.Data)
+            foreach (ISimulationData data in message.Data)
             {
-                // At this point in time the data has successfully
-                // been converted into lockstep server data,
-                // publish it so.
-                _simulations.Input(data, Confidence.Certain);
+                // If the data managed to make its way into a tick
+                // we can publish it as an event now.
+                base.PublishEvent(data, Confidence.Deterministic);
             }
         }
 

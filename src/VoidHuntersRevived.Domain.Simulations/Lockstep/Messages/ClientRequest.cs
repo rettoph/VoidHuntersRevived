@@ -5,11 +5,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Messages
 {
     internal sealed class ClientRequest : Message<ClientRequest>
     {
-        public ClientRequest(ISimulationInputData data)
+        public ClientRequest(ISimulationData data)
         {
             Data = data;
         }
 
-        public ISimulationInputData Data { get; }
+        public ISimulationData Data { get; }
     }
 }

@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Factories
 {
     public interface ITickFactory
     {
-        void Enqueue(ISimulationInputData data);
+        void Enqueue(ISimulationData data);
 
         Tick Create(int id);
 

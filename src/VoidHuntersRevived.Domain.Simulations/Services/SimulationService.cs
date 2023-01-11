@@ -71,11 +71,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             }
         }
 
-        public void Input(ISimulationInputData data, Confidence confidence)
+        public void PublishEvent(ISimulationData data, Confidence confidence)
         {
             foreach(ISimulation simulation in _simulations.Values)
             {
-                simulation.Input(data, confidence);
+                simulation.PublishEvent(data, confidence);
             }
         }
     }

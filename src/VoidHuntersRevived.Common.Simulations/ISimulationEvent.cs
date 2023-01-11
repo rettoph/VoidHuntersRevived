@@ -2,15 +2,15 @@
 
 namespace VoidHuntersRevived.Common.Simulations
 {
-    public interface ISimulationInput : IMessage
+    public interface ISimulationEvent : IMessage
     {
         Confidence Confidence { get; }
         ISimulation Simulation { get; }
-        ISimulationInputData Data { get; }
+        ISimulationData Data { get; }
     }
 
-    public interface ISimulationInput<TData> : ISimulationInput
-        where TData : notnull, ISimulationInputData
+    public interface ISimulationEvent<TData> : ISimulationEvent
+        where TData : notnull, ISimulationData
     {
         new TData Data { get; }
     }
