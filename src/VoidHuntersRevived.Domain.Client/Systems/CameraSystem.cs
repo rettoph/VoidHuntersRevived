@@ -68,7 +68,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 return;
             }
 
-            _camera.TargetPosition = body.Position;
+            _camera.TargetPosition = body.WorldCenter;
             _camera.TargetVelocity = body.LinearVelocity;
         }
     }

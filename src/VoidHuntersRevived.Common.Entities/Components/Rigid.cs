@@ -8,10 +8,10 @@ using tainicom.Aether.Physics2D.Collision.Shapes;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Simulations;
 
-namespace VoidHuntersRevived.Domain.Entities.Components
+namespace VoidHuntersRevived.Common.Entities.Components
 {
-    public sealed partial class Hull : IShipPartComponent
+    public sealed partial class Rigid : IShipPartComponent
     {
-        public Hull.Shape[] Shapes { get; set; } = Array.Empty<Hull.Shape>();
+        public Shape[] Shapes { get; set; } = Array.Empty<Shape>();
     }
 }

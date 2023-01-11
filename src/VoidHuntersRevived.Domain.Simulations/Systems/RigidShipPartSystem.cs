@@ -7,26 +7,27 @@ using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Domain.Entities.Components;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
-    internal sealed class HullSystem : EntitySystem
+    internal sealed class RigidShipPartSystem : EntitySystem
     {
-        private ComponentMapper<Hull> _hulls;
+        private ComponentMapper<Rigid> _rigids;
         private ComponentMapper<AetherLeaf> _leaves;
         private ComponentMapper<Body> _bodies;
 
-        public HullSystem() : base(Aspect.All(typeof(Hull), typeof(AetherLeaf)))
+        public RigidShipPartSystem() : base(Aspect.All(typeof(Rigid), typeof(AetherLeaf)))
         {
-            _hulls = default!;
+            _rigids = default!;
             _leaves = default!;
             _bodies = default!;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
         {
-            _hulls = mapperService.GetMapper<Hull>();
+            _rigids = mapperService.GetMapper<Rigid>();
             _leaves = mapperService.GetMapper<AetherLeaf>();
             _bodies = mapperService.GetMapper<Body>();
         }
@@ -41,12 +42,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             }
 
             var leaf = _leaves.Get(entityId);
-            var hull = _hulls.Get(entityId);
+            var rigid = _rigids.Get(entityId);
             var body = _bodies.Get(leaf.Tree.Entity.Id);
 
-            foreach(var shape in hull.Shapes)
+            foreach(var shape in rigid.Shapes)
             {
-                var fixture = new Fixture(shape.Polygon.Clone());
+                var fixture = new Fixture(shape.Clone());
                 body.Add(fixture);
             }
         }

@@ -1,5 +1,6 @@
 ﻿using Guppy.MonoGame;
 using Guppy.MonoGame.Utilities.Cameras;
+using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities;
@@ -10,54 +11,58 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Dynamics;
+using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Domain.Entities.Components;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
-    internal sealed partial class DrawHullSystem : EntityDrawSystem
+    internal sealed partial class DrawnShipPartSystem : EntityDrawSystem
     {
         private static readonly AspectBuilder HullAspect = Aspect.All(new[]
         {
-            typeof(Hull),
+            typeof(Rigid),
             typeof(Predictive),
             typeof(AetherLeaf)
         });
 
         private readonly IShipPartConfigurationService _configurations;
+        private readonly IResourceProvider _resources;
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private readonly Camera2D _camera;
-        private readonly Dictionary<Hull, HullRenderer> _renderers;
+        private readonly Dictionary<Drawn, Renderer> _renderers;
 
-        private ComponentMapper<Hull> _hulls;
+        private ComponentMapper<Drawn> _drawn;
         private ComponentMapper<AetherLeaf> _leaves;
         private ComponentMapper<Body> _bodies;
 
-        public DrawHullSystem(
+        public DrawnShipPartSystem(
             PrimitiveBatch<VertexPositionColor> primitiveBatch,
             Camera2D camera,
+            IResourceProvider resources,
             IShipPartConfigurationService configurations) : base(HullAspect)
         {
             _primitiveBatch = primitiveBatch;
             _camera = camera;
             _configurations = configurations;
-            _renderers = new Dictionary<Hull, HullRenderer>();
+            _resources = resources;
+            _renderers = new Dictionary<Drawn, Renderer>();
 
-            _hulls = default!;
+            _drawn = default!;
             _leaves = default!;
             _bodies = default!;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
         {
-            _hulls = mapperService.GetMapper<Hull>();
+            _drawn = mapperService.GetMapper<Drawn>();
             _leaves = mapperService.GetMapper<AetherLeaf>();
             _bodies = mapperService.GetMapper<Body>();
 
-            foreach (var hull in _configurations.GetAll<Hull>())
+            foreach (var drawn in _configurations.GetAll<Drawn>())
             {
-                _renderers.Add(hull, new HullRenderer(_primitiveBatch, hull));
+                _renderers.Add(drawn, new Renderer(_primitiveBatch, _resources, drawn));
             }
         }
 
@@ -67,7 +72,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
             foreach(var entityId in this.subscription.ActiveEntities)
             {
-                var hull = _hulls.Get(entityId);
+                var hull = _drawn.Get(entityId);
                 var leaf = _leaves.Get(entityId);
                 var body = _bodies.Get(leaf.Tree.Entity.Id);
 

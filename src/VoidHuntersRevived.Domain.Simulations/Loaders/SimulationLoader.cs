@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
                 manager.AddScoped<UserPilotSystem>()
                     .AddInterfaceAliases();
 
-                manager.AddScoped<HullSystem>()
+                manager.AddScoped<RigidShipPartSystem>()
                     .AddInterfaceAliases();
 
                 this.ConfigureLockstep(services, manager);

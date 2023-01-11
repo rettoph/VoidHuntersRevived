@@ -1,4 +1,5 @@
 ﻿using Guppy.MonoGame;
+using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -7,27 +8,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Common;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Domain.Entities.Components;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
-    internal partial class DrawHullSystem
+    internal partial class DrawnShipPartSystem
     {
-        private sealed class HullRenderer
+        private sealed class Renderer
         {
             private Vector2[][] _vertices;
             private Vector2[] _buffer;
-            private readonly Hull _hull;
+            private readonly Drawn _drawn;
             private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
+            private readonly Color _color;
 
-            public HullRenderer(
+            public Renderer(
                 PrimitiveBatch<VertexPositionColor> primitiveBatch,
-                Hull hull)
+                IResourceProvider resources,
+                Drawn drawn)
             {
-                _hull = hull;
+                _drawn = drawn;
                 _primitiveBatch = primitiveBatch;
-                _vertices = _hull.Shapes.Select(x => x.Polygon.Vertices.ToArray()).ToArray();
+                _vertices = _drawn.Shapes;
                 _buffer = new Vector2[3];
+                _color = resources.Get<Color>(_drawn.Color);
             }
 
             public void Render(Matrix transformation)
@@ -44,7 +50,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                         _buffer[2] = Vector2.Transform(vertices[i], transformation);
 
                         // Render the current triangle..
-                        _primitiveBatch.DrawTriangle(Color.Red, _buffer[0], _buffer[1], _buffer[2]);
+                        _primitiveBatch.DrawTriangle(_color, _buffer[0], _buffer[1], _buffer[2]);
 
                         // Move the old vertice down the buffer 1...
                         _buffer[1] = _buffer[2];
