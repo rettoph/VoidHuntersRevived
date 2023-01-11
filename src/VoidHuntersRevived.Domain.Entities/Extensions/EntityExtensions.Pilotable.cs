@@ -42,9 +42,7 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
 
         public static bool IsShip(this Entity entity)
         {
-            return entity.IsAetherTree() && 
-                entity.IsPilotable() &&
-                entity.Has<Ship>();
+            return entity.Has<Ship>();
         }
     }
 }

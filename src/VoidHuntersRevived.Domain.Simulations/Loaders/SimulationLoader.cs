@@ -44,6 +44,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
                 manager.AddScoped<UserPilotSystem>()
                     .AddInterfaceAliases();
 
+                manager.AddScoped<HullSystem>()
+                    .AddInterfaceAliases();
+
                 this.ConfigureLockstep(services, manager);
                 this.ConfigurePredictive(services, manager);
             });

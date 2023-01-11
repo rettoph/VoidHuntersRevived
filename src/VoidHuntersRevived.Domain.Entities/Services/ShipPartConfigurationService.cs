@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Domain.Entities.Components;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -36,5 +38,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _configurations[name];
         }
 
+        public IEnumerable<ShipPartConfiguration> GetAll()
+        {
+            return _configurations.Values;
+        }
+
+        IEnumerable<TComponent> IShipPartConfigurationService.GetAll<TComponent>()
+        {
+            return this.GetAll().SelectMany(x => x.WhereAs<IShipPartComponent, TComponent>());
+        }
     }
 }
