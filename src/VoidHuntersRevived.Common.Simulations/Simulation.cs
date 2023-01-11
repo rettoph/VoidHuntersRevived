@@ -179,6 +179,8 @@ namespace VoidHuntersRevived.Common.Simulations
             _bus.Publish(EventFactory.GetSimulationEvent(confidence, data, this));
         }
 
+        public abstract void PublishEvent(ISimulationData data);
+
         private static class EventFactory
         {
             private static Dictionary<Type, Func<Confidence, ISimulationData, ISimulation, ISimulationEvent>> _eventFactories = new();

@@ -46,6 +46,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             }
         }
 
+        public override void PublishEvent(ISimulationData data)
+        {
+            this.PublishEvent(data, Confidence.Stochastic);
+        }
+
         public void Process(in Tick message)
         {
             foreach(ISimulationData data in message.Data)
