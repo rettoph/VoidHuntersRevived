@@ -48,6 +48,14 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
                             },
                             density: 1f)
                     }
+                },
+                new Linking()
+                {
+                    new Linking.Joint()
+                    {
+                        Position = new Vector2(0.5f, 0),
+                        Rotation = MathHelper.PiOver2
+                    }
                 }
             });
         }

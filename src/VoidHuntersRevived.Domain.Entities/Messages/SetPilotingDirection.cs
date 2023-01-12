@@ -26,5 +26,18 @@ namespace VoidHuntersRevived.Domain.Entities.Messages
             this.Which = which;
             this.Value = value;
         }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is SetPilotingDirection direction &&
+                   EqualityComparer<ParallelKey>.Default.Equals(PilotKey, direction.PilotKey) &&
+                   Which == direction.Which &&
+                   Value == direction.Value;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(PilotKey, Which, Value);
+        }
     }
 }

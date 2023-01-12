@@ -15,16 +15,17 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
     [GuppyFilter<IGameGuppy>()]
     [SimulationTypeFilter(SimulationType.Predictive)]
-    internal sealed class PredictiveSimulation : Simulation<Common.Simulations.Components.Predictive>,
-        ISubscriber<Tick>
+    internal sealed class PredictiveSimulation : Simulation<Common.Simulations.Components.Predictive>
     {
         private IPredictiveSynchronizationSystem[] _synchronizeSystems;
+        private Dictionary<int, Prediction> _predictions;
 
         public PredictiveSimulation(
             IParallelService simulatedEntities, 
             IGlobalSimulationService globalSimulationService) : base(SimulationType.Predictive, simulatedEntities, globalSimulationService)
         {
             _synchronizeSystems = Array.Empty<IPredictiveSynchronizationSystem>();
+            _predictions = new Dictionary<int, Prediction>();
         }
 
         public override void Initialize(IServiceProvider provider)
@@ -46,17 +47,26 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             }
         }
 
+        public override void PublishEvent(ISimulationData data, Confidence confidence)
+        {
+            if(confidence == Confidence.Stochastic)
+            {
+                base.PublishEvent(data, confidence);
+                _predictions.Add(data.GetHashCode(), new Prediction(data));
+                return;
+            }
+
+            if(_predictions.Remove(data.GetHashCode()))
+            {
+                return;
+            }
+
+            base.PublishEvent(data, confidence);
+        }
+
         public override void PublishEvent(ISimulationData data)
         {
             this.PublishEvent(data, Confidence.Stochastic);
-        }
-
-        public void Process(in Tick message)
-        {
-            foreach(ISimulationData data in message.Data)
-            {
-                this.PublishEvent(data, Confidence.Deterministic);
-            }
         }
     }
 }

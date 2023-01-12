@@ -13,5 +13,16 @@ namespace VoidHuntersRevived.Domain.Simulations.Events
     public class PlayerAction : ISimulationData
     {
         public required UserAction UserAction { get; init; }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is PlayerAction action &&
+                   EqualityComparer<UserAction>.Default.Equals(UserAction, action.UserAction);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(UserAction.Action, UserAction.Id);
+        }
     }
 }

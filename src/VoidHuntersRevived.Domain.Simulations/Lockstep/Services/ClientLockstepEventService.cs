@@ -19,16 +19,21 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Services
     {
         private Action<ISimulationData, Confidence> _publisher;
         private NetScope _netScope;
+        private ISimulation _predictive;
+        private ISimulationService _simulations;
 
         public ClientLockstepEventService(NetScope netScope, ISimulationService simulations)
         {
             _publisher = default!;
             _netScope = netScope;
+            _predictive = default!;
+            _simulations = simulations;
         }
 
         public void Initialize(Action<ISimulationData, Confidence> publisher)
         {
             _publisher = publisher;
+            _predictive = _simulations[SimulationType.Predictive];
         }
 
         public void Publish(ISimulationData data, Confidence type)
@@ -44,6 +49,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Services
             // Any other event we *should* be able to trust
             // and publish immidiately
             _publisher.Invoke(data, type);
+            _predictive.PublishEvent(data, type);
         }
 
         private void RequestEvent(ISimulationData data)
