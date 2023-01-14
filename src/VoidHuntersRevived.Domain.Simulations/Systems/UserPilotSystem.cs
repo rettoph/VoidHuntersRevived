@@ -60,12 +60,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             }
 
             var ship = simulation.CreateShip(ParallelKey.From(ParallelTypes.Ship, user), ShipParts.HullSquare);
-            var pilot = simulation.CreatePilot(ParallelKey.From(ParallelTypes.Pilot, user), ship);
+            var pilot = simulation.CreatePilot(ParallelKey.From(ParallelTypes.Pilot, user.Id), ship);
 
-            for(int i=0; i<4; i++)
+            for(int i=0; i<3; i++)
             {
                 var piece = simulation.CreateShipPart(ParallelKey.From(ParallelTypes.ShipPart, user, i), ShipParts.HullSquare);
-
+            
                 simulation.PublishEvent(new CreateLink()
                 {
                     Parent = ship.Get<Ship>().Bridge.Get<Parallelable>().Key,

@@ -9,6 +9,7 @@ using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Domain.Entities.Components;
+using VoidHuntersRevived.Domain.Simulations.Extensions;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
