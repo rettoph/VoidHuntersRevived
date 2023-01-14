@@ -24,13 +24,13 @@ namespace VoidHuntersRevived.Domain.Entities.Components
             this.Leaves = new ReadOnlyCollection<AetherLeaf>(_leaves);
         }
 
-        public AetherLeaf Attach(Entity entity)
+        public AetherLeaf Add(Entity entity)
         {
             if(entity.Has<AetherLeaf>())
             {
                 var oldLeaf = entity.Get<AetherLeaf>();
 
-                oldLeaf.Tree.Detach(oldLeaf);
+                oldLeaf.Tree.Remove(oldLeaf);
             }
 
             var leaf = new AetherLeaf(entity, this);
@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Domain.Entities.Components
             return leaf;
         }
 
-        public bool Detach(AetherLeaf leaf)
+        public bool Remove(AetherLeaf leaf)
         {
             if(!_leaves.Remove(leaf))
             {

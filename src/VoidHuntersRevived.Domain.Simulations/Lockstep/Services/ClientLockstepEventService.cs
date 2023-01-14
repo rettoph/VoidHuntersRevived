@@ -48,8 +48,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Services
 
             // Any other event we *should* be able to trust
             // and publish immidiately
-            _publisher.Invoke(data, source);
             _predictive.PublishEvent(data, source);
+            _publisher.Invoke(data, source);
         }
 
         private void RequestEvent(IData data)

@@ -51,13 +51,12 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 return;
             }
 
-            var currentUserId = _scope.Peer!.Users.Current?.Id;
-            if (currentUserId is null)
+            if (_scope.Peer!.Users.Current is null)
             {
                 return;
             }
 
-            if (!_simulations[SimulationType.Predictive].TryGetEntityId(new ParallelKey(ParallelTypes.Ship, currentUserId.Value), out var shipEntityId))
+            if (!_simulations[SimulationType.Predictive].TryGetEntityId(ParallelKey.From(ParallelTypes.Ship, _scope.Peer!.Users.Current), out var shipEntityId))
             {
                 return;
             }

@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Entities.Components
             this.Bridge = bridge;
             this.Tree = tree;
 
-            this.Tree.Attach(this.Bridge);
+            this.Tree.Add(this.Bridge);
         }
     }
 }

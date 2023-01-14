@@ -14,7 +14,7 @@ using VoidHuntersRevived.Domain.Entities.Components;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
-    internal partial class DrawnShipPartSystem
+    internal partial class DrawnRigidSystem
     {
         private sealed class Renderer
         {

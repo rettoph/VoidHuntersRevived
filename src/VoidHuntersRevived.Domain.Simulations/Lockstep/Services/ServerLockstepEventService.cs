@@ -35,17 +35,17 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Services
 
         public void Publish(IData data, DataSource source)
         {
-            // If we are confident about the event we can publish it now
-            if (source == DataSource.Determined)
+            // If the event is coming from an external source
+            // we should queue it up for deterministic processing
+            if (source == DataSource.External)
             {
-                _publisher.Invoke(data, source);
-
+                _factory.Enqueue(data);
+                
                 return;
             }
 
-            // events of other sources should be enqueued
-            // to be confidently published later
-            _factory.Enqueue(data);
+            // If we are confident about the event we can publish it now
+            _publisher.Invoke(data, source);
         }
 
         public void Process(in INetIncomingMessage<ClientRequest> message)

@@ -18,14 +18,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
     internal sealed class PredictiveSimulation : Simulation<Common.Simulations.Components.Predictive>
     {
         private IPredictiveSynchronizationSystem[] _synchronizeSystems;
-        private Dictionary<int, Prediction> _predictions;
 
         public PredictiveSimulation(
             IParallelService simulatedEntities, 
             IGlobalSimulationService globalSimulationService) : base(SimulationType.Predictive, simulatedEntities, globalSimulationService)
         {
             _synchronizeSystems = Array.Empty<IPredictiveSynchronizationSystem>();
-            _predictions = new Dictionary<int, Prediction>();
         }
 
         public override void Initialize(IServiceProvider provider)
@@ -45,25 +43,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             {
                 synchronizeSystem.Synchronize(this, gameTime, damping);
             }
-        }
-
-        public override void PublishEvent(IData data, DataSource source)
-        {
-            var predictionId = data.GetHashCode();
-
-            if (source == DataSource.External)
-            {
-                base.PublishEvent(data, source);
-                _predictions.Add(predictionId, new Prediction(predictionId, data));
-                return;
-            }
-
-            if(_predictions.Remove(predictionId))
-            {
-                return;
-            }
-
-            base.PublishEvent(data, source);
         }
 
         public override void PublishEvent(IData data)

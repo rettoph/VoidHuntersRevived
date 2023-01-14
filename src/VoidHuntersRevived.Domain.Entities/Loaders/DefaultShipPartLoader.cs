@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
     {
         public void Load(IShipPartConfigurationService shipParts)
         {
-            shipParts.Add(new ShipPartConfiguration("hull:square")
+            shipParts.Add(new ShipPartConfiguration(ShipParts.HullSquare)
             {
                 new Drawn()
                 {
@@ -49,12 +49,27 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
                             density: 1f)
                     }
                 },
-                new Linking()
+                new Linkable()
                 {
-                    new Linking.Joint()
+                    new Linkable.Joint()
                     {
-                        Position = new Vector2(0.5f, 0),
-                        Rotation = MathHelper.PiOver2
+                        Position = new Vector2(1f, 0.5f),
+                        Rotation = MathHelper.PiOver2 * 0
+                    },
+                    new Linkable.Joint()
+                    {
+                        Position = new Vector2(0.5f, 1),
+                        Rotation = MathHelper.PiOver2 * 1
+                    },
+                    new Linkable.Joint()
+                    {
+                        Position = new Vector2(0f, 0.5f),
+                        Rotation = MathHelper.PiOver2 * 2
+                    },
+                    new Linkable.Joint()
+                    {
+                        Position = new Vector2(0.5f, 0f),
+                        Rotation = MathHelper.PiOver2 * 3
                     }
                 }
             });

@@ -7,10 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Extensions\tainicom\Aether\" />
     <Folder Include="Providers\" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\VoidHuntersRevived.Common.Entities\VoidHuntersRevived.Common.Entities.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Simulations\VoidHuntersRevived.Common.Simulations.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Entities\VoidHuntersRevived.Domain.Entities.csproj" />
   </ItemGroup>

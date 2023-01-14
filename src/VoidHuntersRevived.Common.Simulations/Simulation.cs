@@ -13,6 +13,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
 
@@ -147,6 +148,7 @@ namespace VoidHuntersRevived.Common.Simulations
         {
             var entity = _world.CreateEntity();
             entity.Attach(_entityComponent);
+            entity.Attach(new Parallelable(key));
             entity.Attach<ISimulation>(this);
 
             _simulatedEntities.Set(key, this.Type, entity.Id);

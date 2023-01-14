@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             _simulations.PublishEvent(
                 source: DataSource.External, 
                 data: new SetPilotingDirection(
-                    pilotKey: ParallelKey.From(ParallelTypes.Pilot, _netScope.Peer.Users.Current.Id),
+                    pilotKey: ParallelKey.From(ParallelTypes.Pilot, _netScope.Peer.Users.Current),
                     which: message.Which,
                     value: message.Value));
         }
