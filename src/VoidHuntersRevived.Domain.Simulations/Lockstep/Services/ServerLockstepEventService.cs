@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Services
         ISubscriber<INetIncomingMessage<ClientRequest>>
     {
         private readonly ITickFactory _factory;
-        private Action<ISimulationData, Confidence> _publisher;
+        private Action<IData, DataSource> _publisher;
 
         public ServerLockstepEventService(IFiltered<ITickFactory> factory)
         {
@@ -28,22 +28,22 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Services
             _publisher = default!;
         }
 
-        public void Initialize(Action<ISimulationData, Confidence> publisher)
+        public void Initialize(Action<IData, DataSource> publisher)
         {
             _publisher = publisher;
         }
 
-        public void Publish(ISimulationData data, Confidence type)
+        public void Publish(IData data, DataSource source)
         {
             // If we are confident about the event we can publish it now
-            if (type == Confidence.Deterministic)
+            if (source == DataSource.Determined)
             {
-                _publisher.Invoke(data, type);
+                _publisher.Invoke(data, source);
 
                 return;
             }
 
-            // events of unknown confidence should be enqueued
+            // events of other sources should be enqueued
             // to be confidently published later
             _factory.Enqueue(data);
         }

@@ -21,7 +21,7 @@ using VoidHuntersRevived.Domain.Entities.Components;
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     internal sealed class PilotingSystem : EntitySystem,
-        ISubscriber<ISimulationEvent<SetPilotingDirection>>
+        ISubscriber<IEvent<SetPilotingDirection>>
     {
         private ComponentMapper<Piloting> _pilotings;
         private State _state;
@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _pilotings= mapperService.GetMapper<Piloting>();
         }
 
-        public void Process(in ISimulationEvent<SetPilotingDirection> message)
+        public void Process(in IEvent<SetPilotingDirection> message)
         {
             var pilotId = message.Simulation.GetEntityId(message.Data.PilotKey);
             var piloting = _pilotings.Get(pilotId);

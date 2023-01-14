@@ -38,8 +38,8 @@ namespace VoidHuntersRevived.Common.Simulations
 
         Entity CreateEntity(ParallelKey key);
 
-        void PublishEvent(ISimulationData data, Confidence confidence);
+        void PublishEvent(IData data, DataSource source);
 
-        void PublishEvent(ISimulationData data);
+        void PublishEvent(IData data);
     }
 }

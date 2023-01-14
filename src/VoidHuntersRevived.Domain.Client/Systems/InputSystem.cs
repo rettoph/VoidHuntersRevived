@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             }
 
             _simulations.PublishEvent(
-                confidence: Confidence.Stochastic, 
+                source: DataSource.External, 
                 data: new SetPilotingDirection(
                     pilotKey: ParallelKey.From(ParallelTypes.Pilot, _netScope.Peer.Users.Current.Id),
                     which: message.Which,

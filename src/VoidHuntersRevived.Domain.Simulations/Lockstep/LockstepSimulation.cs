@@ -59,19 +59,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _steps.Update(gameTime);
         }
 
-        public override void PublishEvent(ISimulationData data, Confidence confidence)
+        public override void PublishEvent(IData data, DataSource source)
         {
-            _publisher.Publish(data, confidence);
+            _publisher.Publish(data, source);
         }
 
-        public override void PublishEvent(ISimulationData data)
+        public override void PublishEvent(IData data)
         {
-            this.PublishEvent(data, Confidence.Deterministic);
+            this.PublishEvent(data, DataSource.Determined);
         }
 
         public void Process(in Tick message)
         {
-            foreach (ISimulationData data in message.Data)
+            foreach (IData data in message.Data)
             {
                 // If the data managed to make its way into a tick
                 // we can publish it as an event now.

@@ -47,26 +47,28 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             }
         }
 
-        public override void PublishEvent(ISimulationData data, Confidence confidence)
+        public override void PublishEvent(IData data, DataSource source)
         {
-            if(confidence == Confidence.Stochastic)
+            var predictionId = data.GetHashCode();
+
+            if (source == DataSource.External)
             {
-                base.PublishEvent(data, confidence);
-                _predictions.Add(data.GetHashCode(), new Prediction(data));
+                base.PublishEvent(data, source);
+                _predictions.Add(predictionId, new Prediction(predictionId, data));
                 return;
             }
 
-            if(_predictions.Remove(data.GetHashCode()))
+            if(_predictions.Remove(predictionId))
             {
                 return;
             }
 
-            base.PublishEvent(data, confidence);
+            base.PublishEvent(data, source);
         }
 
-        public override void PublishEvent(ISimulationData data)
+        public override void PublishEvent(IData data)
         {
-            this.PublishEvent(data, Confidence.Stochastic);
+            this.PublishEvent(data, DataSource.Internal);
         }
     }
 }

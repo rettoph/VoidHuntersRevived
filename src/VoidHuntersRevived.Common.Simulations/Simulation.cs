@@ -154,58 +154,58 @@ namespace VoidHuntersRevived.Common.Simulations
             return entity;
         }
 
-        private sealed class SimulationInput<TData> : Message<ISimulationEvent<TData>>, ISimulationEvent<TData>
-            where TData : notnull, ISimulationData
+        private sealed class SimulationInput<TData> : Message<IEvent<TData>>, IEvent<TData>
+            where TData : notnull, IData
         {
-            public Confidence Confidence { get; }
+            public DataSource Source { get; }
 
             public TData Data { get; }
 
             public ISimulation Simulation { get; }
 
-            ISimulationData ISimulationEvent.Data => this.Data;
+            IData IEvent.Data => this.Data;
 
 
-            public SimulationInput(Confidence confidence, TData data, ISimulation simulation)
+            public SimulationInput(DataSource source, TData data, ISimulation simulation)
             {
-                this.Confidence = confidence;
+                this.Source = source;
                 this.Data = data;
                 this.Simulation = simulation;
             }
         }
 
-        public virtual void PublishEvent(ISimulationData data, Confidence confidence)
+        public virtual void PublishEvent(IData data, DataSource source)
         {
-            _bus.Publish(EventFactory.GetSimulationEvent(confidence, data, this));
+            _bus.Publish(EventFactory.GetSimulationEvent(source, data, this));
         }
 
-        public abstract void PublishEvent(ISimulationData data);
+        public abstract void PublishEvent(IData data);
 
         private static class EventFactory
         {
-            private static Dictionary<Type, Func<Confidence, ISimulationData, ISimulation, ISimulationEvent>> _eventFactories = new();
+            private static Dictionary<Type, Func<DataSource, IData, ISimulation, IEvent>> _eventFactories = new();
             private static MethodInfo _eventFactoryMethod = typeof(EventFactory).GetMethod(nameof(SimulationEventFactory), BindingFlags.Static | BindingFlags.NonPublic) ?? throw new UnreachableException();
 
-            public static ISimulationEvent GetSimulationEvent(Confidence confidence, ISimulationData data, ISimulation simulation)
+            public static IEvent GetSimulationEvent(DataSource source, IData data, ISimulation simulation)
             {
                 var type = data.GetType();
                 if (!_eventFactories.TryGetValue(type, out var factory))
                 {
                     var method = _eventFactoryMethod.MakeGenericMethod(type);
-                    factory = (Func<Confidence, ISimulationData, ISimulation, ISimulationEvent>)(method.Invoke(null, Array.Empty<object>()) ?? throw new UnreachableException());
+                    factory = (Func<DataSource, IData, ISimulation, IEvent>)(method.Invoke(null, Array.Empty<object>()) ?? throw new UnreachableException());
 
                     _eventFactories.Add(type, factory);
                 }
 
-                return factory(confidence, data, simulation);
+                return factory(source, data, simulation);
             }
 
-            private static Func<Confidence, ISimulationData, ISimulation, ISimulationEvent> SimulationEventFactory<TData>()
-                where TData : ISimulationData
+            private static Func<DataSource, IData, ISimulation, IEvent> SimulationEventFactory<TData>()
+                where TData : IData
             {
-                ISimulationEvent Factory(Confidence confidence, ISimulationData data, ISimulation simulation)
+                IEvent Factory(DataSource source, IData data, ISimulation simulation)
                 {
-                    return new SimulationInput<TData>(confidence, (TData)data, simulation);
+                    return new SimulationInput<TData>(source, (TData)data, simulation);
                 }
 
                 return Factory;

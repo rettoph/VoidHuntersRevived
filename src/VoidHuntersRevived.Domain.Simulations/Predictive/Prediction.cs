@@ -9,11 +9,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
     public sealed class Prediction
     {
-        public readonly ISimulationData Data;
+        public readonly int Id;
+        public readonly IData Data;
         public readonly DateTime CreatedAt;
 
-        public Prediction(ISimulationData data)
+        public Prediction(int id, IData data)
         {
+            this.Id = id;
             this.Data = data;
             this.CreatedAt = DateTime.Now;
         }

@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Simulations
 {
-    public enum Confidence
+    public enum DataSource
     {
-        Stochastic,
-        Deterministic
+        External,
+        Internal,
+        Determined
     }
 }

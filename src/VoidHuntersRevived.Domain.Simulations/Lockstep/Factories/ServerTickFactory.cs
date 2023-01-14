@@ -14,14 +14,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Factories
     [PeerTypeFilter(PeerType.Server)]
     internal sealed class ServerTickFactory : ITickFactory
     {
-        private IList<ISimulationData> _datum;
+        private IList<IData> _datum;
 
         public ServerTickFactory()
         {
-            _datum = new List<ISimulationData>();
+            _datum = new List<IData>();
         }
 
-        public void Enqueue(ISimulationData data)
+        public void Enqueue(IData data)
         {
             _datum.Add(data);
         }
@@ -30,11 +30,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Factories
         {
             if (_datum.Count == 0)
             {
-                return Tick.Create(id, Enumerable.Empty<ISimulationData>());
+                return Tick.Create(id, Enumerable.Empty<IData>());
             }
 
             var tick = Tick.Create(id, _datum);
-            _datum = new List<ISimulationData>();
+            _datum = new List<IData>();
 
             return tick;
         }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Simulations
 {
-    public interface ISimulationData
+    public interface IData
     {
     }
 }
