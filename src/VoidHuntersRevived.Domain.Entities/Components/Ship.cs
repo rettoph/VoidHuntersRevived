@@ -10,9 +10,9 @@ namespace VoidHuntersRevived.Domain.Entities.Components
     public class Ship
     {
         public readonly Entity Bridge;
-        public readonly AetherTree Tree;
+        public readonly ShipPartTree Tree;
 
-        public Ship(Entity bridge, AetherTree tree)
+        public Ship(Entity bridge, ShipPartTree tree)
         {
             this.Bridge = bridge;
             this.Tree = tree;

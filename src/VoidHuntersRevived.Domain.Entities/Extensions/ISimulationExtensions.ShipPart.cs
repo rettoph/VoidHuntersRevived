@@ -16,10 +16,10 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
     {
         private static ConditionalWeakTable<ISimulation, IShipPartConfigurationService> _configurations = new();
 
-        public static Entity CreateShipPart(this ISimulation simulation, ParallelKey key, string name)
+        public static Entity CreateShipPart(this ISimulation simulation, ParallelKey key, string configuration)
         {
-            var configuration = simulation.ShipPartService().Get(name);
-            return simulation.CreateEntity(key).MakeShipPart(configuration);
+            var configurationInstance = simulation.ShipPartService().Get(configuration);
+            return simulation.CreateEntity(key).MakeShipPart(configurationInstance);
         }
 
         private static IShipPartConfigurationService ShipPartService(this ISimulation simulation)

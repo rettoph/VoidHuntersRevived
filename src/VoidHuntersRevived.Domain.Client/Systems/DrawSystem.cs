@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         {
             typeof(Rigid),
             typeof(Predictive),
-            typeof(AetherLeaf)
+            typeof(ShipPartLeaf)
         });
 
         private readonly IShipPartConfigurationService _configurations;
@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private readonly Dictionary<DrawConfiguration, Renderer> _renderers;
 
         private ComponentMapper<Draw> _draws;
-        private ComponentMapper<AetherLeaf> _leaves;
+        private ComponentMapper<ShipPartLeaf> _leaves;
         private ComponentMapper<Body> _bodies;
         private ComponentMapper<Linked> _linked;
 
@@ -60,7 +60,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         public override void Initialize(IComponentMapperService mapperService)
         {
             _draws = mapperService.GetMapper<Draw>();
-            _leaves = mapperService.GetMapper<AetherLeaf>();
+            _leaves = mapperService.GetMapper<ShipPartLeaf>();
             _bodies = mapperService.GetMapper<Body>();
             _linked = mapperService.GetMapper<Linked>();
 
@@ -82,6 +82,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 var body = _bodies.Get(leaf.Tree.Entity.Id);
 
                 var transformation = linked is null ? Matrix.Identity : linked.LocalTransformation;
+                transformation *= Matrix.CreateRotationZ(body.Rotation);
                 transformation *= Matrix.CreateTranslation(body.Position.X, body.Position.Y, 0);
 
                 _renderers[draw.Configuration].Render(transformation);

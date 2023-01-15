@@ -22,11 +22,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
         ISubscriber<IEvent<CleanLink>>
     {
         private ComponentMapper<Rigid> _rigids;
-        private ComponentMapper<AetherLeaf> _leaves;
+        private ComponentMapper<ShipPartLeaf> _leaves;
         private ComponentMapper<Body> _bodies;
         private ComponentMapper<Linked> _linked;
 
-        public RigidSystem() : base(Aspect.All(typeof(Rigid), typeof(AetherLeaf)))
+        public RigidSystem() : base(Aspect.All(typeof(Rigid), typeof(ShipPartLeaf)))
         {
             _rigids = default!;
             _leaves = default!;
@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
         public override void Initialize(IComponentMapperService mapperService)
         {
             _rigids = mapperService.GetMapper<Rigid>();
-            _leaves = mapperService.GetMapper<AetherLeaf>();
+            _leaves = mapperService.GetMapper<ShipPartLeaf>();
             _bodies = mapperService.GetMapper<Body>();
             _linked = mapperService.GetMapper<Linked>();
         }
@@ -79,7 +79,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
         }
 
         public void Process(in IEvent<CleanLink> message)
-        {
+        { // TODO: This should probably be in a AetherLeafSystem
             if(!this.subscription.IsInterested(message.Data.Link.Parent.Linkable.Entity.Id))
             {
                 return;

@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Domain.Entities.Components
 {
-    public class AetherLeaf
+    public class ShipPartLeaf
     {
         public readonly Entity Entity;
-        public readonly AetherTree Tree;
+        public readonly ShipPartTree Tree;
 
-        internal AetherLeaf(Entity entity, AetherTree tree)
+        internal ShipPartLeaf(Entity entity, ShipPartTree tree)
         {
             this.Entity = entity;
             this.Tree = tree;

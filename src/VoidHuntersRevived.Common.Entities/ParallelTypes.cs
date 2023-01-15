@@ -11,5 +11,6 @@ namespace VoidHuntersRevived.Common.Entities
         public static readonly string Pilot = "pilot";
         public static readonly string Ship = "ship";
         public static readonly string ShipPart = "ship_part";
+        public static readonly string Chain = "chain";
     }
 }

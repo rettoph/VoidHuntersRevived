@@ -27,15 +27,10 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
 
         public static Entity MakeShip(this Entity entity, Aether aether, Entity bridge)
         {
-            if(!bridge.IsShipPart())
-            {
-                throw new ArgumentException($"{nameof(EntityExtensions)}::{nameof(MakeShip)} - Argument '{nameof(bridge)}' failed {nameof(IsShipPart)} check.");
-            }
-
-            entity.MakeAetherTree(aether).MakePilotable();
+            entity.MakeShipPartTree(aether).MakePilotable();
             entity.Attach(new Ship(
                 bridge: bridge,
-                tree: entity.Get<AetherTree>()));
+                tree: entity.Get<ShipPartTree>()));
 
             return entity;
         }
