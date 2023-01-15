@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Entities.Components
     {
         public readonly Linkable.Joint Joint;
         public readonly Linkable.Joint Parent;
-        public readonly Matrix Transformation;
+        public readonly Matrix LocalTransformation;
 
         public Linked(
             Linkable.Joint joint,
@@ -26,9 +26,9 @@ namespace VoidHuntersRevived.Domain.Entities.Components
             this.Joint = joint;
             this.Parent = parent;
 
-            this.Transformation = Matrix.Invert(this.Joint.Configuration.Transformation);
-            this.Transformation *= Matrix.CreateRotationZ(MathHelper.Pi);
-            this.Transformation *= this.Parent.Transformation;
+            this.LocalTransformation = Matrix.Invert(this.Joint.Configuration.Transformation);
+            this.LocalTransformation *= Matrix.CreateRotationZ(MathHelper.Pi);
+            this.LocalTransformation *= this.Parent.LocalTransformation;
         }
 
         public override bool Equals(object? obj)

@@ -56,7 +56,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             var body = _bodies.Get(leaf.Tree.Entity.Id);
             var link = _linked.Get(entityId);
 
-            var transformation = link is null ? Matrix.Identity : link.Transformation;
+            var transformation = link is null ? Matrix.Identity : link.LocalTransformation;
 
             foreach(var shape in rigid.Configuration.Shapes)
             {

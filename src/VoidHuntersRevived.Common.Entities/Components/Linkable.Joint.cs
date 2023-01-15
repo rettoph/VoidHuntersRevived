@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Common.Entities.Components
 
             public readonly Linkable Linkable;
 
-            public Matrix Transformation;
+            public Matrix LocalTransformation;
 
             public Joint(JointConfiguration configuration, Linkable linkable)
             {
@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Common.Entities.Components
 
             public void Reset()
             {
-                this.Transformation = this.Configuration.Transformation;
+                this.LocalTransformation = this.Configuration.Transformation;
             }
         }
     }

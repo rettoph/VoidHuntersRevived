@@ -81,8 +81,8 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         {
             foreach(var joint in joints)
             {
-                 Vector2.Transform(ref _vertices[0], ref joint.Transformation, out _buffer[0]);
-                 Vector2.Transform(ref _vertices[1], ref joint.Transformation, out _buffer[1]);
+                 Vector2.Transform(ref _vertices[0], ref joint.LocalTransformation, out _buffer[0]);
+                 Vector2.Transform(ref _vertices[1], ref joint.LocalTransformation, out _buffer[1]);
                 
                 _primitiveBatch.DrawLine(Color.Green, _buffer[0], _buffer[1]);
             }

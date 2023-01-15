@@ -16,11 +16,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
     {
         public void Process(in IEvent<CleanLink> message)
         {
-            var transformation = message.Data.Link.Transformation;
+            var transformation = message.Data.Link.LocalTransformation;
 
             foreach(var joint in message.Data.Link.Joint.Linkable.Joints)
             {
-                joint.Transformation = joint.Configuration.Transformation * transformation;
+                joint.LocalTransformation = joint.Configuration.Transformation * transformation;
             }
         }
     }

@@ -81,7 +81,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 var linked = _linked.Get(entityId);
                 var body = _bodies.Get(leaf.Tree.Entity.Id);
 
-                var transformation = linked is null ? Matrix.Identity : linked.Transformation;
+                var transformation = linked is null ? Matrix.Identity : linked.LocalTransformation;
                 transformation *= Matrix.CreateTranslation(body.Position.X, body.Position.Y, 0);
 
                 _renderers[draw.Configuration].Render(transformation);
