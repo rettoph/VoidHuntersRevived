@@ -7,47 +7,46 @@ using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Common.ConvexHull;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Configurations;
 
 namespace VoidHuntersRevived.Common.Entities
 {
-    public sealed partial class ShipPartConfiguration : IEnumerable<IShipPartComponent>
+    public sealed partial class ShipPartConfiguration : IEnumerable<IShipPartComponentConfiguration>
     {
-        private IDictionary<Type, ComponentWrapper> _components;
-        private Action<Entity>? _makers;
+        private IDictionary<Type, IShipPartComponentConfiguration> _components;
+        private Action<Entity>? _attachers;
         public string Name { get; }
 
         public ShipPartConfiguration(string name)
         {
-            _components = new Dictionary<Type, ComponentWrapper>();
+            _components = new Dictionary<Type, IShipPartComponentConfiguration>();
             this.Name = name;
         }
 
         public void Add<TComponent>(TComponent component) 
-            where TComponent : class, IShipPartComponent
+            where TComponent : class, IShipPartComponentConfiguration
         {
-            var wrapper = new ComponentWrapper<TComponent>(component);
-            _components.Add(typeof(TComponent), wrapper);
-            _makers += wrapper.Maker;
+            _components.Add(typeof(TComponent), component);
+            _attachers += component.AttachComponentTo;
         }
 
         public void Remove<TComponent>()
-            where TComponent : class, IShipPartComponent
+            where TComponent : class, IShipPartComponentConfiguration
         {
-            if(_components.Remove(typeof(TComponent), out var wrapper))
+            if(_components.Remove(typeof(TComponent), out var component))
             {
-                _makers -= wrapper.Maker;
+                _attachers -= component.AttachComponentTo;
             }
         }
 
         public void Make(Entity entity)
         {
-            _makers?.Invoke(entity);
+            _attachers?.Invoke(entity);
         }
 
-        public IEnumerator<IShipPartComponent> GetEnumerator()
+        public IEnumerator<IShipPartComponentConfiguration> GetEnumerator()
         {
-            return _components.Values.Select(x => x.Component).GetEnumerator();
+            return _components.Values.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

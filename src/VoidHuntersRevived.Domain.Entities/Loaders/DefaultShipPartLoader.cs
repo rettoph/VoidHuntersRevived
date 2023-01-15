@@ -9,6 +9,7 @@ using tainicom.Aether.Physics2D.Collision.Shapes;
 using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Configurations;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Domain.Entities.Components;
 
@@ -21,9 +22,9 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
         {
             shipParts.Add(new ShipPartConfiguration(ShipParts.HullSquare)
             {
-                new Drawn()
-                {
-                    Shapes = new[]
+                new DrawConfiguration(
+                    color: ShipPartColors.Hull,
+                    shapes: new[]
                     {
                         new[]
                         {
@@ -32,11 +33,10 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
                             new Vector2(1, 1),
                             new Vector2(0, 1)
                         }
-                    }
-                },
-                new Rigid()
-                {
-                    Shapes = new[]
+                    },
+                    paths: Array.Empty<Vector2[]>()),
+                new RigidConfiguration(
+                    shapes: new[]
                     {
                         new PolygonShape(
                             vertices: new Vertices()
@@ -47,31 +47,23 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
                                 new Vector2(0, 1)
                             },
                             density: 1f)
-                    }
-                },
-                new Linkable()
-                {
-                    new Linkable.Joint()
+                    }),
+                new LinkableConfiguration(
+                    joints: new[]
                     {
-                        Position = new Vector2(1f, 0.5f),
-                        Rotation = MathHelper.PiOver2 * 0
-                    },
-                    new Linkable.Joint()
-                    {
-                        Position = new Vector2(0.5f, 1),
-                        Rotation = MathHelper.PiOver2 * 1
-                    },
-                    new Linkable.Joint()
-                    {
-                        Position = new Vector2(0f, 0.5f),
-                        Rotation = MathHelper.PiOver2 * 2
-                    },
-                    new Linkable.Joint()
-                    {
-                        Position = new Vector2(0.5f, 0f),
-                        Rotation = MathHelper.PiOver2 * 3
-                    }
-                }
+                        new JointConfiguration(
+                            position: new Vector2(1f, 0.5f),
+                            rotation: MathHelper.PiOver2 * 0),
+                        new JointConfiguration(
+                            position: new Vector2(0.5f, 1),
+                            rotation: MathHelper.PiOver2 * 1),
+                        new JointConfiguration(
+                            position: new Vector2(0f, 0.5f),
+                            rotation: MathHelper.PiOver2 * 2),
+                        new JointConfiguration(
+                            position: new Vector2(0.5f, 0f),
+                            rotation: MathHelper.PiOver2 * 3)
+                    })
             });
         }
     }

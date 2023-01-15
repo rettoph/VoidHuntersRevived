@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
             var transformation = link is null ? Matrix.Identity : link.Transformation;
 
-            foreach(var shape in rigid.Shapes)
+            foreach(var shape in rigid.Configuration.Shapes)
             {
                 var fixture = new Fixture(shape.Clone(ref transformation));
                 body.Add(fixture);
@@ -80,20 +80,20 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
         public void Process(in IEvent<CleanLink> message)
         {
-            if(!this.subscription.IsInterested(message.Data.Link.Parent.Entity.Id))
+            if(!this.subscription.IsInterested(message.Data.Link.Parent.Linkable.Entity.Id))
             {
                 return;
             }
 
             // The entity is currently attached to another tree
-            if (this.subscription.IsInterested(message.Data.Link.Entity.Id))
+            if (this.subscription.IsInterested(message.Data.Link.Joint.Linkable.Entity.Id))
             { // Detach it from its old tree
-                var leaf = _leaves.Get(message.Data.Link.Entity.Id)!;
+                var leaf = _leaves.Get(message.Data.Link.Joint.Linkable.Entity.Id)!;
                 leaf.Tree.Remove(leaf);
             }
 
-            var tree = _leaves.Get(message.Data.Link.Parent.Entity.Id)!.Tree;
-            tree.Add(message.Data.Link.Entity);
+            var tree = _leaves.Get(message.Data.Link.Parent.Linkable.Entity.Id)!.Tree;
+            tree.Add(message.Data.Link.Joint.Linkable.Entity);
         }
     }
 }

@@ -26,18 +26,21 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
         private static readonly AspectBuilder LinkingAspect = Aspect.All(typeof(Linkable), typeof(Linked));
 
         private readonly ISimulationService _simulations;
+        private ComponentMapper<Linkable> _linkables;
         private ComponentMapper<Linked> _linked;
         private ComponentMapper<Linking> _linkings;
 
         public LinkSystem(ISimulationService simulations)
         {
             _simulations = simulations;
+            _linkables = default!;
             _linked = default!;
             _linkings = default!;
         }
 
         public override void Initialize(World world)
         {
+            _linkables = world.ComponentMapper.GetMapper<Linkable>();
             _linked = world.ComponentMapper.GetMapper<Linked>();
             _linkings = world.ComponentMapper.GetMapper<Linking>();
         }
@@ -54,11 +57,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
             var linkings = _linkings.Get(parentId);
             var link = new Linked(
-                entity: message.Simulation.GetEntity(message.Data.Child),
-                joint : message.Data.ChildJointId,
-                parent: new EntityJoint(
-                    entity: message.Simulation.GetEntity(message.Data.Parent),
-                    joint: message.Data.ParentJointId));
+                joint: _linkables.Get(childId).Joints[message.Data.ChildJointId],
+                parent: _linkables.Get(parentId).Joints[message.Data.ParentJointId]);
 
             if(!link.Validate())
             {

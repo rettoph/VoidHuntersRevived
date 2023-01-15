@@ -1,4 +1,4 @@
-﻿using VoidHuntersRevived.Common.Entities.Components;
+﻿using VoidHuntersRevived.Common.Entities.Configurations;
 
 namespace VoidHuntersRevived.Common.Entities.Services
 {
@@ -9,6 +9,6 @@ namespace VoidHuntersRevived.Common.Entities.Services
         ShipPartConfiguration Get(string name);
         IEnumerable<ShipPartConfiguration> GetAll();
         IEnumerable<TComponent> GetAll<TComponent>()
-            where TComponent : class, IShipPartComponent;
+            where TComponent : class, IShipPartComponentConfiguration;
     }
 }

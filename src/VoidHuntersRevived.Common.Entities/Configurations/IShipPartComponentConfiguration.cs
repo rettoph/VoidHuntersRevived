@@ -6,9 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations;
 
-namespace VoidHuntersRevived.Common.Entities.Components
+namespace VoidHuntersRevived.Common.Entities.Configurations
 {
-    public interface IShipPartComponent
+    public interface IShipPartComponentConfiguration
     {
+        void AttachComponentTo(Entity entity);
     }
 }

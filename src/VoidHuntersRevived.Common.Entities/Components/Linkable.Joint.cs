@@ -1,10 +1,12 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities.Configurations;
 
 namespace VoidHuntersRevived.Common.Entities.Components
 {
@@ -12,15 +14,24 @@ namespace VoidHuntersRevived.Common.Entities.Components
     {
         public class Joint
         {
-            public Vector2 Position { get; set; }
-            public float Rotation { get; set; }
+            public readonly JointConfiguration Configuration;
 
+            public readonly Linkable Linkable;
 
-            private Matrix? _asParentTransformation;
-            public Matrix AsParentTransformation => _asParentTransformation ??= Matrix.CreateRotationZ(this.Rotation) * Matrix.CreateTranslation(this.Position.X, this.Position.Y, 0);
+            public Matrix Transformation;
 
-            private Matrix? _asChildTransformation;
-            public Matrix AsChildTransformation => _asChildTransformation ??= Matrix.Invert(Matrix.CreateRotationZ(this.Rotation + MathHelper.Pi) * Matrix.CreateTranslation(this.Position.X, this.Position.Y, 0));
+            public Joint(JointConfiguration configuration, Linkable linkable)
+            {
+                this.Configuration = configuration;
+                this.Linkable = linkable;
+
+                this.Reset();
+            }
+
+            public void Reset()
+            {
+                this.Transformation = this.Configuration.Transformation;
+            }
         }
     }
 }

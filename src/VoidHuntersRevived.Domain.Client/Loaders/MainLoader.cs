@@ -26,7 +26,10 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
                 manager.AddScoped<CameraSystem>()
                     .AddInterfaceAliases();
 
-                manager.AddScoped<DrawnRigidSystem>()
+                manager.AddScoped<DrawSystem>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<DrawJointSystem>()
                     .AddInterfaceAliases();
 
                 manager.AddSingleton<Camera2D>()

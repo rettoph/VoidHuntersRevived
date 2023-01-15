@@ -5,14 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Configurations;
 
 namespace VoidHuntersRevived.Common.Entities.Components
 {
-    public class Drawn : IShipPartComponent
+    public class Draw
     {
-        public string Color { get; set; } = ShipPartColors.Default;
+        public readonly DrawConfiguration Configuration;
 
-        public Vector2[][] Shapes { get; set; } = Array.Empty<Vector2[]>();
-        public Vector2[][] Paths { get; set; } = Array.Empty<Vector2[]>();
+        public Draw(DrawConfiguration configuration)
+        {
+            this.Configuration = configuration;
+        }
     }
 }

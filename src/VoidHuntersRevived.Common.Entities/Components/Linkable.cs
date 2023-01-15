@@ -1,31 +1,27 @@
-﻿using System;
+﻿using MonoGame.Extended.Entities;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities.Configurations;
 
 namespace VoidHuntersRevived.Common.Entities.Components
 {
-    public sealed partial class Linkable : IShipPartComponent, IEnumerable<Linkable.Joint>
+    public sealed partial class Linkable
     {
-        private List<Linkable.Joint> _joints = new();
+        public readonly LinkableConfiguration Configuration;
 
-        public Linkable.Joint this[int index] => _joints[index];
+        public readonly Entity Entity;
+        public readonly Linkable.Joint[] Joints;
 
-        public void Add(Linkable.Joint joint)
+        internal Linkable(LinkableConfiguration configuration, Entity entity)
         {
-            _joints.Add(joint);
-        }
+            this.Configuration = configuration;
+            this.Entity = entity;
 
-        public IEnumerator<Joint> GetEnumerator()
-        {
-            return _joints.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
+            this.Joints = configuration.Joints.Select(x => new Linkable.Joint(x, this)).ToArray();
         }
     }
 }

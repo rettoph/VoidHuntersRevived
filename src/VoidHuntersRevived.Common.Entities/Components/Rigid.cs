@@ -6,12 +6,18 @@ using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Collision.Shapes;
 using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Configurations;
 using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Common.Entities.Components
 {
-    public sealed partial class Rigid : IShipPartComponent
+    public sealed class Rigid
     {
-        public Shape[] Shapes { get; set; } = Array.Empty<Shape>();
+        public readonly RigidConfiguration Configuration;
+
+        public Rigid(RigidConfiguration configuration)
+        {
+            this.Configuration = configuration;
+        }
     }
 }

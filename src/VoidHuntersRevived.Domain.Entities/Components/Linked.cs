@@ -13,40 +13,49 @@ namespace VoidHuntersRevived.Domain.Entities.Components
     /// Can be thought of as the "male"
     /// connection
     /// </summary>
-    public sealed class Linked : EntityJoint
+    public sealed class Linked
     {
-        public readonly EntityJoint Parent;
+        public readonly Linkable.Joint Joint;
+        public readonly Linkable.Joint Parent;
         public readonly Matrix Transformation;
 
         public Linked(
-            Entity entity, 
-            int joint, 
-            EntityJoint parent) : base(entity, joint)
+            Linkable.Joint joint,
+            Linkable.Joint parent)
         {
+            this.Joint = joint;
             this.Parent = parent;
 
-            this.Transformation = this.Joint.AsChildTransformation;
-            this.Transformation *= this.Parent.Joint.AsParentTransformation;
+            this.Transformation = Matrix.Invert(this.Joint.Configuration.Transformation);
+            this.Transformation *= Matrix.CreateRotationZ(MathHelper.Pi);
+            this.Transformation *= this.Parent.Transformation;
+        }
 
-            if (this.Parent.Entity.TryGet<Linked>(out var parentLink))
-            {
-                this.Transformation *= parentLink.Transformation;
-            }
+        public override bool Equals(object? obj)
+        {
+            return obj is Linked linked &&
+                   this.Joint == linked.Joint &&
+                   this.Parent == linked.Parent;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Joint, Parent);
         }
 
         public bool Validate()
         {
-            if(this.Entity == this.Parent.Entity)
+            if(this.Joint.Linkable == this.Parent.Linkable)
             {
                 return false;
             }
 
-            if(!this.Entity.TryGet<Linkable>(out var linkable) || !linkable.Contains(this.Joint))
+            if(!this.Joint.Linkable.Joints.Contains(this.Joint))
             {
                 return false;
             }
 
-            if (!this.Parent.Entity.TryGet<Linkable>(out linkable) || !linkable.Contains(this.Parent.Joint))
+            if (this.Joint.Linkable.Joints.Contains(this.Parent))
             {
                 return false;
             }
@@ -54,33 +63,14 @@ namespace VoidHuntersRevived.Domain.Entities.Components
             return true;
         }
 
-        public override bool Equals(object? obj)
+        public static bool operator ==(Linked left, Linked right)
         {
-            if (obj is Linked linked)
-            {
-                var result = this.Entity == linked.Entity;
-                result &= this.Joint == linked.Joint;
-                result &= this.Parent == linked.Parent;
-
-                return result;
-            }
-
-            return false;
+            return left.Equals(right);
         }
 
-        public override int GetHashCode()
+        public static bool operator !=(Linked left, Linked right)
         {
-            return HashCode.Combine(base.GetHashCode(), Entity, Joint, Parent);
-        }
-
-        public static bool operator ==(Linked linked1, Linked linked2)
-        {
-            return linked1.Equals(linked2);
-        }
-
-        public static bool operator !=(Linked linked1, Linked linked2)
-        {
-            return !linked1.Equals(linked2);
+            return !left.Equals(right);
         }
     }
 }

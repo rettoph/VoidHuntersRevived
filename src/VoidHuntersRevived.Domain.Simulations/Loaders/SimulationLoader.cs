@@ -50,6 +50,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
                 manager.AddScoped<LinkSystem>()
                     .AddInterfaceAliases();
 
+                manager.AddScoped<JointSystem>()
+                    .AddInterfaceAliases();
+
                 this.ConfigureLockstep(services, manager);
                 this.ConfigurePredictive(services, manager);
             });

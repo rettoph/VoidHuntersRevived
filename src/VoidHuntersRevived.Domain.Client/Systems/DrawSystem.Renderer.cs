@@ -10,30 +10,31 @@ using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Configurations;
 using VoidHuntersRevived.Domain.Entities.Components;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
-    internal partial class DrawnRigidSystem
+    internal partial class DrawSystem
     {
         private sealed class Renderer
         {
             private Vector2[][] _vertices;
             private Vector2[] _buffer;
-            private readonly Drawn _drawn;
+            private readonly DrawConfiguration _configuration;
             private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
             private readonly Color _color;
 
             public Renderer(
                 PrimitiveBatch<VertexPositionColor> primitiveBatch,
                 IResourceProvider resources,
-                Drawn drawn)
+                DrawConfiguration configuration)
             {
-                _drawn = drawn;
+                _configuration = configuration;
                 _primitiveBatch = primitiveBatch;
-                _vertices = _drawn.Shapes;
+                _vertices = _configuration.Shapes;
                 _buffer = new Vector2[3];
-                _color = resources.Get<Color>(_drawn.Color);
+                _color = resources.Get<Color>(_configuration.Color);
             }
 
             public void Render(Matrix transformation)

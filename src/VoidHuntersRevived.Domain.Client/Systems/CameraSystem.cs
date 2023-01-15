@@ -13,7 +13,7 @@ using VoidHuntersRevived.Common.Simulations.Services;
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
     [GuppyFilter<ClientGameGuppy>()]
-    internal sealed class CameraSystem : DrawSystem
+    internal sealed class CameraSystem : MonoGame.Extended.Entities.Systems.DrawSystem
     {
         private readonly Camera2D _camera;
         private readonly NetScope _scope;
