@@ -14,7 +14,7 @@ using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Events;
 using VoidHuntersRevived.Common.Simulations;
 
-namespace VoidHuntersRevived.Domain.Simulations.Systems
+namespace VoidHuntersRevived.Domain.Entities.Systems
 {
     internal sealed class RigidNodeSystem : EntitySystem
     {

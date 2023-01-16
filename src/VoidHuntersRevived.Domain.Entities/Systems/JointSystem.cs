@@ -18,7 +18,7 @@ using VoidHuntersRevived.Domain.Entities;
 using VoidHuntersRevived.Domain.Entities.Components;
 using VoidHuntersRevived.Domain.Entities.Events;
 
-namespace VoidHuntersRevived.Domain.Simulations.Systems
+namespace VoidHuntersRevived.Domain.Entities.Systems
 {
     [GuppyFilter<IGameGuppy>()]
     internal sealed class JointSystem : BasicSystem,

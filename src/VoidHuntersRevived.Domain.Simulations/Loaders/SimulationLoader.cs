@@ -44,15 +44,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
                 manager.AddScoped<UserPilotSystem>()
                     .AddInterfaceAliases();
 
-                manager.AddScoped<RigidNodeSystem>()
-                    .AddInterfaceAliases();
-
-                manager.AddScoped<JointSystem>()
-                    .AddInterfaceAliases();
-
-                manager.AddScoped<TreeSystem>()
-                    .AddInterfaceAliases();
-
                 this.ConfigureLockstep(services, manager);
                 this.ConfigurePredictive(services, manager);
             });

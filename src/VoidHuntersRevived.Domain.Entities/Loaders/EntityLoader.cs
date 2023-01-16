@@ -11,6 +11,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Common.Entities.ShipParts.Configurations;
 using VoidHuntersRevived.Domain.Entities.Services;
+using VoidHuntersRevived.Domain.Entities.Systems;
 
 namespace VoidHuntersRevived.Domain.Entities.Loaders
 {
@@ -23,6 +24,15 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
             services.ConfigureCollection(manager =>
             {
                 manager.AddScoped<ShipPartConfigurationService>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<RigidNodeSystem>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<JointSystem>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<TreeSystem>()
                     .AddInterfaceAliases();
             });
         }

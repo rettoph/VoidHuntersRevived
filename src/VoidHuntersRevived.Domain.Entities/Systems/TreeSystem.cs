@@ -14,7 +14,7 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
 
-namespace VoidHuntersRevived.Domain.Simulations.Systems
+namespace VoidHuntersRevived.Domain.Entities.Systems
 {
     internal sealed class TreeSystem : ParallelEntityProcessingSystem,
         ISubscriber<IEvent<CleanJointed>>
