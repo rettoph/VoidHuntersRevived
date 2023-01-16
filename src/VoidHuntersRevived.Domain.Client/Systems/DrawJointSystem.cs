@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         private ComponentMapper<Body> _bodies;
         private ComponentMapper<Jointable> _jointables;
-        private ComponentMapper<Node> _leaves;
+        private ComponentMapper<Node> _nodes;
 
         public DrawJointSystem(
             PrimitiveBatch<VertexPositionColor> primitiveBatch,
@@ -52,14 +52,14 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
 
             _jointables = default!;
-            _leaves = default!;
+            _nodes = default!;
             _bodies = default!;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
         {
             _jointables = mapperService.GetMapper<Jointable>();
-            _leaves = mapperService.GetMapper<Node>();
+            _nodes = mapperService.GetMapper<Node>();
             _bodies = mapperService.GetMapper<Body>();
         }
 
@@ -70,7 +70,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             foreach (var entityId in this.subscription.ActiveEntities)
             {
                 var jointable = _jointables.Get(entityId);
-                var leaf = _leaves.Get(entityId);
+                var leaf = _nodes.Get(entityId);
                 var body = _bodies.Get(leaf.Tree.Entity.Id);
 
                 this.DrawJoints(jointable.Joints, body.Position, body.Rotation);

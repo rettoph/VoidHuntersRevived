@@ -8,10 +8,13 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Entities.Components;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Simulations.Systems;
+using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
-    internal sealed class PilotingSystem : EntitySystem,
+    internal sealed class PilotingSystem : BasicSystem,
         ISubscriber<IEvent<SetPilotingDirection>>,
         ISubscriber<IEvent<SetPilotingTarget>>
     {
@@ -20,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
         private NetScope _scope;
         private ILogger _logger;
 
-        public PilotingSystem(ILogger logger, NetScope scope, State state) : base(Aspect.All(typeof(Piloting)))
+        public PilotingSystem(ILogger logger, NetScope scope, State state)
         {
             _logger = logger;
             _scope = scope;
@@ -28,9 +31,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _pilotings = default!;
         }
 
-        public override void Initialize(IComponentMapperService mapperService)
+        public override void Initialize(World world)
         {
-            _pilotings= mapperService.GetMapper<Piloting>();
+            _pilotings= world.ComponentMapper.GetMapper<Piloting>();
         }
 
         public void Process(in IEvent<SetPilotingDirection> message)
@@ -62,7 +65,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             var piloting = _pilotings.Get(pilotId);
             var pilotable = piloting.Pilotable;
 
-            pilotable.Target = message.Data.Target;
+            pilotable.Aim.Target = message.Data.Target;
         }
     }
 }

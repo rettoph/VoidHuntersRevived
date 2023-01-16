@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Common.Entities.ShipParts.Configurations;
+using VoidHuntersRevived.Domain.Entites.Systems;
 using VoidHuntersRevived.Domain.Entities.Services;
 using VoidHuntersRevived.Domain.Entities.Systems;
 
@@ -23,6 +24,9 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
 
             services.ConfigureCollection(manager =>
             {
+                manager.AddScoped<PilotableSystem>()
+                    .AddInterfaceAliases();
+
                 manager.AddScoped<ShipPartConfigurationService>()
                     .AddInterfaceAliases();
 

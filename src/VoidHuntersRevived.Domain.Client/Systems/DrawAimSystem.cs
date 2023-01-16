@@ -22,11 +22,12 @@ using Guppy.MonoGame.Primitives;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
-    internal sealed class DrawTargetSystem : EntityDrawSystem
+    internal sealed class DrawAimSystem : EntityDrawSystem
     {
         private static readonly AspectBuilder PilotableAspect = Aspect.All(new[]
         {
             typeof(Pilotable),
+            typeof(Predictive)
         });
 
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
@@ -35,7 +36,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         private ComponentMapper<Pilotable> _pilotable;
 
-        public DrawTargetSystem(
+        public DrawAimSystem(
             PrimitiveBatch<VertexPositionColor> primitiveBatch,
             Camera2D camera) : base(PilotableAspect)
         {
@@ -58,8 +59,13 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             foreach (var entityId in this.subscription.ActiveEntities)
             {
                 var pilotable = _pilotable.Get(entityId);
-                var transformation = pilotable.Target.GetTranslation();
+                var transformation = pilotable.Aim.Target.GetTranslation();
                 var color = Color.Yellow;
+
+                // _primitiveBatch.Trace(_shape, in color, ref transformation);
+
+                transformation = pilotable.Aim.Value.GetTranslation();
+                color = Color.Green;
 
                 _primitiveBatch.Trace(_shape, in color, ref transformation);
             }

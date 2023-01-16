@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Client
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            this.IsMouseVisible = true;
+            this.IsMouseVisible = false;
             this.Window.AllowUserResizing = true;
             this.IsFixedTimeStep = false;
 
