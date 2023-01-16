@@ -30,9 +30,9 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private readonly Dictionary<DrawConfiguration, Renderer> _renderers;
 
         private ComponentMapper<Draw> _draws;
-        private ComponentMapper<Node> _leaves;
+        private ComponentMapper<Node> _nodes;
         private ComponentMapper<Body> _bodies;
-        private ComponentMapper<Jointed> _linked;
+        private ComponentMapper<Jointed> _jointed;
 
         public DrawSystem(
             PrimitiveBatch<VertexPositionColor> primitiveBatch,
@@ -47,17 +47,17 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             _renderers = new Dictionary<DrawConfiguration, Renderer>();
 
             _draws = default!;
-            _leaves = default!;
+            _nodes = default!;
             _bodies = default!;
-            _linked = default!;
+            _jointed = default!;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
         {
             _draws = mapperService.GetMapper<Draw>();
-            _leaves = mapperService.GetMapper<Node>();
+            _nodes = mapperService.GetMapper<Node>();
             _bodies = mapperService.GetMapper<Body>();
-            _linked = mapperService.GetMapper<Jointed>();
+            _jointed = mapperService.GetMapper<Jointed>();
 
             foreach (var configuration in _configurations.GetAll<DrawConfiguration>())
             {
@@ -72,15 +72,9 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             foreach(var entityId in this.subscription.ActiveEntities)
             {
                 var draw = _draws.Get(entityId);
-                var leaf = _leaves.Get(entityId);
-                var linked = _linked.Get(entityId);
-                var body = _bodies.Get(leaf.Tree.Entity.Id);
+                var node = _nodes.Get(entityId);
 
-                var transformation = linked is null ? Matrix.Identity : linked.LocalTransformation;
-                transformation *= Matrix.CreateRotationZ(body.Rotation);
-                transformation *= Matrix.CreateTranslation(body.Position.X, body.Position.Y, 0);
-
-                _renderers[draw.Configuration].Render(transformation);
+                _renderers[draw.Configuration].Render(node.WorldTransformation);
             }
 
             _primitiveBatch.End();

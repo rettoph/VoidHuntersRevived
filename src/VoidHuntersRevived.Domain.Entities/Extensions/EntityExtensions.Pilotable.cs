@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
 
         public static Entity MakeShip(this Entity entity, Aether aether, Entity bridge)
         {
-            entity.MakeTree(aether).MakePilotable();
+            entity.MakeTree(aether, bridge).MakePilotable();
             entity.Attach(new Ship(
                 bridge: bridge,
                 tree: entity.Get<Tree>()));

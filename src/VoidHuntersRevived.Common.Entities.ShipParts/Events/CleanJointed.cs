@@ -8,13 +8,13 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Common.Entities.ShipParts.Events
 {
-    public sealed class CleanJointing : IData
+    public sealed class CleanJointed : IData
     {
-        public readonly Jointed Link;
+        public readonly Jointed Jointed;
 
-        public CleanJointing(Jointed link)
+        public CleanJointed(Jointed jointed)
         {
-            Link = link;
+            Jointed = jointed;
         }
     }
 }

@@ -13,5 +13,10 @@ namespace tainicom.Aether.Physics2D.Dynamics
         {
             body.SetTransformIgnoreContacts(ref position, angle);
         }
+
+        public static Matrix GetWorldMatrix(this Body body)
+        {
+            return Matrix.CreateRotationZ(body.Rotation) * Matrix.CreateTranslation(body.Position.X, body.Position.Y, 0);
+        }
     }
 }

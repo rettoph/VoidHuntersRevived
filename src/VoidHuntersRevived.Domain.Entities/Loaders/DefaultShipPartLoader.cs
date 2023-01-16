@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Collision.Shapes;
 using tainicom.Aether.Physics2D.Common;
+using tainicom.Aether.Physics2D.Common.ConvexHull;
 using VoidHuntersRevived.Common.Entities.ShipParts;
 using VoidHuntersRevived.Common.Entities.ShipParts.Configurations;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
@@ -38,13 +39,13 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
                     shapes: new[]
                     {
                         new PolygonShape(
-                            vertices: new Vertices()
+                            vertices: GiftWrap.GetConvexHull(new Vertices()
                             {
                                 new Vector2(0, 0),
                                 new Vector2(1, 0),
                                 new Vector2(1, 1),
                                 new Vector2(0, 1)
-                            },
+                            }),
                             density: 1f)
                     }),
                 new JointableConfiguration(

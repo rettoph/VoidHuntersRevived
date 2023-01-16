@@ -132,6 +132,11 @@ namespace VoidHuntersRevived.Common.Simulations
             return entity;
         }
 
+        public bool HasEntity(ParallelKey key)
+        {
+            return _simulatedEntities.TryGetEntityIdFromKey(key, this.Type, out _);
+        }
+
         public void RemoveEntity(int id)
         {
             _simulatedEntities.Remove(this.Type, id);

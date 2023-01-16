@@ -84,6 +84,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         {
             var world = Matrix.CreateRotationZ(rotation);
             world *= Matrix.CreateTranslation(position.X, position.Y, 0);
+            int i = 0;
 
             foreach (var joint in joints)
             {
@@ -92,7 +93,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 Vector2.Transform(ref _vertices[0], ref transformation, out _buffer[0]);
                 Vector2.Transform(ref _vertices[1], ref transformation, out _buffer[1]);
                 
-                _primitiveBatch.DrawLine(Color.Green, _buffer[0], _buffer[1]);
+                _primitiveBatch.DrawLine(i++ == 0 ? Color.Green : Color.Red, _buffer[0], _buffer[1]);
             }
         }
     }

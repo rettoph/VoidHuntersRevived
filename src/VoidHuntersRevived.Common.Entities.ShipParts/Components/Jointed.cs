@@ -45,17 +45,17 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 
         public bool Validate()
         {
-            if(this.Joint.Linkable == this.Parent.Linkable)
+            if(this.Joint.Jointable == this.Parent.Jointable)
             {
                 return false;
             }
 
-            if(!this.Joint.Linkable.Joints.Contains(this.Joint))
+            if(!this.Joint.Jointable.Joints.Contains(this.Joint))
             {
                 return false;
             }
 
-            if (this.Joint.Linkable.Joints.Contains(this.Parent))
+            if (this.Joint.Jointable.Joints.Contains(this.Parent))
             {
                 return false;
             }

@@ -32,6 +32,8 @@ namespace VoidHuntersRevived.Common.Simulations
 
         Entity GetEntity(ParallelKey key);
 
+        bool HasEntity(ParallelKey key);
+
         void RemoveEntity(int id);
 
         void Update(GameTime gameTime);

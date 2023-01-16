@@ -1,4 +1,5 @@
-﻿using MonoGame.Extended.Entities;
+﻿using Microsoft.Xna.Framework;
+using MonoGame.Extended.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +13,16 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
         public readonly Entity Entity;
         public readonly Tree Tree;
 
-        internal Node(Entity entity, Tree tree)
+        public readonly Matrix LocalTransformation;
+        public Matrix WorldTransformation;
+
+        internal Node(Entity entity, Tree tree, Matrix localTransformation)
         {
             this.Entity = entity;
             this.Tree = tree;
+
+            this.LocalTransformation = localTransformation;
+            this.WorldTransformation = Matrix.Identity;
         }
     }
 }

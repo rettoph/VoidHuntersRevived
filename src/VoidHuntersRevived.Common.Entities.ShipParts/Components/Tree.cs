@@ -1,4 +1,5 @@
-﻿using MonoGame.Extended.Entities;
+﻿using Microsoft.Xna.Framework;
+using MonoGame.Extended.Entities;
 using System.Collections.ObjectModel;
 using VoidHuntersRevived.Common.Entities.ShipParts.Extensions;
 
@@ -20,7 +21,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
             this.Nodes = new ReadOnlyCollection<Node>(_nodes);
         }
 
-        public Node Add(Entity entity)
+        public Node Add(Entity entity, Matrix localTransformation)
         {
             if (!entity.IsShipPart())
             {
@@ -34,7 +35,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
                 oldLeaf.Tree.Remove(oldLeaf);
             }
 
-            var node = new Node(entity, this);
+            var node = new Node(entity, this, localTransformation);
             entity.Attach(node);
             _nodes.Add(node);
 

@@ -11,6 +11,9 @@ using VoidHuntersRevived.Domain.Simulations.Events;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities;
 using VoidHuntersRevived.Common.Entities.ShipParts.Extensions;
+using VoidHuntersRevived.Common.Entities.ShipParts.Events;
+using VoidHuntersRevived.Common.Simulations.Components;
+using VoidHuntersRevived.Domain.Entities.Components;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
@@ -49,10 +52,26 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
                 _scope.Users.Add(user);
             }
 
+            var key = ParallelKey.From(ParallelTypes.Ship, user);
+
+            if(simulation.HasEntity(key))
+            { // This operation has already been done
+                return;
+            }
+
             var ship = simulation.CreateShip(ParallelKey.From(ParallelTypes.Ship, user), ShipParts.HullSquare);
             var pilot = simulation.CreatePilot(ParallelKey.From(ParallelTypes.Pilot, user.Id), ship);
 
             var chain = simulation.CreateChain(ParallelKey.From(ParallelTypes.Chain, user), ShipParts.HullSquare);
+
+            var piece = simulation.CreateShipPart(ParallelKey.From(ParallelTypes.ShipPart, user, 4), ShipParts.HullSquare);
+            simulation.PublishEvent(new CreateJointing()
+            {
+                Parent = ship.Get<Ship>().Bridge.Get<Parallelable>().Key,
+                ParentJointId = 1,
+                Child = piece.Get<Parallelable>().Key,
+                ChildJointId = 0
+            });
         }
     }
 }

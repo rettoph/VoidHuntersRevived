@@ -1,4 +1,5 @@
-﻿using MonoGame.Extended.Entities;
+﻿using Microsoft.Xna.Framework;
+using MonoGame.Extended.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Extensions
                 return entity;
             }
 
-            tree.Add(head);
+            tree.Add(head, Matrix.Identity);
 
             return entity;
         }

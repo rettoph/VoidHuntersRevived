@@ -16,14 +16,14 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
         {
             public readonly JointConfiguration Configuration;
 
-            public readonly Jointable Linkable;
+            public readonly Jointable Jointable;
 
             public Matrix LocalTransformation;
 
             public Joint(JointConfiguration configuration, Jointable linkable)
             {
                 this.Configuration = configuration;
-                this.Linkable = linkable;
+                this.Jointable = linkable;
 
                 this.Reset();
             }
