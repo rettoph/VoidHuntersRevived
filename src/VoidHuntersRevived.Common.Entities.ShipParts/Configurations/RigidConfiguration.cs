@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Collision.Shapes;
-using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 
-namespace VoidHuntersRevived.Common.Entities.Configurations
+namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
 {
     public sealed class RigidConfiguration : IShipPartComponentConfiguration
     {

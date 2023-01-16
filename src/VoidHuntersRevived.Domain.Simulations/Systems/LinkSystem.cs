@@ -8,7 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.ShipParts.Components;
+using VoidHuntersRevived.Common.Entities.ShipParts.Events;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
@@ -21,31 +22,29 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     [GuppyFilter<IGameGuppy>()]
     internal sealed class LinkSystem : BasicSystem,
-        ISubscriber<IEvent<CreateLink>>
+        ISubscriber<IEvent<CreateJointing>>
     {
-        private static readonly AspectBuilder LinkingAspect = Aspect.All(typeof(Linkable), typeof(Linked));
-
         private readonly ISimulationService _simulations;
-        private ComponentMapper<Linkable> _linkables;
-        private ComponentMapper<Linked> _linked;
-        private ComponentMapper<Linking> _linkings;
+        private ComponentMapper<Jointable> _jointables;
+        private ComponentMapper<Jointed> _jointed;
+        private ComponentMapper<Jointings> _jointings;
 
         public LinkSystem(ISimulationService simulations)
         {
             _simulations = simulations;
-            _linkables = default!;
-            _linked = default!;
-            _linkings = default!;
+            _jointables = default!;
+            _jointed = default!;
+            _jointings = default!;
         }
 
         public override void Initialize(World world)
         {
-            _linkables = world.ComponentMapper.GetMapper<Linkable>();
-            _linked = world.ComponentMapper.GetMapper<Linked>();
-            _linkings = world.ComponentMapper.GetMapper<Linking>();
+            _jointables = world.ComponentMapper.GetMapper<Jointable>();
+            _jointed = world.ComponentMapper.GetMapper<Jointed>();
+            _jointings = world.ComponentMapper.GetMapper<Jointings>();
         }
 
-        public void Process(in IEvent<CreateLink> message)
+        public void Process(in IEvent<CreateJointing> message)
         {
             if(message.Source == DataSource.External)
             {
@@ -55,21 +54,21 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             var parentId = message.Simulation.GetEntityId(message.Data.Parent);
             var childId = message.Simulation.GetEntityId(message.Data.Child);
 
-            var linkings = _linkings.Get(parentId);
-            var link = new Linked(
-                joint: _linkables.Get(childId).Joints[message.Data.ChildJointId],
-                parent: _linkables.Get(parentId).Joints[message.Data.ParentJointId]);
+            var jointings = _jointings.Get(parentId);
+            var jointed = new Jointed(
+                joint: _jointables.Get(childId).Joints[message.Data.ChildJointId],
+                parent: _jointables.Get(parentId).Joints[message.Data.ParentJointId]);
 
-            if(!link.Validate())
+            if(!jointed.Validate())
             {
                 throw new NotImplementedException();
             }
 
             // The child is already linked to something else
             // Should we just detach?
-            if(_linked.TryGet(childId, out var oldLink))
+            if(_jointed.TryGet(childId, out var oldLink))
             {
-                if(link == oldLink)
+                if(jointed == oldLink)
                 { // The link already exists
                     return;
                 }
@@ -79,15 +78,15 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
             // The parent join is already linked to something else
             // Should we just detach?
-            if(linkings.Children.Any(x => x.Parent == link.Parent))
+            if(jointings.Children.Any(x => x.Parent == jointed.Parent))
             {
                 throw new NotImplementedException();
             }
 
-            linkings.Add(link);
-            _linked.Put(childId, link);
+            jointings.Add(jointed);
+            _jointed.Put(childId, jointed);
 
-            _simulations.PublishEvent(new CleanLink(link), DataSource.Internal);
+            _simulations.PublishEvent(new CleanJointing(jointed), DataSource.Internal);
         }
     }
 }

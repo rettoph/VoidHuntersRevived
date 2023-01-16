@@ -8,7 +8,7 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 
-namespace VoidHuntersRevived.Domain.Entities.Extensions
+namespace VoidHuntersRevived.Common.Entities.ShipParts.Extensions
 {
     public static partial class ISimulationExtensions
     {

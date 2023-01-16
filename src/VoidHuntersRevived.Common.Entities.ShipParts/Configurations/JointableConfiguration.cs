@@ -5,22 +5,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 
-namespace VoidHuntersRevived.Common.Entities.Configurations
+namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
 {
-    public sealed class LinkableConfiguration : IShipPartComponentConfiguration
+    public sealed class JointableConfiguration : IShipPartComponentConfiguration
     {
         public readonly JointConfiguration[] Joints;
 
-        public LinkableConfiguration(params JointConfiguration[] joints)
+        public JointableConfiguration(params JointConfiguration[] joints)
         {
             this.Joints = joints;
         }
 
         public void AttachComponentTo(Entity entity)
         {
-            entity.Attach(new Linkable(this, entity));
+            entity.Attach(new Jointable(this, entity));
         }
     }
 }

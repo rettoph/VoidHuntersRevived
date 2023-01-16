@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Common.Entities.Configurations
+namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
 {
     public sealed class JointConfiguration
     {

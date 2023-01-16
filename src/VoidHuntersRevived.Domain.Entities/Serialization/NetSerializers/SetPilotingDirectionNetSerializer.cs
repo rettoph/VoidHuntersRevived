@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities.Enums;
-using VoidHuntersRevived.Domain.Entities.Messages;
+using VoidHuntersRevived.Domain.Entities.Events;
 
 namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
 {

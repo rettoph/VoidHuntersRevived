@@ -10,23 +10,21 @@ using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Collision.Shapes;
 using tainicom.Aether.Physics2D.Dynamics;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.ShipParts.Components;
+using VoidHuntersRevived.Common.Entities.ShipParts.Events;
 using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Domain.Entities.Components;
-using VoidHuntersRevived.Domain.Entities.Events;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     internal sealed class RigidSystem : EntitySystem,
-        ISubscriber<IEvent<CleanLink>>
+        ISubscriber<IEvent<CleanJointing>>
     {
         private ComponentMapper<Rigid> _rigids;
-        private ComponentMapper<ShipPartLeaf> _leaves;
+        private ComponentMapper<Node> _leaves;
         private ComponentMapper<Body> _bodies;
-        private ComponentMapper<Linked> _linked;
+        private ComponentMapper<Jointed> _linked;
 
-        public RigidSystem() : base(Aspect.All(typeof(Rigid), typeof(ShipPartLeaf)))
+        public RigidSystem() : base(Aspect.All(typeof(Rigid), typeof(Node)))
         {
             _rigids = default!;
             _leaves = default!;
@@ -37,9 +35,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
         public override void Initialize(IComponentMapperService mapperService)
         {
             _rigids = mapperService.GetMapper<Rigid>();
-            _leaves = mapperService.GetMapper<ShipPartLeaf>();
+            _leaves = mapperService.GetMapper<Node>();
             _bodies = mapperService.GetMapper<Body>();
-            _linked = mapperService.GetMapper<Linked>();
+            _linked = mapperService.GetMapper<Jointed>();
         }
 
         protected override void OnEntityAdded(int entityId)
@@ -78,7 +76,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             }
         }
 
-        public void Process(in IEvent<CleanLink> message)
+        public void Process(in IEvent<CleanJointing> message)
         { // TODO: This should probably be in a AetherLeafSystem
             if(!this.subscription.IsInterested(message.Data.Link.Parent.Linkable.Entity.Id))
             {

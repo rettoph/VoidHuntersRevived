@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Collision.Shapes;
-using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.Entities.Configurations;
+using VoidHuntersRevived.Common.Entities.ShipParts.Components;
+using VoidHuntersRevived.Common.Entities.ShipParts.Configurations;
 using VoidHuntersRevived.Common.Simulations;
 
-namespace VoidHuntersRevived.Common.Entities.Components
+namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 {
     public sealed class Rigid
     {

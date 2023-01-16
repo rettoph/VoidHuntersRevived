@@ -10,15 +10,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Dynamics;
-using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.Entities.Configurations;
-using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Domain.Entities.Components;
 using MonoGame.Extended.Entities.Systems;
 using Guppy.Common.Collections;
 using tainicom.Aether.Physics2D.Common;
 using tainicom.Aether.Physics2D.Dynamics.Joints;
+using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
@@ -26,8 +24,8 @@ namespace VoidHuntersRevived.Domain.Client.Systems
     {
         private static readonly AspectBuilder LinkableAspect = Aspect.All(new[]
         {
-            typeof(Linkable),
-            typeof(ShipPartLeaf),
+            typeof(Jointable),
+            typeof(Node),
             typeof(Predictive)
         });
 
@@ -37,8 +35,8 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private Vector2[] _vertices;
 
         private ComponentMapper<Body> _bodies;
-        private ComponentMapper<Linkable> _linkables;
-        private ComponentMapper<ShipPartLeaf> _leaves;
+        private ComponentMapper<Jointable> _linkables;
+        private ComponentMapper<Node> _leaves;
 
         public DrawJointSystem(
             PrimitiveBatch<VertexPositionColor> primitiveBatch,
@@ -61,8 +59,8 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         public override void Initialize(IComponentMapperService mapperService)
         {
-            _linkables = mapperService.GetMapper<Linkable>();
-            _leaves = mapperService.GetMapper<ShipPartLeaf>();
+            _linkables = mapperService.GetMapper<Jointable>();
+            _leaves = mapperService.GetMapper<Node>();
             _bodies = mapperService.GetMapper<Body>();
         }
 
@@ -82,7 +80,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             _primitiveBatch.End();
         }
 
-        private void DrawJoints(Linkable.Joint[] joints, Vector2 position, float rotation)
+        private void DrawJoints(Jointable.Joint[] joints, Vector2 position, float rotation)
         {
             var world = Matrix.CreateRotationZ(rotation);
             world *= Matrix.CreateTranslation(position.X, position.Y, 0);

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Configurations;
-using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Domain.Entities.Components;
+﻿using VoidHuntersRevived.Common.Entities.ShipParts;
+using VoidHuntersRevived.Common.Entities.ShipParts.Configurations;
+using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {

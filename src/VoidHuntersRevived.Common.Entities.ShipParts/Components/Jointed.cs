@@ -5,23 +5,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 
-namespace VoidHuntersRevived.Domain.Entities.Components
+namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 {
     /// <summary>
     /// Can be thought of as the "male"
     /// connection
     /// </summary>
-    public sealed class Linked
+    public sealed class Jointed
     {
-        public readonly Linkable.Joint Joint;
-        public readonly Linkable.Joint Parent;
+        public readonly Jointable.Joint Joint;
+        public readonly Jointable.Joint Parent;
         public readonly Matrix LocalTransformation;
 
-        public Linked(
-            Linkable.Joint joint,
-            Linkable.Joint parent)
+        public Jointed(
+            Jointable.Joint joint,
+            Jointable.Joint parent)
         {
             this.Joint = joint;
             this.Parent = parent;
@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Domain.Entities.Components
 
         public override bool Equals(object? obj)
         {
-            return obj is Linked linked &&
+            return obj is Jointed linked &&
                    this.Joint == linked.Joint &&
                    this.Parent == linked.Parent;
         }
@@ -63,12 +63,12 @@ namespace VoidHuntersRevived.Domain.Entities.Components
             return true;
         }
 
-        public static bool operator ==(Linked left, Linked right)
+        public static bool operator ==(Jointed left, Jointed right)
         {
             return left.Equals(right);
         }
 
-        public static bool operator !=(Linked left, Linked right)
+        public static bool operator !=(Jointed left, Jointed right)
         {
             return !left.Equals(right);
         }

@@ -1,21 +1,11 @@
 ﻿using Guppy.Common;
-using Guppy.MonoGame;
 using Guppy.Network;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Domain.Entities.Enums;
-using VoidHuntersRevived.Domain.Entities.Messages;
+using VoidHuntersRevived.Domain.Entities.Events;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
-using VoidHuntersRevived.Common.Systems;
 using VoidHuntersRevived.Domain.Entities.Components;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems

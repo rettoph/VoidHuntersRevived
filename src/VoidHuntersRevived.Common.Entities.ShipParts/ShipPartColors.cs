@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Common.Entities
+namespace VoidHuntersRevived.Common.Entities.ShipParts
 {
     public static class ShipPartColors
     {

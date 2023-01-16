@@ -8,6 +8,8 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Components;
+using VoidHuntersRevived.Common.Entities.ShipParts.Extensions;
+using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 
 namespace VoidHuntersRevived.Domain.Entities.Extensions
 {
@@ -27,10 +29,10 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
 
         public static Entity MakeShip(this Entity entity, Aether aether, Entity bridge)
         {
-            entity.MakeShipPartTree(aether).MakePilotable();
+            entity.MakeTree(aether).MakePilotable();
             entity.Attach(new Ship(
                 bridge: bridge,
-                tree: entity.Get<ShipPartTree>()));
+                tree: entity.Get<Tree>()));
 
             return entity;
         }

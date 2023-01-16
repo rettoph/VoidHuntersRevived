@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Domain.Entities.Enums;
-using VoidHuntersRevived.Domain.Entities.Messages;
+using VoidHuntersRevived.Domain.Entities.Events;
 using VoidHuntersRevived.Domain.Client.Constants;
 using VoidHuntersRevived.Domain.Client.Systems;
 

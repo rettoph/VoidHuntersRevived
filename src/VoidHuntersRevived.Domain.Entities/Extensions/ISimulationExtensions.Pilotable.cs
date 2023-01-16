@@ -1,6 +1,7 @@
 ﻿using MonoGame.Extended.Entities;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.ShipParts.Extensions;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Domain.Entities.Components;
 

@@ -1,6 +1,6 @@
-﻿using VoidHuntersRevived.Common.Entities.Configurations;
+﻿using VoidHuntersRevived.Common.Entities.ShipParts.Configurations;
 
-namespace VoidHuntersRevived.Common.Entities.Services
+namespace VoidHuntersRevived.Common.Entities.ShipParts.Services
 {
     public interface IShipPartConfigurationService
     {

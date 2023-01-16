@@ -5,15 +5,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Dynamics;
-using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.Entities.Configurations;
-using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Entities.ShipParts.Components;
+using VoidHuntersRevived.Common.Entities.ShipParts.Configurations;
+using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Domain.Entities.Components;
 
@@ -23,9 +18,9 @@ namespace VoidHuntersRevived.Domain.Client.Systems
     {
         private static readonly AspectBuilder HullAspect = Aspect.All(new[]
         {
-            typeof(Rigid),
+            typeof(Draw),
             typeof(Predictive),
-            typeof(ShipPartLeaf)
+            typeof(Node)
         });
 
         private readonly IShipPartConfigurationService _configurations;
@@ -35,9 +30,9 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private readonly Dictionary<DrawConfiguration, Renderer> _renderers;
 
         private ComponentMapper<Draw> _draws;
-        private ComponentMapper<ShipPartLeaf> _leaves;
+        private ComponentMapper<Node> _leaves;
         private ComponentMapper<Body> _bodies;
-        private ComponentMapper<Linked> _linked;
+        private ComponentMapper<Jointed> _linked;
 
         public DrawSystem(
             PrimitiveBatch<VertexPositionColor> primitiveBatch,
@@ -60,9 +55,9 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         public override void Initialize(IComponentMapperService mapperService)
         {
             _draws = mapperService.GetMapper<Draw>();
-            _leaves = mapperService.GetMapper<ShipPartLeaf>();
+            _leaves = mapperService.GetMapper<Node>();
             _bodies = mapperService.GetMapper<Body>();
-            _linked = mapperService.GetMapper<Linked>();
+            _linked = mapperService.GetMapper<Jointed>();
 
             foreach (var configuration in _configurations.GetAll<DrawConfiguration>())
             {

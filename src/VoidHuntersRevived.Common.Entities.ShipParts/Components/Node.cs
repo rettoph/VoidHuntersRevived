@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Domain.Entities.Components
+namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 {
-    public class ShipPartLeaf
+    public class Node
     {
         public readonly Entity Entity;
-        public readonly ShipPartTree Tree;
+        public readonly Tree Tree;
 
-        internal ShipPartLeaf(Entity entity, ShipPartTree tree)
+        internal Node(Entity entity, Tree tree)
         {
             this.Entity = entity;
             this.Tree = tree;

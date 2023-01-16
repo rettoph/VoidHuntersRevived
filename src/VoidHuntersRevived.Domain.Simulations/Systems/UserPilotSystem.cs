@@ -2,25 +2,15 @@
 using Guppy.Common;
 using Guppy.Network;
 using Guppy.Network.Identity;
-using Guppy.Network.Identity.Providers;
 using Serilog;
-using Serilog.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Domain.Entities.Extensions;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Systems;
 using VoidHuntersRevived.Domain.Simulations.Events;
-using VoidHuntersRevived.Domain.Entities.Components;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities;
-using VoidHuntersRevived.Domain.Entities.Events;
-using VoidHuntersRevived.Common.Simulations.Components;
+using VoidHuntersRevived.Common.Entities.ShipParts.Extensions;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {

@@ -5,16 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Dynamics;
-using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Domain.Entities.Components;
+using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 
-namespace VoidHuntersRevived.Domain.Entities.Extensions
+namespace VoidHuntersRevived.Common.Entities.ShipParts.Extensions
 {
     public static partial class EntityExtensions
     {
-        public static Entity MakeShipPartTree(this Entity entity, Aether aether, Entity? head = null)
+        public static Entity MakeTree(this Entity entity, Aether aether, Entity? head = null)
         {
-            var tree = new ShipPartTree(entity);
+            var tree = new Tree(entity);
 
             entity.Attach(aether.CreateBody(bodyType: BodyType.Dynamic));
             entity.Attach(tree);
@@ -31,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
 
         public static Entity MakeChain(this Entity entity, Aether aether, Entity? head = null)
         {
-            entity.MakeShipPartTree(aether, head);
+            entity.MakeTree(aether, head);
             entity.Attach(Tractorable.Instance);
 
             return entity;

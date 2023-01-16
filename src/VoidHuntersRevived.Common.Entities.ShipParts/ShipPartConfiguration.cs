@@ -6,10 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Common.ConvexHull;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Configurations;
+using VoidHuntersRevived.Common.Entities.ShipParts.Configurations;
 
-namespace VoidHuntersRevived.Common.Entities
+namespace VoidHuntersRevived.Common.Entities.ShipParts
 {
     public sealed partial class ShipPartConfiguration : IEnumerable<IShipPartComponentConfiguration>
     {

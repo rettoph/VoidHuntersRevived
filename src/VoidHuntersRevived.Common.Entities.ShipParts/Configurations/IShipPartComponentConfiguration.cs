@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations;
 
-namespace VoidHuntersRevived.Common.Entities.Configurations
+namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
 {
     public interface IShipPartComponentConfiguration
     {

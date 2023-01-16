@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 
-namespace VoidHuntersRevived.Common.Entities.Configurations
+namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
 {
     public sealed class DrawConfiguration : IShipPartComponentConfiguration
     {

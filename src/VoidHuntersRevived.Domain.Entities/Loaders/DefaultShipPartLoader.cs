@@ -7,10 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Collision.Shapes;
 using tainicom.Aether.Physics2D.Common;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.Entities.Configurations;
-using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Entities.ShipParts;
+using VoidHuntersRevived.Common.Entities.ShipParts.Configurations;
+using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using VoidHuntersRevived.Domain.Entities.Components;
 
 namespace VoidHuntersRevived.Domain.Entities.Loaders
@@ -48,7 +47,7 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
                             },
                             density: 1f)
                     }),
-                new LinkableConfiguration(
+                new JointableConfiguration(
                     joints: new[]
                     {
                         new JointConfiguration(

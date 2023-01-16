@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Domain.Entities.Components;
+using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 
-namespace VoidHuntersRevived.Domain.Entities.Extensions
+namespace VoidHuntersRevived.Common.Entities.ShipParts.Extensions
 {
     public static partial class EntityExtensions
     {
@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
         {
             configuration.Make(entity);
             entity.Attach(configuration);
-            entity.Attach(new Linking(entity));
+            entity.Attach(new Jointings(entity));
 
             return entity;
         }

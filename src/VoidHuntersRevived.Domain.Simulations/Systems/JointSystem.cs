@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities.ShipParts.Events;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Systems;
 using VoidHuntersRevived.Domain.Entities.Events;
@@ -12,9 +13,9 @@ using VoidHuntersRevived.Domain.Entities.Events;
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     internal sealed class JointSystem : BasicSystem,
-        ISubscriber<IEvent<CleanLink>>
+        ISubscriber<IEvent<CleanJointing>>
     {
-        public void Process(in IEvent<CleanLink> message)
+        public void Process(in IEvent<CleanJointing> message)
         {
             var transformation = message.Data.Link.LocalTransformation;
 

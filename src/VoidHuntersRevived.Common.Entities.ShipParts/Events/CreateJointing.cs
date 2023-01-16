@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Simulations;
+﻿using VoidHuntersRevived.Common.Simulations;
 
-namespace VoidHuntersRevived.Domain.Entities.Events
+namespace VoidHuntersRevived.Common.Entities.ShipParts.Events
 {
-    public sealed class CreateLink : IData
+    public sealed class CreateJointing : IData
     {
         public required ParallelKey Parent { get; init; }
         public required int ParentJointId { get; init; }
@@ -17,7 +11,7 @@ namespace VoidHuntersRevived.Domain.Entities.Events
 
         public override bool Equals(object? obj)
         {
-            return obj is CreateLink link &&
+            return obj is CreateJointing link &&
                    EqualityComparer<ParallelKey>.Default.Equals(Parent, link.Parent) &&
                    EqualityComparer<int>.Default.Equals(ParentJointId, link.ParentJointId) &&
                    EqualityComparer<ParallelKey>.Default.Equals(Child, link.Child) &&

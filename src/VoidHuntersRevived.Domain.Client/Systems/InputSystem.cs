@@ -2,7 +2,7 @@
 using Guppy.Network;
 using Guppy.Network.Enums;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Messages;
+using VoidHuntersRevived.Domain.Entities.Events;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Systems;
