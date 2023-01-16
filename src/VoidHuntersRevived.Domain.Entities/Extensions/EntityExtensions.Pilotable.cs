@@ -10,6 +10,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Extensions;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
+using tainicom.Aether.Physics2D.Dynamics;
 
 namespace VoidHuntersRevived.Domain.Entities.Extensions
 {
@@ -29,7 +30,10 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
 
         public static Entity MakeShip(this Entity entity, Aether aether, Entity bridge)
         {
-            entity.MakeTree(aether, bridge).MakePilotable();
+            entity.MakeTree(
+                body: aether.CreateBody(bodyType: BodyType.Dynamic), 
+                head: bridge).MakePilotable();
+
             entity.Attach(new Ship(
                 bridge: bridge,
                 tree: entity.Get<Tree>()));

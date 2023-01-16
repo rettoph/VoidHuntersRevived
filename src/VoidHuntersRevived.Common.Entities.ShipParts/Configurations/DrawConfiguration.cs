@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
 {
     public sealed class DrawConfiguration : IShipPartComponentConfiguration
     {
-        private readonly Draw _component;
+        private readonly Drawable _component;
 
         public readonly string Color;
         public readonly Vector2[][] Shapes;
@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
 
         public DrawConfiguration(string color, Vector2[][] shapes, Vector2[][] paths)
         {
-            _component = new Draw(this);
+            _component = new Drawable(this);
 
             this.Color = color;
             this.Shapes = shapes;

@@ -7,11 +7,13 @@ using VoidHuntersRevived.Domain.Entities.Events;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Entities.Components;
+using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     internal sealed class PilotingSystem : EntitySystem,
-        ISubscriber<IEvent<SetPilotingDirection>>
+        ISubscriber<IEvent<SetPilotingDirection>>,
+        ISubscriber<IEvent<SetPilotingTarget>>
     {
         private ComponentMapper<Piloting> _pilotings;
         private State _state;
@@ -35,12 +37,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
         {
             var pilotId = message.Simulation.GetEntityId(message.Data.PilotKey);
             var piloting = _pilotings.Get(pilotId);
-            var pilotable = piloting?.Pilotable;
-
-            if(pilotable is null)
-            {
-                return;
-            }
+            var pilotable = piloting.Pilotable;
 
             if (message.Data.Value && (pilotable.Direction & message.Data.Which) == 0)
             {
@@ -53,6 +50,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
                 pilotable.Direction &= ~message.Data.Which;
                 return;
             }
+        }
+
+        public void Process(in IEvent<SetPilotingTarget> message)
+        {
+            if(!message.Simulation.TryGetEntityId(message.Data.PilotKey, out int pilotId))
+            {
+                return;
+            }
+
+            var piloting = _pilotings.Get(pilotId);
+            var pilotable = piloting.Pilotable;
+
+            pilotable.Target = message.Data.Target;
         }
     }
 }

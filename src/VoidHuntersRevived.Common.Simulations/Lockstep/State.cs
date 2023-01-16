@@ -3,6 +3,7 @@ using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework.Input;
 using Serilog;
 using VoidHuntersRevived.Common.Constants;
+using VoidHuntersRevived.Common.Simulations.Lockstep.Messages;
 
 namespace VoidHuntersRevived.Common.Simulations.Lockstep
 {
@@ -11,6 +12,7 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
         private int _stepsSinceTick;
         private readonly int _stepsPerTick;
         private readonly Step _step;
+        private readonly PreTick _preTick;
         private readonly IList<Tick> _history;
         private readonly IBus _bus;
         private readonly ILogger _log;
@@ -34,6 +36,7 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
             _history = new List<Tick>();
             _stepsPerTick = settings.Get<int>(SettingConstants.StepsPerTick).Value;
             _step = new Step(settings.Get<TimeSpan>(SettingConstants.StepInterval).Value);
+            _preTick = new PreTick(this);
 
             this.Reset();
         }
@@ -86,6 +89,7 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
                 _history.Add(tick);
             }
 
+            _bus.Enqueue(_preTick);
             _bus.Enqueue(tick);
 
             _stepsSinceTick = 0;

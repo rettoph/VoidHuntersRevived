@@ -9,11 +9,11 @@ using VoidHuntersRevived.Common.Entities.ShipParts.Configurations;
 
 namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 {
-    public class Draw
+    public class Drawable
     {
         public readonly DrawConfiguration Configuration;
 
-        public Draw(DrawConfiguration configuration)
+        public Drawable(DrawConfiguration configuration)
         {
             this.Configuration = configuration;
         }

@@ -1,4 +1,5 @@
 ﻿using Guppy.MonoGame;
+using Guppy.MonoGame.Primitives;
 using Guppy.MonoGame.Utilities.Cameras;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
@@ -14,11 +15,11 @@ using VoidHuntersRevived.Domain.Entities.Components;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
-    internal sealed partial class DrawSystem : EntityDrawSystem
+    internal sealed partial class DrawableSystem : EntityDrawSystem
     {
         private static readonly AspectBuilder HullAspect = Aspect.All(new[]
         {
-            typeof(Draw),
+            typeof(Drawable),
             typeof(Predictive),
             typeof(Node)
         });
@@ -29,12 +30,12 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private readonly Camera2D _camera;
         private readonly Dictionary<DrawConfiguration, Renderer> _renderers;
 
-        private ComponentMapper<Draw> _draws;
+        private ComponentMapper<Drawable> _drawables;
         private ComponentMapper<Node> _nodes;
         private ComponentMapper<Body> _bodies;
         private ComponentMapper<Jointed> _jointed;
 
-        public DrawSystem(
+        public DrawableSystem(
             PrimitiveBatch<VertexPositionColor> primitiveBatch,
             Camera2D camera,
             IResourceProvider resources,
@@ -46,7 +47,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             _resources = resources;
             _renderers = new Dictionary<DrawConfiguration, Renderer>();
 
-            _draws = default!;
+            _drawables = default!;
             _nodes = default!;
             _bodies = default!;
             _jointed = default!;
@@ -54,7 +55,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         public override void Initialize(IComponentMapperService mapperService)
         {
-            _draws = mapperService.GetMapper<Draw>();
+            _drawables = mapperService.GetMapper<Drawable>();
             _nodes = mapperService.GetMapper<Node>();
             _bodies = mapperService.GetMapper<Body>();
             _jointed = mapperService.GetMapper<Jointed>();
@@ -71,10 +72,10 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
             foreach(var entityId in this.subscription.ActiveEntities)
             {
-                var draw = _draws.Get(entityId);
+                var drawable = _drawables.Get(entityId);
                 var node = _nodes.Get(entityId);
 
-                _renderers[draw.Configuration].Render(node.WorldTransformation);
+                _renderers[drawable.Configuration].Render(node.WorldTransformation);
             }
 
             _primitiveBatch.End();

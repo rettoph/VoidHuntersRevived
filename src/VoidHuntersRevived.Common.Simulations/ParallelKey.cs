@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common
 {
-    public struct ParallelKey
+    public readonly struct ParallelKey
     {
         public readonly string Type;
         public readonly int Value;
@@ -37,19 +37,6 @@ namespace VoidHuntersRevived.Common
         public static ParallelKey From(string type, object value, int index)
         {
             return new ParallelKey(type, value.GetHashCode(), index);
-        }
-
-        public override bool Equals(object? obj)
-        {
-            return obj is ParallelKey key &&
-                   Type == key.Type &&
-                   Value == key.Value &&
-                   Index == key.Index;
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Type, Value);
         }
     }
 }

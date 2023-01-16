@@ -17,6 +17,7 @@ using Guppy.Common.Collections;
 using tainicom.Aether.Physics2D.Common;
 using tainicom.Aether.Physics2D.Dynamics.Joints;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
+using Guppy.MonoGame.Primitives;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
@@ -31,11 +32,10 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private readonly Camera2D _camera;
-        private Vector2[] _buffer;
-        private Vector2[] _vertices;
+        private PrimitiveShape _shape;
 
         private ComponentMapper<Body> _bodies;
-        private ComponentMapper<Jointable> _linkables;
+        private ComponentMapper<Jointable> _jointables;
         private ComponentMapper<Node> _leaves;
 
         public DrawJointSystem(
@@ -44,22 +44,21 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         {
             _primitiveBatch = primitiveBatch;
             _camera = camera;
-            _buffer = new Vector2[2];
-            _vertices = new[] 
+            _shape = new PrimitiveShape(new[] 
             {
                 new Vector2(-0.25f, 0),
                 new Vector2(0.25f, 0)
-            };
+            });
 
 
-            _linkables = default!;
+            _jointables = default!;
             _leaves = default!;
             _bodies = default!;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
         {
-            _linkables = mapperService.GetMapper<Jointable>();
+            _jointables = mapperService.GetMapper<Jointable>();
             _leaves = mapperService.GetMapper<Node>();
             _bodies = mapperService.GetMapper<Body>();
         }
@@ -70,11 +69,11 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
             foreach (var entityId in this.subscription.ActiveEntities)
             {
-                var linkable = _linkables.Get(entityId);
+                var jointable = _jointables.Get(entityId);
                 var leaf = _leaves.Get(entityId);
                 var body = _bodies.Get(leaf.Tree.Entity.Id);
 
-                this.DrawJoints(linkable.Joints, body.Position, body.Rotation);
+                this.DrawJoints(jointable.Joints, body.Position, body.Rotation);
             }
 
             _primitiveBatch.End();
@@ -84,16 +83,13 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         {
             var world = Matrix.CreateRotationZ(rotation);
             world *= Matrix.CreateTranslation(position.X, position.Y, 0);
-            int i = 0;
 
             foreach (var joint in joints)
             {
                 var transformation = joint.LocalTransformation * world;
+                var color = Color.Red;
 
-                Vector2.Transform(ref _vertices[0], ref transformation, out _buffer[0]);
-                Vector2.Transform(ref _vertices[1], ref transformation, out _buffer[1]);
-                
-                _primitiveBatch.DrawLine(i++ == 0 ? Color.Green : Color.Red, _buffer[0], _buffer[1]);
+                _primitiveBatch.Trace(_shape, in color, ref transformation);
             }
         }
     }
