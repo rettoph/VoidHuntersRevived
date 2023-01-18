@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MonoGame.Extended.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,11 @@ namespace VoidHuntersRevived.Domain.Entities.Components
 {
     public sealed class Tractoring
     {
-        int TractorableId;
+        public Entity Tractorable;
+
+        public Tractoring(Entity tractorable)
+        {
+            this.Tractorable = tractorable;
+        }
     }
 }

@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
 
             entity.Attach(new Ship(
                 bridge: bridge,
-                tree: entity.Get<Tree>()));
+                tree: entity));
 
             return entity;
         }

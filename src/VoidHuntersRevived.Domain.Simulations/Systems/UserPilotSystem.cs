@@ -15,6 +15,8 @@ using VoidHuntersRevived.Common.Entities.ShipParts.Events;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Domain.Entities.Components;
 using VoidHuntersRevived.Common.Simulations.Extensions;
+using MonoGame.Extended.Entities;
+using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
@@ -24,11 +26,21 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
     {
         private readonly NetScope _scope;
         private readonly ILogger _logger;
+        private ComponentMapper<Node> _nodes;
 
         public UserPilotSystem(NetScope scope, ILogger logger)
         {
             _scope = scope;
             _logger = logger;
+
+            _nodes = default!;
+        }
+
+        public override void Initialize(World world)
+        {
+            base.Initialize(world);
+
+            _nodes = world.ComponentMapper.GetMapper<Node>();
         }
 
         public void Process(in IInput<PlayerAction> message)

@@ -8,7 +8,9 @@ using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Extensions;
 using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Domain.Entities.Components;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
@@ -18,6 +20,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private readonly Camera2D _camera;
         private readonly NetScope _scope;
         private readonly ISimulationService _simulations;
+        private ComponentMapper<Piloting> _pilotings;
         private ComponentMapper<Body> _bodies;
 
         public CameraSystem(NetScope scope, Camera2D camera, ISimulationService simulations)
@@ -25,6 +28,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             _camera = camera;
             _scope = scope;
             _simulations = simulations;
+            _pilotings = default!;
             _bodies = default!;
 
             _camera.Zoom = 100;
@@ -34,6 +38,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         {
             base.Initialize(world);
 
+            _pilotings = world.ComponentMapper.GetMapper<Piloting>();
             _bodies = world.ComponentMapper.GetMapper<Body>();
         }
 
@@ -56,12 +61,13 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 return;
             }
 
-            if (!_simulations[SimulationType.Predictive].TryGetEntityId(ParallelKey.From(ParallelTypes.Ship, _scope.Peer!.Users.Current), out var shipEntityId))
+            if (!_simulations[SimulationType.Predictive].TryGetEntityId(_scope.Peer!.Users.Current.GetPilotKey(), out var pilotId))
             {
                 return;
             }
 
-            var body = _bodies.Get(shipEntityId);
+            var piloting = _pilotings.Get(pilotId);
+            var body = _bodies.Get(piloting.Pilotable);
             if (body is null)
             {
                 return;

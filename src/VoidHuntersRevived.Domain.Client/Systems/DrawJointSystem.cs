@@ -70,8 +70,8 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             foreach (var entityId in this.subscription.ActiveEntities)
             {
                 var jointable = _jointables.Get(entityId);
-                var leaf = _nodes.Get(entityId);
-                var body = _bodies.Get(leaf.Tree.Entity.Id);
+                var joint = _nodes.Get(entityId);
+                var body = _bodies.Get(joint.Tree);
 
                 this.DrawJoints(jointable.Joints, body.Position, body.Rotation);
             }

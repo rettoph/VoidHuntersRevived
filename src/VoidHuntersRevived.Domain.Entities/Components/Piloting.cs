@@ -10,11 +10,11 @@ namespace VoidHuntersRevived.Domain.Entities.Components
 {
     public class Piloting
     {
-        public Pilotable Pilotable;
+        public Entity Pilotable;
 
         public Piloting(Entity pilotable)
         {
-            this.Pilotable = pilotable.Get<Pilotable>();
+            this.Pilotable = pilotable;
         }
     }
 }

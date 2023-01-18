@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 
 namespace VoidHuntersRevived.Common.Entities.ShipParts.Extensions
 {

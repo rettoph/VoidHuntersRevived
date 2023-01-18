@@ -1,56 +1,51 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
+using System;
 using System.Collections.ObjectModel;
+using System.Xml.Linq;
 using VoidHuntersRevived.Common.Entities.ShipParts.Extensions;
 
 namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 {
     public class Tree
     {
-        private List<Node> _nodes;
+        private readonly List<Entity> _nodes;
 
         public readonly Entity Entity;
-        public readonly ReadOnlyCollection<Node> Nodes;
-        public Node? Head => _nodes.Any() ? _nodes[0] : null;
+        public readonly ReadOnlyCollection<Entity> Nodes;
+        public Entity? Head => _nodes.Any() ? _nodes[0] : null;
 
         public Tree(Entity entity)
         {
-            _nodes = new List<Node>();
+            _nodes = new List<Entity>();
 
             this.Entity = entity;
-            this.Nodes = new ReadOnlyCollection<Node>(_nodes);
+            this.Nodes = new ReadOnlyCollection<Entity>(_nodes);
         }
 
         public Node Add(Entity entity, Matrix localTransformation)
         {
-            if (!entity.IsShipPart())
-            {
-                throw new ArgumentException($"{nameof(Tree)}::{nameof(Add)} - Argument '{nameof(entity)}' failed {nameof(Extensions.EntityExtensions.IsShipPart)} check.");
-            }
-
             if (entity.Has<Node>())
             {
-                var oldLeaf = entity.Get<Node>();
-
-                oldLeaf.Tree.Remove(oldLeaf);
+                throw new NotImplementedException();
             }
 
-            var node = new Node(entity, this, localTransformation);
+            var node = new Node(entity, this.Entity, localTransformation);
             entity.Attach(node);
-            _nodes.Add(node);
+            _nodes.Add(entity);
 
             return node;
         }
 
-        public bool Remove(Node leaf)
+        public bool Remove(Entity entity)
         {
-            if(!_nodes.Remove(leaf))
+            if(_nodes.Remove(entity))
             {
-                return false;
+                entity.Detach<Node>();
+                return true;
             }
 
-            leaf.Entity.Detach<Node>();
-            return true;
+            return false;
         }
     }
 }

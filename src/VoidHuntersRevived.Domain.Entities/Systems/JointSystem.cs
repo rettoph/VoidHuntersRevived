@@ -84,7 +84,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             // Update local transformations
             var transformation = jointed.LocalTransformation;
 
-            foreach (var joint in jointed.Joint.Jointable.Joints)
+            var jointable = _jointables.Get(jointed.Joint.Entity);
+            foreach (var joint in jointable.Joints)
             {
                 joint.LocalTransformation = joint.Configuration.Transformation * transformation;
             }

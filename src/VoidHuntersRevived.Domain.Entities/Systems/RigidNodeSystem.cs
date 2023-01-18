@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             var node = _nodes.Get(entityId);
             var rigid = _rigids.Get(entityId);
-            var body = _bodies.Get(node.Tree.Entity.Id);
+            var body = _bodies.Get(node.Tree);
 
             var transformation = node.LocalTransformation;
 

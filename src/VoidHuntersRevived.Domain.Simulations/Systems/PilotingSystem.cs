@@ -19,6 +19,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
         ISubscriber<IInput<SetPilotingTarget>>
     {
         private ComponentMapper<Piloting> _pilotings;
+        private ComponentMapper<Pilotable> _pilotables;
         private State _state;
         private NetScope _scope;
         private ILogger _logger;
@@ -29,18 +30,20 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _scope = scope;
             _state = state;
             _pilotings = default!;
+            _pilotables = default!;
         }
 
         public override void Initialize(World world)
         {
             _pilotings= world.ComponentMapper.GetMapper<Piloting>();
+            _pilotables = world.ComponentMapper.GetMapper<Pilotable>();
         }
 
         public void Process(in IInput<SetPilotingDirection> message)
         {
             var pilotId = message.Simulation.GetEntityId(message.PilotKey);
             var piloting = _pilotings.Get(pilotId);
-            var pilotable = piloting.Pilotable;
+            var pilotable = _pilotables.Get(piloting.Pilotable);
 
             if (message.Data.Value && (pilotable.Direction & message.Data.Which) == 0)
             {
@@ -63,7 +66,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             }
 
             var piloting = _pilotings.Get(pilotId);
-            var pilotable = piloting.Pilotable;
+            var pilotable = _pilotables.Get(piloting.Pilotable);
 
             pilotable.Aim.Target = message.Data.Target;
         }

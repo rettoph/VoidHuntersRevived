@@ -52,8 +52,9 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             var worldTransformation = body.GetWorldMatrix();
 
-            foreach(var node in tree.Nodes)
+            foreach(var nodeId in tree.Nodes)
             {
+                var node = _nodes.Get(nodeId);
                 node.WorldTransformation = node.LocalTransformation * worldTransformation;
             }
         }
@@ -61,14 +62,17 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         public void Process(in IEvent<CleanJointed> message)
         {
             // The entity is currently attached to another tree
-            if (_nodes.TryGet(message.Data.Jointed.Joint.Jointable.Entity.Id, out var oldNode))
+            if (_nodes.TryGet(message.Data.Jointed.Joint.Entity, out var oldNode))
             { // Detach it from its old tree
-                oldNode.Tree.Remove(oldNode);
+                var oldTree = _trees.Get(oldNode.Tree);
+                oldTree.Remove(oldNode.Entity);
             }
 
-            var tree = _nodes.Get(message.Data.Jointed.Parent.Jointable.Entity.Id).Tree;
+            var node = _nodes.Get(message.Data.Jointed.Parent.Entity);
+            var tree = _trees.Get(node.Tree);
+
             tree.Add(
-                entity: message.Data.Jointed.Joint.Jointable.Entity, 
+                entity: message.Data.Jointed.Joint.Entity, 
                 localTransformation: message.Data.Jointed.LocalTransformation);
         }
     }
