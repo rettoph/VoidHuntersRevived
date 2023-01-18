@@ -31,12 +31,10 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
             {
                 (ButtonState.Pressed, new SetTractoring()
                 {
-                    PilotKey = default,
                     Value = true
                 }),
                 (ButtonState.Released, new SetTractoring()
                 {
-                    PilotKey = default,
                     Value = false
                 }),
             });
@@ -53,8 +51,8 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
         {
             services.AddInput(key, defaultSource, new[]
             {
-                (ButtonState.Pressed, new SetPilotingDirection(default, direction, true)),
-                (ButtonState.Released, new SetPilotingDirection(default, direction, false)),
+                (ButtonState.Pressed, new SetPilotingDirection(direction, true)),
+                (ButtonState.Released, new SetPilotingDirection(direction, false)),
             });
         }
     }

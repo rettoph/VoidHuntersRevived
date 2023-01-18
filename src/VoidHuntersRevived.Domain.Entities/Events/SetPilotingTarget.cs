@@ -11,7 +11,6 @@ namespace VoidHuntersRevived.Domain.Entities.Events
 {
     public sealed class SetPilotingTarget : IData
     {
-        public required ParallelKey PilotKey { get; init;  }
         public required Vector2 Target { get; init; }
     }
 }

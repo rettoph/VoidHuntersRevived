@@ -21,7 +21,6 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
         public override SetPilotingDirection Deserialize(NetDataReader reader)
         {
             return new SetPilotingDirection(
-                pilotKey: ParallelKey.From(ParallelTypes.Pilot, reader.GetInt()),
                 which: reader.GetEnum<Direction>(),
                 value: reader.GetBool());
 
@@ -29,7 +28,6 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
 
         public override void Serialize(NetDataWriter writer, in SetPilotingDirection instance)
         {
-            writer.Put(instance.PilotKey.Value);
             writer.Put(instance.Which);
             writer.Put(instance.Value);
         }

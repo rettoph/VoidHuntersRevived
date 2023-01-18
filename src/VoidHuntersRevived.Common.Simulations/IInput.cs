@@ -9,6 +9,6 @@ namespace VoidHuntersRevived.Common.Simulations
     public interface IInput<TData> : IEvent<TData> 
         where TData : IData
     {
-        public ParallelKey User { get; }
+        public ParallelKey PilotKey { get; }
     }
 }

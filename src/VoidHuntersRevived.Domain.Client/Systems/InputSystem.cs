@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private readonly Camera2D _camera;
 
         private Vector2 CurrentTarget => _camera.Unproject(Mouse.GetState().Position.ToVector2());
-        private ParallelKey PilotKey
+        private ParallelKey CurrentPilotKey
         {
             get
             {
@@ -68,9 +68,8 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         public void Process(in SetPilotingDirection message)
         {
             _simulations.Input(
-                user: PilotKey, 
+                user: CurrentPilotKey, 
                 data: new SetPilotingDirection(
-                    pilotKey: PilotKey,
                     which: message.Which,
                     value: message.Value));
         }
@@ -78,10 +77,9 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         public void Process(in SetTractoring message)
         {
             _simulations.Input(
-                user: PilotKey,
+                user: CurrentPilotKey,
                 data: new SetTractoring()
                 {
-                    PilotKey = PilotKey,
                     Value = message.Value
                 });
         }
@@ -89,10 +87,9 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private void SetTarget(SimulationType simulation)
         {
             _simulations[simulation].Input(
-                user: PilotKey,
+                user: CurrentPilotKey,
                 data: new SetPilotingTarget()
                 {
-                    PilotKey = PilotKey,
                     Target = CurrentTarget
                 });
         }

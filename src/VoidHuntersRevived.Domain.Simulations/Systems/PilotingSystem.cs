@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
         public void Process(in IInput<SetPilotingDirection> message)
         {
-            var pilotId = message.Simulation.GetEntityId(message.Data.PilotKey);
+            var pilotId = message.Simulation.GetEntityId(message.PilotKey);
             var piloting = _pilotings.Get(pilotId);
             var pilotable = piloting.Pilotable;
 
@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
         public void Process(in IInput<SetPilotingTarget> message)
         {
-            if(!message.Simulation.TryGetEntityId(message.Data.PilotKey, out int pilotId))
+            if(!message.Simulation.TryGetEntityId(message.PilotKey, out int pilotId))
             {
                 return;
             }

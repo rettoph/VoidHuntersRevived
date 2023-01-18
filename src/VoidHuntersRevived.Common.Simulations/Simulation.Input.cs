@@ -49,13 +49,13 @@ namespace VoidHuntersRevived.Common.Simulations
         {
             private static readonly Type MessageType = typeof(IInput<TData>);
 
-            public ParallelKey User { get; }
+            public ParallelKey PilotKey { get; }
 
             public override Type Type => MessageType;
 
             public Input(SimulationType sender, ParallelKey user, TData data, ISimulation simulation) : base(sender, data, simulation)
             {
-                this.User = user;
+                this.PilotKey = user;
             }
         }
     }
