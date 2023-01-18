@@ -46,11 +46,6 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         public void Process(in IEvent<CreateJointing> message)
         {
-            if(message.Source == DataSource.External)
-            {
-                throw new NotImplementedException();
-            }
-
             var parentId = message.Simulation.GetEntityId(message.Data.Parent);
             var childId = message.Simulation.GetEntityId(message.Data.Child);
 
@@ -94,7 +89,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 joint.LocalTransformation = joint.Configuration.Transformation * transformation;
             }
 
-            _simulations.PublishEvent(new CleanJointed(jointed), DataSource.Internal);
+            message.Simulation.PublishEvent(new CleanJointed(jointed));
         }
     }
 }

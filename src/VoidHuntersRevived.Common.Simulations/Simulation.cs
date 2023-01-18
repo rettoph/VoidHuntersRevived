@@ -19,7 +19,7 @@ using VoidHuntersRevived.Common.Simulations.Systems;
 
 namespace VoidHuntersRevived.Common.Simulations
 {
-    public abstract class Simulation<TEntityComponent> : ISimulation, IDisposable
+    public abstract partial class Simulation<TEntityComponent> : ISimulation, IDisposable
         where TEntityComponent : class, new()
     {
         private IBus _bus;
@@ -161,62 +161,16 @@ namespace VoidHuntersRevived.Common.Simulations
             return entity;
         }
 
-        private sealed class SimulationInput<TData> : Message<IEvent<TData>>, IEvent<TData>
-            where TData : notnull, IData
+        protected virtual void PublishEvent(IEvent @event)
         {
-            public DataSource Source { get; }
-
-            public TData Data { get; }
-
-            public ISimulation Simulation { get; }
-
-            IData IEvent.Data => this.Data;
-
-
-            public SimulationInput(DataSource source, TData data, ISimulation simulation)
-            {
-                this.Source = source;
-                this.Data = data;
-                this.Simulation = simulation;
-            }
+            _bus.Publish(@event);
         }
 
-        public virtual void PublishEvent(IData data, DataSource source)
+        public virtual void PublishEvent(IData data)
         {
-            _bus.Publish(EventFactory.GetSimulationEvent(source, data, this));
+            this.PublishEvent(Simulation.Event.Factory.Create(this.Type, data, this));
         }
 
-        public abstract void PublishEvent(IData data);
-
-        private static class EventFactory
-        {
-            private static Dictionary<Type, Func<DataSource, IData, ISimulation, IEvent>> _eventFactories = new();
-            private static MethodInfo _eventFactoryMethod = typeof(EventFactory).GetMethod(nameof(SimulationEventFactory), BindingFlags.Static | BindingFlags.NonPublic) ?? throw new UnreachableException();
-
-            public static IEvent GetSimulationEvent(DataSource source, IData data, ISimulation simulation)
-            {
-                var type = data.GetType();
-                if (!_eventFactories.TryGetValue(type, out var factory))
-                {
-                    var method = _eventFactoryMethod.MakeGenericMethod(type);
-                    factory = (Func<DataSource, IData, ISimulation, IEvent>)(method.Invoke(null, Array.Empty<object>()) ?? throw new UnreachableException());
-
-                    _eventFactories.Add(type, factory);
-                }
-
-                return factory(source, data, simulation);
-            }
-
-            private static Func<DataSource, IData, ISimulation, IEvent> SimulationEventFactory<TData>()
-                where TData : IData
-            {
-                IEvent Factory(DataSource source, IData data, ISimulation simulation)
-                {
-                    return new SimulationInput<TData>(source, (TData)data, simulation);
-                }
-
-                return Factory;
-            }
-        }
+        public abstract void Input(ParallelKey user, IData data);
     }
 }

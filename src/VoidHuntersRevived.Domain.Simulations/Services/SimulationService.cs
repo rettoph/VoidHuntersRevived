@@ -3,6 +3,7 @@ using Guppy.Network.Enums;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using System.Collections.ObjectModel;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 
@@ -71,11 +72,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             }
         }
 
-        public void PublishEvent(IData data, DataSource source)
+        public void PublishEvent(IData data)
         {
             foreach(ISimulation simulation in _simulations.Values)
             {
-                simulation.PublishEvent(data, source);
+                simulation.PublishEvent(data);
+            }
+        }
+
+        public void Input(ParallelKey user, IData data)
+        {
+            foreach (ISimulation simulation in _simulations.Values)
+            {
+                simulation.Input(user, data);
             }
         }
     }

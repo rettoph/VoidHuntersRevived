@@ -12,6 +12,7 @@ using VoidHuntersRevived.Domain.Entities.Enums;
 using VoidHuntersRevived.Domain.Entities.Events;
 using VoidHuntersRevived.Domain.Client.Constants;
 using VoidHuntersRevived.Domain.Client.Systems;
+using Guppy.MonoGame.Enums;
 
 namespace VoidHuntersRevived.Domain.Client.Loaders
 {
@@ -24,6 +25,20 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
             {
                 manager.AddScoped<InputSystem>()
                     .AddInterfaceAliases();
+            });
+
+            services.AddInput(Inputs.TractorBeam, MouseButtons.Right, new[]
+            {
+                (ButtonState.Pressed, new SetTractoring()
+                {
+                    PilotKey = default,
+                    Value = true
+                }),
+                (ButtonState.Released, new SetTractoring()
+                {
+                    PilotKey = default,
+                    Value = false
+                }),
             });
 
             InputLoader.AddSetDirectionInput(services, Inputs.SetDirectionForward, Keys.W, Direction.Forward);

@@ -17,12 +17,14 @@ using Guppy.MonoGame.Utilities.Cameras;
 using MonoGame.Extended;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Lockstep.Messages;
+using Guppy.Network.Identity;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
     [SimulationTypeFilter(SimulationType.Predictive)]
     internal sealed class InputSystem : UpdateSystem,
         ISubscriber<SetPilotingDirection>,
+        ISubscriber<SetTractoring>,
         ISubscriber<PreTick>
     {
         private readonly NetScope _netScope;
@@ -65,18 +67,29 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         public void Process(in SetPilotingDirection message)
         {
-            _simulations.PublishEvent(
-                source: DataSource.External, 
+            _simulations.Input(
+                user: PilotKey, 
                 data: new SetPilotingDirection(
                     pilotKey: PilotKey,
                     which: message.Which,
                     value: message.Value));
         }
 
+        public void Process(in SetTractoring message)
+        {
+            _simulations.Input(
+                user: PilotKey,
+                data: new SetTractoring()
+                {
+                    PilotKey = PilotKey,
+                    Value = message.Value
+                });
+        }
+
         private void SetTarget(SimulationType simulation)
         {
-            _simulations[simulation].PublishEvent(
-                source: DataSource.External,
+            _simulations[simulation].Input(
+                user: PilotKey,
                 data: new SetPilotingTarget()
                 {
                     PilotKey = PilotKey,

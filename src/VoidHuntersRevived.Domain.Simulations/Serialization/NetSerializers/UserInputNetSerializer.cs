@@ -1,16 +1,20 @@
 ﻿using Guppy.Attributes;
 using Guppy.Network;
-using Guppy.Network.Identity;
 using Guppy.Network.Providers;
 using LiteNetLib.Utils;
-using VoidHuntersRevived.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Domain.Simulations.Lockstep.Messages;
+using VoidHuntersRevived.Common.Simulations.Helpers;
+using VoidHuntersRevived.Common.Simulations.Lockstep;
 
-namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
+namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
 {
     [AutoLoad]
-    internal sealed class LockstepRequestNetSerializer : NetSerializer<ClientRequest>
+    internal sealed class UserInputNetSerializer : NetSerializer<UserInput>
     {
         private INetSerializerProvider _serializers = default!;
 
@@ -21,14 +25,14 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
             _serializers = serializers;
         }
 
-        public override ClientRequest Deserialize(NetDataReader reader)
+        public override UserInput Deserialize(NetDataReader reader)
         {
-            return new ClientRequest(
-                user: ParallelKey.From(nameof(User), reader.GetInt()),
+            return new UserInput(
+                user: ParallelKeyHelper.GetPilotKey(reader.GetInt()),
                 data: (IData)_serializers.Deserialize(reader));
         }
 
-        public override void Serialize(NetDataWriter writer, in ClientRequest instance)
+        public override void Serialize(NetDataWriter writer, in UserInput instance)
         {
             writer.Put(instance.User.Value);
             _serializers.Serialize(writer, instance.Data);

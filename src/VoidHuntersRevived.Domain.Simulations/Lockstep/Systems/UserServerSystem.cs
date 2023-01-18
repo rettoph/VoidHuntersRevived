@@ -10,6 +10,7 @@ using Guppy.Network.Messages;
 using System;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
+using VoidHuntersRevived.Common.Simulations.Extensions;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Systems;
@@ -20,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Systems
 {
     [PeerTypeFilter(PeerType.Server)]
     [SimulationTypeFilter(SimulationType.Lockstep)]
-    internal sealed class UserServerSystem : BasicSystem, ISubscriber<IEvent<PlayerAction>>
+    internal sealed class UserServerSystem : BasicSystem, ISubscriber<IInput<PlayerAction>>
     {
         private readonly State _state;
         private readonly NetScope _scope;
@@ -40,7 +41,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Systems
             _scope.Users.OnUserJoined += this.HandleUserJoined;
         }
 
-        public void Process(in IEvent<PlayerAction> message)
+        public void Process(in IInput<PlayerAction> message)
         {
             var user = _scope.Peer!.Users.UpdateOrCreate(message.Data.UserAction.Id, message.Data.UserAction.Claims);
 
@@ -80,8 +81,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Systems
 
         private void HandleUserJoined(IUserService sender, User args)
         {
-            _simulations[SimulationType.Lockstep].PublishEvent(
-                source: DataSource.External, 
+            _simulations[SimulationType.Lockstep].Input(
+                user: args.GetPilotKey(),
                 data: new PlayerAction()
                 {
                    UserAction = args.CreateAction(UserAction.Actions.UserJoined, ClaimAccessibility.Public)

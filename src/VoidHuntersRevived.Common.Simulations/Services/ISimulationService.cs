@@ -18,6 +18,8 @@ namespace VoidHuntersRevived.Common.Simulations.Services
 
         void Update(GameTime gameTime);
 
-        void PublishEvent(IData data, DataSource source);
+        void PublishEvent(IData data);
+
+        void Input(ParallelKey user, IData data);
     }
 }

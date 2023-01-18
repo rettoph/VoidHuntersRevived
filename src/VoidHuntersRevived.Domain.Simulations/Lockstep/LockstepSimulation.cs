@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         ISubscriber<Step>,
         IDisposable
     {
-        private readonly ILockstepEventService _publisher;
+        private readonly ILockstepInputService _publisher;
         private readonly IStepService _steps;
         private readonly ISimulationService _simulations;
         private readonly ILogger _logger;
@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             State state,
             ISimulationService simulations, 
             IStepService steps, 
-            IFiltered<ILockstepEventService> publisher, 
+            IFiltered<ILockstepInputService> publisher, 
             IParallelService simulatedEntities,
             IGlobalSimulationService globalSimulationService,
             ILogger logger) : base(SimulationType.Lockstep, simulatedEntities, globalSimulationService)
@@ -50,8 +50,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public override void Initialize(IServiceProvider provider)
         {
             base.Initialize(provider);
-
-            _publisher.Initialize(base.PublishEvent);
         }
 
         protected override void Update(GameTime gameTime)
@@ -59,29 +57,27 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _steps.Update(gameTime);
         }
 
-        public override void PublishEvent(IData data, DataSource source)
-        {
-            _publisher.Publish(data, source);
-        }
-
-        public override void PublishEvent(IData data)
-        {
-            this.PublishEvent(data, DataSource.Determined);
-        }
-
         public void Process(in Tick message)
         {
-            foreach (IData data in message.Data)
+            foreach (UserInput input in message.Inputs)
             {
-                // If the data managed to make its way into a tick
-                // we can publish it as an event now.
-                this.PublishEvent(data);
+                this.PublishEvent(
+                    @event: Simulation.Input.Factory.Create(
+                        sender: SimulationType.Lockstep,
+                        user: input.User, 
+                        data: input.Data, 
+                        simulation: this));
             }
         }
 
         public void Process(in Step message)
         {
             this.UpdateSystems(message);
+        }
+
+        public override void Input(ParallelKey user, IData data)
+        {
+            _publisher.Input(user, data);
         }
     }
 }

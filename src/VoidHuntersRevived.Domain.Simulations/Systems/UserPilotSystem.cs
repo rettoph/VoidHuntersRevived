@@ -14,12 +14,13 @@ using VoidHuntersRevived.Common.Entities.ShipParts.Extensions;
 using VoidHuntersRevived.Common.Entities.ShipParts.Events;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Domain.Entities.Components;
+using VoidHuntersRevived.Common.Simulations.Extensions;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     [GuppyFilter<IGameGuppy>()]
     internal sealed class UserPilotSystem : BasicSystem,
-        ISubscriber<IEvent<PlayerAction>>
+        ISubscriber<IInput<PlayerAction>>
     {
         private readonly NetScope _scope;
         private readonly ILogger _logger;
@@ -30,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _logger = logger;
         }
 
-        public void Process(in IEvent<PlayerAction> message)
+        public void Process(in IInput<PlayerAction> message)
         {
             var user = _scope.Peer!.Users.UpdateOrCreate(message.Data.UserAction.Id, message.Data.UserAction.Claims);
 
@@ -52,19 +53,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
                 _scope.Users.Add(user);
             }
 
-            var key = ParallelKey.From(ParallelTypes.Ship, user);
+            var key = user.GetPilotKey(); ;
 
             if(simulation.HasEntity(key))
             { // This operation has already been done
                 return;
             }
 
-            var ship = simulation.CreateShip(key, ShipParts.HullSquare);
-            var pilot = simulation.CreatePilot(ParallelKey.From(ParallelTypes.Pilot, user.Id), ship);
+            var ship = simulation.CreateShip(key.GetKey(ParallelTypes.Ship), ShipParts.HullSquare);
+            var pilot = simulation.CreatePilot(key, ship);
 
-            var chain = simulation.CreateChain(ParallelKey.From(ParallelTypes.Chain, key), ShipParts.HullSquare);
+            var chain = simulation.CreateChain(key.GetKey(ParallelTypes.Chain), ShipParts.HullSquare);
 
-            var piece = simulation.CreateShipPart(ParallelKey.From(ParallelTypes.ShipPart, key, 1), ShipParts.HullSquare);
+            var piece = simulation.CreateShipPart(key.GetKey(ParallelTypes.ShipPart, 1), ShipParts.HullSquare);
             simulation.PublishEvent(new CreateJointing()
             {
                 Parent = ship.Get<Ship>().Bridge.Get<Parallelable>().Key,

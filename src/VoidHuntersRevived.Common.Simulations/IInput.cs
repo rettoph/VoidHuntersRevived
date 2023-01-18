@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Simulations
 {
-    public enum DataSource
+    public interface IInput<TData> : IEvent<TData> 
+        where TData : IData
     {
-        External,
-        Internal,
-        Determined
+        public ParallelKey User { get; }
     }
 }

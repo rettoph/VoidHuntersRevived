@@ -15,7 +15,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
     [GuppyFilter<IGameGuppy>()]
     [SimulationTypeFilter(SimulationType.Predictive)]
-    internal sealed class PredictiveSimulation : Simulation<Common.Simulations.Components.Predictive>
+    internal sealed class PredictiveSimulation : Simulation<Common.Simulations.Components.Predictive>,
+        ISubscriber<Tick>
     {
         private IPredictiveSynchronizationSystem[] _synchronizeSystems;
 
@@ -45,9 +46,22 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             }
         }
 
-        public override void PublishEvent(IData data)
+        public override void Input(ParallelKey user, IData data)
         {
-            this.PublishEvent(data, DataSource.Internal);
+            this.PublishEvent(
+                @event: Simulation.Input.Factory.Create(
+                    sender: SimulationType.Predictive,
+                    user: user,
+                    data: data,
+                    simulation: this));
+        }
+
+        public void Process(in Tick message)
+        {
+            foreach(UserInput input in message.Inputs)
+            {
+                this.Input(input.User, input.Data);
+            }
         }
     }
 }

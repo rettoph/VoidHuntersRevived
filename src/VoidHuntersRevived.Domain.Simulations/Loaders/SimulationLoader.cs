@@ -56,10 +56,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
 
             manager.AddScoped<State>();
 
-            manager.AddScoped<ServerLockstepEventService>()
+            manager.AddScoped<ServerLockstepInputService>()
                 .AddInterfaceAliases();
 
-            manager.AddScoped<ClientLockstepEventService>()
+            manager.AddScoped<ClientLockstepInputService>()
                 .AddInterfaceAliases();
 
             manager.AddScoped<ClientTickFactory>()

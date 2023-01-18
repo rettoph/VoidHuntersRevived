@@ -8,7 +8,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Factories
     [PeerTypeFilter(PeerType.Client)]
     internal sealed class ClientTickFactory : ITickFactory
     {
-        public void Enqueue(IData data)
+        public void Enqueue(UserInput input)
         {
             throw new NotImplementedException();
         }

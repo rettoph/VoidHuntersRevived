@@ -8,6 +8,8 @@ namespace VoidHuntersRevived.Domain.Client.Constants
 {
     public static class Inputs
     {
+        public const string TractorBeam = "tractor_beam";
+
         public const string SetDirectionForward = "set_direction_forward";
         public const string SetDirectionRight = "set_direction_right";
         public const string SetDirectionBackward = "set_direction_backward";
