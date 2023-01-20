@@ -26,6 +26,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="MonoGame.Extended.Entities.World">
+      <Alias>World</Alias>
+    </Using>
     <Using Include="tainicom.Aether.Physics2D.Dynamics.World">
       <Alias>Aether</Alias>
     </Using>

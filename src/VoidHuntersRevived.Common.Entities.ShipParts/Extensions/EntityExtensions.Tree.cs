@@ -16,6 +16,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Extensions
         public static Entity MakeTree(this Entity entity, Body body, Entity? head = null)
         {
             var tree = new Tree(entity);
+            body.Tag = entity.Id;
 
             entity.Attach(body);
             entity.Attach(tree);

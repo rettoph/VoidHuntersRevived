@@ -13,5 +13,6 @@ namespace VoidHuntersRevived.Domain.Entities.Events
     public sealed class SetTractoring : Message<SetTractoring>, IData
     {
         public required bool Value { get; init; }
+        public ParallelKey Tractorable { get; init; }
     }
 }

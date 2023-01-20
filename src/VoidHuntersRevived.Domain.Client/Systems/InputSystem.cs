@@ -18,9 +18,12 @@ using MonoGame.Extended;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Lockstep.Messages;
 using Guppy.Network.Identity;
+using VoidHuntersRevived.Common.Entities.ShipParts.Services;
+using Guppy.Attributes;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
+    [GuppyFilter<ClientGameGuppy>()]
     [SimulationTypeFilter(SimulationType.Predictive)]
     internal sealed class InputSystem : UpdateSystem,
         ISubscriber<SetPilotingDirection>,
@@ -30,6 +33,9 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private readonly NetScope _netScope;
         private readonly ISimulationService _simulations;
         private readonly Camera2D _camera;
+        private readonly ITractorService _tractor;
+        private ComponentMapper<Piloting> _pilotings;
+        private ComponentMapper<Pilotable> _pilotables;
 
         private Vector2 CurrentTarget => _camera.Unproject(Mouse.GetState().Position.ToVector2());
         private ParallelKey CurrentPilotKey
@@ -48,11 +54,24 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         public InputSystem(
             NetScope netScope,
             Camera2D camera,
-            ISimulationService simulations)
+            ISimulationService simulations,
+            ITractorService tractor)
         {
             _netScope = netScope;
             _camera = camera;
             _simulations = simulations;
+            _tractor = tractor;
+
+            _pilotings = default!;
+            _pilotables = default!;
+        }
+
+        public override void Initialize(World world)
+        {
+            base.Initialize(world);
+
+            _pilotings = world.ComponentMapper.GetMapper<Piloting>();
+            _pilotables = world.ComponentMapper.GetMapper<Pilotable>();
         }
 
         public override void Update(GameTime gameTime)
@@ -68,7 +87,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         public void Process(in SetPilotingDirection message)
         {
             _simulations.Input(
-                pilotKey: CurrentPilotKey, 
+                pilotKey: CurrentPilotKey,
                 data: new SetPilotingDirection(
                     which: message.Which,
                     value: message.Value));
@@ -76,12 +95,16 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         public void Process(in SetTractoring message)
         {
-            _simulations.Input(
+            if (_tractor.TryGetTractorable(this.CurrentTarget, out var tractorableKey))
+            {
+                _simulations.Input(
                 pilotKey: CurrentPilotKey,
                 data: new SetTractoring()
                 {
-                    Value = message.Value
+                    Value = message.Value,
+                    Tractorable = tractorableKey
                 });
+            }
         }
 
         private void SetTarget(SimulationType simulation)

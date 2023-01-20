@@ -64,6 +64,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             _initialized = true;
         }
 
+        public ISimulation First(params SimulationType[] types)
+        {
+            foreach(SimulationType type in types)
+            {
+                if(_simulations.TryGetValue(type, out var simulation))
+                {
+                    return simulation;
+                }
+            }
+
+            throw new NotImplementedException();
+        }
+
         public void Update(GameTime gameTime)
         {
             foreach (ISimulation simulation in _simulations.Values)

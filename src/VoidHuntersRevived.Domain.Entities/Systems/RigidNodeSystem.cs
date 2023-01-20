@@ -54,6 +54,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             foreach(var shape in rigid.Configuration.Shapes)
             {
                 var fixture = new Fixture(shape.Clone(ref transformation));
+                fixture.Tag = entityId;
+
                 body.Add(fixture);
             }
         }

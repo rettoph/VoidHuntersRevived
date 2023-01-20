@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace VoidHuntersRevived.Common.Simulations.Services
 {
@@ -15,6 +16,8 @@ namespace VoidHuntersRevived.Common.Simulations.Services
         ISimulation this[SimulationType type] { get; }
 
         void Initialize(SimulationType simulationTypeFlags);
+
+        ISimulation First(params SimulationType[] types);
 
         void Update(GameTime gameTime);
 
