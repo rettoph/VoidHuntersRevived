@@ -20,6 +20,6 @@ namespace VoidHuntersRevived.Common.Simulations.Services
 
         void PublishEvent(IData data);
 
-        void Input(ParallelKey user, IData data);
+        void Input(ParallelKey pilotKey, IData data);
     }
 }

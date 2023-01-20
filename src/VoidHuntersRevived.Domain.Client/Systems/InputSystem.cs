@@ -68,7 +68,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         public void Process(in SetPilotingDirection message)
         {
             _simulations.Input(
-                user: CurrentPilotKey, 
+                pilotKey: CurrentPilotKey, 
                 data: new SetPilotingDirection(
                     which: message.Which,
                     value: message.Value));
@@ -77,7 +77,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         public void Process(in SetTractoring message)
         {
             _simulations.Input(
-                user: CurrentPilotKey,
+                pilotKey: CurrentPilotKey,
                 data: new SetTractoring()
                 {
                     Value = message.Value

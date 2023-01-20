@@ -80,11 +80,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             }
         }
 
-        public void Input(ParallelKey user, IData data)
+        public void Input(ParallelKey pilotKey, IData data)
         {
+            var request = SimulationService.Request.Factory.Create(pilotKey, data);
+            _bus.Publish(request);
+
+            if(request.Rejected)
+            {
+                return;
+            }
+
             foreach (ISimulation simulation in _simulations.Values)
             {
-                simulation.Input(user, data);
+                simulation.Input(pilotKey, data);
             }
         }
     }
