@@ -7,8 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Helpers;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
         public override UserInput Deserialize(NetDataReader reader)
         {
             return new UserInput(
-                user: ParallelKeyHelper.GetPilotKey(reader.GetInt()),
+                user: ParallelTypes.Pilot.Create(reader.GetInt()),
                 data: (IData)_serializers.Deserialize(reader));
         }
 

@@ -98,12 +98,12 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             if (_tractor.TryGetTractorable(this.CurrentTarget, out var tractorableKey))
             {
                 _simulations.Input(
-                pilotKey: CurrentPilotKey,
-                data: new SetTractoring()
-                {
-                    Value = message.Value,
-                    Tractorable = tractorableKey
-                });
+                    pilotKey: CurrentPilotKey,
+                    data: new SetTractoring()
+                    {
+                        Value = message.Value,
+                        Tractorable = tractorableKey
+                    });
             }
         }
 

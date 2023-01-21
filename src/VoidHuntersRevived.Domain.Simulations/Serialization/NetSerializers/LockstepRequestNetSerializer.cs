@@ -4,6 +4,7 @@ using Guppy.Network.Identity;
 using Guppy.Network.Providers;
 using LiteNetLib.Utils;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Domain.Simulations.Lockstep.Messages;
 
@@ -24,13 +25,13 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
         public override ClientRequest Deserialize(NetDataReader reader)
         {
             return new ClientRequest(
-                user: ParallelKey.From(nameof(User), reader.GetInt()),
+                user: ParallelTypes.Pilot.ReadValue(reader),
                 data: (IData)_serializers.Deserialize(reader));
         }
 
         public override void Serialize(NetDataWriter writer, in ClientRequest instance)
         {
-            writer.Put(instance.User.Value);
+            instance.User.WriteValue(writer);
             _serializers.Serialize(writer, instance.Data);
         }
     }

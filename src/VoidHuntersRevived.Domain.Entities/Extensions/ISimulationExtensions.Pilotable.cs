@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
         {
             return simulation.CreateEntity(key).MakeShip(
                 aether: simulation.Aether,
-                bridge: simulation.CreateShipPart(ParallelKey.From(ParallelTypes.ShipPart, key), bridgeConfiguration));
+                bridge: simulation.CreateShipPart(key.Create(ParallelTypes.ShipPart), bridgeConfiguration));
         }
     }
 }

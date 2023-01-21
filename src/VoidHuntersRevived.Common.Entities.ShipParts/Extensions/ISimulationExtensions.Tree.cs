@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Extensions
     {
         public static Entity CreateChain(this ISimulation simulation, ParallelKey key, string headConfiguration)
         {
-            var head = simulation.CreateShipPart(ParallelKey.From(ParallelTypes.Chain, key, 0), headConfiguration);
+            var head = simulation.CreateShipPart(key.Create(ParallelTypes.Chain, 0), headConfiguration);
 
             return simulation.CreateEntity(key).MakeChain(simulation.Aether, head);
         }

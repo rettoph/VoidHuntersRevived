@@ -14,9 +14,9 @@ using VoidHuntersRevived.Common.Entities.ShipParts.Extensions;
 using VoidHuntersRevived.Common.Entities.ShipParts.Events;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Domain.Entities.Components;
-using VoidHuntersRevived.Common.Simulations.Extensions;
 using MonoGame.Extended.Entities;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
+using VoidHuntersRevived.Common.Entities.Extensions;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
@@ -65,19 +65,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
                 _scope.Users.Add(user);
             }
 
-            var key = user.GetPilotKey(); ;
+            var key = user.GetPilotKey();
 
             if(simulation.HasEntity(key))
             { // This operation has already been done
                 return;
             }
 
-            var ship = simulation.CreateShip(key.GetKey(ParallelTypes.Ship), ShipParts.HullSquare);
+            var ship = simulation.CreateShip(key.Create(ParallelTypes.Ship), ShipParts.HullSquare);
             var pilot = simulation.CreatePilot(key, ship);
 
-            var chain = simulation.CreateChain(key.GetKey(ParallelTypes.Chain), ShipParts.HullSquare);
+            var chain = simulation.CreateChain(key.Create(ParallelTypes.Chain), ShipParts.HullSquare);
 
-            var piece = simulation.CreateShipPart(key.GetKey(ParallelTypes.ShipPart, 1), ShipParts.HullSquare);
+            var piece = simulation.CreateShipPart(key.Create(ParallelTypes.ShipPart, 1), ShipParts.HullSquare);
             simulation.PublishEvent(new CreateJointing()
             {
                 Parent = ship.Get<Ship>().Bridge.Get<Parallelable>().Key,
