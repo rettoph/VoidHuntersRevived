@@ -11,7 +11,6 @@ using tainicom.Aether.Physics2D.Common.ConvexHull;
 using VoidHuntersRevived.Common.Entities.ShipParts;
 using VoidHuntersRevived.Common.Entities.ShipParts.Configurations;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
-using VoidHuntersRevived.Domain.Entities.Components;
 
 namespace VoidHuntersRevived.Domain.Entities.Loaders
 {

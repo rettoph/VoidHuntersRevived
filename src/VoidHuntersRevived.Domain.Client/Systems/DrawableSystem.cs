@@ -11,7 +11,6 @@ using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Configurations;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using VoidHuntersRevived.Common.Simulations.Components;
-using VoidHuntersRevived.Domain.Entities.Components;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {

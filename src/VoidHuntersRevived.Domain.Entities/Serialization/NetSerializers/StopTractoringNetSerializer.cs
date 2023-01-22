@@ -13,19 +13,15 @@ using VoidHuntersRevived.Domain.Entities.Events;
 namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
 {
     [AutoLoad]
-    internal sealed class SetTractoringNetSerializer : NetSerializer<SetTractoring>
+    internal sealed class StopTractoringNetSerializer : NetSerializer<StopTractoring>
     {
-        public override SetTractoring Deserialize(NetDataReader reader)
+        public override StopTractoring Deserialize(NetDataReader reader)
         {
-            return new SetTractoring()
-            {
-                Value = reader.GetBool()
-            };
+            return StopTractoring.Instance;
         }
 
-        public override void Serialize(NetDataWriter writer, in SetTractoring instance)
+        public override void Serialize(NetDataWriter writer, in StopTractoring instance)
         {
-            writer.Put(instance.Value);
         }
     }
 }

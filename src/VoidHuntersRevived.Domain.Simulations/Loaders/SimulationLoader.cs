@@ -95,7 +95,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
                 .AddInterfaceAliases();
 
             services.AddNetMessageType<Tick>(DeliveryMethod.ReliableUnordered, 0);
-            services.AddNetMessageType<ClientRequest>(DeliveryMethod.ReliableUnordered, 0);
+            services.AddNetMessageType<ClientInputRequest>(DeliveryMethod.ReliableUnordered, 0);
             services.AddNetMessageType<StateBegin>(DeliveryMethod.ReliableUnordered, 0);
             services.AddNetMessageType<StateTick>(DeliveryMethod.ReliableUnordered, 0);
             services.AddNetMessageType<StateEnd>(DeliveryMethod.ReliableUnordered, 0);

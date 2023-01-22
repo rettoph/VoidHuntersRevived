@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations;
 
-namespace VoidHuntersRevived.Common
+namespace VoidHuntersRevived.Common.Simulations
 {
     public readonly struct ParallelKey
     {

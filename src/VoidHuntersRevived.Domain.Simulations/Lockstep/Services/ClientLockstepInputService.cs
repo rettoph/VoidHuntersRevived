@@ -27,8 +27,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Services
         public void Input(ParallelKey user, IData data)
         {
             _netScope.Messages.Create(
-                body: new ClientRequest(
-                    user: user, 
+                body: new ClientInputRequest(
+                    pilot: user, 
                     data: data)).Enqueue();
         }
     }

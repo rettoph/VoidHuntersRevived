@@ -11,7 +11,6 @@ using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common.Simulations.Components;
-using VoidHuntersRevived.Domain.Entities.Components;
 using MonoGame.Extended.Entities.Systems;
 using Guppy.Common.Collections;
 using tainicom.Aether.Physics2D.Common;

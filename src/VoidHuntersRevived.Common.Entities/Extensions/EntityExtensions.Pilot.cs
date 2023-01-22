@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Domain.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Components;
 
-namespace VoidHuntersRevived.Domain.Entities.Extensions
+namespace VoidHuntersRevived.Common.Entities.Extensions
 {
     public static partial class EntityExtensions
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Domain.Entities.Enums;
+using VoidHuntersRevived.Common.Entities.Enums;
 
-namespace VoidHuntersRevived.Domain.Entities.Components
+namespace VoidHuntersRevived.Common.Entities.Components
 {
     public sealed partial class Pilotable
     {

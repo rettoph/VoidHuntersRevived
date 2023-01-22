@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Common.Entities.Extensions
 {
     public static class UserExtensions
     {
-        public static ParallelKey GetPilotKey(this User user)
+        public static ParallelKey GetKey(this User user)
         {
             return ParallelTypes.Pilot.Create(user.Id);
         }

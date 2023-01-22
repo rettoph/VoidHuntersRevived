@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.Network;
+using Guppy.Network.Identity;
 using Guppy.Resources.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
@@ -48,12 +49,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
         public override void Input(ParallelKey user, IData data)
         {
-            this.PublishEvent(
-                @event: Simulation.Input.Factory.Create(
-                    sender: SimulationType.Predictive,
-                    user: user,
-                    data: data,
-                    simulation: this));
+            if (Simulation.Input.Factory.TryCreate(SimulationType.Predictive, user, data, this, out IEvent? instance))
+            {
+                this.PublishEvent(instance);
+            }
         }
 
         public void Process(in Tick message)

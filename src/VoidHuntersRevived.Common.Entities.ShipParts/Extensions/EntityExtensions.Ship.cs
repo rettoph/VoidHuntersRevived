@@ -7,22 +7,15 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Extensions;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using tainicom.Aether.Physics2D.Dynamics;
 
-namespace VoidHuntersRevived.Domain.Entities.Extensions
+namespace VoidHuntersRevived.Common.Entities.Extensions
 {
     public static partial class EntityExtensions
     {
-        public static Entity MakePilotable(this Entity entity)
-        {
-            entity.Attach(new Pilotable());
-
-            return entity;
-        }
-
         public static bool IsPilotable(this Entity entity)
         {
             return entity.Has<Pilotable>();

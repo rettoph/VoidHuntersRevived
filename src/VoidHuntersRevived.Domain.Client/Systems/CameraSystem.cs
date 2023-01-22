@@ -7,10 +7,10 @@ using MonoGame.Extended.Entities.Systems;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
-using VoidHuntersRevived.Domain.Entities.Components;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 return;
             }
 
-            if (!_simulations[SimulationType.Predictive].TryGetEntityId(_scope.Peer!.Users.Current.GetPilotKey(), out var pilotId))
+            if (!_simulations[SimulationType.Predictive].TryGetEntityId(_scope.Peer!.Users.Current.GetKey(), out var pilotId))
             {
                 return;
             }

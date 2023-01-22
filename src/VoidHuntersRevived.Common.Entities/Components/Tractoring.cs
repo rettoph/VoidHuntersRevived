@@ -5,15 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Domain.Entities.Components
+namespace VoidHuntersRevived.Common.Entities.Components
 {
     public sealed class Tractoring
     {
-        public Entity Tractorable;
+        public int TractorableId;
 
-        public Tractoring(Entity tractorable)
+        public Tractoring(int tractorableId)
         {
-            this.Tractorable = tractorable;
+            this.TractorableId = tractorableId;
         }
     }
 }

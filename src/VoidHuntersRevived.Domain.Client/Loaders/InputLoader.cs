@@ -8,11 +8,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Domain.Entities.Enums;
+using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Domain.Entities.Events;
 using VoidHuntersRevived.Domain.Client.Constants;
 using VoidHuntersRevived.Domain.Client.Systems;
 using Guppy.MonoGame.Enums;
+using VoidHuntersRevived.Common.Simulations;
+using Guppy.Common;
 
 namespace VoidHuntersRevived.Domain.Client.Loaders
 {
@@ -27,16 +29,10 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
                     .AddInterfaceAliases();
             });
 
-            services.AddInput(Inputs.TractorBeam, MouseButtons.Right, new[]
+            services.AddInput(Inputs.TractorBeam, MouseButtons.Right, new (ButtonState, IMessage)[]
             {
-                (ButtonState.Pressed, new SetTractoring()
-                {
-                    Value = true
-                }),
-                (ButtonState.Released, new SetTractoring()
-                {
-                    Value = false
-                }),
+                (ButtonState.Pressed, new StartTractoring()),
+                (ButtonState.Released, StopTractoring.Instance),
             });
 
             InputLoader.AddSetDirectionInput(services, Inputs.SetDirectionForward, Keys.W, Direction.Forward);

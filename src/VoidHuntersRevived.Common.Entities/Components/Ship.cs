@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 
-namespace VoidHuntersRevived.Domain.Entities.Components
+namespace VoidHuntersRevived.Common.Entities.Components
 {
     public class Ship
     {

@@ -93,9 +93,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             }
         }
 
-        public void Input(ParallelKey pilotKey, IData data)
+        public void Input(ParallelKey user, IData data)
         {
-            var request = SimulationService.Request.Factory.Create(pilotKey, data);
+            var request = SimulationService.Request.Factory.Create(user, data);
             _bus.Publish(request);
 
             if(request.Rejected)
@@ -105,7 +105,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
             foreach (ISimulation simulation in _simulations.Values)
             {
-                simulation.Input(pilotKey, data);
+                simulation.Input(user, data);
             }
         }
     }

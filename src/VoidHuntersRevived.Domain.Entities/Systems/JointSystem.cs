@@ -15,7 +15,6 @@ using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Common.Systems;
 using VoidHuntersRevived.Domain.Entities;
-using VoidHuntersRevived.Domain.Entities.Components;
 using VoidHuntersRevived.Domain.Entities.Events;
 
 namespace VoidHuntersRevived.Domain.Entities.Systems

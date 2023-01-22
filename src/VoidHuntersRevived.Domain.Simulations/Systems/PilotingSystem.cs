@@ -6,43 +6,54 @@ using Serilog;
 using VoidHuntersRevived.Domain.Entities.Events;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
-using VoidHuntersRevived.Domain.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Systems;
+using VoidHuntersRevived.Common.Entities.ShipParts.Services;
+using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     internal sealed class PilotingSystem : BasicSystem,
         ISubscriber<IInput<SetPilotingDirection>>,
-        ISubscriber<IInput<SetPilotingTarget>>
+        ISubscriber<IInput<SetPilotingTarget>>,
+        ISubscriber<IInput<StartTractoring>>,
+        ISubscriber<IInput<StopTractoring>>
     {
         private ComponentMapper<Piloting> _pilotings;
         private ComponentMapper<Pilotable> _pilotables;
+        private ComponentMapper<Tractoring> _tractorings;
+        private ComponentMapper<Tractorable> _tractorables;
         private State _state;
-        private NetScope _scope;
-        private ILogger _logger;
+        private readonly NetScope _scope;
+        private readonly ITractorService _tractors;
+        private readonly ILogger _logger;
 
-        public PilotingSystem(ILogger logger, NetScope scope, State state)
+        public PilotingSystem(ITractorService tractors, ILogger logger, NetScope scope, State state)
         {
+            _tractors = tractors;
             _logger = logger;
             _scope = scope;
             _state = state;
             _pilotings = default!;
             _pilotables = default!;
+            _tractorings = default!;
+            _tractorables = default!;
         }
 
         public override void Initialize(World world)
         {
             _pilotings= world.ComponentMapper.GetMapper<Piloting>();
             _pilotables = world.ComponentMapper.GetMapper<Pilotable>();
+            _tractorings = world.ComponentMapper.GetMapper<Tractoring>();
+            _tractorables = world.ComponentMapper.GetMapper<Tractorable>();
         }
 
         public void Process(in IInput<SetPilotingDirection> message)
         {
-            var pilotId = message.Simulation.GetEntityId(message.PilotKey);
-            var piloting = _pilotings.Get(pilotId);
+            var piloting = _pilotings.Get(message.UserId);
             var pilotable = _pilotables.Get(piloting.Pilotable);
 
             if (message.Data.Value && (pilotable.Direction & message.Data.Which) == 0)
@@ -60,15 +71,31 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
         public void Process(in IInput<SetPilotingTarget> message)
         {
-            if(!message.Simulation.TryGetEntityId(message.PilotKey, out int pilotId))
+            var piloting = _pilotings.Get(message.UserId);
+            var pilotable = _pilotables.Get(piloting.Pilotable);
+
+            pilotable.Aim.Target = message.Data.Target;
+        }
+
+        public void Process(in IInput<StartTractoring> message)
+        {
+            if (!message.Simulation.TryGetEntityId(message.Data.Tractorable, out int tractorableId))
             {
                 return;
             }
 
-            var piloting = _pilotings.Get(pilotId);
-            var pilotable = _pilotables.Get(piloting.Pilotable);
+            if(!_tractorables.Has(tractorableId))
+            {
+                throw new NotImplementedException();
+            }
 
-            pilotable.Aim.Target = message.Data.Target;
+            var piloting = _pilotings.Get(message.UserId);
+            _tractorings.Put(piloting.Pilotable.Id, new Tractoring(tractorableId));
+        }
+
+        public void Process(in IInput<StopTractoring> message)
+        {
+            throw new NotImplementedException();
         }
     }
 }

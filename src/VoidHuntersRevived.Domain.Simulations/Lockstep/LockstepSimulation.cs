@@ -2,6 +2,7 @@
 using Guppy.Common;
 using Guppy.Network;
 using Guppy.Network.Enums;
+using Guppy.Network.Identity;
 using LiteNetLib;
 using Microsoft.Xna.Framework;
 using Serilog;
@@ -61,12 +62,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         {
             foreach (UserInput input in message.Inputs)
             {
-                this.PublishEvent(
-                    @event: Simulation.Input.Factory.Create(
-                        sender: SimulationType.Lockstep,
-                        user: input.User, 
-                        data: input.Data, 
-                        simulation: this));
+                if(Simulation.Input.Factory.TryCreate(SimulationType.Lockstep, input.User, input.Data, this, out IEvent? instance))
+                {
+                    this.PublishEvent(instance);
+                }
             }
         }
 

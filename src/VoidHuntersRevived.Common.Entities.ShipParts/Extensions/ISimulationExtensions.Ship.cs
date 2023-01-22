@@ -4,9 +4,9 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Extensions;
 using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Domain.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Components;
 
-namespace VoidHuntersRevived.Domain.Entities.Extensions
+namespace VoidHuntersRevived.Common.Entities.Extensions
 {
     public static partial class ISimulationExtensions
     {

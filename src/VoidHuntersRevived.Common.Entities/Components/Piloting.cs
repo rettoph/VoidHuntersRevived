@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Domain.Entities.Enums;
+using VoidHuntersRevived.Common.Entities.Enums;
 
-namespace VoidHuntersRevived.Domain.Entities.Components
+namespace VoidHuntersRevived.Common.Entities.Components
 {
     public class Piloting
     {

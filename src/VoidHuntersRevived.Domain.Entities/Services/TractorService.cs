@@ -1,15 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Collision;
 using tainicom.Aether.Physics2D.Dynamics;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities.ShipParts;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using VoidHuntersRevived.Common.Simulations;

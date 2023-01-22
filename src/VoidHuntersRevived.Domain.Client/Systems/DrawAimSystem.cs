@@ -11,7 +11,6 @@ using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common.Simulations.Components;
-using VoidHuntersRevived.Domain.Entities.Components;
 using MonoGame.Extended.Entities.Systems;
 using Guppy.Common.Collections;
 using tainicom.Aether.Physics2D.Common;
@@ -19,6 +18,7 @@ using tainicom.Aether.Physics2D.Dynamics.Joints;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Helpers;
 using Guppy.MonoGame.Primitives;
+using VoidHuntersRevived.Common.Entities.Components;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {

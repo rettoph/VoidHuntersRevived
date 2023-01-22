@@ -11,7 +11,7 @@ using VoidHuntersRevived.Common.Simulations.Systems;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities.Systems;
 using MonoGame.Extended.Entities;
-using VoidHuntersRevived.Domain.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Components;
 using Microsoft.Xna.Framework.Input;
 using Guppy.MonoGame.Utilities.Cameras;
 using MonoGame.Extended;
@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
     [SimulationTypeFilter(SimulationType.Predictive)]
     internal sealed class InputSystem : UpdateSystem,
         ISubscriber<SetPilotingDirection>,
-        ISubscriber<SetTractoring>,
+        ISubscriber<StartTractoring>,
         ISubscriber<PreTick>
     {
         private readonly NetScope _netScope;
@@ -87,21 +87,20 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         public void Process(in SetPilotingDirection message)
         {
             _simulations.Input(
-                pilotKey: CurrentPilotKey,
+                user: CurrentPilotKey,
                 data: new SetPilotingDirection(
                     which: message.Which,
                     value: message.Value));
         }
 
-        public void Process(in SetTractoring message)
+        public void Process(in StartTractoring message)
         {
             if (_tractor.TryGetTractorable(this.CurrentTarget, out var tractorableKey))
             {
                 _simulations.Input(
-                    pilotKey: CurrentPilotKey,
-                    data: new SetTractoring()
+                    user: CurrentPilotKey,
+                    data: new StartTractoring()
                     {
-                        Value = message.Value,
                         Tractorable = tractorableKey
                     });
             }

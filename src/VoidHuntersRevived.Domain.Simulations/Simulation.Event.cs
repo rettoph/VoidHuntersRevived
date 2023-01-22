@@ -6,8 +6,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Simulations;
 
-namespace VoidHuntersRevived.Common.Simulations
+namespace VoidHuntersRevived.Domain.Simulations
 {
     public partial class Simulation
     {

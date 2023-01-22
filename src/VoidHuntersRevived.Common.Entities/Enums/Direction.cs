@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Domain.Entities.Enums
+namespace VoidHuntersRevived.Common.Entities.Enums
 {
     [Flags]
     public enum Direction : byte

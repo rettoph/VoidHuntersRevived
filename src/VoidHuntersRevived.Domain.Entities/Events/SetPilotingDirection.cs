@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Domain.Entities.Enums;
+using VoidHuntersRevived.Common.Entities.Enums;
 
 namespace VoidHuntersRevived.Domain.Entities.Events
 {

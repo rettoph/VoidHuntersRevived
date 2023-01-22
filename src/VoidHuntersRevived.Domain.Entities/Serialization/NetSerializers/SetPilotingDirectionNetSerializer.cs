@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Domain.Entities.Enums;
+using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Domain.Entities.Events;
 
 namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers

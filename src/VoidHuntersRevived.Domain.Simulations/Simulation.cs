@@ -1,6 +1,7 @@
 ﻿using Guppy.Common;
 using Guppy.Network;
 using Guppy.Network.Enums;
+using Guppy.Network.Identity;
 using LiteNetLib;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
@@ -13,11 +14,12 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
 
-namespace VoidHuntersRevived.Common.Simulations
+namespace VoidHuntersRevived.Domain.Simulations
 {
     public abstract partial class Simulation<TEntityComponent> : ISimulation, IDisposable
         where TEntityComponent : class, new()
@@ -66,6 +68,8 @@ namespace VoidHuntersRevived.Common.Simulations
             _updateSystems = this.Provider.GetRequiredService<IFiltered<ISimulationUpdateSystem>>().Instances.ToArray();
 
             _globalsSmulationService.Add(this);
+
+            this.CreateEntity(ParallelKeys.System);
         }
 
         public void Dispose()

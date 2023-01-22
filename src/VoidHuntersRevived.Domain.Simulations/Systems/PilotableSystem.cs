@@ -2,11 +2,11 @@
 using MonoGame.Extended.Entities;
 using Serilog;
 using tainicom.Aether.Physics2D.Dynamics;
-using VoidHuntersRevived.Domain.Entities.Enums;
+using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
-using VoidHuntersRevived.Domain.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Components;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
