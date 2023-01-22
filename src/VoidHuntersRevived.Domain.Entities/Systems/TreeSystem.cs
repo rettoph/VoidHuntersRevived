@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         private ComponentMapper<Tree> _trees;
         private ComponentMapper<Node> _nodes;
-        private ComponentMapper<Jointed> _jointed;
+        private ComponentMapper<Jointing> _jointed;
         private ComponentMapper<Body> _bodies;
 
         public TreeSystem(ISimulationService simulations) : base(simulations, TreeAspect)
@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         {
             _trees = mapperService.GetMapper<Tree>();
             _nodes = mapperService.GetMapper<Node>();
-            _jointed = mapperService.GetMapper<Jointed>();
+            _jointed = mapperService.GetMapper<Jointing>();
             _bodies = mapperService.GetMapper<Body>();
         }
 

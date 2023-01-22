@@ -18,12 +18,21 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 
             public readonly Entity Entity;
 
+            public readonly int Index;
+
             public Matrix LocalTransformation;
 
-            public Joint(JointConfiguration configuration, Entity entity)
+            public Vector2 LocalPosition => Vector2.Transform(Vector2.Zero, this.LocalTransformation);
+
+            public Jointing? Jointing;
+
+            public bool Jointed => this.Jointing is not null;
+
+            public Joint(JointConfiguration configuration, Entity entity, int index)
             {
                 this.Configuration = configuration;
                 this.Entity = entity;
+                this.Index = index;
 
                 this.Reset();
             }

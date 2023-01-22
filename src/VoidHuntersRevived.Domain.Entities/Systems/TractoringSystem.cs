@@ -3,13 +3,17 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
+using VoidHuntersRevived.Common.Entities.ShipParts.Events;
+using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Domain.Entities.Events;
@@ -24,28 +28,38 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             typeof(Tractoring)
         });
 
+        private readonly ITractorService _tractor;
+
         private ComponentMapper<Tractoring> _tractorings;
         private ComponentMapper<Tractorable> _tractorables;
-        private ComponentMapper<Body> _bodies;
         private ComponentMapper<Pilotable> _pilotables;
         private ComponentMapper<Piloting> _pilotings;
+        private ComponentMapper<Body> _bodies;
+        private ComponentMapper<Tree> _trees;
+        private ComponentMapper<Jointable> _jointables;
 
-        public TractoringSystem(ISimulationService simulations) : base(simulations, TractoringAspect)
+        public TractoringSystem(ITractorService tractor, ISimulationService simulations) : base(simulations, TractoringAspect)
         {
+            _tractor = tractor;
+
             _tractorings = default!;
-            _bodies = default!;
-            _pilotables = default!;
             _tractorables = default!;
+            _pilotables = default!;
             _pilotings = default!;
+            _bodies = default!;
+            _trees = default!;
+            _jointables = default!;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
         {
             _tractorings = mapperService.GetMapper<Tractoring>();
-            _bodies = mapperService.GetMapper<Body>();
-            _pilotables = mapperService.GetMapper<Pilotable>();
             _tractorables = mapperService.GetMapper<Tractorable>();
+            _pilotables = mapperService.GetMapper<Pilotable>();
             _pilotings = mapperService.GetMapper<Piloting>();
+            _bodies = mapperService.GetMapper<Body>();
+            _trees = mapperService.GetMapper<Tree>();
+            _jointables = mapperService.GetMapper<Jointable>();
         }
 
         public void Process(in IInput<StartTractoring> message)
@@ -61,7 +75,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             }
 
             var piloting = _pilotings.Get(message.UserId);
-            _tractorings.Put(piloting.Pilotable.Id, new Tractoring(tractorableId));
+            _tractorings.Put(piloting.Pilotable.Id, new Tractoring(piloting.Pilotable.Id, tractorableId));
         }
 
         public void Process(in IInput<StopTractoring> message)
@@ -73,25 +87,32 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            var body = _bodies.Get(tractoring.TractorableId);
-            this.TransformBody(body, message.Data.Target);
-
+            var tree = _trees.Get(piloting.Pilotable.Id);
             _tractorings.Delete(piloting.Pilotable.Id);
+
+            if(!_tractor.TransformTractorable(message.Data.Target, tractoring, out var jointing))
+            {
+                return;
+            }
+
+            message.Simulation.PublishEvent(new CreateJointing()
+            {
+                Parent = jointing.Parent.Entity.Get<Parallelable>().Key,
+                ParentJointId = jointing.Parent.Index,
+                Joint = jointing.Joint.Entity.Get<Parallelable>().Key,
+                ChildJointId = jointing.Joint.Index
+            });
         }
 
         protected override void Process(ISimulation simulation, GameTime gameTime, int entityId)
         {
             var pilotable = _pilotables.Get(entityId);
             var tractoring = _tractorings.Get(entityId);
-            var body = _bodies.Get(tractoring.TractorableId);
+            var tree = _trees.Get(entityId);
 
-            this.TransformBody(body, pilotable.Aim.Value);
+            _tractor.TransformTractorable(pilotable.Aim.Value, tractoring, out _);
         }
 
-        private void TransformBody(Body body, Vector2 target)
-        {
-            target = Vector2.Transform(target, body.GetLocalCenterTransformation().Invert());
-            body.SetTransformIgnoreContacts(target, body.Rotation);
-        }
+        
     }
 }

@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Common.Simulations
 
         public ParallelKey Create(ParallelType type, int index)
         {
-            return ParallelKey.From(type, this.Value, index);
+            return ParallelKey.From(type, this.GetHashCode(), index);
         }
 
         public void WriteAll(NetDataWriter writer)

@@ -9,10 +9,12 @@ namespace VoidHuntersRevived.Common.Entities.Components
 {
     public sealed class Tractoring
     {
+        public int EntityId;
         public int TractorableId;
 
-        public Tractoring(int tractorableId)
+        public Tractoring(int entityId, int tractorableId)
         {
+            this.EntityId = entityId;
             this.TractorableId = tractorableId;
         }
     }

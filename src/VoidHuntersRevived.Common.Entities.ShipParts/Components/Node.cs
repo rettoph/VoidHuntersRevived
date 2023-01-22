@@ -16,6 +16,8 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
         public readonly Matrix LocalTransformation;
         public Matrix WorldTransformation;
 
+        public Vector2 WorldPosition => Vector2.Transform(Vector2.Zero, this.WorldTransformation);
+
         internal Node(Entity entity, Entity tree, Matrix localTransformation)
         {
             this.Entity = entity;

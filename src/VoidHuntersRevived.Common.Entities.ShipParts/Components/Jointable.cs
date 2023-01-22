@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
             this.Configuration = configuration;
             this.Entity = entity;
 
-            this.Joints = configuration.Joints.Select(x => new Jointable.Joint(x, this.Entity)).ToArray();
+            this.Joints = configuration.Joints.Select((x, idx) => new Jointable.Joint(x, this.Entity, idx)).ToArray();
         }
     }
 }

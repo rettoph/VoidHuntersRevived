@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
     {
         private readonly ISimulationService _simulations;
         private ComponentMapper<Jointable> _jointables;
-        private ComponentMapper<Jointed> _jointed;
+        private ComponentMapper<Jointing> _jointed;
         private ComponentMapper<Jointings> _jointings;
 
         public JointSystem(ISimulationService simulations)
@@ -39,21 +39,21 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         public override void Initialize(World world)
         {
             _jointables = world.ComponentMapper.GetMapper<Jointable>();
-            _jointed = world.ComponentMapper.GetMapper<Jointed>();
+            _jointed = world.ComponentMapper.GetMapper<Jointing>();
             _jointings = world.ComponentMapper.GetMapper<Jointings>();
         }
 
         public void Process(in IEvent<CreateJointing> message)
         {
             var parentId = message.Simulation.GetEntityId(message.Data.Parent);
-            var childId = message.Simulation.GetEntityId(message.Data.Child);
+            var childId = message.Simulation.GetEntityId(message.Data.Joint);
 
             var jointings = _jointings.Get(parentId);
-            var jointed = new Jointed(
+            var jointing = new Jointing(
                 joint: _jointables.Get(childId).Joints[message.Data.ChildJointId],
                 parent: _jointables.Get(parentId).Joints[message.Data.ParentJointId]);
 
-            if(!jointed.Validate())
+            if(!jointing.Validate())
             {
                 throw new NotImplementedException();
             }
@@ -62,7 +62,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             // Should we just detach?
             if(_jointed.TryGet(childId, out var oldLink))
             {
-                if(jointed == oldLink)
+                if(jointing == oldLink)
                 { // The link already exists
                     return;
                 }
@@ -72,24 +72,24 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             // The parent join is already linked to something else
             // Should we just detach?
-            if(jointings.Children.Any(x => x.Parent == jointed.Parent))
+            if(jointings.Children.Any(x => x.Parent == jointing.Parent))
             {
                 throw new NotImplementedException();
             }
 
-            jointings.Add(jointed);
-            _jointed.Put(childId, jointed);
+            jointings.Add(jointing);
+            _jointed.Put(childId, jointing);
 
             // Update local transformations
-            var transformation = jointed.LocalTransformation;
+            var transformation = jointing.LocalTransformation;
 
-            var jointable = _jointables.Get(jointed.Joint.Entity);
+            var jointable = _jointables.Get(jointing.Joint.Entity);
             foreach (var joint in jointable.Joints)
             {
                 joint.LocalTransformation = joint.Configuration.Transformation * transformation;
             }
 
-            message.Simulation.PublishEvent(new CleanJointed(jointed));
+            message.Simulation.PublishEvent(new CleanJointed(jointing));
         }
     }
 }

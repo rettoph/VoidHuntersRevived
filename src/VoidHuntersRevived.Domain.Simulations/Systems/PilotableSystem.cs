@@ -47,6 +47,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             }
 
             var impulse = Vector2.Zero;
+            var angularImpulse = 0f;
 
             if (pilotable.Direction.HasFlag(Direction.Forward))
             {
@@ -61,6 +62,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             if (pilotable.Direction.HasFlag(Direction.TurnLeft))
             {
                 impulse -= Vector2.UnitX;
+                angularImpulse -= 0.001f;
             }
 
             if (pilotable.Direction.HasFlag(Direction.TurnRight))
@@ -71,6 +73,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             impulse *= (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             body.ApplyLinearImpulse(impulse);
+            body.ApplyAngularImpulse(angularImpulse);
         }
 
         public void Synchronize(ISimulation simulation, GameTime gameTime, float damping)

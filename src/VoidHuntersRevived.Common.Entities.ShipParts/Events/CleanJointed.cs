@@ -10,9 +10,9 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Events
 {
     public sealed class CleanJointed : IData
     {
-        public readonly Jointed Jointed;
+        public readonly Jointing Jointed;
 
-        public CleanJointed(Jointed jointed)
+        public CleanJointed(Jointing jointed)
         {
             Jointed = jointed;
         }

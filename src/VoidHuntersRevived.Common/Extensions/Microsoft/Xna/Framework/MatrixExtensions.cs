@@ -13,5 +13,10 @@ namespace Microsoft.Xna.Framework
         {
             return Matrix.Invert(matrix);
         }
+
+        public static float Radians(this Matrix matrix)
+        {
+            return MathF.Atan2(matrix.M21, matrix.M11);
+        }
     }
 }

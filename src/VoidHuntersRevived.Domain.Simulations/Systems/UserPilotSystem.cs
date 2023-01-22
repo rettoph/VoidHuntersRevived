@@ -69,7 +69,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             {
                 Parent = ship.Get<Ship>().Bridge.Get<Parallelable>().Key,
                 ParentJointId = 1,
-                Child = piece.Get<Parallelable>().Key,
+                Joint = piece.Get<Parallelable>().Key,
                 ChildJointId = 0
             });
         }
