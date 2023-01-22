@@ -10,8 +10,6 @@ namespace VoidHuntersRevived.Domain.Client.Systems
     {
         private sealed class Renderer
         {
-            private Vector2[][] _vertices;
-            private Vector2[] _buffer;
             private readonly DrawConfiguration _configuration;
             private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
             private readonly Color _color;
@@ -24,8 +22,6 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             {
                 _configuration = configuration;
                 _primitiveBatch = primitiveBatch;
-                _vertices = _configuration.Shapes;
-                _buffer = new Vector2[3];
                 _color = resources.Get<Color>(_configuration.Color);
                 _shapes = _configuration.Shapes.Select(x => new PrimitiveShape(x)).ToArray();
             }

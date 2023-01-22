@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Events;
+using Microsoft.Xna.Framework;
 
 namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
 {
@@ -17,11 +18,15 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
     {
         public override StopTractoring Deserialize(NetDataReader reader)
         {
-            return StopTractoring.Instance;
+            return new StopTractoring()
+            {
+                Target = reader.GetVector2()
+            };
         }
 
         public override void Serialize(NetDataWriter writer, in StopTractoring instance)
         {
+            writer.Put(instance.Target);
         }
     }
 }

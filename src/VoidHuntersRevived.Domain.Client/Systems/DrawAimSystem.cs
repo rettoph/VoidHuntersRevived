@@ -19,6 +19,9 @@ using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Helpers;
 using Guppy.MonoGame.Primitives;
 using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.ShipParts.Services;
+using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
@@ -30,26 +33,35 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             typeof(Predictive)
         });
 
+        private readonly ISimulationService _simulations;
+        private readonly ITractorService _tractor;
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private readonly Camera2D _camera;
         private PrimitiveShape _shape;
 
         private ComponentMapper<Pilotable> _pilotable;
+        private ComponentMapper<Body> _bodies;
 
         public DrawAimSystem(
             PrimitiveBatch<VertexPositionColor> primitiveBatch,
-            Camera2D camera) : base(PilotableAspect)
+            Camera2D camera,
+            ITractorService tractor,
+            ISimulationService simulations) : base(PilotableAspect)
         {
             _primitiveBatch = primitiveBatch;
             _camera = camera;
+            _tractor = tractor;
+            _simulations = simulations;
             _shape = new PrimitiveShape(Vector2Helper.CreateCircle(0.25f, 16));
 
             _pilotable = default!;
+            _bodies = default!;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
         {
             _pilotable = mapperService.GetMapper<Pilotable>();
+            _bodies = mapperService.GetMapper<Body>();
         }
 
         public override void Draw(GameTime gameTime)
@@ -63,9 +75,33 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 var color = Color.Yellow;
 
                 _primitiveBatch.Trace(_shape, in color, ref transformation);
+
+                this.DrawTractorTarget(pilotable);
             }
 
             _primitiveBatch.End();
+        }
+
+        private void DrawTractorTarget(Pilotable pilotable)
+        {
+            if (!_tractor.TryGetTractorable(pilotable.Aim.Value, out var tractorableKey))
+            {
+                return;
+            }
+
+            if (!_simulations[SimulationType.Predictive].TryGetEntityId(tractorableKey, out int tractorableId))
+            {
+                return;
+            }
+
+            if(!_bodies.TryGet(tractorableId, out var body))
+            {
+                return;
+            }
+
+            var color = Color.Green;
+            var transformation = body.GetCenterTransformation();
+            _primitiveBatch.Trace(_shape, in color, ref transformation);
         }
     }
 }

@@ -42,6 +42,9 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
 
                 manager.AddScoped<TreeSystem>()
                     .AddInterfaceAliases();
+
+                manager.AddScoped<TractoringSystem>()
+                    .AddInterfaceAliases();
             });
         }
     }

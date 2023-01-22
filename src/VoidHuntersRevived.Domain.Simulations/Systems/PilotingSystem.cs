@@ -18,9 +18,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     internal sealed class PilotingSystem : BasicSystem,
         ISubscriber<IInput<SetPilotingDirection>>,
-        ISubscriber<IInput<SetPilotingTarget>>,
-        ISubscriber<IInput<StartTractoring>>,
-        ISubscriber<IInput<StopTractoring>>
+        ISubscriber<IInput<SetPilotingTarget>>
     {
         private ComponentMapper<Piloting> _pilotings;
         private ComponentMapper<Pilotable> _pilotables;
@@ -75,27 +73,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             var pilotable = _pilotables.Get(piloting.Pilotable);
 
             pilotable.Aim.Target = message.Data.Target;
-        }
-
-        public void Process(in IInput<StartTractoring> message)
-        {
-            if (!message.Simulation.TryGetEntityId(message.Data.Tractorable, out int tractorableId))
-            {
-                return;
-            }
-
-            if(!_tractorables.Has(tractorableId))
-            {
-                throw new NotImplementedException();
-            }
-
-            var piloting = _pilotings.Get(message.UserId);
-            _tractorings.Put(piloting.Pilotable.Id, new Tractoring(tractorableId));
-        }
-
-        public void Process(in IInput<StopTractoring> message)
-        {
-            throw new NotImplementedException();
         }
     }
 }

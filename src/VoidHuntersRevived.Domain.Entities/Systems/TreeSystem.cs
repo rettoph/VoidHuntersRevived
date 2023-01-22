@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             var tree = _trees.Get(entityId);
             var body = _bodies.Get(entityId);
 
-            var worldTransformation = body.GetWorldMatrix();
+            var worldTransformation = body.GetTransformation();
 
             foreach(var nodeId in tree.Nodes)
             {

@@ -11,12 +11,17 @@ using Microsoft.Xna.Framework;
 using Microsoft.Extensions.DependencyInjection;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common;
+using Guppy.Common;
+using VoidHuntersRevived.Common.Simulations.Lockstep;
+using MonoGame.Extended.Timers;
 
 namespace VoidHuntersRevived.Domain
 {
-    public abstract class GameGuppy : FrameableGuppy, IGameGuppy
+    public abstract class GameGuppy : FrameableGuppy, IGameGuppy,
+        ISubscriber<Step>
     {
         private World _world;
+        private readonly GameTime _worldGameTime;
 
         public readonly Peer Peer;
         public readonly NetScope NetScope;
@@ -28,6 +33,7 @@ namespace VoidHuntersRevived.Domain
             ISimulationService simulations)
         {
             _world = default!;
+            _worldGameTime = new GameTime();
 
             this.Peer = peer;
             this.NetScope = netScope;
@@ -39,6 +45,7 @@ namespace VoidHuntersRevived.Domain
             base.Initialize(provider);
 
             _world = provider.GetRequiredService<World>();
+            this.Bus.Subscribe(this);
         }
 
         public override void Update(GameTime gameTime)
@@ -49,7 +56,10 @@ namespace VoidHuntersRevived.Domain
 
             this.Simulations.Update(gameTime);
 
-            _world.Update(gameTime);
+            _worldGameTime.ElapsedGameTime = gameTime.ElapsedGameTime;
+            _worldGameTime.TotalGameTime += gameTime.ElapsedGameTime;
+
+            this.UpdateWorld();
         }
 
         public override void Draw(GameTime gameTime)
@@ -57,6 +67,17 @@ namespace VoidHuntersRevived.Domain
             base.Draw(gameTime);
 
             _world.Draw(gameTime);
+        }
+
+        public void Process(in Step message)
+        {
+            this.UpdateWorld();
+        }
+
+        private void UpdateWorld()
+        {
+            _world.Update(_worldGameTime);
+            _worldGameTime.ElapsedGameTime = TimeSpan.Zero;
         }
     }
 }

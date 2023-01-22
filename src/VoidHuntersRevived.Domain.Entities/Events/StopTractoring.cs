@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,7 @@ namespace VoidHuntersRevived.Domain.Entities.Events
     public class StopTractoring : Message<StopTractoring>, IData
     {
         public static readonly StopTractoring Instance = new StopTractoring();
+
+        public Vector2 Target { get; init; }
     }
 }

@@ -28,6 +28,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
     internal sealed class InputSystem : UpdateSystem,
         ISubscriber<SetPilotingDirection>,
         ISubscriber<StartTractoring>,
+        ISubscriber<StopTractoring>,
         ISubscriber<PreTick>
     {
         private readonly NetScope _netScope;
@@ -93,6 +94,16 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                     value: message.Value));
         }
 
+        private void SetTarget(SimulationType simulation)
+        {
+            _simulations[simulation].Input(
+                user: CurrentPilotKey,
+                data: new SetPilotingTarget()
+                {
+                    Target = CurrentTarget
+                });
+        }
+
         public void Process(in StartTractoring message)
         {
             if (_tractor.TryGetTractorable(this.CurrentTarget, out var tractorableKey))
@@ -106,11 +117,11 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             }
         }
 
-        private void SetTarget(SimulationType simulation)
+        public void Process(in StopTractoring message)
         {
-            _simulations[simulation].Input(
+            _simulations.Input(
                 user: CurrentPilotKey,
-                data: new SetPilotingTarget()
+                data: new StopTractoring()
                 {
                     Target = CurrentTarget
                 });

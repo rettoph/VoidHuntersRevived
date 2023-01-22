@@ -31,8 +31,6 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         private ComponentMapper<Drawable> _drawables;
         private ComponentMapper<Node> _nodes;
-        private ComponentMapper<Body> _bodies;
-        private ComponentMapper<Jointed> _jointed;
 
         public DrawableSystem(
             PrimitiveBatch<VertexPositionColor> primitiveBatch,
@@ -48,16 +46,12 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
             _drawables = default!;
             _nodes = default!;
-            _bodies = default!;
-            _jointed = default!;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
         {
             _drawables = mapperService.GetMapper<Drawable>();
             _nodes = mapperService.GetMapper<Node>();
-            _bodies = mapperService.GetMapper<Body>();
-            _jointed = mapperService.GetMapper<Jointed>();
 
             foreach (var configuration in _configurations.GetAll<DrawConfiguration>())
             {

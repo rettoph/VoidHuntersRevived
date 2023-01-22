@@ -129,7 +129,7 @@ namespace VoidHuntersRevived.Domain.Client
             // TODO: Add your update logic here
             base.Update(gameTime);
 
-            _server ??= _provider?.GetRequiredService<IGuppyProvider>().Create<ServerGameGuppy>();
+            // _server ??= _provider?.GetRequiredService<IGuppyProvider>().Create<ServerGameGuppy>();
             _client ??= _provider?.GetRequiredService<IGuppyProvider>().Create<ClientGameGuppy>();
 
             _globals ??= _provider?.GetRequiredService<IGlobal<IGameComponentService>>();

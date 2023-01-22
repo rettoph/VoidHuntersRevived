@@ -15,14 +15,18 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
         public Step(TimeSpan interval)
         {
             this.ElapsedGameTime = interval;
-            this.TotalGameTime = TimeSpan.Zero;
+            this.TotalGameTime = interval;
         }
 
-        internal Step Increment()
+        private Step(Step previous)
         {
-            this.TotalGameTime += ElapsedGameTime;
+            this.ElapsedGameTime = previous.ElapsedGameTime;
+            this.TotalGameTime = previous.TotalGameTime + this.ElapsedGameTime;
+        }
 
-            return this;
+        internal Step Next()
+        {
+            return new Step(this);
         }
     }
 }

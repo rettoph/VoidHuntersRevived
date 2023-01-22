@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
     {
         private int _stepsSinceTick;
         private readonly int _stepsPerTick;
-        private readonly Step _step;
+        private Step _step;
         private readonly PreTick _preTick;
         private readonly IList<Tick> _history;
         private readonly IBus _bus;
@@ -53,7 +53,8 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
                 return false;
             }
 
-            _bus.Enqueue(_step.Increment());
+            _step = _step.Next();
+            _bus.Enqueue(_step);
             _stepsSinceTick += 1;
             this.LastStep++;
 
@@ -135,7 +136,10 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
             {
                 while (!this.CanTick())
                 {
-                    this.TryStep();
+                    if(this.TryStep())
+                    {
+
+                    }
                 }
 
                 if (this.NextTickId == tick.Id)
