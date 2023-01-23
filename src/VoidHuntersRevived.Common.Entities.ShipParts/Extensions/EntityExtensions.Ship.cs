@@ -31,6 +31,8 @@ namespace VoidHuntersRevived.Common.Entities.Extensions
                 entityId: entity.Id,
                 bridge: bridge));
 
+            entity.Attach(new Tractorable(entity.Id));
+
             return entity;
         }
 

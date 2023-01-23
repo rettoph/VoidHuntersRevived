@@ -9,25 +9,34 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
     /// </summary>
     public sealed class Jointings
     {
-        private readonly List<Jointing> _children;
+        private readonly List<Jointed> _children;
 
         public readonly Entity Entity;
-        public readonly ReadOnlyCollection<Jointing> Children;
+        public readonly ReadOnlyCollection<Jointed> Children;
 
         internal Jointings(Entity entity)
         {
-            _children = new List<Jointing>();
+            _children = new List<Jointed>();
 
             this.Entity = entity;
-            this.Children = new ReadOnlyCollection<Jointing>(_children);
+            this.Children = new ReadOnlyCollection<Jointed>(_children);
         }
 
-        public void Add(Jointing child)
+        public void Add(Jointed child)
         {
             child.Joint.Jointing = child;
             child.Parent.Jointing = child;
 
             _children.Add(child);
+        }
+
+        public void Remove(Jointed child)
+        {
+            if(_children.Remove(child))
+            {
+                child.Joint.Jointing = null;
+                child.Parent.Jointing = null;
+            }
         }
     }
 }

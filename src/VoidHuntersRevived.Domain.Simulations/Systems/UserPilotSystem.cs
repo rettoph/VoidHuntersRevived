@@ -62,7 +62,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             var ship = message.Simulation.CreateShip(key.Create(ParallelTypes.Ship), ShipParts.HullSquare);
             var pilot = message.Simulation.CreatePilot(key, ship);
 
-            var chain = message.Simulation.CreateChain(key.Create(ParallelTypes.Chain), ShipParts.HullSquare);
+            // var chain = message.Simulation.CreateChain(key.Create(ParallelTypes.Chain), ShipParts.HullSquare);
 
             var piece = message.Simulation.CreateShipPart(key.Create(ParallelTypes.ShipPart), ShipParts.HullSquare);
             message.Simulation.PublishEvent(new CreateJointing()

@@ -60,9 +60,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             throw new NotImplementedException();
         }
 
-        public bool TryGetTractorable(Pilotable pilotable, out ParallelKey shipPartKey)
+        public bool TryGetTractorable(Pilotable pilotable, out ParallelKey shipPartKey, out ParallelKey nodeKey)
         {
-            return QueryTractorable.Invoke(pilotable, this, out shipPartKey);
+            return QueryTractorable.Invoke(pilotable, this, out shipPartKey, out nodeKey);
         }
 
         public bool CanTractor(Vector2 target, ParallelKey tractorable)
@@ -117,7 +117,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public bool TransformTractorable(
             Vector2 target,
             Tractoring tractoring,
-            [MaybeNullWhen(false)] out Jointing potential)
+            [MaybeNullWhen(false)] out Jointed potential)
         {
             var tractorableBody = _bodies.Get(tractoring.TractorableId);
             var tractoringTree = _trees.Get(tractoring.EntityId);
@@ -137,7 +137,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return this.DefaultTransformBody(tractorableBody, target, out potential);
             }
 
-            potential = new Jointing(tractorableJoint, tractoringJoint);
+            potential = new Jointed(tractorableJoint, tractoringJoint);
             var transformation = potential.LocalTransformation * tractoringBody.GetTransformation();
 
             target = Vector2.Transform(Vector2.Zero, transformation);
@@ -147,7 +147,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return true;
         }
 
-        private bool DefaultTransformBody(Body body, Vector2 target, out Jointing? potential)
+        private bool DefaultTransformBody(Body body, Vector2 target, out Jointed? potential)
         {
             potential = null;
             target -= body.WorldCenter - body.Position;

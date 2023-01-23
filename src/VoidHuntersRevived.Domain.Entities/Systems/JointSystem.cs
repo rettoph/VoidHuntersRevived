@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
+using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using System;
@@ -21,11 +22,13 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 {
     [GuppyFilter<IGameGuppy>()]
     internal sealed class JointSystem : BasicSystem,
-        ISubscriber<IEvent<CreateJointing>>
+        ISubscriber<IEvent<CreateJointing>>,
+        ISubscriber<IEvent<DestroyJointing>>,
+        ISubscriber<IEvent<CleanJointed>>
     {
         private readonly ISimulationService _simulations;
         private ComponentMapper<Jointable> _jointables;
-        private ComponentMapper<Jointing> _jointed;
+        private ComponentMapper<Jointed> _jointed;
         private ComponentMapper<Jointings> _jointings;
 
         public JointSystem(ISimulationService simulations)
@@ -39,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         public override void Initialize(World world)
         {
             _jointables = world.ComponentMapper.GetMapper<Jointable>();
-            _jointed = world.ComponentMapper.GetMapper<Jointing>();
+            _jointed = world.ComponentMapper.GetMapper<Jointed>();
             _jointings = world.ComponentMapper.GetMapper<Jointings>();
         }
 
@@ -49,11 +52,11 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             var childId = message.Simulation.GetEntityId(message.Data.Joint);
 
             var jointings = _jointings.Get(parentId);
-            var jointing = new Jointing(
+            var jointed = new Jointed(
                 joint: _jointables.Get(childId).Joints[message.Data.ChildJointId],
                 parent: _jointables.Get(parentId).Joints[message.Data.ParentJointId]);
 
-            if(!jointing.Validate())
+            if(!jointed.Validate())
             {
                 throw new NotImplementedException();
             }
@@ -62,7 +65,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             // Should we just detach?
             if(_jointed.TryGet(childId, out var oldLink))
             {
-                if(jointing == oldLink)
+                if(jointed == oldLink)
                 { // The link already exists
                     return;
                 }
@@ -72,24 +75,44 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             // The parent join is already linked to something else
             // Should we just detach?
-            if(jointings.Children.Any(x => x.Parent == jointing.Parent))
+            if(jointings.Children.Any(x => x.Parent == jointed.Parent))
             {
                 throw new NotImplementedException();
             }
 
-            jointings.Add(jointing);
-            _jointed.Put(childId, jointing);
+            jointings.Add(jointed);
+            _jointed.Put(childId, jointed);
 
-            // Update local transformations
-            var transformation = jointing.LocalTransformation;
+            message.Simulation.PublishEvent(new CleanJointed(jointed, CleanJointed.Statuses.Create));
+        }
 
-            var jointable = _jointables.Get(jointing.Joint.Entity);
+        public void Process(in IEvent<DestroyJointing> message)
+        {
+            var jointedId = message.Simulation.GetEntityId(message.Data.Jointed);
+            var jointed = _jointed.Get(jointedId);
+            var jointings = _jointings.Get(jointed.Parent.Entity.Id);
+
+            _jointed.Delete(jointedId);
+            jointings.Remove(jointed);
+
+            message.Simulation.PublishEvent(new CleanJointed(jointed, CleanJointed.Statuses.Destroy));
+        }
+
+        public void Process(in IEvent<CleanJointed> message)
+        {
+            message.Data.Jointed.Clean();
+            var transformation = message.Data.Jointed.LocalTransformation;
+
+            if(message.Data.Status == CleanJointed.Statuses.Destroy)
+            {
+                transformation = Matrix.Identity;
+            }
+
+            var jointable = _jointables.Get(message.Data.Jointed.Joint.Entity);
             foreach (var joint in jointable.Joints)
             {
                 joint.LocalTransformation = joint.Configuration.Transformation * transformation;
             }
-
-            message.Simulation.PublishEvent(new CleanJointed(jointing));
         }
     }
 }

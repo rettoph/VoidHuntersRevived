@@ -1,9 +1,11 @@
 ﻿using Guppy.Common;
+using Guppy.Common.Collections;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -21,9 +23,12 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         private ComponentMapper<Rigid> _rigids;
         private ComponentMapper<Node> _nodes;
         private ComponentMapper<Body> _bodies;
+        private Queue<Fixture> _buffer;
 
         public RigidNodeSystem() : base(Aspect.All(typeof(Rigid), typeof(Node)))
         {
+            _buffer = new Queue<Fixture>();
+
             _rigids = default!;
             _nodes = default!;
             _bodies = default!;
@@ -36,6 +41,45 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             _bodies = mapperService.GetMapper<Body>();
         }
 
+        private void AddRigid(int entityId)
+        {
+            var node = _nodes.Get(entityId);
+            var rigid = _rigids.Get(entityId);
+            var body = _bodies.Get(node.Tree);
+
+            var transformation = node.LocalTransformation;
+
+            foreach (var shape in rigid.Configuration.Shapes)
+            {
+                var fixture = new Fixture(shape.Clone(ref transformation));
+                fixture.Tag = entityId;
+
+                body.Add(fixture);
+            }
+
+            _bodies.Put(entityId, body);
+        }
+
+        private void RemoveRigid(int entityId)
+        {
+            var body = _bodies.Get(entityId);
+
+            foreach (var fixture in body.FixtureList)
+            {
+                if (fixture.Tag is int fixtureEntityId && entityId == fixtureEntityId)
+                {
+                    _buffer.Enqueue(fixture);
+                }
+            }
+
+            while (_buffer.TryDequeue(out var fixture))
+            {
+                body.Remove(fixture);
+            }
+
+            _bodies.Delete(entityId);
+        }
+
         protected override void OnEntityAdded(int entityId)
         {
             base.OnEntityAdded(entityId);
@@ -45,18 +89,29 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            var node = _nodes.Get(entityId);
-            var rigid = _rigids.Get(entityId);
-            var body = _bodies.Get(node.Tree);
+            this.AddRigid(entityId);
+        }
 
-            var transformation = node.LocalTransformation;
+        protected override void OnEntityChanged(int entityId, BitVector32 oldBits)
+        {
+            base.OnEntityChanged(entityId, oldBits);
 
-            foreach(var shape in rigid.Configuration.Shapes)
+            bool wasInterested = this.subscription.IsInterested(oldBits);
+            bool isInterested = this.subscription.IsInterested(entityId);
+
+            if (wasInterested == isInterested)
             {
-                var fixture = new Fixture(shape.Clone(ref transformation));
-                fixture.Tag = entityId;
+                return;
+            }
 
-                body.Add(fixture);
+            if(wasInterested)
+            {
+                this.RemoveRigid(entityId);
+            }
+
+            if (isInterested)
+            {
+                this.AddRigid(entityId);
             }
         }
 
@@ -68,6 +123,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             {
                 return;
             }
+
+            this.RemoveRigid(entityId);
         }
     }
 }

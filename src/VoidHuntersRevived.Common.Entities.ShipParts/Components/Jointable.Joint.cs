@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 
             public Vector2 LocalPosition => Vector2.Transform(Vector2.Zero, this.LocalTransformation);
 
-            public Jointing? Jointing;
+            public Jointed? Jointing;
 
             public bool Jointed => this.Jointing is not null;
 

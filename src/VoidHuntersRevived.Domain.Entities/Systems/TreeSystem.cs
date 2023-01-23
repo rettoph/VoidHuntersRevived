@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         private ComponentMapper<Tree> _trees;
         private ComponentMapper<Node> _nodes;
-        private ComponentMapper<Jointing> _jointed;
+        private ComponentMapper<Jointed> _jointed;
         private ComponentMapper<Body> _bodies;
 
         public TreeSystem(ISimulationService simulations) : base(simulations, TreeAspect)
@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         {
             _trees = mapperService.GetMapper<Tree>();
             _nodes = mapperService.GetMapper<Node>();
-            _jointed = mapperService.GetMapper<Jointing>();
+            _jointed = mapperService.GetMapper<Jointed>();
             _bodies = mapperService.GetMapper<Body>();
         }
 
@@ -68,12 +68,15 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 oldTree.Remove(oldNode.Entity);
             }
 
-            var node = _nodes.Get(message.Data.Jointed.Parent.Entity);
-            var tree = _trees.Get(node.Tree);
+            if(message.Data.Status == CleanJointed.Statuses.Create)
+            {
+                var node = _nodes.Get(message.Data.Jointed.Parent.Entity);
+                var tree = _trees.Get(node.Tree);
 
-            tree.Add(
-                entity: message.Data.Jointed.Joint.Entity, 
-                localTransformation: message.Data.Jointed.LocalTransformation);
+                tree.Add(
+                    entity: message.Data.Jointed.Joint.Entity,
+                    localTransformation: message.Data.Jointed.LocalTransformation);
+            }
         }
     }
 }

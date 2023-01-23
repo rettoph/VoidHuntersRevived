@@ -113,13 +113,14 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             var piloting = _pilotings.Get(pilotId);
             var pilotable = _pilotables.Get(piloting.Pilotable);
 
-            if (_tractor.TryGetTractorable(pilotable, out var tractorableKey))
+            if (_tractor.TryGetTractorable(pilotable, out var tractorable, out var node))
             {
                 _simulations.Input(
                     user: CurrentUserKey,
                     data: new StartTractoring()
                     {
-                        Tractorable = tractorableKey
+                        Tractorable = tractorable,
+                        Node = node
                     });
             }
         }

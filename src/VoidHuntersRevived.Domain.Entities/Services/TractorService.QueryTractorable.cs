@@ -21,10 +21,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             private readonly Pilotable _pilotable;
             private readonly TractorService _tractor;
-            private Vector2 _target;
             private float _distance;
             private int? _tractorableId;
             private ParallelKey _tractorableKey;
+            private ParallelKey _nodeKey;
 
             private QueryTractorable(Pilotable pilotable, TractorService tractor)
             {
@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 _tractor = tractor;
             }
 
-            public bool Query(out ParallelKey tractorableKey)
+            public bool Query(out ParallelKey tractorableKey, out ParallelKey nodeKey)
             {
                 _distance = Radius;
 
@@ -42,10 +42,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 if (_tractorableId is null)
                 {
                     tractorableKey = default;
+                    nodeKey = default;
                     return false;
                 }
 
                 tractorableKey = _tractorableKey;
+                nodeKey = _nodeKey;
                 return true;
             }
 
@@ -66,12 +68,25 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                     return true;
                 }
 
-                if (!_tractor._tractorables.Has(node.Tree.Id))
+                if (!_tractor._tractorables.TryGet(node.Tree.Id, out var tractorable))
                 { // If the node is not attached to a tractorable...
                     return true;
                 }
 
-                var distance = Vector2.Distance(_target, node.WorldPosition);
+                if(tractorable.WhitelistedTractoring is not null)
+                { 
+                    if(tractorable.WhitelistedTractoring.Value != _pilotable.EntityId)
+                    { // This part is attached to another ship
+                        return true;
+                    }
+                    
+                    if(_tractor._trees.Get(_pilotable.EntityId).Head?.Id == node.Entity.Id)
+                    { // We are attempting to grab the bridge
+                        return true;
+                    }
+                }
+
+                var distance = Vector2.Distance(_pilotable.Aim.Value, node.WorldPosition);
 
                 if (distance >= _distance)
                 { // The new distance is further away than the previously closest found target
@@ -82,15 +97,16 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 _distance = distance;
                 _tractorableId = node.Tree.Id;
                 _tractorableKey = _tractor._parallelables.Get(node.Tree.Id).Key;
+                _nodeKey = _tractor._parallelables.Get(node.Entity.Id).Key;
 
                 return true;
             }
 
-            public static bool Invoke(Pilotable pilotable, TractorService tractor, out ParallelKey tractorableKey)
+            public static bool Invoke(Pilotable pilotable, TractorService tractor, out ParallelKey tractorableKey, out ParallelKey nodeKey)
             {
                 var query = new QueryTractorable(pilotable, tractor);
 
-                return query.Query(out tractorableKey);
+                return query.Query(out tractorableKey, out nodeKey);
             }
         }
     }

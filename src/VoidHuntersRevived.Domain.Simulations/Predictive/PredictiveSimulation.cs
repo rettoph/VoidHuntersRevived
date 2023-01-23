@@ -11,6 +11,7 @@ using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
@@ -59,7 +60,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         {
             foreach(UserInput input in message.Inputs)
             {
-                this.Input(input.User, input.Data);
+                if (Simulation.Input.Factory.TryCreate(SimulationType.Lockstep, input.User, input.Data, this, out IEvent? instance))
+                {
+                    this.PublishEvent(instance);
+                }
             }
         }
     }

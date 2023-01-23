@@ -31,9 +31,10 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Extensions
             return entity;
         }
 
-        public static Entity MakeChain(this Entity entity, Aether aether, Entity? head = null)
+        public static Entity MakeChain(this Entity entity, Aether aether, Entity? head = null, Vector2 position = default, float rotation = 0)
         {
             var body = aether.CreateBody(bodyType: BodyType.Dynamic);
+            body.SetTransformIgnoreContacts(ref position, rotation);
             body.OnCollision += HandleChainCollision;
 
             entity.MakeTree(body, head);

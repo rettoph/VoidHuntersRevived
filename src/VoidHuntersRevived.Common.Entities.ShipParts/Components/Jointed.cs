@@ -13,25 +13,30 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
     /// Can be thought of as the "male"
     /// connection
     /// </summary>
-    public sealed class Jointing
+    public sealed class Jointed
     {
         public readonly Jointable.Joint Joint;
         public readonly Jointable.Joint Parent;
-        public readonly Matrix LocalTransformation;
+        public Matrix LocalTransformation;
 
-        public Jointing(
+        public Jointed(
             Jointable.Joint joint,
             Jointable.Joint parent)
         {
             this.Joint = joint;
             this.Parent = parent;
 
+            this.Clean();
+        }
+
+        public void Clean()
+        {
             CalculationLocalTransformation(this.Joint, this.Parent, out this.LocalTransformation);
         }
 
         public override bool Equals(object? obj)
         {
-            return obj is Jointing linked &&
+            return obj is Jointed linked &&
                    this.Joint == linked.Joint &&
                    this.Parent == linked.Parent;
         }
@@ -61,12 +66,12 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
             return true;
         }
 
-        public static bool operator ==(Jointing left, Jointing right)
+        public static bool operator ==(Jointed left, Jointed right)
         {
             return left.Equals(right);
         }
 
-        public static bool operator !=(Jointing left, Jointing right)
+        public static bool operator !=(Jointed left, Jointed right)
         {
             return !left.Equals(right);
         }

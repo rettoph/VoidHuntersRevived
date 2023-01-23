@@ -41,6 +41,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         private ComponentMapper<Pilotable> _pilotable;
         private ComponentMapper<Body> _bodies;
+        private ComponentMapper<Node> _nodes;
 
         public DrawAimSystem(
             PrimitiveBatch<VertexPositionColor> primitiveBatch,
@@ -56,12 +57,14 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
             _pilotable = default!;
             _bodies = default!;
+            _nodes = default!;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
         {
             _pilotable = mapperService.GetMapper<Pilotable>();
             _bodies = mapperService.GetMapper<Body>();
+            _nodes = mapperService.GetMapper<Node>();
         }
 
         public override void Draw(GameTime gameTime)
@@ -84,24 +87,24 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         private void DrawTractorTarget(Pilotable pilotable)
         {
-            if (!_tractor.TryGetTractorable(pilotable, out var tractorableKey))
+            if (!_tractor.TryGetTractorable(pilotable, out _, out var nodeKey))
             {
                 return;
             }
 
-            if (!_simulations[SimulationType.Predictive].TryGetEntityId(tractorableKey, out int tractorableId))
+            if (!_simulations[SimulationType.Predictive].TryGetEntityId(nodeKey, out int nodeId))
             {
                 return;
             }
 
-            if(!_bodies.TryGet(tractorableId, out var body))
+            if(!_nodes.TryGet(nodeId, out var node))
             {
                 return;
             }
+
 
             var color = Color.Green;
-            var transformation = body.GetCenterTransformation();
-            _primitiveBatch.Trace(_shape, in color, ref transformation);
+            _primitiveBatch.Trace(_shape, in color, ref node.WorldTransformation);
         }
     }
 }

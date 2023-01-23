@@ -8,10 +8,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Dynamics;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Events;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Events;
+using VoidHuntersRevived.Common.Entities.ShipParts.Extensions;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Components;
@@ -38,7 +40,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         private ComponentMapper<Body> _bodies;
         private ComponentMapper<Tree> _trees;
         private ComponentMapper<Node> _nodes;
-        private ComponentMapper<Jointable> _jointables;
+        private ComponentMapper<Jointed> _jointed;
+        private ComponentMapper<Parallelable> _parallelables;
 
         public TractoringSystem(ITractorService tractor, ISimulationService simulations) : base(simulations, TractoringAspect)
         {
@@ -51,7 +54,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             _bodies = default!;
             _trees = default!;
             _nodes = default!;
-            _jointables = default!;
+            _jointed = default!;
+            _parallelables = default!;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
@@ -63,7 +67,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             _bodies = mapperService.GetMapper<Body>();
             _trees = mapperService.GetMapper<Tree>();
             _nodes = mapperService.GetMapper<Node>();
-            _jointables = mapperService.GetMapper<Jointable>();
+            _jointed = mapperService.GetMapper<Jointed>();
+            _parallelables = mapperService.GetMapper<Parallelable>();
         }
 
         public void Process(in IInput<StartTractoring> message)
@@ -73,21 +78,70 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
+            if (!message.Simulation.TryGetEntityId(message.Data.Node, out int nodeId))
+            {
+                return;
+            }
+
             var piloting = _pilotings.Get(message.UserId);
             var tree = _trees.Get(piloting.Pilotable.Id);
 
-            if(_nodes.Has(tractorableId))
-            { // The selected target is already attached to a something (confirm its the user ship)
-
-            }
-
-            if (_tractorables.Has(tractorableId) == false)
+            if (!_nodes.TryGet(nodeId, out var node))
             {
-                throw new NotImplementedException();
+                return;
             }
 
-            
-            _tractorings.Put(piloting.Pilotable.Id, new Tractoring(piloting.Pilotable.Id, tractorableId));
+            if (node.Tree.Id != tractorableId)
+            {
+                // This almost always happens on a lockstep sent input within
+                // The predictive simulation. This is because the node exists
+                // but has been attached to another tree after the predictive
+                // simulation pre-detached a part from the current ship, and
+                // created a brand new chain in the process. Ideally there would
+                // be some sort of prediction verification done before we got to
+                // this state?
+                return;
+            }
+
+            if (!_tractorables.TryGet(tractorableId, out var tractorable))
+            { // The target is not tractorable
+                return;
+            }
+
+
+            if (tractorable.WhitelistedTractoring is not null && tractorable.WhitelistedTractoring.Value != piloting.Pilotable.Id)
+            { // This part is attached to another ship
+                return;
+            }
+
+            if (node.Tree.Id == tree.Entity.Id && _jointed.Has(node.Entity.Id))
+            { // The selected node is attached to the current ship
+
+                // Cache all the values we're about to delete...
+                var key = _parallelables.Get(node.Entity.Id).Key;
+                var position = node.WorldPosition;
+                var rotation = node.WorldTransformation.Radians();
+
+                // Destroy the joint to the ship
+                message.Simulation.PublishEvent(new DestroyJointing()
+                {
+                    Jointed = key
+                });
+
+                // Create a brand new chain to hold the detached parts.
+                // Notice we've updated the tractorableId to the new chain id
+                // This is why the comment above happens: A different tractorableId
+                // was slotted in already, but the confirmation from the server doesn't
+                // display that very well.
+                tractorableId = message.Simulation.CreateChain(
+                    key: key.Create(ParallelTypes.Chain), 
+                    head: node.Entity,
+                    position: position,
+                    rotation: rotation).Id;
+            }
+
+            var tractoring = new Tractoring(piloting.Pilotable.Id, tractorableId);
+            _tractorings.Put(piloting.Pilotable.Id, tractoring);
         }
 
         public void Process(in IInput<StopTractoring> message)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,11 +11,19 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Events
 {
     public sealed class CleanJointed : IData
     {
-        public readonly Jointing Jointed;
-
-        public CleanJointed(Jointing jointed)
+        public enum Statuses
         {
-            Jointed = jointed;
+            Create,
+            Destroy
+        };
+
+        public readonly Jointed Jointed;
+        public readonly Statuses Status;
+
+        public CleanJointed(Jointed jointed, Statuses status)
+        {
+            this.Jointed = jointed;
+            this.Status = status;
         }
     }
 }

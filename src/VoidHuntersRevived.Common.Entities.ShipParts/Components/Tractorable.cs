@@ -8,11 +8,13 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 {
     public sealed class Tractorable
     {
-        public static readonly Tractorable Instance = new Tractorable();
+        public static Tractorable Instance = new Tractorable(null);
 
-        private Tractorable()
+        public int? WhitelistedTractoring;
+
+        public Tractorable(int? whitelistedTractoring)
         {
-
+            WhitelistedTractoring = whitelistedTractoring;
         }
     }
 }

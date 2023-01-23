@@ -13,5 +13,6 @@ namespace VoidHuntersRevived.Domain.Entities.Events
     public sealed class StartTractoring : Message<StartTractoring>, IData
     {
         public ParallelKey Tractorable { get; init; }
+        public ParallelKey Node { get; init; }
     }
 }
