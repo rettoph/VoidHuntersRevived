@@ -37,6 +37,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         private ComponentMapper<Piloting> _pilotings;
         private ComponentMapper<Body> _bodies;
         private ComponentMapper<Tree> _trees;
+        private ComponentMapper<Node> _nodes;
         private ComponentMapper<Jointable> _jointables;
 
         public TractoringSystem(ITractorService tractor, ISimulationService simulations) : base(simulations, TractoringAspect)
@@ -49,6 +50,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             _pilotings = default!;
             _bodies = default!;
             _trees = default!;
+            _nodes = default!;
             _jointables = default!;
         }
 
@@ -60,6 +62,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             _pilotings = mapperService.GetMapper<Piloting>();
             _bodies = mapperService.GetMapper<Body>();
             _trees = mapperService.GetMapper<Tree>();
+            _nodes = mapperService.GetMapper<Node>();
             _jointables = mapperService.GetMapper<Jointable>();
         }
 
@@ -70,12 +73,20 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            if (!_tractorables.Has(tractorableId))
+            var piloting = _pilotings.Get(message.UserId);
+            var tree = _trees.Get(piloting.Pilotable.Id);
+
+            if(_nodes.Has(tractorableId))
+            { // The selected target is already attached to a something (confirm its the user ship)
+
+            }
+
+            if (_tractorables.Has(tractorableId) == false)
             {
                 throw new NotImplementedException();
             }
 
-            var piloting = _pilotings.Get(message.UserId);
+            
             _tractorings.Put(piloting.Pilotable.Id, new Tractoring(piloting.Pilotable.Id, tractorableId));
         }
 

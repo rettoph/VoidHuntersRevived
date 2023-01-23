@@ -28,8 +28,8 @@ namespace VoidHuntersRevived.Common.Entities.Extensions
                 head: bridge).MakePilotable();
 
             entity.Attach(new Ship(
-                bridge: bridge,
-                tree: entity));
+                entityId: entity.Id,
+                bridge: bridge));
 
             return entity;
         }

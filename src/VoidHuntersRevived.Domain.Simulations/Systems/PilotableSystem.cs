@@ -62,7 +62,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             if (pilotable.Direction.HasFlag(Direction.TurnLeft))
             {
                 impulse -= Vector2.UnitX;
-                angularImpulse -= 0.001f;
             }
 
             if (pilotable.Direction.HasFlag(Direction.TurnRight))

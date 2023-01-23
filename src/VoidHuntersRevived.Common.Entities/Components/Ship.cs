@@ -9,13 +9,13 @@ namespace VoidHuntersRevived.Common.Entities.Components
 {
     public class Ship
     {
+        public readonly int EntityId;
         public readonly Entity Bridge;
-        public readonly Entity Tree;
 
-        public Ship(Entity bridge, Entity tree)
+        public Ship(int entityId, Entity bridge)
         {
+            this.EntityId = entityId;
             this.Bridge = bridge;
-            this.Tree = tree;
         }
     }
 }

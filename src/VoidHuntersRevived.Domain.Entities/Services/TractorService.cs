@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using tainicom.Aether.Physics2D.Collision;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.ShipParts;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using VoidHuntersRevived.Common.Simulations;
@@ -13,10 +14,8 @@ using VoidHuntersRevived.Common.Simulations.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    internal sealed class TractorService : ITractorService, ISystem
+    internal sealed partial class TractorService : ITractorService, ISystem
     {
-        public ISimulation TryGetTractorableSimulation;
-        public const float TryGetTractorableRadius = 5f;
         public const float GetPotentialParentJointDistance = 1f;
 
         private readonly ISimulationService _simulations;
@@ -26,10 +25,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private ComponentMapper<Jointable> _jointables;
         private ComponentMapper<Parallelable> _parallelables;
         private ComponentMapper<Tree> _trees;
-        private Vector2 _target;
-        private float _distance;
-        private int? _tractorableId;
-        private ParallelKey _tractorableKey;
+        private ComponentMapper<ShipPartConfiguration> _shipParts;
+        private ISimulation _interactive;
 
         public TractorService(ISimulationService simulations)
         {
@@ -40,8 +37,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _jointables = default!;
             _parallelables = default!;
             _trees = default!;
+            _shipParts = default!;
 
-            this.TryGetTractorableSimulation = default!;
+            _interactive = default!;
         }
 
         public void Initialize(World world)
@@ -52,8 +50,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _jointables = world.ComponentMapper.GetMapper<Jointable>();
             _parallelables = world.ComponentMapper.GetMapper<Parallelable>();
             _trees = world.ComponentMapper.GetMapper<Tree>();
+            _shipParts = world.ComponentMapper.GetMapper<ShipPartConfiguration>();
 
-            this.TryGetTractorableSimulation = _simulations.First(SimulationType.Predictive, SimulationType.Lockstep);
+            _interactive = _simulations.First(SimulationType.Predictive, SimulationType.Lockstep);
         }
 
         public void Dispose()
@@ -61,22 +60,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             throw new NotImplementedException();
         }
 
-        public bool TryGetTractorable(Vector2 target, out ParallelKey tractorable)
+        public bool TryGetTractorable(Pilotable pilotable, out ParallelKey shipPartKey)
         {
-            _distance = float.MaxValue;
-            _tractorableId = null;
-
-            AABB aabb = new AABB(target, TryGetTractorableRadius, TryGetTractorableRadius);
-            this.TryGetTractorableSimulation.Aether.QueryAABB(this.TractorableCallback, ref aabb);
-            
-            if(_tractorableId is null)
-            {
-                tractorable = default;
-                return false;
-            }
-
-            tractorable = _tractorableKey;
-            return true;
+            return QueryTractorable.Invoke(pilotable, this, out shipPartKey);
         }
 
         public bool CanTractor(Vector2 target, ParallelKey tractorable)
@@ -168,43 +154,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             body.SetTransformIgnoreContacts(target, body.Rotation);
 
             return false;
-        }
-
-        private bool TractorableCallback(Fixture fixture)
-        {
-            if(fixture.Tag is not int entityId)
-            { // If the fixture is not bound to an entity...
-                return true;
-            }
-            
-            if(!_nodes.TryGet(entityId, out var node))
-            { // If the entity is not a node...
-                return true;
-            }
-
-            if(_tractorableId == node.Tree.Id)
-            { // This is already the target
-                return true;
-            }
-
-            if(!_tractorables.Has(node.Tree.Id))
-            { // If the node is not attached to a tractorable...
-                return true;
-            }
-
-            var distance = Vector2.Distance(_target, node.WorldPosition);
-
-            if(distance >= _distance)
-            { // The new distance is further away than the previously closest found target
-                return true;
-            }
-
-            // Update the target tractorable
-            _distance = distance;
-            _tractorableId = node.Tree.Id;
-            _tractorableKey = _parallelables.Get(node.Tree.Id).Key;
-
-            return true;
         }
     }
 }

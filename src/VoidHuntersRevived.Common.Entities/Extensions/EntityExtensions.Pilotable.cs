@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Common.Entities.Extensions
     {
         public static Entity MakePilotable(this Entity entity)
         {
-            entity.Attach(new Pilotable());
+            entity.Attach(new Pilotable(entity.Id));
 
             return entity;
         }

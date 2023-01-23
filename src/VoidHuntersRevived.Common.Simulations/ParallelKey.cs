@@ -29,30 +29,30 @@ namespace VoidHuntersRevived.Common.Simulations
 
         public ParallelKey Create(ParallelType type)
         {
-            return ParallelKey.From(type, 0, this);
+            return ParallelKey.From(type, this);
         }
 
-        public ParallelKey Create(ParallelType type, int noise)
+        public ParallelKey Create(ParallelType type, params int[] noise)
         {
-            return ParallelKey.From(type, noise, this);
+            return ParallelKey.From(type, this, noise);
         }
 
-        public static ParallelKey From(ParallelType type, int noise)
+        public static ParallelKey From(ParallelType type, params int[] noise)
         {
-            return ParallelKey.From(type, noise, default);
+            return ParallelKey.From(type, default, noise);
         }
 
-        private static ParallelKey From(ParallelType type, int noise, ParallelKey parent)
+        private static ParallelKey From(ParallelType type, ParallelKey parent, params int[] noise)
         {
             int[] int_data = new int[]
             {
                 type.Value,
-                noise,
                 parent.Hash
             };
 
-            byte[] byte_data = new byte[int_data.Length * sizeof(int)];
-            Buffer.BlockCopy(int_data, 0, byte_data, 0, byte_data.Length);
+            byte[] byte_data = new byte[(int_data.Length + noise.Length) * sizeof(int)];
+            Buffer.BlockCopy(int_data, 0, byte_data, 0, int_data.Length * sizeof(int));
+            Buffer.BlockCopy(noise, 0, byte_data, int_data.Length * sizeof(int), noise.Length * sizeof(int));
             IHashValue computed = xxHash.ComputeHash(byte_data);
             int hash = BitConverter.ToInt32(computed.Hash);
 

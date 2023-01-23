@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Services
 {
     public interface ITractorService
     {
-        bool TryGetTractorable(Vector2 target, [MaybeNullWhen(false)] out ParallelKey tractorable);
+        bool TryGetTractorable(Pilotable pilotable, [MaybeNullWhen(false)] out ParallelKey tractorable);
         
         bool CanTractor(Vector2 target, ParallelKey tractorable);
 

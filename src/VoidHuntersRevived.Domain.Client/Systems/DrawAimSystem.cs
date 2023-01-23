@@ -84,7 +84,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         private void DrawTractorTarget(Pilotable pilotable)
         {
-            if (!_tractor.TryGetTractorable(pilotable.Aim.Value, out var tractorableKey))
+            if (!_tractor.TryGetTractorable(pilotable, out var tractorableKey))
             {
                 return;
             }

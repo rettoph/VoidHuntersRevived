@@ -35,11 +35,12 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private readonly ISimulationService _simulations;
         private readonly Camera2D _camera;
         private readonly ITractorService _tractor;
+        private ISimulation _interactive;
         private ComponentMapper<Piloting> _pilotings;
         private ComponentMapper<Pilotable> _pilotables;
 
         private Vector2 CurrentTarget => _camera.Unproject(Mouse.GetState().Position.ToVector2());
-        private ParallelKey CurrentPilotKey
+        private ParallelKey CurrentUserKey
         {
             get
             {
@@ -62,7 +63,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             _camera = camera;
             _simulations = simulations;
             _tractor = tractor;
-
+            _interactive = default!;
             _pilotings = default!;
             _pilotables = default!;
         }
@@ -70,6 +71,8 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         public override void Initialize(World world)
         {
             base.Initialize(world);
+
+            _interactive = _simulations.First(SimulationType.Predictive, SimulationType.Lockstep);
 
             _pilotings = world.ComponentMapper.GetMapper<Piloting>();
             _pilotables = world.ComponentMapper.GetMapper<Pilotable>();
@@ -88,7 +91,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         public void Process(in SetPilotingDirection message)
         {
             _simulations.Input(
-                user: CurrentPilotKey,
+                user: CurrentUserKey,
                 data: new SetPilotingDirection(
                     which: message.Which,
                     value: message.Value));
@@ -97,7 +100,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private void SetTarget(SimulationType simulation)
         {
             _simulations[simulation].Input(
-                user: CurrentPilotKey,
+                user: CurrentUserKey,
                 data: new SetPilotingTarget()
                 {
                     Target = CurrentTarget
@@ -106,10 +109,14 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         public void Process(in StartTractoring message)
         {
-            if (_tractor.TryGetTractorable(this.CurrentTarget, out var tractorableKey))
+            var pilotId = _interactive.GetEntityId(this.CurrentUserKey);
+            var piloting = _pilotings.Get(pilotId);
+            var pilotable = _pilotables.Get(piloting.Pilotable);
+
+            if (_tractor.TryGetTractorable(pilotable, out var tractorableKey))
             {
                 _simulations.Input(
-                    user: CurrentPilotKey,
+                    user: CurrentUserKey,
                     data: new StartTractoring()
                     {
                         Tractorable = tractorableKey
@@ -120,7 +127,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         public void Process(in StopTractoring message)
         {
             _simulations.Input(
-                user: CurrentPilotKey,
+                user: CurrentUserKey,
                 data: new StopTractoring()
                 {
                     Target = CurrentTarget
