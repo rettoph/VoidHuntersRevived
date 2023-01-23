@@ -20,7 +20,6 @@ namespace VoidHuntersRevived.Common.Simulations
         IServiceProvider Provider { get; }
 
         void Initialize(IServiceProvider provider);
-        void PostInitialize();
 
         bool TryGetEntityId(ParallelKey key, [MaybeNullWhen(false)] out int id);
 
@@ -36,10 +35,15 @@ namespace VoidHuntersRevived.Common.Simulations
 
         bool HasEntity(ParallelKey key);
 
-        void AddEntity(ParallelKey key, Entity entity);
-        void RemoveEntity(ParallelKey key, out Entity entity);
+        void RemoveEntity(int id);
+        void RemoveEntity(ParallelKey key);
+
+        void DestroyEntity(int id);
+        void DestroyEntity(ParallelKey key);
 
         void Update(GameTime gameTime);
+
+        Entity CreateEntity(ParallelKey key);
 
         void PublishEvent(IData data);
 

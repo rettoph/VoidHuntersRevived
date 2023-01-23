@@ -21,7 +21,6 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 {
     [Sortable<ISubscriber<IEvent<CleanJointed>>>(int.MinValue + 10)]
     internal sealed class TreeSystem : ParallelEntityProcessingSystem,
-        ISubscriber<IEvent<CreateTree>>,
         ISubscriber<IEvent<CleanJointed>>
     {
         private static readonly AspectBuilder TreeAspect = Aspect.All(new[]
@@ -82,25 +81,6 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 tree.Add(
                     entity: message.Data.Jointed.Joint.Entity,
                     localTransformation: message.Data.Jointed.LocalTransformation);
-            }
-        }
-
-        public void Process(in IEvent<CreateTree> message)
-        {
-            var entity = message.Simulation.CreateEntity(message.Data.Key);
-            var body = message.Data.Body;
-            var head = message.Data.Head;
-
-            var tree = new Tree(entity);
-            body.Tag = entity.Id;
-            body.SetTransformIgnoreContacts(message.Data.Position, message.Data.Rotation);
-
-            entity.Attach(body);
-            entity.Attach(tree);
-
-            if (head is not null)
-            {
-                tree.Add(head, Matrix.Identity);
             }
         }
     }

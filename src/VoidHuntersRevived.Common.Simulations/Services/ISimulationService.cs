@@ -17,8 +17,6 @@ namespace VoidHuntersRevived.Common.Simulations.Services
 
         void Initialize(SimulationType simulationTypeFlags);
 
-        void PostInitialize();
-
         ISimulation First(params SimulationType[] types);
 
         void Update(GameTime gameTime);
