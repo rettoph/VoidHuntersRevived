@@ -28,13 +28,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
         public override UserInput Deserialize(NetDataReader reader)
         {
             return new UserInput(
-                user: ParallelTypes.Pilot.Create(reader.GetInt()),
+                user: reader.GetParallelKey(),
                 data: (IData)_serializers.Deserialize(reader));
         }
 
         public override void Serialize(NetDataWriter writer, in UserInput instance)
         {
-            writer.Put(instance.User.Value);
+            writer.Put(instance.User);
             _serializers.Serialize(writer, instance.Data);
         }
     }

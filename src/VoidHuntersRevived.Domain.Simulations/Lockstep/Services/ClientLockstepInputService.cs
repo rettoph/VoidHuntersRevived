@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Services
         {
             _netScope.Messages.Create(
                 body: new ClientInputRequest(
-                    pilot: user, 
+                    user: user, 
                     data: data)).Enqueue();
         }
     }

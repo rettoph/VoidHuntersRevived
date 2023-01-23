@@ -1,7 +1,11 @@
 ﻿using LiteNetLib.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data.HashFunction;
+using System.Data.HashFunction.xxHash;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations;
@@ -10,76 +14,49 @@ namespace VoidHuntersRevived.Common.Simulations
 {
     public readonly struct ParallelKey
     {
-        public readonly ParallelType Type;
-        public readonly int Value;
-        public readonly int Index;
-
-        private ParallelKey(ParallelType type, int value, int index)
+        private static readonly IxxHash xxHash = xxHashFactory.Instance.Create(new xxHashConfig()
         {
-            this.Type = type;
-            this.Value = value;
-            this.Index = index;
+            HashSizeInBits = 32,
+            Seed = 1337
+        });
+
+        public readonly int Hash;
+
+        internal ParallelKey(int hash)
+        {
+            this.Hash = hash;
         }
 
         public ParallelKey Create(ParallelType type)
         {
-            return ParallelKey.From(type, this.Value);
+            return ParallelKey.From(type, 0, this);
         }
 
-        public ParallelKey Create(ParallelType type, int index)
+        public ParallelKey Create(ParallelType type, int noise)
         {
-            return ParallelKey.From(type, this.GetHashCode(), index);
+            return ParallelKey.From(type, noise, this);
         }
 
-        public void WriteAll(NetDataWriter writer)
+        public static ParallelKey From(ParallelType type, int noise)
         {
-            writer.Put(this.Type.Value);
-            writer.Put(this.Value);
-            writer.Put(this.Index);
+            return ParallelKey.From(type, noise, default);
         }
 
-        public void Write(NetDataWriter writer)
+        private static ParallelKey From(ParallelType type, int noise, ParallelKey parent)
         {
-            writer.Put(this.Value);
-            writer.Put(this.Index);
-        }
+            int[] int_data = new int[]
+            {
+                type.Value,
+                noise,
+                parent.Hash
+            };
 
-        public void WriteValue(NetDataWriter writer)
-        {
-            writer.Put(this.Value);
-        }
+            byte[] byte_data = new byte[int_data.Length * sizeof(int)];
+            Buffer.BlockCopy(int_data, 0, byte_data, 0, byte_data.Length);
+            IHashValue computed = xxHash.ComputeHash(byte_data);
+            int hash = BitConverter.ToInt32(computed.Hash);
 
-        public static ParallelKey From(ParallelType type, int value)
-        {
-            return new ParallelKey(type, value, 0);
-        }
-
-        public static ParallelKey From(ParallelType type, int value, int index)
-        {
-            return new ParallelKey(type, value, index);
-        }
-
-        public static ParallelKey ReadAll(NetDataReader reader)
-        {
-            return ParallelKey.From(
-                type: ParallelType.Get(reader.GetByte()),
-                value: reader.GetInt(),
-                index: reader.GetInt());
-        }
-
-        public static ParallelKey Read(NetDataReader reader, ParallelType type)
-        {
-            return ParallelKey.From(
-                type: type,
-                value: reader.GetInt(),
-                index: reader.GetInt());
-        }
-
-        public static ParallelKey ReadValue(NetDataReader reader, ParallelType type)
-        {
-            return ParallelKey.From(
-                type: type,
-                value: reader.GetInt());
+            return new ParallelKey(hash);
         }
     }
 }

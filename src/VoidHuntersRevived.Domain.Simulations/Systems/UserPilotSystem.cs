@@ -64,7 +64,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
             var chain = message.Simulation.CreateChain(key.Create(ParallelTypes.Chain), ShipParts.HullSquare);
 
-            var piece = message.Simulation.CreateShipPart(key.Create(ParallelTypes.ShipPart, 1), ShipParts.HullSquare);
+            var piece = message.Simulation.CreateShipPart(key.Create(ParallelTypes.ShipPart), ShipParts.HullSquare);
             message.Simulation.PublishEvent(new CreateJointing()
             {
                 Parent = ship.Get<Ship>().Bridge.Get<Parallelable>().Key,

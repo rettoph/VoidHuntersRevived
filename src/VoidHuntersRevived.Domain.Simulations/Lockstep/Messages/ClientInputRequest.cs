@@ -6,12 +6,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Messages
 {
     internal sealed class ClientInputRequest : Message<ClientInputRequest>
     {
-        public ParallelKey Pilot { get; }
+        public ParallelKey User { get; }
         public IData Input { get; }
 
-        public ClientInputRequest(ParallelKey pilot, IData data)
+        public ClientInputRequest(ParallelKey user, IData data)
         {
-            this.Pilot = pilot;
+            this.User = user;
             this.Input = data;
         }
     }

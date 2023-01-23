@@ -20,13 +20,13 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
         {
             return new StartTractoring()
             {
-                Tractorable = ParallelKey.ReadAll(reader),
+                Tractorable = reader.GetParallelKey()
             };
         }
 
         public override void Serialize(NetDataWriter writer, in StartTractoring instance)
         {
-            instance.Tractorable.WriteAll(writer);
+            writer.Put(instance.Tractorable);
         }
     }
 }

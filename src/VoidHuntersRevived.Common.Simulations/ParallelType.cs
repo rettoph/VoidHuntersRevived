@@ -26,24 +26,9 @@ namespace VoidHuntersRevived.Common.Simulations
         {
             _types = new DoubleDictionary<int, string, ParallelType>();
         }
-        public ParallelKey Create(int value)
+        public ParallelKey Create(int noise)
         {
-            return ParallelKey.From(this, value);
-        }
-
-        public ParallelKey Create(int value, int index)
-        {
-            return ParallelKey.From(this, value, index);
-        }
-
-        public ParallelKey Read(NetDataReader reader)
-        {
-            return ParallelKey.Read(reader, this);
-        }
-
-        public ParallelKey ReadValue(NetDataReader reader)
-        {
-            return ParallelKey.ReadValue(reader, this);
+            return ParallelKey.From(this, noise);
         }
 
         public static ParallelType Get(byte value)
