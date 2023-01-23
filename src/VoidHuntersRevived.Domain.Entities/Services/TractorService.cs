@@ -17,6 +17,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     {
         public ISimulation TryGetTractorableSimulation;
         public const float TryGetTractorableRadius = 5f;
+        public const float GetPotentialParentJointDistance = 1f;
 
         private readonly ISimulationService _simulations;
         private ComponentMapper<Tractorable> _tractorables;
@@ -91,7 +92,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             parent = null;
             position = default;
-            float distance = 5f;
+            float distance = GetPotentialParentJointDistance;
             var tree = _trees.Get(tractoring.EntityId);
             var body = _bodies.Get(tractoring.EntityId);
 
@@ -163,7 +164,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private bool DefaultTransformBody(Body body, Vector2 target, out Jointing? potential)
         {
             potential = null;
-            target = Vector2.Transform(target, body.GetLocalCenterTransformation().Invert());
+            target -= body.WorldCenter - body.Position;
             body.SetTransformIgnoreContacts(target, body.Rotation);
 
             return false;

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Events;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Events;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
@@ -87,20 +88,24 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            var tree = _trees.Get(piloting.Pilotable.Id);
             _tractorings.Delete(piloting.Pilotable.Id);
 
-            if(!_tractor.TransformTractorable(message.Data.Target, tractoring, out var jointing))
+            if(!_tractor.TransformTractorable(message.Data.Target, tractoring, out var potential))
             {
                 return;
             }
 
+            message.Simulation.PublishEvent(new DestroyEntity()
+            {
+                EntityKey = potential.Joint.Entity.Get<Node>().Tree.Get<Parallelable>().Key
+            });
+
             message.Simulation.PublishEvent(new CreateJointing()
             {
-                Parent = jointing.Parent.Entity.Get<Parallelable>().Key,
-                ParentJointId = jointing.Parent.Index,
-                Joint = jointing.Joint.Entity.Get<Parallelable>().Key,
-                ChildJointId = jointing.Joint.Index
+                Parent = potential.Parent.Entity.Get<Parallelable>().Key,
+                ParentJointId = potential.Parent.Index,
+                Joint = potential.Joint.Entity.Get<Parallelable>().Key,
+                ChildJointId = potential.Joint.Index
             });
         }
 
@@ -108,11 +113,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         {
             var pilotable = _pilotables.Get(entityId);
             var tractoring = _tractorings.Get(entityId);
-            var tree = _trees.Get(entityId);
 
             _tractor.TransformTractorable(pilotable.Aim.Value, tractoring, out _);
         }
-
-        
     }
 }

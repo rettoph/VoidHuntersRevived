@@ -45,6 +45,9 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
 
                 manager.AddScoped<TractoringSystem>()
                     .AddInterfaceAliases();
+
+                manager.AddScoped<DestroyEntitySystem>()
+                    .AddInterfaceAliases();
             });
         }
     }
