@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
         public readonly Entity Entity;
         public readonly ReadOnlyCollection<Jointed> Children;
 
-        internal Jointings(Entity entity)
+        public Jointings(Entity entity)
         {
             _children = new List<Jointed>();
 

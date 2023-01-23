@@ -64,6 +64,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             _initialized = true;
         }
 
+        public void PostInitialize()
+        {
+            foreach (var simulation in this.Instances)
+            {
+                simulation.PostInitialize();
+            }
+        }
+
         public ISimulation First(params SimulationType[] types)
         {
             foreach(SimulationType type in types)

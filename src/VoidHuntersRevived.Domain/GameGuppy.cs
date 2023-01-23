@@ -46,6 +46,8 @@ namespace VoidHuntersRevived.Domain
 
             _world = provider.GetRequiredService<World>();
             this.Bus.Subscribe(this);
+
+            this.Simulations.PostInitialize();
         }
 
         public override void Update(GameTime gameTime)

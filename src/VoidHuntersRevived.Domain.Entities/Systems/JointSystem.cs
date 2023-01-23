@@ -1,10 +1,12 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
+using Guppy.Common.Attributes;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +23,7 @@ using VoidHuntersRevived.Domain.Entities.Events;
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {
     [GuppyFilter<IGameGuppy>()]
+    [Sortable<ISubscriber<IEvent<CleanJointed>>>(int.MinValue)]
     internal sealed class JointSystem : BasicSystem,
         ISubscriber<IEvent<CreateJointing>>,
         ISubscriber<IEvent<DestroyJointing>>,
@@ -101,17 +104,27 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         public void Process(in IEvent<CleanJointed> message)
         {
             message.Data.Jointed.Clean();
-            var transformation = message.Data.Jointed.LocalTransformation;
-
-            if(message.Data.Status == CleanJointed.Statuses.Destroy)
+            var transformation = message.Data.Status switch
             {
-                transformation = Matrix.Identity;
-            }
+                CleanJointed.Statuses.Destroy => Matrix.Identity,
+                _ => message.Data.Jointed.LocalTransformation
+            };
 
             var jointable = _jointables.Get(message.Data.Jointed.Joint.Entity);
             foreach (var joint in jointable.Joints)
             {
                 joint.LocalTransformation = joint.Configuration.Transformation * transformation;
+            }
+
+            if(!_jointings.TryGet(message.Data.Jointed.Joint.Entity, out var jointings))
+            {
+                return;
+            }
+
+            foreach(var child in jointings.Children)
+            {
+                var clean = new CleanJointed(child, CleanJointed.Statuses.Clean);
+                message.Simulation.PublishEvent(clean);
             }
         }
     }

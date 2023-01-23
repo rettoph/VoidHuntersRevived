@@ -162,7 +162,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             message.Simulation.PublishEvent(new DestroyEntity()
             {
-                EntityKey = potential.Joint.Entity.Get<Node>().Tree.Get<Parallelable>().Key
+                Key = potential.Joint.Entity.Get<Node>().Tree.Get<Parallelable>().Key
             });
 
             message.Simulation.PublishEvent(new CreateJointing()

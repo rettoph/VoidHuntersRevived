@@ -11,15 +11,6 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Extensions
 {
     public static partial class EntityExtensions
     {
-        public static Entity MakeShipPart(this Entity entity, ShipPartConfiguration configuration)
-        {
-            configuration.Make(entity);
-            entity.Attach(configuration);
-            entity.Attach(new Jointings(entity));
-
-            return entity;
-        }
-
         public static bool IsShipPart(this Entity entity)
         {
             return entity.Has<ShipPartConfiguration>();

@@ -1,6 +1,7 @@
 ﻿using Guppy.Common;
 using Guppy.Common.Collections;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using System;
@@ -18,16 +19,19 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {
-    internal sealed class RigidNodeSystem : EntitySystem
+    internal sealed class RigidNodeSystem : EntitySystem,
+        ISubscriber<IEvent<CleanJointed>>
     {
         private ComponentMapper<Rigid> _rigids;
         private ComponentMapper<Node> _nodes;
         private ComponentMapper<Body> _bodies;
         private Queue<Fixture> _buffer;
+        private Dictionary<int, Fixture[]> _fixtures;
 
         public RigidNodeSystem() : base(Aspect.All(typeof(Rigid), typeof(Node)))
         {
             _buffer = new Queue<Fixture>();
+            _fixtures = new Dictionary<int, Fixture[]>();
 
             _rigids = default!;
             _nodes = default!;
@@ -48,48 +52,64 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             var body = _bodies.Get(node.Tree);
 
             var transformation = node.LocalTransformation;
+            var fixtures = new Fixture[rigid.Configuration.Shapes.Length];
 
-            foreach (var shape in rigid.Configuration.Shapes)
+            for(var i=0; i<rigid.Configuration.Shapes.Length; i++)
             {
-                var fixture = new Fixture(shape.Clone(ref transformation));
-                fixture.Tag = entityId;
+                fixtures[i] = new Fixture(rigid.Configuration.Shapes[i].Clone(ref transformation));
+                fixtures[i].Tag = entityId;
 
-                body.Add(fixture);
+                body.Add(fixtures[i]);
             }
 
-            _bodies.Put(entityId, body);
+            _fixtures.Add(entityId, fixtures);
         }
 
         private void RemoveRigid(int entityId)
         {
-            var body = _bodies.Get(entityId);
-
-            foreach (var fixture in body.FixtureList)
+            foreach(var fixture in _fixtures[entityId])
             {
-                if (fixture.Tag is int fixtureEntityId && entityId == fixtureEntityId)
-                {
-                    _buffer.Enqueue(fixture);
-                }
+                fixture.Body.Remove(fixture);
             }
 
-            while (_buffer.TryDequeue(out var fixture))
+            _fixtures.Remove(entityId);
+        }
+
+        private void UpdateRigid(int entityId)
+        {
+            bool interested = this.subscription.IsInterested(entityId);
+            bool added = _fixtures.ContainsKey(entityId);
+
+            if (interested && !added)
             {
-                body.Remove(fixture);
+                this.AddRigid(entityId);
+                return;
             }
 
-            _bodies.Delete(entityId);
+            if (!interested && added)
+            {
+                this.RemoveRigid(entityId);
+                return;
+            }
+        }
+
+        public void Process(in IEvent<CleanJointed> message)
+        {
+            this.UpdateRigid(message.Data.Jointed.Joint.Entity.Id);
         }
 
         protected override void OnEntityAdded(int entityId)
         {
             base.OnEntityAdded(entityId);
 
-            if(!this.subscription.IsInterested(entityId))
-            {
-                return;
-            }
+            this.UpdateRigid(entityId);
+        }
 
-            this.AddRigid(entityId);
+        protected override void OnEntityRemoved(int entityId)
+        {
+            base.OnEntityRemoved(entityId);
+
+            this.UpdateRigid(entityId);
         }
 
         protected override void OnEntityChanged(int entityId, BitVector32 oldBits)
@@ -113,18 +133,6 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             {
                 this.AddRigid(entityId);
             }
-        }
-
-        protected override void OnEntityRemoved(int entityId)
-        {
-            base.OnEntityRemoved(entityId);
-
-            if (!this.subscription.IsInterested(entityId))
-            {
-                return;
-            }
-
-            this.RemoveRigid(entityId);
         }
     }
 }

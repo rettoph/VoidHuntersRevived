@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Common.Attributes;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using System;
@@ -8,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using tainicom.Aether.Physics2D.Dynamics;
+using VoidHuntersRevived.Common.Entities.Events;
+using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Events;
 using VoidHuntersRevived.Common.Simulations;
@@ -16,12 +19,15 @@ using VoidHuntersRevived.Common.Simulations.Systems;
 
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {
+    [Sortable<ISubscriber<IEvent<CleanJointed>>>(int.MinValue + 10)]
     internal sealed class TreeSystem : ParallelEntityProcessingSystem,
+        ISubscriber<IEvent<CreateTree>>,
         ISubscriber<IEvent<CleanJointed>>
     {
         private static readonly AspectBuilder TreeAspect = Aspect.All(new[]
         {
-            typeof(Tree)
+            typeof(Tree),
+            typeof(Body)
         });
 
         private ComponentMapper<Tree> _trees;
@@ -76,6 +82,25 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 tree.Add(
                     entity: message.Data.Jointed.Joint.Entity,
                     localTransformation: message.Data.Jointed.LocalTransformation);
+            }
+        }
+
+        public void Process(in IEvent<CreateTree> message)
+        {
+            var entity = message.Simulation.CreateEntity(message.Data.Key);
+            var body = message.Data.Body;
+            var head = message.Data.Head;
+
+            var tree = new Tree(entity);
+            body.Tag = entity.Id;
+            body.SetTransformIgnoreContacts(message.Data.Position, message.Data.Rotation);
+
+            entity.Attach(body);
+            entity.Attach(tree);
+
+            if (head is not null)
+            {
+                tree.Add(head, Matrix.Identity);
             }
         }
     }

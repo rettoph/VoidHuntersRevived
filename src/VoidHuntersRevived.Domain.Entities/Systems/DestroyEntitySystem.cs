@@ -24,7 +24,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            message.Simulation.DestroyEntity(message.Data.EntityKey);
+            message.Simulation.RemoveEntity(message.Data.Key, out var entity);
+            entity.Destroy();
         }
     }
 }

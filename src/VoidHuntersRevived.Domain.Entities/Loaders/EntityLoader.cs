@@ -48,6 +48,18 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
 
                 manager.AddScoped<DestroyEntitySystem>()
                     .AddInterfaceAliases();
+
+                manager.AddScoped<ParallelEntitySystem>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<ShipPartSystem>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<ShipSystem>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<ChainSystem>()
+                    .AddInterfaceAliases();
             });
         }
     }

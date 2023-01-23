@@ -14,7 +14,8 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Events
         public enum Statuses
         {
             Create,
-            Destroy
+            Destroy,
+            Clean
         };
 
         public readonly Jointed Jointed;

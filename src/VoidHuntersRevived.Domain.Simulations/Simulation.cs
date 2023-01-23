@@ -14,6 +14,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Common.Simulations.Services;
@@ -68,7 +69,10 @@ namespace VoidHuntersRevived.Domain.Simulations
             _updateSystems = this.Provider.GetRequiredService<IFiltered<ISimulationUpdateSystem>>().Instances.ToArray();
 
             _globalsSmulationService.Add(this);
+        }
 
+        public virtual void PostInitialize()
+        {
             this.CreateEntity(ParallelKeys.System);
         }
 
@@ -141,25 +145,19 @@ namespace VoidHuntersRevived.Domain.Simulations
             return _parallel.TryGetEntityIdFromKey(key, this.Type, out _);
         }
 
-        public void RemoveEntity(int id)
+        public void AddEntity(ParallelKey key, Entity entity)
         {
-            _parallel.Remove(this.Type, id);
+            entity.Attach(_entityComponent);
+            entity.Attach(new Parallelable(key));
+            entity.Attach<ISimulation>(this);
+
+            _parallel.Set(key, this.Type, entity.Id);
         }
 
-        public void RemoveEntity(ParallelKey key)
+        public void RemoveEntity(ParallelKey key, out Entity entity)
         {
+            entity = this.GetEntity(key);
             _parallel.Remove(key, this.Type);
-        }
-
-        public void DestroyEntity(int id)
-        {
-            this.RemoveEntity(id);
-            _world.DestroyEntity(id);
-        }
-
-        public void DestroyEntity(ParallelKey key)
-        {
-            this.DestroyEntity(this.GetEntityId(key));
         }
 
         protected abstract void Update(GameTime gameTime);
@@ -167,18 +165,6 @@ namespace VoidHuntersRevived.Domain.Simulations
         void ISimulation.Update(GameTime gameTime)
         {
             this.Update(gameTime);
-        }
-
-        public virtual Entity CreateEntity(ParallelKey key)
-        {
-            var entity = _world.CreateEntity();
-            entity.Attach(_entityComponent);
-            entity.Attach(new Parallelable(key));
-            entity.Attach<ISimulation>(this);
-
-            _parallel.Set(key, this.Type, entity.Id);
-
-            return entity;
         }
 
         protected virtual void PublishEvent(IEvent @event)
