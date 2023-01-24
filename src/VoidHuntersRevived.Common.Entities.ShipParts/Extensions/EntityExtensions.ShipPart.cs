@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Extensions
         {
             configuration.Make(entity);
             entity.Attach(configuration);
-            entity.Attach(new Jointings(entity));
+            entity.Attach(new Jointee(entity));
 
             return entity;
         }

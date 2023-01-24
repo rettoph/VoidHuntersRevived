@@ -20,7 +20,8 @@ using VoidHuntersRevived.Common.Simulations;
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {
     internal sealed class RigidNodeSystem : EntitySystem,
-        ISubscriber<IEvent<CleanJointed>>
+        ISubscriber<IEvent<CreateNode>>,
+        ISubscriber<IEvent<DestroyNode>>
     {
         private ComponentMapper<Rigid> _rigids;
         private ComponentMapper<Node> _nodes;
@@ -47,9 +48,14 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         private void AddRigid(int entityId)
         {
+            if(!this.subscription.IsInterested(entityId))
+            {
+                return;
+            }
+
             var node = _nodes.Get(entityId);
             var rigid = _rigids.Get(entityId);
-            var body = _bodies.Get(node.Tree);
+            var body = _bodies.Get(node.TreeId);
 
             var transformation = node.LocalTransformation;
             var fixtures = new Fixture[rigid.Configuration.Shapes.Length];
@@ -67,6 +73,11 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         private void RemoveRigid(int entityId)
         {
+            if(!_fixtures.ContainsKey(entityId))
+            {
+                return;
+            }
+
             foreach(var fixture in _fixtures[entityId])
             {
                 fixture.Body.Remove(fixture);
@@ -93,46 +104,14 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             }
         }
 
-        public void Process(in IEvent<CleanJointed> message)
+        public void Process(in IEvent<CreateNode> message)
         {
-            this.UpdateRigid(message.Data.Jointed.Joint.Entity.Id);
+            this.AddRigid(message.Data.NodeId);
         }
 
-        protected override void OnEntityAdded(int entityId)
+        public void Process(in IEvent<DestroyNode> message)
         {
-            base.OnEntityAdded(entityId);
-
-            this.UpdateRigid(entityId);
-        }
-
-        protected override void OnEntityRemoved(int entityId)
-        {
-            base.OnEntityRemoved(entityId);
-
-            this.UpdateRigid(entityId);
-        }
-
-        protected override void OnEntityChanged(int entityId, BitVector32 oldBits)
-        {
-            base.OnEntityChanged(entityId, oldBits);
-
-            bool wasInterested = this.subscription.IsInterested(oldBits);
-            bool isInterested = this.subscription.IsInterested(entityId);
-
-            if (wasInterested == isInterested)
-            {
-                return;
-            }
-
-            if(wasInterested)
-            {
-                this.RemoveRigid(entityId);
-            }
-
-            if (isInterested)
-            {
-                this.AddRigid(entityId);
-            }
+            this.RemoveRigid(message.Data.NodeId);
         }
     }
 }

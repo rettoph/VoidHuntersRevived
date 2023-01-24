@@ -19,9 +19,12 @@ using VoidHuntersRevived.Common.Simulations.Systems;
 
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {
-    [Sortable<ISubscriber<IEvent<CleanJointed>>>(int.MinValue + 10)]
+    [Sortable<ISubscriber<IEvent<CreateJointing>>>(int.MinValue + 10)]
+    [Sortable<ISubscriber<IEvent<CreateJointing>>>(int.MinValue + 10)]
     internal sealed class TreeSystem : ParallelEntityProcessingSystem,
-        ISubscriber<IEvent<CleanJointed>>
+        ISubscriber<IEvent<CreateNode>>,
+        ISubscriber<IEvent<DestroyNode>>,
+        ISubscriber<IEvent<CreateJointing>>
     {
         private static readonly AspectBuilder TreeAspect = Aspect.All(new[]
         {
@@ -31,14 +34,16 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         private ComponentMapper<Tree> _trees;
         private ComponentMapper<Node> _nodes;
-        private ComponentMapper<Jointed> _jointed;
+        private ComponentMapper<Jointing> _jointings;
+        private ComponentMapper<Jointee> _jointee;
         private ComponentMapper<Body> _bodies;
 
         public TreeSystem(ISimulationService simulations) : base(simulations, TreeAspect)
         {
             _trees = default!;
             _nodes = default!;
-            _jointed = default!;
+            _jointings = default!;
+            _jointee = default!;
             _bodies = default!;
         }
 
@@ -46,7 +51,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         {
             _trees = mapperService.GetMapper<Tree>();
             _nodes = mapperService.GetMapper<Node>();
-            _jointed = mapperService.GetMapper<Jointed>();
+            _jointings = mapperService.GetMapper<Jointing>();
+            _jointee = mapperService.GetMapper<Jointee>();
             _bodies = mapperService.GetMapper<Body>();
         }
 
@@ -64,24 +70,95 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             }
         }
 
-        public void Process(in IEvent<CleanJointed> message)
+        public void Process(in IEvent<CreateNode> message)
         {
-            // The entity is currently attached to another tree
-            if (_nodes.TryGet(message.Data.Jointed.Joint.Entity, out var oldNode))
+            // Check to see if the entity is already attached to another
+            // tree. If it is, we should remove the node first.
+            if (_nodes.TryGet(message.Data.NodeId, out var existingNode))
             { // Detach it from its old tree
-                var oldTree = _trees.Get(oldNode.Tree);
-                oldTree.Remove(oldNode.Entity);
+                message.Simulation.PublishEvent(new DestroyNode()
+                {
+                    NodeId = message.Data.NodeId,
+                    TreeId = existingNode.TreeId,
+                });
             }
 
-            if(message.Data.Status == CleanJointed.Statuses.Create)
+            var tree = _trees.Get(message.Data.TreeId);
+            var jointing = _jointings.Get(message.Data.NodeId);
+            var node = new Node(
+                entityId: message.Data.NodeId,
+                treeId: message.Data.TreeId,
+                localTransformation: jointing is null ? Matrix.Identity : jointing.LocalTransformation);
+
+            tree.Add(node);
+            _nodes.Put(node.EntityId, node);
+
+            if (!_jointee.TryGet(node.EntityId, out var jointee))
             {
-                var node = _nodes.Get(message.Data.Jointed.Parent.Entity);
-                var tree = _trees.Get(node.Tree);
-
-                tree.Add(
-                    entity: message.Data.Jointed.Joint.Entity,
-                    localTransformation: message.Data.Jointed.LocalTransformation);
+                return;
             }
+
+            // Recersively remove all children from the tree as well.
+            foreach (var child in jointee.Children)
+            {
+                message.Simulation.PublishEvent(new CreateNode()
+                {
+                    NodeId = child.Joint.Entity.Id,
+                    TreeId = message.Data.TreeId,
+                });
+            }
+        }
+
+        public void Process(in IEvent<DestroyNode> message)
+        {
+            var node = _nodes.Get(message.Data.NodeId);
+            var tree = _trees.Get(message.Data.TreeId);
+
+            if (!tree.Remove(node))
+            {
+                return;
+            }
+
+            _nodes.Delete(node.EntityId);
+
+            if(!_jointee.TryGet(node.EntityId, out var jointee))
+            {
+                return;
+            }
+
+            // Recersively remove all children from the tree as well.
+            foreach(var child in jointee.Children)
+            {
+                message.Simulation.PublishEvent(new DestroyNode()
+                {
+                    NodeId = child.Joint.Entity.Id,
+                    TreeId = message.Data.TreeId,
+                });
+            }
+        }
+
+        public void Process(in IEvent<CreateJointing> message)
+        {
+            var nodeId = message.Simulation.GetEntityId(message.Data.Joint);
+            var parentId = message.Simulation.GetEntityId(message.Data.Parent);
+            var parentTree = _nodes.Get(parentId).TreeId;
+
+            // Publish an AddNode event whenever a new joint is created.
+            message.Simulation.PublishEvent(new CreateNode()
+            {
+                NodeId = nodeId,
+                TreeId = parentTree
+            });
+
+            // if(message.Data.Status == CleanJointed.Statuses.Create)
+            // {
+            //     var node = _nodes.Get(message.Data.Jointed.Parent.Entity);
+            //     var tree = _trees.Get(node.Tree);
+            // 
+            //     tree.Add(
+            //         entity: message.Data.Jointed.Joint.Entity,
+            //         localTransformation: message.Data.Jointed.LocalTransformation);
+            // }
         }
     }
 }

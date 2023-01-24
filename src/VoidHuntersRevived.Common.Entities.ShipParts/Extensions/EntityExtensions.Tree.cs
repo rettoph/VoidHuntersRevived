@@ -8,36 +8,40 @@ using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Dynamics;
 using tainicom.Aether.Physics2D.Dynamics.Contacts;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
+using VoidHuntersRevived.Common.Entities.ShipParts.Events;
+using VoidHuntersRevived.Common.Simulations.Extensions;
 
 namespace VoidHuntersRevived.Common.Entities.ShipParts.Extensions
 {
     public static partial class EntityExtensions
     {
-        public static Entity MakeTree(this Entity entity, Body body, Entity? head = null)
+        public static Entity MakeTree(this Entity entity, Body body, int? headId = null)
         {
-            var tree = new Tree(entity);
+            var tree = new Tree(entity.Id);
             body.Tag = entity.Id;
 
             entity.Attach(body);
             entity.Attach(tree);
 
-            if(head is null)
+            if(headId is not null)
             {
-                return entity;
+                entity.PublishEvent(new CreateNode()
+                {
+                    NodeId = headId.Value,
+                    TreeId = tree.EntityId,
+                });
             }
-
-            tree.Add(head, Matrix.Identity);
 
             return entity;
         }
 
-        public static Entity MakeChain(this Entity entity, Aether aether, Entity? head = null, Vector2 position = default, float rotation = 0)
+        public static Entity MakeChain(this Entity entity, Aether aether, int? headId = null, Vector2 position = default, float rotation = 0)
         {
             var body = aether.CreateBody(bodyType: BodyType.Dynamic);
             body.SetTransformIgnoreContacts(ref position, rotation);
             body.OnCollision += HandleChainCollision;
 
-            entity.MakeTree(body, head);
+            entity.MakeTree(body, headId);
             entity.Attach(Tractorable.Instance);
 
             return entity;

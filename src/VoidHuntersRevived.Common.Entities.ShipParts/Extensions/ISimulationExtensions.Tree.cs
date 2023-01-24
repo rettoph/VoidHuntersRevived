@@ -18,11 +18,11 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Extensions
         {
             var head = simulation.CreateShipPart(key.Create(ParallelTypes.ShipPart, 0), headConfiguration);
 
-            return simulation.CreateEntity(key).MakeChain(simulation.Aether, head, position, rotation);
+            return simulation.CreateEntity(key).MakeChain(simulation.Aether, head.Id, position, rotation);
         }
-        public static Entity CreateChain(this ISimulation simulation, ParallelKey key, Entity head, Vector2 position = default, float rotation = 0)
+        public static Entity CreateChain(this ISimulation simulation, ParallelKey key, int headId, Vector2 position = default, float rotation = 0)
         {
-            return simulation.CreateEntity(key).MakeChain(simulation.Aether, head, position, rotation);
+            return simulation.CreateEntity(key).MakeChain(simulation.Aether, headId, position, rotation);
         }
     }
 }

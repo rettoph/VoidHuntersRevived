@@ -70,7 +70,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             {
                 var jointable = _jointables.Get(entityId);
                 var joint = _nodes.Get(entityId);
-                var body = _bodies.Get(joint.Tree);
+                var body = _bodies.Get(joint.TreeId);
 
                 this.DrawJoints(jointable.Joints, body.Position, body.Rotation);
             }

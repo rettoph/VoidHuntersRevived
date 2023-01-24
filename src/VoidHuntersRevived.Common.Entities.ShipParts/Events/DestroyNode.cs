@@ -8,8 +8,9 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Common.Entities.ShipParts.Events
 {
-    public sealed class CleanTree : IData
+    public sealed class DestroyNode : IData
     {
-        public required Tree Tree { get; init; }
+        public required int TreeId { get; init; }
+        public required int NodeId { get; init; }
     }
 }

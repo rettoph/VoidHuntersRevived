@@ -23,30 +23,30 @@ using VoidHuntersRevived.Domain.Entities.Events;
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {
     [GuppyFilter<IGameGuppy>()]
-    [Sortable<ISubscriber<IEvent<CleanJointed>>>(int.MinValue)]
+    [Sortable<ISubscriber<IEvent<CreateJointing>>>(int.MinValue)]
+    [Sortable<ISubscriber<IEvent<DestroyJointing>>>(int.MinValue)]
     internal sealed class JointSystem : BasicSystem,
         ISubscriber<IEvent<CreateJointing>>,
-        ISubscriber<IEvent<DestroyJointing>>,
-        ISubscriber<IEvent<CleanJointed>>
+        ISubscriber<IEvent<DestroyJointing>>
     {
         private readonly ISimulationService _simulations;
         private ComponentMapper<Jointable> _jointables;
-        private ComponentMapper<Jointed> _jointed;
-        private ComponentMapper<Jointings> _jointings;
+        private ComponentMapper<Jointing> _jointed;
+        private ComponentMapper<Jointee> _jointees;
 
         public JointSystem(ISimulationService simulations)
         {
             _simulations = simulations;
             _jointables = default!;
             _jointed = default!;
-            _jointings = default!;
+            _jointees = default!;
         }
 
         public override void Initialize(World world)
         {
             _jointables = world.ComponentMapper.GetMapper<Jointable>();
-            _jointed = world.ComponentMapper.GetMapper<Jointed>();
-            _jointings = world.ComponentMapper.GetMapper<Jointings>();
+            _jointed = world.ComponentMapper.GetMapper<Jointing>();
+            _jointees = world.ComponentMapper.GetMapper<Jointee>();
         }
 
         public void Process(in IEvent<CreateJointing> message)
@@ -54,12 +54,12 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             var parentId = message.Simulation.GetEntityId(message.Data.Parent);
             var childId = message.Simulation.GetEntityId(message.Data.Joint);
 
-            var jointings = _jointings.Get(parentId);
-            var jointed = new Jointed(
-                joint: _jointables.Get(childId).Joints[message.Data.ChildJointId],
+            var jointee = _jointees.Get(parentId);
+            var jointing = new Jointing(
+                joint: _jointables.Get(childId).Joints[message.Data.JointId],
                 parent: _jointables.Get(parentId).Joints[message.Data.ParentJointId]);
 
-            if(!jointed.Validate())
+            if(!jointing.Validate())
             {
                 throw new NotImplementedException();
             }
@@ -68,7 +68,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             // Should we just detach?
             if(_jointed.TryGet(childId, out var oldLink))
             {
-                if(jointed == oldLink)
+                if(jointing == oldLink)
                 { // The link already exists
                     return;
                 }
@@ -78,53 +78,50 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             // The parent join is already linked to something else
             // Should we just detach?
-            if(jointings.Children.Any(x => x.Parent == jointed.Parent))
+            if(jointee.Children.Any(x => x.Parent == jointing.Parent))
             {
                 throw new NotImplementedException();
             }
 
-            jointings.Add(jointed);
-            _jointed.Put(childId, jointed);
+            jointee.Add(jointing);
+            _jointed.Put(childId, jointing);
 
-            message.Simulation.PublishEvent(new CleanJointed(jointed, CleanJointed.Statuses.Create));
+            // At this point all child joints should recursively be updated? Is there a better way?
+            // The tree node has very much the same transformation but the node shouldn't need to 
+            // be aware of a jointing - like in the case of the head node, right?
+            this.CleanLocalTransformationRecersive(childId, jointing.LocalTransformation);
         }
 
         public void Process(in IEvent<DestroyJointing> message)
         {
             var jointedId = message.Simulation.GetEntityId(message.Data.Jointed);
             var jointed = _jointed.Get(jointedId);
-            var jointings = _jointings.Get(jointed.Parent.Entity.Id);
+            var jointings = _jointees.Get(jointed.Parent.Entity.Id);
 
             _jointed.Delete(jointedId);
             jointings.Remove(jointed);
 
-            message.Simulation.PublishEvent(new CleanJointed(jointed, CleanJointed.Statuses.Destroy));
+            
+            this.CleanLocalTransformationRecersive(jointedId, Matrix.Identity);
         }
 
-        public void Process(in IEvent<CleanJointed> message)
+        private void CleanLocalTransformationRecersive(int entityId, Matrix transformation)
         {
-            message.Data.Jointed.Clean();
-            var transformation = message.Data.Status switch
-            {
-                CleanJointed.Statuses.Destroy => Matrix.Identity,
-                _ => message.Data.Jointed.LocalTransformation
-            };
-
-            var jointable = _jointables.Get(message.Data.Jointed.Joint.Entity);
-            foreach (var joint in jointable.Joints)
+            var jointable = _jointables.Get(entityId);
+            foreach(var joint in jointable.Joints)
             {
                 joint.LocalTransformation = joint.Configuration.Transformation * transformation;
             }
 
-            if(!_jointings.TryGet(message.Data.Jointed.Joint.Entity, out var jointings))
+            if (!_jointees.TryGet(entityId, out var jointee))
             {
                 return;
             }
 
-            foreach(var child in jointings.Children)
+            foreach (var child in jointee.Children)
             {
-                var clean = new CleanJointed(child, CleanJointed.Statuses.Clean);
-                message.Simulation.PublishEvent(clean);
+                child.CleanTransformation();
+                this.CleanLocalTransformationRecersive(child.Joint.Entity.Id, child.LocalTransformation);
             }
         }
     }

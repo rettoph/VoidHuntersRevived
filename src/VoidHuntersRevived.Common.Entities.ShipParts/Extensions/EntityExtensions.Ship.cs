@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Common.Entities.Extensions
         {
             entity.MakeTree(
                 body: aether.CreateBody(bodyType: BodyType.Dynamic), 
-                head: bridge).MakePilotable();
+                headId: bridge.Id).MakePilotable();
 
             entity.Attach(new Ship(
                 entityId: entity.Id,

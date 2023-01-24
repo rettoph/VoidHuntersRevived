@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         private ComponentMapper<Body> _bodies;
         private ComponentMapper<Tree> _trees;
         private ComponentMapper<Node> _nodes;
-        private ComponentMapper<Jointed> _jointed;
+        private ComponentMapper<Jointing> _jointed;
         private ComponentMapper<Parallelable> _parallelables;
 
         public TractoringSystem(ITractorService tractor, ISimulationService simulations) : base(simulations, TractoringAspect)
@@ -67,7 +67,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             _bodies = mapperService.GetMapper<Body>();
             _trees = mapperService.GetMapper<Tree>();
             _nodes = mapperService.GetMapper<Node>();
-            _jointed = mapperService.GetMapper<Jointed>();
+            _jointed = mapperService.GetMapper<Jointing>();
             _parallelables = mapperService.GetMapper<Parallelable>();
         }
 
@@ -91,7 +91,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            if (node.Tree.Id != tractorableId)
+            if (node.TreeId != tractorableId)
             {
                 // This almost always happens on a lockstep sent input within
                 // The predictive simulation. This is because the node exists
@@ -114,11 +114,11 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            if (node.Tree.Id == tree.Entity.Id && _jointed.Has(node.Entity.Id))
+            if (node.TreeId == tree.EntityId && _jointed.Has(node.EntityId))
             { // The selected node is attached to the current ship
 
                 // Cache all the values we're about to delete...
-                var key = _parallelables.Get(node.Entity.Id).Key;
+                var key = _parallelables.Get(node.EntityId).Key;
                 var position = node.WorldPosition;
                 var rotation = node.WorldTransformation.Radians();
 
@@ -135,7 +135,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 // display that very well.
                 tractorableId = message.Simulation.CreateChain(
                     key: key.Create(ParallelTypes.Chain), 
-                    head: node.Entity,
+                    headId: node.EntityId,
                     position: position,
                     rotation: rotation).Id;
             }
@@ -160,17 +160,19 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
+            // Destroy the old chain
             message.Simulation.PublishEvent(new DestroyEntity()
             {
-                Key = potential.Joint.Entity.Get<Node>().Tree.Get<Parallelable>().Key
+                Key = _parallelables.Get(potential.Joint.Entity.Get<Node>().TreeId).Key
             });
 
+            // Create a jointing to the current ship.
             message.Simulation.PublishEvent(new CreateJointing()
             {
                 Parent = potential.Parent.Entity.Get<Parallelable>().Key,
                 ParentJointId = potential.Parent.Index,
                 Joint = potential.Joint.Entity.Get<Parallelable>().Key,
-                ChildJointId = potential.Joint.Index
+                JointId = potential.Joint.Index
             });
         }
 

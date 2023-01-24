@@ -29,6 +29,6 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Services
         bool TransformTractorable(
             Vector2 target,
             Tractoring tractoring,
-            [MaybeNullWhen(false)] out Jointed potential);
+            [MaybeNullWhen(false)] out Jointing potential);
     }
 }

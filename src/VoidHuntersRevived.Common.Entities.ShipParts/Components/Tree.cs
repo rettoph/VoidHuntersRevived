@@ -9,43 +9,52 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 {
     public class Tree
     {
-        private readonly List<Entity> _nodes;
+        private readonly List<int> _nodes;
 
-        public readonly Entity Entity;
-        public readonly ReadOnlyCollection<Entity> Nodes;
-        public Entity? Head => _nodes.Any() ? _nodes[0] : null;
+        public readonly int EntityId;
+        public readonly ReadOnlyCollection<int> Nodes;
+        public int? HeadId => _nodes.Any() ? _nodes[0] : null;
 
-        public Tree(Entity entity)
+        public Tree(int entityId)
         {
-            _nodes = new List<Entity>();
+            _nodes = new List<int>();
 
-            this.Entity = entity;
-            this.Nodes = new ReadOnlyCollection<Entity>(_nodes);
+            this.EntityId = entityId;
+            this.Nodes = new ReadOnlyCollection<int>(_nodes);
         }
 
-        public Node Add(Entity entity, Matrix localTransformation)
+        /// <summary>
+        /// <para>Warning: Do not use this method.</para>
+        /// <para>
+        /// This should only be called by the domain level tree system as
+        /// required logic to adding a new node to a tree.
+        /// If you think you need to use this you probably want to publish
+        /// a <see cref="Events.DestroyNode"/> event to your simulation.
+        /// </para>
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public Node Add(Node node)
         {
-            if (entity.Has<Node>())
-            {
-                throw new NotImplementedException();
-            }
-
-            var node = new Node(entity, this.Entity, localTransformation);
-            entity.Attach(node);
-            _nodes.Add(entity);
+            _nodes.Add(node.EntityId);
 
             return node;
         }
 
-        public bool Remove(Entity entity)
+        /// <summary>
+        /// <para>Warning: Do not use this method.</para>
+        /// <para>
+        /// This should only be called by the domain level tree system as
+        /// required logic to adding a new node to a tree.
+        /// If you think you need to use this you probably want to publish
+        /// a <see cref="Events.DestroyNode"/> event to your simulation.
+        /// </para>
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public bool Remove(Node node)
         {
-            if(_nodes.Remove(entity))
-            {
-                entity.Detach<Node>();
-                return true;
-            }
-
-            return false;
+            return _nodes.Remove(node.EntityId);
         }
     }
 }

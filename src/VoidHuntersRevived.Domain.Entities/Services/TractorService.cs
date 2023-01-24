@@ -82,10 +82,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             var tree = _trees.Get(tractoring.EntityId);
             var body = _bodies.Get(tractoring.EntityId);
 
-            foreach (Entity nodeEntity in tree.Nodes)
+            foreach (int nodeId in tree.Nodes)
             {
-                var node = _nodes.Get(nodeEntity);
-                var jointable = _jointables.Get(nodeEntity);
+                var node = _nodes.Get(nodeId);
+                var jointable = _jointables.Get(nodeId);
 
                 if(node is null || jointable is null)
                 {
@@ -117,7 +117,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public bool TransformTractorable(
             Vector2 target,
             Tractoring tractoring,
-            [MaybeNullWhen(false)] out Jointed potential)
+            [MaybeNullWhen(false)] out Jointing potential)
         {
             var tractorableBody = _bodies.Get(tractoring.TractorableId);
             var tractoringTree = _trees.Get(tractoring.EntityId);
@@ -129,7 +129,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             var tractoringBody = _bodies.Get(tractoring.EntityId);
             var tractorableTree = _trees.Get(tractoring.TractorableId);
-            var tractorableJointable = _jointables.Get(tractorableTree.Head);
+            var tractorableJointable = _jointables.Get(tractorableTree.HeadId.Value);
             var tractorableJoint = tractorableJointable.Joints.FirstOrDefault(x => !x.Jointed);
 
             if (tractorableJoint is null)
@@ -137,7 +137,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return this.DefaultTransformBody(tractorableBody, target, out potential);
             }
 
-            potential = new Jointed(tractorableJoint, tractoringJoint);
+            potential = new Jointing(tractorableJoint, tractoringJoint);
             var transformation = potential.LocalTransformation * tractoringBody.GetTransformation();
 
             target = Vector2.Transform(Vector2.Zero, transformation);
@@ -147,7 +147,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return true;
         }
 
-        private bool DefaultTransformBody(Body body, Vector2 target, out Jointed? potential)
+        private bool DefaultTransformBody(Body body, Vector2 target, out Jointing? potential)
         {
             potential = null;
             target -= body.WorldCenter - body.Position;

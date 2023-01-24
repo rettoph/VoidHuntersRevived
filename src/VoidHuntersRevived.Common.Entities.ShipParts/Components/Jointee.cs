@@ -7,22 +7,22 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
     /// Can be thought of as a list of "female"
     /// connections
     /// </summary>
-    public sealed class Jointings
+    public sealed class Jointee
     {
-        private readonly List<Jointed> _children;
+        private readonly List<Jointing> _children;
 
         public readonly Entity Entity;
-        public readonly ReadOnlyCollection<Jointed> Children;
+        public readonly ReadOnlyCollection<Jointing> Children;
 
-        public Jointings(Entity entity)
+        public Jointee(Entity entity)
         {
-            _children = new List<Jointed>();
+            _children = new List<Jointing>();
 
             this.Entity = entity;
-            this.Children = new ReadOnlyCollection<Jointed>(_children);
+            this.Children = new ReadOnlyCollection<Jointing>(_children);
         }
 
-        public void Add(Jointed child)
+        public void Add(Jointing child)
         {
             child.Joint.Jointing = child;
             child.Parent.Jointing = child;
@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
             _children.Add(child);
         }
 
-        public void Remove(Jointed child)
+        public void Remove(Jointing child)
         {
             if(_children.Remove(child))
             {

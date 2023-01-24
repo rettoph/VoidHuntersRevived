@@ -10,18 +10,18 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 {
     public class Node
     {
-        public readonly Entity Entity;
-        public readonly Entity Tree;
+        public readonly int EntityId;
+        public readonly int TreeId;
 
         public readonly Matrix LocalTransformation;
         public Matrix WorldTransformation;
 
         public Vector2 WorldPosition => Vector2.Transform(Vector2.Zero, this.WorldTransformation);
 
-        internal Node(Entity entity, Entity tree, Matrix localTransformation)
+        public Node(int entityId, int treeId, Matrix localTransformation)
         {
-            this.Entity = entity;
-            this.Tree = tree;
+            this.EntityId = entityId;
+            this.TreeId = treeId;
 
             this.LocalTransformation = localTransformation;
             this.WorldTransformation = Matrix.Identity;

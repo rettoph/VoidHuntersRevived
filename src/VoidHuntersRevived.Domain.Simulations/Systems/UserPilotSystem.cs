@@ -70,8 +70,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
                 Parent = ship.Get<Ship>().Bridge.Get<Parallelable>().Key,
                 ParentJointId = 1,
                 Joint = piece.Get<Parallelable>().Key,
-                ChildJointId = 0
+                JointId = 0
             });
+
+            var chain = message.Simulation.CreateChain(ParallelTypes.Chain.Create(1337), ShipParts.HullSquare);
         }
     }
 }
