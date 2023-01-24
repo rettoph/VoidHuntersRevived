@@ -149,16 +149,6 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 NodeId = nodeId,
                 TreeId = parentTree
             });
-
-            // if(message.Data.Status == CleanJointed.Statuses.Create)
-            // {
-            //     var node = _nodes.Get(message.Data.Jointed.Parent.Entity);
-            //     var tree = _trees.Get(node.Tree);
-            // 
-            //     tree.Add(
-            //         entity: message.Data.Jointed.Joint.Entity,
-            //         localTransformation: message.Data.Jointed.LocalTransformation);
-            // }
         }
     }
 }

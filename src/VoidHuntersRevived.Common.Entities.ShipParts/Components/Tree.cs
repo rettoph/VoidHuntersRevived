@@ -27,9 +27,9 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
         /// <para>Warning: Do not use this method.</para>
         /// <para>
         /// This should only be called by the domain level tree system as
-        /// required logic to adding a new node to a tree.
+        /// there is some required logic to adding a new node to a tree.
         /// If you think you need to use this you probably want to publish
-        /// a <see cref="Events.DestroyNode"/> event to your simulation.
+        /// a <see cref="Events.CreateNode"/> event to your simulation.
         /// </para>
         /// </summary>
         /// <param name="node"></param>
@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
         /// <para>Warning: Do not use this method.</para>
         /// <para>
         /// This should only be called by the domain level tree system as
-        /// required logic to adding a new node to a tree.
+        /// there is some required logic to adding a new node to a tree.
         /// If you think you need to use this you probably want to publish
         /// a <see cref="Events.DestroyNode"/> event to your simulation.
         /// </para>

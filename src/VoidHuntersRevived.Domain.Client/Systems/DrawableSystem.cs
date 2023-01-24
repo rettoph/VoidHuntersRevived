@@ -1,4 +1,5 @@
-﻿using Guppy.MonoGame;
+﻿using Guppy.Common;
+using Guppy.MonoGame;
 using Guppy.MonoGame.Primitives;
 using Guppy.MonoGame.Utilities.Cameras;
 using Guppy.Resources.Providers;
@@ -27,6 +28,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private readonly IResourceProvider _resources;
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private readonly Camera2D _camera;
+        private readonly Camera2D _screen;
         private readonly Dictionary<DrawConfiguration, Renderer> _renderers;
 
         private ComponentMapper<Drawable> _drawables;
@@ -35,17 +37,22 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         public DrawableSystem(
             PrimitiveBatch<VertexPositionColor> primitiveBatch,
             Camera2D camera,
+            IGlobal<Camera2D> screen,
             IResourceProvider resources,
             IShipPartConfigurationService configurations) : base(HullAspect)
         {
             _primitiveBatch = primitiveBatch;
             _camera = camera;
+            _screen = screen.Instance;
             _configurations = configurations;
             _resources = resources;
             _renderers = new Dictionary<DrawConfiguration, Renderer>();
 
             _drawables = default!;
             _nodes = default!;
+
+            _screen.Center = false;
+            _screen.Zoom = 1;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
@@ -55,7 +62,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
             foreach (var configuration in _configurations.GetAll<DrawConfiguration>())
             {
-                _renderers.Add(configuration, new Renderer(_primitiveBatch, _resources, configuration));
+                _renderers.Add(configuration, new Renderer(_camera, _primitiveBatch, _resources, configuration));
             }
         }
 
@@ -68,7 +75,20 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 var drawable = _drawables.Get(entityId);
                 var node = _nodes.Get(entityId);
 
-                _renderers[drawable.Configuration].Render(node.WorldTransformation);
+                _renderers[drawable.Configuration].RenderShapes(node.WorldTransformation);
+            }
+
+            _primitiveBatch.End();
+
+            _screen.Update(gameTime);
+            _primitiveBatch.Begin(_screen);
+
+            foreach (var entityId in this.subscription.ActiveEntities)
+            {
+                var drawable = _drawables.Get(entityId);
+                var node = _nodes.Get(entityId);
+
+                _renderers[drawable.Configuration].RenderPaths(node.WorldTransformation);
             }
 
             _primitiveBatch.End();

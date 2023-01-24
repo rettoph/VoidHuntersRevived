@@ -38,6 +38,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private ISimulation _interactive;
         private ComponentMapper<Piloting> _pilotings;
         private ComponentMapper<Pilotable> _pilotables;
+        private float _scroll;
 
         private Vector2 CurrentTarget => _camera.Unproject(Mouse.GetState().Position.ToVector2());
         private ParallelKey CurrentUserKey
@@ -81,6 +82,17 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         public override void Update(GameTime gameTime)
         {
             this.SetTarget(SimulationType.Predictive);
+
+            var mouseScroll = Mouse.GetState().ScrollWheelValue / 120f;
+            var delta = _scroll - mouseScroll;
+            _scroll = mouseScroll;
+
+            if(delta != 0)
+            {
+                Console.WriteLine(delta);
+            }
+
+            _camera.TargetZoom *= 1f - (0.1f * delta);
         }
 
         public void Process(in PreTick message)

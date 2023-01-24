@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
                 manager.AddScoped<DrawAimSystem>()
                     .AddInterfaceAliases();
 
-                manager.AddSingleton<Camera2D>()
+                manager.AddScoped<Camera2D>()
                     .AddAlias<Camera>();
 
                 services.AddService<LockstepStateDebugger>()
