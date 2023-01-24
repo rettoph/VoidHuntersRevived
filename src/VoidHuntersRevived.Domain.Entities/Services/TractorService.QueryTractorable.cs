@@ -30,12 +30,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 _pilotable = pilotable;
                 _tractor = tractor;
+                _distance = Radius;
             }
 
             public bool Query(out ParallelKey tractorableKey, out ParallelKey nodeKey)
             {
-                _distance = Radius;
-
                 AABB aabb = new AABB(_pilotable.Aim.Value, Radius, Radius);
                 _tractor._interactive.Aether.QueryAABB(this.QueryCallback, ref aabb);
 
@@ -60,11 +59,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
                 if (!_tractor._nodes.TryGet(entityId, out var node))
                 { // If the entity is not a node...
-                    return true;
-                }
-
-                if (_tractorableId == node.TreeId)
-                { // This is already the target
                     return true;
                 }
 

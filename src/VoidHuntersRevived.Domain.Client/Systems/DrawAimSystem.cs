@@ -42,6 +42,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private ComponentMapper<Pilotable> _pilotable;
         private ComponentMapper<Body> _bodies;
         private ComponentMapper<Node> _nodes;
+        private ComponentMapper<Drawable> _drawable;
 
         public DrawAimSystem(
             PrimitiveBatch<VertexPositionColor> primitiveBatch,
@@ -58,6 +59,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             _pilotable = default!;
             _bodies = default!;
             _nodes = default!;
+            _drawable = default!;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
@@ -65,6 +67,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             _pilotable = mapperService.GetMapper<Pilotable>();
             _bodies = mapperService.GetMapper<Body>();
             _nodes = mapperService.GetMapper<Node>();
+            _drawable = mapperService.GetMapper<Drawable>();
         }
 
         public override void Draw(GameTime gameTime)
@@ -102,9 +105,14 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 return;
             }
 
+            if(!_drawable.TryGet(nodeId, out var drawable))
+            {
+                return;
+            }
 
+            var transformation = drawable.LocalCenterTransformation * node.WorldTransformation;
             var color = Color.Green;
-            _primitiveBatch.Trace(_shape, in color, ref node.WorldTransformation);
+            _primitiveBatch.Trace(_shape, in color, ref transformation);
         }
     }
 }
