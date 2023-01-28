@@ -5,7 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Collision.Shapes;
+using tainicom.Aether.Physics2D.Common;
+using tainicom.Aether.Physics2D.Common.ConvexHull;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
+using VoidHuntersRevived.Common.Entities.ShipParts.Helpers;
 
 namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
 {
@@ -24,6 +27,15 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
         public void AttachComponentTo(Entity entity)
         {
             entity.Attach<Rigid>(_component);
+        }
+
+        public static RigidConfiguration Polygon(float density, int sides)
+        {
+            var vertices = new Vertices(PolygonHelper.CalculateVertexAngles(sides).Select(x => x.Vertex));
+            vertices = GiftWrap.GetConvexHull(vertices);
+            var shape = new PolygonShape(vertices, density);
+
+            return new RigidConfiguration(shape);
         }
     }
 }

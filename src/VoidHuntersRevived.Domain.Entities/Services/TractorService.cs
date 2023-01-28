@@ -129,6 +129,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             var tractoringBody = _bodies.Get(tractoring.EntityId);
             var tractorableTree = _trees.Get(tractoring.TractorableId);
+
+            if(tractorableTree.HeadId is null)
+            {
+                return this.DefaultTransformBody(tractorableBody, target, out potential);
+            }
+
             var tractorableJointable = _jointables.Get(tractorableTree.HeadId.Value);
             var tractorableJoint = tractorableJointable.Joints.FirstOrDefault(x => !x.Jointed);
 

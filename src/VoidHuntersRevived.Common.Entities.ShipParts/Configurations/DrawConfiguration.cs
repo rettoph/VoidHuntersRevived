@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
+using VoidHuntersRevived.Common.Entities.ShipParts.Helpers;
 
 namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
 {
@@ -28,6 +29,22 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
         {
             _component ??= new Drawable(this);
             entity.Attach(_component);
+        }
+
+        public static DrawConfiguration Polygon(string color, int sides)
+        {
+            var vertexAngles = PolygonHelper.CalculateVertexAngles(sides);
+
+            return new DrawConfiguration(
+                color: color,
+                shapes: new[]
+                {
+                    vertexAngles.Select(x => x.Vertex).ToArray()
+                },
+                paths: new[]
+                {
+                    vertexAngles.Select(x => x.Vertex).Concat(vertexAngles.First().Vertex.Yield()).ToArray()
+                });
         }
     }
 }

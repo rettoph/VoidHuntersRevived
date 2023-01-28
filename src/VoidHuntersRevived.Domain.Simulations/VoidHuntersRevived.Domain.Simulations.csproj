@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Extensions\tainicom\Aether\" />
-    <Folder Include="Providers\" />
   </ItemGroup>
 
   <ItemGroup>

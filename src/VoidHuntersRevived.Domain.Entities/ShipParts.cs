@@ -9,5 +9,6 @@ namespace VoidHuntersRevived.Domain.Entities
     public static class ShipParts
     {
         public const string HullSquare = "hull:square";
+        public const string HullTriangle = "hull:triangle";
     }
 }

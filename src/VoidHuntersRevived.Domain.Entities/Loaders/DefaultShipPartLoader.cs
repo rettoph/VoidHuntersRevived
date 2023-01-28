@@ -21,58 +21,16 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
         {
             shipParts.Add(new ShipPartConfiguration(ShipParts.HullSquare)
             {
-                new DrawConfiguration(
-                    color: ShipPartColors.Hull,
-                    shapes: new[]
-                    {
-                        new[]
-                        {
-                            new Vector2(0, 0),
-                            new Vector2(1, 0),
-                            new Vector2(1, 1),
-                            new Vector2(0, 1)
-                        }
-                    },
-                    paths: new[]
-                    {
-                        new[]
-                        {
-                            new Vector2(0, 0),
-                            new Vector2(1, 0),
-                            new Vector2(1, 1),
-                            new Vector2(0, 1),
-                            new Vector2(0, 0)
-                        }
-                    }),
-                new RigidConfiguration(
-                    shapes: new[]
-                    {
-                        new PolygonShape(
-                            vertices: GiftWrap.GetConvexHull(new Vertices()
-                            {
-                                new Vector2(0, 0),
-                                new Vector2(1, 0),
-                                new Vector2(1, 1),
-                                new Vector2(0, 1)
-                            }),
-                            density: 1f)
-                    }),
-                new JointableConfiguration(
-                    joints: new[]
-                    {
-                        new JointConfiguration(
-                            position: new Vector2(1f, 0.5f),
-                            rotation: MathHelper.PiOver2 * 0),
-                        new JointConfiguration(
-                            position: new Vector2(0.5f, 1),
-                            rotation: MathHelper.PiOver2 * 1),
-                        new JointConfiguration(
-                            position: new Vector2(0f, 0.5f),
-                            rotation: MathHelper.PiOver2 * 2),
-                        new JointConfiguration(
-                            position: new Vector2(0.5f, 0f),
-                            rotation: MathHelper.PiOver2 * 3)
-                    })
+                DrawConfiguration.Polygon(ShipPartColors.Hull, 4),
+                RigidConfiguration.Polygon(1f, 4),
+                JointableConfiguration.Polygon(4)
+            });
+
+            shipParts.Add(new ShipPartConfiguration(ShipParts.HullTriangle)
+            {
+                DrawConfiguration.Polygon(ShipPartColors.Hull, 3),
+                RigidConfiguration.Polygon(1f, 3),
+                JointableConfiguration.Polygon(3)
             });
         }
     }

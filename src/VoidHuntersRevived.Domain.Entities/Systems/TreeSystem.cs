@@ -35,7 +35,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         private ComponentMapper<Tree> _trees;
         private ComponentMapper<Node> _nodes;
         private ComponentMapper<Jointing> _jointings;
-        private ComponentMapper<Jointee> _jointee;
+        private ComponentMapper<Jointee> _jointees;
+        private ComponentMapper<Jointable> _jointables;
         private ComponentMapper<Body> _bodies;
 
         public TreeSystem(ISimulationService simulations) : base(simulations, TreeAspect)
@@ -43,7 +44,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             _trees = default!;
             _nodes = default!;
             _jointings = default!;
-            _jointee = default!;
+            _jointees = default!;
+            _jointables = default!;
             _bodies = default!;
         }
 
@@ -52,7 +54,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             _trees = mapperService.GetMapper<Tree>();
             _nodes = mapperService.GetMapper<Node>();
             _jointings = mapperService.GetMapper<Jointing>();
-            _jointee = mapperService.GetMapper<Jointee>();
+            _jointees = mapperService.GetMapper<Jointee>();
+            _jointables = mapperService.GetMapper<Jointable>();
             _bodies = mapperService.GetMapper<Body>();
         }
 
@@ -85,15 +88,17 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             var tree = _trees.Get(message.Data.TreeId);
             var jointing = _jointings.Get(message.Data.NodeId);
+            var jointable = _jointables.Get(message.Data.NodeId);
             var node = new Node(
                 entityId: message.Data.NodeId,
                 treeId: message.Data.TreeId,
+                center: jointable.Configuration.LocalCenter,
                 localTransformation: jointing is null ? Matrix.Identity : jointing.LocalTransformation);
 
             tree.Add(node);
             _nodes.Put(node.EntityId, node);
 
-            if (!_jointee.TryGet(node.EntityId, out var jointee))
+            if (!_jointees.TryGet(node.EntityId, out var jointee))
             {
                 return;
             }
@@ -121,7 +126,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             _nodes.Delete(node.EntityId);
 
-            if(!_jointee.TryGet(node.EntityId, out var jointee))
+            if(!_jointees.TryGet(node.EntityId, out var jointee))
             {
                 return;
             }

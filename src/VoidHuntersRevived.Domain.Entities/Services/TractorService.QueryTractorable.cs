@@ -80,7 +80,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                     }
                 }
 
-                var distance = Vector2.Distance(_pilotable.Aim.Value, node.WorldPosition);
+                var distance = Vector2.Distance(_pilotable.Aim.Value, node.CenterWorldPosition);
 
                 if (distance >= _distance)
                 { // The new distance is further away than the previously closest found target
