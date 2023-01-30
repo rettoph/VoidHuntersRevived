@@ -14,10 +14,12 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
     public sealed class Rigid
     {
         public readonly RigidConfiguration Configuration;
+        public readonly Shape[] Shapes;
 
         public Rigid(RigidConfiguration configuration)
         {
             this.Configuration = configuration;
+            this.Shapes = configuration.Shapes.ToArray();
         }
     }
 }

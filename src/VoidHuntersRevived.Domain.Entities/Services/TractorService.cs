@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private ComponentMapper<Jointable> _jointables;
         private ComponentMapper<Parallelable> _parallelables;
         private ComponentMapper<Tree> _trees;
-        private ComponentMapper<ShipPartConfiguration> _shipParts;
+        private ComponentMapper<ShipPartResource> _shipParts;
         private ISimulation _interactive;
 
         public TractorService(ISimulationService simulations)
@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _jointables = world.ComponentMapper.GetMapper<Jointable>();
             _parallelables = world.ComponentMapper.GetMapper<Parallelable>();
             _trees = world.ComponentMapper.GetMapper<Tree>();
-            _shipParts = world.ComponentMapper.GetMapper<ShipPartConfiguration>();
+            _shipParts = world.ComponentMapper.GetMapper<ShipPartResource>();
 
             _interactive = _simulations.First(SimulationType.Predictive, SimulationType.Lockstep);
         }

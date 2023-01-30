@@ -2,7 +2,9 @@
 using Guppy.Network.Identity.Claims;
 using Guppy.Network.Identity.Enums;
 using Guppy.Network.Peers;
+using Guppy.Resources.Providers;
 using System;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 
@@ -12,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Client
     {
         public readonly ClientPeer Client;
 
-        public ClientGameGuppy(ClientPeer client, NetScope netScope, ISimulationService simulations) : base(client, netScope, simulations)
+        public ClientGameGuppy(IPackProvider packs, ClientPeer client, NetScope netScope, ISimulationService simulations) : base(client, netScope, simulations)
         {
             this.Client = client;
         }

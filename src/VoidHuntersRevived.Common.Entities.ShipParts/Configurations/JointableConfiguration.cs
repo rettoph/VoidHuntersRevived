@@ -13,13 +13,22 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
 {
     public sealed class JointableConfiguration : IShipPartComponentConfiguration
     {
-        public readonly JointConfiguration[] Joints;
-        public readonly Vector2 LocalCenter;
+        public Vector2 LocalCenter { get; set; }
+        public JointConfiguration[] Joints { get; set; }
 
+        public JointableConfiguration() : this(Vector2.Zero)
+        {
+
+        }
         public JointableConfiguration(Vector2 localCenter, params JointConfiguration[] joints)
         {
             this.LocalCenter = localCenter;
             this.Joints = joints;
+        }
+
+        public void Initialize(string path, IServiceProvider services)
+        {
+            //
         }
 
         public void AttachComponentTo(Entity entity)

@@ -27,8 +27,8 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             {
                 _configuration = configuration;
                 _primitiveBatch = primitiveBatch;
-                _shapeColor = resources.Get<Color>(_configuration.Color);
-                _pathColor = Color.Lerp(resources.Get<Color>(_configuration.Color), Color.White, 0.25f);
+                _shapeColor = resources.Get<Color>(_configuration.Color).Value;
+                _pathColor = Color.Lerp(resources.Get<Color>(_configuration.Color).Value, Color.White, 0.25f);
                 _shapes = _configuration.Shapes.Select(x => new PrimitiveShape(x)).ToArray();
                 _paths = _configuration.Paths.Select(x => new UnprojectedPrimitiveShape(camera, x)).ToArray();
             }

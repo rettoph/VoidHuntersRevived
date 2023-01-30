@@ -58,11 +58,11 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             var body = _bodies.Get(node.TreeId);
 
             var transformation = node.LocalTransformation;
-            var fixtures = new Fixture[rigid.Configuration.Shapes.Length];
+            var fixtures = new Fixture[rigid.Shapes.Length];
 
-            for(var i=0; i<rigid.Configuration.Shapes.Length; i++)
+            for(var i=0; i<rigid.Shapes.Length; i++)
             {
-                fixtures[i] = new Fixture(rigid.Configuration.Shapes[i].Clone(ref transformation));
+                fixtures[i] = new Fixture(rigid.Shapes[i].Clone(ref transformation));
                 fixtures[i].Tag = entityId;
 
                 body.Add(fixtures[i]);

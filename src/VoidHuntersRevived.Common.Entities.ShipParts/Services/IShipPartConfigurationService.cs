@@ -4,10 +4,10 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Services
 {
     public interface IShipPartConfigurationService
     {
-        void Add(ShipPartConfiguration configuration);
+        void Add(ShipPartResource configuration);
         void Remove(string name);
-        ShipPartConfiguration Get(string name);
-        IEnumerable<ShipPartConfiguration> GetAll();
+        ShipPartResource Get(string name);
+        IEnumerable<ShipPartResource> GetAll();
         IEnumerable<TComponent> GetAll<TComponent>()
             where TComponent : class, IShipPartComponentConfiguration;
     }

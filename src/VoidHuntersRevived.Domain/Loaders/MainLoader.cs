@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Loaders;
+using Guppy.Resources;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Loaders
 {
@@ -21,6 +23,11 @@ namespace VoidHuntersRevived.Domain.Loaders
 
                 config.WriteTo.File($"logs/log_{DateTime.Now.ToString("yyyy-dd-M")}.txt")
                       .WriteTo.Console();
+            });
+
+            services.AddSingleton<Pack>(new Pack(VoidHuntersPack.Id, VoidHuntersPack.Name)
+            {
+                Directory = VoidHuntersPack.Directory
             });
         }
     }

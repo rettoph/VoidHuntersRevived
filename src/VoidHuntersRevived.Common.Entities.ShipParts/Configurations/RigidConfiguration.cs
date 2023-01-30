@@ -14,14 +14,29 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
 {
     public sealed class RigidConfiguration : IShipPartComponentConfiguration
     {
-        private readonly Rigid _component;
+        private Rigid _component;
+        private List<Shape> _shapes;
 
-        public readonly Shape[] Shapes;
+        public IEnumerable<Shape> Shapes
+        {
+            get => _shapes;
+            set => _shapes.AddRange(value);
+        }
 
+        public RigidConfiguration() : this(Array.Empty<Shape>())
+        {
+
+        }
         public RigidConfiguration(params Shape[] shapes)
         {
-            _component = new Rigid(this);
+            _shapes = new List<Shape>();
+            _component = default!;
             this.Shapes = shapes;
+        }
+
+        public void Initialize(string path, IServiceProvider services)
+        {
+            _component = new Rigid(this);
         }
 
         public void AttachComponentTo(Entity entity)

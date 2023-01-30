@@ -12,12 +12,16 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
 {
     public sealed class DrawConfiguration : IShipPartComponentConfiguration
     {
-        private Drawable? _component;
+        private Drawable _component = default!;
 
-        public readonly string Color;
-        public readonly Vector2[][] Shapes;
-        public readonly Vector2[][] Paths;
+        public string Color { get; set; } = string.Empty;
+        public Vector2[][] Shapes { get; set; } = Array.Empty<Vector2[]>();
+        public Vector2[][] Paths { get; set; } = Array.Empty<Vector2[]>();
 
+        public DrawConfiguration()
+        {
+
+        }
         public DrawConfiguration(string color, Vector2[][] shapes, Vector2[][] paths)
         {
             this.Color = color;
@@ -25,9 +29,14 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
             this.Paths = paths;
         }
 
+        public void Initialize(string path, IServiceProvider services)
+        {
+            _component = new Drawable(this);
+        }
+
         public void AttachComponentTo(Entity entity)
         {
-            _component ??= new Drawable(this);
+            
             entity.Attach(_component);
         }
 

@@ -16,9 +16,9 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddResourcePack(ResourcePacks.ShipParts.Name, ResourcePacks.ShipParts.Path);
+            // services.AddResourcePack(ResourcePacks.ShipParts.Name, ResourcePacks.ShipParts.Path);
 
-            services.AddColorResource(ShipPartColors.Default);
+            // services.AddColorResource(ShipPartColors.Default);
         }
     }
 }
