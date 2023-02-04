@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Attributes.Common;
 using Guppy.Loaders;
 using Guppy.MonoGame.Resources;
 using Guppy.Resources;
@@ -25,24 +26,34 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
     [AutoLoad]
     public class ShipPartLoader : IPackLoader
     {
+        const float DefaultDensity = 1.0f;
+        const int TriangleSides = 3;
+        const int SquareSides = 4;
+        const int HexagonSides = 6;
+
         public void Load(IPackProvider packs)
         {
             var pack = packs.GetById(VoidHuntersPack.Id);
 
             pack.Add(new IResource[]
             {
-                new ColorResource(ShipPartColors.Default, Color.Orange),
-                new ShipPartResource(ShipParts.HullSquare)
-                {
-                    DrawConfiguration.Polygon(ShipPartColors.Hull, 4),
-                    RigidConfiguration.Polygon(1f, 4),
-                    JointableConfiguration.Polygon(4)
-                },
                 new ShipPartResource(ShipParts.HullTriangle)
                 {
-                    DrawConfiguration.Polygon(ShipPartColors.Hull, 3),
-                    RigidConfiguration.Polygon(1f, 3),
-                    JointableConfiguration.Polygon(3)
+                    DrawConfiguration.Polygon(Colors.Orange, TriangleSides),
+                    RigidConfiguration.Polygon(DefaultDensity, TriangleSides),
+                    JointableConfiguration.Polygon(TriangleSides)
+                },
+                new ShipPartResource(ShipParts.HullSquare)
+                {
+                    DrawConfiguration.Polygon(Colors.Orange, SquareSides),
+                    RigidConfiguration.Polygon(DefaultDensity, SquareSides),
+                    JointableConfiguration.Polygon(SquareSides)
+                },
+                new ShipPartResource(ShipParts.HullHexagon)
+                {
+                    DrawConfiguration.Polygon(Colors.Orange, HexagonSides),
+                    RigidConfiguration.Polygon(DefaultDensity, HexagonSides),
+                    JointableConfiguration.Polygon(HexagonSides)
                 }
             });
         }

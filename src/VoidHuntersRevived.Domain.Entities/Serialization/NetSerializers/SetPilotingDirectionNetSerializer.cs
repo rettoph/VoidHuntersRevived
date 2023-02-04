@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Attributes.Common;
 using Guppy.Network;
 using Guppy.Network.Messages;
 using Guppy.Network.Providers;

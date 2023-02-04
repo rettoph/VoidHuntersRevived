@@ -29,7 +29,12 @@ namespace VoidHuntersRevived.Domain.Client
 
             base.Initialize(provider);
 
-            this.Client.Connect("localhost", 1337, Claim.Create("username", "Rettoph", ClaimAccessibility.Public));
+            this.Connect("localhost", 1337);
+        }
+
+        public void Connect(string host, int port)
+        {
+            this.Client.Connect(host, port, Claim.Create("username", "Rettoph", ClaimAccessibility.Public));
         }
     }
 }

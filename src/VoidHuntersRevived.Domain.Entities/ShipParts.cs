@@ -10,5 +10,6 @@ namespace VoidHuntersRevived.Domain.Entities
     {
         public const string HullSquare = "hull:square";
         public const string HullTriangle = "hull:triangle";
+        public const string HullHexagon = "hull:hexagon";
     }
 }

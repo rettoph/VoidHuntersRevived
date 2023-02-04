@@ -10,6 +10,7 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Events;
 using VoidHuntersRevived.Common.Simulations;
+using Guppy.Attributes.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
 {

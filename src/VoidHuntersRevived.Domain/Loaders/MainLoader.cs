@@ -1,7 +1,10 @@
 ﻿using Guppy.Attributes;
+using Guppy.Attributes.Common;
 using Guppy.Loaders;
+using Guppy.MonoGame.Resources;
 using Guppy.Resources;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Xna.Framework;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -28,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Loaders
             services.AddSingleton<Pack>(new Pack(VoidHuntersPack.Id, VoidHuntersPack.Name)
             {
                 Directory = VoidHuntersPack.Directory
-            });
+            }.Add(new ColorResource(Colors.Orange, Color.Orange)));
         }
     }
 }
