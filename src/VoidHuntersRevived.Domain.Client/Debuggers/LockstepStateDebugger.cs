@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Domain.Client.Debuggers
 
         public override void Draw(GameTime gameTime)
         {
-            foreach (var data in _simulations.Instances.WhereAs<ISimulation, ILockstepSimulation>())
+            foreach (var data in _simulations.Instances.OfType<ILockstepSimulation>())
             {
                 this.DrawData(data);
             }

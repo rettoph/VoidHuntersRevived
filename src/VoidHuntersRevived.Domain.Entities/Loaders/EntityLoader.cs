@@ -21,6 +21,7 @@ using VoidHuntersRevived.Domain.Entities.Systems;
 
 namespace VoidHuntersRevived.Domain.Entities.Loaders
 {
+    [AutoLoad]
     public sealed class EntityLoader : IServiceLoader
     {
         public void ConfigureServices(IServiceCollection services)

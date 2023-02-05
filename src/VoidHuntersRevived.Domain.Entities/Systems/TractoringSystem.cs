@@ -1,4 +1,5 @@
-﻿using Guppy.Common;
+﻿using Guppy.Attributes;
+using Guppy.Common;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using System;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Dynamics;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Events;
@@ -23,6 +25,7 @@ using VoidHuntersRevived.Domain.Entities.Events;
 
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {
+    [GuppyFilter<IGameGuppy>()]
     internal sealed class TractoringSystem : ParallelEntityProcessingSystem,
         ISubscriber<IInput<StartTractoring>>,
         ISubscriber<IInput<StopTractoring>>

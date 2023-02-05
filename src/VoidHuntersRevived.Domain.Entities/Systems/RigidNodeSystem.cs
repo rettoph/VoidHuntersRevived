@@ -1,4 +1,5 @@
-﻿using Guppy.Common;
+﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.Common.Collections;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
@@ -13,12 +14,14 @@ using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Collision.Shapes;
 using tainicom.Aether.Physics2D.Dynamics;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Events;
 using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {
+    [GuppyFilter<IGameGuppy>()]
     internal sealed class RigidNodeSystem : EntitySystem,
         ISubscriber<IEvent<CreateNode>>,
         ISubscriber<IEvent<DestroyNode>>

@@ -15,7 +15,7 @@ using VoidHuntersRevived.Domain.Client.Systems;
 using Guppy.MonoGame.Enums;
 using VoidHuntersRevived.Common.Simulations;
 using Guppy.Common;
-using Guppy.Attributes.Common;
+using Guppy.Attributes;
 
 namespace VoidHuntersRevived.Domain.Client.Loaders
 {

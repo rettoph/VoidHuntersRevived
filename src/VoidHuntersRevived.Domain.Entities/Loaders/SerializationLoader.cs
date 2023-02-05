@@ -13,7 +13,7 @@ using VoidHuntersRevived.Domain.Entities.Serialization.Json.Converters;
 using System.Text.Json.Serialization;
 using Guppy.Attributes;
 using tainicom.Aether.Physics2D.Collision.Shapes;
-using Guppy.Attributes.Common;
+using Guppy.Attributes;
 
 namespace VoidHuntersRevived.Domain.Entities.Loaders
 {

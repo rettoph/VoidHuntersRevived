@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Guppy.Attributes;
+using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
@@ -13,6 +15,7 @@ using VoidHuntersRevived.Common.Simulations.Systems;
 
 namespace VoidHuntersRevived.Domain.Entites.Systems
 {
+    [GuppyFilter<IGameGuppy>()]
     internal sealed class PilotableSystem : ParallelEntityProcessingSystem
     {
         private const float AimDamping = 1f / 32f;

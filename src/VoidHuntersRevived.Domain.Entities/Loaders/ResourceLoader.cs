@@ -1,5 +1,5 @@
 ﻿using Guppy.Attributes;
-using Guppy.Attributes.Common;
+using Guppy.Attributes;
 using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
 using System;

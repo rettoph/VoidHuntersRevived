@@ -1,4 +1,5 @@
-﻿using Guppy.Common;
+﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.Common.Attributes;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
@@ -9,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using tainicom.Aether.Physics2D.Dynamics;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Events;
 using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
@@ -19,7 +21,8 @@ using VoidHuntersRevived.Common.Simulations.Systems;
 
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {
-    [Sortable<ISubscriber<IEvent<CreateJointing>>>(int.MinValue + 10)]
+    [GuppyFilter<IGameGuppy>()]
+    [Sortable<ISubscriber<IEvent<CreateNode>>>(int.MinValue)]
     [Sortable<ISubscriber<IEvent<CreateJointing>>>(int.MinValue + 10)]
     internal sealed class TreeSystem : ParallelEntityProcessingSystem,
         ISubscriber<IEvent<CreateNode>>,

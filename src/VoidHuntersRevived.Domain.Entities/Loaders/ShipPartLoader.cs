@@ -1,5 +1,5 @@
 ﻿using Guppy.Attributes;
-using Guppy.Attributes.Common;
+using Guppy.Attributes;
 using Guppy.Loaders;
 using Guppy.MonoGame.Resources;
 using Guppy.Resources;

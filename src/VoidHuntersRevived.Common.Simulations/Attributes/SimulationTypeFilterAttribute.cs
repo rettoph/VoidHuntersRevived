@@ -1,10 +1,6 @@
-﻿using Guppy.Common.Attributes;
+﻿using Guppy;
+using Guppy.Attributes;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations.Filters;
 
 namespace VoidHuntersRevived.Common.Simulations.Attributes
@@ -18,11 +14,9 @@ namespace VoidHuntersRevived.Common.Simulations.Attributes
             this.SimulationType = simulationType;
         }
 
-        public override void Initialize(IServiceCollection services, Type classType)
+        protected override void Initialize(GuppyEngine engine, Type classType)
         {
-            base.Initialize(services, classType);
-
-            services.AddFilter(new SimulationTypeFilter(this.SimulationType, classType));
+            engine.Services.AddFilter(new SimulationTypeFilter(this.SimulationType, classType));
         }
     }
 }

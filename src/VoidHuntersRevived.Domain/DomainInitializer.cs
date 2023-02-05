@@ -1,25 +1,24 @@
 ﻿using Guppy;
 using Guppy.Attributes;
-using Guppy.Attributes.Common;
-using Guppy.Factories;
+using Guppy.Common.Providers;
+using Guppy.Loaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Domain.Entities.Loaders;
-using VoidHuntersRevived.Domain.Loaders;
 using VoidHuntersRevived.Domain.Simulations.Loaders;
 
 namespace VoidHuntersRevived.Domain
 {
     [AutoLoad]
-    internal sealed class GuppyFactory : IGuppyFactory
+    internal sealed class DomainInitializer : IGuppyInitializer
     {
-        public void Build(GuppyEngine guppy)
+        public void Initialize(GuppyEngine engine)
         {
-            guppy.AddLoader(new EntityLoader(), 0);
-            guppy.AddLoader(new SimulationLoader(), 0);
+            engine.Assemblies.Load(typeof(EntityLoader).Assembly);
+            engine.Assemblies.Load(typeof(SimulationLoader).Assembly);
         }
     }
 }

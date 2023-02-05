@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         IEnumerable<TComponent> IShipPartConfigurationService.GetAll<TComponent>()
         {
-            return this.GetAll().SelectMany(x => x.WhereAs<IShipPartComponentConfiguration, TComponent>());
+            return this.GetAll().SelectMany(x => x.OfType<TComponent>());
         }
     }
 }

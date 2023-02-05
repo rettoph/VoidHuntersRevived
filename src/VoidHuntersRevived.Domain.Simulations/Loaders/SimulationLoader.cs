@@ -19,6 +19,7 @@ using VoidHuntersRevived.Domain.Simulations.Systems;
 
 namespace VoidHuntersRevived.Domain.Simulations.Loaders
 {
+    [AutoLoad]
     public sealed class SimulationLoader : IServiceLoader
     {
         public void ConfigureServices(IServiceCollection services)
