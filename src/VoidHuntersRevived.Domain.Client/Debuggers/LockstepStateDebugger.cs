@@ -1,5 +1,4 @@
 ﻿using Guppy.MonoGame.UI;
-using Guppy.MonoGame.UI.Debuggers;
 using Guppy.Network.Identity;
 using Guppy.Network;
 using ImGuiNET;
@@ -16,23 +15,37 @@ using Guppy.MonoGame.UI.Services;
 using VoidHuntersRevived.Common.Simulations.Services;
 using Microsoft.Extensions.DependencyInjection;
 using VoidHuntersRevived.Domain.Simulations.Extensions;
+using Guppy.MonoGame;
+using MonoGame.Extended;
+using Guppy.MonoGame.Providers;
+using Guppy.MonoGame.Constants;
+using Guppy.Common;
+using Guppy.MonoGame.Messages;
 
 namespace VoidHuntersRevived.Domain.Client.Debuggers
 {
-    internal sealed class LockstepStateDebugger : SimpleDebugger, IImGuiDebugger
+    internal sealed class LockstepStateDebugger : SimpleDrawableGameComponent,
+        ISubscriber<Toggle<LockstepStateDebugger>>
     {
         private readonly IGlobalSimulationService _simulations;
         private readonly IImguiObjectViewer _objectViewer;
 
-        public string ButtonLabel => "Lockstep State";
-
-        public LockstepStateDebugger(IGlobalSimulationService simulations, IImguiObjectViewer objectViewer)
+        public LockstepStateDebugger(
+            IGlobalSimulationService simulations, 
+            IImguiObjectViewer objectViewer,
+            IMenuProvider menus)
         {
             _objectViewer= objectViewer;
             _simulations = simulations;
 
             this.IsEnabled = false;
             this.Visible = this.IsEnabled;
+
+            menus.Get(MenuConstants.Debug).Add(new MenuItem()
+            {
+                Label = "Lockstep State",
+                OnClick = Toggle<LockstepStateDebugger>.Instance
+            });
         }
 
         public void Initialize(ImGuiBatch imGuiBatch)
@@ -75,7 +88,7 @@ namespace VoidHuntersRevived.Domain.Client.Debuggers
             }
         }
 
-        public void Toggle()
+        public void Process(in Toggle<LockstepStateDebugger> message)
         {
             this.IsEnabled = !this.IsEnabled;
             this.Visible = this.IsEnabled;

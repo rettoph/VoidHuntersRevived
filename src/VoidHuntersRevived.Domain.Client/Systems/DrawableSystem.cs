@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         public DrawableSystem(
             PrimitiveBatch<VertexPositionColor> primitiveBatch,
             Camera2D camera,
-            IGlobal<Camera2D> screen,
+            IScoped<Camera2D> screen,
             IResourceProvider resources,
             IShipPartConfigurationService configurations) : base(HullAspect)
         {

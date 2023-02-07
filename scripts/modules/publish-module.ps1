@@ -48,11 +48,14 @@ function Publish-VoidHunters()
     $rid = VoidHuntersRuntimeIdentifierString $runtime
     $directory = $PSScriptRoot + "\..\..\publish\" + $rid + "\" + $project
 
-    Remove-Item $directory\* -Recurse -Force
+	if(Test-Path $directory)
+	{
+		Remove-Item $directory\* -Recurse -Force
+	}
 
     $build = "dotnet publish $path -c $configuration -r $rid -p:PublishSingleFile=$singleFile --self-contained $selfContained -o $directory"
     $output = & Invoke-Expression $build
-
+	
     if($cleanup)
     {
         Remove-Item $directory\*.pdb -Recurse -Force

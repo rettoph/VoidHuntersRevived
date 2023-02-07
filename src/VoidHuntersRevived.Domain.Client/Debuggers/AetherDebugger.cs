@@ -1,6 +1,10 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common;
+using Guppy.MonoGame;
+using Guppy.MonoGame.Constants;
+using Guppy.MonoGame.Messages;
+using Guppy.MonoGame.Providers;
 using Guppy.MonoGame.UI;
-using Guppy.MonoGame.UI.Debuggers;
 using Guppy.MonoGame.Utilities.Cameras;
 using Guppy.Network;
 using Guppy.Network.Enums;
@@ -9,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +28,8 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace VoidHuntersRevived.Domain.Client.Debuggers
 {
     [GuppyFilter<ClientGameGuppy>()]
-    internal sealed class AetherDebugger : SimpleDebugger, IImGuiDebugger
+    internal sealed class AetherDebugger : SimpleDrawableGameComponent,
+        ISubscriber<Toggle<AetherDebugger>>
     {
         private class DebugData
         {
@@ -34,7 +40,10 @@ namespace VoidHuntersRevived.Domain.Client.Debuggers
 
             public Color Color => new Color(ColorVector3.X, ColorVector3.Y, ColorVector3.Z);
 
-            public DebugData(DebugView view, ISimulation simulation, bool enabled)
+            public DebugData(
+                DebugView view, 
+                ISimulation simulation, 
+                bool enabled)
             {
                 this.View = view;
                 this.Simulation = simulation;
@@ -60,12 +69,10 @@ namespace VoidHuntersRevived.Domain.Client.Debuggers
         private DebugData[] _data;
         private readonly DebugViewFlags[] _debugFlags;
         
-
-        public string ButtonLabel => "Aether";
-
         public AetherDebugger(
             Camera2D camera,
             IGlobalSimulationService simulations,
+            IMenuProvider menus,
             GraphicsDevice graphics,
             ContentManager content,
             NetScope netScope)
@@ -80,11 +87,17 @@ namespace VoidHuntersRevived.Domain.Client.Debuggers
                 .Except(DebugViewFlags.None.Yield())
                 .ToArray();
 
-            this.IsEnabled = true;
-            this.Visible = this.IsEnabled;
+            this.IsEnabled = false;
+            this.Visible = false;
+
+            menus.Get(MenuConstants.Debug).Add(new MenuItem()
+            {
+                Label = "Aether",
+                OnClick = Toggle<AetherDebugger>.Instance
+            });
         }
 
-        public void Initialize(ImGuiBatch imGuiBatch)
+        public override void Initialize()
         {
             for (var i = 0; i < _simulations.Instances.Count; i++)
             {
@@ -96,12 +109,6 @@ namespace VoidHuntersRevived.Domain.Client.Debuggers
                 _data[i].View.LoadContent(_graphics, _content);
                 _data[i].UpdateColor();
             }
-        }
-
-        public void Toggle()
-        {
-            this.IsEnabled = !this.IsEnabled;
-            this.Visible = this.IsEnabled;
         }
 
         public override void Update(GameTime gameTime)
@@ -158,6 +165,11 @@ namespace VoidHuntersRevived.Domain.Client.Debuggers
             }
 
             ImGui.End();
+        }
+
+        public void Process(in Toggle<AetherDebugger> message)
+        {
+            this.Visible = !this.Visible;
         }
     }
 }

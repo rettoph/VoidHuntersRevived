@@ -63,7 +63,7 @@ Invoke-SSHCommand -SessionId $ssh.SessionId -Command "tmux kill-session -t VoidH
 if((Test-SFTPPath -SessionId $sftp.SessionId -Path $destination) -eq 0)
 {
     "Creating $destination directory..."
-    New-SFTPItem -SessionId $sftp.SessionId -Path $destination -ItemType Directory
+    New-SFTPItem -SessionId $sftp.SessionId -Path $destination -ItemType Directory -Recurse
 }
 
 # Upload dirty files
@@ -88,6 +88,7 @@ function CheckCacheDirty($target)
 {
     if($null -eq $cache)
     {
+
         return $true
     }
 

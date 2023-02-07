@@ -1,6 +1,7 @@
 ﻿using Guppy;
 using Guppy.Attributes;
 using Guppy.Common.Providers;
+using Guppy.Configurations;
 using Guppy.Loaders;
 using System;
 using System.Collections.Generic;
@@ -13,12 +14,12 @@ using VoidHuntersRevived.Domain.Simulations.Loaders;
 namespace VoidHuntersRevived.Domain
 {
     [AutoLoad]
-    internal sealed class DomainInitializer : IGuppyInitializer
+    internal sealed class DomainInitializer : IGuppyBuilder
     {
-        public void Initialize(GuppyEngine engine)
+        public void Initialize(GuppyConfiguration boot)
         {
-            engine.Assemblies.Load(typeof(EntityLoader).Assembly);
-            engine.Assemblies.Load(typeof(SimulationLoader).Assembly);
+            boot.Assemblies.Load(typeof(EntityLoader).Assembly);
+            boot.Assemblies.Load(typeof(SimulationLoader).Assembly);
         }
     }
 }

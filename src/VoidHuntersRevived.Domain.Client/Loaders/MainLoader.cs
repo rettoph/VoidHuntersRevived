@@ -5,6 +5,7 @@ using Guppy.Loaders;
 using Guppy.MonoGame;
 using Guppy.MonoGame.Utilities.Cameras;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,11 +42,11 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
 
                 services.AddService<LockstepStateDebugger>()
                     .SetLifetime(ServiceLifetime.Scoped)
-                    .AddAlias<IDebugger>();
+                    .AddInterfaceAliases();
 
                 services.AddService<AetherDebugger>()
                     .SetLifetime(ServiceLifetime.Scoped)
-                    .AddAlias<IDebugger>();
+                    .AddInterfaceAliases();
             });
         }
     }

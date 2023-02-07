@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Guppy.MonoGame.Strategies.PublishStrategies;
 using Guppy;
 using Guppy.Common;
 using Guppy.MonoGame.Services;
@@ -18,10 +17,7 @@ namespace VoidHuntersRevived.Domain.Client
     public sealed class VoidHuntersGame : Microsoft.Xna.Framework.Game
     {
         private readonly GraphicsDeviceManager _graphics;
-        private IServiceProvider? _provider;
-        private IScoped<ClientGameGuppy>? _client;
-        private IScoped<ServerGameGuppy>? _server;
-        private IGlobal<IGameComponentService>? _globals;
+        private GuppyEngine _engine;
 
 
         // https://community.monogame.net/t/start-in-maximized-window/12264
@@ -34,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Client
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            this.IsMouseVisible = false;
+            this.IsMouseVisible = true;
             this.Window.AllowUserResizing = true;
             this.IsFixedTimeStep = false;
 
@@ -46,6 +42,11 @@ namespace VoidHuntersRevived.Domain.Client
             _graphics.SynchronizeWithVerticalRetrace = false;
             _graphics.GraphicsProfile = GraphicsProfile.HiDef;
             _graphics.ApplyChanges();
+
+            _engine = new GuppyEngine(new[] { 
+                typeof(GameGuppy).Assembly, 
+                typeof(ClientGameGuppy).Assembly 
+            });
         }
 
         /// <summary>
@@ -58,35 +59,19 @@ namespace VoidHuntersRevived.Domain.Client
         {
             base.Initialize();
 
-            _provider = new GuppyEngine(new[] { typeof(GameGuppy).Assembly, typeof(ClientGameGuppy).Assembly })
-                        .ConfigureMonoGame<LastGuppyPublishStrategy>(this, _graphics, this.Content, this.Window)
-                        .ConfigureECS()
-                        .ConfigureNetwork()
-                        .ConfigureResources()
-                        .ConfigureUI()
-                        .ConfigureNetworkUI()
-                        .Build();
-
-            return;
             // SDL_MaximizeWindow(this.Window.Handle);
-            Task.Run(() =>
-            {
-                try
-                {
-                    _provider = new GuppyEngine(new[] { typeof(GameGuppy).Assembly, typeof(ClientGameGuppy).Assembly })
-                        .ConfigureMonoGame<LastGuppyPublishStrategy>(this, _graphics, this.Content, this.Window)
-                        .ConfigureECS()
-                        .ConfigureNetwork()
-                        .ConfigureResources()
-                        .ConfigureUI()
-                        .ConfigureNetworkUI()
-                        .Build();
-                }
-                catch (Exception ex)
-                {
 
-                }
+            _engine.Start(builder =>
+            {
+                builder.ConfigureMonoGame(this, _graphics, this.Content, this.Window)
+                    .ConfigureECS()
+                    .ConfigureNetwork()
+                    .ConfigureResources()
+                    .ConfigureUI()
+                    .ConfigureNetworkUI();
             });
+
+            _engine.Guppies.Create<ClientGameGuppy>();
         }
 
         /// <summary>
@@ -129,15 +114,7 @@ namespace VoidHuntersRevived.Domain.Client
             // TODO: Add your update logic here
             base.Update(gameTime);
 
-            // _server ??= _provider?.GetRequiredService<IGuppyProvider>().Create<ServerGameGuppy>();
-            _client ??= _provider?.GetRequiredService<IGuppyProvider>().Create<ClientGameGuppy>();
-
-            _globals ??= _provider?.GetRequiredService<IGlobal<IGameComponentService>>();
-
-            _globals?.Instance.Update(gameTime);
-
-            _server?.Instance.Update(gameTime);
-            _client?.Instance.Update(gameTime);
+            _engine.Update(gameTime);
         }
 
         /// <summary>
@@ -148,12 +125,9 @@ namespace VoidHuntersRevived.Domain.Client
         {
             base.Draw(gameTime);
 
-            this.GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.Black);
 
-            _globals?.Instance.Draw(gameTime);
-
-            _server?.Instance.Draw(gameTime);
-            _client?.Instance.Draw(gameTime);
+            _engine.Draw(gameTime);
         }
     }
 }
