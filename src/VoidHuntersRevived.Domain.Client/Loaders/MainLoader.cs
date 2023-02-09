@@ -21,6 +21,7 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddGuppy<MainMenuGuppy>();
             services.AddGuppy<ClientGameGuppy>();
 
             services.ConfigureCollection(manager =>

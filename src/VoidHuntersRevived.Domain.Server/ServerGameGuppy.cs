@@ -2,6 +2,7 @@
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Providers;
 using Guppy.Network.Peers;
+using VoidHuntersRevived.Common.Constants;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 
@@ -20,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Server
 
         public override void Initialize(IServiceProvider provider)
         {
-            this.Peer.Bind(this.NetScope, 0);
+            this.Peer.Bind(this.NetScope, NetScopeIds.Game);
 
             this.Server.Start(1337);
 

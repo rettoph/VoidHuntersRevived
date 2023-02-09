@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Diagnostics;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Domain.Simulations.Extensions;
@@ -68,6 +69,7 @@ namespace VoidHuntersRevived.Domain.Client.Debuggers
         private readonly NetScope _netScope;
         private DebugData[] _data;
         private readonly DebugViewFlags[] _debugFlags;
+        private readonly Menu _menu;
         
         public AetherDebugger(
             Camera2D camera,
@@ -83,22 +85,23 @@ namespace VoidHuntersRevived.Domain.Client.Debuggers
             _content = content;
             _netScope = netScope;
             _data = new DebugData[_simulations.Instances.Count()];
+            _menu = menus.Get(MenuConstants.Debug);
             _debugFlags = Enum.GetValues<DebugViewFlags>()
                 .Except(DebugViewFlags.None.Yield())
                 .ToArray();
 
             this.IsEnabled = false;
             this.Visible = false;
-
-            menus.Get(MenuConstants.Debug).Add(new MenuItem()
-            {
-                Label = "Aether",
-                OnClick = Toggle<AetherDebugger>.Instance
-            });
         }
 
         public override void Initialize()
         {
+            _menu.Add(new MenuItem()
+            {
+                Label = "Aether",
+                OnClick = Toggle<AetherDebugger>.Instance
+            });
+
             for (var i = 0; i < _simulations.Instances.Count; i++)
             {
                 _data[i] = new DebugData(

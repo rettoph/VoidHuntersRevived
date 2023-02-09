@@ -5,6 +5,7 @@ using Guppy.Network.Peers;
 using Guppy.Resources.Providers;
 using System;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Constants;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 
@@ -23,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Client
         {
             this.Client.Start();
 
-            this.Peer.Bind(this.NetScope, 0);
+            this.Peer.Bind(this.NetScope, NetScopeIds.Game);
 
             this.Simulations.Initialize(SimulationType.Lockstep | SimulationType.Predictive);
 

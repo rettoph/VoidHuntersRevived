@@ -1,4 +1,6 @@
-﻿using Guppy.Attributes;
+﻿using Guppy;
+using Guppy.Attributes;
+using Guppy.Loaders;
 using Guppy.MonoGame;
 using Guppy.MonoGame.Loaders;
 using Guppy.MonoGame.Providers;
@@ -13,11 +15,19 @@ using VoidHuntersRevived.Common.Messages;
 namespace VoidHuntersRevived.Domain.Client.Loaders
 {
     [AutoLoad]
-    internal sealed class MenuLoader : IMenuLoader
+    [GuppyFilter<MainMenuGuppy>()]
+    internal sealed class MenuLoader : IGuppyLoader
     {
-        public void Load(IMenuProvider menus)
+        private IMenuProvider _menus;
+
+        public MenuLoader(IMenuProvider menus)
         {
-            menus.Get(Menus.Main).Add(new[]
+            _menus = menus;
+        }
+
+        public void Load(IGuppy guppy)
+        {
+            _menus.Get(Menus.Main).Add(new[]
             {
                 new MenuItem()
                 {

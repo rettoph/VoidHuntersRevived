@@ -14,12 +14,12 @@ using VoidHuntersRevived.Domain.Simulations.Loaders;
 namespace VoidHuntersRevived.Domain
 {
     [AutoLoad]
-    internal sealed class DomainInitializer : IGuppyBuilder
+    internal sealed class DomainConfigurator : IGuppyConfigurator
     {
-        public void Initialize(GuppyConfiguration boot)
+        public void Configure(GuppyConfiguration configuration)
         {
-            boot.Assemblies.Load(typeof(EntityLoader).Assembly);
-            boot.Assemblies.Load(typeof(SimulationLoader).Assembly);
+            configuration.Assemblies.Load(typeof(EntityLoader).Assembly);
+            configuration.Assemblies.Load(typeof(SimulationLoader).Assembly);
         }
     }
 }

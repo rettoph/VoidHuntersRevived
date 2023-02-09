@@ -21,7 +21,7 @@ var guppy = engine.Guppies.Create<ServerGameGuppy>();
 var source = new CancellationTokenSource();
 
 TaskHelper.CreateLoop(
-    guppy.Instance.Update, 
+    guppy.Update, 
     TimeSpan.FromMilliseconds(16), 
     source.Token
 ).GetAwaiter().GetResult();

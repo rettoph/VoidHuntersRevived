@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common.DependencyInjection;
 using Guppy.Loaders;
 using Guppy.MonoGame.Resources;
 using Guppy.Resources;
@@ -11,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.GameComponents;
 
 namespace VoidHuntersRevived.Domain.Loaders
 {
@@ -31,6 +33,12 @@ namespace VoidHuntersRevived.Domain.Loaders
             {
                 Directory = VoidHuntersPack.Directory
             }.Add(new ColorResource(Colors.Orange, Color.Orange)));
+
+            services.ConfigureCollection(manager =>
+            {
+                manager.AddScoped<LaunchComponent>()
+                    .AddInterfaceAliases();
+            });
         }
     }
 }

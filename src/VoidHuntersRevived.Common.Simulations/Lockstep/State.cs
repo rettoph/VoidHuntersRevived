@@ -34,8 +34,8 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
             _log = log;
             _bus = bus;
             _history = new List<Tick>();
-            _stepsPerTick = settings.Get<int>(SettingConstants.StepsPerTick).Value;
-            _step = new Step(settings.Get<TimeSpan>(SettingConstants.StepInterval).Value);
+            _stepsPerTick = settings.Get<int>(Settings.StepsPerTick).Value;
+            _step = new Step(settings.Get<TimeSpan>(Settings.StepInterval).Value);
             _preTick = new PreTick(this);
 
             this.Reset();

@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
 
         public bool TryGetTractorable(Pilotable pilotable, out ParallelKey shipPartKey, out ParallelKey nodeKey)

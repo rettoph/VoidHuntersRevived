@@ -21,14 +21,18 @@ using Guppy.MonoGame.Providers;
 using Guppy.MonoGame.Constants;
 using Guppy.Common;
 using Guppy.MonoGame.Messages;
+using Guppy.Attributes;
+using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Client.Debuggers
 {
+    [GuppyFilter<ClientGameGuppy>()]
     internal sealed class LockstepStateDebugger : SimpleDrawableGameComponent,
         ISubscriber<Toggle<LockstepStateDebugger>>
     {
         private readonly IGlobalSimulationService _simulations;
         private readonly IImguiObjectViewer _objectViewer;
+        private readonly Menu _menu;
 
         public LockstepStateDebugger(
             IGlobalSimulationService simulations, 
@@ -37,20 +41,19 @@ namespace VoidHuntersRevived.Domain.Client.Debuggers
         {
             _objectViewer= objectViewer;
             _simulations = simulations;
+            _menu = menus.Get(MenuConstants.Debug);
 
             this.IsEnabled = false;
             this.Visible = this.IsEnabled;
-
-            menus.Get(MenuConstants.Debug).Add(new MenuItem()
-            {
-                Label = "Lockstep State",
-                OnClick = Toggle<LockstepStateDebugger>.Instance
-            });
         }
 
         public void Initialize(ImGuiBatch imGuiBatch)
         {
-            // throw new NotImplementedException();
+            _menu.Add(new MenuItem()
+            {
+                Label = "Lockstep State",
+                OnClick = Toggle<LockstepStateDebugger>.Instance
+            });
         }
 
         public override void Update(GameTime gameTime)

@@ -71,7 +71,7 @@ namespace VoidHuntersRevived.Domain.Client
                     .ConfigureNetworkUI();
             });
 
-            _engine.Guppies.Create<ClientGameGuppy>();
+            _engine.Guppies.Create<MainMenuGuppy>();
         }
 
         /// <summary>
