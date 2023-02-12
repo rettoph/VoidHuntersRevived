@@ -22,9 +22,11 @@ using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations;
+using Guppy.Attributes;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
+    [GuppyFilter<ClientGameGuppy>]
     internal sealed class DrawAimSystem : EntityDrawSystem
     {
         private static readonly AspectBuilder PilotableAspect = Aspect.All(new[]

@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
             //
         }
 
-        public void AttachComponentTo(Entity entity)
+        public void AttachComponentToEntity(Entity entity)
         {
             entity.Attach(new Jointable(this, entity));
         }

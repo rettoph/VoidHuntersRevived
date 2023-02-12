@@ -17,9 +17,11 @@ using tainicom.Aether.Physics2D.Common;
 using tainicom.Aether.Physics2D.Dynamics.Joints;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using Guppy.MonoGame.Primitives;
+using Guppy.Attributes;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
+    [GuppyFilter<ClientGameGuppy>]
     internal sealed class DrawJointSystem : EntityDrawSystem
     {
         private static readonly AspectBuilder LinkableAspect = Aspect.All(new[]

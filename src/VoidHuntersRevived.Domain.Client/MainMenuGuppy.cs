@@ -14,7 +14,7 @@ using VoidHuntersRevived.Common.Messages;
 
 namespace VoidHuntersRevived.Domain.Client
 {
-    public class MainMenuGuppy : FrameableGuppy
+    public class MainMenuGuppy : ImGuiGuppy
     {
         private readonly ImGuiBatch _imGui;
         private readonly Menu _menu;
@@ -23,10 +23,10 @@ namespace VoidHuntersRevived.Domain.Client
         public MainMenuGuppy(
             ClientPeer client,
             NetScope scope,
-            IImGuiBatchProvider batches,
+            ImGuiBatch imGui,
             IMenuProvider menus)
         {
-            _imGui = batches.Get(ImGuiBatches.Primary);
+            _imGui = imGui;
             _menu = menus.Get(Menus.Main);
 
             client.Bind(scope, NetScopeIds.MainMenu);
@@ -39,11 +39,9 @@ namespace VoidHuntersRevived.Domain.Client
             _font = _imGui.Fonts[ResourceConstants.DiagnosticsImGuiFont].Ptr;
         }
 
-        public override void Draw(GameTime gameTime)
+        protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
-
-            _imGui.Begin(gameTime);
 
             ImGui.PushStyleColor(ImGuiCol.Text, Color.White.ToNumericsVector4());
             ImGui.PushFont(_font);
@@ -63,8 +61,6 @@ namespace VoidHuntersRevived.Domain.Client
 
             ImGui.PopFont();
             ImGui.PopStyleColor();
-
-            _imGui.End();
         }
     }
 }

@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts
             where TComponent : class, IShipPartComponentConfiguration
         {
             _components.Add(typeof(TComponent), component);
-            _attachers += component.AttachComponentTo;
+            _attachers += component.AttachComponentToEntity;
         }
 
         public void AddRange(IEnumerable<IShipPartComponentConfiguration> components)
@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts
             foreach(var component in components)
             {
                 _components.Add(component.GetType(), component);
-                _attachers += component.AttachComponentTo;
+                _attachers += component.AttachComponentToEntity;
             }
 
         }
@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts
         {
             if(_components.Remove(typeof(TComponent), out var component))
             {
-                _attachers -= component.AttachComponentTo;
+                _attachers -= component.AttachComponentToEntity;
             }
         }
 
@@ -74,7 +74,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts
                         continue;
                     }
 
-                    _attachers -= component.AttachComponentTo;
+                    _attachers -= component.AttachComponentToEntity;
                 }
             }
         }

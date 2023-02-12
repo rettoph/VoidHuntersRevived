@@ -20,7 +20,11 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
         public IEnumerable<Shape> Shapes
         {
             get => _shapes;
-            set => _shapes.AddRange(value);
+            set
+            {
+                _shapes = value.ToList();
+                this.CleanComponent();
+            }
         }
 
         public RigidConfiguration() : this(Array.Empty<Shape>())
@@ -29,19 +33,23 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
         }
         public RigidConfiguration(params Shape[] shapes)
         {
-            _shapes = new List<Shape>();
+            _shapes = new List<Shape>(shapes);
             _component = default!;
-            this.Shapes = shapes;
         }
 
         public void Initialize(string path, IServiceProvider services)
         {
-            _component = new Rigid(this);
+            this.CleanComponent();
         }
 
-        public void AttachComponentTo(Entity entity)
+        public void AttachComponentToEntity(Entity entity)
         {
             entity.Attach<Rigid>(_component);
+        }
+
+        private void CleanComponent()
+        {
+            _component = new Rigid(this);
         }
 
         public static RigidConfiguration Polygon(float density, int sides)

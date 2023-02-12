@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
 {
     public interface IShipPartComponentConfiguration
     {
-        void AttachComponentTo(Entity entity);
+        void AttachComponentToEntity(Entity entity);
 
         void Initialize(string path, IServiceProvider services);
     }

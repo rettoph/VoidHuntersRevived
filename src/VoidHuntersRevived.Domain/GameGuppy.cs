@@ -14,10 +14,11 @@ using VoidHuntersRevived.Common;
 using Guppy.Common;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using MonoGame.Extended.Timers;
+using Guppy.MonoGame.UI;
 
 namespace VoidHuntersRevived.Domain
 {
-    public abstract class GameGuppy : FrameableGuppy, IGameGuppy,
+    public abstract class GameGuppy : ImGuiGuppy, IGameGuppy,
         ISubscriber<Step>
     {
         private World _world;
@@ -48,7 +49,7 @@ namespace VoidHuntersRevived.Domain
             this.Bus.Subscribe(this);
         }
 
-        public override void Update(GameTime gameTime)
+        protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
@@ -62,11 +63,11 @@ namespace VoidHuntersRevived.Domain
             this.UpdateWorld();
         }
 
-        public override void Draw(GameTime gameTime)
+        protected override void Draw(GameTime gameTime)
         {
-            base.Draw(gameTime);
-
             _world.Draw(gameTime);
+
+            base.Draw(gameTime);
         }
 
         public void Process(in Step message)

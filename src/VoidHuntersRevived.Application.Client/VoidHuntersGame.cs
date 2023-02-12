@@ -11,8 +11,11 @@ using Guppy.MonoGame.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Guppy.Providers;
 using VoidHuntersRevived.Domain.Server;
+using VoidHuntersRevived.Domain;
+using VoidHuntersRevived.Domain.Client;
+using VoidHuntersRevived.Domain.Editor;
 
-namespace VoidHuntersRevived.Domain.Client
+namespace VoidHuntersRevived.Application.Client
 {
     public sealed class VoidHuntersGame : Microsoft.Xna.Framework.Game
     {
@@ -71,7 +74,8 @@ namespace VoidHuntersRevived.Domain.Client
                     .ConfigureNetworkUI();
             });
 
-            _engine.Guppies.Create<MainMenuGuppy>();
+            _engine.Guppies.Create<EditorGuppy>();
+            //_engine.Guppies.Create<ClientGameGuppy>();
         }
 
         /// <summary>

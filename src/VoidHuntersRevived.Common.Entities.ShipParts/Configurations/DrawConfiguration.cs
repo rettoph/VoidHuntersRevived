@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
             _component = new Drawable(this);
         }
 
-        public void AttachComponentTo(Entity entity)
+        public void AttachComponentToEntity(Entity entity)
         {
             
             entity.Attach(_component);

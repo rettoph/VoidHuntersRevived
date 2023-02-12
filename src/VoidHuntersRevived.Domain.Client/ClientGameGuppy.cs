@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Client
     {
         public readonly ClientPeer Client;
 
-        public ClientGameGuppy(IPackProvider packs, ClientPeer client, NetScope netScope, ISimulationService simulations) : base(client, netScope, simulations)
+        public ClientGameGuppy(ClientPeer client, NetScope netScope, ISimulationService simulations) : base(client, netScope, simulations)
         {
             this.Client = client;
         }

@@ -1,4 +1,5 @@
-﻿using Guppy.Common;
+﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.MonoGame;
 using Guppy.MonoGame.Primitives;
 using Guppy.MonoGame.Utilities.Cameras;
@@ -15,6 +16,7 @@ using VoidHuntersRevived.Common.Simulations.Components;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
+    [GuppyFilter<ClientGameGuppy>]
     internal sealed partial class DrawableSystem : EntityDrawSystem
     {
         private static readonly AspectBuilder HullAspect = Aspect.All(new[]

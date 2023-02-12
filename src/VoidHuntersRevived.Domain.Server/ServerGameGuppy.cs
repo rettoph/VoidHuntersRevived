@@ -14,6 +14,7 @@ namespace VoidHuntersRevived.Domain.Server
 
         public ServerGameGuppy(ServerPeer server, NetScope netScope, ISimulationService simulations) : base(server, netScope, simulations)
         {
+            this.Visible = false;
             this.Server = server;
 
             this.Server.Users.OnUserConnected += this.HandleUserConnected;
@@ -32,7 +33,7 @@ namespace VoidHuntersRevived.Domain.Server
 
         private void HandleUserConnected(IUserProvider sender, User args)
         {
-            this.Server.Scopes[0].Users.Add(args);
+            this.Server.Scopes[NetScopeIds.Game].Users.Add(args);
         }
     }
 }
