@@ -23,7 +23,7 @@ using Guppy.Attributes;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
-    [GuppyFilter<ClientGameGuppy>()]
+    [GuppyFilter<LocalGameGuppy>()]
     [SimulationTypeFilter(SimulationType.Predictive)]
     internal sealed class InputSystem : UpdateSystem,
         ISubscriber<SetPilotingDirection>,
@@ -123,6 +123,12 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         {
             var pilotId = _interactive.GetEntityId(this.CurrentUserKey);
             var piloting = _pilotings.Get(pilotId);
+
+            if(piloting is null)
+            {
+                return;
+            }
+
             var pilotable = _pilotables.Get(piloting.Pilotable);
 
             if (_tractor.TryGetTractorable(pilotable, out var tractorable, out var node))

@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Domain.Client.Debuggers;
+using VoidHuntersRevived.Domain.Client.GameComponents;
 using VoidHuntersRevived.Domain.Client.Systems;
 
 namespace VoidHuntersRevived.Domain.Client.Loaders
@@ -22,10 +23,13 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddGuppy<MainMenuGuppy>();
-            services.AddGuppy<ClientGameGuppy>();
+            services.AddGuppy<MultiplayerGameGuppy>();
 
             services.ConfigureCollection(manager =>
             {
+                manager.AddScoped<ScreenComponent>()
+                    .AddAlias<IGameComponent>();
+
                 manager.AddScoped<CameraSystem>()
                     .AddInterfaceAliases();
 

@@ -7,8 +7,8 @@ using VoidHuntersRevived.Domain.Simulations.Lockstep.Factories;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Providers
 {
-    [PeerTypeFilter(PeerType.Server)]
-    internal sealed class ServerTickProvider : ITickProvider
+    [PeerTypeFilter(PeerType.Server | PeerType.None)]
+    internal sealed class DefaultTickProvider : ITickProvider
     {
         private readonly State _state;
         private readonly ITickFactory _factory;
@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Providers
         public int AvailableId => _state.NextTickId;
 
 
-        public ServerTickProvider(State state, IFiltered<ITickFactory> factory)
+        public DefaultTickProvider(State state, IFiltered<ITickFactory> factory)
         {
             _state = state;
             _factory = factory.Instance;

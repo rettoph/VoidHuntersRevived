@@ -28,7 +28,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Client.Debuggers
 {
-    [GuppyFilter<ClientGameGuppy>()]
+    [GuppyFilter<LocalGameGuppy>()]
     internal sealed class AetherDebugger : SimpleDrawableGameComponent,
         ISubscriber<Toggle<AetherDebugger>>
     {

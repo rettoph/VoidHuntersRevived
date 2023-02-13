@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using tainicom.Aether.Physics2D.Dynamics;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Configurations;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
@@ -16,7 +17,7 @@ using VoidHuntersRevived.Common.Simulations.Components;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
-    [GuppyFilter<ClientGameGuppy>]
+    [GuppyFilter<LocalGameGuppy>]
     internal sealed partial class DrawableSystem : EntityDrawSystem
     {
         private static readonly AspectBuilder HullAspect = Aspect.All(new[]
@@ -30,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private readonly IResourceProvider _resources;
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private readonly Camera2D _camera;
-        private readonly Camera2D _screen;
+        private readonly IScreen _screen;
         private readonly Dictionary<DrawConfiguration, Renderer> _renderers;
 
         private ComponentMapper<Drawable> _drawables;
@@ -39,22 +40,19 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         public DrawableSystem(
             PrimitiveBatch<VertexPositionColor> primitiveBatch,
             Camera2D camera,
-            IScoped<Camera2D> screen,
+            IScreen screen,
             IResourceProvider resources,
             IShipPartConfigurationService configurations) : base(HullAspect)
         {
             _primitiveBatch = primitiveBatch;
             _camera = camera;
-            _screen = screen.Instance;
+            _screen = screen;
             _configurations = configurations;
             _resources = resources;
             _renderers = new Dictionary<DrawConfiguration, Renderer>();
 
             _drawables = default!;
             _nodes = default!;
-
-            _screen.Center = false;
-            _screen.Zoom = 1;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
@@ -82,8 +80,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
             _primitiveBatch.End();
 
-            _screen.Update(gameTime);
-            _primitiveBatch.Begin(_screen);
+            _primitiveBatch.Begin(_screen.Camera);
 
             foreach (var entityId in this.subscription.ActiveEntities)
             {

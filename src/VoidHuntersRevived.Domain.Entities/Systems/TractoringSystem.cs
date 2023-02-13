@@ -151,6 +151,11 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         {
             var piloting = _pilotings.Get(message.UserId);
 
+            if(piloting is null)
+            {
+                return;
+            }
+
             if(!_tractorings.TryGet(piloting.Pilotable.Id, out var tractoring))
             {
                 return;

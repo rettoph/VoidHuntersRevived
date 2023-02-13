@@ -59,6 +59,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
                 return;
             }
 
+            return;
+
             var ship = message.Simulation.CreateShip(key.Create(ParallelTypes.Ship), ShipParts.HullSquare);
             
             // TODO: Make a CreatePilot event and override this extension's functionality

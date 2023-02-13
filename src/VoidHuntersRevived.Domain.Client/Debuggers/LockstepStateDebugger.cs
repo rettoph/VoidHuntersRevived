@@ -26,7 +26,7 @@ using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Client.Debuggers
 {
-    [GuppyFilter<ClientGameGuppy>()]
+    [GuppyFilter<LocalGameGuppy>()]
     internal sealed class LockstepStateDebugger : SimpleDrawableGameComponent,
         ISubscriber<Toggle<LockstepStateDebugger>>
     {
@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Domain.Client.Debuggers
             this.Visible = this.IsEnabled;
         }
 
-        public void Initialize(ImGuiBatch imGuiBatch)
+        public override void Initialize()
         {
             _menu.Add(new MenuItem()
             {

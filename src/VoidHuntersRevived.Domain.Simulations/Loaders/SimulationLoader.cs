@@ -57,6 +57,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
 
             manager.AddScoped<State>();
 
+            manager.AddScoped<DefaultLockstepInputService>()
+                .AddInterfaceAliases();
+
             manager.AddScoped<ServerLockstepInputService>()
                 .AddInterfaceAliases();
 
@@ -66,14 +69,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
             manager.AddScoped<ClientTickFactory>()
                 .AddAlias<ITickFactory>();
 
-            manager.AddScoped<ServerTickFactory>()
+            manager.AddScoped<DefaultTickFactory>()
                 .AddAlias<ITickFactory>();
 
             manager.AddScoped<ClientTickProvider>()
                 .AddAlias<ITickProvider>()
                 .AddAlias<ISubscriber>();
 
-            manager.AddScoped<ServerTickProvider>()
+            manager.AddScoped<DefaultTickProvider>()
                 .AddAlias<ITickProvider>();
 
             services.AddScoped<ITickService, TickService>();
@@ -81,7 +84,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
             manager.AddScoped<ClientStepProvider>()
                 .AddAlias<IStepProvider>();
 
-            manager.AddScoped<ServerStepProvider>()
+            manager.AddScoped<DefaultStepProvider>()
                 .AddAlias<IStepProvider>();
 
             services.AddScoped<IStepService, StepService>();

@@ -70,6 +70,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
         public void Process(in IInput<SetPilotingTarget> message)
         {
             var piloting = _pilotings.Get(message.UserId);
+
+            if(piloting is null)
+            {
+                return;
+            }
+
             var pilotable = _pilotables.Get(piloting.Pilotable);
 
             pilotable.Aim.Target = message.Data.Target;

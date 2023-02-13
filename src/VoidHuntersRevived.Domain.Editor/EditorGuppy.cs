@@ -1,5 +1,6 @@
 ﻿using Guppy.Common;
 using Guppy.MonoGame;
+using Guppy.MonoGame.Primitives;
 using Guppy.MonoGame.UI;
 using Guppy.Network;
 using Guppy.Network.Identity.Enums;
@@ -7,6 +8,7 @@ using Guppy.Network.Peers;
 using Guppy.Providers;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Common.Constants;
 using VoidHuntersRevived.Common.Editor;
 using VoidHuntersRevived.Common.Entities.ShipParts;
@@ -17,22 +19,21 @@ using VoidHuntersRevived.Domain.Server;
 
 namespace VoidHuntersRevived.Domain.Editor
 {
-    public class EditorGuppy : ClientGameGuppy
+    public class EditorGuppy : LocalGameGuppy
     {
         private readonly IShipPartEditor[] _editors;
         private readonly ShipPartResource _shipPart;
-        private readonly ServerGameGuppy _server;
+        private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
 
         public EditorGuppy(
-            ClientPeer client, 
-            NetScope netScope, 
+            PrimitiveBatch<VertexPositionColor> primitiveBatch,
             ISimulationService simulations,
             IFiltered<IShipPartEditor> editors,
-            IGuppyProvider guppies) : base(client, netScope, simulations)
+            IGuppyProvider guppies) : base(simulations)
         {
             _editors = editors.Instances.ToArray();
             _shipPart = new ShipPartResource("editing");
-            _server = guppies.Create<ServerGameGuppy>();
+            _primitiveBatch = primitiveBatch;
         }
 
         public override void Initialize(IServiceProvider provider)
@@ -43,13 +44,6 @@ namespace VoidHuntersRevived.Domain.Editor
             {
                 editor.Initialize(_shipPart);
             }
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-
-            _server.Dispose();
         }
 
         protected override void Draw(GameTime gameTime)

@@ -11,12 +11,12 @@ using VoidHuntersRevived.Common.Simulations.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Factories
 {
-    [PeerTypeFilter(PeerType.Server)]
-    internal sealed class ServerTickFactory : ITickFactory
+    [PeerTypeFilter(PeerType.Server | PeerType.None)]
+    internal sealed class DefaultTickFactory : ITickFactory
     {
         private IList<UserInput> _inputs;
 
-        public ServerTickFactory()
+        public DefaultTickFactory()
         {
             _inputs = new List<UserInput>();
         }

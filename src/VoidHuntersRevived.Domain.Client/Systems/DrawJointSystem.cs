@@ -21,7 +21,7 @@ using Guppy.Attributes;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
-    [GuppyFilter<ClientGameGuppy>]
+    [GuppyFilter<LocalGameGuppy>]
     internal sealed class DrawJointSystem : EntityDrawSystem
     {
         private static readonly AspectBuilder LinkableAspect = Aspect.All(new[]

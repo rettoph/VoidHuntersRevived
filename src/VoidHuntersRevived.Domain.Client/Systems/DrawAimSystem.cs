@@ -26,7 +26,7 @@ using Guppy.Attributes;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
-    [GuppyFilter<ClientGameGuppy>]
+    [GuppyFilter<LocalGameGuppy>]
     internal sealed class DrawAimSystem : EntityDrawSystem
     {
         private static readonly AspectBuilder PilotableAspect = Aspect.All(new[]

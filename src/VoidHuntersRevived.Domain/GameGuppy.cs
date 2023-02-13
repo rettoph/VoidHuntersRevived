@@ -24,20 +24,13 @@ namespace VoidHuntersRevived.Domain
         private World _world;
         private readonly GameTime _worldGameTime;
 
-        public readonly Peer Peer;
-        public readonly NetScope NetScope;
         public readonly ISimulationService Simulations;
 
-        protected GameGuppy(
-            Peer peer, 
-            NetScope netScope,
-            ISimulationService simulations)
+        protected GameGuppy(ISimulationService simulations)
         {
             _world = default!;
             _worldGameTime = new GameTime();
 
-            this.Peer = peer;
-            this.NetScope = netScope;
             this.Simulations = simulations;
         }
 
@@ -52,8 +45,6 @@ namespace VoidHuntersRevived.Domain
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            this.Peer.Flush();
 
             this.Simulations.Update(gameTime);
 

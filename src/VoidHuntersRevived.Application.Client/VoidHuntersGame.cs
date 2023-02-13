@@ -14,6 +14,7 @@ using VoidHuntersRevived.Domain.Server;
 using VoidHuntersRevived.Domain;
 using VoidHuntersRevived.Domain.Client;
 using VoidHuntersRevived.Domain.Editor;
+using Guppy.Network.Peers;
 
 namespace VoidHuntersRevived.Application.Client
 {
@@ -48,7 +49,7 @@ namespace VoidHuntersRevived.Application.Client
 
             _engine = new GuppyEngine(new[] { 
                 typeof(GameGuppy).Assembly, 
-                typeof(ClientGameGuppy).Assembly 
+                typeof(LocalGameGuppy).Assembly 
             });
         }
 
@@ -74,8 +75,9 @@ namespace VoidHuntersRevived.Application.Client
                     .ConfigureNetworkUI();
             });
 
+            //_engine.Guppies.Create<ServerGameGuppy>();
+            //_engine.Guppies.Create<MultiplayerGameGuppy>();
             _engine.Guppies.Create<EditorGuppy>();
-            //_engine.Guppies.Create<ClientGameGuppy>();
         }
 
         /// <summary>

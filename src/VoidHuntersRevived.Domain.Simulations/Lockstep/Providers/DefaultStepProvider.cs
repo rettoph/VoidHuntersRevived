@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Providers
 {
-    [PeerTypeFilter(PeerType.Server)]
-    internal sealed class ServerStepProvider : IStepProvider
+    [PeerTypeFilter(PeerType.Server | PeerType.None)]
+    internal sealed class DefaultStepProvider : IStepProvider
     {
         private readonly GuppyTimer _timer;
 
-        public ServerStepProvider(ISettingProvider settings)
+        public DefaultStepProvider(ISettingProvider settings)
         {
             _timer = new GuppyTimer(settings.Get<TimeSpan>(Settings.StepInterval).Value);
         }

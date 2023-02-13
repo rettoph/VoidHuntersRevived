@@ -32,12 +32,12 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
                 new MenuItem()
                 {
                     Label = "Multiplayer",
-                    OnClick = Launch<ClientGameGuppy>.Instance
+                    OnClick = Launch<LocalGameGuppy>.Instance
                 },
                 new MenuItem()
                 {
                     Label = "Singleplayer",
-                    OnClick = Launch<ClientGameGuppy>.Instance
+                    OnClick = Launch<LocalGameGuppy>.Instance
                 }
             });
         }
