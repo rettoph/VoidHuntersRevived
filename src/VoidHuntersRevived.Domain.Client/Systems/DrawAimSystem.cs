@@ -79,7 +79,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             foreach (var entityId in this.subscription.ActiveEntities)
             {
                 var pilotable = _pilotable.Get(entityId);
-                var transformation = pilotable.Aim.Value.GetTranslation();
+                var transformation = pilotable.Aim.Value.ToTranslation();
                 var color = Color.Yellow;
 
                 _primitiveBatch.Trace(_shape, in color, ref transformation);

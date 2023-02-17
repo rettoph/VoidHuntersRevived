@@ -14,4 +14,10 @@
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Client\VoidHuntersRevived.Domain.Client.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Using Include="System.Numerics">
+      <Alias>Num</Alias>
+    </Using>
+  </ItemGroup>
+
 </Project>

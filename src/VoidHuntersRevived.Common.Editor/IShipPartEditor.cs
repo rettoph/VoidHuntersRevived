@@ -10,6 +10,7 @@ using VoidHuntersRevived.Common.Entities.ShipParts;
 
 namespace VoidHuntersRevived.Common.Editor
 {
+    [GuppyFilter<IEditorGuppy>]
     public interface IShipPartEditor
     {
         Type ComponentConfigurationType { get; }
@@ -21,7 +22,6 @@ namespace VoidHuntersRevived.Common.Editor
         void Update(GameTime gameTime);
     }
 
-    [Service<IShipPartEditor>(ServiceLifetime.Scoped, true)]
     public interface IShipPartEditor<TComponentConfiguration> : IShipPartEditor
     {
 
