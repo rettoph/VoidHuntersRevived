@@ -4,6 +4,7 @@ using Guppy.MonoGame.Extensions.Primitives;
 using Guppy.MonoGame.Primitives;
 using Guppy.MonoGame.UI;
 using Guppy.MonoGame.UI.Constants;
+using Guppy.MonoGame.UI.Elements;
 using Guppy.MonoGame.Utilities.Cameras;
 using Guppy.Network;
 using Guppy.Network.Identity.Enums;
@@ -19,6 +20,7 @@ using VoidHuntersRevived.Common.Editor;
 using VoidHuntersRevived.Common.Editor.Constants;
 using VoidHuntersRevived.Common.Entities.ShipParts;
 using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Domain.Client;
 using VoidHuntersRevived.Domain.Server;
@@ -35,8 +37,10 @@ namespace VoidHuntersRevived.Domain.Editor
         private ImFontPtr _font;
         private readonly Num.Vector2 _menuSpacing;
         private VertexPositionColor[] _grid;
+        private Stage _stage;
 
         public EditorGuppy(
+            Stage stage,
             PrimitiveBatch<VertexPositionColor> primitiveBatch,
             ImGuiBatch imGuiBatch,
             Camera2D camera,
@@ -51,6 +55,7 @@ namespace VoidHuntersRevived.Domain.Editor
             _menuSpacing = new Num.Vector2(15, 15);
             _camera = camera;
             _grid = new VertexPositionColor[2];
+            _stage = stage;
         }
 
         public override void Initialize(IServiceProvider provider)
@@ -66,6 +71,9 @@ namespace VoidHuntersRevived.Domain.Editor
             {
                 editor.Initialize(_shipPart);
             }
+
+            _stage.Initialize(StyleSheets.Main);
+            _stage.Add(new Element());
         }
 
         protected override void PreDraw(GameTime gameTime)
@@ -81,6 +89,8 @@ namespace VoidHuntersRevived.Domain.Editor
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
+
+            _stage.Draw(gameTime);
 
             ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 1.0f);
@@ -150,6 +160,8 @@ namespace VoidHuntersRevived.Domain.Editor
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            _stage.Update(gameTime);
 
             foreach (var editor in _editors)
             {

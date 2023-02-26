@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using VoidHuntersRevived.Domain;
 using VoidHuntersRevived.Domain.Server;
 using Guppy.Providers;
+using Microsoft.Xna.Framework;
 
 var engine = new GuppyEngine(new[] { typeof(GameGuppy).Assembly, typeof(ServerGameGuppy).Assembly })
     .Start(builder =>
@@ -16,7 +17,7 @@ var engine = new GuppyEngine(new[] { typeof(GameGuppy).Assembly, typeof(ServerGa
             .ConfigureResources();
     });
 
-var guppy = engine.Guppies.Create<ServerGameGuppy>();
+var guppy = (IUpdateable)engine.Guppies.Create<ServerGameGuppy>();
 
 var source = new CancellationTokenSource();
 
