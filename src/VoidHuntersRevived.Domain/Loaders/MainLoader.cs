@@ -38,8 +38,6 @@ namespace VoidHuntersRevived.Domain.Loaders
             {
                 manager.AddScoped<LaunchComponent>()
                     .AddInterfaceAliases();
-
-                manager.AddScoped<IScreen>().SetImplementationType<Screen>();
             });
         }
     }

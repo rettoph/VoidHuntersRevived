@@ -72,6 +72,7 @@ namespace VoidHuntersRevived.Application.Client
                     .ConfigureNetwork()
                     .ConfigureResources()
                     .ConfigureUI()
+                    .ConfigureGUI()
                     .ConfigureNetworkUI();
             });
 

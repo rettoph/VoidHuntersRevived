@@ -15,8 +15,9 @@ using System.Threading.Tasks;
 using Guppy.MonoGame.UI.Providers;
 using Guppy.Attributes;
 using VoidHuntersRevived.Common.Constants;
+using Guppy;
 
-namespace Guppy.MonoGame.UI.Loaders
+namespace VoidHuntersRevived.Domain.Client.Loaders
 {
     [AutoLoad]
     internal sealed class ImGuiLoader : IGuppyLoader

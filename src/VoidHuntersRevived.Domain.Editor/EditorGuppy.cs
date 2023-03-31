@@ -1,10 +1,11 @@
 ﻿using Guppy.Common;
+using Guppy.GUI;
+using Guppy.GUI.Elements;
 using Guppy.MonoGame;
 using Guppy.MonoGame.Extensions.Primitives;
 using Guppy.MonoGame.Primitives;
 using Guppy.MonoGame.UI;
 using Guppy.MonoGame.UI.Constants;
-using Guppy.MonoGame.UI.Elements;
 using Guppy.MonoGame.Utilities.Cameras;
 using Guppy.Network;
 using Guppy.Network.Identity.Enums;
@@ -90,8 +91,6 @@ namespace VoidHuntersRevived.Domain.Editor
         {
             base.Draw(gameTime);
 
-            _stage.Draw(gameTime);
-
             ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 1.0f);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Num.Vector2(0.0f, 0.0f));
@@ -150,6 +149,9 @@ namespace VoidHuntersRevived.Domain.Editor
         protected override void PostDraw(GameTime gameTime)
         {
             _primitiveBatch.End();
+
+            _stage.Draw(gameTime);
+
 
             ImGui.PopFont();
             ImGui.PopStyleColor();

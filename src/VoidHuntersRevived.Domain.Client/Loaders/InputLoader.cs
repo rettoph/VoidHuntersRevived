@@ -12,9 +12,9 @@ using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Domain.Entities.Events;
 using VoidHuntersRevived.Domain.Client.Constants;
 using VoidHuntersRevived.Domain.Client.Systems;
-using Guppy.MonoGame.Enums;
 using VoidHuntersRevived.Common.Simulations;
 using Guppy.Common;
+using Guppy.Input.Enums;
 
 namespace VoidHuntersRevived.Domain.Client.Loaders
 {
@@ -29,10 +29,10 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
                     .AddInterfaceAliases();
             });
 
-            services.AddInput(Inputs.TractorBeam, MouseButtons.Right, new (ButtonState, IMessage)[]
+            services.AddInput(Inputs.TractorBeam, MouseButtons.Right, new (bool, IMessage)[]
             {
-                (ButtonState.Pressed, new StartTractoring()),
-                (ButtonState.Released, StopTractoring.Instance),
+                (true, new StartTractoring()),
+                (false, StopTractoring.Instance),
             });
 
             InputLoader.AddSetDirectionInput(services, Inputs.SetDirectionForward, Keys.W, Direction.Forward);
@@ -47,8 +47,8 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
         {
             services.AddInput(key, defaultSource, new[]
             {
-                (ButtonState.Pressed, new SetPilotingDirection(direction, true)),
-                (ButtonState.Released, new SetPilotingDirection(direction, false)),
+                (true, new SetPilotingDirection(direction, true)),
+                (false, new SetPilotingDirection(direction, false)),
             });
         }
     }

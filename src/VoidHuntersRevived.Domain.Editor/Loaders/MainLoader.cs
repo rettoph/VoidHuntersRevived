@@ -1,7 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.DependencyInjection;
+using Guppy.Input.Enums;
 using Guppy.Loaders;
-using Guppy.MonoGame.Enums;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -34,12 +34,12 @@ namespace VoidHuntersRevived.Domain.Editor.Loaders
 
             services.AddInput(Inputs.AddVertex, MouseButtons.Left, new[]
             {
-                (ButtonState.Released, new VertexInput{ Action = VertexInput.Actions.Add })
+                (false, new VertexInput{ Action = VertexInput.Actions.Add })
             });
 
             services.AddInput(Inputs.RemoveVertex, MouseButtons.Right, new[]
             {
-                (ButtonState.Released, new VertexInput{ Action = VertexInput.Actions.Remove })
+                (false, new VertexInput{ Action = VertexInput.Actions.Remove })
             });
         }
     }

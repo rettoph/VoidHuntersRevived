@@ -42,6 +42,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\Aether.Physics2D\Physics2D.Diagnostics\Diagnostics\Aether.Physics2D.Diagnostics.NETSTANDARD2_0.MG.csproj" />
+    <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.GUI\Guppy.GUI.csproj" />
+    <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Input\Guppy.Input.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Entities\VoidHuntersRevived.Domain.Entities.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Server\VoidHuntersRevived.Domain.Server.csproj" />
