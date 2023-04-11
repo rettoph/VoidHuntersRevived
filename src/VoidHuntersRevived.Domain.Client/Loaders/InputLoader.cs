@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
                     .AddInterfaceAliases();
             });
 
-            services.AddInput(Inputs.TractorBeam, MouseButtons.Right, new (bool, IMessage)[]
+            services.AddInput(Inputs.TractorBeam, CursorButtons.Right, new (bool, IMessage)[]
             {
                 (true, new StartTractoring()),
                 (false, StopTractoring.Instance),

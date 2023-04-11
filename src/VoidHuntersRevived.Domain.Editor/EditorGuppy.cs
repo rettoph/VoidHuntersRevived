@@ -74,7 +74,17 @@ namespace VoidHuntersRevived.Domain.Editor
             }
 
             _stage.Initialize(StyleSheets.Main);
-            _stage.Add(new Element());
+            _stage.Add(new TextInput("test"));
+
+            return;
+            for(int i=0; i<1000; i++)
+            {
+                _stage.Add(new Label()
+                {
+                    Text = Guid.NewGuid().ToString()
+                });
+            }
+
         }
 
         protected override void PreDraw(GameTime gameTime)
@@ -91,26 +101,26 @@ namespace VoidHuntersRevived.Domain.Editor
         {
             base.Draw(gameTime);
 
-            ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
-            ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 1.0f);
-            ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Num.Vector2(0.0f, 0.0f));
-            ImGui.Begin(DockSpaces.Editor + "Window", ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove);
-            {
-                ImGui.PopStyleVar(3);
-
-                uint id = ImGui.GetID(DockSpaces.Editor);
-                ImGui.DockSpace(id, new Num.Vector2(0, 0), ImGuiDockNodeFlags.PassthruCentralNode);
-            }
-            
-
-            this.DrawGrid();
-
-            foreach (var editor in _editors)
-            {
-                editor.Draw(gameTime);
-            }
-
-            ImGui.End();
+            // ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
+            // ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 1.0f);
+            // ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Num.Vector2(0.0f, 0.0f));
+            // ImGui.Begin(DockSpaces.Editor + "Window", ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove);
+            // {
+            //     ImGui.PopStyleVar(3);
+            // 
+            //     uint id = ImGui.GetID(DockSpaces.Editor);
+            //     ImGui.DockSpace(id, new Num.Vector2(0, 0), ImGuiDockNodeFlags.PassthruCentralNode);
+            // }
+            // 
+            // 
+            // 
+            // 
+            // foreach (var editor in _editors)
+            // {
+            //     editor.Draw(gameTime);
+            // }
+            // 
+            // ImGui.End();
         }
 
         private void DrawGrid()
@@ -162,8 +172,6 @@ namespace VoidHuntersRevived.Domain.Editor
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            _stage.Update(gameTime);
 
             foreach (var editor in _editors)
             {

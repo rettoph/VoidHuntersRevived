@@ -32,12 +32,12 @@ namespace VoidHuntersRevived.Domain.Editor.Loaders
                     .AddInterfaceAliases();
             });
 
-            services.AddInput(Inputs.AddVertex, MouseButtons.Left, new[]
+            services.AddInput(Inputs.AddVertex, CursorButtons.Left, new[]
             {
                 (false, new VertexInput{ Action = VertexInput.Actions.Add })
             });
 
-            services.AddInput(Inputs.RemoveVertex, MouseButtons.Right, new[]
+            services.AddInput(Inputs.RemoveVertex, CursorButtons.Right, new[]
             {
                 (false, new VertexInput{ Action = VertexInput.Actions.Remove })
             });
