@@ -87,11 +87,6 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             var delta = _scroll - mouseScroll;
             _scroll = mouseScroll;
 
-            if(delta != 0)
-            {
-                Console.WriteLine(delta);
-            }
-
             _camera.TargetZoom *= 1f - (0.1f * delta);
         }
 

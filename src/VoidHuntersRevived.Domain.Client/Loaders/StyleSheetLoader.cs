@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
                 .Configure(Selector.Create<Element>(), manager =>
                 {
                     manager.Set(Property.Padding, new Padding(5, 5, 5, 5))
-                        .Set(Property.Alignment, Alignment.TopLeft);
+                        .Set(Property.Alignment, Alignment.TopCenter);
                 })
                 .Configure(Selector.Create<Label>(), manager =>
                 {
@@ -40,21 +40,6 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
                         .Set(Property.Color, Color.Red)
                         .Set(Property.Color, ElementState.Hovered, Color.Green)
                         .Set(Property.BackgroundColor, ElementState.Hovered, Color.LightBlue);
-                })
-                .Configure(Selector.Create<ScrollContainer<Element>>(), manager =>
-                {
-                    manager.Set(Property.ScrollThumbColor, Color.Green)
-                        .Set(Property.ScrollTrackColor, Color.Yellow)
-                        .Set(Property.ScrollTrackWidth, 15);
-                })
-                .Configure(Selector.Create<TextInput>(), manager =>
-                {
-                    manager.Set(Property.Width, 100)
-                        .Set(Property.Height, 100)
-                        .Set(Property.BackgroundColor, Color.Pink)
-                        .Set(Property.BackgroundColor, ElementState.Hovered, Color.Yellow)
-                        .Set(Property.BackgroundColor, ElementState.Focused, Color.Red)
-                        .Set(Property.BackgroundColor, ElementState.Active, Color.Green);
                 });
         }
     }

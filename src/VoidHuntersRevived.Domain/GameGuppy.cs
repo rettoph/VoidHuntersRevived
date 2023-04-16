@@ -14,11 +14,10 @@ using VoidHuntersRevived.Common;
 using Guppy.Common;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using MonoGame.Extended.Timers;
-using Guppy.MonoGame.UI;
 
 namespace VoidHuntersRevived.Domain
 {
-    public abstract class GameGuppy : ImGuiGuppy, IGameGuppy,
+    public abstract class GameGuppy : FrameableGuppy, IGameGuppy,
         ISubscriber<Step>
     {
         private World _world;

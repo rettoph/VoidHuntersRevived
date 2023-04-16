@@ -4,11 +4,9 @@ using Guppy.MonoGame;
 using Guppy.MonoGame.Constants;
 using Guppy.MonoGame.Messages;
 using Guppy.MonoGame.Providers;
-using Guppy.MonoGame.UI;
 using Guppy.MonoGame.Utilities.Cameras;
 using Guppy.Network;
 using Guppy.Network.Enums;
-using ImGuiNET;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -121,53 +119,6 @@ namespace VoidHuntersRevived.Domain.Client.Debuggers
 
         public override void Draw(GameTime gameTime)
         {
-            if(ImGui.Begin("Aether Debug View", ImGuiWindowFlags.AlwaysAutoResize))
-            {
-                foreach(DebugData data in _data)
-                {
-                    var header = $"{data.Simulation.NetScope().Peer!.Type} - {data.Simulation.Type}";
-                    if(ImGui.CollapsingHeader(header))
-                    {
-                        ImGui.PushID($"{header}_toggle");
-                        if(ImGui.Button($"Toggle"))
-                        {
-                            data.Enabled = !data.Enabled;
-                        }
-
-                        if(data.Enabled)
-                        {
-                            foreach(var flag in _debugFlags)
-                            {
-                                var state = data.View.Flags.HasFlag(flag);
-                                ImGui.PushID($"{header}_flag_{flag}");
-                                if (ImGui.Button($"Toggle {flag} ({state})"))
-                                {
-                                    if(state)
-                                    {
-                                        data.View.RemoveFlags(flag);
-                                        continue;
-                                    }
-
-                                    data.View.AppendFlags(flag);
-                                }
-                            }
-
-                            ImGui.PushID($"{header}_color_1");
-                            if (ImGui.ColorPicker3("Shape Color", ref data.ColorVector3, ImGuiColorEditFlags.NoTooltip))
-                            {
-                                data.UpdateColor();
-                            }
-                        }
-                    }
-
-                    if (data.Enabled)
-                    {
-                        data.View.RenderDebugData(_camera.Projection, _camera.View);
-                    }
-                }
-            }
-
-            ImGui.End();
         }
 
         public void Process(in Toggle<AetherDebugger> message)

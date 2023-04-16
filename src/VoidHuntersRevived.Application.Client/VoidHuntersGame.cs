@@ -47,6 +47,7 @@ namespace VoidHuntersRevived.Application.Client
             _graphics.GraphicsProfile = GraphicsProfile.HiDef;
             _graphics.ApplyChanges();
 
+            
             _engine = new GuppyEngine(new[] { 
                 typeof(GameGuppy).Assembly, 
                 typeof(LocalGameGuppy).Assembly 
@@ -64,16 +65,13 @@ namespace VoidHuntersRevived.Application.Client
             base.Initialize();
 
             // SDL_MaximizeWindow(this.Window.Handle);
-
             _engine.Start(builder =>
             {
                 builder.ConfigureMonoGame(this, _graphics, this.Content, this.Window)
                     .ConfigureECS()
                     .ConfigureNetwork()
                     .ConfigureResources()
-                    .ConfigureUI()
-                    .ConfigureGUI()
-                    .ConfigureNetworkUI();
+                    .ConfigureGUI();
             });
 
             //_engine.Guppies.Create<ServerGameGuppy>();

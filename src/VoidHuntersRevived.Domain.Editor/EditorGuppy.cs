@@ -4,15 +4,12 @@ using Guppy.GUI.Elements;
 using Guppy.MonoGame;
 using Guppy.MonoGame.Extensions.Primitives;
 using Guppy.MonoGame.Primitives;
-using Guppy.MonoGame.UI;
-using Guppy.MonoGame.UI.Constants;
 using Guppy.MonoGame.Utilities.Cameras;
 using Guppy.Network;
 using Guppy.Network.Identity.Enums;
 using Guppy.Network.Peers;
 using Guppy.Providers;
 using Guppy.Resources.Providers;
-using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Common;
@@ -33,9 +30,7 @@ namespace VoidHuntersRevived.Domain.Editor
         private readonly IShipPartEditor[] _editors;
         private readonly ShipPartResource _shipPart;
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
-        private readonly ImGuiBatch _imGuiBatch;
         private readonly Camera2D _camera;
-        private ImFontPtr _font;
         private readonly Num.Vector2 _menuSpacing;
         private VertexPositionColor[] _grid;
         private Stage _stage;
@@ -43,7 +38,6 @@ namespace VoidHuntersRevived.Domain.Editor
         public EditorGuppy(
             Stage stage,
             PrimitiveBatch<VertexPositionColor> primitiveBatch,
-            ImGuiBatch imGuiBatch,
             Camera2D camera,
             ISimulationService simulations,
             IFiltered<IShipPartEditor> editors,
@@ -52,7 +46,6 @@ namespace VoidHuntersRevived.Domain.Editor
             _editors = editors.Instances.ToArray();
             _shipPart = new ShipPartResource("editing");
             _primitiveBatch = primitiveBatch;
-            _imGuiBatch = imGuiBatch;
             _menuSpacing = new Num.Vector2(15, 15);
             _camera = camera;
             _grid = new VertexPositionColor[2];
@@ -63,11 +56,6 @@ namespace VoidHuntersRevived.Domain.Editor
         {
             base.Initialize(provider);
 
-            _font = _imGuiBatch.Fonts[ResourceConstants.DiagnosticsImGuiFont].Ptr;
-            _imGuiBatch.IO.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
-            _imGuiBatch.IO.ConfigDockingNoSplit = true;
-            _imGuiBatch.IO.ConfigDockingWithShift = false;
-
             foreach (var editor in _editors)
             {
                 editor.Initialize(_shipPart);
@@ -76,23 +64,19 @@ namespace VoidHuntersRevived.Domain.Editor
             _stage.Initialize(StyleSheets.Main);
             _stage.Add(new TextInput("test"));
 
-            return;
-            for(int i=0; i<1000; i++)
-            {
-                _stage.Add(new Label()
-                {
-                    Text = Guid.NewGuid().ToString()
-                });
-            }
+            // for(int i=0; i<1000; i++)
+            // {
+            //     _stage.Add(new Label()
+            //     {
+            //         Text = Guid.NewGuid().ToString()
+            //     });
+            // }
 
         }
 
         protected override void PreDraw(GameTime gameTime)
         {
             base.PreDraw(gameTime);
-
-            ImGui.PushStyleColor(ImGuiCol.Text, Color.White.ToNumericsVector4());
-            ImGui.PushFont(_font);
 
             _primitiveBatch.Begin(_camera);
         }
@@ -160,11 +144,7 @@ namespace VoidHuntersRevived.Domain.Editor
         {
             _primitiveBatch.End();
 
-            _stage.Draw(gameTime);
-
-
-            ImGui.PopFont();
-            ImGui.PopStyleColor();
+            //_stage.Draw(gameTime);
 
             base.PostDraw(gameTime);
         }
