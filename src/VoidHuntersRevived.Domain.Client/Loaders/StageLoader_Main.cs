@@ -1,9 +1,8 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common.Utilities;
 using Guppy.GUI;
 using Guppy.GUI.Elements;
 using Guppy.GUI.Loaders;
-using Guppy.GUI.Providers;
-using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -16,17 +15,13 @@ using VoidHuntersRevived.Domain.Client.Constants;
 namespace VoidHuntersRevived.Domain.Client.Loaders
 {
     [AutoLoad]
-    internal sealed class StyleSheetLoader : IStyleSheetLoader
+    internal sealed class StageLoader_Main : IStageLoader
     {
-        public void Configure(IStyleSheet styleSheet)
-        {
-            // throw new NotImplementedException();
-        }
+        public BlockList StageBlockList { get; } = BlockList.CreateWhitelist(Stages.Main);
 
-        public void Load(IStyleSheetProvider styles)
+        public void Load(Stage main)
         {
-            styles.Get(StyleSheets.Main)
-                .Set<Unit>(Property.Width, Selector.Create<Stage>(), 1f)
+            main.StyleSheet.Set<Unit>(Property.Width, Selector.Create<Stage>(), 1f)
                 .Set(Property.Padding, Selector.Create<Label>("test"), new Padding(15, 15, 15, 15))
                 .Configure(Selector.Create<Element>(), manager =>
                 {

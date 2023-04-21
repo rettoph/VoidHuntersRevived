@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Constants
 {
-    public class StyleSheets
+    public class Stages
     {
-        public const string Main = "main";
+        public const string Main = "#main";
+        public const string Editor = "#editor";
     }
 }

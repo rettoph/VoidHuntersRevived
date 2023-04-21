@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.GUI\Guppy.GUI.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Entities.ShipParts\VoidHuntersRevived.Common.Entities.ShipParts.csproj" />
   </ItemGroup>
 

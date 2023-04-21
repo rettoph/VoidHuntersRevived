@@ -1,9 +1,12 @@
 ﻿using Guppy.Common;
 using Guppy.GUI;
 using Guppy.GUI.Elements;
+using Guppy.GUI.Providers;
 using Guppy.MonoGame;
 using Guppy.MonoGame.Extensions.Primitives;
+using Guppy.MonoGame.Messages;
 using Guppy.MonoGame.Primitives;
+using Guppy.MonoGame.Providers;
 using Guppy.MonoGame.Utilities.Cameras;
 using Guppy.Network;
 using Guppy.Network.Identity.Enums;
@@ -27,51 +30,34 @@ namespace VoidHuntersRevived.Domain.Editor
 {
     public class EditorGuppy : LocalGameGuppy, IEditorGuppy
     {
-        private readonly IShipPartEditor[] _editors;
-        private readonly ShipPartResource _shipPart;
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private readonly Camera2D _camera;
-        private readonly Num.Vector2 _menuSpacing;
         private VertexPositionColor[] _grid;
         private Stage _stage;
+        private IEditor _editor;
 
         public EditorGuppy(
-            Stage stage,
             PrimitiveBatch<VertexPositionColor> primitiveBatch,
             Camera2D camera,
-            ISimulationService simulations,
-            IFiltered<IShipPartEditor> editors,
-            IGuppyProvider guppies) : base(simulations)
+            IEditor editor,
+            IStageProvider stages,
+            ISimulationService simulations) : base(simulations)
         {
-            _editors = editors.Instances.ToArray();
-            _shipPart = new ShipPartResource("editing");
             _primitiveBatch = primitiveBatch;
-            _menuSpacing = new Num.Vector2(15, 15);
             _camera = camera;
             _grid = new VertexPositionColor[2];
-            _stage = stage;
+            _stage = stages.Create(Stages.Editor, Stages.Main);
+            _editor = editor;
         }
 
         public override void Initialize(IServiceProvider provider)
         {
             base.Initialize(provider);
+        }
 
-            foreach (var editor in _editors)
-            {
-                editor.Initialize(_shipPart);
-            }
-
-            _stage.Initialize(StyleSheets.Main);
-            _stage.Add(new TextInput("test"));
-
-            // for(int i=0; i<1000; i++)
-            // {
-            //     _stage.Add(new Label()
-            //     {
-            //         Text = Guid.NewGuid().ToString()
-            //     });
-            // }
-
+        public override void Dispose()
+        {
+            base.Dispose();
         }
 
         protected override void PreDraw(GameTime gameTime)
@@ -144,7 +130,7 @@ namespace VoidHuntersRevived.Domain.Editor
         {
             _primitiveBatch.End();
 
-            //_stage.Draw(gameTime);
+            _stage.Draw(gameTime);
 
             base.PostDraw(gameTime);
         }
@@ -152,11 +138,6 @@ namespace VoidHuntersRevived.Domain.Editor
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            foreach (var editor in _editors)
-            {
-                editor.Update(gameTime);
-            }
         }
     }
 }

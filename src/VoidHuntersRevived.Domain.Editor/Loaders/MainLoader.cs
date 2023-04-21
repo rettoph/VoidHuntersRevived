@@ -4,6 +4,7 @@ using Guppy.Input.Enums;
 using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Entities.Systems;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +13,8 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Editor;
 using VoidHuntersRevived.Common.Editor.Constants;
 using VoidHuntersRevived.Common.Editor.Messages;
-using VoidHuntersRevived.Domain.Editor.Editors;
 using VoidHuntersRevived.Domain.Editor.Services;
+using VoidHuntersRevived.Domain.Editor.Systems;
 
 namespace VoidHuntersRevived.Domain.Editor.Loaders
 {
@@ -23,12 +24,15 @@ namespace VoidHuntersRevived.Domain.Editor.Loaders
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddGuppy<EditorGuppy>();
-
+            services.AddScoped<IEditor, Editor>();
             services.AddTransient<IVerticesBuilder, VerticesBuilder>();
 
             services.ConfigureCollection(manager =>
             {
-                manager.AddScoped<RigidEditor>()
+                manager.AddScoped<EditorPreviewSystem>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<RigidEditorSystem>()
                     .AddInterfaceAliases();
             });
 

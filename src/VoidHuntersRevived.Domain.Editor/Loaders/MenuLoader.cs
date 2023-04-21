@@ -10,6 +10,9 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Messages;
+using VoidHuntersRevived.Common.Editor;
+using Guppy.Common;
+using Guppy.MonoGame.Messages;
 
 namespace VoidHuntersRevived.Domain.Editor.Loaders
 {

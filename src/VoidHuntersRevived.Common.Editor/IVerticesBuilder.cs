@@ -14,10 +14,10 @@ namespace VoidHuntersRevived.Common.Editor
     {
         bool Building { get; }
         bool Closed { get; }
+        float Radians { get; }
         ref bool Snap { get; }
         ref float Degrees { get; }
         ref float Length { get; }
-        float Radians { get; }
 
         void Start(bool closed);
 
