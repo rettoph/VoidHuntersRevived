@@ -25,20 +25,8 @@ namespace VoidHuntersRevived.Common.Simulations
 
         int GetEntityId(ParallelKey key);
 
-        bool TryGetEntityId(int id, SimulationType toType, [MaybeNullWhen(false)] out int toId);
-
-        int GetEntityId(int id, SimulationType to);
-
-        bool TryGetEntity(ParallelKey key, [MaybeNullWhen(false)] out Entity entity);
-
-        Entity GetEntity(ParallelKey key);
-
         bool HasEntity(ParallelKey key);
 
-        void RemoveEntity(int id);
-        void RemoveEntity(ParallelKey key);
-
-        void DestroyEntity(int id);
         void DestroyEntity(ParallelKey key);
 
         void Update(GameTime gameTime);

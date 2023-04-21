@@ -7,6 +7,7 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Simulations.Components;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
@@ -14,6 +15,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
         ISimulationUpdateSystem,
         IPredictiveSynchronizationSystem
     {
+        private ComponentMapper<Parallelable> _parallelables;
         private ComponentMapper<Pilotable> _pilotables;
         private ComponentMapper<Body> _bodies;
         private ILogger _logger;
@@ -27,6 +29,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
         public override void Initialize(IComponentMapperService mapperService)
         {
+            _parallelables = mapperService.GetMapper<Parallelable>();
             _pilotables = mapperService.GetMapper<Pilotable>();
             _bodies = mapperService.GetMapper<Body>();
         }
@@ -79,7 +82,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
         {
             foreach (int entityId in this.Entities[simulation.Type].ActiveEntities)
             {
-                var lockstepEntityId = simulation.GetEntityId(entityId, SimulationType.Lockstep);
+                var lockstepEntityId = _parallelables.Get(entityId).GetId(SimulationType.Lockstep);
 
                 var pilotable = _pilotables.Get(entityId);
                 var lockstepPilotable = _pilotables.Get(lockstepEntityId);

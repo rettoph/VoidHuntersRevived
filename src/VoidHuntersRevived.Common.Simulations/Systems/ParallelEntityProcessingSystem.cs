@@ -10,6 +10,11 @@ namespace VoidHuntersRevived.Common.Simulations.Systems
         {
         }
 
+        public virtual void Initialize(ISimulation simulation)
+        {
+            //
+        }
+
         public virtual void Update(ISimulation simulation, GameTime gameTime)
         {
             foreach (var entityId in this.Entities[simulation.Type].ActiveEntities)

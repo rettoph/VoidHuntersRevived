@@ -13,6 +13,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     internal sealed class AetherSystem : BasicSystem, ISimulationUpdateSystem
     {
+        public void Initialize(ISimulation simulation)
+        {
+            //
+        }
+
         public void Update(ISimulation simulation, GameTime gameTime)
         {
             simulation.Aether.Step(gameTime.ElapsedGameTime);

@@ -51,8 +51,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
         public void Process(in IInput<SetPilotingDirection> message)
         {
-            var piloting = _pilotings.Get(message.UserId);
-            var pilotable = _pilotables.Get(piloting.Pilotable);
+            if(!_pilotings.TryGet(message.UserId, out var piloting))
+            {
+                return;
+            }
+
+            var pilotable = _pilotables.Get(piloting?.Pilotable);
 
             if (message.Data.Value && (pilotable.Direction & message.Data.Which) == 0)
             {

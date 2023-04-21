@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             ISimulationService simulations, 
             IStepService steps, 
             IFiltered<ILockstepInputService> publisher, 
-            IParallelService simulatedEntities,
+            IParallelableService simulatedEntities,
             IGlobalSimulationService globalSimulationService,
             ILogger logger) : base(SimulationType.Lockstep, simulatedEntities, globalSimulationService)
         {

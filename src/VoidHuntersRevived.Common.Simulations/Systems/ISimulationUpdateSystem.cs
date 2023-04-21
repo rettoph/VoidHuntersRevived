@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Simulations.Systems
 {
-    public interface ISimulationUpdateSystem : ISystem
+    public interface ISimulationUpdateSystem : ISystem, ISimulationSystem
     {
         void Update(ISimulation simulation, GameTime gameTime);
     }

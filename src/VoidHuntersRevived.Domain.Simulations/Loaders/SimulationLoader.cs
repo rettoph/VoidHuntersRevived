@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
 
             services.AddSingleton<IGlobalSimulationService, GlobalSimulationService>()
                     .AddScoped<ISimulationService, SimulationService>()
-                    .AddScoped<IParallelService, ParallelService>();
+                    .AddScoped<IParallelableService, ParallelableService>();
 
             services.ConfigureCollection(manager =>
             {

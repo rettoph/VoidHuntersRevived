@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         private IPredictiveSynchronizationSystem[] _synchronizeSystems;
 
         public PredictiveSimulation(
-            IParallelService simulatedEntities, 
+            IParallelableService simulatedEntities, 
             IGlobalSimulationService globalSimulationService) : base(SimulationType.Predictive, simulatedEntities, globalSimulationService)
         {
             _synchronizeSystems = Array.Empty<IPredictiveSynchronizationSystem>();

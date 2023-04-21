@@ -5,7 +5,7 @@ using VoidHuntersRevived.Common.Systems;
 
 namespace VoidHuntersRevived.Common.Simulations.Systems
 {
-    public abstract class ParallelEntitySystem : BasicSystem
+    public abstract class ParallelEntitySystem : BasicSystem, ISimulationSystem
     {
         private readonly AspectBuilder _aspectBuilder;
 
@@ -40,6 +40,11 @@ namespace VoidHuntersRevived.Common.Simulations.Systems
             }
 
             this.Initialize(world.ComponentMapper);
+        }
+
+        public virtual void Initialize(ISimulation simulation)
+        {
+            // 
         }
 
         public abstract void Initialize(IComponentMapperService mapperService);

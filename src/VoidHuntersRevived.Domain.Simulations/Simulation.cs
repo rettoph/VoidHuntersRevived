@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         private IBus _bus;
         private World _world;
         private ISimulationUpdateSystem[] _updateSystems;
-        private readonly IParallelService _parallel;
+        private readonly IParallelableService _parallelables;
         private readonly TEntityComponent _entityComponent;
         private readonly IGlobalSimulationService _globalsSmulationService;
 
@@ -43,10 +43,10 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         protected Simulation(
             SimulationType type,
-            IParallelService simulatedEntities,
+            IParallelableService parallelables,
             IGlobalSimulationService globalSimulationService)
         {
-            _parallel = simulatedEntities;
+            _parallelables = parallelables;
             _world = default!;
             _bus = default!;
             _updateSystems = Array.Empty<ISimulationUpdateSystem>();
@@ -66,6 +66,11 @@ namespace VoidHuntersRevived.Domain.Simulations
             _world = this.Provider.GetRequiredService<World>();
             _bus = this.Provider.GetRequiredService<IBus>();
             _updateSystems = this.Provider.GetRequiredService<IFiltered<ISimulationUpdateSystem>>().Instances.ToArray();
+
+            foreach(ISimulationSystem system in this.Provider.GetRequiredService<IFiltered<ISimulationSystem>>().Instances)
+            {
+                system.Initialize(this);
+            }
 
             _globalsSmulationService.Add(this);
 
@@ -87,79 +92,33 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public bool TryGetEntityId(ParallelKey key, [MaybeNullWhen(false)] out int id)
         {
-            return _parallel.TryGetEntityIdFromKey(key, this.Type, out id);
+            return _parallelables.Get(key).TryGetId(this.Type, out id);
         }
 
         public int GetEntityId(ParallelKey key)
         {
-            if (_parallel.TryGetEntityIdFromKey(key, this.Type, out var id))
+            if (_parallelables.Get(key).TryGetId(this.Type, out var id))
             {
                 return id;
             }
 
-            var entity = this.CreateEntity(key);
-
-            return entity.Id;
-        }
-
-        public bool TryGetEntityId(int id, SimulationType toType, [MaybeNullWhen(false)] out int toId)
-        {
-            return _parallel.TryGetEntityId(id, toType, out toId);
-        }
-
-        public int GetEntityId(int id, SimulationType to)
-        {
-            return _parallel.GetId(id, to);
-        }
-
-        public bool TryGetEntity(ParallelKey key, [MaybeNullWhen(false)] out Entity entity)
-        {
-            if (_parallel.TryGetEntityIdFromKey(key, this.Type, out var id))
-            {
-                entity = _world.GetEntity(id);
-                return true;
-            }
-
-            entity = null;
-            return false;
-        }
-
-        public Entity GetEntity(ParallelKey key)
-        {
-            if (_parallel.TryGetEntityIdFromKey(key, this.Type, out var entityId))
-            {
-                return _world.GetEntity(entityId);
-            }
-
-            var entity = this.CreateEntity(key);
-
-            return entity;
+            return this.CreateEntity(key).Id;
         }
 
         public bool HasEntity(ParallelKey key)
         {
-            return _parallel.TryGetEntityIdFromKey(key, this.Type, out _);
-        }
-
-        public void RemoveEntity(int id)
-        {
-            _parallel.Remove(this.Type, id);
-        }
-
-        public void RemoveEntity(ParallelKey key)
-        {
-            _parallel.Remove(key, this.Type);
-        }
-
-        public void DestroyEntity(int id)
-        {
-            this.RemoveEntity(id);
-            _world.DestroyEntity(id);
+            return _parallelables.Get(key).TryGetId(this.Type, out _);
         }
 
         public void DestroyEntity(ParallelKey key)
         {
-            this.DestroyEntity(this.GetEntityId(key));
+            Parallelable parallelable = _parallelables.Get(key);
+
+            if(parallelable.TryGetId(this.Type, out int id))
+            {
+                parallelable.RemoveId(this);
+                _world.DestroyEntity(id);
+            }
         }
 
         protected abstract void Update(GameTime gameTime);
@@ -171,12 +130,15 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public virtual Entity CreateEntity(ParallelKey key)
         {
+            var parallelable = _parallelables.Get(key);
             var entity = _world.CreateEntity();
+            parallelable.AddId(this, entity.Id);
+
+            entity.Attach(parallelable);
             entity.Attach(_entityComponent);
-            entity.Attach(new Parallelable(key));
             entity.Attach<ISimulation>(this);
 
-            _parallel.Set(key, this.Type, entity.Id);
+            
 
             return entity;
         }
