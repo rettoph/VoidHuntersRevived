@@ -17,8 +17,8 @@ using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     internal sealed class PilotingSystem : BasicSystem,
-        ISubscriber<IInput<SetPilotingDirection>>,
-        ISubscriber<IInput<SetPilotingTarget>>
+        ISubscriber<IEvent<SetPilotingDirection>>,
+        ISubscriber<IEvent<SetPilotingTarget>>
     {
         private ComponentMapper<Piloting> _pilotings;
         private ComponentMapper<Pilotable> _pilotables;
@@ -43,15 +43,20 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
         public override void Initialize(World world)
         {
-            _pilotings= world.ComponentMapper.GetMapper<Piloting>();
+            _pilotings = world.ComponentMapper.GetMapper<Piloting>();
             _pilotables = world.ComponentMapper.GetMapper<Pilotable>();
             _tractorings = world.ComponentMapper.GetMapper<Tractoring>();
             _tractorables = world.ComponentMapper.GetMapper<Tractorable>();
         }
 
-        public void Process(in IInput<SetPilotingDirection> message)
+        public void Process(in IEvent<SetPilotingDirection> message)
         {
-            if(!_pilotings.TryGet(message.UserId, out var piloting))
+            if (!message.Target.TryGetEntityId(message.Sender, out int pilotId))
+            {
+                return;
+            }
+
+            if (!_pilotings.TryGet(pilotId, out var piloting))
             {
                 return;
             }
@@ -71,11 +76,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             }
         }
 
-        public void Process(in IInput<SetPilotingTarget> message)
+        public void Process(in IEvent<SetPilotingTarget> message)
         {
-            var piloting = _pilotings.Get(message.UserId);
+            if(!message.Target.TryGetEntityId(message.Sender, out int pilotId))
+            {
+                return;
+            }
 
-            if(piloting is null)
+            if (!_pilotings.TryGet(pilotId, out var piloting))
             {
                 return;
             }

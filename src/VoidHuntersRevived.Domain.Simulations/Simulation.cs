@@ -16,17 +16,19 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Components;
+using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
-    public abstract partial class Simulation<TEntityComponent> : ISimulation, IDisposable
+    public abstract partial class Simulation<TEntityComponent> : ISimulation, IDisposable,
+        ISubscriber<Tick>
         where TEntityComponent : class, new()
     {
-        private IBus _bus;
         private World _world;
         private ISimulationUpdateSystem[] _updateSystems;
+        private readonly IBus _bus;
         private readonly IParallelableService _parallelables;
         private readonly TEntityComponent _entityComponent;
         private readonly IGlobalSimulationService _globalsSmulationService;
@@ -43,12 +45,13 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         protected Simulation(
             SimulationType type,
+            IBus bus,
             IParallelableService parallelables,
             IGlobalSimulationService globalSimulationService)
         {
+            _bus = bus;
             _parallelables = parallelables;
             _world = default!;
-            _bus = default!;
             _updateSystems = Array.Empty<ISimulationUpdateSystem>();
             _entityComponent = new TEntityComponent();
             _globalsSmulationService = globalSimulationService;
@@ -64,7 +67,6 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.Provider = provider;
 
             _world = this.Provider.GetRequiredService<World>();
-            _bus = this.Provider.GetRequiredService<IBus>();
             _updateSystems = this.Provider.GetRequiredService<IFiltered<ISimulationUpdateSystem>>().Instances.ToArray();
 
             foreach(ISimulationSystem system in this.Provider.GetRequiredService<IFiltered<ISimulationSystem>>().Instances)
@@ -102,7 +104,7 @@ namespace VoidHuntersRevived.Domain.Simulations
                 return id;
             }
 
-            return this.CreateEntity(key).Id;
+            throw new InvalidOperationException();
         }
 
         public bool HasEntity(ParallelKey key)
@@ -138,21 +140,24 @@ namespace VoidHuntersRevived.Domain.Simulations
             entity.Attach(_entityComponent);
             entity.Attach<ISimulation>(this);
 
-            
-
             return entity;
         }
 
-        protected virtual void PublishEvent(IEvent @event)
+        public abstract void Enqueue(ParallelKey sender, IData data);
+
+        public void Publish(IEvent @event)
         {
             _bus.Publish(@event);
         }
 
-        public virtual void PublishEvent(IData data)
-        {
-            this.PublishEvent(Simulation.Event.Factory.Create(this.Type, data, this));
-        }
 
-        public abstract void Input(ParallelKey user, IData data);
+        public void Process(in Tick message)
+        {
+            foreach (EventDto @eventDto in message.Events)
+            {
+                IEvent @event = Simulation.Event.Factory.Create(SimulationType.Lockstep, @eventDto.Sender, @eventDto.Data, this);
+                this.Publish(@event);
+            }
+        }
     }
 }

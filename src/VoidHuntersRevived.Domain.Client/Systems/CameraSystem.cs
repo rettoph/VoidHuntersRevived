@@ -66,7 +66,11 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 return;
             }
 
-            var piloting = _pilotings.Get(pilotId);
+            if(!_pilotings.TryGet(pilotId, out var piloting))
+            {
+                return;
+            }
+
             var body = _bodies.Get(piloting.Pilotable);
             if (body is null)
             {

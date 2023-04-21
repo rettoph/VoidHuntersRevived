@@ -5,7 +5,7 @@ using Guppy.Network.Enums;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Lockstep.Messages;
-using VoidHuntersRevived.Domain.Simulations.Lockstep.Utilities;
+using VoidHuntersRevived.Domain.Simulations.Utilities;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Providers
 {

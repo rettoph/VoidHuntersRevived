@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     [GuppyFilter<IGameGuppy>()]
     internal sealed class UserPilotSystem : BasicSystem,
-        ISubscriber<IInput<UserJoined>>
+        ISubscriber<IEvent<UserJoined>>
     {
         private readonly NetScope _scope;
         private readonly ILogger _logger;
@@ -42,9 +42,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _nodes = world.ComponentMapper.GetMapper<Node>();
         }
 
-        public void Process(in IInput<UserJoined> message)
+        public void Process(in IEvent<UserJoined> @event)
         {
-            var user = _scope.Peer!.Users.UpdateOrCreate(message.Data.Id, message.Data.Claims);
+            var user = _scope.Peer!.Users.UpdateOrCreate(@event.Data.Id, @event.Data.Claims);
 
             // Ensure the user has been added to the scope
             if (!_scope.Users.TryGet(user.Id, out _))
@@ -54,18 +54,18 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
             var key = user.GetKey();
 
-            if (message.Simulation.HasEntity(key))
+            if (@event.Target.HasEntity(key))
             { // This operation has already been done
                 return;
             }
 
-            var ship = message.Simulation.CreateShip(key.Create(ParallelTypes.Ship), ShipParts.HullSquare);
+            var ship = @event.Target.CreateShip(@event, key.Create(ParallelTypes.Ship), ShipParts.HullSquare);
             
             // TODO: Make a CreatePilot event and override this extension's functionality
-            var pilot = message.Simulation.CreatePilot(key, ship);
+            var pilot = @event.Target.CreatePilot(key, ship);
 
-            var piece = message.Simulation.CreateShipPart(key.Create(ParallelTypes.ShipPart), ShipParts.HullSquare);
-            message.Simulation.PublishEvent(new CreateJointing()
+            var piece = @event.Target.CreateShipPart(key.Create(ParallelTypes.ShipPart), ShipParts.HullSquare);
+            @event.PublishConsequent(new CreateJointing()
             {
                 Parent = ship.Get<Ship>().Bridge.Get<Parallelable>().Key,
                 ParentJointId = 1,
@@ -73,7 +73,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
                 JointId = 0
             });
 
-            var chain = message.Simulation.CreateChain(ParallelTypes.Chain.Create(1337), ShipParts.HullSquare);
+            var chain = @event.Target.CreateChain(@event, ParallelTypes.Chain.Create(1337), ShipParts.HullSquare);
         }
     }
 }

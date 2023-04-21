@@ -3,12 +3,12 @@ using Guppy.Network.Enums;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 
-namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Factories
+namespace VoidHuntersRevived.Domain.Simulations.Factories
 {
     [PeerTypeFilter(PeerType.Client)]
     internal sealed class ClientTickFactory : ITickFactory
     {
-        public void Enqueue(UserInput input)
+        public void Enqueue(EventDto @event)
         {
             throw new NotImplementedException();
         }

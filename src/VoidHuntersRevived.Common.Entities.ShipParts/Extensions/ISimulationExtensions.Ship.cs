@@ -10,9 +10,10 @@ namespace VoidHuntersRevived.Common.Entities.Extensions
 {
     public static partial class ISimulationExtensions
     {
-        public static Entity CreateShip(this ISimulation simulation, ParallelKey key, string bridgeConfiguration)
+        public static Entity CreateShip(this ISimulation simulation, IEvent @event, ParallelKey key, string bridgeConfiguration)
         {
             return simulation.CreateEntity(key).MakeShip(
+                @event: @event,
                 aether: simulation.Aether,
                 bridge: simulation.CreateShipPart(key.Create(ParallelTypes.ShipPart), bridgeConfiguration));
         }

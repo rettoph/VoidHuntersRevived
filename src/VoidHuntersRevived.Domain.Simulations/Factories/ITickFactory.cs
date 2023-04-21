@@ -7,11 +7,11 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 
-namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Factories
+namespace VoidHuntersRevived.Domain.Simulations.Factories
 {
     public interface ITickFactory
     {
-        void Enqueue(UserInput data);
+        void Enqueue(EventDto @event);
 
         Tick Create(int id);
 

@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         {
             if(!_parallelables.TryGetValue(key, out Parallelable? parallelable))
             {
-                parallelable = new Parallelable(key);
+                parallelable = new Parallelable(key, this.HandleEmpty);
                 _parallelables.Add(key, parallelable);
             }
 
@@ -24,6 +24,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         public Parallelable Get(int id)
         {
             throw new NotImplementedException();
+        }
+
+        private void HandleEmpty(Parallelable args)
+        {
+            _parallelables.Remove(args.Key);
         }
     }
 }

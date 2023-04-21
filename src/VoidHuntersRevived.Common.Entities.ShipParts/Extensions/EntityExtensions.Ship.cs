@@ -21,9 +21,10 @@ namespace VoidHuntersRevived.Common.Entities.Extensions
             return entity.Has<Pilotable>();
         }
 
-        public static Entity MakeShip(this Entity entity, Aether aether, Entity bridge)
+        public static Entity MakeShip(this Entity entity, IEvent @event, Aether aether, Entity bridge)
         {
             entity.MakeTree(
+                @event: @event,
                 body: aether.CreateBody(bodyType: BodyType.Dynamic), 
                 headId: bridge.Id).MakePilotable();
 

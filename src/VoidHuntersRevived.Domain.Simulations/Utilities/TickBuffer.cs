@@ -2,23 +2,23 @@
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 
-namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Utilities
+namespace VoidHuntersRevived.Domain.Simulations.Utilities
 {
     public sealed class TickBuffer
     {
         [DebuggerDisplay("Id: {Data.Id}")]
         private sealed class Node
         {
-            public int Id => this.Data.Id;
-            public int ParentId => this.Id - 1;
-            public int ChildId => this.Id + 1;
+            public int Id => Data.Id;
+            public int ParentId => Id - 1;
+            public int ChildId => Id + 1;
 
             public Tick Data { get; private set; }
             public Node? Child { get; private set; }
 
             public Node(Tick data)
             {
-                this.Data = data;
+                Data = data;
             }
 
             public void Add(Node child)
@@ -38,13 +38,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Utilities
 
             public Node GetTail()
             {
-                if(this.Child is null)
+                if (Child is null)
                 {
                     return this;
                 }
 
                 Node parent = this;
-                Node tick = this.Child;
+                Node tick = Child;
 
                 while (parent.ChildId == tick.Id)
                 {
@@ -62,23 +62,23 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Utilities
 
             private bool TryAdd(Node child)
             {
-                if (this.Child is null)
+                if (Child is null)
                 {
-                    this.Child = child;
+                    Child = child;
                     return true;
                 }
 
-                if (child.Data.Id == this.Data.Id)
+                if (child.Data.Id == Data.Id)
                 {
-                    this.Data = child.Data;
+                    Data = child.Data;
                     return true;
                 }
 
-                if (child.Data.Id < this.Child.Data.Id)
+                if (child.Data.Id < Child.Data.Id)
                 {
-                    var old = this.Child;
-                    this.Child = child;
-                    this.Child.Child = old;
+                    var old = Child;
+                    Child = child;
+                    Child.Child = old;
                     return true;
                 }
 
@@ -99,7 +99,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Utilities
             {
                 Node? result = _head;
 
-                for(int i=0; i<index; i++)
+                for (int i = 0; i < index; i++)
                 {
                     if (result is null)
                     {
@@ -119,7 +119,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Utilities
 
         public bool TryPop(int id, [MaybeNullWhen(false)] out Tick tick)
         {
-            if(_head is null)
+            if (_head is null)
             {
                 tick = null;
                 return false;
@@ -130,7 +130,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Utilities
                 tick = _head.Data;
                 _head = _head.Child;
 
-                if(_head is null)
+                if (_head is null)
                 {
                     _tail = null;
                 }
@@ -138,11 +138,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Utilities
                 return true;
             }
 
-            if(_head.Id < id)
+            if (_head.Id < id)
             { // Sometimes we double send a message, this should fix that.
-                _head = _head.Child; 
+                _head = _head.Child;
 
-                return this.TryPop(id, out tick);
+                return TryPop(id, out tick);
             }
 
             tick = null;
@@ -155,27 +155,27 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Utilities
             if (_head is null)
             {
                 _head = node;
-                this.UpdateTail();
+                UpdateTail();
                 return;
             }
 
-            if(tick.Id < _head.Id)
+            if (tick.Id < _head.Id)
             {
                 var old = _head;
                 _head = node;
                 _head.Add(old);
-                this.UpdateTail();
+                UpdateTail();
                 return;
             }
 
             _head.Add(node);
-            this.UpdateTail();
-            this.Latest = tick;
+            UpdateTail();
+            Latest = tick;
         }
 
         private void UpdateTail()
         {
-            if(_tail is null || _tail.Id < _head?.Id)
+            if (_tail is null || _tail.Id < _head?.Id)
             {
                 _tail = _head;
             }

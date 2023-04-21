@@ -21,8 +21,6 @@ namespace VoidHuntersRevived.Common.Simulations.Services
 
         void Update(GameTime gameTime);
 
-        void PublishEvent(IData data);
-
-        void Input(ParallelKey user, IData data);
+        void Enqueue(ParallelKey sender, IData data);
     }
 }

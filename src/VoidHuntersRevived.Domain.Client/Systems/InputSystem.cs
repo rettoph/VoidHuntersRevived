@@ -20,6 +20,7 @@ using VoidHuntersRevived.Common.Simulations.Lockstep.Messages;
 using Guppy.Network.Identity;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using Guppy.Attributes;
+using VoidHuntersRevived.Common.Simulations.Components;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
@@ -38,9 +39,11 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private ISimulation _interactive;
         private ComponentMapper<Piloting> _pilotings;
         private ComponentMapper<Pilotable> _pilotables;
+        private ComponentMapper<Tractoring> _tractorings;
+        private ComponentMapper<Parallelable> _parallelables;
         private float _scroll;
 
-        private Vector2 CurrentTarget => _camera.Unproject(Mouse.GetState().Position.ToVector2());
+        private Vector2 CurrentTargetPosition => _camera.Unproject(Mouse.GetState().Position.ToVector2());
         private ParallelKey CurrentUserKey
         {
             get
@@ -67,6 +70,8 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             _interactive = default!;
             _pilotings = default!;
             _pilotables = default!;
+            _tractorings = default!;
+            _parallelables = default!;
         }
 
         public override void Initialize(World world)
@@ -77,6 +82,8 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
             _pilotings = world.ComponentMapper.GetMapper<Piloting>();
             _pilotables = world.ComponentMapper.GetMapper<Pilotable>();
+            _tractorings = world.ComponentMapper.GetMapper<Tractoring>();
+            _parallelables = world.ComponentMapper.GetMapper<Parallelable>();
         }
 
         public override void Update(GameTime gameTime)
@@ -97,8 +104,8 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         public void Process(in SetPilotingDirection message)
         {
-            _simulations.Input(
-                user: CurrentUserKey,
+            _simulations.Enqueue(
+                sender: CurrentUserKey,
                 data: new SetPilotingDirection(
                     which: message.Which,
                     value: message.Value));
@@ -106,20 +113,18 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         private void SetTarget(SimulationType simulation)
         {
-            _simulations[simulation].Input(
-                user: CurrentUserKey,
+            _simulations[simulation].Enqueue(
+                sender: CurrentUserKey,
                 data: new SetPilotingTarget()
                 {
-                    Target = CurrentTarget
+                    Target = CurrentTargetPosition
                 });
         }
 
         public void Process(in StartTractoring message)
         {
-            var pilotId = _interactive.GetEntityId(this.CurrentUserKey);
-            var piloting = _pilotings.Get(pilotId);
-
-            if(piloting is null)
+            int pilotId = _interactive.GetEntityId(this.CurrentUserKey);
+            if(!_pilotings.TryGet(pilotId, out Piloting? piloting))
             {
                 return;
             }
@@ -128,8 +133,8 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
             if (_tractor.TryGetTractorable(pilotable, out var tractorable, out var node))
             {
-                _simulations.Input(
-                    user: CurrentUserKey,
+                _simulations.Enqueue(
+                    sender: CurrentUserKey,
                     data: new StartTractoring()
                     {
                         Tractorable = tractorable,
@@ -140,11 +145,23 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         public void Process(in StopTractoring message)
         {
-            _simulations.Input(
-                user: CurrentUserKey,
+            int pilotId = _interactive.GetEntityId(this.CurrentUserKey);
+            if (!_pilotings.TryGet(pilotId, out Piloting? piloting))
+            {
+                return;
+            }
+
+            if (!_tractorings.TryGet(piloting.Pilotable.Id, out Tractoring? tractoring))
+            {
+                return;
+            }
+
+            _simulations.Enqueue(
+                sender: CurrentUserKey,
                 data: new StopTractoring()
                 {
-                    Target = CurrentTarget
+                    TargetPosition = CurrentTargetPosition,
+                    TractorableKey = _parallelables.Get(tractoring.TractorableId).Key
                 });
         }
     }

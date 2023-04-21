@@ -1,5 +1,4 @@
 ﻿using Guppy.Attributes;
-using Guppy.Attributes;
 using Guppy.Network;
 using Guppy.Network.Providers;
 using LiteNetLib.Utils;
@@ -12,13 +11,13 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
     [AutoLoad]
     internal sealed class TickNetSerializer : NetSerializer<Tick>
     {
-        private INetSerializer<UserInput> _serializer = default!;
+        private INetSerializer<EventDto> _serializer = default!;
 
         public override void Initialize(INetSerializerProvider serializers)
         {
             base.Initialize(serializers);
 
-            _serializer = serializers.Get<UserInput>();
+            _serializer = serializers.Get<EventDto>();
         }
 
         public override Tick Deserialize(NetDataReader reader)
@@ -31,11 +30,11 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
                 return Tick.Empty(id);
             }
 
-            var items = new UserInput[count];
+            var items = new EventDto[count];
 
             for (var i = 0; i < count; i++)
             {
-                if(_serializer.Deserialize(reader) is UserInput input)
+                if(_serializer.Deserialize(reader) is EventDto input)
                 {
                     items[i] = input;
                 }
@@ -54,9 +53,9 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
 
             writer.Put(count);
 
-            foreach (UserInput input in instance.Inputs)
+            foreach (EventDto @event in instance.Events)
             {
-                _serializer.Serialize(writer, input);
+                _serializer.Serialize(writer, @event);
             }
         }
     }

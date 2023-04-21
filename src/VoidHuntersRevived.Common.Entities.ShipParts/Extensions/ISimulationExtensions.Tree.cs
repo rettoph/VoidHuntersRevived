@@ -14,15 +14,15 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Extensions
 {
     public static partial class ISimulationExtensions
     {
-        public static Entity CreateChain(this ISimulation simulation, ParallelKey key, string headConfiguration, Vector2 position = default, float rotation = 0)
+        public static Entity CreateChain(this ISimulation simulation, IEvent @event, ParallelKey key, string headConfiguration, Vector2 position = default, float rotation = 0)
         {
             var head = simulation.CreateShipPart(key.Create(ParallelTypes.ShipPart, 0), headConfiguration);
 
-            return simulation.CreateEntity(key).MakeChain(simulation.Aether, head.Id, position, rotation);
+            return simulation.CreateEntity(key).MakeChain(@event, simulation.Aether, head.Id, position, rotation);
         }
-        public static Entity CreateChain(this ISimulation simulation, ParallelKey key, int headId, Vector2 position = default, float rotation = 0)
+        public static Entity CreateChain(this ISimulation simulation, IEvent @event, ParallelKey key, int headId, Vector2 position = default, float rotation = 0)
         {
-            return simulation.CreateEntity(key).MakeChain(simulation.Aether, headId, position, rotation);
+            return simulation.CreateEntity(key).MakeChain(@event, simulation.Aether, headId, position, rotation);
         }
     }
 }

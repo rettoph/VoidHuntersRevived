@@ -4,9 +4,12 @@ namespace VoidHuntersRevived.Common.Simulations
 {
     public interface IEvent : IMessage
     {
-        SimulationType Sender { get; }
-        ISimulation Simulation { get; }
+        ParallelKey Sender { get; }
+        SimulationType Source { get; }
+        ISimulation Target { get; }
         IData Data { get; }
+
+        void PublishConsequent(IData data);
     }
 
     public interface IEvent<TData> : IEvent

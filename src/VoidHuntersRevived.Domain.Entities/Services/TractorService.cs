@@ -72,29 +72,29 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public bool TryGetPotentialParentJoint(
             Vector2 target,
-            Tractoring tractoring,
-            [MaybeNullWhen(false)] out Vector2 position, 
+            int tractoringId,
+            [MaybeNullWhen(false)] out Vector2 position,
             [MaybeNullWhen(false)] out Jointable.Joint parent)
         {
             parent = null;
             position = default;
             float distance = GetPotentialParentJointDistance;
-            var tree = _trees.Get(tractoring.EntityId);
-            var body = _bodies.Get(tractoring.EntityId);
+            var tree = _trees.Get(tractoringId);
+            var body = _bodies.Get(tractoringId);
 
             foreach (int nodeId in tree.Nodes)
             {
                 var node = _nodes.Get(nodeId);
                 var jointable = _jointables.Get(nodeId);
 
-                if(node is null || jointable is null)
+                if (node is null || jointable is null)
                 {
                     continue;
                 }
 
-                foreach(var joint in jointable.Joints)
+                foreach (var joint in jointable.Joints)
                 {
-                    if(joint.Jointed)
+                    if (joint.Jointed)
                     {
                         continue;
                     }
@@ -102,7 +102,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                     var jointPosition = body.Position + joint.LocalPosition;
                     var jointDistance = Vector2.Distance(target, jointPosition);
 
-                    if(jointDistance < distance)
+                    if (jointDistance < distance)
                     {
                         distance = jointDistance;
                         parent = joint;
@@ -119,18 +119,27 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             Tractoring tractoring,
             [MaybeNullWhen(false)] out Jointing potential)
         {
-            var tractorableBody = _bodies.Get(tractoring.TractorableId);
-            var tractoringTree = _trees.Get(tractoring.EntityId);
+            return this.TransformTractorable(target, tractoring.EntityId, tractoring.TractorableId, out potential);
+        }
 
-            if (!this.TryGetPotentialParentJoint(target, tractoring, out Vector2 position, out var tractoringJoint))
+        public bool TransformTractorable(
+            Vector2 target, 
+            int tractoringId, 
+            int tractorableId, 
+            [MaybeNullWhen(false)] out Jointing potential)
+        {
+            var tractorableBody = _bodies.Get(tractorableId);
+            var tractoringTree = _trees.Get(tractoringId);
+
+            if (!this.TryGetPotentialParentJoint(target, tractoringId, out Vector2 position, out var tractoringJoint))
             {
                 return this.DefaultTransformBody(tractorableBody, target, out potential);
             }
 
-            var tractoringBody = _bodies.Get(tractoring.EntityId);
-            var tractorableTree = _trees.Get(tractoring.TractorableId);
+            var tractoringBody = _bodies.Get(tractoringId);
+            var tractorableTree = _trees.Get(tractorableId);
 
-            if(tractorableTree.HeadId is null)
+            if (tractorableTree?.HeadId is null)
             {
                 return this.DefaultTransformBody(tractorableBody, target, out potential);
             }
@@ -153,11 +162,15 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return true;
         }
 
-        private bool DefaultTransformBody(Body body, Vector2 target, out Jointing? potential)
+        private bool DefaultTransformBody(Body? body, Vector2 target, out Jointing? potential)
         {
             potential = null;
-            target -= body.WorldCenter - body.Position;
-            body.SetTransformIgnoreContacts(target, body.Rotation);
+
+            if(body is not null)
+            {
+                target -= body.WorldCenter - body.Position;
+                body.SetTransformIgnoreContacts(target, body.Rotation);
+            }
 
             return false;
         }

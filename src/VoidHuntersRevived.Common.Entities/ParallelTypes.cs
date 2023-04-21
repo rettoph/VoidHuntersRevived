@@ -9,9 +9,9 @@ namespace VoidHuntersRevived.Common.Entities
 {
     public static class ParallelTypes
     {
-        public static readonly ParallelType Pilot = ParallelType.GetOrRegister("pilot");
-        public static readonly ParallelType Ship = ParallelType.GetOrRegister("ship");
-        public static readonly ParallelType ShipPart = ParallelType.GetOrRegister("ship_part");
-        public static readonly ParallelType Chain = ParallelType.GetOrRegister("chain");
+        public static readonly ParallelType Pilot = ParallelType.GetOrRegister(nameof(Pilot));
+        public static readonly ParallelType Ship = ParallelType.GetOrRegister(nameof(Ship));
+        public static readonly ParallelType ShipPart = ParallelType.GetOrRegister(nameof(ShipPart));
+        public static readonly ParallelType Chain = ParallelType.GetOrRegister(nameof(Chain));
     }
 }

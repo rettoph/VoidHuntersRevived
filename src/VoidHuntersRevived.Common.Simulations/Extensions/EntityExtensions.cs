@@ -4,19 +4,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Simulations.Components;
 
 namespace VoidHuntersRevived.Common.Simulations.Extensions
 {
     public static class EntityExtensions
     {
-        public static void PublishEvent(this Entity entity, IData data)
+        public static void Enqueue(this Entity entity, IData data)
         {
-            entity.Get<ISimulation>().PublishEvent(data);
+            entity.Enqueue(entity.Get<Parallelable>().Key, data);
         }
 
-        public static void Input(this Entity entity, ParallelKey user, IData data)
+        public static void Enqueue(this Entity entity, ParallelKey sender, IData data)
         {
-            entity.Get<ISimulation>().Input(user, data);
+            entity.Get<ISimulation>().Enqueue(sender, data);
         }
     }
 }

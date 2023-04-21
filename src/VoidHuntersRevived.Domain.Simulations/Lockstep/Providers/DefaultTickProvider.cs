@@ -3,7 +3,7 @@ using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
-using VoidHuntersRevived.Domain.Simulations.Lockstep.Factories;
+using VoidHuntersRevived.Domain.Simulations.Factories;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Providers
 {

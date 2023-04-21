@@ -22,13 +22,19 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Services
 
         bool TryGetPotentialParentJoint(
             Vector2 target,
-            Tractoring tractoring,
+            int tractoringId,
             [MaybeNullWhen(false)] out Vector2 position,
             [MaybeNullWhen(false)] out Jointable.Joint parent);
 
         bool TransformTractorable(
             Vector2 target,
             Tractoring tractoring,
+            [MaybeNullWhen(false)] out Jointing potential);
+
+        bool TransformTractorable(
+            Vector2 target,
+            int tractoringId,
+            int tractorableId,
             [MaybeNullWhen(false)] out Jointing potential);
     }
 }

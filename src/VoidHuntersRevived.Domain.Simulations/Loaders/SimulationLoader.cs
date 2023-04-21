@@ -7,12 +7,11 @@ using LiteNetLib;
 using Microsoft.Extensions.DependencyInjection;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Domain.Simulations.Factories;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
-using VoidHuntersRevived.Domain.Simulations.Lockstep.Factories;
 using VoidHuntersRevived.Domain.Simulations.Lockstep.Messages;
 using VoidHuntersRevived.Domain.Simulations.Lockstep.Providers;
 using VoidHuntersRevived.Domain.Simulations.Lockstep.Services;
-using VoidHuntersRevived.Domain.Simulations.Lockstep.Systems;
 using VoidHuntersRevived.Domain.Simulations.Predictive;
 using VoidHuntersRevived.Domain.Simulations.Services;
 using VoidHuntersRevived.Domain.Simulations.Systems;
@@ -52,19 +51,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
 
         private void ConfigureLockstep(IServiceCollection services, IServiceCollectionManager manager)
         {
-            manager.AddScoped<LockstepSimulation>()
+            manager.AddScoped<LockstepClientSimulation>()
+                .AddInterfaceAliases();
+
+            manager.AddScoped<LockstepServerSimulation>()
                 .AddInterfaceAliases();
 
             manager.AddScoped<State>();
-
-            manager.AddScoped<DefaultLockstepInputService>()
-                .AddInterfaceAliases();
-
-            manager.AddScoped<ServerLockstepInputService>()
-                .AddInterfaceAliases();
-
-            manager.AddScoped<ClientLockstepInputService>()
-                .AddInterfaceAliases();
 
             manager.AddScoped<ClientTickFactory>()
                 .AddAlias<ITickFactory>();
@@ -89,13 +82,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
 
             services.AddScoped<IStepService, StepService>();
 
-            manager.AddScoped<TickServerSystem>()
+            manager.AddScoped<LockstepServer_TickSystem>()
                 .AddInterfaceAliases();
 
-            manager.AddScoped<StateSystem>()
+            manager.AddScoped<Lockstep_StateSystem>()
                 .AddInterfaceAliases();
 
-            manager.AddScoped<UserServerSystem>()
+            manager.AddScoped<LockstepServer_UserSystem>()
                 .AddInterfaceAliases();
 
             services.AddNetMessageType<Tick>(DeliveryMethod.ReliableUnordered, 0);

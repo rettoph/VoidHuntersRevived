@@ -15,7 +15,7 @@ using VoidHuntersRevived.Common.Simulations.Lockstep;
 namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
 {
     [AutoLoad]
-    internal sealed class UserInputNetSerializer : NetSerializer<UserInput>
+    internal sealed class EventDtoNetSerializer : NetSerializer<EventDto>
     {
         private INetSerializerProvider _serializers = default!;
 
@@ -26,16 +26,16 @@ namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
             _serializers = serializers;
         }
 
-        public override UserInput Deserialize(NetDataReader reader)
+        public override EventDto Deserialize(NetDataReader reader)
         {
-            return new UserInput(
-                user: reader.GetParallelKey(),
+            return new EventDto(
+                sender: reader.GetParallelKey(),
                 data: (IData)_serializers.Deserialize(reader));
         }
 
-        public override void Serialize(NetDataWriter writer, in UserInput instance)
+        public override void Serialize(NetDataWriter writer, in EventDto instance)
         {
-            writer.Put(instance.User);
+            writer.Put(instance.Sender);
             _serializers.Serialize(writer, instance.Data);
         }
     }

@@ -82,7 +82,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             // tree. If it is, we should remove the node first.
             if (_nodes.TryGet(message.Data.NodeId, out var existingNode))
             { // Detach it from its old tree
-                message.Simulation.PublishEvent(new DestroyNode()
+                message.PublishConsequent(new DestroyNode()
                 {
                     NodeId = message.Data.NodeId,
                     TreeId = existingNode.TreeId,
@@ -109,7 +109,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             // Recersively remove all children from the tree as well.
             foreach (var child in jointee.Children)
             {
-                message.Simulation.PublishEvent(new CreateNode()
+                message.PublishConsequent(new CreateNode()
                 {
                     NodeId = child.Joint.Entity.Id,
                     TreeId = message.Data.TreeId,
@@ -137,7 +137,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             // Recersively remove all children from the tree as well.
             foreach(var child in jointee.Children)
             {
-                message.Simulation.PublishEvent(new DestroyNode()
+                message.PublishConsequent(new DestroyNode()
                 {
                     NodeId = child.Joint.Entity.Id,
                     TreeId = message.Data.TreeId,
@@ -147,12 +147,12 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         public void Process(in IEvent<CreateJointing> message)
         {
-            var nodeId = message.Simulation.GetEntityId(message.Data.Joint);
-            var parentId = message.Simulation.GetEntityId(message.Data.Parent);
+            var nodeId = message.Target.GetEntityId(message.Data.Joint);
+            var parentId = message.Target.GetEntityId(message.Data.Parent);
             var parentTree = _nodes.Get(parentId).TreeId;
 
             // Publish an AddNode event whenever a new joint is created.
-            message.Simulation.PublishEvent(new CreateNode()
+            message.PublishConsequent(new CreateNode()
             {
                 NodeId = nodeId,
                 TreeId = parentTree

@@ -9,39 +9,39 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 
-namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Factories
+namespace VoidHuntersRevived.Domain.Simulations.Factories
 {
     [PeerTypeFilter(PeerType.Server | PeerType.None)]
     internal sealed class DefaultTickFactory : ITickFactory
     {
-        private IList<UserInput> _inputs;
+        private IList<EventDto> _events;
 
         public DefaultTickFactory()
         {
-            _inputs = new List<UserInput>();
+            _events = new List<EventDto>();
         }
 
-        public void Enqueue(UserInput input)
+        public void Enqueue(EventDto @event)
         {
-            _inputs.Add(input);
+            _events.Add(@event);
         }
 
         public Tick Create(int id)
         {
-            if (_inputs.Count == 0)
+            if (_events.Count == 0)
             {
-                return Tick.Create(id, Enumerable.Empty<UserInput>());
+                return Tick.Create(id, Enumerable.Empty<EventDto>());
             }
 
-            var tick = Tick.Create(id, _inputs);
-            _inputs = new List<UserInput>();
+            var tick = Tick.Create(id, _events);
+            _events = new List<EventDto>();
 
             return tick;
         }
 
         public void Reset()
         {
-            _inputs.Clear();
+            _events.Clear();
         }
     }
 }

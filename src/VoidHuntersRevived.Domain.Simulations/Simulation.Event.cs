@@ -16,29 +16,29 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             public static class Factory
             {
-                private static Dictionary<Type, Func<SimulationType, IData, ISimulation, IEvent>> _factories = new();
+                private static Dictionary<Type, Func<SimulationType, ParallelKey, IData, ISimulation, IEvent>> _factories = new();
                 private static MethodInfo _method = typeof(Factory).GetMethod(nameof(FactoryMethod), BindingFlags.Static | BindingFlags.NonPublic) ?? throw new UnreachableException();
 
-                public static IEvent Create(SimulationType sender, IData data, ISimulation simulation)
+                public static IEvent Create(SimulationType source, ParallelKey sender, IData data, ISimulation target)
                 {
                     var type = data.GetType();
                     if (!_factories.TryGetValue(type, out var factory))
                     {
                         var method = _method.MakeGenericMethod(type);
-                        factory = (Func<SimulationType, IData, ISimulation, IEvent>)(method.Invoke(null, Array.Empty<object>()) ?? throw new UnreachableException());
+                        factory = (Func<SimulationType, ParallelKey, IData, ISimulation, IEvent>)(method.Invoke(null, Array.Empty<object>()) ?? throw new UnreachableException());
 
                         _factories.Add(type, factory);
                     }
 
-                    return factory(sender, data, simulation);
+                    return factory(source, sender, data, target);
                 }
 
-                private static Func<SimulationType, IData, ISimulation, IEvent> FactoryMethod<TData>()
+                private static Func<SimulationType, ParallelKey, IData, ISimulation, IEvent> FactoryMethod<TData>()
                     where TData : IData
                 {
-                    IEvent Factory(SimulationType sender, IData data, ISimulation simulation)
+                    IEvent Factory(SimulationType source, ParallelKey sender, IData data, ISimulation target)
                     {
-                        return new Simulation.Event<TData>(sender, (TData)data, simulation);
+                        return new Simulation.Event<TData>(source, sender, (TData)data, target);
                     }
 
                     return Factory;
@@ -53,19 +53,32 @@ namespace VoidHuntersRevived.Domain.Simulations
 
             public virtual Type Type => MessageType;
 
-            public SimulationType Sender { get; }
+            public SimulationType Source { get; }
+
+            public ParallelKey Sender { get; }
 
             public TData Data { get; }
 
-            public ISimulation Simulation { get; }
+            public ISimulation Target { get; }
 
             IData IEvent.Data => this.Data;
 
-            public Event(SimulationType sender, TData data, ISimulation simulation)
+            public Event(
+                SimulationType source, 
+                ParallelKey sender, 
+                TData data, 
+                ISimulation simulation)
             {
+                this.Source = source;
                 this.Sender = sender;
                 this.Data = data;
-                this.Simulation = simulation;
+                this.Target = simulation;
+            }
+
+            public void PublishConsequent(IData data)
+            {
+                IEvent @event = Simulation.Event.Factory.Create(this.Source, this.Sender, data, this.Target);
+                @event.Target.Publish(@event);
             }
         }
     }

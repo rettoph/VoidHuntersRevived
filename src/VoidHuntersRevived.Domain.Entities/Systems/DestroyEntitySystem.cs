@@ -22,12 +22,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         public void Process(in IEvent<DestroyEntity> message)
         {
-            if(message.Sender == SimulationType.Predictive)
-            {
-                return;
-            }
-
-            message.Simulation.DestroyEntity(message.Data.Key);
+            message.Target.DestroyEntity(message.Data.Key);
         }
     }
 }

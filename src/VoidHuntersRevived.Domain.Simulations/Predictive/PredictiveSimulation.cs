@@ -11,7 +11,6 @@ using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
@@ -23,8 +22,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         private IPredictiveSynchronizationSystem[] _synchronizeSystems;
 
         public PredictiveSimulation(
+            IBus bus,
             IParallelableService simulatedEntities, 
-            IGlobalSimulationService globalSimulationService) : base(SimulationType.Predictive, simulatedEntities, globalSimulationService)
+            IGlobalSimulationService globalSimulationService) : base(SimulationType.Predictive, bus, simulatedEntities, globalSimulationService)
         {
             _synchronizeSystems = Array.Empty<IPredictiveSynchronizationSystem>();
         }
@@ -48,23 +48,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             }
         }
 
-        public override void Input(ParallelKey user, IData data)
+        public override void Enqueue(ParallelKey sender, IData data)
         {
-            if (Simulation.Input.Factory.TryCreate(SimulationType.Predictive, user, data, this, out IEvent? instance))
-            {
-                this.PublishEvent(instance);
-            }
-        }
-
-        public void Process(in Tick message)
-        {
-            foreach(UserInput input in message.Inputs)
-            {
-                if (Simulation.Input.Factory.TryCreate(SimulationType.Lockstep, input.User, input.Data, this, out IEvent? instance))
-                {
-                    this.PublishEvent(instance);
-                }
-            }
+            this.Publish(Simulation.Event.Factory.Create(this.Type, sender, data, this));
         }
     }
 }

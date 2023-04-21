@@ -7,16 +7,16 @@ using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Systems;
 
-namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Systems
+namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     [PeerTypeFilter(PeerType.Server)]
     [SimulationTypeFilter(SimulationType.Lockstep)]
-    internal sealed class TickServerSystem : BasicSystem,
+    internal sealed class LockstepServer_TickSystem : BasicSystem,
         ISubscriber<Tick>
     {
         private readonly NetScope _scope;
 
-        public TickServerSystem(NetScope scope)
+        public LockstepServer_TickSystem(NetScope scope)
         {
             _scope = scope;
         }

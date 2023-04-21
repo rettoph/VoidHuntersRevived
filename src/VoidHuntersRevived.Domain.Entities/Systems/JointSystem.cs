@@ -51,8 +51,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         public void Process(in IEvent<CreateJointing> message)
         {
-            var parentId = message.Simulation.GetEntityId(message.Data.Parent);
-            var childId = message.Simulation.GetEntityId(message.Data.Joint);
+            var parentId = message.Target.GetEntityId(message.Data.Parent);
+            var childId = message.Target.GetEntityId(message.Data.Joint);
 
             var jointee = _jointees.Get(parentId);
             var jointing = new Jointing(
@@ -94,7 +94,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         public void Process(in IEvent<DestroyJointing> message)
         {
-            var jointedId = message.Simulation.GetEntityId(message.Data.Jointed);
+            var jointedId = message.Target.GetEntityId(message.Data.Jointed);
             var jointed = _jointed.Get(jointedId);
             var jointings = _jointees.Get(jointed.Parent.Entity.Id);
 

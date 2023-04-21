@@ -27,8 +27,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 {
     [GuppyFilter<IGameGuppy>()]
     internal sealed class TractoringSystem : ParallelEntityProcessingSystem,
-        ISubscriber<IInput<StartTractoring>>,
-        ISubscriber<IInput<StopTractoring>>
+        ISubscriber<IEvent<StartTractoring>>,
+        ISubscriber<IEvent<StopTractoring>>
     {
         private static readonly AspectBuilder TractoringAspect = Aspect.All(new[] {
             typeof(Tractoring)
@@ -74,19 +74,20 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             _parallelables = mapperService.GetMapper<Parallelable>();
         }
 
-        public void Process(in IInput<StartTractoring> message)
+        public void Process(in IEvent<StartTractoring> message)
         {
-            if (!message.Simulation.TryGetEntityId(message.Data.Tractorable, out int tractorableId))
+            if (!message.Target.TryGetEntityId(message.Data.Tractorable, out int tractorableId))
             {
                 return;
             }
 
-            if (!message.Simulation.TryGetEntityId(message.Data.Node, out int nodeId))
+            if (!message.Target.TryGetEntityId(message.Data.Node, out int nodeId))
             {
                 return;
             }
 
-            var piloting = _pilotings.Get(message.UserId);
+            var pilotId = message.Target.GetEntityId(message.Sender);
+            var piloting = _pilotings.Get(pilotId);
             var tree = _trees.Get(piloting.Pilotable.Id);
 
             if (!_nodes.TryGet(nodeId, out var node))
@@ -126,7 +127,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 var rotation = node.WorldTransformation.Radians();
 
                 // Destroy the joint to the ship
-                message.Simulation.PublishEvent(new DestroyJointing()
+                message.PublishConsequent(new DestroyJointing()
                 {
                     Jointed = key
                 });
@@ -136,7 +137,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 // This is why the comment above happens: A different tractorableId
                 // was slotted in already, but the confirmation from the server doesn't
                 // display that very well.
-                tractorableId = message.Simulation.CreateChain(
+                tractorableId = message.Target.CreateChain(
+                    @event: message,
                     key: key.Create(ParallelTypes.Chain), 
                     headId: node.EntityId,
                     position: position,
@@ -147,35 +149,38 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             _tractorings.Put(piloting.Pilotable.Id, tractoring);
         }
 
-        public void Process(in IInput<StopTractoring> message)
+        public void Process(in IEvent<StopTractoring> message)
         {
-            var piloting = _pilotings.Get(message.UserId);
-
-            if(piloting is null)
+            int pilotId = message.Target.GetEntityId(message.Sender);
+            if(!_pilotings.TryGet(pilotId, out Piloting? piloting))
             {
                 return;
             }
 
-            if(!_tractorings.TryGet(piloting.Pilotable.Id, out var tractoring))
+            if(!message.Target.TryGetEntityId(message.Data.TractorableKey, out int tractorableId))
             {
                 return;
             }
 
-            _tractorings.Delete(piloting.Pilotable.Id);
+            if(_tractorings.TryGet(piloting.Pilotable.Id, out Tractoring? tractoring)
+                && tractoring.TractorableId == tractorableId)
+            {
+                _tractorings.Delete(piloting.Pilotable.Id);
+            }
 
-            if(!_tractor.TransformTractorable(message.Data.Target, tractoring, out var potential))
+            if(!_tractor.TransformTractorable(message.Data.TargetPosition, piloting.Pilotable.Id, tractorableId, out Jointing? potential))
             {
                 return;
             }
 
             // Destroy the old chain
-            message.Simulation.PublishEvent(new DestroyEntity()
+            message.PublishConsequent(new DestroyEntity()
             {
                 Key = _parallelables.Get(potential.Joint.Entity.Get<Node>().TreeId).Key
             });
 
             // Create a jointing to the current ship.
-            message.Simulation.PublishEvent(new CreateJointing()
+            message.PublishConsequent(new CreateJointing()
             {
                 Parent = potential.Parent.Entity.Get<Parallelable>().Key,
                 ParentJointId = potential.Parent.Index,

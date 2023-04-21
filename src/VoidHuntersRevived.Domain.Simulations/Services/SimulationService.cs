@@ -85,15 +85,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             }
         }
 
-        public void PublishEvent(IData data)
-        {
-            foreach(ISimulation simulation in _simulations.Values)
-            {
-                simulation.PublishEvent(data);
-            }
-        }
-
-        public void Input(ParallelKey user, IData data)
+        public void Enqueue(ParallelKey user, IData data)
         {
             var request = SimulationService.Request.Factory.Create(user, data);
             _bus.Publish(request);
@@ -105,7 +97,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
             foreach (ISimulation simulation in _simulations.Values)
             {
-                simulation.Input(user, data);
+                simulation.Enqueue(user, data);
             }
         }
     }

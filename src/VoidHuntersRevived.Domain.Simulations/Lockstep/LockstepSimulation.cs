@@ -18,32 +18,23 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
     [GuppyFilter<IGameGuppy>()]
     [SimulationTypeFilter(SimulationType.Lockstep)]
-    internal sealed class LockstepSimulation : Simulation<Common.Simulations.Components.Lockstep>, ISimulation,
+    internal abstract class LockstepSimulation : Simulation<Common.Simulations.Components.Lockstep>, ISimulation,
         ILockstepSimulation,
-        ISubscriber<Tick>,
         ISubscriber<Step>,
         IDisposable
     {
-        private readonly ILockstepInputService _publisher;
         private readonly IStepService _steps;
-        private readonly ISimulationService _simulations;
-        private readonly ILogger _logger;
 
         public State State { get; }
 
         public LockstepSimulation(
             State state,
-            ISimulationService simulations, 
+            IBus bus,
             IStepService steps, 
-            IFiltered<ILockstepInputService> publisher, 
-            IParallelableService simulatedEntities,
-            IGlobalSimulationService globalSimulationService,
-            ILogger logger) : base(SimulationType.Lockstep, simulatedEntities, globalSimulationService)
+            IParallelableService parallelables,
+            IGlobalSimulationService globalSimulationService) : base(SimulationType.Lockstep, bus, parallelables, globalSimulationService)
         {
-            _simulations = simulations;
             _steps = steps;
-            _publisher = publisher.Instance ?? throw new ArgumentNullException();
-            _logger = logger;
 
             this.State = state;
         }
@@ -58,25 +49,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _steps.Update(gameTime);
         }
 
-        public void Process(in Tick message)
-        {
-            foreach (UserInput input in message.Inputs)
-            {
-                if(Simulation.Input.Factory.TryCreate(SimulationType.Lockstep, input.User, input.Data, this, out IEvent? instance))
-                {
-                    this.PublishEvent(instance);
-                }
-            }
-        }
-
         public void Process(in Step message)
         {
             this.UpdateSystems(message);
-        }
-
-        public override void Input(ParallelKey user, IData data)
-        {
-            _publisher.Input(user, data);
         }
     }
 }

@@ -13,11 +13,11 @@ using VoidHuntersRevived.Common.Systems;
 using VoidHuntersRevived.Domain.Simulations.Lockstep.Messages;
 using VoidHuntersRevived.Common;
 
-namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Systems
+namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     [GuppyFilter<IGameGuppy>()]
     [SimulationTypeFilter(SimulationType.Lockstep)]
-    internal sealed class StateSystem : BasicSystem,
+    internal sealed class Lockstep_StateSystem : BasicSystem,
         ISubscriber<INetIncomingMessage<StateBegin>>,
         ISubscriber<INetIncomingMessage<StateTick>>,
         ISubscriber<INetIncomingMessage<StateEnd>>
@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Systems
     {
         private readonly State _state;
 
-        public StateSystem(State state)
+        public Lockstep_StateSystem(State state)
         {
             _state = state;
         }
