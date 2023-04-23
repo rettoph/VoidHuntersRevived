@@ -42,10 +42,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             inDegree.Edge = edge;
 
             // At this point all downstream degrees should be recursively updated. Is there a better way?
-            Matrix transformation = Matrix.Invert(inDegree.Configuration.Transformation);
-            transformation *= Matrix.CreateRotationZ(MathHelper.Pi);
-            transformation *= outDegree.LocalTransformation;
-            this.CleanLocalTransformationRecersive(inDegree, transformation);
+            this.CleanLocalTransformationRecersive(inDegree, edge.LocalTransformation);
 
             _bus.Enqueue(new Created<Edge>(edge));
         }

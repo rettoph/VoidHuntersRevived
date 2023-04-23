@@ -141,7 +141,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
 
             potential = new Edge(outDegree, inDegree);
-            var transformation = outDegree.LocalTransformation * tractoringBody.GetTransformation();
+            var transformation = potential.LocalTransformation * tractoringBody.GetTransformation();
 
             target = Vector2.Transform(Vector2.Zero, transformation);
             var rotation = transformation.Radians();
