@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Services
 {
     public interface INodeService
     {
-        void Attach(Degree outDegree, Degree inDegree);
-        void Detach(Degree degree);
+        Edge Attach(Degree outDegree, Degree inDegree);
+        void Detach(Edge edge);
     }
 }

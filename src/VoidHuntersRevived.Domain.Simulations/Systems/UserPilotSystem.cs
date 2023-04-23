@@ -72,6 +72,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             var pilot = @event.Target.CreatePilot(key, ship);
 
             Entity chain = _chains.CreateChain(ParallelTypes.Chain.Create(1337), ShipParts.HullSquare, Vector2.Zero, 0, @event.Target);
+            chain = _chains.CreateChain(ParallelTypes.Chain.Create(1338), ShipParts.HullSquare, Vector2.Zero, 0, @event.Target);
+            chain = _chains.CreateChain(ParallelTypes.Chain.Create(1339), ShipParts.HullSquare, Vector2.Zero, 0, @event.Target);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _bus = bus;
         }
 
-        public void Attach(Degree outDegree, Degree inDegree)
+        public Edge Attach(Degree outDegree, Degree inDegree)
         {
             var outId = outDegree.Node.EntityId;
             var inId = inDegree.Node.EntityId;
@@ -42,33 +42,42 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             inDegree.Edge = edge;
 
             // At this point all downstream degrees should be recursively updated. Is there a better way?
-            this.CleanLocalTransformationRecersive(inDegree, edge.LocalTransformation);
+            this.CleanLocalTransformationRecersive(inDegree.Node, edge.LocalTransformation);
 
-            _bus.Enqueue(new Created<Edge>(edge));
+            _bus.Publish(new Created<Edge>(edge));
+
+            return edge;
         }
 
-        public void Detach(Degree degree)
+        public void Detach(Edge edge)
         {
-            throw new NotImplementedException();
+            edge.InDegree.Edge = null;
+            edge.OutDegree.Edge = null;
+
+            this.CleanLocalTransformationRecersive(edge.InDegree.Node, Matrix.Identity);
+
+            _bus.Publish(new Destroyed<Edge>(edge));
         }
 
-        private void CleanLocalTransformationRecersive(Degree inDegree, Matrix transformation)
+        private void CleanLocalTransformationRecersive(Node node, Matrix transformation)
         {
-            foreach (Degree child in inDegree.Node.Degrees)
+            node.LocalTransformation = transformation;
+
+            foreach (Degree degree in node.Degrees)
             {
-                child.LocalTransformation = child.Configuration.Transformation * transformation;
+                degree.LocalTransformation = degree.Configuration.Transformation * transformation;
 
-                if(child.Edge is null)
+                if (degree.Edge is null)
                 { // There are no further down stream edges to refresh
                     continue;
                 }
 
-                if(child.Edge.InDegree == inDegree)
-                { // This is the same degree as the current input, no need to refresh again
+                if(degree.Edge.InDegree == degree)
+                { // This is the up degree, we do not want to clean down stream
                     continue;
                 }
 
-                this.CleanLocalTransformationRecersive(child.Edge.InDegree, child.LocalTransformation);
+                this.CleanLocalTransformationRecersive(degree.Edge.InDegree.Node, degree.LocalTransformation);
             }
         }
     }

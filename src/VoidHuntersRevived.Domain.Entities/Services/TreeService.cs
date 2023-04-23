@@ -41,6 +41,16 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void AddNode(Node node, Tree tree)
         {
+            if(node.Tree == tree)
+            {
+                return;
+            }
+
+            if(node.Tree is not null)
+            {
+                this.RemoveNode(node, node.Tree);
+            }
+
             tree.Nodes.Add(node);
             node.Tree = tree;
             _bus.Publish(new Added<Node, Tree>(node, tree));
