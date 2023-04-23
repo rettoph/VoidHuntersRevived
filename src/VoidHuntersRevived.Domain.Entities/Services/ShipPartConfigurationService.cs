@@ -5,7 +5,7 @@ using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    internal sealed class ShipPartConfigurationService : IShipPartConfigurationService
+    internal sealed class ShipPartConfigurationService : IShipPartResourceService
     {
         private IDictionary<string, ShipPartResource> _configurations;
 
@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _configurations.Values;
         }
 
-        IEnumerable<TComponent> IShipPartConfigurationService.GetAll<TComponent>()
+        IEnumerable<TComponent> IShipPartResourceService.GetAll<TComponent>()
         {
             return this.GetAll().SelectMany(x => x.OfType<TComponent>());
         }

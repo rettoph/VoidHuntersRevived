@@ -14,8 +14,6 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Events;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
-using VoidHuntersRevived.Common.Entities.ShipParts.Events;
-using VoidHuntersRevived.Common.Entities.ShipParts.Extensions;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Components;
@@ -43,12 +41,19 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         private ComponentMapper<Body> _bodies;
         private ComponentMapper<Tree> _trees;
         private ComponentMapper<Node> _nodes;
-        private ComponentMapper<Jointing> _jointed;
         private ComponentMapper<Parallelable> _parallelables;
+        private INodeService _nodeService;
+        private IChainService _chainService;
 
-        public TractoringSystem(ITractorService tractor, ISimulationService simulations) : base(simulations, TractoringAspect)
+        public TractoringSystem(
+            INodeService nodeService, 
+            IChainService chainService, 
+            ITractorService tractor, 
+            ISimulationService simulations) : base(simulations, TractoringAspect)
         {
             _tractor = tractor;
+            _nodeService = nodeService;
+            _chainService = chainService;
 
             _tractorings = default!;
             _tractorables = default!;
@@ -57,7 +62,6 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             _bodies = default!;
             _trees = default!;
             _nodes = default!;
-            _jointed = default!;
             _parallelables = default!;
         }
 
@@ -70,7 +74,6 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             _bodies = mapperService.GetMapper<Body>();
             _trees = mapperService.GetMapper<Tree>();
             _nodes = mapperService.GetMapper<Node>();
-            _jointed = mapperService.GetMapper<Jointing>();
             _parallelables = mapperService.GetMapper<Parallelable>();
         }
 
@@ -95,7 +98,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            if (node.TreeId != tractorableId)
+            if (node.Tree.EntityId != tractorableId)
             {
                 // This almost always happens on a lockstep sent input within
                 // The predictive simulation. This is because the node exists
@@ -118,7 +121,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            if (node.TreeId == tree.EntityId && _jointed.Has(node.EntityId))
+            if (node.Tree == tree)
             { // The selected node is attached to the current ship
 
                 // Cache all the values we're about to delete...
@@ -127,22 +130,19 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 var rotation = node.WorldTransformation.Radians();
 
                 // Destroy the joint to the ship
-                message.PublishConsequent(new DestroyJointing()
-                {
-                    Jointed = key
-                });
+                _nodeService.Detach(node.InDegree() ?? throw new NotImplementedException());
 
                 // Create a brand new chain to hold the detached parts.
                 // Notice we've updated the tractorableId to the new chain id
                 // This is why the comment above happens: A different tractorableId
                 // was slotted in already, but the confirmation from the server doesn't
                 // display that very well.
-                tractorableId = message.Target.CreateChain(
-                    @event: message,
-                    key: key.Create(ParallelTypes.Chain), 
-                    headId: node.EntityId,
+                tractorableId = _chainService.CreateChain(
+                    key: key.Create(ParallelTypes.Chain),
+                    head: node,
                     position: position,
-                    rotation: rotation).Id;
+                    rotation: rotation,
+                    simulation: message.Target).Id;
             }
 
             var tractoring = new Tractoring(piloting.Pilotable.Id, tractorableId);
@@ -151,42 +151,42 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         public void Process(in IEvent<StopTractoring> message)
         {
-            int pilotId = message.Target.GetEntityId(message.Sender);
-            if(!_pilotings.TryGet(pilotId, out Piloting? piloting))
-            {
-                return;
-            }
-
-            if(!message.Target.TryGetEntityId(message.Data.TractorableKey, out int tractorableId))
-            {
-                return;
-            }
-
-            if(_tractorings.TryGet(piloting.Pilotable.Id, out Tractoring? tractoring)
-                && tractoring.TractorableId == tractorableId)
-            {
-                _tractorings.Delete(piloting.Pilotable.Id);
-            }
-
-            if(!_tractor.TransformTractorable(message.Data.TargetPosition, piloting.Pilotable.Id, tractorableId, out Jointing? potential))
-            {
-                return;
-            }
-
-            // Destroy the old chain
-            message.PublishConsequent(new DestroyEntity()
-            {
-                Key = _parallelables.Get(potential.Joint.Entity.Get<Node>().TreeId).Key
-            });
-
-            // Create a jointing to the current ship.
-            message.PublishConsequent(new CreateJointing()
-            {
-                Parent = potential.Parent.Entity.Get<Parallelable>().Key,
-                ParentJointId = potential.Parent.Index,
-                Joint = potential.Joint.Entity.Get<Parallelable>().Key,
-                JointId = potential.Joint.Index
-            });
+            // int pilotId = message.Target.GetEntityId(message.Sender);
+            // if(!_pilotings.TryGet(pilotId, out Piloting? piloting))
+            // {
+            //     return;
+            // }
+            // 
+            // if(!message.Target.TryGetEntityId(message.Data.TractorableKey, out int tractorableId))
+            // {
+            //     return;
+            // }
+            // 
+            // if(_tractorings.TryGet(piloting.Pilotable.Id, out Tractoring? tractoring)
+            //     && tractoring.TractorableId == tractorableId)
+            // {
+            //     _tractorings.Delete(piloting.Pilotable.Id);
+            // }
+            // 
+            // if(!_tractor.TransformTractorable(message.Data.TargetPosition, piloting.Pilotable.Id, tractorableId, out Jointing? potential))
+            // {
+            //     return;
+            // }
+            // 
+            // // Destroy the old chain
+            // message.PublishConsequent(new DestroyEntity()
+            // {
+            //     Key = _parallelables.Get(potential.Joint.Entity.Get<Node>().TreeId).Key
+            // });
+            // 
+            // // Create a jointing to the current ship.
+            // message.PublishConsequent(new CreateJointing()
+            // {
+            //     Parent = potential.Parent.Entity.Get<Parallelable>().Key,
+            //     ParentJointId = potential.Parent.Index,
+            //     Joint = potential.Joint.Entity.Get<Parallelable>().Key,
+            //     JointId = potential.Joint.Index
+            // });
         }
 
         protected override void Process(ISimulation simulation, GameTime gameTime, int entityId)

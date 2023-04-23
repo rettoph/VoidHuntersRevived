@@ -31,7 +31,6 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
 
             services.AddSingleton<JsonConverter, PolymorphicEnumerableConverter<IShipPartComponentConfiguration>>();
             services.AddSingleton<PolymorphicJsonType>(new PolymorphicJsonType<DrawConfiguration>(PolymorphicJsonTypes.DrawableConfiguration));
-            services.AddSingleton<PolymorphicJsonType>(new PolymorphicJsonType<JointableConfiguration>(PolymorphicJsonTypes.JointableConfiguration));
             services.AddSingleton<PolymorphicJsonType>(new PolymorphicJsonType<RigidConfiguration>(PolymorphicJsonTypes.RigidConfiguration));
         }
     }

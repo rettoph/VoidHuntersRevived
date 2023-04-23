@@ -22,7 +22,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private ComponentMapper<Tractorable> _tractorables;
         private ComponentMapper<Body> _bodies;
         private ComponentMapper<Node> _nodes;
-        private ComponentMapper<Jointable> _jointables;
         private ComponentMapper<Parallelable> _parallelables;
         private ComponentMapper<Tree> _trees;
         private ComponentMapper<ShipPartResource> _shipParts;
@@ -34,7 +33,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _tractorables = default!;
             _bodies = default!;
             _nodes = default!;
-            _jointables = default!;
             _parallelables = default!;
             _trees = default!;
             _shipParts = default!;
@@ -47,7 +45,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _tractorables = world.ComponentMapper.GetMapper<Tractorable>();
             _bodies = world.ComponentMapper.GetMapper<Body>();
             _nodes = world.ComponentMapper.GetMapper<Node>();
-            _jointables = world.ComponentMapper.GetMapper<Jointable>();
             _parallelables = world.ComponentMapper.GetMapper<Parallelable>();
             _trees = world.ComponentMapper.GetMapper<Tree>();
             _shipParts = world.ComponentMapper.GetMapper<ShipPartResource>();
@@ -70,54 +67,46 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return true;
         }
 
-        public bool TryGetPotentialParentJoint(
+        public bool TryGetPotentialEdge(
             Vector2 target,
             int tractoringId,
             [MaybeNullWhen(false)] out Vector2 position,
-            [MaybeNullWhen(false)] out Jointable.Joint parent)
+            [MaybeNullWhen(false)] out Degree outDegree)
         {
-            parent = null;
+            outDegree = null;
             position = default;
             float distance = GetPotentialParentJointDistance;
             var tree = _trees.Get(tractoringId);
             var body = _bodies.Get(tractoringId);
 
-            foreach (int nodeId in tree.Nodes)
+            foreach (Node node in tree.Nodes)
             {
-                var node = _nodes.Get(nodeId);
-                var jointable = _jointables.Get(nodeId);
-
-                if (node is null || jointable is null)
+                foreach (Degree degree in node.Degrees)
                 {
-                    continue;
-                }
-
-                foreach (var joint in jointable.Joints)
-                {
-                    if (joint.Jointed)
+                    if (degree.Edge is not null)
                     {
                         continue;
                     }
 
-                    var jointPosition = body.Position + joint.LocalPosition;
-                    var jointDistance = Vector2.Distance(target, jointPosition);
+                    var degreePosition = body.Position + degree.LocalPosition;
+                    var degreeDistance = Vector2.Distance(target, degreePosition);
 
-                    if (jointDistance < distance)
+                    if (degreeDistance < distance)
                     {
-                        distance = jointDistance;
-                        parent = joint;
-                        position = jointPosition;
+                        distance = degreeDistance;
+                        outDegree = degree;
+                        position = degreePosition;
                     }
                 }
             }
 
-            return parent is not null;
+            return outDegree is not null;
         }
 
         public bool TransformTractorable(
             Vector2 target,
             Tractoring tractoring,
-            [MaybeNullWhen(false)] out Jointing potential)
+            [MaybeNullWhen(false)] out Edge potential)
         {
             return this.TransformTractorable(target, tractoring.EntityId, tractoring.TractorableId, out potential);
         }
@@ -126,34 +115,33 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             Vector2 target, 
             int tractoringId, 
             int tractorableId, 
-            [MaybeNullWhen(false)] out Jointing potential)
+            [MaybeNullWhen(false)] out Edge potential)
         {
-            var tractorableBody = _bodies.Get(tractorableId);
-            var tractoringTree = _trees.Get(tractoringId);
+            Body tractorableBody = _bodies.Get(tractorableId);
+            Tree tractoringTree = _trees.Get(tractoringId);
 
-            if (!this.TryGetPotentialParentJoint(target, tractoringId, out Vector2 position, out var tractoringJoint))
+            if (!this.TryGetPotentialEdge(target, tractoringId, out Vector2 position, out Degree? outDegree))
             {
                 return this.DefaultTransformBody(tractorableBody, target, out potential);
             }
 
-            var tractoringBody = _bodies.Get(tractoringId);
-            var tractorableTree = _trees.Get(tractorableId);
+            Body tractoringBody = _bodies.Get(tractoringId);
+            Tree tractorableTree = _trees.Get(tractorableId);
 
-            if (tractorableTree?.HeadId is null)
+            if (tractorableTree?.Head is null)
             {
                 return this.DefaultTransformBody(tractorableBody, target, out potential);
             }
 
-            var tractorableJointable = _jointables.Get(tractorableTree.HeadId.Value);
-            var tractorableJoint = tractorableJointable.Joints.FirstOrDefault(x => !x.Jointed);
+            Degree? inDegree = tractorableTree.Head.Degrees.FirstOrDefault(x => x.Edge is null);
 
-            if (tractorableJoint is null)
+            if (inDegree is null)
             {
                 return this.DefaultTransformBody(tractorableBody, target, out potential);
             }
 
-            potential = new Jointing(tractorableJoint, tractoringJoint);
-            var transformation = potential.LocalTransformation * tractoringBody.GetTransformation();
+            potential = new Edge(outDegree, inDegree);
+            var transformation = outDegree.LocalTransformation * tractoringBody.GetTransformation();
 
             target = Vector2.Transform(Vector2.Zero, transformation);
             var rotation = transformation.Radians();
@@ -162,7 +150,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return true;
         }
 
-        private bool DefaultTransformBody(Body? body, Vector2 target, out Jointing? potential)
+        private bool DefaultTransformBody(Body? body, Vector2 target, out Edge? potential)
         {
             potential = null;
 

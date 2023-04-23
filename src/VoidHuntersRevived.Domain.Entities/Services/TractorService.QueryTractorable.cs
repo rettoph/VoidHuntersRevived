@@ -62,7 +62,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                     return true;
                 }
 
-                if (!_tractor._tractorables.TryGet(node.TreeId, out var tractorable))
+                if(node.Tree is null)
+                { // Id the node is not attached to a gree
+                    return true;
+                }
+                if (!_tractor._tractorables.TryGet(node.Tree.EntityId, out var tractorable))
                 { // If the node is not attached to a tractorable...
                     return true;
                 }
@@ -74,7 +78,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                         return true;
                     }
                     
-                    if(_tractor._trees.Get(_pilotable.EntityId).HeadId == node.EntityId)
+                    if(_tractor._trees.Get(_pilotable.EntityId).Head.EntityId == node.EntityId)
                     { // We are attempting to grab the bridge
                         return true;
                     }
@@ -89,8 +93,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
                 // Update the target tractorable
                 _distance = distance;
-                _tractorableId = node.TreeId;
-                _tractorableKey = _tractor._parallelables.Get(node.TreeId).Key;
+                _tractorableId = node.Tree.EntityId;
+                _tractorableKey = _tractor._parallelables.Get(node.Tree.EntityId).Key;
                 _nodeKey = _tractor._parallelables.Get(node.EntityId).Key;
 
                 return true;

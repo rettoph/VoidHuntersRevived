@@ -26,7 +26,6 @@ namespace VoidHuntersRevived.Domain.Client.Systems
     {
         private static readonly AspectBuilder LinkableAspect = Aspect.All(new[]
         {
-            typeof(Jointable),
             typeof(Node),
             typeof(Predictive)
         });
@@ -36,7 +35,6 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private PrimitiveShape _shape;
 
         private ComponentMapper<Body> _bodies;
-        private ComponentMapper<Jointable> _jointables;
         private ComponentMapper<Node> _nodes;
 
         public DrawJointSystem(
@@ -52,14 +50,12 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             });
 
 
-            _jointables = default!;
             _nodes = default!;
             _bodies = default!;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
         {
-            _jointables = mapperService.GetMapper<Jointable>();
             _nodes = mapperService.GetMapper<Node>();
             _bodies = mapperService.GetMapper<Body>();
         }
@@ -68,24 +64,23 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         {
             _primitiveBatch.Begin(_camera);
 
-            foreach (var entityId in this.subscription.ActiveEntities)
+            foreach (int entityId in this.subscription.ActiveEntities)
             {
-                var jointable = _jointables.Get(entityId);
-                var node = _nodes.Get(entityId);
-                var body = _bodies.Get(node.TreeId);
+                Node node = _nodes.Get(entityId);
+                Body body = _bodies.Get(node.Tree?.EntityId ?? throw new NotImplementedException());
 
-                this.DrawJoints(jointable.Joints, body.Position, body.Rotation);
+                this.DrawDegrees(node.Degrees, body.Position, body.Rotation);
             }
 
             _primitiveBatch.End();
         }
 
-        private void DrawJoints(Jointable.Joint[] joints, Vector2 position, float rotation)
+        private void DrawDegrees(Degree[] degrees, Vector2 position, float rotation)
         {
             var world = Matrix.CreateRotationZ(rotation);
             world *= Matrix.CreateTranslation(position.X, position.Y, 0);
 
-            foreach (var joint in joints)
+            foreach (var joint in degrees)
             {
                 var transformation = joint.LocalTransformation * world;
                 var color = Color.Red;

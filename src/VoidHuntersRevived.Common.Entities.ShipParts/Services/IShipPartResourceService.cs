@@ -2,7 +2,7 @@
 
 namespace VoidHuntersRevived.Common.Entities.ShipParts.Services
 {
-    public interface IShipPartConfigurationService
+    public interface IShipPartResourceService
     {
         void Add(ShipPartResource configuration);
         void Remove(string name);

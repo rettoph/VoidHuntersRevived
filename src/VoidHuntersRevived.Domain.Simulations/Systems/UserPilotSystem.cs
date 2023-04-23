@@ -1,7 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.Network;
-using Guppy.Network.Identity;
 using Serilog;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
@@ -9,13 +8,13 @@ using VoidHuntersRevived.Common.Systems;
 using VoidHuntersRevived.Domain.Simulations.Events;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities;
-using VoidHuntersRevived.Common.Entities.ShipParts.Extensions;
-using VoidHuntersRevived.Common.Entities.ShipParts.Events;
 using VoidHuntersRevived.Common.Simulations.Components;
 using MonoGame.Extended.Entities;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.ShipParts.Services;
+using Microsoft.Xna.Framework;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
@@ -25,11 +24,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
     {
         private readonly NetScope _scope;
         private readonly ILogger _logger;
+        private readonly IShipPartService _shipParts;
+        private readonly IChainService _chains;
+        private readonly IShipService _ships;
+        private readonly INodeService _nodeService;
         private ComponentMapper<Node> _nodes;
 
-        public UserPilotSystem(NetScope scope, ILogger logger)
+        public UserPilotSystem(NetScope scope, IShipPartService shipParts, IChainService chains, IShipService ships, INodeService nodeService, ILogger logger)
         {
             _scope = scope;
+            _shipParts = shipParts;
+            _chains = chains;
+            _ships = ships;
+            _nodeService = nodeService;
             _logger = logger;
 
             _nodes = default!;
@@ -59,21 +66,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
                 return;
             }
 
-            var ship = @event.Target.CreateShip(@event, key.Create(ParallelTypes.Ship), ShipParts.HullSquare);
+            Entity ship = _ships.CreateShip(key.Create(ParallelTypes.Ship), ShipParts.HullSquare, @event.Target);
             
             // TODO: Make a CreatePilot event and override this extension's functionality
             var pilot = @event.Target.CreatePilot(key, ship);
 
-            var piece = @event.Target.CreateShipPart(key.Create(ParallelTypes.ShipPart), ShipParts.HullSquare);
-            @event.PublishConsequent(new CreateJointing()
-            {
-                Parent = ship.Get<Ship>().Bridge.Get<Parallelable>().Key,
-                ParentJointId = 1,
-                Joint = piece.Get<Parallelable>().Key,
-                JointId = 0
-            });
-
-            var chain = @event.Target.CreateChain(@event, ParallelTypes.Chain.Create(1337), ShipParts.HullSquare);
+            Entity chain = _chains.CreateChain(ParallelTypes.Chain.Create(1337), ShipParts.HullSquare, Vector2.Zero, 0, @event.Target);
         }
     }
 }

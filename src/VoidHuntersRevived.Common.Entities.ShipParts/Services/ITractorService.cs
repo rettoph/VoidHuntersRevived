@@ -20,21 +20,21 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Services
         
         bool CanTractor(Vector2 target, ParallelKey tractorable);
 
-        bool TryGetPotentialParentJoint(
+        bool TryGetPotentialEdge(
             Vector2 target,
             int tractoringId,
             [MaybeNullWhen(false)] out Vector2 position,
-            [MaybeNullWhen(false)] out Jointable.Joint parent);
+            [MaybeNullWhen(false)] out Degree outDegree);
 
         bool TransformTractorable(
             Vector2 target,
             Tractoring tractoring,
-            [MaybeNullWhen(false)] out Jointing potential);
+            [MaybeNullWhen(false)] out Edge potential);
 
         bool TransformTractorable(
             Vector2 target,
             int tractoringId,
             int tractorableId,
-            [MaybeNullWhen(false)] out Jointing potential);
+            [MaybeNullWhen(false)] out Edge potential);
     }
 }

@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             typeof(Node)
         });
 
-        private readonly IShipPartConfigurationService _configurations;
+        private readonly IShipPartResourceService _configurations;
         private readonly IResourceProvider _resources;
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private readonly Camera2D _camera;
@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             Camera2D camera,
             IScreen screen,
             IResourceProvider resources,
-            IShipPartConfigurationService configurations) : base(HullAspect)
+            IShipPartResourceService configurations) : base(HullAspect)
         {
             _primitiveBatch = primitiveBatch;
             _camera = camera;

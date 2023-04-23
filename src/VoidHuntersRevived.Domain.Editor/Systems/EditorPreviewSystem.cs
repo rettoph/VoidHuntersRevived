@@ -10,7 +10,6 @@ using VoidHuntersRevived.Common.Editor;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts;
-using VoidHuntersRevived.Common.Entities.ShipParts.Extensions;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
@@ -50,7 +49,7 @@ namespace VoidHuntersRevived.Domain.Editor.Systems
         {
             ParallelKey key = ParallelTypes.ShipPart.Create(0);
 
-            simulation.CreateEntity(key).MakeShipPart(_editor.ShipPartResource).Attach(new Editable());
+            // simulation.CreateEntity(key).MakeShipPart(_editor.ShipPartResource).Attach(new Editable());
         }
 
         public override void Initialize(IComponentMapperService mapperService)
@@ -64,7 +63,7 @@ namespace VoidHuntersRevived.Domain.Editor.Systems
             {
                 foreach(int entityId in this.ActiveEntities)
                 {
-                    _world.GetEntity(entityId).MakeShipPart(_editor.ShipPartResource);
+                    // _world.GetEntity(entityId).MakeShipPart(_editor.ShipPartResource);
                 }
                 
                 _editorHash = _editor.ShipPartResource.GetHashCode();

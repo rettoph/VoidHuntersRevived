@@ -30,19 +30,19 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
                 {
                     DrawConfiguration.Polygon(Colors.Orange, TriangleSides),
                     RigidConfiguration.Polygon(DefaultDensity, TriangleSides),
-                    JointableConfiguration.Polygon(TriangleSides)
+                    NodeConfiguration.Polygon(TriangleSides)
                 },
                 new ShipPartResource(ShipParts.HullSquare)
                 {
                     DrawConfiguration.Polygon(Colors.Orange, SquareSides),
                     RigidConfiguration.Polygon(DefaultDensity, SquareSides),
-                    JointableConfiguration.Polygon(SquareSides)
+                    NodeConfiguration.Polygon(SquareSides)
                 },
                 new ShipPartResource(ShipParts.HullHexagon)
                 {
                     DrawConfiguration.Polygon(Colors.Orange, HexagonSides),
                     RigidConfiguration.Polygon(DefaultDensity, HexagonSides),
-                    JointableConfiguration.Polygon(HexagonSides)
+                    NodeConfiguration.Polygon(HexagonSides)
                 }
             });
         }

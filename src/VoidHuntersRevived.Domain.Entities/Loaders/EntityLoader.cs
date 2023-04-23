@@ -37,10 +37,22 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
                 manager.AddScoped<ShipPartConfigurationService>()
                     .AddInterfaceAliases();
 
-                manager.AddScoped<RigidNodeSystem>()
+                manager.AddScoped<ShipPartService>()
                     .AddInterfaceAliases();
 
-                manager.AddScoped<JointSystem>()
+                manager.AddScoped<NodeService>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<TreeService>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<ChainService>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<ShipService>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<RigidNodeSystem>()
                     .AddInterfaceAliases();
 
                 manager.AddScoped<TreeSystem>()

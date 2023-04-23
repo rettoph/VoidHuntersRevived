@@ -1,30 +1,20 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
-using Guppy.Common.Collections;
-using Microsoft.Xna.Framework;
-using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Collision.Shapes;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
-using VoidHuntersRevived.Common.Entities.ShipParts.Events;
+using VoidHuntersRevived.Common.Messages;
 using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {
     [GuppyFilter<IGameGuppy>()]
     internal sealed class RigidNodeSystem : EntitySystem,
-        ISubscriber<IEvent<CreateNode>>,
-        ISubscriber<IEvent<DestroyNode>>
+        ISubscriber<Added<Node, Tree>>,
+        ISubscriber<Removed<Node, Tree>>
     {
         private ComponentMapper<Rigid> _rigids;
         private ComponentMapper<Node> _nodes;
@@ -58,7 +48,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             var node = _nodes.Get(entityId);
             var rigid = _rigids.Get(entityId);
-            var body = _bodies.Get(node.TreeId);
+            var body = _bodies.Get(node.Tree?.EntityId ?? throw new NotImplementedException());
 
             var transformation = node.LocalTransformation;
             var fixtures = new Fixture[rigid.Shapes.Length];
@@ -107,14 +97,14 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             }
         }
 
-        public void Process(in IEvent<CreateNode> message)
+        public void Process(in Added<Node, Tree> message)
         {
-            this.AddRigid(message.Data.NodeId);
+            this.AddRigid(message.Item.EntityId);
         }
 
-        public void Process(in IEvent<DestroyNode> message)
+        public void Process(in Removed<Node, Tree> message)
         {
-            this.RemoveRigid(message.Data.NodeId);
+            this.RemoveRigid(message.Item.EntityId);
         }
     }
 }
