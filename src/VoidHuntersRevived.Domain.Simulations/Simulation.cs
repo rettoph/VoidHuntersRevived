@@ -22,13 +22,11 @@ using VoidHuntersRevived.Common.Simulations.Systems;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
-    public abstract partial class Simulation<TEntityComponent> : ISimulation, IDisposable,
-        ISubscriber<Tick>
+    public abstract partial class Simulation<TEntityComponent> : ISimulation, IDisposable
         where TEntityComponent : class, new()
     {
         private World _world;
         private ISimulationUpdateSystem[] _updateSystems;
-        private readonly IBus _bus;
         private readonly IParallelableService _parallelables;
         private readonly TEntityComponent _entityComponent;
         private readonly IGlobalSimulationService _globalsSmulationService;
@@ -45,11 +43,9 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         protected Simulation(
             SimulationType type,
-            IBus bus,
             IParallelableService parallelables,
             IGlobalSimulationService globalSimulationService)
         {
-            _bus = bus;
             _parallelables = parallelables;
             _world = default!;
             _updateSystems = Array.Empty<ISimulationUpdateSystem>();
@@ -143,21 +139,6 @@ namespace VoidHuntersRevived.Domain.Simulations
             return entity;
         }
 
-        public abstract void Input(ParallelKey sender, IData data);
-
-        public void Publish(IInput @event)
-        {
-            _bus.Publish(@event);
-        }
-
-
-        public void Process(in Tick message)
-        {
-            foreach (EventDto @eventDto in message.Events)
-            {
-                IInput @event = Simulation.Event.Factory.Create(SimulationType.Lockstep, @eventDto.Sender, @eventDto.Data, this);
-                this.Publish(@event);
-            }
-        }
+        public abstract void Input(InputDto input);
     }
 }

@@ -15,6 +15,7 @@ using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Systems;
 using VoidHuntersRevived.Domain.Simulations.Events;
 using VoidHuntersRevived.Domain.Simulations.Lockstep.Messages;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
@@ -76,13 +77,16 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
         private void HandleUserJoined(IUserService sender, User args)
         {
-            _simulations[SimulationType.Lockstep].Input(
-                sender: ParallelKeys.System,
-                data: new UserJoined()
+            _simulations.Input(new InputDto()
+            {
+                Id = Guid.NewGuid(),
+                Sender = ParallelKeys.System,
+                Data = new UserJoined()
                 {
                     Id = args.Id,
                     Claims = args.Where(x => x.Accessibility == ClaimAccessibility.Public).ToArray()
-                });
+                }
+            });
         }
     }
 }

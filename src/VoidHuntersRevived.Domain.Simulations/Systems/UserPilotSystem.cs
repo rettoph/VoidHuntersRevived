@@ -49,9 +49,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _nodes = world.ComponentMapper.GetMapper<Node>();
         }
 
-        public void Process(in IInput<UserJoined> @event)
+        public void Process(in IInput<UserJoined> message)
         {
-            var user = _scope.Peer!.Users.UpdateOrCreate(@event.Data.Id, @event.Data.Claims);
+            var user = _scope.Peer!.Users.UpdateOrCreate(message.Data.Id, message.Data.Claims);
 
             // Ensure the user has been added to the scope
             if (!_scope.Users.TryGet(user.Id, out _))
@@ -61,19 +61,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
             var key = user.GetKey();
 
-            if (@event.Simulation.HasEntity(key))
+            if (message.Simulation.HasEntity(key))
             { // This operation has already been done
                 return;
             }
 
-            Entity ship = _ships.CreateShip(key.Create(ParallelTypes.Ship), ShipParts.HullSquare, @event.Simulation);
+            Entity ship = _ships.CreateShip(key.Create(ParallelTypes.Ship), ShipParts.HullSquare, message.Simulation);
             
             // TODO: Make a CreatePilot event and override this extension's functionality
-            var pilot = @event.Simulation.CreatePilot(key, ship);
+            var pilot = message.Simulation.CreatePilot(key, ship);
 
-            Entity chain = _chains.CreateChain(ParallelTypes.Chain.Create(1337), ShipParts.HullSquare, Vector2.Zero, 0, @event.Simulation);
-            chain = _chains.CreateChain(ParallelTypes.Chain.Create(1338), ShipParts.HullSquare, Vector2.Zero, 0, @event.Simulation);
-            chain = _chains.CreateChain(ParallelTypes.Chain.Create(1339), ShipParts.HullSquare, Vector2.Zero, 0, @event.Simulation);
+            Entity chain = _chains.CreateChain(ParallelTypes.Chain.Create(1337), ShipParts.HullSquare, Vector2.Zero, 0, message.Simulation);
+            chain = _chains.CreateChain(ParallelTypes.Chain.Create(1338), ShipParts.HullSquare, Vector2.Zero, 0, message.Simulation);
+            chain = _chains.CreateChain(ParallelTypes.Chain.Create(1339), ShipParts.HullSquare, Vector2.Zero, 0, message.Simulation);
         }
     }
 }

@@ -19,8 +19,7 @@ using static VoidHuntersRevived.Domain.Simulations.Simulation;
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
     [PeerTypeFilter(PeerType.Server)]
-    internal sealed class LockstepServerSimulation : LockstepSimulation,
-        ISubscriber<INetIncomingMessage<ClientInputRequest>>
+    internal sealed class LockstepServerSimulation : LockstepSimulation
     {
         private readonly ITickFactory _ticks;
 
@@ -35,21 +34,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _ticks = ticks;
         }
 
-        public override void Input(ParallelKey sender, IData data)
+        public override void Input(InputDto input)
         {
-            _ticks.Enqueue(new EventDto(
-                sender: sender,
-                data: data));
-        }
-
-        public void Process(in INetIncomingMessage<ClientInputRequest> message)
-        {
-            if (message.Peer is null)
-            {
-                return;
-            }
-
-            this.Input(message.Peer.GetKey(), message.Body.Input);
+            _ticks.Enqueue(input);
         }
     }
 }

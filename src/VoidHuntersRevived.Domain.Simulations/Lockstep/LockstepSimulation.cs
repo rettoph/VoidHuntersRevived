@@ -21,9 +21,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
     internal abstract class LockstepSimulation : Simulation<Common.Simulations.Components.Lockstep>, ISimulation,
         ILockstepSimulation,
         ISubscriber<Step>,
+        ISubscriber<Tick>,
         IDisposable
     {
         private readonly IStepService _steps;
+        private readonly IBus _bus;
 
         public State State { get; }
 
@@ -32,9 +34,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             IBus bus,
             IStepService steps, 
             IParallelableService parallelables,
-            IGlobalSimulationService globalSimulationService) : base(SimulationType.Lockstep, bus, parallelables, globalSimulationService)
+            IGlobalSimulationService globalSimulationService) : base(SimulationType.Lockstep, parallelables, globalSimulationService)
         {
             _steps = steps;
+            _bus = bus;
 
             this.State = state;
         }
@@ -52,6 +55,15 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public void Process(in Step message)
         {
             this.UpdateSystems(message);
+        }
+
+        public void Process(in Tick message)
+        {
+            foreach (InputDto inputDto in message.Inputs)
+            {
+                IInput input = Simulations.Input.Create(this, inputDto);
+                _bus.Publish(input);
+            }
         }
     }
 }

@@ -34,12 +34,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _network = network;
         }
 
-        public override void Input(ParallelKey sender, IData data)
+        public override void Input(InputDto input)
         {
-            _network.Messages.Create(
-                body: new ClientInputRequest(
-                    user: sender,
-                    data: data)).Enqueue();
+            _network.Messages.Create(input).Enqueue();
         }
     }
 }

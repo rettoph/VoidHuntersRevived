@@ -12,7 +12,7 @@ using VoidHuntersRevived.Domain.Simulations.Lockstep.Messages;
 namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
 {
     [AutoLoad]
-    internal sealed class ClientInputRequestNetSerializer : NetSerializer<ClientInputRequest>
+    internal sealed class InputDtoNetSerializer : NetSerializer<InputDto>
     {
         private INetSerializerProvider _serializers = default!;
 
@@ -23,17 +23,21 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
             _serializers = serializers;
         }
 
-        public override ClientInputRequest Deserialize(NetDataReader reader)
+        public override InputDto Deserialize(NetDataReader reader)
         {
-            return new ClientInputRequest(
-                user: reader.GetParallelKey(),
-                data: (IData)_serializers.Deserialize(reader));
+            return new InputDto()
+            {
+                Id = reader.GetGuid(),
+                Sender = reader.GetParallelKey(),
+                Data = (IData)_serializers.Deserialize(reader)
+            };
         }
 
-        public override void Serialize(NetDataWriter writer, in ClientInputRequest instance)
+        public override void Serialize(NetDataWriter writer, in InputDto instance)
         {
-            writer.Put(instance.User);
-            _serializers.Serialize(writer, instance.Input);
+            writer.Put(instance.Id);
+            writer.Put(instance.Sender);
+            _serializers.Serialize(writer, instance.Data);
         }
     }
 }

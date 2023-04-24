@@ -12,33 +12,33 @@ namespace VoidHuntersRevived.Domain.Simulations
 {
     public partial class Simulation
     {
-        public static class Event 
+        public static class Input 
         {
             public static class Factory
             {
-                private static Dictionary<Type, Func<SimulationType, ParallelKey, IData, ISimulation, IInput>> _factories = new();
+                private static Dictionary<Type, Func<Guid, SimulationType, ParallelKey, IData, ISimulation, IInput>> _factories = new();
                 private static MethodInfo _method = typeof(Factory).GetMethod(nameof(FactoryMethod), BindingFlags.Static | BindingFlags.NonPublic) ?? throw new UnreachableException();
 
-                public static IInput Create(SimulationType source, ParallelKey sender, IData data, ISimulation target)
+                public static IInput Create(Guid id, SimulationType source, ParallelKey sender, IData data, ISimulation target)
                 {
                     var type = data.GetType();
                     if (!_factories.TryGetValue(type, out var factory))
                     {
                         var method = _method.MakeGenericMethod(type);
-                        factory = (Func<SimulationType, ParallelKey, IData, ISimulation, IInput>)(method.Invoke(null, Array.Empty<object>()) ?? throw new UnreachableException());
+                        factory = (Func<Guid, SimulationType, ParallelKey, IData, ISimulation, IInput>)(method.Invoke(null, Array.Empty<object>()) ?? throw new UnreachableException());
 
                         _factories.Add(type, factory);
                     }
 
-                    return factory(source, sender, data, target);
+                    return factory(id, source, sender, data, target);
                 }
 
-                private static Func<SimulationType, ParallelKey, IData, ISimulation, IInput> FactoryMethod<TData>()
+                private static Func<Guid, SimulationType, ParallelKey, IData, ISimulation, IInput> FactoryMethod<TData>()
                     where TData : IData
                 {
-                    IInput Factory(SimulationType source, ParallelKey sender, IData data, ISimulation target)
+                    IInput Factory(Guid id, SimulationType source, ParallelKey sender, IData data, ISimulation target)
                     {
-                        return new Simulation.Event<TData>(source, sender, (TData)data, target);
+                        return new Simulation.Input<TData>(id, source, sender, (TData)data, target);
                     }
 
                     return Factory;
@@ -46,12 +46,14 @@ namespace VoidHuntersRevived.Domain.Simulations
             }
         }
 
-        protected class Event<TData> : IMessage, IInput<TData>
+        protected class Input<TData> : IMessage, IInput<TData>
             where TData : notnull, IData
         {
             private static readonly Type MessageType = typeof(IInput<TData>);
 
             public virtual Type Type => MessageType;
+
+            public Guid Id { get; }
 
             public SimulationType Source { get; }
 
@@ -63,12 +65,14 @@ namespace VoidHuntersRevived.Domain.Simulations
 
             IData IInput.Data => this.Data;
 
-            public Event(
+            public Input(
+                Guid id,
                 SimulationType source, 
                 ParallelKey sender, 
                 TData data, 
                 ISimulation simulation)
             {
+                this.Id = id;
                 this.Source = source;
                 this.Sender = sender;
                 this.Data = data;

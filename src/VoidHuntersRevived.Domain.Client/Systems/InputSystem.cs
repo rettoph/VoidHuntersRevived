@@ -21,6 +21,7 @@ using Guppy.Network.Identity;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using Guppy.Attributes;
 using VoidHuntersRevived.Common.Simulations.Components;
+using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
@@ -88,8 +89,6 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         public override void Update(GameTime gameTime)
         {
-            this.SetTarget(SimulationType.Predictive);
-
             var mouseScroll = Mouse.GetState().ScrollWheelValue / 120f;
             var delta = _scroll - mouseScroll;
             _scroll = mouseScroll;
@@ -99,26 +98,27 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         public void Process(in PreTick message)
         {
-            this.SetTarget(SimulationType.Lockstep);
+            _simulations.Input(new InputDto()
+            {
+                Id = Guid.NewGuid(),
+                Sender = CurrentUserKey,
+                Data = new SetPilotingTarget()
+                {
+                    Target = CurrentTargetPosition
+                }
+            });
         }
 
         public void Process(in SetPilotingDirection message)
         {
-            _simulations.Enqueue(
-                sender: CurrentUserKey,
-                data: new SetPilotingDirection(
+            _simulations.Input(new InputDto()
+            {
+                Id = Guid.NewGuid(),
+                Sender = CurrentUserKey,
+                Data = new SetPilotingDirection(
                     which: message.Which,
-                    value: message.Value));
-        }
-
-        private void SetTarget(SimulationType simulation)
-        {
-            _simulations[simulation].Input(
-                sender: CurrentUserKey,
-                data: new SetPilotingTarget()
-                {
-                    Target = CurrentTargetPosition
-                });
+                    value: message.Value)
+            });
         }
 
         public void Process(in StartTractoring message)
@@ -133,13 +133,16 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
             if (_tractor.TryGetTractorable(pilotable, out var tractorable, out var node))
             {
-                _simulations.Enqueue(
-                    sender: CurrentUserKey,
-                    data: new StartTractoring()
+                _simulations.Input(new InputDto()
+                {
+                    Id = Guid.NewGuid(),
+                    Sender = CurrentUserKey,
+                    Data = new StartTractoring()
                     {
                         Tractorable = tractorable,
                         Node = node
-                    });
+                    }
+                });
             }
         }
 
@@ -156,13 +159,16 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 return;
             }
 
-            _simulations.Enqueue(
-                sender: CurrentUserKey,
-                data: new StopTractoring()
+            _simulations.Input(new InputDto()
+            {
+                Id = Guid.NewGuid(),
+                Sender = CurrentUserKey,
+                Data = new StopTractoring()
                 {
                     TargetPosition = CurrentTargetPosition,
                     TractorableKey = _parallelables.Get(tractoring.TractorableId).Key
-                });
+                }
+            });
         }
     }
 }

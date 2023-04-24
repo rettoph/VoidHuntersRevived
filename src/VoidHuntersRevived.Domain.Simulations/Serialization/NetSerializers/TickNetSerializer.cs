@@ -11,13 +11,13 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
     [AutoLoad]
     internal sealed class TickNetSerializer : NetSerializer<Tick>
     {
-        private INetSerializer<EventDto> _serializer = default!;
+        private INetSerializer<InputDto> _serializer = default!;
 
         public override void Initialize(INetSerializerProvider serializers)
         {
             base.Initialize(serializers);
 
-            _serializer = serializers.Get<EventDto>();
+            _serializer = serializers.Get<InputDto>();
         }
 
         public override Tick Deserialize(NetDataReader reader)
@@ -30,11 +30,11 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
                 return Tick.Empty(id);
             }
 
-            var items = new EventDto[count];
+            var items = new InputDto[count];
 
             for (var i = 0; i < count; i++)
             {
-                if(_serializer.Deserialize(reader) is EventDto input)
+                if(_serializer.Deserialize(reader) is InputDto input)
                 {
                     items[i] = input;
                 }
@@ -53,9 +53,9 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
 
             writer.Put(count);
 
-            foreach (EventDto @event in instance.Events)
+            foreach (InputDto input in instance.Inputs)
             {
-                _serializer.Serialize(writer, @event);
+                _serializer.Serialize(writer, input);
             }
         }
     }

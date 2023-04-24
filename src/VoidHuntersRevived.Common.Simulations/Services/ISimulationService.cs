@@ -11,6 +11,7 @@ namespace VoidHuntersRevived.Common.Simulations.Services
     public interface ISimulationService
     {
         public SimulationType Flags { get; }
+
         ReadOnlyCollection<ISimulation> Instances { get; }
 
         ISimulation this[SimulationType type] { get; }
@@ -21,6 +22,6 @@ namespace VoidHuntersRevived.Common.Simulations.Services
 
         void Update(GameTime gameTime);
 
-        void Enqueue(ParallelKey sender, IData data);
+        void Input(InputDto input);
     }
 }

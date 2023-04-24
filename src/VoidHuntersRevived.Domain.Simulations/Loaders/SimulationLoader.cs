@@ -5,6 +5,7 @@ using Guppy.Common.DependencyInjection.Interfaces;
 using Guppy.Loaders;
 using LiteNetLib;
 using Microsoft.Extensions.DependencyInjection;
+using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Domain.Simulations.Factories;
@@ -32,6 +33,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
 
             services.ConfigureCollection(manager =>
             {
+                manager.AddScoped<Server_InputSystem>()
+                    .AddInterfaceAliases();
+
                 manager.AddScoped<AetherSystem>()
                     .AddInterfaceAliases();
 
@@ -92,7 +96,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
                 .AddInterfaceAliases();
 
             services.AddNetMessageType<Tick>(DeliveryMethod.ReliableUnordered, 0);
-            services.AddNetMessageType<ClientInputRequest>(DeliveryMethod.ReliableUnordered, 0);
+            services.AddNetMessageType<InputDto>(DeliveryMethod.ReliableUnordered, 0);
             services.AddNetMessageType<StateBegin>(DeliveryMethod.ReliableUnordered, 0);
             services.AddNetMessageType<StateTick>(DeliveryMethod.ReliableUnordered, 0);
             services.AddNetMessageType<StateEnd>(DeliveryMethod.ReliableUnordered, 0);
