@@ -9,11 +9,14 @@ using VoidHuntersRevived.Common.Entities.ShipParts.Configurations;
 
 namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 {
-    public class Node
+    public partial class Node
     {
+        private static int CurrentId;
+
+        public readonly int Id;
         public readonly NodeConfiguration Configuration;
         public readonly int EntityId;
-        public readonly Degree[] Degrees;
+        public readonly Joint[] Joints;
 
         public Tree? Tree;
         public Vector2 LocalCenter;
@@ -25,48 +28,59 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 
         public Node(NodeConfiguration configuration, int entityId)
         {
+            this.Id = CurrentId++;
             this.Configuration = configuration;
             this.EntityId = entityId;
-            this.Degrees = configuration.Degrees.Select((conf, idx) => new Degree(conf, this, idx)).ToArray();
+            this.Joints = configuration.Joints.Select((conf, idx) => new Joint(conf, this, idx)).ToArray();
 
             this.LocalCenter = configuration.Center;
             this.LocalTransformation = Matrix.Identity;
             this.WorldTransformation = Matrix.Identity;
         }
 
-        public Degree? InDegree()
+        /// <summary>
+        /// This name is a bit confusing, but realize it is from the perspective of the current node.
+        /// Each specific node may have many joints that are parents to other nodes, but only one child
+        /// node.
+        /// </summary>
+        /// <returns></returns>
+        public Joint? ChildJoint()
         {
-            foreach (Degree degree in this.Degrees)
+            foreach (Joint joint in this.Joints)
             {
-                if (degree.Edge is null)
+                if (joint.Link is null)
                 {
                     continue;
                 }
 
-                if (degree.Edge.InDegree.Node == this)
+                if (joint.Link.Child.Node == this)
                 {
-                    return degree;
+                    return joint;
                 }
             }
 
             return null;
         }
 
-        public IEnumerable<Degree> OutDegrees()
+        /// <summary>
+        /// Each node may have many nodes with children, these are those parent nodes.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Joint> ParentJoints()
         {
-            foreach(Degree degree in this.Degrees)
+            foreach(Joint joint in this.Joints)
             {
-                if(degree.Edge is null)
+                if(joint.Link is null)
                 {
                     continue;
                 }
 
-                if(degree.Edge.InDegree.Node == this)
+                if(joint.Link.Child.Node == this)
                 {
                     continue;
                 }
 
-                yield return degree;
+                yield return joint;
             }
         }
     }

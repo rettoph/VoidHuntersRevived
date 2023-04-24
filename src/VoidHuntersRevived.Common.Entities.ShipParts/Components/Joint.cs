@@ -9,18 +9,18 @@ using VoidHuntersRevived.Common.Entities.ShipParts.Configurations;
 
 namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 {
-    public class Degree
+    public class Joint
     {
-        public readonly DegreeConfiguration Configuration;
+        public readonly JointConfiguration Configuration;
         public readonly Node Node;
         public readonly int Index;
 
-        public Edge? Edge;
+        public Link? Link;
 
         public Matrix LocalTransformation;
         public Vector2 LocalPosition => Vector2.Transform(Vector2.Zero, this.LocalTransformation);
 
-        public Degree(DegreeConfiguration configuration, Node node, int index)
+        public Joint(JointConfiguration configuration, Node node, int index)
         {
             this.Configuration = configuration;
             this.Node = node;

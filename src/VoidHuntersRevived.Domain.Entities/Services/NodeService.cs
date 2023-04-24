@@ -15,69 +15,66 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _bus = bus;
         }
 
-        public Edge Attach(Degree outDegree, Degree inDegree)
+        public Link Attach(Joint child, Joint parent)
         {
-            var outId = outDegree.Node.EntityId;
-            var inId = inDegree.Node.EntityId;
+            Link link = new Link(child, parent);
 
-            Edge edge = new Edge(outDegree, inDegree);
-
-            if (outDegree.Edge is not null && outDegree.Edge.InDegree != inDegree)
-            { // The out degree already has another existing connection
+            if (parent.Link is not null && parent.Link.Child != child)
+            { // The parent joint already has another existing connection
                 throw new NotImplementedException();
             }
 
-            if (inDegree.Edge is not null && inDegree.Edge.OutDegree != outDegree)
-            { // The in degree already has another existing connection
+            if (child.Link is not null && child.Link.Parent != parent)
+            { // The child joint already has another existing connection
                 throw new NotImplementedException();
             }
 
-            if(inDegree.Node.Degrees.Any(x => x.Edge?.InDegree == x))
-            { // The in node already has a defined in degree edge
+            if(child.Node.Joints.Any(x => x.Link?.Child == x))
+            { // The child node already has a defined parent joint link
                 throw new NotImplementedException();
             }
 
-            // The edge has been validated, add it and clean the nodes
-            outDegree.Edge = edge;
-            inDegree.Edge = edge;
+            // The link has been validated, add it and clean the nodes
+            child.Link = link;
+            parent.Link = link;
 
-            // At this point all downstream degrees should be recursively updated. Is there a better way?
-            this.CleanLocalTransformationRecersive(inDegree.Node, edge.LocalTransformation);
+            // At this point all down joints should be recursively updated. Is there a better way?
+            this.CleanLocalTransformationRecersive(child.Node, link.LocalTransformation);
 
-            _bus.Publish(new Created<Edge>(edge));
+            _bus.Publish(new Created<Link>(link));
 
-            return edge;
+            return link;
         }
 
-        public void Detach(Edge edge)
+        public void Detach(Link link)
         {
-            edge.InDegree.Edge = null;
-            edge.OutDegree.Edge = null;
+            link.Parent.Link = null;
+            link.Child.Link = null;
 
-            this.CleanLocalTransformationRecersive(edge.InDegree.Node, Matrix.Identity);
+            this.CleanLocalTransformationRecersive(link.Child.Node, Matrix.Identity);
 
-            _bus.Publish(new Destroyed<Edge>(edge));
+            _bus.Publish(new Destroyed<Link>(link));
         }
 
         private void CleanLocalTransformationRecersive(Node node, Matrix transformation)
         {
             node.LocalTransformation = transformation;
 
-            foreach (Degree degree in node.Degrees)
+            foreach (Joint joint in node.Joints)
             {
-                degree.LocalTransformation = degree.Configuration.Transformation * transformation;
+                joint.LocalTransformation = joint.Configuration.Transformation * transformation;
 
-                if (degree.Edge is null)
-                { // There are no further down stream edges to refresh
+                if (joint.Link is null)
+                { // There are no further down stream links to refresh
                     continue;
                 }
 
-                if(degree.Edge.InDegree == degree)
-                { // This is the up degree, we do not want to clean down stream
+                if(joint.Link.Child == joint)
+                { // Only clean parent joints
                     continue;
                 }
 
-                this.CleanLocalTransformationRecersive(degree.Edge.InDegree.Node, degree.LocalTransformation);
+                this.CleanLocalTransformationRecersive(joint.Link.Child.Node, joint.LocalTransformation);
             }
         }
     }

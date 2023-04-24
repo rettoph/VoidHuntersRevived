@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
 {
-    public sealed class DegreeConfiguration
+    public sealed class JointConfiguration
     {
         private Vector2 _position;
         private float _rotation;
@@ -33,11 +33,11 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
 
         public Matrix Transformation;
 
-        public DegreeConfiguration() : this(Vector2.Zero, 0f)
+        public JointConfiguration() : this(Vector2.Zero, 0f)
         {
 
         }
-        public DegreeConfiguration(Vector2 position, float rotation)
+        public JointConfiguration(Vector2 position, float rotation)
         {
             _position = position;
             _rotation = rotation;

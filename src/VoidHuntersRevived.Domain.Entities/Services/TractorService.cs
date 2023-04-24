@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 {
     internal sealed partial class TractorService : ITractorService, ISystem
     {
-        public const float GetPotentialParentJointDistance = 1f;
+        public const float GetPotentialChildJointDistance = 1f;
 
         private readonly ISimulationService _simulations;
         private ComponentMapper<Tractorable> _tractorables;
@@ -67,46 +67,46 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return true;
         }
 
-        public bool TryGetPotentialEdge(
+        public bool TryGetPotentialLink(
             Vector2 target,
             int tractoringId,
             [MaybeNullWhen(false)] out Vector2 position,
-            [MaybeNullWhen(false)] out Degree outDegree)
+            [MaybeNullWhen(false)] out Joint parentJoint)
         {
-            outDegree = null;
+            parentJoint = null;
             position = default;
-            float distance = GetPotentialParentJointDistance;
+            float distance = GetPotentialChildJointDistance;
             var tree = _trees.Get(tractoringId);
             var body = _bodies.Get(tractoringId);
 
             foreach (Node node in tree.Nodes)
             {
-                foreach (Degree degree in node.Degrees)
+                foreach (Joint joint in node.Joints)
                 {
-                    if (degree.Edge is not null)
+                    if (joint.Link is not null)
                     {
                         continue;
                     }
 
-                    var degreePosition = body.Position + degree.LocalPosition;
-                    var degreeDistance = Vector2.Distance(target, degreePosition);
+                    var jointPosition = body.Position + joint.LocalPosition;
+                    var jointDistance = Vector2.Distance(target, jointPosition);
 
-                    if (degreeDistance < distance)
+                    if (jointDistance < distance)
                     {
-                        distance = degreeDistance;
-                        outDegree = degree;
-                        position = degreePosition;
+                        distance = jointDistance;
+                        parentJoint = joint;
+                        position = jointPosition;
                     }
                 }
             }
 
-            return outDegree is not null;
+            return parentJoint is not null;
         }
 
         public bool TransformTractorable(
             Vector2 target,
             Tractoring tractoring,
-            [MaybeNullWhen(false)] out Edge potential)
+            [MaybeNullWhen(false)] out Link potential)
         {
             return this.TransformTractorable(target, tractoring.EntityId, tractoring.TractorableId, out potential);
         }
@@ -115,12 +115,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             Vector2 target, 
             int tractoringId, 
             int tractorableId, 
-            [MaybeNullWhen(false)] out Edge potential)
+            [MaybeNullWhen(false)] out Link potential)
         {
             Body tractorableBody = _bodies.Get(tractorableId);
             Tree tractoringTree = _trees.Get(tractoringId);
 
-            if (!this.TryGetPotentialEdge(target, tractoringId, out Vector2 position, out Degree? outDegree))
+            if (!this.TryGetPotentialLink(target, tractoringId, out Vector2 position, out Joint? parentJoint))
             {
                 return this.DefaultTransformBody(tractorableBody, target, out potential);
             }
@@ -133,14 +133,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return this.DefaultTransformBody(tractorableBody, target, out potential);
             }
 
-            Degree? inDegree = tractorableTree.Head.Degrees.FirstOrDefault(x => x.Edge is null);
+            Joint? childJoint = tractorableTree.Head.Joints.FirstOrDefault(x => x.Link is null);
 
-            if (inDegree is null)
+            if (childJoint is null)
             {
                 return this.DefaultTransformBody(tractorableBody, target, out potential);
             }
 
-            potential = new Edge(outDegree, inDegree);
+            potential = new Link(childJoint, parentJoint);
             var transformation = potential.LocalTransformation * tractoringBody.GetTransformation();
 
             target = Vector2.Transform(Vector2.Zero, transformation);
@@ -150,7 +150,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return true;
         }
 
-        private bool DefaultTransformBody(Body? body, Vector2 target, out Edge? potential)
+        private bool DefaultTransformBody(Body? body, Vector2 target, out Link? potential)
         {
             potential = null;
 

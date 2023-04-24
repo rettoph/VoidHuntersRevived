@@ -69,18 +69,18 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 Node node = _nodes.Get(entityId);
                 Body body = _bodies.Get(node.Tree?.EntityId ?? throw new NotImplementedException());
 
-                this.DrawDegrees(node.Degrees, body.Position, body.Rotation);
+                this.DrawJoints(node.Joints, body.Position, body.Rotation);
             }
 
             _primitiveBatch.End();
         }
 
-        private void DrawDegrees(Degree[] degrees, Vector2 position, float rotation)
+        private void DrawJoints(Common.Entities.ShipParts.Components.Joint[] joints, Vector2 position, float rotation)
         {
             var world = Matrix.CreateRotationZ(rotation);
             world *= Matrix.CreateTranslation(position.X, position.Y, 0);
 
-            foreach (var joint in degrees)
+            foreach (var joint in joints)
             {
                 var transformation = joint.LocalTransformation * world;
                 var color = Color.Red;

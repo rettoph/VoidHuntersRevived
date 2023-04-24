@@ -14,16 +14,16 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
     public sealed class NodeConfiguration : IShipPartComponentConfiguration
     {
         public Vector2 Center { get; set; }
-        public DegreeConfiguration[] Degrees { get; set; }
+        public JointConfiguration[] Joints { get; set; }
 
         public NodeConfiguration() : this(Vector2.Zero)
         {
 
         }
-        public NodeConfiguration(Vector2 center, params DegreeConfiguration[] degrees)
+        public NodeConfiguration(Vector2 center, params JointConfiguration[] joints)
         {
             this.Center = center;
-            this.Degrees = degrees;
+            this.Joints = joints;
         }
 
         public void Initialize(string path, IServiceProvider services)
@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
         public static NodeConfiguration Polygon(int sides)
         {
             var vertexAngles = PolygonHelper.CalculateVertexAngles(sides).ToArray();
-            var joints = new List<DegreeConfiguration>();
+            var joints = new List<JointConfiguration>();
 
             var start = vertexAngles[0];
             var end = vertexAngles[1];
@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
             {
                 end = vertexAngles[i % vertexAngles.Length];
 
-                joints.Add(new DegreeConfiguration(
+                joints.Add(new JointConfiguration(
                     rotation: end.Angle + MathHelper.PiOver2,
                     position: (end.Vertex + start.Vertex) / 2));
 
@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Configurations
 
             return new NodeConfiguration(
                 center: joints.Select(x => x.Position).Average(),
-                degrees: joints.ToArray());
+                joints: joints.ToArray());
         }
     }
 }

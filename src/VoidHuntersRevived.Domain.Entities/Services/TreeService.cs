@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Common.Collections;
 using MonoGame.Extended.Entities;
 using System;
 using System.Collections.Generic;
@@ -16,11 +17,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 {
     internal sealed class TreeService : ITreeService
     {
-        public readonly IBus _bus;
+        private readonly IBus _bus;
+        private readonly Queue<Node> _buffer;
 
         public TreeService(IBus bus)
         {
             _bus = bus;
+            _buffer = new Queue<Node>();
         }
 
         public Tree MakeTree(Entity entity, Body body, Node? head)
@@ -51,30 +54,40 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 this.RemoveNode(node, node.Tree);
             }
 
-            tree.Nodes.Add(node);
-            node.Tree = tree;
-            _bus.Publish(new Added<Node, Tree>(node, tree));
-
-            foreach (Degree degree in node.OutDegrees())
+            _buffer.Enqueue(node);
+            while(_buffer.TryDequeue(out Node? dirty))
             {
-                this.AddNode(degree.Node, tree);
+                tree.Nodes.Add(dirty);
+                dirty.Tree = tree;
+
+                foreach (Joint child in dirty.ParentJoints())
+                {
+                    _buffer.Enqueue(child.Link!.Child.Node);
+                }
+
+                _bus.Publish(new Added<Node, Tree>(dirty, tree));
             }
         }
 
         public void RemoveNode(Node node, Tree tree)
         {
-            
-            if (!tree.Nodes.Remove(node))
+            if (node.Tree != tree)
             {
                 return;
             }
 
-            node.Tree = null;
-            _bus.Publish(new Removed<Node, Tree>(node, tree));
-
-            foreach (Degree degree in node.OutDegrees())
+            _buffer.Enqueue(node);
+            while (_buffer.TryDequeue(out Node? dirty))
             {
-                this.RemoveNode(degree.Node, tree);
+                tree.Nodes.Remove(dirty);
+                dirty.Tree = null;
+
+                foreach (Joint child in dirty.ParentJoints())
+                {
+                    _buffer.Enqueue(child.Link!.Child.Node);
+                }
+
+                _bus.Publish(new Removed<Node, Tree>(dirty, tree));
             }
         }
     }

@@ -24,11 +24,11 @@ using VoidHuntersRevived.Domain.Entities.Services;
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {
     [GuppyFilter<IGameGuppy>()]
-    [Sortable<ISubscriber<Created<Edge>>>(int.MinValue)]
-    [Sortable<ISubscriber<Destroyed<Edge>>>(int.MinValue + 10)]
+    [Sortable<ISubscriber<Created<Link>>>(int.MinValue)]
+    [Sortable<ISubscriber<Destroyed<Link>>>(int.MinValue + 10)]
     internal sealed class TreeSystem : ParallelEntityProcessingSystem,
-        ISubscriber<Created<Edge>>,
-        ISubscriber<Destroyed<Edge>>
+        ISubscriber<Created<Link>>,
+        ISubscriber<Destroyed<Link>>
     {
         private static readonly AspectBuilder TreeAspect = Aspect.All(new[]
         {
@@ -69,10 +69,10 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             }
         }
 
-        public void Process(in Created<Edge> message)
+        public void Process(in Created<Link> message)
         {
-            Tree? tree = message.Instance.OutDegree.Node.Tree;
-            Node node = message.Instance.InDegree.Node;
+            Tree? tree = message.Instance.Parent.Node.Tree;
+            Node node = message.Instance.Child.Node;
 
             if(tree is not null)
             {
@@ -80,10 +80,10 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             }
         }
 
-        public void Process(in Destroyed<Edge> message)
+        public void Process(in Destroyed<Link> message)
         {
-            Tree? tree = message.Instance.OutDegree.Node.Tree;
-            Node node = message.Instance.InDegree.Node;
+            Tree? tree = message.Instance.Parent.Node.Tree;
+            Node node = message.Instance.Child.Node;
 
             if (tree is not null)
             {

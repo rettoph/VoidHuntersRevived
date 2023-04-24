@@ -132,8 +132,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 var position = node.WorldPosition;
                 var rotation = node.WorldTransformation.Radians();
 
-                // Destroy the edge to the ship's tree
-                _nodeService.Detach(node.InDegree()?.Edge ?? throw new NotImplementedException());
+                // Destroy the link to the ship's tree
+                _nodeService.Detach(node.ChildJoint()?.Link ?? throw new NotImplementedException());
 
                 // Create a brand new chain to hold the detached parts.
                 // Notice we've updated the tractorableId to the new chain id
@@ -171,19 +171,19 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 _tractorings.Delete(piloting.Pilotable.Id);
             }
             
-            if(!_tractor.TransformTractorable(message.Data.TargetPosition, piloting.Pilotable.Id, tractorableId, out Edge? potential))
+            if(!_tractor.TransformTractorable(message.Data.TargetPosition, piloting.Pilotable.Id, tractorableId, out Link? potential))
             {
                 return;
             }
 
             // Destroy the old chain
-            if(potential.InDegree.Node.Tree is not null && _parallelables.TryGet(potential.InDegree.Node.Tree.EntityId, out Parallelable? chain))
+            if(potential.Child.Node.Tree is not null && _parallelables.TryGet(potential.Child.Node.Tree.EntityId, out Parallelable? chain))
             {
                 message.Target.DestroyEntity(chain.Key);
             }
 
             // Create a jointing to the current ship.
-            _nodeService.Attach(potential.OutDegree, potential.InDegree);
+            _nodeService.Attach(potential.Child, potential.Parent);
         }
 
         protected override void Process(ISimulation simulation, GameTime gameTime, int entityId)
