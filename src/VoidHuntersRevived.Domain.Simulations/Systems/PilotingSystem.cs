@@ -17,8 +17,8 @@ using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     internal sealed class PilotingSystem : BasicSystem,
-        ISubscriber<IEvent<SetPilotingDirection>>,
-        ISubscriber<IEvent<SetPilotingTarget>>
+        ISubscriber<IInput<SetPilotingDirection>>,
+        ISubscriber<IInput<SetPilotingTarget>>
     {
         private ComponentMapper<Piloting> _pilotings;
         private ComponentMapper<Pilotable> _pilotables;
@@ -49,9 +49,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _tractorables = world.ComponentMapper.GetMapper<Tractorable>();
         }
 
-        public void Process(in IEvent<SetPilotingDirection> message)
+        public void Process(in IInput<SetPilotingDirection> message)
         {
-            if (!message.Target.TryGetEntityId(message.Sender, out int pilotId))
+            if (!message.Simulation.TryGetEntityId(message.Sender, out int pilotId))
             {
                 return;
             }
@@ -76,9 +76,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             }
         }
 
-        public void Process(in IEvent<SetPilotingTarget> message)
+        public void Process(in IInput<SetPilotingTarget> message)
         {
-            if(!message.Target.TryGetEntityId(message.Sender, out int pilotId))
+            if(!message.Simulation.TryGetEntityId(message.Sender, out int pilotId))
             {
                 return;
             }

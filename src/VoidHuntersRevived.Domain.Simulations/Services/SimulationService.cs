@@ -97,7 +97,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
             foreach (ISimulation simulation in _simulations.Values)
             {
-                simulation.Enqueue(user, data);
+                simulation.Input(user, data);
             }
         }
     }

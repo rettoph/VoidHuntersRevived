@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Common.Simulations
 
         Entity CreateEntity(ParallelKey key);
 
-        void Enqueue(ParallelKey sender, IData data);
-        void Publish(IEvent @event);
+        void Input(ParallelKey sender, IData data);
+        void Publish(IInput @event);
     }
 }

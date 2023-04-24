@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _ticks = ticks;
         }
 
-        public override void Enqueue(ParallelKey sender, IData data)
+        public override void Input(ParallelKey sender, IData data)
         {
             _ticks.Enqueue(new EventDto(
                 sender: sender,
@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                 return;
             }
 
-            this.Enqueue(message.Peer.GetKey(), message.Body.Input);
+            this.Input(message.Peer.GetKey(), message.Body.Input);
         }
     }
 }

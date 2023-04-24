@@ -2,17 +2,15 @@
 
 namespace VoidHuntersRevived.Common.Simulations
 {
-    public interface IEvent : IMessage
+    public interface IInput : IMessage
     {
         ParallelKey Sender { get; }
         SimulationType Source { get; }
-        ISimulation Target { get; }
+        ISimulation Simulation { get; }
         IData Data { get; }
-
-        void PublishConsequent(IData data);
     }
 
-    public interface IEvent<TData> : IEvent
+    public interface IInput<TData> : IInput
         where TData : notnull, IData
     {
         new TData Data { get; }

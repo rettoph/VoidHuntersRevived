@@ -143,9 +143,9 @@ namespace VoidHuntersRevived.Domain.Simulations
             return entity;
         }
 
-        public abstract void Enqueue(ParallelKey sender, IData data);
+        public abstract void Input(ParallelKey sender, IData data);
 
-        public void Publish(IEvent @event)
+        public void Publish(IInput @event)
         {
             _bus.Publish(@event);
         }
@@ -155,7 +155,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             foreach (EventDto @eventDto in message.Events)
             {
-                IEvent @event = Simulation.Event.Factory.Create(SimulationType.Lockstep, @eventDto.Sender, @eventDto.Data, this);
+                IInput @event = Simulation.Event.Factory.Create(SimulationType.Lockstep, @eventDto.Sender, @eventDto.Data, this);
                 this.Publish(@event);
             }
         }

@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Common.Simulations.Extensions
 
         public static void Enqueue(this Entity entity, ParallelKey sender, IData data)
         {
-            entity.Get<ISimulation>().Enqueue(sender, data);
+            entity.Get<ISimulation>().Input(sender, data);
         }
     }
 }

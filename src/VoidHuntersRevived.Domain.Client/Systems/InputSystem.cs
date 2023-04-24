@@ -113,7 +113,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         private void SetTarget(SimulationType simulation)
         {
-            _simulations[simulation].Enqueue(
+            _simulations[simulation].Input(
                 sender: CurrentUserKey,
                 data: new SetPilotingTarget()
                 {

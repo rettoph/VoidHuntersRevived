@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     [PeerTypeFilter(PeerType.Server)]
     [SimulationTypeFilter(SimulationType.Lockstep)]
-    internal sealed class LockstepServer_UserSystem : BasicSystem, ISubscriber<IEvent<UserJoined>>
+    internal sealed class LockstepServer_UserSystem : BasicSystem, ISubscriber<IInput<UserJoined>>
     {
         private readonly State _state;
         private readonly NetScope _scope;
@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _scope.Users.OnUserJoined += HandleUserJoined;
         }
 
-        public void Process(in IEvent<UserJoined> message)
+        public void Process(in IInput<UserJoined> message)
         {
             var user = _scope.Peer!.Users.UpdateOrCreate(message.Data.Id, message.Data.Claims);
 
@@ -76,7 +76,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
         private void HandleUserJoined(IUserService sender, User args)
         {
-            _simulations[SimulationType.Lockstep].Enqueue(
+            _simulations[SimulationType.Lockstep].Input(
                 sender: ParallelKeys.System,
                 data: new UserJoined()
                 {

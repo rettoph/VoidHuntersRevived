@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             }
         }
 
-        public override void Enqueue(ParallelKey sender, IData data)
+        public override void Input(ParallelKey sender, IData data)
         {
             this.Publish(Simulation.Event.Factory.Create(this.Type, sender, data, this));
         }
