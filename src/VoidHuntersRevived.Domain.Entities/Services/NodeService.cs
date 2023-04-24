@@ -74,7 +74,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                     continue;
                 }
 
-                this.CleanLocalTransformationRecersive(joint.Link.Child.Node, joint.LocalTransformation);
+                this.CleanLocalTransformationRecersive(joint.Link.Child.Node, joint.Link.LocalTransformation);
             }
         }
     }
