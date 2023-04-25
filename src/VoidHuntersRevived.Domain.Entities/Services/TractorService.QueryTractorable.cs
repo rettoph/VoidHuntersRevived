@@ -33,20 +33,20 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 _distance = Radius;
             }
 
-            public bool Query(out ParallelKey tractorableKey, out ParallelKey nodeKey)
+            public bool Query(out ParallelKey targetTree, out ParallelKey targetNode)
             {
                 AABB aabb = new AABB(_pilotable.Aim.Value, Radius, Radius);
                 _tractor._interactive.Aether.QueryAABB(this.QueryCallback, ref aabb);
 
                 if (_tractorableId is null)
                 {
-                    tractorableKey = default;
-                    nodeKey = default;
+                    targetTree = default;
+                    targetNode = default;
                     return false;
                 }
 
-                tractorableKey = _tractorableKey;
-                nodeKey = _nodeKey;
+                targetTree = _tractorableKey;
+                targetNode = _nodeKey;
                 return true;
             }
 
@@ -100,11 +100,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return true;
             }
 
-            public static bool Invoke(Pilotable pilotable, TractorService tractor, out ParallelKey tractorableKey, out ParallelKey nodeKey)
+            public static bool Invoke(Pilotable pilotable, TractorService tractor, out ParallelKey targetTree, out ParallelKey targetNode)
             {
                 var query = new QueryTractorable(pilotable, tractor);
 
-                return query.Query(out tractorableKey, out nodeKey);
+                return query.Query(out targetTree, out targetNode);
             }
         }
     }

@@ -14,6 +14,6 @@ namespace VoidHuntersRevived.Domain.Entities.Events
         public static readonly StopTractoring Instance = new StopTractoring();
 
         public Vector2 TargetPosition { get; init; }
-        public ParallelKey TractorableKey { get; init; }
+        public ParallelKey TargetTreeKey { get; init; }
     }
 }

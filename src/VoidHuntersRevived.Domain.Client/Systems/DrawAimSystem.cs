@@ -92,12 +92,12 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         private void DrawTractorTarget(Pilotable pilotable)
         {
-            if (!_tractor.TryGetTractorable(pilotable, out _, out var nodeKey))
+            if (!_tractor.TryGetTractorable(pilotable, out _, out ParallelKey targetNodeKey))
             {
                 return;
             }
 
-            if (!_simulations[SimulationType.Predictive].TryGetEntityId(nodeKey, out int nodeId))
+            if (!_simulations[SimulationType.Predictive].TryGetEntityId(targetNodeKey, out int nodeId))
             {
                 return;
             }
@@ -112,8 +112,8 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 return;
             }
 
-            var transformation = drawable.LocalCenterTransformation * node.WorldTransformation;
-            var color = Color.Green;
+            Matrix transformation = drawable.LocalCenterTransformation * node.WorldTransformation;
+            Color color = Color.Green;
             _primitiveBatch.Trace(_shape, in color, ref transformation);
         }
     }

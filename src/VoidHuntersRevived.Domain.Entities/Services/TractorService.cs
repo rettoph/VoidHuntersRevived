@@ -57,9 +57,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             // throw new NotImplementedException();
         }
 
-        public bool TryGetTractorable(Pilotable pilotable, out ParallelKey shipPartKey, out ParallelKey nodeKey)
+        public bool TryGetTractorable(Pilotable pilotable, out ParallelKey targetTreeKey, out ParallelKey targetNodeKey)
         {
-            return QueryTractorable.Invoke(pilotable, this, out shipPartKey, out nodeKey);
+            return QueryTractorable.Invoke(pilotable, this, out targetTreeKey, out targetNodeKey);
         }
 
         public bool CanTractor(Vector2 target, ParallelKey tractorable)
@@ -108,7 +108,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             Tractoring tractoring,
             [MaybeNullWhen(false)] out Link potential)
         {
-            return this.TransformTractorable(target, tractoring.EntityId, tractoring.TractorableId, out potential);
+            return this.TransformTractorable(target, tractoring.EntityId, tractoring.TargetTreeId, out potential);
         }
 
         public bool TransformTractorable(

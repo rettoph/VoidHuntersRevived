@@ -82,12 +82,12 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         public void Process(in IInput<StartTractoring> message)
         {
-            if (!message.Simulation.TryGetEntityId(message.Data.Tractorable, out int tractorableId))
+            if (!message.Simulation.TryGetEntityId(message.Data.TargetTree, out int targetTreeId))
             {
                 return;
             }
 
-            if (!message.Simulation.TryGetEntityId(message.Data.Node, out int nodeId))
+            if (!message.Simulation.TryGetEntityId(message.Data.TargetNode, out int targetNodeId))
             {
                 return;
             }
@@ -96,12 +96,17 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             var piloting = _pilotings.Get(pilotId);
             var tree = _trees.Get(piloting.Pilotable.Id);
 
-            if (!_nodes.TryGet(nodeId, out var node))
+            if (!_nodes.TryGet(targetNodeId, out Node? targetNode))
             {
                 return;
             }
 
-            if (node.Tree.EntityId != tractorableId)
+            if(targetNode.Tree is null)
+            {
+                return;
+            }
+
+            if (targetNode.Tree.EntityId != targetTreeId)
             {
                 // This almost always happens on a lockstep sent input within
                 // The predictive simulation. This is because the node exists
@@ -113,7 +118,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            if (!_tractorables.TryGet(tractorableId, out var tractorable))
+            if (!_tractorables.TryGet(targetTreeId, out var tractorable))
             { // The target is not tractorable
                 return;
             }
@@ -124,31 +129,31 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            if (node.Tree == tree)
+            if (targetNode.Tree == tree)
             { // The selected node is attached to the current ship
 
                 // Cache all the values we're about to delete...
-                var key = _parallelables.Get(node.EntityId).Key;
-                var position = node.WorldPosition;
-                var rotation = node.WorldTransformation.Radians();
+                var key = _parallelables.Get(targetNode.EntityId).Key;
+                var position = targetNode.WorldPosition;
+                var rotation = targetNode.WorldTransformation.Radians();
 
                 // Destroy the link to the ship's tree
-                _nodeService.Detach(node.ChildJoint()?.Link ?? throw new NotImplementedException());
+                _nodeService.Detach(targetNode.ChildJoint()?.Link ?? throw new NotImplementedException());
 
                 // Create a brand new chain to hold the detached parts.
                 // Notice we've updated the tractorableId to the new chain id
                 // This is why the comment above happens: A different tractorableId
                 // was slotted in already, but the confirmation from the server doesn't
                 // display that very well.
-                tractorableId = _chainService.CreateChain(
+                targetTreeId = _chainService.CreateChain(
                     key: key.Create(ParallelTypes.Chain),
-                    head: node,
+                    head: targetNode,
                     position: position,
                     rotation: rotation,
                     simulation: message.Simulation).Id;
             }
 
-            var tractoring = new Tractoring(piloting.Pilotable.Id, tractorableId);
+            var tractoring = new Tractoring(piloting.Pilotable.Id, targetTreeId);
             _tractorings.Put(piloting.Pilotable.Id, tractoring);
         }
 
@@ -160,13 +165,13 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
             
-            if(!message.Simulation.TryGetEntityId(message.Data.TractorableKey, out int tractorableId))
+            if(!message.Simulation.TryGetEntityId(message.Data.TargetTreeKey, out int tractorableId))
             {
                 return;
             }
             
             if(_tractorings.TryGet(piloting.Pilotable.Id, out Tractoring? tractoring)
-                && tractoring.TractorableId == tractorableId)
+                && tractoring.TargetTreeId == tractorableId)
             {
                 _tractorings.Delete(piloting.Pilotable.Id);
             }

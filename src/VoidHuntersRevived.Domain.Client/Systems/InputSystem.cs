@@ -131,7 +131,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
             var pilotable = _pilotables.Get(piloting.Pilotable);
 
-            if (_tractor.TryGetTractorable(pilotable, out var tractorable, out var node))
+            if (_tractor.TryGetTractorable(pilotable, out ParallelKey targetTree, out ParallelKey targetNode))
             {
                 _simulations.Input(new InputDto()
                 {
@@ -139,8 +139,8 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                     Sender = CurrentUserKey,
                     Data = new StartTractoring()
                     {
-                        Tractorable = tractorable,
-                        Node = node
+                        TargetTree = targetTree,
+                        TargetNode = targetNode
                     }
                 });
             }
@@ -166,7 +166,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 Data = new StopTractoring()
                 {
                     TargetPosition = CurrentTargetPosition,
-                    TractorableKey = _parallelables.Get(tractoring.TractorableId).Key
+                    TargetTreeKey = _parallelables.Get(tractoring.TargetTreeId).Key
                 }
             });
         }
