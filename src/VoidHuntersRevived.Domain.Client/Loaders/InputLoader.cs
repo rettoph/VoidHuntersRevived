@@ -31,7 +31,13 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
 
             services.AddInput(Inputs.TractorBeam, CursorButtons.Right, new (bool, IMessage)[]
             {
-                (true, new StartTractoring()),
+                (true, new StartTractoring()
+                {
+                    Id = Guid.Empty,
+                    Sender = default!,
+                    TargetNode = default!,
+                    TargetTree = default!
+                }),
                 (false, StopTractoring.Instance),
             });
 
@@ -47,8 +53,20 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
         {
             services.AddInput(key, defaultSource, new[]
             {
-                (true, new SetPilotingDirection(direction, true)),
-                (false, new SetPilotingDirection(direction, false)),
+                (true, new SetPilotingDirection()
+                {
+                    Id = Guid.Empty,
+                    Sender = default!,
+                    Which = direction,
+                    Value = true
+                }),
+                (false, new SetPilotingDirection()
+                {
+                    Id = Guid.Empty,
+                    Sender = default!,
+                    Which = direction,
+                    Value = false
+                }),
             });
         }
     }

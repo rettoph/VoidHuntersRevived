@@ -17,8 +17,8 @@ using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     internal sealed class PilotingSystem : BasicSystem,
-        ISubscriber<IInput<SetPilotingDirection>>,
-        ISubscriber<IInput<SetPilotingTarget>>
+        IInputSubscriber<SetPilotingDirection>,
+        IInputSubscriber<SetPilotingTarget>
     {
         private ComponentMapper<Piloting> _pilotings;
         private ComponentMapper<Pilotable> _pilotables;
@@ -49,9 +49,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _tractorables = world.ComponentMapper.GetMapper<Tractorable>();
         }
 
-        public void Process(in IInput<SetPilotingDirection> message)
+        public void Process(SetPilotingDirection input, ISimulation simulation)
         {
-            if (!message.Simulation.TryGetEntityId(message.Sender, out int pilotId))
+            if (!simulation.TryGetEntityId(input.Sender, out int pilotId))
             {
                 return;
             }
@@ -63,22 +63,22 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
             var pilotable = _pilotables.Get(piloting?.Pilotable);
 
-            if (message.Data.Value && (pilotable.Direction & message.Data.Which) == 0)
+            if (input.Value && (pilotable.Direction & input.Which) == 0)
             {
-                pilotable.Direction |= message.Data.Which;
+                pilotable.Direction |= input.Which;
                 return;
             }
 
-            if (!message.Data.Value && (pilotable.Direction & message.Data.Which) != 0)
+            if (!input.Value && (pilotable.Direction & input.Which) != 0)
             {
-                pilotable.Direction &= ~message.Data.Which;
+                pilotable.Direction &= ~input.Which;
                 return;
             }
         }
 
-        public void Process(in IInput<SetPilotingTarget> message)
+        public void Process(SetPilotingTarget input, ISimulation simulation)
         {
-            if(!message.Simulation.TryGetEntityId(message.Sender, out int pilotId))
+            if (!simulation.TryGetEntityId(input.Sender, out int pilotId))
             {
                 return;
             }
@@ -90,7 +90,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
             var pilotable = _pilotables.Get(piloting.Pilotable);
 
-            pilotable.Aim.Target = message.Data.Target;
+            pilotable.Aim.Target = input.Target;
         }
     }
 }

@@ -14,7 +14,6 @@ using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Domain.Simulations.Factories;
 using VoidHuntersRevived.Domain.Simulations.Lockstep.Messages;
 using VoidHuntersRevived.Domain.Simulations.Lockstep.Services;
-using static VoidHuntersRevived.Domain.Simulations.Simulation;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
@@ -25,16 +24,16 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public LockstepServerSimulation(
             State state, 
-            IBus bus,
+            IInputService input,
             ITickFactory ticks,
             IStepService steps, 
             IParallelableService parallelables, 
-            IGlobalSimulationService globalSimulationService) : base(state, bus, steps, parallelables, globalSimulationService)
+            IGlobalSimulationService globalSimulationService) : base(state, input, steps, parallelables, globalSimulationService)
         {
             _ticks = ticks;
         }
 
-        public override void Input(InputDto input)
+        public override void Input(Input input)
         {
             _ticks.Enqueue(input);
         }

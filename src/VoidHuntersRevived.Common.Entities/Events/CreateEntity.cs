@@ -8,7 +8,7 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Common.Entities.Events
 {
-    public class CreateEntity : IData
+    public class CreateEntity : Input
     {
         public readonly ParallelKey Key;
 

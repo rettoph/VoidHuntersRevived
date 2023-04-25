@@ -6,14 +6,13 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Simulations
 {
-    public class InputDto
+    internal class InputRequest
     {
-        public Guid Id { get; init; }
-        public ParallelKey Sender { get; init; }
-        public IData Data { get; init; }
+        public readonly Input Input;
 
-        public InputDto()
+        public InputRequest(Input input)
         {
+            this.Input = input;
         }
     }
 }

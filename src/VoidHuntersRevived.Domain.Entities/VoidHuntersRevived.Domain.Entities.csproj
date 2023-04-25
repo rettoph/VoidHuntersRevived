@@ -7,6 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Components\**" />
+    <Compile Remove="Extensions\**" />
+    <EmbeddedResource Remove="Components\**" />
+    <EmbeddedResource Remove="Extensions\**" />
+    <None Remove="Components\**" />
+    <None Remove="Extensions\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Common\Guppy.Common.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\libraries\MonoGame.Extended\src\cs\MonoGame.Extended.Entities\MonoGame.Extended.Entities.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Entities.ShipParts\VoidHuntersRevived.Common.Entities.ShipParts.csproj" />
@@ -22,11 +31,6 @@
     <Using Include="tainicom.Aether.Physics2D.Dynamics.World">
       <Alias>Aether</Alias>
     </Using>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Components\" />
-    <Folder Include="Extensions\" />
   </ItemGroup>
 
 </Project>

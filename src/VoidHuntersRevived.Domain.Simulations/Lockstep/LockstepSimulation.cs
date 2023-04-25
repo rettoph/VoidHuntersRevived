@@ -25,19 +25,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         IDisposable
     {
         private readonly IStepService _steps;
-        private readonly IBus _bus;
+        private readonly IInputService _input;
 
         public State State { get; }
 
         public LockstepSimulation(
             State state,
-            IBus bus,
+            IInputService input,
             IStepService steps, 
             IParallelableService parallelables,
             IGlobalSimulationService globalSimulationService) : base(SimulationType.Lockstep, parallelables, globalSimulationService)
         {
             _steps = steps;
-            _bus = bus;
+            _input = input;
 
             this.State = state;
         }
@@ -59,10 +59,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public void Process(in Tick message)
         {
-            foreach (InputDto inputDto in message.Inputs)
+            foreach (Input input in message.Inputs)
             {
-                IInput input = Simulations.Input.Create(this, inputDto);
-                _bus.Publish(input);
+                _input.Publish(input, this);
             }
         }
     }

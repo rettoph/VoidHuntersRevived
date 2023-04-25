@@ -13,8 +13,6 @@ using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Domain.Simulations.Lockstep.Messages;
 using VoidHuntersRevived.Domain.Simulations.Lockstep.Services;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using static VoidHuntersRevived.Domain.Simulations.Simulation;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
@@ -26,17 +24,17 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public LockstepClientSimulation(
             State state, 
             NetScope network,
-            IBus bus,
+            IInputService input,
             IStepService steps, 
             IParallelableService parallelables, 
-            IGlobalSimulationService globalSimulationService) : base(state, bus, steps, parallelables, globalSimulationService)
+            IGlobalSimulationService globalSimulationService) : base(state, input, steps, parallelables, globalSimulationService)
         {
             _network = network;
         }
 
-        public override void Input(InputDto input)
+        public override void Input(Input input)
         {
-            _network.Messages.Create(input).Enqueue();
+            _network.Messages.Create(new InputRequest(input)).Enqueue();
         }
     }
 }

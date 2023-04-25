@@ -21,7 +21,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     [PeerTypeFilter(PeerType.Server)]
     [SimulationTypeFilter(SimulationType.Lockstep)]
-    internal sealed class LockstepServer_UserSystem : BasicSystem, ISubscriber<IInput<UserJoined>>
+    internal sealed class LockstepServer_UserSystem : BasicSystem,
+        IInputSubscriber<UserJoined>
     {
         private readonly State _state;
         private readonly NetScope _scope;
@@ -41,9 +42,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _scope.Users.OnUserJoined += HandleUserJoined;
         }
 
-        public void Process(in IInput<UserJoined> message)
+        public void Process(UserJoined input, ISimulation simulation)
         {
-            var user = _scope.Peer!.Users.UpdateOrCreate(message.Data.Id, message.Data.Claims);
+            var user = _scope.Peer!.Users.UpdateOrCreate(input.UserId, input.Claims);
 
             if (user.NetPeer is null)
             {
@@ -77,15 +78,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
         private void HandleUserJoined(IUserService sender, User args)
         {
-            _simulations.Input(new InputDto()
+            _simulations.Input(new UserJoined()
             {
                 Id = Guid.NewGuid(),
                 Sender = ParallelKeys.System,
-                Data = new UserJoined()
-                {
-                    Id = args.Id,
-                    Claims = args.Where(x => x.Accessibility == ClaimAccessibility.Public).ToArray()
-                }
+                UserId = args.Id,
+                Claims = args.Where(x => x.Accessibility == ClaimAccessibility.Public).ToArray()
             });
         }
     }

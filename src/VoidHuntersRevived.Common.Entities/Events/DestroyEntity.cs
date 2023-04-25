@@ -7,7 +7,7 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Common.Entities.Events
 {
-    public sealed class DestroyEntity : IData
+    public sealed class DestroyEntity : Input
     {
         public ParallelKey Key { get; set; }
     }

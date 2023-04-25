@@ -10,16 +10,16 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
 {
     public sealed class Tick : Message<Tick>
     {
-        private readonly IEnumerable<InputDto> _inputs;
+        private readonly IEnumerable<Input> _inputs;
         private int? _count;
 
-        public IEnumerable<InputDto> Inputs => _inputs;
+        public IEnumerable<Input> Inputs => _inputs;
 
         public int Count => _count ??= _inputs.Count();
 
         public int Id { get; }
 
-        internal Tick(int id, IEnumerable<InputDto> inputs)
+        internal Tick(int id, IEnumerable<Input> inputs)
         {
             _inputs = inputs;
 
@@ -28,10 +28,10 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
 
         public static Tick Empty(int id)
         {
-            return new Tick(id, Enumerable.Empty<InputDto>());
+            return new Tick(id, Enumerable.Empty<Input>());
         }
 
-        public static Tick Create(int id, IEnumerable<InputDto> events)
+        public static Tick Create(int id, IEnumerable<Input> events)
         {
             return new Tick(id, events);
         }

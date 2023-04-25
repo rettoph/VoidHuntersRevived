@@ -98,26 +98,22 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         public void Process(in PreTick message)
         {
-            _simulations.Input(new InputDto()
+            _simulations.Input(new SetPilotingTarget()
             {
                 Id = Guid.NewGuid(),
                 Sender = CurrentUserKey,
-                Data = new SetPilotingTarget()
-                {
-                    Target = CurrentTargetPosition
-                }
+                Target = CurrentTargetPosition
             });
         }
 
         public void Process(in SetPilotingDirection message)
         {
-            _simulations.Input(new InputDto()
+            _simulations.Input(new SetPilotingDirection()
             {
                 Id = Guid.NewGuid(),
                 Sender = CurrentUserKey,
-                Data = new SetPilotingDirection(
-                    which: message.Which,
-                    value: message.Value)
+                Which = message.Which,
+                Value = message.Value
             });
         }
 
@@ -133,15 +129,12 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
             if (_tractor.TryGetTractorable(pilotable, out ParallelKey targetTree, out ParallelKey targetNode))
             {
-                _simulations.Input(new InputDto()
+                _simulations.Input(new StartTractoring()
                 {
                     Id = Guid.NewGuid(),
                     Sender = CurrentUserKey,
-                    Data = new StartTractoring()
-                    {
-                        TargetTree = targetTree,
-                        TargetNode = targetNode
-                    }
+                    TargetTree = targetTree,
+                    TargetNode = targetNode
                 });
             }
         }
@@ -159,15 +152,12 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 return;
             }
 
-            _simulations.Input(new InputDto()
+            _simulations.Input(new StopTractoring()
             {
                 Id = Guid.NewGuid(),
                 Sender = CurrentUserKey,
-                Data = new StopTractoring()
-                {
-                    TargetPosition = CurrentTargetPosition,
-                    TargetTreeKey = _parallelables.Get(tractoring.TargetTreeId).Key
-                }
+                TargetPosition = CurrentTargetPosition,
+                TargetTreeKey = _parallelables.Get(tractoring.TargetTreeId).Key
             });
         }
     }

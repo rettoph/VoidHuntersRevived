@@ -21,12 +21,16 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
         {
             return new SetPilotingTarget()
             {
+                Id = reader.GetGuid(),
+                Sender = reader.GetParallelKey(),
                 Target = new Vector2(reader.GetFloat(), reader.GetFloat())
             };
         }
 
         public override void Serialize(NetDataWriter writer, in SetPilotingTarget instance)
         {
+            writer.Put(instance.Id);
+            writer.Put(instance.Sender);
             writer.Put(instance.Target.X);
             writer.Put(instance.Target.Y);
         }

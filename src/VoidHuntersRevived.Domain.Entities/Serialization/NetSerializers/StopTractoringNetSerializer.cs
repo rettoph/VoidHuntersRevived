@@ -12,6 +12,8 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
         {
             return new StopTractoring()
             {
+                Id = reader.GetGuid(),
+                Sender = reader.GetParallelKey(),
                 TargetPosition = reader.GetVector2(),
                 TargetTreeKey = reader.GetParallelKey()
             };
@@ -19,6 +21,8 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
 
         public override void Serialize(NetDataWriter writer, in StopTractoring instance)
         {
+            writer.Put(instance.Id);
+            writer.Put(instance.Sender);
             writer.Put(instance.TargetPosition);
             writer.Put(instance.TargetTreeKey);
         }

@@ -85,7 +85,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             }
         }
 
-        public void Input(InputDto input)
+        public void Input(Input input)
         {
             foreach (ISimulation simulation in _simulations.Values)
             {

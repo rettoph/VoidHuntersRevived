@@ -9,7 +9,7 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Domain.Entities.Events
 {
-    public sealed class SetPilotingTarget : IData
+    public sealed class SetPilotingTarget : Input
     {
         public required Vector2 Target { get; init; }
     }

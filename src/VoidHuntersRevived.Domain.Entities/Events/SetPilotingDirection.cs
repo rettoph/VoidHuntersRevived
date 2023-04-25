@@ -10,16 +10,12 @@ using VoidHuntersRevived.Common.Entities.Enums;
 
 namespace VoidHuntersRevived.Domain.Entities.Events
 {
-    public class SetPilotingDirection : Message<SetPilotingDirection>, IData
+    public class SetPilotingDirection : Input, IMessage
     {
-        public Direction Which { get; }
-        public bool Value { get; }
+        public required Direction Which { get; init;  }
+        public required bool Value { get; init;  }
 
-        public SetPilotingDirection(Direction which, bool value)
-        {
-            this.Which = which;
-            this.Value = value;
-        }
+        public Type Type => typeof(SetPilotingDirection);
 
         public override bool Equals(object? obj)
         {

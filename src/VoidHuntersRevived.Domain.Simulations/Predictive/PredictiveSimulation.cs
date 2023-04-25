@@ -20,18 +20,21 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
     internal sealed class PredictiveSimulation : Simulation<Common.Simulations.Components.Predictive>,
         ISubscriber<INetIncomingMessage<Tick>>
     {
+        private readonly IInputService _input;
         private IPredictiveSynchronizationSystem[] _synchronizeSystems;
         private readonly IBus _bus;
-        private readonly Dictionary<Guid, IInput> _inputs;
+        private readonly Dictionary<Guid, Input> _inputs;
 
         public PredictiveSimulation(
             IBus bus,
             IParallelableService simulatedEntities, 
-            IGlobalSimulationService globalSimulationService) : base(SimulationType.Predictive, simulatedEntities, globalSimulationService)
+            IGlobalSimulationService globalSimulationService,
+            IInputService input) : base(SimulationType.Predictive, simulatedEntities, globalSimulationService)
         {
             _synchronizeSystems = Array.Empty<IPredictiveSynchronizationSystem>();
             _bus = bus;
-            _inputs = new Dictionary<Guid, IInput>();
+            _inputs = new Dictionary<Guid, Input>();
+            _input = input;
         }
 
         public override void Initialize(IServiceProvider provider)
@@ -53,9 +56,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             }
         }
 
-        public override void Input(InputDto dto)
+        public override void Input(Input input)
         {
-            ref IInput? input = ref CollectionsMarshal.GetValueRefOrAddDefault(_inputs, dto.Id, out bool exists);
+            ref Input? cache = ref CollectionsMarshal.GetValueRefOrAddDefault(_inputs, input.Id, out bool exists);
 
             if(exists)
             {
@@ -66,15 +69,15 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
                 return;
             }
 
-            input = Simulations.Input.Create(this, dto);
-            _bus.Publish(input);
+            cache = input;
+            _input.Publish(input, this);
         }
 
         public void Process(in INetIncomingMessage<Tick> message)
         {
-            foreach(InputDto inputDto in message.Body.Inputs)
+            foreach(Input input in message.Body.Inputs)
             {
-                this.Input(inputDto);
+                this.Input(input);
             }
         }
     }

@@ -14,15 +14,15 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 {
     [GuppyFilter<IGameGuppy>()]
     internal sealed class DestroyEntitySystem : BasicSystem,
-        ISubscriber<IInput<DestroyEntity>>
+        IInputSubscriber<DestroyEntity>
     {
         public DestroyEntitySystem()
         {
         }
 
-        public void Process(in IInput<DestroyEntity> message)
+        public void Process(DestroyEntity input, ISimulation simulation)
         {
-            message.Simulation.DestroyEntity(message.Data.Key);
+            simulation.DestroyEntity(input.Key);
         }
     }
 }

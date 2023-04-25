@@ -29,6 +29,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
 
             services.AddSingleton<IGlobalSimulationService, GlobalSimulationService>()
                     .AddScoped<ISimulationService, SimulationService>()
+                    .AddScoped<IInputService, InputService>()
                     .AddScoped<IParallelableService, ParallelableService>();
 
             services.ConfigureCollection(manager =>
@@ -96,7 +97,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
                 .AddInterfaceAliases();
 
             services.AddNetMessageType<Tick>(DeliveryMethod.ReliableUnordered, 0);
-            services.AddNetMessageType<InputDto>(DeliveryMethod.ReliableUnordered, 0);
+            services.AddNetMessageType<InputRequest>(DeliveryMethod.ReliableUnordered, 0);
             services.AddNetMessageType<StateBegin>(DeliveryMethod.ReliableUnordered, 0);
             services.AddNetMessageType<StateTick>(DeliveryMethod.ReliableUnordered, 0);
             services.AddNetMessageType<StateEnd>(DeliveryMethod.ReliableUnordered, 0);

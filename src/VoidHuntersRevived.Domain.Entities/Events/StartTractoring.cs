@@ -10,9 +10,11 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Domain.Entities.Events
 {
-    public sealed class StartTractoring : Message<StartTractoring>, IData
+    public sealed class StartTractoring : Input, IMessage
     {
-        public ParallelKey TargetTree { get; init; }
-        public ParallelKey TargetNode { get; init; }
+        public required ParallelKey TargetTree { get; init; }
+        public required ParallelKey TargetNode { get; init; }
+
+        public Type Type => typeof(StartTractoring);
     }
 }

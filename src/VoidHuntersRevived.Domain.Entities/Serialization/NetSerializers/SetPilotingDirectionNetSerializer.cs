@@ -21,14 +21,20 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
     {
         public override SetPilotingDirection Deserialize(NetDataReader reader)
         {
-            return new SetPilotingDirection(
-                which: reader.GetEnum<Direction>(),
-                value: reader.GetBool());
+            return new SetPilotingDirection()
+            {
+                Id = reader.GetGuid(),
+                Sender = reader.GetParallelKey(),
+                Which = reader.GetEnum<Direction>(),
+                Value = reader.GetBool()
+            };
 
         }
 
         public override void Serialize(NetDataWriter writer, in SetPilotingDirection instance)
         {
+            writer.Put(instance.Id);
+            writer.Put(instance.Sender);
             writer.Put(instance.Which);
             writer.Put(instance.Value);
         }

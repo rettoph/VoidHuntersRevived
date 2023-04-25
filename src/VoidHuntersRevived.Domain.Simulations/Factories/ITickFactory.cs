@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Factories
 {
     public interface ITickFactory
     {
-        void Enqueue(InputDto input);
+        void Enqueue(Input input);
 
         Tick Create(int id);
 

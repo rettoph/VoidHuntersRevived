@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     [GuppyFilter<IGameGuppy>()]
     internal sealed class UserPilotSystem : BasicSystem,
-        ISubscriber<IInput<UserJoined>>
+        IInputSubscriber<UserJoined>
     {
         private readonly NetScope _scope;
         private readonly ILogger _logger;
@@ -49,9 +49,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _nodes = world.ComponentMapper.GetMapper<Node>();
         }
 
-        public void Process(in IInput<UserJoined> message)
+        public void Process(UserJoined input, ISimulation simulation)
         {
-            var user = _scope.Peer!.Users.UpdateOrCreate(message.Data.Id, message.Data.Claims);
+            var user = _scope.Peer!.Users.UpdateOrCreate(input.UserId, input.Claims);
 
             // Ensure the user has been added to the scope
             if (!_scope.Users.TryGet(user.Id, out _))
@@ -61,19 +61,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
             var key = user.GetKey();
 
-            if (message.Simulation.HasEntity(key))
+            if (simulation.HasEntity(key))
             { // This operation has already been done
                 return;
             }
 
-            Entity ship = _ships.CreateShip(key.Create(ParallelTypes.Ship), ShipParts.HullSquare, message.Simulation);
-            
-            // TODO: Make a CreatePilot event and override this extension's functionality
-            var pilot = message.Simulation.CreatePilot(key, ship);
+            Entity ship = _ships.CreateShip(key.Create(ParallelTypes.Ship), ShipParts.HullSquare, simulation);
 
-            Entity chain = _chains.CreateChain(ParallelTypes.Chain.Create(1337), ShipParts.HullSquare, Vector2.Zero, 0, message.Simulation);
-            chain = _chains.CreateChain(ParallelTypes.Chain.Create(1338), ShipParts.HullSquare, Vector2.Zero, 0, message.Simulation);
-            chain = _chains.CreateChain(ParallelTypes.Chain.Create(1339), ShipParts.HullSquare, Vector2.Zero, 0, message.Simulation);
+            // TODO: Make a CreatePilot event and override this extension's functionality
+            var pilot = simulation.CreatePilot(key, ship);
+
+            Entity chain = _chains.CreateChain(ParallelTypes.Chain.Create(1337), ShipParts.HullSquare, Vector2.Zero, 0, simulation);
+            chain = _chains.CreateChain(ParallelTypes.Chain.Create(1338), ShipParts.HullSquare, Vector2.Zero, 0, simulation);
+            chain = _chains.CreateChain(ParallelTypes.Chain.Create(1339), ShipParts.HullSquare, Vector2.Zero, 0, simulation);
         }
     }
 }

@@ -9,11 +9,17 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Domain.Entities.Events
 {
-    public class StopTractoring : Message<StopTractoring>, IData
+    public class StopTractoring : Input, IMessage
     {
-        public static readonly StopTractoring Instance = new StopTractoring();
+        public static readonly StopTractoring Instance = new StopTractoring()
+        {
+            Id = Guid.Empty,
+            Sender = default!
+        };
 
         public Vector2 TargetPosition { get; init; }
         public ParallelKey TargetTreeKey { get; init; }
+
+        public Type Type => typeof(StopTractoring);
     }
 }
