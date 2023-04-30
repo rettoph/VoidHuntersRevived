@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
         {
             return new StopTractoring()
             {
-                Id = reader.GetGuid(),
+                Id = reader.GetParallelKey(),
                 Sender = reader.GetParallelKey(),
                 TargetPosition = reader.GetVector2(),
                 TargetTreeKey = reader.GetParallelKey()

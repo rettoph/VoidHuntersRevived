@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public LockstepClientSimulation(
             State state, 
             NetScope network,
-            IInputService input,
+            ISimulationEventPublishingService input,
             IStepService steps, 
             IParallelableService parallelables, 
             IGlobalSimulationService globalSimulationService) : base(state, input, steps, parallelables, globalSimulationService)
@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _network = network;
         }
 
-        public override void Input(Input input)
+        public override void Input(SimulationInput input)
         {
             _network.Messages.Create(new InputRequest(input)).Enqueue();
         }

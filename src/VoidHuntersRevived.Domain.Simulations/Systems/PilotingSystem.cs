@@ -13,12 +13,13 @@ using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Systems;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
+using VoidHuntersRevived.Common.Simulations.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     internal sealed class PilotingSystem : BasicSystem,
-        IInputSubscriber<SetPilotingDirection>,
-        IInputSubscriber<SetPilotingTarget>
+        ISimulationEventListener<SetPilotingDirection>,
+        ISimulationEventListener<SetPilotingTarget>
     {
         private ComponentMapper<Piloting> _pilotings;
         private ComponentMapper<Pilotable> _pilotables;
@@ -49,48 +50,52 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _tractorables = world.ComponentMapper.GetMapper<Tractorable>();
         }
 
-        public void Process(SetPilotingDirection input, ISimulation simulation)
+        public SimulationEventResult Process(ISimulation simulation, SetPilotingDirection data)
         {
-            if (!simulation.TryGetEntityId(input.Sender, out int pilotId))
+            if (!simulation.TryGetEntityId(data.Sender, out int pilotId))
             {
-                return;
+                return SimulationEventResult.Failure;
             }
 
             if (!_pilotings.TryGet(pilotId, out var piloting))
             {
-                return;
+                return SimulationEventResult.Failure;
             }
 
             var pilotable = _pilotables.Get(piloting?.Pilotable);
 
-            if (input.Value && (pilotable.Direction & input.Which) == 0)
+            if (data.Value && (pilotable.Direction & data.Which) == 0)
             {
-                pilotable.Direction |= input.Which;
-                return;
+                pilotable.Direction |= data.Which;
+                return SimulationEventResult.Success;
             }
 
-            if (!input.Value && (pilotable.Direction & input.Which) != 0)
+            if (!data.Value && (pilotable.Direction & data.Which) != 0)
             {
-                pilotable.Direction &= ~input.Which;
-                return;
+                pilotable.Direction &= ~data.Which;
+                return SimulationEventResult.Success;
             }
+
+            return SimulationEventResult.Success;
         }
 
-        public void Process(SetPilotingTarget input, ISimulation simulation)
+        public SimulationEventResult Process(ISimulation simulation, SetPilotingTarget data)
         {
-            if (!simulation.TryGetEntityId(input.Sender, out int pilotId))
+            if (!simulation.TryGetEntityId(data.Sender, out int pilotId))
             {
-                return;
+                return SimulationEventResult.Failure;
             }
 
             if (!_pilotings.TryGet(pilotId, out var piloting))
             {
-                return;
+                return SimulationEventResult.Failure;
             }
 
             var pilotable = _pilotables.Get(piloting.Pilotable);
 
-            pilotable.Aim.Target = input.Target;
+            pilotable.Aim.Target = data.Target;
+
+            return SimulationEventResult.Success;
         }
     }
 }

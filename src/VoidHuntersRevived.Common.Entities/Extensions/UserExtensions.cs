@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Common.Entities.Extensions
     {
         public static ParallelKey GetKey(this User user)
         {
-            return ParallelTypes.Pilot.Create(user.Id);
+            return ParallelEntityTypes.Pilot.Create(user.Id);
         }
     }
 }

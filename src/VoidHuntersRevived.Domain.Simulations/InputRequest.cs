@@ -8,9 +8,9 @@ namespace VoidHuntersRevived.Common.Simulations
 {
     internal class InputRequest
     {
-        public readonly Input Input;
+        public readonly SimulationInput Input;
 
-        public InputRequest(Input input)
+        public InputRequest(SimulationInput input)
         {
             this.Input = input;
         }

@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public Entity CreateChain(ParallelKey key, string headResource, Vector2 position, float rotation, ISimulation simulation)
         {
-            Entity shipPart = _shipParts.CreateShipPart(key.Create(ParallelTypes.ShipPart, 0), simulation, headResource);
+            Entity shipPart = _shipParts.CreateShipPart(key.Create(ParallelEntityTypes.ShipPart, 0), simulation, headResource);
             Node head = shipPart.Get<Node>();
 
             return this.CreateChain(key, head, position, rotation, simulation);

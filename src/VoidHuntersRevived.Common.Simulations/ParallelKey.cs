@@ -1,30 +1,24 @@
-﻿using LiteNetLib.Utils;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data.HashFunction;
-using System.Data.HashFunction.xxHash;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Simulations;
+﻿using Standart.Hash.xxHash;
+using VoidHuntersRevived.Common.Simulations.Extensions.System;
 
 namespace VoidHuntersRevived.Common.Simulations
 {
     public readonly struct ParallelKey
     {
-        private static readonly IxxHash xxHash = xxHashFactory.Instance.Create(new xxHashConfig()
-        {
-            HashSizeInBits = 32,
-            Seed = 1337
-        });
+        public static ParallelKey Empty = new ParallelKey(default);
 
-        public readonly int Hash;
+        private const int TypeAndGuidSize = 17;
 
-        internal ParallelKey(int hash)
+        public readonly Guid Hash;
+
+        internal ParallelKey(Guid hash)
         {
             this.Hash = hash;
+        }
+
+        public unsafe static ParallelKey NewKey()
+        {
+            return new ParallelKey(Guid.NewGuid());
         }
 
         public ParallelKey Create(ParallelType type)
@@ -42,21 +36,16 @@ namespace VoidHuntersRevived.Common.Simulations
             return ParallelKey.From(type, default, noise);
         }
 
-        private static ParallelKey From(ParallelType type, ParallelKey parent, params int[] noise)
+        private static unsafe ParallelKey From(ParallelType type, ParallelKey parent, params int[] noise)
         {
-            int[] int_data = new int[]
-            {
-                type.Value,
-                parent.Hash
-            };
+            byte[] data = new byte[TypeAndGuidSize + (noise.Length * sizeof(int))];
+            data[0] = type.Value;
+            data.Encode(1, parent.Hash);
+            Buffer.BlockCopy(noise, 0, data, TypeAndGuidSize, noise.Length * sizeof(int));
+            uint128 xxHash = xxHash128.ComputeHash(data, data.Length);
+            Guid* hash = (Guid*)&xxHash;
 
-            byte[] byte_data = new byte[(int_data.Length + noise.Length) * sizeof(int)];
-            Buffer.BlockCopy(int_data, 0, byte_data, 0, int_data.Length * sizeof(int));
-            Buffer.BlockCopy(noise, 0, byte_data, int_data.Length * sizeof(int), noise.Length * sizeof(int));
-            IHashValue computed = xxHash.ComputeHash(byte_data);
-            int hash = BitConverter.ToInt32(computed.Hash);
-
-            return new ParallelKey(hash);
+            return new ParallelKey(hash[0]);
         }
     }
 }

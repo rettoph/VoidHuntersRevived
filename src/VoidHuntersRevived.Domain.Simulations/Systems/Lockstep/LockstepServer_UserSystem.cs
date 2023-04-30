@@ -10,6 +10,7 @@ using Guppy.Network.Messages;
 using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
+using VoidHuntersRevived.Common.Simulations.Enums;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Systems;
@@ -22,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
     [PeerTypeFilter(PeerType.Server)]
     [SimulationTypeFilter(SimulationType.Lockstep)]
     internal sealed class LockstepServer_UserSystem : BasicSystem,
-        IInputSubscriber<UserJoined>
+        ISimulationEventListener<UserJoined>
     {
         private readonly State _state;
         private readonly NetScope _scope;
@@ -42,13 +43,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _scope.Users.OnUserJoined += HandleUserJoined;
         }
 
-        public void Process(UserJoined input, ISimulation simulation)
+        public SimulationEventResult Process(ISimulation simulation, UserJoined data)
         {
-            var user = _scope.Peer!.Users.UpdateOrCreate(input.UserId, input.Claims);
+            var user = _scope.Peer!.Users.UpdateOrCreate(data.UserId, data.Claims);
 
             if (user.NetPeer is null)
             {
-                return;
+                return SimulationEventResult.Failure;
             }
 
             var lastTickId = _state.LastTickId;
@@ -74,13 +75,15 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             {
                 LastTickId = lastTickId
             }).AddRecipient(user.NetPeer).Enqueue();
+
+            return SimulationEventResult.Success;
         }
 
         private void HandleUserJoined(IUserService sender, User args)
         {
             _simulations.Input(new UserJoined()
             {
-                Id = Guid.NewGuid(),
+                Id = UserJoined.ParallelType.Create(args.Id),
                 Sender = ParallelKeys.System,
                 UserId = args.Id,
                 Claims = args.Where(x => x.Accessibility == ClaimAccessibility.Public).ToArray()

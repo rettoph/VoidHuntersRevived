@@ -20,20 +20,20 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
     internal sealed class PredictiveSimulation : Simulation<Common.Simulations.Components.Predictive>,
         ISubscriber<INetIncomingMessage<Tick>>
     {
-        private readonly IInputService _input;
+        private readonly ISimulationEventPublishingService _input;
         private IPredictiveSynchronizationSystem[] _synchronizeSystems;
         private readonly IBus _bus;
-        private readonly Dictionary<Guid, Input> _inputs;
+        private readonly Dictionary<Guid, ISimulationEventData> _events;
 
         public PredictiveSimulation(
             IBus bus,
             IParallelableService simulatedEntities, 
             IGlobalSimulationService globalSimulationService,
-            IInputService input) : base(SimulationType.Predictive, simulatedEntities, globalSimulationService)
+            ISimulationEventPublishingService input) : base(SimulationType.Predictive, simulatedEntities, globalSimulationService)
         {
             _synchronizeSystems = Array.Empty<IPredictiveSynchronizationSystem>();
             _bus = bus;
-            _inputs = new Dictionary<Guid, Input>();
+            _events = new Dictionary<Guid, ISimulationEventData>();
             _input = input;
         }
 
@@ -56,11 +56,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             }
         }
 
-        public override void Input(Input input)
+        public override void Publish(ISimulationEventData data)
         {
-            ref Input? cache = ref CollectionsMarshal.GetValueRefOrAddDefault(_inputs, input.Id, out bool exists);
+            ref ISimulationEventData? cached = ref CollectionsMarshal.GetValueRefOrAddDefault(_events, data.Id.Hash, out bool exists);
 
-            if(exists)
+            if (exists)
             {
                 // Indicates a duplicate input.
                 // Most likely a previously predicted local input thats
@@ -69,13 +69,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
                 return;
             }
 
-            cache = input;
-            _input.Publish(input, this);
+            cached = data;
+
+            _input.Publish(this, data);
+        }
+
+        public override void Input(SimulationInput input)
+        {
+            this.Publish(input);
         }
 
         public void Process(in INetIncomingMessage<Tick> message)
         {
-            foreach(Input input in message.Body.Inputs)
+            foreach(SimulationInput input in message.Body.Inputs)
             {
                 this.Input(input);
             }

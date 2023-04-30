@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
         {
             return new SetPilotingDirection()
             {
-                Id = reader.GetGuid(),
+                Id = reader.GetParallelKey(),
                 Sender = reader.GetParallelKey(),
                 Which = reader.GetEnum<Direction>(),
                 Value = reader.GetBool()

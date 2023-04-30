@@ -8,8 +8,10 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Domain.Simulations.Events
 {
-    public sealed class UserJoined : Input
+    public sealed class UserJoined : SimulationInput
     {
+        public static ParallelType ParallelType = ParallelType.GetOrRegister(nameof(UserJoined));
+
         public required int UserId { get; init; }
         public required Claim[] Claims { get; init; }
     }

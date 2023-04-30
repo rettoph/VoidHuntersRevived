@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
         {
             var instance = new UserJoined()
             {
-                Id = reader.GetGuid(),
+                Id = reader.GetParallelKey(),
                 Sender = reader.GetParallelKey(),
                 UserId = reader.GetInt(),
                 Claims = new Claim[reader.GetInt()]

@@ -17,6 +17,7 @@ using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Components;
+using VoidHuntersRevived.Common.Simulations.Enums;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Domain.Entities.Events;
@@ -25,8 +26,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 {
     [GuppyFilter<IGameGuppy>()]
     internal sealed class TractoringSystem : ParallelEntityProcessingSystem,
-        IInputSubscriber<StartTractoring>,
-        IInputSubscriber<StopTractoring>
+        ISimulationEventListener<StartTractoring>,
+        ISimulationEventListener<StopTractoring>
     {
         private static readonly AspectBuilder TractoringAspect = Aspect.All(new[] {
             typeof(Tractoring)
@@ -80,30 +81,30 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             _parallelables = mapperService.GetMapper<Parallelable>();
         }
 
-        public void Process(StartTractoring input, ISimulation simulation)
+        public SimulationEventResult Process(ISimulation simulation, StartTractoring data)
         {
-            if (!simulation.TryGetEntityId(input.TargetTree, out int targetTreeId))
+            if (!simulation.TryGetEntityId(data.TargetTree, out int targetTreeId))
             {
-                return;
+                return SimulationEventResult.Failure;
             }
 
-            if (!simulation.TryGetEntityId(input.TargetNode, out int targetNodeId))
+            if (!simulation.TryGetEntityId(data.TargetNode, out int targetNodeId))
             {
-                return;
+                return SimulationEventResult.Failure;
             }
 
-            var pilotId = simulation.GetEntityId(input.Sender);
+            var pilotId = simulation.GetEntityId(data.Sender);
             var piloting = _pilotings.Get(pilotId);
             var tree = _trees.Get(piloting.Pilotable.Id);
 
             if (!_nodes.TryGet(targetNodeId, out Node? targetNode))
             {
-                return;
+                return SimulationEventResult.Failure;
             }
 
             if (targetNode.Tree is null)
             {
-                return;
+                return SimulationEventResult.Failure;
             }
 
             if (targetNode.Tree.EntityId != targetTreeId)
@@ -115,18 +116,18 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 // created a brand new chain in the process. Ideally there would
                 // be some sort of prediction verification done before we got to
                 // this state?
-                return;
+                return SimulationEventResult.Failure;
             }
 
             if (!_tractorables.TryGet(targetTreeId, out var tractorable))
             { // The target is not tractorable
-                return;
+                return SimulationEventResult.Failure;
             }
 
 
             if (tractorable.WhitelistedTractoring is not null && tractorable.WhitelistedTractoring.Value != piloting.Pilotable.Id)
             { // This part is attached to another ship
-                return;
+                return SimulationEventResult.Failure;
             }
 
             if (targetNode.Tree == tree)
@@ -146,7 +147,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 // was slotted in already, but the confirmation from the server doesn't
                 // display that very well.
                 targetTreeId = _chainService.CreateChain(
-                    key: key.Create(ParallelTypes.Chain),
+                    key: key.Create(ParallelEntityTypes.Chain),
                     head: targetNode,
                     position: position,
                     rotation: rotation,
@@ -155,19 +156,21 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             var tractoring = new Tractoring(piloting.Pilotable.Id, targetTreeId);
             _tractorings.Put(piloting.Pilotable.Id, tractoring);
+
+            return SimulationEventResult.Success;
         }
 
-        public void Process(StopTractoring input, ISimulation simulation)
+        public SimulationEventResult Process(ISimulation simulation, StopTractoring data)
         {
-            int pilotId = simulation.GetEntityId(input.Sender);
+            int pilotId = simulation.GetEntityId(data.Sender);
             if (!_pilotings.TryGet(pilotId, out Piloting? piloting))
             {
-                return;
+                return SimulationEventResult.Failure;
             }
 
-            if (!simulation.TryGetEntityId(input.TargetTreeKey, out int tractorableId))
+            if (!simulation.TryGetEntityId(data.TargetTreeKey, out int tractorableId))
             {
-                return;
+                return SimulationEventResult.Failure;
             }
 
             if (_tractorings.TryGet(piloting.Pilotable.Id, out Tractoring? tractoring)
@@ -176,9 +179,9 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 _tractorings.Delete(piloting.Pilotable.Id);
             }
 
-            if (!_tractor.TransformTractorable(input.TargetPosition, piloting.Pilotable.Id, tractorableId, out Link? potential))
+            if (!_tractor.TransformTractorable(data.TargetPosition, piloting.Pilotable.Id, tractorableId, out Link? potential))
             {
-                return;
+                return SimulationEventResult.Failure;
             }
 
             // Destroy the old chain
@@ -189,6 +192,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             // Create a jointing to the current ship.
             _nodeService.Attach(potential.Child, potential.Parent);
+
+            return SimulationEventResult.Success;
         }
 
         protected override void Process(ISimulation simulation, GameTime gameTime, int entityId)

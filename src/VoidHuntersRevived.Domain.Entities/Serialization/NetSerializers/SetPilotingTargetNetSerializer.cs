@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
         {
             return new SetPilotingTarget()
             {
-                Id = reader.GetGuid(),
+                Id = reader.GetParallelKey(),
                 Sender = reader.GetParallelKey(),
                 Target = new Vector2(reader.GetFloat(), reader.GetFloat())
             };

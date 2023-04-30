@@ -11,12 +11,12 @@ namespace LiteNetLib.Utils
     {
         public static void GetParallelKey(this NetDataReader reader, out ParallelKey key)
         {
-            key = new ParallelKey(reader.GetInt());
+            key = new ParallelKey(reader.GetGuid());
         }
 
         public static ParallelKey GetParallelKey(this NetDataReader reader)
         {
-            return new ParallelKey(reader.GetInt());
+            return new ParallelKey(reader.GetGuid());
         }
     }
 }

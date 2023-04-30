@@ -25,13 +25,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         IDisposable
     {
         private readonly IStepService _steps;
-        private readonly IInputService _input;
+        private readonly ISimulationEventPublishingService _input;
 
         public State State { get; }
 
         public LockstepSimulation(
             State state,
-            IInputService input,
+            ISimulationEventPublishingService input,
             IStepService steps, 
             IParallelableService parallelables,
             IGlobalSimulationService globalSimulationService) : base(SimulationType.Lockstep, parallelables, globalSimulationService)
@@ -52,6 +52,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _steps.Update(gameTime);
         }
 
+        public override void Publish(ISimulationEventData data)
+        {
+            _input.Publish(this, data);
+        }
+
         public void Process(in Step message)
         {
             this.UpdateSystems(message);
@@ -59,9 +64,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public void Process(in Tick message)
         {
-            foreach (Input input in message.Inputs)
+            foreach (SimulationInput input in message.Inputs)
             {
-                _input.Publish(input, this);
+                this.Publish(input);
             }
         }
     }

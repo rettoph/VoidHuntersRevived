@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Common.Simulations
         {
             _types = new DoubleDictionary<int, string, ParallelType>();
         }
-        public ParallelKey Create(int noise)
+        public ParallelKey Create(params int[] noise)
         {
             return ParallelKey.From(this, noise);
         }

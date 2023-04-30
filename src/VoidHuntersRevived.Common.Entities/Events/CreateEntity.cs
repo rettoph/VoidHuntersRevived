@@ -8,13 +8,15 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Common.Entities.Events
 {
-    public class CreateEntity : Input
+    public class CreateEntity : ISimulationEventData
     {
-        public readonly ParallelKey Key;
+        public ParallelKey Id { get; }
 
-        public CreateEntity(ParallelKey key)
+        public readonly ParallelKey EntityKey;
+
+        public CreateEntity(ParallelKey entity)
         {
-            this.Key = key;
+            this.EntityKey = entity;
         }
     }
 }

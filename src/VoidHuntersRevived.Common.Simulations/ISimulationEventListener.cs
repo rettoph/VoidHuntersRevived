@@ -3,17 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Simulations.Enums;
 
 namespace VoidHuntersRevived.Common.Simulations
 {
-    public interface IInputSubscriber
+    public interface ISimulationEventListener<TEventData>
+        where TEventData : ISimulationEventData
     {
-    }
-
-    public interface IInputSubscriber<TInput>
-        where TInput : Input
-    {
-        void Process(TInput input, ISimulation simulation);
+        SimulationEventResult Process(ISimulation simulation, TEventData data);
 
         //void Rollback(TInput input, ISimulation simulation);
     }

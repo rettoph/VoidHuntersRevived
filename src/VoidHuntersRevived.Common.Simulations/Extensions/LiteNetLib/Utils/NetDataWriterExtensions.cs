@@ -9,12 +9,14 @@ namespace LiteNetLib.Utils
 {
     public static class NetDataWriterExtensions
     {
-        public static void Put(this NetDataWriter writer, in ParallelKey key)
+        public static unsafe void Put(this NetDataWriter writer, in ParallelKey key)
         {
+            var test = Guid.NewGuid();
+            ulong* longs = (ulong*)&test;
             writer.Put(key.Hash);
         }
 
-        public static void Put(this NetDataWriter writer, ParallelKey key)
+        public static unsafe void Put(this NetDataWriter writer, ParallelKey key)
         {
             writer.Put(key.Hash);
         }

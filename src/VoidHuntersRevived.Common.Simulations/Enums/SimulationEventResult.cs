@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Common.Simulations
+namespace VoidHuntersRevived.Common.Simulations.Enums
 {
-    internal class InputRequest
+    public enum SimulationEventResult
     {
-        Input Input { get; set; }
+        Success = 0,
+        Failure = 1
     }
 }

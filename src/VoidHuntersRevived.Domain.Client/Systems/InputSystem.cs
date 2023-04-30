@@ -22,6 +22,7 @@ using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using Guppy.Attributes;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
+using VoidHuntersRevived.Domain.Simulations;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
@@ -54,7 +55,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                     return default;
                 }
 
-                return ParallelKey.From(ParallelTypes.Pilot, _netScope.Peer.Users.Current.Id);
+                return ParallelKey.From(ParallelEntityTypes.Pilot, _netScope.Peer.Users.Current.Id);
             }
         }
 
@@ -100,7 +101,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         {
             _simulations.Input(new SetPilotingTarget()
             {
-                Id = Guid.NewGuid(),
+                Id = ParallelKey.NewKey(),
                 Sender = CurrentUserKey,
                 Target = CurrentTargetPosition
             });
@@ -110,7 +111,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         {
             _simulations.Input(new SetPilotingDirection()
             {
-                Id = Guid.NewGuid(),
+                Id = ParallelKey.NewKey(),
                 Sender = CurrentUserKey,
                 Which = message.Which,
                 Value = message.Value
@@ -131,7 +132,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             {
                 _simulations.Input(new StartTractoring()
                 {
-                    Id = Guid.NewGuid(),
+                    Id = ParallelKey.NewKey(),
                     Sender = CurrentUserKey,
                     TargetTree = targetTree,
                     TargetNode = targetNode
@@ -154,7 +155,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
             _simulations.Input(new StopTractoring()
             {
-                Id = Guid.NewGuid(),
+                Id = ParallelKey.NewKey(),
                 Sender = CurrentUserKey,
                 TargetPosition = CurrentTargetPosition,
                 TargetTreeKey = _parallelables.Get(tractoring.TargetTreeId).Key

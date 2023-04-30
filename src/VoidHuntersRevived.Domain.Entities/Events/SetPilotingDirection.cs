@@ -10,7 +10,7 @@ using VoidHuntersRevived.Common.Entities.Enums;
 
 namespace VoidHuntersRevived.Domain.Entities.Events
 {
-    public class SetPilotingDirection : Input, IMessage
+    public class SetPilotingDirection : SimulationInput, IMessage
     {
         public required Direction Which { get; init;  }
         public required bool Value { get; init;  }

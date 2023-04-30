@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public LockstepServerSimulation(
             State state, 
-            IInputService input,
+            ISimulationEventPublishingService input,
             ITickFactory ticks,
             IStepService steps, 
             IParallelableService parallelables, 
@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _ticks = ticks;
         }
 
-        public override void Input(Input input)
+        public override void Input(SimulationInput input)
         {
             _ticks.Enqueue(input);
         }

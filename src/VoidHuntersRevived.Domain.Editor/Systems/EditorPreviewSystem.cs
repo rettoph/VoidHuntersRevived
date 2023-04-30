@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Domain.Editor.Systems
 
         public void Initialize(ISimulation simulation)
         {
-            ParallelKey key = ParallelTypes.ShipPart.Create(0);
+            ParallelKey key = ParallelEntityTypes.ShipPart.Create(0);
 
             // simulation.CreateEntity(key).MakeShipPart(_editor.ShipPartResource).Attach(new Editable());
         }

@@ -139,6 +139,8 @@ namespace VoidHuntersRevived.Domain.Simulations
             return entity;
         }
 
-        public abstract void Input(Input input);
+        public abstract void Publish(ISimulationEventData data);
+
+        public abstract void Input(SimulationInput input);
     }
 }

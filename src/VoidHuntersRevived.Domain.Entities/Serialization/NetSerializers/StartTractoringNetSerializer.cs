@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
         {
             return new StartTractoring()
             {
-                Id = reader.GetGuid(),
+                Id = reader.GetParallelKey(),
                 Sender = reader.GetParallelKey(),
                 TargetTree = reader.GetParallelKey(),
                 TargetNode = reader.GetParallelKey()
