@@ -47,20 +47,20 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         private ComponentMapper<Parallelable> _parallelables;
         private INodeService _nodeService;
         private IChainService _chainService;
-        private IUserPilotService _userPilots;
+        private IUserPilotMappingService _userPilotMap;
 
         public TractoringSystem(
             INodeService nodeService, 
             IChainService chainService, 
             ITractorService tractor,
-            IUserPilotService userPilots,
+            IUserPilotMappingService userPilots,
             IBus bus,
             ISimulationService simulations) : base(simulations, TractoringAspect)
         {
             _tractor = tractor;
             _nodeService = nodeService;
             _chainService = chainService;
-            _userPilots = userPilots;
+            _userPilotMap = userPilots;
             _bus = bus;
 
             _tractorings = default!;
@@ -97,7 +97,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return SimulationEventResult.Failure;
             }
 
-            ParallelKey pilotKey = _userPilots.GetPilotKey(data.SenderId);
+            ParallelKey pilotKey = _userPilotMap.GetPilotKey(data.SenderId);
             int pilotId = simulation.GetEntityId(pilotKey);
             Piloting piloting = _pilotings.Get(pilotId);
             Tree tree = _trees.Get(piloting.Pilotable.Id);
@@ -167,7 +167,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         public SimulationEventResult Process(ISimulation simulation, StopTractoring data)
         {
-            ParallelKey pilotKey = _userPilots.GetPilotKey(data.SenderId);
+            ParallelKey pilotKey = _userPilotMap.GetPilotKey(data.SenderId);
             int pilotId = simulation.GetEntityId(pilotKey);
 
             if (!_pilotings.TryGet(pilotId, out Piloting? piloting))

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
+using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Entities.ShipParts;
 using VoidHuntersRevived.Common.Entities.ShipParts.Configurations;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
@@ -52,7 +53,10 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
                 manager.AddScoped<ShipService>()
                     .AddInterfaceAliases();
 
-                manager.AddScoped<UserPilotService>()
+                manager.AddScoped<PilotService>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<UserPilotMappingService>()
                     .AddInterfaceAliases();
 
                 manager.AddScoped<RigidNodeSystem>()

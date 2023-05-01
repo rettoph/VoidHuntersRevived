@@ -10,9 +10,11 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Common.Entities.Services
 {
-    public interface IUserPilotService
+    public interface IUserPilotMappingService
     {
-        public Entity CreateUserPilot(ParallelKey key, User user, Entity pilotable, ISimulation simulation);
+        void Add(int userId, ParallelKey pilotKey);
+
+        void Remove(ParallelKey pilotKey);
 
         public int GetUserId(ParallelKey key);
 

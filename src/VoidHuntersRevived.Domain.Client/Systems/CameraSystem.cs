@@ -21,11 +21,11 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private readonly Camera2D _camera;
         private readonly NetScope _scope;
         private readonly ISimulationService _simulations;
-        private readonly IUserPilotService _userPilots;
+        private readonly IUserPilotMappingService _userPilots;
         private ComponentMapper<Piloting> _pilotings;
         private ComponentMapper<Body> _bodies;
 
-        public CameraSystem(NetScope scope, Camera2D camera, ISimulationService simulations, IUserPilotService userPilots)
+        public CameraSystem(NetScope scope, Camera2D camera, ISimulationService simulations, IUserPilotMappingService userPilots)
         {
             _camera = camera;
             _scope = scope;

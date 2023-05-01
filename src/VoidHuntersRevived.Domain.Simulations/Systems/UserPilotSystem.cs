@@ -1,90 +1,71 @@
 ﻿using Guppy.Attributes;
-using Guppy.Common;
-using Guppy.Network;
-using Serilog;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Systems;
-using VoidHuntersRevived.Domain.Simulations.Events;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Domain.Entities;
-using VoidHuntersRevived.Common.Simulations.Components;
+using Guppy.Network.Identity;
 using MonoGame.Extended.Entities;
-using VoidHuntersRevived.Common.Entities.ShipParts.Components;
-using VoidHuntersRevived.Common.Entities.Extensions;
+using MonoGame.Extended.Entities.Systems;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.Entities.ShipParts.Services;
-using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Common.Simulations.Enums;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Simulations.Components;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     [GuppyFilter<IGameGuppy>()]
-    internal sealed class UserPilotSystem : BasicSystem,
-        ISimulationEventListener<UserJoined>
+    internal sealed class UserPilotSystem : EntitySystem
     {
-        private readonly NetScope _scope;
-        private readonly ILogger _logger;
-        private readonly IShipPartService _shipParts;
-        private readonly IChainService _chains;
-        private readonly IShipService _ships;
-        private readonly INodeService _nodeService;
-        private readonly IUserPilotService _userPilots;
-        private ComponentMapper<Node> _nodes;
-
-        public UserPilotSystem(
-            NetScope scope, 
-            IShipPartService shipParts, 
-            IChainService chains, 
-            IShipService ships, 
-            INodeService nodeService,
-            IUserPilotService userPilots,
-            ILogger logger)
+        private static readonly AspectBuilder UserPilotAspect = Aspect.All(new[]
         {
-            _scope = scope;
-            _shipParts = shipParts;
-            _chains = chains;
-            _ships = ships;
-            _nodeService = nodeService;
+            typeof(User),
+            typeof(Piloting),
+            typeof(Parallelable)
+        });
+
+        private readonly IUserPilotMappingService _userPilots;
+        private ComponentMapper<User> _users;
+        private ComponentMapper<Parallelable> _parallelables;
+
+        public UserPilotSystem(IUserPilotMappingService userPilots) : base(UserPilotAspect)
+        {
             _userPilots = userPilots;
-            _logger = logger;
-
-            _nodes = default!;
+            _users = null!;
+            _parallelables = null!;
         }
 
-        public override void Initialize(World world)
+        public override void Initialize(IComponentMapperService mapperService)
         {
-            base.Initialize(world);
-
-            _nodes = world.ComponentMapper.GetMapper<Node>();
+            _users = mapperService.GetMapper<User>();
+            _parallelables = mapperService.GetMapper<Parallelable>();
         }
 
-        public SimulationEventResult Process(ISimulation simulation, UserJoined data)
+        protected override void OnEntityAdded(int entityId)
         {
-            var user = _scope.Peer!.Users.UpdateOrCreate(data.UserId, data.Claims);
+            base.OnEntityAdded(entityId);
 
-            // Ensure the user has been added to the scope
-            if (!_scope.Users.TryGet(user.Id, out _))
+            if(!this.subscription.IsInterested(entityId))
             {
-                _scope.Users.Add(user);
+                return;
             }
 
-            ParallelKey key = data.Key.Create(ParallelTypes.Pilot);
-            if (simulation.HasEntity(key))
-            { // This operation has already been done
-                return SimulationEventResult.Failure;
+            Parallelable parallelable = _parallelables.Get(entityId);
+            User user = _users.Get(entityId);
+
+            _userPilots.Add(user.Id, parallelable.Key);
+        }
+
+        protected override void OnEntityRemoved(int entityId)
+        {
+            base.OnEntityRemoved(entityId);
+
+            if (!this.subscription.IsInterested(entityId))
+            {
+                return;
             }
 
-            Entity ship = _ships.CreateShip(key.Create(ParallelTypes.Ship), ShipParts.HullSquare, simulation);
-            Entity pilot = _userPilots.CreateUserPilot(key, user, ship, simulation);
-
-            
-            Entity chain = _chains.CreateChain(key.Create(ParallelTypes.Chain, 1337), ShipParts.HullSquare, Vector2.Zero, 0, simulation);
-            chain = _chains.CreateChain(key.Create(ParallelTypes.Chain, 1338), ShipParts.HullSquare, Vector2.Zero, 0, simulation);
-            chain = _chains.CreateChain(key.Create(ParallelTypes.Chain, 1339), ShipParts.HullSquare, Vector2.Zero, 0, simulation);
-
-            return SimulationEventResult.Success;
+            throw new NotImplementedException();
         }
     }
 }

@@ -29,13 +29,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
         private State _state;
         private readonly NetScope _scope;
         private readonly ITractorService _tractors;
-        private readonly IUserPilotService _userPilots;
+        private readonly IUserPilotMappingService _userPilotMap;
         private readonly ILogger _logger;
 
-        public PilotingSystem(ITractorService tractors, IUserPilotService userPilots, ILogger logger, NetScope scope, State state)
+        public PilotingSystem(ITractorService tractors, IUserPilotMappingService userPilots, ILogger logger, NetScope scope, State state)
         {
             _tractors = tractors;
-            _userPilots = userPilots;
+            _userPilotMap = userPilots;
             _logger = logger;
             _scope = scope;
             _state = state;
@@ -55,7 +55,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
         public SimulationEventResult Process(ISimulation simulation, SetPilotingDirection data)
         {
-            if(!_userPilots.TryGetPilotKey(data.SenderId, out ParallelKey pilotKey))
+            if(!_userPilotMap.TryGetPilotKey(data.SenderId, out ParallelKey pilotKey))
             {
                 return SimulationEventResult.Failure;
             }
@@ -89,7 +89,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
         public SimulationEventResult Process(ISimulation simulation, SetPilotingTarget data)
         {
-            if (!_userPilots.TryGetPilotKey(data.SenderId, out ParallelKey pilotKey))
+            if (!_userPilotMap.TryGetPilotKey(data.SenderId, out ParallelKey pilotKey))
             {
                 return SimulationEventResult.Failure;
             }

@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
     {
         private readonly NetScope _netScope;
         private readonly ISimulationService _simulations;
-        private readonly IUserPilotService _userPilots;
+        private readonly IUserPilotMappingService _userPilots;
         private readonly Camera2D _camera;
         private readonly ITractorService _tractor;
         private ISimulation _interactive;
@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             Camera2D camera,
             ISimulationService simulations,
             ITractorService tractor,
-            IUserPilotService userPilots)
+            IUserPilotMappingService userPilots)
         {
             _netScope = netScope;
             _camera = camera;
