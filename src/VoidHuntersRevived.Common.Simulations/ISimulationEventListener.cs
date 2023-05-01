@@ -7,10 +7,10 @@ using VoidHuntersRevived.Common.Simulations.Enums;
 
 namespace VoidHuntersRevived.Common.Simulations
 {
-    public interface ISimulationEventListener<TEventData>
-        where TEventData : ISimulationEventData
+    public interface ISimulationEventListener<TSimulationEventData>
+        where TSimulationEventData : class
     {
-        SimulationEventResult Process(ISimulation simulation, TEventData data);
+        SimulationEventResult Process(ISimulationEvent<TSimulationEventData> @event);
 
         //void Rollback(TInput input, ISimulation simulation);
     }

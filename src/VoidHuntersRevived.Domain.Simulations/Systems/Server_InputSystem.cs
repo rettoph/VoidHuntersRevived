@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     [PeerTypeFilter(PeerType.Server)]
     internal sealed class Server_InputSystem : BasicSystem,
-        ISubscriber<INetIncomingMessage<InputRequest>>
+        ISubscriber<INetIncomingMessage<SimulationEventData>>
     {
         private readonly ISimulationService _simulations;
 
@@ -24,9 +24,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _simulations = simulations;
         }
 
-        public void Process(in INetIncomingMessage<InputRequest> message)
+        public void Process(in INetIncomingMessage<SimulationEventData> message)
         {
-            _simulations.Input(message.Body.Input);
+            _simulations.Enqueue(message.Body);
         }
     }
 }

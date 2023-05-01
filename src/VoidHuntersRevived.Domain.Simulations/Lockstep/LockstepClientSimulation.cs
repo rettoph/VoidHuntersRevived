@@ -32,9 +32,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _network = network;
         }
 
-        public override void Input(SimulationInput input)
+        public override void Enqueue(SimulationEventData data)
         {
-            _network.Messages.Create(new InputRequest(input)).Enqueue();
+            // Send the incoming event data to the connected server
+            // Wait for a server tick bounceback before actually
+            // Active on the event.
+            _network.Messages.Create(data).Enqueue();
         }
     }
 }

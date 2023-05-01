@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _trees = trees;
         }
 
-        public Entity CreateShip(ParallelKeyProvider keys, string bridgeResource, ISimulation simulation)
+        public Entity CreateShip(ParallelKeyFactory keys, string bridgeResource, ISimulation simulation)
         {
             Entity bridge = _shipParts.CreateShipPart(keys.Next(), simulation, bridgeResource);
             Entity ship = simulation.CreateEntity(keys.Next());

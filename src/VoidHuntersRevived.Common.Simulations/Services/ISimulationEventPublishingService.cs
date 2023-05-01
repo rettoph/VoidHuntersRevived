@@ -9,6 +9,6 @@ namespace VoidHuntersRevived.Common.Simulations.Services
 {
     public interface ISimulationEventPublishingService
     {
-        SimulationEventResult Publish(ISimulation simulation, ISimulationEventData data);
+        ISimulationEvent Publish(ISimulation simulation, SimulationEventData data);
     }
 }

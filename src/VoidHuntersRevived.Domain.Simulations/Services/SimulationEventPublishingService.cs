@@ -24,9 +24,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             _subscribers = new Dictionary<Type, ISimulationEventPublisher>();
         }
 
-        public SimulationEventResult Publish(ISimulation simulation, ISimulationEventData data)
+        public ISimulationEvent Publish(ISimulation simulation, SimulationEventData core)
         {
-            return this.GetInputPublisher(data.GetType()).Publish(simulation, data);
+            return this.GetInputPublisher(core.Body.GetType()).Publish(simulation, core);
         }
 
         private ISimulationEventPublisher GetInputPublisher(Type inputType)

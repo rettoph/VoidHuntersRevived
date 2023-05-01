@@ -2,13 +2,13 @@
 
 namespace VoidHuntersRevived.Common.Simulations
 {
-    public sealed class ParallelKeyProvider
+    public sealed class ParallelKeyFactory
     {
         private readonly int DataSizeInBytes = sizeof(ulong) * 3;
 
         private ulong[] _data;
 
-        public unsafe ParallelKeyProvider(ParallelKey source)
+        public unsafe ParallelKeyFactory(ParallelKey source)
         {
             ulong* pSource = (ulong*)&source;
             _data = new[]

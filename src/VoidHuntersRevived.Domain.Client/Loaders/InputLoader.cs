@@ -33,12 +33,10 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
             {
                 (true, new StartTractoring()
                 {
-                    Key = ParallelKey.Empty,
-                    SenderId = default!,
                     TargetNode = default!,
                     TargetTree = default!
                 }),
-                (false, StopTractoring.Instance),
+                (false, new StopTractoring()),
             });
 
             InputLoader.AddSetDirectionInput(services, Inputs.SetDirectionForward, Keys.W, Direction.Forward);
@@ -55,15 +53,11 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
             {
                 (true, new SetPilotingDirection()
                 {
-                    Key = ParallelKey.Empty,
-                    SenderId = default!,
                     Which = direction,
                     Value = true
                 }),
                 (false, new SetPilotingDirection()
                 {
-                    Key = ParallelKey.Empty,
-                    SenderId = default!,
                     Which = direction,
                     Value = false
                 }),

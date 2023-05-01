@@ -9,14 +9,8 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Domain.Entities.Events
 {
-    public class StopTractoring : SimulationInput, IMessage
+    public class StopTractoring : IMessage
     {
-        public static readonly StopTractoring Instance = new StopTractoring()
-        {
-            Key = ParallelKey.Empty,
-            SenderId = default!
-        };
-
         public Vector2 TargetPosition { get; init; }
         public ParallelKey TargetTreeKey { get; init; }
 

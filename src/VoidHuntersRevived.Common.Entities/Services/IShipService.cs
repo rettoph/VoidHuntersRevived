@@ -11,6 +11,6 @@ namespace VoidHuntersRevived.Common.Entities.Services
     public interface IShipService
     {
         void MakeShip(Entity entity, Entity bridge, ISimulation simulation);
-        Entity CreateShip(ParallelKeyProvider keys, string bridgeResource, ISimulation simulation);
+        Entity CreateShip(ParallelKeyFactory keys, string bridgeResource, ISimulation simulation);
     }
 }

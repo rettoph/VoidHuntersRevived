@@ -96,11 +96,14 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 return;
             }
 
-            _simulations.Input(new SetPilotingTarget()
+            _simulations.Enqueue(new SimulationEventData()
             {
                 Key = ParallelKey.NewKey(),
                 SenderId = _netScope.Peer.Users.Current.Id,
-                Target = CurrentTargetPosition
+                Body = new SetPilotingTarget()
+                {
+                    Target = CurrentTargetPosition
+                }
             });
         }
 
@@ -111,12 +114,15 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 return;
             }
 
-            _simulations.Input(new SetPilotingDirection()
+            _simulations.Enqueue(new SimulationEventData()
             {
                 Key = ParallelKey.NewKey(),
                 SenderId = _netScope.Peer.Users.Current.Id,
-                Which = message.Which,
-                Value = message.Value
+                Body = new SetPilotingDirection()
+                {
+                    Which = message.Which,
+                    Value = message.Value
+                }
             });
         }
 
@@ -146,12 +152,15 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
             if (_tractor.TryGetTractorable(pilotable, out ParallelKey targetTree, out ParallelKey targetNode))
             {
-                _simulations.Input(new StartTractoring()
+                _simulations.Enqueue(new SimulationEventData()
                 {
                     Key = ParallelKey.NewKey(),
                     SenderId = _netScope.Peer.Users.Current.Id,
-                    TargetTree = targetTree,
-                    TargetNode = targetNode
+                    Body = new StartTractoring()
+                    {
+                        TargetTree = targetTree,
+                        TargetNode = targetNode
+                    }
                 });
             }
         }
@@ -183,12 +192,15 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 return;
             }
 
-            _simulations.Input(new StopTractoring()
+            _simulations.Enqueue(new SimulationEventData()
             {
                 Key = ParallelKey.NewKey(),
                 SenderId = _netScope.Peer.Users.Current.Id,
-                TargetPosition = CurrentTargetPosition,
-                TargetTreeKey = _parallelables.Get(tractoring.TargetTreeId).Key
+                Body = new StopTractoring()
+                {
+                    TargetPosition = CurrentTargetPosition,
+                    TargetTreeKey = _parallelables.Get(tractoring.TargetTreeId).Key
+                }
             });
         }
     }

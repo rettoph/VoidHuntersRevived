@@ -33,8 +33,8 @@ namespace VoidHuntersRevived.Common.Simulations
 
         Entity CreateEntity(ParallelKey key);
 
-        void Publish(ISimulationEventData data);
+        void Publish(SimulationEventData data);
 
-        void Input(SimulationInput input);
+        void Enqueue(SimulationEventData data);
     }
 }

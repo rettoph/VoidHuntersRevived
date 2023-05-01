@@ -21,9 +21,9 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         {
         }
 
-        public SimulationEventResult Process(ISimulation simulation, DestroyEntity data)
+        public SimulationEventResult Process(ISimulationEvent<DestroyEntity> message)
         {
-            simulation.DestroyEntity(data.Key);
+            message.Simulation.DestroyEntity(message.Body.EntityKey);
 
             return SimulationEventResult.Success;
         }

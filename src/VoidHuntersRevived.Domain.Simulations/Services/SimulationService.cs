@@ -85,11 +85,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             }
         }
 
-        public void Input(SimulationInput input)
+        public void Enqueue(SimulationEventData input)
         {
             foreach (ISimulation simulation in _simulations.Values)
             {
-                simulation.Input(input);
+                simulation.Enqueue(input);
             }
         }
     }

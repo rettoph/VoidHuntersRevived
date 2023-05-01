@@ -15,6 +15,7 @@ using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Simulations.Enums;
 using VoidHuntersRevived.Common.Entities.Services;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
@@ -53,14 +54,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _tractorables = world.ComponentMapper.GetMapper<Tractorable>();
         }
 
-        public SimulationEventResult Process(ISimulation simulation, SetPilotingDirection data)
+        public SimulationEventResult Process(ISimulationEvent<SetPilotingDirection> @event)
         {
-            if(!_userPilotMap.TryGetPilotKey(data.SenderId, out ParallelKey pilotKey))
+            if (!_userPilotMap.TryGetPilotKey(@event.SenderId, out ParallelKey pilotKey))
             {
                 return SimulationEventResult.Failure;
             }
 
-            if (!simulation.TryGetEntityId(pilotKey, out int pilotId))
+            if (!@event.Simulation.TryGetEntityId(pilotKey, out int pilotId))
             {
                 return SimulationEventResult.Failure;
             }
@@ -72,29 +73,29 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
             var pilotable = _pilotables.Get(piloting?.Pilotable);
 
-            if (data.Value && (pilotable.Direction & data.Which) == 0)
+            if (@event.Body.Value && (pilotable.Direction & @event.Body.Which) == 0)
             {
-                pilotable.Direction |= data.Which;
+                pilotable.Direction |= @event.Body.Which;
                 return SimulationEventResult.Success;
             }
 
-            if (!data.Value && (pilotable.Direction & data.Which) != 0)
+            if (!@event.Body.Value && (pilotable.Direction & @event.Body.Which) != 0)
             {
-                pilotable.Direction &= ~data.Which;
+                pilotable.Direction &= ~@event.Body.Which;
                 return SimulationEventResult.Success;
             }
 
             return SimulationEventResult.Success;
         }
 
-        public SimulationEventResult Process(ISimulation simulation, SetPilotingTarget data)
+        public SimulationEventResult Process(ISimulationEvent<SetPilotingTarget> @event)
         {
-            if (!_userPilotMap.TryGetPilotKey(data.SenderId, out ParallelKey pilotKey))
+            if (!_userPilotMap.TryGetPilotKey(@event.SenderId, out ParallelKey pilotKey))
             {
                 return SimulationEventResult.Failure;
             }
 
-            if (!simulation.TryGetEntityId(pilotKey, out int pilotId))
+            if (!@event.Simulation.TryGetEntityId(pilotKey, out int pilotId))
             {
                 return SimulationEventResult.Failure;
             }
@@ -106,7 +107,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
             var pilotable = _pilotables.Get(piloting.Pilotable);
 
-            pilotable.Aim.Target = data.Target;
+            pilotable.Aim.Target = @event.Body.Target;
 
             return SimulationEventResult.Success;
         }

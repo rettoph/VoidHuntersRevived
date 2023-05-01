@@ -15,11 +15,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
     {
         private interface ISimulationEventPublisher
         {
-            SimulationEventResult Publish(ISimulation simulation, ISimulationEventData data);
+            ISimulationEvent Publish(ISimulation simulation, SimulationEventData core);
         }
 
         private class SimulationEventPublisher<T> : ISimulationEventPublisher
-            where T : class, ISimulationEventData
+            where T : class
         {
             private readonly ISimulationEventListener<T>[] _subscribers;
 
@@ -28,17 +28,23 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
                 _subscribers = subscribers.OfType<ISimulationEventListener<T>>().ToArray();
             }
 
-            public SimulationEventResult Publish(ISimulation simulation, ISimulationEventData data)
+            public ISimulationEvent Publish(ISimulation simulation, SimulationEventData core)
             {
-                T casted = Unsafe.As<T>(data);
-                SimulationEventResult result = SimulationEventResult.Success;
+                SimulationEvent<T> @event = new SimulationEvent<T>()
+                {
+                    Key = core.Key,
+                    SenderId = core.SenderId,
+                    Simulation = simulation,
+                    Body = Unsafe.As<T>(core.Body),
+                    Result = SimulationEventResult.None
+                };
 
                 foreach (ISimulationEventListener<T> subscriber in _subscribers)
                 {
-                    result |= subscriber.Process(simulation, casted);
+                    @event.Result |= subscriber.Process(@event);
                 }
 
-                return result;
+                return @event;
             }
         }
     }

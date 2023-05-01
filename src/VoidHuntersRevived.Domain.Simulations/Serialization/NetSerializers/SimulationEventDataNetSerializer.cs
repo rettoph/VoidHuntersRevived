@@ -9,7 +9,7 @@ using VoidHuntersRevived.Domain.Simulations.Lockstep;
 namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
 {
     [AutoLoad]
-    internal sealed class InputRequestNetSerializer : NetSerializer<InputRequest>
+    internal sealed class SimulationEventDataNetSerializer : NetSerializer<SimulationEventData>
     {
         private INetSerializerProvider _serializers = default!;
 
@@ -20,14 +20,21 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
             _serializers = serializers;
         }
 
-        public override InputRequest Deserialize(NetDataReader reader)
+        public override SimulationEventData Deserialize(NetDataReader reader)
         {
-            return new InputRequest((SimulationInput)_serializers.Deserialize(reader));
+            return new SimulationEventData()
+            {
+                Key = reader.GetParallelKey(),
+                SenderId = reader.GetInt(),
+                Body = _serializers.Deserialize(reader)
+            };
         }
 
-        public override void Serialize(NetDataWriter writer, in InputRequest instance)
+        public override void Serialize(NetDataWriter writer, in SimulationEventData instance)
         {
-            _serializers.Serialize(writer, instance.Input);
+            writer.Put(instance.Key);
+            writer.Put(instance.SenderId);
+            _serializers.Serialize(writer, instance.Body);
         }
     }
 }

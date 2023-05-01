@@ -8,7 +8,8 @@ namespace VoidHuntersRevived.Common.Simulations.Enums
 {
     public enum SimulationEventResult
     {
-        Success = 0,
-        Failure = 1
+        None = 0,
+        Success = 1,
+        Failure = 2
     }
 }

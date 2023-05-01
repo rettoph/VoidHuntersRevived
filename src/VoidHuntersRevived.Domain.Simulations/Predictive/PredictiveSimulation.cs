@@ -20,21 +20,21 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
     internal sealed class PredictiveSimulation : Simulation<Common.Simulations.Components.Predictive>,
         ISubscriber<INetIncomingMessage<Tick>>
     {
-        private readonly ISimulationEventPublishingService _input;
+        private readonly ISimulationEventPublishingService _events;
         private IPredictiveSynchronizationSystem[] _synchronizeSystems;
         private readonly IBus _bus;
-        private readonly Dictionary<Guid, ISimulationEventData> _events;
+        private readonly Dictionary<Guid, ISimulationEvent> _cache;
 
         public PredictiveSimulation(
             IBus bus,
             IParallelableService simulatedEntities, 
             IGlobalSimulationService globalSimulationService,
-            ISimulationEventPublishingService input) : base(SimulationType.Predictive, simulatedEntities, globalSimulationService)
+            ISimulationEventPublishingService events) : base(SimulationType.Predictive, simulatedEntities, globalSimulationService)
         {
             _synchronizeSystems = Array.Empty<IPredictiveSynchronizationSystem>();
             _bus = bus;
-            _events = new Dictionary<Guid, ISimulationEventData>();
-            _input = input;
+            _cache = new Dictionary<Guid, ISimulationEvent>();
+            _events = events;
         }
 
         public override void Initialize(IServiceProvider provider)
@@ -56,9 +56,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             }
         }
 
-        public override void Publish(ISimulationEventData data)
+        public override void Publish(SimulationEventData data)
         {
-            ref ISimulationEventData? cached = ref CollectionsMarshal.GetValueRefOrAddDefault(_events, data.Key.Value, out bool exists);
+            ref ISimulationEvent? cached = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, data.Key.Value, out bool exists);
 
             if (exists)
             {
@@ -69,21 +69,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
                 return;
             }
 
-            cached = data;
-
-            _input.Publish(this, data);
+            cached = _events.Publish(this, data);
         }
 
-        public override void Input(SimulationInput input)
+        public override void Enqueue(SimulationEventData data)
         {
-            this.Publish(input);
+            this.Publish(data);
         }
 
         public void Process(in INetIncomingMessage<Tick> message)
         {
-            foreach(SimulationInput input in message.Body.Inputs)
+            foreach(SimulationEventData input in message.Body.Events)
             {
-                this.Input(input);
+                this.Enqueue(input);
             }
         }
     }

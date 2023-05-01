@@ -22,6 +22,7 @@ using VoidHuntersRevived.Common.Simulations.Enums;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Domain.Entities.Events;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {
@@ -85,20 +86,20 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             _parallelables = mapperService.GetMapper<Parallelable>();
         }
 
-        public SimulationEventResult Process(ISimulation simulation, StartTractoring data)
+        public SimulationEventResult Process(ISimulationEvent<StartTractoring> @event)
         {
-            if (!simulation.TryGetEntityId(data.TargetTree, out int targetTreeId))
+            if (!@event.Simulation.TryGetEntityId(@event.Body.TargetTree, out int targetTreeId))
             {
                 return SimulationEventResult.Failure;
             }
 
-            if (!simulation.TryGetEntityId(data.TargetNode, out int targetNodeId))
+            if (!@event.Simulation.TryGetEntityId(@event.Body.TargetNode, out int targetNodeId))
             {
                 return SimulationEventResult.Failure;
             }
 
-            ParallelKey pilotKey = _userPilotMap.GetPilotKey(data.SenderId);
-            int pilotId = simulation.GetEntityId(pilotKey);
+            ParallelKey pilotKey = _userPilotMap.GetPilotKey(@event.SenderId);
+            int pilotId = @event.Simulation.GetEntityId(pilotKey);
             Piloting piloting = _pilotings.Get(pilotId);
             Tree tree = _trees.Get(piloting.Pilotable.Id);
 
@@ -151,11 +152,11 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 // was slotted in already, but the confirmation from the server doesn't
                 // display that very well.
                 targetTreeId = _chainService.CreateChain(
-                    keys: new ParallelKeyProvider(data.Key),
+                    keys: @event.KeyFactory,
                     head: targetNode,
                     position: position,
                     rotation: rotation,
-                    simulation: simulation).Id;
+                    simulation: @event.Simulation).Id;
             }
 
             var tractoring = new Tractoring(piloting.Pilotable.Id, targetTreeId);
@@ -164,17 +165,17 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             return SimulationEventResult.Success;
         }
 
-        public SimulationEventResult Process(ISimulation simulation, StopTractoring data)
+        public SimulationEventResult Process(ISimulationEvent<StopTractoring> @event)
         {
-            ParallelKey pilotKey = _userPilotMap.GetPilotKey(data.SenderId);
-            int pilotId = simulation.GetEntityId(pilotKey);
+            ParallelKey pilotKey = _userPilotMap.GetPilotKey(@event.SenderId);
+            int pilotId = @event.Simulation.GetEntityId(pilotKey);
 
             if (!_pilotings.TryGet(pilotId, out Piloting? piloting))
             {
                 return SimulationEventResult.Failure;
             }
 
-            if (!simulation.TryGetEntityId(data.TargetTreeKey, out int tractorableId))
+            if (!@event.Simulation.TryGetEntityId(@event.Body.TargetTreeKey, out int tractorableId))
             {
                 return SimulationEventResult.Failure;
             }
@@ -185,7 +186,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 _tractorings.Delete(piloting.Pilotable.Id);
             }
 
-            if (!_tractor.TransformTractorable(data.TargetPosition, piloting.Pilotable.Id, tractorableId, out Link? potential))
+            if (!_tractor.TransformTractorable(@event.Body.TargetPosition, piloting.Pilotable.Id, tractorableId, out Link? potential))
             {
                 return SimulationEventResult.Failure;
             }
@@ -193,7 +194,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             // Destroy the old chain
             if (potential.Child.Node.Tree is not null && _parallelables.TryGet(potential.Child.Node.Tree.EntityId, out Parallelable? chain))
             {
-                simulation.DestroyEntity(chain.Key);
+                @event.Simulation.DestroyEntity(chain.Key);
             }
 
             // Create a jointing to the current ship.

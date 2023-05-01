@@ -9,8 +9,6 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Events;
-using VoidHuntersRevived.Common.Simulations;
-using Guppy.Attributes;
 
 namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
 {
@@ -21,8 +19,6 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
         {
             return new StartTractoring()
             {
-                Key = reader.GetParallelKey(),
-                SenderId = reader.GetInt(),
                 TargetTree = reader.GetParallelKey(),
                 TargetNode = reader.GetParallelKey()
             };
@@ -30,8 +26,6 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
 
         public override void Serialize(NetDataWriter writer, in StartTractoring instance)
         {
-            writer.Put(instance.Key);
-            writer.Put(instance.SenderId);
             writer.Put(instance.TargetTree);
             writer.Put(instance.TargetNode);
         }

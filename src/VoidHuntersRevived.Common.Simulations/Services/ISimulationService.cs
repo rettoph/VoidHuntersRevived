@@ -22,6 +22,6 @@ namespace VoidHuntersRevived.Common.Simulations.Services
 
         void Update(GameTime gameTime);
 
-        void Input(SimulationInput input);
+        void Enqueue(SimulationEventData core);
     }
 }

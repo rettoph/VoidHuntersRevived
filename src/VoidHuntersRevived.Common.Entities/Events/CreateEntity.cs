@@ -8,7 +8,7 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Common.Entities.Events
 {
-    public class CreateEntity : ISimulationEventData
+    public class CreateEntity
     {
         public ParallelKey Key { get; }
 

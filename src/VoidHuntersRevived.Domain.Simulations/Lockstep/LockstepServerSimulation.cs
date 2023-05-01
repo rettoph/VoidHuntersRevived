@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _ticks = ticks;
         }
 
-        public override void Input(SimulationInput input)
+        public override void Enqueue(SimulationEventData input)
         {
             _ticks.Enqueue(input);
         }

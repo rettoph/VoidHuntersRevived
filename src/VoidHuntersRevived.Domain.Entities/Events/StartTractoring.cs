@@ -10,7 +10,7 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Domain.Entities.Events
 {
-    public sealed class StartTractoring : SimulationInput, IMessage
+    public sealed class StartTractoring : IMessage
     {
         public required ParallelKey TargetTree { get; init; }
         public required ParallelKey TargetNode { get; init; }

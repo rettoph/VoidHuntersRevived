@@ -43,9 +43,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _scope.Users.OnUserJoined += HandleUserJoined;
         }
 
-        public SimulationEventResult Process(ISimulation simulation, UserJoined data)
+        public SimulationEventResult Process(ISimulationEvent<UserJoined> @event)
         {
-            var user = _scope.Peer!.Users.UpdateOrCreate(data.UserId, data.Claims);
+            var user = _scope.Peer!.Users.UpdateOrCreate(@event.Body.UserId, @event.Body.Claims);
 
             if (user.NetPeer is null)
             {
@@ -81,12 +81,15 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
         private void HandleUserJoined(IUserService sender, User args)
         {
-            _simulations.Input(new UserJoined()
+            _simulations.Enqueue(new SimulationEventData()
             {
                 Key = ParallelKey.NewKey(),
                 SenderId = int.MaxValue,
-                UserId = args.Id,
-                Claims = args.Where(x => x.Accessibility == ClaimAccessibility.Public).ToArray()
+                Body = new UserJoined()
+                {
+                    UserId = args.Id,
+                    Claims = args.Where(x => x.Accessibility == ClaimAccessibility.Public).ToArray()
+                }
             });
         }
     }
