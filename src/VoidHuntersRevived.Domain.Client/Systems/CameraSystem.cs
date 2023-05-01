@@ -9,6 +9,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Extensions;
+using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 
@@ -20,14 +21,16 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private readonly Camera2D _camera;
         private readonly NetScope _scope;
         private readonly ISimulationService _simulations;
+        private readonly IUserPilotService _userPilots;
         private ComponentMapper<Piloting> _pilotings;
         private ComponentMapper<Body> _bodies;
 
-        public CameraSystem(NetScope scope, Camera2D camera, ISimulationService simulations)
+        public CameraSystem(NetScope scope, Camera2D camera, ISimulationService simulations, IUserPilotService userPilots)
         {
             _camera = camera;
             _scope = scope;
             _simulations = simulations;
+            _userPilots = userPilots;
             _pilotings = default!;
             _bodies = default!;
 
@@ -61,17 +64,22 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 return;
             }
 
-            if (!_simulations[SimulationType.Predictive].TryGetEntityId(_scope.Peer!.Users.Current.GetKey(), out var pilotId))
+            if(!_userPilots.TryGetParallelKey(_scope.Peer!.Users.Current, out ParallelKey pilotKey))
             {
                 return;
             }
 
-            if(!_pilotings.TryGet(pilotId, out var piloting))
+            if (!_simulations[SimulationType.Predictive].TryGetEntityId(pilotKey, out int pilotId))
             {
                 return;
             }
 
-            var body = _bodies.Get(piloting.Pilotable);
+            if(!_pilotings.TryGet(pilotId, out Piloting? piloting))
+            {
+                return;
+            }
+
+            Body body = _bodies.Get(piloting.Pilotable);
             if (body is null)
             {
                 return;

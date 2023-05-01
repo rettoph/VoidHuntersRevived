@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
             {
                 (true, new StartTractoring()
                 {
-                    Id = ParallelKey.Empty,
+                    Key = ParallelKey.Empty,
                     Sender = default!,
                     TargetNode = default!,
                     TargetTree = default!
@@ -55,14 +55,14 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
             {
                 (true, new SetPilotingDirection()
                 {
-                    Id = ParallelKey.Empty,
+                    Key = ParallelKey.Empty,
                     Sender = default!,
                     Which = direction,
                     Value = true
                 }),
                 (false, new SetPilotingDirection()
                 {
-                    Id = ParallelKey.Empty,
+                    Key = ParallelKey.Empty,
                     Sender = default!,
                     Which = direction,
                     Value = false

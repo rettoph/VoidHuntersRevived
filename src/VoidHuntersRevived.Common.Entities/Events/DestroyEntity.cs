@@ -9,6 +9,6 @@ namespace VoidHuntersRevived.Common.Entities.Events
 {
     public sealed class DestroyEntity : SimulationInput, ISimulationEventData
     {
-        public ParallelKey Key { get; set; }
+        public ParallelKey EntityKey { get; set; }
     }
 }

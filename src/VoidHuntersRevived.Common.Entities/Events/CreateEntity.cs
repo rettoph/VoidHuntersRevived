@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Common.Entities.Events
 {
     public class CreateEntity : ISimulationEventData
     {
-        public ParallelKey Id { get; }
+        public ParallelKey Key { get; }
 
         public readonly ParallelKey EntityKey;
 

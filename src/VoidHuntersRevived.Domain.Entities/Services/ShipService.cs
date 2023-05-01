@@ -9,6 +9,7 @@ using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Extensions;
+using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using VoidHuntersRevived.Common.Simulations;

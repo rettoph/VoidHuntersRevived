@@ -8,6 +8,6 @@ namespace VoidHuntersRevived.Common.Simulations
 {
     public interface ISimulationEventData
     {
-        ParallelKey Id { get; } 
+        ParallelKey Key { get; } 
     }
 }

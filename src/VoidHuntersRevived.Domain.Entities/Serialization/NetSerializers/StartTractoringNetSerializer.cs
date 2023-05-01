@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
         {
             return new StartTractoring()
             {
-                Id = reader.GetParallelKey(),
+                Key = reader.GetParallelKey(),
                 Sender = reader.GetParallelKey(),
                 TargetTree = reader.GetParallelKey(),
                 TargetNode = reader.GetParallelKey()
@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
 
         public override void Serialize(NetDataWriter writer, in StartTractoring instance)
         {
-            writer.Put(instance.Id);
+            writer.Put(instance.Key);
             writer.Put(instance.Sender);
             writer.Put(instance.TargetTree);
             writer.Put(instance.TargetNode);

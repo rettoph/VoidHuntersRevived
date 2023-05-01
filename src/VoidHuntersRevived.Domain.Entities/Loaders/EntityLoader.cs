@@ -52,6 +52,9 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
                 manager.AddScoped<ShipService>()
                     .AddInterfaceAliases();
 
+                manager.AddScoped<UserPilotService>()
+                    .AddInterfaceAliases();
+
                 manager.AddScoped<RigidNodeSystem>()
                     .AddInterfaceAliases();
 

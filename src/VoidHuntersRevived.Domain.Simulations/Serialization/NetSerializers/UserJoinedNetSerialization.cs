@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
         {
             var instance = new UserJoined()
             {
-                Id = reader.GetParallelKey(),
+                Key = reader.GetParallelKey(),
                 Sender = reader.GetParallelKey(),
                 UserId = reader.GetInt(),
                 Claims = new Claim[reader.GetInt()]
@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
 
         public override void Serialize(NetDataWriter writer, in UserJoined instance)
         {
-            writer.Put(instance.Id);
+            writer.Put(instance.Key);
             writer.Put(instance.Sender);
             writer.Put(instance.UserId);
             writer.Put(instance.Claims.Length);

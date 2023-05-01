@@ -16,6 +16,7 @@ using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common.Simulations.Enums;
+using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
@@ -29,15 +30,24 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
         private readonly IChainService _chains;
         private readonly IShipService _ships;
         private readonly INodeService _nodeService;
+        private readonly IUserPilotService _userPilots;
         private ComponentMapper<Node> _nodes;
 
-        public UserPilotSystem(NetScope scope, IShipPartService shipParts, IChainService chains, IShipService ships, INodeService nodeService, ILogger logger)
+        public UserPilotSystem(
+            NetScope scope, 
+            IShipPartService shipParts, 
+            IChainService chains, 
+            IShipService ships, 
+            INodeService nodeService,
+            IUserPilotService userPilots,
+            ILogger logger)
         {
             _scope = scope;
             _shipParts = shipParts;
             _chains = chains;
             _ships = ships;
             _nodeService = nodeService;
+            _userPilots = userPilots;
             _logger = logger;
 
             _nodes = default!;
@@ -60,22 +70,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
                 _scope.Users.Add(user);
             }
 
-            var key = user.GetKey();
-
+            ParallelKey key = data.Key.Create(ParallelTypes.Pilot);
             if (simulation.HasEntity(key))
             { // This operation has already been done
                 return SimulationEventResult.Failure;
             }
 
             Entity ship = _ships.CreateShip(key.Create(ParallelTypes.Ship), ShipParts.HullSquare, simulation);
-
-            // TODO: Make a CreatePilot event and override this extension's functionality
-            var pilot = simulation.CreatePilot(key, ship);
+            Entity pilot = _userPilots.CreateUserPilot(key, user, ship, simulation);
 
             
-            Entity chain = _chains.CreateChain(data.Id.Create(ParallelTypes.Chain, 1337), ShipParts.HullSquare, Vector2.Zero, 0, simulation);
-            chain = _chains.CreateChain(data.Id.Create(ParallelTypes.Chain, 1338), ShipParts.HullSquare, Vector2.Zero, 0, simulation);
-            chain = _chains.CreateChain(data.Id.Create(ParallelTypes.Chain, 1339), ShipParts.HullSquare, Vector2.Zero, 0, simulation);
+            Entity chain = _chains.CreateChain(key.Create(ParallelTypes.Chain, 1337), ShipParts.HullSquare, Vector2.Zero, 0, simulation);
+            chain = _chains.CreateChain(key.Create(ParallelTypes.Chain, 1338), ShipParts.HullSquare, Vector2.Zero, 0, simulation);
+            chain = _chains.CreateChain(key.Create(ParallelTypes.Chain, 1339), ShipParts.HullSquare, Vector2.Zero, 0, simulation);
 
             return SimulationEventResult.Success;
         }

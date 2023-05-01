@@ -23,6 +23,7 @@ using Guppy.Attributes;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Domain.Simulations;
+using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
@@ -36,6 +37,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
     {
         private readonly NetScope _netScope;
         private readonly ISimulationService _simulations;
+        private readonly IUserPilotService _userPilots;
         private readonly Camera2D _camera;
         private readonly ITractorService _tractor;
         private ISimulation _interactive;
@@ -55,7 +57,8 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                     return default;
                 }
 
-                return ParallelKey.From(ParallelTypes.Pilot, _netScope.Peer.Users.Current.Id);
+                _userPilots.TryGetParallelKey(_netScope.Peer.Users.Current, out ParallelKey key);
+                return key;
             }
         }
 
@@ -63,12 +66,14 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             NetScope netScope,
             Camera2D camera,
             ISimulationService simulations,
-            ITractorService tractor)
+            ITractorService tractor,
+            IUserPilotService userPilots)
         {
             _netScope = netScope;
             _camera = camera;
             _simulations = simulations;
             _tractor = tractor;
+            _userPilots = userPilots;
             _interactive = default!;
             _pilotings = default!;
             _pilotables = default!;
@@ -101,7 +106,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         {
             _simulations.Input(new SetPilotingTarget()
             {
-                Id = ParallelKey.NewKey(),
+                Key = ParallelKey.NewKey(),
                 Sender = CurrentUserKey,
                 Target = CurrentTargetPosition
             });
@@ -111,7 +116,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         {
             _simulations.Input(new SetPilotingDirection()
             {
-                Id = ParallelKey.NewKey(),
+                Key = ParallelKey.NewKey(),
                 Sender = CurrentUserKey,
                 Which = message.Which,
                 Value = message.Value
@@ -132,7 +137,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             {
                 _simulations.Input(new StartTractoring()
                 {
-                    Id = ParallelKey.NewKey(),
+                    Key = ParallelKey.NewKey(),
                     Sender = CurrentUserKey,
                     TargetTree = targetTree,
                     TargetNode = targetNode
@@ -155,7 +160,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
             _simulations.Input(new StopTractoring()
             {
-                Id = ParallelKey.NewKey(),
+                Key = ParallelKey.NewKey(),
                 Sender = CurrentUserKey,
                 TargetPosition = CurrentTargetPosition,
                 TargetTreeKey = _parallelables.Get(tractoring.TargetTreeId).Key

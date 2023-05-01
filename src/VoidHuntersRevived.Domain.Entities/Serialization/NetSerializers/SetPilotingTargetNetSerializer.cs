@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
         {
             return new SetPilotingTarget()
             {
-                Id = reader.GetParallelKey(),
+                Key = reader.GetParallelKey(),
                 Sender = reader.GetParallelKey(),
                 Target = new Vector2(reader.GetFloat(), reader.GetFloat())
             };
@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
 
         public override void Serialize(NetDataWriter writer, in SetPilotingTarget instance)
         {
-            writer.Put(instance.Id);
+            writer.Put(instance.Key);
             writer.Put(instance.Sender);
             writer.Put(instance.Target.X);
             writer.Put(instance.Target.Y);
