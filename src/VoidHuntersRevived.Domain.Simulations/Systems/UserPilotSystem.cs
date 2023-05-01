@@ -67,14 +67,15 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
                 return SimulationEventResult.Failure;
             }
 
-            Entity ship = _ships.CreateShip(key.Create(ParallelEntityTypes.Ship), ShipParts.HullSquare, simulation);
+            Entity ship = _ships.CreateShip(key.Create(ParallelTypes.Ship), ShipParts.HullSquare, simulation);
 
             // TODO: Make a CreatePilot event and override this extension's functionality
             var pilot = simulation.CreatePilot(key, ship);
 
-            Entity chain = _chains.CreateChain(ParallelEntityTypes.Chain.Create(1337), ShipParts.HullSquare, Vector2.Zero, 0, simulation);
-            chain = _chains.CreateChain(ParallelEntityTypes.Chain.Create(1338), ShipParts.HullSquare, Vector2.Zero, 0, simulation);
-            chain = _chains.CreateChain(ParallelEntityTypes.Chain.Create(1339), ShipParts.HullSquare, Vector2.Zero, 0, simulation);
+            
+            Entity chain = _chains.CreateChain(data.Id.Create(ParallelTypes.Chain, 1337), ShipParts.HullSquare, Vector2.Zero, 0, simulation);
+            chain = _chains.CreateChain(data.Id.Create(ParallelTypes.Chain, 1338), ShipParts.HullSquare, Vector2.Zero, 0, simulation);
+            chain = _chains.CreateChain(data.Id.Create(ParallelTypes.Chain, 1339), ShipParts.HullSquare, Vector2.Zero, 0, simulation);
 
             return SimulationEventResult.Success;
         }

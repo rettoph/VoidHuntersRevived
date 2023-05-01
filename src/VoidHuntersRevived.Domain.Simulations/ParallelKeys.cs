@@ -10,6 +10,6 @@ namespace VoidHuntersRevived.Domain.Simulations
 {
     public static class ParallelKeys
     {
-        public static ParallelKey System = ParallelEntityTypes.Pilot.Create(int.MaxValue);
+        public static ParallelKey System = ParallelTypes.Pilot.Create(int.MaxValue);
     }
 }

@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Common.Entities.Extensions
     {
         public static ParallelKey GetKey(this NetPeer peer)
         {
-            return ParallelEntityTypes.Pilot.Create(peer.Id);
+            return ParallelTypes.Pilot.Create(peer.Id);
         }
     }
 }

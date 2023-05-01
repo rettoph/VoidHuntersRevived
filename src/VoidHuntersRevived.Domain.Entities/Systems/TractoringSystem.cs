@@ -147,7 +147,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 // was slotted in already, but the confirmation from the server doesn't
                 // display that very well.
                 targetTreeId = _chainService.CreateChain(
-                    key: key.Create(ParallelEntityTypes.Chain),
+                    key: key.Create(ParallelTypes.Chain),
                     head: targetNode,
                     position: position,
                     rotation: rotation,

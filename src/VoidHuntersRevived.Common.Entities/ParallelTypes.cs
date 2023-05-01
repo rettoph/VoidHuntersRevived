@@ -7,7 +7,7 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Common.Entities
 {
-    public static class ParallelEntityTypes
+    public static class ParallelTypes
     {
         public static readonly ParallelType Pilot = ParallelType.GetOrRegister(nameof(Pilot));
         public static readonly ParallelType Ship = ParallelType.GetOrRegister(nameof(Ship));

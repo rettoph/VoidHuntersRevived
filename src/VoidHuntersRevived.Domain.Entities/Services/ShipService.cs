@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public Entity CreateShip(ParallelKey key, string bridgeResource, ISimulation simulation)
         {
-            Entity bridge = _shipParts.CreateShipPart(key.Create(ParallelEntityTypes.ShipPart), simulation, bridgeResource);
+            Entity bridge = _shipParts.CreateShipPart(key.Create(ParallelTypes.ShipPart), simulation, bridgeResource);
             Entity ship = simulation.CreateEntity(key);
             this.MakeShip(ship, bridge, simulation);
 

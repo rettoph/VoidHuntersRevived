@@ -55,7 +55,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                     return default;
                 }
 
-                return ParallelKey.From(ParallelEntityTypes.Pilot, _netScope.Peer.Users.Current.Id);
+                return ParallelKey.From(ParallelTypes.Pilot, _netScope.Peer.Users.Current.Id);
             }
         }
 

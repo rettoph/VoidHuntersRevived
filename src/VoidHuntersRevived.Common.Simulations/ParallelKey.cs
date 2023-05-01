@@ -9,11 +9,11 @@ namespace VoidHuntersRevived.Common.Simulations
 
         private const int TypeAndGuidSize = 17;
 
-        public readonly Guid Hash;
+        public readonly Guid Value;
 
-        internal ParallelKey(Guid hash)
+        internal ParallelKey(Guid value)
         {
-            this.Hash = hash;
+            this.Value = value;
         }
 
         public unsafe static ParallelKey NewKey()
@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Common.Simulations
         {
             byte[] data = new byte[TypeAndGuidSize + (noise.Length * sizeof(int))];
             data[0] = type.Value;
-            data.Encode(1, parent.Hash);
+            data.Encode(1, parent.Value);
             Buffer.BlockCopy(noise, 0, data, TypeAndGuidSize, noise.Length * sizeof(int));
             uint128 xxHash = xxHash128.ComputeHash(data, data.Length);
             Guid* hash = (Guid*)&xxHash;

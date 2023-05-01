@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
         public override void Publish(ISimulationEventData data)
         {
-            ref ISimulationEventData? cached = ref CollectionsMarshal.GetValueRefOrAddDefault(_events, data.Id.Hash, out bool exists);
+            ref ISimulationEventData? cached = ref CollectionsMarshal.GetValueRefOrAddDefault(_events, data.Id.Value, out bool exists);
 
             if (exists)
             {

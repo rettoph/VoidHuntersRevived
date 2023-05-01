@@ -13,12 +13,12 @@ namespace LiteNetLib.Utils
         {
             var test = Guid.NewGuid();
             ulong* longs = (ulong*)&test;
-            writer.Put(key.Hash);
+            writer.Put(key.Value);
         }
 
         public static unsafe void Put(this NetDataWriter writer, ParallelKey key)
         {
-            writer.Put(key.Hash);
+            writer.Put(key.Value);
         }
     }
 }
