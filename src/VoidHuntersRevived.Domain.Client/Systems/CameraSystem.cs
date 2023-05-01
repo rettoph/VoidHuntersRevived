@@ -64,7 +64,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 return;
             }
 
-            if(!_userPilots.TryGetParallelKey(_scope.Peer!.Users.Current, out ParallelKey pilotKey))
+            if(!_userPilots.TryGetPilotKey(_scope.Peer!.Users.Current.Id, out ParallelKey pilotKey))
             {
                 return;
             }

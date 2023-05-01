@@ -10,6 +10,6 @@ namespace VoidHuntersRevived.Common.Simulations
     public class SimulationInput : ISimulationEventData
     {
         public required ParallelKey Key { get; init;  }
-        public required ParallelKey Sender { get; init; }
+        public required int SenderId { get; init; }
     }
 }

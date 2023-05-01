@@ -84,7 +84,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _simulations.Input(new UserJoined()
             {
                 Key = UserJoined.ParallelType.Create(args.Id),
-                Sender = ParallelKeys.System,
+                SenderId = int.MaxValue,
                 UserId = args.Id,
                 Claims = args.Where(x => x.Accessibility == ClaimAccessibility.Public).ToArray()
             });

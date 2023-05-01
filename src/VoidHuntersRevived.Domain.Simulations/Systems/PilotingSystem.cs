@@ -14,6 +14,7 @@ using VoidHuntersRevived.Common.Systems;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Simulations.Enums;
+using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
@@ -28,11 +29,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
         private State _state;
         private readonly NetScope _scope;
         private readonly ITractorService _tractors;
+        private readonly IUserPilotService _userPilots;
         private readonly ILogger _logger;
 
-        public PilotingSystem(ITractorService tractors, ILogger logger, NetScope scope, State state)
+        public PilotingSystem(ITractorService tractors, IUserPilotService userPilots, ILogger logger, NetScope scope, State state)
         {
             _tractors = tractors;
+            _userPilots = userPilots;
             _logger = logger;
             _scope = scope;
             _state = state;
@@ -52,7 +55,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
         public SimulationEventResult Process(ISimulation simulation, SetPilotingDirection data)
         {
-            if (!simulation.TryGetEntityId(data.Sender, out int pilotId))
+            if(!_userPilots.TryGetPilotKey(data.SenderId, out ParallelKey pilotKey))
+            {
+                return SimulationEventResult.Failure;
+            }
+
+            if (!simulation.TryGetEntityId(pilotKey, out int pilotId))
             {
                 return SimulationEventResult.Failure;
             }
@@ -81,7 +89,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
         public SimulationEventResult Process(ISimulation simulation, SetPilotingTarget data)
         {
-            if (!simulation.TryGetEntityId(data.Sender, out int pilotId))
+            if (!_userPilots.TryGetPilotKey(data.SenderId, out ParallelKey pilotKey))
+            {
+                return SimulationEventResult.Failure;
+            }
+
+            if (!simulation.TryGetEntityId(pilotKey, out int pilotId))
             {
                 return SimulationEventResult.Failure;
             }

@@ -16,11 +16,8 @@ namespace VoidHuntersRevived.Common.Entities.Services
 
         public int GetUserId(ParallelKey key);
 
-        public ParallelKey GetParallelKey(User user);
+        public ParallelKey GetPilotKey(int userId);
 
-        public ParallelKey GetParallelKey(int userId);
-
-        public bool TryGetParallelKey(User user, out ParallelKey key);
-        public bool TryGetParallelKey(int userId, out ParallelKey key);
+        public bool TryGetPilotKey(int userId, out ParallelKey key);
     }
 }

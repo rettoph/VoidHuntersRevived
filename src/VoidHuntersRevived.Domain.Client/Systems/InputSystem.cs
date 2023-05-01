@@ -48,19 +48,6 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private float _scroll;
 
         private Vector2 CurrentTargetPosition => _camera.Unproject(Mouse.GetState().Position.ToVector2());
-        private ParallelKey CurrentUserKey
-        {
-            get
-            {
-                if (_netScope.Peer?.Users.Current is null)
-                {
-                    return default;
-                }
-
-                _userPilots.TryGetParallelKey(_netScope.Peer.Users.Current, out ParallelKey key);
-                return key;
-            }
-        }
 
         public InputSystem(
             NetScope netScope,
@@ -104,20 +91,30 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         public void Process(in PreTick message)
         {
+            if (_netScope.Peer?.Users.Current is null)
+            {
+                return;
+            }
+
             _simulations.Input(new SetPilotingTarget()
             {
                 Key = ParallelKey.NewKey(),
-                Sender = CurrentUserKey,
+                SenderId = _netScope.Peer.Users.Current.Id,
                 Target = CurrentTargetPosition
             });
         }
 
         public void Process(in SetPilotingDirection message)
         {
+            if (_netScope.Peer?.Users.Current is null)
+            {
+                return;
+            }
+
             _simulations.Input(new SetPilotingDirection()
             {
                 Key = ParallelKey.NewKey(),
-                Sender = CurrentUserKey,
+                SenderId = _netScope.Peer.Users.Current.Id,
                 Which = message.Which,
                 Value = message.Value
             });
@@ -125,7 +122,21 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         public void Process(in StartTractoring message)
         {
-            int pilotId = _interactive.GetEntityId(this.CurrentUserKey);
+            if (_netScope.Peer?.Users.Current is null)
+            {
+                return;
+            }
+
+            if(!_userPilots.TryGetPilotKey(_netScope.Peer.Users.Current.Id, out ParallelKey parallelKey))
+            {
+                return;
+            }
+
+            if(!_interactive.TryGetEntityId(parallelKey, out int pilotId))
+            {
+                return;
+            }
+
             if(!_pilotings.TryGet(pilotId, out Piloting? piloting))
             {
                 return;
@@ -138,7 +149,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 _simulations.Input(new StartTractoring()
                 {
                     Key = ParallelKey.NewKey(),
-                    Sender = CurrentUserKey,
+                    SenderId = _netScope.Peer.Users.Current.Id,
                     TargetTree = targetTree,
                     TargetNode = targetNode
                 });
@@ -147,7 +158,21 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         public void Process(in StopTractoring message)
         {
-            int pilotId = _interactive.GetEntityId(this.CurrentUserKey);
+            if (_netScope.Peer?.Users.Current is null)
+            {
+                return;
+            }
+
+            if (!_userPilots.TryGetPilotKey(_netScope.Peer.Users.Current.Id, out ParallelKey parallelKey))
+            {
+                return;
+            }
+
+            if (!_interactive.TryGetEntityId(parallelKey, out int pilotId))
+            {
+                return;
+            }
+
             if (!_pilotings.TryGet(pilotId, out Piloting? piloting))
             {
                 return;
@@ -161,7 +186,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             _simulations.Input(new StopTractoring()
             {
                 Key = ParallelKey.NewKey(),
-                Sender = CurrentUserKey,
+                SenderId = _netScope.Peer.Users.Current.Id,
                 TargetPosition = CurrentTargetPosition,
                 TargetTreeKey = _parallelables.Get(tractoring.TargetTreeId).Key
             });

@@ -36,22 +36,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _userKeys[key];
         }
 
-        public ParallelKey GetParallelKey(User user)
-        {
-            return _userKeys[user.Id];
-        }
-
-        public ParallelKey GetParallelKey(int userId)
+        public ParallelKey GetPilotKey(int userId)
         {
             return _userKeys[userId];
         }
 
-        public bool TryGetParallelKey(User user, out ParallelKey key)
-        {
-            return _userKeys.TryGet(user.Id, out key);
-        }
-
-        public bool TryGetParallelKey(int userId, out ParallelKey key)
+        public bool TryGetPilotKey(int userId, out ParallelKey key)
         {
             return _userKeys.TryGet(userId, out key);
         }

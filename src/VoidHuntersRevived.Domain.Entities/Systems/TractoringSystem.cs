@@ -13,6 +13,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Events;
+using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using VoidHuntersRevived.Common.Simulations;
@@ -46,17 +47,20 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         private ComponentMapper<Parallelable> _parallelables;
         private INodeService _nodeService;
         private IChainService _chainService;
+        private IUserPilotService _userPilots;
 
         public TractoringSystem(
             INodeService nodeService, 
             IChainService chainService, 
-            ITractorService tractor, 
+            ITractorService tractor,
+            IUserPilotService userPilots,
             IBus bus,
             ISimulationService simulations) : base(simulations, TractoringAspect)
         {
             _tractor = tractor;
             _nodeService = nodeService;
             _chainService = chainService;
+            _userPilots = userPilots;
             _bus = bus;
 
             _tractorings = default!;
@@ -93,9 +97,10 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return SimulationEventResult.Failure;
             }
 
-            var pilotId = simulation.GetEntityId(data.Sender);
-            var piloting = _pilotings.Get(pilotId);
-            var tree = _trees.Get(piloting.Pilotable.Id);
+            ParallelKey pilotKey = _userPilots.GetPilotKey(data.SenderId);
+            int pilotId = simulation.GetEntityId(pilotKey);
+            Piloting piloting = _pilotings.Get(pilotId);
+            Tree tree = _trees.Get(piloting.Pilotable.Id);
 
             if (!_nodes.TryGet(targetNodeId, out Node? targetNode))
             {
@@ -162,7 +167,9 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         public SimulationEventResult Process(ISimulation simulation, StopTractoring data)
         {
-            int pilotId = simulation.GetEntityId(data.Sender);
+            ParallelKey pilotKey = _userPilots.GetPilotKey(data.SenderId);
+            int pilotId = simulation.GetEntityId(pilotKey);
+
             if (!_pilotings.TryGet(pilotId, out Piloting? piloting))
             {
                 return SimulationEventResult.Failure;
