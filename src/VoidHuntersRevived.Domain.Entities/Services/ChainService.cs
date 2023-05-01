@@ -36,17 +36,17 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             entity.Attach(Tractorable.Instance);
         }
 
-        public Entity CreateChain(ParallelKey key, string headResource, Vector2 position, float rotation, ISimulation simulation)
+        public Entity CreateChain(ParallelKeyProvider keys, string headResource, Vector2 position, float rotation, ISimulation simulation)
         {
-            Entity shipPart = _shipParts.CreateShipPart(key.Create(ParallelTypes.ShipPart, 0), simulation, headResource);
+            Entity shipPart = _shipParts.CreateShipPart(keys.Next(), simulation, headResource);
             Node head = shipPart.Get<Node>();
 
-            return this.CreateChain(key, head, position, rotation, simulation);
+            return this.CreateChain(keys, head, position, rotation, simulation);
         }
 
-        public Entity CreateChain(ParallelKey key, Node head, Vector2 position, float rotation, ISimulation simulation)
+        public Entity CreateChain(ParallelKeyProvider keys, Node head, Vector2 position, float rotation, ISimulation simulation)
         {
-            Entity chain = simulation.CreateEntity(key);
+            Entity chain = simulation.CreateEntity(keys.Next());
             this.MakeChain(chain, head, position, rotation, simulation);
 
             return chain;

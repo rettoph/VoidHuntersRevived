@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Services
     public interface IChainService
     {
         void MakeChain(Entity entity, Node head, Vector2 position, float rotation, ISimulation simulation);
-        Entity CreateChain(ParallelKey key, string headResource, Vector2 position, float rotation, ISimulation simulation);
-        Entity CreateChain(ParallelKey key, Node head, Vector2 position, float rotation, ISimulation simulation);
+        Entity CreateChain(ParallelKeyProvider keys, string headResource, Vector2 position, float rotation, ISimulation simulation);
+        Entity CreateChain(ParallelKeyProvider keys, Node head, Vector2 position, float rotation, ISimulation simulation);
     }
 }

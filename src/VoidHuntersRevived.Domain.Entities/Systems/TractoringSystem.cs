@@ -139,9 +139,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             { // The selected node is attached to the current ship
 
                 // Cache all the values we're about to delete...
-                var key = _parallelables.Get(targetNode.EntityId).Key;
-                var position = targetNode.WorldPosition;
-                var rotation = targetNode.WorldTransformation.Radians();
+                Vector2 position = targetNode.WorldPosition;
+                float rotation = targetNode.WorldTransformation.Radians();
 
                 // Destroy the link to the ship's tree
                 _nodeService.Detach(targetNode.ChildJoint()?.Link ?? throw new NotImplementedException());
@@ -152,7 +151,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 // was slotted in already, but the confirmation from the server doesn't
                 // display that very well.
                 targetTreeId = _chainService.CreateChain(
-                    key: key.Create(ParallelTypes.Chain),
+                    keys: new ParallelKeyProvider(data.Key),
                     head: targetNode,
                     position: position,
                     rotation: rotation,

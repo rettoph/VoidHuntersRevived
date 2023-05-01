@@ -22,16 +22,16 @@ namespace VoidHuntersRevived.Common.Simulations
         public ParallelKey Next()
         {
             _data[0]++;
-            return this.Generate();
+            return this.Current();
         }
 
         public ParallelKey Previous()
         {
             _data[0]--;
-            return this.Generate();
+            return this.Current();
         }
 
-        private unsafe ParallelKey Generate()
+        public unsafe ParallelKey Current()
         {
             fixed (ulong* pData = _data)
             {

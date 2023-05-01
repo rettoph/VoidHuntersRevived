@@ -17,6 +17,7 @@ using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common.Simulations.Enums;
 using VoidHuntersRevived.Common.Entities.Services;
+using Guppy.Network.Identity;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
@@ -62,7 +63,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
         public SimulationEventResult Process(ISimulation simulation, UserJoined data)
         {
-            var user = _scope.Peer!.Users.UpdateOrCreate(data.UserId, data.Claims);
+            User? user = _scope.Peer!.Users.UpdateOrCreate(data.UserId, data.Claims);
+            ParallelKeyProvider keys = new ParallelKeyProvider(data.Key);
 
             // Ensure the user has been added to the scope
             if (!_scope.Users.TryGet(user.Id, out _))
@@ -70,19 +72,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
                 _scope.Users.Add(user);
             }
 
-            ParallelKey key = data.Key.Create(ParallelTypes.Pilot);
+            ParallelKey key = keys.Next();
             if (simulation.HasEntity(key))
             { // This operation has already been done
                 return SimulationEventResult.Failure;
             }
 
-            Entity ship = _ships.CreateShip(key.Create(ParallelTypes.Ship), ShipParts.HullSquare, simulation);
+            Entity ship = _ships.CreateShip(keys, ShipParts.HullSquare, simulation);
             Entity pilot = _pilots.CreateUserPilot(key, user, ship, simulation);
 
             
-            Entity chain = _chains.CreateChain(key.Create(ParallelTypes.Chain, 1337), ShipParts.HullSquare, Vector2.Zero, 0, simulation);
-            chain = _chains.CreateChain(key.Create(ParallelTypes.Chain, 1338), ShipParts.HullSquare, Vector2.Zero, 0, simulation);
-            chain = _chains.CreateChain(key.Create(ParallelTypes.Chain, 1339), ShipParts.HullSquare, Vector2.Zero, 0, simulation);
+            Entity chain = _chains.CreateChain(keys, ShipParts.HullSquare, Vector2.Zero, 0, simulation);
+            chain = _chains.CreateChain(keys, ShipParts.HullSquare, Vector2.Zero, 0, simulation);
+            chain = _chains.CreateChain(keys, ShipParts.HullSquare, Vector2.Zero, 0, simulation);
 
             return SimulationEventResult.Success;
         }

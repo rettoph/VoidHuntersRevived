@@ -71,8 +71,6 @@ namespace VoidHuntersRevived.Domain.Simulations
             }
 
             _globalsSmulationService.Add(this);
-
-            this.CreateEntity(ParallelKeys.System);
         }
 
         public void Dispose()
