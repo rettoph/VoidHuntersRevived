@@ -7,16 +7,29 @@ namespace VoidHuntersRevived.Common.Simulations
     {
         public static ParallelKey Empty = new ParallelKey(default);
 
-        public readonly Guid Value;
+        public readonly UInt128 Value;
 
-        internal ParallelKey(Guid value)
+        internal unsafe ParallelKey(UInt128 value)
         {
             this.Value = value;
         }
 
+        public ParallelKey Next()
+        {
+            return new ParallelKey(this.Value + 1);
+        }
+
+        public ParallelKey Previous()
+        {
+            return new ParallelKey(this.Value - 1);
+        }
+
         public unsafe static ParallelKey NewKey()
         {
-            return new ParallelKey(Guid.NewGuid());
+            Guid valueGuid = Guid.NewGuid();
+            UInt128* value = (UInt128*)&valueGuid;
+
+            return new ParallelKey(value[0]);
         }
     }
 }

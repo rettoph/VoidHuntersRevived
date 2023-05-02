@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Common.Simulations
             {
                 Span<byte> dataSpan = new Span<byte>((byte*)pData, DataSizeInBytes);
                 uint128 hash = xxHash128.ComputeHash(dataSpan, DataSizeInBytes);
-                Guid* value = (Guid*)&hash;
+                UInt128* value = (UInt128*)&hash;
 
                 return new ParallelKey(value[0]);
             }

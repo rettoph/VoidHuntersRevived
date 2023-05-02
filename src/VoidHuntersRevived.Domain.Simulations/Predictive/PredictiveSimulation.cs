@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         private readonly ISimulationEventPublishingService _events;
         private IPredictiveSynchronizationSystem[] _synchronizeSystems;
         private readonly IBus _bus;
-        private readonly Dictionary<Guid, ISimulationEvent> _cache;
+        private readonly Dictionary<UInt128, ISimulationEvent> _cache;
 
         public PredictiveSimulation(
             IBus bus,
@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         {
             _synchronizeSystems = Array.Empty<IPredictiveSynchronizationSystem>();
             _bus = bus;
-            _cache = new Dictionary<Guid, ISimulationEvent>();
+            _cache = new Dictionary<UInt128, ISimulationEvent>();
             _events = events;
         }
 
