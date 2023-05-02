@@ -6,41 +6,25 @@ namespace VoidHuntersRevived.Common.Simulations
     {
         private readonly int DataSizeInBytes = sizeof(ulong) * 3;
 
-        private ulong[] _data;
+        private ParallelKey _key;
+
+        public ParallelKey Current => _key;
 
         public unsafe ParallelKeyFactory(ParallelKey source)
         {
-            ulong* pSource = (ulong*)&source;
-            _data = new[]
-            {
-                ulong.MinValue,
-                pSource[0],
-                pSource[1],
-            };
+            _key = source;
         }
 
         public ParallelKey Next()
         {
-            _data[0]++;
-            return this.Current();
+            _key = _key.Next();
+            return _key;
         }
 
         public ParallelKey Previous()
         {
-            _data[0]--;
-            return this.Current();
-        }
-
-        public unsafe ParallelKey Current()
-        {
-            fixed (ulong* pData = _data)
-            {
-                Span<byte> dataSpan = new Span<byte>((byte*)pData, DataSizeInBytes);
-                uint128 hash = xxHash128.ComputeHash(dataSpan, DataSizeInBytes);
-                UInt128* value = (UInt128*)&hash;
-
-                return new ParallelKey(value[0]);
-            }
+            _key = _key.Previous();
+            return _key;
         }
     }
 }
