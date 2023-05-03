@@ -31,5 +31,15 @@ namespace VoidHuntersRevived.Common.Simulations
 
             return new ParallelKey(value[0]);
         }
+
+        public static ParallelKey operator ++(ParallelKey a)
+        {
+            return a.Next();
+        }
+
+        public static ParallelKey operator --(ParallelKey a)
+        {
+            return a.Previous();
+        }
     }
 }

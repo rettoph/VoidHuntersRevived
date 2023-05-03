@@ -65,7 +65,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
         public SimulationEventResult Process(ISimulationEvent<UserJoined> @event)
         {
             User? user = _scope.Peer!.Users.UpdateOrCreate(@event.Body.UserId, @event.Body.Claims);
-            ParallelKeyFactory keys = new ParallelKeyFactory(@event.Key);
+            ParallelKeyGenerator keys = new ParallelKeyGenerator(@event.Key);
 
             // Ensure the user has been added to the scope
             if (!_scope.Users.TryGet(user.Id, out _))
@@ -79,13 +79,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
                 return SimulationEventResult.Failure;
             }
 
-            Entity ship = _ships.CreateShip(keys, ShipParts.HullSquare, @event.Simulation);
-            Entity pilot = _pilots.CreateUserPilot(key, user, ship, @event.Simulation);
+            Entity ship = _ships.CreateShip(ShipParts.HullSquare, @event);
+            Entity pilot = _pilots.CreateUserPilot(user, ship, @event);
 
 
-            Entity chain = _chains.CreateChain(keys, ShipParts.HullSquare, Vector2.Zero, 0, @event.Simulation);
-            chain = _chains.CreateChain(keys, ShipParts.HullSquare, Vector2.Zero, 0, @event.Simulation);
-            chain = _chains.CreateChain(keys, ShipParts.HullSquare, Vector2.Zero, 0, @event.Simulation);
+            Entity chain = _chains.CreateChain(ShipParts.HullSquare, Vector2.Zero, 0, @event);
+            chain = _chains.CreateChain(ShipParts.HullSquare, Vector2.Zero, 0, @event);
+            chain = _chains.CreateChain(ShipParts.HullSquare, Vector2.Zero, 0, @event);
 
             return SimulationEventResult.Success;
         }

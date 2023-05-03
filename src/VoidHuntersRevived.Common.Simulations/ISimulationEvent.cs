@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Common.Simulations
 
         object Body { get; }
 
-        ParallelKeyFactory KeyFactory { get; }
+        ParallelKeyGenerator KeyGenerator { get; }
 
         SimulationEventResult Result { get; }
     }

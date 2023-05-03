@@ -152,11 +152,10 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 // was slotted in already, but the confirmation from the server doesn't
                 // display that very well.
                 targetTreeId = _chainService.CreateChain(
-                    keys: @event.KeyFactory,
                     head: targetNode,
                     position: position,
                     rotation: rotation,
-                    simulation: @event.Simulation).Id;
+                    @event: @event).Id;
             }
 
             var tractoring = new Tractoring(piloting.Pilotable.Id, targetTreeId);

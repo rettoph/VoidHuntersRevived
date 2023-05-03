@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Services
     public interface IShipPartService
     {
         void MakeShipPart(Entity entity, ShipPartResource resource);
-        Entity CreateShipPart(ParallelKey key, ISimulation simulation, string resource);
-        Entity CreateShipPart(ParallelKey key, ISimulation simulation, ShipPartResource resource);
+        Entity CreateShipPart(string resource, ISimulationEvent @event);
+        Entity CreateShipPart(ShipPartResource resource, ISimulationEvent @event);
     }
 }

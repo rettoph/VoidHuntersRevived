@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Domain.Simulations
     internal sealed class SimulationEvent<TSimulationEventData> : ISimulationEvent<TSimulationEventData>
         where TSimulationEventData : class
     {
-        private ParallelKeyFactory? _keyFactory;
+        private ParallelKeyGenerator? _keyFactory;
 
         public required ParallelKey Key { get; init; }
 
@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public required TSimulationEventData Body { get; init; }
 
-        public ParallelKeyFactory KeyFactory => _keyFactory ??= new ParallelKeyFactory(this.Key);
+        public ParallelKeyGenerator KeyGenerator => _keyFactory ??= new ParallelKeyGenerator(this.Key);
 
         public SimulationEventResult Result { get; internal set; }
 

@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Common.Entities.Services
 {
     public interface IPilotService
     {
-        public Entity CreatePilot(ParallelKey key, Entity pilotable, ISimulation simulation);
-        public Entity CreateUserPilot(ParallelKey key, User user, Entity pilotable, ISimulation simulation);
+        public Entity CreatePilot(Entity pilotable, ISimulationEvent @event);
+        public Entity CreateUserPilot(User user, Entity pilotable, ISimulationEvent @event);
     }
 }

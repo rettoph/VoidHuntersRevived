@@ -2,7 +2,7 @@
 
 namespace VoidHuntersRevived.Common.Simulations
 {
-    public sealed class ParallelKeyFactory
+    public sealed class ParallelKeyGenerator
     {
         private readonly int DataSizeInBytes = sizeof(ulong) * 3;
 
@@ -10,21 +10,19 @@ namespace VoidHuntersRevived.Common.Simulations
 
         public ParallelKey Current => _key;
 
-        public unsafe ParallelKeyFactory(ParallelKey source)
+        public unsafe ParallelKeyGenerator(ParallelKey source)
         {
             _key = source;
         }
 
         public ParallelKey Next()
         {
-            _key = _key.Next();
-            return _key;
+            return ++_key;
         }
 
         public ParallelKey Previous()
         {
-            _key = _key.Previous();
-            return _key;
+            return --_key;
         }
     }
 }

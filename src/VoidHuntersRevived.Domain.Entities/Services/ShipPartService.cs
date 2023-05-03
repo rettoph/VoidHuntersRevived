@@ -26,19 +26,19 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             entity.Attach(resource);
         }
 
-        public Entity CreateShipPart(ParallelKey key, ISimulation simulation, ShipPartResource resource)
+        public Entity CreateShipPart(ShipPartResource resource, ISimulationEvent @event)
         {
-            Entity entity = simulation.CreateEntity(key);
+            Entity entity = @event.Simulation.CreateEntity(@event.KeyGenerator.Next());
             this.MakeShipPart(entity, resource);
 
             return entity;
         }
 
-        public Entity CreateShipPart(ParallelKey key, ISimulation simulation, string resourceName)
+        public Entity CreateShipPart(string resourceName, ISimulationEvent @event)
         {
             ShipPartResource resource = _resources.Get(resourceName);
 
-            return this.CreateShipPart(key, simulation, resource);
+            return this.CreateShipPart(resource, @event);
         }
     }
 }

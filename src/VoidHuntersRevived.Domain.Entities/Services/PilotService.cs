@@ -17,16 +17,16 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
         }
 
-        public Entity CreatePilot(ParallelKey key, Entity pilotable, ISimulation simulation)
+        public Entity CreatePilot(Entity pilotable, ISimulationEvent @event)
         {
-            Entity userPilot = simulation.CreateEntity(key).MakePilot(pilotable);
+            Entity userPilot = @event.Simulation.CreateEntity(@event.KeyGenerator.Next()).MakePilot(pilotable);
 
             return userPilot;
         }
 
-        public Entity CreateUserPilot(ParallelKey key, User user, Entity pilotable, ISimulation simulation)
+        public Entity CreateUserPilot(User user, Entity pilotable, ISimulationEvent @event)
         {
-            Entity pilot = this.CreatePilot(key, pilotable, simulation);
+            Entity pilot = this.CreatePilot(pilotable, @event);
             pilot.Attach(user);
 
             return pilot;

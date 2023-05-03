@@ -27,18 +27,18 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _trees = trees;
         }
 
-        public Entity CreateShip(ParallelKeyFactory keys, string bridgeResource, ISimulation simulation)
+        public Entity CreateShip(string bridgeResource, ISimulationEvent @event)
         {
-            Entity bridge = _shipParts.CreateShipPart(keys.Next(), simulation, bridgeResource);
-            Entity ship = simulation.CreateEntity(keys.Next());
-            this.MakeShip(ship, bridge, simulation);
+            Entity bridge = _shipParts.CreateShipPart(bridgeResource, @event);
+            Entity ship = @event.Simulation.CreateEntity(@event.KeyGenerator.Next());
+            this.MakeShip(ship, bridge, @event);
 
             return ship;
         }
 
-        public void MakeShip(Entity entity, Entity bridge, ISimulation simulation)
+        public void MakeShip(Entity entity, Entity bridge, ISimulationEvent @event)
         {
-            Body body = simulation.Aether.CreateBody(bodyType: BodyType.Dynamic);
+            Body body = @event.Simulation.Aether.CreateBody(bodyType: BodyType.Dynamic);
             Node node = bridge.Get<Node>();
 
             _trees.MakeTree(entity, body, node);

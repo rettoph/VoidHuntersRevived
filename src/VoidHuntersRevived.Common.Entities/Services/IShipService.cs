@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Common.Entities.Services
 {
     public interface IShipService
     {
-        void MakeShip(Entity entity, Entity bridge, ISimulation simulation);
-        Entity CreateShip(ParallelKeyFactory keys, string bridgeResource, ISimulation simulation);
+        void MakeShip(Entity entity, Entity bridge, ISimulationEvent @event);
+        Entity CreateShip(string bridgeResource, ISimulationEvent @event);
     }
 }

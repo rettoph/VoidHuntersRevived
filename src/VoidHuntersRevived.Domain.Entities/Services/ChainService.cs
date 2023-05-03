@@ -25,9 +25,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _trees = trees;
         }
 
-        public void MakeChain(Entity entity, Node head, Vector2 position, float rotation, ISimulation simulation)
+        public void MakeChain(Entity entity, Node head, Vector2 position, float rotation, ISimulationEvent @event)
         {
-            Body body = simulation.Aether.CreateBody(bodyType: BodyType.Dynamic);
+            Body body = @event.Simulation.Aether.CreateBody(bodyType: BodyType.Dynamic);
             body.SetTransformIgnoreContacts(ref position, rotation);
             body.OnCollision += HandleChainCollision;
 
@@ -36,18 +36,18 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             entity.Attach(Tractorable.Instance);
         }
 
-        public Entity CreateChain(ParallelKeyFactory keys, string headResource, Vector2 position, float rotation, ISimulation simulation)
+        public Entity CreateChain(string headResource, Vector2 position, float rotation, ISimulationEvent @event)
         {
-            Entity shipPart = _shipParts.CreateShipPart(keys.Next(), simulation, headResource);
+            Entity shipPart = _shipParts.CreateShipPart(headResource, @event);
             Node head = shipPart.Get<Node>();
 
-            return this.CreateChain(keys, head, position, rotation, simulation);
+            return this.CreateChain(head, position, rotation, @event);
         }
 
-        public Entity CreateChain(ParallelKeyFactory keys, Node head, Vector2 position, float rotation, ISimulation simulation)
+        public Entity CreateChain(Node head, Vector2 position, float rotation, ISimulationEvent @event)
         {
-            Entity chain = simulation.CreateEntity(keys.Next());
-            this.MakeChain(chain, head, position, rotation, simulation);
+            Entity chain = @event.Simulation.CreateEntity(@event.KeyGenerator.Next());
+            this.MakeChain(chain, head, position, rotation, @event);
 
             return chain;
         }
