@@ -65,7 +65,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
         public SimulationEventResult Process(ISimulationEvent<UserJoined> @event)
         {
             User? user = _scope.Peer!.Users.UpdateOrCreate(@event.Body.UserId, @event.Body.Claims);
-            ParallelKeyGenerator keys = new ParallelKeyGenerator(@event.Key);
 
             // Ensure the user has been added to the scope
             if (!_scope.Users.TryGet(user.Id, out _))
@@ -73,7 +72,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
                 _scope.Users.Add(user);
             }
 
-            ParallelKey key = keys.Next();
+            ParallelKey key = @event.NewKey();
             if (@event.Simulation.HasEntity(key))
             { // This operation has already been done
                 return SimulationEventResult.Failure;

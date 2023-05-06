@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public Entity CreateShipPart(ShipPartResource resource, ISimulationEvent @event)
         {
-            Entity entity = @event.Simulation.CreateEntity(@event.KeyGenerator.Next());
+            Entity entity = @event.Simulation.CreateEntity(@event.NewKey());
             this.MakeShipPart(entity, resource);
 
             return entity;

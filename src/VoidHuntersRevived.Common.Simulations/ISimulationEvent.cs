@@ -18,9 +18,11 @@ namespace VoidHuntersRevived.Common.Simulations
 
         object Body { get; }
 
-        ParallelKeyGenerator KeyGenerator { get; }
-
         SimulationEventResult Result { get; }
+
+        ParallelKey NewKey();
+
+        ParallelKey PreviousKey();
     }
 
     public interface ISimulationEvent<TSimulationEventData> : ISimulationEvent

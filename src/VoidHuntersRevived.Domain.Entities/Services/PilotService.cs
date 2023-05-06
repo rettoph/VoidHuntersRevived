@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public Entity CreatePilot(Entity pilotable, ISimulationEvent @event)
         {
-            Entity userPilot = @event.Simulation.CreateEntity(@event.KeyGenerator.Next()).MakePilot(pilotable);
+            Entity userPilot = @event.Simulation.CreateEntity(@event.NewKey()).MakePilot(pilotable);
 
             return userPilot;
         }

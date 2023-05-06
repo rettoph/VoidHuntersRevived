@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public Entity CreateChain(Node head, Vector2 position, float rotation, ISimulationEvent @event)
         {
-            Entity chain = @event.Simulation.CreateEntity(@event.KeyGenerator.Next());
+            Entity chain = @event.Simulation.CreateEntity(@event.NewKey());
             this.MakeChain(chain, head, position, rotation, @event);
 
             return chain;

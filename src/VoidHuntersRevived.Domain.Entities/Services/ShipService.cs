@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public Entity CreateShip(string bridgeResource, ISimulationEvent @event)
         {
             Entity bridge = _shipParts.CreateShipPart(bridgeResource, @event);
-            Entity ship = @event.Simulation.CreateEntity(@event.KeyGenerator.Next());
+            Entity ship = @event.Simulation.CreateEntity(@event.NewKey());
             this.MakeShip(ship, bridge, @event);
 
             return ship;

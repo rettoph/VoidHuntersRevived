@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Simulations.Providers
 {
-    public interface ISimulationHashProvider
+    public interface IParallelKeyProvider
     {
-        void GetHash(ISimulation simulation, out int hash);
+        ParallelKey Next(in ParallelKey key);
+
+        ParallelKey Previous(in ParallelKey key);
     }
 }

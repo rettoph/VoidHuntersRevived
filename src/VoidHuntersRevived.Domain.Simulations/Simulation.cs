@@ -17,8 +17,10 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
+using VoidHuntersRevived.Common.Simulations.Providers;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
+using VoidHuntersRevived.Domain.Simulations.Providers;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
@@ -41,6 +43,8 @@ namespace VoidHuntersRevived.Domain.Simulations
         Type ISimulation.EntityComponentType => this.EntityComponentType;
         IServiceProvider ISimulation.Provider => this.Provider;
 
+        public IParallelKeyProvider Keys { get; }
+
         protected Simulation(
             SimulationType type,
             IParallelableService parallelables,
@@ -56,6 +60,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.Aether = new Aether(Vector2.Zero);
             this.EntityComponentType = typeof(TEntityComponent);
             this.Provider = default!;
+            this.Keys = new ParallelKeyProvider();
         }
 
         public virtual void Initialize(IServiceProvider provider)

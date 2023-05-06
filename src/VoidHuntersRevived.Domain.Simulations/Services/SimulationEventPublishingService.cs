@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Enums;
+using VoidHuntersRevived.Common.Simulations.Providers;
 using VoidHuntersRevived.Common.Simulations.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Services
@@ -39,7 +40,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
                 Type subscriberType = typeof(ISimulationEventListener<>).MakeGenericType(inputType);
                 Type sortedType = typeof(ISorted<>).MakeGenericType(subscriberType);
                 IEnumerable<object> subscribers = (IEnumerable<object>)_provider.GetService(sortedType)!;
-                publisher = (ISimulationEventPublisher)Activator.CreateInstance(publisherType, new[] { subscribers })!;
+                publisher = (ISimulationEventPublisher)Activator.CreateInstance(publisherType, new object[] { subscribers })!;
             }
 
             return publisher!;
