@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Enums;
-using VoidHuntersRevived.Common.Simulations.Providers;
+﻿using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
@@ -19,8 +12,6 @@ namespace VoidHuntersRevived.Domain.Simulations
         public required ISimulation Simulation { get; init; }
 
         public required TSimulationEventData Body { get; init; }
-
-        public SimulationEventResult Result { get; internal set; }
 
         object ISimulationEvent.Body => this.Body;
 

@@ -2,27 +2,17 @@
 using Guppy.Common;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.Entities.Events;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Components;
-using VoidHuntersRevived.Common.Simulations.Enums;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Domain.Entities.Events;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {
@@ -86,16 +76,16 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             _parallelables = mapperService.GetMapper<Parallelable>();
         }
 
-        public SimulationEventResult Process(ISimulationEvent<StartTractoring> @event)
+        public void Process(ISimulationEvent<StartTractoring> @event)
         {
             if (!@event.Simulation.TryGetEntityId(@event.Body.TargetTree, out int targetTreeId))
             {
-                return SimulationEventResult.Failure;
+                return;
             }
 
             if (!@event.Simulation.TryGetEntityId(@event.Body.TargetNode, out int targetNodeId))
             {
-                return SimulationEventResult.Failure;
+                return;
             }
 
             ParallelKey pilotKey = _userPilotMap.GetPilotKey(@event.SenderId);
@@ -105,12 +95,12 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             if (!_nodes.TryGet(targetNodeId, out Node? targetNode))
             {
-                return SimulationEventResult.Failure;
+                return;
             }
 
             if (targetNode.Tree is null)
             {
-                return SimulationEventResult.Failure;
+                return;
             }
 
             if (targetNode.Tree.EntityId != targetTreeId)
@@ -122,18 +112,18 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 // created a brand new chain in the process. Ideally there would
                 // be some sort of prediction verification done before we got to
                 // this state?
-                return SimulationEventResult.Failure;
+                return;
             }
 
             if (!_tractorables.TryGet(targetTreeId, out var tractorable))
             { // The target is not tractorable
-                return SimulationEventResult.Failure;
+                return;
             }
 
 
             if (tractorable.WhitelistedTractoring is not null && tractorable.WhitelistedTractoring.Value != piloting.Pilotable.Id)
             { // This part is attached to another ship
-                return SimulationEventResult.Failure;
+                return;
             }
 
             if (targetNode.Tree == tree)
@@ -161,22 +151,22 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             var tractoring = new Tractoring(piloting.Pilotable.Id, targetTreeId);
             _tractorings.Put(piloting.Pilotable.Id, tractoring);
 
-            return SimulationEventResult.Success;
+            return;
         }
 
-        public SimulationEventResult Process(ISimulationEvent<StopTractoring> @event)
+        public void Process(ISimulationEvent<StopTractoring> @event)
         {
             ParallelKey pilotKey = _userPilotMap.GetPilotKey(@event.SenderId);
             int pilotId = @event.Simulation.GetEntityId(pilotKey);
 
             if (!_pilotings.TryGet(pilotId, out Piloting? piloting))
             {
-                return SimulationEventResult.Failure;
+                return;
             }
 
             if (!@event.Simulation.TryGetEntityId(@event.Body.TargetTreeKey, out int tractorableId))
             {
-                return SimulationEventResult.Failure;
+                return;
             }
 
             if (_tractorings.TryGet(piloting.Pilotable.Id, out Tractoring? tractoring)
@@ -187,7 +177,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             if (!_tractor.TransformTractorable(@event.Body.TargetPosition, piloting.Pilotable.Id, tractorableId, out Link? potential))
             {
-                return SimulationEventResult.Failure;
+                return;
             }
 
             // Destroy the old chain
@@ -199,7 +189,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             // Create a jointing to the current ship.
             _nodeService.Attach(potential.Child, potential.Parent);
 
-            return SimulationEventResult.Success;
+            return;
         }
 
         protected override void Process(ISimulation simulation, GameTime gameTime, int entityId)

@@ -1,24 +1,17 @@
 ﻿using Guppy.Attributes;
-using Guppy.Common;
 using Guppy.Network;
 using Serilog;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Systems;
 using VoidHuntersRevived.Domain.Simulations.Events;
-using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities;
-using VoidHuntersRevived.Common.Simulations.Components;
 using MonoGame.Extended.Entities;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
-using VoidHuntersRevived.Common.Entities.Extensions;
-using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Common.Simulations.Enums;
 using VoidHuntersRevived.Common.Entities.Services;
 using Guppy.Network.Identity;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
@@ -62,7 +55,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _nodes = world.ComponentMapper.GetMapper<Node>();
         }
 
-        public SimulationEventResult Process(ISimulationEvent<UserJoined> @event)
+        public void Process(ISimulationEvent<UserJoined> @event)
         {
             User? user = _scope.Peer!.Users.UpdateOrCreate(@event.Body.UserId, @event.Body.Claims);
 
@@ -75,7 +68,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             ParallelKey key = @event.NewKey();
             if (@event.Simulation.HasEntity(key))
             { // This operation has already been done
-                return SimulationEventResult.Failure;
+                return;
             }
 
             Entity ship = _ships.CreateShip(ShipParts.HullSquare, @event);
@@ -86,7 +79,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             chain = _chains.CreateChain(ShipParts.HullSquare, Vector2.Zero, 0, @event);
             chain = _chains.CreateChain(ShipParts.HullSquare, Vector2.Zero, 0, @event);
 
-            return SimulationEventResult.Success;
+            return;
         }
     }
 }

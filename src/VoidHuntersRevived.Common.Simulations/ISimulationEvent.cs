@@ -1,12 +1,4 @@
-﻿using Standart.Hash.xxHash;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Simulations.Enums;
-
-namespace VoidHuntersRevived.Common.Simulations
+﻿namespace VoidHuntersRevived.Common.Simulations
 {
     public interface ISimulationEvent
     {
@@ -17,8 +9,6 @@ namespace VoidHuntersRevived.Common.Simulations
         ISimulation Simulation { get; }
 
         object Body { get; }
-
-        SimulationEventResult Result { get; }
 
         ParallelKey NewKey();
 

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Events;
 using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Enums;
 using VoidHuntersRevived.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Entities.Systems
@@ -21,11 +20,9 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         {
         }
 
-        public SimulationEventResult Process(ISimulationEvent<DestroyEntity> message)
+        public void Process(ISimulationEvent<DestroyEntity> message)
         {
             message.Simulation.DestroyEntity(message.Body.EntityKey);
-
-            return SimulationEventResult.Success;
         }
     }
 }

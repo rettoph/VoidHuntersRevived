@@ -7,7 +7,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Enums;
 using VoidHuntersRevived.Common.Simulations.Providers;
 
 namespace VoidHuntersRevived.Domain.Simulations.Services
@@ -36,13 +35,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
                     Key = core.Key,
                     SenderId = core.SenderId,
                     Simulation = simulation,
-                    Body = Unsafe.As<T>(core.Body),
-                    Result = SimulationEventResult.None
+                    Body = Unsafe.As<T>(core.Body)
                 };
 
                 foreach (ISimulationEventListener<T> subscriber in _subscribers)
                 {
-                    @event.Result |= subscriber.Process(@event);
+                    subscriber.Process(@event);
                 }
 
                 return @event;

@@ -1,22 +1,16 @@
-﻿using Guppy.Common;
-using Guppy.Network;
+﻿using Guppy.Network;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
-using Guppy.Network.Extensions.Identity;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Enums;
 using Guppy.Network.Identity.Services;
-using Guppy.Network.Messages;
-using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
-using VoidHuntersRevived.Common.Simulations.Enums;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Systems;
 using VoidHuntersRevived.Domain.Simulations.Events;
 using VoidHuntersRevived.Domain.Simulations.Lockstep.Messages;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
@@ -43,13 +37,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _scope.Users.OnUserJoined += HandleUserJoined;
         }
 
-        public SimulationEventResult Process(ISimulationEvent<UserJoined> @event)
+        public void Process(ISimulationEvent<UserJoined> @event)
         {
             var user = _scope.Peer!.Users.UpdateOrCreate(@event.Body.UserId, @event.Body.Claims);
 
             if (user.NetPeer is null)
             {
-                return SimulationEventResult.Failure;
+                return;
             }
 
             var lastTickId = _state.LastTickId;
@@ -75,8 +69,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             {
                 LastTickId = lastTickId
             }).AddRecipient(user.NetPeer).Enqueue();
-
-            return SimulationEventResult.Success;
         }
 
         private void HandleUserJoined(IUserService sender, User args)

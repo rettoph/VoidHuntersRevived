@@ -1,21 +1,15 @@
 ﻿using Guppy.Common;
 using Guppy.Network;
 using MonoGame.Extended.Entities;
-using MonoGame.Extended.Entities.Systems;
 using Serilog;
 using VoidHuntersRevived.Domain.Entities.Events;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Simulations.Systems;
-using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Systems;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
-using VoidHuntersRevived.Common.Simulations.Enums;
 using VoidHuntersRevived.Common.Entities.Services;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
@@ -54,21 +48,21 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _tractorables = world.ComponentMapper.GetMapper<Tractorable>();
         }
 
-        public SimulationEventResult Process(ISimulationEvent<SetPilotingDirection> @event)
+        public void Process(ISimulationEvent<SetPilotingDirection> @event)
         {
             if (!_userPilotMap.TryGetPilotKey(@event.SenderId, out ParallelKey pilotKey))
             {
-                return SimulationEventResult.Failure;
+                return;
             }
 
             if (!@event.Simulation.TryGetEntityId(pilotKey, out int pilotId))
             {
-                return SimulationEventResult.Failure;
+                return;
             }
 
             if (!_pilotings.TryGet(pilotId, out var piloting))
             {
-                return SimulationEventResult.Failure;
+                return;
             }
 
             var pilotable = _pilotables.Get(piloting?.Pilotable);
@@ -76,40 +70,36 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             if (@event.Body.Value && (pilotable.Direction & @event.Body.Which) == 0)
             {
                 pilotable.Direction |= @event.Body.Which;
-                return SimulationEventResult.Success;
+                return;
             }
 
             if (!@event.Body.Value && (pilotable.Direction & @event.Body.Which) != 0)
             {
                 pilotable.Direction &= ~@event.Body.Which;
-                return SimulationEventResult.Success;
+                return;
             }
-
-            return SimulationEventResult.Success;
         }
 
-        public SimulationEventResult Process(ISimulationEvent<SetPilotingTarget> @event)
+        public void Process(ISimulationEvent<SetPilotingTarget> @event)
         {
             if (!_userPilotMap.TryGetPilotKey(@event.SenderId, out ParallelKey pilotKey))
             {
-                return SimulationEventResult.Failure;
+                return;
             }
 
             if (!@event.Simulation.TryGetEntityId(pilotKey, out int pilotId))
             {
-                return SimulationEventResult.Failure;
+                return;
             }
 
             if (!_pilotings.TryGet(pilotId, out var piloting))
             {
-                return SimulationEventResult.Failure;
+                return;
             }
 
             var pilotable = _pilotables.Get(piloting.Pilotable);
 
             pilotable.Aim.Target = @event.Body.Target;
-
-            return SimulationEventResult.Success;
         }
     }
 }
