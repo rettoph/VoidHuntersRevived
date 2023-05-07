@@ -29,9 +29,6 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
         {
             services.ConfigureCollection(manager =>
             {
-                manager.AddScoped<TractorService>()
-                    .AddInterfaceAliases();
-
                 manager.AddScoped<PilotableSystem>()
                     .AddInterfaceAliases();
 
@@ -63,9 +60,6 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
                     .AddInterfaceAliases();
 
                 manager.AddScoped<TreeSystem>()
-                    .AddInterfaceAliases();
-
-                manager.AddScoped<TractoringSystem>()
                     .AddInterfaceAliases();
 
                 manager.AddScoped<DestroyEntitySystem>()

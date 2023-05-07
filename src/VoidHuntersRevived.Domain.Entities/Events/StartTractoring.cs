@@ -12,8 +12,7 @@ namespace VoidHuntersRevived.Domain.Entities.Events
 {
     public sealed class StartTractoring : IMessage
     {
-        public required ParallelKey TargetTree { get; init; }
-        public required ParallelKey TargetNode { get; init; }
+        public required ParallelKey TractorBeamEmitterKey { get; init; }
 
         public Type Type => typeof(StartTractoring);
     }

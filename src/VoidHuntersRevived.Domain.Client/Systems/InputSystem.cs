@@ -24,6 +24,7 @@ using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Entities.Tractoring.Components;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
@@ -39,11 +40,10 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private readonly ISimulationService _simulations;
         private readonly IUserPilotMappingService _userPilots;
         private readonly Camera2D _camera;
-        private readonly ITractorService _tractor;
         private ISimulation _interactive;
         private ComponentMapper<Piloting> _pilotings;
         private ComponentMapper<Pilotable> _pilotables;
-        private ComponentMapper<Tractoring> _tractorings;
+        private ComponentMapper<TractorBeamEmitter> _tractorBeamEmitters;
         private ComponentMapper<Parallelable> _parallelables;
         private float _scroll;
 
@@ -53,18 +53,16 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             NetScope netScope,
             Camera2D camera,
             ISimulationService simulations,
-            ITractorService tractor,
             IUserPilotMappingService userPilots)
         {
             _netScope = netScope;
             _camera = camera;
             _simulations = simulations;
-            _tractor = tractor;
             _userPilots = userPilots;
             _interactive = default!;
             _pilotings = default!;
             _pilotables = default!;
-            _tractorings = default!;
+            _tractorBeamEmitters = default!;
             _parallelables = default!;
         }
 
@@ -76,7 +74,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
             _pilotings = world.ComponentMapper.GetMapper<Piloting>();
             _pilotables = world.ComponentMapper.GetMapper<Pilotable>();
-            _tractorings = world.ComponentMapper.GetMapper<Tractoring>();
+            _tractorBeamEmitters = world.ComponentMapper.GetMapper<TractorBeamEmitter>();
             _parallelables = world.ComponentMapper.GetMapper<Parallelable>();
         }
 
@@ -148,21 +146,20 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 return;
             }
 
-            var pilotable = _pilotables.Get(piloting.Pilotable);
-
-            if (_tractor.TryGetTractorable(pilotable, out ParallelKey targetTree, out ParallelKey targetNode))
+            if (!_parallelables.TryGet(piloting.Pilotable.Id, out Parallelable? parallelable))
             {
-                _simulations.Enqueue(new SimulationEventData()
-                {
-                    Key = ParallelKey.NewKey(),
-                    SenderId = _netScope.Peer.Users.Current.Id,
-                    Body = new StartTractoring()
-                    {
-                        TargetTree = targetTree,
-                        TargetNode = targetNode
-                    }
-                });
+                return;
             }
+
+            _simulations.Enqueue(new SimulationEventData()
+            {
+                Key = ParallelKey.NewKey(),
+                SenderId = _netScope.Peer.Users.Current.Id,
+                Body = new StartTractoring()
+                {
+                    TractorBeamEmitterKey = parallelable.Key
+                }
+            });
         }
 
         public void Process(in StopTractoring message)
@@ -187,7 +184,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 return;
             }
 
-            if (!_tractorings.TryGet(piloting.Pilotable.Id, out Tractoring? tractoring))
+            if(!_parallelables.TryGet(piloting.Pilotable.Id, out Parallelable? parallelable))
             {
                 return;
             }
@@ -198,8 +195,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 SenderId = _netScope.Peer.Users.Current.Id,
                 Body = new StopTractoring()
                 {
-                    TargetPosition = CurrentTargetPosition,
-                    TargetTreeKey = _parallelables.Get(tractoring.TargetTreeId).Key
+                    TractorBeamEmitterKey = parallelable.Key
                 }
             });
         }

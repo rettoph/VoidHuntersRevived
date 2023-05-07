@@ -1,40 +1,30 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
+using VoidHuntersRevived.Common.Entities.Tractoring.Components;
 using VoidHuntersRevived.Common.Simulations;
 
-namespace VoidHuntersRevived.Common.Entities.ShipParts.Services
+namespace VoidHuntersRevived.Common.Entities.Tractoring.Services
 {
-    public interface ITractorService
+    public interface ITractorBeamEmitterService
     {
         bool TryGetTractorable(
-            Pilotable pilotable, 
+            int tractorBeamEmitterId,
             [MaybeNullWhen(false)] out ParallelKey tractorableKey,
             [MaybeNullWhen(false)] out ParallelKey nodeKey);
-        
-        bool CanTractor(Vector2 target, ParallelKey tractorable);
 
         bool TryGetPotentialLink(
-            Vector2 target,
-            int tractoringId,
+            int tractorBeamEmitterId,
             [MaybeNullWhen(false)] out Vector2 position,
             [MaybeNullWhen(false)] out Joint childJoint);
 
         bool TransformTractorable(
-            Vector2 target,
-            Tractoring tractoring,
-            [MaybeNullWhen(false)] out Link potential);
-
-        bool TransformTractorable(
-            Vector2 target,
-            int tractoringId,
-            int tractorableId,
+            int tractorBeamEmitterId,
             [MaybeNullWhen(false)] out Link potential);
     }
 }

@@ -11,8 +11,7 @@ namespace VoidHuntersRevived.Domain.Entities.Events
 {
     public class StopTractoring : IMessage
     {
-        public Vector2 TargetPosition { get; init; }
-        public ParallelKey TargetTreeKey { get; init; }
+        public required ParallelKey TractorBeamEmitterKey { get; init; }
 
         public Type Type => typeof(StopTractoring);
     }

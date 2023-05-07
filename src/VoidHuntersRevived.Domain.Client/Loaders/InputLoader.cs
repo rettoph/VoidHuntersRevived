@@ -33,10 +33,12 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
             {
                 (true, new StartTractoring()
                 {
-                    TargetNode = default!,
-                    TargetTree = default!
+                    TractorBeamEmitterKey = default!,
                 }),
-                (false, new StopTractoring()),
+                (false, new StopTractoring()
+                {
+                    TractorBeamEmitterKey = default!
+                }),
             });
 
             InputLoader.AddSetDirectionInput(services, Inputs.SetDirectionForward, Keys.W, Direction.Forward);

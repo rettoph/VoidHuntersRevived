@@ -12,6 +12,7 @@ using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
+using VoidHuntersRevived.Common.Entities.Tractoring.Components;
 using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
@@ -47,7 +48,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 entityId: entity.Id,
                 bridge: bridge));
 
-            entity.Attach(new Tractorable(entity.Id));
+            entity.Attach(new TractorBeamEmitter(entity.Id));
 
             entity.MakePilotable();
         }

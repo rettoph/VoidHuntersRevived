@@ -19,15 +19,13 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
         {
             return new StartTractoring()
             {
-                TargetTree = reader.GetParallelKey(),
-                TargetNode = reader.GetParallelKey()
+                TractorBeamEmitterKey = reader.GetParallelKey()
             };
         }
 
         public override void Serialize(NetDataWriter writer, in StartTractoring instance)
         {
-            writer.Put(instance.TargetTree);
-            writer.Put(instance.TargetNode);
+            writer.Put(instance.TractorBeamEmitterKey);
         }
     }
 }

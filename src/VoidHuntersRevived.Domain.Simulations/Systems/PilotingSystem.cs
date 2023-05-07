@@ -19,24 +19,20 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
     {
         private ComponentMapper<Piloting> _pilotings;
         private ComponentMapper<Pilotable> _pilotables;
-        private ComponentMapper<Tractoring> _tractorings;
         private ComponentMapper<Tractorable> _tractorables;
         private State _state;
         private readonly NetScope _scope;
-        private readonly ITractorService _tractors;
         private readonly IUserPilotMappingService _userPilotMap;
         private readonly ILogger _logger;
 
-        public PilotingSystem(ITractorService tractors, IUserPilotMappingService userPilots, ILogger logger, NetScope scope, State state)
+        public PilotingSystem(IUserPilotMappingService userPilots, ILogger logger, NetScope scope, State state)
         {
-            _tractors = tractors;
             _userPilotMap = userPilots;
             _logger = logger;
             _scope = scope;
             _state = state;
             _pilotings = default!;
             _pilotables = default!;
-            _tractorings = default!;
             _tractorables = default!;
         }
 
@@ -44,7 +40,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
         {
             _pilotings = world.ComponentMapper.GetMapper<Piloting>();
             _pilotables = world.ComponentMapper.GetMapper<Pilotable>();
-            _tractorings = world.ComponentMapper.GetMapper<Tractoring>();
             _tractorables = world.ComponentMapper.GetMapper<Tractorable>();
         }
 

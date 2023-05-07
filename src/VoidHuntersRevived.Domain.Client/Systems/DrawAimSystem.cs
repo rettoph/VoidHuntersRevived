@@ -36,7 +36,6 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         });
 
         private readonly ISimulationService _simulations;
-        private readonly ITractorService _tractor;
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private readonly Camera2D _camera;
         private PrimitiveShape _shape;
@@ -49,12 +48,10 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         public DrawAimSystem(
             PrimitiveBatch<VertexPositionColor> primitiveBatch,
             Camera2D camera,
-            ITractorService tractor,
             ISimulationService simulations) : base(PilotableAspect)
         {
             _primitiveBatch = primitiveBatch;
             _camera = camera;
-            _tractor = tractor;
             _simulations = simulations;
             _shape = new PrimitiveShape(Vector2Helper.CreateCircle(0.25f, 16));
 
@@ -92,29 +89,29 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         private void DrawTractorTarget(Pilotable pilotable)
         {
-            if (!_tractor.TryGetTractorable(pilotable, out _, out ParallelKey targetNodeKey))
-            {
-                return;
-            }
-
-            if (!_simulations[SimulationType.Predictive].TryGetEntityId(targetNodeKey, out int nodeId))
-            {
-                return;
-            }
-
-            if(!_nodes.TryGet(nodeId, out var node))
-            {
-                return;
-            }
-
-            if(!_drawable.TryGet(nodeId, out var drawable))
-            {
-                return;
-            }
-
-            Matrix transformation = drawable.LocalCenterTransformation * node.WorldTransformation;
-            Color color = Color.Green;
-            _primitiveBatch.Trace(_shape, in color, ref transformation);
+            // if (!_tractor.TryGetTractorable(pilotable, out _, out ParallelKey targetNodeKey))
+            // {
+            //     return;
+            // }
+            // 
+            // if (!_simulations[SimulationType.Predictive].TryGetEntityId(targetNodeKey, out int nodeId))
+            // {
+            //     return;
+            // }
+            // 
+            // if(!_nodes.TryGet(nodeId, out var node))
+            // {
+            //     return;
+            // }
+            // 
+            // if(!_drawable.TryGet(nodeId, out var drawable))
+            // {
+            //     return;
+            // }
+            // 
+            // Matrix transformation = drawable.LocalCenterTransformation * node.WorldTransformation;
+            // Color color = Color.Green;
+            // _primitiveBatch.Trace(_shape, in color, ref transformation);
         }
     }
 }

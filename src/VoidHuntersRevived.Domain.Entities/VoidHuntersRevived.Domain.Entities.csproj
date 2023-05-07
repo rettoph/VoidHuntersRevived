@@ -19,6 +19,7 @@
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Common\Guppy.Common.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\libraries\MonoGame.Extended\src\cs\MonoGame.Extended.Entities\MonoGame.Extended.Entities.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Entities.ShipParts\VoidHuntersRevived.Common.Entities.ShipParts.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Common.Entities.Tractoring\VoidHuntersRevived.Common.Entities.Tractoring.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Entities\VoidHuntersRevived.Common.Entities.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Simulations\VoidHuntersRevived.Common.Simulations.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Simulations\VoidHuntersRevived.Common.Simulations.csproj" />
