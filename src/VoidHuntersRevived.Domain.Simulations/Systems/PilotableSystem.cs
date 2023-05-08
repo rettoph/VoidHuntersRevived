@@ -25,6 +25,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _logger = logger;
             _pilotables = default!;
             _bodies = default!;
+            _parallelables = default!;
         }
 
         public override void Initialize(IComponentMapperService mapperService)

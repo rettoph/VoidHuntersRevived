@@ -23,6 +23,9 @@ using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations;
 using Guppy.Attributes;
+using VoidHuntersRevived.Common.Entities.Tractoring.Components;
+using VoidHuntersRevived.Common.Entities.Tractoring;
+using VoidHuntersRevived.Common.Entities.Tractoring.Services;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
@@ -36,6 +39,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         });
 
         private readonly ISimulationService _simulations;
+        private readonly ITractorBeamService _tractorBeams;
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private readonly Camera2D _camera;
         private PrimitiveShape _shape;
@@ -44,21 +48,27 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private ComponentMapper<Body> _bodies;
         private ComponentMapper<Node> _nodes;
         private ComponentMapper<Drawable> _drawable;
+        private ComponentMapper<TractorBeamEmitter> _tractorBeamEmitters;
+        private ComponentMapper<Tractorable> _tractorables;
 
         public DrawAimSystem(
             PrimitiveBatch<VertexPositionColor> primitiveBatch,
             Camera2D camera,
+            ITractorBeamService tractorBeams,
             ISimulationService simulations) : base(PilotableAspect)
         {
             _primitiveBatch = primitiveBatch;
             _camera = camera;
             _simulations = simulations;
+            _tractorBeams = tractorBeams;
             _shape = new PrimitiveShape(Vector2Helper.CreateCircle(0.25f, 16));
 
             _pilotable = default!;
             _bodies = default!;
             _nodes = default!;
             _drawable = default!;
+            _tractorBeamEmitters = default!;
+            _tractorables = default!;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
@@ -67,6 +77,8 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             _bodies = mapperService.GetMapper<Body>();
             _nodes = mapperService.GetMapper<Node>();
             _drawable = mapperService.GetMapper<Drawable>();
+            _tractorBeamEmitters = mapperService.GetMapper<TractorBeamEmitter>();
+            _tractorables = mapperService.GetMapper<Tractorable>();
         }
 
         public override void Draw(GameTime gameTime)
@@ -89,29 +101,34 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         private void DrawTractorTarget(Pilotable pilotable)
         {
-            // if (!_tractor.TryGetTractorable(pilotable, out _, out ParallelKey targetNodeKey))
-            // {
-            //     return;
-            // }
-            // 
-            // if (!_simulations[SimulationType.Predictive].TryGetEntityId(targetNodeKey, out int nodeId))
-            // {
-            //     return;
-            // }
-            // 
-            // if(!_nodes.TryGet(nodeId, out var node))
-            // {
-            //     return;
-            // }
-            // 
-            // if(!_drawable.TryGet(nodeId, out var drawable))
-            // {
-            //     return;
-            // }
-            // 
-            // Matrix transformation = drawable.LocalCenterTransformation * node.WorldTransformation;
-            // Color color = Color.Green;
-            // _primitiveBatch.Trace(_shape, in color, ref transformation);
+            if (!_tractorBeamEmitters.TryGet(pilotable.EntityId, out TractorBeamEmitter? emitter))
+            {
+                return;
+            }
+
+            if(emitter.TractorBeam is not null)
+            {
+                return;
+            }
+
+            if(!_tractorBeams.Query(_simulations[SimulationType.Predictive], emitter.EntityId, out int targetId))
+            {
+                return;
+            }
+            
+            if(!_nodes.TryGet(targetId, out var node))
+            {
+                return;
+            }
+            
+            if(!_drawable.TryGet(targetId, out var drawable))
+            {
+                return;
+            }
+            
+            Matrix transformation = drawable.LocalCenterTransformation * node.WorldTransformation;
+            Color color = Color.Green;
+            _primitiveBatch.Trace(_shape, in color, ref transformation);
         }
     }
 }

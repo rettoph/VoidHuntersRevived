@@ -32,8 +32,8 @@ namespace VoidHuntersRevived.Domain.Client.Systems
     [SimulationTypeFilter(SimulationType.Predictive)]
     internal sealed class InputSystem : UpdateSystem,
         ISubscriber<SetPilotingDirection>,
-        ISubscriber<StartTractoring>,
-        ISubscriber<StopTractoring>,
+        ISubscriber<TryStartTractoring>,
+        ISubscriber<TryStopTractoring>,
         ISubscriber<PreTick>
     {
         private readonly NetScope _netScope;
@@ -124,7 +124,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             });
         }
 
-        public void Process(in StartTractoring message)
+        public void Process(in TryStartTractoring message)
         {
             if (_netScope.Peer?.Users.Current is null)
             {
@@ -155,14 +155,14 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             {
                 Key = ParallelKey.NewKey(),
                 SenderId = _netScope.Peer.Users.Current.Id,
-                Body = new StartTractoring()
+                Body = new TryStartTractoring()
                 {
-                    TractorBeamEmitterKey = parallelable.Key
+                    EmitterKey = parallelable.Key
                 }
             });
         }
 
-        public void Process(in StopTractoring message)
+        public void Process(in TryStopTractoring message)
         {
             if (_netScope.Peer?.Users.Current is null)
             {
@@ -193,9 +193,9 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             {
                 Key = ParallelKey.NewKey(),
                 SenderId = _netScope.Peer.Users.Current.Id,
-                Body = new StopTractoring()
+                Body = new TryStopTractoring()
                 {
-                    TractorBeamEmitterKey = parallelable.Key
+                    EmitterKey = parallelable.Key
                 }
             });
         }

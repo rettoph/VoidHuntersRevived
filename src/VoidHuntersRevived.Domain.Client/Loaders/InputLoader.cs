@@ -31,13 +31,13 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
 
             services.AddInput(Inputs.TractorBeam, CursorButtons.Right, new (bool, IMessage)[]
             {
-                (true, new StartTractoring()
+                (true, new TryStartTractoring()
                 {
-                    TractorBeamEmitterKey = default!,
+                    EmitterKey = default!,
                 }),
-                (false, new StopTractoring()
+                (false, new TryStopTractoring()
                 {
-                    TractorBeamEmitterKey = default!
+                    EmitterKey = default!
                 }),
             });
 

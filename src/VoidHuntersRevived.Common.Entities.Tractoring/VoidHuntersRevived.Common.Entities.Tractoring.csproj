@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VoidHuntersRevived.Common.Entities.ShipParts\VoidHuntersRevived.Common.Entities.ShipParts.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Common.Entities\VoidHuntersRevived.Common.Entities.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Simulations\VoidHuntersRevived.Common.Simulations.csproj" />
   </ItemGroup>
 

@@ -10,7 +10,6 @@ namespace VoidHuntersRevived.Common.Entities.Tractoring.Components
     {
         public readonly int EntityId;
 
-        public bool Online { get; set; }
         public TractorBeam? TractorBeam { get; set; }
 
         public TractorBeamEmitter(int entityId)

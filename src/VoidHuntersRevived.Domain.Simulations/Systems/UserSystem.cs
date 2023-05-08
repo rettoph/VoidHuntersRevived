@@ -76,8 +76,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
 
             Entity chain = _chains.CreateChain(ShipParts.HullSquare, Vector2.Zero, 0, @event);
-            chain = _chains.CreateChain(ShipParts.HullSquare, Vector2.Zero, 0, @event);
-            chain = _chains.CreateChain(ShipParts.HullSquare, Vector2.Zero, 0, @event);
+            // chain = _chains.CreateChain(ShipParts.HullSquare, Vector2.Zero, 0, @event);
+            // chain = _chains.CreateChain(ShipParts.HullSquare, Vector2.Zero, 0, @event);
 
             return;
         }

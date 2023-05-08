@@ -8,7 +8,7 @@ namespace VoidHuntersRevived.Common.Simulations
     [StructLayout(LayoutKind.Explicit)]
     public readonly struct ParallelKey
     {
-        private const int _bufferSizeInULong = 3;
+        private const int _bufferSizeInULong = 4;
         private static readonly int _bufferSizeInBytes = sizeof(ulong) * _bufferSizeInULong;
         private static ulong[] _buffer = new ulong[_bufferSizeInULong];
 
@@ -34,7 +34,23 @@ namespace VoidHuntersRevived.Common.Simulations
             _buffer[0] = _lower;
             _buffer[1] = _upper;
             _buffer[2] = count;
+            _buffer[3] = count;
 
+            return Hash();
+        }
+
+        public unsafe ParallelKey Merge(ParallelKey noise)
+        {
+            _buffer[0] = _lower;
+            _buffer[1] = _upper;
+            _buffer[2] = noise._lower;
+            _buffer[3] = noise._upper;
+
+            return Hash();
+        }
+
+        private static unsafe ParallelKey Hash()
+        {
             fixed (ulong* pBuffer = _buffer)
             {
                 Span<byte> dataSpan = new Span<byte>((byte*)pBuffer, _bufferSizeInBytes);

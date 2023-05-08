@@ -11,6 +11,7 @@ using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Tractoring.Components;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -33,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             _trees.MakeTree(entity, body, head);
 
-            entity.Attach(Tractorable.Instance);
+            entity.Attach(new Tractorable(entity.Id));
         }
 
         public Entity CreateChain(string headResource, Vector2 position, float rotation, ISimulationEvent @event)

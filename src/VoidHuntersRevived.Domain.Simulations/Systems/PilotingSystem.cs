@@ -10,6 +10,7 @@ using VoidHuntersRevived.Common.Systems;
 using VoidHuntersRevived.Common.Entities.ShipParts.Services;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Entities.Tractoring.Components;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
@@ -19,7 +20,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
     {
         private ComponentMapper<Piloting> _pilotings;
         private ComponentMapper<Pilotable> _pilotables;
-        private ComponentMapper<Tractorable> _tractorables;
         private State _state;
         private readonly NetScope _scope;
         private readonly IUserPilotMappingService _userPilotMap;
@@ -33,14 +33,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _state = state;
             _pilotings = default!;
             _pilotables = default!;
-            _tractorables = default!;
         }
 
         public override void Initialize(World world)
         {
             _pilotings = world.ComponentMapper.GetMapper<Piloting>();
             _pilotables = world.ComponentMapper.GetMapper<Pilotable>();
-            _tractorables = world.ComponentMapper.GetMapper<Tractorable>();
         }
 
         public void Process(ISimulationEvent<SetPilotingDirection> @event)

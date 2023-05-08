@@ -1,6 +1,4 @@
-﻿using Guppy.Common;
-using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,10 +7,8 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Domain.Entities.Events
 {
-    public class StopTractoring : IMessage
+    public class StopTractoring
     {
-        public required ParallelKey TractorBeamEmitterKey { get; init; }
-
-        public Type Type => typeof(StopTractoring);
+        public required ParallelKey EmitterKey { get; init; }
     }
 }

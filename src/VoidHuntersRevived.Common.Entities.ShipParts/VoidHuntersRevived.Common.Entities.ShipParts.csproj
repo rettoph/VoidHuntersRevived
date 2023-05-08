@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Messages\**" />
+    <EmbeddedResource Remove="Messages\**" />
+    <None Remove="Messages\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\libraries\Aether.Physics2D\Physics2D\Aether.Physics2D.NETSTANDARD2_0.MG.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\libraries\MonoGame.Extended\src\cs\MonoGame.Extended.Entities\MonoGame.Extended.Entities.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Simulations\VoidHuntersRevived.Common.Simulations.csproj" />
@@ -16,10 +22,6 @@
     <Using Include="tainicom.Aether.Physics2D.Dynamics.World">
       <Alias>Aether</Alias>
     </Using>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Messages\" />
   </ItemGroup>
 
 </Project>

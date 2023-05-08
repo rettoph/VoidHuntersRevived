@@ -53,6 +53,9 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
                 manager.AddScoped<PilotService>()
                     .AddInterfaceAliases();
 
+                manager.AddScoped<TractorBeamService>()
+                    .AddInterfaceAliases();
+
                 manager.AddScoped<UserPilotMappingService>()
                     .AddInterfaceAliases();
 
@@ -60,6 +63,9 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
                     .AddInterfaceAliases();
 
                 manager.AddScoped<TreeSystem>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<TractorBeamEmitterSystem>()
                     .AddInterfaceAliases();
 
                 manager.AddScoped<DestroyEntitySystem>()
