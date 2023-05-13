@@ -114,7 +114,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                     return true;
                 }
 
-                if (!_nodes.TryGet(entityId, out var node))
+                if (!_nodes.TryGet(entityId, out Node? node))
                 { // Invalid target - not a node
                     return true;
                 }
@@ -124,22 +124,27 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                     return true;
                 }
 
-                if (!_tractorables.TryGet(node.Tree.EntityId, out var tractorable) &&
-                    !(node.Tree.EntityId == emitter.EntityId && node.Tree.Head != node))
-                { // Invalid Target - The node is neither not a tractorable, nor not attached to the current ship (excluding bridge)
-                    return true;
-                }
-
-                var distance = Vector2.Distance(pilotable.Aim.Value, node.CenterWorldPosition);
-
+                float distance = Vector2.Distance(pilotable.Aim.Value, node.CenterWorldPosition);
                 if (distance >= minDistance)
-                { // The new distance is further away than the previously closest found target
+                { // Invalid Target - The distance is further away than the previously closest valid target
                     return true;
                 }
 
-                // Update the target tractorable
-                minDistance = distance;
-                callbackTargetId = node.EntityId;
+                if (node.Tree.Head is not null && _tractorables.Has(node.Tree.EntityId))
+                { // Valid Target - The node is attached to a tractorable
+                    minDistance = distance;
+                    callbackTargetId = node.Tree.Head.EntityId;
+
+                    return true;
+                }
+
+                if(node.Tree.EntityId == emitter.EntityId && node.Tree.Head != node)
+                { // Valid Target - The node is attached to the current ship (and not the bridge)
+                    minDistance = distance;
+                    callbackTargetId = node.EntityId;
+
+                    return true;
+                }
 
                 return true;
             }, ref aabb);

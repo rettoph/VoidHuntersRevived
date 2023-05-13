@@ -20,6 +20,7 @@ using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Domain.Entities.Events;
+using VoidHuntersRevived.Domain.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {
@@ -37,6 +38,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         private ITractorBeamService _tractorBeams;
         private INodeService _nodeService;
+        private IChainService _chainService;
         private ComponentMapper<TractorBeamEmitter> _emitters;
         private ComponentMapper<Node> _nodes;
         private ComponentMapper<Tractorable> _tractorables;
@@ -45,10 +47,12 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         public TractorBeamEmitterSystem(
             ISimulationService simulations, 
             ITractorBeamService tractorBeams,
+            IChainService chainService,
             INodeService nodeService) : base(simulations, TractorBeamEmitterAspect)
         {
             _tractorBeams = tractorBeams;
             _nodeService = nodeService;
+            _chainService = chainService;
             _emitters = default!;
             _nodes = default!;
             _tractorables = default!;
@@ -157,9 +161,25 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
+            if(target.Tree.EntityId == emitter.EntityId)
+            { // Detach the node from its current ship and create a brand new chain.
+                // Cache all the values we're about to delete...
+                Vector2 position = target.WorldPosition;
+                float rotation = target.WorldTransformation.Radians();
+
+                // Destroy the link to the ship's tree
+                _nodeService.Detach(target.ChildJoint()?.Link ?? throw new NotImplementedException());
+
+                // Create a brand new chain to hold the detached parts.
+                _chainService.CreateChain(
+                    head: target,
+                    position: position,
+                    rotation: rotation,
+                    @event: @event);
+            }
+
             if(!_tractorables.TryGet(target.Tree.EntityId, out Tractorable? tractorable))
             {
-                // Detach the node from its current tree and create a brand new chain.
                 throw new NotImplementedException();
             }
 
