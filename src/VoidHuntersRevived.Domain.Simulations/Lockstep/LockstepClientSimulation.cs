@@ -24,10 +24,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public LockstepClientSimulation(
             State state, 
             NetScope network,
-            ISimulationEventPublishingService input,
+            IBus bus,
+            ISimulationEventPublishingService events,
             IStepService steps, 
             IParallelableService parallelables, 
-            IGlobalSimulationService globalSimulationService) : base(state, input, steps, parallelables, globalSimulationService)
+            IGlobalSimulationService globalSimulationService) : base(state, bus, events, steps, parallelables, globalSimulationService)
         {
             _network = network;
         }

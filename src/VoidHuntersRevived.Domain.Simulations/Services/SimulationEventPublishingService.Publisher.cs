@@ -21,16 +21,16 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         private class SimulationEventPublisher<T> : ISimulationEventPublisher
             where T : class
         {
-            private readonly ISimulationEventListener<T>[] _subscribers;
+            private readonly IBus _bus;
 
-            public SimulationEventPublisher(IEnumerable<object> subscribers)
+            public SimulationEventPublisher(IBus bus)
             {
-                _subscribers = subscribers.OfType<ISimulationEventListener<T>>().ToArray();
+                _bus = bus;
             }
 
             public ISimulationEvent Publish(ISimulation simulation, SimulationEventData data)
             {
-                SimulationEvent<T> @event = new SimulationEvent<T>()
+                SimulationEvent<T> message = new SimulationEvent<T>()
                 {
                     Key = data.Key,
                     SenderId = data.SenderId,
@@ -38,12 +38,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
                     Body = Unsafe.As<T>(data.Body)
                 };
 
-                foreach (ISimulationEventListener<T> subscriber in _subscribers)
-                {
-                    subscriber.Process(@event);
-                }
+                _bus.Publish(message);
 
-                return @event;
+                return message;
             }
         }
     }

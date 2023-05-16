@@ -1,4 +1,5 @@
-﻿using Guppy.Network;
+﻿using Guppy.Common;
+using Guppy.Network;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
 using Guppy.Network.Identity;
@@ -17,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
     [PeerTypeFilter(PeerType.Server)]
     [SimulationTypeFilter(SimulationType.Lockstep)]
     internal sealed class LockstepServer_UserSystem : BasicSystem,
-        ISimulationEventListener<UserJoined>
+        ISubscriber<ISimulationEvent<UserJoined>>
     {
         private readonly State _state;
         private readonly NetScope _scope;
@@ -37,9 +38,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _scope.Users.OnUserJoined += HandleUserJoined;
         }
 
-        public void Process(ISimulationEvent<UserJoined> @event)
+        public void Process(in ISimulationEvent<UserJoined> message)
         {
-            User? user = _scope.Peer!.Users.UpdateOrCreate(@event.Body.UserId, @event.Body.Claims);
+            User? user = _scope.Peer!.Users.UpdateOrCreate(message.Body.UserId, message.Body.Claims);
 
             if (user.NetPeer is null)
             {

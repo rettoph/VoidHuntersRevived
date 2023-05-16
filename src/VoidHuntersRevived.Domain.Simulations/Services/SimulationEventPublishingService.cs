@@ -8,11 +8,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
     internal sealed partial class SimulationEventPublishingService : ISimulationEventPublishingService
     {
         private readonly Dictionary<Type, ISimulationEventPublisher> _subscribers;
-        private readonly IServiceProvider _provider;
+        private readonly IBus _bus;
 
-        public SimulationEventPublishingService(IServiceProvider provider)
+        public SimulationEventPublishingService(IBus bus)
         {
-            _provider = provider;
+            _bus = bus;
             _subscribers = new Dictionary<Type, ISimulationEventPublisher>();
         }
 
@@ -28,10 +28,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             if (!exists)
             {
                 Type publisherType = typeof(SimulationEventPublisher<>).MakeGenericType(inputType);
-                Type subscriberType = typeof(ISimulationEventListener<>).MakeGenericType(inputType);
-                Type sortedType = typeof(ISorted<>).MakeGenericType(subscriberType);
-                IEnumerable<object> subscribers = (IEnumerable<object>)_provider.GetService(sortedType)!;
-                publisher = (ISimulationEventPublisher)Activator.CreateInstance(publisherType, new object[] { subscribers })!;
+                publisher = (ISimulationEventPublisher)Activator.CreateInstance(publisherType, new object[] { _bus })!;
             }
 
             return publisher!;

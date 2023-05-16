@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Guppy.Common;
+using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ using VoidHuntersRevived.Domain.Entities.Events;
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {
     internal sealed class TacticalSystem : ParallelEntityProcessingSystem,
-        ISimulationEventListener<SetTacticalTarget>
+        ISubscriber<ISimulationEvent<SetTacticalTarget>>
     {
         private const float AimDamping = 1f / 32f;
         private static readonly AspectBuilder TacticalAspect = Aspect.All(new[]
@@ -46,9 +47,9 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 amount: (float)gameTime.ElapsedGameTime.TotalSeconds / AimDamping);
         }
 
-        public void Process(ISimulationEvent<SetTacticalTarget> @event)
+        public void Process(in ISimulationEvent<SetTacticalTarget> message)
         {
-            if (!@event.Simulation.TryGetEntityId(@event.Body.TacticalKey, out int tacticalId))
+            if (!message.Simulation.TryGetEntityId(message.Body.TacticalKey, out int tacticalId))
             {
                 return;
             }
@@ -58,7 +59,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            tactical.Target = @event.Body.Target;
+            tactical.Target = message.Body.Target;
         }
     }
 }

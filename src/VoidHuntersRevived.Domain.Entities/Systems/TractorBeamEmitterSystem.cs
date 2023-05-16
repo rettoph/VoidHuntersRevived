@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Guppy.Common;
+using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using System;
 using System.Collections.Generic;
@@ -20,9 +21,9 @@ using VoidHuntersRevived.Domain.Entities.Events;
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {
     internal sealed class TractorBeamEmitterSystem : ParallelEntityProcessingSystem,
-        ISimulationEventListener<ActivateTractorBeamEmitter>,
-        ISimulationEventListener<CreateTractorBeamEmitterTarget>,
-        ISimulationEventListener<DeactivateTractorBeamEmitter>
+        ISubscriber<ISimulationEvent<ActivateTractorBeamEmitter>>,
+        ISubscriber<ISimulationEvent<CreateTractorBeamEmitterTarget>>,
+        ISubscriber<ISimulationEvent<DeactivateTractorBeamEmitter>>
     {
         private static readonly AspectBuilder TractorBeamEmitterAspect = Aspect.All(new[]
         {
@@ -71,9 +72,9 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             _worldLocations.Get(tractorBeamEmitter.TargetId.Value).SetTransform(tactical.Value, 0);
         }
 
-        public void Process(ISimulationEvent<ActivateTractorBeamEmitter> @event)
+        public void Process(in ISimulationEvent<ActivateTractorBeamEmitter> message)
         {
-            if(!@event.Simulation.TryGetEntityId(@event.Body.TractorBeamEmitterKey, out int tractorBeamEmitterId))
+            if(!message.Simulation.TryGetEntityId(message.Body.TractorBeamEmitterKey, out int tractorBeamEmitterId))
             {
                 return;
             }
@@ -93,28 +94,28 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            if (!this.Query(@event.Simulation, tractorBeamEmitter, tactical.Value, out int targetId))
+            if (!this.Query(message.Simulation, tractorBeamEmitter, tactical.Value, out int targetId))
             { // No valid potential targets found...
                 return;
             }
 
             Parallelable parallelable = _parallelables.Get(targetId);
 
-            @event.Simulation.Publish(new SimulationEventData()
+            message.Simulation.Publish(new SimulationEventData()
             {
-                Key = @event.NewKey(),
-                SenderId = @event.SenderId,
+                Key = message.NewKey(),
+                SenderId = message.SenderId,
                 Body = new CreateTractorBeamEmitterTarget()
                 {
-                    TractorBeamEmitterKey = @event.Body.TractorBeamEmitterKey,
+                    TractorBeamEmitterKey = message.Body.TractorBeamEmitterKey,
                     ShipPart = _shipParts.Get(targetId).Clone()
                 }
             });
 
-            @event.Simulation.Publish(new SimulationEventData()
+            message.Simulation.Publish(new SimulationEventData()
             {
-                Key = @event.NewKey(),
-                SenderId = @event.SenderId,
+                Key = message.NewKey(),
+                SenderId = message.SenderId,
                 Body = new DestroyShipPartEntity()
                 {
                     ShipPartEntityKey = parallelable.Key
@@ -122,9 +123,9 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             });
         }
 
-        public void Process(ISimulationEvent<CreateTractorBeamEmitterTarget> @event)
+        public void Process(in ISimulationEvent<CreateTractorBeamEmitterTarget> message)
         {
-            if (!@event.Simulation.TryGetEntityId(@event.Body.TractorBeamEmitterKey, out int tractorBeamEmitterId))
+            if (!message.Simulation.TryGetEntityId(message.Body.TractorBeamEmitterKey, out int tractorBeamEmitterId))
             {
                 return;
             }
@@ -134,13 +135,13 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            Entity target = @event.Simulation.CreateShipPart(@event.NewKey(), @event.Body.ShipPart);
+            Entity target = message.Simulation.CreateShipPart(message.NewKey(), message.Body.ShipPart);
             tractorBeamEmitter.TargetId = target.Id;
         }
 
-        public void Process(ISimulationEvent<DeactivateTractorBeamEmitter> @event)
+        public void Process(in ISimulationEvent<DeactivateTractorBeamEmitter> message)
         {
-            if (!@event.Simulation.TryGetEntityId(@event.Body.TractorBeamEmitterKey, out int tractorBeamEmitterId))
+            if (!message.Simulation.TryGetEntityId(message.Body.TractorBeamEmitterKey, out int tractorBeamEmitterId))
             {
                 return;
             }

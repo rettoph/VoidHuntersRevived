@@ -33,13 +33,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public LockstepSimulation(
             State state,
             IBus bus,
-            ISimulationEventPublishingService input,
+            ISimulationEventPublishingService events,
             IStepService steps, 
             IParallelableService parallelables,
             IGlobalSimulationService globalSimulationService) : base(SimulationType.Lockstep, parallelables, globalSimulationService)
         {
             _steps = steps;
-            _events = input;
+            _events = events;
             _bus = bus;
 
             this.State = state;

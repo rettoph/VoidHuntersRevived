@@ -1,8 +1,9 @@
-﻿using VoidHuntersRevived.Common.Simulations;
+﻿using Guppy.Common;
+using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
-    internal sealed class SimulationEvent<TSimulationEventData> : ISimulationEvent<TSimulationEventData>
+    internal sealed class SimulationEvent<TSimulationEventData> : Message<ISimulationEvent<TSimulationEventData>>, ISimulationEvent<TSimulationEventData>
         where TSimulationEventData : class
     {
         public required ParallelKey Key { get; init; }

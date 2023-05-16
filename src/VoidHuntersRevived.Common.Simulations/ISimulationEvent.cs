@@ -1,6 +1,8 @@
-﻿namespace VoidHuntersRevived.Common.Simulations
+﻿using Guppy.Common;
+
+namespace VoidHuntersRevived.Common.Simulations
 {
-    public interface ISimulationEvent
+    public interface ISimulationEvent : IMessage
     {
         ParallelKey Key { get; }
 

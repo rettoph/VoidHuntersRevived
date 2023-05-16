@@ -12,12 +12,13 @@ using Guppy.Network.Identity;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
+using Guppy.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {
     [GuppyFilter<IGameGuppy>()]
     internal sealed class UserSystem : BasicSystem,
-        ISimulationEventListener<UserJoined>
+        ISubscriber<ISimulationEvent<UserJoined>>
     {
         private readonly NetScope _scope;
         private readonly ILogger _logger;
@@ -35,10 +36,10 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             base.Initialize(world);
         }
 
-        public void Process(ISimulationEvent<UserJoined> @event)
+        public void Process(in ISimulationEvent<UserJoined> message)
         {
             Console.WriteLine("User Joined Event!");
-            User? user = _scope.Peer!.Users.UpdateOrCreate(@event.Body.UserId, @event.Body.Claims);
+            User? user = _scope.Peer!.Users.UpdateOrCreate(message.Body.UserId, message.Body.Claims);
 
             // Ensure the user has been added to the scope
             if (!_scope.Users.TryGet(user.Id, out _))
@@ -55,10 +56,10 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                     Drawable.Polygon(Colors.Orange, 4)
                 });
 
-            Entity ship = @event.Simulation.CreateShip(@event.NewKey(), square);
+            Entity ship = message.Simulation.CreateShip(message.NewKey(), square);
             ship.Attach(user);
 
-            Entity shipPart = @event.Simulation.CreateShipPart(@event.NewKey(), square);
+            Entity shipPart = message.Simulation.CreateShipPart(message.NewKey(), square);
 
             return;
         }

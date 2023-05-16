@@ -23,11 +23,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public LockstepServerSimulation(
             State state, 
-            ISimulationEventPublishingService input,
+            IBus bus,
+            ISimulationEventPublishingService events,
             ITickFactory ticks,
             IStepService steps, 
             IParallelableService parallelables, 
-            IGlobalSimulationService globalSimulationService) : base(state, input, steps, parallelables, globalSimulationService)
+            IGlobalSimulationService globalSimulationService) : base(state, bus, events, steps, parallelables, globalSimulationService)
         {
             _ticks = ticks;
         }

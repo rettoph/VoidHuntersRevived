@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guppy.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,11 +11,11 @@ using VoidHuntersRevived.Common.Systems;
 namespace VoidHuntersRevived.Domain.Entities.ShipParts.Systems
 {
     internal sealed class DestroyShipPartEntitySystem : BasicSystem,
-        ISimulationEventListener<DestroyShipPartEntity>
+        ISubscriber<ISimulationEvent<DestroyShipPartEntity>>
     {
-        public void Process(ISimulationEvent<DestroyShipPartEntity> @event)
+        public void Process(in ISimulationEvent<DestroyShipPartEntity> message)
         {
-            @event.Simulation.DestroyEntity(@event.Body.ShipPartEntityKey);
+            message.Simulation.DestroyEntity(message.Body.ShipPartEntityKey);
         }
     }
 }

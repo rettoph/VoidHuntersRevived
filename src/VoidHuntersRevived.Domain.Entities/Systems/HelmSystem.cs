@@ -1,4 +1,5 @@
-﻿using MonoGame.Extended.Entities;
+﻿using Guppy.Common;
+using MonoGame.Extended.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ using VoidHuntersRevived.Domain.Entities.Events;
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {
     internal sealed class HelmSystem : BasicSystem,
-        ISimulationEventListener<SetHelmDirection>
+        ISubscriber<ISimulationEvent<SetHelmDirection>>
     {
         private ComponentMapper<Helm> _helms = null!;
 
@@ -24,9 +25,9 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             _helms = world.ComponentMapper.GetMapper<Helm>();
         }
 
-        public void Process(ISimulationEvent<SetHelmDirection> @event)
+        public void Process(in ISimulationEvent<SetHelmDirection> message)
         {
-            if (!@event.Simulation.TryGetEntityId(@event.Body.HelmKey, out int helmId))
+            if (!message.Simulation.TryGetEntityId(message.Body.HelmKey, out int helmId))
             {
                 return;
             }
@@ -36,15 +37,15 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            if (@event.Body.Value && (helm.Direction & @event.Body.Which) == 0)
+            if (message.Body.Value && (helm.Direction & message.Body.Which) == 0)
             {
-                helm.Direction |= @event.Body.Which;
+                helm.Direction |= message.Body.Which;
                 return;
             }
 
-            if (!@event.Body.Value && (helm.Direction & @event.Body.Which) != 0)
+            if (!message.Body.Value && (helm.Direction & message.Body.Which) != 0)
             {
-                helm.Direction &= ~@event.Body.Which;
+                helm.Direction &= ~message.Body.Which;
                 return;
             }
         }
