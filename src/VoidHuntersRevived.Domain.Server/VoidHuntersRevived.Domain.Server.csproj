@@ -10,4 +10,8 @@
     <ProjectReference Include="..\VoidHuntersRevived.Domain\VoidHuntersRevived.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Systems\" />
+  </ItemGroup>
+
 </Project>

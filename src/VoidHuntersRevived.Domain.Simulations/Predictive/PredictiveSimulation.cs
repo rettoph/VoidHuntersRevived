@@ -12,13 +12,15 @@ using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
+using VoidHuntersRevived.Domain.Simulations.Lockstep.Messages;
 
 namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
     [GuppyFilter<IGameGuppy>()]
     [SimulationTypeFilter(SimulationType.Predictive)]
     internal sealed class PredictiveSimulation : Simulation<Common.Simulations.Components.Predictive>,
-        ISubscriber<INetIncomingMessage<Tick>>
+        ISubscriber<INetIncomingMessage<Tick>>,
+        ISubscriber<INetIncomingMessage<StateTick>>
     {
         private readonly ISimulationEventPublishingService _events;
         private IPredictiveSynchronizationSystem[] _synchronizeSystems;
@@ -80,6 +82,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         public void Process(in INetIncomingMessage<Tick> message)
         {
             foreach(SimulationEventData input in message.Body.Events)
+            {
+                this.Enqueue(input);
+            }
+        }
+
+        public void Process(in INetIncomingMessage<StateTick> message)
+        {
+            foreach (SimulationEventData input in message.Body.Tick.Events)
             {
                 this.Enqueue(input);
             }

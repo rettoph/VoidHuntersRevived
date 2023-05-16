@@ -28,14 +28,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
                 _subscribers = subscribers.OfType<ISimulationEventListener<T>>().ToArray();
             }
 
-            public ISimulationEvent Publish(ISimulation simulation, SimulationEventData core)
+            public ISimulationEvent Publish(ISimulation simulation, SimulationEventData data)
             {
                 SimulationEvent<T> @event = new SimulationEvent<T>()
                 {
-                    Key = core.Key,
-                    SenderId = core.SenderId,
+                    Key = data.Key,
+                    SenderId = data.SenderId,
                     Simulation = simulation,
-                    Body = Unsafe.As<T>(core.Body)
+                    Body = Unsafe.As<T>(data.Body)
                 };
 
                 foreach (ISimulationEventListener<T> subscriber in _subscribers)

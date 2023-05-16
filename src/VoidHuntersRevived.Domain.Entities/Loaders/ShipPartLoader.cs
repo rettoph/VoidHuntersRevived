@@ -8,7 +8,6 @@ using Guppy.Resources.Loaders;
 using Guppy.Resources.Providers;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.ShipParts;
-using VoidHuntersRevived.Common.Entities.ShipParts.Configurations;
 
 namespace VoidHuntersRevived.Domain.Entities.Loaders
 {
@@ -24,27 +23,27 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
         {
             var pack = packs.GetById(VoidHuntersPack.Id);
 
-            pack.Add(new IResource[]
-            {
-                new ShipPartResource(ShipParts.HullTriangle)
-                {
-                    DrawConfiguration.Polygon(Colors.Orange, TriangleSides),
-                    RigidConfiguration.Polygon(DefaultDensity, TriangleSides),
-                    NodeConfiguration.Polygon(TriangleSides)
-                },
-                new ShipPartResource(ShipParts.HullSquare)
-                {
-                    DrawConfiguration.Polygon(Colors.Orange, SquareSides),
-                    RigidConfiguration.Polygon(DefaultDensity, SquareSides),
-                    NodeConfiguration.Polygon(SquareSides)
-                },
-                new ShipPartResource(ShipParts.HullHexagon)
-                {
-                    DrawConfiguration.Polygon(Colors.Orange, HexagonSides),
-                    RigidConfiguration.Polygon(DefaultDensity, HexagonSides),
-                    NodeConfiguration.Polygon(HexagonSides)
-                }
-            });
+            // pack.Add(new IResource[]
+            // {
+            //     new ShipPartResource(ShipParts.HullTriangle)
+            //     {
+            //         DrawConfiguration.Polygon(Colors.Orange, TriangleSides),
+            //         RigidConfiguration.Polygon(DefaultDensity, TriangleSides),
+            //         NodeConfiguration.Polygon(TriangleSides)
+            //     },
+            //     new ShipPartResource(ShipParts.HullSquare)
+            //     {
+            //         DrawConfiguration.Polygon(Colors.Orange, SquareSides),
+            //         RigidConfiguration.Polygon(DefaultDensity, SquareSides),
+            //         NodeConfiguration.Polygon(SquareSides)
+            //     },
+            //     new ShipPartResource(ShipParts.HullHexagon)
+            //     {
+            //         DrawConfiguration.Polygon(Colors.Orange, HexagonSides),
+            //         RigidConfiguration.Polygon(DefaultDensity, HexagonSides),
+            //         NodeConfiguration.Polygon(HexagonSides)
+            //     }
+            // });
         }
     }
 }

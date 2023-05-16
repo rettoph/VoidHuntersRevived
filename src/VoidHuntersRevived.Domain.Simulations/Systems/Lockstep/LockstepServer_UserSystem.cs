@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
         public void Process(ISimulationEvent<UserJoined> @event)
         {
-            var user = _scope.Peer!.Users.UpdateOrCreate(@event.Body.UserId, @event.Body.Claims);
+            User? user = _scope.Peer!.Users.UpdateOrCreate(@event.Body.UserId, @event.Body.Claims);
 
             if (user.NetPeer is null)
             {

@@ -1,4 +1,5 @@
-﻿using Guppy.Network;
+﻿using Guppy.ECS;
+using Guppy.Network;
 using Guppy.Network.Identity;
 using LiteNetLib;
 using Microsoft.Xna.Framework;
@@ -33,7 +34,9 @@ namespace VoidHuntersRevived.Common.Simulations
 
         void Update(GameTime gameTime);
 
-        Entity CreateEntity(ParallelKey key);
+        Entity CreateEntity(ParallelKey key, EntityType type);
+
+        Entity CreateEntity(ParallelKey key, EntityType type, Action<Entity> factory);
 
         void Publish(SimulationEventData data);
 

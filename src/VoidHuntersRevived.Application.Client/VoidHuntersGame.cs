@@ -13,7 +13,6 @@ using Guppy.Providers;
 using VoidHuntersRevived.Domain.Server;
 using VoidHuntersRevived.Domain;
 using VoidHuntersRevived.Domain.Client;
-using VoidHuntersRevived.Domain.Editor;
 using Guppy.Network.Peers;
 
 namespace VoidHuntersRevived.Application.Client

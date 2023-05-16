@@ -9,7 +9,6 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Extensions;
-using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 
@@ -21,17 +20,13 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private readonly Camera2D _camera;
         private readonly NetScope _scope;
         private readonly ISimulationService _simulations;
-        private readonly IUserPilotMappingService _userPilots;
-        private ComponentMapper<Piloting> _pilotings;
         private ComponentMapper<Body> _bodies;
 
-        public CameraSystem(NetScope scope, Camera2D camera, ISimulationService simulations, IUserPilotMappingService userPilots)
+        public CameraSystem(NetScope scope, Camera2D camera, ISimulationService simulations)
         {
             _camera = camera;
             _scope = scope;
             _simulations = simulations;
-            _userPilots = userPilots;
-            _pilotings = default!;
             _bodies = default!;
 
             _camera.Zoom = 100;
@@ -41,7 +36,6 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         {
             base.Initialize(world);
 
-            _pilotings = world.ComponentMapper.GetMapper<Piloting>();
             _bodies = world.ComponentMapper.GetMapper<Body>();
         }
 
@@ -54,39 +48,8 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         private void UpdateCameraTargets(GameTime gameTime)
         {
-            if(!_simulations.Flags.HasFlag(SimulationType.Predictive))
-            {
-                return;
-            }
-
-            if (_scope.Peer?.Users.Current is null)
-            {
-                return;
-            }
-
-            if(!_userPilots.TryGetPilotKey(_scope.Peer!.Users.Current.Id, out ParallelKey pilotKey))
-            {
-                return;
-            }
-
-            if (!_simulations[SimulationType.Predictive].TryGetEntityId(pilotKey, out int pilotId))
-            {
-                return;
-            }
-
-            if(!_pilotings.TryGet(pilotId, out Piloting? piloting))
-            {
-                return;
-            }
-
-            Body body = _bodies.Get(piloting.Pilotable);
-            if (body is null)
-            {
-                return;
-            }
-
-            _camera.TargetPosition = body.WorldCenter;
-            _camera.TargetVelocity = body.LinearVelocity;
+            _camera.TargetPosition = Vector2.Zero;
+            _camera.TargetVelocity = Vector2.Zero;
         }
     }
 }

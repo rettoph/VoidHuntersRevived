@@ -1,5 +1,8 @@
-﻿using MonoGame.Extended.Entities;
+﻿using Guppy.Common;
+using MonoGame.Extended.Collections;
+using MonoGame.Extended.Entities;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Systems;
 
@@ -10,10 +13,12 @@ namespace VoidHuntersRevived.Common.Simulations.Systems
         private readonly AspectBuilder _aspectBuilder;
 
         private World _world;
+        private EntitySubscription _subscription = null!;
 
         private readonly IDictionary<SimulationType, EntitySubscription> _subscriptions;
 
         protected readonly ISimulationService simulations;
+        protected EntitySubscription subscription => _subscription;
 
         public readonly IReadOnlyDictionary<SimulationType, EntitySubscription> Entities;
 
@@ -31,13 +36,18 @@ namespace VoidHuntersRevived.Common.Simulations.Systems
         public override void Initialize(World world)
         {
             _world = world;
+            _subscription = new EntitySubscription(_world, _aspectBuilder.Build(_world));
 
-            foreach(ISimulation simulation in this.simulations.Instances)
+            foreach (ISimulation simulation in this.simulations.Instances)
             {
                 var aspect = _aspectBuilder.Clone().All(simulation.EntityComponentType).Build(_world);
                 var subscription = new EntitySubscription(_world, aspect);
                 _subscriptions.Add(simulation.Type, subscription);
             }
+
+            _world.EntityManager.EntityAdded += OnEntityAdded;
+            _world.EntityManager.EntityRemoved += OnEntityRemoved;
+            _world.EntityManager.EntityChanged += OnEntityChanged;
 
             this.Initialize(world.ComponentMapper);
         }
@@ -48,5 +58,9 @@ namespace VoidHuntersRevived.Common.Simulations.Systems
         }
 
         public abstract void Initialize(IComponentMapperService mapperService);
+
+        protected virtual void OnEntityChanged(int entityId, BitVector32 oldBits) { }
+        protected virtual void OnEntityAdded(int entityId) { }
+        protected virtual void OnEntityRemoved(int entityId) { }
     }
 }

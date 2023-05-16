@@ -26,11 +26,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
     {
         private readonly IStepService _steps;
         private readonly ISimulationEventPublishingService _events;
+        private readonly IBus _bus;
 
         public State State { get; }
 
         public LockstepSimulation(
             State state,
+            IBus bus,
             ISimulationEventPublishingService input,
             IStepService steps, 
             IParallelableService parallelables,
@@ -38,6 +40,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         {
             _steps = steps;
             _events = input;
+            _bus = bus;
 
             this.State = state;
         }
@@ -52,9 +55,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _steps.Update(gameTime);
         }
 
-        public override void Publish(SimulationEventData core)
+        public override void Publish(SimulationEventData data)
         {
-            _events.Publish(this, core);
+            _events.Publish(this, data);
+            _bus.Publish(data);
         }
 
         public void Process(in Step message)
@@ -64,9 +68,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public void Process(in Tick message)
         {
-            foreach (SimulationEventData core in message.Events)
+            foreach (SimulationEventData data in message.Events)
             {
-                this.Publish(core);
+                this.Publish(data);
             }
         }
     }

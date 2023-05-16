@@ -11,10 +11,9 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Domain.Entities.Events;
 using VoidHuntersRevived.Domain.Client.Constants;
-using VoidHuntersRevived.Domain.Client.Systems;
-using VoidHuntersRevived.Common.Simulations;
 using Guppy.Common;
 using Guppy.Input.Enums;
+using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Domain.Client.Loaders
 {
@@ -23,21 +22,15 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.ConfigureCollection(manager =>
-            {
-                manager.AddScoped<InputSystem>()
-                    .AddInterfaceAliases();
-            });
-
             services.AddInput(Inputs.TractorBeam, CursorButtons.Right, new (bool, IMessage)[]
             {
-                (true, new TryStartTractoring()
+                (true, new ActivateTractorBeamEmitter()
                 {
-                    EmitterKey = default!,
+                    TractorBeamEmitterKey = default!,
                 }),
-                (false, new TryStopTractoring()
+                (false, new DeactivateTractorBeamEmitter()
                 {
-                    EmitterKey = default!
+                    TractorBeamEmitterKey = default!
                 }),
             });
 
@@ -53,13 +46,15 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
         {
             services.AddInput(key, defaultSource, new[]
             {
-                (true, new SetPilotingDirection()
+                (true, new SetHelmDirection()
                 {
+                    HelmKey = ParallelKey.Empty,
                     Which = direction,
                     Value = true
                 }),
-                (false, new SetPilotingDirection()
+                (false, new SetHelmDirection()
                 {
+                    HelmKey = ParallelKey.Empty,
                     Which = direction,
                     Value = false
                 }),

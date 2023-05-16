@@ -16,6 +16,7 @@
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.MonoGame\Guppy.MonoGame.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network.UI\Guppy.Network.UI.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Simulations\VoidHuntersRevived.Common.Simulations.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Domain.Entities.ShipParts\VoidHuntersRevived.Domain.Entities.ShipParts.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Simulations\VoidHuntersRevived.Domain.Simulations.csproj" />
   </ItemGroup>
 

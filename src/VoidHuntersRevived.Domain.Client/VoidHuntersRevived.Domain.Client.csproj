@@ -45,7 +45,6 @@
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.GUI\Guppy.GUI.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Input\Guppy.Input.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Common.Entities.Tractoring\VoidHuntersRevived.Common.Entities.Tractoring.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Entities\VoidHuntersRevived.Domain.Entities.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Server\VoidHuntersRevived.Domain.Server.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Simulations\VoidHuntersRevived.Domain.Simulations.csproj" />

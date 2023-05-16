@@ -1,4 +1,6 @@
 ﻿using Guppy.Common;
+using Guppy.ECS;
+using Guppy.ECS.Services;
 using Guppy.Network;
 using Guppy.Network.Enums;
 using Guppy.Network.Identity;
@@ -14,6 +16,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
@@ -27,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Simulations
     public abstract partial class Simulation<TEntityComponent> : ISimulation, IDisposable
         where TEntityComponent : class, new()
     {
-        private World _world;
+        private IEntityService _entities;
         private ISimulationUpdateSystem[] _updateSystems;
         private readonly IParallelableService _parallelables;
         private readonly TEntityComponent _entityComponent;
@@ -51,7 +54,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             IGlobalSimulationService globalSimulationService)
         {
             _parallelables = parallelables;
-            _world = default!;
+            _entities = default!;
             _updateSystems = Array.Empty<ISimulationUpdateSystem>();
             _entityComponent = new TEntityComponent();
             _globalsSmulationService = globalSimulationService;
@@ -67,7 +70,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             this.Provider = provider;
 
-            _world = this.Provider.GetRequiredService<World>();
+            _entities = this.Provider.GetRequiredService<IEntityService>();
             _updateSystems = this.Provider.GetRequiredService<IFiltered<ISimulationUpdateSystem>>().Instances.ToArray();
 
             foreach(ISimulationSystem system in this.Provider.GetRequiredService<IFiltered<ISimulationSystem>>().Instances)
@@ -118,7 +121,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             if(parallelable.TryGetId(this.Type, out int id))
             {
                 parallelable.RemoveId(this);
-                _world.DestroyEntity(id);
+                _entities.Destroy(id);
             }
         }
 
@@ -129,10 +132,23 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.Update(gameTime);
         }
 
-        public virtual Entity CreateEntity(ParallelKey key)
+        public virtual Entity CreateEntity(ParallelKey key, EntityType type)
         {
-            var parallelable = _parallelables.Get(key);
-            var entity = _world.CreateEntity();
+            Parallelable parallelable = _parallelables.Get(key);
+            Entity entity = _entities.Create(type);
+            parallelable.AddId(this, entity.Id);
+
+            entity.Attach(parallelable);
+            entity.Attach(_entityComponent);
+            entity.Attach<ISimulation>(this);
+
+            return entity;
+        }
+
+        public virtual Entity CreateEntity(ParallelKey key, EntityType type, Action<Entity> factory)
+        {
+            Parallelable parallelable = _parallelables.Get(key);
+            Entity entity = _entities.Create(type, factory);
             parallelable.AddId(this, entity.Id);
 
             entity.Attach(parallelable);

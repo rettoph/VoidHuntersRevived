@@ -1,25 +1,40 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities.ShipParts.Components;
-using VoidHuntersRevived.Common.Entities.ShipParts.Configurations;
+using VoidHuntersRevived.Common.Entities.ShipParts.Helpers;
 
 namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 {
-    public class Drawable
+    public class Drawable : ShipPartComponent<Drawable>
     {
-        public readonly DrawConfiguration Configuration;
-        public readonly Vector2 LocalCenter;
-        public readonly Matrix LocalCenterTransformation;
+        public string Color { get; set; } = string.Empty;
+        public Vector2[][] Shapes { get; set; } = Array.Empty<Vector2[]>();
+        public Vector2[][] Paths { get; set; } = Array.Empty<Vector2[]>();
 
-        public Drawable(DrawConfiguration configuration)
+        public Drawable(string color, Vector2[][] shapes, Vector2[][] paths)
         {
-            this.Configuration = configuration;
-            this.LocalCenter = configuration.Shapes.SelectMany(x => x).Average();
-            this.LocalCenterTransformation = Matrix.CreateTranslation(this.LocalCenter.X, this.LocalCenter.Y, 0);
+            this.Color = color;
+            this.Shapes = shapes;
+            this.Paths = paths;
+        }
+
+        public static Drawable Polygon(string color, int sides)
+        {
+            var vertexAngles = PolygonHelper.CalculateVertexAngles(sides);
+
+            return new Drawable(
+                color: color,
+                shapes: new[]
+                {
+                    vertexAngles.Select(x => x.Vertex).ToArray()
+                },
+                paths: new[]
+                {
+                    vertexAngles.Select(x => x.Vertex).Concat(vertexAngles.First().Vertex.Yield()).ToArray()
+                });
+        }
+
+        public override ShipPartComponent Clone()
+        {
+            return this;
         }
     }
 }

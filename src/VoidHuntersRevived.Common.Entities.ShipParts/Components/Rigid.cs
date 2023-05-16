@@ -5,21 +5,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Collision.Shapes;
-using VoidHuntersRevived.Common.Entities.ShipParts.Components;
-using VoidHuntersRevived.Common.Entities.ShipParts.Configurations;
-using VoidHuntersRevived.Common.Simulations;
+using tainicom.Aether.Physics2D.Common.ConvexHull;
+using tainicom.Aether.Physics2D.Common;
+using VoidHuntersRevived.Common.Entities.ShipParts.Helpers;
 
 namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 {
-    public sealed class Rigid
+    public class Rigid : ShipPartComponent<Rigid>
     {
-        public readonly RigidConfiguration Configuration;
         public readonly Shape[] Shapes;
 
-        public Rigid(RigidConfiguration configuration)
+        public Rigid(params Shape[] shapes)
         {
-            this.Configuration = configuration;
-            this.Shapes = configuration.Shapes.ToArray();
+            this.Shapes = shapes;
+        }
+
+        public static Rigid Polygon(float density, int sides)
+        {
+            var vertices = new Vertices(PolygonHelper.CalculateVertexAngles(sides).Select(x => x.Vertex));
+            vertices = GiftWrap.GetConvexHull(vertices);
+            var shape = new PolygonShape(vertices, density);
+
+            return new Rigid(shape);
+        }
+
+        public override ShipPartComponent Clone()
+        {
+            return this;
         }
     }
 }

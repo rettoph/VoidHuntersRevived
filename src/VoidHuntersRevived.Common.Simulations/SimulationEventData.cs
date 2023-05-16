@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Simulations
 {
-    public class SimulationEventData
+    public class SimulationEventData : Message<SimulationEventData>
     {
         public required ParallelKey Key { get; init;  }
 

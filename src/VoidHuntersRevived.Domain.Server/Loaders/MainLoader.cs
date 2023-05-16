@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Domain.Simulations.Systems;
+using Guppy.Common.DependencyInjection;
 
 namespace VoidHuntersRevived.Domain.Server.Loaders
 {
@@ -15,6 +17,11 @@ namespace VoidHuntersRevived.Domain.Server.Loaders
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddGuppy<ServerGameGuppy>();
+
+            services.ConfigureCollection(manager =>
+            {
+ 
+            });
         }
     }
 }

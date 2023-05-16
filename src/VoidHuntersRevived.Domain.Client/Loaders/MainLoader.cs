@@ -29,18 +29,6 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
                 manager.AddScoped<ScreenComponent>()
                     .AddAlias<IGameComponent>();
 
-                manager.AddScoped<CameraSystem>()
-                    .AddInterfaceAliases();
-
-                manager.AddScoped<DrawableSystem>()
-                    .AddInterfaceAliases();
-
-                manager.AddScoped<DrawJointSystem>()
-                    .AddInterfaceAliases();
-
-                manager.AddScoped<DrawAimSystem>()
-                    .AddInterfaceAliases();
-
                 manager.AddScoped<Camera2D>()
                     .AddAlias<Camera>();
 
