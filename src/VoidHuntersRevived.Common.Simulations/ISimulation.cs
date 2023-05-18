@@ -30,15 +30,17 @@ namespace VoidHuntersRevived.Common.Simulations
 
         bool HasEntity(ParallelKey key);
 
-        void DestroyEntity(ParallelKey key);
-
         void Update(GameTime gameTime);
 
         Entity CreateEntity(ParallelKey key, EntityType type);
 
         Entity CreateEntity(ParallelKey key, EntityType type, Action<Entity> factory);
 
-        void Publish(SimulationEventData data);
+        void DestroyEntity(ParallelKey key);
+
+        void ConfigureEntity(Entity entity);
+
+        ISimulationEvent Publish(SimulationEventData data);
 
         void Enqueue(SimulationEventData data);
     }

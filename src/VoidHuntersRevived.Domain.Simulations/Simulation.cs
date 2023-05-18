@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Common.Collections;
 using Guppy.ECS;
 using Guppy.ECS.Services;
 using Guppy.Network;
@@ -17,6 +18,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Events;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
@@ -25,12 +27,14 @@ using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Domain.Simulations.Providers;
 
+using CreateEntityEvent = VoidHuntersRevived.Common.Entities.Events.CreateEntity;
+using DestroyEntityEvent = VoidHuntersRevived.Common.Entities.Events.DestroyEntity;
+
 namespace VoidHuntersRevived.Domain.Simulations
 {
     public abstract partial class Simulation<TEntityComponent> : ISimulation, IDisposable
         where TEntityComponent : class, new()
     {
-        private IEntityService _entities;
         private ISimulationUpdateSystem[] _updateSystems;
         private readonly IParallelableService _parallelables;
         private readonly TEntityComponent _entityComponent;
@@ -54,7 +58,6 @@ namespace VoidHuntersRevived.Domain.Simulations
             IGlobalSimulationService globalSimulationService)
         {
             _parallelables = parallelables;
-            _entities = default!;
             _updateSystems = Array.Empty<ISimulationUpdateSystem>();
             _entityComponent = new TEntityComponent();
             _globalsSmulationService = globalSimulationService;
@@ -70,7 +73,6 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             this.Provider = provider;
 
-            _entities = this.Provider.GetRequiredService<IEntityService>();
             _updateSystems = this.Provider.GetRequiredService<IFiltered<ISimulationUpdateSystem>>().Instances.ToArray();
 
             foreach(ISimulationSystem system in this.Provider.GetRequiredService<IFiltered<ISimulationSystem>>().Instances)
@@ -114,17 +116,6 @@ namespace VoidHuntersRevived.Domain.Simulations
             return _parallelables.Get(key).TryGetId(this.Type, out _);
         }
 
-        public void DestroyEntity(ParallelKey key)
-        {
-            Parallelable parallelable = _parallelables.Get(key);
-
-            if(parallelable.TryGetId(this.Type, out int id))
-            {
-                parallelable.RemoveId(this);
-                _entities.Destroy(id);
-            }
-        }
-
         protected abstract void Update(GameTime gameTime);
 
         void ISimulation.Update(GameTime gameTime)
@@ -134,31 +125,45 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public virtual Entity CreateEntity(ParallelKey key, EntityType type)
         {
-            Parallelable parallelable = _parallelables.Get(key);
-            Entity entity = _entities.Create(type);
-            parallelable.AddId(this, entity.Id);
+            ISimulationEvent @event = this.Publish(new SimulationEventData()
+            {
+                Key = CreateEntityEvent.Noise.Merge(key),
+                SenderId = default!,
+                Body = new CreateEntityEvent(type, key, null)
+            });
 
-            entity.Attach(parallelable);
-            entity.Attach(_entityComponent);
-            entity.Attach<ISimulation>(this);
-
-            return entity;
+            return (Entity)@event.Response!;
         }
 
         public virtual Entity CreateEntity(ParallelKey key, EntityType type, Action<Entity> factory)
         {
-            Parallelable parallelable = _parallelables.Get(key);
-            Entity entity = _entities.Create(type, factory);
-            parallelable.AddId(this, entity.Id);
+            ISimulationEvent @event = this.Publish(new SimulationEventData()
+            {
+                Key = CreateEntityEvent.Noise.Merge(key),
+                SenderId = default!,
+                Body = new CreateEntityEvent(type, key, factory)
+            });
 
-            entity.Attach(parallelable);
-            entity.Attach(_entityComponent);
-            entity.Attach<ISimulation>(this);
-
-            return entity;
+            return (Entity)@event.Response!;
         }
 
-        public abstract void Publish(SimulationEventData data);
+        public void DestroyEntity(ParallelKey key)
+        {
+            ISimulationEvent @event = this.Publish(new SimulationEventData()
+            {
+                Key = DestroyEntityEvent.Noise.Merge(key),
+                SenderId = default!,
+                Body = new DestroyEntityEvent(key, true)
+            });
+        }
+
+        public void ConfigureEntity(Entity entity)
+        {
+            entity.Attach(_entityComponent);
+            entity.Attach<ISimulation>(this);
+        }
+
+        public abstract ISimulationEvent Publish(SimulationEventData data);
 
         public abstract void Enqueue(SimulationEventData data);
     }

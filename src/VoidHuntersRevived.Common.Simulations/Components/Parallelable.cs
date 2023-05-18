@@ -15,13 +15,21 @@ namespace VoidHuntersRevived.Common.Simulations.Components
         public int this[SimulationType simulation] => _ids[simulation];
 
         public event OnEventDelegate<Parallelable> OnEmpty;
+        public event OnEventDelegate<Parallelable, int> OnAdded;
+        public event OnEventDelegate<Parallelable, int> OnRemoved;
 
-        public Parallelable(ParallelKey key, OnEventDelegate<Parallelable> onEmpty)
+        public Parallelable(
+            ParallelKey key, 
+            OnEventDelegate<Parallelable, int> onAdded, 
+            OnEventDelegate<Parallelable, int> onRemoved, 
+            OnEventDelegate<Parallelable> onEmpty)
         {
             this.Key = key;
 
             _ids = new Dictionary<SimulationType, int>();
 
+            this.OnAdded = onAdded;
+            this.OnRemoved = onRemoved;
             this.OnEmpty = onEmpty;
         }
 
@@ -38,11 +46,13 @@ namespace VoidHuntersRevived.Common.Simulations.Components
         public void AddId(ISimulation simulation, int id)
         {
             _ids.Add(simulation.Type, id);
+            this.OnAdded(this, id);
         }
 
         public void RemoveId(ISimulation simulation)
         {
-            _ids.Remove(simulation.Type);
+            _ids.Remove(simulation.Type, out int id);
+            this.OnRemoved(this, id);
 
             if (_ids.Count == 0)
             {

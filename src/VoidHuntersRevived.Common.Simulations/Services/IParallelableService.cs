@@ -1,4 +1,5 @@
-﻿using VoidHuntersRevived.Common.Simulations.Components;
+﻿using System.Diagnostics.CodeAnalysis;
+using VoidHuntersRevived.Common.Simulations.Components;
 
 namespace VoidHuntersRevived.Common.Simulations.Services
 {
@@ -6,5 +7,6 @@ namespace VoidHuntersRevived.Common.Simulations.Services
     {
         Parallelable Get(ParallelKey key);
         Parallelable Get(int id);
+        bool TryGet(int id, [MaybeNullWhen(false)] out Parallelable parallelable);
     }
 }

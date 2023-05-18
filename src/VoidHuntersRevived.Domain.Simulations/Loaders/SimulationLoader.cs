@@ -3,6 +3,7 @@ using Guppy.Common;
 using Guppy.Common.DependencyInjection;
 using Guppy.Common.DependencyInjection.Interfaces;
 using Guppy.Loaders;
+using Guppy.Network;
 using LiteNetLib;
 using Microsoft.Extensions.DependencyInjection;
 using VoidHuntersRevived.Common.Simulations;
@@ -48,6 +49,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
 
                 this.ConfigureLockstep(services, manager);
                 this.ConfigurePredictive(services, manager);
+            });
+
+            services.Configure<BrokerConfiguration>(configuration =>
+            {
+                configuration.AddMessageAlias<ISimulationEvent, ISimulationEvent>(true);
             });
         }
 

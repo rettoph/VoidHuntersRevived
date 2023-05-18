@@ -1,5 +1,7 @@
 ﻿using Standart.Hash.xxHash;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 using VoidHuntersRevived.Common.Simulations.Extensions.System;
 using VoidHuntersRevived.Common.Simulations.Providers;
 
@@ -67,6 +69,21 @@ namespace VoidHuntersRevived.Common.Simulations
             UInt128* value = (UInt128*)&valueGuid;
 
             return new ParallelKey(value[0]);
+        }
+
+        public static unsafe ParallelKey From(string input)
+        {
+            byte[] bytes = Encoding.ASCII.GetBytes(input);
+
+            uint128 hash = xxHash128.ComputeHash(bytes, bytes.Length);
+            UInt128* value = (UInt128*)&hash;
+
+            return new ParallelKey(value[0]);
+        }
+
+        public static ParallelKey From<T>()
+        {
+            return ParallelKey.From(typeof(T).AssemblyQualifiedName ?? throw new InvalidOperationException());
         }
 
         public static ParallelKey operator ++(ParallelKey a)

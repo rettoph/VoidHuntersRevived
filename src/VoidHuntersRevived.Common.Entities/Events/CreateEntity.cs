@@ -1,4 +1,5 @@
-﻿using MonoGame.Extended.Entities;
+﻿using Guppy.ECS;
+using MonoGame.Extended.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +11,17 @@ namespace VoidHuntersRevived.Common.Entities.Events
 {
     public class CreateEntity
     {
-        public ParallelKey Key { get; }
+        public static readonly ParallelKey Noise = ParallelKey.From<CreateEntity>();
 
-        public readonly ParallelKey EntityKey;
+        public readonly ParallelKey? Key;
+        public readonly EntityType Type;
+        public readonly Action<Entity>? Factory;
 
-        public CreateEntity(ParallelKey entity)
+        public CreateEntity(EntityType type, ParallelKey? key, Action<Entity>? factory)
         {
-            this.EntityKey = entity;
+            this.Type = type;
+            this.Key = key;
+            this.Factory = factory;
         }
     }
 }

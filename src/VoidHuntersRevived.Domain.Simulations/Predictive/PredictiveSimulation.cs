@@ -5,6 +5,8 @@ using Guppy.Network.Identity;
 using Guppy.Resources.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
+using Serilog;
+using Serilog.Core;
 using System.Runtime.InteropServices;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
@@ -13,6 +15,7 @@ using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Domain.Simulations.Lockstep.Messages;
+using VoidHuntersRevived.Domain.Simulations.Predictive.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
@@ -20,23 +23,28 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
     [SimulationTypeFilter(SimulationType.Predictive)]
     internal sealed class PredictiveSimulation : Simulation<Common.Simulations.Components.Predictive>,
         ISubscriber<INetIncomingMessage<Tick>>,
-        ISubscriber<INetIncomingMessage<StateTick>>
+        ISubscriber<INetIncomingMessage<StateTick>>,
+        ISubscriber<ISimulationEvent>
     {
+        private readonly ILogger _logger;
         private readonly ISimulationEventPublishingService _events;
         private IPredictiveSynchronizationSystem[] _synchronizeSystems;
-        private readonly IBus _bus;
-        private readonly Dictionary<UInt128, ISimulationEvent> _cache;
+        private readonly SimulationEventPredictionService _predictionService;
+        private readonly Queue<SimulationEventData> _predictions;
+        private readonly Queue<ISimulationEvent> _verified;
 
         public PredictiveSimulation(
-            IBus bus,
+            ILogger logger,
             IParallelableService simulatedEntities, 
             IGlobalSimulationService globalSimulationService,
             ISimulationEventPublishingService events) : base(SimulationType.Predictive, simulatedEntities, globalSimulationService)
         {
-            _synchronizeSystems = Array.Empty<IPredictiveSynchronizationSystem>();
-            _bus = bus;
-            _cache = new Dictionary<UInt128, ISimulationEvent>();
+            _logger = logger;
             _events = events;
+            _synchronizeSystems = Array.Empty<IPredictiveSynchronizationSystem>();
+            _predictionService = new SimulationEventPredictionService(logger, _events);
+            _predictions = new Queue<SimulationEventData>();
+            _verified = new Queue<ISimulationEvent>();
         }
 
         public override void Initialize(IServiceProvider provider)
@@ -48,7 +56,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
         protected override void Update(GameTime gameTime)
         {
+            _predictionService.Prune();
+
             this.UpdateSystems(gameTime);
+
+            while (_predictions.TryDequeue(out SimulationEventData? data))
+            {
+                this.Publish(data);
+            }
+
+            while (_verified.TryDequeue(out ISimulationEvent? verified))
+            {
+                _predictionService.Verify(this, verified);
+            }
 
             var damping = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -58,25 +78,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             }
         }
 
-        public override void Publish(SimulationEventData data)
+        public override ISimulationEvent Publish(SimulationEventData data)
         {
-            ref ISimulationEvent? cached = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, data.Key.Value, out bool exists);
-
-            if (exists)
-            {
-                // Indicates a duplicate input.
-                // Most likely a previously predicted local input thats
-                // been bounced back by the server.
-                // No need to re-input within this simulation.
-                return;
-            }
-
-            cached = _events.Publish(this, data);
+            return _predictionService.Predict(this, data).Event;
         }
 
         public override void Enqueue(SimulationEventData data)
         {
-            this.Publish(data);
+            _predictions.Enqueue(data);
         }
 
         public void Process(in INetIncomingMessage<Tick> message)
@@ -93,6 +102,16 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             {
                 this.Enqueue(input);
             }
+        }
+
+        public void Process(in ISimulationEvent message)
+        {
+            if(message.Simulation == this)
+            { // Ignore events that were already publiblished to the predictive simulation
+                return;
+            }
+
+            _verified.Enqueue(message);
         }
     }
 }

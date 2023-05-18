@@ -21,17 +21,11 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
         {
             entities.Configure(EntityTypes.Ship, configuration =>
             {
-                configuration.Inherit(EntityTypes.Base.ShipPart)
+                configuration.Inherit(EntityTypes.ShipPart)
                     .AttachComponent(e => new Helm())
                     .AttachComponent(e => new Tactical())
                     .AttachComponent(e => new TractorBeamEmitter())
                     .EnsureComponent<Body>();
-            });
-
-            entities.Configure(EntityTypes.TractorableShipPart, configuration =>
-            {
-                configuration.Inherit(EntityTypes.Base.ShipPart)
-                    .AttachComponent(e => new Tractorable());
             });
         }
     }

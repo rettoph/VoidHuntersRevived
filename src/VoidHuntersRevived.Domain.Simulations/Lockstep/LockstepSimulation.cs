@@ -55,10 +55,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _steps.Update(gameTime);
         }
 
-        public override void Publish(SimulationEventData data)
+        public override ISimulationEvent Publish(SimulationEventData data)
         {
-            _events.Publish(this, data);
-            _bus.Publish(data);
+            return _events.Publish(this, data);
         }
 
         public void Process(in Step message)

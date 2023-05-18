@@ -55,7 +55,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
             _interactive = _simulations.First(SimulationType.Predictive, SimulationType.Lockstep);
 
-            _parallelables = world.ComponentMapper.GetMapper<Parallelable>();
+            _parallelables = world.ComponentManager.GetMapper<Parallelable>();
         }
 
         public override void Update(GameTime gameTime)

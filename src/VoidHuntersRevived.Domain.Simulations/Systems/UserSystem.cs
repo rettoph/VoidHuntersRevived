@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             Entity ship = message.Simulation.CreateShip(message.NewKey(), square);
             ship.Attach(user);
 
-            Entity shipPart = message.Simulation.CreateShipPart(message.NewKey(), square);
+            Entity shipPart = message.Simulation.CreateShipPart(message.NewKey(), square, true, Vector2.Zero, 0);
 
             return;
         }

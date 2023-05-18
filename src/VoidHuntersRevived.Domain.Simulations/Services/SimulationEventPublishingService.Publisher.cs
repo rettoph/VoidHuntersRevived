@@ -15,7 +15,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
     {
         private interface ISimulationEventPublisher
         {
-            ISimulationEvent Publish(ISimulation simulation, SimulationEventData core);
+            ISimulationEvent Publish(ISimulation simulation, SimulationEventData data);
+            ISimulationEventRevision Revert(ISimulationEvent simulationEvent);
         }
 
         private class SimulationEventPublisher<T> : ISimulationEventPublisher
@@ -36,6 +37,22 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
                     SenderId = data.SenderId,
                     Simulation = simulation,
                     Body = Unsafe.As<T>(data.Body)
+                };
+
+                _bus.Publish(message);
+
+                return message;
+            }
+
+            public ISimulationEventRevision Revert(ISimulationEvent simulationEvent)
+            {
+                SimulationEventRevision<T> message = new SimulationEventRevision<T>()
+                {
+                    Key = simulationEvent.Key,
+                    SenderId = simulationEvent.SenderId,
+                    Simulation = simulationEvent.Simulation,
+                    Body = Unsafe.As<T>(simulationEvent.Body),
+                    Response = simulationEvent.Response
                 };
 
                 _bus.Publish(message);

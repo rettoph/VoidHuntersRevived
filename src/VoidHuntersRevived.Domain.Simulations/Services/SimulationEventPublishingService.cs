@@ -21,6 +21,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             return this.GetInputPublisher(core.Body.GetType()).Publish(simulation, core);
         }
 
+        public ISimulationEventRevision Revert(ISimulationEvent simulationEvent)
+        {
+            return this.GetInputPublisher(simulationEvent.Body.GetType()).Revert(simulationEvent);
+        }
+
         private ISimulationEventPublisher GetInputPublisher(Type inputType)
         {
             ref ISimulationEventPublisher? publisher = ref CollectionsMarshal.GetValueRefOrAddDefault(_subscribers, inputType, out bool exists);

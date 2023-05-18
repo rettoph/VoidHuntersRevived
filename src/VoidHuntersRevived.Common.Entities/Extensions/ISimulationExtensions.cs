@@ -29,16 +29,28 @@ namespace VoidHuntersRevived.Common.Entities.Extensions
             });
         }
 
-        public static Entity CreateShipPart(this ISimulation simulation, ParallelKey key, ShipPart shipPart)
+        public static Entity CreateShipPart(
+            this ISimulation simulation, 
+            ParallelKey key, 
+            ShipPart shipPart, 
+            bool tractorable,
+            Vector2 position,
+            float rotation)
         {
-            return simulation.CreateEntity(key, EntityTypes.TractorableShipPart, entity =>
+            return simulation.CreateEntity(key, EntityTypes.ShipPart, entity =>
             {
                 Body body = simulation.Aether.CreateBody(Vector2.Zero, 0, BodyType.Dynamic);
                 WorldLocation worldLocation = new AetherBodyWorldLocation(body);
+                worldLocation.SetTransform(position, rotation);
 
                 entity.Attach(body);
                 entity.Attach(worldLocation);
                 shipPart.Clone().AttachTo(entity);
+
+                if(tractorable)
+                {
+                    entity.Attach(new Tractorable());
+                }
 
                 body.Tag = entity.Id;
             });

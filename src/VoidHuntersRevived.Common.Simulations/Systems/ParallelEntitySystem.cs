@@ -38,6 +38,11 @@ namespace VoidHuntersRevived.Common.Simulations.Systems
             _world = world;
             _subscription = new EntitySubscription(_world, _aspectBuilder.Build(_world));
 
+            if(_subscriptions.Any())
+            {
+
+            }
+
             foreach (ISimulation simulation in this.simulations.Instances)
             {
                 var aspect = _aspectBuilder.Clone().All(simulation.EntityComponentType).Build(_world);
@@ -49,7 +54,7 @@ namespace VoidHuntersRevived.Common.Simulations.Systems
             _world.EntityManager.EntityRemoved += OnEntityRemoved;
             _world.EntityManager.EntityChanged += OnEntityChanged;
 
-            this.Initialize(world.ComponentMapper);
+            this.Initialize(world.ComponentManager);
         }
 
         public virtual void Initialize(ISimulation simulation)

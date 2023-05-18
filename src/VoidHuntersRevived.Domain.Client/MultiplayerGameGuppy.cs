@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Domain.Client
 
             base.Initialize(provider);
 
-            this.Connect("localhost", 1337);
+            this.Connect("192.168.0.24", 1337);
         }
 
         public void Connect(string host, int port)

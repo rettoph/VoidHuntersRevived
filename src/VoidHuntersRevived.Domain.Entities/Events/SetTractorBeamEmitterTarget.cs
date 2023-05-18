@@ -8,9 +8,9 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Domain.Entities.Events
 {
-    public class CreateTractorBeamEmitterTarget
+    public class SetTractorBeamEmitterTarget
     {
         public required ParallelKey TractorBeamEmitterKey { get; init; }
-        public required ShipPart ShipPart { get; init; }
+        public required ParallelKey TargetKey { get; init; }
     }
 }

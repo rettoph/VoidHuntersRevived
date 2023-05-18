@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         {
             base.Initialize(world);
 
-            _bodies = world.ComponentMapper.GetMapper<Body>();
+            _bodies = world.ComponentManager.GetMapper<Body>();
         }
 
         public override void Draw(GameTime gameTime)

@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Entities.ShipParts.Loaders
     {
         public void Configure(IEntityService entities)
         {
-            entities.Configure(EntityTypes.Base.ShipPart, configuration =>
+            entities.Configure(EntityTypes.ShipPart, configuration =>
             {
                 configuration.EnsureComponent<ShipPart>()
                     .EnsureComponent<WorldLocation>();

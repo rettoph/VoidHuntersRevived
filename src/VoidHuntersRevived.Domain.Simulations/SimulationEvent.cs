@@ -14,6 +14,8 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public required TSimulationEventData Body { get; init; }
 
+        public object? Response { get; private set; }
+
         object ISimulationEvent.Body => this.Body;
 
         public ParallelKey NewKey()
@@ -24,6 +26,11 @@ namespace VoidHuntersRevived.Domain.Simulations
         public ParallelKey PreviousKey()
         {
             return this.Simulation.Keys.Previous(this.Key);
+        }
+
+        public void Respond(object? response)
+        {
+            this.Response = response;
         }
     }
 }

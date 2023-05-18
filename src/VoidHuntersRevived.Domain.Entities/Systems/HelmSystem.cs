@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         {
             base.Initialize(world);
 
-            _helms = world.ComponentMapper.GetMapper<Helm>();
+            _helms = world.ComponentManager.GetMapper<Helm>();
         }
 
         public void Process(in ISimulationEvent<SetHelmDirection> message)

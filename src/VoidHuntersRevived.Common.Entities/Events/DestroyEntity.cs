@@ -9,6 +9,15 @@ namespace VoidHuntersRevived.Common.Entities.Events
 {
     public sealed class DestroyEntity
     {
-        public ParallelKey EntityKey { get; set; }
+        public static readonly ParallelKey Noise = ParallelKey.From<DestroyEntity>();
+
+        public readonly ParallelKey Key;
+        public readonly bool Backup;
+
+        public DestroyEntity(ParallelKey entity, bool backup)
+        {
+            this.Key = entity;
+            this.Backup = backup;
+        }
     }
 }

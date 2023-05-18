@@ -1,0 +1,133 @@
+﻿using Guppy.Common;
+using Guppy.Common.Collections;
+using Guppy.ECS;
+using Guppy.ECS.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Entities;
+using MonoGame.Extended.Entities.Systems;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities.Events;
+using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Components;
+using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Common.Simulations.Systems;
+using VoidHuntersRevived.Common.Systems;
+using VoidHuntersRevived.Common.Utilities;
+
+namespace VoidHuntersRevived.Domain.Entities.Systems
+{
+    internal sealed class EntitySystem : BasicSystem, IUpdateSystem, ISimulationSystem,
+        ISubscriber<ISimulationEvent<CreateEntity>>,
+        ISubscriber<ISimulationEventRevision<CreateEntity>>,
+        ISubscriber<ISimulationEvent<DestroyEntity>>,
+        ISubscriber<ISimulationEventRevision<DestroyEntity>>
+    {
+        private readonly IServiceProvider _provider;
+        private readonly IParallelableService _parallelables;
+        private readonly HashCache<ParallelKey> _invalidEntities;
+        private IEntityService _entities = null!;
+
+        public EntitySystem(IServiceProvider provider, IParallelableService parallelables)
+        {
+            _provider = provider;
+            _parallelables = parallelables;
+            _invalidEntities = new HashCache<ParallelKey>(TimeSpan.FromSeconds(10));
+        }
+
+        public void Initialize(ISimulation simulation)
+        {
+            _entities = _provider.GetRequiredService<IEntityService>();
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            _invalidEntities.Prune();
+        }
+
+        public void Process(in ISimulationEvent<CreateEntity> message)
+        {
+            ParallelKey entityKey = message.Body.Key ?? message.NewKey();
+            Entity entity;
+
+            if (message.Body.Factory is null)
+            {
+                entity = _entities.Create(message.Body.Type);
+            }
+            else
+            {
+                entity = _entities.Create(message.Body.Type, message.Body.Factory);
+            }
+
+            Parallelable parallelable = _parallelables.Get(entityKey);
+            parallelable.AddId(message.Simulation, entity.Id);
+
+            entity.Attach(parallelable);
+            message.Simulation.ConfigureEntity(entity);
+
+            message.Respond(entity);
+        }
+
+        public void Process(in ISimulationEventRevision<CreateEntity> message)
+        {
+            if (message.Response is not Entity entity)
+            {
+                return;
+            }
+
+            if(!_parallelables.TryGet(entity.Id, out Parallelable? parallelable))
+            {
+                return;
+            }
+
+            parallelable.RemoveId(message.Simulation);
+            _entities.Destroy(entity.Id);
+
+            _invalidEntities.Add(parallelable.Key);
+        }
+
+        public void Process(in ISimulationEvent<DestroyEntity> message)
+        {
+            Parallelable parallelable = _parallelables.Get(message.Body.Key);
+
+            if (!parallelable.TryGetId(message.Simulation.Type, out int id))
+            {
+                return;
+            }
+
+            parallelable.RemoveId(message.Simulation);
+            
+            if(message.Body.Backup)
+            {
+                _entities.Destroy(id, out EntityBackup backup);
+                message.Respond(backup);
+            }
+            else
+            {
+                _entities.Destroy(id);
+            }
+        }
+
+        public void Process(in ISimulationEventRevision<DestroyEntity> message)
+        {
+            if (_invalidEntities.Contains(message.Body.Key))
+            {
+                return;
+            }
+
+            if (message.Response is not EntityBackup backup)
+            {
+                return;
+            }
+
+            Parallelable parallelable = _parallelables.Get(message.Body.Key);
+            Entity entity = _entities.Restore(backup);
+            parallelable.AddId(message.Simulation, entity.Id);
+        }
+    }
+}

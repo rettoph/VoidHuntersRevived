@@ -20,9 +20,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
     {
         public static readonly AspectBuilder BodyAspect = Aspect.All(new[]
         {
+            typeof(ISimulation),
             typeof(Body)
         });
 
+        private ComponentMapper<ISimulation> _simulations = null!;
         private ComponentMapper<Body> _bodies = null!;
         private ComponentMapper<Parallelable> _parallelables = null!;
 
@@ -32,8 +34,28 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
         public override void Initialize(IComponentMapperService mapperService)
         {
+            _simulations = mapperService.GetMapper<ISimulation>();
             _bodies = mapperService.GetMapper<Body>();
             _parallelables = mapperService.GetMapper<Parallelable>();
+        }
+
+        protected override void OnEntityAdded(int entityId)
+        {
+            base.OnEntityAdded(entityId);
+
+            if (!this.subscription.IsInterested(entityId))
+            {
+                return;
+            }
+
+            Aether world = _simulations.Get(entityId).Aether;
+            Body body = _bodies.Get(entityId);
+
+            if(body.World != world)
+            {
+                body.World?.Remove(body);
+                world.Add(body);
+            }
         }
 
         protected override void OnEntityRemoved(int entityId)

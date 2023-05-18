@@ -2,6 +2,7 @@
 using Guppy.Common.DependencyInjection;
 using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
+using MonoGame.Extended.Entities.Systems;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,9 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
         {
             services.ConfigureCollection(manager =>
             {
+                manager.AddScoped<Systems.EntitySystem>()
+                    .AddInterfaceAliases();
+
                 manager.AddScoped<UserShipSystem>()
                     .AddInterfaceAliases();
 

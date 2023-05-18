@@ -20,9 +20,6 @@ namespace VoidHuntersRevived.Domain.Entities.ShipParts.Loaders
             {
                 manager.AddScoped<RigidSystem>()
                     .AddInterfaceAliases();
-
-                manager.AddScoped<DestroyShipPartEntitySystem>()
-                    .AddInterfaceAliases();
             });
         }
     }
