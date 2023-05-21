@@ -78,17 +78,6 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             {
                 return;
             }
-
-            _simulations.Enqueue(new SimulationEventData()
-            {
-                Key = ParallelKey.NewKey(),
-                SenderId = _netScope.Peer.Users.Current.Id,
-                Body = new SetTacticalTarget()
-                {
-                    TacticalKey = shipKey,
-                    Target = CurrentTargetPosition
-                }
-            });
         }
 
         public void Process(in SetHelmDirection message)
@@ -127,6 +116,17 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             {
                 return;
             }
+
+            _simulations.Enqueue(new SimulationEventData()
+            {
+                Key = ParallelKey.NewKey(),
+                SenderId = _netScope.Peer.Users.Current.Id,
+                Body = new SetTacticalTarget()
+                {
+                    TacticalKey = shipKey,
+                    Target = CurrentTargetPosition
+                }
+            });
 
             _simulations.Enqueue(new SimulationEventData()
             {

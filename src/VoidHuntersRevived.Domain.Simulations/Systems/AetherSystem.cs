@@ -56,6 +56,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
                 body.World?.Remove(body);
                 world.Add(body);
             }
+
+            body.Tag = entityId;
         }
 
         protected override void OnEntityRemoved(int entityId)
@@ -69,6 +71,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
             Body body = _bodies.Get(entityId);
             body.World.Remove(body);
+            body.Tag = null;
         }
 
         public void Update(ISimulation simulation, GameTime gameTime)

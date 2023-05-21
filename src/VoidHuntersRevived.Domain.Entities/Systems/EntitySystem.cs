@@ -74,6 +74,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             message.Simulation.ConfigureEntity(entity);
 
             message.Respond(entity);
+
+            _logger.Debug($"{nameof(EntitySystem)}::{nameof(Process)}<{nameof(DestroyEntity)}> - Created Entity {entity.Id}, ({message.Simulation.Type}, {parallelable.Key.Value})");
         }
 
         public void Process(in ISimulationEventRevision<CreateEntity> message)
@@ -92,6 +94,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             _destroyedEntities.Add(parallelable.Key);
 
             _entities.Destroy(entity.Id);
+
+            _logger.Debug($"{nameof(EntitySystem)}::{nameof(Process)}<{nameof(DestroyEntity)}> - Reverted Entity creation {entity.Id}, ({message.Simulation.Type}, {parallelable.Key.Value})");
         }
 
         public void Process(in ISimulationEvent<DestroyEntity> message)
@@ -120,7 +124,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         public void Process(in ISimulationEventRevision<DestroyEntity> message)
         {
-            if (_destroyedEntities.Remove(message.Body.Key) != 0)
+            int count = _destroyedEntities.Remove(message.Body.Key);
+            if (count != 0)
             {
                 _logger.Debug($"{nameof(EntitySystem)}::{nameof(Process)}<{nameof(DestroyEntity)}> - Unable to revert entity destruction {message.Simulation.Type}, {message.Body.Key.Value} => {_destroyedEntities.Count(message.Body.Key)}");
 

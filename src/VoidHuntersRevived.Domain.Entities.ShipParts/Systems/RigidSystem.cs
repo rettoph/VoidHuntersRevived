@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Domain.Entities.ShipParts.Systems
 
             ShipPart shipPart = _shipParts.Get(entityId);
             Rigid rigid = _rigids.Get(entityId);
-            if (!_bodies.TryGet(shipPart.Head.EntityId ?? -1, out Body? body))
+            if (!_bodies.TryGet(entityId, out Body? body))
             {
                 return;
             }

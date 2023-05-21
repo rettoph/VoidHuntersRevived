@@ -56,8 +56,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
         protected override void Update(GameTime gameTime)
         {
-            _predictionService.Prune();
-
             this.UpdateSystems(gameTime);
 
             while (_predictions.TryDequeue(out SimulationEventData? data))
@@ -76,6 +74,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             {
                 synchronizeSystem.Synchronize(this, gameTime, damping);
             }
+
+            _predictionService.Prune();
         }
 
         public override ISimulationEvent Publish(SimulationEventData data)

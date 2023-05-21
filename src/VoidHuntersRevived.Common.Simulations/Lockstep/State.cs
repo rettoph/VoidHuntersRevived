@@ -90,6 +90,11 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
                 _history.Add(tick);
             }
 
+            if(_stepsSinceTick != this._stepsPerTick)
+            {
+
+            }
+
             _bus.Enqueue(_preTick);
             _bus.Enqueue(tick);
 

@@ -35,5 +35,18 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
         {
             return new Tick(id, events);
         }
+
+        public ParallelKey Hash()
+        {
+            ParallelKey hash = ParallelKey.Empty.Step((ulong)this.Id);
+
+
+            foreach(SimulationEventData eventData in _events)
+            {
+                hash = hash.Merge(eventData.Key);
+            }
+
+            return hash;
+        }
     }
 }

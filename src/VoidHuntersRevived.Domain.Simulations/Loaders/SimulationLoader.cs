@@ -41,6 +41,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
                 manager.AddScoped<AetherSystem>()
                     .AddInterfaceAliases();
 
+                manager.AddScoped<CommandSystem>()
+                    .AddInterfaceAliases();
+
                 manager.AddScoped<Server_InputSystem>()
                     .AddInterfaceAliases();
 

@@ -24,8 +24,6 @@ namespace VoidHuntersRevived.Common.Entities.Extensions
                 entity.Attach(body);
                 entity.Attach(worldLocation);
                 bridge.Clone().AttachTo(entity);
-
-                body.Tag = entity.Id;
             });
         }
 
@@ -51,8 +49,6 @@ namespace VoidHuntersRevived.Common.Entities.Extensions
                 {
                     entity.Attach(new Tractorable());
                 }
-
-                body.Tag = entity.Id;
             });
         }
     }

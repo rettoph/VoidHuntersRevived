@@ -45,12 +45,12 @@ namespace VoidHuntersRevived.Domain
         {
             base.Update(gameTime);
 
-            this.Simulations.Update(gameTime);
-
             _worldGameTime.ElapsedGameTime = gameTime.ElapsedGameTime;
             _worldGameTime.TotalGameTime += gameTime.ElapsedGameTime;
 
             this.UpdateWorld();
+
+            this.Simulations.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
