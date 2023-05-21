@@ -7,7 +7,7 @@ using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
-    internal partial class DrawableShipPartSystem
+    internal partial class DrawableShipPartSystem<TSimulationComponent>
     {
         private sealed class Renderer
         {
@@ -22,14 +22,22 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 Camera camera,
                 PrimitiveBatch<VertexPositionColor> primitiveBatch,
                 IResourceProvider resources,
-                Drawable drawable)
+                Drawable drawable,
+                Color? tint)
             {
                 _drawable = drawable;
                 _primitiveBatch = primitiveBatch;
-                _shapeColor = resources.Get<Color>(_drawable.Color).Value;
-                _pathColor = Color.Lerp(resources.Get<Color>(_drawable.Color).Value, Color.White, 0.25f);
                 _shapes = _drawable.Shapes.Select(x => new PrimitiveShape(x)).ToArray();
                 _paths = _drawable.Paths.Select(x => new ProjectedShape(camera, x)).ToArray();
+
+                _shapeColor = resources.Get<Color>(_drawable.Color).Value;
+                _pathColor = Color.Lerp(resources.Get<Color>(_drawable.Color).Value, Color.White, 0.25f);
+
+                if(tint is not null)
+                {
+                    _shapeColor = Color.Lerp(_shapeColor, tint.Value, 0.5f);
+                    _pathColor = Color.Lerp(_pathColor, tint.Value, 0.5f);
+                }
             }
 
             public void RenderShapes(Matrix transformation)

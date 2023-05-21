@@ -93,8 +93,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive.Services
 
             if (prediction.Status == PredictionStatus.Unverified)
             {
-                _events.Revert(prediction.Event);
                 _logger.Warning($"{nameof(SimulationEventPredictionService)}::{nameof(Prune)} - Reverting '{prediction.Event.Body.GetType().Name}', '{prediction.Key.Value}'");
+                _events.Revert(prediction.Event);
             }
 
             _dict.Remove(prediction.Key);

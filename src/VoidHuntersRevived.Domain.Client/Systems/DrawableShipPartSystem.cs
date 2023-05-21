@@ -1,7 +1,10 @@
-﻿using Guppy.GUI;
+﻿using Guppy.Common;
+using Guppy.GUI;
+using Guppy.MonoGame.Messages;
 using Guppy.MonoGame.Primitives;
 using Guppy.MonoGame.Utilities.Cameras;
 using Guppy.Resources.Providers;
+using Microsoft.Extensions.Options;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities;
@@ -14,14 +17,16 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Simulations.Components;
+using VoidHuntersRevived.Domain.Client.Options;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
-    internal sealed partial class DrawableShipPartSystem : EntityDrawSystem
+    internal sealed partial class DrawableShipPartSystem<TSimulationComponent>
+        : EntityDrawSystem, ISubscriber<Toggle<TSimulationComponent>>
     {
         private static readonly AspectBuilder ShipPartAspect = Aspect.All(new[]
         {
-            typeof(Predictive),
+            typeof(TSimulationComponent),
             typeof(ShipPart),
             typeof(Drawable),
             typeof(WorldLocation)
@@ -32,11 +37,14 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private readonly Camera2D _camera;
         private readonly Dictionary<Drawable, Renderer> _renderers;
+        private bool _visible;
+        private Color? _tint;
         private ComponentMapper<ShipPart> _shipPart = null!;
         private ComponentMapper<WorldLocation> _worldLocations = null!;
         private ComponentMapper<Drawable> _drawable = null!;
 
         public DrawableShipPartSystem(
+            IOptions<DrawableOptions<TSimulationComponent>> options,
             IResourceProvider resources,
             IScreen screen,
             PrimitiveBatch<VertexPositionColor> primitiveBatch,
@@ -47,6 +55,8 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             _primitiveBatch = primitiveBatch;
             _camera = camera;
             _renderers = new Dictionary<Drawable, Renderer>();
+            _visible = options.Value.Visible;
+            _tint = options.Value.Tint;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
@@ -58,6 +68,11 @@ namespace VoidHuntersRevived.Domain.Client.Systems
 
         public override void Draw(GameTime gameTime)
         {
+            if(!_visible)
+            {
+                return;
+            }
+
             _primitiveBatch.Begin(_camera);
             foreach(int entityId in this.ActiveEntities)
             {
@@ -68,7 +83,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             
                 if(!exists)
                 {
-                    renderer = new Renderer(_camera, _primitiveBatch, _resources, drawable);
+                    renderer = new Renderer(_camera, _primitiveBatch, _resources, drawable, _tint);
                 }
             
                 renderer!.RenderShapes(worldLocation.Transformation);
@@ -85,6 +100,11 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 renderer!.RenderPaths(worldLocation.Transformation);
             }
             _primitiveBatch.End();
+        }
+
+        public void Process(in Toggle<TSimulationComponent> message)
+        {
+            _visible = !_visible;
         }
     }
 }

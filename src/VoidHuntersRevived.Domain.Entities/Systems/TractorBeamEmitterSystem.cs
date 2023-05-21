@@ -1,6 +1,7 @@
 ﻿using Guppy.Common;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +32,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             typeof(Tactical)
         });
 
+        private ILogger _logger;
         private ComponentMapper<TractorBeamEmitter> _tractorBeamEmitters = null!;
         private ComponentMapper<Tactical> _tacticals = null!;
         private ComponentMapper<Tractorable> _tractorables = null!;
@@ -38,8 +40,9 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         private ComponentMapper<WorldLocation> _worldLocations = null!;
         private ComponentMapper<Parallelable> _parallelables = null!;
 
-        public TractorBeamEmitterSystem(ISimulationService simulations) : base(simulations, TractorBeamEmitterAspect)
+        public TractorBeamEmitterSystem(ILogger logger, ISimulationService simulations) : base(simulations, TractorBeamEmitterAspect)
         {
+            _logger = logger;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
@@ -69,7 +72,13 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            _worldLocations.Get(tractorBeamEmitter.TargetId.Value).SetTransform(tactical.Value, 0);
+            if(!_worldLocations.TryGet(tractorBeamEmitter.TargetId.Value, out WorldLocation? location))
+            {
+                // _logger.Error($"{nameof(TractorBeamEmitterSystem)}::{nameof(Process)} - Invalid TractorBeamEmitter Id '{tractorBeamEmitter.TargetId.Value}'");
+                return;
+            }
+
+            location.SetTransform(tactical.Value, 0);
         }
 
         public void Process(in ISimulationEvent<ActivateTractorBeamEmitter> message)
@@ -98,6 +107,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             { // No valid potential targets found...
                 return;
             }
+
+            _logger.Debug($"{nameof(TractorBeamEmitterSystem)}::{nameof(Process)}<{nameof(ActivateTractorBeamEmitter)}> - Activating {tractorBeamEmitterId}, TargetId: {targetId}");
 
             // Create a clone of the target piece
             WorldLocation location = _worldLocations.Get(targetId);
@@ -177,8 +188,14 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            // Create a new tractorable clone
-            WorldLocation location = _worldLocations.Get(tractorBeamEmitter.TargetId.Value);
+            if(!_worldLocations.TryGet(tractorBeamEmitter.TargetId.Value, out WorldLocation? location))
+            {
+                _logger.Error($"{nameof(TractorBeamEmitterSystem)}::{nameof(Process)}<{nameof(DeactivateTractorBeamEmitter)}> - Invalid TractorBeamEmitter Target Id, {tractorBeamEmitter.TargetId.Value}");
+                return;
+            }
+
+            _logger.Debug($"{nameof(TractorBeamEmitterSystem)}::{nameof(Process)}<{nameof(DeactivateTractorBeamEmitter)}> - Deactivating {tractorBeamEmitterId}, TargetId: {tractorBeamEmitter.TargetId}");
+
             Entity clone = message.Simulation.CreateShipPart(
                 key: message.NewKey(), 
                 shipPart: _shipParts.Get(tractorBeamEmitter.TargetId.Value).Clone(), 

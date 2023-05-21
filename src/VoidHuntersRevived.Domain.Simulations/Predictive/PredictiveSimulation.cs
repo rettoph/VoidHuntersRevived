@@ -92,7 +92,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         {
             foreach(SimulationEventData input in message.Body.Events)
             {
-                this.Enqueue(input);
+                // this.Enqueue(input);
             }
         }
 
@@ -100,7 +100,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         {
             foreach (SimulationEventData input in message.Body.Tick.Events)
             {
-                this.Enqueue(input);
+                // this.Enqueue(input);
             }
         }
 

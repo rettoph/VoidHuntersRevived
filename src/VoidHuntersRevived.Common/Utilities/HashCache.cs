@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,14 +25,14 @@ namespace VoidHuntersRevived.Common.Utilities
 
         private readonly TimeSpan _maximumAge;
         private readonly Queue<Cached> _cached;
-        private readonly HashSet<T> _hashed;
+        private readonly Dictionary<T, int> _count;
         private Cached _item;
 
         public HashCache(TimeSpan maximumAge)
         {
             _maximumAge = maximumAge;
             _cached = new Queue<Cached>();
-            _hashed = new HashSet<T>();
+            _count = new Dictionary<T, int>();
         }
 
         public IEnumerable<T> Prune()
@@ -39,32 +40,38 @@ namespace VoidHuntersRevived.Common.Utilities
             while(_cached.Count > 0 && DateTime.Now - _cached.Peek().CachedAt > _maximumAge)
             {
                 _item = _cached.Dequeue();
-                if(this.Remove(_item.Value))
+                if(_count.Remove(_item.Value))
                 {
                     yield return _item.Value;
                 }
             }
         }
 
-        public bool Add(in T item)
+        public int Add(in T item)
         {
-            if(_hashed.Add(item))
+            return ++this.Count(in item);
+        }
+
+        public int Remove(in T item)
+        {
+            return --this.Count(in item);
+        }
+
+        public bool Any(in T item)
+        {
+            return this.Count(in item) != 0;
+        }
+
+        public ref int Count(in T item)
+        {
+            ref int count = ref CollectionsMarshal.GetValueRefOrAddDefault(_count, item, out bool exists);
+            if (!exists)
             {
                 _cached.Enqueue(new Cached(in item));
-                return true;
+                count = 0;
             }
 
-            return false;
-        }
-
-        public bool Remove(in T item)
-        {
-            return _hashed.Remove(item);
-        }
-
-        public bool Contains(in T item)
-        {
-            return _hashed.Contains(item);
+            return ref count;
         }
     }
 }
