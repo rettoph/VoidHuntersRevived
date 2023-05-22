@@ -6,8 +6,11 @@ using Guppy.Loaders;
 using Guppy.Network;
 using LiteNetLib;
 using Microsoft.Extensions.DependencyInjection;
+using VoidHuntersRevived.Common.Constants;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
+using VoidHuntersRevived.Common.Simulations.Lockstep.Factories;
+using VoidHuntersRevived.Common.Simulations.Lockstep.Providers;
 using VoidHuntersRevived.Common.Simulations.Providers;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Domain.Entities.Systems;
@@ -15,7 +18,6 @@ using VoidHuntersRevived.Domain.Simulations.Factories;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Lockstep.Messages;
 using VoidHuntersRevived.Domain.Simulations.Lockstep.Providers;
-using VoidHuntersRevived.Domain.Simulations.Lockstep.Services;
 using VoidHuntersRevived.Domain.Simulations.Predictive;
 using VoidHuntersRevived.Domain.Simulations.Providers;
 using VoidHuntersRevived.Domain.Simulations.Services;
@@ -62,36 +64,26 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
 
         private void ConfigureLockstep(IServiceCollection services, IServiceCollectionManager manager)
         {
-            manager.AddScoped<LockstepClientSimulation>()
+            manager.AddScoped<LockstepSimulation>()
                 .AddInterfaceAliases();
 
-            manager.AddScoped<LockstepServerSimulation>()
+            manager.AddScoped<StateClient>()
                 .AddInterfaceAliases();
 
-            manager.AddScoped<State>();
+            manager.AddScoped<StateServer>()
+                .AddInterfaceAliases();
 
             manager.AddScoped<ClientTickFactory>()
                 .AddAlias<ITickFactory>();
 
-            manager.AddScoped<DefaultTickFactory>()
+            manager.AddScoped<ServerTickFactory>()
                 .AddAlias<ITickFactory>();
 
             manager.AddScoped<ClientTickProvider>()
-                .AddAlias<ITickProvider>()
-                .AddAlias<ISubscriber>();
-
-            manager.AddScoped<DefaultTickProvider>()
                 .AddAlias<ITickProvider>();
 
-            services.AddScoped<ITickService, TickService>();
-
-            manager.AddScoped<ClientStepProvider>()
-                .AddAlias<IStepProvider>();
-
-            manager.AddScoped<DefaultStepProvider>()
-                .AddAlias<IStepProvider>();
-
-            services.AddScoped<IStepService, StepService>();
+            manager.AddScoped<ServerTickProvider>()
+                .AddAlias<ITickProvider>();
 
             manager.AddScoped<LockstepServer_TickSystem>()
                 .AddInterfaceAliases();

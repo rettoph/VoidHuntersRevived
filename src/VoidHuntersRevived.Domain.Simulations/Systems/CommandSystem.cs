@@ -14,9 +14,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
     internal sealed class CommandSystem : BasicSystem,
         ISubscriber<Ticks>
     {
-        private readonly State _state;
+        private readonly IState _state;
 
-        public CommandSystem(State state)
+        public CommandSystem(IState state)
         {
             _state = state;
         }

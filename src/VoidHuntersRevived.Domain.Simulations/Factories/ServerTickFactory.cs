@@ -8,15 +8,16 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
+using VoidHuntersRevived.Common.Simulations.Lockstep.Factories;
 
 namespace VoidHuntersRevived.Domain.Simulations.Factories
 {
-    [PeerTypeFilter(PeerType.Server | PeerType.None)]
-    internal sealed class DefaultTickFactory : ITickFactory
+    [PeerTypeFilter(PeerType.Server)]
+    internal sealed class ServerTickFactory : ITickFactory
     {
         private IList<SimulationEventData> _inputs;
 
-        public DefaultTickFactory()
+        public ServerTickFactory()
         {
             _inputs = new List<SimulationEventData>();
         }

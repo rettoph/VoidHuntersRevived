@@ -182,5 +182,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
 
             _tail = _tail?.GetTail();
         }
+
+        public void Clear()
+        {
+            this._head = null;
+            this._tail = null;
+
+            this.Latest = null;
+        }
     }
 }

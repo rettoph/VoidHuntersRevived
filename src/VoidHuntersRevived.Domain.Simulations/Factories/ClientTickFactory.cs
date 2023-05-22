@@ -2,6 +2,7 @@
 using Guppy.Network.Enums;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
+using VoidHuntersRevived.Common.Simulations.Lockstep.Factories;
 
 namespace VoidHuntersRevived.Domain.Simulations.Factories
 {

@@ -1,32 +1,69 @@
-﻿using Guppy.Common;
-using Guppy.Network.Attributes;
-using Guppy.Network.Enums;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
-using VoidHuntersRevived.Domain.Simulations.Factories;
+using VoidHuntersRevived.Common.Simulations.Lockstep.Providers;
+using VoidHuntersRevived.Domain.Simulations.Utilities;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep.Providers
 {
-    [PeerTypeFilter(PeerType.Server | PeerType.None)]
-    internal sealed class DefaultTickProvider : ITickProvider
+    internal class DefaultTickProvider : ITickProvider
     {
-        private readonly State _state;
-        private readonly ITickFactory _factory;
+        private readonly TickBuffer _buffer;
+        protected int nextId;
 
-        public int AvailableId => _state.NextTickId;
-
-
-        public DefaultTickProvider(State state, IFiltered<ITickFactory> factory)
+        public DefaultTickProvider()
         {
-            _state = state;
-            _factory = factory.Instance;
+            _buffer = new TickBuffer();
         }
 
-        public bool TryGetNextTick([MaybeNullWhen(false)] out Tick next)
+        public void Enqueue(Tick tick)
         {
-            next = _factory.Create(_state.NextTickId);
+            _buffer.Enqueue(tick);
+        }
 
+        public virtual bool TryDequeueNext([MaybeNullWhen(false)] out Tick tick)
+        {
+            if (_buffer.TryPop(this.nextId, out tick))
+            {
+                this.nextId++;
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool PeekHead([MaybeNullWhen(false)] out Tick tick)
+        {
+            if (_buffer.Head is null)
+            {
+                tick = null;
+                return false;
+            }
+
+            tick = _buffer.Head;
             return true;
+        }
+
+        public bool PeekTail([MaybeNullWhen(false)] out Tick tick)
+        {
+            if (_buffer.Tail is null)
+            {
+                tick = null;
+                return false;
+            }
+
+            tick = _buffer.Tail;
+            return true;
+        }
+
+        public void Reset()
+        {
+            this.nextId = 0;
+            _buffer.Clear();
         }
     }
 }

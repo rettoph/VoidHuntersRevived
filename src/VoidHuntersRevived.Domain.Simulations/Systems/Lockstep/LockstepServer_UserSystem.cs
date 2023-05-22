@@ -20,11 +20,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
     internal sealed class LockstepServer_UserSystem : BasicSystem,
         ISubscriber<ISimulationEvent<UserJoined>>
     {
-        private readonly State _state;
+        private readonly IState _state;
         private readonly NetScope _scope;
         private readonly ISimulationService _simulations;
 
-        public LockstepServer_UserSystem(State state, NetScope scope, ISimulationService simulations)
+        public LockstepServer_UserSystem(IState state, NetScope scope, ISimulationService simulations)
         {
             _state = state;
             _scope = scope;
@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
                 return;
             }
 
-            var lastTickId = _state.LastTickId;
+            var lastTickId = _state.Tick?.Id ?? 0;
 
             _scope.Messages.Create(new StateBegin())
                 .AddRecipient(user.NetPeer)

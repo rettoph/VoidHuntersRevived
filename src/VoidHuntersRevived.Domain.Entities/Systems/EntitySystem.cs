@@ -75,7 +75,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             message.Respond(entity);
 
-            _logger.Debug($"{nameof(EntitySystem)}::{nameof(Process)}<{nameof(DestroyEntity)}> - Created Entity {entity.Id}, ({message.Simulation.Type}, {parallelable.Key.Value})");
+            _logger.Debug($"{nameof(EntitySystem)}::{nameof(Process)}<{nameof(CreateEntity)}> - Created Entity {entity.Id}, ({message.Simulation.Type}, {parallelable.Key.Value})");
         }
 
         public void Process(in ISimulationEventRevision<CreateEntity> message)
@@ -95,7 +95,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             _entities.Destroy(entity.Id);
 
-            _logger.Debug($"{nameof(EntitySystem)}::{nameof(Process)}<{nameof(DestroyEntity)}> - Reverted Entity creation {entity.Id}, ({message.Simulation.Type}, {parallelable.Key.Value})");
+            _logger.Debug($"{nameof(EntitySystem)}::{nameof(Process)}<{nameof(CreateEntity)}> - Reverted Entity creation {entity.Id}, ({message.Simulation.Type}, {parallelable.Key.Value})");
         }
 
         public void Process(in ISimulationEvent<DestroyEntity> message)

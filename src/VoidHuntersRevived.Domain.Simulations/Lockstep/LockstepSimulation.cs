@@ -11,38 +11,33 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
-using VoidHuntersRevived.Domain.Simulations.Lockstep.Providers;
-using VoidHuntersRevived.Domain.Simulations.Lockstep.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
     [GuppyFilter<IGameGuppy>()]
     [SimulationTypeFilter(SimulationType.Lockstep)]
-    internal abstract class LockstepSimulation : Simulation<Common.Simulations.Components.Lockstep>, ISimulation,
+    internal class LockstepSimulation : Simulation<Common.Simulations.Components.Lockstep>, ISimulation,
         ILockstepSimulation,
         ISubscriber<Step>,
         ISubscriber<Tick>,
         IDisposable
     {
-        private readonly IStepService _steps;
         private readonly ISimulationEventPublishingService _events;
         private readonly IBus _bus;
 
-        public State State { get; }
+        public IState State { get; }
 
         public LockstepSimulation(
-            State state,
+            IFiltered<IState> state,
             IBus bus,
             ISimulationEventPublishingService events,
-            IStepService steps, 
             IParallelableService parallelables,
             IGlobalSimulationService globalSimulationService) : base(SimulationType.Lockstep, parallelables, globalSimulationService)
         {
-            _steps = steps;
             _events = events;
             _bus = bus;
 
-            this.State = state;
+            this.State = state.Instance;
         }
 
         public override void Initialize(IServiceProvider provider)
@@ -52,8 +47,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         protected override void Update(GameTime gameTime)
         {
-            _steps.Update(gameTime);
+            this.State.Update(gameTime);
         }
+
+        public override void Enqueue(SimulationEventData input)
+        {
+            this.State.Enqueue(input);
+        }
+
 
         public override ISimulationEvent Publish(SimulationEventData data)
         {

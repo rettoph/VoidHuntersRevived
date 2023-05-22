@@ -18,14 +18,15 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
     [GuppyFilter<IGameGuppy>()]
     [SimulationTypeFilter(SimulationType.Lockstep)]
     internal sealed class Lockstep_StateSystem : BasicSystem,
+        ISubscriber<INetIncomingMessage<Tick>>,
         ISubscriber<INetIncomingMessage<StateBegin>>,
         ISubscriber<INetIncomingMessage<StateTick>>,
         ISubscriber<INetIncomingMessage<StateEnd>>
 
     {
-        private readonly State _state;
+        private readonly IState _state;
 
-        public Lockstep_StateSystem(State state)
+        public Lockstep_StateSystem(IState state)
         {
             _state = state;
         }
@@ -43,6 +44,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
         public void Process(in INetIncomingMessage<StateEnd> message)
         {
             _state.EndRead(message.Body.LastTickId);
+        }
+
+        public void Process(in INetIncomingMessage<Tick> message)
+        {
+            _state.Enqueue(message.Body);
         }
     }
 }

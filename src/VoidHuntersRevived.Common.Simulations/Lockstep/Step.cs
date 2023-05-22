@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
             this.TotalGameTime = previous.TotalGameTime + this.ElapsedGameTime;
         }
 
-        internal Step Next()
+        public Step Next()
         {
             return new Step(this);
         }
