@@ -106,6 +106,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         public void Process(in ISimulationEvent<DestroyEntity> message)
         {
+            _destroyedEntities.Add(message.Body.Key);
             Parallelable parallelable = _parallelables.Get(message.Body.Key);
 
             if (!parallelable.TryGetId(message.Simulation.Type, out int id))
@@ -114,7 +115,6 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             }
 
             parallelable.RemoveId(message.Simulation);
-            _destroyedEntities.Add(message.Body.Key);
             _logger.Debug($"{nameof(EntitySystem)}::{nameof(Process)}<{nameof(DestroyEntity)}> - Destroying Entity {id}, ({message.Simulation.Type}, {parallelable.Key.Value})");
 
             if (message.Body.Backup)

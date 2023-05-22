@@ -21,7 +21,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
         public static readonly AspectBuilder BodyAspect = Aspect.All(new[]
         {
             typeof(ISimulation),
-            typeof(Body)
+            typeof(Body),
+            typeof(Parallelable)
         });
 
         private ComponentMapper<ISimulation> _simulations = null!;
@@ -50,6 +51,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
             Aether world = _simulations.Get(entityId).Aether;
             Body body = _bodies.Get(entityId);
+            Parallelable parallelable = _parallelables.Get(entityId);
 
             if(body.World != world)
             {
@@ -57,7 +59,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
                 world.Add(body);
             }
 
-            body.Tag = entityId;
+            body.Tag = parallelable.Key;
         }
 
         protected override void OnEntityRemoved(int entityId)

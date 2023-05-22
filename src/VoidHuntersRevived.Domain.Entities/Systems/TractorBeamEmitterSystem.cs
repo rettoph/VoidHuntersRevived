@@ -62,7 +62,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            if(tractorBeamEmitter.TargetId is null)
+            if(tractorBeamEmitter.TargetKey is null)
             {
                 return;
             }
@@ -72,7 +72,12 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            if(!_worldLocations.TryGet(tractorBeamEmitter.TargetId.Value, out WorldLocation? location))
+            if(!simulation.TryGetEntityId(tractorBeamEmitter.TargetKey.Value, out int targetId))
+            {
+                return;
+            }
+
+            if(!_worldLocations.TryGet(targetId, out WorldLocation? location))
             {
                 // _logger.Error($"{nameof(TractorBeamEmitterSystem)}::{nameof(Process)} - Invalid TractorBeamEmitter Id '{tractorBeamEmitter.TargetId.Value}'");
                 return;
@@ -93,7 +98,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            if(tractorBeamEmitter.TargetId is not null)
+            if(tractorBeamEmitter.TargetKey is not null)
             {
                 return;
             }
@@ -103,8 +108,13 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            if (!this.Query(message.Simulation, tractorBeamEmitter, tactical.Value, out int targetId))
+            if (!this.Query(message.Simulation, tractorBeamEmitter, tactical.Value, out ParallelKey targetKey))
             { // No valid potential targets found...
+                return;
+            }
+
+            if(!message.Simulation.TryGetEntityId(targetKey, out int targetId))
+            {
                 return;
             }
 
@@ -112,8 +122,9 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             // Create a clone of the target piece
             WorldLocation location = _worldLocations.Get(targetId);
+            ParallelKey cloneKey = message.NewKey();
             int clone = message.Simulation.CreateShipPart(
-                key: message.NewKey(), 
+                key: cloneKey, 
                 shipPart: _shipParts.Get(targetId).Clone(), 
                 tractorable: false,
                 position: location.Position,
@@ -127,12 +138,11 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 Body = new SetTractorBeamEmitterTarget()
                 {
                     TractorBeamEmitterKey = message.Body.TractorBeamEmitterKey,
-                    TargetKey = _parallelables.Get(clone).Key
+                    TargetKey = cloneKey
                 }
             });
 
             // Destroy the old piece
-            ParallelKey targetKey = _parallelables.Get(targetId).Key;
             message.Simulation.DestroyEntity(targetKey);
         }
 
@@ -145,7 +155,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             if(!message.Simulation.TryGetEntityId(message.Body.TargetKey, out int targetId))
             {
-
+                return;
             }
 
             if (!_tractorBeamEmitters.TryGet(tractorBeamEmitterId, out TractorBeamEmitter? tractorBeamEmitter))
@@ -153,7 +163,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            tractorBeamEmitter.TargetId = targetId;
+            tractorBeamEmitter.TargetKey = message.Body.TargetKey;
         }
 
         public void Process(in ISimulationEventRevision<SetTractorBeamEmitterTarget> message)
@@ -168,7 +178,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            tractorBeamEmitter.TargetId = null;
+            tractorBeamEmitter.TargetKey = null;
         }
 
         public void Process(in ISimulationEvent<DeactivateTractorBeamEmitter> message)
@@ -183,48 +193,58 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            if(tractorBeamEmitter.TargetId == null)
+            if(tractorBeamEmitter.TargetKey == null)
             {
                 return;
             }
 
-            if(!_worldLocations.TryGet(tractorBeamEmitter.TargetId.Value, out WorldLocation? location))
+            if(!message.Simulation.TryGetEntityId(tractorBeamEmitter.TargetKey.Value, out int targetId))
             {
-                _logger.Error($"{nameof(TractorBeamEmitterSystem)}::{nameof(Process)}<{nameof(DeactivateTractorBeamEmitter)}> - Invalid TractorBeamEmitter Target Id, {tractorBeamEmitter.TargetId.Value}");
                 return;
             }
 
-            _logger.Debug($"{nameof(TractorBeamEmitterSystem)}::{nameof(Process)}<{nameof(DeactivateTractorBeamEmitter)}> - Deactivating {tractorBeamEmitterId}, TargetId: {tractorBeamEmitter.TargetId}");
+            if(!_worldLocations.TryGet(targetId, out WorldLocation? location))
+            {
+                _logger.Error($"{nameof(TractorBeamEmitterSystem)}::{nameof(Process)}<{nameof(DeactivateTractorBeamEmitter)}> - Invalid TractorBeamEmitter Target Id, {tractorBeamEmitter.TargetKey.Value}");
+                return;
+            }
+
+            _logger.Debug($"{nameof(TractorBeamEmitterSystem)}::{nameof(Process)}<{nameof(DeactivateTractorBeamEmitter)}> - Deactivating {tractorBeamEmitterId}, TargetId: {tractorBeamEmitter.TargetKey}");
 
             int clone = message.Simulation.CreateShipPart(
                 key: message.NewKey(), 
-                shipPart: _shipParts.Get(tractorBeamEmitter.TargetId.Value).Clone(), 
+                shipPart: _shipParts.Get(targetId).Clone(), 
                 tractorable: true,
                 position: location.Position,
                 rotation: location.Rotation);
 
             // Destroy the old target
-            ParallelKey targetKey = _parallelables.Get(tractorBeamEmitter.TargetId.Value).Key;
+            ParallelKey targetKey = _parallelables.Get(targetId).Key;
             message.Simulation.DestroyEntity(targetKey);
 
             // Remove the reference
-            tractorBeamEmitter.TargetId = null;
+            tractorBeamEmitter.TargetKey = null;
         }
 
         private bool Query(
             ISimulation simulation,
             TractorBeamEmitter emitter,
             Vector2 target,
-            out int targetId)
+            out ParallelKey targetKey)
         {
             const float Radius = 5f;
             AABB aabb = new AABB(target, Radius, Radius);
             float minDistance = Radius;
-            int? callbackTargetId = default!;
+            ParallelKey? callbackTargetKey = default!;
 
             simulation.Aether.QueryAABB(fixture =>
             {
-                if (fixture.Body.Tag is not int entityId)
+                if (fixture.Body.Tag is not ParallelKey entityKey)
+                { // Invalid target - not an entity
+                    return true;
+                }
+
+                if(!simulation.TryGetEntityId(entityKey, out int entityId))
                 { // Invalid target - not an entity
                     return true;
                 }
@@ -246,18 +266,18 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 }
 
                 minDistance = distance;
-                callbackTargetId = entityId;
+                callbackTargetKey = entityKey;
 
                 return true;
             }, ref aabb);
 
-            if (callbackTargetId is null)
+            if (callbackTargetKey is null)
             {
-                targetId = default;
+                targetKey = default;
                 return false;
             }
 
-            targetId = callbackTargetId.Value;
+            targetKey = callbackTargetKey.Value;
             return true;
         }
     }

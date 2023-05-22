@@ -11,6 +11,7 @@ using tainicom.Aether.Physics2D.Dynamics;
 using tainicom.Aether.Physics2D.Collision.Shapes;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Systems;
+using VoidHuntersRevived.Common.Simulations.Components;
 
 namespace VoidHuntersRevived.Domain.Entities.ShipParts.Systems
 {
@@ -19,13 +20,15 @@ namespace VoidHuntersRevived.Domain.Entities.ShipParts.Systems
         private static readonly AspectBuilder RigidAspect = Aspect.All(new[]
         {
             typeof(Rigid),
-            typeof(ShipPart)
+            typeof(ShipPart),
+            typeof(Parallelable)
         });
 
         private ComponentMapper<Rigid> _rigids = null!;
         private ComponentMapper<Body> _bodies = null!;
         private ComponentMapper<ShipPart> _shipParts = null!;
         private ComponentMapper<Fixture[]> _fixtures = null!;
+        private ComponentMapper<Parallelable> _parallelables = null!;
 
         public RigidSystem() : base(RigidAspect)
         {
@@ -37,6 +40,7 @@ namespace VoidHuntersRevived.Domain.Entities.ShipParts.Systems
             _shipParts = mapperService.GetMapper<ShipPart>();
             _bodies = mapperService.GetMapper<Body>();
             _fixtures = mapperService.GetMapper<Fixture[]>();
+            _parallelables = mapperService.GetMapper<Parallelable>();
         }
 
         protected override void OnEntityAdded(int entityId)
@@ -50,6 +54,7 @@ namespace VoidHuntersRevived.Domain.Entities.ShipParts.Systems
 
             ShipPart shipPart = _shipParts.Get(entityId);
             Rigid rigid = _rigids.Get(entityId);
+            Parallelable parallelable = _parallelables.Get(entityId);
             if (!_bodies.TryGet(entityId, out Body? body))
             {
                 return;
@@ -61,7 +66,7 @@ namespace VoidHuntersRevived.Domain.Entities.ShipParts.Systems
             for (var i = 0; i < rigid.Shapes.Length; i++)
             {
                 fixtures[i] = new Fixture(rigid.Shapes[i].Clone(ref transformation));
-                fixtures[i].Tag = entityId;
+                fixtures[i].Tag = parallelable.Key;
 
                 body.Add(fixtures[i]);
             }
