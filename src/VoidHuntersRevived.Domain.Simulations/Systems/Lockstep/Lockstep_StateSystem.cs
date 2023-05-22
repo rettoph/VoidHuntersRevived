@@ -26,9 +26,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
     {
         private readonly IState _state;
 
-        public Lockstep_StateSystem(IState state)
+        public Lockstep_StateSystem(IFiltered<IState> state)
         {
-            _state = state;
+            _state = state.Instance;
         }
 
         public void Process(in INetIncomingMessage<StateBegin> message)

@@ -24,9 +24,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
         private readonly NetScope _scope;
         private readonly ISimulationService _simulations;
 
-        public LockstepServer_UserSystem(IState state, NetScope scope, ISimulationService simulations)
+        public LockstepServer_UserSystem(IFiltered<IState> state, NetScope scope, ISimulationService simulations)
         {
-            _state = state;
+            _state = state.Instance;
             _scope = scope;
             _simulations = simulations;
         }
