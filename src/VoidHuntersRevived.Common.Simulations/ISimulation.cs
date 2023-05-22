@@ -32,9 +32,9 @@ namespace VoidHuntersRevived.Common.Simulations
 
         void Update(GameTime gameTime);
 
-        Entity CreateEntity(ParallelKey key, EntityType type);
+        int CreateEntity(ParallelKey key, EntityType type);
 
-        Entity CreateEntity(ParallelKey key, EntityType type, Action<Entity> factory);
+        int CreateEntity(ParallelKey key, EntityType type, Action<Entity> factory);
 
         void DestroyEntity(ParallelKey key);
 

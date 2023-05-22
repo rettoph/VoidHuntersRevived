@@ -73,29 +73,35 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             entity.Attach(parallelable);
             message.Simulation.ConfigureEntity(entity);
 
-            message.Respond(entity);
+            message.Respond(entityKey);
 
             _logger.Debug($"{nameof(EntitySystem)}::{nameof(Process)}<{nameof(CreateEntity)}> - Created Entity {entity.Id}, ({message.Simulation.Type}, {parallelable.Key.Value})");
         }
 
         public void Process(in ISimulationEventRevision<CreateEntity> message)
         {
-            if (message.Response is not Entity entity)
+            if (message.Response is not ParallelKey entityKey)
             {
                 return;
             }
 
-            if(!_parallelables.TryGet(entity.Id, out Parallelable? parallelable))
+            _destroyedEntities.Add(entityKey);
+
+            if (!message.Simulation.TryGetEntityId(entityKey, out int entityId))
+            {
+                return;
+            }
+
+            if(!_parallelables.TryGet(entityId, out Parallelable? parallelable))
             {
                 return;
             }
 
             parallelable.RemoveId(message.Simulation);
-            _destroyedEntities.Add(parallelable.Key);
 
-            _entities.Destroy(entity.Id);
+            _entities.Destroy(entityId);
 
-            _logger.Debug($"{nameof(EntitySystem)}::{nameof(Process)}<{nameof(CreateEntity)}> - Reverted Entity creation {entity.Id}, ({message.Simulation.Type}, {parallelable.Key.Value})");
+            _logger.Debug($"{nameof(EntitySystem)}::{nameof(Process)}<{nameof(CreateEntity)}> - Reverted Entity creation {entityId}, ({message.Simulation.Type}, {parallelable.Key.Value})");
         }
 
         public void Process(in ISimulationEvent<DestroyEntity> message)

@@ -41,10 +41,11 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         {
             Tactical tactical = _tacticals.Get(entityId);
 
+            float amount = MathF.Min((float)gameTime.ElapsedGameTime.TotalSeconds / AimDamping, 1f);
             tactical.Value = Vector2.Lerp(
                 value1: tactical.Value,
                 value2: tactical.Target,
-                amount: (float)gameTime.ElapsedGameTime.TotalSeconds / AimDamping);
+                amount: amount);
         }
 
         public void Process(in ISimulationEvent<SetTacticalTarget> message)

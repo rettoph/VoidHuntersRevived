@@ -42,6 +42,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive.Services
             }
 
             ISimulationEvent @event = _events.Publish(simulation, data);
+            _logger.Debug($"{nameof(SimulationEventPredictionService)}::{nameof(Predict)} - Predicting '{@event.Body.GetType().Name}', '{@event.Key.Value}'");
+
             return this.Add(@event);
         }
 
@@ -58,6 +60,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive.Services
             }
 
             prediction.Status = PredictionStatus.Verified;
+
+            _logger.Debug($"{nameof(SimulationEventPredictionService)}::{nameof(Verify)} - Verified '{prediction.Event.Body.GetType().Name}', '{prediction.Key.Value}'");
         }
 
         public void Prune()

@@ -112,7 +112,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             // Create a clone of the target piece
             WorldLocation location = _worldLocations.Get(targetId);
-            Entity clone = message.Simulation.CreateShipPart(
+            int clone = message.Simulation.CreateShipPart(
                 key: message.NewKey(), 
                 shipPart: _shipParts.Get(targetId).Clone(), 
                 tractorable: false,
@@ -196,7 +196,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             _logger.Debug($"{nameof(TractorBeamEmitterSystem)}::{nameof(Process)}<{nameof(DeactivateTractorBeamEmitter)}> - Deactivating {tractorBeamEmitterId}, TargetId: {tractorBeamEmitter.TargetId}");
 
-            Entity clone = message.Simulation.CreateShipPart(
+            int clone = message.Simulation.CreateShipPart(
                 key: message.NewKey(), 
                 shipPart: _shipParts.Get(tractorBeamEmitter.TargetId.Value).Clone(), 
                 tractorable: true,

@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Common.Entities.Extensions
 {
     public static class ISimulationExtensions
     {
-        public static Entity CreateShip(this ISimulation simulation, ParallelKey key, ShipPart bridge)
+        public static int CreateShip(this ISimulation simulation, ParallelKey key, ShipPart bridge)
         {
             return simulation.CreateEntity(key, EntityTypes.Ship, entity =>
             {
@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Common.Entities.Extensions
             });
         }
 
-        public static Entity CreateShipPart(
+        public static int CreateShipPart(
             this ISimulation simulation, 
             ParallelKey key, 
             ShipPart shipPart, 

@@ -68,5 +68,24 @@ namespace VoidHuntersRevived.Domain.Entities.ShipParts.Systems
 
             _fixtures.Put(entityId, fixtures);
         }
+
+        protected override void OnEntityRemoved(int entityId)
+        {
+            base.OnEntityRemoved(entityId);
+
+            if (!this.subscription.IsInterested(entityId))
+            {
+                return;
+            }
+
+            Fixture[] fixtures = _fixtures.Get(entityId);
+            Body body = _bodies.Get(entityId);
+
+            foreach(Fixture fixture in fixtures)
+            {
+                body.Remove(fixture);
+                fixture.Tag = null;
+            }
+        }
     }
 }

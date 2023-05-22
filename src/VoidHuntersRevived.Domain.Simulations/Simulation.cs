@@ -123,7 +123,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.Update(gameTime);
         }
 
-        public virtual Entity CreateEntity(ParallelKey key, EntityType type)
+        public virtual int CreateEntity(ParallelKey key, EntityType type)
         {
             ISimulationEvent @event = this.Publish(new SimulationEventData()
             {
@@ -132,10 +132,11 @@ namespace VoidHuntersRevived.Domain.Simulations
                 Body = new CreateEntityEvent(type, key, null)
             });
 
-            return (Entity)@event.Response!;
+            ParallelKey entityKey = (ParallelKey)@event.Response!;
+            return this.GetEntityId(entityKey);
         }
 
-        public virtual Entity CreateEntity(ParallelKey key, EntityType type, Action<Entity> factory)
+        public virtual int CreateEntity(ParallelKey key, EntityType type, Action<Entity> factory)
         {
             ISimulationEvent @event = this.Publish(new SimulationEventData()
             {
@@ -144,7 +145,8 @@ namespace VoidHuntersRevived.Domain.Simulations
                 Body = new CreateEntityEvent(type, key, factory)
             });
 
-            return (Entity)@event.Response!;
+            ParallelKey entityKey = (ParallelKey)@event.Response!;
+            return this.GetEntityId(entityKey);
         }
 
         public void DestroyEntity(ParallelKey key)

@@ -22,6 +22,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
     {
         private readonly NetScope _scope;
         private readonly ILogger _logger;
+        private ComponentMapper<User> _users = null!;
 
         public UserSystem(
             NetScope scope, 
@@ -34,6 +35,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         public override void Initialize(World world)
         {
             base.Initialize(world);
+
+            _users = world.ComponentManager.GetMapper<User>();
         }
 
         public void Process(in ISimulationEvent<UserJoined> message)
@@ -56,10 +59,10 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                     Drawable.Polygon(Colors.Orange, 4)
                 });
 
-            Entity ship = message.Simulation.CreateShip(message.NewKey(), square);
-            ship.Attach(user);
+            int ship = message.Simulation.CreateShip(message.NewKey(), square);
+            _users.Put(ship, user);
 
-            Entity shipPart = message.Simulation.CreateShipPart(message.NewKey(), square, true, Vector2.Zero, 0);
+            int shipPart = message.Simulation.CreateShipPart(message.NewKey(), square, true, Vector2.Zero, 0);
 
             return;
         }
