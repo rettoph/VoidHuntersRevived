@@ -3,8 +3,8 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
-    internal sealed class SimulationEvent<TSimulationEventData> : Message<ISimulationEvent<TSimulationEventData>>, ISimulationEvent<TSimulationEventData>
-        where TSimulationEventData : class
+    internal sealed class SimulationEvent<TBody> : Message<ISimulationEvent<TBody>>, ISimulationEvent<TBody>
+        where TBody : class
     {
         public required ParallelKey Key { get; init; }
 
@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public required ISimulation Simulation { get; init; }
 
-        public required TSimulationEventData Body { get; init; }
+        public required TBody Body { get; init; }
 
         public object? Response { get; private set; }
 

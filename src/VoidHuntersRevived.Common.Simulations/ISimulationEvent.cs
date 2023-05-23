@@ -21,8 +21,8 @@ namespace VoidHuntersRevived.Common.Simulations
         void Respond(object? response);
     }
 
-    public interface ISimulationEvent<TSimulationEventData> : ISimulationEvent
+    public interface ISimulationEvent<TBody> : ISimulationEvent
     {
-        new TSimulationEventData Body { get; }
+        new TBody Body { get; }
     }
 }
