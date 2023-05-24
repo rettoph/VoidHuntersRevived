@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Client
 
         public override void Initialize(IServiceProvider provider)
         {
-            this.Simulations.Initialize(SimulationType.Lockstep | SimulationType.Predictive);
+            this.Simulations.Configure(SimulationType.Lockstep | SimulationType.Predictive);
 
             base.Initialize(provider);
         }

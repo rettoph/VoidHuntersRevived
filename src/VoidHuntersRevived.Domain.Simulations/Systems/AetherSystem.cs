@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
         private ComponentMapper<Body> _bodies = null!;
         private ComponentMapper<Parallelable> _parallelables = null!;
 
-        public AetherSystem(ISimulationService simulations) : base(simulations, BodyAspect)
+        public AetherSystem() : base(BodyAspect)
         {
         }
 

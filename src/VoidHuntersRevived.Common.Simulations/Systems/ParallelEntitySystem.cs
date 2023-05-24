@@ -17,18 +17,15 @@ namespace VoidHuntersRevived.Common.Simulations.Systems
 
         private readonly IDictionary<SimulationType, EntitySubscription> _subscriptions;
 
-        protected readonly ISimulationService simulations;
         protected EntitySubscription subscription => _subscription;
 
         public readonly IReadOnlyDictionary<SimulationType, EntitySubscription> Entities;
 
-        public ParallelEntitySystem(ISimulationService simulations, AspectBuilder aspectBuilder)
+        public ParallelEntitySystem(AspectBuilder aspectBuilder)
         {
             _world = default!;
             _subscriptions = new Dictionary<SimulationType, EntitySubscription>();
             _aspectBuilder = aspectBuilder;
-
-            this.simulations = simulations;
 
             this.Entities = new ReadOnlyDictionary<SimulationType, EntitySubscription>(_subscriptions);
         }
@@ -38,28 +35,18 @@ namespace VoidHuntersRevived.Common.Simulations.Systems
             _world = world;
             _subscription = new EntitySubscription(_world, _aspectBuilder.Build(_world));
 
-            if(_subscriptions.Any())
-            {
-
-            }
-
-            foreach (ISimulation simulation in this.simulations.Instances)
-            {
-                var aspect = _aspectBuilder.Clone().All(simulation.EntityComponentType).Build(_world);
-                var subscription = new EntitySubscription(_world, aspect);
-                _subscriptions.Add(simulation.Type, subscription);
-            }
+            this.Initialize(world.ComponentManager);
 
             _world.EntityManager.EntityAdded += OnEntityAdded;
             _world.EntityManager.EntityRemoved += OnEntityRemoved;
             _world.EntityManager.EntityChanged += OnEntityChanged;
-
-            this.Initialize(world.ComponentManager);
         }
 
         public virtual void Initialize(ISimulation simulation)
         {
-            // 
+            Aspect aspect = _aspectBuilder.Clone().All(simulation.EntityComponentType).Build(_world);
+            EntitySubscription subscription = new EntitySubscription(_world, aspect);
+            _subscriptions.Add(simulation.Type, subscription);
         }
 
         public abstract void Initialize(IComponentMapperService mapperService);

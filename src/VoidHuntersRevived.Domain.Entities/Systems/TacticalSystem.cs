@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         private ComponentMapper<Tactical> _tacticals = null!;
 
-        public TacticalSystem(ISimulationService simulations) : base(simulations, TacticalAspect)
+        public TacticalSystem() : base(TacticalAspect)
         {
         }
 

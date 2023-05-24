@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Common.Attributes;
 using Guppy.Common.Collections;
 using Guppy.ECS;
 using Guppy.ECS.Services;
@@ -23,6 +24,7 @@ using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {
+    [Sortable<ISimulationSystem>(int.MinValue)]
     internal sealed class EntitySystem : BasicSystem, IUpdateSystem, ISimulationSystem,
         ISubscriber<ISimulationEvent<CreateEntity>>,
         ISubscriber<ISimulationEventRevision<CreateEntity>>,

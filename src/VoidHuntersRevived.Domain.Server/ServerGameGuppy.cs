@@ -29,7 +29,8 @@ namespace VoidHuntersRevived.Domain.Server
 
             this.Server.Start(1337);
 
-            this.Simulations.Initialize(SimulationType.Lockstep);
+
+            this.Simulations.Configure(SimulationType.Lockstep);
 
             base.Initialize(provider);
         }

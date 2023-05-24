@@ -73,9 +73,9 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             this.Provider = provider;
 
-            _updateSystems = this.Provider.GetRequiredService<IFiltered<ISimulationUpdateSystem>>().Instances.ToArray();
+            _updateSystems = this.Provider.GetRequiredService<ISorted<ISimulationUpdateSystem>>().ToArray();
 
-            foreach(ISimulationSystem system in this.Provider.GetRequiredService<IFiltered<ISimulationSystem>>().Instances)
+            foreach(ISimulationSystem system in this.Provider.GetRequiredService<ISorted<ISimulationSystem>>())
             {
                 system.Initialize(this);
             }

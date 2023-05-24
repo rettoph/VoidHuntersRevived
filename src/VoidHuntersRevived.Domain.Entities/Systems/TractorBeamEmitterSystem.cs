@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         private ComponentMapper<WorldLocation> _worldLocations = null!;
         private ComponentMapper<Parallelable> _parallelables = null!;
 
-        public TractorBeamEmitterSystem(ILogger logger, ISimulationService simulations) : base(simulations, TractorBeamEmitterAspect)
+        public TractorBeamEmitterSystem(ILogger logger) : base(TractorBeamEmitterAspect)
         {
             _logger = logger;
         }

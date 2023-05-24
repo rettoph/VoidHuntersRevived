@@ -38,25 +38,32 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             this.Flags = 0;
         }
 
-        public void Initialize(SimulationType simulationTypeFlags)
+        public void Configure(SimulationType simulationTypeFlags)
         {
             if (_initialized)
             {
                 throw new InvalidOperationException();
             }
 
-
             this.Flags = simulationTypeFlags;
 
-            var simulations = _provider.GetRequiredService<IFiltered<ISimulation>>().Instances;
-            foreach (var simulation in simulations)
+            IEnumerable<ISimulation> simulations = _provider.GetRequiredService<IFiltered<ISimulation>>().Instances;
+            foreach (ISimulation simulation in simulations)
             {
                 _simulations.Add(simulation.Type, simulation);
                 _list.Add(simulation);
                 _types.Add(simulation.Type);
             }
+        }
 
-            foreach(var simulation in simulations)
+        public void Initialize()
+        {
+            if (_initialized)
+            {
+                throw new InvalidOperationException();
+            }
+
+            foreach (ISimulation simulation in _simulations.Values)
             {
                 simulation.Initialize(_provider);
             }

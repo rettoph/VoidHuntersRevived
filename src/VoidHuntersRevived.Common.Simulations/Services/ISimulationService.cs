@@ -16,7 +16,9 @@ namespace VoidHuntersRevived.Common.Simulations.Services
 
         ISimulation this[SimulationType type] { get; }
 
-        void Initialize(SimulationType simulationTypeFlags);
+        void Configure(SimulationType simulationTypeFlags);
+
+        void Initialize();
 
         ISimulation First(params SimulationType[] types);
 

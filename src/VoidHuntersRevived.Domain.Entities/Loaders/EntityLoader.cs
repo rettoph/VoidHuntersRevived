@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities;
 using tainicom.Aether.Physics2D.Dynamics;
+using Volatile;
 
 namespace VoidHuntersRevived.Domain.Entities.Loaders
 {
@@ -19,6 +20,11 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
     {
         public void Configure(IEntityService entities)
         {
+            entities.Configure(EntityTypes.VoltWorld, configuration =>
+            {
+                configuration.AttachComponent(e => new VoltWorld());
+            });
+
             entities.Configure(EntityTypes.Ship, configuration =>
             {
                 configuration.Inherit(EntityTypes.ShipPart)

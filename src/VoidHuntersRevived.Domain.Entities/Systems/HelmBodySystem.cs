@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         private ComponentMapper<Helm> _helms = null!;
         private ComponentMapper<Body> _body = null!;
 
-        public HelmBodySystem(ISimulationService simulations) : base(simulations, HelmBodyAspect)
+        public HelmBodySystem() : base(HelmBodyAspect)
         {
         }
 
