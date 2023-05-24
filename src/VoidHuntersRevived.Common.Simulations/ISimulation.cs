@@ -11,7 +11,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations.Providers;
-using Volatile;
 
 namespace VoidHuntersRevived.Common.Simulations
 {

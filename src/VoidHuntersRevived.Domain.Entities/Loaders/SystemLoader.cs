@@ -22,9 +22,6 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
         {
             services.ConfigureCollection(manager =>
             {
-                manager.AddScoped<VoltWorldSystem>()
-                    .AddInterfaceAliases();
-
                 manager.AddScoped<Systems.EntitySystem>()
                     .AddInterfaceAliases();
 

@@ -13,7 +13,6 @@
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Common\Guppy.Common.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.MonoGame\Guppy.MonoGame.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
-    <ProjectReference Include="..\..\libraries\VolatilePhysics-FixedMath\VolatilePhysics\VolatilePhysics.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common\VoidHuntersRevived.Common.csproj" />
   </ItemGroup>
 
