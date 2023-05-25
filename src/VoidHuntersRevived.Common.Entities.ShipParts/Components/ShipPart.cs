@@ -1,12 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using MonoGame.Extended.Entities;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using tainicom.Aether.Physics2D.Common;
+﻿using MonoGame.Extended.Entities;
 
 namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 {

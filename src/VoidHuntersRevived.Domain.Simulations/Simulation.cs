@@ -17,9 +17,11 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using tainicom.Aether.Physics2D.Common;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Events;
+using VoidHuntersRevived.Common.Physics;
+using VoidHuntersRevived.Common.Physics.Factories;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
@@ -42,12 +44,12 @@ namespace VoidHuntersRevived.Domain.Simulations
         private readonly IGlobalSimulationService _globalsSmulationService;
 
         public readonly SimulationType Type;
-        public readonly Aether Aether;
+        public readonly ISpace Space;
         public readonly Type EntityComponentType;
         public IServiceProvider Provider;
 
         SimulationType ISimulation.Type => this.Type;
-        Aether ISimulation.Aether => this.Aether;
+        ISpace ISimulation.Space => this.Space;
         Type ISimulation.EntityComponentType => this.EntityComponentType;
         IServiceProvider ISimulation.Provider => this.Provider;
 
@@ -56,6 +58,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         protected Simulation(
             SimulationType type,
             IParallelableService parallelables,
+            ISpaceFactory spaceFactory,
             IGlobalSimulationService globalSimulationService)
         {
             _parallelables = parallelables;
@@ -64,7 +67,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             _globalsSmulationService = globalSimulationService;
 
             this.Type = type;
-            this.Aether = new Aether(AetherVector2.Zero);
+            this.Space = spaceFactory.Create();
             this.EntityComponentType = typeof(TEntityComponent);
             this.Provider = default!;
             this.Keys = new ParallelKeyProvider();

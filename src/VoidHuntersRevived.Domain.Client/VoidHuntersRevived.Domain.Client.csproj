@@ -41,7 +41,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\Aether.Physics2D\Physics2D.Diagnostics\Diagnostics\Aether.Physics2D.Diagnostics.NETSTANDARD2_0.MG.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.GUI\Guppy.GUI.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Input\Guppy.Input.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
@@ -56,9 +55,6 @@
     </Using>
     <Using Include="System.Numerics">
       <Alias>Num</Alias>
-    </Using>
-    <Using Include="tainicom.Aether.Physics2D.Dynamics.World">
-      <Alias>Aether</Alias>
     </Using>
   </ItemGroup>
 

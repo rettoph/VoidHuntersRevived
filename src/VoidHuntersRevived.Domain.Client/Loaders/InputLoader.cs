@@ -16,6 +16,7 @@ using Guppy.Input.Enums;
 using VoidHuntersRevived.Common.Simulations;
 using Guppy.MonoGame.Messages;
 using VoidHuntersRevived.Common.Simulations.Components;
+using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Client.Loaders
 {

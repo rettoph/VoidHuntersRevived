@@ -7,12 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using tainicom.Aether.Physics2D.Dynamics;
-using tainicom.Aether.Physics2D.Collision.Shapes;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Systems;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Physics;
 
 namespace VoidHuntersRevived.Domain.Entities.ShipParts.Systems
 {
@@ -26,9 +25,9 @@ namespace VoidHuntersRevived.Domain.Entities.ShipParts.Systems
         });
 
         private ComponentMapper<Rigid> _rigids = null!;
-        private ComponentMapper<Body> _bodies = null!;
         private ComponentMapper<ShipPart> _shipParts = null!;
-        private ComponentMapper<Fixture[]> _fixtures = null!;
+        private ComponentMapper<IBody> _bodies = null!;
+        private ComponentMapper<IFixture[]> _fixtures = null!;
         private ComponentMapper<Parallelable> _parallelables = null!;
 
         public RigidSystem() : base(RigidAspect)
@@ -39,8 +38,8 @@ namespace VoidHuntersRevived.Domain.Entities.ShipParts.Systems
         {
             _rigids = mapperService.GetMapper<Rigid>();
             _shipParts = mapperService.GetMapper<ShipPart>();
-            _bodies = mapperService.GetMapper<Body>();
-            _fixtures = mapperService.GetMapper<Fixture[]>();
+            _bodies = mapperService.GetMapper<IBody>();
+            _fixtures = mapperService.GetMapper<IFixture[]>();
             _parallelables = mapperService.GetMapper<Parallelable>();
         }
 
@@ -56,20 +55,17 @@ namespace VoidHuntersRevived.Domain.Entities.ShipParts.Systems
             ShipPart shipPart = _shipParts.Get(entityId);
             Rigid rigid = _rigids.Get(entityId);
             Parallelable parallelable = _parallelables.Get(entityId);
-            if (!_bodies.TryGet(entityId, out Body? body))
+            if (!_bodies.TryGet(entityId, out IBody? body))
             {
                 return;
             }
 
             FixMatrix transformation = FixMatrix.Identity;
-            Fixture[] fixtures = new Fixture[rigid.Shapes.Length];
+            IFixture[] fixtures = new IFixture[rigid.Polygons.Length];
 
-            for (var i = 0; i < rigid.Shapes.Length; i++)
+            for (var i = 0; i < rigid.Polygons.Length; i++)
             {
-                fixtures[i] = new Fixture(rigid.Shapes[i].Clone(ref transformation));
-                fixtures[i].Tag = parallelable.Key;
-
-                body.Add(fixtures[i]);
+                fixtures[i] = body.Create(rigid.Polygons[i], parallelable.Key);
             }
 
             _fixtures.Put(entityId, fixtures);
@@ -84,13 +80,12 @@ namespace VoidHuntersRevived.Domain.Entities.ShipParts.Systems
                 return;
             }
 
-            Fixture[] fixtures = _fixtures.Get(entityId);
-            Body body = _bodies.Get(entityId);
+            IFixture[] fixtures = _fixtures.Get(entityId);
+            IBody body = _bodies.Get(entityId);
 
-            foreach(Fixture fixture in fixtures)
+            foreach(IFixture fixture in fixtures)
             {
-                body.Remove(fixture);
-                fixture.Tag = null;
+                body.Destroy(fixture);
             }
         }
     }

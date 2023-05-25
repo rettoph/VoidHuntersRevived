@@ -2,19 +2,12 @@
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using tainicom.Aether.Physics2D.Collision;
-using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Common.Simulations.Services;
@@ -40,8 +33,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         private ComponentMapper<Tactical> _tacticals = null!;
         private ComponentMapper<Tractorable> _tractorables = null!;
         private ComponentMapper<ShipPart> _shipParts = null!;
-        private ComponentMapper<WorldLocation> _worldLocations = null!;
         private ComponentMapper<Parallelable> _parallelables = null!;
+        private ComponentMapper<IBody> _bodies = null!;
 
         public TractorBeamEmitterSystem(ILogger logger) : base(TractorBeamEmitterAspect)
         {
@@ -54,8 +47,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             _tacticals = mapperService.GetMapper<Tactical>();
             _tractorables = mapperService.GetMapper<Tractorable>();
             _shipParts = mapperService.GetMapper<ShipPart>();
-            _worldLocations = mapperService.GetMapper<WorldLocation>();
             _parallelables = mapperService.GetMapper<Parallelable>();
+            _bodies = mapperService.GetMapper<IBody>();
         }
 
         protected override void Process(ISimulation simulation, GameTime gameTime, int entityId)
@@ -80,13 +73,13 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            if(!_worldLocations.TryGet(targetId, out WorldLocation? location))
+            if(!_bodies.TryGet(targetId, out IBody? body))
             {
                 // _logger.Error($"{nameof(TractorBeamEmitterSystem)}::{nameof(Process)} - Invalid TractorBeamEmitter Id '{tractorBeamEmitter.TargetId.Value}'");
                 return;
             }
 
-            location.SetTransform(tactical.Value, Fix64.Zero);
+            body.SetTransform(tactical.Value, Fix64.Zero);
         }
 
         public void Process(in ISimulationEvent<ActivateTractorBeamEmitter> message)
@@ -124,14 +117,14 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             _logger.Debug($"{nameof(TractorBeamEmitterSystem)}::{nameof(Process)}<{nameof(ActivateTractorBeamEmitter)}> - Activating {tractorBeamEmitterId}, TargetId: {targetId}");
 
             // Create a clone of the target piece
-            WorldLocation location = _worldLocations.Get(targetId);
+            IBody body = _bodies.Get(targetId);
             ParallelKey cloneKey = message.NewKey();
             int clone = message.Simulation.CreateShipPart(
                 key: cloneKey, 
                 shipPart: _shipParts.Get(targetId).Clone(), 
                 tractorable: false,
-                position: location.Position,
-                rotation: location.Rotation);
+                position: body.Position,
+                rotation: body.Rotation);
 
             // Select the brand new clone
             message.Simulation.Publish(new SimulationEventData()
@@ -206,7 +199,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            if(!_worldLocations.TryGet(targetId, out WorldLocation? location))
+            if(!_bodies.TryGet(targetId, out IBody? body))
             {
                 _logger.Error($"{nameof(TractorBeamEmitterSystem)}::{nameof(Process)}<{nameof(DeactivateTractorBeamEmitter)}> - Invalid TractorBeamEmitter Target Id, {tractorBeamEmitter.TargetKey.Value}");
                 return;
@@ -218,8 +211,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 key: message.NewKey(), 
                 shipPart: _shipParts.Get(targetId).Clone(), 
                 tractorable: true,
-                position: location.Position,
-                rotation: location.Rotation);
+                position: body.Position,
+                rotation: body.Rotation);
 
             // Destroy the old target
             ParallelKey targetKey = _parallelables.Get(targetId).Key;
@@ -237,18 +230,13 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             out ParallelKey targetKey)
         {
             
-            AABB aabb = (AABB)new FixAABB(target, Radius, Radius);
+            AABB aabb = (AABB)new AABB(target, Radius, Radius);
             Fix64 minDistance = Radius;
             ParallelKey? callbackTargetKey = default!;
 
-            simulation.Aether.QueryAABB(fixture =>
+            simulation.Space.QueryAABB(fixture =>
             {
-                if (fixture.Body.Tag is not ParallelKey entityKey)
-                { // Invalid target - not an entity
-                    return true;
-                }
-
-                if(!simulation.TryGetEntityId(entityKey, out int entityId))
+                if(!simulation.TryGetEntityId(fixture.Body.EntityKey, out int entityId))
                 { // Invalid target - not an entity
                     return true;
                 }
@@ -258,12 +246,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                     return true;
                 }
 
-                if(!_worldLocations.TryGet(entityId, out WorldLocation? location))
-                { // Invalid target - not in the world?
-                    return true;
-                }
-
-                FixVector2 position = location.Position;
+                FixVector2 position = fixture.Body.Position;
                 FixVector2.Distance(ref target, ref position, out Fix64 distance);
                 if (distance >= minDistance)
                 { // Invalid Target - The distance is further away than the previously closest valid target
@@ -271,7 +254,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 }
 
                 minDistance = distance;
-                callbackTargetKey = entityKey;
+                callbackTargetKey = fixture.Body.EntityKey;
 
                 return true;
             }, ref aabb);

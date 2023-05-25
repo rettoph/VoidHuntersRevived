@@ -7,6 +7,7 @@ using LiteNetLib;
 using Microsoft.Xna.Framework;
 using Serilog;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Physics.Factories;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
@@ -32,7 +33,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             IBus bus,
             ISimulationEventPublishingService events,
             IParallelableService parallelables,
-            IGlobalSimulationService globalSimulationService) : base(SimulationType.Lockstep, parallelables, globalSimulationService)
+            ISpaceFactory spaceFactory,
+            IGlobalSimulationService globalSimulationService) : base(SimulationType.Lockstep, parallelables, spaceFactory, globalSimulationService)
         {
             _events = events;
             _bus = bus;

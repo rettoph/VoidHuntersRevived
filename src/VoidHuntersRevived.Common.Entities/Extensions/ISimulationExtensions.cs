@@ -1,15 +1,6 @@
-﻿using FixedMath.NET;
-using Microsoft.Xna.Framework;
-using MonoGame.Extended.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using tainicom.Aether.Physics2D.Common;
-using tainicom.Aether.Physics2D.Dynamics;
-using VoidHuntersRevived.Common.Entities.Components;
+﻿using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
+using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Common.Entities.Extensions
@@ -20,11 +11,10 @@ namespace VoidHuntersRevived.Common.Entities.Extensions
         {
             return simulation.CreateEntity(key, EntityTypes.Ship, entity =>
             {
-                Body body = simulation.Aether.CreateBody(AetherVector2.Zero, Fix64.Zero, BodyType.Dynamic);
-                WorldLocation worldLocation = new AetherBodyWorldLocation(body);
+                IBody body = entity.Get<ISimulation>().Space.Create(key);
+                body.SetTransform(FixVector2.Zero, Fix64.Zero);
 
                 entity.Attach(body);
-                entity.Attach(worldLocation);
                 bridge.Clone().AttachTo(entity);
             });
         }
@@ -39,12 +29,10 @@ namespace VoidHuntersRevived.Common.Entities.Extensions
         {
             return simulation.CreateEntity(key, EntityTypes.ShipPart, entity =>
             {
-                Body body = simulation.Aether.CreateBody(AetherVector2.Zero, Fix64.Zero, BodyType.Dynamic);
-                WorldLocation worldLocation = new AetherBodyWorldLocation(body);
-                worldLocation.SetTransform(position, rotation);
+                IBody body = entity.Get<ISimulation>().Space.Create(key);
+                body.SetTransform(position, rotation);
 
                 entity.Attach(body);
-                entity.Attach(worldLocation);
                 shipPart.Clone().AttachTo(entity);
 
                 if(tractorable)

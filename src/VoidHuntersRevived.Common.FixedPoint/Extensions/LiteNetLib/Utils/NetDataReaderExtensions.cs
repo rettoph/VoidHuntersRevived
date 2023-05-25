@@ -1,12 +1,4 @@
-﻿using LiteNetLib.Utils;
-using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using tainicom.Aether.Physics2D.Common;
-using VoidHuntersRevived.Common;
+﻿using VoidHuntersRevived.Common;
 
 namespace LiteNetLib.Utils
 {
@@ -25,7 +17,7 @@ namespace LiteNetLib.Utils
             };
         }
 
-        public static void GetFixVector2(this NetDataReader reader, out AetherVector2 value)
+        public static void GetFixVector2(this NetDataReader reader, out FixVector2 value)
         {
             value.X = reader.GetFix64();
             value.Y = reader.GetFix64();

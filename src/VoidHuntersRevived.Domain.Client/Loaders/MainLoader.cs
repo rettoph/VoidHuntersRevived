@@ -35,10 +35,6 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
                 services.AddService<LockstepStateDebugger>()
                     .SetLifetime(ServiceLifetime.Scoped)
                     .AddInterfaceAliases();
-
-                services.AddService<AetherDebugger>()
-                    .SetLifetime(ServiceLifetime.Scoped)
-                    .AddInterfaceAliases();
             });
         }
     }

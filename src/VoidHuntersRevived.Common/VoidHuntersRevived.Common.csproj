@@ -4,10 +4,10 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\Aether.Physics2D\Physics2D\Aether.Physics2D.NETSTANDARD2_0.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\libraries\LiteNetLib\LiteNetLib\LiteNetLib.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\libraries\MonoGame.Extended\src\cs\MonoGame.Extended.Entities\MonoGame.Extended.Entities.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Common\Guppy.Common.csproj" />
@@ -16,6 +16,10 @@
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Resources\Guppy.Resources.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Standart.Hash.xxHash" Version="4.0.5" PrivateAssets="compile" />
+  </ItemGroup>
+  
   <ItemGroup>
     <Using Include="MonoGame.Extended.Entities.World">
       <Alias>World</Alias>

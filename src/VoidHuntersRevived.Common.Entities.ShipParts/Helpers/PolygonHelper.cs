@@ -1,11 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using tainicom.Aether.Physics2D.Common;
 
 namespace VoidHuntersRevived.Common.Entities.ShipParts.Helpers
 {
@@ -19,9 +13,6 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Helpers
 
             [FieldOffset(32)]
             public readonly FixVector2 FixedVertex;
-
-            [FieldOffset(32)]
-            public readonly AetherVector2 AetherVertex;
 
             [FieldOffset(160)]
             public readonly Fix64 Angle;

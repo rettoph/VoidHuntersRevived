@@ -40,9 +40,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
 
             services.ConfigureCollection(manager =>
             {
-                manager.AddScoped<AetherSystem>()
-                    .AddInterfaceAliases();
-
                 manager.AddScoped<CommandSystem>()
                     .AddInterfaceAliases();
 

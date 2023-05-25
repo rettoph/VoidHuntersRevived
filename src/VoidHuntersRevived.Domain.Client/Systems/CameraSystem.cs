@@ -7,11 +7,11 @@ using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using Serilog;
 using Serilog.Core;
-using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Extensions;
+using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Domain.Client.Messages.Commands;
@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private readonly Camera2D _camera;
         private readonly NetScope _scope;
         private readonly ISimulationService _simulations;
-        private ComponentMapper<Body> _bodies;
+        private ComponentMapper<IBody> _bodies;
         private ILogger _logger;
 
         public CameraSystem(ILogger logger, NetScope scope, Camera2D camera, ISimulationService simulations)
@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         {
             base.Initialize(world);
 
-            _bodies = world.ComponentManager.GetMapper<Body>();
+            _bodies = world.ComponentManager.GetMapper<IBody>();
         }
 
         public override void Draw(GameTime gameTime)

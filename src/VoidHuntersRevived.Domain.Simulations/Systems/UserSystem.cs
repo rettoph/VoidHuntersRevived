@@ -13,7 +13,6 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using Guppy.Common;
-using tainicom.Aether.Physics2D.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {

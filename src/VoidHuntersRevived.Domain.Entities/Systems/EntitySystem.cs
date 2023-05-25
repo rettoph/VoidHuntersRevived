@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Events;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Components;
@@ -62,18 +63,17 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             if (message.Body.Factory is null)
             {
-                entity = _entities.Create(message.Body.Type);
+                entity = _entities.Create(message.Body.Type, message.Simulation.ConfigureEntity);
             }
             else
             {
-                entity = _entities.Create(message.Body.Type, message.Body.Factory);
+                entity = _entities.Create(message.Body.Type, message.Simulation.ConfigureEntity, message.Body.Factory);
             }
 
             Parallelable parallelable = _parallelables.Get(entityKey);
             parallelable.AddId(message.Simulation, entity.Id);
 
             entity.Attach(parallelable);
-            message.Simulation.ConfigureEntity(entity);
 
             message.Respond(entityKey);
 

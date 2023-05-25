@@ -16,6 +16,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
+using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Domain.Client.Options;
 
@@ -29,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             typeof(TSimulationComponent),
             typeof(ShipPart),
             typeof(Drawable),
-            typeof(WorldLocation)
+            typeof(IBody)
         });
 
         private readonly IResourceProvider _resources;
@@ -40,7 +41,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private bool _visible;
         private Color? _tint;
         private ComponentMapper<ShipPart> _shipPart = null!;
-        private ComponentMapper<WorldLocation> _worldLocations = null!;
+        private ComponentMapper<IBody> _bodies = null!;
         private ComponentMapper<Drawable> _drawable = null!;
 
         public DrawableShipPartSystem(
@@ -62,7 +63,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         public override void Initialize(IComponentMapperService mapperService)
         {
             _shipPart = mapperService.GetMapper<ShipPart>();
-            _worldLocations = mapperService.GetMapper<WorldLocation>();
+            _bodies = mapperService.GetMapper<IBody>();
             _drawable = mapperService.GetMapper<Drawable>();
         }
 
@@ -76,7 +77,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             _primitiveBatch.Begin(_camera);
             foreach(int entityId in this.ActiveEntities)
             {
-                WorldLocation worldLocation = _worldLocations.Get(entityId);
+                IBody body = _bodies.Get(entityId);
                 Drawable drawable = _drawable.Get(entityId);
             
                 ref Renderer? renderer = ref CollectionsMarshal.GetValueRefOrAddDefault(_renderers, drawable, out bool exists);
@@ -86,18 +87,18 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                     renderer = new Renderer(_camera, _primitiveBatch, _resources, drawable, _tint);
                 }
             
-                renderer!.RenderShapes(worldLocation.Transformation);
+                renderer!.RenderShapes(body.Transformation);
             }
             _primitiveBatch.End();
 
             _primitiveBatch.Begin(_screen.Camera);
             foreach (int entityId in this.ActiveEntities)
             {
-                WorldLocation worldLocation = _worldLocations.Get(entityId);
+                IBody body = _bodies.Get(entityId);
                 Drawable drawable = _drawable.Get(entityId);
                 Renderer renderer = _renderers[drawable];
 
-                renderer!.RenderPaths(worldLocation.Transformation.XnaMatrix);
+                renderer!.RenderPaths(body.Transformation.XnaMatrix);
             }
             _primitiveBatch.End();
         }

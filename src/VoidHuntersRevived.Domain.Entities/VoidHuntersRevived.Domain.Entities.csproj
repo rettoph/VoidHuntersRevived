@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FixedMath.NET" Version="1.0.1" PrivateAssets="buildTransitive" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Common\Guppy.Common.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\libraries\MonoGame.Extended\src\cs\MonoGame.Extended.Entities\MonoGame.Extended.Entities.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Entities.ShipParts\VoidHuntersRevived.Common.Entities.ShipParts.csproj" />
@@ -28,9 +24,6 @@
   <ItemGroup>
     <Using Include="MonoGame.Extended.Entities.World">
       <Alias>World</Alias>
-    </Using>
-    <Using Include="tainicom.Aether.Physics2D.Dynamics.World">
-      <Alias>Aether</Alias>
     </Using>
   </ItemGroup>
 

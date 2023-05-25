@@ -1,11 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using tainicom.Aether.Physics2D.Common;
 
 namespace VoidHuntersRevived.Common
 {
@@ -189,16 +182,6 @@ namespace VoidHuntersRevived.Common
         public static explicit operator FixVector2(Vector2 vector2)
         {
             return new FixVector2((Fix64)vector2.X, (Fix64)vector2.Y);
-        }
-
-        public static explicit operator AetherVector2(FixVector2 fixedVector2)
-        {
-            return Unsafe.As<FixVector2, AetherVector2>(ref fixedVector2);
-        }
-
-        public static explicit operator FixVector2(AetherVector2 aetherVector2)
-        {
-            return Unsafe.As<AetherVector2, FixVector2>(ref aetherVector2);
         }
     }
 }

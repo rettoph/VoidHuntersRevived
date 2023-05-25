@@ -10,6 +10,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations.Providers;
 
 namespace VoidHuntersRevived.Common.Simulations
@@ -17,7 +18,7 @@ namespace VoidHuntersRevived.Common.Simulations
     public interface ISimulation
     {
         SimulationType Type { get; }
-        Aether Aether { get; }
+        ISpace Space { get; }
         Type EntityComponentType { get; }
         IServiceProvider Provider { get; }
         IParallelKeyProvider Keys { get; }

@@ -1,13 +1,6 @@
 ﻿using Guppy.Common;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using tainicom.Aether.Physics2D.Common;
-using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;
@@ -43,7 +36,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         {
             Tactical tactical = _tacticals.Get(entityId);
 
-            Fix64 amount = MathUtils.Min((Fix64)gameTime.ElapsedGameTime.TotalSeconds / AimDamping, Fix64.One);
+            Fix64 amount = Fix64.Min((Fix64)gameTime.ElapsedGameTime.TotalSeconds / AimDamping, Fix64.One);
             tactical.Value = FixVector2.Lerp(
                 v1: tactical.Value,
                 v2: tactical.Target,

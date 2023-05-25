@@ -4,27 +4,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using tainicom.Aether.Physics2D.Collision.Shapes;
-using tainicom.Aether.Physics2D.Common.ConvexHull;
-using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Common.Entities.ShipParts.Helpers;
+using VoidHuntersRevived.Common.Physics;
 
 namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 {
     public class Rigid : ShipPartComponent<Rigid>
     {
-        public readonly Shape[] Shapes;
+        public readonly Polygon[] Polygons;
 
-        public Rigid(params Shape[] shapes)
+        public Rigid(params Polygon[] polygons)
         {
-            this.Shapes = shapes;
+            this.Polygons = polygons;
         }
 
         public static Rigid Polygon(Fix64 density, int sides)
         {
-            var vertices = new Vertices(PolygonHelper.CalculateVertexAngles(sides).Select(x => (AetherVector2)x.FixedVertex));
-            vertices = GiftWrap.GetConvexHull(vertices);
-            var shape = new PolygonShape(vertices, density);
+            Vertices vertices = new Vertices(PolygonHelper.CalculateVertexAngles(sides).Select(x => x.FixedVertex));
+            Polygon shape = new Polygon(vertices, density);
 
             return new Rigid(shape);
         }

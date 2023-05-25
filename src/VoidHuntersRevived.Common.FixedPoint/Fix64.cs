@@ -385,6 +385,26 @@ namespace VoidHuntersRevived.Common
             m_rawValue = rawValue;
         }
 
+        public static Fix64 Min(Fix64 value1, Fix64 value2)
+        {
+            if (value2 < value1)
+            {
+                return value2;
+            }
+
+            return value1;
+        }
+
+        public static Fix64 Max(Fix64 value1, Fix64 value2)
+        {
+            if (value2 > value1)
+            {
+                return value2;
+            }
+
+            return value1;
+        }
+
         public static implicit operator Fix64(FixedMath64 fixedMath64)
         {
             return Unsafe.As<FixedMath64, Fix64>(ref fixedMath64);

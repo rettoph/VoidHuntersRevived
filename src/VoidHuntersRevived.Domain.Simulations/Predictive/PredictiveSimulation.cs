@@ -9,6 +9,7 @@ using Serilog;
 using Serilog.Core;
 using System.Runtime.InteropServices;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Physics.Factories;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
@@ -35,9 +36,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
         public PredictiveSimulation(
             ILogger logger,
-            IParallelableService simulatedEntities, 
+            IParallelableService parallelables,
+            ISpaceFactory spaceFactory,
             IGlobalSimulationService globalSimulationService,
-            ISimulationEventPublishingService events) : base(SimulationType.Predictive, simulatedEntities, globalSimulationService)
+            ISimulationEventPublishingService events) : base(SimulationType.Predictive, parallelables, spaceFactory, globalSimulationService)
         {
             _logger = logger;
             _events = events;

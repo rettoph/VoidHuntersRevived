@@ -1,10 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using tainicom.Aether.Physics2D.Common;
+using VoidHuntersRevived.Common;
 
 namespace LiteNetLib.Utils
 {
@@ -20,6 +15,18 @@ namespace LiteNetLib.Utils
         {
             writer.Put(value.X);
             writer.Put(value.Y);
+        }
+
+        public static unsafe void Put(this NetDataWriter writer, in ParallelKey key)
+        {
+            var test = Guid.NewGuid();
+            ulong* longs = (ulong*)&test;
+            writer.Put(key.Value);
+        }
+
+        public static unsafe void Put(this NetDataWriter writer, ParallelKey key)
+        {
+            writer.Put(key.Value);
         }
     }
 }
