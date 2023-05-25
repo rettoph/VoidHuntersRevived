@@ -1,5 +1,4 @@
-﻿using FixedMath.NET;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +7,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Collision.Shapes;
 using tainicom.Aether.Physics2D.Common;
+using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Serialization.Json.Converters
 {

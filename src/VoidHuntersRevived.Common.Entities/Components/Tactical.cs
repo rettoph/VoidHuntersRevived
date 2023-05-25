@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Common.Entities.Components
 {
     public class Tactical
     {
-        public AetherVector2 Value;
-        public AetherVector2 Target;
+        public FixVector2 Value;
+        public FixVector2 Target;
     }
 }

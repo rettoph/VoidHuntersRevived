@@ -1,27 +1,35 @@
-﻿using FixedMath.NET;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Common;
-using FloatingVector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace VoidHuntersRevived.Common.Entities.ShipParts.Helpers
 {
     public static class PolygonHelper
     {
+        [StructLayout(LayoutKind.Explicit)]
         public readonly struct VertexAngle
         {
-            public readonly FloatingVector2 Floating;
-            public readonly AetherVector2 Fixed;
+            [FieldOffset(0)]
+            public readonly Vector2 XnaVertex;
+
+            [FieldOffset(32)]
+            public readonly FixVector2 FixedVertex;
+
+            [FieldOffset(32)]
+            public readonly AetherVector2 AetherVertex;
+
+            [FieldOffset(160)]
             public readonly Fix64 Angle;
 
-            public VertexAngle(AetherVector2 vertex, Fix64 angle)
+            public VertexAngle(FixVector2 vertex, Fix64 angle)
             {
-                this.Floating = vertex.ToXnaVector2();
-                this.Fixed = vertex;
+                this.XnaVertex = (Vector2)vertex;
+                this.FixedVertex = vertex;
                 this.Angle = angle;
             }
         }
@@ -30,14 +38,14 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Helpers
         {
             Fix64 interval = Fix64.PiTimes2 / (Fix64)sides;
             Fix64 angle = Fix64.Zero;
-            AetherVector2 position = AetherVector2.Zero;
+            FixVector2 position = FixVector2.Zero;
 
             yield return new VertexAngle(position, angle);
 
             for(int i=1; i<sides; i++)
             {
                 angle += interval;
-                position += new AetherVector2()
+                position += new FixVector2()
                 {
                     X = Fix64.Cos(angle),
                     Y = Fix64.Sin(angle)

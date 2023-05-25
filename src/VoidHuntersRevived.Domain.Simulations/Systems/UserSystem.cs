@@ -13,7 +13,6 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using Guppy.Common;
-using FixedMath.NET;
 using tainicom.Aether.Physics2D.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Systems
@@ -54,7 +53,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             ShipPart square = new ShipPart(
                 joints: new[] { 
-                    new Location(AetherVector2.Zero, Fix64.Zero) 
+                    new FixLocation(FixVector2.Zero, Fix64.Zero) 
                 }, 
                 components: new ShipPartComponent[] {
                     Rigid.Polygon(Fix64.One, 4),
@@ -64,7 +63,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             int ship = message.Simulation.CreateShip(message.NewKey(), square);
             _users.Put(ship, user);
 
-            int shipPart = message.Simulation.CreateShipPart(message.NewKey(), square, true, AetherVector2.Zero, Fix64.Zero);
+            int shipPart = message.Simulation.CreateShipPart(message.NewKey(), square, true, FixVector2.Zero, Fix64.Zero);
 
             return;
         }

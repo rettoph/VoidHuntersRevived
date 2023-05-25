@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -10,6 +10,10 @@
     <Compile Remove="Components\**" />
     <EmbeddedResource Remove="Components\**" />
     <None Remove="Components\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FixedMath.NET" Version="1.0.1" PrivateAssets="buildTransitive" />
   </ItemGroup>
 
   <ItemGroup>

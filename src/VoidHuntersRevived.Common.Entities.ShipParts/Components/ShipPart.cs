@@ -1,5 +1,4 @@
-﻿using FixedMath.NET;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using System;
 using System.Collections.Generic;
@@ -16,20 +15,20 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
         public int? EntityId;
         public readonly Joint? Parent;
         public readonly ShipPart Head;
-        public readonly Location Location;
+        public readonly FixLocation Location;
 
         public readonly Joint[] Joints;
 
         public readonly ShipPartComponent[] Components;
 
-        public ShipPart(IEnumerable<Location> joints, params ShipPartComponent[] components) : this(null, joints, components)
+        public ShipPart(IEnumerable<FixLocation> joints, params ShipPartComponent[] components) : this(null, joints, components)
         {
         }
-        private ShipPart(Joint? parent, IEnumerable<Location> joints, params ShipPartComponent[] components)
+        private ShipPart(Joint? parent, IEnumerable<FixLocation> joints, params ShipPartComponent[] components)
         {
             this.Parent = parent;
             this.Head = this.Parent?.Owner.Head ?? this;
-            this.Location = new Location(AetherVector2.Zero, Fix64.Zero);
+            this.Location = new FixLocation(FixVector2.Zero, Fix64.Zero);
             this.Components = components;
 
             this.Joints = joints.Select((x, idx) => new Joint(this, idx, x)).ToArray();

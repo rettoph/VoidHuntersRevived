@@ -10,7 +10,7 @@ namespace tainicom.Aether.Physics2D.Collision.Shapes
 {
     public static class ShapeExtensions
     {
-        public static Shape Clone(this Shape shape, ref FixedMatrix transformation)
+        public static Shape Clone(this Shape shape, ref FixMatrix transformation)
         {
             return shape.ShapeType switch
             {

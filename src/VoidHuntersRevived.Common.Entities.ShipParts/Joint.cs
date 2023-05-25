@@ -8,11 +8,11 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts
     {
         public readonly ShipPart Owner;
         public readonly int Index;
-        public readonly Location Location;
+        public readonly FixLocation Location;
 
         public ShipPart? Child { get; private set; }
 
-        public Joint(ShipPart owner, int index, Location location)
+        public Joint(ShipPart owner, int index, FixLocation location)
         {
             this.Owner = owner;
             this.Index = index;

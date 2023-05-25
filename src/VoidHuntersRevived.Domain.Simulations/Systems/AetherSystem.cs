@@ -1,5 +1,4 @@
-﻿using FixedMath.NET;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using System;
@@ -15,6 +14,7 @@ using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Common.Systems;
+using FixedMath64 = FixedMath.NET.Fix64;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
@@ -100,11 +100,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
                 }
 
                 predictiveBody.SetTransformIgnoreContacts(
-                    position: AetherVector2.Lerp(predictiveBody.Position, lockstepBody.Position, damping),
-                    angle: MathUtils.Lerp(predictiveBody.Rotation, lockstepBody.Rotation, damping));
+                    position: FixVector2.Lerp((FixVector2)predictiveBody.Position, (FixVector2)lockstepBody.Position, damping),
+                    angle: Fix64.Lerp(predictiveBody.Rotation, lockstepBody.Rotation, damping));
 
-                predictiveBody.LinearVelocity = AetherVector2.Lerp(predictiveBody.LinearVelocity, lockstepBody.LinearVelocity, damping);
-                predictiveBody.AngularVelocity = MathUtils.Lerp(predictiveBody.AngularVelocity, lockstepBody.AngularVelocity, damping);
+                predictiveBody.LinearVelocity = (AetherVector2)FixVector2.Lerp((FixVector2)predictiveBody.LinearVelocity, (FixVector2)lockstepBody.LinearVelocity, damping);
+                predictiveBody.AngularVelocity = Fix64.Lerp(predictiveBody.AngularVelocity, lockstepBody.AngularVelocity, damping);
             }
         }
     }

@@ -25,11 +25,11 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
                 color: color,
                 shapes: new[]
                 {
-                    vertexAngles.Select(x => x.Floating).ToArray()
+                    vertexAngles.Select(x => x.XnaVertex).ToArray()
                 },
                 paths: new[]
                 {
-                    vertexAngles.Select(x => x.Floating).Concat(vertexAngles.First().Floating.Yield()).ToArray()
+                    vertexAngles.Select(x => x.XnaVertex).Concat(vertexAngles.First().XnaVertex.Yield()).ToArray()
                 });
         }
 

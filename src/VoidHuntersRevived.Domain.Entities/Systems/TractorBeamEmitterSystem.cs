@@ -1,5 +1,4 @@
-﻿using FixedMath.NET;
-using Guppy.Common;
+﻿using Guppy.Common;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using Serilog;
@@ -11,9 +10,11 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using tainicom.Aether.Physics2D.Collision;
 using tainicom.Aether.Physics2D.Common;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
+using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Common.Simulations.Services;
@@ -232,11 +233,11 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         private bool Query(
             ISimulation simulation,
             TractorBeamEmitter emitter,
-            AetherVector2 target,
+            FixVector2 target,
             out ParallelKey targetKey)
         {
             
-            AABB aabb = new AABB(target, Radius, Radius);
+            AABB aabb = (AABB)new FixAABB(target, Radius, Radius);
             Fix64 minDistance = Radius;
             ParallelKey? callbackTargetKey = default!;
 
@@ -262,8 +263,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                     return true;
                 }
 
-                AetherVector2 position = location.Position;
-                AetherVector2.Distance(ref target, ref position, out Fix64 distance);
+                FixVector2 position = location.Position;
+                FixVector2.Distance(ref target, ref position, out Fix64 distance);
                 if (distance >= minDistance)
                 { // Invalid Target - The distance is further away than the previously closest valid target
                     return true;

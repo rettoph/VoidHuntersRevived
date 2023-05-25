@@ -106,6 +106,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aether.Physics2D.NETSTANDAR
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aether.Physics2D.Diagnostics.NETSTANDARD2_0.MG", "libraries\Aether.Physics2D\Physics2D.Diagnostics\Diagnostics\Aether.Physics2D.Diagnostics.NETSTANDARD2_0.MG.csproj", "{A1EDC051-2BCD-4686-A3E6-0E6CDE8F20E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Common.FixedPoint", "src\VoidHuntersRevived.Common.FixedPoint\VoidHuntersRevived.Common.FixedPoint.csproj", "{136F89F9-430A-436A-9395-C4BBF650C6B8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -488,6 +490,18 @@ Global
 		{A1EDC051-2BCD-4686-A3E6-0E6CDE8F20E0}.Release|x64.Build.0 = Release|Any CPU
 		{A1EDC051-2BCD-4686-A3E6-0E6CDE8F20E0}.Release|x86.ActiveCfg = Release|Any CPU
 		{A1EDC051-2BCD-4686-A3E6-0E6CDE8F20E0}.Release|x86.Build.0 = Release|Any CPU
+		{136F89F9-430A-436A-9395-C4BBF650C6B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{136F89F9-430A-436A-9395-C4BBF650C6B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{136F89F9-430A-436A-9395-C4BBF650C6B8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{136F89F9-430A-436A-9395-C4BBF650C6B8}.Debug|x64.Build.0 = Debug|Any CPU
+		{136F89F9-430A-436A-9395-C4BBF650C6B8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{136F89F9-430A-436A-9395-C4BBF650C6B8}.Debug|x86.Build.0 = Debug|Any CPU
+		{136F89F9-430A-436A-9395-C4BBF650C6B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{136F89F9-430A-436A-9395-C4BBF650C6B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{136F89F9-430A-436A-9395-C4BBF650C6B8}.Release|x64.ActiveCfg = Release|Any CPU
+		{136F89F9-430A-436A-9395-C4BBF650C6B8}.Release|x64.Build.0 = Release|Any CPU
+		{136F89F9-430A-436A-9395-C4BBF650C6B8}.Release|x86.ActiveCfg = Release|Any CPU
+		{136F89F9-430A-436A-9395-C4BBF650C6B8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -534,6 +548,7 @@ Global
 		{27516855-7E16-4540-B321-85EF78C3AE4F} = {DA5CAD48-BEB9-4316-814A-820EA2A21081}
 		{0510FDFC-C960-4D70-A7AB-6A4509876E04} = {846EEE2A-9193-41FF-A661-67380DBEBE60}
 		{A1EDC051-2BCD-4686-A3E6-0E6CDE8F20E0} = {846EEE2A-9193-41FF-A661-67380DBEBE60}
+		{136F89F9-430A-436A-9395-C4BBF650C6B8} = {E45E3FCD-2AA8-46E5-9956-44A76EEB3BDA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FCB1CA3-2B6C-469F-B569-084FC0B57488}

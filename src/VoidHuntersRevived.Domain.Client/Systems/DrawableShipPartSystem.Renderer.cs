@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 }
             }
 
-            public void RenderShapes(FixedMatrix transformation)
+            public void RenderShapes(FixMatrix transformation)
             {
                 foreach(PrimitiveShape shape in _shapes)
                 {

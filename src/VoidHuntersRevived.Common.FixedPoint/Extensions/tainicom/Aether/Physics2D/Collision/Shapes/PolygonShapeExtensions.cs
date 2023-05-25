@@ -12,7 +12,7 @@ namespace tainicom.Aether.Physics2D.Collision.Shapes
 {
     public static class PolygonShapeExtensions
     {
-        public static PolygonShape Clone(this PolygonShape shape, ref FixedMatrix transformation)
+        public static PolygonShape Clone(this PolygonShape shape, ref FixMatrix transformation)
         {
             PolygonShape clone = (PolygonShape)shape.Clone();
 

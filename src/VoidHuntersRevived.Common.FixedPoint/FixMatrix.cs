@@ -1,5 +1,4 @@
-﻿using FixedMath.NET;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,14 +6,13 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
-using tainicom.Aether.Physics2D.Common;
 
 namespace VoidHuntersRevived.Common
 {
     /// <summary>
     /// Represents the right-handed 4x4 floating point matrix, which can store translation, scale and rotation information.
     /// </summary>
-    public struct FixedMatrix : IEquatable<FixedMatrix>
+    public struct FixMatrix : IEquatable<FixMatrix>
     {
         #region Public Constructors
 
@@ -37,7 +35,7 @@ namespace VoidHuntersRevived.Common
         /// <param name="m42">A fourth row and second column value.</param>
         /// <param name="m43">A fourth row and third column value.</param>
         /// <param name="m44">A fourth row and fourth column value.</param>
-        public FixedMatrix(Fix64 m11, Fix64 m12, Fix64 m13, Fix64 m14, Fix64 m21, Fix64 m22, Fix64 m23, Fix64 m24, Fix64 m31,
+        public FixMatrix(Fix64 m11, Fix64 m12, Fix64 m13, Fix64 m14, Fix64 m21, Fix64 m22, Fix64 m23, Fix64 m24, Fix64 m31,
                       Fix64 m32, Fix64 m33, Fix64 m34, Fix64 m41, Fix64 m42, Fix64 m43, Fix64 m44)
         {
             this.M11 = m11;
@@ -235,7 +233,7 @@ namespace VoidHuntersRevived.Common
         #endregion
 
         #region Private Members
-        private static FixedMatrix identity = new FixedMatrix(Fix64.One, Fix64.Zero, Fix64.Zero, Fix64.Zero,
+        private static FixMatrix identity = new FixMatrix(Fix64.One, Fix64.Zero, Fix64.Zero, Fix64.Zero,
                                                     Fix64.Zero, Fix64.One, Fix64.Zero, Fix64.Zero,
                                                     Fix64.Zero, Fix64.Zero, Fix64.One, Fix64.Zero,
                                                     Fix64.Zero, Fix64.Zero, Fix64.Zero, Fix64.One);
@@ -243,7 +241,7 @@ namespace VoidHuntersRevived.Common
         /// <summary>
         /// Returns the identity matrix.
         /// </summary>
-        public static FixedMatrix Identity
+        public static FixMatrix Identity
         {
             get { return identity; }
         }
@@ -252,12 +250,12 @@ namespace VoidHuntersRevived.Common
         #region Public Methods
 
         /// <summary>
-        /// Creates a new <see cref="FixedMatrix"/> which contains sum of two matrixes.
+        /// Creates a new <see cref="FixMatrix"/> which contains sum of two matrixes.
         /// </summary>
         /// <param name="matrix1">The first matrix to add.</param>
         /// <param name="matrix2">The second matrix to add.</param>
         /// <returns>The result of the matrix addition.</returns>
-        public static FixedMatrix Add(FixedMatrix matrix1, FixedMatrix matrix2)
+        public static FixMatrix Add(FixMatrix matrix1, FixMatrix matrix2)
         {
             matrix1.M11 += matrix2.M11;
             matrix1.M12 += matrix2.M12;
@@ -279,12 +277,12 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Creates a new <see cref="FixedMatrix"/> which contains sum of two matrixes.
+        /// Creates a new <see cref="FixMatrix"/> which contains sum of two matrixes.
         /// </summary>
         /// <param name="matrix1">The first matrix to add.</param>
         /// <param name="matrix2">The second matrix to add.</param>
         /// <param name="result">The result of the matrix addition as an output parameter.</param>
-        public static void Add(ref FixedMatrix matrix1, ref FixedMatrix matrix2, out FixedMatrix result)
+        public static void Add(ref FixMatrix matrix1, ref FixMatrix matrix2, out FixMatrix result)
         {
             result.M11 = matrix1.M11 + matrix2.M11;
             result.M12 = matrix1.M12 + matrix2.M12;
@@ -306,25 +304,25 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Creates a new rotation <see cref="FixedMatrix"/> around X axis.
+        /// Creates a new rotation <see cref="FixMatrix"/> around X axis.
         /// </summary>
         /// <param name="radians">Angle in radians.</param>
-        /// <returns>The rotation <see cref="FixedMatrix"/> around X axis.</returns>
-        public static FixedMatrix CreateRotationX(Fix64 radians)
+        /// <returns>The rotation <see cref="FixMatrix"/> around X axis.</returns>
+        public static FixMatrix CreateRotationX(Fix64 radians)
         {
-            FixedMatrix result;
+            FixMatrix result;
             CreateRotationX(radians, out result);
             return result;
         }
 
         /// <summary>
-        /// Creates a new rotation <see cref="FixedMatrix"/> around X axis.
+        /// Creates a new rotation <see cref="FixMatrix"/> around X axis.
         /// </summary>
         /// <param name="radians">Angle in radians.</param>
-        /// <param name="result">The rotation <see cref="FixedMatrix"/> around X axis as an output parameter.</param>
-        public static void CreateRotationX(Fix64 radians, out FixedMatrix result)
+        /// <param name="result">The rotation <see cref="FixMatrix"/> around X axis as an output parameter.</param>
+        public static void CreateRotationX(Fix64 radians, out FixMatrix result)
         {
-            result = FixedMatrix.Identity;
+            result = FixMatrix.Identity;
 
             var val1 = Fix64.Cos(radians);
             var val2 = Fix64.Sin(radians);
@@ -336,25 +334,25 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Creates a new rotation <see cref="FixedMatrix"/> around Y axis.
+        /// Creates a new rotation <see cref="FixMatrix"/> around Y axis.
         /// </summary>
         /// <param name="radians">Angle in radians.</param>
-        /// <returns>The rotation <see cref="FixedMatrix"/> around Y axis.</returns>
-        public static FixedMatrix CreateRotationY(Fix64 radians)
+        /// <returns>The rotation <see cref="FixMatrix"/> around Y axis.</returns>
+        public static FixMatrix CreateRotationY(Fix64 radians)
         {
-            FixedMatrix result;
+            FixMatrix result;
             CreateRotationY(radians, out result);
             return result;
         }
 
         /// <summary>
-        /// Creates a new rotation <see cref="FixedMatrix"/> around Y axis.
+        /// Creates a new rotation <see cref="FixMatrix"/> around Y axis.
         /// </summary>
         /// <param name="radians">Angle in radians.</param>
-        /// <param name="result">The rotation <see cref="FixedMatrix"/> around Y axis as an output parameter.</param>
-        public static void CreateRotationY(Fix64 radians, out FixedMatrix result)
+        /// <param name="result">The rotation <see cref="FixMatrix"/> around Y axis as an output parameter.</param>
+        public static void CreateRotationY(Fix64 radians, out FixMatrix result)
         {
-            result = FixedMatrix.Identity;
+            result = FixMatrix.Identity;
 
             var val1 = Fix64.Cos(radians);
             var val2 = Fix64.Sin(radians);
@@ -366,25 +364,25 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Creates a new rotation <see cref="FixedMatrix"/> around Z axis.
+        /// Creates a new rotation <see cref="FixMatrix"/> around Z axis.
         /// </summary>
         /// <param name="radians">Angle in radians.</param>
-        /// <returns>The rotation <see cref="FixedMatrix"/> around Z axis.</returns>
-        public static FixedMatrix CreateRotationZ(Fix64 radians)
+        /// <returns>The rotation <see cref="FixMatrix"/> around Z axis.</returns>
+        public static FixMatrix CreateRotationZ(Fix64 radians)
         {
-            FixedMatrix result;
+            FixMatrix result;
             CreateRotationZ(radians, out result);
             return result;
         }
 
         /// <summary>
-        /// Creates a new rotation <see cref="FixedMatrix"/> around Z axis.
+        /// Creates a new rotation <see cref="FixMatrix"/> around Z axis.
         /// </summary>
         /// <param name="radians">Angle in radians.</param>
-        /// <param name="result">The rotation <see cref="FixedMatrix"/> around Z axis as an output parameter.</param>
-        public static void CreateRotationZ(Fix64 radians, out FixedMatrix result)
+        /// <param name="result">The rotation <see cref="FixMatrix"/> around Z axis as an output parameter.</param>
+        public static void CreateRotationZ(Fix64 radians, out FixMatrix result)
         {
-            result = FixedMatrix.Identity;
+            result = FixMatrix.Identity;
 
             var val1 = Fix64.Cos(radians);
             var val2 = Fix64.Sin(radians);
@@ -396,25 +394,25 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Creates a new translation <see cref="FixedMatrix"/>.
+        /// Creates a new translation <see cref="FixMatrix"/>.
         /// </summary>
         /// <param name="xPosition">X coordinate of translation.</param>
         /// <param name="yPosition">Y coordinate of translation.</param>
         /// <param name="zPosition">Z coordinate of translation.</param>
-        /// <returns>The translation <see cref="FixedMatrix"/>.</returns>
-        public static FixedMatrix CreateTranslation(Fix64 xPosition, Fix64 yPosition, Fix64 zPosition)
+        /// <returns>The translation <see cref="FixMatrix"/>.</returns>
+        public static FixMatrix CreateTranslation(Fix64 xPosition, Fix64 yPosition, Fix64 zPosition)
         {
-            FixedMatrix result;
+            FixMatrix result;
             CreateTranslation(xPosition, yPosition, zPosition, out result);
             return result;
         }
 
         /// <summary>
-        /// Creates a new translation <see cref="FixedMatrix"/>.
+        /// Creates a new translation <see cref="FixMatrix"/>.
         /// </summary>
         /// <param name="position">X,Y and Z coordinates of translation.</param>
-        /// <param name="result">The translation <see cref="FixedMatrix"/> as an output parameter.</param>
-        public static void CreateTranslation(ref AetherVector3 position, out FixedMatrix result)
+        /// <param name="result">The translation <see cref="FixMatrix"/> as an output parameter.</param>
+        public static void CreateTranslation(ref FixVector3 position, out FixMatrix result)
         {
             result.M11 = Fix64.One;
             result.M12 = Fix64.Zero;
@@ -435,25 +433,25 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Creates a new translation <see cref="FixedMatrix"/>.
+        /// Creates a new translation <see cref="FixMatrix"/>.
         /// </summary>
         /// <param name="position">X,Y and Z coordinates of translation.</param>
-        /// <returns>The translation <see cref="FixedMatrix"/>.</returns>
-        public static FixedMatrix CreateTranslation(AetherVector3 position)
+        /// <returns>The translation <see cref="FixMatrix"/>.</returns>
+        public static FixMatrix CreateTranslation(FixVector3 position)
         {
-            FixedMatrix result;
+            FixMatrix result;
             CreateTranslation(ref position, out result);
             return result;
         }
 
         /// <summary>
-        /// Creates a new translation <see cref="FixedMatrix"/>.
+        /// Creates a new translation <see cref="FixMatrix"/>.
         /// </summary>
         /// <param name="xPosition">X coordinate of translation.</param>
         /// <param name="yPosition">Y coordinate of translation.</param>
         /// <param name="zPosition">Z coordinate of translation.</param>
-        /// <param name="result">The translation <see cref="FixedMatrix"/> as an output parameter.</param>
-        public static void CreateTranslation(Fix64 xPosition, Fix64 yPosition, Fix64 zPosition, out FixedMatrix result)
+        /// <param name="result">The translation <see cref="FixMatrix"/> as an output parameter.</param>
+        public static void CreateTranslation(Fix64 xPosition, Fix64 yPosition, Fix64 zPosition, out FixMatrix result)
         {
             result.M11 = Fix64.One;
             result.M12 = Fix64.Zero;
@@ -476,12 +474,12 @@ namespace VoidHuntersRevived.Common
 
 
         /// <summary>
-        /// Divides the elements of a <see cref="FixedMatrix"/> by the elements of another matrix.
+        /// Divides the elements of a <see cref="FixMatrix"/> by the elements of another matrix.
         /// </summary>
-        /// <param name="matrix1">Source <see cref="FixedMatrix"/>.</param>
-        /// <param name="matrix2">Divisor <see cref="FixedMatrix"/>.</param>
+        /// <param name="matrix1">Source <see cref="FixMatrix"/>.</param>
+        /// <param name="matrix2">Divisor <see cref="FixMatrix"/>.</param>
         /// <returns>The result of dividing the matrix.</returns>
-        public static FixedMatrix Divide(FixedMatrix matrix1, FixedMatrix matrix2)
+        public static FixMatrix Divide(FixMatrix matrix1, FixMatrix matrix2)
         {
             matrix1.M11 = matrix1.M11 / matrix2.M11;
             matrix1.M12 = matrix1.M12 / matrix2.M12;
@@ -503,12 +501,12 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Divides the elements of a <see cref="FixedMatrix"/> by the elements of another matrix.
+        /// Divides the elements of a <see cref="FixMatrix"/> by the elements of another matrix.
         /// </summary>
-        /// <param name="matrix1">Source <see cref="FixedMatrix"/>.</param>
-        /// <param name="matrix2">Divisor <see cref="FixedMatrix"/>.</param>
+        /// <param name="matrix1">Source <see cref="FixMatrix"/>.</param>
+        /// <param name="matrix2">Divisor <see cref="FixMatrix"/>.</param>
         /// <param name="result">The result of dividing the matrix as an output parameter.</param>
-        public static void Divide(ref FixedMatrix matrix1, ref FixedMatrix matrix2, out FixedMatrix result)
+        public static void Divide(ref FixMatrix matrix1, ref FixMatrix matrix2, out FixMatrix result)
         {
             result.M11 = matrix1.M11 / matrix2.M11;
             result.M12 = matrix1.M12 / matrix2.M12;
@@ -529,12 +527,12 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Divides the elements of a <see cref="FixedMatrix"/> by a scalar.
+        /// Divides the elements of a <see cref="FixMatrix"/> by a scalar.
         /// </summary>
-        /// <param name="matrix1">Source <see cref="FixedMatrix"/>.</param>
+        /// <param name="matrix1">Source <see cref="FixMatrix"/>.</param>
         /// <param name="divider">Divisor scalar.</param>
         /// <returns>The result of dividing a matrix by a scalar.</returns>
-        public static FixedMatrix Divide(FixedMatrix matrix1, Fix64 divider)
+        public static FixMatrix Divide(FixMatrix matrix1, Fix64 divider)
         {
             Fix64 num = Fix64.One / divider;
             matrix1.M11 = matrix1.M11 * num;
@@ -557,12 +555,12 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Divides the elements of a <see cref="FixedMatrix"/> by a scalar.
+        /// Divides the elements of a <see cref="FixMatrix"/> by a scalar.
         /// </summary>
-        /// <param name="matrix1">Source <see cref="FixedMatrix"/>.</param>
+        /// <param name="matrix1">Source <see cref="FixMatrix"/>.</param>
         /// <param name="divider">Divisor scalar.</param>
         /// <param name="result">The result of dividing a matrix by a scalar as an output parameter.</param>
-        public static void Divide(ref FixedMatrix matrix1, Fix64 divider, out FixedMatrix result)
+        public static void Divide(ref FixMatrix matrix1, Fix64 divider, out FixMatrix result)
         {
             Fix64 num = Fix64.One / divider;
             result.M11 = matrix1.M11 * num;
@@ -584,11 +582,11 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Compares whether current instance is equal to specified <see cref="FixedMatrix"/> without any tolerance.
+        /// Compares whether current instance is equal to specified <see cref="FixMatrix"/> without any tolerance.
         /// </summary>
-        /// <param name="other">The <see cref="FixedMatrix"/> to compare.</param>
+        /// <param name="other">The <see cref="FixMatrix"/> to compare.</param>
         /// <returns><c>true</c> if the instances are equal; <c>false</c> otherwise.</returns>
-        public bool Equals(FixedMatrix other)
+        public bool Equals(FixMatrix other)
         {
             return ((((((this.M11 == other.M11) && (this.M22 == other.M22)) && ((this.M33 == other.M33) && (this.M44 == other.M44))) && (((this.M12 == other.M12) && (this.M13 == other.M13)) && ((this.M14 == other.M14) && (this.M21 == other.M21)))) && ((((this.M23 == other.M23) && (this.M24 == other.M24)) && ((this.M31 == other.M31) && (this.M32 == other.M32))) && (((this.M34 == other.M34) && (this.M41 == other.M41)) && (this.M42 == other.M42)))) && (this.M43 == other.M43));
         }
@@ -601,40 +599,40 @@ namespace VoidHuntersRevived.Common
         public override bool Equals(object? obj)
         {
             bool flag = false;
-            if (obj is FixedMatrix)
+            if (obj is FixMatrix)
             {
-                flag = this.Equals((FixedMatrix)obj);
+                flag = this.Equals((FixMatrix)obj);
             }
             return flag;
         }
 
         /// <summary>
-        /// Gets the hash code of this <see cref="FixedMatrix"/>.
+        /// Gets the hash code of this <see cref="FixMatrix"/>.
         /// </summary>
-        /// <returns>Hash code of this <see cref="FixedMatrix"/>.</returns>
+        /// <returns>Hash code of this <see cref="FixMatrix"/>.</returns>
         public override int GetHashCode()
         {
             return (((((((((((((((this.M11.GetHashCode() + this.M12.GetHashCode()) + this.M13.GetHashCode()) + this.M14.GetHashCode()) + this.M21.GetHashCode()) + this.M22.GetHashCode()) + this.M23.GetHashCode()) + this.M24.GetHashCode()) + this.M31.GetHashCode()) + this.M32.GetHashCode()) + this.M33.GetHashCode()) + this.M34.GetHashCode()) + this.M41.GetHashCode()) + this.M42.GetHashCode()) + this.M43.GetHashCode()) + this.M44.GetHashCode());
         }
 
         /// <summary>
-        /// Creates a new <see cref="FixedMatrix"/> which contains inversion of the specified matrix. 
+        /// Creates a new <see cref="FixMatrix"/> which contains inversion of the specified matrix. 
         /// </summary>
-        /// <param name="matrix">Source <see cref="FixedMatrix"/>.</param>
+        /// <param name="matrix">Source <see cref="FixMatrix"/>.</param>
         /// <returns>The inverted matrix.</returns>
-        public static FixedMatrix Invert(FixedMatrix matrix)
+        public static FixMatrix Invert(FixMatrix matrix)
         {
-            FixedMatrix result;
+            FixMatrix result;
             Invert(ref matrix, out result);
             return result;
         }
 
         /// <summary>
-        /// Creates a new <see cref="FixedMatrix"/> which contains inversion of the specified matrix. 
+        /// Creates a new <see cref="FixMatrix"/> which contains inversion of the specified matrix. 
         /// </summary>
-        /// <param name="matrix">Source <see cref="FixedMatrix"/>.</param>
+        /// <param name="matrix">Source <see cref="FixMatrix"/>.</param>
         /// <param name="result">The inverted matrix as output parameter.</param>
-        public static void Invert(ref FixedMatrix matrix, out FixedMatrix result)
+        public static void Invert(ref FixMatrix matrix, out FixMatrix result)
         {
             Fix64 num1 = matrix.M11;
             Fix64 num2 = matrix.M12;
@@ -735,13 +733,13 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Creates a new <see cref="FixedMatrix"/> that contains linear interpolation of the values in specified matrixes.
+        /// Creates a new <see cref="FixMatrix"/> that contains linear interpolation of the values in specified matrixes.
         /// </summary>
-        /// <param name="matrix1">The first <see cref="FixedMatrix"/>.</param>
+        /// <param name="matrix1">The first <see cref="FixMatrix"/>.</param>
         /// <param name="matrix2">The second <see cref="Vector2"/>.</param>
         /// <param name="amount">Weighting value(between 0.0 and Fix64.One).</param>
         /// <returns>>The result of linear interpolation of the specified matrixes.</returns>
-        public static FixedMatrix Lerp(FixedMatrix matrix1, FixedMatrix matrix2, Fix64 amount)
+        public static FixMatrix Lerp(FixMatrix matrix1, FixMatrix matrix2, Fix64 amount)
         {
             matrix1.M11 = matrix1.M11 + ((matrix2.M11 - matrix1.M11) * amount);
             matrix1.M12 = matrix1.M12 + ((matrix2.M12 - matrix1.M12) * amount);
@@ -763,13 +761,13 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Creates a new <see cref="FixedMatrix"/> that contains linear interpolation of the values in specified matrixes.
+        /// Creates a new <see cref="FixMatrix"/> that contains linear interpolation of the values in specified matrixes.
         /// </summary>
-        /// <param name="matrix1">The first <see cref="FixedMatrix"/>.</param>
+        /// <param name="matrix1">The first <see cref="FixMatrix"/>.</param>
         /// <param name="matrix2">The second <see cref="Vector2"/>.</param>
         /// <param name="amount">Weighting value(between 0.0 and Fix64.One).</param>
         /// <param name="result">The result of linear interpolation of the specified matrixes as an output parameter.</param>
-        public static void Lerp(ref FixedMatrix matrix1, ref FixedMatrix matrix2, Fix64 amount, out FixedMatrix result)
+        public static void Lerp(ref FixMatrix matrix1, ref FixMatrix matrix2, Fix64 amount, out FixMatrix result)
         {
             result.M11 = matrix1.M11 + ((matrix2.M11 - matrix1.M11) * amount);
             result.M12 = matrix1.M12 + ((matrix2.M12 - matrix1.M12) * amount);
@@ -790,12 +788,12 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Creates a new <see cref="FixedMatrix"/> that contains a multiplication of two matrix.
+        /// Creates a new <see cref="FixMatrix"/> that contains a multiplication of two matrix.
         /// </summary>
-        /// <param name="matrix1">Source <see cref="FixedMatrix"/>.</param>
-        /// <param name="matrix2">Source <see cref="FixedMatrix"/>.</param>
+        /// <param name="matrix1">Source <see cref="FixMatrix"/>.</param>
+        /// <param name="matrix2">Source <see cref="FixMatrix"/>.</param>
         /// <returns>Result of the matrix multiplication.</returns>
-        public static FixedMatrix Multiply(FixedMatrix matrix1, FixedMatrix matrix2)
+        public static FixMatrix Multiply(FixMatrix matrix1, FixMatrix matrix2)
         {
             var m11 = (((matrix1.M11 * matrix2.M11) + (matrix1.M12 * matrix2.M21)) + (matrix1.M13 * matrix2.M31)) + (matrix1.M14 * matrix2.M41);
             var m12 = (((matrix1.M11 * matrix2.M12) + (matrix1.M12 * matrix2.M22)) + (matrix1.M13 * matrix2.M32)) + (matrix1.M14 * matrix2.M42);
@@ -833,12 +831,12 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Creates a new <see cref="FixedMatrix"/> that contains a multiplication of two matrix.
+        /// Creates a new <see cref="FixMatrix"/> that contains a multiplication of two matrix.
         /// </summary>
-        /// <param name="matrix1">Source <see cref="FixedMatrix"/>.</param>
-        /// <param name="matrix2">Source <see cref="FixedMatrix"/>.</param>
+        /// <param name="matrix1">Source <see cref="FixMatrix"/>.</param>
+        /// <param name="matrix2">Source <see cref="FixMatrix"/>.</param>
         /// <param name="result">Result of the matrix multiplication as an output parameter.</param>
-        public static void Multiply(ref FixedMatrix matrix1, ref FixedMatrix matrix2, out FixedMatrix result)
+        public static void Multiply(ref FixMatrix matrix1, ref FixMatrix matrix2, out FixMatrix result)
         {
             var m11 = (((matrix1.M11 * matrix2.M11) + (matrix1.M12 * matrix2.M21)) + (matrix1.M13 * matrix2.M31)) + (matrix1.M14 * matrix2.M41);
             var m12 = (((matrix1.M11 * matrix2.M12) + (matrix1.M12 * matrix2.M22)) + (matrix1.M13 * matrix2.M32)) + (matrix1.M14 * matrix2.M42);
@@ -875,12 +873,12 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Creates a new <see cref="FixedMatrix"/> that contains a multiplication of <see cref="FixedMatrix"/> and a scalar.
+        /// Creates a new <see cref="FixMatrix"/> that contains a multiplication of <see cref="FixMatrix"/> and a scalar.
         /// </summary>
-        /// <param name="matrix1">Source <see cref="FixedMatrix"/>.</param>
+        /// <param name="matrix1">Source <see cref="FixMatrix"/>.</param>
         /// <param name="scaleFactor">Scalar value.</param>
         /// <returns>Result of the matrix multiplication with a scalar.</returns>
-        public static FixedMatrix Multiply(FixedMatrix matrix1, Fix64 scaleFactor)
+        public static FixMatrix Multiply(FixMatrix matrix1, Fix64 scaleFactor)
         {
             matrix1.M11 *= scaleFactor;
             matrix1.M12 *= scaleFactor;
@@ -902,12 +900,12 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Creates a new <see cref="FixedMatrix"/> that contains a multiplication of <see cref="FixedMatrix"/> and a scalar.
+        /// Creates a new <see cref="FixMatrix"/> that contains a multiplication of <see cref="FixMatrix"/> and a scalar.
         /// </summary>
-        /// <param name="matrix1">Source <see cref="FixedMatrix"/>.</param>
+        /// <param name="matrix1">Source <see cref="FixMatrix"/>.</param>
         /// <param name="scaleFactor">Scalar value.</param>
         /// <param name="result">Result of the matrix multiplication with a scalar as an output parameter.</param>
-        public static void Multiply(ref FixedMatrix matrix1, Fix64 scaleFactor, out FixedMatrix result)
+        public static void Multiply(ref FixMatrix matrix1, Fix64 scaleFactor, out FixMatrix result)
         {
             result.M11 = matrix1.M11 * scaleFactor;
             result.M12 = matrix1.M12 * scaleFactor;
@@ -929,14 +927,14 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Copy the values of specified <see cref="FixedMatrix"/> to the Fix64 array.
+        /// Copy the values of specified <see cref="FixMatrix"/> to the Fix64 array.
         /// </summary>
-        /// <param name="matrix">The source <see cref="FixedMatrix"/>.</param>
+        /// <param name="matrix">The source <see cref="FixMatrix"/>.</param>
         /// <returns>The array which matrix values will be stored.</returns>
         /// <remarks>
         /// Required for OpenGL 2.0 projection matrix stuff.
         /// </remarks>
-        public static Fix64[] ToFloatArray(FixedMatrix matrix)
+        public static Fix64[] ToFloatArray(FixMatrix matrix)
         {
             Fix64[] matarray = {
                                     matrix.M11, matrix.M12, matrix.M13, matrix.M14,
@@ -950,9 +948,9 @@ namespace VoidHuntersRevived.Common
         /// <summary>
         /// Returns a matrix with the all values negated.
         /// </summary>
-        /// <param name="matrix">Source <see cref="FixedMatrix"/>.</param>
+        /// <param name="matrix">Source <see cref="FixMatrix"/>.</param>
         /// <returns>Result of the matrix negation.</returns>
-        public static FixedMatrix Negate(FixedMatrix matrix)
+        public static FixMatrix Negate(FixMatrix matrix)
         {
             matrix.M11 = -matrix.M11;
             matrix.M12 = -matrix.M12;
@@ -976,9 +974,9 @@ namespace VoidHuntersRevived.Common
         /// <summary>
         /// Returns a matrix with the all values negated.
         /// </summary>
-        /// <param name="matrix">Source <see cref="FixedMatrix"/>.</param>
+        /// <param name="matrix">Source <see cref="FixMatrix"/>.</param>
         /// <param name="result">Result of the matrix negation as an output parameter.</param>
-        public static void Negate(ref FixedMatrix matrix, out FixedMatrix result)
+        public static void Negate(ref FixMatrix matrix, out FixMatrix result)
         {
             result.M11 = -matrix.M11;
             result.M12 = -matrix.M12;
@@ -1001,10 +999,10 @@ namespace VoidHuntersRevived.Common
         /// <summary>
         /// Adds two matrixes.
         /// </summary>
-        /// <param name="matrix1">Source <see cref="FixedMatrix"/> on the left of the add sign.</param>
-        /// <param name="matrix2">Source <see cref="FixedMatrix"/> on the right of the add sign.</param>
+        /// <param name="matrix1">Source <see cref="FixMatrix"/> on the left of the add sign.</param>
+        /// <param name="matrix2">Source <see cref="FixMatrix"/> on the right of the add sign.</param>
         /// <returns>Sum of the matrixes.</returns>
-        public static FixedMatrix operator +(FixedMatrix matrix1, FixedMatrix matrix2)
+        public static FixMatrix operator +(FixMatrix matrix1, FixMatrix matrix2)
         {
             matrix1.M11 = matrix1.M11 + matrix2.M11;
             matrix1.M12 = matrix1.M12 + matrix2.M12;
@@ -1026,12 +1024,12 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Divides the elements of a <see cref="FixedMatrix"/> by the elements of another <see cref="FixedMatrix"/>.
+        /// Divides the elements of a <see cref="FixMatrix"/> by the elements of another <see cref="FixMatrix"/>.
         /// </summary>
-        /// <param name="matrix1">Source <see cref="FixedMatrix"/> on the left of the div sign.</param>
-        /// <param name="matrix2">Divisor <see cref="FixedMatrix"/> on the right of the div sign.</param>
+        /// <param name="matrix1">Source <see cref="FixMatrix"/> on the left of the div sign.</param>
+        /// <param name="matrix2">Divisor <see cref="FixMatrix"/> on the right of the div sign.</param>
         /// <returns>The result of dividing the matrixes.</returns>
-        public static FixedMatrix operator /(FixedMatrix matrix1, FixedMatrix matrix2)
+        public static FixMatrix operator /(FixMatrix matrix1, FixMatrix matrix2)
         {
             matrix1.M11 = matrix1.M11 / matrix2.M11;
             matrix1.M12 = matrix1.M12 / matrix2.M12;
@@ -1053,12 +1051,12 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Divides the elements of a <see cref="FixedMatrix"/> by a scalar.
+        /// Divides the elements of a <see cref="FixMatrix"/> by a scalar.
         /// </summary>
-        /// <param name="matrix">Source <see cref="FixedMatrix"/> on the left of the div sign.</param>
+        /// <param name="matrix">Source <see cref="FixMatrix"/> on the left of the div sign.</param>
         /// <param name="divider">Divisor scalar on the right of the div sign.</param>
         /// <returns>The result of dividing a matrix by a scalar.</returns>
-        public static FixedMatrix operator /(FixedMatrix matrix, Fix64 divider)
+        public static FixMatrix operator /(FixMatrix matrix, Fix64 divider)
         {
             Fix64 num = Fix64.One / divider;
             matrix.M11 = matrix.M11 * num;
@@ -1081,12 +1079,12 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Compares whether two <see cref="FixedMatrix"/> instances are equal without any tolerance.
+        /// Compares whether two <see cref="FixMatrix"/> instances are equal without any tolerance.
         /// </summary>
-        /// <param name="matrix1">Source <see cref="FixedMatrix"/> on the left of the equal sign.</param>
-        /// <param name="matrix2">Source <see cref="FixedMatrix"/> on the right of the equal sign.</param>
+        /// <param name="matrix1">Source <see cref="FixMatrix"/> on the left of the equal sign.</param>
+        /// <param name="matrix2">Source <see cref="FixMatrix"/> on the right of the equal sign.</param>
         /// <returns><c>true</c> if the instances are equal; <c>false</c> otherwise.</returns>
-        public static bool operator ==(FixedMatrix matrix1, FixedMatrix matrix2)
+        public static bool operator ==(FixMatrix matrix1, FixMatrix matrix2)
         {
             return (
                 matrix1.M11 == matrix2.M11 &&
@@ -1109,12 +1107,12 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Compares whether two <see cref="FixedMatrix"/> instances are not equal without any tolerance.
+        /// Compares whether two <see cref="FixMatrix"/> instances are not equal without any tolerance.
         /// </summary>
-        /// <param name="matrix1">Source <see cref="FixedMatrix"/> on the left of the not equal sign.</param>
-        /// <param name="matrix2">Source <see cref="FixedMatrix"/> on the right of the not equal sign.</param>
+        /// <param name="matrix1">Source <see cref="FixMatrix"/> on the left of the not equal sign.</param>
+        /// <param name="matrix2">Source <see cref="FixMatrix"/> on the right of the not equal sign.</param>
         /// <returns><c>true</c> if the instances are not equal; <c>false</c> otherwise.</returns>
-        public static bool operator !=(FixedMatrix matrix1, FixedMatrix matrix2)
+        public static bool operator !=(FixMatrix matrix1, FixMatrix matrix2)
         {
             return (
                 matrix1.M11 != matrix2.M11 ||
@@ -1139,13 +1137,13 @@ namespace VoidHuntersRevived.Common
         /// <summary>
         /// Multiplies two matrixes.
         /// </summary>
-        /// <param name="matrix1">Source <see cref="FixedMatrix"/> on the left of the mul sign.</param>
-        /// <param name="matrix2">Source <see cref="FixedMatrix"/> on the right of the mul sign.</param>
+        /// <param name="matrix1">Source <see cref="FixMatrix"/> on the left of the mul sign.</param>
+        /// <param name="matrix2">Source <see cref="FixMatrix"/> on the right of the mul sign.</param>
         /// <returns>Result of the matrix multiplication.</returns>
         /// <remarks>
         /// Using matrix multiplication algorithm - see http://en.wikipedia.org/wiki/Matrix_multiplication.
         /// </remarks>
-        public static FixedMatrix operator *(FixedMatrix matrix1, FixedMatrix matrix2)
+        public static FixMatrix operator *(FixMatrix matrix1, FixMatrix matrix2)
         {
             var m11 = (((matrix1.M11 * matrix2.M11) + (matrix1.M12 * matrix2.M21)) + (matrix1.M13 * matrix2.M31)) + (matrix1.M14 * matrix2.M41);
             var m12 = (((matrix1.M11 * matrix2.M12) + (matrix1.M12 * matrix2.M22)) + (matrix1.M13 * matrix2.M32)) + (matrix1.M14 * matrix2.M42);
@@ -1185,10 +1183,10 @@ namespace VoidHuntersRevived.Common
         /// <summary>
         /// Multiplies the elements of matrix by a scalar.
         /// </summary>
-        /// <param name="matrix">Source <see cref="FixedMatrix"/> on the left of the mul sign.</param>
+        /// <param name="matrix">Source <see cref="FixMatrix"/> on the left of the mul sign.</param>
         /// <param name="scaleFactor">Scalar value on the right of the mul sign.</param>
         /// <returns>Result of the matrix multiplication with a scalar.</returns>
-        public static FixedMatrix operator *(FixedMatrix matrix, Fix64 scaleFactor)
+        public static FixMatrix operator *(FixMatrix matrix, Fix64 scaleFactor)
         {
             matrix.M11 = matrix.M11 * scaleFactor;
             matrix.M12 = matrix.M12 * scaleFactor;
@@ -1210,12 +1208,12 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Subtracts the values of one <see cref="FixedMatrix"/> from another <see cref="FixedMatrix"/>.
+        /// Subtracts the values of one <see cref="FixMatrix"/> from another <see cref="FixMatrix"/>.
         /// </summary>
-        /// <param name="matrix1">Source <see cref="FixedMatrix"/> on the left of the sub sign.</param>
-        /// <param name="matrix2">Source <see cref="FixedMatrix"/> on the right of the sub sign.</param>
+        /// <param name="matrix1">Source <see cref="FixMatrix"/> on the left of the sub sign.</param>
+        /// <param name="matrix2">Source <see cref="FixMatrix"/> on the right of the sub sign.</param>
         /// <returns>Result of the matrix subtraction.</returns>
-        public static FixedMatrix operator -(FixedMatrix matrix1, FixedMatrix matrix2)
+        public static FixMatrix operator -(FixMatrix matrix1, FixMatrix matrix2)
         {
             matrix1.M11 = matrix1.M11 - matrix2.M11;
             matrix1.M12 = matrix1.M12 - matrix2.M12;
@@ -1237,11 +1235,11 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Inverts values in the specified <see cref="FixedMatrix"/>.
+        /// Inverts values in the specified <see cref="FixMatrix"/>.
         /// </summary>
-        /// <param name="matrix">Source <see cref="FixedMatrix"/> on the right of the sub sign.</param>
+        /// <param name="matrix">Source <see cref="FixMatrix"/> on the right of the sub sign.</param>
         /// <returns>Result of the inversion.</returns>
-        public static FixedMatrix operator -(FixedMatrix matrix)
+        public static FixMatrix operator -(FixMatrix matrix)
         {
             matrix.M11 = -matrix.M11;
             matrix.M12 = -matrix.M12;
@@ -1263,12 +1261,12 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Creates a new <see cref="FixedMatrix"/> that contains subtraction of one matrix from another.
+        /// Creates a new <see cref="FixMatrix"/> that contains subtraction of one matrix from another.
         /// </summary>
-        /// <param name="matrix1">The first <see cref="FixedMatrix"/>.</param>
-        /// <param name="matrix2">The second <see cref="FixedMatrix"/>.</param>
+        /// <param name="matrix1">The first <see cref="FixMatrix"/>.</param>
+        /// <param name="matrix2">The second <see cref="FixMatrix"/>.</param>
         /// <returns>The result of the matrix subtraction.</returns>
-        public static FixedMatrix Subtract(FixedMatrix matrix1, FixedMatrix matrix2)
+        public static FixMatrix Subtract(FixMatrix matrix1, FixMatrix matrix2)
         {
             matrix1.M11 = matrix1.M11 - matrix2.M11;
             matrix1.M12 = matrix1.M12 - matrix2.M12;
@@ -1290,12 +1288,12 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Creates a new <see cref="FixedMatrix"/> that contains subtraction of one matrix from another.
+        /// Creates a new <see cref="FixMatrix"/> that contains subtraction of one matrix from another.
         /// </summary>
-        /// <param name="matrix1">The first <see cref="FixedMatrix"/>.</param>
-        /// <param name="matrix2">The second <see cref="FixedMatrix"/>.</param>
+        /// <param name="matrix1">The first <see cref="FixMatrix"/>.</param>
+        /// <param name="matrix2">The second <see cref="FixMatrix"/>.</param>
         /// <param name="result">The result of the matrix subtraction as an output parameter.</param>
-        public static void Subtract(ref FixedMatrix matrix1, ref FixedMatrix matrix2, out FixedMatrix result)
+        public static void Subtract(ref FixMatrix matrix1, ref FixMatrix matrix2, out FixMatrix result)
         {
             result.M11 = matrix1.M11 - matrix2.M11;
             result.M12 = matrix1.M12 - matrix2.M12;
@@ -1333,13 +1331,13 @@ namespace VoidHuntersRevived.Common
         }
 
         /// <summary>
-        /// Returns a <see cref="String"/> representation of this <see cref="FixedMatrix"/> in the format:
+        /// Returns a <see cref="String"/> representation of this <see cref="FixMatrix"/> in the format:
         /// {M11:[<see cref="M11"/>] M12:[<see cref="M12"/>] M13:[<see cref="M13"/>] M14:[<see cref="M14"/>]}
         /// {M21:[<see cref="M21"/>] M12:[<see cref="M22"/>] M13:[<see cref="M23"/>] M14:[<see cref="M24"/>]}
         /// {M31:[<see cref="M31"/>] M32:[<see cref="M32"/>] M33:[<see cref="M33"/>] M34:[<see cref="M34"/>]}
         /// {M41:[<see cref="M41"/>] M42:[<see cref="M42"/>] M43:[<see cref="M43"/>] M44:[<see cref="M44"/>]}
         /// </summary>
-        /// <returns>A <see cref="String"/> representation of this <see cref="FixedMatrix"/>.</returns>
+        /// <returns>A <see cref="String"/> representation of this <see cref="FixMatrix"/>.</returns>
         public override string ToString()
         {
             return "{M11:" + M11 + " M12:" + M12 + " M13:" + M13 + " M14:" + M14 + "}"
@@ -1352,10 +1350,10 @@ namespace VoidHuntersRevived.Common
         /// Swap the matrix rows and columns.
         /// </summary>
         /// <param name="matrix">The matrix for transposing operation.</param>
-        /// <returns>The new <see cref="FixedMatrix"/> which contains the transposing result.</returns>
-        public static FixedMatrix Transpose(FixedMatrix matrix)
+        /// <returns>The new <see cref="FixMatrix"/> which contains the transposing result.</returns>
+        public static FixMatrix Transpose(FixMatrix matrix)
         {
-            FixedMatrix ret;
+            FixMatrix ret;
             Transpose(ref matrix, out ret);
             return ret;
         }
@@ -1364,10 +1362,10 @@ namespace VoidHuntersRevived.Common
         /// Swap the matrix rows and columns.
         /// </summary>
         /// <param name="matrix">The matrix for transposing operation.</param>
-        /// <param name="result">The new <see cref="FixedMatrix"/> which contains the transposing result as an output parameter.</param>
-        public static void Transpose(ref FixedMatrix matrix, out FixedMatrix result)
+        /// <param name="result">The new <see cref="FixMatrix"/> which contains the transposing result as an output parameter.</param>
+        public static void Transpose(ref FixMatrix matrix, out FixMatrix result)
         {
-            FixedMatrix ret;
+            FixMatrix ret;
 
             ret.M11 = matrix.M11;
             ret.M12 = matrix.M21;

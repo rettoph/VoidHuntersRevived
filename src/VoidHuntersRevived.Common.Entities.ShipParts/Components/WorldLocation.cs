@@ -1,5 +1,4 @@
-﻿using FixedMath.NET;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +10,10 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 {
     public abstract class WorldLocation
     {
-        public abstract AetherVector2 Position { get; }
+        public abstract FixVector2 Position { get; }
         public abstract Fix64 Rotation { get; }
-        public abstract FixedMatrix Transformation { get; }
+        public abstract FixMatrix Transformation { get; }
 
-        public abstract void SetTransform(AetherVector2 position, Fix64 rotation);
+        public abstract void SetTransform(FixVector2 position, Fix64 rotation);
     }
 }

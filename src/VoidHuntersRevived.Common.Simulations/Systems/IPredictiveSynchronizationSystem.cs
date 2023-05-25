@@ -1,5 +1,4 @@
-﻿using FixedMath.NET;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities.Systems;
 using System;
 using System.Collections.Generic;

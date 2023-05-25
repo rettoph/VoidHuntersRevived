@@ -1,5 +1,4 @@
-﻿using FixedMath.NET;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,15 +19,16 @@ namespace VoidHuntersRevived.Common.Entities.Components
             _body = body;
         }
 
-        public override AetherVector2 Position => _body.Position;
+        public override FixVector2 Position => (FixVector2)_body.Position;
 
-        public override Fix64 Rotation => _body.Rotation;
+        public override Fix64 Rotation => (Fix64)_body.Rotation;
 
-        public override FixedMatrix Transformation => _body.GetTransformation();
+        public override FixMatrix Transformation => _body.GetTransformation();
 
-        public override void SetTransform(AetherVector2 position, Fix64 rotation)
+        public override void SetTransform(FixVector2 position, Fix64 rotation)
         {
-            _body.SetTransformIgnoreContacts(ref position, rotation);
+            AetherVector2 aetherVector2 = (AetherVector2)position;
+            _body.SetTransformIgnoreContacts(ref aetherVector2, rotation);
         }
     }
 }

@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Domain.Entities.ShipParts.Systems
                 return;
             }
 
-            FixedMatrix transformation = FixedMatrix.Identity;
+            FixMatrix transformation = FixMatrix.Identity;
             Fixture[] fixtures = new Fixture[rigid.Shapes.Length];
 
             for (var i = 0; i < rigid.Shapes.Length; i++)

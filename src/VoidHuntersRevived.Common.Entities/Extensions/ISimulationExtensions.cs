@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Common.Entities.Extensions
             ParallelKey key, 
             ShipPart shipPart, 
             bool tractorable,
-            AetherVector2 position,
+            FixVector2 position,
             Fix64 rotation)
         {
             return simulation.CreateEntity(key, EntityTypes.ShipPart, entity =>

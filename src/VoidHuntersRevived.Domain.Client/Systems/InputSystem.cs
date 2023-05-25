@@ -14,6 +14,7 @@ using VoidHuntersRevived.Common.Simulations.Lockstep.Messages;
 using Guppy.Attributes;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
 {
@@ -124,7 +125,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 Body = new SetTacticalTarget()
                 {
                     TacticalKey = shipKey,
-                    Target = CurrentTargetPosition.ToAetherVector2()
+                    Target = (FixVector2)CurrentTargetPosition
                 }
             });
 

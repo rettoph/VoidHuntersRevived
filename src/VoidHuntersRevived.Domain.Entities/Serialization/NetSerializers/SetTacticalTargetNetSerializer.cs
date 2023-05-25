@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
             return new SetTacticalTarget()
             {
                 TacticalKey = reader.GetParallelKey(),
-                Target = reader.GetAetherVector2()
+                Target = reader.GetFixVector2()
             };
         }
 

@@ -1,5 +1,4 @@
-﻿using FixedMath.NET;
-using Guppy.Attributes;
+﻿using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.Network;
 using Guppy.Network.Identity;

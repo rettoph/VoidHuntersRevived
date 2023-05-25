@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Helpers;
 
 namespace tainicom.Aether.Physics2D.Common
 {
@@ -17,21 +16,21 @@ namespace tainicom.Aether.Physics2D.Common
         /// Transforms the polygon using the defined fixedmatrix.
         /// </summary>
         /// <param name="transform">The matrix to use as transformation.</param>
-        public static void Transform(this Vertices vertices, ref FixedMatrix transform)
+        public static void Transform(this Vertices vertices, ref FixMatrix transform)
         {
             // Transform main polygon
             for (int i = 0; i < vertices.Count; i++)
-                vertices[i] = FixedVector2Helper.Transform(vertices[i], transform);
+                vertices[i] = (AetherVector2)FixVector2.Transform((FixVector2)vertices[i], transform);
 
             // Transform holes
             if (vertices.Holes != null && vertices.Holes.Count > 0)
             {
                 for (int i = 0; i < vertices.Holes.Count; i++)
                 {
-                    AetherVector2[] temp = vertices.Holes[i].ToArray();
-                    FixedVector2Helper.Transform(temp, ref transform, temp);
+                    FixVector2[] temp = vertices.Holes[i].Select(x => (FixVector2)x).ToArray();
+                    FixVector2.Transform(temp, ref transform, temp);
 
-                    vertices.Holes[i] = new Vertices(temp);
+                    vertices.Holes[i] = new Vertices(temp.Select(x => (AetherVector2)x).ToArray());
                 }
             }
         }
