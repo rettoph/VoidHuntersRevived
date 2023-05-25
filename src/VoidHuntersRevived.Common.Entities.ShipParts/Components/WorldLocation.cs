@@ -1,18 +1,20 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FixedMath.NET;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using tainicom.Aether.Physics2D.Common;
 
 namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 {
     public abstract class WorldLocation
     {
-        public abstract Vector2 Position { get; }
-        public abstract float Rotation { get; }
-        public abstract Matrix Transformation { get; }
+        public abstract AetherVector2 Position { get; }
+        public abstract Fix64 Rotation { get; }
+        public abstract FixedMatrix Transformation { get; }
 
-        public abstract void SetTransform(Vector2 position, float rotation);
+        public abstract void SetTransform(AetherVector2 position, Fix64 rotation);
     }
 }

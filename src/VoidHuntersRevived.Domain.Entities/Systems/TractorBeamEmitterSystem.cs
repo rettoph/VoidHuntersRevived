@@ -1,4 +1,5 @@
-﻿using Guppy.Common;
+﻿using FixedMath.NET;
+using Guppy.Common;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using Serilog;
@@ -9,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using tainicom.Aether.Physics2D.Collision;
+using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
@@ -83,7 +85,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            location.SetTransform(tactical.Value, 0);
+            location.SetTransform(tactical.Value, Fix64.Zero);
         }
 
         public void Process(in ISimulationEvent<ActivateTractorBeamEmitter> message)
@@ -226,15 +228,16 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             tractorBeamEmitter.TargetKey = null;
         }
 
+        static readonly Fix64 Radius = (Fix64)5;
         private bool Query(
             ISimulation simulation,
             TractorBeamEmitter emitter,
-            Vector2 target,
+            AetherVector2 target,
             out ParallelKey targetKey)
         {
-            const float Radius = 5f;
+            
             AABB aabb = new AABB(target, Radius, Radius);
-            float minDistance = Radius;
+            Fix64 minDistance = Radius;
             ParallelKey? callbackTargetKey = default!;
 
             simulation.Aether.QueryAABB(fixture =>
@@ -259,7 +262,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                     return true;
                 }
 
-                float distance = Vector2.Distance(target, location.Position);
+                AetherVector2 position = location.Position;
+                AetherVector2.Distance(ref target, ref position, out Fix64 distance);
                 if (distance >= minDistance)
                 { // Invalid Target - The distance is further away than the previously closest valid target
                     return true;

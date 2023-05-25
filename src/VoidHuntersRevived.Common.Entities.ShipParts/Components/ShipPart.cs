@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FixedMath.NET;
+using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using tainicom.Aether.Physics2D.Common;
 
 namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 {
@@ -27,7 +29,7 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
         {
             this.Parent = parent;
             this.Head = this.Parent?.Owner.Head ?? this;
-            this.Location = new Location(Vector2.Zero, 0);
+            this.Location = new Location(AetherVector2.Zero, Fix64.Zero);
             this.Components = components;
 
             this.Joints = joints.Select((x, idx) => new Joint(this, idx, x)).ToArray();

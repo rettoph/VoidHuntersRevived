@@ -21,15 +21,14 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
             return new SetTacticalTarget()
             {
                 TacticalKey = reader.GetParallelKey(),
-                Target = new Vector2(reader.GetFloat(), reader.GetFloat())
+                Target = reader.GetAetherVector2()
             };
         }
 
         public override void Serialize(NetDataWriter writer, in SetTacticalTarget instance)
         {
             writer.Put(instance.TacticalKey);
-            writer.Put(instance.Target.X);
-            writer.Put(instance.Target.Y);
+            writer.Put(instance.Target);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FixedMath.NET;
+using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities.Systems;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,6 @@ namespace VoidHuntersRevived.Common.Simulations.Systems
 {
     public interface IPredictiveSynchronizationSystem : ISystem
     {
-        void Synchronize(ISimulation simulation, GameTime gameTime, float damping);
+        void Synchronize(ISimulation simulation, GameTime gameTime, Fix64 damping);
     }
 }

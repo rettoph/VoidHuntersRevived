@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FixedMath.NET;
+using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using tainicom.Aether.Physics2D.Common;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
@@ -81,7 +83,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             simulation.Aether.Step(gameTime.ElapsedGameTime);
         }
 
-        public void Synchronize(ISimulation simulation, GameTime gameTime, float damping)
+        public void Synchronize(ISimulation simulation, GameTime gameTime, Fix64 damping)
         {
             foreach (int entityId in this.Entities[simulation.Type].ActiveEntities)
             {
@@ -98,11 +100,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
                 }
 
                 predictiveBody.SetTransformIgnoreContacts(
-                    position: Vector2.Lerp(predictiveBody.Position, lockstepBody.Position, damping),
-                    angle: MathHelper.Lerp(predictiveBody.Rotation, lockstepBody.Rotation, damping));
+                    position: AetherVector2.Lerp(predictiveBody.Position, lockstepBody.Position, damping),
+                    angle: MathUtils.Lerp(predictiveBody.Rotation, lockstepBody.Rotation, damping));
 
-                predictiveBody.LinearVelocity = Vector2.Lerp(predictiveBody.LinearVelocity, lockstepBody.LinearVelocity, damping);
-                predictiveBody.AngularVelocity = MathHelper.Lerp(predictiveBody.AngularVelocity, lockstepBody.AngularVelocity, damping);
+                predictiveBody.LinearVelocity = AetherVector2.Lerp(predictiveBody.LinearVelocity, lockstepBody.LinearVelocity, damping);
+                predictiveBody.AngularVelocity = MathUtils.Lerp(predictiveBody.AngularVelocity, lockstepBody.AngularVelocity, damping);
             }
         }
     }

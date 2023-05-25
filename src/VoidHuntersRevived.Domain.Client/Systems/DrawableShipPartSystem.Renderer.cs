@@ -3,6 +3,7 @@ using Guppy.MonoGame.Utilities.Cameras;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 
 namespace VoidHuntersRevived.Domain.Client.Systems
@@ -40,11 +41,12 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 }
             }
 
-            public void RenderShapes(Matrix transformation)
+            public void RenderShapes(FixedMatrix transformation)
             {
                 foreach(PrimitiveShape shape in _shapes)
                 {
-                    _primitiveBatch.Fill(shape, in _shapeColor, ref transformation);
+                    Matrix xnaMatrix = transformation.XnaMatrix;
+                    _primitiveBatch.Fill(shape, in _shapeColor, ref xnaMatrix);
                 }
             }
 

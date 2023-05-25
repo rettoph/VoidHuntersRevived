@@ -1,10 +1,12 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FixedMath.NET;
+using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using tainicom.Aether.Physics2D.Common;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
@@ -18,7 +20,7 @@ namespace VoidHuntersRevived.Common.Entities.Extensions
         {
             return simulation.CreateEntity(key, EntityTypes.Ship, entity =>
             {
-                Body body = simulation.Aether.CreateBody(Vector2.Zero, 0, BodyType.Dynamic);
+                Body body = simulation.Aether.CreateBody(AetherVector2.Zero, Fix64.Zero, BodyType.Dynamic);
                 WorldLocation worldLocation = new AetherBodyWorldLocation(body);
 
                 entity.Attach(body);
@@ -32,12 +34,12 @@ namespace VoidHuntersRevived.Common.Entities.Extensions
             ParallelKey key, 
             ShipPart shipPart, 
             bool tractorable,
-            Vector2 position,
-            float rotation)
+            AetherVector2 position,
+            Fix64 rotation)
         {
             return simulation.CreateEntity(key, EntityTypes.ShipPart, entity =>
             {
-                Body body = simulation.Aether.CreateBody(Vector2.Zero, 0, BodyType.Dynamic);
+                Body body = simulation.Aether.CreateBody(AetherVector2.Zero, Fix64.Zero, BodyType.Dynamic);
                 WorldLocation worldLocation = new AetherBodyWorldLocation(body);
                 worldLocation.SetTransform(position, rotation);
 

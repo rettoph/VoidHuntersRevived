@@ -12,6 +12,7 @@ using tainicom.Aether.Physics2D.Collision.Shapes;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using VoidHuntersRevived.Common.Systems;
 using VoidHuntersRevived.Common.Simulations.Components;
+using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.ShipParts.Systems
 {
@@ -60,7 +61,7 @@ namespace VoidHuntersRevived.Domain.Entities.ShipParts.Systems
                 return;
             }
 
-            Matrix transformation = Matrix.Identity;
+            FixedMatrix transformation = FixedMatrix.Identity;
             Fixture[] fixtures = new Fixture[rigid.Shapes.Length];
 
             for (var i = 0; i < rigid.Shapes.Length; i++)

@@ -1,10 +1,12 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FixedMath.NET;
+using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using tainicom.Aether.Physics2D.Common;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Enums;
@@ -40,30 +42,31 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             Helm helm = _helms.Get(entityId);
             Body body = _body.Get(entityId);
 
-            Vector2 impulse = Vector2.Zero;
-            float angularImpulse = 0f;
+            AetherVector2 impulse = AetherVector2.Zero;
+            Fix64 angularImpulse = Fix64.Zero;
 
             if (helm.Direction.HasFlag(Direction.Forward))
             {
-                impulse -= Vector2.UnitY;
+                impulse -= AetherVector2.UnitY;
             }
 
             if (helm.Direction.HasFlag(Direction.Backward))
             {
-                impulse += Vector2.UnitY;
+                impulse += AetherVector2.UnitY;
             }
 
             if (helm.Direction.HasFlag(Direction.TurnLeft))
             {
-                impulse -= Vector2.UnitX;
+                impulse -= AetherVector2.UnitX;
             }
 
             if (helm.Direction.HasFlag(Direction.TurnRight))
             {
-                impulse += Vector2.UnitX;
+                impulse += AetherVector2.UnitX;
             }
 
-            impulse *= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            // TODO: Fix this - determinsim is lost by casting a float
+            impulse *= (Fix64)gameTime.ElapsedGameTime.TotalSeconds;
 
             body.ApplyLinearImpulse(impulse);
             body.ApplyAngularImpulse(angularImpulse);

@@ -8,6 +8,7 @@ using tainicom.Aether.Physics2D.Collision.Shapes;
 using tainicom.Aether.Physics2D.Common.ConvexHull;
 using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Common.Entities.ShipParts.Helpers;
+using FixedMath.NET;
 
 namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 {
@@ -20,9 +21,9 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
             this.Shapes = shapes;
         }
 
-        public static Rigid Polygon(float density, int sides)
+        public static Rigid Polygon(Fix64 density, int sides)
         {
-            var vertices = new Vertices(PolygonHelper.CalculateVertexAngles(sides).Select(x => x.Vertex));
+            var vertices = new Vertices(PolygonHelper.CalculateVertexAngles(sides).Select(x => x.Fixed));
             vertices = GiftWrap.GetConvexHull(vertices);
             var shape = new PolygonShape(vertices, density);
 

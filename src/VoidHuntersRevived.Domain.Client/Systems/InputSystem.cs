@@ -124,7 +124,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 Body = new SetTacticalTarget()
                 {
                     TacticalKey = shipKey,
-                    Target = CurrentTargetPosition
+                    Target = CurrentTargetPosition.ToAetherVector2()
                 }
             });
 

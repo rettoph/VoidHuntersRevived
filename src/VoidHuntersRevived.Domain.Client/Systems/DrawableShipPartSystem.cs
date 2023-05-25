@@ -97,7 +97,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
                 Drawable drawable = _drawable.Get(entityId);
                 Renderer renderer = _renderers[drawable];
 
-                renderer!.RenderPaths(worldLocation.Transformation);
+                renderer!.RenderPaths(worldLocation.Transformation.XnaMatrix);
             }
             _primitiveBatch.End();
         }

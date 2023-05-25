@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FixedMath.NET;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,18 +15,18 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json.Converters
     {
         public override PolygonShape? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var vertices = new Vertices();
-            var density = 0f;
+            Vertices vertices = new Vertices();
+            Fix64 density = Fix64.Zero;
 
             while(reader.ReadPropertyName(out string? property))
             {
                 switch(property)
                 {
                     case nameof(PolygonShape.Density):
-                        density = reader.ReadSingle();
+                        density = Fix64.FromRaw(reader.ReadInt64());
                         break;
                     case nameof(PolygonShape.Vertices):
-                        vertices = JsonSerializer.Deserialize<Vertices>(ref reader, options);
+                        vertices = JsonSerializer.Deserialize<Vertices>(ref reader, options) ?? throw new NotImplementedException();
                         reader.Read();
                         break;
                 }
@@ -38,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json.Converters
         {
             writer.WriteStartObject();
 
-            writer.WriteNumber(nameof(PolygonShape.Density), value.Density);
+            writer.WriteNumber(nameof(PolygonShape.Density), value.Density.RawValue);
 
             writer.WritePropertyName(nameof(PolygonShape.Vertices));
             JsonSerializer.Serialize<Vertices>(writer, value.Vertices, options);

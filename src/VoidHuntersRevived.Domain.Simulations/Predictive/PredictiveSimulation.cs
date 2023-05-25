@@ -1,4 +1,5 @@
-﻿using Guppy.Attributes;
+﻿using FixedMath.NET;
+using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.Network;
 using Guppy.Network.Identity;
@@ -68,7 +69,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
                 _predictionService.Verify(this, verified);
             }
 
-            var damping = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Fix64 damping = (Fix64)gameTime.ElapsedGameTime.TotalSeconds;
 
             foreach (IPredictiveSynchronizationSystem synchronizeSystem in _synchronizeSystems)
             {

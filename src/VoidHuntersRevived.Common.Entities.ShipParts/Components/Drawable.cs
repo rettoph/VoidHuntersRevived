@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System.Linq;
 using VoidHuntersRevived.Common.Entities.ShipParts.Helpers;
 
 namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
@@ -18,17 +19,17 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 
         public static Drawable Polygon(string color, int sides)
         {
-            var vertexAngles = PolygonHelper.CalculateVertexAngles(sides);
+            IEnumerable<PolygonHelper.VertexAngle> vertexAngles = PolygonHelper.CalculateVertexAngles(sides);
 
             return new Drawable(
                 color: color,
                 shapes: new[]
                 {
-                    vertexAngles.Select(x => x.Vertex).ToArray()
+                    vertexAngles.Select(x => x.Floating).ToArray()
                 },
                 paths: new[]
                 {
-                    vertexAngles.Select(x => x.Vertex).Concat(vertexAngles.First().Vertex.Yield()).ToArray()
+                    vertexAngles.Select(x => x.Floating).Concat(vertexAngles.First().Floating.Yield()).ToArray()
                 });
         }
 

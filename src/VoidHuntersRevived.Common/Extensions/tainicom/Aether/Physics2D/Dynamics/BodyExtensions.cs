@@ -1,32 +1,35 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FixedMath.NET;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using tainicom.Aether.Physics2D.Common;
+using VoidHuntersRevived.Common;
 
 namespace tainicom.Aether.Physics2D.Dynamics
 {
     public static class BodyExtensions
     {
-        public static void SetTransformIgnoreContacts(this Body body, Vector2 position, float angle)
+        public static void SetTransformIgnoreContacts(this Body body, AetherVector2 position, Fix64 angle)
         {
             body.SetTransformIgnoreContacts(ref position, angle);
         }
 
-        public static Matrix GetTransformation(this Body body)
+        public static FixedMatrix GetTransformation(this Body body)
         {
-            return Matrix.CreateRotationZ(body.Rotation) * Matrix.CreateTranslation(body.Position.X, body.Position.Y, 0);
+            return FixedMatrix.CreateRotationZ(body.Rotation) * FixedMatrix.CreateTranslation(body.Position.X, body.Position.Y, Fix64.Zero);
         }
 
-        public static Matrix GetCenterTransformation(this Body body)
+        public static FixedMatrix GetCenterTransformation(this Body body)
         {
-            return Matrix.CreateTranslation(body.LocalCenter.X, body.LocalCenter.Y, 0) * body.GetTransformation();
+            return FixedMatrix.CreateTranslation(body.LocalCenter.X, body.LocalCenter.Y, Fix64.Zero) * body.GetTransformation();
         }
 
-        public static Matrix GetLocalCenterTransformation(this Body body)
+        public static FixedMatrix GetLocalCenterTransformation(this Body body)
         {
-            return Matrix.CreateTranslation(body.LocalCenter.X, body.LocalCenter.Y, 0);
+            return FixedMatrix.CreateTranslation(body.LocalCenter.X, body.LocalCenter.Y, Fix64.Zero);
         }
     }
 }

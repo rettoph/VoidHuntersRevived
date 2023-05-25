@@ -17,6 +17,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Events;
 using VoidHuntersRevived.Common.Simulations;
@@ -63,7 +64,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             _globalsSmulationService = globalSimulationService;
 
             this.Type = type;
-            this.Aether = new Aether(Vector2.Zero);
+            this.Aether = new Aether(AetherVector2.Zero);
             this.EntityComponentType = typeof(TEntityComponent);
             this.Provider = default!;
             this.Keys = new ParallelKeyProvider();

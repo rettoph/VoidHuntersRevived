@@ -13,6 +13,8 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Entities.ShipParts.Components;
 using Guppy.Common;
+using FixedMath.NET;
+using tainicom.Aether.Physics2D.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {
@@ -52,17 +54,17 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             ShipPart square = new ShipPart(
                 joints: new[] { 
-                    new Location(Vector2.Zero, 0) 
+                    new Location(AetherVector2.Zero, Fix64.Zero) 
                 }, 
                 components: new ShipPartComponent[] {
-                    Rigid.Polygon(1f, 4),
+                    Rigid.Polygon(Fix64.One, 4),
                     Drawable.Polygon(Colors.Orange, 4)
                 });
 
             int ship = message.Simulation.CreateShip(message.NewKey(), square);
             _users.Put(ship, user);
 
-            int shipPart = message.Simulation.CreateShipPart(message.NewKey(), square, true, Vector2.Zero, 0);
+            int shipPart = message.Simulation.CreateShipPart(message.NewKey(), square, true, AetherVector2.Zero, Fix64.Zero);
 
             return;
         }

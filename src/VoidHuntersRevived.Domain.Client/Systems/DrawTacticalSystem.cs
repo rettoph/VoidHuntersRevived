@@ -56,7 +56,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             foreach(int entityId in this.ActiveEntities)
             {
                 Tactical tactical = _tacticals.Get(entityId);
-                Matrix transformation = Matrix.CreateTranslation(tactical.Value.X - 0.5f, tactical.Value.Y - 0.5f, 0);
+                Matrix transformation = Matrix.CreateTranslation((float)tactical.Value.X - 0.5f, (float)tactical.Value.Y - 0.5f, 0);
 
                 _primitiveBatch.Trace(_shape, Color.Blue, transformation);
             }
