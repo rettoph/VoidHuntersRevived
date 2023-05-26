@@ -1,8 +1,13 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
+using Guppy.Common.Collections;
+using Guppy.GUI;
+using Guppy.GUI.Elements;
+using Guppy.GUI.Providers;
 using Guppy.MonoGame.Utilities.Cameras;
 using Guppy.Network;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using Serilog;
@@ -27,9 +32,21 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private readonly ISimulationService _simulations;
         private ComponentMapper<IBody> _bodies;
         private ILogger _logger;
+        private Stage _stage;
+        private Label _fps;
+        private TimeSpan _timeSinceSecond;
+        private float _framesSinceSecond;
+        private Buffer<float> _framesPerSecond = new Buffer<float>(10);
+        private TimeSpan _second = TimeSpan.FromSeconds(1);
 
-        public CameraSystem(ILogger logger, NetScope scope, Camera2D camera, ISimulationService simulations)
-        { 
+        public CameraSystem(
+            IStageProvider stages,
+            ILogger logger, 
+            NetScope scope, 
+            Camera2D camera, 
+            ISimulationService simulations)
+        {
+            _stage = stages.Create();
             _logger = logger;
             _camera = camera;
             _scope = scope;
@@ -37,6 +54,14 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             _bodies = default!;
 
             _camera.Zoom = 100;
+
+            _fps = new Label()
+            {
+                Color = Color.Red,
+                Text = "test"
+            };
+
+            _stage.Add(_fps);
         }
 
         public override void Initialize(World world)
@@ -50,7 +75,20 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         {
             this.UpdateCameraTargets(gameTime);
 
+            _timeSinceSecond += gameTime.ElapsedGameTime;
+            _framesSinceSecond++;
+
+            if(_timeSinceSecond >= _second)
+            {
+                _timeSinceSecond -= _second;
+                _framesPerSecond.Add(_framesSinceSecond);
+                _framesSinceSecond = 0;
+
+                _fps.Text = _framesPerSecond.Average().ToString("#,##0.00");
+            }
+
             _camera.Update(gameTime);
+            _stage.Draw(gameTime);
         }
 
         private void UpdateCameraTargets(GameTime gameTime)
