@@ -11,7 +11,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Physics;
-using VoidHuntersRevived.Common.Simulations.Providers;
 
 namespace VoidHuntersRevived.Common.Simulations
 {
@@ -21,7 +20,6 @@ namespace VoidHuntersRevived.Common.Simulations
         ISpace Space { get; }
         Type EntityComponentType { get; }
         IServiceProvider Provider { get; }
-        IParallelKeyProvider Keys { get; }
 
         void Initialize(IServiceProvider provider);
 

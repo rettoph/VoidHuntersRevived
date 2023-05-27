@@ -59,10 +59,10 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                     Drawable.Polygon(Colors.Orange, 4)
                 });
 
-            int ship = message.Simulation.CreateShip(message.NewKey(), square);
+            int ship = message.Simulation.CreateShip(message.Key.Step(1), square);
             _users.Put(ship, user);
 
-            int shipPart = message.Simulation.CreateShipPart(message.NewKey(), square, true, FixVector2.Zero, Fix64.Zero);
+            int shipPart = message.Simulation.CreateShipPart(message.Key.Step(2), square, true, FixVector2.Zero, Fix64.Zero);
 
             return;
         }

@@ -19,16 +19,6 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         object ISimulationEvent.Body => this.Body;
 
-        public ParallelKey NewKey()
-        {
-            return this.Simulation.Keys.Next(this.Key);
-        }
-
-        public ParallelKey PreviousKey()
-        {
-            return this.Simulation.Keys.Previous(this.Key);
-        }
-
         public void Respond(object? response)
         {
             this.Response = response;

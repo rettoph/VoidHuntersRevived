@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             _fps = new Label()
             {
                 Color = Color.Red,
-                Text = "test"
+                Text = ""
             };
 
             _stage.Add(_fps);

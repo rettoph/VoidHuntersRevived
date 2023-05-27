@@ -14,10 +14,6 @@ namespace VoidHuntersRevived.Common.Simulations
 
         object? Response { get; }
 
-        ParallelKey NewKey();
-
-        ParallelKey PreviousKey();
-
         void Respond(object? response);
     }
 

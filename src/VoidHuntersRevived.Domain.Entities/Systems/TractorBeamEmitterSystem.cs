@@ -118,7 +118,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             // Create a clone of the target piece
             IBody body = _bodies.Get(targetId);
-            ParallelKey cloneKey = message.NewKey();
+            ParallelKey cloneKey = message.Key.Step(1);
             int clone = message.Simulation.CreateShipPart(
                 key: cloneKey, 
                 shipPart: _shipParts.Get(targetId).Clone(), 
@@ -129,7 +129,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             // Select the brand new clone
             message.Simulation.Publish(new SimulationEventData()
             {
-                Key = message.NewKey(),
+                Key = message.Key.Step(2),
                 SenderId = message.SenderId,
                 Body = new SetTractorBeamEmitterTarget()
                 {
@@ -208,7 +208,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             _logger.Debug($"{nameof(TractorBeamEmitterSystem)}::{nameof(Process)}<{nameof(DeactivateTractorBeamEmitter)}> - Deactivating {tractorBeamEmitterId}, TargetId: {tractorBeamEmitter.TargetKey}");
 
             int clone = message.Simulation.CreateShipPart(
-                key: message.NewKey(), 
+                key: message.Key.Step(1), 
                 shipPart: _shipParts.Get(targetId).Clone(), 
                 tractorable: true,
                 position: body.Position,

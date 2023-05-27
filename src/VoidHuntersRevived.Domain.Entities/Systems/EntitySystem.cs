@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         public void Process(in ISimulationEvent<CreateEntity> message)
         {
-            ParallelKey entityKey = message.Body.Key ?? message.NewKey();
+            ParallelKey entityKey = message.Body.Key ?? message.Key.Step(1);
             Entity entity;
 
             if (message.Body.Factory is null)

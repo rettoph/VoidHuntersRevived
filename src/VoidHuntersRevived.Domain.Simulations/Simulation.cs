@@ -23,12 +23,8 @@ using VoidHuntersRevived.Common.Entities.Events;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Physics.Factories;
 using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Components;
-using VoidHuntersRevived.Common.Simulations.Lockstep;
-using VoidHuntersRevived.Common.Simulations.Providers;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
-using VoidHuntersRevived.Domain.Simulations.Providers;
 
 using CreateEntityEvent = VoidHuntersRevived.Common.Entities.Events.CreateEntity;
 using DestroyEntityEvent = VoidHuntersRevived.Common.Entities.Events.DestroyEntity;
@@ -53,8 +49,6 @@ namespace VoidHuntersRevived.Domain.Simulations
         Type ISimulation.EntityComponentType => this.EntityComponentType;
         IServiceProvider ISimulation.Provider => this.Provider;
 
-        public IParallelKeyProvider Keys { get; }
-
         protected Simulation(
             SimulationType type,
             IParallelableService parallelables,
@@ -70,7 +64,6 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.Space = spaceFactory.Create();
             this.EntityComponentType = typeof(TEntityComponent);
             this.Provider = default!;
-            this.Keys = new ParallelKeyProvider();
         }
 
         public virtual void Initialize(IServiceProvider provider)

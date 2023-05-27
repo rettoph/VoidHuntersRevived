@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Common.Entities.Events
 {
     public class CreateEntity
     {
-        public static readonly ParallelKey Noise = ParallelKey.From<CreateEntity>();
+        public static readonly ParallelKey Noise = Common.ParallelKey.From<CreateEntity>();
 
         public readonly ParallelKey? Key;
         public readonly EntityType Type;
