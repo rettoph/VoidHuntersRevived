@@ -30,8 +30,6 @@ namespace VoidHuntersRevived.Domain.Client.Systems
         private readonly ISimulationService _simulations;
         private readonly IUserShipMappingService _userShips;
         private readonly Camera2D _camera;
-        private ISimulation _interactive;
-        private ComponentMapper<Parallelable> _parallelables;
         private float _scroll;
 
         private Vector2 CurrentTargetPosition => _camera.Unproject(Mouse.GetState().Position.ToVector2());
@@ -46,17 +44,11 @@ namespace VoidHuntersRevived.Domain.Client.Systems
             _camera = camera;
             _simulations = simulations;
             _userShips = userShips;
-            _interactive = default!;
-            _parallelables = default!;
         }
 
         public override void Initialize(World world)
         {
             base.Initialize(world);
-
-            _interactive = _simulations.First(SimulationType.Predictive, SimulationType.Lockstep);
-
-            _parallelables = world.ComponentManager.GetMapper<Parallelable>();
         }
 
         public override void Update(GameTime gameTime)

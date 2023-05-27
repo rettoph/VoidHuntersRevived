@@ -93,5 +93,10 @@ namespace VoidHuntersRevived.Common
         {
             return a.Step(b);
         }
+
+        public override string ToString()
+        {
+            return this.Value.ToString();
+        }
     }
 }

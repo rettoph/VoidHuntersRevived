@@ -11,6 +11,7 @@ using VoidHuntersRevived.Common.Physics;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
 using tainicom.Aether.Physics2D.Common;
+using VoidHuntersRevived.Common.Simulations.Services;
 
 namespace VoidHuntersRevived.Domain.Physics.Systems
 {
@@ -19,23 +20,22 @@ namespace VoidHuntersRevived.Domain.Physics.Systems
         public static readonly AspectBuilder BodyAspect = Aspect.All(new[]
 {
             typeof(ISimulation),
-            typeof(IBody),
-            typeof(Parallelable)
+            typeof(IBody)
         });
 
-        private ComponentMapper<ISimulation> _simulations = null!;
-        private ComponentMapper<IBody> _bodies = null!;
-        private ComponentMapper<Parallelable> _parallelables = null!;
+        private IParallelComponentMapper<ISimulation> _simulations = null!;
+        private IParallelComponentMapper<IBody> _bodies = null!;
 
         public SpaceSystem() : base(BodyAspect)
         {
         }
 
-        public override void Initialize(IComponentMapperService mapperService)
+        public override void Initialize(IParallelComponentMapperService components, IParallelEntityService entities)
         {
-            _simulations = mapperService.GetMapper<ISimulation>();
-            _bodies = mapperService.GetMapper<IBody>();
-            _parallelables = mapperService.GetMapper<Parallelable>();
+            base.Initialize(components, entities);
+
+            _simulations = components.GetMapper<ISimulation>();
+            _bodies = components.GetMapper<IBody>();
         }
 
         public void Update(ISimulation simulation, GameTime gameTime)
@@ -43,17 +43,17 @@ namespace VoidHuntersRevived.Domain.Physics.Systems
             simulation.Space.Step(gameTime.ElapsedGameTime);
         }
 
-        public void Synchronize(ISimulation simulation, GameTime gameTime, Fix64 damping)
+        public void Synchronize(ISimulation predctive, ISimulation lockstep, GameTime gameTime, Fix64 damping)
         {
-            foreach (int entityId in this.Entities[simulation.Type].ActiveEntities)
+            foreach (ParallelKey entityKey in this.Entities[predctive.Type].ActiveEntities)
             {
-                if (!_parallelables.Get(entityId).TryGetId(SimulationType.Lockstep, out int lockstepEntityId))
+                if (!_bodies.TryGet(entityKey, lockstep, out IBody? lockstepBody))
                 {
-                    continue;
+                    return;
                 }
 
-                IBody predictiveBody = _bodies.Get(entityId);
-                IBody lockstepBody = _bodies.Get(lockstepEntityId);
+                IBody predictiveBody = _bodies.Get(entityKey, predctive);
+
                 if (predictiveBody is null || lockstepBody is null)
                 {
                     return;

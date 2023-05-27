@@ -12,47 +12,49 @@ namespace VoidHuntersRevived.Common.Simulations.Systems
     {
         private readonly AspectBuilder _aspectBuilder;
 
-        private World _world;
+        private World _world = null!;
+        private IParallelEntityService _entities = null!;
         private EntitySubscription _subscription = null!;
 
-        private readonly IDictionary<SimulationType, EntitySubscription> _subscriptions;
+        private readonly IDictionary<SimulationType, ParallelEntitySubscription> _subscriptions;
 
         protected EntitySubscription subscription => _subscription;
 
-        public readonly IReadOnlyDictionary<SimulationType, EntitySubscription> Entities;
+        public readonly IReadOnlyDictionary<SimulationType, ParallelEntitySubscription> Entities;
 
         public ParallelEntitySystem(AspectBuilder aspectBuilder)
         {
-            _world = default!;
-            _subscriptions = new Dictionary<SimulationType, EntitySubscription>();
+            _subscriptions = new Dictionary<SimulationType, ParallelEntitySubscription>();
             _aspectBuilder = aspectBuilder;
 
-            this.Entities = new ReadOnlyDictionary<SimulationType, EntitySubscription>(_subscriptions);
+            this.Entities = new ReadOnlyDictionary<SimulationType, ParallelEntitySubscription>(_subscriptions);
         }
 
         public override void Initialize(World world)
         {
             _world = world;
+
             _subscription = new EntitySubscription(_world, _aspectBuilder.Build(_world));
+        }
 
-            this.Initialize(world.ComponentManager);
+        public virtual void Initialize(IParallelComponentMapperService components, IParallelEntityService entities)
+        {
+            _entities = entities;
 
-            _world.EntityManager.EntityAdded += OnEntityAdded;
-            _world.EntityManager.EntityRemoved += OnEntityRemoved;
-            _world.EntityManager.EntityChanged += OnEntityChanged;
+            _entities.EntityAdded += OnEntityAdded;
+            _entities.EntityRemoved += OnEntityRemoved;
+            _entities.EntityChanged += OnEntityChanged;
         }
 
         public virtual void Initialize(ISimulation simulation)
         {
             Aspect aspect = _aspectBuilder.Clone().All(simulation.EntityComponentType).Build(_world);
-            EntitySubscription subscription = new EntitySubscription(_world, aspect);
+            ParallelEntitySubscription subscription = new ParallelEntitySubscription(simulation, _entities, aspect);
             _subscriptions.Add(simulation.Type, subscription);
         }
 
-        public abstract void Initialize(IComponentMapperService mapperService);
-
-        protected virtual void OnEntityChanged(int entityId, BitVector32 oldBits) { }
-        protected virtual void OnEntityAdded(int entityId) { }
-        protected virtual void OnEntityRemoved(int entityId) { }
+        protected virtual void OnEntityChanged(ParallelKey entityKey, ISimulation simulation, BitVector32 oldBits) { }
+        protected virtual void OnEntityAdded(ParallelKey entityKey, ISimulation simulation) { }
+        protected virtual void OnEntityRemoved(ParallelKey entityKey, ISimulation simulation) { }
     }
 }

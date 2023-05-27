@@ -34,7 +34,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
             services.AddSingleton<IGlobalSimulationService, GlobalSimulationService>()
                     .AddScoped<ISimulationService, SimulationService>()
                     .AddScoped<ISimulationEventPublishingService, SimulationEventPublishingService>()
-                    .AddScoped<IParallelableService, ParallelableService>();
+                    .AddScoped<IParallelEntityService, ParallelEntityService>()
+                    .AddScoped<IParallelComponentMapperService, ParallelComponentMapperService>();
 
             services.ConfigureCollection(manager =>
             {

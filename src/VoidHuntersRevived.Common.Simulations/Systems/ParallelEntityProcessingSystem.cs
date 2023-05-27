@@ -12,12 +12,12 @@ namespace VoidHuntersRevived.Common.Simulations.Systems
 
         public virtual void Update(ISimulation simulation, GameTime gameTime)
         {
-            foreach (int entityId in this.Entities[simulation.Type].ActiveEntities)
+            foreach (ParallelKey entityKey in this.Entities[simulation.Type].ActiveEntities)
             {
-                this.Process(simulation, gameTime, entityId);
+                this.Process(simulation, gameTime, entityKey);
             }   
         }
 
-        protected abstract void Process(ISimulation simulation, GameTime gameTime, int entityId);
+        protected abstract void Process(ISimulation simulation, GameTime gameTime, ParallelKey entityKey);
     }
 }

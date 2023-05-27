@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             IFiltered<IState> state,
             IBus bus,
             ISimulationEventPublishingService events,
-            IParallelableService parallelables,
+            IParallelEntityService parallelables,
             ISpaceFactory spaceFactory,
             IGlobalSimulationService globalSimulationService) : base(SimulationType.Lockstep, parallelables, spaceFactory, globalSimulationService)
         {

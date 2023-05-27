@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Common.Simulations.Systems;
 
 namespace VoidHuntersRevived.Domain.Simulations.Services
 {
@@ -23,6 +24,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         public ReadOnlyCollection<ISimulation> Instances { get; }
 
         public SimulationType Flags { get; private set; }
+
 
         public ISimulation this[SimulationType type] => _simulations[type];
 
@@ -61,6 +63,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             if (_initialized)
             {
                 throw new InvalidOperationException();
+            }
+
+            IParallelComponentMapperService components = _provider.GetRequiredService<IParallelComponentMapperService>();
+            IParallelEntityService entities = _provider.GetRequiredService<IParallelEntityService>();
+
+            foreach (ISimulationSystem system in _provider.GetRequiredService<ISorted<ISimulationSystem>>())
+            {
+                system.Initialize(components, entities);
             }
 
             foreach (ISimulation simulation in _simulations.Values)

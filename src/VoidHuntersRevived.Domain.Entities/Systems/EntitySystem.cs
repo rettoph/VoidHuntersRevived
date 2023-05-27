@@ -34,21 +34,26 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
     {
         private readonly ILogger _logger;
         private readonly IServiceProvider _provider;
-        private readonly IParallelableService _parallelables;
         private readonly HashCache<ParallelKey> _destroyedEntities;
         private IEntityService _entities = null!;
+        private IParallelEntityService _parallelEntities = null!;
 
-        public EntitySystem(ILogger logger, IServiceProvider provider, IParallelableService parallelables)
+        public EntitySystem(ILogger logger, IServiceProvider provider)
         {
             _logger = logger;
             _provider = provider;
-            _parallelables = parallelables;
             _destroyedEntities = new HashCache<ParallelKey>(TimeSpan.FromSeconds(10));
+        }
+
+        public void Initialize(IParallelComponentMapperService components, IParallelEntityService entities)
+        {
+            _parallelEntities = entities;
+            _entities = _provider.GetRequiredService<IEntityService>();
         }
 
         public void Initialize(ISimulation simulation)
         {
-            _entities = _provider.GetRequiredService<IEntityService>();
+            //
         }
 
         public void Update(GameTime gameTime)
@@ -63,21 +68,18 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             if (message.Body.Factory is null)
             {
-                entity = _entities.Create(message.Body.Type, message.Simulation.ConfigureEntity);
+                entity = _entities.Create(message.Body.Type, message.Simulation.Configure);
             }
             else
             {
-                entity = _entities.Create(message.Body.Type, message.Simulation.ConfigureEntity, message.Body.Factory);
+                entity = _entities.Create(message.Body.Type, message.Simulation.Configure, message.Body.Factory);
             }
 
-            Parallelable parallelable = _parallelables.Get(entityKey);
-            parallelable.AddId(message.Simulation, entity.Id);
-
-            entity.Attach(parallelable);
+            _parallelEntities.Map(entity.Id, entityKey, message.Simulation);
 
             message.Respond(entityKey);
 
-            _logger.Debug($"{nameof(EntitySystem)}::{nameof(Process)}<{nameof(CreateEntity)}> - Created Entity {entity.Id}, ({message.Simulation.Type}, {parallelable.Key.Value})");
+            _logger.Debug($"{nameof(EntitySystem)}::{nameof(Process)}<{nameof(CreateEntity)}> - Created Entity {entity.Id}, ({message.Simulation.Type}), with key {entityKey})");
         }
 
         public void Process(in ISimulationEventRevision<CreateEntity> message)
@@ -87,46 +89,33 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
+            if(_destroyedEntities.Add(entityKey) > 1)
+            {
+                return;
+            }
+
             _destroyedEntities.Add(entityKey);
-
-            if (!message.Simulation.TryGetEntityId(entityKey, out int entityId))
-            {
-                return;
-            }
-
-            if(!_parallelables.TryGet(entityId, out Parallelable? parallelable))
-            {
-                return;
-            }
-
-            parallelable.RemoveId(message.Simulation);
-
+            _parallelEntities.Unmap(entityKey, message.Simulation, out int entityId);
             _entities.Destroy(entityId);
 
-            _logger.Debug($"{nameof(EntitySystem)}::{nameof(Process)}<{nameof(CreateEntity)}> - Reverted Entity creation {entityId}, ({message.Simulation.Type}, {parallelable.Key.Value})");
+            _logger.Debug($"{nameof(EntitySystem)}::{nameof(Process)}<{nameof(CreateEntity)}> - Reverted Entity creation {entityId}, ({message.Simulation.Type}, {message.Body.Key})");
         }
 
         public void Process(in ISimulationEvent<DestroyEntity> message)
         {
             _destroyedEntities.Add(message.Body.Key);
-            Parallelable parallelable = _parallelables.Get(message.Body.Key);
+            _parallelEntities.Unmap(message.Body.Key, message.Simulation, out int entityId);
 
-            if (!parallelable.TryGetId(message.Simulation.Type, out int id))
-            {
-                return;
-            }
-
-            parallelable.RemoveId(message.Simulation);
-            _logger.Debug($"{nameof(EntitySystem)}::{nameof(Process)}<{nameof(DestroyEntity)}> - Destroying Entity {id}, ({message.Simulation.Type}, {parallelable.Key.Value})");
+            _logger.Debug($"{nameof(EntitySystem)}::{nameof(Process)}<{nameof(DestroyEntity)}> - Destroying Entity {entityId}, ({message.Simulation.Type}, {message.Body.Key})");
 
             if (message.Body.Backup)
             {
-                _entities.Destroy(id, out EntityBackup backup);
+                _entities.Destroy(entityId, out EntityBackup backup);
                 message.Respond(backup);
             }
             else
             {
-                _entities.Destroy(id);
+                _entities.Destroy(entityId);
             }
         }
 
@@ -145,10 +134,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            Parallelable parallelable = _parallelables.Get(message.Body.Key);
             Entity entity = _entities.Restore(backup);
-            parallelable.AddId(message.Simulation, entity.Id);
-            entity.Attach(parallelable);
+            _parallelEntities.Map(entity.Id, message.Body.Key, message.Simulation);
 
             _logger.Debug($"{nameof(EntitySystem)}::{nameof(Process)}<{nameof(DestroyEntity)}> - Reverted Entity destruction {entity.Id}, ({message.Simulation.Type}, {message.Body.Key.Value})");
         }

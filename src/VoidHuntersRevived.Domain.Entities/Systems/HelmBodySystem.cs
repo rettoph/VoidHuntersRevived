@@ -23,23 +23,25 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             typeof(IBody)
         });
 
-        private ComponentMapper<Helm> _helms = null!;
-        private ComponentMapper<IBody> _body = null!;
+        private IParallelComponentMapper<Helm> _helms = null!;
+        private IParallelComponentMapper<IBody> _body = null!;
 
         public HelmBodySystem() : base(HelmBodyAspect)
         {
         }
 
-        public override void Initialize(IComponentMapperService mapperService)
+        public override void Initialize(IParallelComponentMapperService components, IParallelEntityService entities)
         {
-            _helms = mapperService.GetMapper<Helm>();
-            _body = mapperService.GetMapper<IBody>();
+            base.Initialize(components, entities);
+
+            _helms = components.GetMapper<Helm>();
+            _body = components.GetMapper<IBody>();
         }
 
-        protected override void Process(ISimulation simulation, GameTime gameTime, int entityId)
+        protected override void Process(ISimulation simulation, GameTime gameTime, ParallelKey entityKey)
         {
-            Helm helm = _helms.Get(entityId);
-            IBody body = _body.Get(entityId);
+            Helm helm = _helms.Get(entityKey, simulation);
+            IBody body = _body.Get(entityKey, simulation);
 
             FixVector2 impulse = FixVector2.Zero;
             Fix64 angularImpulse = Fix64.Zero;

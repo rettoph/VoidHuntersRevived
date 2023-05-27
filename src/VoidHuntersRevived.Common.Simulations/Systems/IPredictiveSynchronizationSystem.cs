@@ -10,6 +10,6 @@ namespace VoidHuntersRevived.Common.Simulations.Systems
 {
     public interface IPredictiveSynchronizationSystem : ISystem
     {
-        void Synchronize(ISimulation simulation, GameTime gameTime, Fix64 damping);
+        void Synchronize(ISimulation predctive, ISimulation lockstep, GameTime gameTime, Fix64 damping);
     }
 }

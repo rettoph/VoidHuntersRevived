@@ -29,31 +29,31 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         });
 
         private ILogger _logger;
-        private ComponentMapper<TractorBeamEmitter> _tractorBeamEmitters = null!;
-        private ComponentMapper<Tactical> _tacticals = null!;
-        private ComponentMapper<Tractorable> _tractorables = null!;
-        private ComponentMapper<ShipPart> _shipParts = null!;
-        private ComponentMapper<Parallelable> _parallelables = null!;
-        private ComponentMapper<IBody> _bodies = null!;
+        private IParallelComponentMapper<TractorBeamEmitter> _tractorBeamEmitters = null!;
+        private IParallelComponentMapper<Tactical> _tacticals = null!;
+        private IParallelComponentMapper<Tractorable> _tractorables = null!;
+        private IParallelComponentMapper<ShipPart> _shipParts = null!;
+        private IParallelComponentMapper<IBody> _bodies = null!;
 
         public TractorBeamEmitterSystem(ILogger logger) : base(TractorBeamEmitterAspect)
         {
             _logger = logger;
         }
 
-        public override void Initialize(IComponentMapperService mapperService)
+        public override void Initialize(IParallelComponentMapperService components, IParallelEntityService entities)
         {
-            _tractorBeamEmitters = mapperService.GetMapper<TractorBeamEmitter>();
-            _tacticals = mapperService.GetMapper<Tactical>();
-            _tractorables = mapperService.GetMapper<Tractorable>();
-            _shipParts = mapperService.GetMapper<ShipPart>();
-            _parallelables = mapperService.GetMapper<Parallelable>();
-            _bodies = mapperService.GetMapper<IBody>();
+            base.Initialize(components, entities);
+
+            _tractorBeamEmitters = components.GetMapper<TractorBeamEmitter>();
+            _tacticals = components.GetMapper<Tactical>();
+            _tractorables = components.GetMapper<Tractorable>();
+            _shipParts = components.GetMapper<ShipPart>();
+            _bodies = components.GetMapper<IBody>();
         }
 
-        protected override void Process(ISimulation simulation, GameTime gameTime, int entityId)
+        protected override void Process(ISimulation simulation, GameTime gameTime, ParallelKey entityKey)
         {
-            if (!_tractorBeamEmitters.TryGet(entityId, out TractorBeamEmitter? tractorBeamEmitter))
+            if (!_tractorBeamEmitters.TryGet(entityKey, simulation, out TractorBeamEmitter? tractorBeamEmitter))
             {
                 return;
             }
@@ -63,17 +63,12 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            if (!_tacticals.TryGet(entityId, out Tactical? tactical))
+            if (!_tacticals.TryGet(entityKey, simulation, out Tactical? tactical))
             {
                 return;
             }
 
-            if(!simulation.TryGetEntityId(tractorBeamEmitter.TargetKey.Value, out int targetId))
-            {
-                return;
-            }
-
-            if(!_bodies.TryGet(targetId, out IBody? body))
+            if(!_bodies.TryGet(tractorBeamEmitter.TargetKey.Value, simulation, out IBody? body))
             {
                 // _logger.Error($"{nameof(TractorBeamEmitterSystem)}::{nameof(Process)} - Invalid TractorBeamEmitter Id '{tractorBeamEmitter.TargetId.Value}'");
                 return;
@@ -84,12 +79,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         public void Process(in ISimulationEvent<ActivateTractorBeamEmitter> message)
         {
-            if(!message.Simulation.TryGetEntityId(message.Body.TractorBeamEmitterKey, out int tractorBeamEmitterId))
-            {
-                return;
-            }
-
-            if (!_tractorBeamEmitters.TryGet(tractorBeamEmitterId, out TractorBeamEmitter? tractorBeamEmitter))
+            if (!_tractorBeamEmitters.TryGet(message.Body.TractorBeamEmitterKey, message.Simulation, out TractorBeamEmitter? tractorBeamEmitter))
             {
                 return;
             }
@@ -99,7 +89,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            if (!_tacticals.TryGet(tractorBeamEmitterId, out Tactical? tactical))
+            if (!_tacticals.TryGet(message.Body.TractorBeamEmitterKey, message.Simulation, out Tactical? tactical))
             {
                 return;
             }
@@ -109,19 +99,14 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            if(!message.Simulation.TryGetEntityId(targetKey, out int targetId))
-            {
-                return;
-            }
-
-            _logger.Debug($"{nameof(TractorBeamEmitterSystem)}::{nameof(Process)}<{nameof(ActivateTractorBeamEmitter)}> - Activating {tractorBeamEmitterId}, TargetId: {targetId}");
+            _logger.Debug($"{nameof(TractorBeamEmitterSystem)}::{nameof(Process)}<{nameof(ActivateTractorBeamEmitter)}> - Activating {message.Body.TractorBeamEmitterKey}, TargetId: {targetKey}");
 
             // Create a clone of the target piece
-            IBody body = _bodies.Get(targetId);
+            IBody body = _bodies.Get(targetKey, message.Simulation);
             ParallelKey cloneKey = message.Key.Step(1);
             int clone = message.Simulation.CreateShipPart(
                 key: cloneKey, 
-                shipPart: _shipParts.Get(targetId).Clone(), 
+                shipPart: _shipParts.Get(targetKey, message.Simulation).Clone(), 
                 tractorable: false,
                 position: body.Position,
                 rotation: body.Rotation);
@@ -149,12 +134,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            if(!message.Simulation.TryGetEntityId(message.Body.TargetKey, out int targetId))
-            {
-                return;
-            }
-
-            if (!_tractorBeamEmitters.TryGet(tractorBeamEmitterId, out TractorBeamEmitter? tractorBeamEmitter))
+            if (!_tractorBeamEmitters.TryGet(message.Body.TractorBeamEmitterKey, message.Simulation, out TractorBeamEmitter? tractorBeamEmitter))
             {
                 return;
             }
@@ -164,12 +144,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         public void Process(in ISimulationEventRevision<SetTractorBeamEmitterTarget> message)
         {
-            if (!message.Simulation.TryGetEntityId(message.Body.TractorBeamEmitterKey, out int tractorBeamEmitterId))
-            {
-                return;
-            }
-
-            if (!_tractorBeamEmitters.TryGet(tractorBeamEmitterId, out TractorBeamEmitter? tractorBeamEmitter))
+            if (!_tractorBeamEmitters.TryGet(message.Body.TractorBeamEmitterKey, message.Simulation, out TractorBeamEmitter? tractorBeamEmitter))
             {
                 return;
             }
@@ -179,12 +154,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         public void Process(in ISimulationEvent<DeactivateTractorBeamEmitter> message)
         {
-            if (!message.Simulation.TryGetEntityId(message.Body.TractorBeamEmitterKey, out int tractorBeamEmitterId))
-            {
-                return;
-            }
-
-            if (!_tractorBeamEmitters.TryGet(tractorBeamEmitterId, out TractorBeamEmitter? tractorBeamEmitter))
+            if (!_tractorBeamEmitters.TryGet(message.Body.TractorBeamEmitterKey, message.Simulation, out TractorBeamEmitter? tractorBeamEmitter))
             {
                 return;
             }
@@ -194,29 +164,23 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            if(!message.Simulation.TryGetEntityId(tractorBeamEmitter.TargetKey.Value, out int targetId))
-            {
-                return;
-            }
-
-            if(!_bodies.TryGet(targetId, out IBody? body))
+            if(!_bodies.TryGet(tractorBeamEmitter.TargetKey.Value, message.Simulation, out IBody? body))
             {
                 _logger.Error($"{nameof(TractorBeamEmitterSystem)}::{nameof(Process)}<{nameof(DeactivateTractorBeamEmitter)}> - Invalid TractorBeamEmitter Target Id, {tractorBeamEmitter.TargetKey.Value}");
                 return;
             }
 
-            _logger.Debug($"{nameof(TractorBeamEmitterSystem)}::{nameof(Process)}<{nameof(DeactivateTractorBeamEmitter)}> - Deactivating {tractorBeamEmitterId}, TargetId: {tractorBeamEmitter.TargetKey}");
+            _logger.Debug($"{nameof(TractorBeamEmitterSystem)}::{nameof(Process)}<{nameof(DeactivateTractorBeamEmitter)}> - Deactivating {tractorBeamEmitter.TargetKey.Value}, TargetId: {tractorBeamEmitter.TargetKey}");
 
             int clone = message.Simulation.CreateShipPart(
                 key: message.Key.Step(1), 
-                shipPart: _shipParts.Get(targetId).Clone(), 
+                shipPart: _shipParts.Get(tractorBeamEmitter.TargetKey.Value, message.Simulation).Clone(), 
                 tractorable: true,
                 position: body.Position,
                 rotation: body.Rotation);
 
             // Destroy the old target
-            ParallelKey targetKey = _parallelables.Get(targetId).Key;
-            message.Simulation.DestroyEntity(targetKey);
+            message.Simulation.DestroyEntity(tractorBeamEmitter.TargetKey.Value);
 
             // Remove the reference
             tractorBeamEmitter.TargetKey = null;
@@ -236,12 +200,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             simulation.Space.QueryAABB(fixture =>
             {
-                if(!simulation.TryGetEntityId(fixture.Body.EntityKey, out int entityId))
-                { // Invalid target - not an entity
-                    return true;
-                }
-
-                if(!_tractorables.Has(entityId))
+                if(!_tractorables.Has(fixture.Body.EntityKey, simulation))
                 { // Invalid target - not tractorable
                     return true;
                 }

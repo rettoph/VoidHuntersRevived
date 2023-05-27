@@ -12,50 +12,52 @@ using VoidHuntersRevived.Common.Systems;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Physics;
+using VoidHuntersRevived.Common.Simulations.Systems;
+using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.ShipParts.Systems
 {
-    internal sealed class RigidSystem : EntitySystem
+    internal sealed class RigidSystem : ParallelEntitySystem
     {
         private static readonly AspectBuilder RigidAspect = Aspect.All(new[]
         {
             typeof(Rigid),
             typeof(ShipPart),
-            typeof(Parallelable)
         });
 
-        private ComponentMapper<Rigid> _rigids = null!;
-        private ComponentMapper<ShipPart> _shipParts = null!;
-        private ComponentMapper<IBody> _bodies = null!;
-        private ComponentMapper<IFixture[]> _fixtures = null!;
-        private ComponentMapper<Parallelable> _parallelables = null!;
+        private IParallelComponentMapper<Rigid> _rigids = null!;
+        private IParallelComponentMapper<ShipPart> _shipParts = null!;
+        private IParallelComponentMapper<IBody> _bodies = null!;
+        private IParallelComponentMapper<IFixture[]> _fixtures = null!;
 
         public RigidSystem() : base(RigidAspect)
         {
         }
 
-        public override void Initialize(IComponentMapperService mapperService)
+        public override void Initialize(IParallelComponentMapperService components, IParallelEntityService entities)
         {
-            _rigids = mapperService.GetMapper<Rigid>();
-            _shipParts = mapperService.GetMapper<ShipPart>();
-            _bodies = mapperService.GetMapper<IBody>();
-            _fixtures = mapperService.GetMapper<IFixture[]>();
-            _parallelables = mapperService.GetMapper<Parallelable>();
+            base.Initialize(components, entities);
+
+            _rigids = components.GetMapper<Rigid>();
+            _shipParts = components.GetMapper<ShipPart>();
+            _bodies = components.GetMapper<IBody>();
+            _fixtures = components.GetMapper<IFixture[]>();
         }
 
-        protected override void OnEntityAdded(int entityId)
+        protected override void OnEntityAdded(ParallelKey entityKey, ISimulation simulation)
         {
-            base.OnEntityAdded(entityId);
+            base.OnEntityAdded(entityKey, simulation);
 
-            if(!this.subscription.IsInterested(entityId))
+            if (!this.Entities[simulation.Type].IsInterested(entityKey))
             {
                 return;
             }
 
-            ShipPart shipPart = _shipParts.Get(entityId);
-            Rigid rigid = _rigids.Get(entityId);
-            Parallelable parallelable = _parallelables.Get(entityId);
-            if (!_bodies.TryGet(entityId, out IBody? body))
+            ShipPart shipPart = _shipParts.Get(entityKey, simulation);
+            Rigid rigid = _rigids.Get(entityKey, simulation);
+
+            if (!_bodies.TryGet(entityKey, simulation, out IBody ? body))
             {
                 return;
             }
@@ -65,25 +67,25 @@ namespace VoidHuntersRevived.Domain.Entities.ShipParts.Systems
 
             for (var i = 0; i < rigid.Polygons.Length; i++)
             {
-                fixtures[i] = body.Create(rigid.Polygons[i], parallelable.Key);
+                fixtures[i] = body.Create(rigid.Polygons[i], entityKey);
             }
 
-            _fixtures.Put(entityId, fixtures);
+            _fixtures.Put(entityKey, simulation, fixtures);
         }
 
-        protected override void OnEntityRemoved(int entityId)
+        protected override void OnEntityRemoved(ParallelKey entityKey, ISimulation simulation)
         {
-            base.OnEntityRemoved(entityId);
+            base.OnEntityRemoved(entityKey, simulation);
 
-            if (!this.subscription.IsInterested(entityId))
+            if (!this.Entities[simulation.Type].IsInterested(entityKey))
             {
                 return;
             }
 
-            IFixture[] fixtures = _fixtures.Get(entityId);
-            IBody body = _bodies.Get(entityId);
+            IFixture[] fixtures = _fixtures.Get(entityKey, simulation);
+            IBody body = _bodies.Get(entityKey, simulation);
 
-            foreach(IFixture fixture in fixtures)
+            foreach (IFixture fixture in fixtures)
             {
                 body.Destroy(fixture);
             }

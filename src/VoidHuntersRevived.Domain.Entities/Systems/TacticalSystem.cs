@@ -21,20 +21,22 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             typeof(Tactical)
         });
 
-        private ComponentMapper<Tactical> _tacticals = null!;
+        private IParallelComponentMapper<Tactical> _tacticals = null!;
 
         public TacticalSystem() : base(TacticalAspect)
         {
         }
 
-        public override void Initialize(IComponentMapperService mapperService)
+        public override void Initialize(IParallelComponentMapperService components, IParallelEntityService entities)
         {
-            _tacticals = mapperService.GetMapper<Tactical>();
+            base.Initialize(components, entities);
+
+            _tacticals = components.GetMapper<Tactical>();
         }
 
-        protected override void Process(ISimulation simulation, GameTime gameTime, int entityId)
+        protected override void Process(ISimulation simulation, GameTime gameTime, ParallelKey parallelKey)
         {
-            Tactical tactical = _tacticals.Get(entityId);
+            Tactical tactical = _tacticals.Get(parallelKey, simulation);
 
             Fix64 amount = Fix64.Min((Fix64)gameTime.ElapsedGameTime.TotalSeconds / AimDamping, Fix64.One);
             tactical.Value = FixVector2.Lerp(
@@ -45,12 +47,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
         public void Process(in ISimulationEvent<SetTacticalTarget> message)
         {
-            if (!message.Simulation.TryGetEntityId(message.Body.TacticalKey, out int tacticalId))
-            {
-                return;
-            }
-
-            if (!_tacticals.TryGet(tacticalId, out Tactical? tactical))
+            if (!_tacticals.TryGet(message.Body.TacticalKey, message.Simulation, out Tactical? tactical))
             {
                 return;
             }

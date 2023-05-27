@@ -33,10 +33,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         private readonly SimulationEventPredictionService _predictionService;
         private readonly Queue<SimulationEventData> _predictions;
         private readonly Queue<ISimulationEvent> _verified;
+        private ISimulation _lockstep;
 
         public PredictiveSimulation(
             ILogger logger,
-            IParallelableService parallelables,
+            IParallelEntityService parallelables,
             ISpaceFactory spaceFactory,
             IGlobalSimulationService globalSimulationService,
             ISimulationEventPublishingService events) : base(SimulationType.Predictive, parallelables, spaceFactory, globalSimulationService)
@@ -54,10 +55,18 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             base.Initialize(provider);
 
             _synchronizeSystems = provider.GetRequiredService<IFiltered<IPredictiveSynchronizationSystem>>().Instances.ToArray();
+            _lockstep = provider.GetRequiredService<ISimulationService>().First(SimulationType.Lockstep) ?? this;
         }
 
         protected override void Update(GameTime gameTime)
         {
+            Fix64 damping = (Fix64)gameTime.ElapsedGameTime.TotalSeconds;
+
+            foreach (IPredictiveSynchronizationSystem synchronizeSystem in _synchronizeSystems)
+            {
+                synchronizeSystem.Synchronize(this, _lockstep, gameTime, damping);
+            }
+
             this.UpdateSystems(gameTime);
 
             while (_predictions.TryDequeue(out SimulationEventData? data))
@@ -68,13 +77,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             while (_verified.TryDequeue(out ISimulationEvent? verified))
             {
                 _predictionService.Verify(this, verified);
-            }
-
-            Fix64 damping = (Fix64)gameTime.ElapsedGameTime.TotalSeconds;
-
-            foreach (IPredictiveSynchronizationSystem synchronizeSystem in _synchronizeSystems)
-            {
-                synchronizeSystem.Synchronize(this, gameTime, damping);
             }
 
             _predictionService.Prune();

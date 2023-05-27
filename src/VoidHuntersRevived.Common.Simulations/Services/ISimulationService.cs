@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Common.Simulations.Services
 {
     public interface ISimulationService
     {
-        public SimulationType Flags { get; }
+        SimulationType Flags { get; }
 
         ReadOnlyCollection<ISimulation> Instances { get; }
 

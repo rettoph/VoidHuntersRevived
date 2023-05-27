@@ -35,9 +35,10 @@ namespace VoidHuntersRevived.Domain.Simulations
         where TEntityComponent : class, new()
     {
         private ISimulationUpdateSystem[] _updateSystems;
-        private readonly IParallelableService _parallelables;
+        private readonly IParallelEntityService _parallelables;
         private readonly TEntityComponent _entityComponent;
         private readonly IGlobalSimulationService _globalsSmulationService;
+        private readonly Dictionary<ParallelKey, int> _keysToIds;
 
         public readonly SimulationType Type;
         public readonly ISpace Space;
@@ -51,7 +52,7 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         protected Simulation(
             SimulationType type,
-            IParallelableService parallelables,
+            IParallelEntityService parallelables,
             ISpaceFactory spaceFactory,
             IGlobalSimulationService globalSimulationService)
         {
@@ -59,6 +60,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             _updateSystems = Array.Empty<ISimulationUpdateSystem>();
             _entityComponent = new TEntityComponent();
             _globalsSmulationService = globalSimulationService;
+            _keysToIds = new Dictionary<ParallelKey, int>();
 
             this.Type = type;
             this.Space = spaceFactory.Create();
@@ -91,26 +93,6 @@ namespace VoidHuntersRevived.Domain.Simulations
             {
                 updateSystem.Update(this, gameTime);
             }
-        }
-
-        public bool TryGetEntityId(ParallelKey key, [MaybeNullWhen(false)] out int id)
-        {
-            return _parallelables.Get(key).TryGetId(this.Type, out id);
-        }
-
-        public int GetEntityId(ParallelKey key)
-        {
-            if (_parallelables.Get(key).TryGetId(this.Type, out var id))
-            {
-                return id;
-            }
-
-            throw new InvalidOperationException();
-        }
-
-        public bool HasEntity(ParallelKey key)
-        {
-            return _parallelables.Get(key).TryGetId(this.Type, out _);
         }
 
         protected abstract void Update(GameTime gameTime);
@@ -156,14 +138,39 @@ namespace VoidHuntersRevived.Domain.Simulations
             });
         }
 
-        public void ConfigureEntity(Entity entity)
+        public abstract ISimulationEvent Publish(SimulationEventData data);
+
+        public abstract void Enqueue(SimulationEventData data);
+
+        public bool TryGetEntityId(ParallelKey key, [MaybeNullWhen(false)] out int entityId)
+        {
+            return _keysToIds.TryGetValue(key, out entityId);
+        }
+
+        public int GetEntityId(ParallelKey key)
+        {
+            return _keysToIds[key];
+        }
+
+        public bool HasEntity(ParallelKey key)
+        {
+            return _keysToIds.ContainsKey(key);
+        }
+
+        public void Configure(Entity entity)
         {
             entity.Attach(_entityComponent);
             entity.Attach<ISimulation>(this);
         }
 
-        public abstract ISimulationEvent Publish(SimulationEventData data);
+        public void Map(ParallelKey entityKey, int entityId)
+        {
+            _keysToIds.Add(entityKey, entityId);
+        }
 
-        public abstract void Enqueue(SimulationEventData data);
+        public void Unmap(ParallelKey entityKey)
+        {
+            _keysToIds.Remove(entityKey);
+        }
     }
 }
