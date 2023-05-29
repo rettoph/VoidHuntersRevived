@@ -12,61 +12,29 @@ using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
 using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Physics.Systems
 {
-    internal sealed class SpaceSystem : ParallelEntitySystem, ISimulationUpdateSystem, IPredictiveSynchronizationSystem
+    internal sealed class SpaceSystem : BasicSystem, ISimulationUpdateSystem
     {
-        public static readonly AspectBuilder BodyAspect = Aspect.All(new[]
-{
-            typeof(ISimulation),
-            typeof(IBody)
-        });
-
-        private IParallelComponentMapper<ISimulation> _simulations = null!;
-        private IParallelComponentMapper<IBody> _bodies = null!;
-
-        public SpaceSystem() : base(BodyAspect)
+        public SpaceSystem() : base()
         {
         }
 
-        public override void Initialize(IParallelComponentMapperService components, IParallelEntityService entities)
+        public void Initialize(IParallelComponentMapperService components, IParallelEntityService entities)
         {
-            base.Initialize(components, entities);
+            // throw new NotImplementedException();
+        }
 
-            _simulations = components.GetMapper<ISimulation>();
-            _bodies = components.GetMapper<IBody>();
+        public void Initialize(ISimulation simulation)
+        {
+            // throw new NotImplementedException();
         }
 
         public void Update(ISimulation simulation, GameTime gameTime)
         {
             simulation.Space.Step(gameTime.ElapsedGameTime);
-        }
-
-        public void Synchronize(ISimulation predctive, ISimulation lockstep, GameTime gameTime, Fix64 damping)
-        {
-            foreach (ParallelKey entityKey in this.Entities[predctive.Type].ActiveEntities)
-            {
-                if (!_bodies.TryGet(entityKey, lockstep, out IBody? lockstepBody))
-                {
-                    return;
-                }
-
-                IBody predictiveBody = _bodies.Get(entityKey, predctive);
-
-                if (predictiveBody is null || lockstepBody is null)
-                {
-                    return;
-                }
-
-                predictiveBody.SetTransform(
-                    position: FixVector2.Lerp(predictiveBody.Position, lockstepBody.Position, damping),
-                    rotation: Fix64.Lerp(predictiveBody.Rotation, lockstepBody.Rotation, damping));
-
-                predictiveBody.SetVelocity(
-                    linear: FixVector2.Lerp(predictiveBody.LinearVelocity, lockstepBody.LinearVelocity, damping),
-                    angular: Fix64.Lerp(predictiveBody.AngularVelocity, lockstepBody.AngularVelocity, damping));
-            }
         }
     }
 }

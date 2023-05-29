@@ -10,6 +10,8 @@ namespace VoidHuntersRevived.Common.Physics
     {
         ParallelKey EntityKey { get; }
 
+        ISpace? Space { get; }
+
         FixVector2 Position { get; }
         Fix64 Rotation { get; }
         FixMatrix Transformation { get; }

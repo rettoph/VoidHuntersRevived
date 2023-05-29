@@ -25,6 +25,9 @@ namespace VoidHuntersRevived.Domain.Physics.Loaders
             {
                 manager.AddScoped<SpaceSystem>()
                     .AddInterfaceAliases();
+
+                manager.AddScoped<BodySystem>()
+                    .AddInterfaceAliases();
             });
         }
     }

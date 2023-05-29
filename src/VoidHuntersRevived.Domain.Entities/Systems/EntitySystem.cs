@@ -94,8 +94,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
                 return;
             }
 
-            _destroyedEntities.Add(entityKey);
-            _parallelEntities.Unmap(entityKey, message.Simulation, out int entityId);
+            int entityId = message.Simulation.GetEntityId(entityKey);
             _entities.Destroy(entityId);
 
             _logger.Debug($"{nameof(EntitySystem)}::{nameof(Process)}<{nameof(CreateEntity)}> - Reverted Entity creation {entityId}, ({message.Simulation.Type}, {message.Body.Key})");
@@ -104,7 +103,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         public void Process(in ISimulationEvent<DestroyEntity> message)
         {
             _destroyedEntities.Add(message.Body.Key);
-            _parallelEntities.Unmap(message.Body.Key, message.Simulation, out int entityId);
+            int entityId = message.Simulation.GetEntityId(message.Body.Key);
 
             _logger.Debug($"{nameof(EntitySystem)}::{nameof(Process)}<{nameof(DestroyEntity)}> - Destroying Entity {entityId}, ({message.Simulation.Type}, {message.Body.Key})");
 

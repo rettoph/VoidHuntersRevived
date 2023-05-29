@@ -48,6 +48,7 @@ namespace VoidHuntersRevived.Domain.Physics
         {
             _bodies.Add(body);
             body.AddToWorld(_aether);
+            body.Space = this;
         }
 
         internal void Remove(Body body)
@@ -57,6 +58,7 @@ namespace VoidHuntersRevived.Domain.Physics
                 return;
             }
 
+            body.Space = null;
             body.RemoveFromWorld(_aether);
         }
 

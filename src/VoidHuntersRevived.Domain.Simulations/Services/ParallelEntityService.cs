@@ -48,15 +48,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             _idToKey.Add(entityId, key);
         }
 
-        private void Unmap(int entityId)
-        {
-            _idToKey.Remove(entityId);
-        }
-
         public void Unmap(ParallelKey key, ISimulation simulation, out int entityId)
         {
             entityId = simulation.GetEntityId(key);
             simulation.Unmap(key);
+            _idToKey.Remove(entityId);
         }
 
         private void HandleEntityRemoved(int entityId)
@@ -71,8 +67,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
                 return;
             }
 
-            this.EntityRemoved.Invoke(entityKey, _simulations.Get(entityId));
-            this.Unmap(entityId);
+            ISimulation simulation = _simulations.Get(entityId);
+            this.EntityRemoved.Invoke(entityKey, simulation);
+            this.Unmap(entityKey, simulation, out _);
         }
 
         private void HandleEntityChanged(int entityId, BitVector32 oldBits)
