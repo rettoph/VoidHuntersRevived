@@ -1,25 +1,17 @@
-﻿using Guppy.Network.Identity;
-using MonoGame.Extended.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities.Extensions;
-using VoidHuntersRevived.Common.Simulations;
+﻿using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Common.Entities.Services
 {
     public interface IUserShipMappingService
     {
-        void Add(int userId, ParallelKey shipKey);
+        void Add(int userId, EventId shipKey);
 
-        void Remove(ParallelKey shipKey);
+        void Remove(EventId shipKey);
 
-        public int GetUserId(ParallelKey shipKey);
+        public int GetUserId(EventId shipKey);
 
-        public ParallelKey GetShipKey(int userId);
+        public EventId GetShipKey(int userId);
 
-        public bool TryGetShipKey(int userId, out ParallelKey shipKey);
+        public bool TryGetShipKey(int userId, out EventId shipKey);
     }
 }

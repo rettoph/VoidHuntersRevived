@@ -8,7 +8,7 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Domain.Simulations.Events
 {
-    public sealed class UserJoined
+    public sealed class UserJoined : IEventData
     {
         public required int UserId { get; init; }
         public required Claim[] Claims { get; init; }

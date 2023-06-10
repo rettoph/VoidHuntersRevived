@@ -1,12 +1,6 @@
 ﻿using Guppy.GUI;
+using Guppy.MonoGame;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Client.GameComponents
 {

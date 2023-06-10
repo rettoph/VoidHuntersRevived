@@ -9,12 +9,12 @@ namespace VoidHuntersRevived.Common.Entities.Events
 {
     public sealed class DestroyEntity
     {
-        public static readonly ParallelKey Noise = ParallelKey.From<DestroyEntity>();
+        public static readonly EventId Noise = EventId.From<DestroyEntity>();
 
-        public readonly ParallelKey Key;
+        public readonly EventId Key;
         public readonly bool Backup;
 
-        public DestroyEntity(ParallelKey entity, bool backup)
+        public DestroyEntity(EventId entity, bool backup)
         {
             this.Key = entity;
             this.Backup = backup;

@@ -1,25 +1,19 @@
 ﻿using Guppy.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Common.Simulations.Lockstep
 {
     public sealed class Tick : Message<Tick>
     {
-        private readonly IEnumerable<SimulationEventData> _events;
+        private readonly IEnumerable<EventDto> _events;
         private int? _count;
 
-        public IEnumerable<SimulationEventData> Events => _events;
+        public IEnumerable<EventDto> Events => _events;
 
         public int Count => _count ??= _events.Count();
 
         public int Id { get; }
 
-        internal Tick(int id, IEnumerable<SimulationEventData> events)
+        internal Tick(int id, IEnumerable<EventDto> events)
         {
             _events = events;
 
@@ -28,20 +22,20 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
 
         public static Tick Empty(int id)
         {
-            return new Tick(id, Enumerable.Empty<SimulationEventData>());
+            return new Tick(id, Enumerable.Empty<EventDto>());
         }
 
-        public static Tick Create(int id, IEnumerable<SimulationEventData> events)
+        public static Tick Create(int id, IEnumerable<EventDto> events)
         {
             return new Tick(id, events);
         }
 
-        public ParallelKey Hash()
+        public EventId Hash()
         {
-            ParallelKey hash = ParallelKey.Empty.Step((ulong)this.Id);
+            EventId hash = EventId.Empty.Step((ulong)this.Id);
 
 
-            foreach(SimulationEventData eventData in _events)
+            foreach(EventDto eventData in _events)
             {
                 hash = hash.Merge(eventData.Key);
             }

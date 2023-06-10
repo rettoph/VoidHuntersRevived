@@ -8,6 +8,6 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
 {
     public interface ILockstepSimulation : ISimulation
     {
-        IState State { get; }
+        IGameState State { get; }
     }
 }

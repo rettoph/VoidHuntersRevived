@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
         {
             return new SetHelmDirection()
             {
-                HelmKey = reader.GetParallelKey(),
+                HelmKey = reader.GetEventId(),
                 Which = reader.GetEnum<Direction>(),
                 Value = reader.GetBool()
             };

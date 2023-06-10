@@ -17,10 +17,12 @@ namespace VoidHuntersRevived.Domain.GameComponents
         private readonly IGuppy _guppy;
         private readonly IGuppyProvider _guppies;
 
-        public LaunchComponent(IGuppy guppy, IGuppyProvider guppies)
+        public LaunchComponent(IBus bus, IGuppy guppy, IGuppyProvider guppies)
         {
             _guppy = guppy;
             _guppies = guppies;
+
+            bus.Subscribe(this);
         }
 
         public void Initialize()

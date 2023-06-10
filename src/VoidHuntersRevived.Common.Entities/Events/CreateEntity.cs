@@ -1,27 +1,19 @@
-﻿using Guppy.ECS;
-using MonoGame.Extended.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using VoidHuntersRevived.Common.ECS;
 using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Common.Entities.Events
 {
     public class CreateEntity
     {
-        public static readonly ParallelKey Noise = Common.ParallelKey.From<CreateEntity>();
+        public static readonly EventId Noise = EventId.From<CreateEntity>();
 
-        public readonly ParallelKey? Key;
+        public readonly EventId? Key;
         public readonly EntityType Type;
-        public readonly Action<Entity>? Factory;
 
-        public CreateEntity(EntityType type, ParallelKey? key, Action<Entity>? factory)
+        public CreateEntity(EntityType type, EventId? key)
         {
             this.Type = type;
             this.Key = key;
-            this.Factory = factory;
         }
     }
 }

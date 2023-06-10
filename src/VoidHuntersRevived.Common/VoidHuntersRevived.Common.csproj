@@ -9,21 +9,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\Guppy\libraries\LiteNetLib\LiteNetLib\LiteNetLib.csproj" />
-    <ProjectReference Include="..\..\libraries\Guppy\libraries\MonoGame.Extended\src\cs\MonoGame.Extended.Entities\MonoGame.Extended.Entities.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Common\Guppy.Common.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.MonoGame\Guppy.MonoGame.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Resources\Guppy.Resources.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Standart.Hash.xxHash" Version="4.0.5" PrivateAssets="compile" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Using Include="MonoGame.Extended.Entities.World">
-      <Alias>World</Alias>
-    </Using>
   </ItemGroup>
 
 </Project>

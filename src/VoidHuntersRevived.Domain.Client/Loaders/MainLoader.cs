@@ -10,9 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Domain.Client.Debuggers;
 using VoidHuntersRevived.Domain.Client.GameComponents;
-using VoidHuntersRevived.Domain.Client.Systems;
 
 namespace VoidHuntersRevived.Domain.Client.Loaders
 {
@@ -31,10 +29,6 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
 
                 manager.AddScoped<Camera2D>()
                     .AddAlias<Camera>();
-
-                services.AddService<LockstepStateDebugger>()
-                    .SetLifetime(ServiceLifetime.Scoped)
-                    .AddInterfaceAliases();
             });
         }
     }

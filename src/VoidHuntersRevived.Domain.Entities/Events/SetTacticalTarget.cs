@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Entities.Events
 {
     public sealed class SetTacticalTarget
     {
-        public required ParallelKey TacticalKey { get; init; }
+        public required EventId TacticalKey { get; init; }
         public required FixVector2 Target { get; init; }
     }
 }

@@ -7,8 +7,13 @@ using VoidHuntersRevived.Common.Entities.Enums;
 
 namespace VoidHuntersRevived.Common.Entities.Components
 {
-    public class Helm
+    public struct Helm
     {
-        public Direction Direction = Direction.None;
+        public Direction Direction;
+
+        public Helm()
+        {
+            this.Direction = Direction.None;
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Domain.Entities.Events
 {
     public class SetTractorBeamEmitterTarget
     {
-        public required ParallelKey TractorBeamEmitterKey { get; init; }
-        public required ParallelKey TargetKey { get; init; }
+        public required EventId TractorBeamEmitterKey { get; init; }
+        public required EventId TargetKey { get; init; }
     }
 }

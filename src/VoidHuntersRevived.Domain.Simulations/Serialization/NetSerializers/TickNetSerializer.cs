@@ -4,6 +4,7 @@ using Guppy.Network.Providers;
 using LiteNetLib.Utils;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
+using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
@@ -30,11 +31,11 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
                 return Tick.Empty(id);
             }
 
-            var items = new SimulationEventData[count];
+            var items = new EventDto[count];
 
             for (var i = 0; i < count; i++)
             {
-                if(_serializers.Deserialize(reader) is SimulationEventData input)
+                if(_serializers.Deserialize(reader) is EventDto input)
                 {
                     items[i] = input;
                 }
@@ -53,7 +54,7 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
 
             writer.Put(count);
 
-            foreach (SimulationEventData input in instance.Events)
+            foreach (EventDto input in instance.Events)
             {
                 _serializers.Serialize(writer, input);
             }

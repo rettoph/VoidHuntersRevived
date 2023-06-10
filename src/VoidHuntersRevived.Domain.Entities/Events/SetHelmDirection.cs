@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Domain.Entities.Events
 {
     public class SetHelmDirection : IMessage
     {
-        public required ParallelKey HelmKey { get; init; }
+        public required EventId HelmKey { get; init; }
         public required Direction Which { get; init;  }
         public required bool Value { get; init; }
 

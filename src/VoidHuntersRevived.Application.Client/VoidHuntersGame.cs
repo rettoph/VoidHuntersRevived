@@ -67,7 +67,6 @@ namespace VoidHuntersRevived.Application.Client
             _engine.Start(builder =>
             {
                 builder.ConfigureMonoGame(this, _graphics, this.Content, this.Window)
-                    .ConfigureECS()
                     .ConfigureNetwork()
                     .ConfigureResources()
                     .ConfigureGUI();

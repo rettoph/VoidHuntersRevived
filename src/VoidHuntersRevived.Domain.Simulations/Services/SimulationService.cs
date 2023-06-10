@@ -52,6 +52,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             IEnumerable<ISimulation> simulations = _provider.GetRequiredService<IFiltered<ISimulation>>().Instances;
             foreach (ISimulation simulation in simulations)
             {
+                if(!this.Flags.HasFlag(simulation.Type))
+                {
+                    continue;
+                }
+
                 _simulations.Add(simulation.Type, simulation);
                 _list.Add(simulation);
                 _types.Add(simulation.Type);
@@ -65,17 +70,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
                 throw new InvalidOperationException();
             }
 
-            IParallelComponentMapperService components = _provider.GetRequiredService<IParallelComponentMapperService>();
-            IParallelEntityService entities = _provider.GetRequiredService<IParallelEntityService>();
-
-            foreach (ISimulationSystem system in _provider.GetRequiredService<ISorted<ISimulationSystem>>())
-            {
-                system.Initialize(components, entities);
-            }
-
             foreach (ISimulation simulation in _simulations.Values)
             {
-                simulation.Initialize(_provider);
+                simulation.Initialize(this);
             }
 
             _initialized = true;
@@ -102,11 +99,22 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             }
         }
 
-        public void Enqueue(SimulationEventData input)
+        public void Enqueue(EventDto input)
         {
+
+        }
+
+        public void Enqueue(IEventData data)
+        {
+            EventDto @event = new EventDto()
+            {
+                Id = EventId.NewId(),
+                Data = data
+            };
+
             foreach (ISimulation simulation in _simulations.Values)
             {
-                simulation.Enqueue(input);
+                simulation.Enqueue(@event);
             }
         }
     }

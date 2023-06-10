@@ -61,13 +61,13 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
             {
                 (true, new SetHelmDirection()
                 {
-                    HelmKey = ParallelKey.Empty,
+                    HelmKey = EventId.Empty,
                     Which = direction,
                     Value = true
                 }),
                 (false, new SetHelmDirection()
                 {
-                    HelmKey = ParallelKey.Empty,
+                    HelmKey = EventId.Empty,
                     Which = direction,
                     Value = false
                 }),

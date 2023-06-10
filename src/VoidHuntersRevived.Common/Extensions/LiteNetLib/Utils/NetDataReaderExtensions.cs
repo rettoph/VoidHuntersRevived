@@ -19,15 +19,5 @@ namespace LiteNetLib.Utils
             value.X = reader.GetFloat();
             value.Y = reader.GetFloat();
         }
-
-        public static void GetParallelKey(this NetDataReader reader, out ParallelKey key)
-        {
-            key = new ParallelKey(reader.GetUInt128());
-        }
-
-        public static ParallelKey GetParallelKey(this NetDataReader reader)
-        {
-            return new ParallelKey(reader.GetUInt128());
-        }
     }
 }

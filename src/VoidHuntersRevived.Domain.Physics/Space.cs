@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.ECS;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Physics.Factories;
@@ -20,15 +21,15 @@ namespace VoidHuntersRevived.Domain.Physics
             _factory = factory;
         }
 
-        public IBody Create(ParallelKey entityKey)
+        public IBody CreateBody(EntityId id)
         {
-            IBody body = _factory.Create(entityKey);
-            this.Add(body);
+            IBody body = _factory.Create(id);
+            this.AddBody(body);
 
             return body;
         }
 
-        public void Add(IBody body)
+        public void AddBody(IBody body)
         {
             if(body is Body casted)
             {
@@ -36,7 +37,7 @@ namespace VoidHuntersRevived.Domain.Physics
             }
         }
 
-        public void Remove(IBody body)
+        public void RemoveBody(IBody body)
         {
             if (body is Body casted)
             {

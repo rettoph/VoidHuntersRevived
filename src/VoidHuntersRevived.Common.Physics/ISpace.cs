@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.ECS;
 using VoidHuntersRevived.Common.FixedPoint;
 
 namespace VoidHuntersRevived.Common.Physics
@@ -15,9 +16,9 @@ namespace VoidHuntersRevived.Common.Physics
 
     public interface ISpace
     {
-        IBody Create(ParallelKey parallelKey);
-        void Add(IBody body);
-        void Remove(IBody body);
+        IBody CreateBody(EntityId id);
+        void AddBody(IBody body);
+        void RemoveBody(IBody body);
 
         void QueryAABB(QueryReportFixtureDelegate callback, ref AABB aabb);
         void Step(TimeSpan elapsedGameTime);

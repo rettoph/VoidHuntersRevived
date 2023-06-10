@@ -1,24 +1,20 @@
 ﻿using Guppy.Attributes;
-using Guppy.ECS.Loaders;
-using Guppy.ECS.Services;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Physics;
+using VoidHuntersRevived.Common.ECS.Loaders;
+using VoidHuntersRevived.Common.ECS.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Loaders
 {
     [AutoLoad]
-    public sealed class EntityLoader : IEntityLoader
+    public sealed class EntityLoader : IEntityTypeLoader
     {
-        public void Configure(IEntityService entities)
+        public void Configure(IEntityTypeService entities)
         {
             entities.Configure(EntityTypes.Ship, configuration =>
             {
-                configuration.Inherit(EntityTypes.ShipPart)
-                    .AttachComponent(e => new Helm())
-                    .AttachComponent(e => new Tactical())
-                    .AttachComponent(e => new TractorBeamEmitter())
-                    .EnsureComponent<IBody>();
+                configuration.Has<Helm>();
             });
         }
     }

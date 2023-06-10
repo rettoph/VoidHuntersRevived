@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.ECS;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Common;
 using FixedMath64 = FixedMath.NET.Fix64;
@@ -22,11 +23,11 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public Fix64 AngularVelocity => (Fix64)_aether.AngularVelocity;
 
-        public ParallelKey EntityKey { get; }
+        public EntityId Id { get; }
 
         public FixMatrix Transformation => FixMatrix.CreateRotationZ(this.Rotation) * FixMatrix.CreateTranslation(this.Position.X, this.Position.Y, Fix64.Zero);
 
-        public Body(ParallelKey entityKey)
+        public Body(EntityId entityKey)
         {
             _aether = new AetherBody()
             {
@@ -35,7 +36,7 @@ namespace VoidHuntersRevived.Domain.Physics
             _fixtures = new HashSet<Fixture>();
             _aether.Tag = this;
 
-            this.EntityKey = entityKey;
+            this.Id = entityKey;
         }
 
         public void SetTransform(FixVector2 position, Fix64 rotation)
@@ -65,9 +66,9 @@ namespace VoidHuntersRevived.Domain.Physics
             _aether.ApplyLinearImpulse(impulse.AsAetherVector2());
         }
 
-        public IFixture Create(Polygon polygon, ParallelKey entityKey)
+        public IFixture Create(Polygon polygon, EntityId id)
         {
-            Fixture fixture = new Fixture(this, polygon, entityKey);
+            Fixture fixture = new Fixture(this, polygon, id);
             fixture.AddToBody(_aether);
             _fixtures.Add(fixture);
 

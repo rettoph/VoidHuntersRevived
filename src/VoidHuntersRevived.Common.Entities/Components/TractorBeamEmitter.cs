@@ -9,6 +9,6 @@ namespace VoidHuntersRevived.Common.Entities.Components
 {
     public class TractorBeamEmitter
     {
-        public ParallelKey? TargetKey;
+        public EventId? TargetKey;
     }
 }

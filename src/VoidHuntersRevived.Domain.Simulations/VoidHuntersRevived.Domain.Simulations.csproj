@@ -12,13 +12,4 @@
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Entities\VoidHuntersRevived.Domain.Entities.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Using Include="MonoGame.Extended.Entities.World">
-      <Alias>World</Alias>
-    </Using>
-    <Using Include="System.Numerics">
-      <Alias>Num</Alias>
-    </Using>
-  </ItemGroup>
-
 </Project>

@@ -7,44 +7,41 @@ using LiteNetLib;
 using Microsoft.Xna.Framework;
 using Serilog;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.ECS;
+using VoidHuntersRevived.Common.ECS.Factories;
 using VoidHuntersRevived.Common.Physics.Factories;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Domain.Simulations.Utilities;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
     [GuppyFilter<IGameGuppy>()]
-    [SimulationTypeFilter(SimulationType.Lockstep)]
-    internal class LockstepSimulation : Simulation<Common.Simulations.Components.Lockstep>, ISimulation,
+    internal class LockstepSimulation : Simulation, ISimulation,
         ILockstepSimulation,
         ISubscriber<Step>,
         ISubscriber<Tick>,
         IDisposable
     {
-        private readonly ISimulationEventPublishingService _events;
-        private readonly IBus _bus;
-
-        public IState State { get; }
+        public IGameState State { get; }
 
         public LockstepSimulation(
-            IFiltered<IState> state,
-            IBus bus,
-            ISimulationEventPublishingService events,
-            IParallelEntityService parallelables,
+            IFiltered<IGameState> state,
+            IWorldFactory worldFactory,
             ISpaceFactory spaceFactory,
-            IGlobalSimulationService globalSimulationService) : base(SimulationType.Lockstep, parallelables, spaceFactory, globalSimulationService)
+            IBus bus,
+            IBroker broker) : base(SimulationType.Lockstep, worldFactory, spaceFactory, bus)
         {
-            _events = events;
-            _bus = bus;
-
             this.State = state.Instance;
         }
 
-        public override void Initialize(IServiceProvider provider)
+        public override void Initialize(ISimulationService simulations)
         {
-            base.Initialize(provider);
+            base.Initialize(simulations);
+
+            this.bus.Subscribe(this);
         }
 
         protected override void Update(GameTime gameTime)
@@ -52,25 +49,24 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             this.State.Update(gameTime);
         }
 
-        public override void Enqueue(SimulationEventData input)
+        public override void Enqueue(EventDto input)
         {
             this.State.Enqueue(input);
         }
 
-
-        public override ISimulationEvent Publish(SimulationEventData data)
+        public override void Publish(EventDto data)
         {
-            return _events.Publish(this, data);
+            this.publisher.Publish(data);
         }
 
         public void Process(in Step message)
         {
-            this.UpdateSystems(message);
+            this.World.Update(message);
         }
 
         public void Process(in Tick message)
         {
-            foreach (SimulationEventData data in message.Events)
+            foreach (EventDto data in message.Events)
             {
                 this.Publish(data);
             }

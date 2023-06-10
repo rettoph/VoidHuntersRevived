@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Factories
     [PeerTypeFilter(PeerType.Client)]
     internal sealed class ClientTickFactory : ITickFactory
     {
-        public void Enqueue(SimulationEventData input)
+        public void Enqueue(EventDto input)
         {
             throw new NotImplementedException();
         }

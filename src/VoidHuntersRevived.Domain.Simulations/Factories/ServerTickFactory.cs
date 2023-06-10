@@ -15,14 +15,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Factories
     [PeerTypeFilter(PeerType.Server)]
     internal sealed class ServerTickFactory : ITickFactory
     {
-        private IList<SimulationEventData> _inputs;
+        private IList<EventDto> _inputs;
 
         public ServerTickFactory()
         {
-            _inputs = new List<SimulationEventData>();
+            _inputs = new List<EventDto>();
         }
 
-        public void Enqueue(SimulationEventData input)
+        public void Enqueue(EventDto input)
         {
             _inputs.Add(input);
         }
@@ -31,11 +31,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Factories
         {
             if (_inputs.Count == 0)
             {
-                return Tick.Create(id, Enumerable.Empty<SimulationEventData>());
+                return Tick.Create(id, Enumerable.Empty<EventDto>());
             }
 
             var tick = Tick.Create(id, _inputs);
-            _inputs = new List<SimulationEventData>();
+            _inputs = new List<EventDto>();
 
             return tick;
         }

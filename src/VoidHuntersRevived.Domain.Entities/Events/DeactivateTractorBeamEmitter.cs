@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Domain.Entities.Events
 {
     public class DeactivateTractorBeamEmitter : IMessage
     {
-        public required ParallelKey TractorBeamEmitterKey { get; init; }
+        public required EventId TractorBeamEmitterKey { get; init; }
 
         public Type Type => typeof(DeactivateTractorBeamEmitter);
     }

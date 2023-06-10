@@ -49,13 +49,4 @@
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Simulations\VoidHuntersRevived.Domain.Simulations.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Using Include="MonoGame.Extended.Entities.World">
-      <Alias>World</Alias>
-    </Using>
-    <Using Include="System.Numerics">
-      <Alias>Num</Alias>
-    </Using>
-  </ItemGroup>
-
 </Project>

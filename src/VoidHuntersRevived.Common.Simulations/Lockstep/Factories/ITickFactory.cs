@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VoidHuntersRevived.Common.Simulations.Lockstep.Factories
+﻿namespace VoidHuntersRevived.Common.Simulations.Lockstep.Factories
 {
     public interface ITickFactory
     {
-        void Enqueue(SimulationEventData input);
+        void Enqueue(EventDto @event);
         Tick Create(int id);
         void Reset();
     }

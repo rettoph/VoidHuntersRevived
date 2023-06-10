@@ -9,9 +9,9 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep.Messages
 {
     public sealed class PreTick : Message<PreTick>
     {
-        public readonly IState State;
+        public readonly IGameState State;
 
-        public PreTick(IState state)
+        public PreTick(IGameState state)
         {
             this.State = state;
         }

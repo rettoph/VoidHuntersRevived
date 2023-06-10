@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.ECS;
 
 namespace VoidHuntersRevived.Common.Physics
 {
     public interface IBody
     {
-        ParallelKey EntityKey { get; }
+        EntityId Id { get; }
 
         ISpace? Space { get; }
 
@@ -19,7 +20,7 @@ namespace VoidHuntersRevived.Common.Physics
         FixVector2 LinearVelocity { get; }
         Fix64 AngularVelocity { get; }
 
-        IFixture Create(Polygon polygon, ParallelKey entityKey);
+        IFixture Create(Polygon polygon, EntityId id);
         void Destroy(IFixture fixture);
 
         void SetTransform(FixVector2 position, Fix64 rotation);

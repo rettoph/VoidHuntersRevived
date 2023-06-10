@@ -1,16 +1,9 @@
-﻿using Guppy.ECS;
-using Guppy.Network;
-using Guppy.Network.Identity;
-using LiteNetLib;
+﻿using Guppy.Common;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended.Entities;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using VoidHuntersRevived.Common.ECS;
 using VoidHuntersRevived.Common.Physics;
+using VoidHuntersRevived.Common.Simulations.Services;
 
 namespace VoidHuntersRevived.Common.Simulations
 {
@@ -18,33 +11,14 @@ namespace VoidHuntersRevived.Common.Simulations
     {
         SimulationType Type { get; }
         ISpace Space { get; }
-        Type EntityComponentType { get; }
-        IServiceProvider Provider { get; }
+        IWorld World { get; }
 
-        void Initialize(IServiceProvider provider);
+        void Initialize(ISimulationService simulations);
 
         void Update(GameTime gameTime);
 
-        int CreateEntity(ParallelKey key, EntityType type);
+        void Publish(EventDto @event);
 
-        int CreateEntity(ParallelKey key, EntityType type, Action<Entity> factory);
-
-        void DestroyEntity(ParallelKey key);
-
-        ISimulationEvent Publish(SimulationEventData data);
-
-        void Enqueue(SimulationEventData data);
-
-        bool TryGetEntityId(ParallelKey key, [MaybeNullWhen(false)] out int entityId);
-
-        int GetEntityId(ParallelKey key);
-
-        bool HasEntity(ParallelKey key);
-
-        void Configure(Entity entity);
-
-        void Map(ParallelKey entityKey, int entityId);
-
-        void Unmap(ParallelKey entityKey);
+        void Enqueue(EventDto @event);
     }
 }

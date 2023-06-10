@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 
 namespace VoidHuntersRevived.Common.Simulations.Services
 {
@@ -24,6 +23,6 @@ namespace VoidHuntersRevived.Common.Simulations.Services
 
         void Update(GameTime gameTime);
 
-        void Enqueue(SimulationEventData core);
+        void Enqueue(IEventData data);
     }
 }

@@ -9,6 +9,6 @@ namespace VoidHuntersRevived.Common.Entities
 {
     public interface ICurrentPilot
     {
-        ParallelKey Key { get; }
+        EventId Key { get; }
     }
 }

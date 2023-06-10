@@ -1,6 +1,4 @@
-﻿using MonoGame.Extended.Entities;
-
-namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
+﻿namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
 {
     public class ShipPart
     {
@@ -49,18 +47,6 @@ namespace VoidHuntersRevived.Common.Entities.ShipParts.Components
         public ShipPart Clone()
         {
             return this.Clone(null);
-        }
-
-        public void AttachTo(Entity entity)
-        {
-            entity.Attach(this);
-
-            foreach(ShipPartComponent component in this.Components)
-            {
-                component.AttachTo(entity);
-            }
-
-            this.EntityId = entity.Id;
         }
     }
 }

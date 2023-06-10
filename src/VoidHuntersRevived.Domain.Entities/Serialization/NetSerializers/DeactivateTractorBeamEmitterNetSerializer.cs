@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.NetSerializers
         {
             return new DeactivateTractorBeamEmitter()
             {
-                TractorBeamEmitterKey = reader.GetParallelKey()
+                TractorBeamEmitterKey = reader.GetEventId()
             };
         }
 

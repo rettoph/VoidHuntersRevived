@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.ECS;
 
 namespace VoidHuntersRevived.Common.Physics
 {
     public interface IFixture
     {
-        ParallelKey EntityKey { get; }
+        EntityId EntityId { get; }
 
         IBody Body { get; }
     }
