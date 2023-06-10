@@ -14,4 +14,8 @@
     <ProjectReference Include="..\VoidHuntersRevived.Common.Simulations\VoidHuntersRevived.Common.Simulations.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Serialization\NetSerializers\" />
+  </ItemGroup>
+
 </Project>

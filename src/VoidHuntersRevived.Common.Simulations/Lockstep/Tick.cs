@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
 
             foreach(EventDto eventData in _events)
             {
-                hash = hash.Merge(eventData.Key);
+                hash = hash.Merge(eventData.Id);
             }
 
             return hash;

@@ -9,7 +9,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Enums;
-using VoidHuntersRevived.Domain.Entities.Events;
 using VoidHuntersRevived.Domain.Client.Constants;
 using Guppy.Common;
 using Guppy.Input.Enums;
@@ -32,18 +31,6 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
             InputLoader.AddSetDirectionInput(services, Inputs.SetDirectionRight, Keys.E, Direction.Right);
             InputLoader.AddSetDirectionInput(services, Inputs.SetDirectionLeft, Keys.Q, Direction.Left);
 
-            services.AddInput(Inputs.TractorBeam, CursorButtons.Right, new (bool, IMessage)[]
-            {
-                (true, new ActivateTractorBeamEmitter()
-                {
-                    TractorBeamEmitterKey = default!,
-                }),
-                (false, new DeactivateTractorBeamEmitter()
-                {
-                    TractorBeamEmitterKey = default!
-                }),
-            });
-
             services.AddInput(Inputs.ToggleLockstep, Keys.F12, new[]
             {
                 (false, Toggle<Lockstep>.Instance)
@@ -57,21 +44,21 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
 
         private static void AddSetDirectionInput(IServiceCollection services, string key, Keys defaultSource, Direction direction)
         {
-            services.AddInput(key, defaultSource, new[]
-            {
-                (true, new SetHelmDirection()
-                {
-                    HelmKey = EventId.Empty,
-                    Which = direction,
-                    Value = true
-                }),
-                (false, new SetHelmDirection()
-                {
-                    HelmKey = EventId.Empty,
-                    Which = direction,
-                    Value = false
-                }),
-            });
+            // services.AddInput(key, defaultSource, new[]
+            // {
+            //     (true, new SetHelmDirection()
+            //     {
+            //         HelmKey = EventId.Empty,
+            //         Which = direction,
+            //         Value = true
+            //     }),
+            //     (false, new SetHelmDirection()
+            //     {
+            //         HelmKey = EventId.Empty,
+            //         Which = direction,
+            //         Value = false
+            //     }),
+            // });
         }
     }
 }

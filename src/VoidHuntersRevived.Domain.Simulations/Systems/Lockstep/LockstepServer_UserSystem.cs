@@ -23,11 +23,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
     internal sealed class LockstepServer_UserSystem : BasicSystem,
         IEventSubscriber<UserJoined>
     {
-        private readonly IState _state;
+        private readonly IGameState _state;
         private readonly NetScope _scope;
         private readonly ISimulationService _simulations;
 
-        public LockstepServer_UserSystem(IFiltered<IState> state, NetScope scope, ISimulationService simulations)
+        public LockstepServer_UserSystem(IFiltered<IGameState> state, NetScope scope, ISimulationService simulations)
         {
             _state = state.Instance;
             _scope = scope;
@@ -43,7 +43,36 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 
         public void Process(in EventId id, UserJoined data)
         {
-            throw new NotImplementedException();
+            User? user = _scope.Peer!.Users.UpdateOrCreate(data.UserId, data.Claims);
+
+            if (user.NetPeer is null)
+            {
+                return;
+            }
+
+            int lastTickId = _state.Tick?.Id ?? 0;
+
+            _scope.Messages.Create(new StateBegin())
+                .AddRecipient(user.NetPeer)
+                .Enqueue();
+
+            foreach (Tick tick in _state.History)
+            {
+                if (tick.Id > lastTickId)
+                {
+                    break;
+                }
+
+                _scope.Messages.Create(new StateTick()
+                {
+                    Tick = tick
+                }).AddRecipient(user.NetPeer).Enqueue();
+            }
+
+            _scope.Messages.Create(new StateEnd()
+            {
+                LastTickId = lastTickId
+            }).AddRecipient(user.NetPeer).Enqueue();
         }
 
         private void HandleUserJoined(IUserService sender, User args)

@@ -12,8 +12,6 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Domain.Simulations.Services;
-using CreateEntityEvent = VoidHuntersRevived.Common.Entities.Events.CreateEntity;
-using DestroyEntityEvent = VoidHuntersRevived.Common.Entities.Events.DestroyEntity;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
