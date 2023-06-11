@@ -1,6 +1,6 @@
 ﻿using VoidHuntersRevived.Common.Simulations.Systems;
 using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Common.ECS.Systems;
+using VoidHuntersRevived.Common.Simulations.Systems;
 
 namespace VoidHuntersRevived.Domain.Physics.Systems
 {

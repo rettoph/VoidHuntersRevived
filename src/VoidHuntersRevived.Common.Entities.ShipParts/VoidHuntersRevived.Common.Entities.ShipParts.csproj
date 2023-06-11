@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VoidHuntersRevived.Common.FixedPoint\VoidHuntersRevived.Common.FixedPoint.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Common.Simulations\VoidHuntersRevived.Common.Simulations.csproj" />
   </ItemGroup>
 
 </Project>

@@ -8,7 +8,7 @@ using LiteNetLib;
 using Microsoft.Extensions.DependencyInjection;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Constants;
-using VoidHuntersRevived.Common.ECS.Systems;
+using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;

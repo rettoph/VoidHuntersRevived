@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Common.ECS.Systems;
+using VoidHuntersRevived.Common.Simulations.Systems;
 
 namespace VoidHuntersRevived.Common.Simulations.Systems
 {

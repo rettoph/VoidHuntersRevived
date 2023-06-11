@@ -2,7 +2,8 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
-using VoidHuntersRevived.Common.ECS;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Common.Simulations
 {

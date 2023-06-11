@@ -1,6 +1,4 @@
-﻿using VoidHuntersRevived.Common.ECS;
-
-namespace VoidHuntersRevived.Common.Entities
+﻿namespace VoidHuntersRevived.Common.Entities
 {
     public static class EntityTypes
     {

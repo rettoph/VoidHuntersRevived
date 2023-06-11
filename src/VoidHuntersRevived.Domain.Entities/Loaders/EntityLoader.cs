@@ -2,8 +2,8 @@
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Physics;
-using VoidHuntersRevived.Common.ECS.Loaders;
-using VoidHuntersRevived.Common.ECS.Services;
+using VoidHuntersRevived.Common.Simulations.Loaders;
+using VoidHuntersRevived.Common.Simulations.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Loaders
 {

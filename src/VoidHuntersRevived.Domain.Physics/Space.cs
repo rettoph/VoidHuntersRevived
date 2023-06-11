@@ -1,10 +1,11 @@
 ﻿using System.Runtime.CompilerServices;
 using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.ECS;
+using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Physics.Factories;
+using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Physics
 {

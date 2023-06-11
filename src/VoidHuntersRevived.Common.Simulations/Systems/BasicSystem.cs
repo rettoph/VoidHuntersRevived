@@ -1,4 +1,4 @@
-﻿using VoidHuntersRevived.Common.ECS;
+﻿using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Systems;
 

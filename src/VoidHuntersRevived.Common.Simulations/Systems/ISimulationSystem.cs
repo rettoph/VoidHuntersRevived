@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Common.ECS.Systems;
+using VoidHuntersRevived.Common.Simulations.Systems;
 
 namespace VoidHuntersRevived.Common.Simulations.Systems
 {
