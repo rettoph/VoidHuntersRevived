@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common.ECS;
 using VoidHuntersRevived.Common.Physics;
+using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 
 namespace VoidHuntersRevived.Common.Simulations
@@ -12,6 +13,8 @@ namespace VoidHuntersRevived.Common.Simulations
         SimulationType Type { get; }
         ISpace Space { get; }
         IWorld World { get; }
+
+        Tick CurrentTick { get; }
 
         void Initialize(ISimulationService simulations);
 

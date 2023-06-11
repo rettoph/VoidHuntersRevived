@@ -44,12 +44,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
             manager.AddScoped<LockstepSimulation>()
                 .AddInterfaceAliases();
 
-            manager.AddScoped<GameStateClient>()
-                .AddInterfaceAliases();
-
-            manager.AddScoped<GameStateServer>()
-                .AddInterfaceAliases();
-
             manager.AddScoped<ClientTickFactory>()
                 .AddAlias<ITickFactory>();
 
