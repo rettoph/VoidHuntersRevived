@@ -12,7 +12,6 @@ var engine = new GuppyEngine(new[] { typeof(GameGuppy).Assembly, typeof(ServerGa
     .Start(builder =>
     {
         builder.ConfigureGame()
-            .ConfigureECS()
             .ConfigureNetwork()
             .ConfigureResources();
     });

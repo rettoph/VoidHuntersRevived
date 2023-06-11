@@ -3,9 +3,6 @@ using Guppy.Network;
 using Guppy.Network.Providers;
 using LiteNetLib.Utils;
 using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Lockstep;
-using VoidHuntersRevived.Domain.Simulations;
-using VoidHuntersRevived.Domain.Simulations.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
 {
@@ -50,7 +47,7 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
         {
             writer.Put(instance.Id);
 
-            var count = (byte)instance.Count;
+            var count = (byte)instance.Events.Length;
 
             writer.Put(count);
 

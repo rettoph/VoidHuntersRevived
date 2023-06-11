@@ -1,9 +1,6 @@
-﻿using Guppy.Common;
-using Microsoft.Xna.Framework;
-using System.Diagnostics.CodeAnalysis;
+﻿using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common.ECS;
 using VoidHuntersRevived.Common.Physics;
-using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 
 namespace VoidHuntersRevived.Common.Simulations
@@ -18,7 +15,7 @@ namespace VoidHuntersRevived.Common.Simulations
 
         void Initialize(ISimulationService simulations);
 
-        void Update(GameTime gameTime);
+        void Update(GameTime realTime);
 
         void Publish(EventDto @event);
 

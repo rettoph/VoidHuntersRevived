@@ -40,20 +40,6 @@ namespace VoidHuntersRevived.Domain.ECS
             _entities = new EntityService(_types, _enginesRoot.GenerateEntityFactory(), _enginesRoot.GenerateEntityFunctions());
             _components = new ComponentService(_entities);
             _systems = systems.ToArray();
-
-            IEnumerable<IEngine> engines = Enumerable.Empty<IEngine>()
-                .Concat(new IEngine[]
-                {
-                    _entities,
-                    _components
-                })
-                .Concat(_systems.Select(x => new SystemEngine(this, x)))
-                .Concat(BuildReactiveEngines(_entities, _systems));
-
-            foreach(IEngine engine in engines)
-            {
-                _enginesRoot.AddEngine(engine);
-            }
         }
 
         public void Dispose()
@@ -63,6 +49,23 @@ namespace VoidHuntersRevived.Domain.ECS
         public void Update(GameTime gameTime)
         {
             _simpleEntitiesSubmissionScheduler.SubmitEntities();
+        }
+
+        public void Initialize()
+        {
+            IEnumerable<IEngine> engines = Enumerable.Empty<IEngine>()
+                .Concat(new IEngine[]
+                {
+                    _entities,
+                    _components
+                })
+                .Concat(_systems.Select(x => new SystemEngine(this, x)))
+                .Concat(BuildReactiveEngines(_entities, _systems));
+
+            foreach (IEngine engine in engines)
+            {
+                _enginesRoot.AddEngine(engine);
+            }
         }
 
         private static IEnumerable<IEngine> BuildReactiveEngines(EntityService entities, ISystem[] systems)
@@ -80,10 +83,6 @@ namespace VoidHuntersRevived.Domain.ECS
                     }
                 }
             }
-        }
-
-        public void Initialize()
-        {
         }
     }
 }

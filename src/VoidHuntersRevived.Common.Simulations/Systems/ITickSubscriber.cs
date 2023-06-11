@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Common.Physics.Systems
+namespace VoidHuntersRevived.Common.Simulations.Systems
 {
-    public interface IPhysicsSystem
+    public interface ITickSubscriber
     {
-        void Initialize(ISpace space);
+        void Process(Tick tick);
     }
 }

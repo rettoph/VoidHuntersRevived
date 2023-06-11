@@ -8,10 +8,10 @@ namespace VoidHuntersRevived.Common.Simulations
 {
     public sealed class Tick
     {
-        public readonly uint Id;
+        public readonly int Id;
         public readonly EventDto[] Events;
 
-        private Tick(uint id, EventDto[] events)
+        private Tick(int id, EventDto[] events)
         {
             this.Id = id;
             this.Events = events;
@@ -25,6 +25,16 @@ namespace VoidHuntersRevived.Common.Simulations
         public static Tick First(params EventDto[] events)
         {
             return new Tick(0, events);
+        }
+
+        public static Tick Empty(int id)
+        {
+            return new Tick(id, Array.Empty<EventDto>());
+        }
+
+        public static Tick Create(int id, EventDto[] events)
+        {
+            return new Tick(id, events);
         }
     }
 }

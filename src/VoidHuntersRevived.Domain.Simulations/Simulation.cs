@@ -18,6 +18,8 @@ namespace VoidHuntersRevived.Domain.Simulations
 {
     public abstract partial class Simulation : ISimulation, IDisposable
     {
+        private Action<Tick>? _onTicks;
+
         protected readonly EventPublishingService publisher;
 
         public readonly SimulationType Type;
@@ -36,31 +38,38 @@ namespace VoidHuntersRevived.Domain.Simulations
             ISpaceFactory spaceFactory)
         {
             this.Type = type;
-            this.World = worldFactory.Create(new IState[]
-            {
-                 new SimulationState(this)
-            });
             this.Space = spaceFactory.Create();
+            this.World = worldFactory.Create(new SimulationState(this));
             this.CurrentTick = Tick.First();
 
             this.publisher = new EventPublishingService(this.World.Systems);
+
+            foreach(ITickSubscriber subscriber in this.World.Systems.OfType<ITickSubscriber>())
+            {
+                _onTicks += subscriber.Process;
+            }
         }
 
         public virtual void Initialize(ISimulationService simulations)
         {
             this.World.Initialize();
+
+            foreach (ISimulationSystem system in this.World.Systems.OfType<ISimulationSystem>())
+            {
+                system.Initialize(this);
+            }
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             this.World.Dispose();
         }
 
-        public virtual void Update(GameTime gameTime)
+        public virtual void Update(GameTime realTime)
         {
-            while (this.CanStep(gameTime))
+            while (this.TryGetNextStep(realTime, out Step? step))
             {
-                this.DoStep(gameTime);
+                this.DoStep(step);
             }
 
             if(this.TryGetNextTick(this.CurrentTick, out Tick? next))
@@ -69,8 +78,8 @@ namespace VoidHuntersRevived.Domain.Simulations
             }
         }
 
-        protected abstract bool CanStep(GameTime realTime);
-        protected virtual void DoStep(GameTime realTime)
+        protected abstract bool TryGetNextStep(GameTime realTime, [MaybeNullWhen(false)] out Step step);
+        protected virtual void DoStep(Step step)
         {
 
         }
@@ -78,7 +87,14 @@ namespace VoidHuntersRevived.Domain.Simulations
         protected abstract bool TryGetNextTick(Tick current, [MaybeNullWhen(false)] out Tick next);
         protected virtual void DoTick(Tick tick)
         {
+            this.CurrentTick = tick;
 
+            _onTicks?.Invoke(tick);
+
+            foreach(EventDto @event in tick.Events)
+            {
+                this.Publish(@event);
+            }
         }
 
         public abstract void Publish(EventDto data);

@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using VoidHuntersRevived.Common.Simulations.Lockstep;
+using VoidHuntersRevived.Common.Simulations;
 
-namespace VoidHuntersRevived.Domain.Simulations.Utilities
+namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
     public sealed class TickBuffer
     {
@@ -169,8 +169,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
             }
 
             _head.Add(node);
-            UpdateTail();
-            Latest = tick;
+            this.UpdateTail();
+            this.Latest = tick;
         }
 
         private void UpdateTail()
@@ -185,8 +185,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
 
         public void Clear()
         {
-            this._head = null;
-            this._tail = null;
+            _head = null;
+            _tail = null;
 
             this.Latest = null;
         }
