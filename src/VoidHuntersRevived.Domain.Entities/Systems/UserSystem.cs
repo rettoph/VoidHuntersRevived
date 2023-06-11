@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Common.Simulations.Events;
+using VoidHuntersRevived.Common.Simulations.Systems;
 
-namespace VoidHuntersRevived.Domain.Simulations.Systems
+namespace VoidHuntersRevived.Domain.Entities.Systems
 {
     [AutoLoad]
     internal sealed class UserSystem : BasicSystem,
@@ -16,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
     {
         public void Process(in EventId id, UserJoined data)
         {
-            Console.WriteLine("User Joined!");
+            this.Simulation.World.Entities.Create(EntityTypes.Ship, id.EntityId());
         }
     }
 }

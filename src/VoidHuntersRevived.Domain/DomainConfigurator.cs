@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Domain
     {
         public void Configure(GuppyConfiguration configuration)
         {
-            // configuration.Assemblies.Load(typeof(EntityLoader).Assembly);
+            configuration.Assemblies.Load(typeof(EntityLoader).Assembly);
             configuration.Assemblies.Load(typeof(SimulationLoader).Assembly);
             // configuration.Assemblies.Load(typeof(ShipPartEntityLoader).Assembly);
             configuration.Assemblies.Load(typeof(PhysicsLoader).Assembly);

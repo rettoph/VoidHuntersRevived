@@ -13,7 +13,7 @@ using VoidHuntersRevived.Common.ECS.Systems;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Systems;
-using VoidHuntersRevived.Domain.Simulations.Events;
+using VoidHuntersRevived.Common.Simulations.Events;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
     [PeerTypeFilter(PeerType.Server)]
     [SimulationTypeFilter(SimulationType.Lockstep)]
     internal sealed class LockstepServer_TickSystem : BasicSystem,
-        ITickSubscriber,
+        ITickSystem,
         IEventSubscriber<UserJoined>
     {
         private readonly NetScope _scope;
@@ -69,7 +69,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
             }).AddRecipient(user.NetPeer).Enqueue();
         }
 
-        public void Process(Tick tick)
+        public void Tick(Tick tick)
         {
             if(tick.Events.Length == 0)
             {

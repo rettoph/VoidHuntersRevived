@@ -44,9 +44,9 @@ namespace VoidHuntersRevived.Domain.Simulations
 
             this.publisher = new EventPublishingService(this.World.Systems);
 
-            foreach(ITickSubscriber subscriber in this.World.Systems.OfType<ITickSubscriber>())
+            foreach(ITickSystem subscriber in this.World.Systems.OfType<ITickSystem>())
             {
-                _onTicks += subscriber.Process;
+                _onTicks += subscriber.Tick;
             }
         }
 

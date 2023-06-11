@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.ECS;
 
 namespace VoidHuntersRevived.Common.Simulations.Systems
 {
-    public interface ITickSubscriber
+    public class StepSystem<T1> : BasicSystem, IStepSystem
+        where T1 : unmanaged
     {
-        void Process(Tick tick);
+        public void Step(Step step)
+        {
+        }
     }
 }

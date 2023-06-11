@@ -13,7 +13,7 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
-using VoidHuntersRevived.Domain.Simulations.Events;
+using VoidHuntersRevived.Common.Simulations.Events;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {

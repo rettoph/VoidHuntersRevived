@@ -7,15 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Serialization\**" />
+    <EmbeddedResource Remove="Serialization\**" />
+    <None Remove="Serialization\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Common\Guppy.Common.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Entities.ShipParts\VoidHuntersRevived.Common.Entities.ShipParts.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Entities\VoidHuntersRevived.Common.Entities.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Simulations\VoidHuntersRevived.Common.Simulations.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Simulations\VoidHuntersRevived.Common.Simulations.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Serialization\NetSerializers\" />
   </ItemGroup>
 
 </Project>

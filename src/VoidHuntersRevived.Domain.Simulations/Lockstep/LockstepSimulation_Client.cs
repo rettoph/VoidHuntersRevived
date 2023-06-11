@@ -17,7 +17,6 @@ using VoidHuntersRevived.Common.Physics.Factories;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Domain.Simulations.Messages;
-using static VoidHuntersRevived.Domain.Simulations.Commands.State;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {

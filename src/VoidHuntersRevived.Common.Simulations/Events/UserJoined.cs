@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations;
 
-namespace VoidHuntersRevived.Domain.Simulations.Events
+namespace VoidHuntersRevived.Common.Simulations.Events
 {
     public sealed class UserJoined : IEventData
     {

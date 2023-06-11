@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Domain.ECS.Services
         {
             if(!_configurations.TryGetValue(type, out EntityTypeConfiguration? configuration))
             {
-                configuration = new EntityTypeConfiguration(type);
+                _configurations[type] = configuration = new EntityTypeConfiguration(type);
             }
 
             return configuration;

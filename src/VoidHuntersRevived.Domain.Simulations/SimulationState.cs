@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Domain.Simulations.Commands;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
