@@ -10,9 +10,14 @@ namespace VoidHuntersRevived.Domain.ECS.Abstractions
 {
     internal sealed class EntityDescriptor : IEntityDescriptor
     {
+        private readonly IComponentBuilder[] _componentsToBuild = new[]
+        {
+            new ComponentBuilder<Component<EntityId>>()
+        };
+
         public readonly ExclusiveGroup ExclusiveGroup = new ExclusiveGroup();
 
-        public IComponentBuilder[] componentsToBuild => Array.Empty<IComponentBuilder>();
+        public IComponentBuilder[] componentsToBuild => _componentsToBuild;
 
         public EntityDescriptor()
         {

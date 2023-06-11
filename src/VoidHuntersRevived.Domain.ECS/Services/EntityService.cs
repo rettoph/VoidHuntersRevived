@@ -41,40 +41,43 @@ namespace VoidHuntersRevived.Domain.ECS.Services
         {
         }
 
-        public EntityId Create(EntityType type, EntityId entityKey)
+        public EntityId Create(EntityType type, EntityId id)
         {
             EntityDescriptorGroup descriptorGroup = _entityTypes.EntityDescriptorGroup(type);
             EntityInitializer initializer = _factory.BuildEntity(_id++, descriptorGroup.Group, descriptorGroup.Descriptor);
 
-            _keyMap.Add(entityKey, new EGIDGroup(initializer.EGID, descriptorGroup.Group));
-            _idMap.Add(initializer.EGID, entityKey);
+            _keyMap.Add(id, new EGIDGroup(initializer.EGID, descriptorGroup.Group));
+            _idMap.Add(initializer.EGID, id);
 
-            return entityKey;
+            initializer.Get<Component<EntityId>>().Instance = id;
+
+            return id;
         }
 
-        public EntityId Create(EntityType type, EntityId entityKey, Action<IEntityInitializer> initializerAction)
+        public EntityId Create(EntityType type, EntityId id, Action<IEntityInitializer> initializerAction)
         {
             EntityDescriptorGroup descriptorGroup = _entityTypes.EntityDescriptorGroup(type);
             EntityInitializer initializer = _factory.BuildEntity(_id++, descriptorGroup.Group, descriptorGroup.Descriptor);
             EGIDGroup egidGroup = new EGIDGroup(initializer.EGID, descriptorGroup.Group);
 
-            _keyMap.Add(entityKey, egidGroup);
-            _idMap.Add(initializer.EGID, entityKey);
+            _keyMap.Add(id, egidGroup);
+            _idMap.Add(initializer.EGID, id);
 
-            initializerAction(new InternalEntityInitializer(_entitiesDB, egidGroup, entityKey, type));
+            initializer.Get<Component<EntityId>>().Instance = id;
+            initializerAction(new InternalEntityInitializer(_entitiesDB, egidGroup, id, type));
 
-            return entityKey;
+            return id;
         }
 
-        public void Destroy(EntityId entityKey)
+        public void Destroy(EntityId id)
         {
-            if(!this.TryGetEGIDGroup(ref entityKey, out EGIDGroup egidGroup))
+            if(!this.TryGetEGIDGroup(ref id, out EGIDGroup egidGroup))
             {
                 return;
             }
 
             _idMap.Remove(egidGroup.EGID);
-            _keyMap.Remove(entityKey);
+            _keyMap.Remove(id);
             _functions.RemoveEntity<EntityDescriptor>(egidGroup.EGID);
         }
 

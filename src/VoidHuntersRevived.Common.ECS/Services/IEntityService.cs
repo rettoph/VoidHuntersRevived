@@ -11,6 +11,6 @@ namespace VoidHuntersRevived.Common.ECS.Services
         EntityId Create(EntityType type, EntityId id);
         EntityId Create(EntityType type, EntityId id, Action<IEntityInitializer> initializer);
 
-        void Destroy(EntityId entityKey);
+        void Destroy(EntityId id);
     }
 }
