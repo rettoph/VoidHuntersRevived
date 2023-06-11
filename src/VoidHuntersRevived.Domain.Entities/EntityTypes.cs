@@ -1,4 +1,6 @@
-﻿namespace VoidHuntersRevived.Common.Entities
+﻿using VoidHuntersRevived.Common.Entities;
+
+namespace VoidHuntersRevived.Domain.Entities
 {
     public static class EntityTypes
     {

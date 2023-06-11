@@ -1,9 +1,9 @@
 ﻿using Guppy.Attributes;
-using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations.Loaders;
 using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Domain.Entities.Components;
 
 namespace VoidHuntersRevived.Domain.Entities.Loaders
 {

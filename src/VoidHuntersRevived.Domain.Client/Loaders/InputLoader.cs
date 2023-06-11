@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Domain.Client.Constants;
 using Guppy.Common;
 using Guppy.Input.Enums;
@@ -16,6 +15,7 @@ using VoidHuntersRevived.Common.Simulations;
 using Guppy.MonoGame.Messages;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Enums;
 
 namespace VoidHuntersRevived.Domain.Client.Loaders
 {
