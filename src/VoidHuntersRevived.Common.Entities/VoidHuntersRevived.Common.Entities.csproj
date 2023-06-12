@@ -9,7 +9,6 @@
 
   <ItemGroup>
 	  <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.MonoGame\Guppy.MonoGame.csproj" />
-	  <ProjectReference Include="..\VoidHuntersRevived.Common.Entities.ShipParts\VoidHuntersRevived.Common.Entities.ShipParts.csproj" />
 	  <ProjectReference Include="..\VoidHuntersRevived.Common.FixedPoint\VoidHuntersRevived.Common.FixedPoint.csproj" />
 	  <ProjectReference Include="..\VoidHuntersRevived.Common\VoidHuntersRevived.Common.csproj" />
   </ItemGroup>

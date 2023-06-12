@@ -14,7 +14,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VoidHuntersRevived.Game.Client\VoidHuntersRevived.Game.Client.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Game.Server\VoidHuntersRevived.Game.Server.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Domain.Simulations\VoidHuntersRevived.Domain.Simulations.csproj" />
   </ItemGroup>
 </Project>

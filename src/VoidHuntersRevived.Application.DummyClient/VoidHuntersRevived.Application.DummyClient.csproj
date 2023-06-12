@@ -13,9 +13,8 @@
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\VoidHuntersRevived.Domain.Client\VoidHuntersRevived.Domain.Client.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Domain.Entities\VoidHuntersRevived.Domain.Entities.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Domain.Server\VoidHuntersRevived.Domain.Server.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Game.Client\VoidHuntersRevived.Game.Client.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Game.Server\VoidHuntersRevived.Game.Server.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Simulations\VoidHuntersRevived.Domain.Simulations.csproj" />
   </ItemGroup>
 </Project>
