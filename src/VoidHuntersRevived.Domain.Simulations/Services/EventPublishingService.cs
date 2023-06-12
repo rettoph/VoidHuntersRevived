@@ -69,11 +69,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
                 this.Invoke(@event.Id, Unsafe.As<T>(@event.Data));
             }
 
-            private void Invoke(in EventId id, T data)
+            private void Invoke(in Guid id, T data)
             {
                 foreach(IEventSubscriber<T> subscriber in _subscribers)
                 {
-                    subscriber.Process(in id, data);
+                    subscriber.Process(id, data);
                 }
             }
         }

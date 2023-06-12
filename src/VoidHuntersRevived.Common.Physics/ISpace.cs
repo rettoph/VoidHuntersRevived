@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.FixedPoint;
-using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Common.Physics
 {
@@ -16,7 +15,7 @@ namespace VoidHuntersRevived.Common.Physics
 
     public interface ISpace
     {
-        IBody CreateBody(EntityId id);
+        IBody CreateBody(Guid id);
         void AddBody(IBody body);
         void RemoveBody(IBody body);
 

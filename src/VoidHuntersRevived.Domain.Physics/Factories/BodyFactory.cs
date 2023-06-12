@@ -7,13 +7,12 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Physics.Factories;
-using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Physics.Factories
 {
     internal sealed class BodyFactory : IBodyFactory
     {
-        public IBody Create(EntityId id)
+        public IBody Create(Guid id)
         {
             return new Body(id);
         }

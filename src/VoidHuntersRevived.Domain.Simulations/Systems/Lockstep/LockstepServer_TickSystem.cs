@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
             _history = new List<Tick>();
         }
 
-        public void Process(in EventId id, UserJoined data)
+        public void Process(Guid id, UserJoined data)
         {
             User? user = _scope.Peer!.Users.UpdateOrCreate(data.UserId, data.Claims);
 

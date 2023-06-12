@@ -18,8 +18,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
     [AutoLoad]
     [PeerTypeFilter(PeerType.Server)]
     [SimulationTypeFilter(SimulationType.Lockstep)]
-    internal sealed class LockstepServer_UserSystem : BasicSystem,
-        IEventSubscriber<UserJoined>
+    internal sealed class LockstepServer_UserSystem : BasicSystem
     {
         private readonly NetScope _scope;
         private readonly ISimulationService _simulations;
@@ -35,11 +34,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             base.Initialize(simulation);
 
             _scope.Users.OnUserJoined += this.HandleUserJoined;
-        }
-
-        public void Process(in EventId id, UserJoined data)
-        {
-            
         }
 
         private void HandleUserJoined(IUserService sender, User args)

@@ -5,7 +5,6 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Physics.Factories;
-using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Physics
 {
@@ -22,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Physics
             _factory = factory;
         }
 
-        public IBody CreateBody(EntityId id)
+        public IBody CreateBody(Guid id)
         {
             IBody body = _factory.Create(id);
             this.AddBody(body);

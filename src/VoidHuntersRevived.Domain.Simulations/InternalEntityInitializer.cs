@@ -1,13 +1,5 @@
 ﻿using Svelto.DataStructures;
 using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Domain.Simulations.Abstractions;
 
@@ -19,10 +11,10 @@ namespace VoidHuntersRevived.Domain.Simulations
         private readonly EGIDGroup _egidGroup;
         private uint? _index;
 
-        public EntityId Key { get; }
+        public Guid Key { get; }
         public EntityType Type { get; }
 
-        public InternalEntityInitializer(EntitiesDB entities, EGIDGroup egidGroup, EntityId key, EntityType type)
+        public InternalEntityInitializer(EntitiesDB entities, EGIDGroup egidGroup, Guid key, EntityType type)
         {
             _entitiesDB = entities;
             _egidGroup = egidGroup;

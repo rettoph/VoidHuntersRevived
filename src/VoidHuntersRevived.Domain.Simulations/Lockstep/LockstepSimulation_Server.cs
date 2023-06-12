@@ -16,6 +16,7 @@ using VoidHuntersRevived.Common.Constants;
 using VoidHuntersRevived.Common.Physics.Factories;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
@@ -127,6 +128,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public void Process(in INetIncomingMessage<EventDto> message)
         {
+            if (message.Body.Data is not IInputData)
+            {
+                throw new InvalidOperationException();
+            }
+
             this.Enqueue(message.Body);
         }
     }

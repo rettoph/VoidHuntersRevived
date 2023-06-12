@@ -58,8 +58,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{E45E3F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Common", "src\VoidHuntersRevived.Common\VoidHuntersRevived.Common.csproj", "{696E7F3C-358F-4423-A8ED-BF6CFBCDCA9E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Common.Entities", "src\VoidHuntersRevived.Common.Entities\VoidHuntersRevived.Common.Entities.csproj", "{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Common.Simulations", "src\VoidHuntersRevived.Common.Simulations\VoidHuntersRevived.Common.Simulations.csproj", "{0E00905A-4FE1-4DF6-ADF4-ACC3A742EA30}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "domain", "domain", "{D96DE0C0-0199-4613-9C86-4D5A8A7EDC3A}"
@@ -94,19 +92,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.Extended", "librar
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "game", "game", "{6AF146E0-CC82-43A5-9B26-E5EC1C416076}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Game", "src\VoidHuntersRevived.Game\VoidHuntersRevived.Game.csproj", "{A22C827F-CACC-4A12-A218-3F8FFE5062A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Game", "src\VoidHuntersRevived.Game\VoidHuntersRevived.Game.csproj", "{A22C827F-CACC-4A12-A218-3F8FFE5062A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Game.Client", "src\VoidHuntersRevived.Game.Client\VoidHuntersRevived.Game.Client.csproj", "{5ECD6F3C-169F-498B-AFBE-B5F0B598AF99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Game.Client", "src\VoidHuntersRevived.Game.Client\VoidHuntersRevived.Game.Client.csproj", "{5ECD6F3C-169F-498B-AFBE-B5F0B598AF99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Game.Server", "src\VoidHuntersRevived.Game.Server\VoidHuntersRevived.Game.Server.csproj", "{809CEAD5-F976-4840-AA4B-DAECFDA87266}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Game.Server", "src\VoidHuntersRevived.Game.Server\VoidHuntersRevived.Game.Server.csproj", "{809CEAD5-F976-4840-AA4B-DAECFDA87266}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "presentation", "presentation", "{A594D47D-6CDC-415A-A810-2E86769C4E5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Presentation.Client", "src\VoidHuntersRevived.Presentation.Client\VoidHuntersRevived.Presentation.Client.csproj", "{43D5D678-34E8-4013-A661-44453AC64CC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Presentation.Client", "src\VoidHuntersRevived.Presentation.Client\VoidHuntersRevived.Presentation.Client.csproj", "{43D5D678-34E8-4013-A661-44453AC64CC0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Presentation.Server", "src\VoidHuntersRevived.Presentation.Server\VoidHuntersRevived.Presentation.Server.csproj", "{D3F3D1B9-6B5F-463E-B48F-D32D76E28D57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Game.Common", "src\VoidHuntersRevived.Game.Common\VoidHuntersRevived.Game.Common.csproj", "{3ECCD66B-7CBF-4C1E-BF88-A5EC864491B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Game.Common", "src\VoidHuntersRevived.Game.Common\VoidHuntersRevived.Game.Common.csproj", "{3ECCD66B-7CBF-4C1E-BF88-A5EC864491B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -328,30 +326,6 @@ Global
 		{696E7F3C-358F-4423-A8ED-BF6CFBCDCA9E}.SlowSubmissionRelease|x64.Build.0 = Release|Any CPU
 		{696E7F3C-358F-4423-A8ED-BF6CFBCDCA9E}.SlowSubmissionRelease|x86.ActiveCfg = Release|Any CPU
 		{696E7F3C-358F-4423-A8ED-BF6CFBCDCA9E}.SlowSubmissionRelease|x86.Build.0 = Release|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.Debug|x64.Build.0 = Debug|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.Debug|x86.Build.0 = Debug|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.Release|x64.ActiveCfg = Release|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.Release|x64.Build.0 = Release|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.Release|x86.ActiveCfg = Release|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.Release|x86.Build.0 = Release|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.SlowSubmissionDebug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.SlowSubmissionDebug|Any CPU.Build.0 = Debug|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.SlowSubmissionDebug|x64.ActiveCfg = Debug|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.SlowSubmissionDebug|x64.Build.0 = Debug|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.SlowSubmissionDebug|x86.ActiveCfg = Debug|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.SlowSubmissionDebug|x86.Build.0 = Debug|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.SlowSubmissionRelease|Any CPU.ActiveCfg = Release|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.SlowSubmissionRelease|Any CPU.Build.0 = Release|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.SlowSubmissionRelease|x64.ActiveCfg = Release|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.SlowSubmissionRelease|x64.Build.0 = Release|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.SlowSubmissionRelease|x86.ActiveCfg = Release|Any CPU
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC}.SlowSubmissionRelease|x86.Build.0 = Release|Any CPU
 		{0E00905A-4FE1-4DF6-ADF4-ACC3A742EA30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0E00905A-4FE1-4DF6-ADF4-ACC3A742EA30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E00905A-4FE1-4DF6-ADF4-ACC3A742EA30}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -854,7 +828,6 @@ Global
 		{033AEBDD-D6AE-40DD-BB38-8667A78674D8} = {F38772AD-EAEE-4F89-B8CF-239B92DC5714}
 		{E45E3FCD-2AA8-46E5-9956-44A76EEB3BDA} = {D2A649EA-BF5F-4B70-87EB-DFA556F59B99}
 		{696E7F3C-358F-4423-A8ED-BF6CFBCDCA9E} = {E45E3FCD-2AA8-46E5-9956-44A76EEB3BDA}
-		{BC43BAE4-4B73-46E9-B18E-CC63C84DA8BC} = {E45E3FCD-2AA8-46E5-9956-44A76EEB3BDA}
 		{0E00905A-4FE1-4DF6-ADF4-ACC3A742EA30} = {E45E3FCD-2AA8-46E5-9956-44A76EEB3BDA}
 		{D96DE0C0-0199-4613-9C86-4D5A8A7EDC3A} = {D2A649EA-BF5F-4B70-87EB-DFA556F59B99}
 		{9C89009D-C43B-4BEA-A073-835274289BF2} = {D96DE0C0-0199-4613-9C86-4D5A8A7EDC3A}

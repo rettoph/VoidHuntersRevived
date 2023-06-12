@@ -5,7 +5,6 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Common;
 using FixedMath64 = FixedMath.NET.Fix64;
-using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Physics
 {
@@ -24,11 +23,11 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public Fix64 AngularVelocity => (Fix64)_aether.AngularVelocity;
 
-        public EntityId Id { get; }
+        public Guid Id { get; }
 
         public FixMatrix Transformation => FixMatrix.CreateRotationZ(this.Rotation) * FixMatrix.CreateTranslation(this.Position.X, this.Position.Y, Fix64.Zero);
 
-        public Body(EntityId entityKey)
+        public Body(Guid entityKey)
         {
             _aether = new AetherBody()
             {
@@ -67,7 +66,7 @@ namespace VoidHuntersRevived.Domain.Physics
             _aether.ApplyLinearImpulse(impulse.AsAetherVector2());
         }
 
-        public IFixture Create(Polygon polygon, EntityId id)
+        public IFixture Create(Polygon polygon, Guid id)
         {
             Fixture fixture = new Fixture(this, polygon, id);
             fixture.AddToBody(_aether);

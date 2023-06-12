@@ -1,11 +1,8 @@
 ﻿using Guppy.Attributes;
-using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities;
+using Guppy.Network;
+using Guppy.Network.Identity;
+using Guppy.Network.Identity.Providers;
+using Guppy.Network.Peers;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Events;
 using VoidHuntersRevived.Common.Simulations.Systems;
@@ -19,12 +16,27 @@ namespace VoidHuntersRevived.Game.Systems
         IEventSubscriber<UserJoined>,
         IStepSystem<Helm>
     {
-        public void Process(in EventId id, UserJoined data)
+        private readonly NetScope _scope;
+
+        public UserSystem(NetScope scope)
         {
-            this.Simulation.Entities.Create(EntityTypes.Ship, id.EntityId());
+            _scope = scope;
         }
 
-        public void Step(Step step, in EntityId id, ref Helm component1)
+        public void Process(Guid id, UserJoined data)
+        {
+            User user = _scope.Peer!.Users.UpdateOrCreate(data.UserId, data.Claims);
+
+            this.Simulation.Entities.Create(EntityTypes.Pilot, user.GetPilotId(), initializer =>
+            {
+                initializer.Set(new Pilot()
+                {
+                    ShipId = this.Simulation.Entities.Create(EntityTypes.Ship, id.Create(1))
+                });
+            });
+        }
+
+        public void Step(Step step, in Guid id, ref Helm component1)
         {
         }
     }

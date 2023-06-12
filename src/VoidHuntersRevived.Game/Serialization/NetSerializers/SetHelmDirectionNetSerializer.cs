@@ -18,6 +18,7 @@ namespace VoidHuntersRevived.Game.Serialization.NetSerializers
         {
             return new SetHelmDirection()
             {
+                PilotId = reader.GetGuid(),
                 Which = reader.GetEnum<Direction>(),
                 Value = reader.GetBool()
             };
@@ -25,6 +26,7 @@ namespace VoidHuntersRevived.Game.Serialization.NetSerializers
 
         public override void Serialize(NetDataWriter writer, in SetHelmDirection instance)
         {
+            writer.Put(instance.PilotId);
             writer.Put(instance.Which);
             writer.Put(instance.Value);
         }

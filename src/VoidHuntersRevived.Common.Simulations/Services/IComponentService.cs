@@ -1,26 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities;
-
-namespace VoidHuntersRevived.Common.Simulations.Services
+﻿namespace VoidHuntersRevived.Common.Simulations.Services
 {
-    public delegate void IterateDelegate<T1>(Step step, in EntityId id, ref T1 component1) 
+    public delegate void IterateDelegate<T1>(Step step, in Guid id, ref T1 component1) 
         where T1 : unmanaged;
 
-    public delegate void IterateDelegate<T1, T2>(Step step, in EntityId id, ref T1 component1, ref T2 component2)
+    public delegate void IterateDelegate<T1, T2>(Step step, in Guid id, ref T1 component1, ref T2 component2)
         where T1 : unmanaged
         where T2 : unmanaged;
 
-    public delegate void IterateDelegate<T1, T2, T3>(Step step, in EntityId id, ref T1 component1, ref T2 component2, ref T3 component3)
+    public delegate void IterateDelegate<T1, T2, T3>(Step step, in Guid id, ref T1 component1, ref T2 component2, ref T3 component3)
         where T1 : unmanaged
         where T2 : unmanaged
         where T3 : unmanaged;
 
-    public delegate void IterateDelegate<T1, T2, T3, T4>(Step step, in EntityId id, ref T1 component1, ref T2 component2, ref T3 component3, ref T4 component4)
+    public delegate void IterateDelegate<T1, T2, T3, T4>(Step step, in Guid id, ref T1 component1, ref T2 component2, ref T3 component3, ref T4 component4)
         where T1 : unmanaged
         where T2 : unmanaged
         where T3 : unmanaged
@@ -28,19 +20,19 @@ namespace VoidHuntersRevived.Common.Simulations.Services
 
     public interface IComponentService
     {
-        bool TryGet<T1>(EntityId id, out Ref<T1> component1)
+        bool TryGet<T1>(Guid id, out Ref<T1> component1)
             where T1 : unmanaged;
 
-        bool TryGet<T1, T2>(EntityId id, out Ref<T1> component1, out Ref<T2> component2)
+        bool TryGet<T1, T2>(Guid id, out Ref<T1> component1, out Ref<T2> component2)
             where T1 : unmanaged
             where T2 : unmanaged;
 
-        bool TryGet<T1, T2, T3>(EntityId id, out Ref<T1> component1, out Ref<T2> component2, out Ref<T3> component3)
+        bool TryGet<T1, T2, T3>(Guid id, out Ref<T1> component1, out Ref<T2> component2, out Ref<T3> component3)
             where T1 : unmanaged
             where T2 : unmanaged
             where T3 : unmanaged;
 
-        bool TryGet<T1, T2, T3, T4>(EntityId id, out Ref<T1> component1, out Ref<T2> component2, out Ref<T3> component3, out Ref<T4> component4)
+        bool TryGet<T1, T2, T3, T4>(Guid id, out Ref<T1> component1, out Ref<T2> component2, out Ref<T3> component3, out Ref<T4> component4)
             where T1 : unmanaged
             where T2 : unmanaged
             where T3 : unmanaged

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Systems;
+using VoidHuntersRevived.Game.Common.Components;
 using VoidHuntersRevived.Game.Common.Events;
 
 namespace VoidHuntersRevived.Game.Systems
@@ -14,9 +15,9 @@ namespace VoidHuntersRevived.Game.Systems
     internal sealed class HelmSystem : BasicSystem,
         IEventSubscriber<SetHelmDirection>
     {
-        public void Process(in EventId id, SetHelmDirection data)
+        public void Process(Guid id, SetHelmDirection data)
         {
-            throw new NotImplementedException();
+
         }
     }
 }

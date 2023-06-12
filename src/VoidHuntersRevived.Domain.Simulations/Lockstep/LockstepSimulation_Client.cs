@@ -78,6 +78,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public override void Enqueue(EventDto data)
         {
+            if(data.Data is not IInputData)
+            {
+                throw new InvalidOperationException();
+            }
+
             _scope.Messages.Create(in data).Enqueue();
         }
 

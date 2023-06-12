@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             _enginesRoot = new EnginesRoot(_simpleEntitiesSubmissionScheduler);
 
             _types = filtered.Get< EntityTypeService>().Instance;
-            _entities = new EntityService(_types, _enginesRoot.GenerateEntityFactory(), _enginesRoot.GenerateEntityFunctions());
+            _entities = new EntityService(_simpleEntitiesSubmissionScheduler, _types, _enginesRoot.GenerateEntityFactory(), _enginesRoot.GenerateEntityFunctions());
             _components = new ComponentService(_entities);
             _bus = bus;
 
@@ -65,8 +65,6 @@ namespace VoidHuntersRevived.Domain.Simulations
             {
                 _tickSystems += subscriber.Tick;
             }
-
-            
         }
 
         public virtual void Initialize(ISimulationService simulations)
@@ -97,7 +95,6 @@ namespace VoidHuntersRevived.Domain.Simulations
         protected abstract bool TryGetNextStep(GameTime realTime, [MaybeNullWhen(false)] out Step step);
         protected virtual void DoStep(Step step)
         {
-            _simpleEntitiesSubmissionScheduler.SubmitEntities();
             _stepEngines(step);
         }
 

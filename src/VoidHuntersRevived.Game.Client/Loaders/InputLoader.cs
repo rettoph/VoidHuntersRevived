@@ -44,12 +44,12 @@ namespace VoidHuntersRevived.Game.Client.Loaders
         {
             services.AddInput(key, defaultSource, new[]
             {
-                (true, new SetHelmDirection()
+                (true, new SetHelmDirectionInput()
                 {
                     Which = direction,
                     Value = true
                 }),
-                (false, new SetHelmDirection()
+                (false, new SetHelmDirectionInput()
                 {
                     Which = direction,
                     Value = false

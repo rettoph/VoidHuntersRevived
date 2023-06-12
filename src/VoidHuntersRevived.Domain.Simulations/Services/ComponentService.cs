@@ -1,11 +1,5 @@
 ﻿using Svelto.DataStructures;
 using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Domain.Simulations.Abstractions;
@@ -32,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
        
 
-        public bool TryGet<T1>(EntityId key, out Ref<T1> component1)
+        public bool TryGet<T1>(Guid key, out Ref<T1> component1)
             where T1 : unmanaged
         {
             if(!_entities.TryGetEGIDGroup(ref key, out EGIDGroup egidGroup))
@@ -46,7 +40,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             return true;
         }
 
-        public bool TryGet<T1, T2>(EntityId key, out Ref<T1> component1, out Ref<T2> component2)
+        public bool TryGet<T1, T2>(Guid key, out Ref<T1> component1, out Ref<T2> component2)
             where T1 : unmanaged
             where T2 : unmanaged
         {
@@ -66,7 +60,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             return true;
         }
 
-        public bool TryGet<T1, T2, T3>(EntityId key, out Ref<T1> component1, out Ref<T2> component2, out Ref<T3> component3)
+        public bool TryGet<T1, T2, T3>(Guid key, out Ref<T1> component1, out Ref<T2> component2, out Ref<T3> component3)
             where T1 : unmanaged
             where T2 : unmanaged
             where T3 : unmanaged
@@ -90,7 +84,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             return true;
         }
 
-        public bool TryGet<T1, T2, T3, T4>(EntityId key, out Ref<T1> component1, out Ref<T2> component2, out Ref<T3> component3, out Ref<T4> component4)
+        public bool TryGet<T1, T2, T3, T4>(Guid key, out Ref<T1> component1, out Ref<T2> component2, out Ref<T3> component3, out Ref<T4> component4)
             where T1 : unmanaged
             where T2 : unmanaged
             where T3 : unmanaged
@@ -120,8 +114,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
         public void Iterate<T1>(IterateDelegate<T1> iterator, Step step) where T1 : unmanaged
         {
-            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = _entitiesDB.FindGroups<Component<EntityId>, Component<T1>>();
-            foreach (var ((ids, component1s, count), _) in _entitiesDB.QueryEntities<Component<EntityId>, Component<T1>>(groups))
+            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = _entitiesDB.FindGroups<Component<Guid>, Component<T1>>();
+            foreach (var ((ids, component1s, count), _) in _entitiesDB.QueryEntities<Component<Guid>, Component<T1>>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -134,8 +128,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             where T1 : unmanaged
             where T2 : unmanaged
         {
-            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = _entitiesDB.FindGroups<Component<EntityId>, Component<T1>, Component<T2>>();
-            foreach (var ((ids, component1s, component2s, count), _) in _entitiesDB.QueryEntities<Component<EntityId>, Component<T1>, Component<T2>>(groups))
+            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = _entitiesDB.FindGroups<Component<Guid>, Component<T1>, Component<T2>>();
+            foreach (var ((ids, component1s, component2s, count), _) in _entitiesDB.QueryEntities<Component<Guid>, Component<T1>, Component<T2>>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -149,8 +143,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             where T2 : unmanaged
             where T3 : unmanaged
         {
-            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = _entitiesDB.FindGroups<Component<EntityId>, Component<T1>, Component<T2>, Component<T3>>();
-            foreach (var ((ids, component1s, component2s, component3s, count), _) in _entitiesDB.QueryEntities<Component<EntityId>, Component<T1>, Component<T2>, Component<T3>>(groups))
+            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = _entitiesDB.FindGroups<Component<Guid>, Component<T1>, Component<T2>, Component<T3>>();
+            foreach (var ((ids, component1s, component2s, component3s, count), _) in _entitiesDB.QueryEntities<Component<Guid>, Component<T1>, Component<T2>, Component<T3>>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {

@@ -7,7 +7,6 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Dynamics;
-using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Physics
 {
@@ -15,16 +14,16 @@ namespace VoidHuntersRevived.Domain.Physics
     {
         private readonly AetherFixture _aether;
 
-        public EntityId EntityId { get; }
+        public Guid Guid { get; }
 
         public IBody Body { get; }
 
-        public Fixture(IBody body, Polygon polygon, EntityId entityId)
+        public Fixture(IBody body, Polygon polygon, Guid entityId)
         {
             _aether = new AetherFixture(polygon.ToShape());
             _aether.Tag = this;
 
-            this.EntityId = entityId;
+            this.Guid = entityId;
             this.Body = body;
         }
 

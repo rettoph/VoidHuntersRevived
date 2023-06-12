@@ -3,6 +3,6 @@
     public interface IEventSubscriber<T>
         where T : class, IEventData
     {
-        void Process(in EventId id, T data);
+        void Process(Guid id, T data);
     }
 }

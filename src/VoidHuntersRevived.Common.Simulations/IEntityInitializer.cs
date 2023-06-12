@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Common.Simulations
 {
     public interface IEntityInitializer
     {
-        EntityId Key { get; }
+        Guid Key { get; }
         EntityType Type { get; }
 
         bool Has<T>()

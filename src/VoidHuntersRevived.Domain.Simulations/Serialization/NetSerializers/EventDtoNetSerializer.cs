@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
         {
             return new EventDto()
             {
-                Id = reader.GetEventId(),
+                Id = reader.GetGuid(),
                 Data = (IEventData)_serializers.Deserialize(reader)
             };
         }

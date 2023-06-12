@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Domain.Simulations.Services;
@@ -30,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Abstractions
 
             for(uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                EntityId entityKey = _entities.GetEntityKey(entityIds[index], groupID);
+                Guid entityKey = _entities.GetEntityKey(entityIds[index], groupID);
                 Ref<T> component = new Ref<T>(ref components[index].Instance);
 
                 _system.OnAdded(in entityKey, in component);
@@ -43,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Abstractions
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                EntityId entityKey = _entities.GetEntityKey(entityIds[index], groupID);
+                Guid entityKey = _entities.GetEntityKey(entityIds[index], groupID);
                 Ref<T> component = new Ref<T>(ref components[index].Instance);
 
                 _system.OnRemoved(in entityKey, in component);

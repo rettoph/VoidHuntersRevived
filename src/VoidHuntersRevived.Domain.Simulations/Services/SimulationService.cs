@@ -108,7 +108,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         {
             EventDto @event = new EventDto()
             {
-                Id = EventId.NewId(),
+                Id = Guid.NewGuid(),
                 Data = data
             };
 

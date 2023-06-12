@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Domain.Simulations.Abstractions
@@ -13,7 +12,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Abstractions
     {
         private readonly IComponentBuilder[] _componentsToBuild = new[]
         {
-            new ComponentBuilder<Component<EntityId>>()
+            new ComponentBuilder<Component<Guid>>()
         };
 
         public readonly ExclusiveGroup ExclusiveGroup = new ExclusiveGroup();

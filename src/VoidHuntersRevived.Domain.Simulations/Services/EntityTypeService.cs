@@ -1,6 +1,5 @@
 ﻿using Guppy.Common;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Loaders;
 using VoidHuntersRevived.Common.Simulations.Services;
