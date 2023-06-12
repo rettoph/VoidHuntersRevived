@@ -12,6 +12,8 @@ using VoidHuntersRevived.Game.Client.Constants;
 using Guppy.MonoGame.Messages;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Game.Common.Enums;
+using VoidHuntersRevived.Game.Client.Messages;
+using VoidHuntersRevived.Game.Common.Events;
 
 namespace VoidHuntersRevived.Game.Client.Loaders
 {
@@ -40,21 +42,19 @@ namespace VoidHuntersRevived.Game.Client.Loaders
 
         private static void AddSetDirectionInput(IServiceCollection services, string key, Keys defaultSource, Direction direction)
         {
-            // services.AddInput(key, defaultSource, new[]
-            // {
-            //     (true, new SetHelmDirection()
-            //     {
-            //         HelmKey = EventId.Empty,
-            //         Which = direction,
-            //         Value = true
-            //     }),
-            //     (false, new SetHelmDirection()
-            //     {
-            //         HelmKey = EventId.Empty,
-            //         Which = direction,
-            //         Value = false
-            //     }),
-            // });
+            services.AddInput(key, defaultSource, new[]
+            {
+                (true, new SetHelmDirection()
+                {
+                    Which = direction,
+                    Value = true
+                }),
+                (false, new SetHelmDirection()
+                {
+                    Which = direction,
+                    Value = false
+                }),
+            });
         }
     }
 }

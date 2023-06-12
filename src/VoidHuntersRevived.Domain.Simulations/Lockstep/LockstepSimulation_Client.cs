@@ -17,6 +17,7 @@ using VoidHuntersRevived.Common.Physics.Factories;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Domain.Simulations.Messages;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
@@ -24,25 +25,25 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
     internal sealed class LockstepSimulation_Client : LockstepSimulation,
         IDisposable
     {
+        private readonly NetScope _scope;
         private readonly TickBuffer _ticks;
         private readonly int _stepsPerTick;
         private int _stepsSinceTick;
         private Step _step;
 
-        private List<EventDto> _events;
-
         public LockstepSimulation_Client(
+            NetScope scope,
             TickBuffer ticks,
             ISettingProvider settings, 
             ISpaceFactory spaceFactory,
             IFilteredProvider filtered,
             IBus bus) : base(spaceFactory, filtered, bus)
         {
+            _scope = scope;
             _ticks = ticks;
             _stepsSinceTick = 0;
             _stepsPerTick = settings.Get<int>(Settings.StepsPerTick).Value;
             _step = new Step();
-            _events = new List<EventDto>();
         }
 
         public override void Update(GameTime realTime)
@@ -77,7 +78,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public override void Enqueue(EventDto data)
         {
-            _events.Add(data);
+            _scope.Messages.Create(in data).Enqueue();
         }
 
         protected override bool TryGetNextTick(Tick current, [MaybeNullWhen(false)] out Tick next)

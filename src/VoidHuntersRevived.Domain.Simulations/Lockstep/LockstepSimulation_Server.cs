@@ -20,8 +20,10 @@ using VoidHuntersRevived.Common.Simulations.Services;
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
     [PeerTypeFilter(PeerType.Server)]
-    internal sealed class LockstepSimulation_Server : LockstepSimulation
+    internal sealed class LockstepSimulation_Server : LockstepSimulation,
+        ISubscriber<INetIncomingMessage<EventDto>>
     {
+        private readonly IBus _bus;
         private readonly List<EventDto> _events;
         private readonly int _stepsPerTick;
         private int _stepsSinceTick;
@@ -37,6 +39,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         {
             Fix64 stepInterval = settings.Get<Fix64>(Settings.StepInterval).Value;
 
+            _bus = bus;
             _stepsSinceTick = 0;
             _events = new List<EventDto>();
             _stepsPerTick = settings.Get<int>(Settings.StepsPerTick).Value;
@@ -46,6 +49,20 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                 ElapsedTime = stepInterval,
                 TotalTime = stepInterval
             };
+        }
+
+        public override void Initialize(ISimulationService simulations)
+        {
+            base.Initialize(simulations);
+
+            _bus.Subscribe(this);
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            _bus.Unsubscribe(this);
         }
 
         public override void Update(GameTime realTime)
@@ -106,6 +123,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             base.DoTick(tick);
 
             _stepsSinceTick = 0;
+        }
+
+        public void Process(in INetIncomingMessage<EventDto> message)
+        {
+            this.Enqueue(message.Body);
         }
     }
 }
