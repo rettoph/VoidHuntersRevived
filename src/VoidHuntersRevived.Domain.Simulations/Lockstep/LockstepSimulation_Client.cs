@@ -22,13 +22,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
     [PeerTypeFilter(PeerType.Client)]
     internal sealed class LockstepSimulation_Client : LockstepSimulation,
-        ISubscriber<INetIncomingMessage<Tick>>,
-        ISubscriber<INetIncomingMessage<TickHistoryStart>>,
-        ISubscriber<INetIncomingMessage<TickHistoryItem>>,
-        ISubscriber<INetIncomingMessage<TickHistoryEnd>>,
         IDisposable
     {
-        private readonly IBus _bus;
         private readonly TickBuffer _ticks;
         private readonly int _stepsPerTick;
         private int _stepsSinceTick;
@@ -37,31 +32,17 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         private List<EventDto> _events;
 
         public LockstepSimulation_Client(
-            IBus bus,
+            TickBuffer ticks,
             ISettingProvider settings, 
             ISpaceFactory spaceFactory,
-            IFilteredProvider filtered) : base(spaceFactory, filtered)
+            IFilteredProvider filtered,
+            IBus bus) : base(spaceFactory, filtered, bus)
         {
-            Fix64 stepInterval = settings.Get<Fix64>(Settings.StepInterval).Value;
-
-            _bus = bus;
-            _ticks = new TickBuffer();
+            _ticks = ticks;
             _stepsSinceTick = 0;
             _stepsPerTick = settings.Get<int>(Settings.StepsPerTick).Value;
             _step = new Step();
             _events = new List<EventDto>();
-        }
-
-        public override void Initialize(ISimulationService simulations)
-        {
-            base.Initialize(simulations);
-
-            _bus.Subscribe(this);
-        }
-
-        public void Dispose()
-        {
-            _bus.Unsubscribe(this);
         }
 
         public override void Update(GameTime realTime)
@@ -92,7 +73,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
             _stepsSinceTick++;
             _step.ElapsedTime = Fix64.Zero;
-            // Console.WriteLine("Step!");
         }
 
         public override void Enqueue(EventDto data)
@@ -116,34 +96,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             base.DoTick(tick);
 
             _stepsSinceTick = 0;
-        }
-
-        public void Process(in INetIncomingMessage<Tick> message)
-        {
-            _ticks.Enqueue(message.Body);
-        }
-
-        public void Process(in INetIncomingMessage<TickHistoryStart> message)
-        {
-            _ticks.Clear();
-        }
-
-        public void Process(in INetIncomingMessage<TickHistoryItem> message)
-        {
-            for (int id = (_ticks.Tail?.Id ?? this.CurrentTick.Id) + 1; id < message.Body.Tick.Id - 1; id++)
-            {
-                _ticks.Enqueue(Tick.Empty(id));
-            }
-
-            _ticks.Enqueue(message.Body.Tick);
-        }
-
-        public void Process(in INetIncomingMessage<TickHistoryEnd> message)
-        {
-            for(int id = (_ticks.Tail?.Id ?? this.CurrentTick.Id) + 1; id < message.Body.CurrentTickId; id++)
-            {
-                _ticks.Enqueue(Tick.Empty(id));
-            }
         }
     }
 }

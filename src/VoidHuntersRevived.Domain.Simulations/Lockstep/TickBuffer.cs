@@ -91,7 +91,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public Tick? Head => _head?.Data;
         public Tick? Tail => _tail?.Data;
-        public Tick? Latest { get; private set; }
+        public Tick? Popped { get; private set; }
 
         public Tick? this[int index]
         {
@@ -113,10 +113,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             }
         }
 
-        public TickBuffer()
-        {
-        }
-
         public bool TryPop(int id, [MaybeNullWhen(false)] out Tick tick)
         {
             if (_head is null)
@@ -135,6 +131,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                     _tail = null;
                 }
 
+                this.Popped = tick;
                 return true;
             }
 
@@ -170,7 +167,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
             _head.Add(node);
             this.UpdateTail();
-            this.Latest = tick;
         }
 
         private void UpdateTail()
@@ -187,8 +183,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         {
             _head = null;
             _tail = null;
-
-            this.Latest = null;
         }
     }
 }

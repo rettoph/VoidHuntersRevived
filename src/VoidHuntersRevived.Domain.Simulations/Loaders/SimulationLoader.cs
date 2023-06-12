@@ -45,6 +45,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
             manager.AddScoped<LockstepSimulation_Client>()
                 .AddInterfaceAliases();
 
+            manager.AddScoped<TickBuffer>();
+
             services.AddNetMessageType<Tick>(DeliveryMethod.ReliableUnordered, 0);
             services.AddNetMessageType<EventDto>(DeliveryMethod.ReliableUnordered, 0);
             services.AddNetMessageType<TickHistoryStart>(DeliveryMethod.ReliableOrdered, 0);

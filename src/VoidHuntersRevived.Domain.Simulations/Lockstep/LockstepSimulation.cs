@@ -21,7 +21,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
     {
         public LockstepSimulation(
             ISpaceFactory spaceFactory,
-            IFilteredProvider filtered) : base(SimulationType.Lockstep, spaceFactory, filtered)
+            IFilteredProvider filtered,
+            IBus bus) : base(SimulationType.Lockstep, spaceFactory, filtered, bus)
 
         {
         }

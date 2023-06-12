@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
-using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Common.Simulations.Events;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 
@@ -71,7 +70,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
 
         public void Tick(Tick tick)
         {
-            if(tick.Events.Length == 0)
+            // Broadcast the current tick to all connected peers
+            _scope.Messages.Create(in tick)
+                .AddRecipients(_scope.Users.Peers)
+                .Enqueue();
+
+            if (tick.Events.Length == 0)
             {
                 return;
             }

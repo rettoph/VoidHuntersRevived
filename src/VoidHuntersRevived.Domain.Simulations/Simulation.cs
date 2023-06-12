@@ -17,14 +17,14 @@ using Svelto.ECS;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
-    public abstract partial class Simulation : ISimulation
+    public abstract partial class Simulation : ISimulation, IDisposable
     {
+        private readonly IBus _bus;
         private readonly EnginesRoot _enginesRoot;
         private readonly SimpleEntitiesSubmissionScheduler _simpleEntitiesSubmissionScheduler;
         private readonly EntityTypeService _types;
         private readonly EntityService _entities;
         private readonly ComponentService _components;
-        private readonly Action<Tick>? _onTicks;
 
         protected readonly EventPublishingService publisher;
 
@@ -43,7 +43,8 @@ namespace VoidHuntersRevived.Domain.Simulations
         protected Simulation(
             SimulationType type,
             ISpaceFactory spaceFactory,
-            IFilteredProvider filtered)
+            IFilteredProvider filtered,
+            IBus bus)
         {
             _simpleEntitiesSubmissionScheduler = new SimpleEntitiesSubmissionScheduler();
             _enginesRoot = new EnginesRoot(_simpleEntitiesSubmissionScheduler);
@@ -51,6 +52,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             _types = filtered.Get< EntityTypeService>().Instance;
             _entities = new EntityService(_types, _enginesRoot.GenerateEntityFactory(), _enginesRoot.GenerateEntityFunctions());
             _components = new ComponentService(_entities);
+            _bus = bus;
 
             this.Type = type;
             this.Space = spaceFactory.Create();
@@ -61,13 +63,22 @@ namespace VoidHuntersRevived.Domain.Simulations
 
             foreach(ITickSystem subscriber in this.Systems.OfType<ITickSystem>())
             {
-                _onTicks += subscriber.Tick;
+                _tickSystems += subscriber.Tick;
             }
+
+            
         }
 
         public virtual void Initialize(ISimulationService simulations)
         {
             this.InitializeEngines();
+
+            _bus.SubscribeMany(this.Systems.OfType<ISubscriber>());
+        }
+
+        public virtual void Dispose()
+        {
+            _bus.UnsubscribeMany(this.Systems.OfType<ISubscriber>());
         }
 
         public virtual void Update(GameTime realTime)
@@ -87,6 +98,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         protected virtual void DoStep(Step step)
         {
             _simpleEntitiesSubmissionScheduler.SubmitEntities();
+            _stepEngines(step);
         }
 
         protected abstract bool TryGetNextTick(Tick current, [MaybeNullWhen(false)] out Tick next);
@@ -94,7 +106,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             this.CurrentTick = tick;
 
-            _onTicks?.Invoke(tick);
+            _tickSystems?.Invoke(tick);
 
             foreach(EventDto @event in tick.Events)
             {

@@ -1,4 +1,5 @@
-﻿using Guppy.Common.Providers;
+﻿using Guppy.Common;
+using Guppy.Common.Providers;
 using Guppy.Network;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
@@ -22,7 +23,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
     internal sealed class LockstepSimulation_Server : LockstepSimulation
     {
         private readonly List<EventDto> _events;
-        private readonly NetScope _scope;
         private readonly int _stepsPerTick;
         private int _stepsSinceTick;
         private TimeSpan _timeSinceStep;
@@ -30,14 +30,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         private Step _step;
 
         public LockstepSimulation_Server(
-            NetScope scope,
             ISettingProvider settings, 
             ISpaceFactory spaceFactory,
-            IFilteredProvider filtered) : base(spaceFactory, filtered)
+            IFilteredProvider filtered,
+            IBus bus) : base(spaceFactory, filtered, bus)
         {
             Fix64 stepInterval = settings.Get<Fix64>(Settings.StepInterval).Value;
 
-            _scope = scope;
             _stepsSinceTick = 0;
             _events = new List<EventDto>();
             _stepsPerTick = settings.Get<int>(Settings.StepsPerTick).Value;
@@ -105,11 +104,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         protected override void DoTick(Tick tick)
         {
             base.DoTick(tick);
-
-            // Broadcast the current tick to all connected peers
-            _scope.Messages.Create(in tick)
-                .AddRecipients(_scope.Users.Peers)
-                .Enqueue();
 
             _stepsSinceTick = 0;
         }
