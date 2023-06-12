@@ -11,6 +11,7 @@
     <ProjectReference Include="..\VoidHuntersRevived.Common.Simulations\VoidHuntersRevived.Common.Simulations.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common\VoidHuntersRevived.Common.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain\VoidHuntersRevived.Domain.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Game.Common\VoidHuntersRevived.Game.Common.csproj" />
   </ItemGroup>
 
 </Project>

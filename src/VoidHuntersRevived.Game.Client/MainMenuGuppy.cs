@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Constants;
 using VoidHuntersRevived.Common.Messages;
+using VoidHuntersRevived.Game.Common;
 
 namespace VoidHuntersRevived.Game.Client
 {

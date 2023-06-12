@@ -118,19 +118,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             return true;
         }
 
-        public void Iterate<T1>(IterateDelegate<T1> iterator) where T1 : unmanaged
+        public void Iterate<T1>(IterateDelegate<T1> iterator, Step step) where T1 : unmanaged
         {
             LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = _entitiesDB.FindGroups<Component<EntityId>, Component<T1>>();
             foreach (var ((ids, component1s, count), _) in _entitiesDB.QueryEntities<Component<EntityId>, Component<T1>>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {
-                    iterator(in ids[i].Instance, ref component1s[i].Instance);
+                    iterator(step, in ids[i].Instance, ref component1s[i].Instance);
                 }
             }
         }
 
-        public void Iterate<T1, T2>(IterateDelegate<T1, T2> iterator)
+        public void Iterate<T1, T2>(IterateDelegate<T1, T2> iterator, Step step)
             where T1 : unmanaged
             where T2 : unmanaged
         {
@@ -139,12 +139,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             {
                 for (int i = 0; i < count; i++)
                 {
-                    iterator(in ids[i].Instance, ref component1s[i].Instance, ref component2s[i].Instance);
+                    iterator(step, in ids[i].Instance, ref component1s[i].Instance, ref component2s[i].Instance);
                 }
             }
         }
 
-        public void Iterate<T1, T2, T3>(IterateDelegate<T1, T2, T3> iterator)
+        public void Iterate<T1, T2, T3>(IterateDelegate<T1, T2, T3> iterator, Step step)
             where T1 : unmanaged
             where T2 : unmanaged
             where T3 : unmanaged
@@ -154,12 +154,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             {
                 for (int i = 0; i < count; i++)
                 {
-                    iterator(in ids[i].Instance, ref component1s[i].Instance, ref component2s[i].Instance, ref component3s[i].Instance);
+                    iterator(step, in ids[i].Instance, ref component1s[i].Instance, ref component2s[i].Instance, ref component3s[i].Instance);
                 }
             }
         }
 
-        public void Iterate<T1, T2, T3, T4>(IterateDelegate<T1, T2, T3, T4> iterator)
+        public void Iterate<T1, T2, T3, T4>(IterateDelegate<T1, T2, T3, T4> iterator, Step step)
             where T1 : unmanaged
             where T2 : unmanaged
             where T3 : unmanaged

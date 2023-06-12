@@ -30,10 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.GUI\Guppy.GUI.csproj" />
-    <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Input\Guppy.Input.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Common\VoidHuntersRevived.Common.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Game.Entities\VoidHuntersRevived.Game.Entities.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Game\VoidHuntersRevived.Game.csproj" />
   </ItemGroup>
 

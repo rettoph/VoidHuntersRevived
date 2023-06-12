@@ -3,8 +3,8 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations.Loaders;
 using VoidHuntersRevived.Common.Simulations.Services;
-using VoidHuntersRevived.Game.Entities;
-using VoidHuntersRevived.Game.Entities.Components;
+using VoidHuntersRevived.Game.Common;
+using VoidHuntersRevived.Game.Common.Components;
 
 namespace VoidHuntersRevived.Game.Entities.Loaders
 {

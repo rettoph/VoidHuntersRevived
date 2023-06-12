@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VoidHuntersRevived.Common.Entities\VoidHuntersRevived.Common.Entities.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Common.Simulations\VoidHuntersRevived.Common.Simulations.csproj" />
   </ItemGroup>
 
 </Project>

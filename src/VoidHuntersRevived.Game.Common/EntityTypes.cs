@@ -1,6 +1,6 @@
 ﻿using VoidHuntersRevived.Common.Entities;
 
-namespace VoidHuntersRevived.Game.Entities
+namespace VoidHuntersRevived.Game.Common
 {
     public static class EntityTypes
     {

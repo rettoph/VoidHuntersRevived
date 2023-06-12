@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Game
+namespace VoidHuntersRevived.Game.Common
 {
     public static class Menus
     {

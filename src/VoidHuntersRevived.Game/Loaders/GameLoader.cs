@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Game.Common;
 
 namespace VoidHuntersRevived.Game.Loaders
 {

@@ -5,6 +5,7 @@ using Guppy.MonoGame;
 using Guppy.MonoGame.Loaders;
 using Guppy.MonoGame.Providers;
 using VoidHuntersRevived.Common.Messages;
+using VoidHuntersRevived.Game.Common;
 
 namespace VoidHuntersRevived.Game.Client.Loaders
 {
