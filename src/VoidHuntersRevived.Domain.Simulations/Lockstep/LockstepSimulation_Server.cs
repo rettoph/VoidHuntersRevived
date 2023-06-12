@@ -1,4 +1,5 @@
-﻿using Guppy.Network;
+﻿using Guppy.Common.Providers;
+using Guppy.Network;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
 using Guppy.Resources.Providers;
@@ -11,7 +12,6 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Constants;
-using VoidHuntersRevived.Common.Simulations.Factories;
 using VoidHuntersRevived.Common.Physics.Factories;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
@@ -32,8 +32,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public LockstepSimulation_Server(
             NetScope scope,
             ISettingProvider settings, 
-            IWorldFactory worldFactory, 
-            ISpaceFactory spaceFactory) : base(worldFactory, spaceFactory)
+            ISpaceFactory spaceFactory,
+            IFilteredProvider filtered) : base(spaceFactory, filtered)
         {
             Fix64 stepInterval = settings.Get<Fix64>(Settings.StepInterval).Value;
 

@@ -6,45 +6,60 @@ using Microsoft.Xna.Framework;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Factories;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Physics.Factories;
-using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Domain.Simulations.Services;
+using Guppy.Common.Providers;
+using Svelto.ECS.Schedulers;
+using Svelto.ECS;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
-    public abstract partial class Simulation : ISimulation, IDisposable
+    public abstract partial class Simulation : ISimulation
     {
-        private Action<Tick>? _onTicks;
+        private readonly EnginesRoot _enginesRoot;
+        private readonly SimpleEntitiesSubmissionScheduler _simpleEntitiesSubmissionScheduler;
+        private readonly EntityTypeService _types;
+        private readonly EntityService _entities;
+        private readonly ComponentService _components;
+        private readonly Action<Tick>? _onTicks;
 
         protected readonly EventPublishingService publisher;
 
         public readonly SimulationType Type;
         public readonly ISpace Space;
-        public readonly IWorld World;
+        public readonly ISystem[] Systems;
 
         SimulationType ISimulation.Type => this.Type;
         ISpace ISimulation.Space => this.Space;
-        IWorld ISimulation.World => this.World;
+        IEntityService ISimulation.Entities => _entities;
+        IComponentService ISimulation.Components => _components;
+        ISystem[] ISimulation.Systems => this.Systems;
 
         public Tick CurrentTick { get; private set; }
 
         protected Simulation(
             SimulationType type,
-            IWorldFactory worldFactory,
-            ISpaceFactory spaceFactory)
+            ISpaceFactory spaceFactory,
+            IFilteredProvider filtered)
         {
+            _simpleEntitiesSubmissionScheduler = new SimpleEntitiesSubmissionScheduler();
+            _enginesRoot = new EnginesRoot(_simpleEntitiesSubmissionScheduler);
+
+            _types = filtered.Get< EntityTypeService>().Instance;
+            _entities = new EntityService(_types, _enginesRoot.GenerateEntityFactory(), _enginesRoot.GenerateEntityFunctions());
+            _components = new ComponentService(_entities);
+
             this.Type = type;
             this.Space = spaceFactory.Create();
-            this.World = worldFactory.Create(new SimulationState(this));
             this.CurrentTick = Tick.First();
+            this.Systems = filtered.Instances<ISystem>(new SimulationState(this)).Sort().ToArray();
 
-            this.publisher = new EventPublishingService(this.World.Systems);
+            this.publisher = new EventPublishingService(this.Systems);
 
-            foreach(ITickSystem subscriber in this.World.Systems.OfType<ITickSystem>())
+            foreach(ITickSystem subscriber in this.Systems.OfType<ITickSystem>())
             {
                 _onTicks += subscriber.Tick;
             }
@@ -52,17 +67,7 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public virtual void Initialize(ISimulationService simulations)
         {
-            this.World.Initialize();
-
-            foreach (ISimulationSystem system in this.World.Systems.OfType<ISimulationSystem>())
-            {
-                system.Initialize(this);
-            }
-        }
-
-        public virtual void Dispose()
-        {
-            this.World.Dispose();
+            this.InitializeEngines();
         }
 
         public virtual void Update(GameTime realTime)
@@ -81,7 +86,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         protected abstract bool TryGetNextStep(GameTime realTime, [MaybeNullWhen(false)] out Step step);
         protected virtual void DoStep(Step step)
         {
-
+            _simpleEntitiesSubmissionScheduler.SubmitEntities();
         }
 
         protected abstract bool TryGetNextTick(Tick current, [MaybeNullWhen(false)] out Tick next);

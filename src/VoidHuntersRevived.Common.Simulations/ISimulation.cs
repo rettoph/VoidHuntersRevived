@@ -2,6 +2,7 @@
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Common.Simulations.Systems;
 
 namespace VoidHuntersRevived.Common.Simulations
 {
@@ -9,7 +10,10 @@ namespace VoidHuntersRevived.Common.Simulations
     {
         SimulationType Type { get; }
         ISpace Space { get; }
-        IWorld World { get; }
+
+        IEntityService Entities { get; }
+        IComponentService Components { get; }
+        ISystem[] Systems { get; }
 
         Tick CurrentTick { get; }
 

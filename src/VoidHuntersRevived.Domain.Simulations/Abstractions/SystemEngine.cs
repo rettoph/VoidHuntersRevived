@@ -13,19 +13,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Abstractions
     internal sealed class SystemEngine : IGetReadyEngine
     {
         private readonly ISystem _system;
-        private readonly IWorld _world;
+        private readonly ISimulation _simulation;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
-        public SystemEngine(IWorld world, ISystem system)
+        public SystemEngine(ISimulation simulation, ISystem system)
         {
             _system = system;
-            _world = world;
+            _simulation = simulation;
         }
 
         public void Ready()
         {
-            _system.Initialize(_world);
+            _system.Initialize(_simulation);
         }
     }
 }

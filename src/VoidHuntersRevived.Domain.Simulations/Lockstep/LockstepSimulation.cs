@@ -11,9 +11,8 @@ using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Constants;
 using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Factories;
 using VoidHuntersRevived.Common.Physics.Factories;
-using VoidHuntersRevived.Common.Simulations;
+using Guppy.Common.Providers;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
@@ -21,8 +20,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
     internal abstract class LockstepSimulation : Simulation, ISimulation
     {
         public LockstepSimulation(
-            IWorldFactory worldFactory,
-            ISpaceFactory spaceFactory) : base(SimulationType.Lockstep, worldFactory, spaceFactory)
+            ISpaceFactory spaceFactory,
+            IFilteredProvider filtered) : base(SimulationType.Lockstep, spaceFactory, filtered)
+
         {
         }
 

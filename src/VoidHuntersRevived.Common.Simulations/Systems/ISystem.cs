@@ -11,6 +11,6 @@ namespace VoidHuntersRevived.Common.Simulations.Systems
     [Service<ISystem>(ServiceLifetime.Transient, true)]
     public interface ISystem : IDisposable
     {
-        void Initialize(IWorld world);
+        void Initialize(ISimulation simulation);
     }
 }

@@ -30,9 +30,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
             _simulations = simulations;
         }
 
-        public override void Initialize(IWorld world)
+        public override void Initialize(ISimulation simulation)
         {
-            base.Initialize(world);
+            base.Initialize(simulation);
 
             _scope.Users.OnUserJoined += this.HandleUserJoined;
         }

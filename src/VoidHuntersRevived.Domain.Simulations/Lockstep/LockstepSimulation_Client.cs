@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Common.Providers;
 using Guppy.Network;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
@@ -12,7 +13,6 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Constants;
-using VoidHuntersRevived.Common.Simulations.Factories;
 using VoidHuntersRevived.Common.Physics.Factories;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
@@ -39,8 +39,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public LockstepSimulation_Client(
             IBus bus,
             ISettingProvider settings, 
-            IWorldFactory worldFactory, 
-            ISpaceFactory spaceFactory) : base(worldFactory, spaceFactory)
+            ISpaceFactory spaceFactory,
+            IFilteredProvider filtered) : base(spaceFactory, filtered)
         {
             Fix64 stepInterval = settings.Get<Fix64>(Settings.StepInterval).Value;
 
@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _bus.Subscribe(this);
         }
 
-        public override void Dispose()
+        public void Dispose()
         {
             _bus.Unsubscribe(this);
         }

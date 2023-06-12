@@ -14,9 +14,6 @@ using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 using VoidHuntersRevived.Domain.Simulations.Services;
-using VoidHuntersRevived.Domain.Simulations.Systems;
-using VoidHuntersRevived.Common.Simulations.Factories;
-using VoidHuntersRevived.Domain.Simulations.Factories;
 
 namespace VoidHuntersRevived.Domain.Simulations.Loaders
 {
@@ -34,9 +31,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
             {
                 manager.AddScoped<EntityTypeService>()
                     .AddAlias<IEntityTypeService>();
-
-                manager.AddTransient<IWorldFactory>()
-                    .SetImplementationType<WorldFactory>();
 
                 this.ConfigureLockstep(services, manager);
                 this.ConfigurePredictive(services, manager);
