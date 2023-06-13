@@ -1,6 +1,6 @@
 ﻿using Guppy.Attributes;
-using VoidHuntersRevived.Common.Simulations.Loaders;
-using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Common.Entities.Loaders;
+using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Game.Common;
 using VoidHuntersRevived.Game.Common.Components;
 

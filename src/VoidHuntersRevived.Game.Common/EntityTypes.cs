@@ -1,5 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Game.Common
 {

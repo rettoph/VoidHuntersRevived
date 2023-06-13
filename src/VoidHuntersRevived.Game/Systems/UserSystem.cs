@@ -3,6 +3,9 @@ using Guppy.Network;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Providers;
 using Guppy.Network.Peers;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Systems;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Events;
@@ -31,7 +34,7 @@ namespace VoidHuntersRevived.Game.Systems
         {
             User user = _scope.Peer!.Users.UpdateOrCreate(data.UserId, data.Claims);
 
-            this.Simulation.Entities.Create(EntityTypes.UserShip, user.GetUserShipId(), initializer =>
+            this.Simulation.World.Entities.Create(EntityTypes.UserShip, user.GetUserShipId(), initializer =>
             {
                 initializer.Set(new UserOwned()
                 {

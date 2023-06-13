@@ -4,19 +4,19 @@ using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Common.Pieces.Services;
+using VoidHuntersRevived.Common.Entities.Systems;
+using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Common.Simulations
 {
     public interface ISimulation
     {
         SimulationType Type { get; }
+        IWorld World { get; }
         ISpace Space { get; }
 
         IPieceService Pieces { get; }
-
-        IEntityService Entities { get; }
-        IComponentService Components { get; }
-        ISystem[] Systems { get; }
 
         Tick CurrentTick { get; }
 

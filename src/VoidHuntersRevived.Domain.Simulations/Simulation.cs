@@ -16,30 +16,25 @@ using Svelto.ECS.Schedulers;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Domain.Pieces.Services;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Domain.Entities;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
-    public abstract partial class Simulation : ISimulation, IDisposable
+    public abstract class Simulation : ISimulation, IDisposable
     {
-        private readonly IBus _bus;
-        private readonly EnginesRoot _enginesRoot;
-        private readonly SimpleEntitiesSubmissionScheduler _simpleEntitiesSubmissionScheduler;
-        private readonly EntityTypeService _types;
-        private readonly EntityService _entities;
-        private readonly ComponentService _components;
+        private Action<Tick> _tickSystems = null!;
 
         protected readonly EventPublishingService publisher;
 
         public readonly SimulationType Type;
         public readonly ISpace Space;
-        public readonly ISystem[] Systems;
         public readonly IPieceService Pieces;
+        public readonly World World;
 
         SimulationType ISimulation.Type => this.Type;
         ISpace ISimulation.Space => this.Space;
-        IEntityService ISimulation.Entities => _entities;
-        IComponentService ISimulation.Components => _components;
-        ISystem[] ISimulation.Systems => this.Systems;
+        IWorld ISimulation.World => this.World;
         IPieceService ISimulation.Pieces => this.Pieces;
 
         public Tick CurrentTick { get; private set; }
@@ -50,23 +45,15 @@ namespace VoidHuntersRevived.Domain.Simulations
             IFilteredProvider filtered,
             IBus bus)
         {
-            _simpleEntitiesSubmissionScheduler = new SimpleEntitiesSubmissionScheduler();
-            _enginesRoot = new EnginesRoot(_simpleEntitiesSubmissionScheduler);
-
-            _types = filtered.Get< EntityTypeService>().Instance;
-            _entities = new EntityService(_simpleEntitiesSubmissionScheduler, _types, _enginesRoot.GenerateEntityFactory(), _enginesRoot.GenerateEntityFunctions());
-            _components = new ComponentService(_entities);
-            _bus = bus;
-
             this.Type = type;
             this.Space = spaceFactory.Create();
+            this.World = new World(bus, filtered, new SimulationState(this));
             this.CurrentTick = Tick.First();
-            this.Systems = filtered.Instances<ISystem>(new SimulationState(this)).Sort().ToArray();
             this.Pieces = new PieceService();
 
-            this.publisher = new EventPublishingService(this.Systems);
+            this.publisher = new EventPublishingService(this.World.Systems.OfType<ISimulationSystem>());
 
-            foreach(ITickSystem subscriber in this.Systems.OfType<ITickSystem>())
+            foreach(ITickSystem subscriber in this.World.Systems.OfType<ITickSystem>())
             {
                 _tickSystems += subscriber.Tick;
             }
@@ -74,14 +61,17 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public virtual void Initialize(ISimulationService simulations)
         {
-            this.InitializeEngines();
+            this.World.Initialize();
 
-            _bus.SubscribeMany(this.Systems.OfType<ISubscriber>());
+            foreach(ISimulationSystem system in this.World.Systems.OfType<ISimulationSystem>())
+            {
+                system.Initialize(this);
+            }
         }
 
         public virtual void Dispose()
         {
-            _bus.UnsubscribeMany(this.Systems.OfType<ISubscriber>());
+            this.World.Dispose();
         }
 
         public virtual void Update(GameTime realTime)
@@ -100,7 +90,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         protected abstract bool TryGetNextStep(GameTime realTime, [MaybeNullWhen(false)] out Step step);
         protected virtual void DoStep(Step step)
         {
-            _stepEngines(step);
+            this.World.Step(step);
         }
 
         protected abstract bool TryGetNextTick(Tick current, [MaybeNullWhen(false)] out Tick next);

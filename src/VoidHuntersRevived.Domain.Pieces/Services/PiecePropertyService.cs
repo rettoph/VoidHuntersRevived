@@ -9,7 +9,7 @@ using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Loaders;
 using VoidHuntersRevived.Common.Pieces.Services;
-using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {

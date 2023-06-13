@@ -22,6 +22,6 @@ namespace VoidHuntersRevived.Common.Physics
         IBody GetBody(in Guid id);
 
         void QueryAABB(QueryReportFixtureDelegate callback, ref AABB aabb);
-        void Step(TimeSpan elapsedGameTime);
+        void Step(Step step);
     }
 }

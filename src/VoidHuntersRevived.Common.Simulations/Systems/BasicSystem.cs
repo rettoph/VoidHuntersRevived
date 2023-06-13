@@ -1,6 +1,6 @@
 ﻿namespace VoidHuntersRevived.Common.Simulations.Systems
 {
-    public abstract class BasicSystem : ISystem
+    public abstract class BasicSystem : ISimulationSystem
     {
         public ISimulation Simulation { get; private set; } = null!;
 

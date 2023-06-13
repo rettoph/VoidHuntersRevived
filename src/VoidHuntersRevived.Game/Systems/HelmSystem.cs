@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Game.Common.Components;
@@ -17,7 +18,7 @@ namespace VoidHuntersRevived.Game.Systems
     {
         public void Process(Guid id, SetHelmDirection data)
         {
-            if (!this.Simulation.Components.TryGet(data.ShipId, out Ref<Helm> helm))
+            if (!this.Simulation.World.Components.TryGet(data.ShipId, out Ref<Helm> helm))
             {
                 return;
             }

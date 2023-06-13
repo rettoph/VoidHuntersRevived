@@ -81,9 +81,9 @@ namespace VoidHuntersRevived.Domain.Physics
             }, ref Unsafe.As<AABB, AetherAABB>(ref aabb));
         }
 
-        public void Step(TimeSpan elapsedGameTime)
+        public void Step(Step step)
         {
-            _aether.Step((Fix64)elapsedGameTime.TotalSeconds);
+            _aether.Step(step.ElapsedTime);
         }
     }
 }

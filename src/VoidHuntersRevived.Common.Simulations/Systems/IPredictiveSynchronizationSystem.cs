@@ -3,7 +3,7 @@ using VoidHuntersRevived.Common.Simulations.Systems;
 
 namespace VoidHuntersRevived.Common.Simulations.Systems
 {
-    public interface IPredictiveSynchronizationSystem : ISystem
+    public interface IPredictiveSynchronizationSystem : ISimulationSystem
     {
         void Synchronize(ISimulation lockstep, GameTime gameTime, Fix64 damping);
     }

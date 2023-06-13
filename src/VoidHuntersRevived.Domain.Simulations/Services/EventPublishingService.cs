@@ -15,16 +15,16 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
     {
         private readonly Dictionary<Type, SimulationEventPublisher> _publishers;
 
-        public EventPublishingService(IEnumerable<ISystem> systems)
+        public EventPublishingService(IEnumerable<ISimulationSystem> systems)
         {
-            Dictionary<Type, List<ISystem>> subscriptions = new Dictionary<Type, List<ISystem>>();
-            foreach (ISystem system in systems)
+            Dictionary<Type, List<ISimulationSystem>> subscriptions = new Dictionary<Type, List<ISimulationSystem>>();
+            foreach (ISimulationSystem system in systems)
             {
                 foreach (Type subscriberType in system.GetType().GetConstructedGenericTypes(typeof(IEventSubscriber<>)))
                 {
-                    if (!subscriptions.TryGetValue(subscriberType.GenericTypeArguments[0], out List<ISystem>? subSystems))
+                    if (!subscriptions.TryGetValue(subscriberType.GenericTypeArguments[0], out List<ISimulationSystem>? subSystems))
                     {
-                        subscriptions[subscriberType.GenericTypeArguments[0]] = subSystems = new List<ISystem>();
+                        subscriptions[subscriberType.GenericTypeArguments[0]] = subSystems = new List<ISimulationSystem>();
                     }
 
                     subSystems.Add(system); ;
@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             }
 
             _publishers = new Dictionary<Type, SimulationEventPublisher>();
-            foreach ((Type type, List<ISystem> subscribers) in subscriptions)
+            foreach ((Type type, List<ISimulationSystem> subscribers) in subscriptions)
             {
                 Type publisherType = typeof(SimulationEventPublisher<>).MakeGenericType(type);
                 SimulationEventPublisher publisher = (SimulationEventPublisher)Activator.CreateInstance(publisherType, new[] { subscribers })!;
@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         {
             private readonly IEventSubscriber<T>[] _subscribers;
 
-            public SimulationEventPublisher(List<ISystem> subscribers)
+            public SimulationEventPublisher(List<ISimulationSystem> subscribers)
             {
                 _subscribers = subscribers.OfType<IEventSubscriber<T>>().ToArray();
             }

@@ -29,9 +29,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
 
             services.ConfigureCollection(manager =>
             {
-                manager.AddScoped<EntityTypeService>()
-                    .AddAlias<IEntityTypeService>();
-
                 this.ConfigureLockstep(services, manager);
                 this.ConfigurePredictive(services, manager);
             });

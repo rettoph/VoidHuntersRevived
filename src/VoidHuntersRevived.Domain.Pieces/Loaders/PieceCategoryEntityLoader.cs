@@ -6,8 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
-using VoidHuntersRevived.Common.Simulations.Loaders;
-using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Common.Entities.Loaders;
+using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Domain.Pieces.Services;
 
 namespace VoidHuntersRevived.Domain.Pieces.Loaders
