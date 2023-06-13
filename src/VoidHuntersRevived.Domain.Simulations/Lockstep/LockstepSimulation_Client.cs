@@ -14,8 +14,10 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Constants;
 using VoidHuntersRevived.Common.Physics.Factories;
+using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Domain.Pieces.Services;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 using static System.Formats.Asn1.AsnWriter;
 
@@ -37,7 +39,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             ISettingProvider settings, 
             ISpaceFactory spaceFactory,
             IFilteredProvider filtered,
-            IBus bus) : base(spaceFactory, filtered, bus)
+            IBus bus,
+            PieceConfigurationService pieces) : base(spaceFactory, filtered, bus, pieces)
         {
             _scope = scope;
             _ticks = ticks;

@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Loaders
                 manager.AddSingleton<PiecePropertyService>()
                     .AddInterfaceAliases();
 
-                manager.AddSingleton<PieceService>()
+                manager.AddTransient<PieceService>()
                     .AddInterfaceAliases();
             });
         }

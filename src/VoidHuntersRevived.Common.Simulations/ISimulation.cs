@@ -13,9 +13,8 @@ namespace VoidHuntersRevived.Common.Simulations
     public interface ISimulation
     {
         SimulationType Type { get; }
-        IWorld World { get; }
         ISpace Space { get; }
-
+        IWorld World { get; }
         IPieceService Pieces { get; }
 
         Tick CurrentTick { get; }

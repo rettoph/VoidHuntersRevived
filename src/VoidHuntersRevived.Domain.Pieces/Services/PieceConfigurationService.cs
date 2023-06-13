@@ -14,7 +14,7 @@ using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
-    internal sealed class PieceConfigurationService : IPieceConfigurationService
+    public sealed class PieceConfigurationService : IPieceConfigurationService
     {
         private readonly PieceCategoryService _categories;
         private readonly PiecePropertyService _properties;
@@ -48,6 +48,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             {
                 throw new ArgumentNullException(nameof(conf.Category));
             }
+        }
+
+        public Guid Create(PieceType type, Guid id, IEntityService entities)
+        {
+            PieceConfiguration configuration = _configurations[type];
+            return entities.Create(configuration.Category, id, configuration.Initialize);
         }
     }
 }

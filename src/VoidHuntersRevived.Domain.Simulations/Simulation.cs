@@ -43,13 +43,14 @@ namespace VoidHuntersRevived.Domain.Simulations
             SimulationType type,
             ISpaceFactory spaceFactory,
             IFilteredProvider filtered,
-            IBus bus)
+            IBus bus,
+            PieceConfigurationService pieces)
         {
             this.Type = type;
             this.Space = spaceFactory.Create();
             this.World = new World(bus, filtered, new SimulationState(this));
+            this.Pieces = new PieceService(pieces, this.World.Entities);
             this.CurrentTick = Tick.First();
-            this.Pieces = new PieceService();
 
             this.publisher = new EventPublishingService(this.World.Systems.OfType<ISimulationSystem>());
 

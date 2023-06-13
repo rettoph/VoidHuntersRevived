@@ -11,7 +11,7 @@ using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
-    internal sealed class PieceCategoryService : IPieceCategoryService
+    public sealed class PieceCategoryService : IPieceCategoryService
     {
         private readonly Dictionary<PieceCategory, PieceCategoryConfiguration> _configurations;
 

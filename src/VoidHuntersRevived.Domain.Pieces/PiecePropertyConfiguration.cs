@@ -11,13 +11,13 @@ using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Pieces
 {
-    internal abstract class PiecePropertyConfiguration : IPiecePropertyConfiguration
+    public abstract class PiecePropertyConfiguration : IPiecePropertyConfiguration
     {
         public abstract Type Type { get; }
 
         public abstract void Initialize(PieceProperty property, IEntityInitializer entity);
     }
-    internal sealed class PiecePropertyConfiguration<T> : PiecePropertyConfiguration, IPiecePropertyConfiguration<T>
+    public sealed class PiecePropertyConfiguration<T> : PiecePropertyConfiguration, IPiecePropertyConfiguration<T>
         where T : class, IPieceProperty
     {
         private Action<PieceProperty<T>, IEntityInitializer> _initializers = null!;

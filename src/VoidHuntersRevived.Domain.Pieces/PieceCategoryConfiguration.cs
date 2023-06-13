@@ -10,7 +10,7 @@ using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Pieces
 {
-    internal sealed class PieceCategoryConfiguration : IPieceCategoryConfiguration
+    public sealed class PieceCategoryConfiguration : IPieceCategoryConfiguration
     {
         private readonly HashSet<Type> _properties;
 

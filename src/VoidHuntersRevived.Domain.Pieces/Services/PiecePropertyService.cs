@@ -13,7 +13,7 @@ using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
-    internal sealed class PiecePropertyService : IPiecePropertyService
+    public sealed class PiecePropertyService : IPiecePropertyService
     {
         private readonly Dictionary<Type, PiecePropertyConfiguration> _configurations;
         private readonly List<IPieceProperty> _propertyInstanceCache;
