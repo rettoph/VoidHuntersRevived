@@ -8,6 +8,8 @@ using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
+using Svelto.ECS;
+using VoidHuntersRevived.Domain.Entities.Abstractions;
 
 namespace VoidHuntersRevived.Domain.Pieces
 {
@@ -15,35 +17,36 @@ namespace VoidHuntersRevived.Domain.Pieces
     {
         public abstract Type Type { get; }
 
-        public abstract void Initialize(PieceProperty property, IEntityInitializer entity);
+        public abstract void Initialize(PieceProperty property, ref EntityInitializer entity);
     }
     public sealed class PiecePropertyConfiguration<T> : PiecePropertyConfiguration, IPiecePropertyConfiguration<T>
         where T : class, IPieceProperty
     {
-        private Action<PieceProperty<T>, IEntityInitializer> _initializers = null!;
+        private delegate void PieceInitializerDelegate(PieceProperty<T> property, ref EntityInitializer initializer);
+        private PieceInitializerDelegate _initializers = null!;
 
         public override Type Type => typeof(T);
 
         public PiecePropertyConfiguration()
         {
-            this.RequiresComponent((PieceProperty<T> property, ref PiecePropertyId<T> component) =>
+            this.RequiresComponent((PieceProperty<T> property, ref Piece<T> component) =>
             {
-                component.Value = property.Id.Value;
+                component.Value = property.Component.Value;
             });
         }
 
         public void RequiresComponent<TComponent>(InitializeComponentDelegate<T, TComponent> initializer)
             where TComponent : unmanaged
         {
-            _initializers += (PieceProperty<T> property, IEntityInitializer entity) =>
+            _initializers += (PieceProperty<T> property, ref EntityInitializer entity) =>
             {
-                initializer(property, ref entity.Get<TComponent>());
+                initializer(property, ref entity.Get<Component<TComponent>>().Instance);
             };
         }
 
-        public override void Initialize(PieceProperty property, IEntityInitializer entity)
+        public override void Initialize(PieceProperty property, ref EntityInitializer entity)
         {
-            _initializers(Unsafe.As<PieceProperty<T>>(property), entity);
+            _initializers(Unsafe.As<PieceProperty<T>>(property), ref entity);
         }
     }
 }

@@ -15,6 +15,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
     {
         private readonly Dictionary<PieceCategory, PieceCategoryConfiguration> _configurations;
 
+        public IEnumerable<PieceCategoryConfiguration> Configurations => _configurations.Values;
+
         public PieceCategoryService(ISorted<IPieceCategoryLoader> loaders)
         {
             _configurations = new Dictionary<PieceCategory, PieceCategoryConfiguration>();

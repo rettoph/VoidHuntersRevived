@@ -3,6 +3,7 @@ using Guppy.Network;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Providers;
 using Guppy.Network.Peers;
+using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Systems;
@@ -10,6 +11,7 @@ using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Events;
 using VoidHuntersRevived.Common.Simulations.Systems;
+using VoidHuntersRevived.Domain.Entities.Abstractions;
 using VoidHuntersRevived.Game.Common;
 using VoidHuntersRevived.Game.Common.Components;
 using VoidHuntersRevived.Game.Pieces;
@@ -34,13 +36,12 @@ namespace VoidHuntersRevived.Game.Systems
         {
             User user = _scope.Peer!.Users.UpdateOrCreate(data.UserId, data.Claims);
 
-            this.Simulation.World.Entities.Create(EntityTypes.UserShip, user.GetUserShipId(), initializer =>
+            this.Simulation.World.Entities.Create(EntityTypes.UserShip, user.GetUserShipId(), (ref EntityInitializer initializer) =>
             {
-                initializer.Set(new UserOwned()
-                {
-                    UserId = data.UserId
-                });
+                initializer.Get<Component<UserOwned>>().Instance.UserId = data.UserId;
             });
+
+            this.Simulation.Pieces.Create(PieceTypes.HullSquare, id.Create(1));
         }
 
         public void Step(Step step, in Guid id, ref Helm component1)

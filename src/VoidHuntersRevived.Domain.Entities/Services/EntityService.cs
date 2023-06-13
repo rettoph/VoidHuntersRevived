@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return id;
         }
 
-        public Guid Create(EntityType type, Guid id, Action<IEntityInitializer> initializerAction)
+        public Guid Create(EntityType type, Guid id, EntityInitializerDelegate initializerDelegate)
         {
             EntityDescriptorGroup descriptorGroup = _entityTypes.EntityDescriptorGroup(type);
             EntityInitializer initializer = _factory.BuildEntity(_id++, descriptorGroup.Group, descriptorGroup.Descriptor);
@@ -64,9 +64,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _idMap.Add(initializer.EGID, id);
 
             initializer.Get<Component<Guid>>().Instance = id;
+            initializerDelegate(ref initializer);
 
             _simpleEntitiesSubmissionScheduler.SubmitEntities();
-            initializerAction(new InternalEntityInitializer(_entitiesDB, egidGroup, id, type));
 
             return id;
         }

@@ -8,6 +8,7 @@ using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Pieces.Services;
+using Svelto.ECS;
 
 namespace VoidHuntersRevived.Domain.Pieces
 {
@@ -49,11 +50,11 @@ namespace VoidHuntersRevived.Domain.Pieces
             return this;
         }
 
-        public void Initialize(IEntityInitializer entity)
+        public void Initialize(ref EntityInitializer initializer)
         {
             foreach (PieceProperty property in _propertyInstances)
             {
-                _properties.Initialize(property, entity);
+                _properties.Initialize(property, ref initializer);
             }
         }
     }

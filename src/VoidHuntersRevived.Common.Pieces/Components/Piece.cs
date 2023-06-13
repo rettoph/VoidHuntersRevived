@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Pieces.Components
 {
-    public struct PiecePropertyId<T>
+    public struct Piece<T>
         where T : class, IPieceProperty
     {
         public int Value;

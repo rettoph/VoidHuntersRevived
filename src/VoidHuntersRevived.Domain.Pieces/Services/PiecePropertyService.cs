@@ -10,6 +10,7 @@ using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Loaders;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Entities;
+using Svelto.ECS;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
@@ -18,10 +19,19 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         private readonly Dictionary<Type, PiecePropertyConfiguration> _configurations;
         private readonly List<IPieceProperty> _propertyInstanceCache;
 
-        public PiecePropertyService(ISorted<IPiecePropertyLoader> loaders)
+        public PiecePropertyService(PieceCategoryService categories, ISorted<IPiecePropertyLoader> loaders)
         {
             _configurations = new Dictionary<Type, PiecePropertyConfiguration>();
             _propertyInstanceCache = new List<IPieceProperty>();
+
+            Type[] propertyTypes = categories.Configurations.SelectMany(x => x.PropertyTypes).Distinct().ToArray();
+            foreach(Type propertyType in propertyTypes)
+            {
+                Type configurationType = typeof(PiecePropertyConfiguration<>).MakeGenericType(propertyType);
+                PiecePropertyConfiguration configuration = (PiecePropertyConfiguration)Activator.CreateInstance(configurationType)!;
+
+                _configurations.Add(configuration.Type, configuration);
+            }
 
             foreach (IPiecePropertyLoader loader in loaders)
             {
@@ -38,24 +48,17 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         public PiecePropertyConfiguration<T> Get<T>()
             where T : class, IPieceProperty
         {
-            if (_configurations.TryGetValue(typeof(T), out PiecePropertyConfiguration? uncasted))
-            {
-                return Unsafe.As<PiecePropertyConfiguration<T>>(uncasted);
-            }
-
-            PiecePropertyConfiguration<T> conf = new PiecePropertyConfiguration<T>();
-            _configurations[typeof(T)] = conf;
-            return conf;
+            return Unsafe.As<PiecePropertyConfiguration<T>>(_configurations[typeof(T)]);
         }
 
-        public void Initialize(PieceProperty property, IEntityInitializer entity)
+        public void Initialize(PieceProperty property, ref EntityInitializer entity)
         {
-            if(!_configurations.TryGetValue(property.GetType(), out PiecePropertyConfiguration? configuration))
+            if(!_configurations.TryGetValue(property.Type, out PiecePropertyConfiguration? configuration))
             {
                 return;
             }
 
-            configuration.Initialize(property, entity);
+            configuration.Initialize(property, ref entity);
         }
 
         public PieceProperty<T> Cache<T>(T property)
@@ -63,10 +66,16 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         {
             _propertyInstanceCache.Add(property);
 
-            return new PieceProperty<T>(property, new PiecePropertyId<T>()
+            return new PieceProperty<T>(property, new Piece<T>()
             {
-                Value = _propertyInstanceCache.Count - 1
+                Value = _propertyInstanceCache.Count + 1
             });
+        }
+
+        public T Get<T>(Piece<T> piece)
+            where T : class, IPieceProperty
+        {
+            return Unsafe.As<T>(_propertyInstanceCache[piece.Value]);
         }
     }
 }

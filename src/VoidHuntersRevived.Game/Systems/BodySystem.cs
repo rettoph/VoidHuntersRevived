@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Game.Systems
     [AutoLoad]
     internal sealed class BodySystem : BasicSystem,
         IReactiveSystem<Body>,
-        IReactiveSystem<PiecePropertyId<Rigid>>,
+        IReactiveSystem<Piece<Rigid>>,
         IStepSystem<Body>
     {
         public void OnAdded(in Guid id, in Ref<Body> body)
@@ -41,12 +41,12 @@ namespace VoidHuntersRevived.Game.Systems
             this.Simulation.Space.RemoveBody(id);
         }
 
-        public void OnAdded(in Guid id, in Ref<PiecePropertyId<Rigid>> component)
+        public void OnAdded(in Guid id, in Ref<Piece<Rigid>> component)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(component.Instance.Value);
         }
 
-        public void OnRemoved(in Guid id, in Ref<PiecePropertyId<Rigid>> component)
+        public void OnRemoved(in Guid id, in Ref<Piece<Rigid>> component)
         {
             throw new NotImplementedException();
         }

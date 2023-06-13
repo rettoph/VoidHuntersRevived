@@ -9,10 +9,12 @@ namespace VoidHuntersRevived.Common.Pieces
 {
     public class PieceProperty
     {
+        public readonly Type Type;
         public readonly IPieceProperty Property;
 
-        public PieceProperty(IPieceProperty property)
+        public PieceProperty(Type type, IPieceProperty property)
         {
+            this.Type = type;
             this.Property = property;
         }
     }
@@ -21,12 +23,12 @@ namespace VoidHuntersRevived.Common.Pieces
         where T : class, IPieceProperty
     {
         public new readonly T Property;
-        public readonly PiecePropertyId<T> Id;
+        public readonly Piece<T> Component;
 
-        public PieceProperty(T property, PiecePropertyId<T> id) : base(property)
+        public PieceProperty(T property, Piece<T> id) : base(typeof(T), property)
         {
             this.Property = property;
-            this.Id = id;
+            this.Component = id;
         }
     }
 }

@@ -16,6 +16,8 @@ namespace VoidHuntersRevived.Domain.Pieces
 
         public PieceCategory Category { get; private set; }
 
+        public IEnumerable<Type> PropertyTypes => _properties;
+
         public PieceCategoryConfiguration(PieceCategory category)
         {
             _properties = new HashSet<Type>();
@@ -37,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Pieces
             {
                 foreach(Type property in _properties)
                 {
-                    configuration.Has(typeof(PiecePropertyId<>).MakeGenericType(property));
+                    configuration.Has(typeof(Piece<>).MakeGenericType(property));
                 }
             });
         }
