@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Standart.Hash.xxHash;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,10 +10,16 @@ namespace VoidHuntersRevived.Common.Simulations
     public class EntityType
     {
         public readonly string Name;
+        public readonly Guid Hash;
 
-        public EntityType(string name)
+        public unsafe EntityType(Guid nameSpace, string name)
         {
             this.Name = name;
+
+            uint128 nameHash = xxHash128.ComputeHash(name);
+            Guid* pNameHash = (Guid*)&nameHash;
+
+            this.Hash = nameSpace.Create(pNameHash[0]);
         }
     }
 }

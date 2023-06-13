@@ -2,6 +2,6 @@
 {
     public interface IInputData : IEventData
     {
-        Guid PilotId { get; }
+        Guid ShipId { get; }
     }
 }

@@ -1,7 +1,7 @@
 ﻿namespace VoidHuntersRevived.Game.Common.Components
 {
-    public struct Pilot
+    public struct UserOwned
     {
-        public Guid ShipId;
+        public int UserId;
     }
 }

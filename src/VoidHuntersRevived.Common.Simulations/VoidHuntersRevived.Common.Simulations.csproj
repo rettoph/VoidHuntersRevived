@@ -14,6 +14,7 @@
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.FixedPoint\VoidHuntersRevived.Common.FixedPoint.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Physics\VoidHuntersRevived.Common.Physics.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Common.Pieces\VoidHuntersRevived.Common.Pieces.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common\VoidHuntersRevived.Common.csproj" />
   </ItemGroup>
 

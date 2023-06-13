@@ -3,6 +3,7 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Systems;
+using VoidHuntersRevived.Common.Pieces.Services;
 
 namespace VoidHuntersRevived.Common.Simulations
 {
@@ -10,6 +11,8 @@ namespace VoidHuntersRevived.Common.Simulations
     {
         SimulationType Type { get; }
         ISpace Space { get; }
+
+        IPieceService Pieces { get; }
 
         IEntityService Entities { get; }
         IComponentService Components { get; }

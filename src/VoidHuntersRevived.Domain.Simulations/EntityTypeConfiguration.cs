@@ -3,6 +3,7 @@ using Svelto.ECS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations;
@@ -37,6 +38,17 @@ namespace VoidHuntersRevived.Domain.Simulations
             where T : unmanaged
         {
             _builders.Add(Component<T>.Builder);
+
+            return this;
+        }
+
+        private static readonly MethodInfo _genericHasMethodInfo = typeof(EntityTypeConfiguration)
+            .GetMethod(nameof(Has), 1, Array.Empty<Type>()) ?? throw new Exception();
+
+        public IEntityTypeConfiguration Has(Type component)
+        {
+            var method = _genericHasMethodInfo.MakeGenericMethod(component);
+            method.Invoke(this, Array.Empty<object>());
 
             return this;
         }

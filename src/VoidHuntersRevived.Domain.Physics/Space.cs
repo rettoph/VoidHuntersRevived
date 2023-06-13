@@ -11,17 +11,17 @@ namespace VoidHuntersRevived.Domain.Physics
     public class Space : ISpace
     {
         private readonly AetherWorld _aether;
-        private readonly HashSet<Body> _bodies;
         private readonly IBodyFactory _factory;
+        private readonly Dictionary<Guid, Body> _bodies;
 
         public Space(IBodyFactory factory)
         {
             _aether = new AetherWorld(AetherVector2.Zero);
-            _bodies = new HashSet<Body>();
+            _bodies = new Dictionary<Guid, Body>();
             _factory = factory;
         }
 
-        public IBody CreateBody(Guid id)
+        public IBody CreateBody(in Guid id)
         {
             IBody body = _factory.Create(id);
             this.AddBody(body);
@@ -45,22 +45,32 @@ namespace VoidHuntersRevived.Domain.Physics
             }
         }
 
+        public void RemoveBody(in Guid id)
+        {
+            this.RemoveBody(this.GetBody(id));
+        }
+
         internal void Add(Body body)
         {
-            _bodies.Add(body);
+            _bodies.Add(body.Id, body);
             body.AddToWorld(_aether);
             body.Space = this;
         }
 
         internal void Remove(Body body)
         {
-            if (!_bodies.Remove(body))
+            if (!_bodies.Remove(body.Id))
             {
                 return;
             }
 
             body.Space = null;
             body.RemoveFromWorld(_aether);
+        }
+
+        public IBody GetBody(in Guid id)
+        {
+            return _bodies[id];
         }
 
         public void QueryAABB(QueryReportFixtureDelegate callback, ref AABB aabb)

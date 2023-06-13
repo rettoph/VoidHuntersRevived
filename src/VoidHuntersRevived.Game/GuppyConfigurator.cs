@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Domain.Physics.Loaders;
 using VoidHuntersRevived.Domain.Loaders;
+using VoidHuntersRevived.Game.Pieces.Loaders;
 
 namespace VoidHuntersRevived.Domain
 {
@@ -19,6 +20,7 @@ namespace VoidHuntersRevived.Domain
         public void Configure(GuppyConfiguration configuration)
         {
             configuration.Assemblies.Load(typeof(DomainLoader).Assembly);
+            configuration.Assemblies.Load(typeof(PieceLoader).Assembly);
         }
     }
 }

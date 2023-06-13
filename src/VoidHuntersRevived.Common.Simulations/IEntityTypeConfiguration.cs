@@ -8,5 +8,7 @@
 
         IEntityTypeConfiguration Has<T>()
             where T : unmanaged;
+
+        IEntityTypeConfiguration Has(Type component);
     }
 }

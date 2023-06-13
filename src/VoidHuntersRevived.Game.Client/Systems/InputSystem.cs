@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Game.Client.Systems
 
             _simulations.Enqueue(new SetHelmDirection() 
             {
-                PilotId = _client.Users.Current.GetPilotId(),
+                ShipId = _client.Users.Current.GetUserShipId(),
                 Which = message.Which,
                 Value = message.Value
             });

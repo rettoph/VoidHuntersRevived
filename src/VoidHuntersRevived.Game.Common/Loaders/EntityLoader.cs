@@ -11,14 +11,16 @@ namespace VoidHuntersRevived.Game.Entities.Loaders
     {
         public void Configure(IEntityTypeService entities)
         {
-            entities.Configure(EntityTypes.Pilot, configuration =>
-            {
-                configuration.Has<Pilot>();
-            });
-
             entities.Configure(EntityTypes.Ship, configuration =>
             {
-                configuration.Has<Helm>();
+                configuration.Has<Helm>()
+                    .Has<Body>();
+            });
+
+            entities.Configure(EntityTypes.UserShip, configuration =>
+            {
+                configuration.Inherits(EntityTypes.Ship)
+                    .Has<UserOwned>();
             });
         }
     }

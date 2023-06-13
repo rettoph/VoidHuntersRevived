@@ -17,7 +17,12 @@ namespace VoidHuntersRevived.Game.Systems
     {
         public void Process(Guid id, SetHelmDirection data)
         {
+            if (!this.Simulation.Components.TryGet(data.ShipId, out Ref<Helm> helm))
+            {
+                return;
+            }
 
+            Console.WriteLine("Set Helm");
         }
     }
 }
