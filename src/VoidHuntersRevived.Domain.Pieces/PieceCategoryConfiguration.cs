@@ -7,6 +7,8 @@ using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Pieces.Properties;
+using VoidHuntersRevived.Domain.Pieces.Services;
 
 namespace VoidHuntersRevived.Domain.Pieces
 {
@@ -23,6 +25,8 @@ namespace VoidHuntersRevived.Domain.Pieces
             _properties = new HashSet<Type>();
 
             this.Category = category;
+
+            this.HasProperty<Core>();
         }
 
         public IPieceCategoryConfiguration HasProperty<T>() 
@@ -33,13 +37,16 @@ namespace VoidHuntersRevived.Domain.Pieces
             return this;
         }
 
-        public void Initialize(IEntityTypeService entityTypes)
+        public void Initialize(PiecePropertyService properties, IEntityTypeService entityTypes)
         {
             entityTypes.Configure(this.Category, configuration =>
             {
                 foreach(Type property in _properties)
                 {
-                    configuration.Has(typeof(Piece<>).MakeGenericType(property));
+                    foreach(Type component in properties.Get(property).Components)
+                    {
+                        configuration.Has(component);
+                    }
                 }
             });
         }

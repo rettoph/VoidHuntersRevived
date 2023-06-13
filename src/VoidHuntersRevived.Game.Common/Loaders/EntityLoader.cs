@@ -13,8 +13,10 @@ namespace VoidHuntersRevived.Game.Entities.Loaders
         {
             entities.Configure(EntityTypes.Ship, configuration =>
             {
-                configuration.Has<Helm>()
-                    .Has<Body>();
+                configuration
+                    .Has<Helm>()
+                    .Has<Body>()
+                    .Has<Tree>();
             });
 
             entities.Configure(EntityTypes.UserShip, configuration =>

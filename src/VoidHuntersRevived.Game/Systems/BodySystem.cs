@@ -34,6 +34,8 @@ namespace VoidHuntersRevived.Game.Systems
 
             body.Position = spaceBody.Position;
             body.Rotation = spaceBody.Rotation;
+
+            body.Position.X += Fix64.One;
         }
 
         public void OnRemoved(in Guid id, in Ref<Body> body)

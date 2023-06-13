@@ -45,6 +45,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             configuration(this.Get<T>());
         }
 
+        public PiecePropertyConfiguration Get(Type type)
+        {
+            return _configurations[type];
+        }
+
         public PiecePropertyConfiguration<T> Get<T>()
             where T : class, IPieceProperty
         {

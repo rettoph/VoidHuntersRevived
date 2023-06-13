@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Domain.Entities
             _enginesRoot = new EnginesRoot(_simpleEntitiesSubmissionScheduler);
 
             _types = filtered.Get<EntityTypeService>().Instance;
-            _entities = new EntityService(_simpleEntitiesSubmissionScheduler, _types, _enginesRoot.GenerateEntityFactory(), _enginesRoot.GenerateEntityFunctions());
+            _entities = new EntityService(_types, _enginesRoot.GenerateEntityFactory(), _enginesRoot.GenerateEntityFunctions());
             _components = new ComponentService(_entities);
 
             this.Systems = filtered.Instances<ISystem>(states).Sort().ToArray();
@@ -61,6 +61,8 @@ namespace VoidHuntersRevived.Domain.Entities
 
         public void Step(Step step)
         {
+            _simpleEntitiesSubmissionScheduler.SubmitEntities();
+
             _stepEngines(step);
         }
 

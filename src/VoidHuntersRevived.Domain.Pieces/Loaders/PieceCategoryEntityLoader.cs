@@ -16,15 +16,17 @@ namespace VoidHuntersRevived.Domain.Pieces.Loaders
     internal sealed class PieceCategoryEntityLoader : IEntityTypeLoader
     {
         private readonly PieceCategoryService _categories;
+        private readonly PiecePropertyService _properties;
 
-        public PieceCategoryEntityLoader(PieceCategoryService categories)
+        public PieceCategoryEntityLoader(PieceCategoryService categories, PiecePropertyService properties)
         {
             _categories = categories;
+            _properties = properties;
         }
 
         public void Configure(IEntityTypeService entityTypes)
         {
-            _categories.Initialize(entityTypes);
+            _categories.Initialize(_properties, entityTypes);
         }
     }
 

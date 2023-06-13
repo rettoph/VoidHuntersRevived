@@ -42,11 +42,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             return categoryConfiguration;
         }
 
-        public void Initialize(IEntityTypeService entityTypes)
+        public void Initialize(PiecePropertyService properties, IEntityTypeService entityTypes)
         {
             foreach(PieceCategoryConfiguration configuration in _configurations.Values)
             {
-                configuration.Initialize(entityTypes);
+                configuration.Initialize(properties, entityTypes);
             }
         }
     }

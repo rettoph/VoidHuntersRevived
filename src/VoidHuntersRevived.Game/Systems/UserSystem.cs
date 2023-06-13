@@ -39,9 +39,10 @@ namespace VoidHuntersRevived.Game.Systems
             this.Simulation.World.Entities.Create(EntityTypes.UserShip, user.GetUserShipId(), (ref EntityInitializer initializer) =>
             {
                 initializer.Get<UserOwned>().UserId = data.UserId;
+                initializer.Get<Tree>().HeadId = this.Simulation.Pieces.Create(PieceTypes.HullSquare, id.Create(1));
             });
 
-            this.Simulation.Pieces.Create(PieceTypes.HullSquare, id.Create(1));
+            
         }
 
         public void Step(Step step, in Guid id, ref Helm component1)

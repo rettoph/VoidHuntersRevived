@@ -22,12 +22,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public EntitiesDB entitiesDB { set => _entitiesDB = value; }
 
         public EntityService(
-            SimpleEntitiesSubmissionScheduler simpleEntitiesSubmissionScheduler,
             EntityTypeService entityTypes, 
             IEntityFactory factory,
             IEntityFunctions functions)
         {
-            _simpleEntitiesSubmissionScheduler = simpleEntitiesSubmissionScheduler;
             _entityTypes = entityTypes;
             _factory = factory;
             _functions = functions;
@@ -50,8 +48,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             initializer.Get<EntityId>().Value = id;
 
-            _simpleEntitiesSubmissionScheduler.SubmitEntities();
-
             return id;
         }
 
@@ -67,8 +63,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             initializer.Get<EntityId>().Value = id;
             initializerDelegate(ref initializer);
 
-            _simpleEntitiesSubmissionScheduler.SubmitEntities();
-
             return id;
         }
 
@@ -82,8 +76,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _idMap.Remove(egidGroup.EGID);
             _keyMap.Remove(id);
             _functions.RemoveEntity<EntityDescriptor>(egidGroup.EGID);
-
-            _simpleEntitiesSubmissionScheduler.SubmitEntities();
         }
 
         public bool TryGetEGIDGroup(ref Guid key, out EGIDGroup egidGroup)

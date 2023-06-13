@@ -16,6 +16,7 @@ namespace VoidHuntersRevived.Domain.Pieces
     public abstract class PiecePropertyConfiguration : IPiecePropertyConfiguration
     {
         public abstract Type Type { get; }
+        public abstract IEnumerable<Type> Components { get; }
 
         public abstract void Initialize(PieceProperty property, ref EntityInitializer entity);
     }
@@ -24,11 +25,16 @@ namespace VoidHuntersRevived.Domain.Pieces
     {
         private delegate void PieceInitializerDelegate(PieceProperty<T> property, ref EntityInitializer initializer);
         private PieceInitializerDelegate _initializers = null!;
+        private List<Type> _components;
 
         public override Type Type => typeof(T);
 
+        public override IEnumerable<Type> Components => _components;
+
         public PiecePropertyConfiguration()
         {
+            _components = new List<Type>();
+
             this.RequiresComponent((PieceProperty<T> property, ref Piece<T> component) =>
             {
                 component.Value = property.Component.Value;
@@ -38,6 +44,7 @@ namespace VoidHuntersRevived.Domain.Pieces
         public void RequiresComponent<TComponent>(InitializeComponentDelegate<T, TComponent> initializer)
             where TComponent : unmanaged, IEntityComponent
         {
+            _components.Add(typeof(TComponent));
             _initializers += (PieceProperty<T> property, ref EntityInitializer entity) =>
             {
                 initializer(property, ref entity.Get<TComponent>());
