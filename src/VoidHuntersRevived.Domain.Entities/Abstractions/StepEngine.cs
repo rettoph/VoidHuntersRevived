@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Domain.Entities.Abstractions
     }
 
     internal class StepEngine<T1> : IStepEngine
-        where T1 : unmanaged
+        where T1 : unmanaged, IEntityComponent
     {
         private readonly IStepSystem<T1> _system;
         private readonly IComponentService _components;
@@ -51,8 +51,8 @@ namespace VoidHuntersRevived.Domain.Entities.Abstractions
     }
 
     internal class StepEngine<T1, T2> : IStepEngine
-        where T1 : unmanaged
-        where T2 : unmanaged
+        where T1 : unmanaged, IEntityComponent
+        where T2 : unmanaged, IEntityComponent
     {
         private readonly IStepSystem<T1, T2> _system;
         private readonly IComponentService _components;
@@ -70,9 +70,9 @@ namespace VoidHuntersRevived.Domain.Entities.Abstractions
     }
 
     internal class StepEngine<T1, T2, T3> : IStepEngine
-        where T1 : unmanaged
-        where T2 : unmanaged
-        where T3 : unmanaged
+        where T1 : unmanaged, IEntityComponent
+        where T2 : unmanaged, IEntityComponent
+        where T3 : unmanaged, IEntityComponent
     {
         private readonly IStepSystem<T1, T2, T3> _system;
         private readonly IComponentService _components;
@@ -90,10 +90,10 @@ namespace VoidHuntersRevived.Domain.Entities.Abstractions
     }
 
     internal class StepEngine<T1, T2, T3, T4> : IStepEngine
-        where T1 : unmanaged
-        where T2 : unmanaged
-        where T3 : unmanaged
-        where T4 : unmanaged
+        where T1 : unmanaged, IEntityComponent
+        where T2 : unmanaged, IEntityComponent
+        where T3 : unmanaged, IEntityComponent
+        where T4 : unmanaged, IEntityComponent
     {
         private readonly IStepSystem<T1, T2, T3, T4> _system;
         private readonly IComponentService _components;

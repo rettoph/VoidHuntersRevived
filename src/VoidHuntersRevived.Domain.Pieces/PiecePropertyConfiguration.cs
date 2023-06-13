@@ -36,11 +36,11 @@ namespace VoidHuntersRevived.Domain.Pieces
         }
 
         public void RequiresComponent<TComponent>(InitializeComponentDelegate<T, TComponent> initializer)
-            where TComponent : unmanaged
+            where TComponent : unmanaged, IEntityComponent
         {
             _initializers += (PieceProperty<T> property, ref EntityInitializer entity) =>
             {
-                initializer(property, ref entity.Get<Component<TComponent>>().Instance);
+                initializer(property, ref entity.Get<TComponent>());
             };
         }
 

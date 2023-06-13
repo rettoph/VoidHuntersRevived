@@ -1,6 +1,8 @@
-﻿namespace VoidHuntersRevived.Game.Common.Components
+﻿using Svelto.ECS;
+
+namespace VoidHuntersRevived.Game.Common.Components
 {
-    public struct UserOwned
+    public struct UserOwned : IEntityComponent
     {
         public int UserId;
     }

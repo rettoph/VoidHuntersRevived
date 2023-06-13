@@ -11,8 +11,8 @@ using VoidHuntersRevived.Domain.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Abstractions
 {
-    internal sealed class ReactiveEngine<T> : IEngine, IReactOnAddEx<Component<T>>, IReactOnAddAndRemoveEx<Component<T>>
-        where T : unmanaged
+    internal sealed class ReactiveEngine<T> : IEngine, IReactOnAddEx<T>, IReactOnAddAndRemoveEx<T>
+        where T : unmanaged, IEntityComponent
     {
         private readonly EntityService _entities;
         private readonly IReactiveSystem<T> _system;
@@ -23,27 +23,27 @@ namespace VoidHuntersRevived.Domain.Entities.Abstractions
             _system = system;
         }
 
-        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Component<T>> entities, ExclusiveGroupStruct groupID)
+        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<T> entities, ExclusiveGroupStruct groupID)
         {
             var (components, entityIds, _) = entities;
 
             for(uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
                 Guid entityKey = _entities.GetEntityKey(entityIds[index], groupID);
-                Ref<T> component = new Ref<T>(ref components[index].Instance);
+                Ref<T> component = new Ref<T>(ref components[index]);
 
                 _system.OnAdded(in entityKey, in component);
             }
         }
 
-        public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Component<T>> entities, ExclusiveGroupStruct groupID)
+        public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<T> entities, ExclusiveGroupStruct groupID)
         {
             var (components, entityIds, _) = entities;
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
                 Guid entityKey = _entities.GetEntityKey(entityIds[index], groupID);
-                Ref<T> component = new Ref<T>(ref components[index].Instance);
+                Ref<T> component = new Ref<T>(ref components[index]);
 
                 _system.OnRemoved(in entityKey, in component);
             }

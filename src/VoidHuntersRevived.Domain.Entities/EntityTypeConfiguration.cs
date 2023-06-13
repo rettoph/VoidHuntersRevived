@@ -35,9 +35,9 @@ namespace VoidHuntersRevived.Domain.Entities
         }
 
         public IEntityTypeConfiguration Has<T>()
-            where T : unmanaged
+            where T : unmanaged, IEntityComponent
         {
-            _builders.Add(Component<T>.Builder);
+            _builders.Add(new ComponentBuilder<T>());
 
             return this;
         }

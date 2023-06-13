@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Svelto.ECS;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +8,7 @@ using VoidHuntersRevived.Game.Common.Enums;
 
 namespace VoidHuntersRevived.Game.Common.Components
 {
-    public struct Helm
+    public struct Helm : IEntityComponent
     {
         public Direction Direction;
 

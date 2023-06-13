@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Entities;
+using Svelto.ECS;
 
 namespace VoidHuntersRevived.Common.Pieces
 {
@@ -21,6 +22,6 @@ namespace VoidHuntersRevived.Common.Pieces
         where T : class, IPieceProperty
     {
         void RequiresComponent<TComponent>(InitializeComponentDelegate<T, TComponent> initializer)
-            where TComponent : unmanaged;
+            where TComponent : unmanaged, IEntityComponent;
     }
 }

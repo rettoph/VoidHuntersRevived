@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Svelto.ECS;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -8,7 +9,7 @@ using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Game.Common.Components
 {
-    public struct Body
+    public struct Body : IEntityComponent
     {
         public FixVector2 Position;
         public Fix64 Rotation;

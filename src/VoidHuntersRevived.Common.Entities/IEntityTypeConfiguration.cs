@@ -1,4 +1,6 @@
-﻿namespace VoidHuntersRevived.Common.Entities
+﻿using Svelto.ECS;
+
+namespace VoidHuntersRevived.Common.Entities
 {
     public interface IEntityTypeConfiguration
     {
@@ -7,7 +9,7 @@
         IEntityTypeConfiguration Inherits(EntityType baseType);
 
         IEntityTypeConfiguration Has<T>()
-            where T : unmanaged;
+            where T : unmanaged, IEntityComponent;
 
         IEntityTypeConfiguration Has(Type component);
     }

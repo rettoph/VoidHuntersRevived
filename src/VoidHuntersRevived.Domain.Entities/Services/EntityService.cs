@@ -4,6 +4,7 @@ using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Domain.Entities.Abstractions;
+using VoidHuntersRevived.Domain.Entities.Components;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -47,7 +48,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _keyMap.Add(id, new EGIDGroup(initializer.EGID, descriptorGroup.Group));
             _idMap.Add(initializer.EGID, id);
 
-            initializer.Get<Component<Guid>>().Instance = id;
+            initializer.Get<EntityId>().Value = id;
 
             _simpleEntitiesSubmissionScheduler.SubmitEntities();
 
@@ -63,7 +64,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _keyMap.Add(id, egidGroup);
             _idMap.Add(initializer.EGID, id);
 
-            initializer.Get<Component<Guid>>().Instance = id;
+            initializer.Get<EntityId>().Value = id;
             initializerDelegate(ref initializer);
 
             _simpleEntitiesSubmissionScheduler.SubmitEntities();
