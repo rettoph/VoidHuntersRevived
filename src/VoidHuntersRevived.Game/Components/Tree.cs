@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common;
 
-namespace VoidHuntersRevived.Game.Common.Components
+namespace VoidHuntersRevived.Game.Components
 {
     public struct Tree : IEntityComponent
     {
-        public Guid HeadId;
+        public static readonly FilterContextID FilterContextID = new FilterContextID();
+
+        public VhId HeadId;
     }
 }

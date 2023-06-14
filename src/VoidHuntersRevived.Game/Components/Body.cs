@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 
-namespace VoidHuntersRevived.Game.Common.Components
+namespace VoidHuntersRevived.Game.Components
 {
     public struct Body : IEntityComponent
     {

@@ -11,9 +11,8 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Game.Client.Constants;
 using Guppy.MonoGame.Messages;
 using VoidHuntersRevived.Common.Simulations.Components;
-using VoidHuntersRevived.Game.Common.Enums;
-using VoidHuntersRevived.Game.Client.Messages;
 using VoidHuntersRevived.Game.Common.Events;
+using VoidHuntersRevived.Game.Enums;
 
 namespace VoidHuntersRevived.Game.Client.Loaders
 {

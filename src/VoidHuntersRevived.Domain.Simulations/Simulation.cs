@@ -17,6 +17,7 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Simulations.EnginesGroups;
+using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
@@ -33,6 +34,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         SimulationType ISimulation.Type => this.Type;
         ISpace ISimulation.Space => this.Space;
         IWorld ISimulation.World => this.World;
+        IEntityService ISimulation.Entities => this.World.Entities;
 
         public Tick CurrentTick { get; private set; }
 

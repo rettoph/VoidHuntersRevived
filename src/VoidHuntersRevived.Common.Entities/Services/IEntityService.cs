@@ -7,14 +7,15 @@ namespace VoidHuntersRevived.Common.Entities.Services
 
     public interface IEntityService
     {
-        VhId Create(EntityName name, VhId id);
-        VhId Create(EntityName name, VhId id, EntityInitializerDelegate initializer);
+        IdMap Create(EntityName name, VhId id);
+        IdMap Create(EntityName name, VhId id, EntityInitializerDelegate initializer);
 
         T GetProperty<T>(Property<T> id) 
             where T : class, IEntityProperty;
 
-        EGID GetEGID(VhId id);
-        VhId GetVhId(EGID egid);
+        IdMap GetIdMap(VhId id);
+        IdMap GetIdMap(EGID egid);
+        IdMap GetIdMap(uint entityId, ExclusiveGroupStruct groupId);
 
         void Destroy(VhId id);
     }

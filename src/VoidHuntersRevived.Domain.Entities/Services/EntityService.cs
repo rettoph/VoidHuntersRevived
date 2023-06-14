@@ -1,4 +1,5 @@
-﻿using Svelto.ECS;
+﻿using Guppy.Common.Collections;
+using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
@@ -15,8 +16,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly EntityPropertyService _properties;
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
-        private readonly Dictionary<VhId, EGID> _vhidMap;
-        private readonly Dictionary<EGID, VhId> _egidMap;
+        private readonly DoubleDictionary<VhId, EGID, IdMap> _idMap;
         private uint _id;
 
         public EntityService(
@@ -29,50 +29,53 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _properties = properties;
             _factory = factory;
             _functions = functions;
-            _vhidMap = new Dictionary<VhId, EGID>();
-            _egidMap = new Dictionary<EGID, VhId>();
+            _idMap = new DoubleDictionary<VhId, EGID, IdMap>();
         }
 
         public void Ready()
         {
         }
 
-        public VhId Create(EntityName name, VhId id)
+        public IdMap Create(EntityName name, VhId vhid)
         {
             EntityConfiguration configuration = _entityConfigurations.GetConfiguration(name);
             EntityInitializer initializer = _factory.BuildEntity(_id++, configuration.typeConfiguration.group, configuration.typeConfiguration.descriptor);
 
-            initializer.Get<EntityVhId>().Value = id;
+            initializer.Get<EntityVhId>().Value = vhid;
 
             foreach(PropertyCache property in configuration.properties)
             {
                 property.Initialize(ref initializer);
             }
 
-            return id;
+            return new IdMap(initializer.EGID, vhid);
         }
 
-        public VhId Create(EntityName name, VhId id, EntityInitializerDelegate initializerDelegate)
+        public IdMap Create(EntityName name, VhId vhid, EntityInitializerDelegate initializerDelegate)
         {
             EntityConfiguration configuration = _entityConfigurations.GetConfiguration(name);
             EntityInitializer initializer = _factory.BuildEntity(_id++, configuration.typeConfiguration.group, configuration.typeConfiguration.descriptor);
 
-            initializer.Get<EntityVhId>().Value = id;
+            initializer.Get<EntityVhId>().Value = vhid;
+
+            foreach (PropertyCache property in configuration.properties)
+            {
+                property.Initialize(ref initializer);
+            }
+
             initializerDelegate(ref initializer);
 
-            return id;
+            return new IdMap(initializer.EGID, vhid);
         }
 
-        public void Destroy(VhId id)
+        public void Destroy(VhId vhid)
         {
-            if(!this.TryGetEGID(ref id, out EGID egid))
+            if(!this.TryGetIdMap(ref vhid, out IdMap id))
             {
                 return;
             }
 
-            _egidMap.Remove(egid);
-            _vhidMap.Remove(id);
-            _functions.RemoveEntity<EntityDescriptor>(egid);
+            _functions.RemoveEntity<EntityDescriptor>(id.EGID);
         }
 
         public T GetProperty<T>(Property<T> id)
@@ -81,29 +84,24 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _properties.GetProperty(in id);
         }
 
-        public bool TryGetEGID(ref VhId id, out EGID egid)
+        public bool TryGetIdMap(ref VhId vhid, out IdMap id)
         {
-            return _vhidMap.TryGetValue(id, out egid);
+            return _idMap.TryGet(vhid, out id);
         }
 
-        public VhId GetEntityId(uint id, ExclusiveGroupStruct group)
+        public IdMap GetIdMap(VhId vhid)
         {
-            return _egidMap[new EGID(id, group)];
+            return _idMap[vhid];
         }
 
-        public EGID GetEGID(VhId id)
+        public IdMap GetIdMap(EGID egid)
         {
-            return _vhidMap[id];
+            return _idMap[egid];
         }
 
-        public VhId GetVhId(EGID egid)
+        public IdMap GetIdMap(uint id, ExclusiveGroupStruct group)
         {
-            return _egidMap[egid];
-        }
-
-        public VhId GetVhId(uint id, ExclusiveGroupStruct group)
-        {
-            return this.GetVhId(new EGID(id, group));
+            return this.GetIdMap(new EGID(id, group));
         }
 
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<EntityVhId> entities, ExclusiveGroupStruct groupID)
@@ -114,11 +112,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
                 //get the Stride entityID that will be instanced multipled times
-                VhId id = entityIds[index].Value;
+                VhId vhid = entityIds[index].Value;
                 EGID egid = new EGID(nativeIds[index], groupID);
 
-                _vhidMap.Add(id, egid);
-                _egidMap.Add(egid, id);
+                _idMap.TryAdd(vhid, egid, new IdMap(egid, vhid));
             }
         }
 
@@ -130,11 +127,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
                 //get the Stride entityID that will be instanced multipled times
-                VhId id = entityIds[index].Value;
+                VhId vhid = entityIds[index].Value;
                 EGID egid = new EGID(nativeIds[index], groupID);
 
-                _vhidMap.Remove(id);
-                _egidMap.Remove(egid);
+                _idMap.Remove(vhid, egid);
             }
         }
     }

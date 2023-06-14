@@ -48,6 +48,8 @@ namespace VoidHuntersRevived.Domain.Entities
 
         public void Initialize()
         {
+            _enginesRoot.AddEngine(_entities);
+
             foreach (IEngine engine in this.Engines)
             {
                 _enginesRoot.AddEngine(engine);

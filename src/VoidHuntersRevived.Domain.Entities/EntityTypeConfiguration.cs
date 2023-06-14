@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Domain.Entities.Abstractions;
+using VoidHuntersRevived.Domain.Entities.Components;
 using VoidHuntersRevived.Domain.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Entities
@@ -37,6 +38,8 @@ namespace VoidHuntersRevived.Domain.Entities
             this.group = null!;
 
             this.Type = type;
+
+            this.HasComponent<EntityVhId>();
         }
 
         internal void Initialize(

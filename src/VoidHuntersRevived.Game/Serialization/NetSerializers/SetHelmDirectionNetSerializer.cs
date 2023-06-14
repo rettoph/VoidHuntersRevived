@@ -2,12 +2,8 @@
 using Guppy.Network;
 using LiteNetLib.Utils;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Game.Common.Enums;
-using VoidHuntersRevived.Game.Common.Events;
+using VoidHuntersRevived.Game.Enums;
+using VoidHuntersRevived.Game.Events;
 
 namespace VoidHuntersRevived.Game.Serialization.NetSerializers
 {
@@ -18,7 +14,7 @@ namespace VoidHuntersRevived.Game.Serialization.NetSerializers
         {
             return new SetHelmDirection()
             {
-                ShipId = reader.GetGuid(),
+                ShipId = reader.GetVhId(),
                 Which = reader.GetEnum<Direction>(),
                 Value = reader.GetBool()
             };

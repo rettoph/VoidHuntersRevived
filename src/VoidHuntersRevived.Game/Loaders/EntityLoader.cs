@@ -3,8 +3,9 @@ using VoidHuntersRevived.Common.Entities.Loaders;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Game.Common;
 using VoidHuntersRevived.Game.Common.Components;
+using VoidHuntersRevived.Game.Components;
 
-namespace VoidHuntersRevived.Game.Entities.Loaders
+namespace VoidHuntersRevived.Game.Loaders
 {
     [AutoLoad]
     public sealed class EntityLoader : IEntityTypeLoader, IEntityLoader

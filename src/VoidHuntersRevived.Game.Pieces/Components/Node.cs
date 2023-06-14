@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common;
 
-namespace VoidHuntersRevived.Game.Common.Components
+namespace VoidHuntersRevived.Game.Pieces
 {
     public struct Node : IEntityComponent
     {
-        public Guid TreeId;
+        public VhId TreeId;
     }
 }
