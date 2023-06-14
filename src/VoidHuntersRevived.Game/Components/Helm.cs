@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Game.Common.Enums;
+using VoidHuntersRevived.Game.Enums;
 
-namespace VoidHuntersRevived.Game.Common.Components
+namespace VoidHuntersRevived.Game.Components
 {
     public struct Helm : IEntityComponent
     {

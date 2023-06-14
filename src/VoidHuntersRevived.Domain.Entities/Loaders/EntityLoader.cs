@@ -24,6 +24,9 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
 
                 manager.AddScoped<EntityTypeService>()
                     .AddAlias<IEntityTypeService>();
+
+                manager.AddScoped<EntityPropertyService>()
+                    .AddAlias<IEntityPropertyService>();
             });
         }
     }

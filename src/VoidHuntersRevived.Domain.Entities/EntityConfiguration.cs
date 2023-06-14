@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Svelto.DataStructures;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,22 +11,33 @@ namespace VoidHuntersRevived.Domain.Entities
 {
     internal sealed class EntityConfiguration : IEntityConfiguration
     {
+        private readonly List<PreCacheProperty> _properties;
+
         internal EntityTypeConfiguration typeConfiguration;
+        internal readonly FasterList<PropertyCache> properties;
 
         public EntityName Name { get; }
         public EntityType Type { get; set; }
 
         public EntityConfiguration(EntityName name)
         {
+            _properties = new List<PreCacheProperty>();
+
             this.typeConfiguration = null!;
+            this.properties = new FasterList<PropertyCache>();
 
             this.Name = name;
             this.Type = null!;
         }
 
-        internal void Initialize(EntityTypeService types)
+        internal void Initialize(EntityTypeService types, EntityPropertyService properties)
         {
             this.typeConfiguration = types.GetConfiguration(this.Type);
+
+            foreach(PreCacheProperty preProperty in _properties)
+            {
+                this.properties.Add(preProperty.Iniitalize(properties));
+            }
         }
 
         public IEntityConfiguration SetType(EntityType type)
@@ -38,7 +50,9 @@ namespace VoidHuntersRevived.Domain.Entities
         public IEntityConfiguration AddProperty<T>(T property)
             where T : class, IEntityProperty
         {
-            throw new NotImplementedException();
+            _properties.Add(new PreCacheProperty<T>(property));
+
+            return this;
         }
     }
 }

@@ -9,9 +9,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 {
     internal sealed class EntityTypeService : IEntityTypeService
     {
-        private Dictionary<EntityType, EntityTypeConfiguration> _configurations;
+        private readonly Dictionary<EntityType, EntityTypeConfiguration> _configurations;
 
-        public EntityTypeService(ISorted<IEntityTypeLoader> loaders)
+        public EntityTypeService(EntityPropertyService properties, ISorted<IEntityTypeLoader> loaders)
         {
             _configurations = new Dictionary<EntityType, EntityTypeConfiguration>();
 
@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             foreach(EntityTypeConfiguration configuration in _configurations.Values)
             {
-                configuration.Initialize(this);
+                configuration.Initialize(this, properties);
             }
         }
 

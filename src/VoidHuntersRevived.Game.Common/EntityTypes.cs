@@ -5,6 +5,6 @@ namespace VoidHuntersRevived.Game.Common
 {
     public static class EntityTypes
     {
-        internal static readonly EntityType Ship = new EntityType(VoidHuntersRevivedGame.NameSpace, nameof(Ship));
+        public static readonly EntityType Ship = new EntityType(VoidHuntersRevivedGame.NameSpace, nameof(Ship));
     }
 }

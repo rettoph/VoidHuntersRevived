@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Physics;
-using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Game.Pieces.Utilities;
 
 namespace VoidHuntersRevived.Game.Pieces.Properties
 {
-    public class Rigid : IPieceProperty
+    public class Rigid : IEntityProperty
     {
         public required Polygon[] Polygons { get; init; }
 

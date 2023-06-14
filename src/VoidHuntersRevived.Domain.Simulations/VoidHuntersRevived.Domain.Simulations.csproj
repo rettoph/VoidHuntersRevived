@@ -11,7 +11,6 @@
     <ProjectReference Include="..\..\libraries\Svelto.ECS\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Simulations\VoidHuntersRevived.Common.Simulations.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Entities\VoidHuntersRevived.Domain.Entities.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Domain.Pieces\VoidHuntersRevived.Domain.Pieces.csproj" />
   </ItemGroup>
 
 </Project>

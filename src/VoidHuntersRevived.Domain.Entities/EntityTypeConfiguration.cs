@@ -39,7 +39,9 @@ namespace VoidHuntersRevived.Domain.Entities
             this.Type = type;
         }
 
-        internal void Initialize(EntityTypeService types)
+        internal void Initialize(
+            EntityTypeService types,
+            EntityPropertyService properties)
         {
             if(_initialized)
             {
@@ -47,7 +49,7 @@ namespace VoidHuntersRevived.Domain.Entities
             }
 
             List<IComponentBuilder> builders = new List<IComponentBuilder>();
-            this.GetComponentBuildersRecursive(new HashSet<EntityTypeConfiguration>(), builders, types);
+            this.GetComponentBuildersRecursive(new HashSet<EntityTypeConfiguration>(), builders, types, properties);
             this.descriptor = new DynamicEntityDescriptor<EntityDescriptor>(builders.ToArray());
             this.group = new ExclusiveGroup();
         }
@@ -92,7 +94,8 @@ namespace VoidHuntersRevived.Domain.Entities
         private void GetComponentBuildersRecursive(
             HashSet<EntityTypeConfiguration> configurations,
             List<IComponentBuilder> components,
-            EntityTypeService types)
+            EntityTypeService types,
+            EntityPropertyService properties)
         {
             if (!configurations.Add(this))
             {
@@ -101,12 +104,20 @@ namespace VoidHuntersRevived.Domain.Entities
 
             foreach(EntityType baseType in  _baseTypes)
             {
-                types.GetOrCreateConfiguration(baseType).GetComponentBuildersRecursive(configurations, components, types);
+                types.GetOrCreateConfiguration(baseType).GetComponentBuildersRecursive(configurations, components, types, properties);
             }
 
             foreach (IComponentBuilder builder in _builders)
             {
                 components.Add(builder);
+            }
+
+            foreach(Type propertyType in _properties)
+            {
+                foreach(IComponentBuilder builder in properties.GetOrCreateConfiguration(propertyType).builders)
+                {
+                    components.Add(builder);
+                }
             }
         }
     }

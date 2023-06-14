@@ -1,6 +1,7 @@
 ﻿using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Domain.Entities.Abstractions;
 using VoidHuntersRevived.Domain.Entities.Components;
@@ -11,6 +12,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         IReactOnAddAndRemoveEx<EntityVhId>
     {
         private readonly EntityConfigurationService _entityConfigurations;
+        private readonly EntityPropertyService _properties;
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
         private readonly Dictionary<VhId, EGID> _vhidMap;
@@ -18,11 +20,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private uint _id;
 
         public EntityService(
-            EntityConfigurationService entityConfigurations, 
+            EntityConfigurationService entityConfigurations,
+            EntityPropertyService properties, 
             IEntityFactory factory,
             IEntityFunctions functions)
         {
             _entityConfigurations = entityConfigurations;
+            _properties = properties;
             _factory = factory;
             _functions = functions;
             _vhidMap = new Dictionary<VhId, EGID>();
@@ -39,6 +43,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             EntityInitializer initializer = _factory.BuildEntity(_id++, configuration.typeConfiguration.group, configuration.typeConfiguration.descriptor);
 
             initializer.Get<EntityVhId>().Value = id;
+
+            foreach(PropertyCache property in configuration.properties)
+            {
+                property.Initialize(ref initializer);
+            }
 
             return id;
         }
@@ -64,6 +73,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _egidMap.Remove(egid);
             _vhidMap.Remove(id);
             _functions.RemoveEntity<EntityDescriptor>(egid);
+        }
+
+        public T GetProperty<T>(Property<T> id)
+            where T : class, IEntityProperty
+        {
+            return _properties.GetProperty(in id);
         }
 
         public bool TryGetEGID(ref VhId id, out EGID egid)

@@ -14,11 +14,16 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     internal class EntityConfigurationService : IEntityConfigurationService
     {
         private readonly EntityTypeService _types;
+        private readonly EntityPropertyService _properties;
         private readonly Dictionary<EntityName, EntityConfiguration> _configurations;
 
-        public EntityConfigurationService(EntityTypeService types, ISorted<IEntityLoader> loaders)
+        public EntityConfigurationService(
+            EntityTypeService types, 
+            EntityPropertyService properties,
+            ISorted<IEntityLoader> loaders)
         {
             _types = types;
+            _properties = properties;
             _configurations = new Dictionary<EntityName, EntityConfiguration>();
 
             foreach(IEntityLoader loader in loaders)
@@ -28,7 +33,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             foreach(EntityConfiguration configuration in _configurations.Values)
             {
-                configuration.Initialize(types);
+                configuration.Initialize(types, properties);
             }
         }
 

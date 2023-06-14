@@ -10,7 +10,6 @@
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.MonoGame\Guppy.MonoGame.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Simulations\VoidHuntersRevived.Common.Simulations.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common\VoidHuntersRevived.Common.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Domain.Pieces\VoidHuntersRevived.Domain.Pieces.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain\VoidHuntersRevived.Domain.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Game.Common\VoidHuntersRevived.Game.Common.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Game.Pieces\VoidHuntersRevived.Game.Pieces.csproj" />

@@ -11,19 +11,25 @@ namespace VoidHuntersRevived.Domain.Entities
 {
     internal abstract class EntityPropertyConfiguration : IEntityPropertyConfiguration
     {
+        internal abstract IEnumerable<IComponentBuilder> builders { get; }
+
         public abstract Type Type { get; }
     }
 
-    internal sealed class EntityPropertyConfiguration<T> : IEntityPropertyConfiguration<T>
+    internal sealed class EntityPropertyConfiguration<T> : EntityPropertyConfiguration, IEntityPropertyConfiguration<T>
         where T : class, IEntityProperty
     {
-        public Type Type => typeof(T);
+        private List<IComponentBuilder> _builders;
+        internal override IEnumerable<IComponentBuilder> builders => _builders;
+
+        public override Type Type => typeof(T);
 
         private HashSet<Type> _components;
         private InitializeComponentDelegate<T> _initializer;
 
         public EntityPropertyConfiguration()
         {
+            _builders = new List<IComponentBuilder>();
             _components = new HashSet<Type>();
             _initializer = null!;
 
@@ -38,6 +44,7 @@ namespace VoidHuntersRevived.Domain.Entities
             where TComponent : unmanaged, IEntityComponent
         {
             _components.Add(typeof(TComponent));
+            _builders.Add(new ComponentBuilder<TComponent>());
         }
 
         public void HasInitializer(InitializeComponentDelegate<T> initializer)

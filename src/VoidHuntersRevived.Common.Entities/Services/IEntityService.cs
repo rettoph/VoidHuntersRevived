@@ -1,4 +1,5 @@
 ﻿using Svelto.ECS;
+using VoidHuntersRevived.Common.Entities.Components;
 
 namespace VoidHuntersRevived.Common.Entities.Services
 {
@@ -8,6 +9,9 @@ namespace VoidHuntersRevived.Common.Entities.Services
     {
         VhId Create(EntityName name, VhId id);
         VhId Create(EntityName name, VhId id, EntityInitializerDelegate initializer);
+
+        T GetProperty<T>(Property<T> id) 
+            where T : class, IEntityProperty;
 
         EGID GetEGID(VhId id);
         VhId GetVhId(EGID egid);

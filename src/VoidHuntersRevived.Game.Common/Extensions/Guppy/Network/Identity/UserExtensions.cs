@@ -6,7 +6,6 @@ using System.Text;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Game.Common;
-using VoidHuntersRevived.Game.Common.Components;
 
 namespace Guppy.Network.Identity
 {

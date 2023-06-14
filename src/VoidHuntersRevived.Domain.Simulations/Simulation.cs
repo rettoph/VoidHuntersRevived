@@ -13,8 +13,6 @@ using VoidHuntersRevived.Domain.Simulations.Services;
 using Guppy.Common.Providers;
 using Svelto.ECS.Schedulers;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Pieces.Services;
-using VoidHuntersRevived.Domain.Pieces.Services;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities;
 using VoidHuntersRevived.Common.Simulations.Engines;
@@ -30,13 +28,11 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public readonly SimulationType Type;
         public readonly ISpace Space;
-        public readonly IPieceService Pieces;
         public readonly World World;
 
         SimulationType ISimulation.Type => this.Type;
         ISpace ISimulation.Space => this.Space;
         IWorld ISimulation.World => this.World;
-        IPieceService ISimulation.Pieces => this.Pieces;
 
         public Tick CurrentTick { get; private set; }
 
@@ -44,13 +40,11 @@ namespace VoidHuntersRevived.Domain.Simulations
             SimulationType type,
             ISpaceFactory spaceFactory,
             IFilteredProvider filtered,
-            IBus bus,
-            PieceConfigurationService pieces)
+            IBus bus)
         {
             this.Type = type;
             this.Space = spaceFactory.Create();
             this.World = new World(bus, filtered, new SimulationState(this));
-            this.Pieces = new PieceService(pieces, this.World.Entities);
             this.CurrentTick = Tick.First();
 
             this.publisher = new EventPublishingService(this.World.Engines.OfType<IEventEngine>());

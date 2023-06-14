@@ -13,8 +13,6 @@ using VoidHuntersRevived.Common.Constants;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Physics.Factories;
 using Guppy.Common.Providers;
-using VoidHuntersRevived.Common.Pieces.Services;
-using VoidHuntersRevived.Domain.Pieces.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
@@ -24,8 +22,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public LockstepSimulation(
             ISpaceFactory spaceFactory,
             IFilteredProvider filtered,
-            IBus bus,
-            PieceConfigurationService pieces) : base(SimulationType.Lockstep, spaceFactory, filtered, bus, pieces)
+            IBus bus) : base(SimulationType.Lockstep, spaceFactory, filtered, bus)
 
         {
         }

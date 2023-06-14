@@ -1,7 +1,7 @@
 ﻿using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Game.Common.Enums;
+using VoidHuntersRevived.Game.Enums;
 
-namespace VoidHuntersRevived.Game.Common.Events
+namespace VoidHuntersRevived.Game.Events
 {
     public class SetHelmDirection : IInputData
     {

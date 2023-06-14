@@ -2,7 +2,6 @@
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations.Services;
-using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Common.Simulations
@@ -12,7 +11,6 @@ namespace VoidHuntersRevived.Common.Simulations
         SimulationType Type { get; }
         ISpace Space { get; }
         IWorld World { get; }
-        IPieceService Pieces { get; }
 
         Tick CurrentTick { get; }
 

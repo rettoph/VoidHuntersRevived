@@ -7,20 +7,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Pieces.Loaders;
-using VoidHuntersRevived.Common.Pieces.Services;
+using VoidHuntersRevived.Common.Entities.Loaders;
+using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Game.Pieces.Properties;
 
 namespace VoidHuntersRevived.Game.Pieces.Loaders
 {
     [AutoLoad]
-    public class PieceLoader : IPieceLoader
+    public class PieceLoader : IEntityLoader
     {
-        public void Configure(IPieceConfigurationService pieces)
+        public void Configure(IEntityConfigurationService configuration)
         {
-            pieces.Configure(PieceTypes.HullSquare, configuration =>
+            configuration.Configure(PieceNames.HullTriangle, configuration =>
             {
-                configuration.SetCategory(PieceCategories.Hull)
+                configuration.SetType(PieceTypes.Hull)
+                    .AddProperty(Rigid.Polygon(Fix64.One, 3));
+            });
+
+            configuration.Configure(PieceNames.HullSquare, configuration =>
+            {
+                configuration.SetType(PieceTypes.Hull)
                     .AddProperty(Rigid.Polygon(Fix64.One, 4));
             });
         }
