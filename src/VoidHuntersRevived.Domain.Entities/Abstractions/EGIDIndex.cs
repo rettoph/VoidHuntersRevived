@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Domain.Entities.Abstractions
 {
-    internal readonly struct EGIDGroup
+    internal readonly struct EGIDIndex
     {
         public readonly EGID EGID;
-        public readonly ExclusiveGroup Group;
+        public readonly uint Index;
 
-        public EGIDGroup(EGID eGID, ExclusiveGroup group)
+        public EGIDIndex(EGID eGID, uint index)
         {
             EGID = eGID;
-            Group = group;
+            Index = index;
         }
     }
 }

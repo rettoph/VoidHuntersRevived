@@ -9,7 +9,6 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Physics.Factories;
 using VoidHuntersRevived.Common.Simulations.Services;
-using VoidHuntersRevived.Common.Simulations.Systems;
 using VoidHuntersRevived.Domain.Simulations.Services;
 using Guppy.Common.Providers;
 using Svelto.ECS.Schedulers;
@@ -18,12 +17,14 @@ using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Domain.Pieces.Services;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities;
+using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Domain.Simulations.EnginesGroups;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
     public abstract class Simulation : ISimulation, IDisposable
     {
-        private Action<Tick> _tickSystems = null!;
+        private readonly TickEngineGroup _tickEngines;
 
         protected readonly EventPublishingService publisher;
 
@@ -52,19 +53,16 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.Pieces = new PieceService(pieces, this.World.Entities);
             this.CurrentTick = Tick.First();
 
-            this.publisher = new EventPublishingService(this.World.Systems.OfType<ISimulationSystem>());
+            this.publisher = new EventPublishingService(this.World.Engines.OfType<IEventEngine>());
 
-            foreach(ITickSystem subscriber in this.World.Systems.OfType<ITickSystem>())
-            {
-                _tickSystems += subscriber.Tick;
-            }
+            _tickEngines = new TickEngineGroup(this.World.Engines.OfType<ITickEngine>());
         }
 
         public virtual void Initialize(ISimulationService simulations)
         {
             this.World.Initialize();
 
-            foreach(ISimulationSystem system in this.World.Systems.OfType<ISimulationSystem>())
+            foreach(ISimulationEngine system in this.World.Engines.OfType<ISimulationEngine>())
             {
                 system.Initialize(this);
             }
@@ -99,9 +97,9 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             this.CurrentTick = tick;
 
-            _tickSystems?.Invoke(tick);
+            _tickEngines.Step(tick);
 
-            foreach(EventDto @event in tick.Events)
+            foreach (EventDto @event in tick.Events)
             {
                 this.Publish(@event);
             }

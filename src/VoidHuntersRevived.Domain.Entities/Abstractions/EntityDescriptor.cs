@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Domain.Entities.Abstractions
     {
         private readonly IComponentBuilder[] _componentsToBuild = new[]
         {
-            new ComponentBuilder<EntityId>()
+            new ComponentBuilder<EntityVhId>()
         };
 
         public readonly ExclusiveGroup ExclusiveGroup = new ExclusiveGroup();

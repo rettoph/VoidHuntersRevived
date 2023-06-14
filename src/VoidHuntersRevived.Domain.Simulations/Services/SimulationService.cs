@@ -6,7 +6,6 @@ using System.Collections.ObjectModel;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
-using VoidHuntersRevived.Common.Simulations.Systems;
 
 namespace VoidHuntersRevived.Domain.Simulations.Services
 {
@@ -108,7 +107,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         {
             EventDto @event = new EventDto()
             {
-                Id = Guid.NewGuid(),
+                Id = VhId.NewId(),
                 Data = data
             };
 

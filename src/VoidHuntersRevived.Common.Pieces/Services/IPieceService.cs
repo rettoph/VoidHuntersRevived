@@ -9,6 +9,6 @@ namespace VoidHuntersRevived.Common.Pieces.Services
 {
     public interface IPieceService
     {
-        Guid Create(PieceType type, Guid id);
+        VhId Create(PieceType type, VhId id);
     }
 }

@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Domain.Physics.Factories
 {
     internal sealed class BodyFactory : IBodyFactory
     {
-        public IBody Create(Guid id)
+        public IBody Create(VhId id)
         {
             return new Body(id);
         }

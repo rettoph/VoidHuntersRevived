@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Common.Pieces
 {
     public class PieceCategory : EntityType
     {
-        public PieceCategory(Guid nameSpace, string name) : base(nameSpace, name)
+        public PieceCategory(VhId nameSpace, string name) : base(nameSpace, name)
         {
         }
     }

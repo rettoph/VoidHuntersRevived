@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Common.Simulations.Systems
+namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    public interface ITickSystem
+    internal class StepService
     {
-        void Tick(Tick tick);
     }
 }

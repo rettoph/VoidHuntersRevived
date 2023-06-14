@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Domain.Entities.Components
+namespace VoidHuntersRevived.Common.Simulations.Engines
 {
-    public struct EntityId : IEntityComponent
+    public interface ISimulationEngine : IEngine
     {
-        public Guid Value;
+        void Initialize(ISimulation simulation);
     }
 }

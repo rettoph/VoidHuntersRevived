@@ -8,7 +8,7 @@ namespace VoidHuntersRevived.Common.Physics
 {
     public interface IBody
     {
-        Guid Id { get; }
+        VhId Id { get; }
 
         ISpace? Space { get; }
 

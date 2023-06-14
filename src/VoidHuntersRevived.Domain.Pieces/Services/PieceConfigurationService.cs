@@ -11,6 +11,7 @@ using VoidHuntersRevived.Common.Pieces.Loaders;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
@@ -50,7 +51,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             }
         }
 
-        public Guid Create(PieceType type, Guid id, IEntityService entities)
+        public VhId Create(PieceType type, VhId id, IEntityService entities)
         {
             PieceConfiguration configuration = _configurations[type];
             return entities.Create(configuration.Category, id, configuration.Initialize);

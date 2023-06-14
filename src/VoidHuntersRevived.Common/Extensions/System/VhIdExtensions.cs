@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace System
+namespace VoidHuntersRevived.Common
 {
-    public static class GuidExtensions
+    public static class VhIdExtensions
     {
         private static int[] _buffer = new int[8];
 
-        public static unsafe Guid Create(this Guid nameSpace, int name)
+        public static unsafe VhId Create(this VhId nameSpace, int name)
         {
             int* pNameSpace = (int*)&nameSpace;
             _buffer[0] = pNameSpace[0];
@@ -27,13 +27,13 @@ namespace System
             {
                 Span<byte> dataSpan = new Span<byte>((byte*)pBuffer, 32);
                 uint128 hash = xxHash128.ComputeHash(dataSpan, 32);
-                Guid* newGuid = (Guid*)&hash;
+                VhId* newId = (VhId*)&hash;
 
-                return newGuid[0];
+                return newId[0];
             }
         }
 
-        public static unsafe Guid Create(this Guid nameSpace, Guid name)
+        public static unsafe VhId Create(this VhId nameSpace, VhId name)
         {
             int* pNameSpace = (int*)&nameSpace;
             _buffer[0] = pNameSpace[0];
@@ -51,9 +51,9 @@ namespace System
             {
                 Span<byte> dataSpan = new Span<byte>((byte*)pBuffer, 32);
                 uint128 hash = xxHash128.ComputeHash(dataSpan, 32);
-                Guid* newGuid = (Guid*)&hash;
+                VhId* newId = (VhId*)&hash;
 
-                return newGuid[0];
+                return newId[0];
             }
         }
     }

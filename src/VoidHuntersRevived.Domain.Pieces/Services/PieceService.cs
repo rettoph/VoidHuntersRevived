@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Services;
@@ -23,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             _entities = entities;
         }
 
-        public Guid Create(PieceType type, Guid id)
+        public VhId Create(PieceType type, VhId id)
         {
             return _configurations.Create(type, id, _entities);
         }

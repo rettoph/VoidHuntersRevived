@@ -12,16 +12,16 @@ namespace VoidHuntersRevived.Domain.Physics
     {
         private readonly AetherWorld _aether;
         private readonly IBodyFactory _factory;
-        private readonly Dictionary<Guid, Body> _bodies;
+        private readonly Dictionary<VhId, Body> _bodies;
 
         public Space(IBodyFactory factory)
         {
             _aether = new AetherWorld(AetherVector2.Zero);
-            _bodies = new Dictionary<Guid, Body>();
+            _bodies = new Dictionary<VhId, Body>();
             _factory = factory;
         }
 
-        public IBody CreateBody(in Guid id)
+        public IBody CreateBody(in VhId id)
         {
             IBody body = _factory.Create(id);
             this.AddBody(body);
@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Domain.Physics
             }
         }
 
-        public void RemoveBody(in Guid id)
+        public void RemoveBody(in VhId id)
         {
             this.RemoveBody(this.GetBody(id));
         }
@@ -68,7 +68,7 @@ namespace VoidHuntersRevived.Domain.Physics
             body.RemoveFromWorld(_aether);
         }
 
-        public IBody GetBody(in Guid id)
+        public IBody GetBody(in VhId id)
         {
             return _bodies[id];
         }

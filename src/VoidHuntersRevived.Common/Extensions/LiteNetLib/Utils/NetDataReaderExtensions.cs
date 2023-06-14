@@ -19,5 +19,13 @@ namespace LiteNetLib.Utils
             value.X = reader.GetFloat();
             value.Y = reader.GetFloat();
         }
+
+        public static VhId GetVhId(this NetDataReader reader)
+        {
+            byte[] buffer = new byte[16];
+            reader.GetBytes(buffer, 16);
+
+            return new VhId(new Guid(buffer));
+        }
     }
 }

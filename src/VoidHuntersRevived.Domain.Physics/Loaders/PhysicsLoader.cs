@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Physics.Factories;
 using VoidHuntersRevived.Domain.Physics.Factories;
-using VoidHuntersRevived.Domain.Physics.Systems;
 
 namespace VoidHuntersRevived.Domain.Physics.Loaders
 {
@@ -20,12 +19,6 @@ namespace VoidHuntersRevived.Domain.Physics.Loaders
         {
             services.AddScoped<IBodyFactory, BodyFactory>();
             services.AddScoped<ISpaceFactory, SpaceFactory>();
-
-            services.ConfigureCollection(manager =>
-            {
-                manager.AddScoped<SpaceSystem>()
-                    .AddInterfaceAliases();
-            });
         }
     }
 }

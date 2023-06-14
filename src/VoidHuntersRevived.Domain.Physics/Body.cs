@@ -23,11 +23,11 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public Fix64 AngularVelocity => (Fix64)_aether.AngularVelocity;
 
-        public Guid Id { get; }
+        public VhId Id { get; }
 
         public FixMatrix Transformation => FixMatrix.CreateRotationZ(this.Rotation) * FixMatrix.CreateTranslation(this.Position.X, this.Position.Y, Fix64.Zero);
 
-        public Body(Guid entityKey)
+        public Body(VhId id)
         {
             _aether = new AetherBody()
             {
@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Domain.Physics
             _fixtures = new HashSet<Fixture>();
             _aether.Tag = this;
 
-            this.Id = entityKey;
+            this.Id = id;
         }
 
         public void SetTransform(FixVector2 position, Fix64 rotation)

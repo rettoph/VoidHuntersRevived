@@ -5,9 +5,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Simulations.Systems;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Systems;
+using VoidHuntersRevived.Common.Simulations.Engines;
 
 namespace VoidHuntersRevived.Domain.Simulations.Services
 {
@@ -15,16 +15,16 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
     {
         private readonly Dictionary<Type, SimulationEventPublisher> _publishers;
 
-        public EventPublishingService(IEnumerable<ISimulationSystem> systems)
+        public EventPublishingService(IEnumerable<IEventEngine> systems)
         {
-            Dictionary<Type, List<ISimulationSystem>> subscriptions = new Dictionary<Type, List<ISimulationSystem>>();
-            foreach (ISimulationSystem system in systems)
+            Dictionary<Type, List<IEventEngine>> subscriptions = new Dictionary<Type, List<IEventEngine>>();
+            foreach (IEventEngine system in systems)
             {
-                foreach (Type subscriberType in system.GetType().GetConstructedGenericTypes(typeof(IEventSubscriber<>)))
+                foreach (Type subscriberType in system.GetType().GetConstructedGenericTypes(typeof(IEventEngine<>)))
                 {
-                    if (!subscriptions.TryGetValue(subscriberType.GenericTypeArguments[0], out List<ISimulationSystem>? subSystems))
+                    if (!subscriptions.TryGetValue(subscriberType.GenericTypeArguments[0], out List<IEventEngine>? subSystems))
                     {
-                        subscriptions[subscriberType.GenericTypeArguments[0]] = subSystems = new List<ISimulationSystem>();
+                        subscriptions[subscriberType.GenericTypeArguments[0]] = subSystems = new List<IEventEngine>();
                     }
 
                     subSystems.Add(system); ;
@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             }
 
             _publishers = new Dictionary<Type, SimulationEventPublisher>();
-            foreach ((Type type, List<ISimulationSystem> subscribers) in subscriptions)
+            foreach ((Type type, List<IEventEngine> subscribers) in subscriptions)
             {
                 Type publisherType = typeof(SimulationEventPublisher<>).MakeGenericType(type);
                 SimulationEventPublisher publisher = (SimulationEventPublisher)Activator.CreateInstance(publisherType, new[] { subscribers })!;
@@ -57,11 +57,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         private class SimulationEventPublisher<T> : SimulationEventPublisher
             where T : class, IEventData
         {
-            private readonly IEventSubscriber<T>[] _subscribers;
+            private readonly IEventEngine<T>[] _subscribers;
 
-            public SimulationEventPublisher(List<ISimulationSystem> subscribers)
+            public SimulationEventPublisher(List<IEventEngine> subscribers)
             {
-                _subscribers = subscribers.OfType<IEventSubscriber<T>>().ToArray();
+                _subscribers = subscribers.OfType<IEventEngine<T>>().ToArray();
             }
 
             public override void Publish(EventDto @event)
@@ -69,9 +69,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
                 this.Invoke(@event.Id, Unsafe.As<T>(@event.Data));
             }
 
-            private void Invoke(in Guid id, T data)
+            private void Invoke(in VhId id, T data)
             {
-                foreach(IEventSubscriber<T> subscriber in _subscribers)
+                foreach(IEventEngine<T> subscriber in _subscribers)
                 {
                     subscriber.Process(id, data);
                 }

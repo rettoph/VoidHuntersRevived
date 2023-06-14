@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Guppy;
 using VoidHuntersRevived.Game.Client;
 using VoidHuntersRevived.Game;
+using VoidHuntersRevived.Game.Server;
 
 namespace VoidHuntersRevived.Application.Client
 {
@@ -61,7 +62,7 @@ namespace VoidHuntersRevived.Application.Client
                     .ConfigureGUI();
             });
 
-            //_engine.Guppies.Create<ServerGameGuppy>();
+            _engine.Guppies.Create<ServerGameGuppy>();
             _engine.Guppies.Create<MultiplayerGameGuppy>();
             //_engine.Guppies.Create<EditorGuppy>();
         }

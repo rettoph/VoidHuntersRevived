@@ -6,9 +6,13 @@ namespace VoidHuntersRevived.Common.Entities.Services
 
     public interface IEntityService
     {
-        Guid Create(EntityType type, Guid id);
-        Guid Create(EntityType type, Guid id, EntityInitializerDelegate initializer);
+        VhId Create(EntityType type, VhId id);
+        VhId Create(EntityType type, VhId id, EntityInitializerDelegate initializer);
 
-        void Destroy(Guid id);
+        EGID GetEGID(VhId id);
+        VhId GetVhId(EGID egid);
+        VhId GetVhId(uint id, ExclusiveGroupStruct group);
+
+        void Destroy(VhId id);
     }
 }

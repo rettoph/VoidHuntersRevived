@@ -16,5 +16,10 @@ namespace LiteNetLib.Utils
             writer.Put(value.X);
             writer.Put(value.Y);
         }
+
+        public static void Put(this NetDataWriter writer, VhId value)
+        {
+            writer.Put(value.Value.ToByteArray());
+        }
     }
 }

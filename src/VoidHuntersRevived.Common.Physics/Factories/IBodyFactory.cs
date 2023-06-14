@@ -8,6 +8,6 @@ namespace VoidHuntersRevived.Common.Physics.Factories
 {
     public interface IBodyFactory
     {
-        IBody Create(Guid id);
+        IBody Create(VhId id);
     }
 }

@@ -15,11 +15,11 @@ namespace VoidHuntersRevived.Common.Physics
 
     public interface ISpace
     {
-        IBody CreateBody(in Guid id);
+        IBody CreateBody(in VhId id);
         void AddBody(IBody body);
         void RemoveBody(IBody body);
-        void RemoveBody(in Guid id);
-        IBody GetBody(in Guid id);
+        void RemoveBody(in VhId id);
+        IBody GetBody(in VhId id);
 
         void QueryAABB(QueryReportFixtureDelegate callback, ref AABB aabb);
         void Step(Step step);

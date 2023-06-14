@@ -10,16 +10,16 @@ namespace VoidHuntersRevived.Common.Entities
     public class EntityType
     {
         public readonly string Name;
-        public readonly Guid Hash;
+        public readonly VhId Id;
 
-        public unsafe EntityType(Guid nameSpace, string name)
+        public unsafe EntityType(VhId nameSpace, string name)
         {
             this.Name = name;
 
             uint128 nameHash = xxHash128.ComputeHash(name);
-            Guid* pNameHash = (Guid*)&nameHash;
+            VhId* pNameHash = (VhId*)&nameHash;
 
-            this.Hash = nameSpace.Create(pNameHash[0]);
+            this.Id = nameSpace.Create(pNameHash[0]);
         }
     }
 }
