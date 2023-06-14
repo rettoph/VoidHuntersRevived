@@ -14,16 +14,16 @@ namespace VoidHuntersRevived.Domain.Physics
     {
         private readonly AetherFixture _aether;
 
-        public Guid Guid { get; }
+        public VhId VhId { get; }
 
         public IBody Body { get; }
 
-        public Fixture(IBody body, Polygon polygon, Guid entityId)
+        public Fixture(IBody body, Polygon polygon, VhId entityId)
         {
             _aether = new AetherFixture(polygon.ToShape());
             _aether.Tag = this;
 
-            this.Guid = entityId;
+            this.VhId = entityId;
             this.Body = body;
         }
 

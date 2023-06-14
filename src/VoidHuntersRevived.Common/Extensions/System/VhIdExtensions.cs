@@ -56,5 +56,13 @@ namespace VoidHuntersRevived.Common
                 return newId[0];
             }
         }
+
+        public static unsafe VhId Create(this VhId nameSpace, string name)
+        {
+            uint128 nameHash = xxHash128.ComputeHash(name);
+            VhId* pNameHash = (VhId*)&nameHash;
+
+            return nameSpace.Create(pNameHash[0]);
+        }
     }
 }

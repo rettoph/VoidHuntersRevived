@@ -2,7 +2,7 @@
 {
     public interface IFixture
     {
-        Guid Guid { get; }
+        VhId VhId { get; }
 
         IBody Body { get; }
     }

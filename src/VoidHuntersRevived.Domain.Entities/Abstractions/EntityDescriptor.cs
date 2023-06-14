@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Domain.Entities.Components;
+using VoidHuntersRevived.Domain.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Entities.Abstractions
 {

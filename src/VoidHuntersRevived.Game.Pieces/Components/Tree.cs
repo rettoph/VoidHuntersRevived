@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 
-namespace VoidHuntersRevived.Game.Components
+namespace VoidHuntersRevived.Game.Pieces.Components
 {
     public struct Tree : IEntityComponent
     {

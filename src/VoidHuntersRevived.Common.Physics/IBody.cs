@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Common.Physics
         FixVector2 LinearVelocity { get; }
         Fix64 AngularVelocity { get; }
 
-        IFixture Create(Polygon polygon, Guid id);
+        IFixture Create(Polygon polygon, VhId id);
         void Destroy(IFixture fixture);
 
         void SetTransform(FixVector2 position, Fix64 rotation);

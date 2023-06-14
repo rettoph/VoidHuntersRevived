@@ -10,16 +10,21 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Game.Components;
+using VoidHuntersRevived.Game.Common;
 using VoidHuntersRevived.Game.Pieces;
+using VoidHuntersRevived.Game.Pieces.Components;
+using VoidHuntersRevived.Game.Pieces.Events;
 
-namespace VoidHuntersRevived.Game.Engines
+namespace VoidHuntersRevived.Game.Pieces.Engines
 {
     [AutoLoad]
     internal sealed class TreeEngine : BasicEngine, IReactOnAddEx<Tree>,
         IStepEngine<Step>
     {
+        private static readonly VhId CreateFilterEvent = VoidHuntersRevivedGame.NameSpace.Create(nameof(CreateFilterEvent));
+
         private readonly Map<CombinedFilterID, EGID> _filterEgIds = new Map<CombinedFilterID, EGID>();
         private int _treeFilterId;
 
@@ -31,9 +36,15 @@ namespace VoidHuntersRevived.Game.Engines
 
             for(uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                this.CreateFilter(
-                    treeId: this.Simulation.Entities.GetIdMap(ids[index], groupID),
-                    headId: this.Simulation.Entities.GetIdMap(trees[index].HeadId));
+                IdMap treeId = this.Simulation.Entities.GetIdMap(ids[index], groupID);
+                IdMap headId = this.Simulation.Entities.GetIdMap(trees[index].HeadId);
+
+                var filterId = new CombinedFilterID(_treeFilterId++, Tree.FilterContextID);
+                this.entitiesDB.GetFilters().CreatePersistentFilter<Tree>(filterId);
+                _filterEgIds.TryAdd(filterId, treeId.EGID);
+
+                VhId id = CreateFilterEvent.Create(treeId.VhId);
+                this.AddNodeToTree(in id, in treeId, in headId);
             }
         }
 
@@ -55,22 +66,12 @@ namespace VoidHuntersRevived.Game.Engines
                     for(int i=0; i<indices.count; i++)
                     {
                         Node node = nodes[i];
-                        Console.WriteLine(node.TreeId.Value);
                     }
                 }
             }
         }
 
-        private void CreateFilter(in IdMap treeId, in IdMap headId)
-        {
-            var filterId = new CombinedFilterID(_treeFilterId++, Tree.FilterContextID);
-            this.entitiesDB.GetFilters().CreatePersistentFilter<Tree>(filterId);
-            _filterEgIds.TryAdd(filterId, treeId.EGID);
-
-            this.AddNodeToTree(treeId, headId);            
-        }
-
-        private void AddNodeToTree(in IdMap treeId, in IdMap nodeId)
+        private void AddNodeToTree(in VhId id, in IdMap treeId, in IdMap nodeId)
         {
             var filters = this.entitiesDB.GetFilters();
             var filter = filters.GetPersistentFilter<Tree>(_filterEgIds[treeId.EGID]);
@@ -79,6 +80,12 @@ namespace VoidHuntersRevived.Game.Engines
             filter.Add(nodeId.EGID.entityID, nodeId.EGID.groupID, index);
 
             nodes[index].TreeId = treeId.VhId;
+
+            this.Simulation.Publish(id.Create(1), new AddedNode()
+            {
+                NodeId = nodeId.VhId,
+                TreeId = treeId.VhId
+            });
         }
     }
 }

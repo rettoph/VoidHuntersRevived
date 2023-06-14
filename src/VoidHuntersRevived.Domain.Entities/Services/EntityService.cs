@@ -4,13 +4,13 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Domain.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Abstractions;
-using VoidHuntersRevived.Domain.Entities.Components;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
     internal sealed class EntityService : IEntityService,
-        IReactOnAddAndRemoveEx<EntityVhId>
+        IReactOnAddAndRemoveEx<EntityVhId>, IQueryingEntitiesEngine
     {
         private readonly EntityConfigurationService _entityConfigurations;
         private readonly EntityPropertyService _properties;
@@ -18,6 +18,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly IEntityFunctions _functions;
         private readonly DoubleDictionary<VhId, EGID, IdMap> _idMap;
         private uint _id;
+
+        public EntitiesDB entitiesDB { get; set; }
 
         public EntityService(
             EntityConfigurationService entityConfigurations,
@@ -82,6 +84,19 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             where T : class, IEntityProperty
         {
             return _properties.GetProperty(in id);
+        }
+
+        public bool TryGetProperty<T>(EGID id, out T property) 
+            where T : class, IEntityProperty
+        {
+            if(this.entitiesDB.TryGetEntity(id, out Property<T> propertyComponent))
+            {
+                property = _properties.GetProperty(propertyComponent);
+                return true;
+            }
+
+            property = default!;
+            return false;
         }
 
         public bool TryGetIdMap(ref VhId vhid, out IdMap id)

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
 
-namespace VoidHuntersRevived.Game.Events
+namespace VoidHuntersRevived.Game.Pieces.Events
 {
-    public class AddNodeToTree : IEventData
+    public class AddedNode : IEventData
     {
         public VhId NodeId;
         public VhId TreeId;

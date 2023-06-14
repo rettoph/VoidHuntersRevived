@@ -12,6 +12,6 @@ namespace VoidHuntersRevived.Common.Entities.Loaders
     [Service<IEntityLoader>(ServiceLifetime.Scoped, true)]
     public interface IEntityLoader
     {
-        void Configure(IEntityConfigurationService configuration);
+        void Configure(IEntityConfigurationService entities);
     }
 }

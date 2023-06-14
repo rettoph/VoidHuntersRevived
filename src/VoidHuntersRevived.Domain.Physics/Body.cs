@@ -66,7 +66,7 @@ namespace VoidHuntersRevived.Domain.Physics
             _aether.ApplyLinearImpulse(impulse.AsAetherVector2());
         }
 
-        public IFixture Create(Polygon polygon, Guid id)
+        public IFixture Create(Polygon polygon, VhId id)
         {
             Fixture fixture = new Fixture(this, polygon, id);
             fixture.AddToBody(_aether);

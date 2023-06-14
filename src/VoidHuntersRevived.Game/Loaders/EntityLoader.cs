@@ -4,26 +4,27 @@ using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Game.Common;
 using VoidHuntersRevived.Game.Common.Components;
 using VoidHuntersRevived.Game.Components;
+using VoidHuntersRevived.Game.Pieces.Components;
 
 namespace VoidHuntersRevived.Game.Loaders
 {
     [AutoLoad]
     public sealed class EntityLoader : IEntityTypeLoader, IEntityLoader
     {
-        public void Configure(IEntityTypeService entities)
+        public void Configure(IEntityTypeService entityTypes)
         {
-            entities.Configure(EntityTypes.Ship, configuration =>
+            entityTypes.Configure(EntityTypes.Ship, configuration =>
             {
                 configuration
                     .HasComponent<Helm>()
-                    .HasComponent<Body>()
-                    .HasComponent<Tree>();
+                    .HasComponent<Tree>()
+                    .HasComponent<Body>();
             });
         }
 
-        public void Configure(IEntityConfigurationService configuration)
+        public void Configure(IEntityConfigurationService entities)
         {
-            configuration.Configure(EntityNames.UserShip, configuration =>
+            entities.Configure(EntityNames.UserShip, configuration =>
             {
                 configuration.SetType(EntityTypes.Ship);
             });

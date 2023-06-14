@@ -18,6 +18,7 @@ using VoidHuntersRevived.Game.Common;
 using VoidHuntersRevived.Game.Common.Components;
 using VoidHuntersRevived.Game.Components;
 using VoidHuntersRevived.Game.Pieces;
+using VoidHuntersRevived.Game.Pieces.Components;
 using VoidHuntersRevived.Game.Pieces.Properties;
 
 namespace VoidHuntersRevived.Game.Engines
