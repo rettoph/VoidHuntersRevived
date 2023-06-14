@@ -8,9 +8,12 @@ namespace VoidHuntersRevived.Common.Entities
 
         IEntityTypeConfiguration Inherits(EntityType baseType);
 
-        IEntityTypeConfiguration Has<T>()
+        IEntityTypeConfiguration HasComponent<T>()
             where T : unmanaged, IEntityComponent;
 
-        IEntityTypeConfiguration Has(Type component);
+        IEntityTypeConfiguration HasComponent(Type component);
+
+        IEntityTypeConfiguration HasProperty<T>()
+            where T : IEntityProperty;
     }
 }

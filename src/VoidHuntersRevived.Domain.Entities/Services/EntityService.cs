@@ -1,6 +1,4 @@
-﻿using Guppy.Common.Collections;
-using Svelto.ECS;
-using Svelto.ECS.Schedulers;
+﻿using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
@@ -12,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     internal sealed class EntityService : IEntityService,
         IReactOnAddAndRemoveEx<EntityVhId>
     {
-        private readonly EntityTypeService _entityTypes;
+        private readonly EntityConfigurationService _entityConfigurations;
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
         private readonly Dictionary<VhId, EGID> _vhidMap;
@@ -20,11 +18,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private uint _id;
 
         public EntityService(
-            EntityTypeService entityTypes, 
+            EntityConfigurationService entityConfigurations, 
             IEntityFactory factory,
             IEntityFunctions functions)
         {
-            _entityTypes = entityTypes;
+            _entityConfigurations = entityConfigurations;
             _factory = factory;
             _functions = functions;
             _vhidMap = new Dictionary<VhId, EGID>();
@@ -35,20 +33,20 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
         }
 
-        public VhId Create(EntityType type, VhId id)
+        public VhId Create(EntityName name, VhId id)
         {
-            EntityDescriptorGroup descriptorGroup = _entityTypes.EntityDescriptorGroup(type);
-            EntityInitializer initializer = _factory.BuildEntity(_id++, descriptorGroup.Group, descriptorGroup.Descriptor);
+            EntityConfiguration configuration = _entityConfigurations.GetConfiguration(name);
+            EntityInitializer initializer = _factory.BuildEntity(_id++, configuration.typeConfiguration.group, configuration.typeConfiguration.descriptor);
 
             initializer.Get<EntityVhId>().Value = id;
 
             return id;
         }
 
-        public VhId Create(EntityType type, VhId id, EntityInitializerDelegate initializerDelegate)
+        public VhId Create(EntityName name, VhId id, EntityInitializerDelegate initializerDelegate)
         {
-            EntityDescriptorGroup descriptorGroup = _entityTypes.EntityDescriptorGroup(type);
-            EntityInitializer initializer = _factory.BuildEntity(_id++, descriptorGroup.Group, descriptorGroup.Descriptor);
+            EntityConfiguration configuration = _entityConfigurations.GetConfiguration(name);
+            EntityInitializer initializer = _factory.BuildEntity(_id++, configuration.typeConfiguration.group, configuration.typeConfiguration.descriptor);
 
             initializer.Get<EntityVhId>().Value = id;
             initializerDelegate(ref initializer);

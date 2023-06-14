@@ -10,7 +10,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     internal sealed class EntityTypeService : IEntityTypeService
     {
         private Dictionary<EntityType, EntityTypeConfiguration> _configurations;
-        private Dictionary<EntityType, EntityDescriptorGroup> _descriptorGroups;
 
         public EntityTypeService(ISorted<IEntityTypeLoader> loaders)
         {
@@ -21,22 +20,18 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 loader.Configure(this);
             }
 
-            _descriptorGroups = _configurations.Values.ToDictionary(
-                keySelector: x => x.Type,
-                elementSelector: x => x.BuildEntityDescriptorGroup(this));
+            foreach(EntityTypeConfiguration configuration in _configurations.Values)
+            {
+                configuration.Initialize(this);
+            }
         }
 
         public void Configure(EntityType type, Action<IEntityTypeConfiguration> configuration)
         {
-            configuration(this.GetConfiguration(type));
+            configuration(this.GetOrCreateConfiguration(type));
         }
 
-        internal EntityDescriptorGroup EntityDescriptorGroup(EntityType type)
-        {
-            return _descriptorGroups[type];
-        }
-
-        internal EntityTypeConfiguration GetConfiguration(EntityType type)
+        internal EntityTypeConfiguration GetOrCreateConfiguration(EntityType type)
         {
             if(!_configurations.TryGetValue(type, out EntityTypeConfiguration? configuration))
             {
@@ -44,6 +39,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
 
             return configuration;
+        }
+
+        internal EntityTypeConfiguration GetConfiguration(EntityType type)
+        {
+            return _configurations[type];
         }
     }
 }

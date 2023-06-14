@@ -39,16 +39,16 @@ namespace VoidHuntersRevived.Domain.Pieces
 
         public void Initialize(PiecePropertyService properties, IEntityTypeService entityTypes)
         {
-            entityTypes.Configure(this.Category, configuration =>
-            {
-                foreach(Type property in _properties)
-                {
-                    foreach(Type component in properties.Get(property).Components)
-                    {
-                        configuration.Has(component);
-                    }
-                }
-            });
+            // entityTypes.Configure(this.Category, configuration =>
+            // {
+            //     foreach(Type property in _properties)
+            //     {
+            //         foreach(Type component in properties.Get(property).Components)
+            //         {
+            //             configuration.HasComponent(component);
+            //         }
+            //     }
+            // });
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Domain.Entities.Abstractions;
 using VoidHuntersRevived.Domain.Entities.Services;
 
@@ -14,17 +15,41 @@ namespace VoidHuntersRevived.Domain.Entities
 {
     internal sealed class EntityTypeConfiguration : IEntityTypeConfiguration
     {
+        private bool _initialized;
         private readonly HashSet<EntityType> _baseTypes;
+        private readonly HashSet<Type> _components;
+        private readonly HashSet<Type> _properties;
         private readonly List<IComponentBuilder> _builders;
+
+        internal IEntityDescriptor descriptor;
+        internal ExclusiveGroup group;
 
         public EntityType Type { get; }
 
         public EntityTypeConfiguration(EntityType type)
         {
             _baseTypes = new HashSet<EntityType>();
+            _components = new HashSet<Type>();
+            _properties = new HashSet<Type>();
             _builders = new List<IComponentBuilder>();
 
+            this.descriptor = null!;
+            this.group = null!;
+
             this.Type = type;
+        }
+
+        internal void Initialize(EntityTypeService types)
+        {
+            if(_initialized)
+            {
+                return;
+            }
+
+            List<IComponentBuilder> builders = new List<IComponentBuilder>();
+            this.GetComponentBuildersRecursive(new HashSet<EntityTypeConfiguration>(), builders, types);
+            this.descriptor = new DynamicEntityDescriptor<EntityDescriptor>(builders.ToArray());
+            this.group = new ExclusiveGroup();
         }
 
         public IEntityTypeConfiguration Inherits(EntityType baseType)
@@ -34,18 +59,21 @@ namespace VoidHuntersRevived.Domain.Entities
             return this;
         }
 
-        public IEntityTypeConfiguration Has<T>()
+        public IEntityTypeConfiguration HasComponent<T>()
             where T : unmanaged, IEntityComponent
         {
-            _builders.Add(new ComponentBuilder<T>());
+            if(_components.Add(typeof(T)))
+            {
+                _builders.Add(new ComponentBuilder<T>());
+            }
 
             return this;
         }
 
         private static readonly MethodInfo _genericHasMethodInfo = typeof(EntityTypeConfiguration)
-            .GetMethod(nameof(Has), 1, Array.Empty<Type>()) ?? throw new Exception();
+            .GetMethod(nameof(HasComponent), 1, Array.Empty<Type>()) ?? throw new Exception();
 
-        public IEntityTypeConfiguration Has(Type component)
+        public IEntityTypeConfiguration HasComponent(Type component)
         {
             var method = _genericHasMethodInfo.MakeGenericMethod(component);
             method.Invoke(this, Array.Empty<object>());
@@ -53,36 +81,32 @@ namespace VoidHuntersRevived.Domain.Entities
             return this;
         }
 
-        internal EntityDescriptorGroup BuildEntityDescriptorGroup(EntityTypeService entityTypes)
+        public IEntityTypeConfiguration HasProperty<T>() 
+            where T : IEntityProperty
         {
-            HashSet<EntityType> types = new HashSet<EntityType>();
-            HashSet<IComponentBuilder> components = new HashSet<IComponentBuilder>();
+            _properties.Add(typeof(T));
 
-            this.GetComponentBuildersRecersive(entityTypes, types, components);
-
-            return new EntityDescriptorGroup(
-                descriptor: new DynamicEntityDescriptor<EntityDescriptor>(components.ToArray()),
-                group: new ExclusiveGroup());
+            return this;
         }
 
-        private void GetComponentBuildersRecersive(
-            EntityTypeService entityTypes,
-            HashSet<EntityType> types, 
-            HashSet<IComponentBuilder> components)
+        private void GetComponentBuildersRecursive(
+            HashSet<EntityTypeConfiguration> configurations,
+            List<IComponentBuilder> components,
+            EntityTypeService types)
         {
-            if(!types.Add(this.Type))
+            if (!configurations.Add(this))
             {
                 return;
+            }
+
+            foreach(EntityType baseType in  _baseTypes)
+            {
+                types.GetOrCreateConfiguration(baseType).GetComponentBuildersRecursive(configurations, components, types);
             }
 
             foreach (IComponentBuilder builder in _builders)
             {
                 components.Add(builder);
-            }
-
-            foreach (EntityType type in _baseTypes)
-            {
-                entityTypes.GetConfiguration(type).GetComponentBuildersRecersive(entityTypes, types, components);
             }
         }
     }

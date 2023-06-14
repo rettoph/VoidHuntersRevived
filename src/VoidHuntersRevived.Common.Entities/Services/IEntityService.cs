@@ -6,12 +6,11 @@ namespace VoidHuntersRevived.Common.Entities.Services
 
     public interface IEntityService
     {
-        VhId Create(EntityType type, VhId id);
-        VhId Create(EntityType type, VhId id, EntityInitializerDelegate initializer);
+        VhId Create(EntityName name, VhId id);
+        VhId Create(EntityName name, VhId id, EntityInitializerDelegate initializer);
 
         EGID GetEGID(VhId id);
         VhId GetVhId(EGID egid);
-        VhId GetVhId(uint id, ExclusiveGroupStruct group);
 
         void Destroy(VhId id);
     }

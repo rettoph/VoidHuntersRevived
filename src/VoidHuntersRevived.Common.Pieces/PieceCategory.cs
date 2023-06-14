@@ -8,7 +8,7 @@ using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Common.Pieces
 {
-    public class PieceCategory : EntityType
+    public class PieceCategory : EntityName
     {
         public PieceCategory(VhId nameSpace, string name) : base(nameSpace, name)
         {

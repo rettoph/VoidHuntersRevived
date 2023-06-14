@@ -14,7 +14,7 @@ namespace Guppy.Network.Identity
     {
         public static VhId GetUserShipId(this User user)
         {
-            return EntityTypes.UserShip.Id.Create(user.Id);
+            return EntityNames.UserShip.Id.Create(user.Id);
         }
     }
 }

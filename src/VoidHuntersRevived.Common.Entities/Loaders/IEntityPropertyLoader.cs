@@ -9,9 +9,9 @@ using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Common.Entities.Loaders
 {
-    [Service<IEntityTypeLoader>(ServiceLifetime.Scoped, true)]
-    public interface IEntityTypeLoader
+    [Service<IEntityLoader>(ServiceLifetime.Scoped, true)]
+    public interface IEntityPropertyLoader
     {
-        void Configure(IEntityTypeService entityTypes);
+        void Configure(IEntityPropertyService properties);
     }
 }
