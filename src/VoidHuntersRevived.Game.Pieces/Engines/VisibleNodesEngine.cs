@@ -23,7 +23,7 @@ using VoidHuntersRevived.Game.Pieces.Utilities;
 namespace VoidHuntersRevived.Game.Pieces.Engines
 {
     [AutoLoad]
-    internal sealed class VisibleEngine : BasicEngine, IStepEngine<GameTime>
+    internal sealed class VisibleNodesEngine : BasicEngine, IStepEngine<GameTime>
     {
         private readonly Camera2D _camera;
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
@@ -31,9 +31,9 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
         private readonly Color _tint;
         private readonly Dictionary<int, VisibleRenderer> _renderers;
 
-        public string name { get; } = nameof(VisibleEngine);
+        public string name { get; } = nameof(VisibleNodesEngine);
 
-        public VisibleEngine(Camera2D camera, PrimitiveBatch<VertexPositionColor> primitiveBatch, IResourceProvider resources)
+        public VisibleNodesEngine(Camera2D camera, PrimitiveBatch<VertexPositionColor> primitiveBatch, IResourceProvider resources)
         {
             _camera = camera;
             _primitiveBatch = primitiveBatch;
@@ -55,12 +55,12 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
         public void Step(in GameTime _param)
         {
             _primitiveBatch.Begin(_camera);
-            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = this.entitiesDB.FindGroups<Property<Visible>>();
-            foreach (var ((visibleIds, count), _) in this.entitiesDB.QueryEntities<Property<Visible>>(groups))
+            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = this.entitiesDB.FindGroups<Property<Visible>, Node>();
+            foreach (var ((visibleIds, nodes, count), _) in this.entitiesDB.QueryEntities<Property<Visible>, Node>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {
-                    _renderers[visibleIds[i].Id].RenderShapes(Matrix.Identity);
+                    _renderers[visibleIds[i].Id].RenderShapes(nodes[i].Transformation.XnaMatrix);
                 }
             }
             _primitiveBatch.End();

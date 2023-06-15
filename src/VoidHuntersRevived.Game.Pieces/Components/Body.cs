@@ -13,6 +13,5 @@ namespace VoidHuntersRevived.Game.Pieces.Components
     {
         public FixVector2 Position;
         public Fix64 Rotation;
-        public FixMatrix Transformation;
     }
 }

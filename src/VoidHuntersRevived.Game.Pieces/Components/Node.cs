@@ -11,5 +11,6 @@ namespace VoidHuntersRevived.Game.Pieces
     public struct Node : IEntityComponent
     {
         public VhId TreeId;
+        public FixMatrix Transformation;
     }
 }

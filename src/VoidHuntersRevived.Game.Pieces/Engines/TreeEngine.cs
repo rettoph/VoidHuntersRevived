@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.Collections;
+using Svelto.DataStructures;
 using Svelto.ECS;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Game.Common;
@@ -24,9 +26,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
         IStepEngine<Step>
     {
         private static readonly VhId CreateFilterEvent = VoidHuntersRevivedGame.NameSpace.Create(nameof(CreateFilterEvent));
-
-        private readonly Map<CombinedFilterID, EGID> _filterEgIds = new Map<CombinedFilterID, EGID>();
-        private int _treeFilterId;
+        private int _nodesFilterId;
 
         public string name { get; } = nameof(TreeEngine);
 
@@ -39,43 +39,59 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                 IdMap treeId = this.Simulation.Entities.GetIdMap(ids[index], groupID);
                 IdMap headId = this.Simulation.Entities.GetIdMap(trees[index].HeadId);
 
-                var filterId = new CombinedFilterID(_treeFilterId++, Tree.FilterContextID);
-                this.entitiesDB.GetFilters().CreatePersistentFilter<Tree>(filterId);
-                _filterEgIds.TryAdd(filterId, treeId.EGID);
+                ref var filter = ref this.entitiesDB.GetFilters().GetOrCreatePersistentFilter<Tree>(_nodesFilterId++, Tree.FilterContextID);
+                trees[index].NodesFilterId = filter.combinedFilterID;
 
                 VhId id = CreateFilterEvent.Create(treeId.VhId);
-                this.AddNodeToTree(in id, in treeId, in headId);
+                this.AddNodeToTree(in id, in treeId, in trees[index], in headId);
             }
         }
-
         public void Step(in Step _param)
         {
-            if(!this.entitiesDB.GetFilters().TryGetPersistentFilters<Tree>(Tree.FilterContextID, out var filters))
+            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = this.entitiesDB.FindGroups<Tree>();
+            foreach (var ((trees, count), _) in this.entitiesDB.QueryEntities<Tree>(groups))
             {
-                return;
-            }
-
-            foreach(ref EntityFilterCollection filter in filters)
-            {
-                EGID treeId = _filterEgIds[filter.combinedFilterID];
-                Tree tree = this.entitiesDB.QueryMappedEntities<Tree>(treeId.groupID).Entity(treeId.entityID);
-
-                foreach(var (indices, group) in filter)
+                for (uint treeIndex = 0; treeIndex < count; treeIndex++)
                 {
-                    var (nodes, _) = entitiesDB.QueryEntities<Node>(group);
+                    ref var filter = ref this.entitiesDB.GetFilters().GetPersistentFilter<Tree>(trees[treeIndex].NodesFilterId);
 
-                    for(int i=0; i<indices.count; i++)
+                    foreach (var (nodeIndices, group) in filter)
                     {
-                        Node node = nodes[indices[i]];
+                        var (nodes, _) = entitiesDB.QueryEntities<Node>(group);
+
+                        for (int i = 0; i < nodeIndices.count; i++)
+                        {
+                            nodes[nodeIndices[i]].Transformation = trees[treeIndex].Transformation;
+                        }
                     }
                 }
             }
+
+            // if (!this.entitiesDB.GetFilters().TryGetPersistentFilters<Tree>(Tree.FilterContextID, out var filters))
+            // {
+            //     return;
+            // }
+            // 
+            // foreach(ref EntityFilterCollection filter in filters)
+            // {
+            //     EGID treeId = this.Simulation.World.Filters.GetEGID<Tree>(filter.combinedFilterID);
+            //     Tree tree = this.entitiesDB.QueryMappedEntities<Tree>(treeId.groupID).Entity(treeId.entityID);
+            // 
+            //     foreach(var (indices, group) in filter)
+            //         var (nodes, _) = entitiesDB.QueryEntities<Node>(group);
+            // 
+            //         for(int i=0; i<indices.count; i++)
+            //         {
+            //             Node node = nodes[indices[i]];
+            //         }
+            //     }
+            // }
         }
 
-        private void AddNodeToTree(in VhId id, in IdMap treeId, in IdMap nodeId)
+        private void AddNodeToTree(in VhId id, in IdMap treeId, in Tree tree, in IdMap nodeId)
         {
             var filters = this.entitiesDB.GetFilters();
-            var filter = filters.GetPersistentFilter<Tree>(_filterEgIds[treeId.EGID]);
+            ref var filter = ref this.entitiesDB.GetFilters().GetPersistentFilter<Tree>(tree.NodesFilterId);
 
             var nodes = this.entitiesDB.QueryEntitiesAndIndex<Node>(nodeId.EGID, out uint index);
             filter.Add(nodeId.EGID.entityID, nodeId.EGID.groupID, index);

@@ -13,5 +13,7 @@ namespace VoidHuntersRevived.Game.Pieces.Components
         public static readonly FilterContextID FilterContextID = new FilterContextID();
 
         public VhId HeadId;
+        public FixMatrix Transformation;
+        public CombinedFilterID NodesFilterId;
     }
 }

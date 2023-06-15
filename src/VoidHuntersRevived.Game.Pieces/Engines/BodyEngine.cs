@@ -42,11 +42,11 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                 for (int i = 0; i < count; i++)
                 {
                     IBody bodyInstance = this.Simulation.Space.GetBody(vhids[i].Value);
-                    Body bodyComponent = bodies[i];
+                    ref Body bodyComponent = ref bodies[i];
 
                     bodyComponent.Position = bodyInstance.Position;
                     bodyComponent.Rotation = bodyInstance.Rotation;
-                    bodyComponent.Transformation = FixMatrix.CreateRotationZ(bodyComponent.Rotation) * FixMatrix.CreateTranslation(bodyComponent.Position.X, bodyComponent.Position.Y, Fix64.Zero);
+                    // bodyComponent.Transformation = FixMatrix.CreateRotationZ(bodyComponent.Rotation) * FixMatrix.CreateTranslation(bodyComponent.Position.X, bodyComponent.Position.Y, Fix64.Zero);
                 }
             }
         }
