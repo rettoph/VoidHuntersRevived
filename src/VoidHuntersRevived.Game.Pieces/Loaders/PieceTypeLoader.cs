@@ -18,6 +18,7 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
             entityTypes.Configure(PieceTypes.Hull, configuration =>
             {
                 configuration.HasProperty<Rigid>()
+                    .HasProperty<Visible>()
                     .HasComponent<Node>();
             });
         }

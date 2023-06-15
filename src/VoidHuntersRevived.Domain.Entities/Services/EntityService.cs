@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly DoubleDictionary<VhId, EGID, IdMap> _idMap;
         private uint _id;
 
-        public EntitiesDB entitiesDB { get; set; }
+        public EntitiesDB entitiesDB { get; set; } = null!;
 
         public EntityService(
             EntityConfigurationService entityConfigurations,
@@ -97,6 +97,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             property = default!;
             return false;
+        }
+
+        public IEnumerable<(int, T)> GetProperties<T>()
+            where T : class, IEntityProperty
+        {
+            return _properties.GetProperties<T>();
         }
 
         public bool TryGetIdMap(ref VhId vhid, out IdMap id)

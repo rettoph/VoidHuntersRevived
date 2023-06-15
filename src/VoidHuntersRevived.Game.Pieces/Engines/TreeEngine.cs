@@ -58,6 +58,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             foreach(ref EntityFilterCollection filter in filters)
             {
                 EGID treeId = _filterEgIds[filter.combinedFilterID];
+                Tree tree = this.entitiesDB.QueryMappedEntities<Tree>(treeId.groupID).Entity(treeId.entityID);
 
                 foreach(var (indices, group) in filter)
                 {
@@ -65,7 +66,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
                     for(int i=0; i<indices.count; i++)
                     {
-                        Node node = nodes[i];
+                        Node node = nodes[indices[i]];
                     }
                 }
             }

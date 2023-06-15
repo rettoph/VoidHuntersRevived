@@ -74,5 +74,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             return Unsafe.As<PropertyCache<T>>(_cache[id.Id]).Instance;
         }
+
+        internal IEnumerable<(int, T)> GetProperties<T>()
+            where T : class, IEntityProperty
+        {
+            return _cache.Values.OfType<PropertyCache<T>>().Select(x => (x.Id, x.Instance));
+        }
     }
 }

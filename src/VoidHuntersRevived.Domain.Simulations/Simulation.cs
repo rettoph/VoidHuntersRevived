@@ -24,6 +24,7 @@ namespace VoidHuntersRevived.Domain.Simulations
     public abstract class Simulation : ISimulation, IDisposable
     {
         private readonly TickEngineGroup _tickEngines;
+        private readonly DrawEngineGroups _drawEnginesGroups;
 
         protected readonly EventPublishingService publisher;
 
@@ -52,6 +53,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.publisher = new EventPublishingService(this.World.Engines.OfType<IEventEngine>());
 
             _tickEngines = new TickEngineGroup(this.World.Engines.OfType<ITickEngine>());
+            _drawEnginesGroups = new DrawEngineGroups(this.World.Engines.OfType<IStepEngine<GameTime>>());
         }
 
         public virtual void Initialize(ISimulationService simulations)
@@ -67,6 +69,11 @@ namespace VoidHuntersRevived.Domain.Simulations
         public virtual void Dispose()
         {
             this.World.Dispose();
+        }
+
+        public virtual void Draw(GameTime realTime)
+        {
+            _drawEnginesGroups.Step(realTime);
         }
 
         public virtual void Update(GameTime realTime)

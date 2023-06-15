@@ -90,6 +90,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             throw new NotImplementedException();
         }
 
+        public void Draw(GameTime gameTime)
+        {
+            foreach (ISimulation simulation in _simulations.Values)
+            {
+                simulation.Draw(gameTime);
+            }
+        }
+
         public void Update(GameTime gameTime)
         {
             foreach (ISimulation simulation in _simulations.Values)

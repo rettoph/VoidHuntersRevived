@@ -18,6 +18,8 @@ namespace VoidHuntersRevived.Common.Simulations
 
         void Initialize(ISimulationService simulations);
 
+        void Draw(GameTime realTime);
+
         void Update(GameTime realTime);
 
         void Publish(EventDto @event);

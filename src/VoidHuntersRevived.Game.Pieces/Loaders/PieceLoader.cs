@@ -21,13 +21,15 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
             configuration.Configure(PieceNames.HullTriangle, configuration =>
             {
                 configuration.SetType(PieceTypes.Hull)
-                    .AddProperty(Rigid.Polygon(Fix64.One, 3));
+                    .AddProperty(Rigid.Polygon(Fix64.One, 3))
+                    .AddProperty(Visible.Polygon("orange", 3));
             });
 
             configuration.Configure(PieceNames.HullSquare, configuration =>
             {
                 configuration.SetType(PieceTypes.Hull)
-                    .AddProperty(Rigid.Polygon(Fix64.One, 4));
+                    .AddProperty(Rigid.Polygon(Fix64.One, 4))
+                    .AddProperty(Visible.Polygon("orange", 4));
             });
         }
     }

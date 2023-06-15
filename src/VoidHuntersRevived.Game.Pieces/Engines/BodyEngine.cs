@@ -46,6 +46,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
                     bodyComponent.Position = bodyInstance.Position;
                     bodyComponent.Rotation = bodyInstance.Rotation;
+                    bodyComponent.Transformation = FixMatrix.CreateRotationZ(bodyComponent.Rotation) * FixMatrix.CreateTranslation(bodyComponent.Position.X, bodyComponent.Position.Y, Fix64.Zero);
                 }
             }
         }

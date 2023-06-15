@@ -21,6 +21,8 @@ namespace VoidHuntersRevived.Common.Simulations.Services
 
         ISimulation First(params SimulationType[] types);
 
+        void Draw(GameTime gameTime);
+
         void Update(GameTime gameTime);
 
         void Enqueue(IEventData data);

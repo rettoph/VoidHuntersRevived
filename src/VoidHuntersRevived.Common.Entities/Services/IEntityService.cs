@@ -16,6 +16,9 @@ namespace VoidHuntersRevived.Common.Entities.Services
         bool TryGetProperty<T>(EGID id, out T property)
             where T : class, IEntityProperty;
 
+        IEnumerable<(int, T)> GetProperties<T>()
+            where T : class, IEntityProperty;
+
         IdMap GetIdMap(VhId id);
         IdMap GetIdMap(EGID egid);
         IdMap GetIdMap(uint entityId, ExclusiveGroupStruct groupId);
