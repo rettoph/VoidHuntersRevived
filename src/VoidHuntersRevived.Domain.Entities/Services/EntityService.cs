@@ -9,8 +9,7 @@ using VoidHuntersRevived.Domain.Entities.Abstractions;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    internal sealed class EntityService : IEntityService,
-        IReactOnAddAndRemoveEx<EntityVhId>, IQueryingEntitiesEngine
+    internal sealed class EntityService : IEntityService, IQueryingEntitiesEngine
     {
         private readonly EntityConfigurationService _entityConfigurations;
         private readonly EntityPropertyService _properties;
@@ -50,7 +49,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 property.Initialize(ref initializer);
             }
 
-            return new IdMap(initializer.EGID, vhid);
+            IdMap idMap = new IdMap(initializer.EGID, vhid);
+            _idMap.TryAdd(vhid, initializer.EGID, idMap);
+
+            return idMap;
         }
 
         public IdMap Create(EntityName name, VhId vhid, EntityInitializerDelegate initializerDelegate)
@@ -67,7 +69,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             initializerDelegate(ref initializer);
 
-            return new IdMap(initializer.EGID, vhid);
+            IdMap idMap = new IdMap(initializer.EGID, vhid);
+            _idMap.TryAdd(vhid, initializer.EGID, idMap);
+
+            return idMap;
         }
 
         public void Destroy(VhId vhid)
@@ -78,6 +83,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
 
             _functions.RemoveEntity<EntityDescriptor>(id.EGID);
+            _idMap.Remove(id.VhId, id.EGID);
         }
 
         public T GetProperty<T>(Property<T> id)
@@ -125,34 +131,34 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return this.GetIdMap(new EGID(id, group));
         }
 
-        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<EntityVhId> entities, ExclusiveGroupStruct groupID)
-        {
-            var (entityIds, nativeIds, _) = entities;
-
-            //for each entity added in this submission phase
-            for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
-            {
-                //get the Stride entityID that will be instanced multipled times
-                VhId vhid = entityIds[index].Value;
-                EGID egid = new EGID(nativeIds[index], groupID);
-
-                _idMap.TryAdd(vhid, egid, new IdMap(egid, vhid));
-            }
-        }
-
-        public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<EntityVhId> entities, ExclusiveGroupStruct groupID)
-        {
-            var (entityIds, nativeIds, _) = entities;
-
-            //for each entity added in this submission phase
-            for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
-            {
-                //get the Stride entityID that will be instanced multipled times
-                VhId vhid = entityIds[index].Value;
-                EGID egid = new EGID(nativeIds[index], groupID);
-
-                _idMap.Remove(vhid, egid);
-            }
-        }
+        // public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<EntityVhId> entities, ExclusiveGroupStruct groupID)
+        // {
+        //     var (entityIds, nativeIds, _) = entities;
+        // 
+        //     //for each entity added in this submission phase
+        //     for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
+        //     {
+        //         //get the Stride entityID that will be instanced multipled times
+        //         VhId vhid = entityIds[index].Value;
+        //         EGID egid = new EGID(nativeIds[index], groupID);
+        // 
+        //         _idMap.TryAdd(vhid, egid, new IdMap(egid, vhid));
+        //     }
+        // }
+        // 
+        // public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<EntityVhId> entities, ExclusiveGroupStruct groupID)
+        // {
+        //     var (entityIds, nativeIds, _) = entities;
+        // 
+        //     //for each entity added in this submission phase
+        //     for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
+        //     {
+        //         //get the Stride entityID that will be instanced multipled times
+        //         VhId vhid = entityIds[index].Value;
+        //         EGID egid = new EGID(nativeIds[index], groupID);
+        // 
+        //         _idMap.Remove(vhid, egid);
+        //     }
+        // }
     }
 }
