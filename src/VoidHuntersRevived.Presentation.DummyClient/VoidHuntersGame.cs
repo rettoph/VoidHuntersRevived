@@ -1,19 +1,8 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Guppy;
-using Guppy.Common;
-using Guppy.MonoGame.Services;
-using Microsoft.Extensions.DependencyInjection;
-using Guppy.Providers;
-using VoidHuntersRevived.Game.Server;
-using VoidHuntersRevived.Domain;
 using VoidHuntersRevived.Game.Client;
-using Guppy.Network.Peers;
+using VoidHuntersRevived.Game;
 
 namespace VoidHuntersRevived.Application.Client
 {
@@ -67,12 +56,12 @@ namespace VoidHuntersRevived.Application.Client
             _engine.Start(builder =>
             {
                 builder.ConfigureMonoGame(this, _graphics, this.Content, this.Window)
-                    .ConfigureECS()
                     .ConfigureNetwork()
                     .ConfigureResources()
                     .ConfigureGUI();
             });
 
+            // _engine.Guppies.Create<ServerGameGuppy>();
             _engine.Guppies.Create<MultiplayerGameGuppy>();
             //_engine.Guppies.Create<EditorGuppy>();
         }

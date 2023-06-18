@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                 return;
             }
 
-            IBody body = this.Simulation.Space.GetBody(treeId.VhId);
+            IBody body = this.Simulation.Space.GetOrCreateBody(treeId.VhId);
             body.Create(rigid.Polygons[0], nodeId.VhId);
         }
     }

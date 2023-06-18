@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             {
                 IdMap bodyId = this.Simulation.Entities.GetIdMap(ids[index], groupID);
 
-                this.Simulation.Space.CreateBody(bodyId.VhId);
+                this.Simulation.Space.GetOrCreateBody(bodyId.VhId);
             }
         }
 

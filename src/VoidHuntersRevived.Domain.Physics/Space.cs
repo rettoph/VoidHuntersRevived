@@ -21,8 +21,14 @@ namespace VoidHuntersRevived.Domain.Physics
             _factory = factory;
         }
 
-        public IBody CreateBody(in VhId id)
+        public IBody GetOrCreateBody(in VhId id)
         {
+            if(_bodies.TryGetValue(id, out Body? cached))
+            {
+                return cached;
+
+            }
+            
             IBody body = _factory.Create(id);
             this.AddBody(body);
 

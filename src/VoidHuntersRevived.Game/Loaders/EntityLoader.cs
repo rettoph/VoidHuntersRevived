@@ -13,17 +13,27 @@ namespace VoidHuntersRevived.Game.Loaders
     {
         public void Configure(IEntityTypeService entityTypes)
         {
-            entityTypes.Configure(EntityTypes.Ship, configuration =>
+            entityTypes.Configure(EntityTypes.Tree, configuration =>
             {
                 configuration
-                    .HasComponent<Helm>()
-                    .HasComponent<Tree>()
-                    .HasComponent<Body>();
+                    .HasComponent<Body>()
+                    .HasComponent<Tree>();
+            });
+
+            entityTypes.Configure(EntityTypes.Ship, configuration =>
+            {
+                configuration.Inherits(EntityTypes.Tree)
+                    .HasComponent<Helm>();
             });
         }
 
         public void Configure(IEntityConfigurationService entities)
         {
+            entities.Configure(EntityNames.Chain, configuration =>
+            {
+                configuration.SetType(EntityTypes.Tree);
+            });
+
             entities.Configure(EntityNames.UserShip, configuration =>
             {
                 configuration.SetType(EntityTypes.Ship);

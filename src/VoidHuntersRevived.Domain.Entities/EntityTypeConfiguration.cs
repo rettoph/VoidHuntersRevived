@@ -38,8 +38,6 @@ namespace VoidHuntersRevived.Domain.Entities
             this.group = null!;
 
             this.Type = type;
-
-            this.HasComponent<EntityVhId>();
         }
 
         internal void Initialize(
@@ -51,7 +49,10 @@ namespace VoidHuntersRevived.Domain.Entities
                 return;
             }
 
-            List<IComponentBuilder> builders = new List<IComponentBuilder>();
+            List<IComponentBuilder> builders = new List<IComponentBuilder>(new[]
+            {
+                new ComponentBuilder<EntityVhId>()
+            });
             this.GetComponentBuildersRecursive(new HashSet<EntityTypeConfiguration>(), builders, types, properties);
             this.descriptor = new DynamicEntityDescriptor<EntityDescriptor>(builders.ToArray());
             this.group = new ExclusiveGroup();
