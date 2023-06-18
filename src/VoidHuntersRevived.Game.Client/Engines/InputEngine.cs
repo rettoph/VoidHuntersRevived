@@ -13,13 +13,15 @@ using VoidHuntersRevived.Game.Common.Events;
 using VoidHuntersRevived.Game.Events;
 using Guppy.Common;
 using Guppy.Network.Identity;
+using VoidHuntersRevived.Game.Client.Messages;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [SimulationTypeFilter(SimulationType.Lockstep)]
     internal class InputEngine : BasicEngine, 
-        ISubscriber<SetHelmDirectionInput>
+        ISubscriber<SetHelmDirectionInput>,
+        ISubscriber<SetTractorBeamEmitterActiveInput>
     {
         private readonly ISimulationService _simulations;
         private ClientPeer _client;
@@ -43,6 +45,20 @@ namespace VoidHuntersRevived.Game.Client.Engines
             {
                 ShipId = _client.Users.Current.GetUserShipId(),
                 Which = message.Which,
+                Value = message.Value
+            });
+        }
+
+        public void Process(in SetTractorBeamEmitterActiveInput message)
+        {
+            if (_client.Users.Current is null)
+            {
+                return;
+            }
+
+            _simulations.Enqueue(new SetTractorBeamEmitterActive()
+            {
+                ShipId = _client.Users.Current.GetUserShipId(),
                 Value = message.Value
             });
         }

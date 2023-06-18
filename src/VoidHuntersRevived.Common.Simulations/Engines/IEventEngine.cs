@@ -14,6 +14,6 @@ namespace VoidHuntersRevived.Common.Simulations.Engines
     public interface IEventEngine<T> : IEventEngine
         where T : IEventData
     {
-        void Process(VhId id, T data);
+        void Process(VhId eventId, T data);
     }
 }

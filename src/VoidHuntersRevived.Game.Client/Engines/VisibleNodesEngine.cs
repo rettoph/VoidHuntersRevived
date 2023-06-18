@@ -17,10 +17,11 @@ using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Common.Components;
+using VoidHuntersRevived.Game.Pieces;
 using VoidHuntersRevived.Game.Pieces.Properties;
 using VoidHuntersRevived.Game.Pieces.Utilities;
 
-namespace VoidHuntersRevived.Game.Pieces.Engines
+namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     internal sealed class VisibleNodesEngine : BasicEngine, IStepEngine<GameTime>

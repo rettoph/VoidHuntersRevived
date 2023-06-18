@@ -13,6 +13,9 @@ using Guppy.MonoGame.Messages;
 using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Game.Common.Events;
 using VoidHuntersRevived.Game.Enums;
+using Guppy.Input.Enums;
+using VoidHuntersRevived.Game.Events;
+using VoidHuntersRevived.Game.Client.Messages;
 
 namespace VoidHuntersRevived.Game.Client.Loaders
 {
@@ -28,14 +31,20 @@ namespace VoidHuntersRevived.Game.Client.Loaders
             InputLoader.AddSetDirectionInput(services, Inputs.SetDirectionRight, Keys.E, Direction.Right);
             InputLoader.AddSetDirectionInput(services, Inputs.SetDirectionLeft, Keys.Q, Direction.Left);
 
+            services.AddInput(Inputs.ToggleLockstep, CursorButtons.Right, new[]
+{
+                (ButtonState.Pressed, new SetTractorBeamEmitterActiveInput(true)),
+                (ButtonState.Released, new SetTractorBeamEmitterActiveInput(false))
+            });
+
             services.AddInput(Inputs.ToggleLockstep, Keys.F12, new[]
             {
-                (false, Toggle<Lockstep>.Instance)
+                (KeyState.Up, Toggle<Lockstep>.Instance)
             });
 
             services.AddInput(Inputs.TogglePredictive, Keys.F11, new[]
             {
-                (false, Toggle<Predictive>.Instance)
+                (KeyState.Up, Toggle<Predictive>.Instance)
             });
         }
 
@@ -43,12 +52,12 @@ namespace VoidHuntersRevived.Game.Client.Loaders
         {
             services.AddInput(key, defaultSource, new[]
             {
-                (true, new SetHelmDirectionInput()
+                (KeyState.Down, new SetHelmDirectionInput()
                 {
                     Which = direction,
                     Value = true
                 }),
-                (false, new SetHelmDirectionInput()
+                (KeyState.Up, new SetHelmDirectionInput()
                 {
                     Which = direction,
                     Value = false

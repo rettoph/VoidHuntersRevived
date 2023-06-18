@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations.Engines;
 
-namespace VoidHuntersRevived.Game.Pieces.Engines
+namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     internal sealed class CameraEngine : BasicEngine, IStepEngine<GameTime>

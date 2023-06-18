@@ -23,7 +23,9 @@ namespace VoidHuntersRevived.Game.Loaders
             entityTypes.Configure(EntityTypes.Ship, configuration =>
             {
                 configuration.Inherits(EntityTypes.Tree)
-                    .HasComponent<Helm>();
+                    .HasComponent<Helm>()
+                    .HasComponent<Tactical>()
+                    .HasComponent<TractorBeamEmitter>();
             });
         }
 
