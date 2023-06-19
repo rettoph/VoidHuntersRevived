@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Svelto.ECS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,30 +51,56 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             publisher.Publish(@event);
         }
 
+        public void Revert(EventDto @event)
+        {
+            if (!_publishers.TryGetValue(@event.Data.GetType(), out SimulationEventPublisher? publisher))
+            {
+                return;
+            }
+
+            publisher.Revert(@event);
+        }
+
         private abstract class SimulationEventPublisher
         {
             public abstract void Publish(EventDto @event);
+            public abstract void Revert(EventDto @event);
         }
         private class SimulationEventPublisher<T> : SimulationEventPublisher
             where T : class, IEventData
         {
             private readonly IEventEngine<T>[] _subscribers;
+            private readonly IRevertEventEngine<T>[] _reverters;
 
             public SimulationEventPublisher(List<IEventEngine> subscribers)
             {
                 _subscribers = subscribers.OfType<IEventEngine<T>>().ToArray();
+                _reverters = subscribers.OfType<IRevertEventEngine<T>>().ToArray();
             }
 
             public override void Publish(EventDto @event)
             {
-                this.Invoke(@event.Id, Unsafe.As<T>(@event.Data));
+                this.Publish(@event.Id, Unsafe.As<T>(@event.Data));
             }
 
-            private void Invoke(in VhId id, T data)
+            private void Publish(in VhId id, T data)
             {
                 foreach(IEventEngine<T> subscriber in _subscribers)
                 {
                     subscriber.Process(id, data);
+                }
+            }
+
+            public override void Revert(EventDto @event)
+            {
+                this.Revert(@event.Id, Unsafe.As<T>(@event.Data));
+            }
+
+            private void Revert(in VhId id, T data)
+            {
+                foreach (IRevertEventEngine<T> reverter in _reverters)
+                {
+                    reverter.Revert(id, data);
                 }
             }
         }

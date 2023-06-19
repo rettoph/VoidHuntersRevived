@@ -14,11 +14,14 @@ using VoidHuntersRevived.Game.Events;
 using Guppy.Common;
 using Guppy.Network.Identity;
 using VoidHuntersRevived.Game.Client.Messages;
+using Guppy.Network.Attributes;
+using Guppy.Network.Enums;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [SimulationTypeFilter(SimulationType.Lockstep)]
+    [PeerTypeFilter(PeerType.Client)]
+    [SimulationTypeFilter(SimulationType.Predictive)]
     internal class InputEngine : BasicEngine, 
         ISubscriber<SetHelmDirectionInput>,
         ISubscriber<SetTractorBeamEmitterActiveInput>

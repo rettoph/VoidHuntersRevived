@@ -10,6 +10,6 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
     {
         Tick CurrentTick { get; }
 
-        event OnEventDelegate<Tick>? OnTick;
+        event OnEventDelegate<EventDto>? OnEvent;
     }
 }

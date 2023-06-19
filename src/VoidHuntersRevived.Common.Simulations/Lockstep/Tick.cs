@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Common.Simulations
+namespace VoidHuntersRevived.Common.Simulations.Lockstep
 {
     public sealed class Tick
     {
@@ -13,13 +13,13 @@ namespace VoidHuntersRevived.Common.Simulations
 
         private Tick(int id, EventDto[] events)
         {
-            this.Id = id;
-            this.Events = events;
+            Id = id;
+            Events = events;
         }
 
         public Tick Next(params EventDto[] events)
         {
-            return new Tick(this.Id + 1, events);
+            return new Tick(Id + 1, events);
         }
 
         public static Tick First(params EventDto[] events)

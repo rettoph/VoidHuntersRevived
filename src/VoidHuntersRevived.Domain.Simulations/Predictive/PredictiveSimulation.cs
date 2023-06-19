@@ -1,6 +1,7 @@
 ﻿using Guppy.Common;
 using Guppy.Common.Providers;
 using Microsoft.Xna.Framework;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -13,6 +14,7 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
@@ -22,8 +24,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         private Step _step;
         private double _lastStepTime;
         private IPredictiveSynchronizationEngine[] _synchronizations;
+        private readonly PredictionService _predictions;
 
         public PredictiveSimulation(
+            ILogger logger,
             IFiltered<ILockstepSimulation> lockstep,
             ISpaceFactory spaceFactory, 
             IFilteredProvider filtered, 
@@ -31,13 +35,15 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         {
             _step = new Step();
             _lockstep = lockstep.Instance;
+            _synchronizations = Array.Empty<IPredictiveSynchronizationEngine>();
+            _predictions = new PredictionService(logger, this.publisher);
         }
 
         public override void Initialize(ISimulationService simulations)
         {
             base.Initialize(simulations);
 
-            _lockstep.OnTick += this.HandleLockstepTick;
+            _lockstep.OnEvent += this.HandleLockstepEvent;
             _synchronizations = this.World.Engines.OfType<IPredictiveSynchronizationEngine>().ToArray();
         }
 
@@ -65,24 +71,23 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             {
                 synchronization.Synchronize(_lockstep, step);
             }
+
+            _predictions.Prune();
         }
 
         public override void Enqueue(EventDto data)
         {
-            this.publisher.Publish(data);
+            _predictions.Predict(data);
         }
 
         public override void Publish(EventDto data)
         {
-            this.publisher.Publish(data);
+            _predictions.Predict(data);
         }
 
-        private void HandleLockstepTick(Tick args)
+        private void HandleLockstepEvent(EventDto args)
         {
-            foreach(EventDto @event in args.Events)
-            {
-                this.Enqueue(@event);
-            }
+            _predictions.Verify(args);
         }
     }
 }
