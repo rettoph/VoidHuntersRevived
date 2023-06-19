@@ -126,7 +126,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _stepsSinceTick = 0;
         }
 
-        public void Process(in INetIncomingMessage<EventDto> message)
+        public void Process(in Guid messsageId, in INetIncomingMessage<EventDto> message)
         {
             if (message.Body.Data is not IInputData)
             {

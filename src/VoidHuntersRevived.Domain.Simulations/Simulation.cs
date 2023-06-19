@@ -88,5 +88,23 @@ namespace VoidHuntersRevived.Domain.Simulations
         public abstract void Publish(EventDto data);
 
         public abstract void Enqueue(EventDto data);
+
+        public void Publish(VhId eventId, IEventData data)
+        {
+            this.Publish(new EventDto()
+            {
+                Id = eventId,
+                Data = data
+            });
+        }
+
+        public void Enqueue(VhId eventId, IEventData data)
+        {
+            this.Enqueue(new EventDto()
+            {
+                Id = eventId,
+                Data = data
+            });
+        }
     }
 }

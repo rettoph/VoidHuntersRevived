@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.GameComponents
             // throw new NotImplementedException();
         }
 
-        public void Process(in Launch message)
+        public void Process(in Guid messageId, in Launch message)
         {
             _guppies.Create(message.GuppyType);
             _guppy.Dispose();

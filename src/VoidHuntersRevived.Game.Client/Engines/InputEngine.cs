@@ -16,54 +16,54 @@ using Guppy.Network.Identity;
 using VoidHuntersRevived.Game.Client.Messages;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
+using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [PeerTypeFilter(PeerType.Client)]
-    [SimulationTypeFilter(SimulationType.Predictive)]
     internal class InputEngine : BasicEngine, 
         ISubscriber<SetHelmDirectionInput>,
         ISubscriber<SetTractorBeamEmitterActiveInput>
     {
-        private readonly ISimulationService _simulations;
         private ClientPeer _client;
 
-        public InputEngine(
-            ClientPeer client,
-            ISimulationService simulations)
+        public InputEngine(ClientPeer client)
         {
             _client = client;
-            _simulations = simulations;
         }
 
-        public void Process(in SetHelmDirectionInput message)
+        public void Process(in Guid messageId, in SetHelmDirectionInput message)
         {
             if (_client.Users.Current is null)
             {
                 return;
             }
 
-            _simulations.Enqueue(new SetHelmDirection()
-            {
-                ShipId = _client.Users.Current.GetUserShipId(),
-                Which = message.Which,
-                Value = message.Value
-            });
+            this.Simulation.Enqueue(
+                eventId: new VhId(messageId),
+                data: new SetHelmDirection()
+                {
+                    ShipId = _client.Users.Current.GetUserShipId(),
+                    Which = message.Which,
+                    Value = message.Value
+                });
         }
 
-        public void Process(in SetTractorBeamEmitterActiveInput message)
+        public void Process(in Guid messageId, in SetTractorBeamEmitterActiveInput message)
         {
             if (_client.Users.Current is null)
             {
                 return;
             }
 
-            _simulations.Enqueue(new SetTractorBeamEmitterActive()
-            {
-                ShipId = _client.Users.Current.GetUserShipId(),
-                Value = message.Value
-            });
+            this.Simulation.Enqueue(
+                eventId: new VhId(messageId),
+                data: new SetTractorBeamEmitterActive()
+                {
+                    ShipId = _client.Users.Current.GetUserShipId(),
+                    Value = message.Value
+                });
         }
     }
 }

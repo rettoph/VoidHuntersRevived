@@ -23,5 +23,7 @@ namespace VoidHuntersRevived.Common.Simulations
         void Publish(EventDto @event);
 
         void Enqueue(EventDto @event);
+
+        void Enqueue(VhId eventId, IEventData data);
     }
 }
