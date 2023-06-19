@@ -14,8 +14,6 @@ namespace VoidHuntersRevived.Common.Simulations
         IWorld World { get; }
         IEntityService Entities { get; }
 
-        Tick CurrentTick { get; }
-
         void Initialize(ISimulationService simulations);
 
         void Draw(GameTime realTime);

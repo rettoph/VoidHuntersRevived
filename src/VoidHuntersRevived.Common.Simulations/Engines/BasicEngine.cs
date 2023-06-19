@@ -10,18 +10,24 @@ using System.Threading.Tasks;
 namespace VoidHuntersRevived.Common.Simulations.Engines
 {
     [Service<IEngine>(ServiceLifetime.Transient, true)]
-    public abstract class BasicEngine : ISimulationEngine, IQueryingEntitiesEngine
+    public abstract class BasicEngine<TSimulation> : ISimulationEngine<TSimulation>, IQueryingEntitiesEngine
+        where TSimulation : ISimulation
     {
-        public ISimulation Simulation { get; private set; } = null!;
+        public TSimulation Simulation { get; private set; } = default!;
         public EntitiesDB entitiesDB { get; set; } = null!;
 
         public virtual void Ready()
         {
         }
 
-        public virtual void Initialize(ISimulation simulation)
+        public virtual void Initialize(TSimulation simulation)
         {
             this.Simulation = simulation;
         }
+    }
+
+    public abstract class BasicEngine : BasicEngine<ISimulation>
+    {
+
     }
 }

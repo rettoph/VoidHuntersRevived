@@ -17,6 +17,8 @@ namespace VoidHuntersRevived.Game.Client.Constants
         public const string SetDirectionTurnRight = "set_direction_turn_right";
         public const string SetDirectionTurnLeft = "set_direction_turn_left";
 
+        public const string SetTractorBeamEmitterActive = "set_tractor_beam_emitter_active";
+
         public const string TogglePredictive = "toggle_predictive";
         public const string ToggleLockstep = "toggle_lockstep";
     }

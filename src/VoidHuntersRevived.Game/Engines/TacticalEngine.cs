@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Game.Engines
                 {
                     Tactical tactical = tacticals[i];
 
-                    Fix64 amount = Fix64.Min((Fix64)_param.ElapsedTime / AimDamping, Fix64.One);
+                    Fix64 amount = Fix64.Min(_param.ElapsedTime / AimDamping, Fix64.One);
                     tactical.Value = FixVector2.Lerp(
                         v1: tactical.Value,
                         v2: tactical.Target,

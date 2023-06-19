@@ -14,13 +14,14 @@ using Guppy.Attributes;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
 using VoidHuntersRevived.Common.Simulations.Attributes;
+using VoidHuntersRevived.Common.Simulations.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 {
     [AutoLoad]
     [PeerTypeFilter(PeerType.Server)]
     [SimulationTypeFilter(SimulationType.Lockstep)]
-    internal class LockstepServer_TickEngine : BasicEngine,
+    internal class LockstepServer_TickEngine : BasicEngine<ILockstepSimulation>,
         ITickEngine,
         IEventEngine<UserJoined>
     {

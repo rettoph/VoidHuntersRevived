@@ -23,7 +23,6 @@ namespace VoidHuntersRevived.Domain.Simulations
 {
     public abstract class Simulation : ISimulation, IDisposable
     {
-        private readonly TickEngineGroup _tickEngines;
         private readonly DrawEngineGroups _drawEnginesGroups;
 
         protected readonly EventPublishingService publisher;
@@ -37,8 +36,6 @@ namespace VoidHuntersRevived.Domain.Simulations
         IWorld ISimulation.World => this.World;
         IEntityService ISimulation.Entities => this.World.Entities;
 
-        public Tick CurrentTick { get; private set; }
-
         protected Simulation(
             SimulationType type,
             ISpaceFactory spaceFactory,
@@ -48,11 +45,9 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.Type = type;
             this.Space = spaceFactory.Create();
             this.World = new World(bus, filtered, new SimulationState(this));
-            this.CurrentTick = Tick.First();
 
             this.publisher = new EventPublishingService(this.World.Engines.OfType<IEventEngine>());
 
-            _tickEngines = new TickEngineGroup(this.World.Engines.OfType<ITickEngine>());
             _drawEnginesGroups = new DrawEngineGroups(this.World.Engines.OfType<IStepEngine<GameTime>>());
         }
 
@@ -60,7 +55,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             this.World.Initialize();
 
-            foreach(ISimulationEngine system in this.World.Engines.OfType<ISimulationEngine>())
+            foreach(ISimulationEngine<ISimulation> system in this.World.Engines.OfType<ISimulationEngine<ISimulation>>())
             {
                 system.Initialize(this);
             }
@@ -82,30 +77,12 @@ namespace VoidHuntersRevived.Domain.Simulations
             {
                 this.DoStep(step);
             }
-
-            if(this.TryGetNextTick(this.CurrentTick, out Tick? next))
-            {
-                this.DoTick(next);
-            }
         }
 
         protected abstract bool TryGetNextStep(GameTime realTime, [MaybeNullWhen(false)] out Step step);
         protected virtual void DoStep(Step step)
         {
             this.World.Step(step);
-        }
-
-        protected abstract bool TryGetNextTick(Tick current, [MaybeNullWhen(false)] out Tick next);
-        protected virtual void DoTick(Tick tick)
-        {
-            this.CurrentTick = tick;
-
-            _tickEngines.Step(tick);
-
-            foreach (EventDto @event in tick.Events)
-            {
-                this.Publish(@event);
-            }
         }
 
         public abstract void Publish(EventDto data);
