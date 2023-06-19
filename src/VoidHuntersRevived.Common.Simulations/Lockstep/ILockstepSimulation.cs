@@ -9,5 +9,7 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
     public interface ILockstepSimulation : ISimulation
     {
         Tick CurrentTick { get; }
+
+        event OnEventDelegate<Tick>? OnTick;
     }
 }

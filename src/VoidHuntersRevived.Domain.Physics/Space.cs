@@ -5,6 +5,7 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Physics.Factories;
+using System.Diagnostics.CodeAnalysis;
 
 namespace VoidHuntersRevived.Domain.Physics
 {
@@ -90,6 +91,23 @@ namespace VoidHuntersRevived.Domain.Physics
         public void Step(Step step)
         {
             _aether.Step(step.ElapsedTime);
+        }
+
+        public IEnumerable<IBody> AllBodies()
+        {
+            return _bodies.Values;
+        }
+
+        public bool TryGetBody(in VhId id, [MaybeNullWhen(false)] out IBody body)
+        {
+            if(_bodies.TryGetValue(id, out Body? instance))
+            {
+                body = instance;
+                return true;
+            }
+
+            body = null;
+            return false;
         }
     }
 }

@@ -55,9 +55,9 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             this.World.Initialize();
 
-            foreach(ISimulationEngine<ISimulation> system in this.World.Engines.OfType<ISimulationEngine<ISimulation>>())
+            foreach(ISimulationEngine<ISimulation> engine in this.World.Engines.OfType<ISimulationEngine<ISimulation>>())
             {
-                system.Initialize(this);
+                engine.Initialize(this);
             }
         }
 

@@ -12,6 +12,7 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Messages;
+using VoidHuntersRevived.Domain.Simulations.Predictive;
 using VoidHuntersRevived.Domain.Simulations.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Loaders
@@ -52,6 +53,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
 
         private void ConfigurePredictive(IServiceCollection services, IServiceCollectionManager manager)
         {
+            manager.AddScoped<PredictiveSimulation>()
+                .AddInterfaceAliases();
         }
     }
 }

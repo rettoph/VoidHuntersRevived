@@ -27,6 +27,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public Tick CurrentTick { get; private set; }
 
+        public event OnEventDelegate<Tick>? OnTick;
+
         public LockstepSimulation(
             ISpaceFactory spaceFactory,
             IFilteredProvider filtered,
@@ -69,6 +71,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             {
                 this.Publish(@event);
             }
+
+            this.OnTick?.Invoke(tick);
         }
 
         public override void Publish(EventDto data)

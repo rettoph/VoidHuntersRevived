@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace VoidHuntersRevived.Common.Physics
         void RemoveBody(IBody body);
         void RemoveBody(in VhId id);
         IBody GetBody(in VhId id);
+        IEnumerable<IBody> AllBodies();
+        bool TryGetBody(in VhId id, [MaybeNullWhen(false)] out IBody body);
 
         void QueryAABB(QueryReportFixtureDelegate callback, ref AABB aabb);
         void Step(Step step);
