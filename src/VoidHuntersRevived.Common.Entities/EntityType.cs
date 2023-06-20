@@ -1,4 +1,5 @@
 ﻿using Standart.Hash.xxHash;
+using Svelto.ECS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,12 +8,14 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Entities
 {
-    public class EntityType
+    public abstract class EntityType
     {
+        private static List<EntityType> _list = new List<EntityType>();
+
         public readonly string Name;
         public readonly VhId Id;
 
-        public unsafe EntityType(VhId nameSpace, string name)
+        internal unsafe EntityType(VhId nameSpace, string name)
         {
             this.Name = name;
 
@@ -20,6 +23,30 @@ namespace VoidHuntersRevived.Common.Entities
             VhId* pNameHash = (VhId*)&nameHash;
 
             this.Id = nameSpace.Create(pNameHash[0]);
+
+            _list.Add(this);
+        }
+
+        public abstract IEntityTypeConfiguration BuildConfiguration();
+
+        public static IEnumerable<EntityType> All()
+        {
+            return _list;
+        }
+    }
+
+    public class EntityType<TDescriptor> : EntityType
+        where TDescriptor : IEntityDescriptor, new()
+    {
+        public static readonly ExclusiveGroup Group = new ExclusiveGroup();
+
+        public EntityType(VhId nameSpace, string name) : base(nameSpace, name)
+        {
+        }
+
+        public override IEntityTypeConfiguration BuildConfiguration()
+        {
+            return new EntityTypeConfiguration<TDescriptor>(this);
         }
     }
 }

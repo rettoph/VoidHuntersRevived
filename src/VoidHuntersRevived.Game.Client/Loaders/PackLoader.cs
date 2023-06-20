@@ -1,7 +1,8 @@
 ﻿using Guppy.Attributes;
-using Guppy.MonoGame.Resources;
+using Guppy.Resources.Constants;
 using Guppy.Resources.Loaders;
 using Guppy.Resources.Providers;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -17,10 +18,21 @@ namespace VoidHuntersRevived.Game.Client.Loaders
     [AutoLoad]
     internal sealed class PackLoader : IPackLoader
     {
-        public void Load(IPackProvider packs)
+        private readonly ContentManager _content;
+
+        public PackLoader(ContentManager content)
         {
-            packs.GetById(VoidHuntersPack.Id)
-                .Add(new SpriteFontResource(Fonts.Default, "Fonts/BiomeLight-Normal"));
+            _content = content;
+        }
+
+        public void Load(IResourcePackProvider packs)
+        {
+            _content.RootDirectory = VoidHuntersPack.Directory;
+
+            packs.Configure(VoidHuntersPack.Id, pack =>
+            {
+                pack.Add(Resources.Fonts.Default, _content.Load<SpriteFont>("Fonts/BiomeLight-Normal"));
+            });
         }
     }
 }

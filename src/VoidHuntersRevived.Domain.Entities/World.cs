@@ -24,8 +24,7 @@ namespace VoidHuntersRevived.Domain.Entities
         private readonly EnginesRoot _enginesRoot;
         private readonly StepEnginesGroup _stepEngines;
         private readonly SimpleEntitiesSubmissionScheduler _simpleEntitiesSubmissionScheduler;
-        private readonly EntityConfigurationService _entityConfigurations;
-        private readonly EntityPropertyService _properties;
+        private readonly EntityTypeService _entityTypes;
         private readonly EntityService _entities;
 
         public IEntityService Entities => _entities;
@@ -38,9 +37,8 @@ namespace VoidHuntersRevived.Domain.Entities
             _simpleEntitiesSubmissionScheduler = new SimpleEntitiesSubmissionScheduler();
             _enginesRoot = new EnginesRoot(_simpleEntitiesSubmissionScheduler);
 
-            _entityConfigurations = filtered.Get<EntityConfigurationService>().Instance;
-            _properties = filtered.Get<EntityPropertyService>().Instance;
-            _entities = new EntityService(_entityConfigurations, _properties, _enginesRoot.GenerateEntityFactory(), _enginesRoot.GenerateEntityFunctions());
+            _entityTypes = filtered.Get<EntityTypeService>().Instance;
+            _entities = new EntityService(_entityTypes, _enginesRoot.GenerateEntityFactory(), _enginesRoot.GenerateEntityFunctions(), _enginesRoot.GenerateEntitySerializer());
 
             this.Engines = filtered.Instances<IEngine>(states).Sort().ToArray();
             _stepEngines = new StepEnginesGroup(this.Engines.OfType<IStepEngine<Step>>());

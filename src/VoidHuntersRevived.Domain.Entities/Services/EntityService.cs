@@ -1,8 +1,10 @@
 ﻿using Guppy.Common.Collections;
 using Svelto.ECS;
+using Svelto.ECS.Serialization;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Domain.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Abstractions;
@@ -11,25 +13,25 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 {
     internal sealed class EntityService : IEntityService, IQueryingEntitiesEngine
     {
-        private readonly EntityConfigurationService _entityConfigurations;
-        private readonly EntityPropertyService _properties;
+        private readonly EntityTypeService _entityTypes;
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
+        private readonly IEntitySerialization _serialization;
         private readonly DoubleDictionary<VhId, EGID, IdMap> _idMap;
         private uint _id;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
         public EntityService(
-            EntityConfigurationService entityConfigurations,
-            EntityPropertyService properties, 
+            EntityTypeService entityTypes,
             IEntityFactory factory,
-            IEntityFunctions functions)
+            IEntityFunctions functions,
+            IEntitySerialization serialization)
         {
-            _entityConfigurations = entityConfigurations;
-            _properties = properties;
+            _entityTypes = entityTypes;
             _factory = factory;
             _functions = functions;
+            _serialization = serialization;
             _idMap = new DoubleDictionary<VhId, EGID, IdMap>();
         }
 
@@ -37,17 +39,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
         }
 
-        public IdMap Create(EntityName name, VhId vhid)
+        public IdMap Create<TDescriptor>(EntityType<TDescriptor> type, VhId vhid)
+            where TDescriptor : IEntityDescriptor, new()
         {
-            EntityConfiguration configuration = _entityConfigurations.GetConfiguration(name);
-            EntityInitializer initializer = _factory.BuildEntity(_id++, configuration.typeConfiguration.group, configuration.typeConfiguration.descriptor);
+            EntityInitializer initializer = _factory.BuildEntity<TDescriptor>(_id++, EntityType<TDescriptor>.Group);
 
-            initializer.Get<EntityVhId>().Value = vhid;
-
-            foreach(PropertyCache property in configuration.properties)
-            {
-                property.Initialize(ref initializer);
-            }
+            initializer.Init(new EntityVhId() { Value = vhid });
+            _entityTypes.GetConfiguration(type).Initialize(ref initializer);
 
             IdMap idMap = new IdMap(initializer.EGID, vhid);
             _idMap.TryAdd(vhid, initializer.EGID, idMap);
@@ -55,17 +53,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return idMap;
         }
 
-        public IdMap Create(EntityName name, VhId vhid, EntityInitializerDelegate initializerDelegate)
+        public IdMap Create<TDescriptor>(EntityType<TDescriptor> type, VhId vhid, EntityInitializerDelegate initializerDelegate)
+            where TDescriptor : IEntityDescriptor, new()
         {
-            EntityConfiguration configuration = _entityConfigurations.GetConfiguration(name);
-            EntityInitializer initializer = _factory.BuildEntity(_id++, configuration.typeConfiguration.group, configuration.typeConfiguration.descriptor);
+            EntityInitializer initializer = _factory.BuildEntity<TDescriptor>(_id++, EntityType<TDescriptor>.Group);
 
-            initializer.Get<EntityVhId>().Value = vhid;
-
-            foreach (PropertyCache property in configuration.properties)
-            {
-                property.Initialize(ref initializer);
-            }
+            initializer.Init(new EntityVhId() { Value = vhid });
+            _entityTypes.GetConfiguration(type).Initialize(ref initializer);
 
             initializerDelegate(ref initializer);
 
@@ -75,40 +69,16 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return idMap;
         }
 
-        public void Destroy(VhId vhid)
+        public void Destroy<TDescriptor>(VhId vhid)
+            where TDescriptor : IEntityDescriptor, new()
         {
             if(!this.TryGetIdMap(ref vhid, out IdMap id))
             {
                 return;
             }
 
-            _functions.RemoveEntity<EntityDescriptor>(id.EGID);
+            _functions.RemoveEntity<TDescriptor>(id.EGID);
             _idMap.Remove(id.VhId, id.EGID);
-        }
-
-        public T GetProperty<T>(Property<T> id)
-            where T : class, IEntityProperty
-        {
-            return _properties.GetProperty(in id);
-        }
-
-        public bool TryGetProperty<T>(EGID id, out T property) 
-            where T : class, IEntityProperty
-        {
-            if(this.entitiesDB.TryGetEntity(id, out Property<T> propertyComponent))
-            {
-                property = _properties.GetProperty(propertyComponent);
-                return true;
-            }
-
-            property = default!;
-            return false;
-        }
-
-        public IEnumerable<(int, T)> GetProperties<T>()
-            where T : class, IEntityProperty
-        {
-            return _properties.GetProperties<T>();
         }
 
         public bool TryGetIdMap(ref VhId vhid, out IdMap id)
@@ -130,35 +100,5 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             return this.GetIdMap(new EGID(id, group));
         }
-
-        // public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<EntityVhId> entities, ExclusiveGroupStruct groupID)
-        // {
-        //     var (entityIds, nativeIds, _) = entities;
-        // 
-        //     //for each entity added in this submission phase
-        //     for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
-        //     {
-        //         //get the Stride entityID that will be instanced multipled times
-        //         VhId vhid = entityIds[index].Value;
-        //         EGID egid = new EGID(nativeIds[index], groupID);
-        // 
-        //         _idMap.TryAdd(vhid, egid, new IdMap(egid, vhid));
-        //     }
-        // }
-        // 
-        // public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<EntityVhId> entities, ExclusiveGroupStruct groupID)
-        // {
-        //     var (entityIds, nativeIds, _) = entities;
-        // 
-        //     //for each entity added in this submission phase
-        //     for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
-        //     {
-        //         //get the Stride entityID that will be instanced multipled times
-        //         VhId vhid = entityIds[index].Value;
-        //         EGID egid = new EGID(nativeIds[index], groupID);
-        // 
-        //         _idMap.Remove(vhid, egid);
-        //     }
-        // }
     }
 }

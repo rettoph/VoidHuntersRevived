@@ -19,14 +19,8 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
         {
             services.ConfigureCollection(manager =>
             {
-                manager.AddScoped<EntityConfigurationService>()
-                    .AddAlias<IEntityConfigurationService>();
-
-                manager.AddScoped<EntityTypeService>()
+                manager.AddSingleton<EntityTypeService>()
                     .AddAlias<IEntityTypeService>();
-
-                manager.AddScoped<EntityPropertyService>()
-                    .AddAlias<IEntityPropertyService>();
             });
         }
     }

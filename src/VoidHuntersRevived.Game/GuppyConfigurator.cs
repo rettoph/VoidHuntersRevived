@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain
         public void Configure(GuppyConfiguration configuration)
         {
             configuration.Assemblies.Load(typeof(DomainLoader).Assembly);
-            configuration.Assemblies.Load(typeof(PieceLoader).Assembly);
+            configuration.Assemblies.Load(typeof(PieceTypeLoader).Assembly);
         }
     }
 }

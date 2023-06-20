@@ -15,6 +15,7 @@ using Guppy.Attributes;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
 using VoidHuntersRevived.Common.Simulations.Attributes;
+using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 {
@@ -41,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 
         private void HandleUserJoined(IUserService sender, User args)
         {
-            _simulations.Enqueue(new UserJoined()
+            this.Simulation.Enqueue(VhId.NewId(), new UserJoined()
             {
                 UserId = args.Id,
                 Claims = args.Where(x => x.Accessibility == ClaimAccessibility.Public).ToArray()

@@ -34,8 +34,4 @@
     <ProjectReference Include="..\VoidHuntersRevived.Game\VoidHuntersRevived.Game.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Utilities\" />
-  </ItemGroup>
-
 </Project>

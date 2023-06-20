@@ -9,7 +9,7 @@ using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Common.Entities.Loaders
 {
-    [Service<IEntityTypeLoader>(ServiceLifetime.Scoped, true)]
+    [Service<IEntityTypeLoader>(ServiceLifetime.Singleton, true)]
     public interface IEntityTypeLoader
     {
         void Configure(IEntityTypeService entityTypes);

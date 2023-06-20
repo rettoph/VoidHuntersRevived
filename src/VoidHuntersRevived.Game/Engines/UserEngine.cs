@@ -19,7 +19,6 @@ using VoidHuntersRevived.Game.Common.Components;
 using VoidHuntersRevived.Game.Components;
 using VoidHuntersRevived.Game.Pieces;
 using VoidHuntersRevived.Game.Pieces.Components;
-using VoidHuntersRevived.Game.Pieces.Properties;
 
 namespace VoidHuntersRevived.Game.Engines
 {
@@ -40,14 +39,14 @@ namespace VoidHuntersRevived.Game.Engines
         {
             VhId shipId = _scope.Peer!.Users.UpdateOrCreate(data.UserId, data.Claims).GetUserShipId();
 
-            this.Simulation.Entities.Create(EntityNames.UserShip, shipId, (ref EntityInitializer initializer) =>
+            this.Simulation.Entities.Create(EntityTypes.UserShip, shipId, (ref EntityInitializer initializer) =>
             {
-                initializer.Get<Tree>().HeadId = this.Simulation.Entities.Create(PieceNames.HullSquare, id.Create(1)).VhId;
+                initializer.Get<Tree>().HeadId = this.Simulation.Entities.Create(PieceTypes.HullSquare, id.Create(1)).VhId;
             });
 
-            this.Simulation.Entities.Create(EntityNames.Chain, id.Create(2), (ref EntityInitializer initializer) =>
+            this.Simulation.Entities.Create(EntityTypes.Chain, id.Create(2), (ref EntityInitializer initializer) =>
             {
-                initializer.Get<Tree>().HeadId = this.Simulation.Entities.Create(PieceNames.HullSquare, id.Create(3)).VhId;
+                initializer.Get<Tree>().HeadId = this.Simulation.Entities.Create(PieceTypes.HullSquare, id.Create(3)).VhId;
             });
         }
     }

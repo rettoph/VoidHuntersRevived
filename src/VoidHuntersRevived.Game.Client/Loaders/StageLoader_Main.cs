@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Game.Client.Loaders
                 .Configure(Selector.Create<Label>(), manager =>
                 {
                     manager.Set(Property.Inline, true)
-                        .Set(Property.Font, Fonts.Default)
+                        .Set(Property.Font, Resources.Fonts.Default)
                         .Set(Property.Color, Color.Red)
                         .Set(Property.Color, ElementState.Hovered, Color.Green)
                         .Set(Property.BackgroundColor, ElementState.Hovered, Color.LightBlue);

@@ -15,7 +15,6 @@ using VoidHuntersRevived.Game.Components;
 using VoidHuntersRevived.Game.Enums;
 using VoidHuntersRevived.Game.Events;
 using VoidHuntersRevived.Game.Pieces.Components;
-using VoidHuntersRevived.Game.Pieces.Properties;
 
 namespace VoidHuntersRevived.Game.Engines
 {

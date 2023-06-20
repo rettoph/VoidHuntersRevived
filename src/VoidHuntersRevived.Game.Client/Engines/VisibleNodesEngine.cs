@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.MonoGame.Primitives;
 using Guppy.MonoGame.Utilities.Cameras;
+using Guppy.Resources;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,8 +18,9 @@ using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Common.Components;
+using VoidHuntersRevived.Game.Client.Utilities;
 using VoidHuntersRevived.Game.Pieces;
-using VoidHuntersRevived.Game.Pieces.Properties;
+using VoidHuntersRevived.Game.Pieces.Resources;
 using VoidHuntersRevived.Game.Pieces.Utilities;
 
 namespace VoidHuntersRevived.Game.Client.Engines
@@ -29,8 +31,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly Camera2D _camera;
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private readonly IResourceProvider _resources;
-        private readonly Color _tint;
-        private readonly Dictionary<int, VisibleRenderer> _renderers;
+        private readonly Color? _tint;
+        private readonly Dictionary<Guid, VisibleRenderer> _renderers;
 
         public string name { get; } = nameof(VisibleNodesEngine);
 
@@ -39,29 +41,29 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _camera = camera;
             _primitiveBatch = primitiveBatch;
             _resources = resources;
-            _renderers = new Dictionary<int, VisibleRenderer>();
-            _tint = Color.Wheat;
+            _renderers = new Dictionary<Guid, VisibleRenderer>();
+            _tint = null;
         }
 
         public override void Initialize(ISimulation simulation)
         {
             base.Initialize(simulation);
 
-            foreach((int id, Visible visible) in this.Simulation.Entities.GetProperties<Visible>())
+            foreach((Resource resource, Visible visible) in _resources.GetAll<Visible>())
             {
-                _renderers.Add(id, new VisibleRenderer(_camera, _primitiveBatch, _resources, visible, _tint));
+                _renderers.Add(resource.Id, new VisibleRenderer(_camera, _primitiveBatch, _resources, visible, _tint));
             }
         }
 
         public void Step(in GameTime _param)
         {
             _primitiveBatch.Begin(_camera);
-            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = this.entitiesDB.FindGroups<Property<Visible>, Node>();
-            foreach (var ((visibleIds, nodes, count), _) in this.entitiesDB.QueryEntities<Property<Visible>, Node>(groups))
+            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = this.entitiesDB.FindGroups<ResourceId<Visible>, Node>();
+            foreach (var ((visibleIds, nodes, count), _) in this.entitiesDB.QueryEntities<ResourceId<Visible>, Node>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {
-                    _renderers[visibleIds[i].Id].RenderShapes(nodes[i].Transformation.XnaMatrix);
+                    _renderers[visibleIds[i].Value].RenderShapes(nodes[i].Transformation.XnaMatrix);
                 }
             }
             _primitiveBatch.End();

@@ -1,4 +1,6 @@
 ﻿using Svelto.ECS;
+using Svelto.ECS.Serialization;
+using VoidHuntersRevived.Common.Entities.Enums;
 
 namespace VoidHuntersRevived.Common.Entities
 {
@@ -6,14 +8,8 @@ namespace VoidHuntersRevived.Common.Entities
     {
         public EntityType Type { get; }
 
-        IEntityTypeConfiguration Inherits(EntityType baseType);
+        void Initialize(ref EntityInitializer initializer);
 
-        IEntityTypeConfiguration HasComponent<T>()
-            where T : unmanaged, IEntityComponent;
-
-        IEntityTypeConfiguration HasComponent(Type component);
-
-        IEntityTypeConfiguration HasProperty<T>()
-            where T : IEntityProperty;
+        IEntityTypeConfiguration HasInitializer(EntityInitializerDelegate initializer);
     }
 }

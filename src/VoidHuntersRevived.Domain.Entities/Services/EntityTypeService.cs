@@ -7,22 +7,25 @@ using VoidHuntersRevived.Domain.Entities.Abstractions;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    internal sealed class EntityTypeService : IEntityTypeService
+    public sealed class EntityTypeService : IEntityTypeService
     {
-        private readonly Dictionary<EntityType, EntityTypeConfiguration> _configurations;
+        private readonly Dictionary<EntityType, IEntityTypeConfiguration> _configurations;
 
-        public EntityTypeService(EntityPropertyService properties, ISorted<IEntityTypeLoader> loaders)
+        public EntityTypeService(ISorted<IEntityTypeLoader> loaders)
         {
-            _configurations = new Dictionary<EntityType, EntityTypeConfiguration>();
+            _configurations = new Dictionary<EntityType, IEntityTypeConfiguration>();
 
             foreach (IEntityTypeLoader loader in loaders)
             {
                 loader.Configure(this);
             }
+        }
 
-            foreach(EntityTypeConfiguration configuration in _configurations.Values)
+        public void Register(params EntityType[] types)
+        {
+            foreach(EntityType type in types)
             {
-                configuration.Initialize(this, properties);
+                this.GetOrCreateConfiguration(type);
             }
         }
 
@@ -31,17 +34,17 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             configuration(this.GetOrCreateConfiguration(type));
         }
 
-        internal EntityTypeConfiguration GetOrCreateConfiguration(EntityType type)
+        internal IEntityTypeConfiguration GetOrCreateConfiguration(EntityType type)
         {
-            if(!_configurations.TryGetValue(type, out EntityTypeConfiguration? configuration))
+            if(!_configurations.TryGetValue(type, out IEntityTypeConfiguration? configuration))
             {
-                _configurations[type] = configuration = new EntityTypeConfiguration(type);
+                _configurations[type] = configuration = type.BuildConfiguration();
             }
 
             return configuration;
         }
 
-        internal EntityTypeConfiguration GetConfiguration(EntityType type)
+        internal IEntityTypeConfiguration GetConfiguration(EntityType type)
         {
             return _configurations[type];
         }
