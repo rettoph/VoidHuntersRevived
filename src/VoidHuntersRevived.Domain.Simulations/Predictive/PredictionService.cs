@@ -45,7 +45,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         {
             if (!_dict.TryGetValue(verified.Id, out Prediction? prediction))
             {
-                prediction = this.Predict(verified);
+                _publisher.Publish(verified);
+                prediction = this.Add(verified);
             }
 
             prediction.Status = PredictionStatus.Verified;

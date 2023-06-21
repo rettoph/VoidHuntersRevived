@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 
         public void Process(in Guid messsageId, in INetIncomingMessage<TickHistoryItem> message)
         {
-            for (int id = (_ticks.Tail?.Id ?? _ticks.Popped?.Id ?? 0) + 1; id < message.Body.Tick.Id - 1; id++)
+            for (int id = (_ticks.Tail?.Id ?? _ticks.Popped?.Id ?? 0) + 1; id < message.Body.Tick.Id; id++)
             {
                 _ticks.Enqueue(Tick.Empty(id));
             }

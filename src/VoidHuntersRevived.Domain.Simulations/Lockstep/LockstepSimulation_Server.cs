@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _stepsSinceTick = 0;
             _events = new List<EventDto>();
             _stepsPerTick = settings.Get<int>(Settings.StepsPerTick).Value;
-            _stepTimeSpan = TimeSpan.FromMilliseconds((int)stepInterval);
+            _stepTimeSpan = TimeSpan.FromSeconds((float)stepInterval);
             _step = new Step()
             {
                 ElapsedTime = stepInterval,

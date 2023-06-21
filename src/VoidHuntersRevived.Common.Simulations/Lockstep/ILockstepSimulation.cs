@@ -10,6 +10,8 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
     {
         Tick CurrentTick { get; }
 
+        IEnumerable<Tick> History { get; }
+
         event OnEventDelegate<EventDto>? OnEvent;
     }
 }

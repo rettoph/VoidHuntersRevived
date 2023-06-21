@@ -24,8 +24,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
     internal abstract class LockstepSimulation : Simulation, ILockstepSimulation
     {
         private readonly TickEngineGroup _tickEngines;
+        private readonly List<Tick> _history;
 
         public Tick CurrentTick { get; private set; }
+
+        public IEnumerable<Tick> History => _history;
 
         public event OnEventDelegate<EventDto>? OnEvent;
 
@@ -36,6 +39,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         {
             _tickEngines = new TickEngineGroup(this.World.Engines.OfType<ITickEngine>());
+            _history = new List<Tick>();
 
             this.CurrentTick = Tick.First();
         }
@@ -67,10 +71,17 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
             _tickEngines.Step(tick);
 
+            if (tick.Events.Length == 0)
+            {
+                return;
+            }
+
             foreach (EventDto @event in tick.Events)
             {
                 this.Publish(@event);
             }
+
+            _history.Add(tick);
         }
 
         public override void Publish(EventDto data)

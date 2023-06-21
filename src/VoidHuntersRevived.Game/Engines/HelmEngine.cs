@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Game.Engines
         public void Step(in Step _param)
         {
             LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = this.entitiesDB.FindGroups<Helm, Body>();
-            foreach (var ((helms, bodies, entityIds, count), groupId) in this.entitiesDB.QueryEntities<Helm, Body>(groups))
+            foreach (var ((helms, entityIds, count), groupId) in this.entitiesDB.QueryEntities<Helm>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {

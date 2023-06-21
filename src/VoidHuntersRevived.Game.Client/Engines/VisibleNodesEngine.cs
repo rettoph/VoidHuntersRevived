@@ -16,6 +16,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Common.Components;
 using VoidHuntersRevived.Game.Client.Utilities;

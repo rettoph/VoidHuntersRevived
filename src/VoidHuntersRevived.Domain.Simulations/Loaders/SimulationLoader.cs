@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSetting<Fix64>(Settings.StepInterval, (Fix64)20, false);
+            services.AddSetting<Fix64>(Settings.StepInterval, (Fix64)20/(Fix64)1000, false);
             services.AddSetting<int>(Settings.StepsPerTick, 3, false);
 
             services.AddScoped<ISimulationService, SimulationService>();

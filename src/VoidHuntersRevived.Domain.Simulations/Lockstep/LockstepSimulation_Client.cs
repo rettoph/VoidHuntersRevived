@@ -37,31 +37,33 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             IFilteredProvider filtered,
             IBus bus) : base(spaceFactory, filtered, bus)
         {
+            Fix64 stepInterval = settings.Get<Fix64>(Settings.StepInterval).Value;
+
             _scope = scope;
             _ticks = ticks;
             _stepsSinceTick = 0;
             _stepsPerTick = settings.Get<int>(Settings.StepsPerTick).Value;
-            _step = new Step();
-        }
-
-        public override void Update(GameTime realTime)
-        {
-            Fix64 fixedElapsedTime = (Fix64)realTime.ElapsedGameTime.TotalSeconds;
-
-            _step.TotalTime += fixedElapsedTime;
-            _step.ElapsedTime += fixedElapsedTime;
-
-            base.Update(realTime);
+            _step = new Step()
+            {
+                ElapsedTime = stepInterval,
+                TotalTime = stepInterval
+            };
         }
 
         protected override bool TryGetNextStep(GameTime realTime, [MaybeNullWhen(false)] out Step step)
         {
-            if (_stepsSinceTick >= _stepsPerTick)
+            if (_stepsSinceTick > _stepsPerTick)
+            {
+                throw new Exception();
+            }
+
+            if (_stepsSinceTick == _stepsPerTick)
             {
                 step = null;
                 return false;
             }
 
+            _step.TotalTime += _step.ElapsedTime;
             step = _step;
             return true;
         }
@@ -71,22 +73,16 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             base.DoStep(step);
 
             _stepsSinceTick++;
-            _step.ElapsedTime = Fix64.Zero;
-        }
-
-        public override void Enqueue(EventDto data)
-        {
-            if(data.Data is not IInputData)
-            {
-                throw new InvalidOperationException();
-            }
-
-            _scope.Messages.Create(in data).Enqueue();
         }
 
         protected override bool TryGetNextTick(Tick current, [MaybeNullWhen(false)] out Tick next)
         {
-            if (_stepsSinceTick != _stepsPerTick)
+            if (_stepsSinceTick > _stepsPerTick)
+            {
+                throw new Exception();
+            }
+
+            if (_stepsSinceTick < _stepsPerTick)
             {
                 next = null;
                 return false;
@@ -100,6 +96,16 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             base.DoTick(tick);
 
             _stepsSinceTick = 0;
+        }
+
+        public override void Enqueue(EventDto data)
+        {
+            if(data.Data is not IInputData)
+            {
+                throw new InvalidOperationException();
+            }
+
+            _scope.Messages.Create(in data).Enqueue();
         }
     }
 }

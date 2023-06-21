@@ -62,7 +62,7 @@ namespace VoidHuntersRevived.Application.Client
                     .ConfigureGUI();
             });
 
-            _engine.Guppies.Create<ServerGameGuppy>();
+            //_engine.Guppies.Create<ServerGameGuppy>();
             _engine.Guppies.Create<MultiplayerGameGuppy>();
             //_engine.Guppies.Create<EditorGuppy>();
         }
