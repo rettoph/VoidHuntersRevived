@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 {
     [AutoLoad]
     internal sealed class BodyEngine : BasicEngine,
-        IReactOnAddEx<Body>, IStepEngine<Step>
+        IReactOnAddAndRemoveEx<Body>, IStepEngine<Step>
     {
         public string name { get; } = nameof(BodyEngine);
 
@@ -30,6 +30,18 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                 IdMap bodyId = this.Simulation.Entities.GetIdMap(ids[index], groupID);
 
                 this.Simulation.Space.GetOrCreateBody(bodyId.VhId);
+            }
+        }
+
+        public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Body> entities, ExclusiveGroupStruct groupID)
+        {
+            var (bodies, ids, _) = entities;
+
+            for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
+            {
+                IdMap bodyId = this.Simulation.Entities.GetIdMap(ids[index], groupID);
+
+                this.Simulation.Space.RemoveBody(bodyId.VhId);
             }
         }
 

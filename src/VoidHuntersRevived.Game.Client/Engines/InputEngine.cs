@@ -17,6 +17,9 @@ using VoidHuntersRevived.Game.Client.Messages;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
 using VoidHuntersRevived.Common;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework;
+using Guppy.MonoGame.Utilities.Cameras;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -26,11 +29,15 @@ namespace VoidHuntersRevived.Game.Client.Engines
         ISubscriber<SetHelmDirectionInput>,
         ISubscriber<SetTractorBeamEmitterActiveInput>
     {
-        private ClientPeer _client;
+        private readonly ClientPeer _client;
+        private readonly Camera2D _camera;
 
-        public InputEngine(ClientPeer client)
+        private Vector2 CurrentTargetPosition => _camera.Unproject(Mouse.GetState().Position.ToVector2());
+
+        public InputEngine(ClientPeer client, Camera2D camera)
         {
             _client = client;
+            _camera = camera;
         }
 
         public void Process(in Guid messageId, in SetHelmDirectionInput message)
@@ -57,8 +64,18 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
+            VhId eventId = new VhId(messageId);
+
             this.Simulation.Enqueue(
-                eventId: new VhId(messageId),
+                eventId: eventId.Create(1),
+                data: new SetTacticalTarget()
+                {
+                    ShipId = _client.Users.Current.GetUserShipId(),
+                    Value = (FixVector2)this.CurrentTargetPosition
+                });
+
+            this.Simulation.Enqueue(
+                eventId: eventId.Create(2),
                 data: new SetTractorBeamEmitterActive()
                 {
                     ShipId = _client.Users.Current.GetUserShipId(),

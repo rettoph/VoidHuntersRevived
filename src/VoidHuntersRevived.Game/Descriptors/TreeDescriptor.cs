@@ -9,7 +9,7 @@ using VoidHuntersRevived.Game.Pieces.Components;
 
 namespace VoidHuntersRevived.Game.Descriptors
 {
-    public class TreeDescriptor : VoidHuntersEntityDescriptor
+    public abstract class TreeDescriptor : VoidHuntersEntityDescriptor
     {
         public TreeDescriptor()
         {

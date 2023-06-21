@@ -1,11 +1,13 @@
 ﻿using Guppy.Common.Collections;
 using Svelto.ECS;
+using Svelto.ECS.Schedulers;
 using Svelto.ECS.Serialization;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Messages;
 using VoidHuntersRevived.Domain.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Abstractions;
 
@@ -16,8 +18,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly EntityTypeService _entityTypes;
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
-        private readonly IEntitySerialization _serialization;
+        private readonly SimpleEntitiesSubmissionScheduler _submission;
         private readonly DoubleDictionary<VhId, EGID, IdMap> _idMap;
+        private readonly Queue<IdMap> _added;
+        private readonly Queue<IdMap> _removed;
         private uint _id;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
@@ -26,13 +30,15 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             EntityTypeService entityTypes,
             IEntityFactory factory,
             IEntityFunctions functions,
-            IEntitySerialization serialization)
+            SimpleEntitiesSubmissionScheduler sumbission)
         {
             _entityTypes = entityTypes;
             _factory = factory;
             _functions = functions;
-            _serialization = serialization;
+            _submission = sumbission;
             _idMap = new DoubleDictionary<VhId, EGID, IdMap>();
+            _added = new Queue<IdMap>();
+            _removed = new Queue<IdMap>();
         }
 
         public void Ready()
@@ -64,7 +70,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             initializerDelegate(ref initializer);
 
             IdMap idMap = new IdMap(initializer.EGID, vhid);
-            _idMap.TryAdd(vhid, initializer.EGID, idMap);
+            _added.Enqueue(idMap);
 
             return idMap;
         }
@@ -78,7 +84,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
 
             _functions.RemoveEntity<TDescriptor>(id.EGID);
-            _idMap.Remove(id.VhId, id.EGID);
+            _removed.Enqueue(id);
         }
 
         public bool TryGetIdMap(ref VhId vhid, out IdMap id)
@@ -99,6 +105,21 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public IdMap GetIdMap(uint id, ExclusiveGroupStruct group)
         {
             return this.GetIdMap(new EGID(id, group));
+        }
+
+        public void Clean()
+        {
+            while (_added.TryDequeue(out IdMap added))
+            {
+                _idMap.TryAdd(added.VhId, added.EGID, added);
+            }
+
+            _submission.SubmitEntities();
+
+            while (_removed.TryDequeue(out IdMap removed))
+            {
+                _idMap.Remove(removed.VhId, removed.EGID);
+            }
         }
     }
 }

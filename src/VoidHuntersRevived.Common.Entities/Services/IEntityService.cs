@@ -16,5 +16,7 @@ namespace VoidHuntersRevived.Common.Entities.Services
 
         void Destroy<TDescriptor>(VhId id)
             where TDescriptor : IEntityDescriptor, new();
+
+        void Clean();
     }
 }

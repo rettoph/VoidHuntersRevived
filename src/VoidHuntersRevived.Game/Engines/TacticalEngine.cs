@@ -13,16 +13,26 @@ using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Game.Components;
 using VoidHuntersRevived.Game.Enums;
+using VoidHuntersRevived.Game.Events;
 
 namespace VoidHuntersRevived.Game.Engines
 {
     [AutoLoad]
     internal sealed class TacticalEngine : BasicEngine,
+        IEventEngine<SetTacticalTarget>,
         IStepEngine<Step>
     {
         private static readonly Fix64 AimDamping = Fix64.One / (Fix64)32;
 
         public string name { get; } = nameof(TacticalEngine);
+
+        public void Process(VhId eventId, SetTacticalTarget data)
+        {
+            IdMap id = this.Simulation.Entities.GetIdMap(data.ShipId);
+            ref Tactical tactical = ref entitiesDB.QueryMappedEntities<Tactical>(id.EGID.groupID).Entity(id.EGID.entityID);
+
+            tactical.Target = data.Value;
+        }
 
         public void Step(in Step _param)
         {
@@ -31,7 +41,7 @@ namespace VoidHuntersRevived.Game.Engines
             {
                 for (int i = 0; i < count; i++)
                 {
-                    Tactical tactical = tacticals[i];
+                    ref Tactical tactical = ref tacticals[i];
 
                     Fix64 amount = Fix64.Min(_param.ElapsedTime / AimDamping, Fix64.One);
                     tactical.Value = FixVector2.Lerp(

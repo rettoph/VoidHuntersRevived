@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Entities
             _enginesRoot = new EnginesRoot(_simpleEntitiesSubmissionScheduler);
 
             _entityTypes = filtered.Get<EntityTypeService>().Instance;
-            _entities = new EntityService(_entityTypes, _enginesRoot.GenerateEntityFactory(), _enginesRoot.GenerateEntityFunctions(), _enginesRoot.GenerateEntitySerializer());
+            _entities = new EntityService(_entityTypes, _enginesRoot.GenerateEntityFactory(), _enginesRoot.GenerateEntityFunctions(), _simpleEntitiesSubmissionScheduler);
 
             this.Engines = filtered.Instances<IEngine>(states).Sort().ToArray();
             _stepEngines = new StepEnginesGroup(this.Engines.OfType<IStepEngine<Step>>());
@@ -46,12 +46,12 @@ namespace VoidHuntersRevived.Domain.Entities
 
         public void Initialize()
         {
-            _enginesRoot.AddEngine(_entities);
-
             foreach (IEngine engine in this.Engines)
             {
                 _enginesRoot.AddEngine(engine);
             }
+
+            _enginesRoot.AddEngine(_entities);
 
             _bus.SubscribeMany(this.Engines.OfType<ISubscriber>());
         }
@@ -63,7 +63,7 @@ namespace VoidHuntersRevived.Domain.Entities
 
         public void Step(Step step)
         {
-            _simpleEntitiesSubmissionScheduler.SubmitEntities();
+            _entities.Clean();
 
             _stepEngines.Step(step);
         }
