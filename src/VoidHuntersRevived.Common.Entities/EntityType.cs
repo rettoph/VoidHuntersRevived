@@ -29,6 +29,8 @@ namespace VoidHuntersRevived.Common.Entities
 
         public abstract IEntityTypeConfiguration BuildConfiguration();
 
+        public abstract void DestroyEntity(IEntityFunctions functions, in EGID egid);
+
         public static IEnumerable<EntityType> All()
         {
             return _list;
@@ -47,6 +49,11 @@ namespace VoidHuntersRevived.Common.Entities
         public override IEntityTypeConfiguration BuildConfiguration()
         {
             return new EntityTypeConfiguration<TDescriptor>(this);
+        }
+
+        public override void DestroyEntity(IEntityFunctions functions, in EGID egid)
+        {
+            functions.RemoveEntity<TDescriptor>(egid);
         }
     }
 }

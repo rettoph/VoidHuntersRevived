@@ -14,8 +14,7 @@ namespace VoidHuntersRevived.Common.Entities.Services
         IdMap GetIdMap(EGID egid);
         IdMap GetIdMap(uint entityId, ExclusiveGroupStruct groupId);
 
-        void Destroy<TDescriptor>(VhId id)
-            where TDescriptor : IEntityDescriptor, new();
+        void Destroy(VhId id);
 
         void Clean();
     }

@@ -19,7 +19,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
         private readonly SimpleEntitiesSubmissionScheduler _submission;
-        private readonly DoubleDictionary<VhId, EGID, IdMap> _idMap;
+        private readonly DoubleDictionary<VhId, EGID, IdMap> _ids;
+        private readonly Dictionary<VhId, EntityType> _types;
         private readonly Queue<IdMap> _added;
         private readonly Queue<IdMap> _removed;
         private uint _id;
@@ -36,9 +37,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _factory = factory;
             _functions = functions;
             _submission = sumbission;
-            _idMap = new DoubleDictionary<VhId, EGID, IdMap>();
+            _ids = new DoubleDictionary<VhId, EGID, IdMap>();
             _added = new Queue<IdMap>();
             _removed = new Queue<IdMap>();
+            _types = new Dictionary<VhId, EntityType>();
         }
 
         public void Ready()
@@ -54,7 +56,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _entityTypes.GetConfiguration(type).Initialize(ref initializer);
 
             IdMap idMap = new IdMap(initializer.EGID, vhid);
-            _idMap.TryAdd(vhid, initializer.EGID, idMap);
+            _ids.TryAdd(vhid, initializer.EGID, idMap);
 
             return idMap;
         }
@@ -71,35 +73,40 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             IdMap idMap = new IdMap(initializer.EGID, vhid);
             _added.Enqueue(idMap);
+            _types.Add(vhid, type);
 
             return idMap;
         }
 
-        public void Destroy<TDescriptor>(VhId vhid)
-            where TDescriptor : IEntityDescriptor, new()
+        public void Destroy(VhId vhid)
         {
             if(!this.TryGetIdMap(ref vhid, out IdMap id))
             {
                 return;
             }
 
-            _functions.RemoveEntity<TDescriptor>(id.EGID);
+            if(!_types.Remove(vhid, out EntityType? type))
+            {
+                return;
+            }
+
+            type.DestroyEntity(_functions, in id.EGID);
             _removed.Enqueue(id);
         }
 
         public bool TryGetIdMap(ref VhId vhid, out IdMap id)
         {
-            return _idMap.TryGet(vhid, out id);
+            return _ids.TryGet(vhid, out id);
         }
 
         public IdMap GetIdMap(VhId vhid)
         {
-            return _idMap[vhid];
+            return _ids[vhid];
         }
 
         public IdMap GetIdMap(EGID egid)
         {
-            return _idMap[egid];
+            return _ids[egid];
         }
 
         public IdMap GetIdMap(uint id, ExclusiveGroupStruct group)
@@ -111,14 +118,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             while (_added.TryDequeue(out IdMap added))
             {
-                _idMap.TryAdd(added.VhId, added.EGID, added);
+                _ids.TryAdd(added.VhId, added.EGID, added);
             }
 
             _submission.SubmitEntities();
 
             while (_removed.TryDequeue(out IdMap removed))
             {
-                _idMap.Remove(removed.VhId, removed.EGID);
+                _ids.Remove(removed.VhId, removed.EGID);
             }
         }
     }
