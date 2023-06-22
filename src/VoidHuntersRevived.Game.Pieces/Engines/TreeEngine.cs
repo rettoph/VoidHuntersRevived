@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
@@ -23,6 +24,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 {
     [AutoLoad]
     internal sealed class TreeEngine : BasicEngine, IReactOnAddAndRemoveEx<Tree>,
+        IOnCloneEngine<Tree>,
         IStepEngine<Step>
     {
         private static readonly VhId AddNodeEventId = VoidHuntersRevivedGame.NameSpace.Create(nameof(AddNodeEventId));
@@ -71,6 +73,11 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                     }
                 }
             }
+        }
+
+        public void OnCloned(in IdMap sourceId, in IdMap cloneId, ref Tree clone)
+        {
+            throw new NotImplementedException();
         }
 
         public void Step(in Step _param)

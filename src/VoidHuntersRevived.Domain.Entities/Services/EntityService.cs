@@ -1,4 +1,5 @@
 ﻿using Guppy.Common.Collections;
+using Svelto.DataStructures;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using Svelto.ECS.Serialization;
@@ -6,11 +7,13 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Messages;
 using VoidHuntersRevived.Domain.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Abstractions;
+using VoidHuntersRevived.Domain.Entities.EnginesGroups;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -24,6 +27,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly Dictionary<VhId, EntityType> _types;
         private readonly Queue<IdMap> _added;
         private readonly Queue<IdMap> _removed;
+        private readonly Dictionary<EntityType, FasterList<OnCloneEnginesGroup>> _onCloneEngines;
         private uint _id;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
@@ -32,7 +36,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             EntityTypeService entityTypes,
             IEntityFactory factory,
             IEntityFunctions functions,
-            SimpleEntitiesSubmissionScheduler sumbission)
+            SimpleEntitiesSubmissionScheduler sumbission,
+            IEnumerable<IEngine> engines)
         {
             _entityTypes = entityTypes;
             _factory = factory;
@@ -42,6 +47,41 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _added = new Queue<IdMap>();
             _removed = new Queue<IdMap>();
             _types = new Dictionary<VhId, EntityType>();
+
+            // Create all OnCloneEnginee groups via reflection
+            Dictionary<Type, OnCloneEnginesGroup> componentCloneEngineGroups = new Dictionary<Type, OnCloneEnginesGroup>();
+            foreach(IEngine engine in engines)
+            {
+                foreach(Type onCloneEngineType in engine.GetType().GetConstructedGenericTypes(typeof(IOnCloneEngine<>)))
+                {
+                    Type componentType = onCloneEngineType.GenericTypeArguments[0];
+
+                    if(componentCloneEngineGroups.ContainsKey(componentType))
+                    {
+                        continue;
+                    }
+
+                    Type onCloneEnginesGroupType = typeof(OnCloneEnginesGroup<>).MakeGenericType(componentType);
+                    componentCloneEngineGroups.Add(componentType, (OnCloneEnginesGroup)Activator.CreateInstance(onCloneEnginesGroupType, engines)!);
+                }
+                
+            }
+
+            _onCloneEngines = _entityTypes.GetAllConfigurations().ToDictionary(
+                keySelector: x => x.Type,
+                elementSelector: x =>
+                {
+                    List<OnCloneEnginesGroup> onCloneEnginesGroups = new List<OnCloneEnginesGroup>();
+                    foreach (Type componentType in x.Type.Descriptor.ComponentManagers.Select(m => m.Type))
+                    {
+                        if(componentCloneEngineGroups.TryGetValue(componentType, out var group))
+                        {
+                            onCloneEnginesGroups.Add(group);
+                        }
+                    }
+
+                    return new FasterList<OnCloneEnginesGroup>(onCloneEnginesGroups);
+                });
         }
 
         public void Ready()
@@ -90,6 +130,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             IdMap cloneIdMap = new IdMap(initializer.EGID, cloneId);
             _added.Enqueue(cloneIdMap);
             _types.Add(cloneId, type);
+
+            var onCloneEngines = _onCloneEngines[type];
+            foreach(OnCloneEnginesGroup engines in onCloneEngines)
+            {
+                engines.Invoke(in sourceId, in cloneIdMap, ref initializer);
+            }
 
             return cloneIdMap;
         }

@@ -33,14 +33,15 @@ namespace VoidHuntersRevived.Domain.Entities
 
         public World(IBus bus, IFilteredProvider filtered, params IState[] states)
         {
+            this.Engines = filtered.Instances<IEngine>(states).Sort().ToArray();
+
             _bus = bus;
             _simpleEntitiesSubmissionScheduler = new SimpleEntitiesSubmissionScheduler();
             _enginesRoot = new EnginesRoot(_simpleEntitiesSubmissionScheduler);
 
             _entityTypes = filtered.Get<EntityTypeService>().Instance;
-            _entities = new EntityService(_entityTypes, _enginesRoot.GenerateEntityFactory(), _enginesRoot.GenerateEntityFunctions(), _simpleEntitiesSubmissionScheduler);
+            _entities = new EntityService(_entityTypes, _enginesRoot.GenerateEntityFactory(), _enginesRoot.GenerateEntityFunctions(), _simpleEntitiesSubmissionScheduler, this.Engines);
 
-            this.Engines = filtered.Instances<IEngine>(states).Sort().ToArray();
             _stepEngines = new StepEnginesGroup(this.Engines.OfType<IStepEngine<Step>>());
         }
 

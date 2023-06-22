@@ -48,5 +48,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             return _configurations[type];
         }
+
+        public IEnumerable<IEntityTypeConfiguration> GetAllConfigurations()
+        {
+            return _configurations.Values;
+        }
     }
 }

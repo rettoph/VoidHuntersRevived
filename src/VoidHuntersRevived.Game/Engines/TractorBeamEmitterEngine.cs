@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Game.Engines
                 return;
             }
 
-            this.Simulation.Entities.Destroy(targetId);
+            this.Simulation.Entities.Clone(targetId, targetId.Create(1));
         }
 
         public bool Query(FixVector2 target, Fix64 radius, out VhId targetId)

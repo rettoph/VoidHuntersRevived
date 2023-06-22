@@ -17,6 +17,8 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
 
         public IComponentBuilder[] componentsToBuild => _dynamicDescriptor.componentsToBuild;
 
+        public IEnumerable<ComponentManager> ComponentManagers => _componentManagers;
+
         protected VoidHuntersEntityDescriptor()
         {
             _dynamicDescriptor = DynamicEntityDescriptor<BaseEntityDescriptor>.CreateDynamicEntityDescriptor();

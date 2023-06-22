@@ -9,11 +9,13 @@ namespace VoidHuntersRevived.Common.Entities
 {
     public abstract class ComponentManager
     {
+        public readonly Type Type;
         public readonly IComponentBuilder Builder;
 
         protected ComponentManager(IComponentBuilder builder)
         {
             this.Builder = builder;
+            this.Type = this.Builder.GetEntityComponentType();
         }
 
         public abstract void Clone(uint sourceIndex, ExclusiveGroupStruct groupId, EntitiesDB entities, ref EntityInitializer clone);
