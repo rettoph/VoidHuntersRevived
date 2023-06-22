@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Physics
     {
         private readonly AetherFixture _aether;
 
-        public VhId VhId { get; }
+        public VhId Id { get; }
 
         public IBody Body { get; }
 
@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Physics
             _aether = new AetherFixture(polygon.ToShape());
             _aether.Tag = this;
 
-            this.VhId = entityId;
+            this.Id = entityId;
             this.Body = body;
         }
 

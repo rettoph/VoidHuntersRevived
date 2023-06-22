@@ -5,13 +5,14 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Common;
 using FixedMath64 = FixedMath.NET.Fix64;
+using tainicom.Aether.Physics2D.Dynamics;
 
 namespace VoidHuntersRevived.Domain.Physics
 {
     public class Body : IBody
     {
         private readonly AetherBody _aether;
-        private readonly HashSet<Fixture> _fixtures;
+        private readonly Dictionary<VhId, Fixture> _fixtures;
 
         public ISpace? Space { get; internal set; }
 
@@ -33,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Physics
             {
                 BodyType = tainicom.Aether.Physics2D.Dynamics.BodyType.Dynamic
             };
-            _fixtures = new HashSet<Fixture>();
+            _fixtures = new Dictionary<VhId, Fixture>();
             _aether.Tag = this;
 
             this.Id = id;
@@ -70,7 +71,7 @@ namespace VoidHuntersRevived.Domain.Physics
         {
             Fixture fixture = new Fixture(this, polygon, id);
             fixture.AddToBody(_aether);
-            _fixtures.Add(fixture);
+            _fixtures.Add(id, fixture);
 
             return fixture;
         }
@@ -82,12 +83,20 @@ namespace VoidHuntersRevived.Domain.Physics
                 return;
             }
 
-            if(!_fixtures.Remove(casted))
+            if(!_fixtures.Remove(casted.Id))
             {
                 return;
             }
 
             casted.RemoveFromBody(_aether);
+        }
+
+        public void Destroy(VhId id)
+        {
+            if(_fixtures.Remove(id, out Fixture? fixture))
+            {
+                fixture.RemoveFromBody(_aether);
+            }
         }
 
         internal void AddToWorld(AetherWorld world)

@@ -21,6 +21,7 @@ namespace VoidHuntersRevived.Common.Physics
 
         IFixture Create(Polygon polygon, VhId id);
         void Destroy(IFixture fixture);
+        void Destroy(VhId id);
 
         void SetTransform(FixVector2 position, Fix64 rotation);
         void SetVelocity(FixVector2 linear, Fix64 angular);

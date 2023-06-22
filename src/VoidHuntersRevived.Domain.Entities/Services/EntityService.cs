@@ -50,6 +50,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public IdMap Create<TDescriptor>(EntityType<TDescriptor> type, VhId vhid)
             where TDescriptor : IEntityDescriptor, new()
         {
+            Console.WriteLine("Creating Entity:" + vhid.Value + " " + typeof(TDescriptor).Name);
+
             EntityInitializer initializer = _factory.BuildEntity<TDescriptor>(_id++, EntityType<TDescriptor>.Group);
 
             initializer.Init(new EntityVhId() { Value = vhid });
@@ -57,6 +59,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             IdMap idMap = new IdMap(initializer.EGID, vhid);
             _ids.TryAdd(vhid, initializer.EGID, idMap);
+            _types.Add(vhid, type);
 
             return idMap;
         }
@@ -64,6 +67,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public IdMap Create<TDescriptor>(EntityType<TDescriptor> type, VhId vhid, EntityInitializerDelegate initializerDelegate)
             where TDescriptor : IEntityDescriptor, new()
         {
+            Console.WriteLine("Creating Entity:" + vhid.Value + " " + typeof(TDescriptor).Name);
+
             EntityInitializer initializer = _factory.BuildEntity<TDescriptor>(_id++, EntityType<TDescriptor>.Group);
 
             initializer.Init(new EntityVhId() { Value = vhid });
@@ -80,7 +85,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Destroy(VhId vhid)
         {
-            if(!this.TryGetIdMap(ref vhid, out IdMap id))
+            Console.WriteLine("Destroying Entity:" + vhid.Value);
+
+            if (!this.TryGetIdMap(ref vhid, out IdMap id))
             {
                 return;
             }

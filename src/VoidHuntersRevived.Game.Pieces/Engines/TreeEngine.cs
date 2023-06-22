@@ -22,10 +22,11 @@ using VoidHuntersRevived.Game.Pieces.Events;
 namespace VoidHuntersRevived.Game.Pieces.Engines
 {
     [AutoLoad]
-    internal sealed class TreeEngine : BasicEngine, IReactOnAddEx<Tree>,
+    internal sealed class TreeEngine : BasicEngine, IReactOnAddAndRemoveEx<Tree>,
         IStepEngine<Step>
     {
-        private static readonly VhId CreateFilterEvent = VoidHuntersRevivedGame.NameSpace.Create(nameof(CreateFilterEvent));
+        private static readonly VhId AddNodeEventId = VoidHuntersRevivedGame.NameSpace.Create(nameof(AddNodeEventId));
+        private static readonly VhId RemoveNodeEventId = VoidHuntersRevivedGame.NameSpace.Create(nameof(RemoveNodeEventId));
         private int _nodesFilterId;
 
         public string name { get; } = nameof(TreeEngine);
@@ -42,10 +43,36 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                 ref var filter = ref this.entitiesDB.GetFilters().GetOrCreatePersistentFilter<Tree>(_nodesFilterId++, Tree.FilterContextID);
                 trees[index].NodesFilterId = filter.combinedFilterID;
 
-                VhId id = CreateFilterEvent.Create(treeId.VhId);
-                this.AddNodeToTree(in id, in treeId, in trees[index], in headId);
+                VhId eventId = AddNodeEventId.Create(treeId.VhId).Create(headId.VhId);
+                this.AddNodeToTree(in eventId, in treeId, in trees[index], in headId);
             }
         }
+
+        public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Tree> entities, ExclusiveGroupStruct groupID)
+        {
+            var (trees, ids, _) = entities;
+
+            for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
+            {
+                IdMap treeId = this.Simulation.Entities.GetIdMap(ids[index], groupID);
+
+                ref var filter = ref this.entitiesDB.GetFilters().GetPersistentFilter<Tree>(trees[index].NodesFilterId);
+
+                // Ensure every node gets removed when the tree is removed
+                foreach (var (nodeIndices, group) in filter)
+                {
+                    var (_, nodeIds, _) = entitiesDB.QueryEntities<Node>(group);
+
+                    for (int i = 0; i < nodeIndices.count; i++)
+                    {
+                        IdMap nodeId = this.Simulation.Entities.GetIdMap(nodeIds[nodeIndices[i]], group);
+                        VhId eventId = RemoveNodeEventId.Create(treeId.VhId).Create(nodeId.VhId);
+                        this.RemoveNodeFromTree(in eventId, in treeId, in trees[index], in nodeId);
+                    }
+                }
+            }
+        }
+
         public void Step(in Step _param)
         {
             LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = this.entitiesDB.FindGroups<Tree>();
@@ -88,7 +115,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             // }
         }
 
-        private void AddNodeToTree(in VhId id, in IdMap treeId, in Tree tree, in IdMap nodeId)
+        private void AddNodeToTree(in VhId eventId, in IdMap treeId, in Tree tree, in IdMap nodeId)
         {
             var filters = this.entitiesDB.GetFilters();
             ref var filter = ref this.entitiesDB.GetFilters().GetPersistentFilter<Tree>(tree.NodesFilterId);
@@ -98,11 +125,27 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
             nodes[index].TreeId = treeId.VhId;
 
-            this.Simulation.Publish(id.Create(1), new AddedNode()
+            this.Simulation.Publish(eventId.Create(1), new AddedNode()
             {
                 NodeId = nodeId.VhId,
                 TreeId = treeId.VhId
             });
+        }
+
+        private void RemoveNodeFromTree(in VhId eventId, in IdMap treeId, in Tree tree, in IdMap nodeId)
+        {
+            var filters = this.entitiesDB.GetFilters();
+            ref var filter = ref this.entitiesDB.GetFilters().GetPersistentFilter<Tree>(tree.NodesFilterId);
+
+            filter.Remove(nodeId.EGID);
+
+            this.Simulation.Publish(eventId.Create(1), new RemovedNode()
+            {
+                NodeId = nodeId.VhId,
+                TreeId = treeId.VhId
+            });
+
+            this.Simulation.Entities.Destroy(nodeId.VhId);
         }
     }
 }
