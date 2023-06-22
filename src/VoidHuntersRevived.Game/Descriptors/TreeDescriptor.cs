@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Game.Pieces.Components;
 
@@ -13,10 +14,10 @@ namespace VoidHuntersRevived.Game.Descriptors
     {
         public TreeDescriptor()
         {
-            this.ExtendWith(new IComponentBuilder[]
+            this.ExtendWith(new ComponentManager[]
             {
-                new ComponentBuilder<Body>(),
-                new ComponentBuilder<Tree>()
+                new ComponentManager<Body>(),
+                new ComponentManager<Tree>()
             });
         }
     }

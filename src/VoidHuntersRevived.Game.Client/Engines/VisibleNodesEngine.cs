@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public void Step(in GameTime _param)
         {
             _primitiveBatch.Begin(_camera);
-            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = this.entitiesDB.FindGroups<ResourceId<Visible>, Node>();
+            var groups = this.entitiesDB.FindGroups<ResourceId<Visible>, Node>();
             foreach (var ((visibleIds, nodes, count), _) in this.entitiesDB.QueryEntities<ResourceId<Visible>, Node>(groups))
             {
                 for (int i = 0; i < count; i++)

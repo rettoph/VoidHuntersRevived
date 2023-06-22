@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Domain.Common.Components;
@@ -15,7 +16,7 @@ using VoidHuntersRevived.Domain.Common.Components;
 namespace VoidHuntersRevived.Common.Entities
 {
     internal sealed class EntityTypeConfiguration<TDescriptor> : IEntityTypeConfiguration
-        where TDescriptor : IEntityDescriptor, new()
+        where TDescriptor : VoidHuntersEntityDescriptor, new()
     {
         private EntityInitializerDelegate? _initializer;
 

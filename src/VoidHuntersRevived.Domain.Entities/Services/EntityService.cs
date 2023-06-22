@@ -5,6 +5,7 @@ using Svelto.ECS.Serialization;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Messages;
@@ -48,11 +49,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         }
 
         public IdMap Create<TDescriptor>(EntityType<TDescriptor> type, VhId vhid)
-            where TDescriptor : IEntityDescriptor, new()
+            where TDescriptor : VoidHuntersEntityDescriptor, new()
         {
-            Console.WriteLine("Creating Entity:" + vhid.Value + " " + typeof(TDescriptor).Name);
-
-            EntityInitializer initializer = _factory.BuildEntity<TDescriptor>(_id++, EntityType<TDescriptor>.Group);
+            EntityInitializer initializer = type.CreateEntity(_factory);
 
             initializer.Init(new EntityVhId() { Value = vhid });
             _entityTypes.GetConfiguration(type).Initialize(ref initializer);
@@ -65,11 +64,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         }
 
         public IdMap Create<TDescriptor>(EntityType<TDescriptor> type, VhId vhid, EntityInitializerDelegate initializerDelegate)
-            where TDescriptor : IEntityDescriptor, new()
+            where TDescriptor : VoidHuntersEntityDescriptor, new()
         {
-            Console.WriteLine("Creating Entity:" + vhid.Value + " " + typeof(TDescriptor).Name);
-
-            EntityInitializer initializer = _factory.BuildEntity<TDescriptor>(_id++, EntityType<TDescriptor>.Group);
+            EntityInitializer initializer = type.CreateEntity(_factory);
 
             initializer.Init(new EntityVhId() { Value = vhid });
             _entityTypes.GetConfiguration(type).Initialize(ref initializer);
@@ -83,10 +80,22 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return idMap;
         }
 
+        public IdMap Clone(VhId sourceVhId, VhId cloneId)
+        {
+            IdMap sourceId = _ids[sourceVhId];
+            EntityType type = _types[sourceVhId];
+            EntityInitializer initializer = type.CreateEntity(_factory);
+            type.Descriptor.Clone(sourceId.EGID, this.entitiesDB, ref initializer);
+
+            IdMap cloneIdMap = new IdMap(initializer.EGID, cloneId);
+            _added.Enqueue(cloneIdMap);
+            _types.Add(cloneId, type);
+
+            return cloneIdMap;
+        }
+
         public void Destroy(VhId vhid)
         {
-            Console.WriteLine("Destroying Entity:" + vhid.Value);
-
             if (!this.TryGetIdMap(ref vhid, out IdMap id))
             {
                 return;
