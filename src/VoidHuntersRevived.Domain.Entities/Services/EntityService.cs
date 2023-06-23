@@ -125,6 +125,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             IdMap sourceId = _ids[sourceVhId];
             EntityType type = _types[sourceVhId];
             EntityInitializer initializer = type.CreateEntity(_factory);
+            initializer.Init(new EntityVhId() { Value = cloneId });
+
             type.Descriptor.Clone(sourceId.EGID, this.entitiesDB, ref initializer);
 
             IdMap cloneIdMap = new IdMap(initializer.EGID, cloneId);
