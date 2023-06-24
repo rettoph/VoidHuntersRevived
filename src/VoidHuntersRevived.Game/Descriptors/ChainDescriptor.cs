@@ -5,7 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Game.Components;
+using VoidHuntersRevived.Game.Pieces;
 
 namespace VoidHuntersRevived.Game.Descriptors
 {
@@ -15,7 +17,9 @@ namespace VoidHuntersRevived.Game.Descriptors
         {
             this.ExtendWith(new[]
             {
-                new ComponentManager<Tractorable>()
+                new ComponentManager<Tractorable>(
+                    builder: new ComponentBuilder<Tractorable>(),
+                    serializer: ComponentSerializer<Tractorable>.Default())
             });
         }
     }

@@ -77,7 +77,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
         public void OnCloned(in IdMap sourceId, in IdMap cloneId, ref Tree clone)
         {
-            clone.HeadId = this.Simulation.Entities.Clone(clone.HeadId, cloneId.VhId.Create(clone.HeadId)).VhId;
+            // clone.HeadId = this.Simulation.Entities.Clone(clone.HeadId, cloneId.VhId.Create(clone.HeadId)).VhId;
         }
 
         public void Step(in Step _param)

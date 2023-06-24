@@ -5,5 +5,6 @@
         void Register(params EntityType[] types);
         void Configure(EntityType type, Action<IEntityTypeConfiguration> configuration);
         IEnumerable<IEntityTypeConfiguration> GetAllConfigurations();
+        EntityType GetById(VhId id);
     }
 }

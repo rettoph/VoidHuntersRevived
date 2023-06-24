@@ -3,6 +3,7 @@ using Svelto.DataStructures;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using Svelto.ECS.Serialization;
+using System.Text;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
@@ -88,8 +89,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
         }
 
-        public IdMap Create<TDescriptor>(EntityType<TDescriptor> type, VhId vhid)
-            where TDescriptor : VoidHuntersEntityDescriptor, new()
+        public IdMap Create(EntityType type, VhId vhid)
         {
             EntityInitializer initializer = type.CreateEntity(_factory);
 
@@ -103,8 +103,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return idMap;
         }
 
-        public IdMap Create<TDescriptor>(EntityType<TDescriptor> type, VhId vhid, EntityInitializerDelegate initializerDelegate)
-            where TDescriptor : VoidHuntersEntityDescriptor, new()
+        public IdMap Create(EntityType type, VhId vhid, EntityInitializerDelegate initializerDelegate)
         {
             EntityInitializer initializer = type.CreateEntity(_factory);
 
@@ -118,28 +117,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _types.Add(vhid, type);
 
             return idMap;
-        }
-
-        public IdMap Clone(VhId sourceVhId, VhId cloneId)
-        {
-            IdMap sourceId = _ids[sourceVhId];
-            EntityType type = _types[sourceVhId];
-            EntityInitializer initializer = type.CreateEntity(_factory);
-            initializer.Init(new EntityVhId() { Value = cloneId });
-
-            type.Descriptor.Clone(sourceId.EGID, this.entitiesDB, ref initializer);
-
-            IdMap cloneIdMap = new IdMap(initializer.EGID, cloneId);
-            _added.Enqueue(cloneIdMap);
-            _types.Add(cloneId, type);
-
-            var onCloneEngines = _onCloneEngines[type];
-            foreach(OnCloneEnginesGroup engines in onCloneEngines)
-            {
-                engines.Invoke(in sourceId, in cloneIdMap, ref initializer);
-            }
-
-            return cloneIdMap;
         }
 
         public void Destroy(VhId vhid)
@@ -191,6 +168,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 _ids.Remove(removed.VhId, removed.EGID);
             }
+        }
+
+        public EntityType GetEntityType(VhId entityVhId)
+        {
+            return _types[entityVhId];
         }
     }
 }

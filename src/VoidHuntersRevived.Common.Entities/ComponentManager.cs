@@ -1,9 +1,12 @@
-﻿using Svelto.ECS;
+﻿using Guppy.Common;
+using Svelto.ECS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities.Serialization;
 
 namespace VoidHuntersRevived.Common.Entities
 {
@@ -11,28 +14,24 @@ namespace VoidHuntersRevived.Common.Entities
     {
         public readonly Type Type;
         public readonly IComponentBuilder Builder;
+        public readonly ComponentSerializer Serializer;
 
-        protected ComponentManager(IComponentBuilder builder)
+        internal ComponentManager(IComponentBuilder builder, ComponentSerializer serializer)
         {
+            this.Serializer = serializer;
             this.Builder = builder;
             this.Type = this.Builder.GetEntityComponentType();
-        }
 
-        public abstract void Clone(uint sourceIndex, ExclusiveGroupStruct groupId, EntitiesDB entities, ref EntityInitializer clone);
+            ThrowIf.Type.IsNotAssignableFrom(this.Serializer.Type, this.Builder.GetEntityComponentType());
+        }
     }
 
     public sealed class ComponentManager<TComponent> : ComponentManager
         where TComponent : unmanaged, IEntityComponent
     {
-        public ComponentManager() : base(new ComponentBuilder<TComponent>())
+        public ComponentManager(ComponentBuilder<TComponent> builder, ComponentSerializer<TComponent> serializer) : base(builder, serializer)
         {
 
-        }
-
-        public override void Clone(uint sourceIndex, ExclusiveGroupStruct groupId, EntitiesDB entities, ref EntityInitializer clone)
-        {
-            var (components, _) = entities.QueryEntities<TComponent>(groupId);
-            clone.Init(components[sourceIndex]);
         }
     }
 }

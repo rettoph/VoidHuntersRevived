@@ -12,7 +12,10 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Game.Components;
 using VoidHuntersRevived.Game.Events;
+using VoidHuntersRevived.Game.Pieces;
+using VoidHuntersRevived.Game.Pieces.Components;
 using VoidHuntersRevived.Game.Pieces.Descriptors;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace VoidHuntersRevived.Game.Engines
 {
@@ -35,26 +38,38 @@ namespace VoidHuntersRevived.Game.Engines
 
             if (data.Value)
             {
-                this.ActivateTractorBeamEmitter(ref eventId, ref id, ref tractorBeamEmitter, ref tactical);
+                this.ActivateTractorBeamEmitter(eventId, ref id, ref tractorBeamEmitter, ref tactical);
             }
         }
 
-        private void ActivateTractorBeamEmitter(ref VhId eventId, ref IdMap shipId, ref TractorBeamEmitter tractorBeamEmitter, ref Tactical tactical)
+        private void ActivateTractorBeamEmitter(VhId eventId, ref IdMap shipId, ref TractorBeamEmitter tractorBeamEmitter, ref Tactical tactical)
         {
-            if(!this.Query(tactical.Target, QueryRadius, out VhId targetId))
+            if(!this.Query(tactical.Target, QueryRadius, out IdMap targetId))
             {
                 return;
             }
 
-            this.Simulation.Entities.Clone(targetId, eventId.Create(1));
-            this.Simulation.Entities.Destroy(targetId);
+            if(!this.entitiesDB.TryGetEntity<Tree>(targetId.EGID, out Tree tree))
+            {
+                return;
+            }
+
+            VhId nameSpace = eventId.Create(tree.HeadId);
+            Console.WriteLine("Serializing: " + tree.HeadId.Value + ", NameSpace: " + nameSpace.Value.ToString());
+
+            var nodes = this.Simulation.World.Serialization.Serialize(tree.HeadId);
+            this.Simulation.Entities.Create(EntityTypes.Chain, nameSpace.Create(1), (ref EntityInitializer initializer) =>
+            {
+                initializer.Get<Tree>().HeadId = this.Simulation.World.Serialization.Deserialize(nameSpace.Create(2), nodes).VhId;
+            });
+            //this.Simulation.Entities.Destroy(targetId);
         }
 
-        public bool Query(FixVector2 target, Fix64 radius, out VhId targetId)
+        public bool Query(FixVector2 target, Fix64 radius, out IdMap targetId)
         {
             AABB aabb = new AABB(target, radius, radius);
             Fix64 minDistance = radius;
-            VhId? callbackTargetId = default!;
+            IdMap? callbackTargetId = default!;
 
             this.Simulation.Space.QueryAABB(fixture =>
             {
@@ -73,7 +88,7 @@ namespace VoidHuntersRevived.Game.Engines
                 }
 
                 minDistance = distance;
-                callbackTargetId = fixture.Body.Id;
+                callbackTargetId = bodyId;
 
                 return true;
             }, ref aabb);

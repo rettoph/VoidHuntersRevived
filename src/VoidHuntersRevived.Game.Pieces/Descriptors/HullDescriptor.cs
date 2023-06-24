@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Common.Entities.Serialization;
+using VoidHuntersRevived.Game.Pieces.Components;
 using VoidHuntersRevived.Game.Pieces.Resources;
 
 namespace VoidHuntersRevived.Game.Pieces.Descriptors
@@ -17,8 +19,12 @@ namespace VoidHuntersRevived.Game.Pieces.Descriptors
         {
             this.ExtendWith(new ComponentManager[]
             {
-                new ComponentManager<ResourceId<Visible>>(),
-                new ComponentManager<ResourceId<Rigid>>()
+                new ComponentManager<ResourceId<Visible>>(
+                    builder: new ComponentBuilder<ResourceId<Visible>>(),
+                    serializer: ComponentSerializer<ResourceId<Visible>>.Default()),
+                new ComponentManager<ResourceId<Rigid>>(
+                    builder: new ComponentBuilder<ResourceId<Rigid>>(),
+                    serializer: ComponentSerializer<ResourceId<Rigid>>.Default())
             });
         }
     }

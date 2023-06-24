@@ -4,8 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Domain.Common.Components;
 
 namespace VoidHuntersRevived.Common.Entities.Descriptors
@@ -34,13 +36,21 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             return this;
         }
 
-        public void Clone(EGID source, EntitiesDB entities, ref EntityInitializer clone)
+        public void Serialize(EntityWriter writer, EGID egid, EntitiesDB entities)
         {
-            entities.QueryEntitiesAndIndex<EntityVhId>(source, out uint index);
+            entities.QueryEntitiesAndIndex<EntityVhId>(egid, out uint index);
 
-            foreach(ComponentManager componentManager in _componentManagers)
+            foreach (ComponentManager componentManager in _componentManagers)
             {
-                componentManager.Clone(index, source.groupID, entities, ref clone);
+                componentManager.Serializer.Serialize(writer, index, egid.groupID, entities);
+            }
+        }
+
+        public void Deserialize(EntityReader reader, ref EntityInitializer initializer)
+        {
+            foreach (ComponentManager componentManager in _componentManagers)
+            {
+                componentManager.Serializer.Deserialize(reader, ref initializer);
             }
         }
     }
