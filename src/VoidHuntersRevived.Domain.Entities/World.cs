@@ -68,9 +68,9 @@ namespace VoidHuntersRevived.Domain.Entities
 
         public void Step(Step step)
         {
-            _entities.Clean();
-
             _stepEngines.Step(step);
+
+            this.Entities.Clean();
         }
     }
 }

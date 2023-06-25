@@ -26,7 +26,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly SimpleEntitiesSubmissionScheduler _submission;
         private readonly DoubleDictionary<VhId, EGID, IdMap> _ids;
         private readonly Dictionary<VhId, EntityType> _types;
-        private readonly Queue<IdMap> _added;
         private readonly Queue<IdMap> _removed;
         private readonly Dictionary<EntityType, FasterList<OnCloneEnginesGroup>> _onCloneEngines;
         private uint _id;
@@ -45,7 +44,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _functions = functions;
             _submission = sumbission;
             _ids = new DoubleDictionary<VhId, EGID, IdMap>();
-            _added = new Queue<IdMap>();
             _removed = new Queue<IdMap>();
             _types = new Dictionary<VhId, EntityType>();
 
@@ -113,7 +111,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             initializerDelegate(ref initializer);
 
             IdMap idMap = new IdMap(initializer.EGID, vhid);
-            _added.Enqueue(idMap);
+            _ids.TryAdd(vhid, initializer.EGID, idMap);
             _types.Add(vhid, type);
 
             return idMap;
@@ -126,12 +124,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            if(!_types.Remove(vhid, out EntityType? type))
-            {
-                return;
-            }
-
-            type.DestroyEntity(_functions, in id.EGID);
+            _types[vhid].DestroyEntity(_functions, in id.EGID);
             _removed.Enqueue(id);
         }
 
@@ -157,16 +150,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Clean()
         {
-            while (_added.TryDequeue(out IdMap added))
-            {
-                _ids.TryAdd(added.VhId, added.EGID, added);
-            }
-
             _submission.SubmitEntities();
 
             while (_removed.TryDequeue(out IdMap removed))
             {
                 _ids.Remove(removed.VhId, removed.EGID);
+                _types.Remove(removed.VhId);
             }
         }
 

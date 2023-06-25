@@ -17,6 +17,7 @@ using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Simulations.EnginesGroups;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
@@ -30,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public IEnumerable<Tick> History => _history;
 
-        public event OnEventDelegate<EventDto>? OnEvent;
+        public event OnEventDelegate<Tick>? OnTick;
 
         public LockstepSimulation(
             ISpaceFactory spaceFactory,
@@ -71,6 +72,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
             _tickEngines.Step(tick);
 
+            this.OnTick?.Invoke(tick);
+
             if (tick.Events.Length == 0)
             {
                 return;
@@ -84,10 +87,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _history.Add(tick);
         }
 
-        public override void Publish(EventDto data)
+        protected override void Publish(EventDto data)
         {
             this.publisher.Publish(data);
-            this.OnEvent?.Invoke(data);
         }
     }
 }

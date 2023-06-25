@@ -14,7 +14,7 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
@@ -25,6 +25,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         private double _lastStepTime;
         private IPredictiveSynchronizationEngine[] _synchronizations;
         private readonly PredictionService _predictions;
+        private readonly Queue<Tick> _verifiableTicks;
 
         public PredictiveSimulation(
             ILogger logger,
@@ -37,13 +38,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             _lockstep = lockstep.Instance;
             _synchronizations = Array.Empty<IPredictiveSynchronizationEngine>();
             _predictions = new PredictionService(logger, this.publisher);
+            _verifiableTicks = new Queue<Tick>();
         }
 
         public override void Initialize(ISimulationService simulations)
         {
             base.Initialize(simulations);
 
-            _lockstep.OnEvent += this.HandleLockstepEvent;
+            _lockstep.OnTick += this.HandleLockstepTick;
             _synchronizations = this.World.Engines.OfType<IPredictiveSynchronizationEngine>().ToArray();
         }
 
@@ -73,21 +75,29 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             }
 
             _predictions.Prune();
+
+            if(_verifiableTicks.TryDequeue(out Tick? verifiableTick))
+            {
+                foreach(EventDto verifiableEvent in verifiableTick.Events)
+                {
+                    _predictions.Verify(verifiableEvent);
+                }
+            }
         }
 
-        public override void Enqueue(EventDto data)
+        protected override void Publish(EventDto data)
         {
             _predictions.Predict(data);
         }
 
-        public override void Publish(EventDto data)
+        private void HandleLockstepTick(Tick tick)
         {
-            _predictions.Predict(data);
-        }
+            if(tick.Events.Length == 0)
+            {
+                return;
+            }
 
-        private void HandleLockstepEvent(EventDto args)
-        {
-            _predictions.Verify(args);
+            _verifiableTicks.Enqueue(tick);
         }
     }
 }

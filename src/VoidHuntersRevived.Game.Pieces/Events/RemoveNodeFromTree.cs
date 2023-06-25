@@ -8,9 +8,11 @@ using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Game.Pieces.Events
 {
-    public class RemovedNode : IEventData
+    public class RemoveNodeFromTree : IEventData
     {
-        public VhId NodeId;
-        public VhId TreeId;
+        public static VhId NameSpace = new VhId("b364834f-c048-41e8-8400-4a0cdc71eee2");
+
+        public required VhId NodeId { get; init; }
+        public required VhId TreeId { get; init; }
     }
 }

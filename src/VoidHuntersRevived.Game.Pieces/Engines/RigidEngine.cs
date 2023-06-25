@@ -18,8 +18,8 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 {
     [AutoLoad]
     internal sealed class RigidEngine : BasicEngine,
-        IEventEngine<AddedNode>,
-        IEventEngine<RemovedNode>
+        IEventEngine<AddNodeToTree>,
+        IEventEngine<RemoveNodeFromTree>
     {
         private readonly IResourceProvider _resources;
 
@@ -28,23 +28,31 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             _resources = resources;
         }
 
-        public void Process(VhId id, AddedNode data)
+        public void Process(VhId id, AddNodeToTree data)
         {
-            IdMap nodeId = this.Simulation.Entities.GetIdMap(data.NodeId);
-            IdMap treeId = this.Simulation.Entities.GetIdMap(data.TreeId);
-
-            // Node is not a rigid entity
-            if(!this.entitiesDB.TryGetEntity<ResourceId<Rigid>>(nodeId.EGID, out ResourceId<Rigid> rigidId))
+            try
             {
-                return;
+                IdMap nodeId = this.Simulation.Entities.GetIdMap(data.NodeId);
+                IdMap treeId = this.Simulation.Entities.GetIdMap(data.TreeId);
+
+                // Node is not a rigid entity
+                if (!this.entitiesDB.TryGetEntity<ResourceId<Rigid>>(nodeId.EGID, out ResourceId<Rigid> rigidId))
+                {
+                    return;
+                }
+
+                Rigid rigid = _resources.Get(rigidId)!;
+                IBody body = this.Simulation.Space.GetOrCreateBody(treeId.VhId);
+                body.Create(rigid.Shapes[0], nodeId.VhId);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Failed to add node");
             }
 
-            Rigid rigid = _resources.Get(rigidId)!;
-            IBody body = this.Simulation.Space.GetOrCreateBody(treeId.VhId);
-            body.Create(rigid.Shapes[0], nodeId.VhId);
         }
 
-        public void Process(VhId eventId, RemovedNode data)
+        public void Process(VhId eventId, RemoveNodeFromTree data)
         {
             IdMap nodeId = this.Simulation.Entities.GetIdMap(data.NodeId);
             IdMap treeId = this.Simulation.Entities.GetIdMap(data.TreeId);

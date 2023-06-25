@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 
         private void HandleUserJoined(IUserService sender, User args)
         {
-            this.Simulation.Enqueue(VhId.NewId(), new UserJoined()
+            this.Simulation.Input(VhId.NewId(), new UserJoined()
             {
                 UserId = args.Id,
                 Claims = args.Where(x => x.Accessibility == ClaimAccessibility.Public).ToArray()

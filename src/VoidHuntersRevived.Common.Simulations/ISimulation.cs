@@ -20,12 +20,8 @@ namespace VoidHuntersRevived.Common.Simulations
 
         void Update(GameTime realTime);
 
-        void Publish(EventDto @event);
-
         void Publish(VhId eventId, IEventData data);
 
-        void Enqueue(EventDto @event);
-
-        void Enqueue(VhId eventId, IEventData data);
+        void Input(VhId eventId, IInputData data);
     }
 }

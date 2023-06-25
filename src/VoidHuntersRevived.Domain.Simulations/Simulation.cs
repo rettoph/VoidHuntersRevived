@@ -18,12 +18,14 @@ using VoidHuntersRevived.Domain.Entities;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Simulations.EnginesGroups;
 using VoidHuntersRevived.Common.Entities.Services;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
     public abstract class Simulation : ISimulation, IDisposable
     {
         private readonly DrawEngineGroups _drawEnginesGroups;
+        private Queue<EventDto> _events;
 
         protected readonly EventPublishingService publisher;
 
@@ -49,6 +51,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.publisher = new EventPublishingService(this.World.Engines.OfType<IEventEngine>());
 
             _drawEnginesGroups = new DrawEngineGroups(this.World.Engines.OfType<IStepEngine<GameTime>>());
+            _events = new Queue<EventDto>();
         }
 
         public virtual void Initialize(ISimulationService simulations)
@@ -85,9 +88,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.World.Step(step);
         }
 
-        public abstract void Publish(EventDto data);
-
-        public abstract void Enqueue(EventDto data);
+        protected abstract void Publish(EventDto data);
 
         public void Publish(VhId eventId, IEventData data)
         {
@@ -98,13 +99,14 @@ namespace VoidHuntersRevived.Domain.Simulations
             });
         }
 
-        public void Enqueue(VhId eventId, IEventData data)
+        protected virtual void Enqueue(EventDto @event)
         {
-            this.Enqueue(new EventDto()
-            {
-                Id = eventId,
-                Data = data
-            });
+            _events.Enqueue(@event);
+        }
+
+        public virtual void Input(VhId eventId, IInputData data)
+        {
+            this.Publish(eventId, data);
         }
     }
 }

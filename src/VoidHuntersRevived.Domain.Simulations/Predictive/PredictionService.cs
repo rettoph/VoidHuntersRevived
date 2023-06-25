@@ -35,23 +35,26 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
                 return prediction;
             }
 
-            _publisher.Publish(@event);
             _logger.Debug($"{nameof(PredictionService)}::{nameof(Predict)} - Predicting '{@event.Data.GetType().Name}', '{@event.Id.Value}'");
+            _publisher.Publish(@event);
 
             return this.Add(@event);
         }
 
-        public void Verify(EventDto verified)
+        public VerificationResult Verify(EventDto verified)
         {
+            _logger.Debug($"{nameof(PredictionService)}::{nameof(Verify)} - Verifying '{verified.Data.GetType().Name}', '{verified.Id.Value}'");
+            VerificationResult result = VerificationResult.Predicted;
+
             if (!_dict.TryGetValue(verified.Id, out Prediction? prediction))
             {
                 _publisher.Publish(verified);
                 prediction = this.Add(verified);
+                result = VerificationResult.Published;
             }
 
             prediction.Status = PredictionStatus.Verified;
-
-            _logger.Debug($"{nameof(PredictionService)}::{nameof(Verify)} - Verified '{prediction.Event.Data.GetType().Name}', '{prediction.Event.Id.Value}'");
+            return result;
         }
 
         public void Prune()

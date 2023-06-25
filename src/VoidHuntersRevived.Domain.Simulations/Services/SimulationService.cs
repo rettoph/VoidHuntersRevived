@@ -105,24 +105,5 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
                 simulation.Update(gameTime);
             }
         }
-
-        public void Enqueue(EventDto input)
-        {
-
-        }
-
-        public void Enqueue(IEventData data)
-        {
-            EventDto @event = new EventDto()
-            {
-                Id = VhId.NewId(),
-                Data = data
-            };
-
-            foreach (ISimulation simulation in _simulations.Values)
-            {
-                simulation.Enqueue(@event);
-            }
-        }
     }
 }

@@ -31,9 +31,9 @@ namespace VoidHuntersRevived.Game
 
         protected override void Draw(GameTime gameTime)
         {
-            base.Draw(gameTime);
-
             this.Simulations.Draw(gameTime);
+
+            base.Draw(gameTime);
         }
     }
 }

@@ -51,7 +51,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 data.Position = 0;
 
                 VhId vhid = reader.ReadVhId();
-                Console.WriteLine(vhid.Value.ToString() + " ----- " + seed.Value.ToString());
                 EntityType type = _types.GetById(reader.ReadUnmanaged<VhId>());
 
                 return _entities.Create(type, vhid, (ref EntityInitializer initializer) =>

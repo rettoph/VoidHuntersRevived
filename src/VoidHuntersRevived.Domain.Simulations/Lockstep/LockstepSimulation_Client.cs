@@ -98,14 +98,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _stepsSinceTick = 0;
         }
 
-        public override void Enqueue(EventDto data)
+        public override void Input(VhId eventId, IInputData data)
         {
-            if(data.Data is not IInputData)
+            _scope.Messages.Create(new EventDto()
             {
-                throw new InvalidOperationException();
-            }
-
-            _scope.Messages.Create(in data).Enqueue();
+                Id = eventId,
+                Data = data
+            }).Enqueue();
         }
     }
 }

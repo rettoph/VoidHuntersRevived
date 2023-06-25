@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            this.Simulation.Enqueue(
+            this.Simulation.Input(
                 eventId: new VhId(messageId),
                 data: new SetHelmDirection()
                 {
@@ -66,7 +66,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             VhId eventId = new VhId(messageId);
 
-            this.Simulation.Enqueue(
+            this.Simulation.Input(
                 eventId: eventId.Create(1),
                 data: new SetTacticalTarget()
                 {
@@ -74,7 +74,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     Value = (FixVector2)this.CurrentTargetPosition
                 });
 
-            this.Simulation.Enqueue(
+            this.Simulation.Input(
                 eventId: eventId.Create(2),
                 data: new SetTractorBeamEmitterActive()
                 {

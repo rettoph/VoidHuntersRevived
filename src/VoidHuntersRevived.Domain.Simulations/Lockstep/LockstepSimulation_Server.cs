@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         ISubscriber<INetIncomingMessage<EventDto>>
     {
         private readonly IBus _bus;
-        private readonly List<EventDto> _events;
+        private readonly List<EventDto> _inputs;
         private readonly int _stepsPerTick;
         private int _stepsSinceTick;
         private TimeSpan _timeSinceStep;
@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
             _bus = bus;
             _stepsSinceTick = 0;
-            _events = new List<EventDto>();
+            _inputs = new List<EventDto>();
             _stepsPerTick = settings.Get<int>(Settings.StepsPerTick).Value;
             _stepTimeSpan = TimeSpan.FromSeconds((float)stepInterval);
             _step = new Step()
@@ -100,9 +100,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _timeSinceStep -= _stepTimeSpan;
         }
 
-        public override void Enqueue(EventDto data)
+        public override void Input(VhId eventId, IInputData data)
         {
-            _events.Add(data);
+            _inputs.Add(new EventDto()
+            {
+                Id = eventId,
+                Data = data
+            });
         }
 
         protected override bool TryGetNextTick(Tick current, [MaybeNullWhen(false)] out Tick next)
@@ -113,8 +117,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                 return false;
             }
 
-            next = current.Next(_events.ToArray());
-            _events.Clear();
+            next = current.Next(_inputs.ToArray());
+            _inputs.Clear();
 
             return true;
         }
@@ -133,7 +137,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                 throw new InvalidOperationException();
             }
 
-            this.Enqueue(message.Body);
+            this.Input(message.Body.Id, (IInputData)message.Body.Data);
         }
     }
 }
