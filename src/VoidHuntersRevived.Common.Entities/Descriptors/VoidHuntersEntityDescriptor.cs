@@ -36,10 +36,8 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             return this;
         }
 
-        public void Serialize(EntityWriter writer, EGID egid, EntitiesDB entities)
+        public void Serialize(EntityWriter writer, EGID egid, EntitiesDB entities, uint index)
         {
-            entities.QueryEntitiesAndIndex<EntityVhId>(egid, out uint index);
-
             foreach (ComponentManager componentManager in _componentManagers)
             {
                 componentManager.Serializer.Serialize(writer, index, egid.groupID, entities);

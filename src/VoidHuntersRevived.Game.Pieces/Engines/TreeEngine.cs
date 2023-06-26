@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
+using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
@@ -26,7 +27,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 {
     [AutoLoad]
     internal sealed class TreeEngine : BasicEngine, IReactOnAddAndRemoveEx<Tree>,
-        IOnCloneEngine<Tree>,
+        ISerializationEngine<Tree>,
         IStepEngine<Step>,
         IEventEngine<AddNodeToTree>,
         IEventEngine<RemoveNodeFromTree>
@@ -154,6 +155,16 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             IdMap nodeId = this.Simulation.Entities.GetIdMap(data.NodeId);
             
             this.Simulation.Entities.Destroy(nodeId.VhId);
+        }
+
+        public void Serialize(in Tree tree, EntityWriter writer)
+        {
+            this.Simulation.World.Serialization.Serialize(tree.HeadId, writer);
+        }
+
+        public void Deserialize(EntityReader reader, ref Tree component)
+        {
+            this.Simulation.World.Serialization.Deserialize(reader);
         }
 
         // private void AddNodeToTree(in VhId eventId, in IdMap treeId, in Tree tree, in IdMap nodeId)

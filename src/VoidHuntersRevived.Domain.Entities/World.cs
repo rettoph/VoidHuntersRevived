@@ -42,8 +42,8 @@ namespace VoidHuntersRevived.Domain.Entities
             _enginesRoot = new EnginesRoot(_simpleEntitiesSubmissionScheduler);
 
             _entityTypes = filtered.Get<EntityTypeService>().Instance;
-            _entities = new EntityService(_entityTypes, _enginesRoot.GenerateEntityFactory(), _enginesRoot.GenerateEntityFunctions(), _simpleEntitiesSubmissionScheduler, this.Engines);
-            _serialization = new EntitySerializationService(_entities, _entityTypes);
+            _entities = new EntityService(_entityTypes, _enginesRoot.GenerateEntityFactory(), _enginesRoot.GenerateEntityFunctions(), _simpleEntitiesSubmissionScheduler);
+            _serialization = new EntitySerializationService(_entities, _entityTypes, this.Engines);
 
             _stepEngines = new StepEnginesGroup(this.Engines.OfType<IStepEngine<Step>>());
         }

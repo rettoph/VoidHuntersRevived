@@ -8,17 +8,24 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
 {
     public class EntityReader : BinaryReader
     {
-        public readonly VhId _seed;
+        private readonly bool _seeding;
+        private readonly VhId _seed;
 
-        public EntityReader(VhId seed, EntityData data) : base(data, Encoding.UTF8, true)
+        public EntityReader(EntityData data) : this(null, data)
         {
-            _seed = seed;
+        }
+
+        public EntityReader(VhId? seed, EntityData data) : base(data, Encoding.UTF8, true)
+        {
+            _seeding = seed is not null;
+            _seed = seed ?? default;
         }
 
         public VhId ReadVhId()
         {
             VhId value = this.ReadUnmanaged<VhId>();
-            return this.Seed(value);
+
+            return _seeding ? this.Seed(value) : value;
         }
 
         public VhId Seed(VhId vhid)

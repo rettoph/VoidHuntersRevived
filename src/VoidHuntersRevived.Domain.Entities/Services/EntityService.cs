@@ -27,7 +27,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly DoubleDictionary<VhId, EGID, IdMap> _ids;
         private readonly Dictionary<VhId, EntityType> _types;
         private readonly Queue<IdMap> _removed;
-        private readonly Dictionary<EntityType, FasterList<OnCloneEnginesGroup>> _onCloneEngines;
         private uint _id;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
@@ -36,8 +35,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             EntityTypeService entityTypes,
             IEntityFactory factory,
             IEntityFunctions functions,
-            SimpleEntitiesSubmissionScheduler sumbission,
-            IEnumerable<IEngine> engines)
+            SimpleEntitiesSubmissionScheduler sumbission)
         {
             _entityTypes = entityTypes;
             _factory = factory;
@@ -46,41 +44,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _ids = new DoubleDictionary<VhId, EGID, IdMap>();
             _removed = new Queue<IdMap>();
             _types = new Dictionary<VhId, EntityType>();
-
-            // Create all OnCloneEnginee groups via reflection
-            Dictionary<Type, OnCloneEnginesGroup> componentCloneEngineGroups = new Dictionary<Type, OnCloneEnginesGroup>();
-            foreach(IEngine engine in engines)
-            {
-                foreach(Type onCloneEngineType in engine.GetType().GetConstructedGenericTypes(typeof(IOnCloneEngine<>)))
-                {
-                    Type componentType = onCloneEngineType.GenericTypeArguments[0];
-
-                    if(componentCloneEngineGroups.ContainsKey(componentType))
-                    {
-                        continue;
-                    }
-
-                    Type onCloneEnginesGroupType = typeof(OnCloneEnginesGroup<>).MakeGenericType(componentType);
-                    componentCloneEngineGroups.Add(componentType, (OnCloneEnginesGroup)Activator.CreateInstance(onCloneEnginesGroupType, engines)!);
-                }
-                
-            }
-
-            _onCloneEngines = _entityTypes.GetAllConfigurations().ToDictionary(
-                keySelector: x => x.Type,
-                elementSelector: x =>
-                {
-                    List<OnCloneEnginesGroup> onCloneEnginesGroups = new List<OnCloneEnginesGroup>();
-                    foreach (Type componentType in x.Type.Descriptor.ComponentManagers.Select(m => m.Type))
-                    {
-                        if(componentCloneEngineGroups.TryGetValue(componentType, out var group))
-                        {
-                            onCloneEnginesGroups.Add(group);
-                        }
-                    }
-
-                    return new FasterList<OnCloneEnginesGroup>(onCloneEnginesGroups);
-                });
         }
 
         public void Ready()

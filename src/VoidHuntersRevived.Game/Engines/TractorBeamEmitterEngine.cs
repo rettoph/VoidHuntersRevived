@@ -22,8 +22,7 @@ namespace VoidHuntersRevived.Game.Engines
     [AutoLoad]
     internal sealed class TractorBeamEmitterEngine : BasicEngine,
         IEventEngine<SetTractorBeamEmitterActive>,
-        IEventEngine<SetTractorBeamTarget>,
-        IRevertEventEngine<SetTractorBeamTarget>
+        IEventEngine<SetTractorBeamTarget>
     {
         public static readonly Fix64 QueryRadius = (Fix64)5;
 
@@ -62,26 +61,25 @@ namespace VoidHuntersRevived.Game.Engines
                 TargetData = this.Simulation.World.Serialization.Serialize(tree.HeadId)
             });
 
-            // this.Simulation.Publish(DestroyEntity.NameSpace.Create(targetId.VhId), new DestroyEntity()
-            // {
-            //     EntityId = targetId.VhId
-            // });
-
-
-            //this.Simulation.Entities.Destroy(targetId);
+            this.Simulation.Publish(TryDestroyEntity.NameSpace.Create(targetId.VhId), new TryDestroyEntity()
+            {
+                EntityVhId = targetId.VhId,
+                Backup = this.Simulation.World.Serialization.Serialize(targetId)
+            });
         }
 
         public void Process(VhId eventId, SetTractorBeamTarget data)
         {
-            this.Simulation.Entities.Create(EntityTypes.Chain, eventId.Create(1), (ref EntityInitializer initializer) =>
+            VhId targetVhId = eventId.Create(1);
+            this.Simulation.Publish(TryCreateEntity.NameSpace.Create(targetVhId), new TryCreateEntity()
             {
-                initializer.Get<Tree>().HeadId = this.Simulation.World.Serialization.Deserialize(eventId.Create(2), data.TargetData).VhId;
+                Type = EntityTypes.Chain,
+                EntityVhId = targetVhId,
+                Initializer = (ref EntityInitializer initializer) =>
+                {
+                    initializer.Get<Tree>().HeadId = this.Simulation.World.Serialization.Deserialize(eventId.Create(2), data.TargetData).VhId;
+                }
             });
-        }
-
-        public void Revert(VhId eventId, SetTractorBeamTarget data)
-        {
-            this.Simulation.Entities.Destroy(eventId.Create(1));
         }
 
         public bool Query(FixVector2 target, Fix64 radius, out IdMap targetId)
