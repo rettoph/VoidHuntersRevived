@@ -10,7 +10,6 @@ namespace VoidHuntersRevived.Common.Entities
 {
     public interface IWorld
     {
-        IEntitySerializationService Serialization { get; }
         IEntityService Entities { get; }
         IEngine[] Engines { get; }
 

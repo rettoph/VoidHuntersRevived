@@ -6,6 +6,8 @@ namespace VoidHuntersRevived.Common.Entities.Services
 {
     public interface IEntityService
     {
+        IEntitySerializationService Serialization { get; }
+
         IdMap Create(EntityType type, VhId id);
         IdMap Create(EntityType type, VhId id, EntityInitializerDelegate initializer);
 

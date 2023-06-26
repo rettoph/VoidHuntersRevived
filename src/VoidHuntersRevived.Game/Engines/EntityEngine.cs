@@ -65,7 +65,7 @@ namespace VoidHuntersRevived.Game.Engines
                 return;
             }
 
-            this.Simulation.World.Serialization.Deserialize(data.Backup);
+            this.Simulation.Entities.Serialization.Deserialize(data.Backup);
         }
     }
 }

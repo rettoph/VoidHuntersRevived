@@ -27,8 +27,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly SimpleEntitiesSubmissionScheduler _submission;
         private readonly DoubleDictionary<VhId, EGID, IdMap> _ids;
         private readonly Dictionary<VhId, EntityType> _types;
+        private readonly EntitySerializationService _serialization;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
+
+        public IEntitySerializationService Serialization => _serialization;
 
         public EntityService(
             IWorld world,
@@ -44,10 +47,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _submission = sumbission;
             _ids = new DoubleDictionary<VhId, EGID, IdMap>();
             _types = new Dictionary<VhId, EntityType>();
+            _serialization = new EntitySerializationService(this, _entityTypes, _world.Engines);
         }
 
         public void Ready()
         {
+            _serialization.entitiesDB = this.entitiesDB;
+            _serialization.Ready();
         }
 
         public IdMap Create(EntityType type, VhId vhid)
@@ -55,7 +61,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             EntityInitializer initializer = type.CreateEntity(_factory);
 
             initializer.Init(new EntityVhId() { Value = vhid });
-            _entityTypes.GetConfiguration(type).Initialize(_world, ref initializer);
+            _entityTypes.GetConfiguration(type).Initialize(_world.Entities, ref initializer);
 
             IdMap idMap = new IdMap(initializer.EGID, vhid);
             _ids.TryAdd(vhid, initializer.EGID, idMap);
@@ -69,9 +75,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             EntityInitializer initializer = type.CreateEntity(_factory);
 
             initializer.Init(new EntityVhId() { Value = vhid });
-            _entityTypes.GetConfiguration(type).Initialize(_world, ref initializer);
+            _entityTypes.GetConfiguration(type).Initialize(_world.Entities, ref initializer);
 
-            initializerDelegate(_world, ref initializer);
+            initializerDelegate(_world.Entities, ref initializer);
 
             IdMap idMap = new IdMap(initializer.EGID, vhid);
             _ids.TryAdd(vhid, initializer.EGID, idMap);

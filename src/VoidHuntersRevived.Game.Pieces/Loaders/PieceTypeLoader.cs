@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
         {
             entityTypes.Configure(PieceTypes.HullTriangle, configuration =>
             {
-                configuration.HasInitializer((IWorld world, ref EntityInitializer initializer) =>
+                configuration.HasInitializer((IEntityService entities, ref EntityInitializer initializer) =>
                 {
                     initializer.Init<ResourceId<Rigid>>(PieceResources.HullTriangle.Rigid);
                     initializer.Init<ResourceId<Visible>>(PieceResources.HullTriangle.Visible);
@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
 
             entityTypes.Configure(PieceTypes.HullSquare, configuration =>
             {
-                configuration.HasInitializer((IWorld world, ref EntityInitializer initializer) =>
+                configuration.HasInitializer((IEntityService entities, ref EntityInitializer initializer) =>
                 {
                     initializer.Init<ResourceId<Rigid>>(PieceResources.HullSquare.Rigid);
                     initializer.Init<ResourceId<Visible>>(PieceResources.HullSquare.Visible);

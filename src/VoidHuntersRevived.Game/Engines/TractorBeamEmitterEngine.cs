@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
@@ -58,13 +59,13 @@ namespace VoidHuntersRevived.Game.Engines
             this.Simulation.Publish(eventId.Create(tree.HeadId), new SetTractorBeamTarget()
             {
                 TractorBeamId = shipId.VhId,
-                TargetData = this.Simulation.World.Serialization.Serialize(tree.HeadId)
+                TargetData = this.Simulation.Entities.Serialization.Serialize(tree.HeadId)
             });
 
             this.Simulation.Publish(TryDestroyEntity.NameSpace.Create(targetId.VhId), new TryDestroyEntity()
             {
                 EntityVhId = targetId.VhId,
-                Backup = this.Simulation.World.Serialization.Serialize(targetId)
+                Backup = this.Simulation.Entities.Serialization.Serialize(targetId)
             });
         }
 
@@ -75,9 +76,9 @@ namespace VoidHuntersRevived.Game.Engines
             {
                 Type = EntityTypes.Chain,
                 EntityVhId = targetVhId,
-                Initializer = (IWorld world, ref EntityInitializer initializer) =>
+                Initializer = (IEntityService entities, ref EntityInitializer initializer) =>
                 {
-                    initializer.Get<Tree>().HeadId = world.Serialization.Deserialize(eventId.Create(2), data.TargetData).VhId;
+                    initializer.Get<Tree>().HeadId = entities.Serialization.Deserialize(eventId.Create(2), data.TargetData).VhId;
                 }
             });
         }

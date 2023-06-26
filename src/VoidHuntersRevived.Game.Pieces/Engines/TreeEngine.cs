@@ -151,12 +151,12 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
         public void Serialize(in Tree tree, EntityWriter writer)
         {
-            this.Simulation.World.Serialization.Serialize(tree.HeadId, writer);
+            this.Simulation.Entities.Serialization.Serialize(tree.HeadId, writer);
         }
 
         public void Deserialize(EntityReader reader, ref Tree component)
         {
-            this.Simulation.World.Serialization.Deserialize(reader);
+            this.Simulation.Entities.Serialization.Deserialize(reader);
         }
 
         // private void AddNodeToTree(in VhId eventId, in IdMap treeId, in Tree tree, in IdMap nodeId)
