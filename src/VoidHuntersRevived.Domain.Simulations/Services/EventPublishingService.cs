@@ -85,7 +85,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
             private void Publish(in VhId id, T data)
             {
-                foreach(IEventEngine<T> subscriber in _subscribers)
+                foreach (IEventEngine<T> subscriber in _subscribers)
                 {
                     subscriber.Process(id, data);
                 }

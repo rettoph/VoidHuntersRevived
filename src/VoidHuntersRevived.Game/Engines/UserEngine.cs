@@ -39,14 +39,14 @@ namespace VoidHuntersRevived.Game.Engines
         {
             VhId shipId = _scope.Peer!.Users.UpdateOrCreate(data.UserId, data.Claims).GetUserShipId();
 
-            this.Simulation.Entities.Create(EntityTypes.UserShip, shipId, (ref EntityInitializer initializer) =>
+            this.Simulation.Entities.Create(EntityTypes.UserShip, shipId, (IWorld world, ref EntityInitializer initializer) =>
             {
-                initializer.Get<Tree>().HeadId = this.Simulation.Entities.Create(PieceTypes.HullSquare, id.Create(1)).VhId;
+                initializer.Get<Tree>().HeadId = world.Entities.Create(PieceTypes.HullSquare, id.Create(1)).VhId;
             });
 
-            this.Simulation.Entities.Create(EntityTypes.Chain, id.Create(2), (ref EntityInitializer initializer) =>
+            this.Simulation.Entities.Create(EntityTypes.Chain, id.Create(2), (IWorld world, ref EntityInitializer initializer) =>
             {
-                initializer.Get<Tree>().HeadId = this.Simulation.Entities.Create(PieceTypes.HullSquare, id.Create(3)).VhId;
+                initializer.Get<Tree>().HeadId = world.Entities.Create(PieceTypes.HullSquare, id.Create(3)).VhId;
             });
         }
     }

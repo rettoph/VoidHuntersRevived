@@ -60,31 +60,15 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
         public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Tree> entities, ExclusiveGroupStruct treeGroupId)
         {
-            var (trees, treeIds, _) = entities;
+            var (trees, _, _) = entities;
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                IdMap treeId = this.Simulation.Entities.GetIdMap(treeIds[index], treeGroupId);
-
-                ref var filter = ref this.entitiesDB.GetFilters().GetPersistentFilter<Node>(trees[index].NodesFilterId);
-
-                // Ensure every node gets removed when the tree is removed
-                foreach (var (nodeIndices, nodeGroupid) in filter)
+                VhId headId = trees[index].HeadId;
+                this.Simulation.Publish(RemoveNodeFromTree.NameSpace.Create(headId), new RemoveNodeFromTree()
                 {
-                    var (_, nodeIds, _) = entitiesDB.QueryEntities<Node>(nodeGroupid);
-
-                    for (int i = 0; i < nodeIndices.count; i++)
-                    {
-                        uint nodeIndex = nodeIds[nodeIndices[i]];
-                        IdMap nodeId = this.Simulation.Entities.GetIdMap(nodeIndex, nodeGroupid);
-
-                        this.Simulation.Publish(RemoveNodeFromTree.NameSpace.Create(nodeId.VhId), new RemoveNodeFromTree()
-                        {
-                            TreeId = treeId.VhId,
-                            NodeId = nodeId.VhId
-                        });
-                    }
-                }
+                    NodeId = headId
+                });
             }
         }
 
@@ -148,13 +132,21 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             filter.Add(nodeId.EGID.entityID, nodeId.EGID.groupID, index);
 
             nodes[index].TreeId = treeId.VhId;
+
+            this.Simulation.Publish(CreateNode.NameSpace.Create(data.NodeId), new CreateNode()
+            {
+                NodeId = data.NodeId
+            });
         }
 
         public void Process(VhId eventId, RemoveNodeFromTree data)
         {
-            IdMap nodeId = this.Simulation.Entities.GetIdMap(data.NodeId);
-            
-            this.Simulation.Entities.Destroy(nodeId.VhId);
+            this.Simulation.Publish(DestroyNode.NameSpace.Create(data.NodeId), new DestroyNode()
+            {
+                NodeId = data.NodeId
+            });
+
+            this.Simulation.Entities.Destroy(data.NodeId);
         }
 
         public void Serialize(in Tree tree, EntityWriter writer)

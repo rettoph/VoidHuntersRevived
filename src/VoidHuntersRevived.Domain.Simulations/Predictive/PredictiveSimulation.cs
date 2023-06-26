@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         private double _lastStepTime;
         private IPredictiveSynchronizationEngine[] _synchronizations;
         private readonly PredictionService _predictions;
-        private readonly Queue<Tick> _verifiableTicks;
+        private readonly Queue<EventDto> _verifiableEvents;
 
         public PredictiveSimulation(
             ILogger logger,
@@ -38,14 +38,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             _lockstep = lockstep.Instance;
             _synchronizations = Array.Empty<IPredictiveSynchronizationEngine>();
             _predictions = new PredictionService(logger, this.publisher);
-            _verifiableTicks = new Queue<Tick>();
+            _verifiableEvents = new Queue<EventDto>();
         }
 
         public override void Initialize(ISimulationService simulations)
         {
             base.Initialize(simulations);
 
-            _lockstep.OnTick += this.HandleLockstepTick;
+            _lockstep.OnEvent += this.HandleLockstepTick;
             _synchronizations = this.World.Engines.OfType<IPredictiveSynchronizationEngine>().ToArray();
         }
 
@@ -76,12 +76,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
             _predictions.Prune();
 
-            if(_verifiableTicks.TryDequeue(out Tick? verifiableTick))
+            if(_verifiableEvents.TryDequeue(out EventDto? verifiableEvent))
             {
-                foreach(EventDto verifiableEvent in verifiableTick.Events)
-                {
-                    _predictions.Verify(verifiableEvent);
-                }
+                _predictions.Verify(verifiableEvent);
             }
         }
 
@@ -90,14 +87,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             _predictions.Predict(data);
         }
 
-        private void HandleLockstepTick(Tick tick)
+        private void HandleLockstepTick(EventDto @event)
         {
-            if(tick.Events.Length == 0)
-            {
-                return;
-            }
-
-            _verifiableTicks.Enqueue(tick);
+            _verifiableEvents.Enqueue(@event);
         }
     }
 }

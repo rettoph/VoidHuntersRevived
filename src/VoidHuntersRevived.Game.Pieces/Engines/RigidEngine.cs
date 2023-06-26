@@ -18,8 +18,8 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 {
     [AutoLoad]
     internal sealed class RigidEngine : BasicEngine,
-        IEventEngine<AddNodeToTree>,
-        IEventEngine<RemoveNodeFromTree>
+        IEventEngine<CreateNode>,
+        IEventEngine<DestroyNode>
     {
         private readonly IResourceProvider _resources;
 
@@ -28,21 +28,23 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             _resources = resources;
         }
 
-        public void Process(VhId id, AddNodeToTree data)
+        public void Process(VhId id, CreateNode data)
         {
             try
             {
                 IdMap nodeId = this.Simulation.Entities.GetIdMap(data.NodeId);
-                IdMap treeId = this.Simulation.Entities.GetIdMap(data.TreeId);
 
                 // Node is not a rigid entity
-                if (!this.entitiesDB.TryGetEntity<ResourceId<Rigid>>(nodeId.EGID, out ResourceId<Rigid> rigidId))
+                if (!this.entitiesDB.TryQueryEntitiesAndIndex<ResourceId<Rigid>>(nodeId.EGID, out uint index, out var rigidIds))
                 {
                     return;
                 }
 
-                Rigid rigid = _resources.Get(rigidId)!;
-                IBody body = this.Simulation.Space.GetOrCreateBody(treeId.VhId);
+                var (nodes, _) = this.entitiesDB.QueryEntities<Node>(nodeId.EGID.groupID);
+
+                Rigid rigid = _resources.Get(rigidIds[index])!;
+                Node node = nodes[index];
+                IBody body = this.Simulation.Space.GetOrCreateBody(node.TreeId);
                 body.Create(rigid.Shapes[0], nodeId.VhId);
             }
             catch(Exception e)
@@ -52,18 +54,20 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
         }
 
-        public void Process(VhId eventId, RemoveNodeFromTree data)
+        public void Process(VhId eventId, DestroyNode data)
         {
             IdMap nodeId = this.Simulation.Entities.GetIdMap(data.NodeId);
-            IdMap treeId = this.Simulation.Entities.GetIdMap(data.TreeId);
 
             // Node is not a rigid entity
-            if (!this.entitiesDB.TryGetEntity<ResourceId<Rigid>>(nodeId.EGID, out ResourceId<Rigid> rigidId))
+            if (!this.entitiesDB.TryQueryEntitiesAndIndex<ResourceId<Rigid>>(nodeId.EGID, out uint index, out var rigidIds))
             {
                 return;
             }
 
-            if(this.Simulation.Space.TryGetBody(treeId.VhId, out IBody? body))
+            var (nodes, _) = this.entitiesDB.QueryEntities<Node>(nodeId.EGID.groupID);
+            Node node = nodes[index];
+
+            if (this.Simulation.Space.TryGetBody(node.TreeId, out IBody? body))
             {
                 body.Destroy(nodeId.VhId);
             }

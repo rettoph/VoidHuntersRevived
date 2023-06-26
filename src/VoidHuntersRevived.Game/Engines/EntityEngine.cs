@@ -45,33 +45,20 @@ namespace VoidHuntersRevived.Game.Engines
 
         public void Revert(VhId eventId, TryCreateEntity data)
         {
-            int destroyedCount = _destroyedEntities.Add(data.EntityVhId);
-            if (destroyedCount > 1)
-            {
-                _logger.Verbose($"{nameof(EntityEngine)}::{nameof(Revert)}<{nameof(TryCreateEntity)}> - Unable to destroy entity => {_destroyedEntities.Count(data.EntityVhId)}, already Destroyed.");
-
-                return;
-            }
-
+            _destroyedEntities.Add(data.EntityVhId);
             this.Simulation.Entities.Destroy(data.EntityVhId);
         }
 
         public void Process(VhId eventId, TryDestroyEntity data)
         {
-            int destroyedCount = _destroyedEntities.Add(data.EntityVhId);
-            if (destroyedCount > 1)
-            {
-                _logger.Verbose($"{nameof(EntityEngine)}::{nameof(Process)}<{nameof(TryDestroyEntity)}> - Unable to destroy entity => {_destroyedEntities.Count(data.EntityVhId)}, already Destroyed.");
-
-                return;
-            }
+            _destroyedEntities.Add(data.EntityVhId);
             this.Simulation.Entities.Destroy(data.EntityVhId);
         }
 
         public void Revert(VhId eventId, TryDestroyEntity data)
         {
             int destroyedCount = _destroyedEntities.Remove(data.EntityVhId);
-            if(destroyedCount > 1)
+            if(destroyedCount != 0)
             {
                 _logger.Verbose($"{nameof(EntityEngine)}::{nameof(Revert)}<{nameof(TryDestroyEntity)}> - Unable to revert entity destruction => {_destroyedEntities.Count(data.EntityVhId)}");
 

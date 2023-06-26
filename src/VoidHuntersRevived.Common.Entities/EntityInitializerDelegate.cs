@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Entities
 {
-    public delegate void EntityInitializerDelegate(ref EntityInitializer initializer);
+    public delegate void EntityInitializerDelegate(IWorld world, ref EntityInitializer initializer);
 }

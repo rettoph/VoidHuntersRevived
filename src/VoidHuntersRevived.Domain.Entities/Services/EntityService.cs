@@ -20,29 +20,29 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 {
     internal sealed class EntityService : IEntityService, IQueryingEntitiesEngine
     {
+        private readonly IWorld _world;
         private readonly EntityTypeService _entityTypes;
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
         private readonly SimpleEntitiesSubmissionScheduler _submission;
         private readonly DoubleDictionary<VhId, EGID, IdMap> _ids;
         private readonly Dictionary<VhId, EntityType> _types;
-        private readonly Queue<IdMap> _removed;
-        private uint _id;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
         public EntityService(
+            IWorld world,
             EntityTypeService entityTypes,
             IEntityFactory factory,
             IEntityFunctions functions,
             SimpleEntitiesSubmissionScheduler sumbission)
         {
+            _world = world;
             _entityTypes = entityTypes;
             _factory = factory;
             _functions = functions;
             _submission = sumbission;
             _ids = new DoubleDictionary<VhId, EGID, IdMap>();
-            _removed = new Queue<IdMap>();
             _types = new Dictionary<VhId, EntityType>();
         }
 
@@ -55,7 +55,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             EntityInitializer initializer = type.CreateEntity(_factory);
 
             initializer.Init(new EntityVhId() { Value = vhid });
-            _entityTypes.GetConfiguration(type).Initialize(ref initializer);
+            _entityTypes.GetConfiguration(type).Initialize(_world, ref initializer);
 
             IdMap idMap = new IdMap(initializer.EGID, vhid);
             _ids.TryAdd(vhid, initializer.EGID, idMap);
@@ -69,9 +69,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             EntityInitializer initializer = type.CreateEntity(_factory);
 
             initializer.Init(new EntityVhId() { Value = vhid });
-            _entityTypes.GetConfiguration(type).Initialize(ref initializer);
+            _entityTypes.GetConfiguration(type).Initialize(_world, ref initializer);
 
-            initializerDelegate(ref initializer);
+            initializerDelegate(_world, ref initializer);
 
             IdMap idMap = new IdMap(initializer.EGID, vhid);
             _ids.TryAdd(vhid, initializer.EGID, idMap);
@@ -82,18 +82,15 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Destroy(VhId vhid)
         {
-            if (!this.TryGetIdMap(ref vhid, out IdMap id))
+            if (!this.TryGetIdMap(vhid, out IdMap id))
             {
                 return;
             }
 
             _types[vhid].DestroyEntity(_functions, in id.EGID);
-            _removed.Enqueue(id);
-        }
 
-        public bool TryGetIdMap(ref VhId vhid, out IdMap id)
-        {
-            return _ids.TryGet(vhid, out id);
+            _ids.Remove(id.VhId, id.EGID);
+            _types.Remove(id.VhId);
         }
 
         public IdMap GetIdMap(VhId vhid)
@@ -106,20 +103,29 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _ids[egid];
         }
 
-        public IdMap GetIdMap(uint id, ExclusiveGroupStruct group)
+        public IdMap GetIdMap(uint entityId, ExclusiveGroupStruct groupId)
         {
-            return this.GetIdMap(new EGID(id, group));
+            return this.GetIdMap(new EGID(entityId, groupId));
+        }
+
+        public bool TryGetIdMap(VhId vhid, out IdMap id)
+        {
+            return _ids.TryGet(vhid, out id);
+        }
+
+        public bool TryGetIdMap(EGID egid, out IdMap id)
+        {
+            return _ids.TryGet(egid, out id);
+        }
+
+        public bool TryGetIdMap(uint entityId, ExclusiveGroupStruct groupId, out IdMap id)
+        {
+            return _ids.TryGet(new EGID(entityId, groupId), out id);
         }
 
         public void Clean()
         {
             _submission.SubmitEntities();
-
-            while (_removed.TryDequeue(out IdMap removed))
-            {
-                _ids.Remove(removed.VhId, removed.EGID);
-                _types.Remove(removed.VhId);
-            }
         }
 
         public EntityType GetEntityType(VhId entityVhId)

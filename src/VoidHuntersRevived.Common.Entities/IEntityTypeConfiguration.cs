@@ -8,7 +8,7 @@ namespace VoidHuntersRevived.Common.Entities
     {
         public EntityType Type { get; }
 
-        void Initialize(ref EntityInitializer initializer);
+        void Initialize(IWorld world, ref EntityInitializer initializer);
 
         IEntityTypeConfiguration HasInitializer(EntityInitializerDelegate initializer);
     }

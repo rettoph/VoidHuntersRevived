@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Loaders;
 using VoidHuntersRevived.Common.Entities.Services;
@@ -38,7 +39,7 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
         {
             entityTypes.Configure(PieceTypes.HullTriangle, configuration =>
             {
-                configuration.HasInitializer((ref EntityInitializer initializer) =>
+                configuration.HasInitializer((IWorld world, ref EntityInitializer initializer) =>
                 {
                     initializer.Init<ResourceId<Rigid>>(PieceResources.HullTriangle.Rigid);
                     initializer.Init<ResourceId<Visible>>(PieceResources.HullTriangle.Visible);
@@ -47,7 +48,7 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
 
             entityTypes.Configure(PieceTypes.HullSquare, configuration =>
             {
-                configuration.HasInitializer((ref EntityInitializer initializer) =>
+                configuration.HasInitializer((IWorld world, ref EntityInitializer initializer) =>
                 {
                     initializer.Init<ResourceId<Rigid>>(PieceResources.HullSquare.Rigid);
                     initializer.Init<ResourceId<Visible>>(PieceResources.HullSquare.Visible);

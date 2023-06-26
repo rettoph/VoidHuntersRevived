@@ -75,9 +75,9 @@ namespace VoidHuntersRevived.Game.Engines
             {
                 Type = EntityTypes.Chain,
                 EntityVhId = targetVhId,
-                Initializer = (ref EntityInitializer initializer) =>
+                Initializer = (IWorld world, ref EntityInitializer initializer) =>
                 {
-                    initializer.Get<Tree>().HeadId = this.Simulation.World.Serialization.Deserialize(eventId.Create(2), data.TargetData).VhId;
+                    initializer.Get<Tree>().HeadId = world.Serialization.Deserialize(eventId.Create(2), data.TargetData).VhId;
                 }
             });
         }
@@ -90,7 +90,10 @@ namespace VoidHuntersRevived.Game.Engines
 
             this.Simulation.Space.QueryAABB(fixture =>
             {
-                IdMap bodyId = this.Simulation.Entities.GetIdMap(fixture.Body.Id);
+                if(!this.Simulation.Entities.TryGetIdMap(fixture.Body.Id, out IdMap bodyId))
+                { // Invalid target - has been deleted.
+                    return true;
+                }
 
                 if(!this.entitiesDB.TryGetEntity<Tractorable>(bodyId.EGID, out _))
                 { // Invalid target - not tractorable

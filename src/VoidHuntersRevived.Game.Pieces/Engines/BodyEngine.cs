@@ -28,6 +28,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
                 IdMap bodyId = this.Simulation.Entities.GetIdMap(ids[index], groupID);
+                bodies[index].Id = bodyId.VhId;
 
                 this.Simulation.Space.GetOrCreateBody(bodyId.VhId);
             }
@@ -39,9 +40,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                IdMap bodyId = this.Simulation.Entities.GetIdMap(ids[index], groupID);
-
-                this.Simulation.Space.RemoveBody(bodyId.VhId);
+                this.Simulation.Space.RemoveBody(bodies[index].Id);
             }
         }
 

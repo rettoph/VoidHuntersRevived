@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
     {
         public void Process(VhId eventId, DestroyNode data)
         {
-            this.Simulation.Entities.Destroy(data.NodeId);
+            // this.Simulation.Entities.Destroy(data.NodeId);
         }
     }
 }

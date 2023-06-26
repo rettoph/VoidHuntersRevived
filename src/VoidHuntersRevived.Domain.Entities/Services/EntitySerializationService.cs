@@ -124,7 +124,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             VhId vhid = reader.ReadVhId();
             EntityType type = _types.GetById(reader.ReadUnmanaged<VhId>());
 
-            return _entities.Create(type, vhid, (ref EntityInitializer initializer) =>
+            return _entities.Create(type, vhid, (IWorld world, ref EntityInitializer initializer) =>
             {
                 type.Descriptor.Deserialize(reader, ref initializer);
 
