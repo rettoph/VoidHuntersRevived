@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Serilog;
 using Svelto.ECS;
 using System;
 using System.Collections.Generic;
@@ -9,15 +10,20 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Simulations.Services
 {
     public sealed class EventPublishingService
     {
         private readonly Dictionary<Type, SimulationEventPublisher> _publishers;
+        private readonly HashCache<VhId> _publishedEvents;
+        private readonly ILogger _logger;
 
-        public EventPublishingService(IEnumerable<IEventEngine> systems)
+        public EventPublishingService(ILogger logger, IEnumerable<IEventEngine> systems)
         {
+            _logger = logger;
+            _publishedEvents = new HashCache<VhId>(TimeSpan.FromSeconds(10));
             Dictionary<Type, List<IEventEngine>> subscriptions = new Dictionary<Type, List<IEventEngine>>();
             foreach (IEventEngine system in systems)
             {
@@ -36,13 +42,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             foreach ((Type type, List<IEventEngine> subscribers) in subscriptions)
             {
                 Type publisherType = typeof(SimulationEventPublisher<>).MakeGenericType(type);
-                SimulationEventPublisher publisher = (SimulationEventPublisher)Activator.CreateInstance(publisherType, new[] { subscribers })!;
+                SimulationEventPublisher publisher = (SimulationEventPublisher)Activator.CreateInstance(publisherType, new object[] { _logger, subscribers })!;
                 _publishers.Add(type, publisher);
             }
         }
 
         public void Publish(EventDto @event)
         {
+            if(_publishedEvents.Add(@event.Id) > 1)
+            {
+                _logger.Warning($"{nameof(SimulationEventPublisher)}::{nameof(Publish)} - Duplicate event '{@event.Data.GetType().Name}', '{@event.Id.Value}'");
+                //return;
+            }
+
             if(!_publishers.TryGetValue(@event.Data.GetType(), out SimulationEventPublisher? publisher))
             {
                 return;
@@ -61,6 +73,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             publisher.Revert(@event);
         }
 
+        public void Clean()
+        {
+            _publishedEvents.Prune();
+        }
+
         private abstract class SimulationEventPublisher
         {
             public abstract void Publish(EventDto @event);
@@ -71,9 +88,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         {
             private readonly IEventEngine<T>[] _subscribers;
             private readonly IRevertEventEngine<T>[] _reverters;
+            private readonly ILogger _logger;
 
-            public SimulationEventPublisher(List<IEventEngine> subscribers)
+            public SimulationEventPublisher(ILogger logger, List<IEventEngine> subscribers)
             {
+                _logger = logger;
                 _subscribers = subscribers.OfType<IEventEngine<T>>().ToArray();
                 _reverters = subscribers.OfType<IRevertEventEngine<T>>().ToArray();
             }
@@ -98,6 +117,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
             private void Revert(in VhId id, T data)
             {
+                if(_reverters.Length == 0)
+                {
+                    return;
+                }
+
+                _logger.Verbose($"{nameof(SimulationEventPublisher)}::{nameof(Revert)} - Reverting '{typeof(T).Name}', '{id.Value}'");
                 foreach (IRevertEventEngine<T> reverter in _reverters)
                 {
                     reverter.Revert(id, data);

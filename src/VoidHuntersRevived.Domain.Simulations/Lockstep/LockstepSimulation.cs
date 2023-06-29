@@ -37,7 +37,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public LockstepSimulation(
             ISpaceFactory spaceFactory,
             IFilteredProvider filtered,
-            IBus bus) : base(SimulationType.Lockstep, spaceFactory, filtered, bus)
+            IBus bus,
+            ILogger logger) : base(SimulationType.Lockstep, spaceFactory, filtered, bus, logger)
 
         {
             _tickEngines = new TickEngineGroup(this.World.Engines.OfType<ITickEngine>());
@@ -64,6 +65,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             {
                 this.DoTick(next);
             }
+
+            this.publisher.Clean();
         }
 
         protected abstract bool TryGetNextTick(Tick current, [MaybeNullWhen(false)] out Tick next);

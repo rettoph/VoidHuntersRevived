@@ -32,7 +32,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly Camera2D _camera;
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private readonly IResourceProvider _resources;
-        private readonly Color? _tint;
         private readonly Dictionary<Guid, VisibleRenderer> _renderers;
 
         public string name { get; } = nameof(VisibleNodesEngine);
@@ -43,16 +42,17 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _primitiveBatch = primitiveBatch;
             _resources = resources;
             _renderers = new Dictionary<Guid, VisibleRenderer>();
-            _tint = null;
         }
 
         public override void Initialize(ISimulation simulation)
         {
             base.Initialize(simulation);
 
+            Color? tint = simulation.Type == SimulationType.Lockstep ? Color.Blue : null;
+
             foreach((Resource resource, Visible visible) in _resources.GetAll<Visible>())
             {
-                _renderers.Add(resource.Id, new VisibleRenderer(_camera, _primitiveBatch, _resources, visible, _tint));
+                _renderers.Add(resource.Id, new VisibleRenderer(_camera, _primitiveBatch, _resources, visible, tint));
             }
         }
 

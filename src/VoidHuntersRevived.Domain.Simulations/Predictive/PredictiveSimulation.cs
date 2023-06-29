@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             IFiltered<ILockstepSimulation> lockstep,
             ISpaceFactory spaceFactory, 
             IFilteredProvider filtered, 
-            IBus bus) : base(SimulationType.Predictive, spaceFactory, filtered, bus)
+            IBus bus) : base(SimulationType.Predictive, spaceFactory, filtered, bus, logger)
         {
             _step = new Step();
             _lockstep = lockstep.Instance;

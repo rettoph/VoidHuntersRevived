@@ -90,7 +90,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
             if (prediction.Status == PredictionStatus.Unverified)
             {
-                _logger.Warning($"{nameof(PredictionService)}::{nameof(Prune)} - Reverting '{prediction.Event.Data.GetType().Name}', '{prediction.Event.Id.Value}'");
+                _logger.Warning($"{nameof(PredictionService)}::{nameof(Prune)} - Pruning '{prediction.Event.Data.GetType().Name}', '{prediction.Event.Id.Value}'");
                 _publisher.Revert(prediction.Event);
             }
 

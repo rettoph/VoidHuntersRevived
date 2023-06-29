@@ -19,6 +19,7 @@ using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Simulations.EnginesGroups;
 using VoidHuntersRevived.Common.Entities.Services;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Serilog;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
@@ -28,6 +29,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         private Queue<EventDto> _events;
 
         protected readonly EventPublishingService publisher;
+        protected readonly ILogger logger;
 
         public readonly SimulationType Type;
         public readonly ISpace Space;
@@ -42,13 +44,15 @@ namespace VoidHuntersRevived.Domain.Simulations
             SimulationType type,
             ISpaceFactory spaceFactory,
             IFilteredProvider filtered,
-            IBus bus)
+            IBus bus,
+            ILogger logger)
         {
             this.Type = type;
             this.Space = spaceFactory.Create();
             this.World = new World(bus, filtered, new SimulationState(this));
 
-            this.publisher = new EventPublishingService(this.World.Engines.OfType<IEventEngine>());
+            this.publisher = new EventPublishingService(logger, this.World.Engines.OfType<IEventEngine>());
+            this.logger = logger;
 
             _drawEnginesGroups = new DrawEngineGroups(this.World.Engines.OfType<IStepEngine<GameTime>>());
             _events = new Queue<EventDto>();

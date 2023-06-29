@@ -45,27 +45,17 @@ namespace VoidHuntersRevived.Game.Engines
 
         public void Revert(VhId eventId, TryCreateEntity data)
         {
-            _destroyedEntities.Add(data.EntityVhId);
             this.Simulation.Entities.Destroy(data.EntityVhId);
         }
 
         public void Process(VhId eventId, TryDestroyEntity data)
         {
-            _destroyedEntities.Add(data.EntityVhId);
             this.Simulation.Entities.Destroy(data.EntityVhId);
         }
 
         public void Revert(VhId eventId, TryDestroyEntity data)
         {
-            int destroyedCount = _destroyedEntities.Remove(data.EntityVhId);
-            if(destroyedCount != 0)
-            {
-                _logger.Verbose($"{nameof(EntityEngine)}::{nameof(Revert)}<{nameof(TryDestroyEntity)}> - Unable to revert entity destruction => {_destroyedEntities.Count(data.EntityVhId)}");
-
-                return;
-            }
-
-            this.Simulation.Entities.Serialization.Deserialize(data.Backup);
+            // this.Simulation.Entities.Serialization.Deserialize(data.Backup);
         }
     }
 }

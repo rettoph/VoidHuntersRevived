@@ -5,6 +5,7 @@ using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -35,7 +36,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             ISettingProvider settings, 
             ISpaceFactory spaceFactory,
             IFilteredProvider filtered,
-            IBus bus) : base(spaceFactory, filtered, bus)
+            IBus bus,
+            ILogger logger) : base(spaceFactory, filtered, bus, logger)
         {
             Fix64 stepInterval = settings.Get<Fix64>(Settings.StepInterval).Value;
 
