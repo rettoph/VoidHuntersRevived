@@ -55,7 +55,7 @@ namespace VoidHuntersRevived.Game.Engines
 
         public void Revert(VhId eventId, TryDestroyEntity data)
         {
-            // this.Simulation.Entities.Serialization.Deserialize(data.Backup);
+            this.Simulation.Entities.Serialization.Deserialize(data.Backup);
         }
     }
 }

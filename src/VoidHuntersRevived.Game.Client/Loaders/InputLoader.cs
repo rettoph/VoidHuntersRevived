@@ -10,7 +10,6 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Game.Client.Constants;
 using Guppy.MonoGame.Messages;
-using VoidHuntersRevived.Common.Simulations.Components;
 using VoidHuntersRevived.Game.Common.Events;
 using VoidHuntersRevived.Game.Enums;
 using Guppy.Input.Enums;
@@ -35,16 +34,6 @@ namespace VoidHuntersRevived.Game.Client.Loaders
 {
                 (ButtonState.Pressed, new SetTractorBeamEmitterActiveInput(true)),
                 (ButtonState.Released, new SetTractorBeamEmitterActiveInput(false))
-            });
-
-            services.AddInput(Inputs.ToggleLockstep, Keys.F12, new[]
-            {
-                (KeyState.Up, Toggle<Lockstep>.Instance)
-            });
-
-            services.AddInput(Inputs.TogglePredictive, Keys.F11, new[]
-            {
-                (KeyState.Up, Toggle<Predictive>.Instance)
             });
         }
 
