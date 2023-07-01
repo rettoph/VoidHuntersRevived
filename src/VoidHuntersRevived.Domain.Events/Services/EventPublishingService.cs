@@ -8,22 +8,21 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Common.Events;
+using VoidHuntersRevived.Common.Events.Engines;
+using VoidHuntersRevived.Common.Events.Services;
 using VoidHuntersRevived.Common.Utilities;
 
-namespace VoidHuntersRevived.Domain.Simulations.Services
+namespace VoidHuntersRevived.Domain.Events.Services
 {
-    public sealed class EventPublishingService
+    public sealed class EventPublishingService : IEventPublishingService
     {
         private readonly Dictionary<Type, SimulationEventPublisher> _publishers;
-        private readonly HashCache<VhId> _publishedEvents;
         private readonly ILogger _logger;
 
         public EventPublishingService(ILogger logger, IEnumerable<IEventEngine> systems)
         {
             _logger = logger;
-            _publishedEvents = new HashCache<VhId>(TimeSpan.FromSeconds(10));
             Dictionary<Type, List<IEventEngine>> subscriptions = new Dictionary<Type, List<IEventEngine>>();
             foreach (IEventEngine system in systems)
             {
@@ -49,12 +48,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
         public void Publish(EventDto @event)
         {
-            if(_publishedEvents.Add(@event.Id) > 1)
-            {
-                _logger.Warning($"{nameof(SimulationEventPublisher)}::{nameof(Publish)} - Duplicate event '{@event.Data.GetType().Name}', '{@event.Id.Value}'");
-                //return;
-            }
-
             if(!_publishers.TryGetValue(@event.Data.GetType(), out SimulationEventPublisher? publisher))
             {
                 return;
@@ -71,11 +64,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             }
 
             publisher.Revert(@event);
-        }
-
-        public void Clean()
-        {
-            _publishedEvents.Prune();
         }
 
         private abstract class SimulationEventPublisher

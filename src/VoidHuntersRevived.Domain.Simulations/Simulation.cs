@@ -18,8 +18,11 @@ using VoidHuntersRevived.Domain.Entities;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Simulations.EnginesGroups;
 using VoidHuntersRevived.Common.Entities.Services;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using Serilog;
+using VoidHuntersRevived.Common.Events;
+using VoidHuntersRevived.Common.Events.Engines;
+using VoidHuntersRevived.Common.Events.Services;
+using VoidHuntersRevived.Domain.Events.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
@@ -28,41 +31,41 @@ namespace VoidHuntersRevived.Domain.Simulations
         private readonly DrawEngineGroups _drawEnginesGroups;
         private Queue<EventDto> _events;
 
-        protected readonly EventPublishingService publisher;
         protected readonly ILogger logger;
 
         public readonly SimulationType Type;
         public readonly ISpace Space;
-        public readonly World World;
+        public readonly IEngineService Engines;
+        public readonly EventPublishingService Events;
 
         SimulationType ISimulation.Type => this.Type;
         ISpace ISimulation.Space => this.Space;
-        IWorld ISimulation.World => this.World;
-        IEntityService ISimulation.Entities => this.World.Entities;
+        IEngineService ISimulation.Engines => this.Engines;
+        IEntityService ISimulation.Entities => this.Engines.Entities;
+        IEntitySerializationService ISimulation.Serialization => this.Engines.Serialization;
+        IEventPublishingService ISimulation.Events => this.Events;
 
         protected Simulation(
             SimulationType type,
             ISpaceFactory spaceFactory,
-            IFilteredProvider filtered,
+            IEngineService engines,
             IBus bus,
             ILogger logger)
         {
             this.Type = type;
             this.Space = spaceFactory.Create();
-            this.World = new World(bus, filtered, new SimulationState(this));
+            this.Engines = engines.Initialize(new SimulationState(this));
+            this.Events = new EventPublishingService(logger, this.Engines.OfType<IEventEngine>());
 
-            this.publisher = new EventPublishingService(logger, this.World.Engines.OfType<IEventEngine>());
             this.logger = logger;
 
-            _drawEnginesGroups = new DrawEngineGroups(this.World.Engines.OfType<IStepEngine<GameTime>>());
+            _drawEnginesGroups = new DrawEngineGroups(this.Engines.OfType<IStepEngine<GameTime>>());
             _events = new Queue<EventDto>();
         }
 
         public virtual void Initialize(ISimulationService simulations)
         {
-            this.World.Initialize();
-
-            foreach(ISimulationEngine<ISimulation> engine in this.World.Engines.OfType<ISimulationEngine<ISimulation>>())
+            foreach(ISimulationEngine<ISimulation> engine in this.Engines.OfType<ISimulationEngine<ISimulation>>())
             {
                 engine.Initialize(this);
             }
@@ -70,7 +73,7 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public virtual void Dispose()
         {
-            this.World.Dispose();
+            this.Engines.Dispose();
         }
 
         public virtual void Draw(GameTime realTime)
@@ -89,10 +92,10 @@ namespace VoidHuntersRevived.Domain.Simulations
         protected abstract bool TryGetNextStep(GameTime realTime, [MaybeNullWhen(false)] out Step step);
         protected virtual void DoStep(Step step)
         {
-            this.World.Step(step);
+            this.Engines.Step(step);
         }
 
-        protected abstract void Publish(EventDto data);
+        public abstract void Publish(EventDto data);
 
         public void Publish(VhId eventId, IEventData data)
         {

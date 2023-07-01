@@ -14,6 +14,8 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Constants;
+using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Events;
 using VoidHuntersRevived.Common.Physics.Factories;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
@@ -36,9 +38,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public LockstepSimulation_Server(
             ISettingProvider settings, 
             ISpaceFactory spaceFactory,
-            IFilteredProvider filtered,
+            IEngineService engines,
             IBus bus,
-            ILogger logger) : base(spaceFactory, filtered, bus, logger)
+            ILogger logger) : base(spaceFactory, engines, bus, logger)
         {
             Fix64 stepInterval = settings.Get<Fix64>(Settings.StepInterval).Value;
 

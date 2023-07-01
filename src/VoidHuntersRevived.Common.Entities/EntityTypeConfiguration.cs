@@ -35,9 +35,9 @@ namespace VoidHuntersRevived.Common.Entities
             return this;
         }
 
-        public void Initialize(IEntityService entities, ref EntityInitializer initializer)
+        public void Initialize(IEngineService engines, ref EntityInitializer initializer)
         {
-            _initializer?.Invoke(entities, ref initializer);
+            _initializer?.Invoke(engines, ref initializer);
         }
     }
 }

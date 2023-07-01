@@ -9,6 +9,7 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Serialization;
+using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.EnginesGroups
 {
@@ -24,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Entities.EnginesGroups
     {
         private FasterList<ISerializationEngine<T>> _engines;
 
-        public SerializationEnginesGroup(IEnumerable<IEngine> engines)
+        public SerializationEnginesGroup(IEngineService engines)
         {
             _engines = new FasterList<ISerializationEngine<T>>(engines.OfType<ISerializationEngine<T>>().ToArray());
         }

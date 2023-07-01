@@ -6,13 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Services;
 
-namespace VoidHuntersRevived.Common.Entities
+namespace VoidHuntersRevived.Common.Entities.Engines
 {
-    public interface IWorld
+    public interface IEnginesGroupEngine : IEngine
     {
-        IEntityService Entities { get; }
-        IEngine[] Engines { get; }
-
-        void Step(Step step);
+        void Initialize(IEngineService engines);
     }
 }

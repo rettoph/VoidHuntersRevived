@@ -46,7 +46,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
             manager.AddScoped<TickBuffer>();
 
             services.AddNetMessageType<Tick>(DeliveryMethod.ReliableUnordered, 0);
-            services.AddNetMessageType<EventDto>(DeliveryMethod.ReliableUnordered, 0);
             services.AddNetMessageType<TickHistoryStart>(DeliveryMethod.ReliableOrdered, 0);
             services.AddNetMessageType<TickHistoryItem>(DeliveryMethod.ReliableOrdered, 0);
             services.AddNetMessageType<TickHistoryEnd>(DeliveryMethod.ReliableOrdered, 0);

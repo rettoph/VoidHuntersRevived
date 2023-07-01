@@ -19,6 +19,8 @@ using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using VoidHuntersRevived.Domain.Simulations.Messages.Commands;
+using VoidHuntersRevived.Common.Events;
+using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
@@ -36,12 +38,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public LockstepSimulation(
             ISpaceFactory spaceFactory,
-            IFilteredProvider filtered,
+            IEngineService engines,
             IBus bus,
-            ILogger logger) : base(SimulationType.Lockstep, spaceFactory, filtered, bus, logger)
+            ILogger logger) : base(SimulationType.Lockstep, spaceFactory, engines, bus, logger)
 
         {
-            _tickEngines = new TickEngineGroup(this.World.Engines.OfType<ITickEngine>());
+            _tickEngines = new TickEngineGroup(this.Engines.OfType<ITickEngine>());
             _history = new List<Tick>();
 
             this.CurrentTick = Tick.First();
@@ -51,7 +53,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         {
             base.Initialize(simulations);
 
-            foreach (ISimulationEngine<ILockstepSimulation> system in this.World.Engines.OfType<ISimulationEngine<ILockstepSimulation>>())
+            foreach (ISimulationEngine<ILockstepSimulation> system in this.Engines.OfType<ISimulationEngine<ILockstepSimulation>>())
             {
                 system.Initialize(this);
             }
@@ -65,8 +67,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             {
                 this.DoTick(next);
             }
-
-            this.publisher.Clean();
         }
 
         protected abstract bool TryGetNextTick(Tick current, [MaybeNullWhen(false)] out Tick next);
@@ -89,11 +89,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _history.Add(tick);
         }
 
-        protected override void Publish(EventDto data)
+        public override void Publish(EventDto data)
         {
-            this.publisher.Publish(data);
-
             this.OnEvent?.Invoke(data);
+
+            this.Events.Publish(data);
         }
     }
 }

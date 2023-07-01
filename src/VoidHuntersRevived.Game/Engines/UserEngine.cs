@@ -11,7 +11,9 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Events;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Events.Engines;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Events;
 using VoidHuntersRevived.Domain.Entities.Engines;
@@ -39,16 +41,27 @@ namespace VoidHuntersRevived.Game.Engines
         public void Process(VhId id, UserJoined data)
         {
             VhId shipId = _scope.Peer!.Users.UpdateOrCreate(data.UserId, data.Claims).GetUserShipId();
+            VhId square1Id = id.Create(1);
+            VhId square2Id = id.Create(2);
 
-            this.Simulation.Entities.Create(EntityTypes.UserShip, shipId, (IEntityService entities, ref EntityInitializer initializer) =>
-            {
-                initializer.Get<Tree>().HeadId = entities.Create(PieceTypes.HullSquare, id.Create(1)).VhId;
-            });
+            this.Simulation.Publish(CreateEntity.CreateEvent(PieceTypes.HullSquare, square1Id));
+            this.Simulation.Publish(CreateEntity.CreateEvent(PieceTypes.HullSquare, square2Id));
 
-            this.Simulation.Entities.Create(EntityTypes.Chain, id.Create(2), (IEntityService entities, ref EntityInitializer initializer) =>
-            {
-                initializer.Get<Tree>().HeadId = entities.Create(PieceTypes.HullSquare, id.Create(3)).VhId;
-            });
+            this.Simulation.Publish(CreateEntity.CreateEvent(
+                type: EntityTypes.UserShip,
+                vhid: shipId,
+                initializer: (IEngineService engines, ref EntityInitializer initializer) =>
+                {
+                    initializer.Get<Tree>().HeadId = square1Id;
+                }));
+
+            this.Simulation.Publish(CreateEntity.CreateEvent(
+                type: EntityTypes.Chain,
+                vhid: id.Create(3),
+                initializer: (IEngineService engines, ref EntityInitializer initializer) =>
+                {
+                    initializer.Get<Tree>().HeadId = square2Id;
+                }));
         }
     }
 }

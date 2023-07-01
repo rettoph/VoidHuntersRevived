@@ -2,9 +2,9 @@
 using Guppy.Network;
 using Guppy.Network.Providers;
 using LiteNetLib.Utils;
-using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Events;
 
-namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
+namespace VoidHuntersRevived.Domain.Events.Serialization.NetSerializers
 {
     [AutoLoad]
     internal sealed class EventDtoNetSerializer : NetSerializer<EventDto>

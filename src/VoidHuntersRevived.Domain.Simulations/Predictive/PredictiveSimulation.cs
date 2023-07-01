@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Events;
 using VoidHuntersRevived.Common.Physics.Factories;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
@@ -31,13 +33,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             ILogger logger,
             IFiltered<ILockstepSimulation> lockstep,
             ISpaceFactory spaceFactory, 
-            IFilteredProvider filtered, 
-            IBus bus) : base(SimulationType.Predictive, spaceFactory, filtered, bus, logger)
+            IEngineService engines, 
+            IBus bus) : base(SimulationType.Predictive, spaceFactory, engines, bus, logger)
         {
             _step = new Step();
             _lockstep = lockstep.Instance;
             _synchronizations = Array.Empty<IPredictiveSynchronizationEngine>();
-            _predictions = new PredictionService(logger, this.publisher);
+            _predictions = new PredictionService(logger, this.Events);
             _verifiableEvents = new Queue<EventDto>();
         }
 
@@ -46,7 +48,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             base.Initialize(simulations);
 
             _lockstep.OnEvent += this.HandleLockstepTick;
-            _synchronizations = this.World.Engines.OfType<IPredictiveSynchronizationEngine>().ToArray();
+            _synchronizations = this.Engines.OfType<IPredictiveSynchronizationEngine>().ToArray();
         }
 
         protected override bool TryGetNextStep(GameTime realTime, [MaybeNullWhen(false)] out Step step)
@@ -82,7 +84,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             }
         }
 
-        protected override void Publish(EventDto data)
+        public override void Publish(EventDto data)
         {
             _predictions.Predict(data);
         }

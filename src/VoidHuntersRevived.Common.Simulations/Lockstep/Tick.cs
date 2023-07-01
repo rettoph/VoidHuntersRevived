@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Events;
 
 namespace VoidHuntersRevived.Common.Simulations.Lockstep
 {

@@ -2,6 +2,7 @@
 using Guppy.Common.DependencyInjection;
 using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
+using Svelto.ECS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,15 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
             {
                 manager.AddSingleton<EntityTypeService>()
                     .AddAlias<IEntityTypeService>();
+
+                manager.AddTransient<EngineService>()
+                    .AddAlias<IEngineService>();
+
+                manager.AddTransient<EntityService>()
+                    .AddAlias<IEngine>();
+
+                manager.AddTransient<EntitySerializationService>()
+                    .AddAlias<IEngine>();
             });
         }
     }

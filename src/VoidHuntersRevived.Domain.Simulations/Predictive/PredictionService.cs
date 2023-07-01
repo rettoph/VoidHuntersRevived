@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Events;
+using VoidHuntersRevived.Common.Events.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
 using VoidHuntersRevived.Domain.Simulations.Services;
@@ -14,13 +16,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
     internal class PredictionService
     {
         private readonly ILogger _logger;
-        private readonly EventPublishingService _publisher;
+        private readonly IEventPublishingService _publisher;
         private readonly Dictionary<VhId, Prediction> _dict;
         private readonly Prediction[] _buffer;
         private int _tail;
         private int _head;
 
-        public PredictionService(ILogger logger, EventPublishingService publisher)
+        public PredictionService(ILogger logger, IEventPublishingService publisher)
         {
             _logger = logger;
             _publisher = publisher;

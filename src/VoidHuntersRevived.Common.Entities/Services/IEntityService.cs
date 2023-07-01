@@ -6,11 +6,6 @@ namespace VoidHuntersRevived.Common.Entities.Services
 {
     public interface IEntityService
     {
-        IEntitySerializationService Serialization { get; }
-
-        IdMap Create(EntityType type, VhId id);
-        IdMap Create(EntityType type, VhId id, EntityInitializerDelegate initializer);
-
         IdMap GetIdMap(VhId vhid);
         IdMap GetIdMap(EGID egid);
         IdMap GetIdMap(uint entityId, ExclusiveGroupStruct groupId);
@@ -18,10 +13,6 @@ namespace VoidHuntersRevived.Common.Entities.Services
         bool TryGetIdMap(VhId vhid, out IdMap id);
         bool TryGetIdMap(EGID egid, out IdMap id);
         bool TryGetIdMap(uint entityId, ExclusiveGroupStruct groupId, out IdMap id);
-
-        void Destroy(VhId id);
-
-        void Clean();
 
         EntityType GetEntityType(VhId entityVhId);
     }

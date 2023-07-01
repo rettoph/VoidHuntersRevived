@@ -1,4 +1,5 @@
-﻿using Svelto.DataStructures;
+﻿using Guppy.Attributes;
+using Svelto.DataStructures;
 using Svelto.ECS;
 using System;
 using System.Collections.Generic;
@@ -12,42 +13,47 @@ using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Domain.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Engines;
 using VoidHuntersRevived.Domain.Entities.EnginesGroups;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    internal sealed class EntitySerializationService : IEntitySerializationService, IQueryingEntitiesEngine
+    internal sealed class EntitySerializationService : IEntitySerializationService, IEnginesGroupEngine
     {
         private readonly EntityService _entities;
         private readonly EntityTypeService _types;
-        private readonly Dictionary<EntityType, FasterList<SerializationEnginesGroup>> _serializationEngines;
+        private Dictionary<EntityType, FasterList<SerializationEnginesGroup>> _serializationEngines;
+
+        public EntitiesDB entitiesDB { get; set; } = null!;
 
         public EntitySerializationService(
             EntityService entities, 
-            EntityTypeService types,
-            IEnumerable<IEngine> engines)
+            EntityTypeService types)
         {
             _entities = entities;
             _types = types;
+            _serializationEngines = null!;
+        }
 
+        public void Initialize(IEngineService engines)
+        {
             // Create all OnCloneEnginee groups via reflection
             Dictionary<Type, SerializationEnginesGroup> componentCloneEngineGroups = new Dictionary<Type, SerializationEnginesGroup>();
-            foreach (IEngine engine in engines)
+            foreach (IEngine engine in engines.All())
             {
-                foreach (Type onCloneEngineType in engine.GetType().GetConstructedGenericTypes(typeof(ISerializationEngine<>)))
+                foreach (Type serializationEngineType in engine.GetType().GetConstructedGenericTypes(typeof(ISerializationEngine<>)))
                 {
-                    Type componentType = onCloneEngineType.GenericTypeArguments[0];
+                    Type componentType = serializationEngineType.GenericTypeArguments[0];
 
                     if (componentCloneEngineGroups.ContainsKey(componentType))
                     {
                         continue;
                     }
 
-                    Type onCloneEnginesGroupType = typeof(SerializationEnginesGroup<>).MakeGenericType(componentType);
-                    componentCloneEngineGroups.Add(componentType, (SerializationEnginesGroup)Activator.CreateInstance(onCloneEnginesGroupType, engines)!);
+                    Type serializationEngineTypeGroup = typeof(SerializationEnginesGroup<>).MakeGenericType(componentType);
+                    componentCloneEngineGroups.Add(componentType, (SerializationEnginesGroup)Activator.CreateInstance(serializationEngineTypeGroup, engines)!);
                 }
-
             }
 
             _serializationEngines = _types.GetAllConfigurations().ToDictionary(
@@ -65,12 +71,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
                     return new FasterList<SerializationEnginesGroup>(serializationEnginesGroups);
                 });
-        }
-
-        public EntitiesDB entitiesDB { get; set; } = null!;
-
-        public void Ready()
-        {
         }
 
         public EntityData Serialize(IdMap id)
@@ -124,7 +124,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             VhId vhid = reader.ReadVhId();
             EntityType type = _types.GetById(reader.ReadUnmanaged<VhId>());
 
-            return _entities.Create(type, vhid, (IEntityService entities, ref EntityInitializer initializer) =>
+            return _entities.Create(type, vhid, (IEngineService engines, ref EntityInitializer initializer) =>
             {
                 type.Descriptor.Deserialize(reader, ref initializer);
 

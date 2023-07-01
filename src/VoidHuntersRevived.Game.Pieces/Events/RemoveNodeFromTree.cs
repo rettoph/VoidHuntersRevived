@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Events;
 
 namespace VoidHuntersRevived.Game.Pieces.Events
 {

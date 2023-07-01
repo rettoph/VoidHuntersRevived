@@ -25,12 +25,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
     internal class LockstepServer_UserEngine : BasicEngine
     {
         private readonly NetScope _scope;
-        private readonly ISimulationService _simulations;
 
-        public LockstepServer_UserEngine(NetScope scope, ISimulationService simulations)
+        public LockstepServer_UserEngine(NetScope scope)
         {
             _scope = scope;
-            _simulations = simulations;
         }
 
         public override void Initialize(ISimulation simulation)

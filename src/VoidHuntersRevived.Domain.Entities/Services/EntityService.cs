@@ -15,53 +15,46 @@ using VoidHuntersRevived.Common.Messages;
 using VoidHuntersRevived.Domain.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Abstractions;
 using VoidHuntersRevived.Domain.Entities.EnginesGroups;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    internal sealed class EntityService : IEntityService, IQueryingEntitiesEngine
+    internal sealed partial class EntityService : IEntityService, IEngine, IEnginesGroupEngine
     {
-        private readonly IWorld _world;
+        private IEngineService _engines;
+        private IEntityFactory _factory;
+        private IEntityFunctions _functions;
         private readonly EntityTypeService _entityTypes;
-        private readonly IEntityFactory _factory;
-        private readonly IEntityFunctions _functions;
-        private readonly SimpleEntitiesSubmissionScheduler _submission;
         private readonly DoubleDictionary<VhId, EGID, IdMap> _ids;
         private readonly Dictionary<VhId, EntityType> _types;
-        private readonly EntitySerializationService _serialization;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
-        public IEntitySerializationService Serialization => _serialization;
-
-        public EntityService(
-            IWorld world,
-            EntityTypeService entityTypes,
-            IEntityFactory factory,
-            IEntityFunctions functions,
-            SimpleEntitiesSubmissionScheduler sumbission)
+        public EntityService(EntityTypeService entityTypes)
         {
-            _world = world;
+            _engines = null!;
+            _factory = null!;
+            _functions = null!;
             _entityTypes = entityTypes;
-            _factory = factory;
-            _functions = functions;
-            _submission = sumbission;
             _ids = new DoubleDictionary<VhId, EGID, IdMap>();
             _types = new Dictionary<VhId, EntityType>();
-            _serialization = new EntitySerializationService(this, _entityTypes, _world.Engines);
         }
 
-        public void Ready()
+        public void Initialize(IEngineService engines)
         {
-            _serialization.entitiesDB = this.entitiesDB;
-            _serialization.Ready();
+            _engines = engines;
+            _factory = engines.Root.GenerateEntityFactory();
+            _functions = engines.Root.GenerateEntityFunctions();
         }
 
-        public IdMap Create(EntityType type, VhId vhid)
+        internal IdMap Create(EntityType type, VhId vhid, EntityInitializerDelegate? initializerDelegate)
         {
             EntityInitializer initializer = type.CreateEntity(_factory);
 
             initializer.Init(new EntityVhId() { Value = vhid });
-            _entityTypes.GetConfiguration(type).Initialize(_world.Entities, ref initializer);
+            _entityTypes.GetConfiguration(type).Initialize(_engines, ref initializer);
+
+            initializerDelegate?.Invoke(_engines, ref initializer);
 
             IdMap idMap = new IdMap(initializer.EGID, vhid);
             _ids.TryAdd(vhid, initializer.EGID, idMap);
@@ -70,23 +63,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return idMap;
         }
 
-        public IdMap Create(EntityType type, VhId vhid, EntityInitializerDelegate initializerDelegate)
-        {
-            EntityInitializer initializer = type.CreateEntity(_factory);
-
-            initializer.Init(new EntityVhId() { Value = vhid });
-            _entityTypes.GetConfiguration(type).Initialize(_world.Entities, ref initializer);
-
-            initializerDelegate(_world.Entities, ref initializer);
-
-            IdMap idMap = new IdMap(initializer.EGID, vhid);
-            _ids.TryAdd(vhid, initializer.EGID, idMap);
-            _types.Add(vhid, type);
-
-            return idMap;
-        }
-
-        public void Destroy(VhId vhid)
+        internal void Destroy(VhId vhid)
         {
             if (!this.TryGetIdMap(vhid, out IdMap id))
             {
@@ -127,11 +104,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public bool TryGetIdMap(uint entityId, ExclusiveGroupStruct groupId, out IdMap id)
         {
             return _ids.TryGet(new EGID(entityId, groupId), out id);
-        }
-
-        public void Clean()
-        {
-            _submission.SubmitEntities();
         }
 
         public EntityType GetEntityType(VhId entityVhId)

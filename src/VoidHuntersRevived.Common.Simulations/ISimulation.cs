@@ -4,6 +4,8 @@ using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Events;
+using VoidHuntersRevived.Common.Events.Services;
 
 namespace VoidHuntersRevived.Common.Simulations
 {
@@ -11,8 +13,10 @@ namespace VoidHuntersRevived.Common.Simulations
     {
         SimulationType Type { get; }
         ISpace Space { get; }
-        IWorld World { get; }
         IEntityService Entities { get; }
+        IEntitySerializationService Serialization { get; }
+        IEngineService Engines { get; }
+        IEventPublishingService Events { get; }
 
         void Initialize(ISimulationService simulations);
 
@@ -20,6 +24,7 @@ namespace VoidHuntersRevived.Common.Simulations
 
         void Update(GameTime realTime);
 
+        void Publish(EventDto @event);
         void Publish(VhId eventId, IEventData data);
 
         void Input(VhId eventId, IInputData data);
