@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
+using VoidHuntersRevived.Common.Entities.Events;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Domain.Common.Components;
@@ -19,25 +20,32 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    internal sealed class EntitySerializationService : IEntitySerializationService, IEnginesGroupEngine
+    internal sealed class EntitySerializationService : IEntitySerializationService, IEnginesGroupEngine, IQueryingEntitiesEngine
     {
-        private readonly EntityService _entities;
         private readonly EntityTypeService _types;
         private Dictionary<EntityType, FasterList<SerializationEnginesGroup>> _serializationEngines;
+        private IEventPublishingService _events;
+        private IEntityService _entities;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
-        public EntitySerializationService(
-            EntityService entities, 
-            EntityTypeService types)
+        public EntitySerializationService(EntityTypeService types)
         {
-            _entities = entities;
             _types = types;
             _serializationEngines = null!;
+            _events = null!;
+            _entities = null!;
+        }
+
+        public void Ready()
+        {
         }
 
         public void Initialize(IEngineService engines)
         {
+            _events = engines.Events;
+            _entities = engines.Entities;
+
             // Create all OnCloneEnginee groups via reflection
             Dictionary<Type, SerializationEnginesGroup> componentCloneEngineGroups = new Dictionary<Type, SerializationEnginesGroup>();
             foreach (IEngine engine in engines.All())
@@ -124,7 +132,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             VhId vhid = reader.ReadVhId();
             EntityType type = _types.GetById(reader.ReadUnmanaged<VhId>());
 
-            return _entities.Create(type, vhid, (IEngineService engines, ref EntityInitializer initializer) =>
+            _events.Publish(CreateEntity.CreateEvent(type, vhid, (IEngineService engines, ref EntityInitializer initializer) =>
             {
                 type.Descriptor.Deserialize(reader, ref initializer);
 
@@ -132,7 +140,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 {
                     serializationEngineGroup.Deserialize(reader, ref initializer);
                 }
-            });
+            }));
+
+            return _entities.GetIdMap(vhid);
         }
 
         public EntityData Serialize(VhId vhid)
