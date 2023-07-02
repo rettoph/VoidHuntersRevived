@@ -19,10 +19,6 @@ using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Simulations.EnginesGroups;
 using VoidHuntersRevived.Common.Entities.Services;
 using Serilog;
-using VoidHuntersRevived.Common.Events;
-using VoidHuntersRevived.Common.Events.Engines;
-using VoidHuntersRevived.Common.Events.Services;
-using VoidHuntersRevived.Domain.Events.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
@@ -36,14 +32,14 @@ namespace VoidHuntersRevived.Domain.Simulations
         public readonly SimulationType Type;
         public readonly ISpace Space;
         public readonly IEngineService Engines;
-        public readonly EventPublishingService Events;
 
         SimulationType ISimulation.Type => this.Type;
         ISpace ISimulation.Space => this.Space;
         IEngineService ISimulation.Engines => this.Engines;
-        IEntityService ISimulation.Entities => this.Engines.Entities;
-        IEntitySerializationService ISimulation.Serialization => this.Engines.Serialization;
-        IEventPublishingService ISimulation.Events => this.Events;
+
+        public IEntityService Entities => this.Engines.Entities;
+        public IEntitySerializationService Serialization => this.Engines.Serialization;
+        public IEventPublishingService Events => this.Engines.Events;
 
         protected Simulation(
             SimulationType type,
@@ -54,8 +50,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             this.Type = type;
             this.Space = spaceFactory.Create();
-            this.Engines = engines.Initialize(new SimulationState(this));
-            this.Events = new EventPublishingService(logger, this.Engines.OfType<IEventEngine>());
+            this.Engines = engines.Load(new SimulationState(this));
 
             this.logger = logger;
 
@@ -65,6 +60,8 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public virtual void Initialize(ISimulationService simulations)
         {
+            this.Engines.Initialize();
+
             foreach(ISimulationEngine<ISimulation> engine in this.Engines.OfType<ISimulationEngine<ISimulation>>())
             {
                 engine.Initialize(this);

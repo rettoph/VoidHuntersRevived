@@ -4,8 +4,6 @@ using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Events;
-using VoidHuntersRevived.Common.Events.Services;
 
 namespace VoidHuntersRevived.Common.Simulations
 {

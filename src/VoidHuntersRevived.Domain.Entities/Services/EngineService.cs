@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Domain.Entities.Engines;
 using VoidHuntersRevived.Domain.Entities.EnginesGroups;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
@@ -27,6 +26,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private StepEnginesGroup _stepEngines;
 
         public EnginesRoot Root => _enginesRoot;
+
+        public IEventPublishingService Events { get; private set; }
 
         public IEntityService Entities { get; private set; }
 
@@ -43,16 +44,27 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             this.Entities = null!;
             this.Serialization = null!;
+            this.Events = null!;
         }
 
-        public IEngineService Initialize(params IState[] states)
+        public IEngineService Load(params IState[] states)
         {
             _engines = _filtered.Instances<IEngine>(states).Sort().ToArray();
+
+            this.Entities = this.Get<IEntityService>();
+            this.Serialization = this.Get<IEntitySerializationService>();
+            this.Events = this.Get<IEventPublishingService>();
+
+            return this;
+        }
+
+        public void Initialize()
+        {
             List<IStepEngine<Step>> stepEngines = new();
 
             foreach (IEngine engine in _engines)
             {
-                if(engine is IEnginesGroupEngine enginesGroup)
+                if (engine is IEnginesGroupEngine enginesGroup)
                 {
                     enginesGroup.Initialize(this);
                 }
@@ -62,7 +74,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                     _bus.Subscribe(subscriber);
                 }
 
-                if(engine is IStepEngine<Step> stepEngine)
+                if (engine is IStepEngine<Step> stepEngine)
                 {
                     stepEngines.Add(stepEngine);
                 }
@@ -71,11 +83,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
 
             _stepEngines = new StepEnginesGroup(stepEngines);
-
-            this.Entities = this.Get<IEntityService>();
-            this.Serialization = this.Get<IEntitySerializationService>();
-
-            return this;
         }
 
         public void Dispose()

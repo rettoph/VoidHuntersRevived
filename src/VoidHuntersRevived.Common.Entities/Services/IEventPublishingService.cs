@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Common.Events.Services
+namespace VoidHuntersRevived.Common.Entities.Services
 {
     public interface IEventPublishingService
     {

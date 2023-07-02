@@ -31,6 +31,9 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
 
                 manager.AddTransient<EntitySerializationService>()
                     .AddAlias<IEngine>();
+
+                manager.AddTransient<EventPublishingService>()
+                    .AddAlias<IEngine>();
             });
         }
     }

@@ -8,23 +8,28 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Events;
-using VoidHuntersRevived.Common.Events.Engines;
-using VoidHuntersRevived.Common.Events.Services;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Engines;
+using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Utilities;
 
-namespace VoidHuntersRevived.Domain.Events.Services
+namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    public sealed class EventPublishingService : IEventPublishingService
+    public sealed class EventPublishingService : IEventPublishingService, IEnginesGroupEngine
     {
-        private readonly Dictionary<Type, SimulationEventPublisher> _publishers;
+        private Dictionary<Type, SimulationEventPublisher> _publishers;
         private readonly ILogger _logger;
 
-        public EventPublishingService(ILogger logger, IEnumerable<IEventEngine> systems)
+        public EventPublishingService(ILogger logger)
         {
             _logger = logger;
+            _publishers = null!;
+        }
+
+        public void Initialize(IEngineService engines)
+        {
             Dictionary<Type, List<IEventEngine>> subscriptions = new Dictionary<Type, List<IEventEngine>>();
-            foreach (IEventEngine system in systems)
+            foreach (IEventEngine system in engines.OfType<IEventEngine>())
             {
                 foreach (Type subscriberType in system.GetType().GetConstructedGenericTypes(typeof(IEventEngine<>)))
                 {

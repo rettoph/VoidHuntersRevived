@@ -9,7 +9,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Events;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Events.Engines;
+using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;

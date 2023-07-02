@@ -16,6 +16,10 @@ namespace VoidHuntersRevived.Common.Simulations.Engines
         public TSimulation Simulation { get; private set; } = default!;
         public EntitiesDB entitiesDB { get; set; } = null!;
 
+        public BasicEngine()
+        {
+        }
+
         public virtual void Ready()
         {
         }

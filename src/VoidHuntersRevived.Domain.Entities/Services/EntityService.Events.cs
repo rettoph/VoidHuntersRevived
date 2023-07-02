@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Events;
-using VoidHuntersRevived.Common.Events.Engines;
+using VoidHuntersRevived.Common.Entities.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {

@@ -16,7 +16,7 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Events;
 using VoidHuntersRevived.Common.Entities.Serialization;
-using VoidHuntersRevived.Common.Events.Engines;
+using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
@@ -41,6 +41,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
         private HashSet<EGID> _removedNodes = new HashSet<EGID>();
 
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Tree> entities, ExclusiveGroupStruct groupID)
+        
         {
             var (trees, ids, _) = entities;
 

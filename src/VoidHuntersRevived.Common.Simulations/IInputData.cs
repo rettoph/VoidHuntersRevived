@@ -1,4 +1,4 @@
-﻿using VoidHuntersRevived.Common.Events;
+﻿using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Common.Simulations
 {

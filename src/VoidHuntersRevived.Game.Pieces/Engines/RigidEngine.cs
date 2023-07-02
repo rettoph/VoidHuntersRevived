@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.Events.Engines;
+using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Game.Pieces.Events;

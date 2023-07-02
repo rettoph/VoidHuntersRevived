@@ -7,9 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Events;
+using VoidHuntersRevived.Common.Entities;
 
-namespace VoidHuntersRevived.Domain.Events.Loaders
+namespace VoidHuntersRevived.Domain.Entities.Loaders
 {
     [AutoLoad]
     internal sealed class EventLoader : IServiceLoader

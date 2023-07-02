@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Constants;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Events;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Physics.Factories;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Lockstep;

@@ -1,7 +1,7 @@
 ﻿using Guppy.Common;
 using VoidHuntersRevived.Common;
 
-namespace VoidHuntersRevived.Common.Events
+namespace VoidHuntersRevived.Common.Entities
 {
     public class EventDto
     {

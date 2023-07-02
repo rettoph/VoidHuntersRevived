@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Common.Events
+namespace VoidHuntersRevived.Common.Entities
 {
     public interface IEventData
     {
