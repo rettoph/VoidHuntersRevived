@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Svelto.ECS;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Services;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Common.Entities.Events
 {
@@ -15,7 +18,17 @@ namespace VoidHuntersRevived.Common.Entities.Events
         public required EntityType Type { get; init; }
         public required EntityInitializerDelegate? Initializer { get; init; }
 
-        public static EventDto CreateEvent(EntityType type, VhId vhid, EntityInitializerDelegate? initializer = null)
+        public static EventDto CreateEvent(EntityType type, VhId vhid)
+        {
+            return InternalCreateEvent(type, vhid, null);
+        }
+
+        public static EventDto CreateEvent(EntityType type, VhId vhid, EntityInitializerDelegate initializer)
+        {
+            return InternalCreateEvent(type, vhid, initializer);
+        }
+
+        private static EventDto InternalCreateEvent(EntityType type, VhId vhid, EntityInitializerDelegate? initializer)
         {
             return new EventDto()
             {

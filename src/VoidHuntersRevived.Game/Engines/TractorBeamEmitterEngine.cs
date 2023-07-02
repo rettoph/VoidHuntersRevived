@@ -70,14 +70,15 @@ namespace VoidHuntersRevived.Game.Engines
         public void Process(VhId eventId, SetTractorBeamTarget data)
         {
             VhId targetVhId = eventId.Create(1);
-            long headPosition = data.TargetData.Position;
+
+            IdMap headId = this.Simulation.Serialization.Deserialize(eventId, data.TargetData);
+
             this.Simulation.Publish(CreateEntity.CreateEvent(
                 type: EntityTypes.Chain,
                 vhid: targetVhId,
-                initializer: (IEngineService engines, ref EntityInitializer initializer) =>
+                initializer: (ref EntityInitializer initializer) =>
                 {
-                    data.TargetData.Position = headPosition;
-                    initializer.Get<Tree>().HeadId = engines.Serialization.Deserialize(eventId.Create(2), data.TargetData).VhId;
+                    initializer.Get<Tree>().HeadId = headId.VhId;
                 }));
         }
 

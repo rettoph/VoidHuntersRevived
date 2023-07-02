@@ -8,5 +8,5 @@ using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Common.Entities
 {
-    public delegate void EntityInitializerDelegate(IEngineService engines, ref EntityInitializer initializer);
+    public delegate void EntityInitializerDelegate(ref EntityInitializer initializer);
 }

@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Game.Engines
             this.Simulation.Publish(CreateEntity.CreateEvent(
                 type: EntityTypes.UserShip,
                 vhid: shipId,
-                initializer: (IEngineService engines, ref EntityInitializer initializer) =>
+                initializer: (ref EntityInitializer initializer) =>
                 {
                     initializer.Get<Tree>().HeadId = square1Id;
                 }));
@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Game.Engines
             this.Simulation.Publish(CreateEntity.CreateEvent(
                 type: EntityTypes.Chain,
                 vhid: id.Create(3),
-                initializer: (IEngineService engines, ref EntityInitializer initializer) =>
+                initializer: (ref EntityInitializer initializer) =>
                 {
                     initializer.Get<Tree>().HeadId = square2Id;
                 }));

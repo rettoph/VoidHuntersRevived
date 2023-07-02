@@ -1,4 +1,5 @@
 ﻿using Guppy.Common.Collections;
+using Serilog;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
@@ -27,10 +28,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly EntityTypeService _entityTypes;
         private readonly DoubleDictionary<VhId, EGID, IdMap> _ids;
         private readonly Dictionary<VhId, EntityType> _types;
+        private readonly ILogger _logger;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
-        public EntityService(EntityTypeService entityTypes)
+        public EntityService(EntityTypeService entityTypes, ILogger logger)
         {
             _engines = null!;
             _factory = null!;
@@ -38,6 +40,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _entityTypes = entityTypes;
             _ids = new DoubleDictionary<VhId, EGID, IdMap>();
             _types = new Dictionary<VhId, EntityType>();
+            _logger = logger;
         }
 
         public void Initialize(IEngineService engines)
@@ -45,35 +48,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _engines = engines;
             _factory = engines.Root.GenerateEntityFactory();
             _functions = engines.Root.GenerateEntityFunctions();
-        }
-
-        internal IdMap Create(EntityType type, VhId vhid, EntityInitializerDelegate? initializerDelegate)
-        {
-            EntityInitializer initializer = type.CreateEntity(_factory);
-
-            initializer.Init(new EntityVhId() { Value = vhid });
-            _entityTypes.GetConfiguration(type).Initialize(_engines, ref initializer);
-
-            initializerDelegate?.Invoke(_engines, ref initializer);
-
-            IdMap idMap = new IdMap(initializer.EGID, vhid);
-            _ids.TryAdd(vhid, initializer.EGID, idMap);
-            _types.Add(vhid, type);
-
-            return idMap;
-        }
-
-        internal void Destroy(VhId vhid)
-        {
-            if (!this.TryGetIdMap(vhid, out IdMap id))
-            {
-                return;
-            }
-
-            _types[vhid].DestroyEntity(_functions, in id.EGID);
-
-            _ids.Remove(id.VhId, id.EGID);
-            _types.Remove(id.VhId);
         }
 
         public IdMap GetIdMap(VhId vhid)
