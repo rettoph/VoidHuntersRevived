@@ -19,15 +19,17 @@ using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Simulations.EnginesGroups;
 using VoidHuntersRevived.Common.Entities.Services;
 using Serilog;
+using VoidHuntersRevived.Common.Entities.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
-    public abstract class Simulation : ISimulation, IDisposable
+    public abstract partial class Simulation : ISimulation, IDisposable
     {
         private readonly DrawEngineGroups _drawEnginesGroups;
         private Queue<EventDto> _events;
 
         protected readonly ILogger logger;
+        protected abstract EventValidity DefaultEventValidity { get; }
 
         public readonly SimulationType Type;
         public readonly ISpace Space;
@@ -92,7 +94,10 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.Engines.Step(step);
         }
 
-        public abstract void Publish(EventDto data);
+        public virtual void Publish(EventDto data)
+        {
+            this.Events.Publish(data, this.DefaultEventValidity);
+        }
 
         public void Publish(VhId eventId, IEventData data)
         {

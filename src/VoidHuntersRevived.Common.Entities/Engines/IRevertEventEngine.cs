@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Common.Entities.Engines
     {
     }
 
-    public interface IRevertEventEngine<T> : IRevertEventEngine, IEventEngine<T>
+    public interface IRevertEventEngine<T> : IRevertEventEngine
         where T : IEventData
     {
         void Revert(VhId eventId, T data);

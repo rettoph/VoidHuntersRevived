@@ -4,17 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities.Enums;
 
 namespace VoidHuntersRevived.Common.Entities.Engines
 {
-    public interface IEventEngine : IEngine
+    public interface IValidEventEngine : IEngine
     {
     }
 
-    public interface IEventEngine<T> : IEventEngine
+    public interface IVerifyEventEngine<T> : IValidEventEngine
         where T : IEventData
     {
-        void Process(VhId eventId, T data);
+        void Validate(VhId eventId, T data);
     }
 }

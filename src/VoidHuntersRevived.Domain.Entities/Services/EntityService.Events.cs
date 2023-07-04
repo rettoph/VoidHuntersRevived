@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         IEventEngine<DestroyEntity>,
         IRevertEventEngine<DestroyEntity>
     {
-        private Dictionary<VhId, EntityData> _backups;
+        private Dictionary<VhId, EntityData> _backups = new Dictionary<VhId, EntityData>();
 
         private IdMap Create(EntityType type, VhId vhid, EntityInitializerDelegate? initializerDelegate)
         {

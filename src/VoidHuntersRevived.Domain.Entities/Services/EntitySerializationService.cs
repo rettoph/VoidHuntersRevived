@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
+using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Common.Entities.Events;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Domain.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Engines;
 using VoidHuntersRevived.Domain.Entities.EnginesGroups;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -108,26 +108,26 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
         }
 
-        public IdMap Deserialize(VhId seed, EntityData data)
+        public IdMap Deserialize(VhId seed, EntityData data, EventValidity validity)
         {
-            return this.Deserialize((VhId?)seed, data);
+            return this.Deserialize((VhId?)seed, data, validity);
         }
 
-        public IdMap Deserialize(EntityData data)
+        public IdMap Deserialize(EntityData data, EventValidity validity)
         {
-            return this.Deserialize(null, data);
+            return this.Deserialize(null, data, validity);
         }
 
-        private IdMap Deserialize(VhId? seed, EntityData data)
+        private IdMap Deserialize(VhId? seed, EntityData data, EventValidity validity)
         {
             data.Position = 0;
             using (EntityReader reader = new EntityReader(seed, data))
             {
-                return this.Deserialize(reader);
+                return this.Deserialize(reader, validity);
             }
         }
 
-        public IdMap Deserialize(EntityReader reader)
+        public IdMap Deserialize(EntityReader reader, EventValidity validity)
         {
             VhId vhid = reader.ReadVhId();
             EntityType type = _types.GetById(reader.ReadUnmanaged<VhId>());
@@ -140,59 +140,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 {
                     serializationEngineGroup.Deserialize(reader, ref initializer);
                 }
-            }));
+            }), validity);
 
             return _entities.GetIdMap(vhid);
         }
-
-        public EntityData Serialize(VhId vhid)
-        {
-            return this.Serialize(_entities.GetIdMap(vhid));
-        }
-
-        public EntityData Serialize(EGID egid)
-        {
-            return this.Serialize(_entities.GetIdMap(egid));
-        }
-
-        public EntityData Serialize(uint entityId, ExclusiveGroupStruct groupId)
-        {
-            return this.Serialize(_entities.GetIdMap(entityId, groupId));
-        }
-
-        public void Serialize(VhId vhid, EntityWriter writer)
-        {
-            this.Serialize(_entities.GetIdMap(vhid), writer);
-        }
-
-        public void Serialize(EGID egid, EntityWriter writer)
-        {
-            this.Serialize(_entities.GetIdMap(egid), writer);
-        }
-
-        public void Serialize(uint entityId, ExclusiveGroupStruct groupId, EntityWriter writer)
-        {
-            this.Serialize(_entities.GetIdMap(entityId, groupId), writer);
-        }
-
-        /*            IdMap sourceId = _ids[sourceVhId];
-            EntityType type = _types[sourceVhId];
-            EntityInitializer initializer = type.CreateEntity(_factory);
-            initializer.Init(new EntityVhId() { Value = cloneId });
-
-            type.Descriptor.Clone(sourceId.EGID, this.entitiesDB, ref initializer);
-
-            IdMap cloneIdMap = new IdMap(initializer.EGID, cloneId);
-            _added.Enqueue(cloneIdMap);
-            _types.Add(cloneId, type);
-
-            var onCloneEngines = _onCloneEngines[type];
-            foreach(OnCloneEnginesGroup engines in onCloneEngines)
-            {
-                engines.Invoke(in sourceId, in cloneIdMap, ref initializer);
-            }
-
-            return cloneIdMap;
-        */
     }
 }

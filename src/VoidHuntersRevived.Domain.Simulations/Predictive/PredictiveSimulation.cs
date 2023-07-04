@@ -17,6 +17,7 @@ using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
+using VoidHuntersRevived.Common.Entities.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
@@ -28,6 +29,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         private IPredictiveSynchronizationEngine[] _synchronizations;
         private readonly PredictionService _predictions;
         private readonly Queue<EventDto> _verifiableEvents;
+
+        protected override EventValidity DefaultEventValidity { get; } = EventValidity.Unknown;
 
         public PredictiveSimulation(
             ILogger logger,

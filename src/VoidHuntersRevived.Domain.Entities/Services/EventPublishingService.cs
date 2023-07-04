@@ -10,20 +10,26 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
+using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Utilities;
+using VoidHuntersRevived.Domain.Entities.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
     public sealed class EventPublishingService : IEventPublishingService, IEnginesGroupEngine
     {
-        private Dictionary<Type, SimulationEventPublisher> _publishers;
+        private Dictionary<Type, EventPublisher> _publishers;
+        private Dictionary<VhId, EventDto> _unverifiedEvents;
         private readonly ILogger _logger;
+
+        public event OnEventDelegate<EventDto>? OnVerifiedEvent;
 
         public EventPublishingService(ILogger logger)
         {
             _logger = logger;
             _publishers = null!;
+            _unverifiedEvents = new Dictionary<VhId, EventDto>();
         }
 
         public void Initialize(IEngineService engines)
@@ -42,28 +48,43 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 }
             }
 
-            _publishers = new Dictionary<Type, SimulationEventPublisher>();
+            _publishers = new Dictionary<Type, EventPublisher>();
             foreach ((Type type, List<IEventEngine> subscribers) in subscriptions)
             {
-                Type publisherType = typeof(SimulationEventPublisher<>).MakeGenericType(type);
-                SimulationEventPublisher publisher = (SimulationEventPublisher)Activator.CreateInstance(publisherType, new object[] { _logger, subscribers })!;
+                Type publisherType = typeof(EventPublisher<>).MakeGenericType(type);
+                EventPublisher publisher = (EventPublisher)Activator.CreateInstance(publisherType, new object[] { _logger, subscribers })!;
                 _publishers.Add(type, publisher);
             }
         }
 
-        public void Publish(EventDto @event)
+        public void Publish(EventDto @event, EventValidity validity)
         {
-            if(!_publishers.TryGetValue(@event.Data.GetType(), out SimulationEventPublisher? publisher))
+            if (!_publishers.TryGetValue(@event.Data.GetType(), out EventPublisher? publisher))
             {
                 return;
             }
 
-            publisher.Publish(@event);
+            if (validity == EventValidity.Valid)
+            {
+                this.OnVerifiedEvent?.Invoke(@event);
+                publisher.Publish(@event);
+                publisher.Validate(@event);
+            }
+            else
+            {
+                publisher.Publish(@event);
+                _unverifiedEvents.Add(@event.Id, @event);
+            }
         }
 
-        public void Revert(EventDto @event)
+        public void Revert(VhId eventId)
         {
-            if (!_publishers.TryGetValue(@event.Data.GetType(), out SimulationEventPublisher? publisher))
+            if(!_unverifiedEvents.Remove(eventId, out EventDto? @event))
+            {
+                return;
+            }
+
+            if (!_publishers.TryGetValue(@event.Data.GetType(), out EventPublisher? publisher))
             {
                 return;
             }
@@ -71,56 +92,20 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             publisher.Revert(@event);
         }
 
-        private abstract class SimulationEventPublisher
+        public void Validate(VhId eventId)
         {
-            public abstract void Publish(EventDto @event);
-            public abstract void Revert(EventDto @event);
-        }
-        private class SimulationEventPublisher<T> : SimulationEventPublisher
-            where T : class, IEventData
-        {
-            private readonly IEventEngine<T>[] _subscribers;
-            private readonly IRevertEventEngine<T>[] _reverters;
-            private readonly ILogger _logger;
-
-            public SimulationEventPublisher(ILogger logger, List<IEventEngine> subscribers)
+            if (!_unverifiedEvents.Remove(eventId, out EventDto? @event))
             {
-                _logger = logger;
-                _subscribers = subscribers.OfType<IEventEngine<T>>().ToArray();
-                _reverters = subscribers.OfType<IRevertEventEngine<T>>().ToArray();
+                return;
             }
 
-            public override void Publish(EventDto @event)
+            if (!_publishers.TryGetValue(@event.Data.GetType(), out EventPublisher? publisher))
             {
-                this.Publish(@event.Id, Unsafe.As<T>(@event.Data));
+                return;
             }
 
-            private void Publish(in VhId id, T data)
-            {
-                foreach (IEventEngine<T> subscriber in _subscribers)
-                {
-                    subscriber.Process(id, data);
-                }
-            }
-
-            public override void Revert(EventDto @event)
-            {
-                this.Revert(@event.Id, Unsafe.As<T>(@event.Data));
-            }
-
-            private void Revert(in VhId id, T data)
-            {
-                if(_reverters.Length == 0)
-                {
-                    return;
-                }
-
-                _logger.Verbose($"{nameof(SimulationEventPublisher)}::{nameof(Revert)} - Reverting '{typeof(T).Name}', '{id.Value}'");
-                foreach (IRevertEventEngine<T> reverter in _reverters)
-                {
-                    reverter.Revert(id, data);
-                }
-            }
+            publisher.Validate(@event);
+            this.OnVerifiedEvent?.Invoke(@event);
         }
     }
 }

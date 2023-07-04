@@ -16,9 +16,6 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Events;
 using VoidHuntersRevived.Common.Entities.Serialization;
-using VoidHuntersRevived.Common.Entities.Engines;
-using VoidHuntersRevived.Common.Physics.Components;
-using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Game.Common;
 using VoidHuntersRevived.Game.Pieces;
@@ -154,12 +151,12 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
         public void Serialize(in Tree tree, EntityWriter writer)
         {
-            this.Simulation.Serialization.Serialize(tree.HeadId, writer);
+            this.Simulation.Serialize(tree.HeadId, writer);
         }
 
         public void Deserialize(EntityReader reader, ref Tree component)
         {
-            this.Simulation.Serialization.Deserialize(reader);
+            this.Simulation.Deserialize(reader);
         }
 
         // private void AddNodeToTree(in VhId eventId, in IdMap treeId, in Tree tree, in IdMap nodeId)

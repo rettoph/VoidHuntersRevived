@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Game.Engines
             this.Simulation.Publish(eventId.Create(tree.HeadId), new SetTractorBeamTarget()
             {
                 TractorBeamId = shipId.VhId,
-                TargetData = this.Simulation.Serialization.Serialize(tree.HeadId)
+                TargetData = this.Simulation.Serialize(tree.HeadId)
             });
 
             this.Simulation.Publish(DestroyEntity.CreateEvent(targetId.VhId));
@@ -71,7 +71,7 @@ namespace VoidHuntersRevived.Game.Engines
         {
             VhId targetVhId = eventId.Create(1);
 
-            IdMap headId = this.Simulation.Serialization.Deserialize(eventId, data.TargetData);
+            IdMap headId = this.Simulation.Deserialize(eventId, data.TargetData);
 
             this.Simulation.Publish(CreateEntity.CreateEvent(
                 type: EntityTypes.Chain,

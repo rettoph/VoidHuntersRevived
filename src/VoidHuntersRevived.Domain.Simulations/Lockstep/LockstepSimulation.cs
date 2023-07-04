@@ -19,6 +19,7 @@ using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Entities.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
@@ -32,7 +33,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public IEnumerable<Tick> History => _history;
 
-        public event OnEventDelegate<EventDto>? OnEvent;
+        protected override EventValidity DefaultEventValidity { get; } = EventValidity.Valid;
+
+        public event OnEventDelegate<EventDto>? OnEvent
+        {
+            add => this.Events.OnVerifiedEvent += value;
+            remove => this.Events.OnVerifiedEvent -= value;
+        }
 
         public LockstepSimulation(
             ISpaceFactory spaceFactory,
@@ -85,13 +92,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             }
 
             _history.Add(tick);
-        }
-
-        public override void Publish(EventDto data)
-        {
-            this.OnEvent?.Invoke(data);
-
-            this.Events.Publish(data);
         }
     }
 }
