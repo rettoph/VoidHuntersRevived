@@ -20,16 +20,16 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     public sealed class EventPublishingService : IEventPublishingService, IEnginesGroupEngine
     {
         private Dictionary<Type, EventPublisher> _publishers;
-        private Dictionary<VhId, EventDto> _unverifiedEvents;
+        private Dictionary<VhId, EventDto> _unconfirmedEvents;
         private readonly ILogger _logger;
 
-        public event OnEventDelegate<EventDto>? OnVerifiedEvent;
+        public event OnEventDelegate<EventDto>? OnEvent;
 
         public EventPublishingService(ILogger logger)
         {
             _logger = logger;
             _publishers = null!;
-            _unverifiedEvents = new Dictionary<VhId, EventDto>();
+            _unconfirmedEvents = new Dictionary<VhId, EventDto>();
         }
 
         public void Initialize(IEngineService engines)
@@ -57,29 +57,22 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
         }
 
-        public void Publish(EventDto @event, EventValidity validity)
+        public void Publish(EventDto @event)
         {
             if (!_publishers.TryGetValue(@event.Data.GetType(), out EventPublisher? publisher))
             {
                 return;
             }
 
-            if (validity == EventValidity.Valid)
-            {
-                this.OnVerifiedEvent?.Invoke(@event);
-                publisher.Publish(@event);
-                publisher.Validate(@event);
-            }
-            else
-            {
-                publisher.Publish(@event);
-                _unverifiedEvents.Add(@event.Id, @event);
-            }
+            this.OnEvent?.Invoke(@event);
+
+            publisher.Publish(@event);
+            _unconfirmedEvents.Add(@event.Id, @event);
         }
 
         public void Revert(VhId eventId)
         {
-            if(!_unverifiedEvents.Remove(eventId, out EventDto? @event))
+            if(!_unconfirmedEvents.Remove(eventId, out EventDto? @event))
             {
                 return;
             }
@@ -92,9 +85,17 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             publisher.Revert(@event);
         }
 
-        public void Validate(VhId eventId)
+        public void Confirm(VhId eventId)
         {
-            if (!_unverifiedEvents.Remove(eventId, out EventDto? @event))
+            if (!_unconfirmedEvents.Remove(eventId, out EventDto? @event))
+            {
+                return;
+            }
+        }
+
+        public void Confirm(EventDto @event)
+        {
+            if (_unconfirmedEvents.Remove(@event.Id))
             {
                 return;
             }
@@ -104,8 +105,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            publisher.Validate(@event);
-            this.OnVerifiedEvent?.Invoke(@event);
+            this.OnEvent?.Invoke(@event);
+
+            publisher.Publish(@event);
         }
     }
 }

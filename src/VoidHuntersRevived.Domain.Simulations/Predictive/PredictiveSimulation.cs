@@ -30,8 +30,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         private readonly PredictionService _predictions;
         private readonly Queue<EventDto> _verifiableEvents;
 
-        protected override EventValidity DefaultEventValidity { get; } = EventValidity.Unknown;
-
         public PredictiveSimulation(
             ILogger logger,
             IFiltered<ILockstepSimulation> lockstep,

@@ -3,34 +3,64 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Common.Entities.Serialization
 {
     public class EntityReader : BinaryReader
     {
-        private readonly bool _seeding;
-        private readonly VhId _seed;
+        public static readonly EntityReader Instance = new EntityReader();
 
-        public EntityReader(EntityData data) : this(null, data)
+        private EntityData _loaded;
+        private VhId _seed;
+
+        public EntityReader() : base(new MemoryStream())
         {
+            _loaded = new EntityData(Array.Empty<byte>());
         }
 
-        public EntityReader(VhId? seed, EntityData data) : base(data, Encoding.UTF8, true)
+        public void Load(VhId seed, EntityData data)
         {
-            _seeding = seed is not null;
-            _seed = seed ?? default;
+            if(_loaded.Id != data.Id)
+            {
+                this.BaseStream.Position = 0;
+                this.BaseStream.Write(data.Bytes, 0, data.Bytes.Length);
+                this.BaseStream.Position = 0;
+
+                _loaded = data;
+            }
+
+            _seed = seed;
+        }
+        public void Load(EntityReaderState state)
+        {
+            if (_loaded.Id != state.Data.Id)
+            {
+                this.BaseStream.Position = state.Position;
+                this.BaseStream.Write(state.Data.Bytes, state.Position, state.Data.Bytes.Length - state.Position);
+                this.BaseStream.Position = state.Position;
+
+                _loaded = state.Data;
+            }
+
+            _seed = state.Seed;
+        }
+
+        public EntityReaderState GetState()
+        {
+            return new EntityReaderState(_loaded!, _seed, (int)this.BaseStream.Position);
         }
 
         public VhId ReadVhId()
         {
             VhId value = this.ReadUnmanaged<VhId>();
 
-            return _seeding ? this.Seed(value) : value;
-        }
+            if(_seed.Value == default!)
+            {
+                return value;
+            }
 
-        public VhId Seed(VhId vhid)
-        {
-            return _seed.Create(vhid);
+            return _seed.Create(value);
         }
 
         public unsafe T ReadUnmanaged<T>()

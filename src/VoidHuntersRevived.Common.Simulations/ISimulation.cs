@@ -41,7 +41,6 @@ namespace VoidHuntersRevived.Common.Simulations
         void Serialize(uint entityId, ExclusiveGroupStruct groupId, EntityWriter writer);
 
         IdMap Deserialize(VhId seed, EntityData data);
-        IdMap Deserialize(EntityData data);
         IdMap Deserialize(EntityReader reader);
     }
 }

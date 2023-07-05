@@ -33,12 +33,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public IEnumerable<Tick> History => _history;
 
-        protected override EventValidity DefaultEventValidity { get; } = EventValidity.Valid;
-
         public event OnEventDelegate<EventDto>? OnEvent
         {
-            add => this.Events.OnVerifiedEvent += value;
-            remove => this.Events.OnVerifiedEvent -= value;
+            add => this.Events.OnEvent += value;
+            remove => this.Events.OnEvent -= value;
         }
 
         public LockstepSimulation(
@@ -62,6 +60,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             {
                 system.Initialize(this);
             }
+        }
+
+        public override void Publish(EventDto data)
+        {
+            base.Publish(data);
+
+            this.Events.Confirm(data.Id);
         }
 
         public override void Update(GameTime realTime)

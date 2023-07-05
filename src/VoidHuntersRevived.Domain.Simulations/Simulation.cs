@@ -29,7 +29,6 @@ namespace VoidHuntersRevived.Domain.Simulations
         private Queue<EventDto> _events;
 
         protected readonly ILogger logger;
-        protected abstract EventValidity DefaultEventValidity { get; }
 
         public readonly SimulationType Type;
         public readonly ISpace Space;
@@ -96,7 +95,7 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public virtual void Publish(EventDto data)
         {
-            this.Events.Publish(data, this.DefaultEventValidity);
+            this.Events.Publish(data);
         }
 
         public void Publish(VhId eventId, IEventData data)

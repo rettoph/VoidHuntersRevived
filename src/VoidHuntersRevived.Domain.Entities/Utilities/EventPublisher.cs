@@ -15,14 +15,12 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
     {
         public abstract void Publish(EventDto @event);
         public abstract void Revert(EventDto @event);
-        public abstract void Validate(EventDto @event);
     }
     internal class EventPublisher<T> : EventPublisher
         where T : class, IEventData
     {
         private readonly IEventEngine<T>[] _subscribers;
         private readonly IRevertEventEngine<T>[] _reverters;
-        private readonly IVerifyEventEngine<T>[] _verifiers;
         private readonly ILogger _logger;
 
         public EventPublisher(ILogger logger, List<IEventEngine> subscribers)
@@ -30,7 +28,6 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
             _logger = logger;
             _subscribers = subscribers.OfType<IEventEngine<T>>().ToArray();
             _reverters = subscribers.OfType<IRevertEventEngine<T>>().ToArray();
-            _verifiers = subscribers.OfType<IVerifyEventEngine<T>>().ToArray();
         }
 
         public override void Publish(EventDto @event)
@@ -40,6 +37,8 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
 
         private void Publish(in VhId id, T data)
         {
+            _logger.Debug($"{nameof(EventPublisher)}::{nameof(Publish)} - Publishing: '{typeof(T).Name}', '{id.Value}' ({this.GetHashCode()})");
+
             foreach (IEventEngine<T> subscriber in _subscribers)
             {
                 subscriber.Process(id, data);
@@ -51,11 +50,6 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
             this.Revert(@event.Id, Unsafe.As<T>(@event.Data));
         }
 
-        public override void Validate(EventDto @event)
-        {
-            this.Validate(@event.Id, Unsafe.As<T>(@event.Data));
-        }
-
         private void Revert(in VhId id, T data)
         {
             if (_reverters.Length == 0)
@@ -63,24 +57,10 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
                 return;
             }
 
-            _logger.Verbose($"{nameof(EventPublisher)}::{nameof(Revert)} - Reverting '{typeof(T).Name}', '{id.Value}'");
+            _logger.Verbose($"{nameof(EventPublisher)}::{nameof(Revert)} - Reverting '{typeof(T).Name}', '{id.Value}' ({this.GetHashCode()})");
             foreach (IRevertEventEngine<T> reverter in _reverters)
             {
                 reverter.Revert(id, data);
-            }
-        }
-
-        private void Validate(in VhId id, T data)
-        {
-            if (_verifiers.Length == 0)
-            {
-                return;
-            }
-
-            _logger.Verbose($"{nameof(EventPublisher)}::{nameof(Revert)} - Verifying '{typeof(T).Name}', '{id.Value}'");
-            foreach (IVerifyEventEngine<T> verify in _verifiers)
-            {
-                verify.Validate(id, data);
             }
         }
     }

@@ -1,19 +1,10 @@
-﻿using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using VoidHuntersRevived.Domain.Common.Components;
-using VoidHuntersRevived.Common.Entities.Services;
-
-namespace VoidHuntersRevived.Common.Entities.Serialization
+﻿namespace VoidHuntersRevived.Common.Entities.Serialization
 {
     public sealed class EntityWriter : BinaryWriter
     {
-        public EntityWriter(EntityData data) : base(data, Encoding.UTF8, true)
+        public static readonly EntityWriter Instance = new EntityWriter();
+
+        public EntityWriter() : base(new MemoryStream())
         {
         }
 
@@ -29,6 +20,21 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
         public void Write(VhId vhid)
         {
             this.WriteUnmanaged(vhid);
+        }
+
+        public void Reset()
+        {
+            this.BaseStream.Position = 0;
+        }
+
+        public EntityData Export()
+        {
+            byte[] bytes = new byte[this.BaseStream.Position];
+
+            this.BaseStream.Position = 0;
+            this.BaseStream.Read(bytes, 0, bytes.Length);
+
+            return new EntityData(bytes);
         }
     }
 }

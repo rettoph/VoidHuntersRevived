@@ -10,6 +10,8 @@ using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Common.Components;
 using VoidHuntersRevived.Common.Entities.Serialization;
+using VoidHuntersRevived.Common.Utilities;
+using VoidHuntersRevived.Common.Entities.Enums;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -19,6 +21,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         IEventEngine<DestroyEntity>,
         IRevertEventEngine<DestroyEntity>
     {
+        private HashCache<VhId> _destroyed = new HashCache<VhId>(TimeSpan.FromSeconds(5));
         private Dictionary<VhId, EntityData> _backups = new Dictionary<VhId, EntityData>();
 
         private IdMap Create(EntityType type, VhId vhid, EntityInitializerDelegate? initializerDelegate)
@@ -57,11 +60,16 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Revert(VhId eventId, CreateEntity data)
         {
+            _destroyed.Add(eventId);
             this.Destroy(data.VhId);
         }
 
         public void Process(VhId eventId, DestroyEntity data)
         {
+            EntityData backup = _engines.Serialization.Serialize(this.GetIdMap(data.VhId));
+
+            _destroyed.Add(eventId);
+            _backups.Add(eventId, backup);
             this.Destroy(data.VhId);
         }
 

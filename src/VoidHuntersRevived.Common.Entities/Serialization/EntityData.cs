@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Entities.Serialization
 {
-    public sealed class EntityData : MemoryStream
+    public class EntityData
     {
+        public readonly Guid Id;
+        public readonly byte[] Bytes;
+
+        internal EntityData(byte[] bytes)
+        {
+            Id = Guid.NewGuid();
+            Bytes = bytes;
+        }
     }
 }

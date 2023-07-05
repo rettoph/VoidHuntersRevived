@@ -12,14 +12,13 @@ namespace VoidHuntersRevived.Common.Entities.Services
         /// <summary>
         /// Invoked when an event is published
         /// </summary>
-        event OnEventDelegate<EventDto>? OnVerifiedEvent;
+        event OnEventDelegate<EventDto>? OnEvent;
 
         /// <summary>
         /// Publish an event to be processed
         /// </summary>
         /// <param name="event"></param>
-        /// <param name="validity"></param>
-        void Publish(EventDto @event, EventValidity validity);
+        void Publish(EventDto @event);
 
         /// <summary>
         /// Revert a previously published event
@@ -28,9 +27,15 @@ namespace VoidHuntersRevived.Common.Entities.Services
         void Revert(VhId eventId);
 
         /// <summary>
-        /// Mark a previously published event as verified
+        /// Mark a previously published event as confirmed
         /// </summary>
         /// <param name="eventId"></param>
-        void Validate(VhId eventId);
+        void Confirm(VhId eventId);
+
+        /// <summary>
+        /// Publish the event if not already published and mark as confirmed
+        /// </summary>
+        /// <param name="eventId"></param>
+        void Confirm(EventDto @event);
     }
 }

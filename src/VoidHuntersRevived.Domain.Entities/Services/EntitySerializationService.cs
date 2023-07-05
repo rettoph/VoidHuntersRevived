@@ -83,13 +83,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EntityData Serialize(IdMap id)
         {
-            EntityData data = new EntityData();
-            using (EntityWriter writer = new EntityWriter(data))
-            {
-                this.Serialize(id, writer);
-
-                return data;
-            }
+            EntityWriter.Instance.Reset();
+            this.Serialize(id, EntityWriter.Instance);
+            return EntityWriter.Instance.Export();
         }
 
         public void Serialize(IdMap id, EntityWriter writer)
@@ -108,39 +104,29 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
         }
 
-        public IdMap Deserialize(VhId seed, EntityData data, EventValidity validity)
+        public IdMap Deserialize(VhId seed, EntityData data)
         {
-            return this.Deserialize((VhId?)seed, data, validity);
+            EntityReader.Instance.Load(seed, data);
+            return this.Deserialize(EntityReader.Instance);
         }
 
-        public IdMap Deserialize(EntityData data, EventValidity validity)
-        {
-            return this.Deserialize(null, data, validity);
-        }
-
-        private IdMap Deserialize(VhId? seed, EntityData data, EventValidity validity)
-        {
-            data.Position = 0;
-            using (EntityReader reader = new EntityReader(seed, data))
-            {
-                return this.Deserialize(reader, validity);
-            }
-        }
-
-        public IdMap Deserialize(EntityReader reader, EventValidity validity)
+        public IdMap Deserialize(EntityReader reader)
         {
             VhId vhid = reader.ReadVhId();
-            EntityType type = _types.GetById(reader.ReadUnmanaged<VhId>());
+            VhId typeId = reader.ReadUnmanaged<VhId>();
+            EntityType type = _types.GetById(typeId);
+            EntityReaderState readerState = reader.GetState();
 
             _events.Publish(CreateEntity.CreateEvent(type, vhid, (ref EntityInitializer initializer) =>
             {
+                reader.Load(readerState);
                 type.Descriptor.Deserialize(reader, ref initializer);
 
                 foreach (SerializationEnginesGroup serializationEngineGroup in _serializationEngines[type])
                 {
                     serializationEngineGroup.Deserialize(reader, ref initializer);
                 }
-            }), validity);
+            }));
 
             return _entities.GetIdMap(vhid);
         }

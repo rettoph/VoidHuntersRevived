@@ -8,7 +8,6 @@ using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
@@ -48,15 +47,11 @@ namespace VoidHuntersRevived.Domain.Simulations
         }
         public IdMap Deserialize(VhId seed, EntityData data)
         {
-            return this.Engines.Serialization.Deserialize(seed, data, this.DefaultEventValidity);
-        }
-        public IdMap Deserialize(EntityData data)
-        {
-            return this.Engines.Serialization.Deserialize(data, this.DefaultEventValidity);
+            return this.Engines.Serialization.Deserialize(seed, data);
         }
         public IdMap Deserialize(EntityReader reader)
         {
-            return this.Engines.Serialization.Deserialize(reader, this.DefaultEventValidity);
+            return this.Engines.Serialization.Deserialize(reader);
         }
     }
 }

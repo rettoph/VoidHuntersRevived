@@ -14,8 +14,7 @@ namespace VoidHuntersRevived.Common.Entities.Services
         EntityData Serialize(IdMap id);
         void Serialize(IdMap id, EntityWriter writer);
 
-        IdMap Deserialize(VhId seed, EntityData data, EventValidity validity);
-        IdMap Deserialize(EntityData data, EventValidity validity);
-        IdMap Deserialize(EntityReader reader, EventValidity validity);
+        IdMap Deserialize(VhId seed, EntityData data);
+        IdMap Deserialize(EntityReader reader);
     }
 }

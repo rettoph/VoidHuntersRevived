@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             }
 
             _logger.Debug($"{nameof(PredictionService)}::{nameof(Predict)} - Predicting '{@event.Data.GetType().Name}', '{@event.Id.Value}'");
-            _publisher.Publish(@event, EventValidity.Unknown);
+            _publisher.Publish(@event);
 
             return this.Add(@event.Id);
         }
@@ -50,12 +50,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
             if (_predictions.TryGetValue(verified.Id, out Prediction? prediction))
             {
-                _publisher.Validate(verified.Id);
+                _publisher.Confirm(verified.Id);
                 prediction.Status = PredictionStatus.Verified;
             }
             else
             {
-                _publisher.Publish(verified, EventValidity.Valid);
+                _publisher.Confirm(verified);
             }
         }
 
