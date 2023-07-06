@@ -8,6 +8,7 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Serialization;
+using VoidHuntersRevived.Game.Pieces.Components;
 using VoidHuntersRevived.Game.Pieces.Resources;
 
 namespace VoidHuntersRevived.Game.Pieces.Descriptors
@@ -20,7 +21,15 @@ namespace VoidHuntersRevived.Game.Pieces.Descriptors
             {
                 new ComponentManager<Node>(
                     builder: new ComponentBuilder<Node>(),
-                    serializer: ComponentSerializer<Node>.Default())
+                    serializer: new ComponentSerializer<Node>(
+                        writer: (writer, tree) =>
+                        {
+                            writer.Write(tree.TreeId);
+                        },
+                        reader: reader =>
+                        {
+                            return new Node(reader.ReadVhId());
+                        }))
             });
         }
     }

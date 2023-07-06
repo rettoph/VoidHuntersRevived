@@ -34,6 +34,9 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
 
                 manager.AddTransient<EventPublishingService>()
                     .AddAlias<IEngine>();
+
+                manager.AddTransient<FilterService>()
+                    .AddAlias<IEngine>();
             });
         }
     }

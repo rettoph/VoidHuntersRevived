@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
 
         private void Publish(in VhId id, T data)
         {
-            _logger.Debug($"{nameof(EventPublisher)}::{nameof(Publish)} - Publishing: '{typeof(T).Name}', '{id.Value}' ({this.GetHashCode()})");
+            _logger.Debug($"{nameof(EventPublisher)}::{nameof(Publish)} - Publishing: '{typeof(T).Name}', '{id.Value}'");
 
             foreach (IEventEngine<T> subscriber in _subscribers)
             {
@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
                 return;
             }
 
-            _logger.Verbose($"{nameof(EventPublisher)}::{nameof(Revert)} - Reverting '{typeof(T).Name}', '{id.Value}' ({this.GetHashCode()})");
+            _logger.Verbose($"{nameof(EventPublisher)}::{nameof(Revert)} - Reverting '{typeof(T).Name}', '{id.Value}'");
             foreach (IRevertEventEngine<T> reverter in _reverters)
             {
                 reverter.Revert(id, data);

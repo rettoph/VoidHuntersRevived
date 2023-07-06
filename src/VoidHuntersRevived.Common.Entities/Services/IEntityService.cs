@@ -15,5 +15,7 @@ namespace VoidHuntersRevived.Common.Entities.Services
         bool TryGetIdMap(uint entityId, ExclusiveGroupStruct groupId, out IdMap id);
 
         EntityType GetEntityType(VhId entityVhId);
+
+        void Clean();
     }
 }

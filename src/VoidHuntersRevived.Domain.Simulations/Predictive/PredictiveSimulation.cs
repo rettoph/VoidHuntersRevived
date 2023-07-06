@@ -27,8 +27,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         private Step _step;
         private double _lastStepTime;
         private IPredictiveSynchronizationEngine[] _synchronizations;
-        private readonly PredictionService _predictions;
-        private readonly Queue<EventDto> _verifiableEvents;
+        private readonly Queue<EventDto> _confirmedEvents;
 
         public PredictiveSimulation(
             ILogger logger,
@@ -40,8 +39,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             _step = new Step();
             _lockstep = lockstep.Instance;
             _synchronizations = Array.Empty<IPredictiveSynchronizationEngine>();
-            _predictions = new PredictionService(logger, this.Events);
-            _verifiableEvents = new Queue<EventDto>();
+            _confirmedEvents = new Queue<EventDto>();
         }
 
         public override void Initialize(ISimulationService simulations)
@@ -77,22 +75,17 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
                 synchronization.Synchronize(_lockstep, step);
             }
 
-            _predictions.Prune();
+            this.Events.Prune();
 
-            if(_verifiableEvents.TryDequeue(out EventDto? verifiableEvent))
+            if(_confirmedEvents.TryDequeue(out EventDto? confirmedEvent))
             {
-                _predictions.Verify(verifiableEvent);
+                this.Events.Confirm(confirmedEvent);
             }
-        }
-
-        public override void Publish(EventDto data)
-        {
-            _predictions.Predict(data);
         }
 
         private void HandleLockstepTick(EventDto @event)
         {
-            _verifiableEvents.Enqueue(@event);
+            _confirmedEvents.Enqueue(@event);
         }
     }
 }

@@ -31,6 +31,24 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
         public void Process(VhId id, CreateNode data)
         {
+            IdMap nodeId = this.Simulation.Entities.GetIdMap(data.NodeId);
+
+            // Node is not a rigid entity
+            if (!this.entitiesDB.TryQueryEntitiesAndIndex<ResourceId<Rigid>>(nodeId.EGID, out uint index, out var rigidIds))
+            {
+                return;
+            }
+
+            var (nodes, _) = this.entitiesDB.QueryEntities<Node>(nodeId.EGID.groupID);
+
+            Rigid rigid = _resources.Get(rigidIds[index])!;
+            Node node = nodes[index];
+            IBody body = this.Simulation.Space.GetOrCreateBody(node.TreeId);
+            body.Create(rigid.Shapes[0], nodeId.VhId);
+        }
+
+        public void Process(VhId eventId, DestroyNode data)
+        {
             try
             {
                 IdMap nodeId = this.Simulation.Entities.GetIdMap(data.NodeId);
@@ -42,35 +60,16 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                 }
 
                 var (nodes, _) = this.entitiesDB.QueryEntities<Node>(nodeId.EGID.groupID);
-
-                Rigid rigid = _resources.Get(rigidIds[index])!;
                 Node node = nodes[index];
-                IBody body = this.Simulation.Space.GetOrCreateBody(node.TreeId);
-                body.Create(rigid.Shapes[0], nodeId.VhId);
+
+                if (this.Simulation.Space.TryGetBody(node.TreeId, out IBody? body))
+                {
+                    body.Destroy(nodeId.VhId);
+                }
             }
-            catch(Exception e)
+            catch
             {
-                Console.WriteLine("Failed to add node");
-            }
 
-        }
-
-        public void Process(VhId eventId, DestroyNode data)
-        {
-            IdMap nodeId = this.Simulation.Entities.GetIdMap(data.NodeId);
-
-            // Node is not a rigid entity
-            if (!this.entitiesDB.TryQueryEntitiesAndIndex<ResourceId<Rigid>>(nodeId.EGID, out uint index, out var rigidIds))
-            {
-                return;
-            }
-
-            var (nodes, _) = this.entitiesDB.QueryEntities<Node>(nodeId.EGID.groupID);
-            Node node = nodes[index];
-
-            if (this.Simulation.Space.TryGetBody(node.TreeId, out IBody? body))
-            {
-                body.Destroy(nodeId.VhId);
             }
         }
     }

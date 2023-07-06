@@ -29,10 +29,7 @@ namespace VoidHuntersRevived.Game.Descriptors
                         },
                         reader: reader =>
                         {
-                            return new Tree()
-                            {
-                                HeadId = reader.ReadVhId()
-                            };
+                            return new Tree(reader.ReadVhId());
                         }))
             });
         }

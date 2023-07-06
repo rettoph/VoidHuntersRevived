@@ -33,6 +33,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public IEntitySerializationService Serialization { get; private set; }
 
+        public IFilterService Filters { get; private set; }
+
         public EngineService(IBus bus, IFilteredProvider filtered)
         {
             _bus = bus;
@@ -45,6 +47,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             this.Entities = null!;
             this.Serialization = null!;
             this.Events = null!;
+            this.Filters = null!;
         }
 
         public IEngineService Load(params IState[] states)
@@ -54,6 +57,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             this.Entities = this.Get<IEntityService>();
             this.Serialization = this.Get<IEntitySerializationService>();
             this.Events = this.Get<IEventPublishingService>();
+            this.Filters = this.Get<IFilterService>();
 
             return this;
         }
@@ -110,6 +114,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _stepEngines.Step(step);
 
             _submission.SubmitEntities();
+
+            this.Entities.Clean();
         }
     }
 }

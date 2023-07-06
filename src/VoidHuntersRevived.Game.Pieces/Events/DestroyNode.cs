@@ -13,6 +13,7 @@ namespace VoidHuntersRevived.Game.Pieces.Events
     {
         public static VhId NameSpace = new VhId("50b7c7fc-6d6c-40fe-9547-440c0c666f7e");
 
+        public required VhId TreeId { get; init; }
         public required VhId NodeId { get; init; }
     }
 }

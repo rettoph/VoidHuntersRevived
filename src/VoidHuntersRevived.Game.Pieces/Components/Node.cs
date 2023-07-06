@@ -10,7 +10,14 @@ namespace VoidHuntersRevived.Game.Pieces
 {
     public struct Node : IEntityComponent
     {
-        public VhId TreeId;
+        public static readonly FilterContextID FilterContextID = new FilterContextID();
+
+        public readonly VhId TreeId;
         public FixMatrix Transformation;
+
+        public Node(VhId treeId)
+        {
+            this.TreeId = treeId;
+        }
     }
 }

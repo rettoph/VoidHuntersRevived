@@ -18,6 +18,7 @@ namespace VoidHuntersRevived.Common.Simulations
         IEntitySerializationService Serialization { get; }
         IEngineService Engines { get; }
         IEventPublishingService Events { get; }
+        IFilterService Filters { get; }
 
         void Initialize(ISimulationService simulations);
 

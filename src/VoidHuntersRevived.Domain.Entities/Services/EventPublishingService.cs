@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Common.Collections;
 using Serilog;
 using Svelto.ECS;
 using System;
@@ -20,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     public sealed class EventPublishingService : IEventPublishingService, IEnginesGroupEngine
     {
         private Dictionary<Type, EventPublisher> _publishers;
-        private Dictionary<VhId, EventDto> _unconfirmedEvents;
+        private DictionaryQueue<VhId, PublishedEvent> _published;
         private readonly ILogger _logger;
 
         public event OnEventDelegate<EventDto>? OnEvent;
@@ -29,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             _logger = logger;
             _publishers = null!;
-            _unconfirmedEvents = new Dictionary<VhId, EventDto>();
+            _published = new DictionaryQueue<VhId, PublishedEvent>();
         }
 
         public void Initialize(IEngineService engines)
@@ -59,53 +60,61 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Publish(EventDto @event)
         {
-            if (!_publishers.TryGetValue(@event.Data.GetType(), out EventPublisher? publisher))
-            {
-                return;
-            }
-
-            this.OnEvent?.Invoke(@event);
-
-            publisher.Publish(@event);
-            _unconfirmedEvents.Add(@event.Id, @event);
-        }
-
-        public void Revert(VhId eventId)
-        {
-            if(!_unconfirmedEvents.Remove(eventId, out EventDto? @event))
-            {
-                return;
-            }
-
-            if (!_publishers.TryGetValue(@event.Data.GetType(), out EventPublisher? publisher))
-            {
-                return;
-            }
-
-            publisher.Revert(@event);
-        }
-
-        public void Confirm(VhId eventId)
-        {
-            if (!_unconfirmedEvents.Remove(eventId, out EventDto? @event))
-            {
-                return;
-            }
+            this.Publish(@event, out _);
         }
 
         public void Confirm(EventDto @event)
         {
-            if (_unconfirmedEvents.Remove(@event.Id))
+            if (!_published.TryGet(@event.Id, out PublishedEvent published))
+            {
+                this.Publish(@event, out published);
+            }
+
+            _logger.Information($"{nameof(EventPublishingService)}::{nameof(Confirm)} - Confirming '{@event.Data.GetType().Name}', '{@event.Id.Value}'");
+
+            published.Status = PublishedEventStatus.Confirmed;
+        }
+
+        public void Prune()
+        {
+            while(_published.TryPeek(out PublishedEvent published) && published.Expired)
+            {
+                if(published.Status == PublishedEventStatus.Unconfirmed)
+                {
+                    this.Revert(published);
+                }
+
+                _published.TryDequeue(out _);
+            }
+        }
+
+
+        private void Revert(PublishedEvent published)
+        {
+            if (!_publishers.TryGetValue(published.Event.Data.GetType(), out EventPublisher? publisher))
             {
                 return;
             }
+
+            publisher.Revert(published.Event);
+            published.Status = PublishedEventStatus.Reverted;
+        }
+
+        private void Publish(EventDto @event, out PublishedEvent published)
+        {
+            published = new PublishedEvent(@event);
+            if (!_published.TryEnqueue(@event.Id, published))
+            {
+                _logger.Warning($"{nameof(EventPublishingService)}::{nameof(Publish)} - Unable to publish '{@event.Data.GetType().Name}', '{@event.Id.Value}'; duplicate event.");
+                return;
+            }
+
+            this.OnEvent?.Invoke(@event);
 
             if (!_publishers.TryGetValue(@event.Data.GetType(), out EventPublisher? publisher))
             {
                 return;
             }
-
-            this.OnEvent?.Invoke(@event);
 
             publisher.Publish(@event);
         }

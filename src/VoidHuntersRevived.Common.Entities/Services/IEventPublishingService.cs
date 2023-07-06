@@ -21,21 +21,14 @@ namespace VoidHuntersRevived.Common.Entities.Services
         void Publish(EventDto @event);
 
         /// <summary>
-        /// Revert a previously published event
-        /// </summary>
-        /// <param name="eventId"></param>
-        void Revert(VhId eventId);
-
-        /// <summary>
         /// Mark a previously published event as confirmed
         /// </summary>
         /// <param name="eventId"></param>
-        void Confirm(VhId eventId);
+        void Confirm(EventDto @event);
 
         /// <summary>
-        /// Publish the event if not already published and mark as confirmed
+        /// Prune any events, reverting expired published events.
         /// </summary>
-        /// <param name="eventId"></param>
-        void Confirm(EventDto @event);
+        void Prune();
     }
 }

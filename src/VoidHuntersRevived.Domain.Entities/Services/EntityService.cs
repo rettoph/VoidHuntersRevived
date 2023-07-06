@@ -12,11 +12,6 @@ using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Messages;
-using VoidHuntersRevived.Domain.Common.Components;
-using VoidHuntersRevived.Domain.Entities.Abstractions;
-using VoidHuntersRevived.Domain.Entities.EnginesGroups;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -28,9 +23,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly EntityTypeService _entityTypes;
         private readonly DoubleDictionary<VhId, EGID, IdMap> _ids;
         private readonly Dictionary<VhId, EntityType> _types;
+        private readonly Queue<IdMap> _removed;
         private readonly ILogger _logger;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
+
+        public string name { get; } = nameof(EntityService);
 
         public EntityService(EntityTypeService entityTypes, ILogger logger)
         {
@@ -40,6 +38,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _entityTypes = entityTypes;
             _ids = new DoubleDictionary<VhId, EGID, IdMap>();
             _types = new Dictionary<VhId, EntityType>();
+            _removed = new Queue<IdMap>();
             _logger = logger;
         }
 
@@ -83,6 +82,16 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public EntityType GetEntityType(VhId entityVhId)
         {
             return _types[entityVhId];
+        }
+
+        public void Clean()
+        {
+            while(_removed.TryDequeue(out IdMap removed))
+            {
+                Console.WriteLine($"Removing Entity Map: {removed.VhId}");
+                _ids.Remove(removed.VhId, removed.EGID);
+                _types.Remove(removed.VhId);
+            }
         }
     }
 }

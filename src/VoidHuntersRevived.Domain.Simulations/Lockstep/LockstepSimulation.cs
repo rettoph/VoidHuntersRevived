@@ -66,7 +66,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         {
             base.Publish(data);
 
-            this.Events.Confirm(data.Id);
+            this.Events.Confirm(data);
         }
 
         public override void Update(GameTime realTime)

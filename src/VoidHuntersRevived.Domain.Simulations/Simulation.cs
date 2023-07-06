@@ -41,6 +41,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         public IEntityService Entities => this.Engines.Entities;
         public IEntitySerializationService Serialization => this.Engines.Serialization;
         public IEventPublishingService Events => this.Engines.Events;
+        public IFilterService Filters => this.Engines.Filters;
 
         protected Simulation(
             SimulationType type,

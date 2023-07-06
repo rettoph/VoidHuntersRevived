@@ -4,6 +4,8 @@ namespace VoidHuntersRevived.Common
 {
     public struct VhId
     {
+        public static readonly VhId Empty = default!;
+
         public readonly Guid Value;
 
         public VhId(string g)
@@ -17,6 +19,11 @@ namespace VoidHuntersRevived.Common
         public static VhId NewId()
         {
             return new VhId(Guid.NewGuid());
+        }
+
+        public override string ToString()
+        {
+            return this.Value.ToString();
         }
     }
 }

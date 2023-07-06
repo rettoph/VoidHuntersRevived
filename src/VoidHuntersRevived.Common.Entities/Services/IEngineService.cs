@@ -15,6 +15,7 @@ namespace VoidHuntersRevived.Common.Entities.Services
         IEventPublishingService Events { get; }
         IEntityService Entities { get; }
         IEntitySerializationService Serialization { get; }
+        IFilterService Filters { get; }
 
         IEngineService Load(params IState[] states);
         void Initialize();

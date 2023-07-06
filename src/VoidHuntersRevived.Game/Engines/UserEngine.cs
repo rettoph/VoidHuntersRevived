@@ -44,24 +44,42 @@ namespace VoidHuntersRevived.Game.Engines
             VhId square1Id = id.Create(1);
             VhId square2Id = id.Create(2);
 
-            this.Simulation.Publish(CreateEntity.CreateEvent(PieceTypes.HullSquare, square1Id));
-            this.Simulation.Publish(CreateEntity.CreateEvent(PieceTypes.HullSquare, square2Id));
-
+            // BEGIN SHIP
             this.Simulation.Publish(CreateEntity.CreateEvent(
                 type: EntityTypes.UserShip,
                 vhid: shipId,
                 initializer: (ref EntityInitializer initializer) =>
                 {
-                    initializer.Get<Tree>().HeadId = square1Id;
+                    initializer.Init(new Tree(square1Id));
                 }));
 
             this.Simulation.Publish(CreateEntity.CreateEvent(
-                type: EntityTypes.Chain,
-                vhid: id.Create(3),
+                type: PieceTypes.HullSquare, 
+                vhid: square1Id,
                 initializer: (ref EntityInitializer initializer) =>
                 {
-                    initializer.Get<Tree>().HeadId = square2Id;
+                    initializer.Init(new Node(shipId));
                 }));
+            // END SHIP
+
+            // BEGIN CHAIN
+            VhId chainId = id.Create(3);
+            this.Simulation.Publish(CreateEntity.CreateEvent(
+                type: EntityTypes.Chain,
+                vhid: chainId,
+                initializer: (ref EntityInitializer initializer) =>
+                {
+                    initializer.Init(new Tree(square2Id));
+                }));
+
+            this.Simulation.Publish(CreateEntity.CreateEvent(
+                type: PieceTypes.HullSquare,
+                vhid: square2Id,
+                initializer: (ref EntityInitializer initializer) =>
+                {
+                    initializer.Init(new Node(chainId));
+                }));
+            // END CHAIN
         }
     }
 }

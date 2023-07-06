@@ -64,7 +64,7 @@ namespace VoidHuntersRevived.Game.Engines
                 TargetData = this.Simulation.Serialize(tree.HeadId)
             });
 
-            this.Simulation.Publish(DestroyEntity.CreateEvent(targetId.VhId));
+            // this.Simulation.Publish(DestroyEntity.CreateEvent(targetId.VhId));
         }
 
         public void Process(VhId eventId, SetTractorBeamTarget data)
@@ -78,7 +78,7 @@ namespace VoidHuntersRevived.Game.Engines
                 vhid: targetVhId,
                 initializer: (ref EntityInitializer initializer) =>
                 {
-                    initializer.Get<Tree>().HeadId = headId.VhId;
+                    initializer.Init<Tree>(new Tree(headId.VhId));
                 }));
         }
 
