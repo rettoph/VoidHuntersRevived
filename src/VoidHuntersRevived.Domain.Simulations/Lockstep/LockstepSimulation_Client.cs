@@ -35,11 +35,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public LockstepSimulation_Client(
             NetScope scope,
             TickBuffer ticks,
-            ISettingProvider settings, 
-            ISpaceFactory spaceFactory,
-            IEngineService engines,
-            IBus bus,
-            ILogger logger) : base(spaceFactory, engines, bus, logger)
+            ISettingProvider settings,
+            IServiceProvider provider) : base(provider)
         {
             Fix64 stepInterval = settings.Get<Fix64>(Settings.StepInterval).Value;
 

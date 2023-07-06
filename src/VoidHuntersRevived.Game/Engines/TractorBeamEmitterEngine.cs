@@ -19,6 +19,7 @@ using VoidHuntersRevived.Game.Pieces;
 using VoidHuntersRevived.Game.Pieces.Components;
 using VoidHuntersRevived.Game.Pieces.Descriptors;
 using static System.Net.Mime.MediaTypeNames;
+using VoidHuntersRevived.Common.Physics;
 
 namespace VoidHuntersRevived.Game.Engines
 {
@@ -29,9 +30,20 @@ namespace VoidHuntersRevived.Game.Engines
     {
         public static readonly Fix64 QueryRadius = (Fix64)5;
 
+        private readonly IEntityService _entities;
+        private readonly IEntitySerializationService _serialization;
+        private readonly ISpace _space;
+
+        public TractorBeamEmitterEngine(IEntityService entities, IEntitySerializationService serialization, ISpace space)
+        {
+            _entities = entities;
+            _serialization = serialization;
+            _space = space;
+        }
+
         public void Process(VhId eventId, SetTractorBeamEmitterActive data)
         {
-            IdMap id = this.Simulation.Entities.GetIdMap(data.ShipId);
+            IdMap id = _entities.GetIdMap(data.ShipId);
             ref TractorBeamEmitter tractorBeamEmitter = ref entitiesDB.QueryMappedEntities<TractorBeamEmitter>(id.EGID.groupID).Entity(id.EGID.entityID);
             ref Tactical tactical = ref entitiesDB.QueryMappedEntities<Tactical>(id.EGID.groupID).Entity(id.EGID.entityID);
 
@@ -61,7 +73,7 @@ namespace VoidHuntersRevived.Game.Engines
             this.Simulation.Publish(eventId.Create(tree.HeadId), new SetTractorBeamTarget()
             {
                 TractorBeamId = shipId.VhId,
-                TargetData = this.Simulation.Serialize(tree.HeadId)
+                TargetData = _serialization.Serialize(tree.HeadId)
             });
 
             // this.Simulation.Publish(DestroyEntity.CreateEvent(targetId.VhId));
@@ -71,7 +83,7 @@ namespace VoidHuntersRevived.Game.Engines
         {
             VhId targetVhId = eventId.Create(1);
 
-            IdMap headId = this.Simulation.Deserialize(eventId, data.TargetData);
+            IdMap headId = _serialization.Deserialize(eventId, data.TargetData);
 
             this.Simulation.Publish(CreateEntity.CreateEvent(
                 type: EntityTypes.Chain,
@@ -88,9 +100,9 @@ namespace VoidHuntersRevived.Game.Engines
             Fix64 minDistance = radius;
             IdMap? callbackTargetId = default!;
 
-            this.Simulation.Space.QueryAABB(fixture =>
+            _space.QueryAABB(fixture =>
             {
-                if(!this.Simulation.Entities.TryGetIdMap(fixture.Body.Id, out IdMap bodyId))
+                if(!_entities.TryGetIdMap(fixture.Body.Id, out IdMap bodyId))
                 { // Invalid target - has been deleted.
                     return true;
                 }

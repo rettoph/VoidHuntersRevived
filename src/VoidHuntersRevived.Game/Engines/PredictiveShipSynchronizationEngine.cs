@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Microsoft.Extensions.DependencyInjection;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using System;
@@ -20,13 +21,27 @@ namespace VoidHuntersRevived.Game.Engines
     [AutoLoad]
     internal class PredictiveShipSynchronizationEngine : BasicEngine, IPredictiveSynchronizationEngine
     {
-        public void Synchronize(ILockstepSimulation lockstep, Step step)
+        private readonly ISpace _predictiveSpace;
+        private ISpace _lockstepSpace;
+
+        public PredictiveShipSynchronizationEngine(ISpace space)
+        {
+            _predictiveSpace = space;
+            _lockstepSpace = null!;
+        }
+
+        public void Initialize(ILockstepSimulation lockstep)
+        {
+            _lockstepSpace = lockstep.Scope.ServiceProvider.GetRequiredService<ISpace>();
+        }
+
+        public void Synchronize(Step step)
         {
             Fix64 damping = step.ElapsedTime;
 
-            foreach (IBody predictiveBody in this.Simulation.Space.AllBodies())
+            foreach (IBody predictiveBody in _predictiveSpace.AllBodies())
             {
-                if(!lockstep.Space.TryGetBody(predictiveBody.Id, out IBody? lockstepBody))
+                if(!_lockstepSpace.TryGetBody(predictiveBody.Id, out IBody? lockstepBody))
                 {
                     continue;
                 }

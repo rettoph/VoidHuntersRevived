@@ -18,25 +18,30 @@ using VoidHuntersRevived.Domain.Entities.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    public sealed class EventPublishingService : IEventPublishingService, IEnginesGroupEngine
+    public sealed class EventPublishingService : IEventPublishingService, IGetReadyEngine
     {
         private Dictionary<Type, EventPublisher> _publishers;
         private DictionaryQueue<VhId, PublishedEvent> _published;
         private readonly ILogger _logger;
+        private readonly IEngineService _engines;
 
         public event OnEventDelegate<EventDto>? OnEvent;
 
-        public EventPublishingService(ILogger logger)
+        public EventPublishingService(
+            ILogger logger,
+            IEngineService engines)
         {
             _logger = logger;
+            _engines = engines;
             _publishers = null!;
             _published = new DictionaryQueue<VhId, PublishedEvent>();
         }
 
-        public void Initialize(IEngineService engines)
+
+        public void Ready()
         {
             Dictionary<Type, List<IEventEngine>> subscriptions = new Dictionary<Type, List<IEventEngine>>();
-            foreach (IEventEngine system in engines.OfType<IEventEngine>())
+            foreach (IEventEngine system in _engines.OfType<IEventEngine>())
             {
                 foreach (Type subscriberType in system.GetType().GetConstructedGenericTypes(typeof(IEventEngine<>)))
                 {
@@ -65,7 +70,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Confirm(EventDto @event)
         {
-            if (!_published.TryGet(@event.Id, out PublishedEvent published))
+            if (!_published.TryGet(@event.Id, out PublishedEvent? published))
             {
                 this.Publish(@event, out published);
             }
@@ -77,7 +82,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Prune()
         {
-            while(_published.TryPeek(out PublishedEvent published) && published.Expired)
+            while(_published.TryPeek(out PublishedEvent? published) && published.Expired)
             {
                 if(published.Status == PublishedEventStatus.Unconfirmed)
                 {

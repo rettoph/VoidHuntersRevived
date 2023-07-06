@@ -30,11 +30,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         private readonly Queue<EventDto> _confirmedEvents;
 
         public PredictiveSimulation(
-            ILogger logger,
             IFiltered<ILockstepSimulation> lockstep,
-            ISpaceFactory spaceFactory, 
-            IEngineService engines, 
-            IBus bus) : base(SimulationType.Predictive, spaceFactory, engines, bus, logger)
+            IServiceProvider provider) : base(SimulationType.Predictive, provider)
         {
             _step = new Step();
             _lockstep = lockstep.Instance;
@@ -48,6 +45,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
             _lockstep.OnEvent += this.HandleLockstepTick;
             _synchronizations = this.Engines.OfType<IPredictiveSynchronizationEngine>().ToArray();
+
+            foreach(IPredictiveSynchronizationEngine synchronization in _synchronizations)
+            {
+                synchronization.Initialize(_lockstep);
+            }
         }
 
         protected override bool TryGetNextStep(GameTime realTime, [MaybeNullWhen(false)] out Step step)
@@ -72,7 +74,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
             foreach(IPredictiveSynchronizationEngine synchronization in _synchronizations)
             {
-                synchronization.Synchronize(_lockstep, step);
+                synchronization.Synchronize(step);
             }
 
             this.Events.Prune();

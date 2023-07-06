@@ -20,41 +20,33 @@ using VoidHuntersRevived.Domain.Simulations.EnginesGroups;
 using VoidHuntersRevived.Common.Entities.Services;
 using Serilog;
 using VoidHuntersRevived.Common.Entities.Enums;
+using Guppy.Network;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
     public abstract partial class Simulation : ISimulation, IDisposable
     {
+        private readonly IServiceScope _scope;
         private readonly DrawEngineGroups _drawEnginesGroups;
         private Queue<EventDto> _events;
 
-        protected readonly ILogger logger;
-
         public readonly SimulationType Type;
-        public readonly ISpace Space;
         public readonly IEngineService Engines;
+        public readonly IEventPublishingService Events;
 
         SimulationType ISimulation.Type => this.Type;
-        ISpace ISimulation.Space => this.Space;
-        IEngineService ISimulation.Engines => this.Engines;
+        IServiceScope ISimulation.Scope => _scope;
 
-        public IEntityService Entities => this.Engines.Entities;
-        public IEntitySerializationService Serialization => this.Engines.Serialization;
-        public IEventPublishingService Events => this.Engines.Events;
-        public IFilterService Filters => this.Engines.Filters;
-
-        protected Simulation(
-            SimulationType type,
-            ISpaceFactory spaceFactory,
-            IEngineService engines,
-            IBus bus,
-            ILogger logger)
+        protected Simulation(SimulationType type, IServiceProvider provider)
         {
             this.Type = type;
-            this.Space = spaceFactory.Create();
-            this.Engines = engines.Load(new SimulationState(this));
 
-            this.logger = logger;
+            _scope = provider.CreateScope();
+
+            // Pass the current scoped netscope to the new child scope
+            _scope.ServiceProvider.GetRequiredService<ScopedProvider<NetScope>>().SetInstance(provider.GetRequiredService<NetScope>());
+            this.Engines = _scope.ServiceProvider.GetRequiredService<IEngineService>().Load(new SimulationState(this));
+            this.Events = _scope.ServiceProvider.GetRequiredService<IEventPublishingService>();
 
             _drawEnginesGroups = new DrawEngineGroups(this.Engines.OfType<IStepEngine<GameTime>>());
             _events = new Queue<EventDto>();

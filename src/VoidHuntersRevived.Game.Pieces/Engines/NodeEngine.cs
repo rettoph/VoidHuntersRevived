@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Engines;
+using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Game.Pieces.Events;
 
@@ -18,6 +19,15 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
         IReactOnAddEx<Node>,
         IReactOnRemoveEx<Node>
     {
+        private readonly IEntityService _entities;
+        private readonly IFilterService _filters;
+
+        public NodeEngine(IEntityService entities, IFilterService filters)
+        {
+            _entities = entities;
+            _filters = filters;
+        }
+
         public void Process(VhId eventId, DestroyNode data)
         {
             // this.Simulation.Entities.Destroy(data.NodeId);
@@ -30,11 +40,11 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
                 VhId treeId = nodes[index].TreeId;
-                VhId nodeId = this.Simulation.Entities.GetIdMap(ids[index], groupID).VhId;
+                VhId nodeId = _entities.GetIdMap(ids[index], groupID).VhId;
 
                 Debug.Assert(treeId.Value != VhId.Empty.Value);
 
-                ref var filter = ref this.Simulation.Filters.GetFilter<Node>(treeId);
+                ref var filter = ref _filters.GetFilter<Node>(treeId);
                 filter.Add(ids[index], groupID, index);
 
                 this.Simulation.Publish(CreateNode.NameSpace.Create(nodeId), new CreateNode()
@@ -52,9 +62,9 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
                 VhId treeId = nodes[index].TreeId;
-                VhId nodeId = this.Simulation.Entities.GetIdMap(ids[index], groupID).VhId;
+                VhId nodeId = _entities.GetIdMap(ids[index], groupID).VhId;
 
-                ref var filter = ref this.Simulation.Filters.GetFilter<Node>(treeId);
+                ref var filter = ref _filters.GetFilter<Node>(treeId);
                 filter.Remove(ids[index], groupID);
 
                 this.Simulation.Publish(DestroyNode.NameSpace.Create(nodeId), new DestroyNode()

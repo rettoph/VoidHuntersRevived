@@ -17,38 +17,38 @@ using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Domain.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Engines;
 using VoidHuntersRevived.Domain.Entities.EnginesGroups;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    internal sealed class EntitySerializationService : IEntitySerializationService, IEnginesGroupEngine, IQueryingEntitiesEngine
+    internal sealed class EntitySerializationService : IEntitySerializationService, IQueryingEntitiesEngine
     {
+        private readonly IEventPublishingService _events;
+        private readonly IEntityService _entities;
+        private readonly IEngineService _engines;
         private readonly EntityTypeService _types;
         private Dictionary<EntityType, FasterList<SerializationEnginesGroup>> _serializationEngines;
-        private IEventPublishingService _events;
-        private IEntityService _entities;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
-        public EntitySerializationService(EntityTypeService types)
+        public EntitySerializationService(
+            IEventPublishingService events, 
+            IEntityService entities, 
+            IEngineService engines,
+            EntityTypeService types)
         {
+            _events = events;
+            _entities = entities;
+            _engines = engines;
             _types = types;
             _serializationEngines = null!;
-            _events = null!;
-            _entities = null!;
         }
 
         public void Ready()
         {
-        }
-
-        public void Initialize(IEngineService engines)
-        {
-            _events = engines.Events;
-            _entities = engines.Entities;
-
             // Create all OnCloneEnginee groups via reflection
             Dictionary<Type, SerializationEnginesGroup> componentCloneEngineGroups = new Dictionary<Type, SerializationEnginesGroup>();
-            foreach (IEngine engine in engines.All())
+            foreach (IEngine engine in _engines.All())
             {
                 foreach (Type serializationEngineType in engine.GetType().GetConstructedGenericTypes(typeof(ISerializationEngine<>)))
                 {
@@ -60,7 +60,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                     }
 
                     Type serializationEngineTypeGroup = typeof(SerializationEnginesGroup<>).MakeGenericType(componentType);
-                    componentCloneEngineGroups.Add(componentType, (SerializationEnginesGroup)Activator.CreateInstance(serializationEngineTypeGroup, engines)!);
+                    componentCloneEngineGroups.Add(componentType, (SerializationEnginesGroup)Activator.CreateInstance(serializationEngineTypeGroup, _engines)!);
                 }
             }
 
@@ -129,6 +129,36 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }));
 
             return _entities.GetIdMap(vhid);
+        }
+
+        public EntityData Serialize(VhId vhid)
+        {
+            return this.Serialize(_entities.GetIdMap(vhid));
+        }
+
+        public EntityData Serialize(EGID egid)
+        {
+            return this.Serialize(_entities.GetIdMap(egid));
+        }
+
+        public EntityData Serialize(uint entityId, ExclusiveGroupStruct groupId)
+        {
+            return this.Serialize(_entities.GetIdMap(entityId, groupId));
+        }
+
+        public void Serialize(VhId vhid, EntityWriter writer)
+        {
+            this.Serialize(_entities.GetIdMap(vhid), writer);
+        }
+
+        public void Serialize(EGID egid, EntityWriter writer)
+        {
+            this.Serialize(_entities.GetIdMap(egid), writer);
+        }
+
+        public void Serialize(uint entityId, ExclusiveGroupStruct groupId, EntityWriter writer)
+        {
+            this.Serialize(_entities.GetIdMap(entityId, groupId), writer);
         }
     }
 }

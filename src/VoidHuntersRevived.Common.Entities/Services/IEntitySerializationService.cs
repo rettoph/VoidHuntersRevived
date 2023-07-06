@@ -12,7 +12,14 @@ namespace VoidHuntersRevived.Common.Entities.Services
     public interface IEntitySerializationService
     {
         EntityData Serialize(IdMap id);
+        EntityData Serialize(VhId vhid);
+        EntityData Serialize(EGID egid);
+        EntityData Serialize(uint entityId, ExclusiveGroupStruct groupId);
+        
         void Serialize(IdMap id, EntityWriter writer);
+        void Serialize(VhId vhid, EntityWriter writer);
+        void Serialize(EGID egid, EntityWriter writer);
+        void Serialize(uint entityId, ExclusiveGroupStruct groupId, EntityWriter writer);
 
         IdMap Deserialize(VhId seed, EntityData data);
         IdMap Deserialize(EntityReader reader);

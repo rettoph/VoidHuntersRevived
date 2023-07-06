@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
+using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Game.Components;
@@ -23,11 +24,20 @@ namespace VoidHuntersRevived.Game.Engines
     internal sealed class HelmEngine : BasicEngine,
         IEventEngine<SetHelmDirection>, IStepEngine<Step>
     {
+        private readonly IEntityService _entities;
+        private readonly ISpace _space;
+
+        public HelmEngine(IEntityService entities, ISpace space)
+        {
+            _entities = entities;
+            _space = space;
+        }
+
         public string name { get; } = nameof(HelmEngine);
 
         public void Process(VhId vhid, SetHelmDirection data)
         {
-            IdMap id = this.Simulation.Entities.GetIdMap(data.ShipId);
+            IdMap id =_entities.GetIdMap(data.ShipId);
             ref Helm helm = ref entitiesDB.QueryMappedEntities<Helm>(id.EGID.groupID).Entity(id.EGID.entityID);
 
             if (data.Value)
@@ -47,8 +57,8 @@ namespace VoidHuntersRevived.Game.Engines
             {
                 for (int i = 0; i < count; i++)
                 {
-                    IdMap helmId = this.Simulation.Entities.GetIdMap(entityIds[i], groupId);
-                    IBody body = this.Simulation.Space.GetBody(helmId.VhId);
+                    IdMap helmId = _entities.GetIdMap(entityIds[i], groupId);
+                    IBody body = _space.GetBody(helmId.VhId);
 
                     FixVector2 impulse = FixVector2.Zero;
                     Helm helm = helms[i];

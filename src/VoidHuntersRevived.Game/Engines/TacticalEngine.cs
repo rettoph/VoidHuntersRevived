@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
+using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Game.Components;
@@ -25,11 +26,18 @@ namespace VoidHuntersRevived.Game.Engines
     {
         private static readonly Fix64 AimDamping = Fix64.One / (Fix64)32;
 
+        private readonly IEntityService _entities;
+
+        public TacticalEngine(IEntityService entities)
+        {
+            _entities = entities;
+        }
+
         public string name { get; } = nameof(TacticalEngine);
 
         public void Process(VhId eventId, SetTacticalTarget data)
         {
-            IdMap id = this.Simulation.Entities.GetIdMap(data.ShipId);
+            IdMap id = _entities.GetIdMap(data.ShipId);
             ref Tactical tactical = ref entitiesDB.QueryMappedEntities<Tactical>(id.EGID.groupID).Entity(id.EGID.entityID);
 
             tactical.Target = data.Value;

@@ -12,6 +12,8 @@ namespace VoidHuntersRevived.Common.Simulations.Engines
     [SimulationTypeFilter(SimulationType.Predictive)]
     public interface IPredictiveSynchronizationEngine : IEngine
     {
-        void Synchronize(ILockstepSimulation lockstep, Step step);
+        void Initialize(ILockstepSimulation lockstep);
+
+        void Synchronize(Step step);
     }
 }

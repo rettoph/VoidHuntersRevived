@@ -16,6 +16,7 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Events;
 using VoidHuntersRevived.Common.Entities.Serialization;
+using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Common.Components;
 using VoidHuntersRevived.Game.Common;
@@ -34,6 +35,14 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
         public string name { get; } = nameof(TreeEngine);
 
         private HashSet<EGID> _removedNodes = new HashSet<EGID>();
+        private readonly IEntitySerializationService _serialization;
+        private readonly IFilterService _filters;
+
+        public TreeEngine(IEntitySerializationService serialization, IFilterService filters)
+        {
+            _serialization = serialization;
+            _filters = filters;
+        }
 
         // public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Tree> entities, ExclusiveGroupStruct groupID)
         // 
@@ -89,7 +98,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             {
                 for (uint treeIndex = 0; treeIndex < count; treeIndex++)
                 {
-                    ref var filter = ref this.Simulation.Filters.GetFilter<Node>(vhids[treeIndex].Value);
+                    ref var filter = ref _filters.GetFilter<Node>(vhids[treeIndex].Value);
 
                     foreach (var (nodeIndices, group) in filter)
                     {
@@ -156,12 +165,12 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
         public void Serialize(in Tree tree, EntityWriter writer)
         {
-            this.Simulation.Serialize(tree.HeadId, writer);
+            _serialization.Serialize(tree.HeadId, writer);
         }
 
         public void Deserialize(EntityReader reader, ref Tree component)
         {
-            this.Simulation.Deserialize(reader);
+            _serialization.Deserialize(reader);
         }
 
         // private void AddNodeToTree(in VhId eventId, in IdMap treeId, in Tree tree, in IdMap nodeId)

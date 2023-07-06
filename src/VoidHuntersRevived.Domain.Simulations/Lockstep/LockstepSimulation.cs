@@ -39,11 +39,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             remove => this.Events.OnEvent -= value;
         }
 
-        public LockstepSimulation(
-            ISpaceFactory spaceFactory,
-            IEngineService engines,
-            IBus bus,
-            ILogger logger) : base(SimulationType.Lockstep, spaceFactory, engines, bus, logger)
+        public LockstepSimulation(IServiceProvider provider) : base(SimulationType.Lockstep, provider)
 
         {
             _tickEngines = new TickEngineGroup(this.Engines.OfType<ITickEngine>());

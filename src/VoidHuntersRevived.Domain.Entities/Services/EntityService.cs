@@ -15,11 +15,12 @@ using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    internal sealed partial class EntityService : IEntityService, IEngine, IEnginesGroupEngine
+    internal sealed partial class EntityService : IEntityService, IEngine, IGetReadyEngine
     {
-        private IEngineService _engines;
-        private IEntityFactory _factory;
-        private IEntityFunctions _functions;
+        private readonly IEngineService _engines;
+        private readonly IEntityFactory _factory;
+        private readonly IEntityFunctions _functions;
+        private IEntitySerializationService _serialization;
         private readonly EntityTypeService _entityTypes;
         private readonly DoubleDictionary<VhId, EGID, IdMap> _ids;
         private readonly Dictionary<VhId, EntityType> _types;
@@ -30,7 +31,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public string name { get; } = nameof(EntityService);
 
-        public EntityService(EntityTypeService entityTypes, ILogger logger)
+        public EntityService(
+            ILogger logger,
+            IEngineService engines,
+            EnginesRoot enginesRoot,
+            EntityTypeService entityTypes)
         {
             _engines = null!;
             _factory = null!;
@@ -40,13 +45,15 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _types = new Dictionary<VhId, EntityType>();
             _removed = new Queue<IdMap>();
             _logger = logger;
+            _factory = enginesRoot.GenerateEntityFactory();
+            _functions = enginesRoot.GenerateEntityFunctions();
+            _engines = engines;
+            _serialization = null!;
         }
 
-        public void Initialize(IEngineService engines)
+        public void Ready()
         {
-            _engines = engines;
-            _factory = engines.Root.GenerateEntityFactory();
-            _functions = engines.Root.GenerateEntityFunctions();
+            _serialization = _engines.Get<IEntitySerializationService>();
         }
 
         public IdMap GetIdMap(VhId vhid)

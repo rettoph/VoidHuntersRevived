@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Physics.Factories;
 using VoidHuntersRevived.Domain.Physics.Factories;
 
@@ -18,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Physics.Loaders
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IBodyFactory, BodyFactory>();
-            services.AddScoped<ISpaceFactory, SpaceFactory>();
+            services.AddScoped<ISpace, Space>();
         }
     }
 }

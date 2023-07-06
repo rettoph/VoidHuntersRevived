@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Common.Components;
@@ -19,6 +20,15 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
     internal sealed class BodyEngine : BasicEngine,
         IReactOnAddAndRemoveEx<Body>, IStepEngine<Step>
     {
+        private readonly IEntityService _entities;
+        private readonly ISpace _space;
+
+        public BodyEngine(IEntityService entities, ISpace space)
+        {
+            _entities = entities;
+            _space = space;
+        }
+
         public string name { get; } = nameof(BodyEngine);
 
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Body> entities, ExclusiveGroupStruct groupID)
@@ -27,10 +37,10 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                IdMap bodyId = this.Simulation.Entities.GetIdMap(ids[index], groupID);
+                IdMap bodyId = _entities.GetIdMap(ids[index], groupID);
                 bodies[index].Id = bodyId.VhId;
 
-                this.Simulation.Space.GetOrCreateBody(bodyId.VhId);
+                _space.GetOrCreateBody(bodyId.VhId);
             }
         }
 
@@ -40,7 +50,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                this.Simulation.Space.RemoveBody(bodies[index].Id);
+                _space.RemoveBody(bodies[index].Id);
             }
         }
 
@@ -51,7 +61,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             {
                 for (int i = 0; i < count; i++)
                 {
-                    IBody bodyInstance = this.Simulation.Space.GetBody(vhids[i].Value);
+                    IBody bodyInstance = _space.GetBody(vhids[i].Value);
                     ref Body bodyComponent = ref bodies[i];
 
                     bodyComponent.Position = bodyInstance.Position;

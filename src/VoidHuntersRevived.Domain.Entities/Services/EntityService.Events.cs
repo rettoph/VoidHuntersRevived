@@ -87,7 +87,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            EntityData backup = _engines.Serialization.Serialize(this.GetIdMap(data.VhId));
+            EntityData backup = _serialization.Serialize(this.GetIdMap(data.VhId));
 
             _backups.Add(data.VhId, backup);
             this.Destroy(data.VhId);
@@ -103,7 +103,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            _engines.Serialization.Deserialize(default, _backups[data.VhId]);
+            _serialization.Deserialize(default, _backups[data.VhId]);
         }
     }
 }

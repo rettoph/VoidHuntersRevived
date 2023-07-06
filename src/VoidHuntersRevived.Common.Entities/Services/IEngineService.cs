@@ -11,13 +11,8 @@ namespace VoidHuntersRevived.Common.Entities.Services
 {
     public interface IEngineService : IDisposable
     {
-        EnginesRoot Root { get; }
-        IEventPublishingService Events { get; }
-        IEntityService Entities { get; }
-        IEntitySerializationService Serialization { get; }
-        IFilterService Filters { get; }
-
         IEngineService Load(params IState[] states);
+
         void Initialize();
 
         IEnumerable<T> OfType<T>();

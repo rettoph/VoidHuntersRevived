@@ -3,6 +3,7 @@ using Guppy.Common.DependencyInjection;
 using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
 using Svelto.ECS;
+using Svelto.ECS.Schedulers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,20 +24,25 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
                 manager.AddSingleton<EntityTypeService>()
                     .AddAlias<IEntityTypeService>();
 
-                manager.AddTransient<EngineService>()
-                    .AddAlias<IEngineService>();
+                manager.AddScoped<SimpleEntitiesSubmissionScheduler>()
+                    .AddAlias<EntitiesSubmissionScheduler>();
 
-                manager.AddTransient<EntityService>()
-                    .AddAlias<IEngine>();
+                manager.AddScoped<EnginesRoot>();
 
-                manager.AddTransient<EntitySerializationService>()
-                    .AddAlias<IEngine>();
+                manager.AddScoped<EngineService>()
+                    .AddInterfaceAliases();
 
-                manager.AddTransient<EventPublishingService>()
-                    .AddAlias<IEngine>();
+                manager.AddScoped<EntityService>()
+                    .AddInterfaceAliases();
 
-                manager.AddTransient<FilterService>()
-                    .AddAlias<IEngine>();
+                manager.AddScoped<EntitySerializationService>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<EventPublishingService>()
+                    .AddInterfaceAliases();
+
+                manager.AddScoped<FilterService>()
+                    .AddInterfaceAliases();
             });
         }
     }

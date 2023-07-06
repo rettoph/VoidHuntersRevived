@@ -36,11 +36,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         private Step _step;
 
         public LockstepSimulation_Server(
-            ISettingProvider settings, 
-            ISpaceFactory spaceFactory,
-            IEngineService engines,
-            IBus bus,
-            ILogger logger) : base(spaceFactory, engines, bus, logger)
+            ISettingProvider settings,
+            IServiceProvider provider,
+            IBus bus) : base(provider)
         {
             Fix64 stepInterval = settings.Get<Fix64>(Settings.StepInterval).Value;
 

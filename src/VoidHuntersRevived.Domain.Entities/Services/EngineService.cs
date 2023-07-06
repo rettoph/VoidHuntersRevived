@@ -35,12 +35,16 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public IFilterService Filters { get; private set; }
 
-        public EngineService(IBus bus, IFilteredProvider filtered)
+        public EngineService(
+            IBus bus, 
+            IFilteredProvider filtered,
+            EnginesRoot enginesRoot,
+            SimpleEntitiesSubmissionScheduler simpleEntitiesSubmissionScheduler)
         {
             _bus = bus;
             _filtered = filtered;
-            _submission = new();
-            _enginesRoot = new(_submission);
+            _submission = simpleEntitiesSubmissionScheduler;
+            _enginesRoot = enginesRoot;
             _stepEngines = null!;
             _engines = null!;
 
@@ -68,11 +72,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             foreach (IEngine engine in _engines)
             {
-                if (engine is IEnginesGroupEngine enginesGroup)
-                {
-                    enginesGroup.Initialize(this);
-                }
-
                 if (engine is ISubscriber subscriber)
                 {
                     _bus.Subscribe(subscriber);
