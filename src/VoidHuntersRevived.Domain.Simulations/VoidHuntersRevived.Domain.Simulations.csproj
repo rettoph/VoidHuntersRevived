@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <ProjectReference Include="..\..\libraries\Svelto.ECS\com.sebaslab.svelto.common\Svelto.Common.csproj" />
     <ProjectReference Include="..\..\libraries\Svelto.ECS\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Simulations\VoidHuntersRevived.Common.Simulations.csproj" />

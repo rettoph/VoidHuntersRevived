@@ -18,6 +18,7 @@ using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
 using VoidHuntersRevived.Common.Entities.Enums;
+using Autofac;
 
 namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
@@ -31,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
         public PredictiveSimulation(
             IFiltered<ILockstepSimulation> lockstep,
-            IServiceProvider provider) : base(SimulationType.Predictive, provider)
+            ILifetimeScope scope) : base(SimulationType.Predictive, scope)
         {
             _step = new Step();
             _lockstep = lockstep.Instance;

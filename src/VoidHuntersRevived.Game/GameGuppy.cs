@@ -1,8 +1,8 @@
 ﻿using Guppy.MonoGame;
 using Microsoft.Xna.Framework;
-using Microsoft.Extensions.DependencyInjection;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common;
+using Autofac;
 
 namespace VoidHuntersRevived.Game
 {
@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Game
             this.Simulations = simulations;
         }
 
-        public override void Initialize(IServiceProvider provider)
+        public override void Initialize(ILifetimeScope provider)
         {
             base.Initialize(provider);
 

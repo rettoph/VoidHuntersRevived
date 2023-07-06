@@ -1,9 +1,7 @@
-﻿using Guppy.Common;
-using Guppy.Network.Enums;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Autofac;
+using Guppy.Common;
 using Microsoft.Xna.Framework;
 using System.Collections.ObjectModel;
-using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 
@@ -13,7 +11,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
     {
         private bool _initialized;
         private readonly IBus _bus;
-        private readonly IServiceProvider _provider;
+        private readonly ILifetimeScope _scope;
         private readonly IDictionary<SimulationType, ISimulation> _simulations;
         private readonly IList<SimulationType> _types;
         private readonly IList<ISimulation> _list;
@@ -27,10 +25,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
         public ISimulation this[SimulationType type] => _simulations[type];
 
-        public SimulationService(IBus bus, IServiceProvider provider)
+        public SimulationService(IBus bus, ILifetimeScope scope)
         {
             _bus = bus;
-            _provider = provider;
+            _scope = scope;
             _simulations = new Dictionary<SimulationType, ISimulation>();
             _list = new List<ISimulation>();
             _types = new List<SimulationType>();
@@ -48,7 +46,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
             this.Flags = simulationTypeFlags;
 
-            IEnumerable<ISimulation> simulations = _provider.GetRequiredService<IFiltered<ISimulation>>().Instances;
+            IEnumerable<ISimulation> simulations = _scope.Resolve<IFiltered<ISimulation>>().Instances;
             foreach (ISimulation simulation in simulations)
             {
                 if(!this.Flags.HasFlag(simulation.Type))

@@ -1,6 +1,5 @@
 ﻿using Guppy.Attributes;
 using Guppy.Resources.Providers;
-using Microsoft.Extensions.Configuration;
 using Svelto.ECS;
 using System;
 using System.Collections.Generic;

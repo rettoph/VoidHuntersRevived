@@ -1,7 +1,5 @@
 ﻿using Guppy.Attributes;
-using Guppy.Common.DependencyInjection;
 using Guppy.Loaders;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -15,13 +13,14 @@ using VoidHuntersRevived.Game.Enums;
 using Guppy.Input.Enums;
 using VoidHuntersRevived.Game.Events;
 using VoidHuntersRevived.Game.Client.Messages;
+using Autofac;
 
 namespace VoidHuntersRevived.Game.Client.Loaders
 {
     [AutoLoad]
     internal sealed class InputLoader : IServiceLoader
     {
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(ContainerBuilder services)
         {
             InputLoader.AddSetDirectionInput(services, Inputs.SetDirectionForward, Keys.W, Direction.Forward);
             InputLoader.AddSetDirectionInput(services, Inputs.SetDirectionTurnRight, Keys.D, Direction.TurnRight);
@@ -37,7 +36,7 @@ namespace VoidHuntersRevived.Game.Client.Loaders
             });
         }
 
-        private static void AddSetDirectionInput(IServiceCollection services, string key, Keys defaultSource, Direction direction)
+        private static void AddSetDirectionInput(ContainerBuilder services, string key, Keys defaultSource, Direction direction)
         {
             services.AddInput(key, defaultSource, new[]
             {

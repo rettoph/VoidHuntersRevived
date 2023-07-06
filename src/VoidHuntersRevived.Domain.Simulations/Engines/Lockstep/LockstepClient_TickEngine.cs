@@ -3,6 +3,7 @@ using Guppy.Common;
 using Guppy.Network;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,10 +28,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
         ISubscriber<INetIncomingMessage<TickHistoryEnd>>
     {
         private readonly TickBuffer _ticks;
+        private readonly ILogger _logger;
 
-        public LockstepClient_TickEngine(TickBuffer ticks)
+        public LockstepClient_TickEngine(ILogger logger, TickBuffer ticks)
         {
             _ticks = ticks;
+            _logger = logger;
         }
 
         public void Process(in Guid messsageId, in INetIncomingMessage<Tick> message)

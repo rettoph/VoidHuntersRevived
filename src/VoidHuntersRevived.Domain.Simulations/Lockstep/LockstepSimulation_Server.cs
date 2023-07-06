@@ -20,6 +20,7 @@ using VoidHuntersRevived.Common.Physics.Factories;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
+using Autofac;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
@@ -37,8 +38,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public LockstepSimulation_Server(
             ISettingProvider settings,
-            IServiceProvider provider,
-            IBus bus) : base(provider)
+            ILifetimeScope scope,
+            IBus bus) : base(scope)
         {
             Fix64 stepInterval = settings.Get<Fix64>(Settings.StepInterval).Value;
 

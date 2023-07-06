@@ -1,14 +1,9 @@
-﻿using Guppy.Attributes;
-using Guppy.Common;
-using Guppy.Common.DependencyInjection;
-using Guppy.Common.DependencyInjection.Interfaces;
+﻿using Autofac;
+using Guppy.Attributes;
 using Guppy.Loaders;
-using Guppy.Network;
 using LiteNetLib;
-using Microsoft.Extensions.DependencyInjection;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Constants;
-using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
@@ -21,29 +16,22 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
     [AutoLoad]
     public sealed class SimulationLoader : IServiceLoader
     {
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(ContainerBuilder services)
         {
             services.AddSetting<Fix64>(Settings.StepInterval, (Fix64)20/(Fix64)1000, false);
             services.AddSetting<int>(Settings.StepsPerTick, 3, false);
 
-            services.AddScoped<ISimulationService, SimulationService>();
+            services.RegisterType<SimulationService>().As<ISimulationService>().InstancePerLifetimeScope();
 
-            services.ConfigureCollection(manager =>
-            {
-                this.ConfigureLockstep(services, manager);
-                this.ConfigurePredictive(services, manager);
-            });
+            this.ConfigureLockstep(services);
+            this.ConfigurePredictive(services);
         }
 
-        private void ConfigureLockstep(IServiceCollection services, IServiceCollectionManager manager)
+        private void ConfigureLockstep(ContainerBuilder services)
         {
-            manager.AddScoped<LockstepSimulation_Server>()
-                .AddInterfaceAliases();
-
-            manager.AddScoped<LockstepSimulation_Client>()
-                .AddInterfaceAliases();
-
-            manager.AddScoped<TickBuffer>();
+            services.RegisterType<LockstepSimulation_Server>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            services.RegisterType<LockstepSimulation_Client>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            services.RegisterType<TickBuffer>().InstancePerLifetimeScope();
 
             services.AddNetMessageType<Tick>(DeliveryMethod.ReliableUnordered, 0);
             services.AddNetMessageType<TickHistoryStart>(DeliveryMethod.ReliableOrdered, 0);
@@ -51,10 +39,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
             services.AddNetMessageType<TickHistoryEnd>(DeliveryMethod.ReliableOrdered, 0);
         }
 
-        private void ConfigurePredictive(IServiceCollection services, IServiceCollectionManager manager)
+        private void ConfigurePredictive(ContainerBuilder services)
         {
-            manager.AddScoped<PredictiveSimulation>()
-                .AddInterfaceAliases();
+            services.RegisterType<PredictiveSimulation>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }

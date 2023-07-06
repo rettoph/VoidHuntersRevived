@@ -16,6 +16,7 @@ using Guppy.Network.Enums;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Entities.Engines;
+using Serilog;
 
 namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 {
@@ -28,11 +29,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
     {
         private readonly NetScope _scope;
         private readonly List<Tick> _history;
+        private readonly ILogger _logger;
 
-        public LockstepServer_TickEngine(NetScope scope)
+        public LockstepServer_TickEngine(ILogger logger, NetScope scope)
         {
             _scope = scope;
             _history = new List<Tick>();
+            _logger = logger;
         }
 
         public string name { get; } = nameof(LockstepServer_TickEngine);

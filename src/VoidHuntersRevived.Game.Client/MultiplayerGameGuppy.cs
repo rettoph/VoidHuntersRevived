@@ -11,6 +11,7 @@ using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations;
 using Guppy.Network.Identity.Claims;
 using Microsoft.Xna.Framework;
+using Autofac;
 
 namespace VoidHuntersRevived.Game.Client
 {
@@ -25,13 +26,13 @@ namespace VoidHuntersRevived.Game.Client
             this.NetScope = netScope;
         }
 
-        public override void Initialize(IServiceProvider provider)
+        public override void Initialize(ILifetimeScope scope)
         {
             this.Client.Start();
 
             this.Client.Bind(this.NetScope, NetScopeIds.Game);
 
-            base.Initialize(provider);
+            base.Initialize(scope);
 
             this.Connect("localhost", 1337);
         }

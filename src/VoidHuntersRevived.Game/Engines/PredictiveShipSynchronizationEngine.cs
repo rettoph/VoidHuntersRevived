@@ -1,20 +1,9 @@
-﻿using Guppy.Attributes;
-using Microsoft.Extensions.DependencyInjection;
-using Svelto.DataStructures;
-using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Autofac;
+using Guppy.Attributes;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
-using VoidHuntersRevived.Game.Components;
-using VoidHuntersRevived.Game.Enums;
-using VoidHuntersRevived.Game.Pieces.Components;
 
 namespace VoidHuntersRevived.Game.Engines
 {
@@ -32,7 +21,7 @@ namespace VoidHuntersRevived.Game.Engines
 
         public void Initialize(ILockstepSimulation lockstep)
         {
-            _lockstepSpace = lockstep.Scope.ServiceProvider.GetRequiredService<ISpace>();
+            _lockstepSpace = lockstep.Scope.Resolve<ISpace>();
         }
 
         public void Synchronize(Step step)

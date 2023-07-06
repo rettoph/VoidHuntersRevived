@@ -19,6 +19,7 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Physics.Factories;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
+using Autofac;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
@@ -26,21 +27,21 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
     internal sealed class LockstepSimulation_Client : LockstepSimulation,
         IDisposable
     {
-        private readonly NetScope _scope;
+        private readonly NetScope _netScope;
         private readonly TickBuffer _ticks;
         private readonly int _stepsPerTick;
         private int _stepsSinceTick;
         private Step _step;
 
         public LockstepSimulation_Client(
-            NetScope scope,
+            NetScope netScope,
             TickBuffer ticks,
             ISettingProvider settings,
-            IServiceProvider provider) : base(provider)
+            ILifetimeScope scope) : base(scope)
         {
             Fix64 stepInterval = settings.Get<Fix64>(Settings.StepInterval).Value;
 
-            _scope = scope;
+            _netScope = netScope;
             _ticks = ticks;
             _stepsSinceTick = 0;
             _stepsPerTick = settings.Get<int>(Settings.StepsPerTick).Value;
@@ -101,7 +102,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public override void Input(VhId eventId, IInputData data)
         {
-            _scope.Messages.Create(new EventDto()
+            _netScope.Messages.Create(new EventDto()
             {
                 Id = eventId,
                 Data = data

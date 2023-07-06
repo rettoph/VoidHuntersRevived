@@ -1,4 +1,5 @@
-﻿using Guppy.Common;
+﻿using Autofac;
+using Guppy.Common;
 using Guppy.MonoGame;
 using Guppy.MonoGame.Providers;
 using Guppy.Network;
@@ -17,17 +18,17 @@ namespace VoidHuntersRevived.Game.Client
 
         public MainMenuGuppy(
             ClientPeer client,
-            NetScope scope,
+            NetScope netScope,
             IMenuProvider menus)
         {
             _menu = menus.Get(Menus.Main);
 
-            client.Bind(scope, NetScopeIds.MainMenu);
+            client.Bind(netScope, NetScopeIds.MainMenu);
         }
 
-        public override void Initialize(IServiceProvider provider)
+        public override void Initialize(ILifetimeScope scope)
         {
-            base.Initialize(provider);
+            base.Initialize(scope);
         }
 
         protected override void Draw(GameTime gameTime)

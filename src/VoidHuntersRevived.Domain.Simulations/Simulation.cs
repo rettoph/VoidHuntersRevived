@@ -1,32 +1,25 @@
-﻿using Guppy.Common;
-using Guppy.Common.Extensions;
-using Guppy.Resources.Providers;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Physics;
-using VoidHuntersRevived.Common.Physics.Factories;
 using VoidHuntersRevived.Common.Simulations.Services;
-using VoidHuntersRevived.Domain.Simulations.Services;
-using Guppy.Common.Providers;
-using Svelto.ECS.Schedulers;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Domain.Entities;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Simulations.EnginesGroups;
 using VoidHuntersRevived.Common.Entities.Services;
+using Autofac;
+using Guppy.Common.Extensions.Autofac;
 using Serilog;
-using VoidHuntersRevived.Common.Entities.Enums;
 using Guppy.Network;
+using Guppy.Common;
+using Guppy.Network.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
     public abstract partial class Simulation : ISimulation, IDisposable
     {
-        private readonly IServiceScope _scope;
+        private readonly ILifetimeScope _scope;
         private readonly DrawEngineGroups _drawEnginesGroups;
         private Queue<EventDto> _events;
 
@@ -35,18 +28,24 @@ namespace VoidHuntersRevived.Domain.Simulations
         public readonly IEventPublishingService Events;
 
         SimulationType ISimulation.Type => this.Type;
-        IServiceScope ISimulation.Scope => _scope;
+        ILifetimeScope ISimulation.Scope => _scope;
 
-        protected Simulation(SimulationType type, IServiceProvider provider)
+        protected Simulation(SimulationType type, ILifetimeScope scope)
         {
             this.Type = type;
 
-            _scope = provider.CreateScope();
+            _scope = scope.BeginLifetimeScope(builder =>
+            {
+                builder.Configure<LoggerConfiguration>(configuration =>
+                {
+                    configuration.Enrich.WithProperty("PeerType", scope.Resolve<NetScope>().Peer?.Type ?? PeerType.None);
+                    configuration.Enrich.WithProperty("SimulationType", this.Type);
+                });
+            });
 
             // Pass the current scoped netscope to the new child scope
-            _scope.ServiceProvider.GetRequiredService<ScopedProvider<NetScope>>().SetInstance(provider.GetRequiredService<NetScope>());
-            this.Engines = _scope.ServiceProvider.GetRequiredService<IEngineService>().Load(new SimulationState(this));
-            this.Events = _scope.ServiceProvider.GetRequiredService<IEventPublishingService>();
+            this.Engines = _scope.Resolve<IEngineService>().Load(new SimulationState(this));
+            this.Events = _scope.Resolve<IEventPublishingService>();
 
             _drawEnginesGroups = new DrawEngineGroups(this.Engines.OfType<IStepEngine<GameTime>>());
             _events = new Queue<EventDto>();

@@ -20,6 +20,7 @@ using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Entities.Enums;
+using Autofac;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
@@ -39,7 +40,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             remove => this.Events.OnEvent -= value;
         }
 
-        public LockstepSimulation(IServiceProvider provider) : base(SimulationType.Lockstep, provider)
+        public LockstepSimulation(ILifetimeScope scope) : base(SimulationType.Lockstep, scope)
 
         {
             _tickEngines = new TickEngineGroup(this.Engines.OfType<ITickEngine>());

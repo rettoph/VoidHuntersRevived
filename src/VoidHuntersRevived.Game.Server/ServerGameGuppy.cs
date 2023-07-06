@@ -1,4 +1,5 @@
-﻿using Guppy.Network;
+﻿using Autofac;
+using Guppy.Network;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Providers;
 using Guppy.Network.Peers;
@@ -23,7 +24,7 @@ namespace VoidHuntersRevived.Game.Server
             this.Server.Users.OnUserConnected += this.HandleUserConnected;
         }
 
-        public override void Initialize(IServiceProvider provider)
+        public override void Initialize(ILifetimeScope scope)
         {
             this.Server.Bind(this.NetScope, NetScopeIds.Game);
 
@@ -32,7 +33,7 @@ namespace VoidHuntersRevived.Game.Server
 
             this.Simulations.Configure(SimulationType.Lockstep);
 
-            base.Initialize(provider);
+            base.Initialize(scope);
         }
 
         protected override void Update(GameTime gameTime)

@@ -1,20 +1,17 @@
 ﻿using Guppy.Loaders;
-using Guppy.Resources.Serialization.Json.Converters;
-using Guppy.Resources.Serialization.Json;
-using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json.Serialization;
 using Guppy.Attributes;
-using tainicom.Aether.Physics2D.Collision.Shapes;
 using VoidHuntersRevived.Domain.Physics.Serialization.Json.Converters;
+using Autofac;
 
 namespace VoidHuntersRevived.Domain.Physics.Loaders
 {
     [AutoLoad]
     internal sealed class SerializationLoader : IServiceLoader
     {
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(ContainerBuilder services)
         {
-            services.AddSingleton<JsonConverter, PolygonConverter>();
+            services.RegisterType<PolygonConverter>().As<JsonConverter>().SingleInstance();
         }
     }
 }

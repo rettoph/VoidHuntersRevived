@@ -1,14 +1,8 @@
-﻿using Guppy.Attributes;
-using Guppy.Common.DependencyInjection;
+﻿using Autofac;
+using Guppy.Attributes;
 using Guppy.Loaders;
-using Microsoft.Extensions.DependencyInjection;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Domain.Entities.Services;
 
@@ -17,33 +11,23 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
     [AutoLoad]
     public sealed class EntityLoader : IServiceLoader
     {
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(ContainerBuilder builder)
         {
-            services.ConfigureCollection(manager =>
-            {
-                manager.AddSingleton<EntityTypeService>()
-                    .AddAlias<IEntityTypeService>();
+            builder.RegisterType<EntityTypeService>().As<IEntityTypeService>().AsSelf().InstancePerLifetimeScope();
 
-                manager.AddScoped<SimpleEntitiesSubmissionScheduler>()
-                    .AddAlias<EntitiesSubmissionScheduler>();
+            builder.RegisterType<SimpleEntitiesSubmissionScheduler>().AsSelf().As<EntitiesSubmissionScheduler>().InstancePerLifetimeScope();
 
-                manager.AddScoped<EnginesRoot>();
+            builder.RegisterType<EnginesRoot>().InstancePerLifetimeScope();
 
-                manager.AddScoped<EngineService>()
-                    .AddInterfaceAliases();
+            builder.RegisterType<EngineService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-                manager.AddScoped<EntityService>()
-                    .AddInterfaceAliases();
+            builder.RegisterType<EntityService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-                manager.AddScoped<EntitySerializationService>()
-                    .AddInterfaceAliases();
+            builder.RegisterType<EntitySerializationService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-                manager.AddScoped<EventPublishingService>()
-                    .AddInterfaceAliases();
+            builder.RegisterType<EventPublishingService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-                manager.AddScoped<FilterService>()
-                    .AddInterfaceAliases();
-            });
+            builder.RegisterType<FilterService>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }

@@ -1,9 +1,8 @@
-﻿using Guppy.Attributes;
-using Guppy.Common.DependencyInjection;
+﻿using Autofac;
+using Guppy.Attributes;
 using Guppy.Loaders;
 using Guppy.MonoGame;
 using Guppy.MonoGame.Utilities.Cameras;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -17,19 +16,10 @@ namespace VoidHuntersRevived.Game.Client.Loaders
     [AutoLoad]
     internal sealed class MainLoader : IServiceLoader
     {
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(ContainerBuilder services)
         {
-            services.AddGuppy<MainMenuGuppy>();
-            services.AddGuppy<MultiplayerGameGuppy>();
-
-            services.ConfigureCollection(manager =>
-            {
-                manager.AddScoped<ScreenComponent>()
-                    .AddAlias<IGameComponent>();
-
-                manager.AddScoped<Camera2D>()
-                    .AddAlias<Camera>();
-            });
+            services.RegisterType<ScreenComponent>().As<IGameComponent>().InstancePerLifetimeScope();
+            services.RegisterType<Camera2D>().As<Camera>().AsSelf().InstancePerLifetimeScope();
         }
     }
 }
