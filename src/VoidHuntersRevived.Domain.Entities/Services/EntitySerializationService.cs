@@ -22,6 +22,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 {
     internal sealed class EntitySerializationService : IEntitySerializationService, IQueryingEntitiesEngine
     {
+        private readonly EntityReader _reader = new EntityReader();
+        private readonly EntityWriter _writer = new EntityWriter();
         private readonly IEventPublishingService _events;
         private readonly IEntityService _entities;
         private readonly IEngineService _engines;
@@ -82,9 +84,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EntityData Serialize(IdMap id)
         {
-            EntityWriter.Instance.Reset();
-            this.Serialize(id, EntityWriter.Instance);
-            return EntityWriter.Instance.Export();
+            _writer.Reset();
+            this.Serialize(id, _writer);
+            return _writer.Export();
         }
 
         public void Serialize(IdMap id, EntityWriter writer)
@@ -105,8 +107,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public IdMap Deserialize(in VhId seed, EntityData data)
         {
-            EntityReader.Instance.Load(data);
-            return this.Deserialize(in seed, EntityReader.Instance);
+            _reader.Load(data);
+            return this.Deserialize(in seed, _reader);
         }
 
         public IdMap Deserialize(in VhId seed, EntityReader reader)
@@ -125,6 +127,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 {
                     serializationEngineGroup.Deserialize(in readerState.Seed, reader, ref initializer);
                 }
+
+                reader.Busy = false;
             }));
 
             return _entities.GetIdMap(vhid);

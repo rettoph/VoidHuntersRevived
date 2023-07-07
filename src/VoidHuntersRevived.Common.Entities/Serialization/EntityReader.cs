@@ -9,9 +9,9 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
 {
     public class EntityReader : BinaryReader
     {
-        public static readonly EntityReader Instance = new EntityReader();
-
         private EntityData _loaded;
+
+        public bool Busy;
 
         public EntityReader() : base(new MemoryStream())
         {
@@ -31,6 +31,11 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
         }
         public void Load(EntityReaderState state)
         {
+            if(this.Busy)
+            {
+                throw new Exception();
+            }
+
             if (_loaded.Id != state.Data.Id)
             {
                 this.BaseStream.Position = state.Position;

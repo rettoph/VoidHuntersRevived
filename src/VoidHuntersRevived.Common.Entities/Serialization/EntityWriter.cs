@@ -2,7 +2,7 @@
 {
     public sealed class EntityWriter : BinaryWriter
     {
-        public static readonly EntityWriter Instance = new EntityWriter();
+        public bool Busy;
 
         public EntityWriter() : base(new MemoryStream())
         {
@@ -24,6 +24,12 @@
 
         public void Reset()
         {
+            if(this.Busy)
+            {
+                throw new Exception();
+            }
+
+            this.Busy = true;
             this.BaseStream.Position = 0;
         }
 
@@ -33,6 +39,7 @@
 
             this.BaseStream.Position = 0;
             this.BaseStream.Read(bytes, 0, bytes.Length);
+            this.Busy = false;
 
             return new EntityData(bytes);
         }

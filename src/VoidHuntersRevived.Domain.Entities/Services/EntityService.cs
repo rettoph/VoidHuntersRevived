@@ -95,7 +95,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             while(_removed.TryDequeue(out IdMap removed))
             {
-                Console.WriteLine($"Removing Entity Map: {removed.VhId}");
                 _ids.Remove(removed.VhId, removed.EGID);
                 _types.Remove(removed.VhId);
             }
