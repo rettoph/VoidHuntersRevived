@@ -21,10 +21,10 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
             {
                 new ComponentManager<ResourceId<Visible>>(
                     builder: new ComponentBuilder<ResourceId<Visible>>(),
-                    serializer: ComponentSerializer<ResourceId<Visible>>.Default()),
+                    serializer: ComponentSerializer<ResourceId<Visible>>.Default),
                 new ComponentManager<ResourceId<Rigid>>(
                     builder: new ComponentBuilder<ResourceId<Rigid>>(),
-                    serializer: ComponentSerializer<ResourceId<Rigid>>.Default())
+                    serializer: ComponentSerializer<ResourceId<Rigid>>.Default)
             });
         }
     }

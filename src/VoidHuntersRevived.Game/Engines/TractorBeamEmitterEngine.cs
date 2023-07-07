@@ -17,6 +17,7 @@ using VoidHuntersRevived.Game.Components;
 using VoidHuntersRevived.Game.Events;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Factories;
 
 namespace VoidHuntersRevived.Game.Engines
 {
@@ -30,12 +31,14 @@ namespace VoidHuntersRevived.Game.Engines
         private readonly IEntityService _entities;
         private readonly IEntitySerializationService _serialization;
         private readonly ISpace _space;
+        private readonly ITreeFactory _treeFactory;
 
-        public TractorBeamEmitterEngine(IEntityService entities, IEntitySerializationService serialization, ISpace space)
+        public TractorBeamEmitterEngine(IEntityService entities, IEntitySerializationService serialization, ISpace space, ITreeFactory treeFactory)
         {
             _entities = entities;
             _serialization = serialization;
             _space = space;
+            _treeFactory = treeFactory;
         }
 
         public void Process(VhId eventId, SetTractorBeamEmitterActive data)
@@ -78,17 +81,9 @@ namespace VoidHuntersRevived.Game.Engines
 
         public void Process(VhId eventId, SetTractorBeamTarget data)
         {
-            VhId targetVhId = eventId.Create(1);
+            VhId targetVhId = eventId.Create(100);
 
-            IdMap headId = _serialization.Deserialize(eventId, data.TargetData);
-
-            this.Simulation.Publish(CreateEntity.CreateEvent(
-                type: EntityTypes.Chain,
-                vhid: targetVhId,
-                initializer: (ref EntityInitializer initializer) =>
-                {
-                    initializer.Init<Tree>(new Tree(headId.VhId));
-                }));
+            _treeFactory.Create(targetVhId, EntityTypes.Chain, data.TargetData);
         }
 
         public bool Query(FixVector2 target, Fix64 radius, out IdMap targetId)

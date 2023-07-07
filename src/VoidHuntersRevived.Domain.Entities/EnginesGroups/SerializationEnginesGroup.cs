@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Engines;
@@ -17,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Entities.EnginesGroups
     {
         public abstract void Serialize(EntityWriter writer, EGID egid, EntitiesDB entities, uint index);
 
-        public abstract void Deserialize(EntityReader reader, ref EntityInitializer initializer);
+        public abstract void Deserialize(in VhId seed, EntityReader reader, ref EntityInitializer initializer);
     }
 
     internal sealed class SerializationEnginesGroup<T> : SerializationEnginesGroup
@@ -41,12 +42,12 @@ namespace VoidHuntersRevived.Domain.Entities.EnginesGroups
             }
         }
 
-        public override void Deserialize(EntityReader reader, ref EntityInitializer initializer)
+        public override void Deserialize(in VhId seed, EntityReader reader, ref EntityInitializer initializer)
         {
             ref T component = ref initializer.Get<T>();
             foreach (ISerializationEngine<T> engine in _engines)
             {
-                engine.Deserialize(reader, ref component);
+                engine.Deserialize(in seed, reader, ref component);
             }
         }
     }

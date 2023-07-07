@@ -12,14 +12,13 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
         public static readonly EntityReader Instance = new EntityReader();
 
         private EntityData _loaded;
-        private VhId _seed;
 
         public EntityReader() : base(new MemoryStream())
         {
             _loaded = new EntityData(Array.Empty<byte>());
         }
 
-        public void Load(VhId seed, EntityData data)
+        public void Load(EntityData data)
         {
             if(_loaded.Id != data.Id)
             {
@@ -29,8 +28,6 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
 
                 _loaded = data;
             }
-
-            _seed = seed;
         }
         public void Load(EntityReaderState state)
         {
@@ -38,29 +35,22 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             {
                 this.BaseStream.Position = state.Position;
                 this.BaseStream.Write(state.Data.Bytes, state.Position, state.Data.Bytes.Length - state.Position);
-                this.BaseStream.Position = state.Position;
 
                 _loaded = state.Data;
             }
 
-            _seed = state.Seed;
+            this.BaseStream.Position = state.Position;
         }
 
-        public EntityReaderState GetState()
+        public EntityReaderState GetState(in VhId seed)
         {
-            return new EntityReaderState(_loaded!, _seed, (int)this.BaseStream.Position);
+            return new EntityReaderState(_loaded!, seed, (int)this.BaseStream.Position);
         }
+
 
         public VhId ReadVhId()
         {
-            VhId value = this.ReadUnmanaged<VhId>();
-
-            if(_seed.Value == default!)
-            {
-                return value;
-            }
-
-            return _seed.Create(value);
+            return this.ReadUnmanaged<VhId>();
         }
 
         public unsafe T ReadUnmanaged<T>()

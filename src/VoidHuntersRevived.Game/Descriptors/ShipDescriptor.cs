@@ -19,13 +19,13 @@ namespace VoidHuntersRevived.Game.Descriptors
             {
                 new ComponentManager<Helm>(
                     builder: new ComponentBuilder<Helm>(),
-                    serializer: ComponentSerializer<Helm>.Default()),
+                    serializer: ComponentSerializer<Helm>.Default),
                 new ComponentManager<Tactical>(
                     builder: new ComponentBuilder<Tactical>(),
-                    serializer: ComponentSerializer<Tactical>.Default()),
+                    serializer: ComponentSerializer<Tactical>.Default),
                 new ComponentManager<TractorBeamEmitter>(
                     builder: new ComponentBuilder<TractorBeamEmitter>(),
-                    serializer: ComponentSerializer<TractorBeamEmitter>.Default())
+                    serializer: ComponentSerializer<TractorBeamEmitter>.Default)
             });
         }
     }

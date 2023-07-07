@@ -12,8 +12,8 @@ namespace VoidHuntersRevived.Game.Client
 
         public override void Initialize(ILifetimeScope scope)
         {
-            //this.Simulations.Configure(SimulationType.Lockstep | SimulationType.Predictive);
-            this.Simulations.Configure(SimulationType.Lockstep);
+            this.Simulations.Configure(SimulationType.Lockstep | SimulationType.Predictive);
+            //this.Simulations.Configure(SimulationType.Lockstep);
 
             base.Initialize(scope);
         }

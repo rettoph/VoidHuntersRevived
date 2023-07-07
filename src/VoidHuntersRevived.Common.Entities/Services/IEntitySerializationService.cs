@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Common.Entities.Services
         void Serialize(EGID egid, EntityWriter writer);
         void Serialize(uint entityId, ExclusiveGroupStruct groupId, EntityWriter writer);
 
-        IdMap Deserialize(VhId seed, EntityData data);
-        IdMap Deserialize(EntityReader reader);
+        IdMap Deserialize(in VhId seed, EntityData data);
+        IdMap Deserialize(in VhId seed, EntityReader reader);
     }
 }

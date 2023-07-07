@@ -17,7 +17,6 @@ using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Domain.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Engines;
 using VoidHuntersRevived.Domain.Entities.EnginesGroups;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -104,27 +103,27 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
         }
 
-        public IdMap Deserialize(VhId seed, EntityData data)
+        public IdMap Deserialize(in VhId seed, EntityData data)
         {
-            EntityReader.Instance.Load(seed, data);
-            return this.Deserialize(EntityReader.Instance);
+            EntityReader.Instance.Load(data);
+            return this.Deserialize(in seed, EntityReader.Instance);
         }
 
-        public IdMap Deserialize(EntityReader reader)
+        public IdMap Deserialize(in VhId seed, EntityReader reader)
         {
-            VhId vhid = reader.ReadVhId();
-            VhId typeId = reader.ReadUnmanaged<VhId>();
+            VhId vhid = seed.Create(reader.ReadVhId());
+            VhId typeId = reader.ReadVhId();
             IEntityType type = _types.GetById(typeId);
-            EntityReaderState readerState = reader.GetState();
+            EntityReaderState readerState = reader.GetState(in seed);
 
             _events.Publish(CreateEntity.CreateEvent(type, vhid, (ref EntityInitializer initializer) =>
             {
                 reader.Load(readerState);
-                type.Descriptor.Deserialize(reader, ref initializer);
+                type.Descriptor.Deserialize(in readerState.Seed, reader, ref initializer);
 
                 foreach (SerializationEnginesGroup serializationEngineGroup in _serializationEngines[type])
                 {
-                    serializationEngineGroup.Deserialize(reader, ref initializer);
+                    serializationEngineGroup.Deserialize(in readerState.Seed, reader, ref initializer);
                 }
             }));
 

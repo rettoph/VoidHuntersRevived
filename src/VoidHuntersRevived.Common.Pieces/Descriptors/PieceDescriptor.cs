@@ -22,13 +22,13 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                 new ComponentManager<Node>(
                     builder: new ComponentBuilder<Node>(),
                     serializer: new ComponentSerializer<Node>(
-                        writer: (writer, tree) =>
+                        writer: (writer, node) =>
                         {
-                            writer.Write(tree.TreeId);
+                            //
                         },
-                        reader: reader =>
+                        reader: (seed, reader) =>
                         {
-                            return new Node(reader.ReadVhId());
+                            return new Node(seed);
                         }))
             });
         }

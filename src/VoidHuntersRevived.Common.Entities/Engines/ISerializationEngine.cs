@@ -12,6 +12,6 @@ namespace VoidHuntersRevived.Common.Entities.Engines
         where T : struct, IEntityComponent
     {
         void Serialize(in T component, EntityWriter writer);
-        void Deserialize(EntityReader reader, ref T component);
+        void Deserialize(in VhId seed, EntityReader reader, ref T component);
     }
 }

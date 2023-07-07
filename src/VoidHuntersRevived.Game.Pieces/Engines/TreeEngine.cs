@@ -165,9 +165,9 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             _serialization.Serialize(tree.HeadId, writer);
         }
 
-        public void Deserialize(EntityReader reader, ref Tree component)
+        public void Deserialize(in VhId seed, EntityReader reader, ref Tree component)
         {
-            _serialization.Deserialize(reader);
+            _serialization.Deserialize(in seed, reader);
         }
 
         // private void AddNodeToTree(in VhId eventId, in IdMap treeId, in Tree tree, in IdMap nodeId)

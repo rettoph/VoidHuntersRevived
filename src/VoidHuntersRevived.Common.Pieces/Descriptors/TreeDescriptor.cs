@@ -19,18 +19,10 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
             {
                 new ComponentManager<Body>(
                     builder: new ComponentBuilder<Body>(),
-                    serializer: ComponentSerializer<Body>.Default()),
+                    serializer: ComponentSerializer<Body>.Default),
                 new ComponentManager<Tree>(
                     builder: new ComponentBuilder<Tree>(),
-                    serializer: new ComponentSerializer<Tree>(
-                        writer: (writer, tree) =>
-                        {
-                            writer.Write(tree.HeadId);
-                        },
-                        reader: reader =>
-                        {
-                            return new Tree(reader.ReadVhId());
-                        }))
+                    serializer: ComponentSerializer<Tree>.Default)
             });
         }
     }

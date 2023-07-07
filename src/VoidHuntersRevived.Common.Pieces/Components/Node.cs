@@ -10,8 +10,6 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 {
     public struct Node : IEntityComponent
     {
-        public static readonly FilterContextID FilterContextID = new FilterContextID();
-
         public readonly VhId TreeId;
         public FixMatrix Transformation;
 

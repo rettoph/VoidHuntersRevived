@@ -18,16 +18,16 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
         }
 
         public abstract void Serialize(EntityWriter writer, uint sourceIndex, ExclusiveGroupStruct groupId, EntitiesDB entities);
-        public abstract void Deserialize(EntityReader reader, ref EntityInitializer initializer);
+        public abstract void Deserialize(in VhId seed, EntityReader reader, ref EntityInitializer initializer);
     }
 
     public class ComponentSerializer<T> : ComponentSerializer
         where T : unmanaged, IEntityComponent
     {
         private Action<EntityWriter, T> _writer;
-        private Func<EntityReader, T> _reader;
+        private Func<VhId, EntityReader, T> _reader;
 
-        public ComponentSerializer(Action<EntityWriter, T> writer, Func<EntityReader, T> reader) : base(typeof(T))
+        public ComponentSerializer(Action<EntityWriter, T> writer, Func<VhId, EntityReader, T> reader) : base(typeof(T))
         {
             _writer = writer;
             _reader = reader;
@@ -41,16 +41,13 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             _writer(writer, component);
         }
 
-        public override void Deserialize(EntityReader reader, ref EntityInitializer initializer)
+        public override void Deserialize(in VhId seed, EntityReader reader, ref EntityInitializer initializer)
         {
-            initializer.Init<T>(_reader(reader));
+            initializer.Init<T>(_reader(seed, reader));
         }
 
 
-        public static ComponentSerializer<T> Default()
-        {
-            return new ComponentSerializer<T>(RawSerialize, RawDeserialize);
-        }
+        public static ComponentSerializer<T> Default => new ComponentSerializer<T>(RawSerialize, RawDeserialize);
 
         private static unsafe void RawSerialize(EntityWriter writer, T component)
         {
@@ -59,7 +56,7 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
 
             writer.Write(span);
         }
-        private unsafe static T RawDeserialize(EntityReader reader)
+        private unsafe static T RawDeserialize(VhId seed, EntityReader reader)
         {
             Span<byte> span = stackalloc byte[sizeof(T)];
             reader.Read(span);
