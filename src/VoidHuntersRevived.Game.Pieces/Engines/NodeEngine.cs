@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Serilog;
 using Svelto.ECS;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Game.Pieces.Events;
 
@@ -21,11 +23,13 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
     {
         private readonly IEntityService _entities;
         private readonly IFilterService _filters;
+        private readonly ILogger _logger;
 
-        public NodeEngine(IEntityService entities, IFilterService filters)
+        public NodeEngine(IEntityService entities, IFilterService filters, ILogger logger)
         {
             _entities = entities;
             _filters = filters;
+            _logger = logger;
         }
 
         public void Process(VhId eventId, DestroyNode data)

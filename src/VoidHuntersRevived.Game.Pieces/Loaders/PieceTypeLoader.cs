@@ -11,7 +11,7 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Loaders;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Game.Pieces.Resources;
+using VoidHuntersRevived.Common.Pieces.Resources;
 using Colors = VoidHuntersRevived.Common.Resources.Colors;
 
 namespace VoidHuntersRevived.Game.Pieces.Loaders

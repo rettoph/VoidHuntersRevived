@@ -21,7 +21,8 @@ using VoidHuntersRevived.Game.Common;
 using VoidHuntersRevived.Game.Common.Components;
 using VoidHuntersRevived.Game.Components;
 using VoidHuntersRevived.Game.Pieces;
-using VoidHuntersRevived.Game.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Factories;
 
 namespace VoidHuntersRevived.Game.Engines
 {
@@ -30,10 +31,12 @@ namespace VoidHuntersRevived.Game.Engines
         IEventEngine<UserJoined>
     {
         private readonly NetScope _scope;
+        private readonly ITreeFactory _treeFactory;
 
-        public UserEngine(NetScope scope)
+        public UserEngine(ITreeFactory treeFactory, NetScope scope)
         {
             _scope = scope;
+            _treeFactory = treeFactory;
         }
 
         public string name { get; } = nameof(UserEngine);
@@ -41,45 +44,9 @@ namespace VoidHuntersRevived.Game.Engines
         public void Process(VhId id, UserJoined data)
         {
             VhId shipId = _scope.Peer!.Users.UpdateOrCreate(data.UserId, data.Claims).GetUserShipId();
-            VhId square1Id = id.Create(1);
-            VhId square2Id = id.Create(2);
 
-            // BEGIN SHIP
-            this.Simulation.Publish(CreateEntity.CreateEvent(
-                type: EntityTypes.UserShip,
-                vhid: shipId,
-                initializer: (ref EntityInitializer initializer) =>
-                {
-                    initializer.Init(new Tree(square1Id));
-                }));
-
-            this.Simulation.Publish(CreateEntity.CreateEvent(
-                type: PieceTypes.HullSquare, 
-                vhid: square1Id,
-                initializer: (ref EntityInitializer initializer) =>
-                {
-                    initializer.Init(new Node(shipId));
-                }));
-            // END SHIP
-
-            // BEGIN CHAIN
-            VhId chainId = id.Create(3);
-            this.Simulation.Publish(CreateEntity.CreateEvent(
-                type: EntityTypes.Chain,
-                vhid: chainId,
-                initializer: (ref EntityInitializer initializer) =>
-                {
-                    initializer.Init(new Tree(square2Id));
-                }));
-
-            this.Simulation.Publish(CreateEntity.CreateEvent(
-                type: PieceTypes.HullSquare,
-                vhid: square2Id,
-                initializer: (ref EntityInitializer initializer) =>
-                {
-                    initializer.Init(new Node(chainId));
-                }));
-            // END CHAIN
+            _treeFactory.Create(shipId, EntityTypes.UserShip, PieceTypes.HullSquare);
+            _treeFactory.Create(id.Create(1), EntityTypes.Chain, PieceTypes.HullSquare);
         }
     }
 }

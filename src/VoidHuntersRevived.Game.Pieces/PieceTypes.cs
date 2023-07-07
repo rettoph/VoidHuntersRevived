@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Pieces.Descriptors;
 using VoidHuntersRevived.Game.Common;
-using VoidHuntersRevived.Game.Pieces.Descriptors;
 
 namespace VoidHuntersRevived.Game.Pieces
 {

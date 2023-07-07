@@ -10,9 +10,9 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics;
+using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Common.Components;
-using VoidHuntersRevived.Game.Pieces.Components;
 
 namespace VoidHuntersRevived.Game.Pieces.Engines
 {
@@ -33,24 +33,21 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Body> entities, ExclusiveGroupStruct groupID)
         {
-            var (bodies, ids, _) = entities;
+            var (vhids, _) = this.entitiesDB.QueryEntities<EntityVhId>(groupID);
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                IdMap bodyId = _entities.GetIdMap(ids[index], groupID);
-                bodies[index].Id = bodyId.VhId;
-
-                _space.GetOrCreateBody(bodyId.VhId);
+                _space.GetOrCreateBody(vhids[index].Value);
             }
         }
 
         public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Body> entities, ExclusiveGroupStruct groupID)
         {
-            var (bodies, ids, _) = entities;
+            var (vhids, _) = this.entitiesDB.QueryEntities<EntityVhId>(groupID);
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                _space.RemoveBody(bodies[index].Id);
+                _space.RemoveBody(vhids[index].Value);
             }
         }
 

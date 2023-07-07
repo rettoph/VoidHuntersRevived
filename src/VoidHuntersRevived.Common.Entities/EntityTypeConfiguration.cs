@@ -20,10 +20,10 @@ namespace VoidHuntersRevived.Common.Entities
     {
         private EntityInitializerDelegate? _initializer;
 
-        public EntityType<TDescriptor> Type { get; }
-        EntityType IEntityTypeConfiguration.Type => Type;
+        public IEntityType<TDescriptor> Type { get; }
+        IEntityType IEntityTypeConfiguration.Type => Type;
 
-        public EntityTypeConfiguration(EntityType<TDescriptor> type)
+        public EntityTypeConfiguration(IEntityType<TDescriptor> type)
         {
             Type = type;
         }

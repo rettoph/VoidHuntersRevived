@@ -75,12 +75,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 this.Publish(@event, out published);
             }
 
-            _logger.Information($"{nameof(EventPublishingService)}::{nameof(Confirm)} - Confirming '{@event.Data.GetType().Name}', '{@event.Id.Value}'");
+            _logger.Verbose("Confirming Event {EventId} {EventType}", @event.Id.Value, @event.Data.GetType().Name);
+
 
             published.Status = PublishedEventStatus.Confirmed;
         }
 
-        public void Prune()
+        public void Revert()
         {
             while(_published.TryPeek(out PublishedEvent? published) && published.Expired)
             {
@@ -91,6 +92,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
                 _published.TryDequeue(out _);
             }
+        }
+
+        public void Confirm()
+        {
+            _published.Clear();
         }
 
 

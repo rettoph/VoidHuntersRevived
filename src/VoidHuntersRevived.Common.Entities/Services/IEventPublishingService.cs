@@ -29,6 +29,11 @@ namespace VoidHuntersRevived.Common.Entities.Services
         /// <summary>
         /// Prune any events, reverting expired published events.
         /// </summary>
-        void Prune();
+        void Revert();
+
+        /// <summary>
+        /// Confirm all unconfirmed events.
+        /// </summary>
+        void Confirm();
     }
 }

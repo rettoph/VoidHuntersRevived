@@ -8,10 +8,10 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Serialization;
-using VoidHuntersRevived.Game.Pieces.Components;
-using VoidHuntersRevived.Game.Pieces.Resources;
+using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Resources;
 
-namespace VoidHuntersRevived.Game.Pieces.Descriptors
+namespace VoidHuntersRevived.Common.Pieces.Descriptors
 {
     public class HullDescriptor : PieceDescriptor
     {

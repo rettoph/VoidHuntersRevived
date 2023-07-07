@@ -17,18 +17,15 @@ using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Events;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Pieces;
+using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Common.Components;
-using VoidHuntersRevived.Game.Common;
-using VoidHuntersRevived.Game.Pieces;
-using VoidHuntersRevived.Game.Pieces.Components;
-using VoidHuntersRevived.Game.Pieces.Events;
 
 namespace VoidHuntersRevived.Game.Pieces.Engines
 {
     [AutoLoad]
     internal sealed class TreeEngine : BasicEngine,
-        IReactOnRemoveEx<Tree>,
         ISerializationEngine<Tree>,
         IStepEngine<Step>
     {
@@ -86,7 +83,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
                 VhId headId = trees[index].HeadId;
-
+        
                 this.Simulation.Publish(DestroyEntity.CreateEvent(headId));
             }
         }
@@ -94,7 +91,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
         public void Step(in Step _param)
         {
             LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = this.entitiesDB.FindGroups<Tree>();
-            foreach (var ((vhids, trees, count), _) in this.entitiesDB.QueryEntities<EntityVhId, Tree>(groups))
+            foreach (var ((vhids, trees, egids, count), _) in this.entitiesDB.QueryEntities<EntityVhId, Tree>(groups))
             {
                 for (uint treeIndex = 0; treeIndex < count; treeIndex++)
                 {

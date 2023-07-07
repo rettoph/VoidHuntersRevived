@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private IEntitySerializationService _serialization;
         private readonly EntityTypeService _entityTypes;
         private readonly DoubleDictionary<VhId, EGID, IdMap> _ids;
-        private readonly Dictionary<VhId, EntityType> _types;
+        private readonly Dictionary<VhId, IEntityType> _types;
         private readonly Queue<IdMap> _removed;
         private readonly ILogger _logger;
 
@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _functions = null!;
             _entityTypes = entityTypes;
             _ids = new DoubleDictionary<VhId, EGID, IdMap>();
-            _types = new Dictionary<VhId, EntityType>();
+            _types = new Dictionary<VhId, IEntityType>();
             _removed = new Queue<IdMap>();
             _logger = logger;
             _factory = enginesRoot.GenerateEntityFactory();
@@ -86,7 +86,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _ids.TryGet(new EGID(entityId, groupId), out id);
         }
 
-        public EntityType GetEntityType(VhId entityVhId)
+        public IEntityType GetEntityType(VhId entityVhId)
         {
             return _types[entityVhId];
         }

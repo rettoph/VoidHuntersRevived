@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 
-namespace VoidHuntersRevived.Game.Pieces.Utilities
+namespace VoidHuntersRevived.Common.Pieces.Utilities
 {
     public static class PolygonHelper
     {

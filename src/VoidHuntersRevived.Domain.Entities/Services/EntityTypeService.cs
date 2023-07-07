@@ -10,13 +10,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 {
     public sealed class EntityTypeService : IEntityTypeService
     {
-        private readonly Dictionary<EntityType, IEntityTypeConfiguration> _configurations;
-        private readonly Dictionary<VhId, EntityType> _ids;
+        private readonly Dictionary<IEntityType, IEntityTypeConfiguration> _configurations;
+        private readonly Dictionary<VhId, IEntityType> _ids;
 
         public EntityTypeService(ISorted<IEntityTypeLoader> loaders)
         {
-            _configurations = new Dictionary<EntityType, IEntityTypeConfiguration>();
-            _ids = new Dictionary<VhId, EntityType>();
+            _configurations = new Dictionary<IEntityType, IEntityTypeConfiguration>();
+            _ids = new Dictionary<VhId, IEntityType>();
 
             foreach (IEntityTypeLoader loader in loaders)
             {
@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
         }
 
-        public void Register(params EntityType[] types)
+        public void Register(params IEntityType[] types)
         {
             foreach(EntityType type in types)
             {
@@ -32,12 +32,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
         }
 
-        public void Configure(EntityType type, Action<IEntityTypeConfiguration> configuration)
+        public void Configure(IEntityType type, Action<IEntityTypeConfiguration> configuration)
         {
             configuration(this.GetOrCreateConfiguration(type));
         }
 
-        internal IEntityTypeConfiguration GetOrCreateConfiguration(EntityType type)
+        internal IEntityTypeConfiguration GetOrCreateConfiguration(IEntityType type)
         {
             if(!_configurations.TryGetValue(type, out IEntityTypeConfiguration? configuration))
             {
@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return configuration;
         }
 
-        internal IEntityTypeConfiguration GetConfiguration(EntityType type)
+        internal IEntityTypeConfiguration GetConfiguration(IEntityType type)
         {
             return _configurations[type];
         }
@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _configurations.Values;
         }
 
-        public EntityType GetById(VhId id)
+        public IEntityType GetById(VhId id)
         {
             return _ids[id];
         }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Serialization;
+using VoidHuntersRevived.Common.Pieces.Descriptors;
 using VoidHuntersRevived.Game.Components;
 using VoidHuntersRevived.Game.Pieces;
 

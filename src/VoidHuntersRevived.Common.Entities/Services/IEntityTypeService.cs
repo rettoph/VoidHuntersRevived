@@ -2,9 +2,9 @@
 {
     public interface IEntityTypeService
     {
-        void Register(params EntityType[] types);
-        void Configure(EntityType type, Action<IEntityTypeConfiguration> configuration);
+        void Register(params IEntityType[] types);
+        void Configure(IEntityType type, Action<IEntityTypeConfiguration> configuration);
         IEnumerable<IEntityTypeConfiguration> GetAllConfigurations();
-        EntityType GetById(VhId id);
+        IEntityType GetById(VhId id);
     }
 }

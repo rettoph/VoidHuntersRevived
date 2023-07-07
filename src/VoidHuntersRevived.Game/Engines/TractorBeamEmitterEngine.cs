@@ -15,11 +15,8 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Game.Components;
 using VoidHuntersRevived.Game.Events;
-using VoidHuntersRevived.Game.Pieces;
-using VoidHuntersRevived.Game.Pieces.Components;
-using VoidHuntersRevived.Game.Pieces.Descriptors;
-using static System.Net.Mime.MediaTypeNames;
 using VoidHuntersRevived.Common.Physics;
+using VoidHuntersRevived.Common.Pieces.Components;
 
 namespace VoidHuntersRevived.Game.Engines
 {

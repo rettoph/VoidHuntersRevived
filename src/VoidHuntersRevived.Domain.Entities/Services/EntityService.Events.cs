@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private HashCache<VhId> _destroyed = new HashCache<VhId>(TimeSpan.FromSeconds(5));
         private Dictionary<VhId, EntityData> _backups = new Dictionary<VhId, EntityData>();
 
-        private IdMap Create(EntityType type, VhId vhid, EntityInitializerDelegate? initializerDelegate)
+        private IdMap Create(IEntityType type, VhId vhid, EntityInitializerDelegate? initializerDelegate)
         {
             EntityInitializer initializer = type.CreateEntity(_factory);
 
@@ -54,9 +54,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, CreateEntity data)
         {
-            int count = _destroyed.Remove(data.VhId);
-            _logger.Verbose($"{nameof(EntityService)}::{nameof(Process)}<{nameof(CreateEntity)}> - Creating Entity {data.VhId} ({count}) ({data.Type.Name})");
-            if (count != -1)
+            if (_destroyed.Remove(data.VhId) != -1)
             {
                 return;
             }
@@ -66,10 +64,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Revert(VhId eventId, CreateEntity data)
         {
-            int count = _destroyed.Add(data.VhId);
-            _logger.Verbose($"{nameof(EntityService)}::{nameof(Revert)}<{nameof(CreateEntity)}> - Reverting Creating Entity {data.VhId} ({count}) ({data.Type.Name})");
-
-            if (count != 0)
+            if (_destroyed.Add(data.VhId) != 0)
             {
                 return;
             }
@@ -79,10 +74,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, DestroyEntity data)
         {
-            int count = _destroyed.Add(data.VhId);
-            _logger.Verbose($"{nameof(EntityService)}::{nameof(Process)}<{nameof(DestroyEntity)}> - Destroying Entity {data.VhId} ({count})");
-
-            if (count != 0)
+            if (_destroyed.Add(data.VhId) != 0)
             {
                 return;
             }
@@ -95,10 +87,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Revert(VhId eventId, DestroyEntity data)
         {
-            int count = _destroyed.Count(data.VhId);
-            _logger.Verbose($"{nameof(EntityService)}::{nameof(Revert)}<{nameof(DestroyEntity)}> - Reverting Destroying Entity {data.VhId} ({count})");
-
-            if (count != 0)
+            if (_destroyed.Count(data.VhId) != 0)
             {
                 return;
             }

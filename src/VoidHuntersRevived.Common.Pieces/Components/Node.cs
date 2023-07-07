@@ -8,10 +8,16 @@ using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Common.Pieces.Components
 {
-    public struct Local : IEntityComponent
+    public struct Node : IEntityComponent
     {
+        public static readonly FilterContextID FilterContextID = new FilterContextID();
+
+        public readonly VhId TreeId;
         public FixMatrix Transformation;
-        public FixVector2 Position;
-        public Fix64 Rotation;
+
+        public Node(VhId treeId)
+        {
+            this.TreeId = treeId;
+        }
     }
 }

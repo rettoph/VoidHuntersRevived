@@ -10,13 +10,17 @@ using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Common.Entities
 {
-    public abstract class EntityType
+    public abstract class EntityType : IEntityType
     {
         private static List<EntityType> _list = new List<EntityType>();
 
         public readonly VoidHuntersEntityDescriptor Descriptor;
         public readonly string Name;
         public readonly VhId Id;
+
+        VoidHuntersEntityDescriptor IEntityType.Descriptor => this.Descriptor;
+        string IEntityType.Name => this.Name;
+        VhId IEntityType.Id => this.Id;
 
         internal unsafe EntityType(VhId nameSpace, string name, VoidHuntersEntityDescriptor descriptor)
         {
@@ -42,13 +46,15 @@ namespace VoidHuntersRevived.Common.Entities
         }
     }
 
-    public class EntityType<TDescriptor> : EntityType
+    public sealed class EntityType<TDescriptor> : EntityType, IEntityType<TDescriptor>
         where TDescriptor : VoidHuntersEntityDescriptor, new()
     {
         private static uint EntityId;
         private static readonly ExclusiveGroup Group = new ExclusiveGroup();
 
         public readonly new TDescriptor Descriptor;
+
+        TDescriptor IEntityType<TDescriptor>.Descriptor => this.Descriptor;
 
         public EntityType(VhId nameSpace, string name) : base(nameSpace, name, new TDescriptor())
         {

@@ -15,14 +15,13 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Physics;
+using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Resources;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Common.Components;
 using VoidHuntersRevived.Game.Client.Utilities;
-using VoidHuntersRevived.Game.Pieces;
-using VoidHuntersRevived.Game.Pieces.Resources;
-using VoidHuntersRevived.Game.Pieces.Utilities;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {

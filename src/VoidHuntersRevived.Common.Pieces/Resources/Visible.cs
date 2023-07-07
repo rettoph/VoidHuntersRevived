@@ -1,16 +1,8 @@
 ﻿using Guppy.Resources;
 using Microsoft.Xna.Framework;
-using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Physics;
-using VoidHuntersRevived.Game.Pieces.Utilities;
+using VoidHuntersRevived.Common.Pieces.Utilities;
 
-namespace VoidHuntersRevived.Game.Pieces.Resources
+namespace VoidHuntersRevived.Common.Pieces.Resources
 {
     public class Visible
     {

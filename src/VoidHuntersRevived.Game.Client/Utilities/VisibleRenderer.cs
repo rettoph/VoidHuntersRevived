@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using Guppy.MonoGame.Utilities.Cameras;
-using VoidHuntersRevived.Game.Pieces.Resources;
+using VoidHuntersRevived.Common.Pieces.Resources;
 
 namespace VoidHuntersRevived.Game.Client.Utilities
 {

@@ -15,20 +15,20 @@ namespace VoidHuntersRevived.Common.Entities.Events
         public static readonly VhId NameSpace = new VhId("6a7a5aed-2cfe-4c85-8c24-421a82f1d738");
 
         public required VhId VhId { get; init; }
-        public required EntityType Type { get; init; }
+        public required IEntityType Type { get; init; }
         public required EntityInitializerDelegate? Initializer { get; init; }
 
-        public static EventDto CreateEvent(EntityType type, VhId vhid)
+        public static EventDto CreateEvent(IEntityType type, VhId vhid)
         {
             return InternalCreateEvent(type, vhid, null);
         }
 
-        public static EventDto CreateEvent(EntityType type, VhId vhid, EntityInitializerDelegate initializer)
+        public static EventDto CreateEvent(IEntityType type, VhId vhid, EntityInitializerDelegate initializer)
         {
             return InternalCreateEvent(type, vhid, initializer);
         }
 
-        private static EventDto InternalCreateEvent(EntityType type, VhId vhid, EntityInitializerDelegate? initializer)
+        private static EventDto InternalCreateEvent(IEntityType type, VhId vhid, EntityInitializerDelegate? initializer)
         {
             return new EventDto()
             {

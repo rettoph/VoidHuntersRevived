@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Serialization;
-using VoidHuntersRevived.Game.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Components;
 
-namespace VoidHuntersRevived.Game.Descriptors
+namespace VoidHuntersRevived.Common.Pieces.Descriptors
 {
     public abstract class TreeDescriptor : VoidHuntersEntityDescriptor
     {

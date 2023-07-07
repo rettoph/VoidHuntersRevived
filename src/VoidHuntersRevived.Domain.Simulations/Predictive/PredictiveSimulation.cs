@@ -78,7 +78,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
                 synchronization.Synchronize(step);
             }
 
-            this.Events.Prune();
+            this.Events.Revert();
 
             if(_confirmedEvents.TryDequeue(out EventDto? confirmedEvent))
             {

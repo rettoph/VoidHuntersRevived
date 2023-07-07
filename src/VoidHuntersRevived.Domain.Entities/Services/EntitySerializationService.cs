@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly IEntityService _entities;
         private readonly IEngineService _engines;
         private readonly EntityTypeService _types;
-        private Dictionary<EntityType, FasterList<SerializationEnginesGroup>> _serializationEngines;
+        private Dictionary<IEntityType, FasterList<SerializationEnginesGroup>> _serializationEngines;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
@@ -90,7 +90,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Serialize(IdMap id, EntityWriter writer)
         {
-            EntityType type = _entities.GetEntityType(id.VhId);
+            IEntityType type = _entities.GetEntityType(id.VhId);
 
             writer.Write(id.VhId);
             writer.WriteUnmanaged(type.Id);
@@ -114,7 +114,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             VhId vhid = reader.ReadVhId();
             VhId typeId = reader.ReadUnmanaged<VhId>();
-            EntityType type = _types.GetById(typeId);
+            IEntityType type = _types.GetById(typeId);
             EntityReaderState readerState = reader.GetState();
 
             _events.Publish(CreateEntity.CreateEvent(type, vhid, (ref EntityInitializer initializer) =>

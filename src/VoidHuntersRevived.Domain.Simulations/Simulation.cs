@@ -85,7 +85,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.Engines.Step(step);
         }
 
-        public virtual void Publish(EventDto data)
+        public void Publish(EventDto data)
         {
             this.Events.Publish(data);
         }

@@ -4,7 +4,7 @@ using Svelto.ECS;
 
 namespace VoidHuntersRevived.Common.Simulations.Engines
 {
-    [Service<IEngine>(ServiceLifetime.Transient, true)]
+    [Service<IEngine>(ServiceLifetime.Scoped, true)]
     public abstract class BasicEngine<TSimulation> : ISimulationEngine<TSimulation>, IQueryingEntitiesEngine
         where TSimulation : ISimulation
     {

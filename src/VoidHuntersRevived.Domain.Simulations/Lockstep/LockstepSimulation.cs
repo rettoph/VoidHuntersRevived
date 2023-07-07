@@ -59,13 +59,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             }
         }
 
-        public override void Publish(EventDto data)
-        {
-            base.Publish(data);
-
-            this.Events.Confirm(data);
-        }
-
         public override void Update(GameTime realTime)
         {
             base.Update(realTime);
@@ -94,6 +87,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             }
 
             _history.Add(tick);
+        }
+
+        protected override void DoStep(Step step)
+        {
+            base.DoStep(step);
+
+            this.Events.Confirm();
         }
     }
 }
