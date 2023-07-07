@@ -56,6 +56,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public IEngineService Load(params IState[] states)
         {
+            
             _engines = _filtered.Instances<IEngine>(states).Sort().ToArray();
 
             this.Entities = this.Get<IEntityService>();

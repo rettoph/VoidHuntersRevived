@@ -19,22 +19,22 @@ namespace VoidHuntersRevived.Domain.Simulations
 {
     public abstract partial class Simulation : ISimulation, IDisposable
     {
-        private readonly ILifetimeScope _scope;
         private readonly DrawEngineGroups _drawEnginesGroups;
         private Queue<EventDto> _events;
 
         public readonly SimulationType Type;
         public readonly IEngineService Engines;
         public readonly IEventPublishingService Events;
+        public readonly ILifetimeScope Scope;
 
         SimulationType ISimulation.Type => this.Type;
-        ILifetimeScope ISimulation.Scope => _scope;
+        ILifetimeScope ISimulation.Scope => this.Scope;
 
         protected Simulation(SimulationType type, ILifetimeScope scope)
         {
             this.Type = type;
 
-            _scope = scope.BeginLifetimeScope(builder =>
+            this.Scope = scope.BeginLifetimeScope(builder =>
             {
                 builder.Configure<LoggerConfiguration>(configuration =>
                 {
@@ -44,8 +44,8 @@ namespace VoidHuntersRevived.Domain.Simulations
             });
 
             // Pass the current scoped netscope to the new child scope
-            this.Engines = _scope.Resolve<IEngineService>().Load(new SimulationState(this));
-            this.Events = _scope.Resolve<IEventPublishingService>();
+            this.Engines = this.Scope.Resolve<IEngineService>().Load(new SimulationState(this));
+            this.Events = this.Scope.Resolve<IEventPublishingService>();
 
             _drawEnginesGroups = new DrawEngineGroups(this.Engines.OfType<IStepEngine<GameTime>>());
             _events = new Queue<EventDto>();

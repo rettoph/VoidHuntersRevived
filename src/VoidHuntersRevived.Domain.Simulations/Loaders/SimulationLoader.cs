@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Guppy.Attributes;
+using Guppy.Common.Autofac;
 using Guppy.Loaders;
 using LiteNetLib;
 using VoidHuntersRevived.Common;
@@ -31,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
         {
             services.RegisterType<LockstepSimulation_Server>().AsImplementedInterfaces().InstancePerLifetimeScope();
             services.RegisterType<LockstepSimulation_Client>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            services.RegisterType<TickBuffer>().InstancePerLifetimeScope();
+            services.RegisterType<TickBuffer>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.Guppy);
 
             services.AddNetMessageType<Tick>(DeliveryMethod.ReliableUnordered, 0);
             services.AddNetMessageType<TickHistoryStart>(DeliveryMethod.ReliableOrdered, 0);
