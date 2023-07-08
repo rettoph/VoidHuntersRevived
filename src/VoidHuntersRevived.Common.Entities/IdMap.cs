@@ -7,15 +7,17 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Entities
 {
-    public readonly struct IdMap
+    public struct IdMap
     {
         public readonly EGID EGID;
         public readonly VhId VhId;
+        public bool Destroyed;
 
         public IdMap(EGID eGID, VhId vhId)
         {
             this.EGID = eGID;
             this.VhId = vhId;
+            this.Destroyed = false;
         }
     }
 }

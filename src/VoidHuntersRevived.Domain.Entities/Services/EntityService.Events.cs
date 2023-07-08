@@ -42,11 +42,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         private void Destroy(VhId vhid)
         {
-            if (!this.TryGetIdMap(vhid, out IdMap id))
+            ref IdMap id = ref _ids.TryGetRef(vhid, out bool isNullRef);
+            if (isNullRef)
             {
-                return;
+                throw new NullReferenceException();
             }
 
+            id.Destroyed = true;
             _types[vhid].DestroyEntity(_functions, in id.EGID);
             _removed.Enqueue(id);
         }

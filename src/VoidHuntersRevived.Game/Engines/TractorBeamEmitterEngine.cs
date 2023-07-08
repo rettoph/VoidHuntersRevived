@@ -18,6 +18,7 @@ using VoidHuntersRevived.Game.Events;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Factories;
+using tainicom.Aether.Physics2D.Dynamics;
 
 namespace VoidHuntersRevived.Game.Engines
 {
@@ -94,7 +95,7 @@ namespace VoidHuntersRevived.Game.Engines
 
             _space.QueryAABB(fixture =>
             {
-                if(!_entities.TryGetIdMap(fixture.Body.Id, out IdMap bodyId))
+                if(!_entities.TryGetIdMap(fixture.Body.Id, out IdMap bodyId) || bodyId.Destroyed)
                 { // Invalid target - has been deleted.
                     return true;
                 }
