@@ -8,9 +8,9 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Game.Events
 {
-    public class SetTractorBeamEmitterActive : IInputData
+    public class Tactical_SetTarget : IInputData
     {
-        public required VhId ShipId { get; init; }
-        public required bool Value { get; init; }
+        public required VhId ShipVhId { get; init; }
+        public required FixVector2 Value { get; init; }
     }
 }

@@ -19,13 +19,14 @@ using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Factories;
 using tainicom.Aether.Physics2D.Dynamics;
+using VoidHuntersRevived.Game.Services;
 
 namespace VoidHuntersRevived.Game.Engines
 {
     [AutoLoad]
     internal sealed class TractorBeamEmitterEngine : BasicEngine,
-        IEventEngine<SetTractorBeamEmitterActive>,
-        IEventEngine<SetTractorBeamTarget>
+        IEventEngine<TractorBeamEmitter_Activate>,
+        IEventEngine<TractorBeamEmitter_SetTarget>
     {
         public static readonly Fix64 QueryRadius = (Fix64)5;
 
@@ -33,99 +34,52 @@ namespace VoidHuntersRevived.Game.Engines
         private readonly IEntitySerializationService _serialization;
         private readonly ISpace _space;
         private readonly ITreeFactory _treeFactory;
+        private readonly TractorBeamEmitterService _tractorBeamEmitterService;
 
-        public TractorBeamEmitterEngine(IEntityService entities, IEntitySerializationService serialization, ISpace space, ITreeFactory treeFactory)
+        public TractorBeamEmitterEngine(
+            IEntityService entities, 
+            IEntitySerializationService serialization, 
+            ISpace space, 
+            ITreeFactory treeFactory,
+            TractorBeamEmitterService tractorBeamEmitterService)
         {
             _entities = entities;
             _serialization = serialization;
             _space = space;
             _treeFactory = treeFactory;
+            _tractorBeamEmitterService = tractorBeamEmitterService;
         }
 
-        public void Process(VhId eventId, SetTractorBeamEmitterActive data)
+        public void Process(VhId eventId, TractorBeamEmitter_Activate data)
         {
-            IdMap id = _entities.GetIdMap(data.ShipId);
-            ref TractorBeamEmitter tractorBeamEmitter = ref entitiesDB.QueryMappedEntities<TractorBeamEmitter>(id.EGID.groupID).Entity(id.EGID.entityID);
-            ref Tactical tactical = ref entitiesDB.QueryMappedEntities<Tactical>(id.EGID.groupID).Entity(id.EGID.entityID);
+            IdMap shipId = _entities.GetIdMap(data.ShipVhId);
+            ref TractorBeamEmitter tractorBeamEmitter = ref entitiesDB.QueryMappedEntities<TractorBeamEmitter>(shipId.EGID.groupID).Entity(shipId.EGID.entityID);
 
-            if (tractorBeamEmitter.Active == data.Value)
+            if (tractorBeamEmitter.Active)
             {
                 return;
             }
 
-            if (data.Value)
-            {
-                this.ActivateTractorBeamEmitter(eventId, ref id, ref tractorBeamEmitter, ref tactical);
-            }
-        }
+            IdMap targetNodeId = _entities.GetIdMap(data.TargetVhId);
+            Node targetNode = this.entitiesDB.QueryEntity<Node>(targetNodeId.EGID);
 
-        private void ActivateTractorBeamEmitter(VhId eventId, ref IdMap shipId, ref TractorBeamEmitter tractorBeamEmitter, ref Tactical tactical)
-        {
-            if(!this.Query(tactical.Target, QueryRadius, out IdMap targetId))
-            {
-                return;
-            }
+            IdMap targetTreeId = _entities.GetIdMap(targetNode.TreeId);
+            Tree targetTree = this.entitiesDB.QueryEntity<Tree>(targetTreeId.EGID);
 
-            if(!this.entitiesDB.TryGetEntity<Tree>(targetId.EGID, out Tree targetTree))
-            {
-                return;
-            }
-
-            this.Simulation.Publish(eventId.Create(targetTree.HeadId), new SetTractorBeamTarget()
+            this.Simulation.Publish(eventId.Create(targetTree.HeadId), new TractorBeamEmitter_SetTarget()
             {
                 TractorBeamId = shipId.VhId,
                 TargetData = _serialization.Serialize(targetTree.HeadId)
             });
 
-            this.Simulation.Publish(DestroyEntity.CreateEvent(targetId.VhId));
+            this.Simulation.Publish(DestroyEntity.CreateEvent(targetTreeId.VhId));
         }
 
-        public void Process(VhId eventId, SetTractorBeamTarget data)
+        public void Process(VhId eventId, TractorBeamEmitter_SetTarget data)
         {
             VhId targetVhId = eventId.Create(1);
 
             _treeFactory.Create(targetVhId, EntityTypes.Chain, data.TargetData);
-        }
-
-        public bool Query(FixVector2 target, Fix64 radius, out IdMap targetId)
-        {
-            AABB aabb = new AABB(target, radius, radius);
-            Fix64 minDistance = radius;
-            IdMap? callbackTargetId = default!;
-
-            _space.QueryAABB(fixture =>
-            {
-                if(!_entities.TryGetIdMap(fixture.Body.Id, out IdMap bodyId) || bodyId.Destroyed)
-                { // Invalid target - has been deleted.
-                    return true;
-                }
-
-                if(!this.entitiesDB.TryGetEntity<Tractorable>(bodyId.EGID, out _))
-                { // Invalid target - not tractorable
-                    return true;
-                }
-
-                FixVector2 position = fixture.Body.Position;
-                FixVector2.Distance(ref target, ref position, out Fix64 distance);
-                if (distance >= minDistance)
-                { // Invalid Target - The distance is further away than the previously closest valid target
-                    return true;
-                }
-
-                minDistance = distance;
-                callbackTargetId = bodyId;
-
-                return true;
-            }, ref aabb);
-
-            if (callbackTargetId is null)
-            {
-                targetId = default;
-                return false;
-            }
-
-            targetId = callbackTargetId.Value;
-            return true;
         }
     }
 }

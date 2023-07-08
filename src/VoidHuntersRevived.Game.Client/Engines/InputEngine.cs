@@ -20,27 +20,38 @@ using VoidHuntersRevived.Common;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using Guppy.MonoGame.Utilities.Cameras;
+using VoidHuntersRevived.Game.Services;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [PeerTypeFilter(PeerType.Client)]
     internal class InputEngine : BasicEngine, 
-        ISubscriber<SetHelmDirectionInput>,
-        ISubscriber<SetTractorBeamEmitterActiveInput>
+        ISubscriber<Input_Helm_SetDirection>,
+        ISubscriber<Input_TractorBeamEmitter_SetActive>
     {
+        private readonly IEntityService _entities;
         private readonly ClientPeer _client;
         private readonly Camera2D _camera;
+        private readonly TractorBeamEmitterService _tractorBeamEmitterService;
 
         private Vector2 CurrentTargetPosition => _camera.Unproject(Mouse.GetState().Position.ToVector2());
 
-        public InputEngine(ClientPeer client, Camera2D camera)
+        public InputEngine(
+            IEntityService entities, 
+            ClientPeer client, 
+            Camera2D camera, 
+            TractorBeamEmitterService tractorBeamEmitterService)
         {
+            _entities = entities;
             _client = client;
             _camera = camera;
+            _tractorBeamEmitterService = tractorBeamEmitterService;
         }
 
-        public void Process(in Guid messageId, in SetHelmDirectionInput message)
+        public void Process(in Guid messageId, in Input_Helm_SetDirection message)
         {
             if (_client.Users.Current is null)
             {
@@ -49,38 +60,48 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             this.Simulation.Input(
                 eventId: new VhId(messageId),
-                data: new SetHelmDirection()
+                data: new Helm_SetDirection()
                 {
-                    ShipId = _client.Users.Current.GetUserShipId(),
+                    ShipVhId = _client.Users.Current.GetUserShipId(),
                     Which = message.Which,
                     Value = message.Value
                 });
         }
 
-        public void Process(in Guid messageId, in SetTractorBeamEmitterActiveInput message)
+        public void Process(in Guid messageId, in Input_TractorBeamEmitter_SetActive message)
         {
             if (_client.Users.Current is null)
             {
                 return;
             }
 
-            VhId eventId = new VhId(messageId);
+            if (message.Value)
+            {
+                VhId eventId = new VhId(messageId);
+                IdMap shipId = _entities.GetIdMap(_client.Users.Current.GetUserShipId());
 
-            this.Simulation.Input(
-                eventId: eventId.Create(1),
-                data: new SetTacticalTarget()
+                if (!_tractorBeamEmitterService.Query(shipId, out IdMap targetId))
                 {
-                    ShipId = _client.Users.Current.GetUserShipId(),
-                    Value = (FixVector2)this.CurrentTargetPosition
-                });
+                    return;
+                }
 
-            this.Simulation.Input(
-                eventId: eventId.Create(2),
-                data: new SetTractorBeamEmitterActive()
-                {
-                    ShipId = _client.Users.Current.GetUserShipId(),
-                    Value = message.Value
-                });
+
+                this.Simulation.Input(
+                    eventId: eventId.Create(1),
+                    data: new Tactical_SetTarget()
+                    {
+                        ShipVhId = _client.Users.Current.GetUserShipId(),
+                        Value = (FixVector2)this.CurrentTargetPosition
+                    });
+
+                this.Simulation.Input(
+                    eventId: eventId.Create(2),
+                    data: new TractorBeamEmitter_Activate()
+                    {
+                        ShipVhId = shipId.VhId,
+                        TargetVhId = targetId.VhId
+                    });
+            }
         }
     }
 }

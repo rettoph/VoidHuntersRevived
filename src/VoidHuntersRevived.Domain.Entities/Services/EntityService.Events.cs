@@ -11,7 +11,6 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Common.Components;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Utilities;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {

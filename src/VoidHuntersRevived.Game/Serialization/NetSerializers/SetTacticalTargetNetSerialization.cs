@@ -11,20 +11,20 @@ using VoidHuntersRevived.Game.Events;
 namespace VoidHuntersRevived.Game.Serialization.NetSerializers
 {
     [AutoLoad]
-    internal sealed class SetTacticalTargetNetSerialization : NetSerializer<SetTacticalTarget>
+    internal sealed class SetTacticalTargetNetSerialization : NetSerializer<Tactical_SetTarget>
     {
-        public override SetTacticalTarget Deserialize(NetDataReader reader)
+        public override Tactical_SetTarget Deserialize(NetDataReader reader)
         {
-            return new SetTacticalTarget()
+            return new Tactical_SetTarget()
             {
-                ShipId = reader.GetVhId(),
+                ShipVhId = reader.GetVhId(),
                 Value = reader.GetFixVector2()
             };
         }
 
-        public override void Serialize(NetDataWriter writer, in SetTacticalTarget instance)
+        public override void Serialize(NetDataWriter writer, in Tactical_SetTarget instance)
         {
-            writer.Put(instance.ShipId);
+            writer.Put(instance.ShipVhId);
             writer.Put(instance.Value);
         }
     }

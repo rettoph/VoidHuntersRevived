@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Common.Simulations.Events
 {
     public sealed class UserJoined : IInputData
     {
-        public VhId ShipId => throw new NotImplementedException();
+        public VhId ShipVhId => throw new NotImplementedException();
 
         public required int UserId { get; init; }
         public required Claim[] Claims { get; init; }

@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Game.Client.Messages
 {
-    internal sealed class SetTractorBeamEmitterActiveInput : Message<SetTractorBeamEmitterActiveInput>
+    internal sealed class Input_TractorBeamEmitter_SetActive : Message<Input_TractorBeamEmitter_SetActive>
     {
-        public SetTractorBeamEmitterActiveInput(bool value)
+        public readonly bool Value;
+
+        public Input_TractorBeamEmitter_SetActive(bool value)
         {
             Value = value;
         }
-
-        public bool Value { get; }
     }
 }

@@ -8,21 +8,21 @@ using VoidHuntersRevived.Game.Events;
 namespace VoidHuntersRevived.Game.Serialization.NetSerializers
 {
     [AutoLoad]
-    internal sealed class SetHelmDirectionNetSerializer : NetSerializer<SetHelmDirection>
+    internal sealed class SetHelmDirectionNetSerializer : NetSerializer<Helm_SetDirection>
     {
-        public override SetHelmDirection Deserialize(NetDataReader reader)
+        public override Helm_SetDirection Deserialize(NetDataReader reader)
         {
-            return new SetHelmDirection()
+            return new Helm_SetDirection()
             {
-                ShipId = reader.GetVhId(),
+                ShipVhId = reader.GetVhId(),
                 Which = reader.GetEnum<Direction>(),
                 Value = reader.GetBool()
             };
         }
 
-        public override void Serialize(NetDataWriter writer, in SetHelmDirection instance)
+        public override void Serialize(NetDataWriter writer, in Helm_SetDirection instance)
         {
-            writer.Put(instance.ShipId);
+            writer.Put(instance.ShipVhId);
             writer.Put(instance.Which);
             writer.Put(instance.Value);
         }

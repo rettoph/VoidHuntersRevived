@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Game.Engines
 {
     [AutoLoad]
     internal sealed class TacticalEngine : BasicEngine,
-        IEventEngine<SetTacticalTarget>,
+        IEventEngine<Tactical_SetTarget>,
         IStepEngine<Step>
     {
         private static readonly Fix64 AimDamping = Fix64.One / (Fix64)32;
@@ -35,9 +35,9 @@ namespace VoidHuntersRevived.Game.Engines
 
         public string name { get; } = nameof(TacticalEngine);
 
-        public void Process(VhId eventId, SetTacticalTarget data)
+        public void Process(VhId eventId, Tactical_SetTarget data)
         {
-            IdMap id = _entities.GetIdMap(data.ShipId);
+            IdMap id = _entities.GetIdMap(data.ShipVhId);
             ref Tactical tactical = ref entitiesDB.QueryMappedEntities<Tactical>(id.EGID.groupID).Entity(id.EGID.entityID);
 
             tactical.Target = data.Value;

@@ -10,7 +10,7 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Game.Events
 {
-    public class SetTractorBeamTarget : IEventData
+    public class TractorBeamEmitter_SetTarget : IEventData
     {
         public required VhId TractorBeamId { get; init; }
         public required EntityData TargetData { get; init; }

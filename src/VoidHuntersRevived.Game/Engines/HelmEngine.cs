@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Game.Engines
 {
     [AutoLoad]
     internal sealed class HelmEngine : BasicEngine,
-        IEventEngine<SetHelmDirection>, IStepEngine<Step>
+        IEventEngine<Helm_SetDirection>, IStepEngine<Step>
     {
         private readonly IEntityService _entities;
         private readonly ISpace _space;
@@ -35,9 +35,9 @@ namespace VoidHuntersRevived.Game.Engines
 
         public string name { get; } = nameof(HelmEngine);
 
-        public void Process(VhId vhid, SetHelmDirection data)
+        public void Process(VhId vhid, Helm_SetDirection data)
         {
-            IdMap id =_entities.GetIdMap(data.ShipId);
+            IdMap id =_entities.GetIdMap(data.ShipVhId);
             ref Helm helm = ref entitiesDB.QueryMappedEntities<Helm>(id.EGID.groupID).Entity(id.EGID.entityID);
 
             if (data.Value)
