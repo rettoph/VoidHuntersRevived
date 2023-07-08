@@ -35,6 +35,11 @@ namespace VoidHuntersRevived.Common
 
         public static unsafe VhId Create(this VhId nameSpace, VhId name)
         {
+            if(nameSpace.Value == name.Value)
+            {
+                return name;
+            }
+
             int* pNameSpace = (int*)&nameSpace;
             _buffer[0] = pNameSpace[0];
             _buffer[1] = pNameSpace[1];

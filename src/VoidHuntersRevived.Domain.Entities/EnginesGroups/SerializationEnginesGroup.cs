@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Entities.EnginesGroups
     {
         public abstract void Serialize(EntityWriter writer, EGID egid, EntitiesDB entities, uint index);
 
-        public abstract void Deserialize(in VhId seed, EntityReader reader, ref EntityInitializer initializer);
+        public abstract void Deserialize(in VhId seed, EntityReader reader, ref EntityInitializer initializer, bool confirmed);
     }
 
     internal sealed class SerializationEnginesGroup<T> : SerializationEnginesGroup
@@ -42,12 +42,12 @@ namespace VoidHuntersRevived.Domain.Entities.EnginesGroups
             }
         }
 
-        public override void Deserialize(in VhId seed, EntityReader reader, ref EntityInitializer initializer)
+        public override void Deserialize(in VhId seed, EntityReader reader, ref EntityInitializer initializer, bool confirmed)
         {
             ref T component = ref initializer.Get<T>();
             foreach (ISerializationEngine<T> engine in _engines)
             {
-                engine.Deserialize(in seed, reader, ref component);
+                engine.Deserialize(in seed, reader, ref component, confirmed);
             }
         }
     }

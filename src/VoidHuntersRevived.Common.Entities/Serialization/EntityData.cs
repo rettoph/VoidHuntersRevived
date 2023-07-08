@@ -8,12 +8,12 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
 {
     public class EntityData
     {
-        public readonly Guid Id;
+        public readonly VhId Id;
         public readonly byte[] Bytes;
 
-        internal EntityData(byte[] bytes)
+        internal EntityData(VhId id, byte[] bytes)
         {
-            Id = Guid.NewGuid();
+            Id = id;
             Bytes = bytes;
         }
     }

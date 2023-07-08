@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Game.Pieces.Factories
 
         public void Create(VhId vhid, IEntityType<TreeDescriptor> tree, EntityData nodes)
         {
-            IdMap headId = _serialization.Deserialize(vhid, nodes);
+            IdMap headId = _serialization.Deserialize(vhid, nodes, false);
 
             _events.Publish(CreateEntity.CreateEvent(
                 type: tree,

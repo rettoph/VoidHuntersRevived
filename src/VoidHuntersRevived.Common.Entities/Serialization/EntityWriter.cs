@@ -33,7 +33,7 @@
             this.BaseStream.Position = 0;
         }
 
-        public EntityData Export()
+        public EntityData Export(VhId id)
         {
             byte[] bytes = new byte[this.BaseStream.Position];
 
@@ -41,7 +41,7 @@
             this.BaseStream.Read(bytes, 0, bytes.Length);
             this.Busy = false;
 
-            return new EntityData(bytes);
+            return new EntityData(id, bytes);
         }
     }
 }

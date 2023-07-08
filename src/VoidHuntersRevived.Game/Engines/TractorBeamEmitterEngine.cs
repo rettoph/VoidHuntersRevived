@@ -65,23 +65,23 @@ namespace VoidHuntersRevived.Game.Engines
                 return;
             }
 
-            if(!this.entitiesDB.TryGetEntity<Tree>(targetId.EGID, out Tree tree))
+            if(!this.entitiesDB.TryGetEntity<Tree>(targetId.EGID, out Tree targetTree))
             {
                 return;
             }
 
-            this.Simulation.Publish(eventId.Create(tree.HeadId), new SetTractorBeamTarget()
+            this.Simulation.Publish(eventId.Create(targetTree.HeadId), new SetTractorBeamTarget()
             {
                 TractorBeamId = shipId.VhId,
-                TargetData = _serialization.Serialize(tree.HeadId)
+                TargetData = _serialization.Serialize(targetTree.HeadId)
             });
 
-            // this.Simulation.Publish(DestroyEntity.CreateEvent(targetId.VhId));
+            this.Simulation.Publish(DestroyEntity.CreateEvent(targetId.VhId));
         }
 
         public void Process(VhId eventId, SetTractorBeamTarget data)
         {
-            VhId targetVhId = eventId.Create(100);
+            VhId targetVhId = eventId.Create(1);
 
             _treeFactory.Create(targetVhId, EntityTypes.Chain, data.TargetData);
         }

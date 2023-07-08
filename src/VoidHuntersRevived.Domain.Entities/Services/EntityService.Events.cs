@@ -11,7 +11,6 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Common.Components;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Utilities;
-using VoidHuntersRevived.Common.Entities.Enums;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
@@ -54,8 +53,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, CreateEntity data)
         {
+            _logger.Debug("Attempting to Create Entity {Id}, {Type}", data.VhId.Value, data.Type.Name);
+
             if (_destroyed.Remove(data.VhId) != -1)
             {
+                _logger.Warning("Unable to Create Entity {Id}, Destroyed Count: {Count}", data.VhId.Value, _destroyed.Count(data.VhId));
+
                 return;
             }
 
@@ -64,8 +67,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Revert(VhId eventId, CreateEntity data)
         {
+            _logger.Debug("Attempting to Revert Entity Creation {Id}, {Type}", data.VhId.Value, data.Type.Name);
+
             if (_destroyed.Add(data.VhId) != 0)
             {
+                _logger.Warning("Unable to Revert Entity Creation {Id}, Destroyed Count: {Count}", data.VhId.Value, _destroyed.Count(data.VhId));
+
                 return;
             }
 
@@ -74,8 +81,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, DestroyEntity data)
         {
+            _logger.Debug("Attempting to Destroy Entity {Id}", data.VhId.Value);
+
             if (_destroyed.Add(data.VhId) != 0)
             {
+                _logger.Warning("Unableto Destroy Entity {Id}, Destroyed Count: {Count}", data.VhId.Value, _destroyed.Count(data.VhId));
+
                 return;
             }
 
@@ -87,12 +98,21 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Revert(VhId eventId, DestroyEntity data)
         {
+            _logger.Debug("Attempting to Revert Entity Destruction {Id}", data.VhId.Value);
+
             if (_destroyed.Count(data.VhId) != 0)
             {
+                _logger.Warning("Unable to Revert Entity Destruction {Id}, Destroyed Count: {Count}", data.VhId.Value, _destroyed.Count(data.VhId));
+
                 return;
             }
 
-            _serialization.Deserialize(default, _backups[data.VhId]);
+            if(!_backups.Remove(data.VhId, out EntityData? backup))
+            {
+                throw new Exception();
+            }
+
+            _serialization.Deserialize(backup.Id, backup, true);
         }
     }
 }

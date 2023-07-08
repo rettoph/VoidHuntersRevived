@@ -86,7 +86,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             _writer.Reset();
             this.Serialize(id, _writer);
-            return _writer.Export();
+            return _writer.Export(id.VhId);
         }
 
         public void Serialize(IdMap id, EntityWriter writer)
@@ -105,31 +105,39 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
         }
 
-        public IdMap Deserialize(in VhId seed, EntityData data)
+        public IdMap Deserialize(in VhId seed, EntityData data, bool confirmed)
         {
             _reader.Load(data);
-            return this.Deserialize(in seed, _reader);
+            return this.Deserialize(in seed, _reader, confirmed);
         }
 
-        public IdMap Deserialize(in VhId seed, EntityReader reader)
+        public IdMap Deserialize(in VhId seed, EntityReader reader, bool confirmed)
         {
             VhId vhid = seed.Create(reader.ReadVhId());
             VhId typeId = reader.ReadVhId();
+
             IEntityType type = _types.GetById(typeId);
             EntityReaderState readerState = reader.GetState(in seed);
 
-            _events.Publish(CreateEntity.CreateEvent(type, vhid, (ref EntityInitializer initializer) =>
+            EventDto createEvent = CreateEntity.CreateEvent(type, vhid, (ref EntityInitializer initializer) =>
             {
                 reader.Load(readerState);
                 type.Descriptor.Deserialize(in readerState.Seed, reader, ref initializer);
 
                 foreach (SerializationEnginesGroup serializationEngineGroup in _serializationEngines[type])
                 {
-                    serializationEngineGroup.Deserialize(in readerState.Seed, reader, ref initializer);
+                    serializationEngineGroup.Deserialize(in readerState.Seed, reader, ref initializer, confirmed);
                 }
 
                 reader.Busy = false;
-            }));
+            });
+
+            _events.Publish(createEvent);
+
+            if(confirmed)
+            {
+                _events.Confirm(createEvent);
+            }
 
             return _entities.GetIdMap(vhid);
         }

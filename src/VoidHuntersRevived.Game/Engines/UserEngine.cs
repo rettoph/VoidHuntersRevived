@@ -47,6 +47,7 @@ namespace VoidHuntersRevived.Game.Engines
 
             _treeFactory.Create(shipId, EntityTypes.UserShip, PieceTypes.HullSquare);
             _treeFactory.Create(id.Create(1), EntityTypes.Chain, PieceTypes.HullSquare);
+            _treeFactory.Create(id.Create(2), EntityTypes.Chain, PieceTypes.HullSquare);
         }
     }
 }

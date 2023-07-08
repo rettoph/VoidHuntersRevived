@@ -55,27 +55,20 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
         public void Process(VhId eventId, DestroyNode data)
         {
-            try
+            IdMap nodeId = _entities.GetIdMap(data.NodeId);
+
+            // Node is not a rigid entity
+            if (!this.entitiesDB.TryQueryEntitiesAndIndex<ResourceId<Rigid>>(nodeId.EGID, out uint index, out var rigidIds))
             {
-                IdMap nodeId = _entities.GetIdMap(data.NodeId);
-
-                // Node is not a rigid entity
-                if (!this.entitiesDB.TryQueryEntitiesAndIndex<ResourceId<Rigid>>(nodeId.EGID, out uint index, out var rigidIds))
-                {
-                    return;
-                }
-
-                var (nodes, _) = this.entitiesDB.QueryEntities<Node>(nodeId.EGID.groupID);
-                Node node = nodes[index];
-
-                if (_space.TryGetBody(node.TreeId, out IBody? body))
-                {
-                    body.Destroy(nodeId.VhId);
-                }
+                return;
             }
-            catch
-            {
 
+            var (nodes, _) = this.entitiesDB.QueryEntities<Node>(nodeId.EGID.groupID);
+            Node node = nodes[index];
+
+            if (_space.TryGetBody(node.TreeId, out IBody? body))
+            {
+                body.Destroy(nodeId.VhId);
             }
         }
     }

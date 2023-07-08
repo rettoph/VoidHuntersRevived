@@ -15,29 +15,38 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
 
         public EntityReader() : base(new MemoryStream())
         {
-            _loaded = new EntityData(Array.Empty<byte>());
+            _loaded = new EntityData(VhId.Empty, Array.Empty<byte>());
         }
 
         public void Load(EntityData data)
         {
-            if(_loaded.Id != data.Id)
-            {
-                this.BaseStream.Position = 0;
-                this.BaseStream.Write(data.Bytes, 0, data.Bytes.Length);
-                this.BaseStream.Position = 0;
-
-                _loaded = data;
-            }
-        }
-        public void Load(EntityReaderState state)
-        {
-            if(this.Busy)
+            if (this.Busy)
             {
                 throw new Exception();
             }
 
-            if (_loaded.Id != state.Data.Id)
+            if (_loaded.Id.Value != data.Id.Value)
             {
+                this.BaseStream.Position = 0;
+                this.BaseStream.Write(data.Bytes, 0, data.Bytes.Length);
+
+                _loaded = data;
+            }
+
+            this.BaseStream.Position = 0;
+            this.BaseStream.Flush();
+
+            this.Busy = true;
+        }
+        public void Load(EntityReaderState state)
+        {
+            if (_loaded.Id.Value != state.Data.Id.Value)
+            {
+                if (this.Busy)
+                {
+                    throw new Exception();
+                }
+
                 this.BaseStream.Position = state.Position;
                 this.BaseStream.Write(state.Data.Bytes, state.Position, state.Data.Bytes.Length - state.Position);
 
@@ -45,6 +54,7 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             }
 
             this.BaseStream.Position = state.Position;
+            this.Busy = true;
         }
 
         public EntityReaderState GetState(in VhId seed)
