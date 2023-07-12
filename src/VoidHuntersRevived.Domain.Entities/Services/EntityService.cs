@@ -1,4 +1,5 @@
-﻿using Guppy.Common.Collections;
+﻿using Guppy.Common.Attributes;
+using Guppy.Common.Collections;
 using Serilog;
 using Svelto.DataStructures;
 using Svelto.ECS;
@@ -15,13 +16,15 @@ using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    internal sealed partial class EntityService : IEntityService, IEngine, IGetReadyEngine
+    [Sequence<StepSequence>(StepSequence.OnEntitySubmit)]
+    internal sealed partial class EntityService : IEntityService, IEngine, IGetReadyEngine, IStepEngine<Step>
     {
         private readonly IEngineService _engines;
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
         private IEntitySerializationService _serialization;
         private readonly EntityTypeService _entityTypes;
+        private readonly SimpleEntitiesSubmissionScheduler _scheduler;
         private readonly DoubleDictionary<VhId, EGID, IdMap> _ids;
         private readonly Dictionary<VhId, IEntityType> _types;
         private readonly Queue<IdMap> _removed;
@@ -35,7 +38,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             ILogger logger,
             IEngineService engines,
             EnginesRoot enginesRoot,
-            EntityTypeService entityTypes)
+            EntityTypeService entityTypes,
+            SimpleEntitiesSubmissionScheduler scheduler)
         {
             _engines = null!;
             _factory = null!;
@@ -48,6 +52,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _factory = enginesRoot.GenerateEntityFactory();
             _functions = enginesRoot.GenerateEntityFunctions();
             _engines = engines;
+            _scheduler = scheduler;
             _serialization = null!;
         }
 
@@ -98,6 +103,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 _ids.Remove(removed.VhId, removed.EGID);
                 _types.Remove(removed.VhId);
             }
+        }
+
+        public void Step(in Step _param)
+        {
+            _scheduler.SubmitEntities();
         }
     }
 }

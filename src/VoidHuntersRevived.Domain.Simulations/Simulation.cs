@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Simulations
     public abstract partial class Simulation : ISimulation, IDisposable
     {
         private Queue<EventDto> _events;
-        private UnsortedEnginesGroup<IStepEngine<GameTime>, GameTime> _gameTimeStepEnginesGroup;
+        private IStepGroupEngine<GameTime> _gameTimeStepEnginesGroup;
 
         public readonly SimulationType Type;
         public readonly IEngineService Engines;
@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.Engines = this.Scope.Resolve<IEngineService>().Load(new SimulationState(this));
             this.Events = this.Scope.Resolve<IEventPublishingService>();
 
-            _gameTimeStepEnginesGroup = this.Engines.All().CreateUnsortedEnginesGroup<IStepEngine<GameTime>, GameTime>();
+            _gameTimeStepEnginesGroup = this.Engines.All().CreateStepEnginesGroup<GameTime>();
             _events = new Queue<EventDto>();
         }
 

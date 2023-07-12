@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Entities.Services;
@@ -24,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly IBus _bus;
         private readonly IFilteredProvider _filtered;
         private IEngine[] _engines;
-        private UnsortedEnginesGroup<IStepEngine<Step>, Step> _stepEngines;
+        private IStepGroupEngine<Step> _stepEngines;
 
         public EnginesRoot Root => _enginesRoot;
 
@@ -80,7 +81,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 _enginesRoot.AddEngine(engine);
             }
 
-            _stepEngines = _engines.CreateUnsortedEnginesGroup<IStepEngine<Step>, Step>();
+            _stepEngines = _engines.CreateStepEnginesGroup<Step, StepSequence>(StepSequence.PostEntitySubmit);
         }
 
         public void Dispose()
@@ -106,8 +107,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public void Step(Step step)
         {
             _stepEngines.Step(step);
-
-            _submission.SubmitEntities();
 
             this.Entities.Clean();
         }

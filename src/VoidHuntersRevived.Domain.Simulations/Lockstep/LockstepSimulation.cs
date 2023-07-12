@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
     [GuppyFilter<IGameGuppy>()]
     internal abstract class LockstepSimulation : Simulation, ILockstepSimulation
     {
-        private readonly UnsortedEnginesGroup<IStepEngine<Tick>, Tick> _tickStepEnginesGroup;
+        private readonly IStepGroupEngine<Tick> _tickStepEnginesGroup;
         private readonly List<Tick> _history;
 
         public Tick CurrentTick { get; private set; }
@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public LockstepSimulation(ILifetimeScope scope) : base(SimulationType.Lockstep, scope)
 
         {
-            _tickStepEnginesGroup = this.Engines.All().CreateUnsortedEnginesGroup<IStepEngine<Tick>, Tick>();
+            _tickStepEnginesGroup = this.Engines.All().CreateStepEnginesGroup<Tick>();
             _history = new List<Tick>();
 
             this.CurrentTick = Tick.First();
