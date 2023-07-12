@@ -1,6 +1,8 @@
 ﻿using Guppy.Attributes;
 using Guppy.Enums;
+using Svelto.Common;
 using Svelto.ECS;
+using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Common.Simulations.Engines
 {

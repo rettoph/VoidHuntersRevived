@@ -8,7 +8,7 @@ using VoidHuntersRevived.Game.Events;
 namespace VoidHuntersRevived.Game.Serialization.NetSerializers
 {
     [AutoLoad]
-    internal sealed class SetHelmDirectionNetSerializer : NetSerializer<Helm_SetDirection>
+    internal sealed class Helm_SetDirection_NetSerializer : NetSerializer<Helm_SetDirection>
     {
         public override Helm_SetDirection Deserialize(NetDataReader reader)
         {

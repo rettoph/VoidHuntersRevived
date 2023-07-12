@@ -11,21 +11,21 @@ using VoidHuntersRevived.Game.Events;
 namespace VoidHuntersRevived.Game.Serialization.NetSerializers
 {
     [AutoLoad]
-    internal sealed class SetTacticalTargetNetSerialization : NetSerializer<Tactical_SetTarget>
+    internal class TractorBeamEmitter_Activate_NetSerializer : NetSerializer<TractorBeamEmitter_Activate>
     {
-        public override Tactical_SetTarget Deserialize(NetDataReader reader)
+        public override TractorBeamEmitter_Activate Deserialize(NetDataReader reader)
         {
-            return new Tactical_SetTarget()
+            return new TractorBeamEmitter_Activate()
             {
                 ShipVhId = reader.GetVhId(),
-                Value = reader.GetFixVector2()
+                TargetVhId = reader.GetVhId()
             };
         }
 
-        public override void Serialize(NetDataWriter writer, in Tactical_SetTarget instance)
+        public override void Serialize(NetDataWriter writer, in TractorBeamEmitter_Activate instance)
         {
             writer.Put(instance.ShipVhId);
-            writer.Put(instance.Value);
+            writer.Put(instance.TargetVhId);
         }
     }
 }

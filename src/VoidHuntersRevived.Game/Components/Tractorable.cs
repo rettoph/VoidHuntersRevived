@@ -9,5 +9,6 @@ namespace VoidHuntersRevived.Game.Components
 {
     public struct Tractorable : IEntityComponent
     {
+        public bool IsTractored { get; set; }
     }
 }

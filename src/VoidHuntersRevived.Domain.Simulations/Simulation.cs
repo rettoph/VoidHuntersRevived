@@ -6,7 +6,6 @@ using VoidHuntersRevived.Common.Simulations.Services;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Domain.Simulations.EnginesGroups;
 using VoidHuntersRevived.Common.Entities.Services;
 using Autofac;
 using Guppy.Common.Extensions.Autofac;
@@ -14,13 +13,14 @@ using Serilog;
 using Guppy.Network;
 using Guppy.Common;
 using Guppy.Network.Enums;
+using VoidHuntersRevived.Common.Entities.Extensions;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
     public abstract partial class Simulation : ISimulation, IDisposable
     {
-        private readonly DrawEngineGroups _drawEnginesGroups;
         private Queue<EventDto> _events;
+        private UnsortedEnginesGroup<IStepEngine<GameTime>, GameTime> _gameTimeStepEnginesGroup;
 
         public readonly SimulationType Type;
         public readonly IEngineService Engines;
@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.Engines = this.Scope.Resolve<IEngineService>().Load(new SimulationState(this));
             this.Events = this.Scope.Resolve<IEventPublishingService>();
 
-            _drawEnginesGroups = new DrawEngineGroups(this.Engines.OfType<IStepEngine<GameTime>>());
+            _gameTimeStepEnginesGroup = this.Engines.All().CreateUnsortedEnginesGroup<IStepEngine<GameTime>, GameTime>();
             _events = new Queue<EventDto>();
         }
 
@@ -68,7 +68,7 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public virtual void Draw(GameTime realTime)
         {
-            _drawEnginesGroups.Step(realTime);
+            _gameTimeStepEnginesGroup.Step(realTime);
         }
 
         public virtual void Update(GameTime realTime)

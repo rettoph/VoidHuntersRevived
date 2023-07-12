@@ -75,16 +75,15 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
+            VhId eventId = new VhId(messageId);
+            IdMap shipId = _entities.GetIdMap(_client.Users.Current.GetUserShipId());
+
             if (message.Value)
             {
-                VhId eventId = new VhId(messageId);
-                IdMap shipId = _entities.GetIdMap(_client.Users.Current.GetUserShipId());
-
                 if (!_tractorBeamEmitterService.Query(shipId, out IdMap targetId))
                 {
                     return;
                 }
-
 
                 this.Simulation.Input(
                     eventId: eventId.Create(1),
@@ -100,6 +99,15 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     {
                         ShipVhId = shipId.VhId,
                         TargetVhId = targetId.VhId
+                    });
+            }
+            else
+            {
+                this.Simulation.Input(
+                    eventId: eventId.Create(3),
+                    data: new TractorBeamEmitter_Deactivate()
+                    {
+                        ShipVhId = shipId.VhId
                     });
             }
         }

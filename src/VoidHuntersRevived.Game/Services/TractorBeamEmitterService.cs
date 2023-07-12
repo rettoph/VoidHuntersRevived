@@ -66,7 +66,7 @@ namespace VoidHuntersRevived.Game.Services
                 IdMap fixtureNodeTreeId = _entities.GetIdMap(fixtureNode.TreeId);
                 Tree fixtureNodeTree = this.entitiesDB.QueryEntity<Tree>(fixtureNodeTreeId.EGID);
 
-                if(this.entitiesDB.TryGetEntity<Tractorable>(fixtureNodeTreeId.EGID, out _))
+                if(this.entitiesDB.TryGetEntity<Tractorable>(fixtureNodeTreeId.EGID, out var tractorable) && tractorable.IsTractored == false)
                 { // Target resides within a tractorable tree, so we want to grab the head
                     queryTargetId = fixtureNodeTree.HeadId;
                 }

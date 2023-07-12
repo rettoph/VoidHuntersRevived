@@ -14,20 +14,21 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Physics.Factories;
 using Guppy.Common.Providers;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Domain.Simulations.EnginesGroups;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Entities.Enums;
 using Autofac;
+using Svelto.ECS;
+using VoidHuntersRevived.Common.Entities.Extensions;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
     [GuppyFilter<IGameGuppy>()]
     internal abstract class LockstepSimulation : Simulation, ILockstepSimulation
     {
-        private readonly TickEngineGroup _tickEngines;
+        private readonly UnsortedEnginesGroup<IStepEngine<Tick>, Tick> _tickStepEnginesGroup;
         private readonly List<Tick> _history;
 
         public Tick CurrentTick { get; private set; }
@@ -43,7 +44,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public LockstepSimulation(ILifetimeScope scope) : base(SimulationType.Lockstep, scope)
 
         {
-            _tickEngines = new TickEngineGroup(this.Engines.OfType<ITickEngine>());
+            _tickStepEnginesGroup = this.Engines.All().CreateUnsortedEnginesGroup<IStepEngine<Tick>, Tick>();
             _history = new List<Tick>();
 
             this.CurrentTick = Tick.First();
@@ -74,7 +75,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         {
             this.CurrentTick = tick;
 
-            _tickEngines.Step(tick);
+            _tickStepEnginesGroup.Step(tick);
 
             if (tick.Events.Length == 0)
             {

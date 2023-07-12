@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Engines;
+using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Domain.Entities.EnginesGroups;
 
@@ -23,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly IBus _bus;
         private readonly IFilteredProvider _filtered;
         private IEngine[] _engines;
-        private StepEnginesGroup _stepEngines;
+        private UnsortedEnginesGroup<IStepEngine<Step>, Step> _stepEngines;
 
         public EnginesRoot Root => _enginesRoot;
 
@@ -69,8 +70,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Initialize()
         {
-            List<IStepEngine<Step>> stepEngines = new();
-
             foreach (IEngine engine in _engines)
             {
                 if (engine is ISubscriber subscriber)
@@ -78,15 +77,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                     _bus.Subscribe(subscriber);
                 }
 
-                if (engine is IStepEngine<Step> stepEngine)
-                {
-                    stepEngines.Add(stepEngine);
-                }
-
                 _enginesRoot.AddEngine(engine);
             }
 
-            _stepEngines = new StepEnginesGroup(stepEngines);
+            _stepEngines = _engines.CreateUnsortedEnginesGroup<IStepEngine<Step>, Step>();
         }
 
         public void Dispose()

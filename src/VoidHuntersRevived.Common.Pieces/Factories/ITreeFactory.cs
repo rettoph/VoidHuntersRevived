@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Common.Pieces.Factories
 {
     public interface ITreeFactory
     {
-        void Create(VhId vhid, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> piece);
-        void Create(VhId vhid, IEntityType<TreeDescriptor> tree, EntityData nodes);
+        IdMap Create(VhId vhid, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> piece);
+        IdMap Create(VhId vhid, IEntityType<TreeDescriptor> tree, EntityData pieces, EntityInitializerDelegate initializer);
     }
 }

@@ -20,13 +20,17 @@ using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Factories;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Game.Services;
+using Svelto.DataStructures;
+using VoidHuntersRevived.Game.Enums;
+using VoidHuntersRevived.Domain.Common.Components;
 
 namespace VoidHuntersRevived.Game.Engines
 {
     [AutoLoad]
     internal sealed class TractorBeamEmitterEngine : BasicEngine,
         IEventEngine<TractorBeamEmitter_Activate>,
-        IEventEngine<TractorBeamEmitter_SetTarget>
+        IEventEngine<TractorBeamEmitter_Deactivate>,
+        IStepEngine<Step>
     {
         public static readonly Fix64 QueryRadius = (Fix64)5;
 
@@ -50,6 +54,9 @@ namespace VoidHuntersRevived.Game.Engines
             _tractorBeamEmitterService = tractorBeamEmitterService;
         }
 
+        public string name { get; } = nameof(TractorBeamEmitterEngine);
+
+
         public void Process(VhId eventId, TractorBeamEmitter_Activate data)
         {
             IdMap shipId = _entities.GetIdMap(data.ShipVhId);
@@ -66,20 +73,60 @@ namespace VoidHuntersRevived.Game.Engines
             IdMap targetTreeId = _entities.GetIdMap(targetNode.TreeId);
             Tree targetTree = this.entitiesDB.QueryEntity<Tree>(targetTreeId.EGID);
 
-            this.Simulation.Publish(eventId.Create(targetTree.HeadId), new TractorBeamEmitter_SetTarget()
-            {
-                TractorBeamId = shipId.VhId,
-                TargetData = _serialization.Serialize(targetTree.HeadId)
-            });
+            IdMap cloneId = _treeFactory.Create(
+                vhid: eventId.Create(targetNode.TreeId), 
+                tree: EntityTypes.Chain, 
+                pieces: _serialization.Serialize(targetTree.HeadId), 
+                initializer: (ref EntityInitializer initializer) =>
+                {
+                    initializer.Init<Tractorable>(new Tractorable()
+                    {
+                        IsTractored = true
+                    });
+                });
+
+            tractorBeamEmitter.TargetEGID = cloneId.EGID;
+            tractorBeamEmitter.Active = true;
 
             this.Simulation.Publish(DestroyEntity.CreateEvent(targetTreeId.VhId));
         }
 
-        public void Process(VhId eventId, TractorBeamEmitter_SetTarget data)
+        public void Process(VhId eventId, TractorBeamEmitter_Deactivate data)
         {
-            VhId targetVhId = eventId.Create(1);
+            IdMap shipId = _entities.GetIdMap(data.ShipVhId);
+            ref TractorBeamEmitter tractorBeamEmitter = ref entitiesDB.QueryMappedEntities<TractorBeamEmitter>(shipId.EGID.groupID).Entity(shipId.EGID.entityID);
 
-            _treeFactory.Create(targetVhId, EntityTypes.Chain, data.TargetData);
+            IdMap targetId = _entities.GetIdMap(tractorBeamEmitter.TargetEGID);
+
+            ref Tractorable target = ref entitiesDB.QueryEntity<Tractorable>(targetId.EGID);
+
+            target.IsTractored = false;
+            tractorBeamEmitter.Active = false;
+        }
+
+        public void Step(in Step _param)
+        {
+            var groups = this.entitiesDB.FindGroups<Tactical, TractorBeamEmitter>();
+            foreach (var ((tacticals, tractorBeamEmitters, count), groupId) in this.entitiesDB.QueryEntities<Tactical, TractorBeamEmitter>(groups))
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    this.UpdateTractorBeamEmitterTarget(ref tacticals[i], ref tractorBeamEmitters[i]);
+                }
+            }
+        }
+
+        private void UpdateTractorBeamEmitterTarget(ref Tactical tactical, ref TractorBeamEmitter tractorBeamEmitter)
+        {
+            if(tractorBeamEmitter.Active == false)
+            {
+                return;
+            }
+
+            EntityVhId vhid = this.entitiesDB.QueryEntity<EntityVhId>(tractorBeamEmitter.TargetEGID);
+            IBody targetBody = _space.GetBody(in vhid.Value);
+
+            targetBody.SetTransform(tactical.Value, targetBody.Rotation);
         }
     }
 }
