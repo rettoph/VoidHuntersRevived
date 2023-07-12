@@ -1,10 +1,8 @@
 ﻿using Guppy.Common;
-using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Loaders;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Domain.Entities.Abstractions;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -13,12 +11,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly Dictionary<IEntityType, IEntityTypeConfiguration> _configurations;
         private readonly Dictionary<VhId, IEntityType> _ids;
 
-        public EntityTypeService(ISorted<IEntityTypeLoader> loaders)
+        public EntityTypeService(IFiltered<IEntityTypeLoader> loaders)
         {
             _configurations = new Dictionary<IEntityType, IEntityTypeConfiguration>();
             _ids = new Dictionary<VhId, IEntityType>();
 
-            foreach (IEntityTypeLoader loader in loaders)
+            foreach (IEntityTypeLoader loader in loaders.Instances)
             {
                 loader.Configure(this);
             }
