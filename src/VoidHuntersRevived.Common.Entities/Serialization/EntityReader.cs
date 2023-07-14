@@ -62,10 +62,9 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             return new EntityReaderState(_loaded!, seed, (int)this.BaseStream.Position);
         }
 
-
-        public VhId ReadVhId()
+        public VhId ReadVhId(VhId seed)
         {
-            return this.ReadUnmanaged<VhId>();
+            return seed.Create(this.ReadUnmanaged<VhId>());
         }
 
         public unsafe T ReadUnmanaged<T>()

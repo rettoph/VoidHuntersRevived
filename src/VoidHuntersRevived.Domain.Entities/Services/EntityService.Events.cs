@@ -113,7 +113,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 throw new Exception();
             }
 
-            _serialization.Deserialize(backup.Id, backup, true);
+            _serialization.Deserialize(VhId.Empty, backup, true);
         }
     }
 }

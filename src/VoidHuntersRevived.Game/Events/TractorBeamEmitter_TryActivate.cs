@@ -8,11 +8,11 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Game.Events
 {
-    public class Tactical_SetTarget : IInputData
+    public class TractorBeamEmitter_TryActivate : IInputData
     {
-        public static readonly VhId NameSpace = new VhId("C942030A-8541-44E3-8658-B3F3AB1FD0D7");
+        public static readonly VhId NameSpace = new VhId("2336DDC1-1F88-4B5A-A00A-D2DEFE3FCE52");
 
         public required VhId ShipVhId { get; init; }
-        public required FixVector2 Value { get; init; }
+        public required VhId TargetVhId { get; init; }
     }
 }

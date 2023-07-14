@@ -21,6 +21,7 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using Autofac;
+using VoidHuntersRevived.Common.Simulations.Events;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
@@ -60,6 +61,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             base.Initialize(simulations);
 
             _bus.Subscribe(this);
+
+            this.Input(VhId.NewId(), new Simulation_Begin());
         }
 
         public override void Dispose()

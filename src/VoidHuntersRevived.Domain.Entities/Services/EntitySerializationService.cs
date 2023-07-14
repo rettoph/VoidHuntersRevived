@@ -113,8 +113,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public IdMap Deserialize(in VhId seed, EntityReader reader, bool confirmed)
         {
-            VhId vhid = seed.Create(reader.ReadVhId());
-            VhId typeId = reader.ReadVhId();
+            VhId vhid = reader.ReadVhId(seed);
+            VhId typeId = reader.ReadVhId(VhId.Empty);
 
             IEntityType type = _types.GetById(typeId);
             EntityReaderState readerState = reader.GetState(in seed);

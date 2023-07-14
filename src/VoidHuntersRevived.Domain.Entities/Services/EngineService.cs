@@ -58,7 +58,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public IEngineService Load(params IState[] states)
         {
-            
             _engines = _filtered.Instances<IEngine>(states).ToArray();
 
             this.Entities = this.Get<IEntityService>();
@@ -81,7 +80,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 _enginesRoot.AddEngine(engine);
             }
 
-            _stepEngines = _engines.CreateStepEnginesGroup<Step, StepSequence>(StepSequence.PostEntitySubmit);
+            _stepEngines = _engines.CreateSequencedStepEnginesGroup<Step, StepSequence>(StepSequence.PostEntitySubmit);
         }
 
         public void Dispose()

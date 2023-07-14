@@ -22,7 +22,15 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                     serializer: ComponentSerializer<Body>.Default),
                 new ComponentManager<Tree>(
                     builder: new ComponentBuilder<Tree>(),
-                    serializer: ComponentSerializer<Tree>.Default)
+                    serializer: new ComponentSerializer<Tree>(
+                        writer: (writer, tree) =>
+                        {
+                            writer.Write(tree.HeadId);
+                        },
+                        reader: (seed, reader) =>
+                        {
+                            return new Tree(reader.ReadVhId(seed));
+                        }))
             });
         }
     }

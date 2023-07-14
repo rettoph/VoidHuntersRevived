@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Common.Entities.Extensions
 {
     public static class EnginesGroupExtensions
     {
-        public static IStepGroupEngine<T> CreateStepEnginesGroup<T, TSequence>(
+        public static IStepGroupEngine<T> CreateSequencedStepEnginesGroup<T, TSequence>(
             this IEnumerable<IEngine> engines,
             TSequence defaultSequence)
             where TSequence : Enum
