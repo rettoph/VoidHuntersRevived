@@ -114,7 +114,7 @@ namespace VoidHuntersRevived.Game.Engines
                     });
                 });
 
-            tractorBeamEmitter.TargetEGID = cloneId.EGID;
+            tractorBeamEmitter.TargetVhId = cloneId.VhId;
             tractorBeamEmitter.Active = true;
         }
 
@@ -123,13 +123,9 @@ namespace VoidHuntersRevived.Game.Engines
             IdMap tractorBeamEmitterVhId = _entities.GetIdMap(data.TractorBeamEmitterVhId);
             ref TractorBeamEmitter tractorBeamEmitter = ref entitiesDB.QueryMappedEntities<TractorBeamEmitter>(tractorBeamEmitterVhId.EGID.groupID).Entity(tractorBeamEmitterVhId.EGID.entityID);
 
-            if(!_entities.TryGetIdMap(tractorBeamEmitter.TargetEGID, out IdMap targetId))
+            if(tractorBeamEmitter.TargetVhId.Value != eventId.Create(1).Value)
             {
-                return;
-            }
-
-            if(targetId.VhId.Value != eventId.Create(1).Value)
-            {
+                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Target is no longer {OldTargetId}, now {NewTargetId}", nameof(TractorBeamEmitterEngine), nameof(Revert), nameof(TractorBeamEmitter_Activate), eventId.Create(1).Value, tractorBeamEmitter.TargetVhId.Value);
                 return;
             }
 
@@ -141,8 +137,10 @@ namespace VoidHuntersRevived.Game.Engines
             IdMap shipId = _entities.GetIdMap(data.ShipVhId);
             ref TractorBeamEmitter tractorBeamEmitter = ref entitiesDB.QueryMappedEntities<TractorBeamEmitter>(shipId.EGID.groupID).Entity(shipId.EGID.entityID);
 
-            if(!_entities.TryGetIdMap(tractorBeamEmitter.TargetEGID, out IdMap targetId))
+            if(!_entities.TryGetIdMap(tractorBeamEmitter.TargetVhId, out IdMap targetId))
             {
+                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - {TargetVhIdPropertyName} {TargetVhId} map not found", nameof(TractorBeamEmitterEngine), nameof(Process), nameof(TractorBeamEmitter_TryDeactivate), nameof(TractorBeamEmitter.TargetVhId), tractorBeamEmitter.TargetVhId.Value);
+
                 return;
             }
 
@@ -157,7 +155,6 @@ namespace VoidHuntersRevived.Game.Engines
             {
                 _logger.Error(e, "{ClassName}::{MethodName}<{GenericTypeName}> - Target {TargetId} not found, deactivation request sent in the same frame as activation?", nameof(TractorBeamEmitterEngine), nameof(Process), nameof(TractorBeamEmitter_TryDeactivate), targetId.VhId.Value);
             }
-
         }
 
         public void Step(in Step _param)
@@ -179,8 +176,7 @@ namespace VoidHuntersRevived.Game.Engines
                 return;
             }
 
-            EntityVhId vhid = this.entitiesDB.QueryEntity<EntityVhId>(tractorBeamEmitter.TargetEGID);
-            IBody targetBody = _space.GetBody(in vhid.Value);
+            IBody targetBody = _space.GetBody(in tractorBeamEmitter.TargetVhId);
 
             targetBody.SetTransform(tactical.Value, targetBody.Rotation);
         }

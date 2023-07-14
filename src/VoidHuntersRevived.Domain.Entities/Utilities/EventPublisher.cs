@@ -8,6 +8,7 @@ using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common;
 using Serilog;
+using VoidHuntersRevived.Domain.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Utilities
 {
@@ -37,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
 
         private void Publish(in VhId id, T data)
         {
-            _logger.Verbose("Publishing Event {EventId} {EventType}", id.Value, typeof(T).Name);
+            _logger.Verbose("{ClassName}::{MethodName} - Publishing Event {EventId} {EventType}", nameof(EventPublishingService), nameof(Publish), id.Value, typeof(T).Name);
 
             foreach (IEventEngine<T> subscriber in _subscribers)
             {
@@ -57,7 +58,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
                 return;
             }
 
-            _logger.Verbose("Reverting Event {EventId} {EventType}", id.Value, typeof(T).Name);
+            _logger.Verbose("{ClassName}::{MethodName} - Reverting Event {EventId} {EventType}", nameof(EventPublishingService), nameof(Revert), id.Value, typeof(T).Name);
             foreach (IRevertEventEngine<T> reverter in _reverters)
             {
                 reverter.Revert(id, data);

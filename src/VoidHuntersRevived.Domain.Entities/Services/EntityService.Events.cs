@@ -54,11 +54,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, CreateEntity data)
         {
-            _logger.Debug("Attempting to Create Entity {Id}, {Type}", data.VhId.Value, data.Type.Name);
+            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to Create Entity {Id}, {Type}", nameof(EntityService), nameof(Process), nameof(CreateEntity), data.VhId.Value, data.Type.Name);
 
             if (_destroyed.Remove(data.VhId) != -1)
             {
-                _logger.Warning("Unable to Create Entity {Id}, Destroyed Count: {Count}", data.VhId.Value, _destroyed.Count(data.VhId));
+                _logger.Warning("{ClassName}::{MethodName}<{EventName}> - Unable to Create Entity {Id}, Destroyed Count: {Count}", nameof(EntityService), nameof(Process), nameof(CreateEntity), data.VhId.Value, _destroyed.Count(data.VhId));
 
                 return;
             }
@@ -68,11 +68,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Revert(VhId eventId, CreateEntity data)
         {
-            _logger.Debug("Attempting to Revert Entity Creation {Id}, {Type}", data.VhId.Value, data.Type.Name);
+            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to Revert Entity Creation {Id}, {Type}", nameof(EntityService), nameof(Revert), nameof(CreateEntity), data.VhId.Value, data.Type.Name);
 
             if (_destroyed.Add(data.VhId) != 0)
             {
-                _logger.Warning("Unable to Revert Entity Creation {Id}, Destroyed Count: {Count}", data.VhId.Value, _destroyed.Count(data.VhId));
+                _logger.Warning("{ClassName}::{MethodName}<{EventName}> - Unable to Revert Entity Creation {Id}, Destroyed Count: {Count}", nameof(EntityService), nameof(Revert), nameof(CreateEntity), data.VhId.Value, _destroyed.Count(data.VhId));
 
                 return;
             }
@@ -82,11 +82,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, DestroyEntity data)
         {
-            _logger.Debug("Attempting to Destroy Entity {Id}", data.VhId.Value);
+            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to Destroy Entity {Id}", nameof(EntityService), nameof(Process), nameof(DestroyEntity), data.VhId.Value);
 
             if (_destroyed.Add(data.VhId) != 0)
             {
-                _logger.Warning("Unableto Destroy Entity {Id}, Destroyed Count: {Count}", data.VhId.Value, _destroyed.Count(data.VhId));
+                _logger.Warning("{ClassName}::{MethodName}<{EventName}> - Unableto Destroy Entity {Id}, Destroyed Count: {Count}", nameof(EntityService), nameof(Process), nameof(DestroyEntity), data.VhId.Value, _destroyed.Count(data.VhId));
 
                 return;
             }
@@ -99,11 +99,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Revert(VhId eventId, DestroyEntity data)
         {
-            _logger.Debug("Attempting to Revert Entity Destruction {Id}", data.VhId.Value);
+            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to Revert Entity Destruction {Id}", nameof(EntityService), nameof(Revert), nameof(DestroyEntity), data.VhId.Value);
 
             if (_destroyed.Count(data.VhId) != 0)
             {
-                _logger.Warning("Unable to Revert Entity Destruction {Id}, Destroyed Count: {Count}", data.VhId.Value, _destroyed.Count(data.VhId));
+                _logger.Warning("{ClassName}::{MethodName}<{EventName}> - Unable to Revert Entity Destruction {Id}, Destroyed Count: {Count}", nameof(EntityService), nameof(Revert), nameof(DestroyEntity), data.VhId.Value, _destroyed.Count(data.VhId));
 
                 return;
             }

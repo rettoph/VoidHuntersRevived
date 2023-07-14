@@ -75,7 +75,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 this.Publish(@event, out published);
             }
 
-            _logger.Verbose("Confirming Event {EventId} {EventType}", @event.Id.Value, @event.Data.GetType().Name);
+            _logger.Verbose("{ClassName}::{MethodName} - Confirming Event {EventId} {EventType}", nameof(EventPublishingService), nameof(Confirm), @event.Id.Value, @event.Data.GetType().Name);
 
 
             published.Status = PublishedEventStatus.Confirmed;
