@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Resources.Providers;
+using Serilog;
 using Svelto.ECS;
 using System;
 using System.Collections.Generic;
@@ -27,12 +28,14 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
         private readonly IResourceProvider _resources;
         private readonly ISpace _space;
         private readonly IEntityService _entities;
+        private readonly ILogger _logger;
 
-        public RigidEngine(IResourceProvider resources, ISpace space, IEntityService entities)
+        public RigidEngine(IResourceProvider resources, ISpace space, IEntityService entities, ILogger logger)
         {
             _resources = resources;
             _space = space;
             _entities = entities;
+            _logger = logger;
         }
 
         public void Process(VhId id, CreateNode data)
@@ -69,6 +72,10 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             if (_space.TryGetBody(node.TreeId, out IBody? body))
             {
                 body.Destroy(nodeId.VhId);
+            }
+            else
+            {
+                _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Unable to find body {BodyId} while attempting to remove fixture {FixtureId}", nameof(RigidEngine), nameof(Process), nameof(DestroyNode), node.TreeId.Value, nodeId.VhId.Value);
             }
         }
     }

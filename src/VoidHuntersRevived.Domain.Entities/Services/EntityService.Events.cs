@@ -93,7 +93,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             EntityData backup = _serialization.Serialize(this.GetIdMap(data.VhId));
 
-            _backups.Add(data.VhId, backup);
+            _backups[data.VhId] = backup;
             this.Destroy(data.VhId);
         }
 

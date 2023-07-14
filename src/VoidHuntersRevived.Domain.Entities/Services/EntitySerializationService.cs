@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Serilog;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using System;
@@ -28,20 +29,23 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly IEntityService _entities;
         private readonly IEngineService _engines;
         private readonly EntityTypeService _types;
+        private readonly ILogger _logger;
         private Dictionary<IEntityType, FasterList<SerializationEnginesGroup>> _serializationEngines;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
         public EntitySerializationService(
-            IEventPublishingService events, 
-            IEntityService entities, 
+            IEventPublishingService events,
+            IEntityService entities,
             IEngineService engines,
+            ILogger logger,
             EntityTypeService types)
         {
             _events = events;
             _entities = entities;
             _engines = engines;
             _types = types;
+            _logger = logger;
             _serializationEngines = null!;
         }
 
@@ -118,6 +122,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             IEntityType type = _types.GetById(typeId);
             EntityReaderState readerState = reader.GetState(in seed);
+
+            _logger.Verbose("{ClassName}::{MathodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntitySerializationService), nameof(Deserialize), vhid.Value, type.Name, seed.Value);
 
             EventDto createEvent = CreateEntity.CreateEvent(type, vhid, (ref EntityInitializer initializer) =>
             {

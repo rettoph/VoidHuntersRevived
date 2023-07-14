@@ -80,7 +80,7 @@ namespace VoidHuntersRevived.Game.Engines
             }
             Tree targetTree = this.entitiesDB.QueryEntity<Tree>(targetTreeId.EGID);
 
-            this.Simulation.Publish(TractorBeamEmitter_Activate.NameSpace.Create(eventId), new TractorBeamEmitter_Activate()
+            this.Simulation.Publish(TractorBeamEmitter_Activate.NameSpace.Create(eventId).Create(targetTreeId.VhId), new TractorBeamEmitter_Activate()
             {
                 TractorBeamEmitterVhId = data.ShipVhId,
                 TargetData = _serialization.Serialize(targetTree.HeadId)
