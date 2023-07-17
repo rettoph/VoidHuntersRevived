@@ -63,11 +63,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
         }
 
-        public void Publish(VhId source, IEventData data)
+        public void Publish(VhId sender, IEventData data)
         {
             this.Publish(new EventDto()
             {
-                Id = data.CalculateHash(source),
+                Sender = sender,
                 Data = data,
             }, out _);
         }
@@ -90,11 +90,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             published.Status = PublishedEventStatus.Confirmed;
         }
 
-        public void Confirm(VhId source, IEventData data)
+        public void Confirm(VhId sender, IEventData data)
         {
             this.Confirm(new EventDto()
             {
-                Id = data.CalculateHash(source),
+                Sender = sender,
                 Data = data
             });
         }

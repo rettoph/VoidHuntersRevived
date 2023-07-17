@@ -17,9 +17,9 @@ namespace VoidHuntersRevived.Common.Entities.Services
         /// <summary>
         /// Publish an event to be processed
         /// </summary>
-        /// <param name="source"></param>
+        /// <param name="sender"></param>
         /// <param name="data"></param>
-        void Publish(VhId source, IEventData data);
+        void Publish(VhId sender, IEventData data);
 
         /// <summary>
         /// Publish an event to be processed
@@ -36,9 +36,9 @@ namespace VoidHuntersRevived.Common.Entities.Services
         /// <summary>
         /// Publish and confirm an event to be processed
         /// </summary>
-        /// <param name="source"></param>
+        /// <param name="sender"></param>
         /// <param name="data"></param>
-        void Confirm(VhId source, IEventData data);
+        void Confirm(VhId sender, IEventData data);
 
         /// <summary>
         /// Prune any events, reverting expired published events.

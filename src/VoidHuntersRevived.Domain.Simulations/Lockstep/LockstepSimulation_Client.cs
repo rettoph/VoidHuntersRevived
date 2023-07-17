@@ -100,11 +100,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _stepsSinceTick = 0;
         }
 
-        public override void Input(VhId eventId, IInputData data)
+        public override void Input(VhId sender, IInputData data)
         {
             _netScope.Messages.Create(new EventDto()
             {
-                Id = eventId,
+                Sender = sender,
                 Data = data
             }).Enqueue();
         }

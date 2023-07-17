@@ -106,11 +106,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _timeSinceStep -= _stepTimeSpan;
         }
 
-        public override void Input(VhId eventId, IInputData data)
+        public override void Input(VhId sender, IInputData data)
         {
             _inputs.Add(new EventDto()
             {
-                Id = eventId,
+                Sender = sender,
                 Data = data
             });
         }
@@ -143,7 +143,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                 throw new InvalidOperationException();
             }
 
-            this.Input(message.Body.Id, (IInputData)message.Body.Data);
+            this.Input(message.Body.Sender, (IInputData)message.Body.Data);
         }
     }
 }

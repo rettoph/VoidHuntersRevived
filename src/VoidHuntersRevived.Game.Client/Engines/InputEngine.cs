@@ -64,7 +64,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
 
             this.Simulation.Input(
-                eventId: new VhId(messageId),
+                sender: new VhId(messageId),
                 data: new Helm_SetDirection()
                 {
                     ShipVhId = _client.Users.Current.GetUserShipId(),
@@ -91,7 +91,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 }
 
                 this.Simulation.Input(
-                    eventId: eventId,
+                    sender: eventId,
                     data: new Tactical_SetTarget()
                     {
                         ShipVhId = _client.Users.Current.GetUserShipId(),
@@ -99,7 +99,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     });
 
                 this.Simulation.Input(
-                    eventId: eventId,
+                    sender: eventId,
                     data: new TractorBeamEmitter_TryActivate()
                     {
                         ShipVhId = shipId.VhId,
@@ -109,7 +109,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             else
             {
                 this.Simulation.Input(
-                    eventId: eventId,
+                    sender: eventId,
                     data: new TractorBeamEmitter_TryDeactivate()
                     {
                         ShipVhId = shipId.VhId
@@ -127,7 +127,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             return;
 
             this.Simulation.Input(
-                eventId: NameSpace<Tick>.Instance.Create(_param.Id),
+                sender: NameSpace<Tick>.Instance.Create(_param.Id),
                 data: new Tactical_SetTarget()
                 {
                     ShipVhId = _client.Users.Current.GetUserShipId(),

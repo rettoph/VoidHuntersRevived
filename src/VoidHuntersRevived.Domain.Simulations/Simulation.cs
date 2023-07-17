@@ -85,14 +85,9 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.Engines.Step(step);
         }
 
-        public void Publish(EventDto data)
+        public void Publish(VhId sender, IEventData data)
         {
-            this.Events.Publish(data);
-        }
-
-        public void Publish(VhId eventId, IEventData data)
-        {
-            this.Events.Publish(eventId, data);
+            this.Events.Publish(sender, data);
         }
 
         protected virtual void Enqueue(EventDto @event)
@@ -100,9 +95,9 @@ namespace VoidHuntersRevived.Domain.Simulations
             _events.Enqueue(@event);
         }
 
-        public virtual void Input(VhId eventId, IInputData data)
+        public virtual void Input(VhId sender, IInputData data)
         {
-            this.Publish(eventId, data);
+            this.Publish(sender, data);
         }
     }
 }

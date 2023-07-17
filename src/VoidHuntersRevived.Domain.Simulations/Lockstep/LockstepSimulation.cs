@@ -84,7 +84,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
             foreach (EventDto @event in tick.Events)
             {
-                this.Publish(@event);
+                this.Events.Publish(@event);
             }
 
             _history.Add(tick);
