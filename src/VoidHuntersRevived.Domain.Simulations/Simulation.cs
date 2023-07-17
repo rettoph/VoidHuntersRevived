@@ -92,11 +92,7 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public void Publish(VhId eventId, IEventData data)
         {
-            this.Publish(new EventDto()
-            {
-                Id = eventId,
-                Data = data
-            });
+            this.Events.Publish(eventId, data);
         }
 
         protected virtual void Enqueue(EventDto @event)

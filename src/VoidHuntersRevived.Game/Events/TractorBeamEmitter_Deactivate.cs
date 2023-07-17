@@ -5,14 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Simulations.Events;
+using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Game.Events
 {
     public class TractorBeamEmitter_Deactivate : IEventData
     {
-        public static readonly VhId NameSpace = new VhId("599A5204-6F73-400C-BA1D-64F89C8E2406");
-
         public required VhId TractorBeamEmitterVhId { get; init; }
         public required VhId TargetVhId { get; init; }
+
+        public VhId CalculateHash(in VhId source)
+        {
+            return HashBuilder<TractorBeamEmitter_Deactivate, VhId, VhId, VhId>.Instance.Calculate(source, this.TractorBeamEmitterVhId, this.TargetVhId);
+        }
     }
 }

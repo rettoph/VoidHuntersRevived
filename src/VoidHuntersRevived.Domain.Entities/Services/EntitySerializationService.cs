@@ -125,24 +125,33 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             _logger.Verbose("{ClassName}::{MathodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntitySerializationService), nameof(Deserialize), vhid.Value, type.Name, seed.Value);
 
-            EventDto createEvent = CreateEntity.CreateEvent(type, vhid, (ref EntityInitializer initializer) =>
+            CreateEntity createEntityEvent = new CreateEntity()
             {
-                reader.Load(readerState);
-                type.Descriptor.Deserialize(in readerState.Seed, reader, ref initializer);
-
-                foreach (SerializationEnginesGroup serializationEngineGroup in _serializationEngines[type])
+                Type = type,
+                VhId = vhid,
+                Initializer = (ref EntityInitializer initializer) =>
                 {
-                    serializationEngineGroup.Deserialize(in readerState.Seed, reader, ref initializer, confirmed);
+                    reader.Load(readerState);
+                    type.Descriptor.Deserialize(in readerState.Seed, reader, ref initializer);
+
+                    foreach (SerializationEnginesGroup serializationEngineGroup in _serializationEngines[type])
+                    {
+                        serializationEngineGroup.Deserialize(in readerState.Seed, reader, ref initializer, confirmed);
+                    }
+
+                    reader.Busy = false;
                 }
+            };
 
-                reader.Busy = false;
-            });
-
-            _events.Publish(createEvent);
+            
 
             if(confirmed)
             {
-                _events.Confirm(createEvent);
+                _events.Confirm(vhid, createEntityEvent);
+            }
+            else
+            {
+                _events.Publish(vhid, createEntityEvent);
             }
 
             return _entities.GetIdMap(vhid);

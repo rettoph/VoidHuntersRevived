@@ -81,13 +81,16 @@ namespace VoidHuntersRevived.Game.Engines
             }
             Tree targetTree = this.entitiesDB.QueryEntity<Tree>(targetTreeId.EGID);
 
-            this.Simulation.Publish(TractorBeamEmitter_Activate.NameSpace.Create(eventId).Create(targetTreeId.VhId), new TractorBeamEmitter_Activate()
+            this.Simulation.Publish(eventId, new TractorBeamEmitter_Activate()
             {
                 TractorBeamEmitterVhId = data.ShipVhId,
                 TargetData = _serialization.Serialize(targetTree.HeadId)
             });
 
-            this.Simulation.Publish(DestroyEntity.CreateEvent(targetTreeId.VhId));
+            this.Simulation.Publish(eventId, new DestroyEntity()
+            {
+                VhId = targetTreeId.VhId
+            });
         }
 
         public void Process(VhId eventId, TractorBeamEmitter_Activate data)
@@ -97,7 +100,7 @@ namespace VoidHuntersRevived.Game.Engines
 
             if (tractorBeamEmitter.Active)
             {
-                this.Simulation.Publish(TractorBeamEmitter_TryDeactivate.NameSpace.Create(eventId), new TractorBeamEmitter_TryDeactivate()
+                this.Simulation.Publish(eventId, new TractorBeamEmitter_TryDeactivate()
                 {
                     ShipVhId = data.TractorBeamEmitterVhId
                 });
@@ -140,7 +143,7 @@ namespace VoidHuntersRevived.Game.Engines
             IdMap tractorBeamEmitterId = _entities.GetIdMap(data.ShipVhId);
             ref TractorBeamEmitter tractorBeamEmitter = ref entitiesDB.QueryMappedEntities<TractorBeamEmitter>(tractorBeamEmitterId.EGID.groupID).Entity(tractorBeamEmitterId.EGID.entityID);
 
-            this.Simulation.Publish(TractorBeamEmitter_Deactivate.NameSpace.Create(eventId).Create(tractorBeamEmitter.TargetVhId), new TractorBeamEmitter_Deactivate()
+            this.Simulation.Publish(eventId, new TractorBeamEmitter_Deactivate()
             {
                 TractorBeamEmitterVhId = data.ShipVhId,
                 TargetVhId = tractorBeamEmitter.TargetVhId

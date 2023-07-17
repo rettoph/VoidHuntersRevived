@@ -24,7 +24,20 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                     serializer: ComponentSerializer<ResourceId<Visible>>.Default),
                 new ComponentManager<ResourceId<Rigid>>(
                     builder: new ComponentBuilder<ResourceId<Rigid>>(),
-                    serializer: ComponentSerializer<ResourceId<Rigid>>.Default)
+                    serializer: ComponentSerializer<ResourceId<Rigid>>.Default),
+                new ComponentManager<Joints>(
+                    builder: new ComponentBuilder<Joints>(),
+                    serializer: new ComponentSerializer<Joints>(
+                        writer: (writer, joints) =>
+                        {
+                            writer.Write(joints.Items.count);
+                        },
+                        reader: (seed, reader) =>
+                        {
+                            var joints =  new Joints(reader.ReadUInt32());
+
+                            return joints;
+                        }))
             });
         }
     }

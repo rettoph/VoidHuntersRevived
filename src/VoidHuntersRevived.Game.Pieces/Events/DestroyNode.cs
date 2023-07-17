@@ -6,14 +6,19 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Events;
+using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Game.Pieces.Events
 {
     internal class DestroyNode : IEventData
     {
-        public static VhId NameSpace = new VhId("762D9FAC-46E4-4765-8124-0D2CC582E526");
-
         public required VhId TreeId { get; init; }
         public required VhId NodeId { get; init; }
+
+        public VhId CalculateHash(in VhId source)
+        {
+            return HashBuilder<DestroyNode, VhId, VhId, VhId>.Instance.Calculate(source, this.NodeId, this.TreeId);
+        }
     }
 }

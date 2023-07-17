@@ -63,6 +63,15 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
         }
 
+        public void Publish(VhId source, IEventData data)
+        {
+            this.Publish(new EventDto()
+            {
+                Id = data.CalculateHash(source),
+                Data = data,
+            }, out _);
+        }
+
         public void Publish(EventDto @event)
         {
             this.Publish(@event, out _);
@@ -79,6 +88,15 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
 
             published.Status = PublishedEventStatus.Confirmed;
+        }
+
+        public void Confirm(VhId source, IEventData data)
+        {
+            this.Confirm(new EventDto()
+            {
+                Id = data.CalculateHash(source),
+                Data = data
+            });
         }
 
         public void Revert()

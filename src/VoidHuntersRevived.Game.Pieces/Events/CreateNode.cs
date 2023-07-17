@@ -6,14 +6,19 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Events;
+using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Game.Pieces.Events
 {
     public class CreateNode : IEventData
     {
-        public static VhId NameSpace = new VhId("9BAFF71B-8F89-4B96-8FEC-7D6CA3C37B6B");
-
         public required VhId NodeId { get; init; }
         public required VhId TreeId { get; init; }
+
+        public VhId CalculateHash(in VhId source)
+        {
+            return HashBuilder<CreateNode, VhId, VhId, VhId>.Instance.Calculate(source, this.NodeId, this.TreeId);
+        }
     }
 }

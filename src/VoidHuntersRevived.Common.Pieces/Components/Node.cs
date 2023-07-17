@@ -1,4 +1,6 @@
-﻿using Svelto.ECS;
+﻿using Svelto.Common;
+using Svelto.DataStructures;
+using Svelto.ECS;
 using System;
 using System.Collections.Generic;
 using System.Linq;

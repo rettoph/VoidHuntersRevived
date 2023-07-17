@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                 ref var filter = ref _filters.GetFilter<Node>(treeId);
                 filter.Add(ids[index], groupID, index);
 
-                this.Simulation.Publish(CreateNode.NameSpace.Create(nodeId), new CreateNode()
+                this.Simulation.Publish(NameSpace<NodeEngine>.Instance, new CreateNode()
                 {
                     TreeId = treeId,
                     NodeId = nodeId
@@ -71,7 +71,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                 ref var filter = ref _filters.GetFilter<Node>(treeId);
                 filter.Remove(ids[index], groupID);
 
-                this.Simulation.Publish(DestroyNode.NameSpace.Create(nodeId), new DestroyNode()
+                this.Simulation.Publish(NameSpace<NodeEngine>.Instance, new DestroyNode()
                 {
                     TreeId = treeId,
                     NodeId = nodeId

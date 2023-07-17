@@ -33,21 +33,25 @@ namespace VoidHuntersRevived.Game.Pieces.Factories
         public IdMap Create(VhId vhid, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> head)
         {
             VhId headId = vhid.Create(1);
-            _events.Publish(CreateEntity.CreateEvent(
-                type: tree,
-                vhid: vhid,
-                initializer: (ref EntityInitializer initializer) =>
+            _events.Publish(vhid, new CreateEntity()
+            {
+                Type = tree,
+                VhId = vhid,
+                Initializer = (ref EntityInitializer initializer) =>
                 {
                     initializer.Init(new Tree(headId));
-                }));
+                }
+            });
 
-            _events.Publish(CreateEntity.CreateEvent(
-                type: head,
-                vhid: headId,
-                initializer: (ref EntityInitializer initializer) =>
+            _events.Publish(vhid, new CreateEntity()
+            {
+                Type = head,
+                VhId = headId,
+                Initializer = (ref EntityInitializer initializer) =>
                 {
                     initializer.Init(new Node(vhid));
-                }));
+                }
+            });
 
             return _entities.GetIdMap(vhid);
         }
@@ -56,14 +60,16 @@ namespace VoidHuntersRevived.Game.Pieces.Factories
         {
             IdMap headId = _serialization.Deserialize(vhid, nodes, false);
 
-            _events.Publish(CreateEntity.CreateEvent(
-                type: tree,
-                vhid: vhid,
-                initializer: (ref EntityInitializer initializer) =>
+            _events.Publish(vhid, new CreateEntity()
+            {
+                Type = tree,
+                VhId = vhid,
+                Initializer = (ref EntityInitializer initializer) =>
                 {
                     initializer.Init<Tree>(new Tree(headId.VhId));
                     initializerDelegate(ref initializer);
-                }));
+                }
+            });
 
             return _entities.GetIdMap(vhid);
         }
