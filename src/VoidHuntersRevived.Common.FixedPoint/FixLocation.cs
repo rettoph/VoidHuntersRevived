@@ -1,6 +1,8 @@
-﻿namespace VoidHuntersRevived.Common
+﻿using Microsoft.Xna.Framework;
+
+namespace VoidHuntersRevived.Common
 {
-    public readonly struct FixLocation
+    public struct FixLocation
     {
         public readonly FixMatrix Transformation;
         public readonly FixVector2 Position;

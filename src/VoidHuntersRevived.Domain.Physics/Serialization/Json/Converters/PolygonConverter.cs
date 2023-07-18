@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Svelto.DataStructures;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,9 +13,9 @@ namespace VoidHuntersRevived.Domain.Physics.Serialization.Json.Converters
 {
     internal class PolygonConverter : JsonConverter<Polygon>
     {
-        public override Polygon? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override Polygon Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            Vertices vertices = new Vertices();
+            NativeDynamicArrayCast<FixVector2> vertices = default;
             Fix64 density = Fix64.Zero;
 
             while(reader.ReadPropertyName(out string? property))
@@ -25,13 +26,13 @@ namespace VoidHuntersRevived.Domain.Physics.Serialization.Json.Converters
                         density = Fix64.FromRaw(reader.ReadInt64());
                         break;
                     case nameof(Polygon.Vertices):
-                        vertices = JsonSerializer.Deserialize<Vertices>(ref reader, options) ?? throw new NotImplementedException();
+                        vertices = new NativeDynamicArrayCast<FixVector2>(JsonSerializer.Deserialize<NativeDynamicArray>(ref reader, options));
                         reader.Read();
                         break;
                 }
             }
 
-            return new Polygon(vertices, density); ;
+            return new Polygon(density, vertices); ;
         }
 
         public override void Write(Utf8JsonWriter writer, Polygon value, JsonSerializerOptions options)
@@ -41,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Physics.Serialization.Json.Converters
             writer.WriteNumber(nameof(Polygon.Density), value.Density.RawValue);
 
             writer.WritePropertyName(nameof(Polygon.Vertices));
-            JsonSerializer.Serialize<Vertices>(writer, value.Vertices, options);
+            JsonSerializer.Serialize<NativeDynamicArray>(writer, value.Vertices.ToNativeArray(), options);
 
             writer.WriteEndObject();
         }

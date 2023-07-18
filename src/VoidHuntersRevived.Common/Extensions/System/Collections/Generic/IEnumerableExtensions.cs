@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using Svelto.Common;
+using Svelto.DataStructures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +23,20 @@ namespace System.Collections.Generic
             }
 
             return sum / count;
+        }
+
+        public static NativeDynamicArrayCast<T> ToNativeDynamicArray<T>(this IEnumerable<T> items, Allocator allocator = Allocator.Persistent)
+            where T : struct
+        {
+            NativeDynamicArrayCast<T> native = new NativeDynamicArrayCast<T>((uint)items.Count(), allocator);
+
+            int index = 0;
+            foreach(T item in items)
+            {
+                native.Set(index++, item);
+            }
+
+            return native;
         }
     }
 }

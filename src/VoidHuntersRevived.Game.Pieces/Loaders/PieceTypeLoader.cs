@@ -20,30 +20,14 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
     [AutoLoad]
     public sealed class PieceTypeLoader : IEntityTypeLoader
     {
-        private readonly IResourceProvider _resources;
-
-        public PieceTypeLoader(IResourceProvider resources)
-        {
-            _resources = resources;
-
-            _resources
-                .Set(PieceResources.HullSquare.Rigid, Rigid.Polygon(Fix64.One, 4))
-                .Set(PieceResources.HullSquare.Visible, Visible.Polygon(Colors.Orange, 4));
-
-            _resources
-                .Set(PieceResources.HullTriangle.Rigid, Rigid.Polygon(Fix64.One, 3))
-                .Set(PieceResources.HullTriangle.Visible, Visible.Polygon(Colors.Orange, 3));
-        }
-
         public void Configure(IEntityTypeService entityTypes)
         {
             entityTypes.Configure(PieceTypes.HullTriangle, configuration =>
             {
                 configuration.HasInitializer((ref EntityInitializer initializer) =>
                 {
-                    initializer.Init<ResourceId<Rigid>>(PieceResources.HullTriangle.Rigid);
-                    initializer.Init<ResourceId<Visible>>(PieceResources.HullTriangle.Visible);
-                    initializer.Init<Joints>(Joints.Polygon(3));
+                    initializer.Init<Rigid>(Rigid.Polygon(Fix64.One, 3));
+                    initializer.Init<Visible>(Visible.Polygon(Colors.Orange, 3));
                 });
             });
 
@@ -51,9 +35,8 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
             {
                 configuration.HasInitializer((ref EntityInitializer initializer) =>
                 {
-                    initializer.Init<ResourceId<Rigid>>(PieceResources.HullSquare.Rigid);
-                    initializer.Init<ResourceId<Visible>>(PieceResources.HullSquare.Visible);
-                    initializer.Init<Joints>(Joints.Polygon(4));
+                    initializer.Init<Rigid>(Rigid.Polygon(Fix64.One, 4));
+                    initializer.Init<Visible>(Visible.Polygon(Colors.Orange, 4));
                 });
             });
         }

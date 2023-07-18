@@ -9,8 +9,7 @@ namespace Guppy.Resources.Providers
 {
     public static class IResourceProviderExtensions
     {
-        public static T? Get<T>(this IResourceProvider resources, ResourceId<T> id)
-            where T : notnull
+        public static T? Get<T>(this IResourceProvider resources, EntityResource<T> id)
         {
             if(id.Value == Guid.Empty)
             {

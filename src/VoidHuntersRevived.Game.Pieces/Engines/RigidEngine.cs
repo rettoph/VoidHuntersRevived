@@ -25,14 +25,12 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
         IEventEngine<CreateNode>,
         IEventEngine<DestroyNode>
     {
-        private readonly IResourceProvider _resources;
         private readonly ISpace _space;
         private readonly IEntityService _entities;
         private readonly ILogger _logger;
 
-        public RigidEngine(IResourceProvider resources, ISpace space, IEntityService entities, ILogger logger)
+        public RigidEngine(ISpace space, IEntityService entities, ILogger logger)
         {
-            _resources = resources;
             _space = space;
             _entities = entities;
             _logger = logger;
@@ -43,14 +41,14 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             IdMap nodeId = _entities.GetIdMap(data.NodeId);
 
             // Node is not a rigid entity
-            if (!this.entitiesDB.TryQueryEntitiesAndIndex<ResourceId<Rigid>>(nodeId.EGID, out uint index, out var rigidIds))
+            if (!this.entitiesDB.TryQueryEntitiesAndIndex<Rigid>(nodeId.EGID, out uint index, out var rigids))
             {
                 return;
             }
 
             var (nodes, _) = this.entitiesDB.QueryEntities<Node>(nodeId.EGID.groupID);
 
-            Rigid rigid = _resources.Get(rigidIds[index])!;
+            Rigid rigid = rigids[index];
             Node node = nodes[index];
             IBody body = _space.GetOrCreateBody(node.TreeId);
             body.Create(rigid.Shapes[0], nodeId.VhId);
@@ -61,7 +59,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             IdMap nodeId = _entities.GetIdMap(data.NodeId);
 
             // Node is not a rigid entity
-            if (!this.entitiesDB.TryQueryEntitiesAndIndex<ResourceId<Rigid>>(nodeId.EGID, out uint index, out var rigidIds))
+            if (!this.entitiesDB.TryQueryEntitiesAndIndex<Rigid>(nodeId.EGID, out uint index, out var _))
             {
                 return;
             }

@@ -14,13 +14,14 @@ using Guppy.Network;
 using Guppy.Common;
 using Guppy.Network.Enums;
 using VoidHuntersRevived.Common.Entities.Extensions;
+using VoidHuntersRevived.Common.Simulations.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
     public abstract partial class Simulation : ISimulation, IDisposable
     {
         private Queue<EventDto> _events;
-        private IStepGroupEngine<GameTime> _gameTimeStepEnginesGroup;
+        private IStepGroupEngine<GameTime> _drawEnginesGroup;
 
         public readonly SimulationType Type;
         public readonly IEngineService Engines;
@@ -47,7 +48,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.Engines = this.Scope.Resolve<IEngineService>().Load(new SimulationState(this));
             this.Events = this.Scope.Resolve<IEventPublishingService>();
 
-            _gameTimeStepEnginesGroup = this.Engines.All().CreateStepEnginesGroup<GameTime>();
+            _drawEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<GameTime, DrawEngineSequence>(DrawEngineSequence.Draw);
             _events = new Queue<EventDto>();
         }
 
@@ -68,7 +69,7 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public virtual void Draw(GameTime realTime)
         {
-            _gameTimeStepEnginesGroup.Step(realTime);
+            _drawEnginesGroup.Step(realTime);
         }
 
         public virtual void Update(GameTime realTime)

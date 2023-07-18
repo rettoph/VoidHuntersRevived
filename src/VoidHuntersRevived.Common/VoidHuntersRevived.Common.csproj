@@ -13,6 +13,7 @@
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.MonoGame\Guppy.MonoGame.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Resources\Guppy.Resources.csproj" />
+    <ProjectReference Include="..\..\libraries\Svelto.ECS\com.sebaslab.svelto.common\Svelto.Common.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.FixedPoint\VoidHuntersRevived.Common.FixedPoint.csproj" />
   </ItemGroup>
 

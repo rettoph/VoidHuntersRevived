@@ -1,22 +1,27 @@
-﻿using Svelto.DataStructures;
+﻿using Svelto.Common;
+using Svelto.DataStructures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Extensions.System;
 
 namespace VoidHuntersRevived.Common.Physics
 {
-    public class Polygon
+    public struct Polygon
     {
-        public Vertices Vertices;
+        public NativeDynamicArrayCast<FixVector2> Vertices;
         public Fix64 Density;
 
-        public Polygon(Vertices vertices, Fix64 density)
+        public Polygon(Fix64 density, params FixVector2[] vertices) : this(density, vertices.ToNativeDynamicArray())
         {
-            this.Vertices = vertices;
+        }
+        public Polygon(Fix64 density, NativeDynamicArrayCast<FixVector2> vertices)
+        {
             this.Density = density;
+            this.Vertices = vertices;
         }
     }
 }
