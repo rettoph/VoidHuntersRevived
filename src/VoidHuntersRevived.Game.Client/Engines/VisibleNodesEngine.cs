@@ -127,14 +127,12 @@ namespace VoidHuntersRevived.Game.Client.Engines
         {
             _primitiveBatch.EnsureCapacity(shape.Vertices.count);
 
-            Color color = Color.LightCyan;
+            Color color = _resources.Get(shape.Color);
 
             ref VertexPositionColor v1 = ref _primitiveBatch.NextVertex(out _indexBuffer[0]);
             v1.Color = color;
             Vector3.Transform(ref shape.Vertices[0], ref transformation, out v1.Position);
             v1.Position = _camera.Project(v1.Position);
-
-
 
             for (int i = 1; i < shape.Vertices.count; i++)
             {

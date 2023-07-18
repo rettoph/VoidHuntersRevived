@@ -10,10 +10,10 @@ namespace VoidHuntersRevived.Common.Extensions.System
 {
     public static class ArrayExtensions
     {
-        public static NativeDynamicArrayCast<T> ToNativeDynamicArray<T>(this T[] array, Allocator allocator = Allocator.Persistent)
+        public static NativeDynamicArrayCast<T> ToNativeDynamicArray<T>(this T[] array)
             where T : struct
         {
-            NativeDynamicArrayCast<T> native = new NativeDynamicArrayCast<T>((uint)array.Length, allocator);
+            NativeDynamicArrayCast<T> native = new NativeDynamicArrayCast<T>((uint)array.Length, Allocator.Persistent);
 
             for(int i=0; i<array.Length; i++)
             {

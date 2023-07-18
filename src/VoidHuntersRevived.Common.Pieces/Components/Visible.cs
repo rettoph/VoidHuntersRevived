@@ -7,10 +7,26 @@ using VoidHuntersRevived.Common.Pieces.Utilities;
 
 namespace VoidHuntersRevived.Common.Pieces.Components
 {
-    public struct Visible : IEntityComponent
+    public struct Visible : IEntityComponent, IDisposable
     {
         public required NativeDynamicArrayCast<Shape> Shapes { get; init; }
         public required NativeDynamicArrayCast<Shape> Paths { get; init; }
+
+        public void Dispose()
+        {
+            for (int i = 0; i < this.Shapes.count; i++)
+            {
+                this.Shapes[i].Dispose();
+            }
+
+            for (int i = 0; i < this.Paths.count; i++)
+            {
+                this.Paths[i].Dispose();
+            }
+
+            this.Shapes.Dispose();
+            this.Paths.Dispose();
+        }
 
         public static Visible Polygon(Resource<Color> color, int sides)
         {

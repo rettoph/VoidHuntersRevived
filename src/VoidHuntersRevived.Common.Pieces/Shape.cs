@@ -9,9 +9,14 @@ using VoidHuntersRevived.Common.Entities.Components;
 
 namespace VoidHuntersRevived.Common.Pieces
 {
-    public struct Shape
+    public struct Shape : IDisposable
     {
         public required EntityResource<Color> Color { get; init; }
         public required NativeDynamicArrayCast<Vector3> Vertices { get; init; }
+
+        public void Dispose()
+        {
+            this.Vertices.Dispose();
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace VoidHuntersRevived.Common.Entities.Serialization
+﻿using Svelto.DataStructures;
+
+namespace VoidHuntersRevived.Common.Entities.Serialization
 {
     public sealed class EntityWriter : BinaryWriter
     {
@@ -7,6 +9,8 @@
         public EntityWriter() : base(new MemoryStream())
         {
         }
+
+
 
         public unsafe void WriteUnmanaged<T>(T value)
             where T : unmanaged
@@ -42,6 +46,29 @@
             this.Busy = false;
 
             return new EntityData(id, bytes);
+        }
+
+        public void WriteNativeDynamicArray<T>(NativeDynamicArrayCast<T> native, Action<EntityWriter, T> writer)
+            where T : unmanaged
+        {
+            this.Write(native.count);
+
+            for (int i = 0; i < native.count; i++)
+            {
+                writer(this, native[i]);
+            }
+        }
+
+        public void WriteNativeDynamicArray<T>(NativeDynamicArrayCast<T> native)
+            where T : unmanaged
+        {
+            this.WriteNativeDynamicArray<T>(native, DefaultNativeDynamicArrayItemWriter<T>);
+        }
+
+        private static void DefaultNativeDynamicArrayItemWriter<T>(EntityWriter writer, T item)
+            where T : unmanaged
+        {
+            writer.WriteUnmanaged<T>(item);
         }
     }
 }

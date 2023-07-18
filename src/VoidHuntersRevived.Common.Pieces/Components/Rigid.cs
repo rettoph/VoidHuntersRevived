@@ -13,7 +13,18 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 {
     public struct Rigid : IEntityComponent, IDisposable
     {
+        public bool Disposed { get; set; }
         public required NativeDynamicArrayCast<Polygon> Shapes { get; init; }
+
+        public void Dispose()
+        {
+            for(int i=0; i<this.Shapes.count; i++)
+            {
+                this.Shapes[i].Dispose();
+            }
+
+            this.Shapes.Dispose();
+        }
 
         public static Rigid Polygon(Fix64 density, int sides)
         {
@@ -29,11 +40,6 @@ namespace VoidHuntersRevived.Common.Pieces.Components
             };
 
             return rigid;
-        }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
         }
     }
 }

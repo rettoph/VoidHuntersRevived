@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Svelto.Common;
+using Svelto.DataStructures;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -79,6 +81,32 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
 
                 return value[0];
             }
+        }
+
+        public NativeDynamicArrayCast<T> ReadNativeDynamicArray<T>(Func<EntityReader, T> reader)
+            where T : unmanaged
+        {
+            int count = this.ReadInt32();
+            NativeDynamicArrayCast<T> native = new NativeDynamicArrayCast<T>((uint)count, Allocator.Persistent);
+
+            for (int i = 0; i < count; i++)
+            {
+                native.Set(i, reader(this));
+            }
+
+            return native;
+        }
+
+        public NativeDynamicArrayCast<T> ReadNativeDynamicArray<T>()
+            where T : unmanaged
+        {
+            return this.ReadNativeDynamicArray<T>(DefaultNativeDynamicArrayItemReader<T>);
+        }
+
+        private static T DefaultNativeDynamicArrayItemReader<T>(EntityReader reader)
+            where T : unmanaged
+        {
+            return reader.ReadUnmanaged<T>();
         }
     }
 }

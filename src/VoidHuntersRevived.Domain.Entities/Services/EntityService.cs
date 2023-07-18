@@ -17,7 +17,7 @@ using VoidHuntersRevived.Common.Entities.Services;
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
     [Sequence<StepSequence>(StepSequence.OnEntitySubmit)]
-    internal sealed partial class EntityService : IEntityService, IEngine, IGetReadyEngine, IStepEngine<Step>
+    internal sealed partial class EntityService : IEntityService, IEngine, IGetReadyEngine, IQueryingEntitiesEngine, IStepEngine<Step>
     {
         private readonly IEngineService _engines;
         private readonly IEntityFactory _factory;

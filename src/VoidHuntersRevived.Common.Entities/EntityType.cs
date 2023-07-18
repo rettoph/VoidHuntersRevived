@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Common.Entities
 
         public abstract IEntityTypeConfiguration BuildConfiguration();
 
-        public abstract void DestroyEntity(IEntityFunctions functions, in EGID egid);
+        public abstract void DestroyEntity(IEntityFunctions functions, in EGID egid, EntitiesDB entities);
         public abstract EntityInitializer CreateEntity(IEntityFactory factory);
 
         public static IEnumerable<EntityType> All()
@@ -72,8 +72,9 @@ namespace VoidHuntersRevived.Common.Entities
             return factory.BuildEntity(egid, this.Descriptor);
         }
 
-        public override void DestroyEntity(IEntityFunctions functions, in EGID egid)
+        public override void DestroyEntity(IEntityFunctions functions, in EGID egid, EntitiesDB entities)
         {
+            this.Descriptor.Dispose(in egid, entities);
             functions.RemoveEntity<TDescriptor>(egid);
         }
     }

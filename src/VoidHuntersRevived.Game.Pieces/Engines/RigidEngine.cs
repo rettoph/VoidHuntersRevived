@@ -46,11 +46,12 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                 return;
             }
 
-            var (nodes, _) = this.entitiesDB.QueryEntities<Node>(nodeId.EGID.groupID);
+            var (nodes, count) = this.entitiesDB.QueryEntities<Node>(nodeId.EGID.groupID);
 
             Rigid rigid = rigids[index];
             Node node = nodes[index];
             IBody body = _space.GetOrCreateBody(node.TreeId);
+
             body.Create(rigid.Shapes[0], nodeId.VhId);
         }
 

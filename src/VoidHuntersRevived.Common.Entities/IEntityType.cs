@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Common.Entities
 
         IEntityTypeConfiguration BuildConfiguration();
 
-        void DestroyEntity(IEntityFunctions functions, in EGID egid);
+        void DestroyEntity(IEntityFunctions functions, in EGID egid, EntitiesDB entities);
         EntityInitializer CreateEntity(IEntityFactory factory);
     }
 

@@ -10,7 +10,7 @@ using VoidHuntersRevived.Common.Extensions.System;
 
 namespace VoidHuntersRevived.Common.Physics
 {
-    public struct Polygon
+    public struct Polygon : IDisposable
     {
         public NativeDynamicArrayCast<FixVector2> Vertices;
         public Fix64 Density;
@@ -22,6 +22,11 @@ namespace VoidHuntersRevived.Common.Physics
         {
             this.Density = density;
             this.Vertices = vertices;
+        }
+
+        public void Dispose()
+        {
+            this.Vertices.Dispose();
         }
     }
 }
