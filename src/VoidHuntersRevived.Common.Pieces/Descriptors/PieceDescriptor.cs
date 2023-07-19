@@ -1,4 +1,5 @@
-﻿using Svelto.ECS;
+﻿using Microsoft.Xna.Framework;
+using Svelto.ECS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Serialization;
+using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Pieces.Components;
 
 namespace VoidHuntersRevived.Common.Pieces.Descriptors
@@ -32,8 +34,62 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                             VhId treeId = reader.ReadVhId();
                             treeId = reader.Seed.Value == VhId.Empty.Value ? treeId : reader.Seed;
                             return  new Node(treeId);
-                        }))
+                        })),
+                new ComponentManager<Rigid>(
+                    builder: new ComponentBuilder<Rigid>(),
+                    serializer: new ComponentSerializer<Rigid>(
+                        writer: (writer, instance) =>
+                        {
+                            writer.WriteNativeDynamicArray(instance.Shapes, PolygonWriter);
+                        },
+                        reader: (reader) => new Rigid()
+                        {
+                            Shapes = reader.ReadNativeDynamicArray<Polygon>(PolygonReader)
+                        })),
+                new ComponentManager<Visible>(
+                    builder: new ComponentBuilder<Visible>(),
+                    serializer: new ComponentSerializer<Visible>(
+                        writer: (writer, instance) =>
+                        {
+                            writer.WriteNativeDynamicArray(instance.Shapes, ShapeWriter);
+                            writer.WriteNativeDynamicArray(instance.Paths, ShapeWriter);
+                        },
+                        reader: (reader) => new Visible()
+                        {
+                            Shapes = reader.ReadNativeDynamicArray<Shape>(ShapeReader),
+                            Paths = reader.ReadNativeDynamicArray<Shape>(ShapeReader)
+                        })),
             });
+        }
+
+        private Shape ShapeReader(EntityReader reader)
+        {
+            return new Shape()
+            {
+                Color = reader.ReadStruct<EntityResource<Color>>(),
+                Vertices = reader.ReadNativeDynamicArray<Vector3>()
+            };
+        }
+
+        private void ShapeWriter(EntityWriter writer, Shape shape)
+        {
+            writer.WriteStruct(shape.Color);
+            writer.WriteNativeDynamicArray(shape.Vertices);
+        }
+
+        private Polygon PolygonReader(EntityReader reader)
+        {
+            return new Polygon()
+            {
+                Density = reader.ReadStruct<Fix64>(),
+                Vertices = reader.ReadNativeDynamicArray<FixVector2>()
+            };
+        }
+
+        private void PolygonWriter(EntityWriter writer, Polygon polygon)
+        {
+            writer.WriteStruct(polygon.Density);
+            writer.WriteNativeDynamicArray(polygon.Vertices);
         }
     }
 }

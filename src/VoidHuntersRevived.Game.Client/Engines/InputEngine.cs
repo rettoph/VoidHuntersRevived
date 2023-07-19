@@ -124,8 +124,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            return;
-
             this.Simulation.Input(
                 sender: NameSpace<Tick>.Instance.Create(_param.Id),
                 data: new Tactical_SetTarget()

@@ -6,6 +6,7 @@ using Guppy.Resources;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Serilog;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using System;
@@ -33,16 +34,18 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly Camera2D _camera;
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private readonly IResourceProvider _resources;
+        private readonly ILogger _logger;
 
         public string name { get; } = nameof(VisibleNodesEngine);
 
-        public VisibleNodesEngine(IScreen screen, Camera2D camera, PrimitiveBatch<VertexPositionColor> primitiveBatch, IResourceProvider resources)
+        public VisibleNodesEngine(IScreen screen, ILogger logger, Camera2D camera, PrimitiveBatch<VertexPositionColor> primitiveBatch, IResourceProvider resources)
         {
             _screen = screen;
             _camera = camera;
             _primitiveBatch = primitiveBatch;
             _resources = resources;
             _indexBuffer = new short[3];
+            _logger = logger;
         }
 
         public override void Initialize(ISimulation simulation)
@@ -55,12 +58,19 @@ namespace VoidHuntersRevived.Game.Client.Engines
             var groups = this.entitiesDB.FindGroups<Visible, Node>();
 
             _primitiveBatch.Begin(_camera);
-            foreach (var ((visibles, nodes, count), _) in this.entitiesDB.QueryEntities<Visible, Node>(groups))
+            foreach (var ((vhids, visibles, nodes, count), _) in this.entitiesDB.QueryEntities<EntityVhId, Visible, Node>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {
-                    Matrix transformation = nodes[i].Transformation.XnaMatrix;
-                    this.FillShapes(in visibles[i], ref transformation);
+                    try
+                    {
+                        Matrix transformation = nodes[i].Transformation.XnaMatrix;
+                        this.FillShapes(in visibles[i], ref transformation);
+                    }
+                    catch(Exception e)
+                    {
+                        _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to fill shapes for visible {VisibleVhId}", nameof(VisibleNodesEngine), nameof(Step), vhids[i].Value.Value);
+                    }
                 }
             }
             _primitiveBatch.End();
