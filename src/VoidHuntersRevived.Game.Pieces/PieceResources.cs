@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Pieces.Components;
-using VoidHuntersRevived.Common.Pieces.Resources;
 
 namespace VoidHuntersRevived.Game.Pieces
 {

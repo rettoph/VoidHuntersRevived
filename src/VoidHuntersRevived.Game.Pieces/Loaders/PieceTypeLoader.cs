@@ -12,7 +12,7 @@ using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Loaders;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces.Components;
-using VoidHuntersRevived.Common.Pieces.Resources;
+
 using Colors = VoidHuntersRevived.Common.Resources.Colors;
 
 namespace VoidHuntersRevived.Game.Pieces.Loaders
@@ -28,6 +28,7 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
                 {
                     initializer.Init<Rigid>(Rigid.Polygon(Fix64.One, 3));
                     initializer.Init<Visible>(Visible.Polygon(Colors.Orange, 3));
+                    initializer.Init<Joints>(Joints.Polygon(3));
                 });
             });
 
@@ -37,6 +38,7 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
                 {
                     initializer.Init<Rigid>(Rigid.Polygon(Fix64.One, 4));
                     initializer.Init<Visible>(Visible.Polygon(Colors.Orange, 4));
+                    initializer.Init<Joints>(Joints.Polygon(4));
                 });
             });
         }

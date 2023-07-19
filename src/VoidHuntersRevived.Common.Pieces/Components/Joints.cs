@@ -1,15 +1,23 @@
-﻿using System;
+﻿using Svelto.Common;
+using Svelto.DataStructures;
+using Svelto.ECS;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Pieces.Utilities;
 
-namespace VoidHuntersRevived.Common.Pieces.Resources
+namespace VoidHuntersRevived.Common.Pieces.Components
 {
-    public class Joints
+    public struct Joints : IEntityComponent, IDisposable
     {
-        public required FixLocation[] Locations { get; init; }
+        public required NativeDynamicArrayCast<Joint> Items { get; init; }
+
+        public void Dispose()
+        {
+            this.Items.Dispose();
+        }
 
         public static Joints Polygon(int sides)
         {
@@ -17,16 +25,16 @@ namespace VoidHuntersRevived.Common.Pieces.Resources
 
             Joints joints = new Joints()
             {
-                Locations = new FixLocation[sides]
+                Items = new NativeDynamicArrayCast<Joint>((uint)sides, Allocator.Persistent)
             };
 
-            for (int i=0; i<vertexAngles.Length; i++)
+            for (int i = 0; i < vertexAngles.Length; i++)
             {
                 FixVector2 start = vertexAngles[i].FixedVertex;
                 FixVector2 end = vertexAngles[(i + 1) % vertexAngles.Length].FixedVertex;
                 FixVector2 center = (start + end) / (Fix64)2;
 
-                joints.Locations[i] = new FixLocation(center, vertexAngles[i].Angle);
+                joints.Items.Set(i, new Joint(new FixLocation(center, vertexAngles[i].Angle)));
             }
 
             return joints;

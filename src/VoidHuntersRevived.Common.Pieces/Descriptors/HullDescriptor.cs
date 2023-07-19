@@ -13,7 +13,6 @@ using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Pieces.Components;
-using VoidHuntersRevived.Common.Pieces.Resources;
 
 namespace VoidHuntersRevived.Common.Pieces.Descriptors
 {
@@ -30,14 +29,9 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                         {
                             writer.WriteNativeDynamicArray(instance.Shapes, PolygonWriter);
                         },
-                        reader: (seed, reader) =>
+                        reader: (seed, reader) => new Rigid()
                         {
-                            Rigid rigid = new Rigid()
-                            {
-                                Shapes = reader.ReadNativeDynamicArray<Polygon>(PolygonReader)
-                            };
-
-                            return rigid;
+                            Shapes = reader.ReadNativeDynamicArray<Polygon>(PolygonReader)
                         })),
                 new ComponentManager<Visible>(
                     builder: new ComponentBuilder<Visible>(),
@@ -47,15 +41,21 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                             writer.WriteNativeDynamicArray(instance.Shapes, ShapeWriter);
                             writer.WriteNativeDynamicArray(instance.Paths, ShapeWriter);
                         },
-                        reader: (seed, reader) =>
+                        reader: (seed, reader) => new Visible()
                         {
-                            Visible visible = new Visible()
-                            {
-                                Shapes = reader.ReadNativeDynamicArray<Shape>(ShapeReader),
-                                Paths = reader.ReadNativeDynamicArray<Shape>(ShapeReader)
-                            };
-
-                            return visible;
+                            Shapes = reader.ReadNativeDynamicArray<Shape>(ShapeReader),
+                            Paths = reader.ReadNativeDynamicArray<Shape>(ShapeReader)
+                        })),
+                new ComponentManager<Joints>(
+                    builder: new ComponentBuilder<Joints>(),
+                    serializer: new ComponentSerializer<Joints>(
+                        writer: (writer, instance) =>
+                        {
+                            writer.WriteNativeDynamicArray(instance.Items);
+                        },
+                        reader: (seed, reader) => new Joints()
+                        {
+                            Items = reader.ReadNativeDynamicArray<Joint>(),
                         }))
             });
         }

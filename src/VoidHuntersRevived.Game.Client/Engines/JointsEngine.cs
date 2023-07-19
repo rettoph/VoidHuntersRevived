@@ -7,15 +7,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Screens;
 using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Pieces.Components;
-using VoidHuntersRevived.Common.Pieces.Resources;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Enums;
 
@@ -47,21 +40,21 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in GameTime _param)
         {
-            // _primitiveBatch.Begin(_screen.Camera);
-            // var groups = this.entitiesDB.FindGroups<Joints, Node>();
-            // foreach (var ((joints, nodes, count), _) in this.entitiesDB.QueryEntities<Joints, Node>(groups))
-            // {
-            //     for (int i = 0; i < count; i++)
-            //     {
-            //         for(int j=0; j < joints[i].Items.count; j++)
-            //         {
-            //             FixMatrix jointTransformation = joints[i].Items[j].Location.Transformation * nodes[i].Transformation;
-            //             _primitiveBatch.Trace(_jointShape, Color.Red, jointTransformation.XnaMatrix);
-            //         }
-            //         
-            //     }
-            // }
-            // _primitiveBatch.End();
+            _primitiveBatch.Begin(_screen.Camera);
+            var groups = this.entitiesDB.FindGroups<Joints, Node>();
+            foreach (var ((joints, nodes, count), _) in this.entitiesDB.QueryEntities<Joints, Node>(groups))
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    for(int j=0; j < joints[i].Items.count; j++)
+                    {
+                        FixMatrix jointTransformation = joints[i].Items[j].Location.Transformation * nodes[i].Transformation;
+                        _primitiveBatch.Trace(_jointShape, Color.Red, jointTransformation.XnaMatrix);
+                    }
+                    
+                }
+            }
+            _primitiveBatch.End();
         }
     }
 }

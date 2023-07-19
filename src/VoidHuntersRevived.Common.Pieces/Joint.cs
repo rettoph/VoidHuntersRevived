@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Common.Pieces.Components
+namespace VoidHuntersRevived.Common.Pieces
 {
     public struct Joint
     {
@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 
         public Joint(FixLocation location)
         {
-            this.Location = location;
+            Location = location;
         }
     }
 }

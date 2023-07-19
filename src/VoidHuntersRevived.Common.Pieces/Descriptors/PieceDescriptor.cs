@@ -9,7 +9,6 @@ using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Pieces.Components;
-using VoidHuntersRevived.Common.Pieces.Resources;
 
 namespace VoidHuntersRevived.Common.Pieces.Descriptors
 {
