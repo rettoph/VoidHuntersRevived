@@ -27,18 +27,15 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
     [AutoLoad]
     internal sealed class TreeEngine : BasicEngine,
         IReactOnRemoveEx<Tree>,
-        ISerializationEngine<Tree>,
         IStepEngine<Step>
     {
         public string name { get; } = nameof(TreeEngine);
 
         private HashSet<EGID> _removedNodes = new HashSet<EGID>();
-        private readonly IEntitySerializationService _serialization;
         private readonly IFilterService _filters;
 
-        public TreeEngine(IEntitySerializationService serialization, IFilterService filters)
+        public TreeEngine(IFilterService filters)
         {
-            _serialization = serialization;
             _filters = filters;
         }
 
@@ -164,15 +161,15 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
         //     this.Simulation.Publish(DestroyEntity.CreateEvent(data.NodeId));
         // }
 
-        public void Serialize(in Tree tree, EntityWriter writer)
-        {
-            _serialization.Serialize(tree.HeadId, writer);
-        }
-
-        public void Deserialize(in VhId seed, EntityReader reader, ref Tree component, bool confirmed)
-        {
-            _serialization.Deserialize(in seed, reader, confirmed);
-        }
+        // public void Serialize(in Tree tree, EntityWriter writer)
+        // {
+        //     _serialization.Serialize(tree.HeadId, writer);
+        // }
+        // 
+        // public void Deserialize(in VhId seed, EntityReader reader, ref Tree component, bool confirmed)
+        // {
+        //     _serialization.Deserialize(in seed, reader, confirmed);
+        // }
 
         // private void AddNodeToTree(in VhId eventId, in IdMap treeId, in Tree tree, in IdMap nodeId)
         // {

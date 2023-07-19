@@ -1,18 +1,23 @@
 ﻿using Svelto.DataStructures;
+using Svelto.ECS;
+using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Common.Entities.Serialization
 {
     public sealed class EntityWriter : BinaryWriter
     {
+        private readonly IEntitySerializationService _serializer;
+
         public bool Busy;
 
-        public EntityWriter() : base(new MemoryStream())
+        public EntityWriter(IEntitySerializationService serializer) : base(new MemoryStream())
         {
+            _serializer = serializer;
         }
 
 
 
-        public unsafe void WriteUnmanaged<T>(T value)
+        public unsafe void WriteStruct<T>(T value)
             where T : unmanaged
         {
             byte* pBytes = (byte*)&value;
@@ -23,7 +28,7 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
 
         public void Write(VhId vhid)
         {
-            this.WriteUnmanaged(vhid);
+            this.WriteStruct(vhid);
         }
 
         public void Reset()
@@ -68,7 +73,22 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
         private static void DefaultNativeDynamicArrayItemWriter<T>(EntityWriter writer, T item)
             where T : unmanaged
         {
-            writer.WriteUnmanaged<T>(item);
+            writer.WriteStruct<T>(item);
+        }
+
+        public void Serialize(IdMap id)
+        {
+            _serializer.Serialize(id, this);
+        }
+
+        public void Serialize(VhId vhId)
+        {
+            _serializer.Serialize(vhId, this);
+        }
+
+        public void Serialize(EGID egid)
+        {
+            _serializer.Serialize(egid, this);
         }
     }
 }

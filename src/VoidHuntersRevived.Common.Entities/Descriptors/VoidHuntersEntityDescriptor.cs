@@ -57,11 +57,11 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             }
         }
 
-        public void Deserialize(in VhId seed, EntityReader reader, ref EntityInitializer initializer)
+        public void Deserialize(EntityReader reader, ref EntityInitializer initializer)
         {
             foreach (ComponentManager componentManager in _componentManagers)
             {
-                componentManager.Serializer.Deserialize(in seed, reader, ref initializer);
+                componentManager.Serializer.Deserialize(reader, ref initializer);
             }
         }
 

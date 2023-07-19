@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                         {
                             writer.WriteNativeDynamicArray(instance.Shapes, PolygonWriter);
                         },
-                        reader: (seed, reader) => new Rigid()
+                        reader: (reader) => new Rigid()
                         {
                             Shapes = reader.ReadNativeDynamicArray<Polygon>(PolygonReader)
                         })),
@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                             writer.WriteNativeDynamicArray(instance.Shapes, ShapeWriter);
                             writer.WriteNativeDynamicArray(instance.Paths, ShapeWriter);
                         },
-                        reader: (seed, reader) => new Visible()
+                        reader: (reader) => new Visible()
                         {
                             Shapes = reader.ReadNativeDynamicArray<Shape>(ShapeReader),
                             Paths = reader.ReadNativeDynamicArray<Shape>(ShapeReader)
@@ -53,7 +53,7 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                         {
                             writer.WriteNativeDynamicArray(instance.Items);
                         },
-                        reader: (seed, reader) => new Joints()
+                        reader: (reader) => new Joints()
                         {
                             Items = reader.ReadNativeDynamicArray<Joint>(),
                         }))
@@ -64,14 +64,14 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
         {
             return new Shape()
             {
-                Color = reader.ReadUnmanaged<EntityResource<Color>>(),
+                Color = reader.ReadStruct<EntityResource<Color>>(),
                 Vertices = reader.ReadNativeDynamicArray<Vector3>()
             };
         }
 
         private void ShapeWriter(EntityWriter writer, Shape shape)
         {
-            writer.WriteUnmanaged(shape.Color);
+            writer.WriteStruct(shape.Color);
             writer.WriteNativeDynamicArray(shape.Vertices);
         }
 
@@ -79,14 +79,14 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
         {
             return new Polygon()
             {
-                Density = reader.ReadUnmanaged<Fix64>(),
+                Density = reader.ReadStruct<Fix64>(),
                 Vertices = reader.ReadNativeDynamicArray<FixVector2>()
             };
         }
 
         private void PolygonWriter(EntityWriter writer, Polygon polygon)
         {
-            writer.WriteUnmanaged(polygon.Density);
+            writer.WriteStruct(polygon.Density);
             writer.WriteNativeDynamicArray(polygon.Vertices);
         }
     }

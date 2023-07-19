@@ -23,12 +23,16 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private HashCache<VhId> _destroyed = new HashCache<VhId>(TimeSpan.FromSeconds(5));
         private Dictionary<VhId, EntityData> _backups = new Dictionary<VhId, EntityData>();
 
-        private IdMap Create(IEntityType type, VhId vhid, EntityInitializerDelegate? initializerDelegate)
+        private IdMap Create(IEntityType type, VhId vhid, bool configure, EntityInitializerDelegate? initializerDelegate)
         {
             EntityInitializer initializer = type.CreateEntity(_factory);
 
             initializer.Init(new EntityVhId() { Value = vhid });
-            _entityTypes.GetConfiguration(type).Initialize(ref initializer);
+
+            if(configure)
+            {
+                _entityTypes.GetConfiguration(type).Initialize(ref initializer);
+            }
 
             initializerDelegate?.Invoke(ref initializer);
 
@@ -63,7 +67,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            this.Create(data.Type, data.VhId, data.Initializer);
+            this.Create(data.Type, data.VhId, data.Configure, data.Initializer);
         }
 
         public void Revert(VhId eventId, CreateEntity data)

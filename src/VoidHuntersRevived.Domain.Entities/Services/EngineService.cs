@@ -14,7 +14,6 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Domain.Entities.EnginesGroups;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {

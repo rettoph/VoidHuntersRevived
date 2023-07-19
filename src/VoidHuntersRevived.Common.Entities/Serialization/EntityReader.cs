@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities.Services;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Common.Entities.Serialization
@@ -13,14 +14,19 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
     {
         private EntityData _loaded;
 
-        public bool Busy;
+        private readonly IEntitySerializationService _serializer;
 
-        public EntityReader() : base(new MemoryStream())
+        public bool Busy { get; set; }
+        public VhId Seed { get; private set; }
+        public bool Confirmed { get; private set; }
+
+        public EntityReader(IEntitySerializationService serializer) : base(new MemoryStream())
         {
             _loaded = new EntityData(VhId.Empty, Array.Empty<byte>());
+            _serializer = serializer;
         }
 
-        public void Load(EntityData data)
+        public void Load(VhId seed, EntityData data, bool confirmed)
         {
             if (this.Busy)
             {
@@ -38,6 +44,8 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             this.BaseStream.Position = 0;
             this.BaseStream.Flush();
 
+            this.Seed = seed;
+            this.Confirmed = confirmed;
             this.Busy = true;
         }
         public void Load(EntityReaderState state)
@@ -56,20 +64,31 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             }
 
             this.BaseStream.Position = state.Position;
+            this.Seed = state.Seed;
+            this.Confirmed = state.Confirmed;
             this.Busy = true;
         }
 
-        public EntityReaderState GetState(in VhId seed)
+        public EntityReaderState GetState()
         {
-            return new EntityReaderState(_loaded!, seed, (int)this.BaseStream.Position);
+            return new EntityReaderState(_loaded!, this.Seed, (int)this.BaseStream.Position, this.Confirmed);
         }
 
-        public VhId ReadVhId(VhId seed)
+        /// <summary>
+        /// Read and seed a VhId value
+        /// </summary>
+        /// <returns></returns>
+        public VhId ReadVhId()
         {
-            return seed.Create(this.ReadUnmanaged<VhId>());
+            return this.Seed.Create(this.ReadStruct<VhId>());
         }
 
-        public unsafe T ReadUnmanaged<T>()
+        /// <summary>
+        /// Read a raw value directly from the memor stream
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public unsafe T ReadStruct<T>()
             where T : unmanaged
         {
             Span<byte> bytes = stackalloc byte[sizeof(T)];
@@ -106,7 +125,12 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
         private static T DefaultNativeDynamicArrayItemReader<T>(EntityReader reader)
             where T : unmanaged
         {
-            return reader.ReadUnmanaged<T>();
+            return reader.ReadStruct<T>();
+        }
+
+        public IdMap Deserialize()
+        {
+            return _serializer.Deserialize(this);
         }
     }
 }

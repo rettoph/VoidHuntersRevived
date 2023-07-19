@@ -17,20 +17,18 @@ using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Domain.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Engines;
-using VoidHuntersRevived.Domain.Entities.EnginesGroups;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
     internal sealed class EntitySerializationService : IEntitySerializationService, IQueryingEntitiesEngine
     {
-        private readonly EntityReader _reader = new EntityReader();
-        private readonly EntityWriter _writer = new EntityWriter();
+        private readonly EntityReader _reader;
+        private readonly EntityWriter _writer;
         private readonly IEventPublishingService _events;
         private readonly IEntityService _entities;
         private readonly IEngineService _engines;
         private readonly EntityTypeService _types;
         private readonly ILogger _logger;
-        private Dictionary<IEntityType, FasterList<SerializationEnginesGroup>> _serializationEngines;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
@@ -46,44 +44,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _engines = engines;
             _types = types;
             _logger = logger;
-            _serializationEngines = null!;
+            _reader = new EntityReader(this);
+            _writer = new EntityWriter(this);
         }
 
         public void Ready()
         {
-            // Create all OnCloneEnginee groups via reflection
-            Dictionary<Type, SerializationEnginesGroup> componentCloneEngineGroups = new Dictionary<Type, SerializationEnginesGroup>();
-            foreach (IEngine engine in _engines.All())
-            {
-                foreach (Type serializationEngineType in engine.GetType().GetConstructedGenericTypes(typeof(ISerializationEngine<>)))
-                {
-                    Type componentType = serializationEngineType.GenericTypeArguments[0];
-
-                    if (componentCloneEngineGroups.ContainsKey(componentType))
-                    {
-                        continue;
-                    }
-
-                    Type serializationEngineTypeGroup = typeof(SerializationEnginesGroup<>).MakeGenericType(componentType);
-                    componentCloneEngineGroups.Add(componentType, (SerializationEnginesGroup)Activator.CreateInstance(serializationEngineTypeGroup, _engines)!);
-                }
-            }
-
-            _serializationEngines = _types.GetAllConfigurations().ToDictionary(
-                keySelector: x => x.Type,
-                elementSelector: x =>
-                {
-                    List<SerializationEnginesGroup> serializationEnginesGroups = new List<SerializationEnginesGroup>();
-                    foreach (Type componentType in x.Type.Descriptor.ComponentManagers.Select(m => m.Type))
-                    {
-                        if (componentCloneEngineGroups.TryGetValue(componentType, out var group))
-                        {
-                            serializationEnginesGroups.Add(group);
-                        }
-                    }
-
-                    return new FasterList<SerializationEnginesGroup>(serializationEnginesGroups);
-                });
         }
 
         public EntityData Serialize(IdMap id)
@@ -98,54 +64,43 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             IEntityType type = _entities.GetEntityType(id.VhId);
 
             writer.Write(id.VhId);
-            writer.WriteUnmanaged(type.Id);
+            writer.WriteStruct(type.Id);
 
             this.entitiesDB.QueryEntitiesAndIndex<EntityVhId>(id.EGID, out uint index);
             type.Descriptor.Serialize(writer, id.EGID, this.entitiesDB, index);
-
-            foreach (SerializationEnginesGroup serializationEngineGroup in _serializationEngines[type])
-            {
-                serializationEngineGroup.Serialize(writer, id.EGID, this.entitiesDB, index);
-            }
         }
 
         public IdMap Deserialize(in VhId seed, EntityData data, bool confirmed)
         {
-            _reader.Load(data);
-            return this.Deserialize(in seed, _reader, confirmed);
+            _reader.Load(seed, data, confirmed);
+            return this.Deserialize(_reader);
         }
 
-        public IdMap Deserialize(in VhId seed, EntityReader reader, bool confirmed)
+        public IdMap Deserialize(EntityReader reader)
         {
-            VhId vhid = reader.ReadVhId(seed);
-            VhId typeId = reader.ReadVhId(VhId.Empty);
+            VhId vhid = reader.ReadVhId();
+            VhId typeId = reader.ReadStruct<VhId>();
 
             IEntityType type = _types.GetById(typeId);
-            EntityReaderState readerState = reader.GetState(in seed);
+            EntityReaderState readerState = reader.GetState();
 
-            _logger.Verbose("{ClassName}::{MathodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntitySerializationService), nameof(Deserialize), vhid.Value, type.Name, seed.Value);
+            _logger.Verbose("{ClassName}::{MathodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntitySerializationService), nameof(Deserialize), vhid.Value, type.Name, reader.Seed.Value);
 
             CreateEntity createEntityEvent = new CreateEntity()
             {
                 Type = type,
                 VhId = vhid,
+                Configure = false,
                 Initializer = (ref EntityInitializer initializer) =>
                 {
                     reader.Load(readerState);
-                    type.Descriptor.Deserialize(in readerState.Seed, reader, ref initializer);
-
-                    foreach (SerializationEnginesGroup serializationEngineGroup in _serializationEngines[type])
-                    {
-                        serializationEngineGroup.Deserialize(in readerState.Seed, reader, ref initializer, confirmed);
-                    }
+                    type.Descriptor.Deserialize(reader, ref initializer);
 
                     reader.Busy = false;
                 }
             };
 
-            
-
-            if(confirmed)
+            if(reader.Confirmed)
             {
                 _events.Confirm(vhid, createEntityEvent);
             }

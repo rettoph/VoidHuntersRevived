@@ -7,6 +7,7 @@ namespace VoidHuntersRevived.Common.Entities.Events
         public required VhId VhId { get; init; }
         public required IEntityType Type { get; init; }
         public required EntityInitializerDelegate? Initializer { get; init; }
+        public bool Configure { get; init; } = true;
 
         public VhId CalculateHash(in VhId source)
         {
