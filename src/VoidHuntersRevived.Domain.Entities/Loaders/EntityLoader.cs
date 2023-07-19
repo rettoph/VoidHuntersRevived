@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Guppy.Attributes;
+using Guppy.Common.Providers;
 using Guppy.Loaders;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;

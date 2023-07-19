@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
 
             id.Destroyed = true;
-            _types[vhid].DestroyEntity(_functions, in id.EGID, this.entitiesDB);
+            _types[vhid].DestroyEntity(_functions, in id.EGID);
             _removed.Enqueue(id);
         }
 

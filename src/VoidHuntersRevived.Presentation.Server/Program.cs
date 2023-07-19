@@ -6,8 +6,9 @@ using Guppy.Providers;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Game;
 using VoidHuntersRevived.Game.Server;
+using VoidHuntersRevived.Common;
 
-var engine = new GuppyEngine(new[] { typeof(GameGuppy).Assembly, typeof(ServerGameGuppy).Assembly })
+var engine = new GuppyEngine(new[] { typeof(GameGuppy).Assembly, typeof(ServerGameGuppy).Assembly, typeof(IGameGuppy).Assembly })
     .Start(builder =>
     {
         builder.ConfigureGame()

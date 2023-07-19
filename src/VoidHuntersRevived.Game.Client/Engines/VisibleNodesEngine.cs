@@ -76,12 +76,19 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _primitiveBatch.End();
 
             _primitiveBatch.Begin(_screen.Camera);
-            foreach (var ((visibles, nodes, count), _) in this.entitiesDB.QueryEntities<Visible, Node>(groups))
+            foreach (var ((vhids, visibles, nodes, count), _) in this.entitiesDB.QueryEntities<EntityVhId, Visible, Node>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {
-                    Matrix transformation = nodes[i].Transformation.XnaMatrix;
-                    this.TracePaths(in visibles[i], ref transformation);
+                    try
+                    {
+                        Matrix transformation = nodes[i].Transformation.XnaMatrix;
+                        this.TracePaths(in visibles[i], ref transformation);
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to trace paths for visible {VisibleVhId}", nameof(VisibleNodesEngine), nameof(Step), vhids[i].Value.Value);
+                    }
                 }
             }
             _primitiveBatch.End();

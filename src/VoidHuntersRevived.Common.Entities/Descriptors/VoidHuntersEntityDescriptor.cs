@@ -9,7 +9,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Serialization;
-using VoidHuntersRevived.Common.Entities.Utilities;
 using VoidHuntersRevived.Domain.Common.Components;
 
 namespace VoidHuntersRevived.Common.Entities.Descriptors
@@ -18,7 +17,6 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
     {
         private DynamicEntityDescriptor<BaseEntityDescriptor> _dynamicDescriptor;
         private readonly List<ComponentManager> _componentManagers;
-        private readonly FasterList<ComponentDisposer> _disposers;
 
         public IComponentBuilder[] componentsToBuild => _dynamicDescriptor.componentsToBuild;
 
@@ -28,7 +26,6 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
         {
             _dynamicDescriptor = DynamicEntityDescriptor<BaseEntityDescriptor>.CreateDynamicEntityDescriptor();
             _componentManagers = new List<ComponentManager>();
-            _disposers = new FasterList<ComponentDisposer>();
         }
 
         protected VoidHuntersEntityDescriptor ExtendWith(ComponentManager[] managers)
@@ -39,11 +36,6 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             foreach(ComponentManager manager in managers)
             {
                 _componentManagers.Add(manager);
-                
-                if(manager.Disposer is not null)
-                {
-                    _disposers.Add(manager.Disposer);
-                }
             }
 
             return this;
@@ -62,22 +54,6 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             foreach (ComponentManager componentManager in _componentManagers)
             {
                 componentManager.Serializer.Deserialize(reader, ref initializer);
-            }
-        }
-
-        public void Dispose(in EGID egid, EntitiesDB entities)
-        {
-            if(_disposers.count == 0)
-            {
-                return;
-            }
-
-
-            entities.QueryEntitiesAndIndex<EntityVhId>(egid, out uint index);
-
-            foreach (ComponentDisposer disposer in _disposers)
-            {
-                disposer.Dispose(index, egid.groupID, entities);
             }
         }
     }

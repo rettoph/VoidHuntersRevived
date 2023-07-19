@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Common.Entities.Events
 
         public VhId CalculateHash(in VhId source)
         {
-            return HashBuilder<CreateEntity, VhId, VhId, VhId>.Instance.Calculate(in source, this.VhId, this.Type.Id);
+            return HashBuilder<CreateEntity, VhId, VhId, VhId, bool>.Instance.Calculate(in source, this.VhId, this.Type.Id, this.Configure);
         }
     }
 }
