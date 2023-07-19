@@ -25,6 +25,7 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
+using VoidHuntersRevived.Game.Components;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -85,7 +86,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             if (message.Value)
             {
-                if (!_tractorBeamEmitterService.Query(shipId, out IdMap targetId))
+                if (!_tractorBeamEmitterService.Query(shipId, (FixVector2)this.CurrentTargetPosition, out IdMap targetId))
                 {
                     return;
                 }
@@ -124,11 +125,23 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
+            VhId localShipVhId = _client.Users.Current.GetUserShipId();
+            if(!_entities.TryGetIdMap(localShipVhId, out IdMap localShipId))
+            {
+                return;
+            }
+
+            ref Tactical tactical = ref this.entitiesDB.QueryEntity<Tactical>(localShipId.EGID);
+            if(tactical.Uses == 0)
+            {
+                return;
+            }
+
             this.Simulation.Input(
                 sender: NameSpace<Tick>.Instance.Create(_param.Id),
                 data: new Tactical_SetTarget()
                 {
-                    ShipVhId = _client.Users.Current.GetUserShipId(),
+                    ShipVhId = localShipVhId,
                     Value = (FixVector2)this.CurrentTargetPosition
                 });
         }

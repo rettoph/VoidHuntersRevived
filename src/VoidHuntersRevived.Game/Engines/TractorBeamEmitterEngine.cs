@@ -96,7 +96,11 @@ namespace VoidHuntersRevived.Game.Engines
         public void Process(VhId eventId, TractorBeamEmitter_Activate data)
         {
             IdMap tractorBeamEmitterId = _entities.GetIdMap(data.TractorBeamEmitterVhId);
-            ref TractorBeamEmitter tractorBeamEmitter = ref entitiesDB.QueryMappedEntities<TractorBeamEmitter>(tractorBeamEmitterId.EGID.groupID).Entity(tractorBeamEmitterId.EGID.entityID);
+            var tractorBeamEmitters = this.entitiesDB.QueryEntitiesAndIndex<TractorBeamEmitter>(tractorBeamEmitterId.EGID, out uint index);
+            var (tacticals, _) = this.entitiesDB.QueryEntities<Tactical>(tractorBeamEmitterId.EGID.groupID);
+
+            ref TractorBeamEmitter tractorBeamEmitter = ref tractorBeamEmitters[index];
+            ref Tactical tactical = ref tacticals[index];
 
             if (tractorBeamEmitter.Active)
             {
@@ -120,16 +124,19 @@ namespace VoidHuntersRevived.Game.Engines
 
             tractorBeamEmitter.TargetVhId = cloneId.VhId;
             tractorBeamEmitter.Active = true;
+            tactical.AddUse();
 
             _logger.Verbose("{ClassName}::{MethodName}<{GenericTypeName}> - TractorBeam {TractorBeamId} has selected {TargetId}", nameof(TractorBeamEmitterEngine), nameof(Process), nameof(TractorBeamEmitter_Activate), tractorBeamEmitterId.VhId.Value, tractorBeamEmitter.TargetVhId.Value);
         }
 
         public void Revert(VhId eventId, TractorBeamEmitter_Activate data)
         {
-            IdMap tractorBeamEmitterVhId = _entities.GetIdMap(data.TractorBeamEmitterVhId);
-            ref TractorBeamEmitter tractorBeamEmitter = ref entitiesDB.QueryMappedEntities<TractorBeamEmitter>(tractorBeamEmitterVhId.EGID.groupID).Entity(tractorBeamEmitterVhId.EGID.entityID);
+            IdMap tractorBeamEmitterId = _entities.GetIdMap(data.TractorBeamEmitterVhId);
 
-            if(tractorBeamEmitter.TargetVhId.Value != eventId.Create(1).Value)
+            var tractorBeamEmitters = this.entitiesDB.QueryEntitiesAndIndex<TractorBeamEmitter>(tractorBeamEmitterId.EGID, out uint index);
+            ref TractorBeamEmitter tractorBeamEmitter = ref tractorBeamEmitters[index];
+
+            if (tractorBeamEmitter.TargetVhId.Value != eventId.Create(1).Value)
             {
                 _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Target is no longer {OldTargetId}, now {NewTargetId}", nameof(TractorBeamEmitterEngine), nameof(Revert), nameof(TractorBeamEmitter_Activate), eventId.Create(1).Value, tractorBeamEmitter.TargetVhId.Value);
                 return;
@@ -153,9 +160,13 @@ namespace VoidHuntersRevived.Game.Engines
         public void Process(VhId eventId, TractorBeamEmitter_Deactivate data)
         {
             IdMap tractorBeamEmitterId = _entities.GetIdMap(data.TractorBeamEmitterVhId);
-            ref TractorBeamEmitter tractorBeamEmitter = ref entitiesDB.QueryMappedEntities<TractorBeamEmitter>(tractorBeamEmitterId.EGID.groupID).Entity(tractorBeamEmitterId.EGID.entityID);
+            var tractorBeamEmitters = this.entitiesDB.QueryEntitiesAndIndex<TractorBeamEmitter>(tractorBeamEmitterId.EGID, out uint tractorBeamEmitterIndex);
+            var (tacticals, _) = this.entitiesDB.QueryEntities<Tactical>(tractorBeamEmitterId.EGID.groupID);
 
-            if(tractorBeamEmitter.TargetVhId.Value != data.TargetVhId.Value)
+            ref TractorBeamEmitter tractorBeamEmitter = ref tractorBeamEmitters[tractorBeamEmitterIndex];
+            ref Tactical tactical = ref tacticals[tractorBeamEmitterIndex];
+
+            if (tractorBeamEmitter.TargetVhId.Value != data.TargetVhId.Value)
             {
                 _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - TargetVhId has changed from {OldTargetId} to {NewTargetId}", nameof(TractorBeamEmitterEngine), nameof(Process), nameof(TractorBeamEmitter_Deactivate), data.TargetVhId.Value, tractorBeamEmitter.TargetVhId.Value);
 
@@ -164,6 +175,7 @@ namespace VoidHuntersRevived.Game.Engines
 
             // Ensure the emitter is deactivated no matter what
             tractorBeamEmitter.Active = false;
+            tactical.RemoveUse();
 
             if (!_entities.TryGetIdMap(tractorBeamEmitter.TargetVhId, out IdMap targetId))
             {
@@ -172,14 +184,14 @@ namespace VoidHuntersRevived.Game.Engines
                 return;
             }
 
-            if(!this.entitiesDB.TryQueryEntitiesAndIndex<Tractorable>(targetId.EGID, out uint index, out var tractorables))
+            if(!this.entitiesDB.TryQueryEntitiesAndIndex<Tractorable>(targetId.EGID, out uint tractorableIndex, out var tractorables))
             {
                 _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Tractorable entity not found", nameof(TractorBeamEmitterEngine), nameof(Process), nameof(TractorBeamEmitter_TryDeactivate), tractorBeamEmitter.TargetVhId.Value);
 
                 return;
             }
 
-            tractorables[index].IsTractored = false;
+            tractorables[tractorableIndex].IsTractored = false;
         }
 
         public void Step(in Step _param)

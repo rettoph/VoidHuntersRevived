@@ -30,15 +30,13 @@ namespace VoidHuntersRevived.Game.Services
             // throw new NotImplementedException();
         }
 
-        public bool Query(IdMap tractorBeamEmitterId, out IdMap targetId)
+        public bool Query(IdMap tractorBeamEmitterId, FixVector2 target, out IdMap targetId)
         {
             var tractorBeamEmitters = this.entitiesDB.QueryEntitiesAndIndex<TractorBeamEmitter>(tractorBeamEmitterId.EGID, out uint index);
-            var (tacticals, _) = this.entitiesDB.QueryEntities<Tactical>(tractorBeamEmitterId.EGID.groupID);
 
             TractorBeamEmitter tractorBeamEmitter = tractorBeamEmitters[index];
-            Tactical tactical = tacticals[index];
 
-            AABB aabb = new AABB(tactical.Target, QueryRadius, QueryRadius);
+            AABB aabb = new AABB(target, QueryRadius, QueryRadius);
             Fix64 minDistance = QueryRadius;
             VhId? callbackTargetId = default!;
             int queryCount = 0;
@@ -51,7 +49,7 @@ namespace VoidHuntersRevived.Game.Services
                 IdMap fixtureNodeId = _entities.GetIdMap(fixture.Id);
                 Node fixtureNode = this.entitiesDB.QueryEntity<Node>(fixtureNodeId.EGID);
                 FixVector2 fixtureNodePosition = FixVector2.Transform(FixVector2.Zero, fixtureNode.Transformation);
-                FixVector2.Distance(ref tactical.Target, ref fixtureNodePosition, out Fix64 fixtureNodeDistance);
+                FixVector2.Distance(ref target, ref fixtureNodePosition, out Fix64 fixtureNodeDistance);
 
                 if (fixtureNodeDistance < minDistance)
                 { // Node is closer than a previously scanned target
