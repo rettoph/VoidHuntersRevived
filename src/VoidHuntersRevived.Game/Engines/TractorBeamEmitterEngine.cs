@@ -87,7 +87,7 @@ namespace VoidHuntersRevived.Game.Engines
                 TargetData = _serialization.Serialize(targetTree.HeadId)
             });
 
-            this.Simulation.Publish(eventId, new DestroyEntity()
+            this.Simulation.Publish(eventId, new DespawnEntity()
             {
                 VhId = targetTreeId.VhId
             });

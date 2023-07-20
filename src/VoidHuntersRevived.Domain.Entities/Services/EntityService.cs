@@ -17,48 +17,21 @@ using VoidHuntersRevived.Common.Entities.Services;
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
     [Sequence<StepSequence>(StepSequence.OnEntitySubmit)]
-    internal sealed partial class EntityService : IEntityService, IEngine, IGetReadyEngine, IQueryingEntitiesEngine, IStepEngine<Step>
+    internal sealed partial class EntityService : IEntityService, IEngine, IStepEngine<Step>
     {
-        private readonly IEngineService _engines;
-        private readonly IEntityFactory _factory;
-        private readonly IEntityFunctions _functions;
-        private IEntitySerializationService _serialization;
-        private readonly EntityTypeService _entityTypes;
         private readonly SimpleEntitiesSubmissionScheduler _scheduler;
         private readonly DoubleDictionary<VhId, EGID, IdMap> _ids;
         private readonly Dictionary<VhId, IEntityType> _types;
         private readonly Queue<IdMap> _removed;
-        private readonly ILogger _logger;
-
-        public EntitiesDB entitiesDB { get; set; } = null!;
 
         public string name { get; } = nameof(EntityService);
 
-        public EntityService(
-            ILogger logger,
-            IEngineService engines,
-            EnginesRoot enginesRoot,
-            EntityTypeService entityTypes,
-            SimpleEntitiesSubmissionScheduler scheduler)
+        public EntityService(SimpleEntitiesSubmissionScheduler scheduler)
         {
-            _engines = null!;
-            _factory = null!;
-            _functions = null!;
-            _entityTypes = entityTypes;
             _ids = new DoubleDictionary<VhId, EGID, IdMap>();
             _types = new Dictionary<VhId, IEntityType>();
             _removed = new Queue<IdMap>();
-            _logger = logger;
-            _factory = enginesRoot.GenerateEntityFactory();
-            _functions = enginesRoot.GenerateEntityFunctions();
-            _engines = engines;
             _scheduler = scheduler;
-            _serialization = null!;
-        }
-
-        public void Ready()
-        {
-            _serialization = _engines.Get<IEntitySerializationService>();
         }
 
         public IdMap GetIdMap(VhId vhid)
@@ -108,6 +81,30 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public void Step(in Step _param)
         {
             _scheduler.SubmitEntities();
+        }
+
+        internal IdMap Add(VhId vhid, EGID egid, IEntityType type)
+        {
+            IdMap idMap = new IdMap(egid, vhid);
+            _ids.TryAdd(vhid, egid, idMap);
+            _types.Add(vhid, type);
+
+            return idMap;
+        }
+
+        internal IdMap Remove(VhId vhid, out IEntityType type)
+        {
+            ref IdMap id = ref _ids.TryGetRef(vhid, out bool isNullRef);
+            if (isNullRef)
+            {
+                throw new NullReferenceException();
+            }
+
+            id.Destroyed = true;
+            _removed.Enqueue(id);
+            type = _types[vhid];
+
+            return id;
         }
     }
 }

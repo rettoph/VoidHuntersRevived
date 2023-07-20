@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Common.Entities
         IEntityTypeConfiguration BuildConfiguration();
 
         void DestroyEntity(IEntityFunctions functions, in EGID egid);
-        EntityInitializer CreateEntity(IEntityFactory factory);
+        EntityInitializer CreateEntity(IEntityFactory factory, VhId vhid);
     }
 
     public interface IEntityType<out T> : IEntityType

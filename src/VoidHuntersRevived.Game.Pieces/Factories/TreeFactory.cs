@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Game.Pieces.Factories
         public IdMap Create(VhId vhid, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> head)
         {
             VhId headId = vhid.Create(1);
-            _events.Publish(vhid, new CreateEntity()
+            _events.Publish(vhid, new SpawnEntity()
             {
                 Type = tree,
                 VhId = vhid,
@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Game.Pieces.Factories
                 }
             });
 
-            _events.Publish(vhid, new CreateEntity()
+            _events.Publish(vhid, new SpawnEntity()
             {
                 Type = head,
                 VhId = headId,
@@ -60,7 +60,7 @@ namespace VoidHuntersRevived.Game.Pieces.Factories
         {
             IdMap headId = _serialization.Deserialize(vhid, nodes, false);
 
-            _events.Publish(vhid, new CreateEntity()
+            _events.Publish(vhid, new SpawnEntity()
             {
                 Type = tree,
                 VhId = vhid,

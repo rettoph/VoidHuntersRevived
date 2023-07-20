@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Domain.Common.Components;
 
 namespace VoidHuntersRevived.Common.Entities
 {
@@ -38,7 +39,7 @@ namespace VoidHuntersRevived.Common.Entities
         public abstract IEntityTypeConfiguration BuildConfiguration();
 
         public abstract void DestroyEntity(IEntityFunctions functions, in EGID egid);
-        public abstract EntityInitializer CreateEntity(IEntityFactory factory);
+        public abstract EntityInitializer CreateEntity(IEntityFactory factory, VhId vhid);
 
         public static IEnumerable<EntityType> All()
         {
@@ -66,10 +67,13 @@ namespace VoidHuntersRevived.Common.Entities
             return new EntityTypeConfiguration<TDescriptor>(this);
         }
 
-        public override EntityInitializer CreateEntity(IEntityFactory factory)
+        public override EntityInitializer CreateEntity(IEntityFactory factory, VhId vhid)
         {
             EGID egid = new EGID(EntityId++, Group);
-            return factory.BuildEntity(egid, this.Descriptor);
+            EntityInitializer initializer = factory.BuildEntity(egid, this.Descriptor);
+            initializer.Init(new EntityVhId() { Value = vhid });
+
+            return initializer;
         }
 
         public override void DestroyEntity(IEntityFunctions functions, in EGID egid)

@@ -86,7 +86,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             _logger.Verbose("{ClassName}::{MathodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntitySerializationService), nameof(Deserialize), vhid.Value, type.Name, reader.Seed.Value);
 
-            CreateEntity createEntityEvent = new CreateEntity()
+            SpawnEntity createEntityEvent = new SpawnEntity()
             {
                 Type = type,
                 VhId = vhid,
