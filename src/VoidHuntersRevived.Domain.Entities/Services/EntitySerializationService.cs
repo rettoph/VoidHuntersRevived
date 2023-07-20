@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly EntityReader _reader;
         private readonly EntityWriter _writer;
         private readonly IEventPublishingService _events;
-        private readonly IEntityService _entities;
+        private readonly IEntityIdService _entities;
         private readonly IEngineService _engines;
         private readonly EntityTypeService _types;
         private readonly ILogger _logger;
@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EntitySerializationService(
             IEventPublishingService events,
-            IEntityService entities,
+            IEntityIdService entities,
             IEngineService engines,
             ILogger logger,
             EntityTypeService types)
@@ -52,14 +52,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
         }
 
-        public EntityData Serialize(IdMap id)
+        public EntityData Serialize(EntityId id)
         {
             _writer.Reset();
             this.Serialize(id, _writer);
             return _writer.Export(id.VhId);
         }
 
-        public void Serialize(IdMap id, EntityWriter writer)
+        public void Serialize(EntityId id, EntityWriter writer)
         {
             IEntityType type = _entities.GetEntityType(id.VhId);
 
@@ -70,13 +70,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             type.Descriptor.Serialize(writer, id.EGID, this.entitiesDB, index);
         }
 
-        public IdMap Deserialize(in VhId seed, EntityData data, bool confirmed)
+        public EntityId Deserialize(in VhId seed, EntityData data, bool confirmed)
         {
             _reader.Load(seed, data, confirmed);
             return this.Deserialize(_reader);
         }
 
-        public IdMap Deserialize(EntityReader reader)
+        public EntityId Deserialize(EntityReader reader)
         {
             VhId vhid = reader.ReadVhId();
             VhId typeId = reader.ReadStruct<VhId>();
@@ -109,37 +109,37 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 _events.Publish(vhid, createEntityEvent);
             }
 
-            return _entities.GetIdMap(vhid);
+            return _entities.GetId(vhid);
         }
 
         public EntityData Serialize(VhId vhid)
         {
-            return this.Serialize(_entities.GetIdMap(vhid));
+            return this.Serialize(_entities.GetId(vhid));
         }
 
         public EntityData Serialize(EGID egid)
         {
-            return this.Serialize(_entities.GetIdMap(egid));
+            return this.Serialize(_entities.GetId(egid));
         }
 
         public EntityData Serialize(uint entityId, ExclusiveGroupStruct groupId)
         {
-            return this.Serialize(_entities.GetIdMap(entityId, groupId));
+            return this.Serialize(_entities.GetId(entityId, groupId));
         }
 
         public void Serialize(VhId vhid, EntityWriter writer)
         {
-            this.Serialize(_entities.GetIdMap(vhid), writer);
+            this.Serialize(_entities.GetId(vhid), writer);
         }
 
         public void Serialize(EGID egid, EntityWriter writer)
         {
-            this.Serialize(_entities.GetIdMap(egid), writer);
+            this.Serialize(_entities.GetId(egid), writer);
         }
 
         public void Serialize(uint entityId, ExclusiveGroupStruct groupId, EntityWriter writer)
         {
-            this.Serialize(_entities.GetIdMap(entityId, groupId), writer);
+            this.Serialize(_entities.GetId(entityId, groupId), writer);
         }
     }
 }

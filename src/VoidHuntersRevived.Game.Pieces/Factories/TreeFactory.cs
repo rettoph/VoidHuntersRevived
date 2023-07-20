@@ -21,16 +21,16 @@ namespace VoidHuntersRevived.Game.Pieces.Factories
     {
         private readonly IEventPublishingService _events;
         private readonly IEntitySerializationService _serialization;
-        private readonly IEntityService _entities;
+        private readonly IEntityIdService _entities;
 
-        public TreeFactory(IEventPublishingService events, IEntitySerializationService serialization, IEntityService entities)
+        public TreeFactory(IEventPublishingService events, IEntitySerializationService serialization, IEntityIdService entities)
         {
             _events = events;
             _serialization = serialization;
             _entities = entities;
         }
 
-        public IdMap Create(VhId vhid, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> head)
+        public EntityId Create(VhId vhid, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> head)
         {
             VhId headId = vhid.Create(1);
             _events.Publish(vhid, new SpawnEntity()
@@ -53,12 +53,12 @@ namespace VoidHuntersRevived.Game.Pieces.Factories
                 }
             });
 
-            return _entities.GetIdMap(vhid);
+            return _entities.GetId(vhid);
         }
 
-        public IdMap Create(VhId vhid, IEntityType<TreeDescriptor> tree, EntityData nodes, EntityInitializerDelegate initializerDelegate)
+        public EntityId Create(VhId vhid, IEntityType<TreeDescriptor> tree, EntityData nodes, EntityInitializerDelegate initializerDelegate)
         {
-            IdMap headId = _serialization.Deserialize(vhid, nodes, false);
+            EntityId headId = _serialization.Deserialize(vhid, nodes, false);
 
             _events.Publish(vhid, new SpawnEntity()
             {
@@ -71,7 +71,7 @@ namespace VoidHuntersRevived.Game.Pieces.Factories
                 }
             });
 
-            return _entities.GetIdMap(vhid);
+            return _entities.GetId(vhid);
         }
     }
 }

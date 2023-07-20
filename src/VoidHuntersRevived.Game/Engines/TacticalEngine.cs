@@ -26,9 +26,9 @@ namespace VoidHuntersRevived.Game.Engines
     {
         private static readonly Fix64 AimDamping = Fix64.One / (Fix64)32;
 
-        private readonly IEntityService _entities;
+        private readonly IEntityIdService _entities;
 
-        public TacticalEngine(IEntityService entities)
+        public TacticalEngine(IEntityIdService entities)
         {
             _entities = entities;
         }
@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Game.Engines
 
         public void Process(VhId eventId, Tactical_SetTarget data)
         {
-            IdMap id = _entities.GetIdMap(data.ShipVhId);
+            EntityId id = _entities.GetId(data.ShipVhId);
             ref Tactical tactical = ref entitiesDB.QueryMappedEntities<Tactical>(id.EGID.groupID).Entity(id.EGID.entityID);
 
             tactical.Target = data.Value;

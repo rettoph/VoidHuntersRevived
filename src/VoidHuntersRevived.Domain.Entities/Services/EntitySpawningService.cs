@@ -31,11 +31,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
         private readonly EntityTypeService _types;
-        private readonly EntityService _entities;
+        private readonly EntityIdService _entities;
         private readonly HashCache<VhId> _destroyed;
         private readonly Dictionary<VhId, EntityData> _backups;
 
-        public EntitySpawningService(IEntitySerializationService serialization, ILogger logger, EnginesRoot enginesRoot, EntityTypeService types, EntityService entities)
+        public EntitySpawningService(IEntitySerializationService serialization, ILogger logger, EnginesRoot enginesRoot, EntityTypeService types, EntityIdService entities)
         {
             _serialization = serialization;
             _logger = logger;
@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _backups = new Dictionary<VhId, EntityData>();
         }
 
-        private IdMap Spawn(IEntityType type, VhId vhid, EntityInitializerDelegate? initializerDelegate)
+        private EntityId Spawn(IEntityType type, VhId vhid, EntityInitializerDelegate? initializerDelegate)
         {
             EntityInitializer initializer = type.CreateEntity(_factory, vhid);
 
@@ -60,7 +60,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         private void Despawn(VhId vhid)
         {
-            IdMap id = _entities.Remove(vhid, out IEntityType type);
+            EntityId id = _entities.Remove(vhid, out IEntityType type);
             type.DestroyEntity(_functions, in id.EGID);
         }
 
@@ -103,7 +103,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            EntityData backup = _serialization.Serialize(_entities.GetIdMap(data.VhId));
+            EntityData backup = _serialization.Serialize(_entities.GetId(data.VhId));
 
             _backups[data.VhId] = backup;
             this.Despawn(data.VhId);

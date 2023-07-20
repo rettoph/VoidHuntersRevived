@@ -21,11 +21,11 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
         IReactOnAddEx<Node>,
         IReactOnRemoveEx<Node>
     {
-        private readonly IEntityService _entities;
+        private readonly IEntityIdService _entities;
         private readonly IFilterService _filters;
         private readonly ILogger _logger;
 
-        public NodeEngine(IEntityService entities, IFilterService filters, ILogger logger)
+        public NodeEngine(IEntityIdService entities, IFilterService filters, ILogger logger)
         {
             _entities = entities;
             _filters = filters;
@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
                 VhId treeId = nodes[index].TreeId;
-                VhId nodeId = _entities.GetIdMap(ids[index], groupID).VhId;
+                VhId nodeId = _entities.GetId(ids[index], groupID).VhId;
 
                 Debug.Assert(treeId.Value != VhId.Empty.Value);
 
@@ -66,7 +66,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
                 VhId treeId = nodes[index].TreeId;
-                VhId nodeId = _entities.GetIdMap(ids[index], groupID).VhId;
+                VhId nodeId = _entities.GetId(ids[index], groupID).VhId;
 
                 ref var filter = ref _filters.GetFilter<Node>(treeId);
                 filter.Remove(ids[index], groupID);

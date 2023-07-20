@@ -17,49 +17,49 @@ using VoidHuntersRevived.Common.Entities.Services;
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
     [Sequence<StepSequence>(StepSequence.OnEntitySubmit)]
-    internal sealed partial class EntityService : IEntityService, IEngine, IStepEngine<Step>
+    internal sealed partial class EntityIdService : IEntityIdService, IEngine, IStepEngine<Step>
     {
         private readonly SimpleEntitiesSubmissionScheduler _scheduler;
-        private readonly DoubleDictionary<VhId, EGID, IdMap> _ids;
+        private readonly DoubleDictionary<VhId, EGID, EntityId> _ids;
         private readonly Dictionary<VhId, IEntityType> _types;
-        private readonly Queue<IdMap> _removed;
+        private readonly Queue<EntityId> _removed;
 
-        public string name { get; } = nameof(EntityService);
+        public string name { get; } = nameof(EntityIdService);
 
-        public EntityService(SimpleEntitiesSubmissionScheduler scheduler)
+        public EntityIdService(SimpleEntitiesSubmissionScheduler scheduler)
         {
-            _ids = new DoubleDictionary<VhId, EGID, IdMap>();
+            _ids = new DoubleDictionary<VhId, EGID, EntityId>();
             _types = new Dictionary<VhId, IEntityType>();
-            _removed = new Queue<IdMap>();
+            _removed = new Queue<EntityId>();
             _scheduler = scheduler;
         }
 
-        public IdMap GetIdMap(VhId vhid)
+        public EntityId GetId(VhId vhid)
         {
             return _ids[vhid];
         }
 
-        public IdMap GetIdMap(EGID egid)
+        public EntityId GetId(EGID egid)
         {
             return _ids[egid];
         }
 
-        public IdMap GetIdMap(uint entityId, ExclusiveGroupStruct groupId)
+        public EntityId GetId(uint entityId, ExclusiveGroupStruct groupId)
         {
-            return this.GetIdMap(new EGID(entityId, groupId));
+            return this.GetId(new EGID(entityId, groupId));
         }
 
-        public bool TryGetIdMap(VhId vhid, out IdMap id)
+        public bool TryGetId(VhId vhid, out EntityId id)
         {
             return _ids.TryGet(vhid, out id);
         }
 
-        public bool TryGetIdMap(EGID egid, out IdMap id)
+        public bool TryGetId(EGID egid, out EntityId id)
         {
             return _ids.TryGet(egid, out id);
         }
 
-        public bool TryGetIdMap(uint entityId, ExclusiveGroupStruct groupId, out IdMap id)
+        public bool TryGetId(uint entityId, ExclusiveGroupStruct groupId, out EntityId id)
         {
             return _ids.TryGet(new EGID(entityId, groupId), out id);
         }
@@ -71,7 +71,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Clean()
         {
-            while(_removed.TryDequeue(out IdMap removed))
+            while(_removed.TryDequeue(out EntityId removed))
             {
                 _ids.Remove(removed.VhId, removed.EGID);
                 _types.Remove(removed.VhId);
@@ -83,18 +83,18 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _scheduler.SubmitEntities();
         }
 
-        internal IdMap Add(VhId vhid, EGID egid, IEntityType type)
+        internal EntityId Add(VhId vhid, EGID egid, IEntityType type)
         {
-            IdMap idMap = new IdMap(egid, vhid);
+            EntityId idMap = new EntityId(egid, vhid);
             _ids.TryAdd(vhid, egid, idMap);
             _types.Add(vhid, type);
 
             return idMap;
         }
 
-        internal IdMap Remove(VhId vhid, out IEntityType type)
+        internal EntityId Remove(VhId vhid, out IEntityType type)
         {
-            ref IdMap id = ref _ids.TryGetRef(vhid, out bool isNullRef);
+            ref EntityId id = ref _ids.TryGetRef(vhid, out bool isNullRef);
             if (isNullRef)
             {
                 throw new NullReferenceException();

@@ -14,9 +14,9 @@ namespace VoidHuntersRevived.Game.Services
         private static Fix64 QueryRadius = (Fix64)5;
 
         private readonly ISpace _space;
-        private readonly IEntityService _entities;
+        private readonly IEntityIdService _entities;
 
-        public TractorBeamEmitterService(ISpace space, IEntityService entities)
+        public TractorBeamEmitterService(ISpace space, IEntityIdService entities)
         {
             _space = space;
             _entities = entities;
@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Game.Services
             // throw new NotImplementedException();
         }
 
-        public bool Query(IdMap tractorBeamEmitterId, FixVector2 target, out IdMap targetId)
+        public bool Query(EntityId tractorBeamEmitterId, FixVector2 target, out EntityId targetId)
         {
             var tractorBeamEmitters = this.entitiesDB.QueryEntitiesAndIndex<TractorBeamEmitter>(tractorBeamEmitterId.EGID, out uint index);
 
@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Game.Services
                 VhId queryTargetId = default;
 
                 // BEGIN NODE DISTANCE CHECK
-                IdMap fixtureNodeId = _entities.GetIdMap(fixture.Id);
+                EntityId fixtureNodeId = _entities.GetId(fixture.Id);
                 Node fixtureNode = this.entitiesDB.QueryEntity<Node>(fixtureNodeId.EGID);
                 FixVector2 fixtureNodePosition = FixVector2.Transform(FixVector2.Zero, fixtureNode.Transformation);
                 FixVector2.Distance(ref target, ref fixtureNodePosition, out Fix64 fixtureNodeDistance);
@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Game.Services
                 }
 
                 // BEGIN NODE TREE CHECK
-                IdMap fixtureNodeTreeId = _entities.GetIdMap(fixtureNode.TreeId);
+                EntityId fixtureNodeTreeId = _entities.GetId(fixtureNode.TreeId);
                 Tree fixtureNodeTree = this.entitiesDB.QueryEntity<Tree>(fixtureNodeTreeId.EGID);
 
                 if(this.entitiesDB.TryGetEntity<Tractorable>(fixtureNodeTreeId.EGID, out var tractorable) && tractorable.IsTractored == false)
@@ -84,7 +84,7 @@ namespace VoidHuntersRevived.Game.Services
                 return false;
             }
 
-            targetId = _entities.GetIdMap(callbackTargetId.Value);
+            targetId = _entities.GetId(callbackTargetId.Value);
             return true;
         }
     }

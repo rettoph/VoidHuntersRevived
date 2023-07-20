@@ -25,10 +25,10 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
         IEventEngine<DestroyNode>
     {
         private readonly ISpace _space;
-        private readonly IEntityService _entities;
+        private readonly IEntityIdService _entities;
         private readonly ILogger _logger;
 
-        public RigidEngine(ISpace space, IEntityService entities, ILogger logger)
+        public RigidEngine(ISpace space, IEntityIdService entities, ILogger logger)
         {
             _space = space;
             _entities = entities;
@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
         public void Process(VhId id, CreateNode data)
         {
-            IdMap nodeId = _entities.GetIdMap(data.NodeId);
+            EntityId nodeId = _entities.GetId(data.NodeId);
 
             // Node is not a rigid entity
             if (!this.entitiesDB.TryQueryEntitiesAndIndex<Rigid>(nodeId.EGID, out uint index, out var rigids))
@@ -56,7 +56,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
         public void Process(VhId eventId, DestroyNode data)
         {
-            IdMap nodeId = _entities.GetIdMap(data.NodeId);
+            EntityId nodeId = _entities.GetId(data.NodeId);
 
             // Node is not a rigid entity
             if (!this.entitiesDB.TryQueryEntitiesAndIndex<Rigid>(nodeId.EGID, out uint index, out var _))

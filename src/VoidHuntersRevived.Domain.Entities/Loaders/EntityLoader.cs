@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
 
             builder.RegisterType<EntitySpawningService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-            builder.RegisterType<EntityService>().AsImplementedInterfaces().AsSelf().InstancePerLifetimeScope();
+            builder.RegisterType<EntityIdService>().AsImplementedInterfaces().AsSelf().InstancePerLifetimeScope();
 
             builder.RegisterType<EntitySerializationService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 

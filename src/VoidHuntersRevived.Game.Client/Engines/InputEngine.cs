@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         ISubscriber<Input_TractorBeamEmitter_SetActive>,
         IStepEngine<Tick>
     {
-        private readonly IEntityService _entities;
+        private readonly IEntityIdService _entities;
         private readonly ClientPeer _client;
         private readonly Camera2D _camera;
         private readonly TractorBeamEmitterService _tractorBeamEmitterService;
@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public string name { get; } = nameof(InputEngine);
 
         public InputEngine(
-            IEntityService entities, 
+            IEntityIdService entities, 
             ClientPeer client, 
             Camera2D camera, 
             TractorBeamEmitterService tractorBeamEmitterService)
@@ -82,11 +82,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
 
             VhId eventId = new VhId(messageId);
-            IdMap shipId = _entities.GetIdMap(_client.Users.Current.GetUserShipId());
+            EntityId shipId = _entities.GetId(_client.Users.Current.GetUserShipId());
 
             if (message.Value)
             {
-                if (!_tractorBeamEmitterService.Query(shipId, (FixVector2)this.CurrentTargetPosition, out IdMap targetId))
+                if (!_tractorBeamEmitterService.Query(shipId, (FixVector2)this.CurrentTargetPosition, out EntityId targetId))
                 {
                     return;
                 }
@@ -126,7 +126,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
 
             VhId localShipVhId = _client.Users.Current.GetUserShipId();
-            if(!_entities.TryGetIdMap(localShipVhId, out IdMap localShipId))
+            if(!_entities.TryGetId(localShipVhId, out EntityId localShipId))
             {
                 return;
             }

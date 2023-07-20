@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public IEventPublishingService Events { get; private set; }
 
-        public IEntityService Entities { get; private set; }
+        public IEntityIdService Entities { get; private set; }
 
         public IEntitySerializationService Serialization { get; private set; }
 
@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             _engines = _filtered.Instances<IEngine>(states).ToArray();
 
-            this.Entities = this.Get<IEntityService>();
+            this.Entities = this.Get<IEntityIdService>();
             this.Serialization = this.Get<IEntitySerializationService>();
             this.Events = this.Get<IEventPublishingService>();
             this.Filters = this.Get<IFilterService>();

@@ -24,10 +24,10 @@ namespace VoidHuntersRevived.Game.Engines
     internal sealed class HelmEngine : BasicEngine,
         IEventEngine<Helm_SetDirection>, IStepEngine<Step>
     {
-        private readonly IEntityService _entities;
+        private readonly IEntityIdService _entities;
         private readonly ISpace _space;
 
-        public HelmEngine(IEntityService entities, ISpace space)
+        public HelmEngine(IEntityIdService entities, ISpace space)
         {
             _entities = entities;
             _space = space;
@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Game.Engines
 
         public void Process(VhId vhid, Helm_SetDirection data)
         {
-            IdMap id =_entities.GetIdMap(data.ShipVhId);
+            EntityId id =_entities.GetId(data.ShipVhId);
             ref Helm helm = ref entitiesDB.QueryMappedEntities<Helm>(id.EGID.groupID).Entity(id.EGID.entityID);
 
             if (data.Value)
@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Game.Engines
             {
                 for (int i = 0; i < count; i++)
                 {
-                    IdMap helmId = _entities.GetIdMap(entityIds[i], groupId);
+                    EntityId helmId = _entities.GetId(entityIds[i], groupId);
                     IBody body = _space.GetBody(helmId.VhId);
 
                     FixVector2 impulse = FixVector2.Zero;

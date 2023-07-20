@@ -128,7 +128,7 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             return reader.ReadStruct<T>();
         }
 
-        public IdMap Deserialize()
+        public EntityId Deserialize()
         {
             return _serializer.Deserialize(this);
         }

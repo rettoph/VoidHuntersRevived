@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Game.Engines
     {
         public static readonly Fix64 QueryRadius = (Fix64)5;
 
-        private readonly IEntityService _entities;
+        private readonly IEntityIdService _entities;
         private readonly IEntitySerializationService _serialization;
         private readonly ISpace _space;
         private readonly ITreeFactory _treeFactory;
@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Game.Engines
         private readonly TractorBeamEmitterService _tractorBeamEmitterService;
 
         public TractorBeamEmitterEngine(
-            IEntityService entities, 
+            IEntityIdService entities, 
             IEntitySerializationService serialization, 
             ISpace space, 
             ITreeFactory treeFactory,
@@ -66,7 +66,7 @@ namespace VoidHuntersRevived.Game.Engines
 
         public void Process(VhId eventId, TractorBeamEmitter_TryActivate data)
         {
-            if(!_entities.TryGetIdMap(data.TargetVhId, out IdMap targetNodeId) || targetNodeId.Destroyed)
+            if(!_entities.TryGetId(data.TargetVhId, out EntityId targetNodeId) || targetNodeId.Destroyed)
             {
                 _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - TargetVhId {TargetId} not found.", nameof(TractorBeamEmitterEngine), nameof(Process), nameof(TractorBeamEmitter_TryActivate), data.TargetVhId.Value);
                 return;
@@ -74,7 +74,7 @@ namespace VoidHuntersRevived.Game.Engines
 
             Node targetNode = this.entitiesDB.QueryEntity<Node>(targetNodeId.EGID);
 
-            if (!_entities.TryGetIdMap(targetNode.TreeId, out IdMap targetTreeId) || targetTreeId.Destroyed)
+            if (!_entities.TryGetId(targetNode.TreeId, out EntityId targetTreeId) || targetTreeId.Destroyed)
             {
                 _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - TreeId {TargetTreeId} not found.", nameof(TractorBeamEmitterEngine), nameof(Process), nameof(TractorBeamEmitter_TryActivate), targetNode.TreeId.Value);
                 return;
@@ -95,7 +95,7 @@ namespace VoidHuntersRevived.Game.Engines
 
         public void Process(VhId eventId, TractorBeamEmitter_Activate data)
         {
-            IdMap tractorBeamEmitterId = _entities.GetIdMap(data.TractorBeamEmitterVhId);
+            EntityId tractorBeamEmitterId = _entities.GetId(data.TractorBeamEmitterVhId);
             var tractorBeamEmitters = this.entitiesDB.QueryEntitiesAndIndex<TractorBeamEmitter>(tractorBeamEmitterId.EGID, out uint index);
             var (tacticals, _) = this.entitiesDB.QueryEntities<Tactical>(tractorBeamEmitterId.EGID.groupID);
 
@@ -110,7 +110,7 @@ namespace VoidHuntersRevived.Game.Engines
                 });
             }
 
-            IdMap cloneId = _treeFactory.Create(
+            EntityId cloneId = _treeFactory.Create(
                 vhid: eventId.Create(1),
                 tree: EntityTypes.Chain,
                 pieces: data.TargetData,
@@ -131,7 +131,7 @@ namespace VoidHuntersRevived.Game.Engines
 
         public void Revert(VhId eventId, TractorBeamEmitter_Activate data)
         {
-            IdMap tractorBeamEmitterId = _entities.GetIdMap(data.TractorBeamEmitterVhId);
+            EntityId tractorBeamEmitterId = _entities.GetId(data.TractorBeamEmitterVhId);
 
             var tractorBeamEmitters = this.entitiesDB.QueryEntitiesAndIndex<TractorBeamEmitter>(tractorBeamEmitterId.EGID, out uint index);
             ref TractorBeamEmitter tractorBeamEmitter = ref tractorBeamEmitters[index];
@@ -147,7 +147,7 @@ namespace VoidHuntersRevived.Game.Engines
 
         public void Process(VhId eventId, TractorBeamEmitter_TryDeactivate data)
         {
-            IdMap tractorBeamEmitterId = _entities.GetIdMap(data.ShipVhId);
+            EntityId tractorBeamEmitterId = _entities.GetId(data.ShipVhId);
             ref TractorBeamEmitter tractorBeamEmitter = ref entitiesDB.QueryMappedEntities<TractorBeamEmitter>(tractorBeamEmitterId.EGID.groupID).Entity(tractorBeamEmitterId.EGID.entityID);
 
             this.Simulation.Publish(eventId, new TractorBeamEmitter_Deactivate()
@@ -159,7 +159,7 @@ namespace VoidHuntersRevived.Game.Engines
 
         public void Process(VhId eventId, TractorBeamEmitter_Deactivate data)
         {
-            IdMap tractorBeamEmitterId = _entities.GetIdMap(data.TractorBeamEmitterVhId);
+            EntityId tractorBeamEmitterId = _entities.GetId(data.TractorBeamEmitterVhId);
             var tractorBeamEmitters = this.entitiesDB.QueryEntitiesAndIndex<TractorBeamEmitter>(tractorBeamEmitterId.EGID, out uint tractorBeamEmitterIndex);
             var (tacticals, _) = this.entitiesDB.QueryEntities<Tactical>(tractorBeamEmitterId.EGID.groupID);
 
@@ -177,7 +177,7 @@ namespace VoidHuntersRevived.Game.Engines
             tractorBeamEmitter.Active = false;
             tactical.RemoveUse();
 
-            if (!_entities.TryGetIdMap(tractorBeamEmitter.TargetVhId, out IdMap targetId))
+            if (!_entities.TryGetId(tractorBeamEmitter.TargetVhId, out EntityId targetId))
             {
                 _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - TargetVhId {TargetVhId} map not found", nameof(TractorBeamEmitterEngine), nameof(Process), nameof(TractorBeamEmitter_TryDeactivate), tractorBeamEmitter.TargetVhId.Value);
 

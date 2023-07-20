@@ -76,7 +76,7 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             writer.WriteStruct<T>(item);
         }
 
-        public void Serialize(IdMap id)
+        public void Serialize(EntityId id)
         {
             _serializer.Serialize(id, this);
         }
