@@ -105,8 +105,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public void Step(Step step)
         {
             _stepEngines.Step(step);
-
-            this.Entities.Clean();
         }
     }
 }

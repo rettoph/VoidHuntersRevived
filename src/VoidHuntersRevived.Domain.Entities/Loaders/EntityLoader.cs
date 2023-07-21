@@ -5,6 +5,7 @@ using Guppy.Loaders;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Domain.Entities.Engines;
 using VoidHuntersRevived.Domain.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Loaders
@@ -29,6 +30,8 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
             builder.RegisterType<EntitySerializationService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.RegisterType<EntityDescriptorService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+            builder.RegisterType<EntitySubmissionEngine>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.RegisterType<EventPublishingService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 

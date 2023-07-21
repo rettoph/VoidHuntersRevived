@@ -16,10 +16,9 @@ using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    [Sequence<StepSequence>(StepSequence.OnEntitySubmit)]
+    [Sequence<StepSequence>(StepSequence.Cleanup)]
     internal sealed partial class EntityIdService : IEntityIdService, IEngine, IStepEngine<Step>
     {
-        private readonly SimpleEntitiesSubmissionScheduler _scheduler;
         private readonly DoubleDictionary<VhId, EGID, EntityId> _ids;
         private readonly Queue<EntityId> _removed;
 
@@ -29,7 +28,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             _ids = new DoubleDictionary<VhId, EGID, EntityId>();
             _removed = new Queue<EntityId>();
-            _scheduler = scheduler;
         }
 
         public EntityId GetId(VhId vhid)
@@ -62,17 +60,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _ids.TryGet(new EGID(entityId, groupId), out id);
         }
 
-        public void Clean()
+        public void Step(in Step _param)
         {
-            while(_removed.TryDequeue(out EntityId removed))
+            while (_removed.TryDequeue(out EntityId removed))
             {
                 _ids.Remove(removed.VhId, removed.EGID);
             }
-        }
-
-        public void Step(in Step _param)
-        {
-            _scheduler.SubmitEntities();
         }
 
         internal EntityId Add(VhId vhid, EGID egid)

@@ -10,6 +10,7 @@ namespace VoidHuntersRevived.Common.Entities
     {
         PreEntitySubmit = 0,
         OnEntitySubmit = 1,
-        PostEntitySubmit = 2
+        PostEntitySubmit = 2,
+        Cleanup = 3
     }
 }

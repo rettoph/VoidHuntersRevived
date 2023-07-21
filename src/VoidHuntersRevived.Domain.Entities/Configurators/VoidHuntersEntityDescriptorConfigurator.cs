@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 
-namespace VoidHuntersRevived.Domain.Entities
+namespace VoidHuntersRevived.Domain.Entities.Configurators
 {
     [AutoLoad]
     internal sealed class VoidHuntersEntityDescriptorConfigurator : IGuppyConfigurator
