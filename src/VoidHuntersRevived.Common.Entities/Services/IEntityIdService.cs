@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Common.Entities.Services
         bool TryGetId(EGID egid, out EntityId id);
         bool TryGetId(uint entityId, ExclusiveGroupStruct groupId, out EntityId id);
 
-        IEntityType GetEntityType(VhId entityVhId);
+        VoidHuntersEntityDescriptor GetEntityDescriptor(VhId entityVhId);
 
         void Clean();
     }

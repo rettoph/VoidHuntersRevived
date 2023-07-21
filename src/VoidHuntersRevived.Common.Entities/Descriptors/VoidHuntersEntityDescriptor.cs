@@ -1,11 +1,14 @@
-﻿using Svelto.DataStructures;
+﻿using Standart.Hash.xxHash;
+using Svelto.DataStructures;
 using Svelto.ECS;
 using Svelto.ECS.Internal;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -20,11 +23,29 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
         private readonly List<ComponentManager> _componentManagers;
         private readonly VoidHuntersEntityDescriptorSpawner _spawner;
 
+        private VhId? _id;
+        private string? _name;
+        public unsafe VhId Id
+        {
+            get
+            {
+                if(_id is null)
+                {
+                    uint128 nameHash = xxHash128.ComputeHash(this.GetType().AssemblyQualifiedName);
+                    VhId* pNameHash = (VhId*)&nameHash;
+
+                    _id = NameSpace<VoidHuntersEntityDescriptor>.Instance.Create(pNameHash[0]);
+                }
+                return _id.Value;
+            }
+        }
+        public string Name => _name ??= this.GetType().Name;
+
         public IComponentBuilder[] componentsToBuild => _dynamicDescriptor.componentsToBuild;
 
         public IEnumerable<ComponentManager> ComponentManagers => _componentManagers;
 
-        protected VoidHuntersEntityDescriptor()
+        protected unsafe VoidHuntersEntityDescriptor()
         {
             _dynamicDescriptor = DynamicEntityDescriptor<BaseEntityDescriptor>.CreateDynamicEntityDescriptor();
             _componentManagers = new List<ComponentManager>();

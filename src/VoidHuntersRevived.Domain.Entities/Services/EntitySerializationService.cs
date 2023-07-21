@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Common.Entities.Events;
@@ -26,6 +27,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly EntityWriter _writer;
         private readonly IEventPublishingService _events;
         private readonly IEntityIdService _entities;
+        private readonly IEntityDescriptorService _descriptors;
         private readonly IEngineService _engines;
         private readonly EntityTypeService _types;
         private readonly ILogger _logger;
@@ -35,12 +37,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public EntitySerializationService(
             IEventPublishingService events,
             IEntityIdService entities,
+            IEntityDescriptorService descriptors,
             IEngineService engines,
             ILogger logger,
             EntityTypeService types)
         {
             _events = events;
             _entities = entities;
+            _descriptors = descriptors;
             _engines = engines;
             _types = types;
             _logger = logger;
@@ -61,13 +65,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Serialize(EntityId id, EntityWriter writer)
         {
-            IEntityType type = _entities.GetEntityType(id.VhId);
+            VoidHuntersEntityDescriptor descriptor = _entities.GetEntityDescriptor(id.VhId);
 
             writer.Write(id.VhId);
-            writer.WriteStruct(type.Id);
+            writer.WriteStruct(descriptor.Id);
 
             this.entitiesDB.QueryEntitiesAndIndex<EntityVhId>(id.EGID, out uint index);
-            type.Descriptor.Serialize(writer, id.EGID, this.entitiesDB, index);
+            descriptor.Serialize(writer, id.EGID, this.entitiesDB, index);
         }
 
         public EntityId Deserialize(in VhId seed, EntityData data, bool confirmed)
@@ -79,22 +83,21 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public EntityId Deserialize(EntityReader reader)
         {
             VhId vhid = reader.ReadVhId();
-            VhId typeId = reader.ReadStruct<VhId>();
+            VhId descriptorId = reader.ReadStruct<VhId>();
 
-            IEntityType type = _types.GetById(typeId);
+            VoidHuntersEntityDescriptor descriptor = _descriptors.GetById(descriptorId);
             EntityReaderState readerState = reader.GetState();
 
-            _logger.Verbose("{ClassName}::{MathodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntitySerializationService), nameof(Deserialize), vhid.Value, type.Name, reader.Seed.Value);
+            _logger.Verbose("{ClassName}::{MathodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntitySerializationService), nameof(Deserialize), vhid.Value, descriptor.Name, reader.Seed.Value);
 
-            SpawnEntity createEntityEvent = new SpawnEntity()
+            SpawnEntityDescriptor createEntityEvent = new SpawnEntityDescriptor()
             {
-                Type = type,
+                Descriptor = descriptor,
                 VhId = vhid,
-                Configure = false,
                 Initializer = (ref EntityInitializer initializer) =>
                 {
                     reader.Load(readerState);
-                    type.Descriptor.Deserialize(reader, ref initializer);
+                    descriptor.Deserialize(reader, ref initializer);
 
                     reader.Busy = false;
                 }
