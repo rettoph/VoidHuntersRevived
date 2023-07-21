@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         private EntityId Spawn(IEntityType type, VhId vhid, EntityInitializerDelegate? initializerDelegate)
         {
-            EntityInitializer initializer = type.CreateEntity(_factory, vhid);
+            EntityInitializer initializer = type.Descriptor.SpawnEntity(_factory, vhid);
 
             _types.GetConfiguration(type).Initialize(ref initializer);
 
@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private void Despawn(VhId vhid)
         {
             EntityId id = _entities.Remove(vhid, out IEntityType type);
-            type.DestroyEntity(_functions, in id.EGID);
+            type.Descriptor.DespawnEntity(_functions, in id.EGID);
         }
 
         public void Process(VhId eventId, SpawnEntity data)

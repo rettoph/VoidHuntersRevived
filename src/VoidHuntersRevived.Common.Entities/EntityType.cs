@@ -38,9 +38,6 @@ namespace VoidHuntersRevived.Common.Entities
 
         public abstract IEntityTypeConfiguration BuildConfiguration();
 
-        public abstract void DestroyEntity(IEntityFunctions functions, in EGID egid);
-        public abstract EntityInitializer CreateEntity(IEntityFactory factory, VhId vhid);
-
         public static IEnumerable<EntityType> All()
         {
             return _list;
@@ -50,9 +47,6 @@ namespace VoidHuntersRevived.Common.Entities
     public sealed class EntityType<TDescriptor> : EntityType, IEntityType<TDescriptor>
         where TDescriptor : VoidHuntersEntityDescriptor, new()
     {
-        private static uint EntityId;
-        private static readonly ExclusiveGroup Group = new ExclusiveGroup();
-
         public readonly new TDescriptor Descriptor;
 
         TDescriptor IEntityType<TDescriptor>.Descriptor => this.Descriptor;
@@ -65,20 +59,6 @@ namespace VoidHuntersRevived.Common.Entities
         public override IEntityTypeConfiguration BuildConfiguration()
         {
             return new EntityTypeConfiguration<TDescriptor>(this);
-        }
-
-        public override EntityInitializer CreateEntity(IEntityFactory factory, VhId vhid)
-        {
-            EGID egid = new EGID(EntityId++, Group);
-            EntityInitializer initializer = factory.BuildEntity(egid, this.Descriptor);
-            initializer.Init(new EntityVhId() { Value = vhid });
-
-            return initializer;
-        }
-
-        public override void DestroyEntity(IEntityFunctions functions, in EGID egid)
-        {
-            functions.RemoveEntity<TDescriptor>(egid);
         }
     }
 }
