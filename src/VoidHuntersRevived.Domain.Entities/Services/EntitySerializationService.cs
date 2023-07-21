@@ -65,7 +65,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Serialize(EntityId id, EntityWriter writer)
         {
-            VoidHuntersEntityDescriptor descriptor = _entities.GetEntityDescriptor(id.VhId);
+            VoidHuntersEntityDescriptor descriptor = _descriptors.GetByEntityVhId(id.VhId);
 
             writer.Write(id.VhId);
             writer.WriteStruct(descriptor.Id);

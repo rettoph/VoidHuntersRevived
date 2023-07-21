@@ -21,7 +21,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     {
         private readonly SimpleEntitiesSubmissionScheduler _scheduler;
         private readonly DoubleDictionary<VhId, EGID, EntityId> _ids;
-        private readonly Dictionary<VhId, VoidHuntersEntityDescriptor> _descriptors;
         private readonly Queue<EntityId> _removed;
 
         public string name { get; } = nameof(EntityIdService);
@@ -29,7 +28,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public EntityIdService(SimpleEntitiesSubmissionScheduler scheduler)
         {
             _ids = new DoubleDictionary<VhId, EGID, EntityId>();
-            _descriptors = new Dictionary<VhId, VoidHuntersEntityDescriptor>();
             _removed = new Queue<EntityId>();
             _scheduler = scheduler;
         }
@@ -64,17 +62,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _ids.TryGet(new EGID(entityId, groupId), out id);
         }
 
-        public VoidHuntersEntityDescriptor GetEntityDescriptor(VhId entityVhId)
-        {
-            return _descriptors[entityVhId];
-        }
-
         public void Clean()
         {
             while(_removed.TryDequeue(out EntityId removed))
             {
                 _ids.Remove(removed.VhId, removed.EGID);
-                _descriptors.Remove(removed.VhId);
             }
         }
 
@@ -83,16 +75,15 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _scheduler.SubmitEntities();
         }
 
-        internal EntityId Add(VhId vhid, EGID egid, VoidHuntersEntityDescriptor descriptor)
+        internal EntityId Add(VhId vhid, EGID egid)
         {
             EntityId idMap = new EntityId(egid, vhid);
             _ids.TryAdd(vhid, egid, idMap);
-            _descriptors.Add(vhid, descriptor);
 
             return idMap;
         }
 
-        internal EntityId Remove(VhId vhid, out VoidHuntersEntityDescriptor descriptor)
+        internal EntityId Remove(VhId vhid)
         {
             ref EntityId id = ref _ids.TryGetRef(vhid, out bool isNullRef);
             if (isNullRef)
@@ -102,7 +93,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             id.Destroyed = true;
             _removed.Enqueue(id);
-            descriptor = _descriptors[vhid];
 
             return id;
         }

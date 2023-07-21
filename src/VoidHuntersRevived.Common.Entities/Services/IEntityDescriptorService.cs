@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Svelto.ECS;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,11 @@ namespace VoidHuntersRevived.Common.Entities.Services
     public interface IEntityDescriptorService
     {
         VoidHuntersEntityDescriptor GetById(VhId id);
+
+        VoidHuntersEntityDescriptor GetByEntityVhId(VhId id);
+
+        EntityInitializer Spawn(VoidHuntersEntityDescriptor descriptor, IEntityFactory factory, VhId vhid);
+
+        void Despawn(IEntityFunctions functions, in EntityId id);
     }
 }

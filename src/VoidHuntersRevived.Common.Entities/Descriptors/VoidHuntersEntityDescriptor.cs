@@ -21,7 +21,6 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
     {
         private DynamicEntityDescriptor<BaseEntityDescriptor> _dynamicDescriptor;
         private readonly List<ComponentManager> _componentManagers;
-        private readonly VoidHuntersEntityDescriptorSpawner _spawner;
 
         private VhId? _id;
         private string? _name;
@@ -49,7 +48,6 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
         {
             _dynamicDescriptor = DynamicEntityDescriptor<BaseEntityDescriptor>.CreateDynamicEntityDescriptor();
             _componentManagers = new List<ComponentManager>();
-            _spawner = VoidHuntersEntityDescriptorSpawner.Build(this);
         }
 
         protected VoidHuntersEntityDescriptor ExtendWith(ComponentManager[] managers)
@@ -78,56 +76,6 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             foreach (ComponentManager componentManager in _componentManagers)
             {
                 componentManager.Serializer.Deserialize(reader, ref initializer);
-            }
-        }
-
-        public EntityInitializer SpawnEntity(IEntityFactory factory, VhId vhid)
-        {
-            return _spawner.SpawnEntity(factory, vhid);
-        }
-
-        public void DespawnEntity(IEntityFunctions functions, in EGID egid)
-        {
-            _spawner.DespawnEntity(functions, in egid);
-        }
-
-        private abstract class VoidHuntersEntityDescriptorSpawner
-        {
-            public abstract EntityInitializer SpawnEntity(IEntityFactory factory, VhId vhid);
-            public abstract void DespawnEntity(IEntityFunctions functions, in EGID egid);
-
-            public static VoidHuntersEntityDescriptorSpawner Build(VoidHuntersEntityDescriptor descriptor)
-            {
-                Type spawnerType = typeof(VoidHuntersEntityDescriptorSpawner<>).MakeGenericType(descriptor.GetType());
-
-                return (VoidHuntersEntityDescriptorSpawner)Activator.CreateInstance(spawnerType, descriptor)!;
-            }
-        }
-
-        private sealed class VoidHuntersEntityDescriptorSpawner<TDescriptor> : VoidHuntersEntityDescriptorSpawner
-            where TDescriptor : VoidHuntersEntityDescriptor, new()
-        {
-            private uint EntityId;
-            public readonly ExclusiveGroup Group = new ExclusiveGroup();
-            public readonly TDescriptor Descriptor;
-
-            public VoidHuntersEntityDescriptorSpawner(TDescriptor descriptor)
-            {
-                Descriptor = descriptor;
-            }
-
-            public override EntityInitializer SpawnEntity(IEntityFactory factory, VhId vhid)
-            {
-                EGID egid = new EGID(EntityId++, Group);
-                EntityInitializer initializer = factory.BuildEntity(egid, this.Descriptor);
-                initializer.Init(new EntityVhId() { Value = vhid });
-
-                return initializer;
-            }
-
-            public override void DespawnEntity(IEntityFunctions functions, in EGID egid)
-            {
-                functions.RemoveEntity<TDescriptor>(egid);
             }
         }
     }
