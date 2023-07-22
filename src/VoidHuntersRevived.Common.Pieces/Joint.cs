@@ -8,12 +8,11 @@ namespace VoidHuntersRevived.Common.Pieces
 {
     public struct Joint
     {
-        public readonly VhId NodeVhId;
         public readonly FixLocation Location;
 
         public Joint(FixLocation location)
         {
-            Location = location;
+            this.Location = location;
         }
     }
 }

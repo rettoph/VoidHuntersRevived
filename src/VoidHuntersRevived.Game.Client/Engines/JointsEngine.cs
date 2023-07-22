@@ -9,6 +9,8 @@ using MonoGame.Extended.Screens;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Simulations.Attributes;
+using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Enums;
 
@@ -16,6 +18,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [Sequence<DrawEngineSequence>(DrawEngineSequence.PostDraw)]
+    [SimulationTypeFilter(SimulationType.Predictive)]
     internal class JointsEngine : BasicEngine, IStepEngine<GameTime>
     {
         private readonly IScreen _screen;
