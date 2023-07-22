@@ -66,7 +66,7 @@ namespace VoidHuntersRevived.Game.Services
 
                 if(this.entitiesDB.TryGetEntity<Tractorable>(fixtureNodeTreeId.EGID, out var tractorable) && tractorable.IsTractored == false)
                 { // Target resides within a tractorable tree, so we want to grab the head
-                    queryTargetId = fixtureNodeTree.HeadId;
+                    queryTargetId = fixtureNodeTree.HeadVhId;
                 }
                 else
                 { // Target is not in any way tractorable, we can disregard it

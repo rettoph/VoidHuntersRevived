@@ -49,9 +49,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
             {
                 for (int i = 0; i < count; i++)
                 {
-                    for(int j=0; j < joints[i].Items.count; j++)
+                    for(int j=0; j < joints[i].Parents.count; j++)
                     {
-                        FixMatrix jointTransformation = joints[i].Items[j].Location.Transformation * nodes[i].Transformation;
+                        FixMatrix jointTransformation = joints[i].Parents[j].Location.Transformation * nodes[i].Transformation;
                         _primitiveBatch.Trace(_jointShape, Color.Red, jointTransformation.XnaMatrix);
                     }
                     

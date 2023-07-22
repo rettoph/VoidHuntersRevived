@@ -12,21 +12,20 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 {
     public struct Joints : IEntityComponent, IDisposable
     {
-        public required NativeDynamicArrayCast<Joint> Items { get; init; }
+        public required Joint Child { get; init; }
+        public required NativeDynamicArrayCast<Joint> Parents { get; init; }
 
         public void Dispose()
         {
-            this.Items.Dispose();
+            this.Parents.Dispose();
         }
 
         public static Joints Polygon(int sides)
         {
             PolygonHelper.VertexAngle[] vertexAngles = PolygonHelper.CalculateVertexAngles(sides).ToArray();
 
-            Joints joints = new Joints()
-            {
-                Items = new NativeDynamicArrayCast<Joint>((uint)sides, Allocator.Persistent)
-            };
+            Joint child = default;
+            NativeDynamicArrayCast<Joint> parents = new NativeDynamicArrayCast<Joint>((uint)sides, Allocator.Persistent);
 
             for (int i = 0; i < vertexAngles.Length; i++)
             {
@@ -34,10 +33,21 @@ namespace VoidHuntersRevived.Common.Pieces.Components
                 FixVector2 end = vertexAngles[(i + 1) % vertexAngles.Length].FixedVertex;
                 FixVector2 center = (start + end) / (Fix64)2;
 
-                joints.Items.Set(i, new Joint((byte)i, new FixLocation(center, vertexAngles[i].Angle)));
+                if (i == 0)
+                {
+                    child = new Joint(byte.MaxValue, new FixLocation(center, vertexAngles[i].Angle));
+                }
+                else
+                {
+                    parents.Set(i - 1, new Joint((byte)i, new FixLocation(center, vertexAngles[i].Angle)));
+                }
             }
 
-            return joints;
+            return new Joints()
+            {
+                Child = child,
+                Parents = parents
+            };
         }
     }
 }

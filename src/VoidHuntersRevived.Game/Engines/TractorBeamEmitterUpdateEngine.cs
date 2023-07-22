@@ -29,6 +29,8 @@ using System.Xml.Linq;
 using VoidHuntersRevived.Common.Pieces;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using Microsoft.Xna.Framework;
+using VoidHuntersRevived.Common.FixedPoint.Extensions;
 
 namespace VoidHuntersRevived.Game.Engines
 {
@@ -61,7 +63,7 @@ namespace VoidHuntersRevived.Game.Engines
         public void Step(in Step _param)
         {
             var groups = this.entitiesDB.FindGroups<Tactical, TractorBeamEmitter>();
-            foreach (var ((vhids, tacticals, tractorBeamEmitters, count), groupId) in this.entitiesDB.QueryEntities<EntityVhId, Tactical, TractorBeamEmitter>(groups))
+            foreach (var ((vhids, tacticals, tractorBeamEmitters, count), _) in this.entitiesDB.QueryEntities<EntityVhId, Tactical, TractorBeamEmitter>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -79,15 +81,24 @@ namespace VoidHuntersRevived.Game.Engines
 
             IBody targetBody = _space.GetBody(in tractorBeamEmitter.TargetVhId);
 
-            // if (this.TryGetClosestOpenJointOnShipToTactical(shipId, ref tactical, out var nodeJoint))
-            // {
-            //     FixVector2 openNodePosition = FixVector2.Transform(FixVector2.Zero, nodeJoint.Node.Transformation);
-            //     targetBody.SetTransform(openNodePosition, targetBody.Rotation);
-            // 
-            //     return;
-            // }
+            EntityId targetId = _entities.GetId(tractorBeamEmitter.TargetVhId);
+            ref Tree target = ref this.entitiesDB.QueryEntity<Tree>(targetId.EGID);
 
-            targetBody.SetTransform(tactical.Value, targetBody.Rotation);
+            EntityId targetHeadId = _entities.GetId(target.HeadVhId);
+            Joint targetHeadChildNode = this.entitiesDB.QueryEntity<Joints>(targetHeadId.EGID).Child;
+
+            if (this.TryGetClosestOpenJointOnShipToTactical(shipId, ref tactical, out var openNodeJoint))
+            {
+                FixMatrix potentialTransformation = targetHeadChildNode.Location.Transformation * openNodeJoint.Transformation;
+                FixVector2 potentialPosition = FixVector2.Transform(FixVector2.Zero, potentialTransformation);
+
+                targetBody.SetTransform(potentialPosition, Fix64.Pi - openNodeJoint.Transformation.Radians());
+
+                return;
+            }
+
+            FixVector2 targetHeadChildNodePosition = FixVector2.Transform(targetHeadChildNode.Location.Position, FixMatrix.CreateRotationZ(targetBody.Rotation));
+            targetBody.SetTransform(tactical.Value - targetHeadChildNodePosition, targetBody.Rotation);
         }
 
         private bool TryGetClosestOpenJointOnShipToTactical(VhId shipId, ref Tactical tactical, out NodeJoint nodeJoint)
@@ -135,9 +146,9 @@ namespace VoidHuntersRevived.Game.Engines
             closestOpenNodeJointOnNodeToTactical = default!;
             bool result = false;
 
-            for (int j = 0; j < joints.Items.count; j++)
+            for (int j = 0; j < joints.Parents.count; j++)
             {
-                FixMatrix jointWorldTransformation = joints.Items[j].Location.Transformation * node.Transformation;
+                FixMatrix jointWorldTransformation = joints.Parents[j].Location.Transformation * node.Transformation;
                 FixVector2 jointWorldPosition = FixVector2.Transform(FixVector2.Zero, jointWorldTransformation);
 
                 FixVector2.Distance(ref jointWorldPosition, ref tactical.Value, out Fix64 jointDistanceFromTactical);
@@ -148,7 +159,7 @@ namespace VoidHuntersRevived.Game.Engines
                 }
 
                 closestOpenJointToTacticalDistance = jointDistanceFromTactical;
-                closestOpenNodeJointOnNodeToTactical = new NodeJoint(ref node, ref joints.Items[j]);
+                closestOpenNodeJointOnNodeToTactical = new NodeJoint(ref node, ref joints.Parents[j]);
                 result = true;
             }
 

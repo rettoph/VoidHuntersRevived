@@ -27,11 +27,13 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                     serializer: new ComponentSerializer<Joints>(
                         writer: (writer, instance) =>
                         {
-                            writer.WriteNativeDynamicArray(instance.Items);
+                            writer.WriteStruct(instance.Child);
+                            writer.WriteNativeDynamicArray(instance.Parents);
                         },
                         reader: (reader) => new Joints()
                         {
-                            Items = reader.ReadNativeDynamicArray<Joint>(),
+                            Child = reader.ReadStruct<Joint>(),
+                            Parents = reader.ReadNativeDynamicArray<Joint>(),
                         }))
             });
         }

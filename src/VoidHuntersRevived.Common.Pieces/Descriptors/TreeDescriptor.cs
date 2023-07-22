@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                     serializer: new ComponentSerializer<Tree>(
                         writer: (writer, tree) =>
                         {
-                            writer.SerializeEntity(tree.HeadId);
+                            writer.SerializeEntity(tree.HeadVhId);
                         },
                         reader: (reader) =>
                         {

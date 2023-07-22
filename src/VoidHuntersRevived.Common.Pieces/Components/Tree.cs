@@ -10,12 +10,12 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 {
     public struct Tree : IEntityComponent
     {
-        public readonly VhId HeadId;
+        public readonly VhId HeadVhId;
         public FixMatrix Transformation;
 
         public Tree(VhId headId)
         {
-            this.HeadId = headId;
+            this.HeadVhId = headId;
         }
     }
 }
