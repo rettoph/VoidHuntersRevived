@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
                 FixVector2 end = vertexAngles[(i + 1) % vertexAngles.Length].FixedVertex;
                 FixVector2 center = (start + end) / (Fix64)2;
 
-                joints.Items.Set(i, new Joint(new FixLocation(center, vertexAngles[i].Angle)));
+                joints.Items.Set(i, new Joint((byte)i, new FixLocation(center, vertexAngles[i].Angle)));
             }
 
             return joints;

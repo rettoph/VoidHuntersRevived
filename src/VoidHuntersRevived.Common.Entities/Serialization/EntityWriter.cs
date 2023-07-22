@@ -81,7 +81,7 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             _serializer.Serialize(id, this);
         }
 
-        public void Serialize(VhId vhId)
+        public void SerializeEntity(VhId vhId)
         {
             _serializer.Serialize(vhId, this);
         }

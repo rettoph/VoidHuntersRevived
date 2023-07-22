@@ -26,6 +26,9 @@ using VoidHuntersRevived.Domain.Common.Components;
 using Serilog;
 using Svelto.ECS.Native;
 using System.Xml.Linq;
+using VoidHuntersRevived.Common.Pieces;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace VoidHuntersRevived.Game.Engines
 {
@@ -74,21 +77,26 @@ namespace VoidHuntersRevived.Game.Engines
                 return;
             }
 
-            if(this.TryGetClosestOpenJointOnShipToTactical(shipId, ref tactical))
-            {
-
-            }
-
             IBody targetBody = _space.GetBody(in tractorBeamEmitter.TargetVhId);
+
+            if (this.TryGetClosestOpenJointOnShipToTactical(shipId, ref tactical, out var nodeJoint))
+            {
+                FixVector2 openNodePosition = FixVector2.Transform(FixVector2.Zero, nodeJoint.Node.Transformation);
+                targetBody.SetTransform(openNodePosition, targetBody.Rotation);
+
+                return;
+            }
 
             targetBody.SetTransform(tactical.Value, targetBody.Rotation);
         }
 
-        private bool TryGetClosestOpenJointOnShipToTactical(VhId shipId, ref Tactical tactical)
+        private bool TryGetClosestOpenJointOnShipToTactical(VhId shipId, ref Tactical tactical, out NodeJoint nodeJoint)
         {
             // Since ships are Trees the ShipId will be the filterId seen in NodeEngine
             ref var filter = ref _filters.GetFilter<Node>(shipId);
-            Fix64 closestOpenJointOnShipToTacticalDistance = Fix64.MaxValue;
+            Fix64 closestOpenJointOnShipToTacticalDistance = Fix64.One;
+            nodeJoint = default!;
+            bool result = false;
 
             foreach (var (indeces, group) in filter)
             {
@@ -103,20 +111,28 @@ namespace VoidHuntersRevived.Game.Engines
                 {
                     uint index = indeces[i];
                     if(
-                        this.TryGetClosestOpenJointOnNodeToTactical(ref tactical, ref nodes[index], ref jointses[index], out Fix64 closestOpenJointOnNodeToTacticalDistance)
+                        this.TryGetClosestOpenJointOnNodeToTactical(ref tactical, ref nodes[index], ref jointses[index], out Fix64 closestOpenJointOnNodeToTacticalDistance, out var closestOpenNodeJointOnNodeToTactical)
                         && closestOpenJointOnNodeToTacticalDistance < closestOpenJointOnShipToTacticalDistance)
                     {
                         closestOpenJointOnShipToTacticalDistance = closestOpenJointOnNodeToTacticalDistance;
+                        nodeJoint = new NodeJoint(ref closestOpenNodeJointOnNodeToTactical.Node, ref closestOpenNodeJointOnNodeToTactical.Joint);
+                        result = true;
                     }
                 }
             }
 
-            return true;
+            return result;
         }
 
-        private bool TryGetClosestOpenJointOnNodeToTactical(ref Tactical tactical, ref Node node, ref Joints joints, out Fix64 closestOpenJointToTacticalDistance)
+        private bool TryGetClosestOpenJointOnNodeToTactical(
+            ref Tactical tactical, 
+            ref Node node, 
+            ref Joints joints, 
+            out Fix64 closestOpenJointToTacticalDistance,
+            out NodeJoint closestOpenNodeJointOnNodeToTactical)
         {
-            closestOpenJointToTacticalDistance = Fix64.MaxValue;
+            closestOpenJointToTacticalDistance = Fix64.One;
+            closestOpenNodeJointOnNodeToTactical = default!;
             bool result = false;
 
             for (int j = 0; j < joints.Items.count; j++)
@@ -132,6 +148,7 @@ namespace VoidHuntersRevived.Game.Engines
                 }
 
                 closestOpenJointToTacticalDistance = jointDistanceFromTactical;
+                closestOpenNodeJointOnNodeToTactical = new NodeJoint(ref node, ref joints.Items[j]);
                 result = true;
             }
 

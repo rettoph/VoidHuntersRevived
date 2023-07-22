@@ -8,10 +8,12 @@ namespace VoidHuntersRevived.Common.Pieces
 {
     public struct Joint
     {
+        public readonly byte Index;
         public readonly FixLocation Location;
 
-        public Joint(FixLocation location)
+        public Joint(byte index, FixLocation location)
         {
+            this.Index = index;
             this.Location = location;
         }
     }
