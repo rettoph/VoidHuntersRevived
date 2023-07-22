@@ -11,7 +11,6 @@ using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Constants;
 using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Physics.Factories;
 using Guppy.Common.Providers;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Services;

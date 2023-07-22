@@ -2,8 +2,6 @@
 using Guppy.Attributes;
 using Guppy.Loaders;
 using VoidHuntersRevived.Common.Physics;
-using VoidHuntersRevived.Common.Physics.Factories;
-using VoidHuntersRevived.Domain.Physics.Factories;
 
 namespace VoidHuntersRevived.Domain.Physics.Loaders
 {
@@ -12,7 +10,6 @@ namespace VoidHuntersRevived.Domain.Physics.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            services.RegisterType<BodyFactory>().As<IBodyFactory>().InstancePerLifetimeScope();
             services.RegisterType<Space>().As<ISpace>().InstancePerLifetimeScope();
         }
     }

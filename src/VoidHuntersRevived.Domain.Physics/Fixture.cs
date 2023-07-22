@@ -10,31 +10,27 @@ using VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Dyn
 
 namespace VoidHuntersRevived.Domain.Physics
 {
-    internal sealed class Fixture : IFixture
+    internal sealed class Fixture : IFixture, IDisposable
     {
+        private readonly Body _body;
         private readonly AetherFixture _aether;
 
         public VhId Id { get; }
 
-        public IBody Body { get; }
+        public IBody Body => _body;
 
-        public Fixture(IBody body, Polygon polygon, VhId entityId)
+        public Fixture(Body body, Polygon polygon, VhId entityId)
         {
-            _aether = new AetherFixture(polygon.ToShape());
+            _body = body;
+            _aether = _body._aether.CreateFixture(polygon.ToShape());
             _aether.Tag = this;
 
             this.Id = entityId;
-            this.Body = body;
         }
 
-        internal void AddToBody(AetherBody body)
+        public void Dispose()
         {
-            body.Add(_aether);
-        }
-
-        internal void RemoveFromBody(AetherBody body)
-        {
-            body.Remove(_aether);
+            _body._aether.Remove(_aether);
         }
     }
 }

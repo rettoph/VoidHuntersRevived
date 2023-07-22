@@ -17,9 +17,7 @@ namespace VoidHuntersRevived.Common.Physics
     public interface ISpace
     {
         IBody GetOrCreateBody(in VhId id);
-        void AddBody(IBody body);
-        void RemoveBody(IBody body);
-        void RemoveBody(in VhId id);
+        void DestroyBody(in VhId id);
         IBody GetBody(in VhId id);
         IEnumerable<IBody> AllBodies();
         bool TryGetBody(in VhId id, [MaybeNullWhen(false)] out IBody body);

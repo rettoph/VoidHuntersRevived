@@ -9,12 +9,14 @@ using tainicom.Aether.Physics2D.Dynamics;
 
 namespace VoidHuntersRevived.Domain.Physics
 {
-    public class Body : IBody
+    public class Body : IBody, IDisposable
     {
-        private readonly AetherBody _aether;
+        private readonly Space _space;
         private readonly Dictionary<VhId, Fixture> _fixtures;
 
-        public ISpace? Space { get; internal set; }
+        internal readonly AetherBody _aether;
+
+        public ISpace? Space => _space;
 
         public FixVector2 Position => _aether.Position.AsFixVector2();
 
@@ -28,12 +30,10 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public FixMatrix Transformation => FixMatrix.CreateRotationZ(this.Rotation) * FixMatrix.CreateTranslation(this.Position.X, this.Position.Y, Fix64.Zero);
 
-        public Body(VhId id)
+        public Body(Space space, VhId id)
         {
-            _aether = new AetherBody()
-            {
-                BodyType = tainicom.Aether.Physics2D.Dynamics.BodyType.Dynamic
-            };
+            _space = space;
+            _aether = space._aether.CreateBody(AetherVector2.Zero, FixedMath64.Zero, BodyType.Dynamic);
             _fixtures = new Dictionary<VhId, Fixture>();
             _aether.Tag = this;
 
@@ -70,7 +70,6 @@ namespace VoidHuntersRevived.Domain.Physics
         public IFixture Create(Polygon polygon, VhId id)
         {
             Fixture fixture = new Fixture(this, polygon, id);
-            fixture.AddToBody(_aether);
             _fixtures.Add(id, fixture);
 
             return fixture;
@@ -88,25 +87,20 @@ namespace VoidHuntersRevived.Domain.Physics
                 return;
             }
 
-            casted.RemoveFromBody(_aether);
+            casted.Dispose();
         }
 
         public void Destroy(VhId id)
         {
             if(_fixtures.Remove(id, out Fixture? fixture))
             {
-                fixture.RemoveFromBody(_aether);
+                fixture.Dispose();
             }
         }
 
-        internal void AddToWorld(AetherWorld world)
+        public void Dispose()
         {
-            world.Add(_aether);
-        }
-
-        internal void RemoveFromWorld(AetherWorld world)
-        {
-            world.Remove(_aether);
+            _space._aether.Remove(_aether);
         }
     }
 }

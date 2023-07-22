@@ -79,13 +79,13 @@ namespace VoidHuntersRevived.Game.Engines
 
             IBody targetBody = _space.GetBody(in tractorBeamEmitter.TargetVhId);
 
-            if (this.TryGetClosestOpenJointOnShipToTactical(shipId, ref tactical, out var nodeJoint))
-            {
-                FixVector2 openNodePosition = FixVector2.Transform(FixVector2.Zero, nodeJoint.Node.Transformation);
-                targetBody.SetTransform(openNodePosition, targetBody.Rotation);
-
-                return;
-            }
+            // if (this.TryGetClosestOpenJointOnShipToTactical(shipId, ref tactical, out var nodeJoint))
+            // {
+            //     FixVector2 openNodePosition = FixVector2.Transform(FixVector2.Zero, nodeJoint.Node.Transformation);
+            //     targetBody.SetTransform(openNodePosition, targetBody.Rotation);
+            // 
+            //     return;
+            // }
 
             targetBody.SetTransform(tactical.Value, targetBody.Rotation);
         }

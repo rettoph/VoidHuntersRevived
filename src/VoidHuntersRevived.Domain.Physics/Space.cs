@@ -4,22 +4,20 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Physics;
-using VoidHuntersRevived.Common.Physics.Factories;
 using System.Diagnostics.CodeAnalysis;
 
 namespace VoidHuntersRevived.Domain.Physics
 {
     public class Space : ISpace
     {
-        private readonly AetherWorld _aether;
-        private readonly IBodyFactory _factory;
         private readonly Dictionary<VhId, Body> _bodies;
 
-        public Space(IBodyFactory factory)
+        internal readonly AetherWorld _aether;
+
+        public Space()
         {
             _aether = new AetherWorld(AetherVector2.Zero);
             _bodies = new Dictionary<VhId, Body>();
-            _factory = factory;
         }
 
         public IBody GetOrCreateBody(in VhId id)
@@ -30,49 +28,16 @@ namespace VoidHuntersRevived.Domain.Physics
 
             }
             
-            IBody body = _factory.Create(id);
-            this.AddBody(body);
+            Body body = new Body(this, id);
+            _bodies.Add(id, body);
 
             return body;
         }
 
-        public void AddBody(IBody body)
+        public void DestroyBody(in VhId id)
         {
-            if(body is Body casted)
-            {
-                this.Add(casted);
-            }
-        }
-
-        public void RemoveBody(IBody body)
-        {
-            if (body is Body casted)
-            {
-                this.Remove(casted);
-            }
-        }
-
-        public void RemoveBody(in VhId id)
-        {
-            this.RemoveBody(this.GetBody(id));
-        }
-
-        internal void Add(Body body)
-        {
-            _bodies.Add(body.Id, body);
-            body.AddToWorld(_aether);
-            body.Space = this;
-        }
-
-        internal void Remove(Body body)
-        {
-            if (!_bodies.Remove(body.Id))
-            {
-                return;
-            }
-
-            body.Space = null;
-            body.RemoveFromWorld(_aether);
+            _bodies.Remove(id, out var body);
+            body!.Dispose();
         }
 
         public IBody GetBody(in VhId id)
