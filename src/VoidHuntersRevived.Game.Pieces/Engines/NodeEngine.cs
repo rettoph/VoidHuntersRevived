@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces.Components;
@@ -43,18 +44,16 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                VhId treeId = nodes[index].TreeId;
-                VhId nodeId = _entities.GetId(ids[index], groupID).VhId;
+                EntityId treeId = nodes[index].TreeId;
+                VhId nodeVhId = _entities.GetId(ids[index], groupID).VhId;
 
-                Debug.Assert(treeId.Value != VhId.Empty.Value);
-
-                ref var filter = ref _filters.GetFilter<Node>(treeId);
+                ref var filter = ref _filters.GetFilter<Node>(treeId.VhId);
                 filter.Add(ids[index], groupID, index);
 
                 this.Simulation.Publish(NameSpace<NodeEngine>.Instance, new CreateNode()
                 {
-                    TreeId = treeId,
-                    NodeId = nodeId
+                    TreeId = treeId.VhId,
+                    NodeId = nodeVhId
                 });
             }
         }
@@ -65,16 +64,16 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                VhId treeId = nodes[index].TreeId;
-                VhId nodeId = _entities.GetId(ids[index], groupID).VhId;
+                EntityId treeId = nodes[index].TreeId;
+                VhId nodeVhId = _entities.GetId(ids[index], groupID).VhId;
 
-                ref var filter = ref _filters.GetFilter<Node>(treeId);
+                ref var filter = ref _filters.GetFilter<Node>(treeId.VhId);
                 filter.Remove(ids[index], groupID);
 
                 this.Simulation.Publish(NameSpace<NodeEngine>.Instance, new DestroyNode()
                 {
-                    TreeId = treeId,
-                    NodeId = nodeId
+                    TreeId = treeId.VhId,
+                    NodeId = nodeVhId
                 });
             }
         }

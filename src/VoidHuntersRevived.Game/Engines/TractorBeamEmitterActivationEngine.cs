@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Game.Engines
 
         public void Process(VhId eventId, TractorBeamEmitter_TryActivate data)
         {
-            if (!_entities.TryGetId(data.TargetVhId, out EntityId targetNodeId) || targetNodeId.Destroyed)
+            if (!_entities.TryGetId(data.TargetVhId, out EntityId targetNodeId) || _entities.GetState(targetNodeId) != EntityState.Spawned)
             {
                 _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - TargetVhId {TargetId} not found.", nameof(TractorBeamEmitterActivationEngine), nameof(Process), nameof(TractorBeamEmitter_TryActivate), data.TargetVhId.Value);
                 return;
@@ -49,9 +49,9 @@ namespace VoidHuntersRevived.Game.Engines
 
             Node targetNode = this.entitiesDB.QueryEntity<Node>(targetNodeId.EGID);
 
-            if (!_entities.TryGetId(targetNode.TreeId, out EntityId targetTreeId) || targetTreeId.Destroyed)
+            if (!_entities.TryGetId(targetNode.TreeId.VhId, out EntityId targetTreeId) || _entities.GetState(targetTreeId) != EntityState.Spawned)
             {
-                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - TreeId {TargetTreeId} not found.", nameof(TractorBeamEmitterActivationEngine), nameof(Process), nameof(TractorBeamEmitter_TryActivate), targetNode.TreeId.Value);
+                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - TreeId {TargetTreeId} not found.", nameof(TractorBeamEmitterActivationEngine), nameof(Process), nameof(TractorBeamEmitter_TryActivate), targetNode.TreeId.VhId.Value);
                 return;
             }
             Tree targetTree = this.entitiesDB.QueryEntity<Tree>(targetTreeId.EGID);

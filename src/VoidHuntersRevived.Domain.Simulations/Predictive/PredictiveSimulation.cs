@@ -15,8 +15,6 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
-using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
-using VoidHuntersRevived.Common.Entities.Enums;
 using Autofac;
 
 namespace VoidHuntersRevived.Domain.Simulations.Predictive

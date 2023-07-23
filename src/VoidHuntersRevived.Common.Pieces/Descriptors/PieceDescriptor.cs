@@ -25,15 +25,15 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                     serializer: new ComponentSerializer<Node>(
                         writer: (entities, writer, node) =>
                         {
-                            writer.Write(node.TreeId);
+                            writer.Write(node.TreeId.VhId);
                         },
                         reader: (entities, reader) =>
                         {
                             // If no seed is passed the tree should be read, if a seed is passed we assume it is the id of the owning tree
                             // This is relevant during Node deletion revision and Tree creation from cloned data within TreeFactory
-                            VhId treeId = reader.ReadVhId();
-                            treeId = reader.Seed.Value == VhId.Empty.Value ? treeId : reader.Seed;
-                            return  new Node(treeId);
+                            VhId treeVhId = reader.ReadVhId();
+                            treeVhId = reader.Seed.Value == VhId.Empty.Value ? treeVhId : reader.Seed;
+                            return  new Node(entities.GetId(treeVhId));
                         })),
                 new ComponentManager<Rigid>(
                     builder: new ComponentBuilder<Rigid>(),

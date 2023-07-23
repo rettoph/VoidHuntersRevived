@@ -15,6 +15,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     {
         private readonly DoubleDictionary<VhId, EGID, EntityId> _ids = new DoubleDictionary<VhId, EGID, EntityId>();
         private readonly Queue<EntityId> _removed = new Queue<EntityId>();
+        private readonly Dictionary<EntityId, EntityState> _states = new Dictionary<EntityId, EntityState>();
 
         public string name { get; } = nameof(EntityService);
 
@@ -48,20 +49,32 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _ids.TryGet(new EGID(entityId, groupId), out id);
         }
 
+        public EntityState GetState(EntityId id)
+        {
+            if(_states.TryGetValue(id, out EntityState state))
+            {
+                return state;
+            }
+
+            return EntityState.Unknown;
+        }
+
         public void Step(in Step _param)
         {
             while (_removed.TryDequeue(out EntityId removed))
             {
                 _ids.Remove(removed.VhId, removed.EGID);
+                _states.Remove(removed);
             }
         }
 
         internal EntityId Add(VhId vhid, EGID egid)
         {
-            EntityId idMap = new EntityId(egid, vhid);
-            _ids.TryAdd(vhid, egid, idMap);
+            EntityId id = new EntityId(egid, vhid);
+            _ids.TryAdd(vhid, egid, id);
+            _states.Add(id, EntityState.Spawned);
 
-            return idMap;
+            return id;
         }
 
         internal EntityId Remove(VhId vhid)
@@ -72,8 +85,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 throw new NullReferenceException();
             }
 
-            id.Destroyed = true;
             _removed.Enqueue(id);
+            _states[id] = EntityState.Despawned;
 
             return id;
         }

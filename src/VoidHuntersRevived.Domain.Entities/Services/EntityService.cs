@@ -9,6 +9,7 @@ using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Common;
 using Serilog;
+using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {

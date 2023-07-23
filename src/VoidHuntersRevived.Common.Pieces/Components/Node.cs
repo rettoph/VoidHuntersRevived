@@ -7,15 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Common.Pieces.Components
 {
     public struct Node : IEntityComponent
     {
-        public readonly VhId TreeId;
+        public readonly EntityId TreeId;
         public FixMatrix Transformation;
 
-        public Node(VhId treeId)
+        public Node(EntityId treeId)
         {
             this.TreeId = treeId;
         }
