@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         ISubscriber<Input_TractorBeamEmitter_SetActive>,
         IStepEngine<Tick>
     {
-        private readonly IEntityIdService _entities;
+        private readonly IEntityService _entities;
         private readonly ClientPeer _client;
         private readonly Camera2D _camera;
         private readonly TractorBeamEmitterService _tractorBeamEmitterService;
@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public string name { get; } = nameof(InputEngine);
 
         public InputEngine(
-            IEntityIdService entities, 
+            IEntityService entities, 
             ClientPeer client, 
             Camera2D camera, 
             TractorBeamEmitterService tractorBeamEmitterService)

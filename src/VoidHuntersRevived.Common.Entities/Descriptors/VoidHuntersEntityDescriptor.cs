@@ -13,6 +13,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Serialization;
+using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Domain.Common.Components;
 
 namespace VoidHuntersRevived.Common.Entities.Descriptors
@@ -63,19 +64,19 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             return this;
         }
 
-        public void Serialize(EntityWriter writer, EGID egid, EntitiesDB entities, uint index)
+        public void Serialize(IEntityService entities, EntityWriter writer, EGID egid, EntitiesDB entitiesDB, uint index)
         {
             foreach (ComponentManager componentManager in _componentManagers)
             {
-                componentManager.Serializer.Serialize(writer, index, egid.groupID, entities);
+                componentManager.Serializer.Serialize(entities, writer, index, egid.groupID, entitiesDB);
             }
         }
 
-        public void Deserialize(EntityReader reader, ref EntityInitializer initializer)
+        public void Deserialize(IEntityService entities, EntityReader reader, ref EntityInitializer initializer)
         {
             foreach (ComponentManager componentManager in _componentManagers)
             {
-                componentManager.Serializer.Deserialize(reader, ref initializer);
+                componentManager.Serializer.Deserialize(entities, reader, ref initializer);
             }
         }
     }

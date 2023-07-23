@@ -26,9 +26,9 @@ namespace VoidHuntersRevived.Game.Engines
     {
         private static readonly Fix64 AimDamping = Fix64.One / (Fix64)32;
 
-        private readonly IEntityIdService _entities;
+        private readonly IEntityService _entities;
 
-        public TacticalEngine(IEntityIdService entities)
+        public TacticalEngine(IEntityService entities)
         {
             _entities = entities;
         }

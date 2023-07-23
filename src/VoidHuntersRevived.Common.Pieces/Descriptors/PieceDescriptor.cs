@@ -23,11 +23,11 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                 new ComponentManager<Node>(
                     builder: new ComponentBuilder<Node>(),
                     serializer: new ComponentSerializer<Node>(
-                        writer: (writer, node) =>
+                        writer: (entities, writer, node) =>
                         {
                             writer.Write(node.TreeId);
                         },
-                        reader: (reader) =>
+                        reader: (entities, reader) =>
                         {
                             // If no seed is passed the tree should be read, if a seed is passed we assume it is the id of the owning tree
                             // This is relevant during Node deletion revision and Tree creation from cloned data within TreeFactory
@@ -38,23 +38,23 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                 new ComponentManager<Rigid>(
                     builder: new ComponentBuilder<Rigid>(),
                     serializer: new ComponentSerializer<Rigid>(
-                        writer: (writer, instance) =>
+                        writer: (entites, writer, instance) =>
                         {
                             writer.WriteNativeDynamicArray(instance.Shapes, PolygonWriter);
                         },
-                        reader: (reader) => new Rigid()
+                        reader: (entites, reader) => new Rigid()
                         {
                             Shapes = reader.ReadNativeDynamicArray<Polygon>(PolygonReader)
                         })),
                 new ComponentManager<Visible>(
                     builder: new ComponentBuilder<Visible>(),
                     serializer: new ComponentSerializer<Visible>(
-                        writer: (writer, instance) =>
+                        writer: (entites, writer, instance) =>
                         {
                             writer.WriteNativeDynamicArray(instance.Shapes, ShapeWriter);
                             writer.WriteNativeDynamicArray(instance.Paths, ShapeWriter);
                         },
-                        reader: (reader) => new Visible()
+                        reader: (entites, reader) => new Visible()
                         {
                             Shapes = reader.ReadNativeDynamicArray<Shape>(ShapeReader),
                             Paths = reader.ReadNativeDynamicArray<Shape>(ShapeReader)

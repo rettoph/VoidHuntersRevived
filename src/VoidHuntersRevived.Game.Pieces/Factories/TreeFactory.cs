@@ -19,26 +19,22 @@ namespace VoidHuntersRevived.Game.Pieces.Factories
 {
     internal sealed class TreeFactory : ITreeFactory, IEngine
     {
-        private readonly IEntitySpawningService _spawner;
-        private readonly IEntitySerializationService _serialization;
-        private readonly IEntityIdService _entities;
+        private readonly IEntityService _entities;
 
-        public TreeFactory(IEntitySpawningService spawner, IEntitySerializationService serialization, IEntityIdService entities)
+        public TreeFactory(IEntityService entities)
         {
-            _spawner = spawner;
-            _serialization = serialization;
             _entities = entities;
         }
 
         public EntityId Create(VhId vhid, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> head)
         {
             VhId headId = vhid.Create(1);
-            _spawner.Spawn(head, headId, (IEntitySpawningService spawner, ref EntityInitializer initializer) =>
+            _entities.Spawn(head, headId, (IEntityService entities, ref EntityInitializer initializer) =>
             {
                 initializer.Init(new Node(vhid));
             });
 
-            return _spawner.Spawn(tree, vhid, (IEntitySpawningService spawner, ref EntityInitializer initializer) =>
+            return _entities.Spawn(tree, vhid, (IEntityService entities, ref EntityInitializer initializer) =>
             {
                 initializer.Init(new Tree(headId));
             });
@@ -46,12 +42,12 @@ namespace VoidHuntersRevived.Game.Pieces.Factories
 
         public EntityId Create(VhId vhid, IEntityType<TreeDescriptor> tree, EntityData nodes, EntityInitializerDelegate initializerDelegate)
         {
-            EntityId headId = _serialization.Deserialize(vhid, nodes, false);
+            EntityId headId = _entities.Deserialize(vhid, nodes, false);
 
-            return _spawner.Spawn(tree, vhid, (IEntitySpawningService spawner, ref EntityInitializer initializer) =>
+            return _entities.Spawn(tree, vhid, (IEntityService entities, ref EntityInitializer initializer) =>
             {
                 initializer.Init<Tree>(new Tree(headId.VhId));
-                initializerDelegate(spawner, ref initializer);
+                initializerDelegate(entities, ref initializer);
             });
         }
     }

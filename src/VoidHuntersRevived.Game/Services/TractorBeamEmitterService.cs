@@ -14,9 +14,9 @@ namespace VoidHuntersRevived.Game.Services
         private static Fix64 QueryRadius = (Fix64)5;
 
         private readonly ISpace _space;
-        private readonly IEntityIdService _entities;
+        private readonly IEntityService _entities;
 
-        public TractorBeamEmitterService(ISpace space, IEntityIdService entities)
+        public TractorBeamEmitterService(ISpace space, IEntityService entities)
         {
             _space = space;
             _entities = entities;

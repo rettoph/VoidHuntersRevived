@@ -20,10 +20,10 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
     internal sealed class BodyEngine : BasicEngine,
         IReactOnAddAndRemoveEx<Body>, IStepEngine<Step>
     {
-        private readonly IEntityIdService _entities;
+        private readonly IEntityService _entities;
         private readonly ISpace _space;
 
-        public BodyEngine(IEntityIdService entities, ISpace space)
+        public BodyEngine(IEntityService entities, ISpace space)
         {
             _entities = entities;
             _space = space;

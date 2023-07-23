@@ -1,34 +1,22 @@
-﻿using Guppy.Common.Attributes;
-using Guppy.Common.Collections;
-using Serilog;
-using Svelto.DataStructures;
-using Svelto.ECS;
-using Svelto.ECS.Schedulers;
-using Svelto.ECS.Serialization;
+﻿using Svelto.ECS;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using VoidHuntersRevived.Common;
+using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Common.Entities.Engines;
-using VoidHuntersRevived.Common.Entities.Enums;
-using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Messages;
+using VoidHuntersRevived.Common;
+using Guppy.Common.Collections;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    [Sequence<StepSequence>(StepSequence.Cleanup)]
-    internal sealed partial class EntityIdService : IEntityIdService, IEngine, IStepEngine<Step>
+    internal partial class EntityService : IStepEngine<Step>
     {
-        private readonly DoubleDictionary<VhId, EGID, EntityId> _ids;
-        private readonly Queue<EntityId> _removed;
+        private readonly DoubleDictionary<VhId, EGID, EntityId> _ids = new DoubleDictionary<VhId, EGID, EntityId>();
+        private readonly Queue<EntityId> _removed = new Queue<EntityId>();
 
-        public string name { get; } = nameof(EntityIdService);
-
-        public EntityIdService(SimpleEntitiesSubmissionScheduler scheduler)
-        {
-            _ids = new DoubleDictionary<VhId, EGID, EntityId>();
-            _removed = new Queue<EntityId>();
-        }
+        public string name { get; } = nameof(EntityService);
 
         public EntityId GetId(VhId vhid)
         {

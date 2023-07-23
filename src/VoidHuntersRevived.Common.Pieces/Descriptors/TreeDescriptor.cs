@@ -23,13 +23,13 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                 new ComponentManager<Tree>(
                     builder: new ComponentBuilder<Tree>(),
                     serializer: new ComponentSerializer<Tree>(
-                        writer: (writer, tree) =>
+                        writer: (entities, writer, tree) =>
                         {
-                            writer.SerializeEntity(tree.HeadVhId);
+                            entities.Serialize(tree.HeadVhId, writer);
                         },
-                        reader: (reader) =>
+                        reader: (entities, reader) =>
                         {
-                            return new Tree(reader.DeserializeEntity().VhId);
+                            return new Tree(entities.Deserialize(reader).VhId);
                         }))
             });
         }

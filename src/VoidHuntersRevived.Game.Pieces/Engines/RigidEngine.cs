@@ -25,10 +25,10 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
         IEventEngine<DestroyNode>
     {
         private readonly ISpace _space;
-        private readonly IEntityIdService _entities;
+        private readonly IEntityService _entities;
         private readonly ILogger _logger;
 
-        public RigidEngine(ISpace space, IEntityIdService entities, ILogger logger)
+        public RigidEngine(ISpace space, IEntityService entities, ILogger logger)
         {
             _space = space;
             _entities = entities;

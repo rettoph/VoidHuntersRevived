@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
         {
             entityTypes.Configure(PieceTypes.HullTriangle, configuration =>
             {
-                configuration.HasInitializer((IEntitySpawningService spawner, ref EntityInitializer initializer) =>
+                configuration.HasInitializer((IEntityService entities, ref EntityInitializer initializer) =>
                 {
                     initializer.Init<Rigid>(Rigid.Polygon(Fix64.One, 3));
                     initializer.Init<Visible>(Visible.Polygon(Colors.Orange, 3));
@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
 
             entityTypes.Configure(PieceTypes.HullSquare, configuration =>
             {
-                configuration.HasInitializer((IEntitySpawningService spawner, ref EntityInitializer initializer) =>
+                configuration.HasInitializer((IEntityService entities, ref EntityInitializer initializer) =>
                 {
                     initializer.Init<Rigid>(Rigid.Polygon(Fix64.One, 4));
                     initializer.Init<Visible>(Visible.Polygon(Colors.Orange, 4));

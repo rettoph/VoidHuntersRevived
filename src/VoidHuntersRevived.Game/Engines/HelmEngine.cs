@@ -24,10 +24,10 @@ namespace VoidHuntersRevived.Game.Engines
     internal sealed class HelmEngine : BasicEngine,
         IEventEngine<Helm_SetDirection>, IStepEngine<Step>
     {
-        private readonly IEntityIdService _entities;
+        private readonly IEntityService _entities;
         private readonly ISpace _space;
 
-        public HelmEngine(IEntityIdService entities, ISpace space)
+        public HelmEngine(IEntityService entities, ISpace space)
         {
             _entities = entities;
             _space = space;

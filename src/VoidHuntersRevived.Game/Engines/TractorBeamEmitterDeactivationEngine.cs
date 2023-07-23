@@ -22,11 +22,11 @@ namespace VoidHuntersRevived.Game.Engines
         IEventEngine<TractorBeamEmitter_TryDeactivate>,
         IEventEngine<TractorBeamEmitter_Deactivate>
     {
-        private readonly IEntityIdService _entities;
+        private readonly IEntityService _entities;
         private readonly ILogger _logger;
 
         public TractorBeamEmitterDeactivationEngine(
-            IEntityIdService entities,
+            IEntityService entities,
             ILogger logger)
         {
             _entities = entities;

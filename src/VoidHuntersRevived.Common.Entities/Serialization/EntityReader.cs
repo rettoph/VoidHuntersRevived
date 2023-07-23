@@ -14,16 +14,13 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
     {
         private EntityData _loaded;
 
-        private readonly IEntitySerializationService _serializer;
-
         public bool Busy { get; set; }
         public VhId Seed { get; private set; }
         public bool Confirmed { get; private set; }
 
-        public EntityReader(IEntitySerializationService serializer) : base(new MemoryStream())
+        public EntityReader() : base(new MemoryStream())
         {
             _loaded = new EntityData(VhId.Empty, Array.Empty<byte>());
-            _serializer = serializer;
         }
 
         public void Load(VhId seed, EntityData data, bool confirmed)
@@ -126,11 +123,6 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             where T : unmanaged
         {
             return reader.ReadStruct<T>();
-        }
-
-        public EntityId DeserializeEntity()
-        {
-            return _serializer.Deserialize(this);
         }
     }
 }

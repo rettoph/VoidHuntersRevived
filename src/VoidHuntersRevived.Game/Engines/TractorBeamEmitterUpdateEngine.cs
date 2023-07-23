@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Game.Engines
     internal sealed class TractorBeamEmitterUpdateEngine : BasicEngine,
         IStepEngine<Step>
     {
-        private readonly IEntityIdService _entities;
+        private readonly IEntityService _entities;
         private readonly ISpace _space;
         private readonly IFilterService _filters;
         private readonly ILogger _logger;
@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Game.Engines
         public string name { get; } = nameof(TractorBeamEmitterUpdateEngine);
 
         public TractorBeamEmitterUpdateEngine(
-            IEntityIdService entities, 
+            IEntityService entities, 
             ISpace space,
             IFilterService filters,
             ILogger logger,

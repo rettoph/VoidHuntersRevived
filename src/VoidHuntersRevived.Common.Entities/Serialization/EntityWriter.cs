@@ -6,16 +6,11 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
 {
     public sealed class EntityWriter : BinaryWriter
     {
-        private readonly IEntitySerializationService _serializer;
-
         public bool Busy;
 
-        public EntityWriter(IEntitySerializationService serializer) : base(new MemoryStream())
+        public EntityWriter() : base(new MemoryStream())
         {
-            _serializer = serializer;
         }
-
-
 
         public unsafe void WriteStruct<T>(T value)
             where T : unmanaged
@@ -74,21 +69,6 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             where T : unmanaged
         {
             writer.WriteStruct<T>(item);
-        }
-
-        public void Serialize(EntityId id)
-        {
-            _serializer.Serialize(id, this);
-        }
-
-        public void SerializeEntity(VhId vhId)
-        {
-            _serializer.Serialize(vhId, this);
-        }
-
-        public void Serialize(EGID egid)
-        {
-            _serializer.Serialize(egid, this);
         }
     }
 }

@@ -25,19 +25,16 @@ namespace VoidHuntersRevived.Game.Engines
         IEventEngine<TractorBeamEmitter_Activate>,
         IRevertEventEngine<TractorBeamEmitter_Activate>
     {
-        private readonly IEntityIdService _entities;
-        private readonly IEntitySerializationService _serializer;
+        private readonly IEntityService _entities;
         private readonly ITreeFactory _treeFactory;
         private readonly ILogger _logger;
 
         public TractorBeamEmitterActivationEngine(
-            IEntityIdService entities, 
-            IEntitySerializationService serializer,
+            IEntityService entities, 
             ITreeFactory treeFactory,
             ILogger logger)
         {
             _entities = entities;
-            _serializer = serializer;
             _treeFactory = treeFactory;
             _logger = logger;
         }
@@ -62,7 +59,7 @@ namespace VoidHuntersRevived.Game.Engines
             this.Simulation.Publish(eventId, new TractorBeamEmitter_Activate()
             {
                 TractorBeamEmitterVhId = data.ShipVhId,
-                TargetData = _serializer.Serialize(targetTree.HeadVhId)
+                TargetData = _entities.Serialize(targetTree.HeadVhId)
             });
 
             this.Simulation.Publish(eventId, new DespawnEntity()
@@ -92,7 +89,7 @@ namespace VoidHuntersRevived.Game.Engines
                 vhid: eventId.Create(1),
                 tree: EntityTypes.Chain,
                 pieces: data.TargetData,
-                initializer: (IEntitySpawningService spawner, ref EntityInitializer initializer) =>
+                initializer: (IEntityService entities, ref EntityInitializer initializer) =>
                 {
                     initializer.Init<Tractorable>(new Tractorable()
                     {
