@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Game.Engines
             this.Simulation.Publish(eventId, new TractorBeamEmitter_Activate()
             {
                 TractorBeamEmitterVhId = data.ShipVhId,
-                TargetData = _entities.Serialize(targetTree.HeadVhId)
+                TargetData = _entities.Serialize(targetTree.HeadId)
             });
 
             this.Simulation.Publish(eventId, new DespawnEntity()

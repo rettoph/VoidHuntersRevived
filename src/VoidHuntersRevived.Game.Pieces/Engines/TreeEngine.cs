@@ -80,11 +80,11 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
         
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                VhId headId = trees[index].HeadVhId;
+                EntityId headId = trees[index].HeadId;
 
                 this.Simulation.Publish(NameSpace<TreeEngine>.Instance, new DespawnEntity()
                 {
-                    VhId = headId
+                    VhId = headId.VhId
                 });
             }
         }

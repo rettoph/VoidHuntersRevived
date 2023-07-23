@@ -27,7 +27,7 @@ using VoidHuntersRevived.Domain.Common.Components;
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [SimulationTypeFilter(SimulationType.Predictive)]
+    //[SimulationTypeFilter(SimulationType.Predictive)]
     internal sealed class VisibleNodesEngine : BasicEngine, IStepEngine<GameTime>
     {
         private readonly short[] _indexBuffer;

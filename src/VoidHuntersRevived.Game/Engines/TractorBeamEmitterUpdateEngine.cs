@@ -84,8 +84,7 @@ namespace VoidHuntersRevived.Game.Engines
             EntityId targetId = _entities.GetId(tractorBeamEmitter.TargetVhId);
             ref Tree target = ref this.entitiesDB.QueryEntity<Tree>(targetId.EGID);
 
-            EntityId targetHeadId = _entities.GetId(target.HeadVhId);
-            Joint targetHeadChildNode = this.entitiesDB.QueryEntity<Joints>(targetHeadId.EGID).Child;
+            Joint targetHeadChildNode = this.entitiesDB.QueryEntity<Joints>(target.HeadId.EGID).Child;
 
             if (this.TryGetClosestOpenJointOnShipToTactical(shipId, ref tactical, out var openNodeJoint))
             {

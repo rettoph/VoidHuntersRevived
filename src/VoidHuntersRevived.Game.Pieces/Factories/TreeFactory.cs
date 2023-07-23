@@ -28,25 +28,24 @@ namespace VoidHuntersRevived.Game.Pieces.Factories
 
         public EntityId Create(VhId vhid, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> head)
         {
-            VhId headId = vhid.Create(1);
-            _entities.Spawn(head, headId, (IEntityService entities, ref EntityInitializer initializer) =>
-            {
-                initializer.Init(new Node(vhid));
-            });
-
             return _entities.Spawn(tree, vhid, (IEntityService entities, ref EntityInitializer initializer) =>
             {
+                EntityId headId = _entities.Spawn(head, vhid.Create(1), (IEntityService entities, ref EntityInitializer initializer) =>
+                {
+                    initializer.Init(new Node(vhid));
+                });
+
                 initializer.Init(new Tree(headId));
             });
         }
 
         public EntityId Create(VhId vhid, IEntityType<TreeDescriptor> tree, EntityData nodes, EntityInitializerDelegate initializerDelegate)
         {
-            EntityId headId = _entities.Deserialize(vhid, nodes, false);
-
             return _entities.Spawn(tree, vhid, (IEntityService entities, ref EntityInitializer initializer) =>
             {
-                initializer.Init<Tree>(new Tree(headId.VhId));
+                EntityId headId = entities.Deserialize(vhid, nodes, false);
+
+                initializer.Init<Tree>(new Tree(headId));
                 initializerDelegate(entities, ref initializer);
             });
         }

@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Physics
             _body = body;
             _aether = _body._aether.CreateFixture(polygon.ToShape());
             _aether.Tag = this;
-            _aether.CollisionGroup = -1;
+            //_aether.CollisionGroup = -1;
 
             this.Id = entityId;
         }
