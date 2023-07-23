@@ -123,21 +123,22 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private EntityId SpawnDescriptor(VoidHuntersEntityDescriptor descriptor, VhId vhid, EntityInitializerDelegate? initializerDelegate)
         {
             EntityInitializer initializer = _descriptors.Spawn(descriptor, _factory, vhid);
+            EntityId id = this.Add(vhid, initializer.EGID);
 
             initializerDelegate?.Invoke(this, ref initializer);
 
-            return this.Add(vhid, initializer.EGID);
+            return id;
         }
 
         private EntityId SpawnType(IEntityType type, VhId vhid, EntityInitializerDelegate? initializerDelegate)
         {
             EntityInitializer initializer = _descriptors.Spawn(type.Descriptor, _factory, vhid);
-
+            EntityId id = this.Add(vhid, initializer.EGID);
             _types.GetConfiguration(type).Initialize(this, ref initializer);
 
             initializerDelegate?.Invoke(this, ref initializer);
 
-            return this.Add(vhid, initializer.EGID);
+            return id;
         }
 
         private void Despawn(VhId vhid)
