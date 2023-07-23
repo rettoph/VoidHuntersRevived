@@ -92,7 +92,7 @@ namespace VoidHuntersRevived.Game.Engines
                 vhid: eventId.Create(1),
                 tree: EntityTypes.Chain,
                 pieces: data.TargetData,
-                initializer: (ref EntityInitializer initializer) =>
+                initializer: (IEntitySpawningService spawner, ref EntityInitializer initializer) =>
                 {
                     initializer.Init<Tractorable>(new Tractorable()
                     {

@@ -19,13 +19,13 @@ namespace VoidHuntersRevived.Game.Pieces.Factories
 {
     internal sealed class TreeFactory : ITreeFactory, IEngine
     {
-        private readonly IEventPublishingService _events;
+        private readonly IEntitySpawningService _spawner;
         private readonly IEntitySerializationService _serialization;
         private readonly IEntityIdService _entities;
 
-        public TreeFactory(IEventPublishingService events, IEntitySerializationService serialization, IEntityIdService entities)
+        public TreeFactory(IEntitySpawningService spawner, IEntitySerializationService serialization, IEntityIdService entities)
         {
-            _events = events;
+            _spawner = spawner;
             _serialization = serialization;
             _entities = entities;
         }
@@ -33,45 +33,26 @@ namespace VoidHuntersRevived.Game.Pieces.Factories
         public EntityId Create(VhId vhid, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> head)
         {
             VhId headId = vhid.Create(1);
-            _events.Publish(vhid, new SpawnEntityType()
+            _spawner.Spawn(head, headId, (IEntitySpawningService spawner, ref EntityInitializer initializer) =>
             {
-                Type = tree,
-                VhId = vhid,
-                Initializer = (ref EntityInitializer initializer) =>
-                {
-                    initializer.Init(new Tree(headId));
-                }
+                initializer.Init(new Node(vhid));
             });
 
-            _events.Publish(vhid, new SpawnEntityType()
+            return _spawner.Spawn(tree, vhid, (IEntitySpawningService spawner, ref EntityInitializer initializer) =>
             {
-                Type = head,
-                VhId = headId,
-                Initializer = (ref EntityInitializer initializer) =>
-                {
-                    initializer.Init(new Node(vhid));
-                }
+                initializer.Init(new Tree(headId));
             });
-
-            return _entities.GetId(vhid);
         }
 
         public EntityId Create(VhId vhid, IEntityType<TreeDescriptor> tree, EntityData nodes, EntityInitializerDelegate initializerDelegate)
         {
             EntityId headId = _serialization.Deserialize(vhid, nodes, false);
 
-            _events.Publish(vhid, new SpawnEntityType()
+            return _spawner.Spawn(tree, vhid, (IEntitySpawningService spawner, ref EntityInitializer initializer) =>
             {
-                Type = tree,
-                VhId = vhid,
-                Initializer = (ref EntityInitializer initializer) =>
-                {
-                    initializer.Init<Tree>(new Tree(headId.VhId));
-                    initializerDelegate(ref initializer);
-                }
+                initializer.Init<Tree>(new Tree(headId.VhId));
+                initializerDelegate(spawner, ref initializer);
             });
-
-            return _entities.GetId(vhid);
         }
     }
 }

@@ -8,5 +8,6 @@ namespace VoidHuntersRevived.Common.Entities.Services
 {
     public interface IEntitySpawningService
     {
+        EntityId Spawn(IEntityType Type, VhId VhId, EntityInitializerDelegate? Initializer);
     }
 }

@@ -30,15 +30,17 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly ILogger _logger;
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
+        private readonly IEventPublishingService _events;
         private readonly EntityTypeService _types;
         private readonly EntityIdService _entities;
         private readonly HashCache<VhId> _destroyed;
         private readonly Dictionary<VhId, EntityData> _backups;
 
-        public EntitySpawningService(IEntitySerializationService serialization, IEntityDescriptorService descriptors, ILogger logger, EnginesRoot enginesRoot, EntityTypeService types, EntityIdService entities)
+        public EntitySpawningService(IEntitySerializationService serialization, IEntityDescriptorService descriptors, IEventPublishingService events, ILogger logger, EnginesRoot enginesRoot, EntityTypeService types, EntityIdService entities)
         {
             _serialization = serialization;
             _descriptors = descriptors;
+            _events = events;
             _logger = logger;
             _factory = enginesRoot.GenerateEntityFactory();
             _functions = enginesRoot.GenerateEntityFunctions();
@@ -46,6 +48,18 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _entities = entities;
             _destroyed = new HashCache<VhId>(TimeSpan.FromSeconds(5));
             _backups = new Dictionary<VhId, EntityData>();
+        }
+
+        public EntityId Spawn(IEntityType type, VhId vhId, EntityInitializerDelegate? initializer)
+        {
+            _events.Publish(NameSpace<EntitySpawningService>.Instance, new SpawnEntityType()
+            {
+                Type = type,
+                VhId = vhId,
+                Initializer = initializer
+            });
+
+            return _entities.GetId(vhId);
         }
 
         public void Process(VhId eventId, SpawnEntityDescriptor data)
@@ -144,7 +158,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             EntityInitializer initializer = _descriptors.Spawn(descriptor, _factory, vhid);
 
-            initializerDelegate?.Invoke(ref initializer);
+            initializerDelegate?.Invoke(this,ref initializer);
 
             return _entities.Add(vhid, initializer.EGID);
         }
@@ -153,9 +167,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             EntityInitializer initializer = _descriptors.Spawn(type.Descriptor, _factory, vhid);
 
-            _types.GetConfiguration(type).Initialize(ref initializer);
+            _types.GetConfiguration(type).Initialize(this, ref initializer);
 
-            initializerDelegate?.Invoke(ref initializer);
+            initializerDelegate?.Invoke(this, ref initializer);
 
             return _entities.Add(vhid, initializer.EGID);
         }

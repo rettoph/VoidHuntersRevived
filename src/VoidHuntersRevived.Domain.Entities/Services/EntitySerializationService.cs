@@ -94,7 +94,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 Descriptor = descriptor,
                 VhId = vhid,
-                Initializer = (ref EntityInitializer initializer) =>
+                Initializer = (IEntitySpawningService spawner, ref EntityInitializer initializer) =>
                 {
                     reader.Load(readerState);
                     descriptor.Deserialize(reader, ref initializer);
