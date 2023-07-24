@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Common.Entities.Services
 
         VoidHuntersEntityDescriptor GetByEntityVhId(VhId id);
 
-        EntityInitializer Spawn(VoidHuntersEntityDescriptor descriptor, IEntityFactory factory, VhId vhid);
+        EntityInitializer Spawn(VoidHuntersEntityDescriptor descriptor, IEntityFactory factory, VhId vhid, out EntityId id);
 
         void Despawn(IEntityFunctions functions, in EntityId id);
     }

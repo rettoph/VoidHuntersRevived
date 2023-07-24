@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Common.Components;
+using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Entities.Utilities
 {
@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
             Descriptor = descriptor;
         }
 
-        public abstract EntityInitializer Spawn(IEntityFactory factory, VhId vhid);
+        public abstract EntityInitializer Spawn(IEntityFactory factory, VhId vhid, out EntityId id);
         public abstract void Despawn(IEntityFunctions functions, in EGID egid);
 
         public static VoidHuntersEntityDescriptorSpawner Build(VoidHuntersEntityDescriptor descriptor)
@@ -42,11 +42,13 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
             Descriptor = descriptor;
         }
 
-        public override EntityInitializer Spawn(IEntityFactory factory, VhId vhid)
+        public override EntityInitializer Spawn(IEntityFactory factory, VhId vhid, out EntityId id)
         {
             EGID egid = new EGID(EntityId++, Group);
+            id = new EntityId(egid, vhid);
+
             EntityInitializer initializer = factory.BuildEntity(egid, this.Descriptor);
-            initializer.Init(new EntityVhId() { Value = vhid });
+            initializer.Init(id);
 
             return initializer;
         }

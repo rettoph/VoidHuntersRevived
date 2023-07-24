@@ -1,13 +1,6 @@
 ﻿using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities.Events;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Common.Components;
 using Serilog;
+using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Entities.Engines
 {
@@ -31,11 +24,11 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<T> entities, ExclusiveGroupStruct groupID)
         {
             var (components, egids, _) = entities;
-            var (vhids, _) = this.entitiesDB.QueryEntities<EntityVhId>(groupID);
+            var (ids, _) = this.entitiesDB.QueryEntities<EntityId>(groupID);
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                _logger.Verbose("{ClassName}::{MethodName} - Disposing of {ComponentType} for {VhId}", nameof(DisposableEngine<T>), nameof(Remove), typeof(T).Name, vhids[index].Value.Value);
+                _logger.Verbose("{ClassName}::{MethodName} - Disposing of {ComponentType} for {VhId}", nameof(DisposableEngine<T>), nameof(Remove), typeof(T).Name, ids[index].VhId.Value);
                 components[index].Dispose();
             }
         }

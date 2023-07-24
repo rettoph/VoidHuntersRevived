@@ -28,11 +28,11 @@ namespace VoidHuntersRevived.Game.Pieces.Factories
 
         public EntityId Create(VhId vhid, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> head)
         {
-            return _entities.Spawn(tree, vhid, (IEntityService entities, ref EntityInitializer initializer) =>
+            return _entities.Spawn(tree, vhid, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {
-                EntityId headId = entities.Spawn(head, vhid.Create(1), (IEntityService entities, ref EntityInitializer initializer) =>
+                EntityId headId = entities.Spawn(head, vhid.Create(1), (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                 {
-                    initializer.Init(new Node(entities.GetId(vhid)));
+                    initializer.Init(new Node(id,entities.GetId(vhid)));
                 });
 
                 initializer.Init(new Tree(headId));
@@ -41,12 +41,12 @@ namespace VoidHuntersRevived.Game.Pieces.Factories
 
         public EntityId Create(VhId vhid, IEntityType<TreeDescriptor> tree, EntityData nodes, EntityInitializerDelegate initializerDelegate)
         {
-            return _entities.Spawn(tree, vhid, (IEntityService entities, ref EntityInitializer initializer) =>
+            return _entities.Spawn(tree, vhid, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {
                 EntityId headId = entities.Deserialize(vhid, nodes, false);
 
                 initializer.Init<Tree>(new Tree(headId));
-                initializerDelegate(entities, ref initializer);
+                initializerDelegate(entities, ref initializer, in id);
             });
         }
     }

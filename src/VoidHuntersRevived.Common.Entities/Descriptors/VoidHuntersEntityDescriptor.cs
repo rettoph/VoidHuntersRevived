@@ -14,7 +14,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Domain.Common.Components;
 
 namespace VoidHuntersRevived.Common.Entities.Descriptors
 {
@@ -72,11 +71,11 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             }
         }
 
-        public void Deserialize(IEntityService entities, EntityReader reader, ref EntityInitializer initializer)
+        public void Deserialize(IEntityService entities, EntityReader reader, ref EntityInitializer initializer, in EntityId id)
         {
             foreach (ComponentManager componentManager in _componentManagers)
             {
-                componentManager.Serializer.Deserialize(entities, reader, ref initializer);
+                componentManager.Serializer.Deserialize(entities, reader, ref initializer, in id);
             }
         }
     }

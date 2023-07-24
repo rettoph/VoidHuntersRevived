@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                             writer.WriteStruct(instance.Child);
                             writer.WriteNativeDynamicArray(instance.Parents);
                         },
-                        reader: (entities, reader) => new Joints()
+                        reader: (entities, reader, id) => new Joints()
                         {
                             Child = reader.ReadStruct<Joint>(),
                             Parents = reader.ReadNativeDynamicArray<Joint>(),

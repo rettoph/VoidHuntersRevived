@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Entities
 {
-    public struct EntityId
+    public struct EntityId : IEntityComponent
     {
         public readonly EGID EGID;
         public readonly VhId VhId;

@@ -11,7 +11,6 @@ using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -34,7 +33,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             writer.Write(id.VhId);
             writer.WriteStruct(descriptor.Id);
 
-            this.entitiesDB.QueryEntitiesAndIndex<EntityVhId>(id.EGID, out uint index);
+            this.entitiesDB.QueryEntitiesAndIndex<EntityId>(id.EGID, out uint index);
             descriptor.Serialize(this, writer, id.EGID, this.entitiesDB, index);
         }
 
@@ -58,10 +57,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 Descriptor = descriptor,
                 VhId = vhid,
-                Initializer = (IEntityService entities, ref EntityInitializer initializer) =>
+                Initializer = (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                 {
                     reader.Load(readerState);
-                    descriptor.Deserialize(this, reader, ref initializer);
+                    descriptor.Deserialize(this, reader, ref initializer, in id);
 
                     reader.Busy = false;
                 }

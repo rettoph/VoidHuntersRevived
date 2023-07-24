@@ -10,5 +10,11 @@ namespace VoidHuntersRevived.Common.Pieces
     {
         public readonly VhId NodeId;
         public readonly byte Index;
+
+        public NodeJointId(VhId nodeId, byte index)
+        {
+            NodeId = nodeId;
+            Index = index;
+        }
     }
 }

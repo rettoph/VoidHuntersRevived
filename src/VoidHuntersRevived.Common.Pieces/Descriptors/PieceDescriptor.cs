@@ -27,13 +27,13 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                         {
                             writer.Write(node.TreeId.VhId);
                         },
-                        reader: (entities, reader) =>
+                        reader: (entities, reader, id) =>
                         {
                             // If no seed is passed the tree should be read, if a seed is passed we assume it is the id of the owning tree
                             // This is relevant during Node deletion revision and Tree creation from cloned data within TreeFactory
                             VhId treeVhId = reader.ReadVhId();
                             treeVhId = reader.Seed.Value == VhId.Empty.Value ? treeVhId : reader.Seed;
-                            return  new Node(entities.GetId(treeVhId));
+                            return  new Node(id, entities.GetId(treeVhId));
                         })),
                 new ComponentManager<Rigid>(
                     builder: new ComponentBuilder<Rigid>(),
@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                         {
                             writer.WriteNativeDynamicArray(instance.Shapes, PolygonWriter);
                         },
-                        reader: (entites, reader) => new Rigid()
+                        reader: (entites, reader, id) => new Rigid()
                         {
                             Shapes = reader.ReadNativeDynamicArray<Polygon>(PolygonReader)
                         })),
@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                             writer.WriteNativeDynamicArray(instance.Shapes, ShapeWriter);
                             writer.WriteNativeDynamicArray(instance.Paths, ShapeWriter);
                         },
-                        reader: (entites, reader) => new Visible()
+                        reader: (entites, reader, id) => new Visible()
                         {
                             Shapes = reader.ReadNativeDynamicArray<Shape>(ShapeReader),
                             Paths = reader.ReadNativeDynamicArray<Shape>(ShapeReader)

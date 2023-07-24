@@ -12,7 +12,6 @@ using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Domain.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
@@ -33,11 +32,11 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Location> entities, ExclusiveGroupStruct groupID)
         {
-            var (vhids, collisions, _) = this.entitiesDB.QueryEntities<EntityVhId, Collision>(groupID);
+            var (ids, collisions, _) = this.entitiesDB.QueryEntities<EntityId, Collision>(groupID);
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                IBody body = _space.GetOrCreateBody(vhids[index].Value);
+                IBody body = _space.GetOrCreateBody(ids[index].VhId);
                 body.CollisionCategories = collisions[index].Categories;
                 body.CollidesWith = collisions[index].CollidesWith;
             }
@@ -45,22 +44,22 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Location> entities, ExclusiveGroupStruct groupID)
         {
-            var (vhids, _) = this.entitiesDB.QueryEntities<EntityVhId>(groupID);
+            var (ids, _) = this.entitiesDB.QueryEntities<EntityId>(groupID);
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                _space.DestroyBody(vhids[index].Value);
+                _space.DestroyBody(ids[index].VhId);
             }
         }
 
         public void Step(in Step _param)
         {
-            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = this.entitiesDB.FindGroups<EntityVhId, Location>();
-            foreach (var ((vhids, bodies, count), _) in this.entitiesDB.QueryEntities<EntityVhId, Location>(groups))
+            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = this.entitiesDB.FindGroups<Location>();
+            foreach (var ((ids, bodies, count), _) in this.entitiesDB.QueryEntities<EntityId, Location>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {
-                    IBody bodyInstance = _space.GetBody(vhids[i].Value);
+                    IBody bodyInstance = _space.GetBody(ids[i].VhId);
                     ref Location bodyComponent = ref bodies[i];
 
                     bodyComponent.Position = bodyInstance.Position;

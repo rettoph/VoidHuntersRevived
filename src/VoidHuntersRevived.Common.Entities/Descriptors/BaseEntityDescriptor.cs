@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Domain.Common.Components;
 
 namespace VoidHuntersRevived.Common.Entities.Descriptors
 {
@@ -12,7 +11,7 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
     {
         private readonly IComponentBuilder[] _componentsToBuild = new[]
         {
-            new ComponentBuilder<EntityVhId>()
+            new ComponentBuilder<EntityId>()
         };
 
         public IComponentBuilder[] componentsToBuild => _componentsToBuild;

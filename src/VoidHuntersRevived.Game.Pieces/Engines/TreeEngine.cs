@@ -20,7 +20,6 @@ using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Domain.Common.Components;
 
 namespace VoidHuntersRevived.Game.Pieces.Engines
 {
@@ -92,11 +91,11 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
         public void Step(in Step _param)
         {
             LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = this.entitiesDB.FindGroups<Tree>();
-            foreach (var ((vhids, trees, egids, count), _) in this.entitiesDB.QueryEntities<EntityVhId, Tree>(groups))
+            foreach (var ((ids, trees, count), _) in this.entitiesDB.QueryEntities<EntityId, Tree>(groups))
             {
                 for (uint treeIndex = 0; treeIndex < count; treeIndex++)
                 {
-                    ref var filter = ref _filters.GetFilter<Node>(vhids[treeIndex].Value);
+                    ref var filter = ref _filters.GetFilter<Node>(ids[treeIndex].VhId);
 
                     foreach (var (nodeIndices, group) in filter)
                     {

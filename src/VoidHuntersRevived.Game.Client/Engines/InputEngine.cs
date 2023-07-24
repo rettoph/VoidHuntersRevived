@@ -26,6 +26,7 @@ using VoidHuntersRevived.Common.Entities.Services;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Game.Components;
+using VoidHuntersRevived.Common.Pieces;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -109,6 +110,12 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
             else
             {
+
+                if (_tractorBeamEmitterService.TryGetClosestOpenJoint(shipId, (FixVector2)this.CurrentTargetPosition, out NodeJoint nodeJoint))
+                {
+
+                }
+
                 this.Simulation.Input(
                     sender: eventId,
                     data: new TractorBeamEmitter_TryDeactivate()

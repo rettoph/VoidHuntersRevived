@@ -30,10 +30,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _instanceSpawners[id.Value].Descriptor;
         }
 
-        public EntityInitializer Spawn(VoidHuntersEntityDescriptor descriptor, IEntityFactory factory, VhId vhid)
+        public EntityInitializer Spawn(VoidHuntersEntityDescriptor descriptor, IEntityFactory factory, VhId vhid, out EntityId id)
         {
             VoidHuntersEntityDescriptorSpawner spawner = _spawners[descriptor.Id.Value];
-            EntityInitializer initializer = spawner.Spawn(factory, vhid);
+            EntityInitializer initializer = spawner.Spawn(factory, vhid, out id);
 
             _instanceSpawners.Add(vhid.Value, spawner);
 

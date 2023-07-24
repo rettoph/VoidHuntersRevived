@@ -12,7 +12,6 @@ using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Domain.Common.Components;
 
 namespace VoidHuntersRevived.Game.Pieces.Engines
 {

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Loaders;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics.Components;
@@ -20,7 +21,7 @@ namespace VoidHuntersRevived.Game.Loaders
         {
             entityTypes.Configure(EntityTypes.UserShip, configuration =>
             {
-                configuration.HasInitializer((IEntityService entities, ref EntityInitializer initializer) =>
+                configuration.HasInitializer((IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                 {
                     initializer.Init<Collision>(new Collision()
                     {
@@ -32,7 +33,7 @@ namespace VoidHuntersRevived.Game.Loaders
 
             entityTypes.Configure(EntityTypes.Chain, configuration =>
             {
-                configuration.HasInitializer((IEntityService entities, ref EntityInitializer initializer) =>
+                configuration.HasInitializer((IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                 {
                     initializer.Init<Collision>(new Collision()
                     {

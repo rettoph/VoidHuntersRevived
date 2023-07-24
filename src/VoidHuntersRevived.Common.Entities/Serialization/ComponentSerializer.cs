@@ -19,16 +19,16 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
         }
 
         public abstract void Serialize(IEntityService entities, EntityWriter writer, uint sourceIndex, ExclusiveGroupStruct groupId, EntitiesDB entitiesDB);
-        public abstract void Deserialize(IEntityService entities, EntityReader reader, ref EntityInitializer initializer);
+        public abstract void Deserialize(IEntityService entities, EntityReader reader, ref EntityInitializer initializer, in EntityId id);
     }
 
     public class ComponentSerializer<T> : ComponentSerializer
         where T : unmanaged, IEntityComponent
     {
         private Action<IEntityService, EntityWriter, T> _writer;
-        private Func<IEntityService, EntityReader, T> _reader;
+        private Func<IEntityService, EntityReader, EntityId, T> _reader;
 
-        public ComponentSerializer(Action<IEntityService, EntityWriter, T> writer, Func<IEntityService, EntityReader, T> reader) : base(typeof(T))
+        public ComponentSerializer(Action<IEntityService, EntityWriter, T> writer, Func<IEntityService, EntityReader, EntityId, T> reader) : base(typeof(T))
         {
             _writer = writer;
             _reader = reader;
@@ -42,9 +42,9 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             _writer(entities, writer, component);
         }
 
-        public override void Deserialize(IEntityService entities, EntityReader reader, ref EntityInitializer initializer)
+        public override void Deserialize(IEntityService entities, EntityReader reader, ref EntityInitializer initializer, in EntityId id)
         {
-            initializer.Init<T>(_reader(entities, reader));
+            initializer.Init<T>(_reader(entities, reader, id));
         }
 
 
@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
 
             writer.Write(span);
         }
-        private unsafe static T RawDeserialize(IEntityService entities, EntityReader reader)
+        private unsafe static T RawDeserialize(IEntityService entities, EntityReader reader, EntityId id)
         {
             Span<byte> span = stackalloc byte[sizeof(T)];
             reader.Read(span);

@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Pieces;
@@ -22,7 +23,6 @@ using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Domain.Common.Components;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             var groups = this.entitiesDB.FindGroups<Visible, Node>();
 
             _primitiveBatch.Begin(_camera);
-            foreach (var ((vhids, visibles, nodes, count), _) in this.entitiesDB.QueryEntities<EntityVhId, Visible, Node>(groups))
+            foreach (var ((vhids, visibles, nodes, count), _) in this.entitiesDB.QueryEntities<EntityId, Visible, Node>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -70,14 +70,14 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     }
                     catch(Exception e)
                     {
-                        _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to fill shapes for visible {VisibleVhId}", nameof(VisibleNodesEngine), nameof(Step), vhids[i].Value.Value);
+                        _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to fill shapes for visible {VisibleVhId}", nameof(VisibleNodesEngine), nameof(Step), vhids[i].VhId.Value);
                     }
                 }
             }
             _primitiveBatch.End();
 
             _primitiveBatch.Begin(_screen.Camera);
-            foreach (var ((vhids, visibles, nodes, count), _) in this.entitiesDB.QueryEntities<EntityVhId, Visible, Node>(groups))
+            foreach (var ((vhids, visibles, nodes, count), _) in this.entitiesDB.QueryEntities<EntityId, Visible, Node>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -88,7 +88,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     }
                     catch (Exception e)
                     {
-                        _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to trace paths for visible {VisibleVhId}", nameof(VisibleNodesEngine), nameof(Step), vhids[i].Value.Value);
+                        _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to trace paths for visible {VisibleVhId}", nameof(VisibleNodesEngine), nameof(Step), vhids[i].VhId.Value);
                     }
                 }
             }

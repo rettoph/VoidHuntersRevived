@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                         {
                             entities.Serialize(tree.HeadId, writer);
                         },
-                        reader: (entities, reader) =>
+                        reader: (entities, reader, id) =>
                         {
                             return new Tree(entities.Deserialize(reader));
                         }))

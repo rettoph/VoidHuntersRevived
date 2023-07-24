@@ -68,10 +68,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
         }
 
-        internal EntityId Add(VhId vhid, EGID egid)
+        internal EntityId Add(EntityId id)
         {
-            EntityId id = new EntityId(egid, vhid);
-            _ids.TryAdd(vhid, egid, id);
+            _ids.TryAdd(id.VhId, id.EGID, id);
             _states.Add(id, EntityState.Spawned);
 
             return id;

@@ -10,7 +10,6 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Domain.Common.Components;
 
 namespace VoidHuntersRevived.Common.Entities
 {
@@ -34,9 +33,9 @@ namespace VoidHuntersRevived.Common.Entities
             return this;
         }
 
-        public void Initialize(IEntityService entities, ref EntityInitializer initializer)
+        public void Initialize(IEntityService entities, ref EntityInitializer initializer, in EntityId id)
         {
-            _initializer?.Invoke(entities, ref initializer);
+            _initializer?.Invoke(entities, ref initializer, in id);
         }
     }
 }
