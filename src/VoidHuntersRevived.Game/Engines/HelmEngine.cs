@@ -12,6 +12,7 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics;
+using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Game.Components;
@@ -52,7 +53,7 @@ namespace VoidHuntersRevived.Game.Engines
 
         public void Step(in Step _param)
         {
-            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = this.entitiesDB.FindGroups<Helm, Body>();
+            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = this.entitiesDB.FindGroups<Helm, Location>();
             foreach (var ((helms, entityIds, count), groupId) in this.entitiesDB.QueryEntities<Helm>(groups))
             {
                 for (int i = 0; i < count; i++)

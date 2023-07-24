@@ -19,6 +19,9 @@ namespace VoidHuntersRevived.Common.Physics
         FixVector2 LinearVelocity { get; }
         Fix64 AngularVelocity { get; }
 
+        CollisionGroup CollisionCategories { get; set; }
+        CollisionGroup CollidesWith { get; set; }
+
         IFixture Create(Polygon polygon, VhId id);
         void Destroy(IFixture fixture);
         void Destroy(VhId id);

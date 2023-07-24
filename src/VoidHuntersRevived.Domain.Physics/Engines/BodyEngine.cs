@@ -10,15 +10,15 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics;
-using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Common.Components;
 
-namespace VoidHuntersRevived.Game.Pieces.Engines
+namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
     internal sealed class BodyEngine : BasicEngine,
-        IReactOnAddAndRemoveEx<Body>, IStepEngine<Step>
+        IReactOnAddAndRemoveEx<Location>, IStepEngine<Step>
     {
         private readonly IEntityService _entities;
         private readonly ISpace _space;
@@ -31,17 +31,19 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
         public string name { get; } = nameof(BodyEngine);
 
-        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Body> entities, ExclusiveGroupStruct groupID)
+        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Location> entities, ExclusiveGroupStruct groupID)
         {
-            var (vhids, _) = this.entitiesDB.QueryEntities<EntityVhId>(groupID);
+            var (vhids, collisions, _) = this.entitiesDB.QueryEntities<EntityVhId, Collision>(groupID);
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                _space.GetOrCreateBody(vhids[index].Value);
+                IBody body = _space.GetOrCreateBody(vhids[index].Value);
+                body.CollisionCategories = collisions[index].Categories;
+                body.CollidesWith = collisions[index].CollidesWith;
             }
         }
 
-        public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Body> entities, ExclusiveGroupStruct groupID)
+        public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Location> entities, ExclusiveGroupStruct groupID)
         {
             var (vhids, _) = this.entitiesDB.QueryEntities<EntityVhId>(groupID);
 
@@ -53,13 +55,13 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
         public void Step(in Step _param)
         {
-            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = this.entitiesDB.FindGroups<EntityVhId, Body>();
-            foreach (var ((vhids, bodies, count), _) in this.entitiesDB.QueryEntities<EntityVhId, Body>(groups))
+            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = this.entitiesDB.FindGroups<EntityVhId, Location>();
+            foreach (var ((vhids, bodies, count), _) in this.entitiesDB.QueryEntities<EntityVhId, Location>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {
                     IBody bodyInstance = _space.GetBody(vhids[i].Value);
-                    ref Body bodyComponent = ref bodies[i];
+                    ref Location bodyComponent = ref bodies[i];
 
                     bodyComponent.Position = bodyInstance.Position;
                     bodyComponent.Rotation = bodyInstance.Rotation;

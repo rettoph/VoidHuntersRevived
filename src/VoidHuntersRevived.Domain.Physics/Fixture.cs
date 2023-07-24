@@ -7,6 +7,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Dynamics;
+using tainicom.Aether.Physics2D.Dynamics;
 
 namespace VoidHuntersRevived.Domain.Physics
 {
@@ -19,12 +20,13 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public IBody Body => _body;
 
-        public Fixture(Body body, Polygon polygon, VhId entityId)
+        public Fixture(Body body, Polygon polygon, Category colissionCategories, Category collidesWith, VhId entityId)
         {
             _body = body;
             _aether = _body._aether.CreateFixture(polygon.ToShape());
             _aether.Tag = this;
-            //_aether.CollisionGroup = -1;
+            _aether.CollisionCategories = colissionCategories;
+            _aether.CollidesWith = collidesWith;
 
             this.Id = entityId;
         }

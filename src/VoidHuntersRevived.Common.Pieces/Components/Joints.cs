@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces.Utilities;
 
 namespace VoidHuntersRevived.Common.Pieces.Components
@@ -35,11 +36,11 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 
                 if (i == 0)
                 {
-                    child = new Joint(byte.MaxValue, new FixLocation(center, vertexAngles[i].Angle));
+                    child = new Joint(byte.MaxValue, new Location(center, vertexAngles[i].Angle));
                 }
                 else
                 {
-                    parents.Set(i - 1, new Joint((byte)i, new FixLocation(center, vertexAngles[i].Angle)));
+                    parents.Set(i - 1, new Joint((byte)i, new Location(center, vertexAngles[i].Angle)));
                 }
             }
 

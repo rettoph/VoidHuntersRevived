@@ -1,36 +1,18 @@
 ﻿using Guppy.Attributes;
+using Microsoft.Xna.Framework;
+using Serilog;
 using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Events;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Entities.Engines;
-using VoidHuntersRevived.Common.FixedPoint;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Game.Components;
-using VoidHuntersRevived.Game.Events;
-using VoidHuntersRevived.Common.Physics;
-using VoidHuntersRevived.Common.Pieces.Components;
-using VoidHuntersRevived.Common.Pieces.Factories;
-using tainicom.Aether.Physics2D.Dynamics;
-using VoidHuntersRevived.Game.Services;
-using Svelto.DataStructures;
-using VoidHuntersRevived.Game.Enums;
-using VoidHuntersRevived.Domain.Common.Components;
-using Serilog;
-using Svelto.ECS.Native;
-using System.Xml.Linq;
-using VoidHuntersRevived.Common.Pieces;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
-using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
+using VoidHuntersRevived.Common.Physics;
+using VoidHuntersRevived.Common.Pieces;
+using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Domain.Common.Components;
+using VoidHuntersRevived.Game.Components;
+using VoidHuntersRevived.Game.Services;
 
 namespace VoidHuntersRevived.Game.Engines
 {
@@ -38,6 +20,8 @@ namespace VoidHuntersRevived.Game.Engines
     internal sealed class TractorBeamEmitterUpdateEngine : BasicEngine,
         IStepEngine<Step>
     {
+        private static readonly Fix64 OpenNodemaximumDistance = Fix64.One;
+
         private readonly IEntityService _entities;
         private readonly ISpace _space;
         private readonly IFilterService _filters;
@@ -104,7 +88,7 @@ namespace VoidHuntersRevived.Game.Engines
         {
             // Since ships are Trees the ShipId will be the filterId seen in NodeEngine
             ref var filter = ref _filters.GetFilter<Node>(shipId);
-            Fix64 closestOpenJointOnShipToTacticalDistance = Fix64.One;
+            Fix64 closestOpenJointOnShipToTacticalDistance = OpenNodemaximumDistance;
             nodeJoint = default!;
             bool result = false;
 
@@ -141,7 +125,7 @@ namespace VoidHuntersRevived.Game.Engines
             out Fix64 closestOpenJointToTacticalDistance,
             out NodeJoint closestOpenNodeJointOnNodeToTactical)
         {
-            closestOpenJointToTacticalDistance = Fix64.One;
+            closestOpenJointToTacticalDistance = OpenNodemaximumDistance;
             closestOpenNodeJointOnNodeToTactical = default!;
             bool result = false;
 

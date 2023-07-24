@@ -30,6 +30,9 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public FixMatrix Transformation => FixMatrix.CreateRotationZ(this.Rotation) * FixMatrix.CreateTranslation(this.Position.X, this.Position.Y, Fix64.Zero);
 
+        public CollisionGroup CollisionCategories { get; set; }
+        public CollisionGroup CollidesWith { get; set; }
+
         public Body(Space space, VhId id)
         {
             _space = space;
@@ -69,7 +72,13 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public IFixture Create(Polygon polygon, VhId id)
         {
-            Fixture fixture = new Fixture(this, polygon, id);
+            Fixture fixture = new Fixture(
+                this,
+                polygon, 
+                (Category)this.CollisionCategories.Flags,
+                (Category)this.CollidesWith.Flags,
+                id);
+
             _fixtures.Add(id, fixture);
 
             return fixture;
