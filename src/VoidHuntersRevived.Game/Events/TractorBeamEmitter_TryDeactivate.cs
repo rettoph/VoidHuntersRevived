@@ -7,16 +7,18 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations.Events;
 using VoidHuntersRevived.Common.Utilities;
+using VoidHuntersRevived.Common.Pieces;
 
 namespace VoidHuntersRevived.Game.Events
 {
     public class TractorBeamEmitter_TryDeactivate : IInputData
     {
         public required VhId ShipVhId { get; init; }
+        public required NodeJointId? AttachTo { get; init; }
 
         public VhId CalculateHash(in VhId source)
         {
-            return HashBuilder<TractorBeamEmitter_TryDeactivate, VhId, VhId>.Instance.Calculate(source, this.ShipVhId);
+            return HashBuilder<TractorBeamEmitter_TryDeactivate, VhId, VhId, NodeJointId>.Instance.Calculate(source, this.ShipVhId, this.AttachTo ?? default);
         }
     }
 }

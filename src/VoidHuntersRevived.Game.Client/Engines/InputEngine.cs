@@ -110,17 +110,18 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
             else
             {
-
+                NodeJointId? attachTo = null;
                 if (_tractorBeamEmitterService.TryGetClosestOpenJoint(shipId, (FixVector2)this.CurrentTargetPosition, out NodeJoint nodeJoint))
                 {
-
+                    attachTo = nodeJoint.Id;
                 }
 
                 this.Simulation.Input(
                     sender: eventId,
                     data: new TractorBeamEmitter_TryDeactivate()
                     {
-                        ShipVhId = shipId.VhId
+                        ShipVhId = shipId.VhId,
+                        AttachTo = attachTo
                     });
             }
         }

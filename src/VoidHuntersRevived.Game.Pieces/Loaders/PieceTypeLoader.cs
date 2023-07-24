@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
                 {
                     initializer.Init<Rigid>(Rigid.Polygon(Fix64.One, 3));
                     initializer.Init<Visible>(Visible.Polygon(Colors.Orange, 3));
-                    initializer.Init<Joints>(Joints.Polygon(3));
+                    initializer.Init<Joints>(Joints.Polygon(id, 3));
                 });
             });
 
@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
                 {
                     initializer.Init<Rigid>(Rigid.Polygon(Fix64.One, 4));
                     initializer.Init<Visible>(Visible.Polygon(Colors.Orange, 4));
-                    initializer.Init<Joints>(Joints.Polygon(4));
+                    initializer.Init<Joints>(Joints.Polygon(id, 4));
                 });
             });
         }

@@ -7,6 +7,7 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.Physics;
+using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Simulations.Engines;
@@ -62,11 +63,11 @@ namespace VoidHuntersRevived.Game.Engines
             EntityId targetId = _entities.GetId(tractorBeamEmitter.TargetVhId);
             ref Tree target = ref this.entitiesDB.QueryEntity<Tree>(targetId.EGID);
 
-            Joint targetHeadChildNode = this.entitiesDB.QueryEntity<Joints>(target.HeadId.EGID).Child;
+            Location targetHeadChildLocatio = this.entitiesDB.QueryEntity<Joints>(target.HeadId.EGID).Child;
 
             if (_tractorBeamEmitterService.TryGetClosestOpenJoint(shipId, tactical.Value, out var openNodeJoint))
             {
-                FixMatrix potentialTransformation = targetHeadChildNode.Location.Transformation * openNodeJoint.Transformation;
+                FixMatrix potentialTransformation = targetHeadChildLocatio.Transformation * openNodeJoint.Transformation;
                 FixVector2 potentialPosition = FixVector2.Transform(FixVector2.Zero, potentialTransformation);
 
                 targetBody.SetTransform(potentialPosition, Fix64.Pi - openNodeJoint.Transformation.Radians());
@@ -74,7 +75,7 @@ namespace VoidHuntersRevived.Game.Engines
                 return;
             }
 
-            FixVector2 targetHeadChildNodePosition = FixVector2.Transform(targetHeadChildNode.Location.Position, FixMatrix.CreateRotationZ(targetBody.Rotation));
+            FixVector2 targetHeadChildNodePosition = FixVector2.Transform(targetHeadChildLocatio.Position, FixMatrix.CreateRotationZ(targetBody.Rotation));
             targetBody.SetTransform(tactical.Value - targetHeadChildNodePosition, targetBody.Rotation);
         }
     }

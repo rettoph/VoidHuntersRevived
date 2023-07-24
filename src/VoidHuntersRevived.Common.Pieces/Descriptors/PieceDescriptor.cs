@@ -26,6 +26,11 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                         writer: (entities, writer, node) =>
                         {
                             writer.Write(node.TreeId.VhId);
+
+                            if(writer.WriteIf(node.ParentId.HasValue))
+                            {
+                                writer.Write(node.ParentId!.Value.VhId);
+                            }
                         },
                         reader: (entities, reader, id) =>
                         {
@@ -33,7 +38,10 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                             // This is relevant during Node deletion revision and Tree creation from cloned data within TreeFactory
                             VhId treeVhId = reader.ReadVhId();
                             treeVhId = reader.Seed.Value == VhId.Empty.Value ? treeVhId : reader.Seed;
-                            return  new Node(id, entities.GetId(treeVhId));
+
+                            EntityId? parentId = reader.ReadIf() ? entities.GetId(reader.ReadVhId()) : null;
+
+                            return  new Node(id, entities.GetId(treeVhId), parentId);
                         })),
                 new ComponentManager<Rigid>(
                     builder: new ComponentBuilder<Rigid>(),

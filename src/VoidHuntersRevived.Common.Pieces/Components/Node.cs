@@ -15,12 +15,14 @@ namespace VoidHuntersRevived.Common.Pieces.Components
     {
         public readonly EntityId Id;
         public readonly EntityId TreeId;
+        public readonly Joint? Parent;
         public FixMatrix Transformation;
 
-        public Node(EntityId id, EntityId treeId)
+        public Node(EntityId id, EntityId treeId, Joint? parent)
         {
             this.Id = id;
             this.TreeId = treeId;
+            this.Parent = parent;
         }
     }
 }

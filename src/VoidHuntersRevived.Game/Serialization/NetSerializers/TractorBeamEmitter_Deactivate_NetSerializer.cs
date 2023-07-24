@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Game.Events;
 
 namespace VoidHuntersRevived.Game.Serialization.NetSerializers
@@ -17,13 +18,19 @@ namespace VoidHuntersRevived.Game.Serialization.NetSerializers
         {
             return new TractorBeamEmitter_TryDeactivate()
             {
-                ShipVhId = reader.GetVhId()
+                ShipVhId = reader.GetVhId(),
+                AttachTo = reader.GetIf() ? new NodeJointId(reader.GetVhId(), reader.GetByte()) : null
             };
         }
 
         public override void Serialize(NetDataWriter writer, in TractorBeamEmitter_TryDeactivate instance)
         {
             writer.Put(instance.ShipVhId);
+            if(writer.PutIf(instance.AttachTo.HasValue))
+            {
+                writer.Put(instance.AttachTo!.Value.NodeId);
+                writer.Put(instance.AttachTo!.Value.Index);
+            }
         }
     }
 }

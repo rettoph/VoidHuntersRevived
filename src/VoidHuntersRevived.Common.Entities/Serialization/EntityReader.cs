@@ -81,6 +81,15 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
         }
 
         /// <summary>
+        /// Read and return a bool
+        /// </summary>
+        /// <returns></returns>
+        public bool ReadIf()
+        {
+            return this.ReadBoolean();
+        }
+
+        /// <summary>
         /// Read a raw value directly from the memor stream
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -97,6 +106,20 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
 
                 return value[0];
             }
+        }
+
+        public NativeDynamicArrayCast<T> ReadNativeDynamicArray<T>(IEntityService eneities, Func<IEntityService, EntityReader, T> reader)
+            where T : unmanaged
+        {
+            int count = this.ReadInt32();
+            NativeDynamicArrayCast<T> native = new NativeDynamicArrayCast<T>((uint)count, Allocator.Persistent);
+
+            for (int i = 0; i < count; i++)
+            {
+                native.Set(i, reader(eneities, this));
+            }
+
+            return native;
         }
 
         public NativeDynamicArrayCast<T> ReadNativeDynamicArray<T>(Func<EntityReader, T> reader)
