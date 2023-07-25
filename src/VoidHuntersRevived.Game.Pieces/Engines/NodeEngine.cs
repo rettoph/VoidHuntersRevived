@@ -23,13 +23,11 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
         IReactOnRemoveEx<Node>
     {
         private readonly IEntityService _entities;
-        private readonly IFilterService _filters;
         private readonly ILogger _logger;
 
-        public NodeEngine(IEntityService entities, IFilterService filters, ILogger logger)
+        public NodeEngine(IEntityService entities, ILogger logger)
         {
             _entities = entities;
-            _filters = filters;
             _logger = logger;
         }
 
@@ -47,7 +45,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                 EntityId treeId = nodes[index].TreeId;
                 VhId nodeVhId = _entities.GetId(ids[index], groupID).VhId;
 
-                ref var filter = ref _filters.GetFilter<Node>(treeId.VhId);
+                ref var filter = ref _entities.GetFilter<Node>(treeId, Tree.NodeFilterContextId);
                 filter.Add(ids[index], groupID, index);
 
                 this.Simulation.Publish(NameSpace<NodeEngine>.Instance, new CreateNode()
@@ -67,7 +65,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                 EntityId treeId = nodes[index].TreeId;
                 VhId nodeVhId = _entities.GetId(ids[index], groupID).VhId;
 
-                ref var filter = ref _filters.GetFilter<Node>(treeId.VhId);
+                ref var filter = ref _entities.GetFilter<Node>(treeId, Tree.NodeFilterContextId);
                 filter.Remove(ids[index], groupID);
 
                 this.Simulation.Publish(NameSpace<NodeEngine>.Instance, new DestroyNode()

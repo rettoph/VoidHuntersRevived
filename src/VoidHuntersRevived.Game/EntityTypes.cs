@@ -7,7 +7,7 @@ namespace VoidHuntersRevived.Game
 {
     public static class EntityTypes
     {
-        public static readonly EntityType<ChainDescriptor> Chain = new(VoidHuntersRevivedGame.NameSpace, nameof(Chain));
-        public static readonly EntityType<ShipDescriptor> UserShip = new(VoidHuntersRevivedGame.NameSpace, nameof(UserShip));
+        public static readonly EntityType<ChainDescriptor> Chain = new(nameof(Chain));
+        public static readonly EntityType<ShipDescriptor> UserShip = new(nameof(UserShip));
     }
 }

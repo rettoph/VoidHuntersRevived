@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Game.Serialization.NetSerializers
             return new TractorBeamEmitter_TryDeactivate()
             {
                 ShipVhId = reader.GetVhId(),
-                AttachTo = reader.GetIf() ? new NodeJointId(reader.GetVhId(), reader.GetByte()) : null
+                AttachTo = reader.GetIf() ? new JointVhId(reader.GetVhId(), reader.GetByte()) : null
             };
         }
 
@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Game.Serialization.NetSerializers
             writer.Put(instance.ShipVhId);
             if(writer.PutIf(instance.AttachTo.HasValue))
             {
-                writer.Put(instance.AttachTo!.Value.NodeId);
+                writer.Put(instance.AttachTo!.Value.NodeVhId);
                 writer.Put(instance.AttachTo!.Value.Index);
             }
         }

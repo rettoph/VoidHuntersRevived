@@ -22,16 +22,16 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly HashCache<VhId> _destroyed = new HashCache<VhId>(TimeSpan.FromSeconds(5));
         private readonly Dictionary<VhId, EntityData> _backups = new Dictionary<VhId, EntityData>();
 
-        public EntityId Spawn(IEntityType type, VhId vhId, EntityInitializerDelegate? initializer)
+        public EntityId Spawn(IEntityType type, VhId vhid, EntityInitializerDelegate? initializer)
         {
             _events.Publish(NameSpace<EntityService>.Instance, new SpawnEntityType()
             {
                 Type = type,
-                VhId = vhId,
+                VhId = vhid,
                 Initializer = initializer
             });
 
-            return this.GetId(vhId);
+            return this.GetId(vhid);
         }
 
         public void Process(VhId eventId, SpawnEntityDescriptor data)

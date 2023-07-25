@@ -10,14 +10,12 @@ namespace VoidHuntersRevived.Common.Pieces
 {
     public struct Joint
     {
-        public readonly EntityId NodeId;
-        public readonly byte Index;
+        public readonly JointId Id;
         public readonly Location Location;
 
         public Joint(EntityId nodeId, byte index, Location location)
         {
-            this.NodeId = nodeId;
-            this.Index = index;
+            this.Id = new JointId(nodeId, index);
             this.Location = location;
         }
     }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Serialization;
@@ -23,7 +24,7 @@ namespace VoidHuntersRevived.Common.Entities.Services
         #endregion
 
         #region Entity Spawning
-        EntityId Spawn(IEntityType Type, VhId VhId, EntityInitializerDelegate? Initializer);
+        EntityId Spawn(IEntityType type, VhId vhid, EntityInitializerDelegate? initializer);
         #endregion
 
         #region Serialization
@@ -39,6 +40,11 @@ namespace VoidHuntersRevived.Common.Entities.Services
 
         EntityId Deserialize(in VhId seed, EntityData data, bool confirmed);
         EntityId Deserialize(EntityReader reader);
+        #endregion
+
+        #region Filters
+        ref EntityFilterCollection GetFilter<T>(EntityId id, FilterContextID filterContext)
+            where T : unmanaged, IEntityComponent;
         #endregion
     }
 }

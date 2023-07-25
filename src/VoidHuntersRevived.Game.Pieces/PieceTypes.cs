@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Game.Pieces
 {
     public static class PieceTypes
     {
-        public static EntityType<HullDescriptor> HullSquare = new(VoidHuntersRevivedGame.NameSpace, nameof(HullSquare));
-        public static EntityType<HullDescriptor> HullTriangle = new(VoidHuntersRevivedGame.NameSpace, nameof(HullTriangle));
+        public static EntityType<HullDescriptor> HullSquare = new(nameof(HullSquare));
+        public static EntityType<HullDescriptor> HullTriangle = new(nameof(HullTriangle));
     }
 }

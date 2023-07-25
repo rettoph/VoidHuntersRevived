@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Common.Entities
 
         TDescriptor IEntityType<TDescriptor>.Descriptor => this.Descriptor;
 
-        public EntityType(VhId nameSpace, string name) : base(nameSpace, name, new TDescriptor())
+        public EntityType(string name) : base(NameSpace<TDescriptor>.Instance, name, new TDescriptor())
         {
             this.Descriptor = new TDescriptor();
         }

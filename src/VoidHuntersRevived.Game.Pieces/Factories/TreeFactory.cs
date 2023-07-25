@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Game.Pieces.Factories
             {
                 EntityId headId = entities.Spawn(head, vhid.Create(1), (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                 {
-                    initializer.Init(new Node(id, entities.GetId(vhid), null));
+                    initializer.Init(new Node(id, entities.GetId(vhid)));
                 });
 
                 initializer.Init(new Tree(headId));

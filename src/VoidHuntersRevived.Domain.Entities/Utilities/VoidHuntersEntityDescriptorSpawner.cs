@@ -7,11 +7,15 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Utilities
 {
     internal abstract class VoidHuntersEntityDescriptorSpawner
     {
+        [ThreadStatic]
+        internal static uint EntityId;
+
         public readonly VoidHuntersEntityDescriptor Descriptor;
 
         protected VoidHuntersEntityDescriptorSpawner(VoidHuntersEntityDescriptor descriptor)
@@ -33,9 +37,9 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
     internal sealed class VoidHuntersEntityDescriptorSpawner<TDescriptor> : VoidHuntersEntityDescriptorSpawner
         where TDescriptor : VoidHuntersEntityDescriptor, new()
     {
-        private uint EntityId;
+        [ThreadStatic]
         public readonly ExclusiveGroup Group = new ExclusiveGroup();
-        public readonly TDescriptor Descriptor;
+        public new readonly TDescriptor Descriptor;
 
         public VoidHuntersEntityDescriptorSpawner(TDescriptor descriptor) : base(descriptor)
         {

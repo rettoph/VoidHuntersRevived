@@ -39,7 +39,6 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                         }))
             });
         }
-
         private static Joint ReadJoint(IEntityService entities, EntityReader reader)
         {
             return new Joint(
@@ -50,8 +49,8 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
 
         private static void WriteJoint(IEntityService entities, EntityWriter writer, Joint joint)
         {
-            writer.Write(joint.NodeId.VhId);
-            writer.Write(joint.Index);
+            writer.Write(joint.Id.NodeId.VhId);
+            writer.Write(joint.Id.Index);
             writer.WriteStruct<Location>(joint.Location);
         }
     }

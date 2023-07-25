@@ -32,8 +32,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public IEntityService Entities { get; private set; }
 
-        public IFilterService Filters { get; private set; }
-
         public EngineService(
             IBus bus, 
             IFilteredProvider filtered,
@@ -49,7 +47,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             this.Entities = null!;
             this.Events = null!;
-            this.Filters = null!;
         }
 
         public IEngineService Load(params IState[] states)
@@ -58,7 +55,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             this.Entities = this.Get<IEntityService>();
             this.Events = this.Get<IEventPublishingService>();
-            this.Filters = this.Get<IFilterService>();
 
             return this;
         }

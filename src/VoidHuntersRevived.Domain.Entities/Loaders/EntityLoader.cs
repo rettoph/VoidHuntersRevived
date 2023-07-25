@@ -30,8 +30,6 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
             builder.RegisterType<EntitySubmissionEngine>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.RegisterType<EventPublishingService>().AsImplementedInterfaces().InstancePerLifetimeScope();
-
-            builder.RegisterType<FilterService>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }

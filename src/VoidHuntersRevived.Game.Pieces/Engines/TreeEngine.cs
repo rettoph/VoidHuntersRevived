@@ -31,11 +31,11 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
         public string name { get; } = nameof(TreeEngine);
 
         private HashSet<EGID> _removedNodes = new HashSet<EGID>();
-        private readonly IFilterService _filters;
+        private readonly IEntityService _entities;
 
-        public TreeEngine(IFilterService filters)
+        public TreeEngine(IEntityService entities)
         {
-            _filters = filters;
+            _entities = entities;
         }
 
         // public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Tree> entities, ExclusiveGroupStruct groupID)
@@ -95,7 +95,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             {
                 for (uint treeIndex = 0; treeIndex < count; treeIndex++)
                 {
-                    ref var filter = ref _filters.GetFilter<Node>(ids[treeIndex].VhId);
+                    ref var filter = ref _entities.GetFilter<Node>(ids[treeIndex], Tree.NodeFilterContextId);
 
                     foreach (var (nodeIndices, group) in filter)
                     {

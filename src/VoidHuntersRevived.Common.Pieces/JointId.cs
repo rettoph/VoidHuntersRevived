@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Common.Pieces
 {
-    public struct NodeJointId
+    public struct JointId
     {
-        public readonly VhId NodeId;
+        public readonly EntityId NodeId;
         public readonly byte Index;
 
-        public NodeJointId(VhId nodeId, byte index)
+        public JointVhId VhId => new JointVhId(NodeId.VhId, Index);
+
+        public JointId(EntityId nodeId, byte index)
         {
             NodeId = nodeId;
             Index = index;
