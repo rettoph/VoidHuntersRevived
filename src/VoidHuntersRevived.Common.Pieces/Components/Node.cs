@@ -15,6 +15,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
     {
         public readonly EntityId Id;
         public readonly EntityId TreeId;
+
         public FixMatrix Transformation;
 
         public Node(EntityId id, EntityId treeId)

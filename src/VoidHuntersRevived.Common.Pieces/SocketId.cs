@@ -7,14 +7,14 @@ using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Common.Pieces
 {
-    public struct JointId
+    public struct SocketId
     {
         public readonly EntityId NodeId;
         public readonly byte Index;
 
-        public JointVhId VhId => new JointVhId(NodeId.VhId, Index);
+        public SocketVhId VhId => new SocketVhId(NodeId.VhId, Index);
 
-        public JointId(EntityId nodeId, byte index)
+        public SocketId(EntityId nodeId, byte index)
         {
             NodeId = nodeId;
             Index = index;

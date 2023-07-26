@@ -90,32 +90,32 @@ namespace VoidHuntersRevived.Game.Services
             return true;
         }
 
-        public bool TryGetClosestOpenJoint(EntityId shipId, FixVector2 target, [MaybeNullWhen(false)] out NodeJoint nodeJoint)
+        public bool TryGetClosestOpenSocket(EntityId shipId, FixVector2 target, [MaybeNullWhen(false)] out SocketNode socketNode)
         {
             // Since ships are Trees the ShipId will be the filterId seen in NodeEngine
             ref var filter = ref _entities.GetFilter<Node>(shipId, Tree.NodeFilterContextId);
-            Fix64 closestOpenJointOnShipToTacticalDistance = OpenNodemaximumDistance;
-            nodeJoint = default!;
+            Fix64 closestOpenSocketDistance = OpenNodemaximumDistance;
+            socketNode = default!;
             bool result = false;
         
             foreach (var (indeces, group) in filter)
             {
-                if (!this.entitiesDB.HasAny<Joints>(group))
+                if (!this.entitiesDB.HasAny<Sockets>(group))
                 {
                     continue;
                 }
         
-                var (nodes, jointses, _) = entitiesDB.QueryEntities<Node, Joints>(group);
+                var (nodes, socketses, _) = entitiesDB.QueryEntities<Node, Sockets>(group);
         
                 for (int i = 0; i < indeces.count; i++)
                 {
                     uint index = indeces[i];
                     if (
-                        this.TryGetClosestOpenJointOnNodeToTactical(target, ref nodes[index], ref jointses[index], out Fix64 closestOpenJointOnNodeToTacticalDistance, out var closestOpenNodeJointOnNodeToTactical)
-                        && closestOpenJointOnNodeToTacticalDistance < closestOpenJointOnShipToTacticalDistance)
+                        this.TryGetClosestOpenSocketOnNode(target, ref nodes[index], ref socketses[index], out Fix64 closestOpenSocketOnNodeDistance, out var closestOpenSocketOnNode)
+                        && closestOpenSocketOnNodeDistance < closestOpenSocketDistance)
                     {
-                        closestOpenJointOnShipToTacticalDistance = closestOpenJointOnNodeToTacticalDistance;
-                        nodeJoint = new NodeJoint(ref closestOpenNodeJointOnNodeToTactical.Node, ref closestOpenNodeJointOnNodeToTactical.Joint);
+                        closestOpenSocketDistance = closestOpenSocketOnNodeDistance;
+                        socketNode = new SocketNode(ref closestOpenSocketOnNode.Joint, ref closestOpenSocketOnNode.Node);
                         result = true;
                     }
                 }
@@ -124,31 +124,31 @@ namespace VoidHuntersRevived.Game.Services
             return result;
         }
         
-        private bool TryGetClosestOpenJointOnNodeToTactical(
+        private bool TryGetClosestOpenSocketOnNode(
             FixVector2 target,
             ref Node node,
-            ref Joints joints,
-            out Fix64 closestOpenJointToTacticalDistance,
-            out NodeJoint closestOpenNodeJointOnNodeToTactical)
+            ref Sockets sockets,
+            out Fix64 closestOpenSocketDistance,
+            out SocketNode closestOpenSocketOnNode)
         {
-            closestOpenJointToTacticalDistance = OpenNodemaximumDistance;
-            closestOpenNodeJointOnNodeToTactical = default!;
+            closestOpenSocketDistance = OpenNodemaximumDistance;
+            closestOpenSocketOnNode = default!;
             bool result = false;
         
-            for (int j = 0; j < joints.Parents.count; j++)
+            for (int j = 0; j < sockets.Items.count; j++)
             {
-                FixMatrix jointWorldTransformation = joints.Parents[j].Location.Transformation * node.Transformation;
+                FixMatrix jointWorldTransformation = sockets.Items[j].Location.Transformation * node.Transformation;
                 FixVector2 jointWorldPosition = FixVector2.Transform(FixVector2.Zero, jointWorldTransformation);
         
                 FixVector2.Distance(ref jointWorldPosition, ref target, out Fix64 jointDistanceFromTactical);
         
-                if (jointDistanceFromTactical > closestOpenJointToTacticalDistance)
+                if (jointDistanceFromTactical > closestOpenSocketDistance)
                 {
                     continue;
                 }
         
-                closestOpenJointToTacticalDistance = jointDistanceFromTactical;
-                closestOpenNodeJointOnNodeToTactical = new NodeJoint(ref node, ref joints.Parents[j]);
+                closestOpenSocketDistance = jointDistanceFromTactical;
+                closestOpenSocketOnNode = new SocketNode(ref sockets.Items[j], ref node);
                 result = true;
             }
         

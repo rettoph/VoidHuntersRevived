@@ -8,14 +8,14 @@ using VoidHuntersRevived.Common.Pieces.Components;
 
 namespace VoidHuntersRevived.Common.Pieces
 {
-    public readonly ref struct NodeJoint
+    public readonly ref struct SocketNode
     {
         public readonly ref Node Node;
-        public readonly ref Joint Joint;
+        public readonly ref Socket Joint;
 
         public FixMatrix Transformation => Joint.Location.Transformation * Node.Transformation;
 
-        public NodeJoint(ref Node node, ref Joint joint)
+        public SocketNode(ref Socket joint, ref Node node)
         {
             Node = ref node;
             Joint = ref joint;

@@ -110,7 +110,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
             else
             {
-                JointVhId? attachTo = null;
+                SocketVhId? attachTo = null;
                 // if (_tractorBeamEmitterService.TryGetClosestOpenJoint(shipId, (FixVector2)this.CurrentTargetPosition, out NodeJoint nodeJoint))
                 // {
                 //     attachTo = nodeJoint.Id;

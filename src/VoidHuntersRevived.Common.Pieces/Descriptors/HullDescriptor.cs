@@ -24,30 +24,28 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
         {
             this.ExtendWith(new ComponentManager[]
             {
-                new ComponentManager<Joints>(
-                    builder: new ComponentBuilder<Joints>(),
-                    serializer: new ComponentSerializer<Joints>(
+                new ComponentManager<Sockets>(
+                    builder: new ComponentBuilder<Sockets>(),
+                    serializer: new ComponentSerializer<Sockets>(
                         writer: (entities, writer, instance) =>
                         {
-                            writer.WriteStruct(instance.Child);
-                            writer.WriteNativeDynamicArray(entities, instance.Parents, WriteJoint);
+                            writer.WriteNativeDynamicArray(entities, instance.Items, WriteJoint);
                         },
-                        reader: (entities, reader, id) => new Joints()
+                        reader: (entities, reader, id) => new Sockets()
                         {
-                            Child = reader.ReadStruct<Location>(),
-                            Parents = reader.ReadNativeDynamicArray<Joint>(entities, ReadJoint),
+                            Items = reader.ReadNativeDynamicArray<Socket>(entities, ReadJoint),
                         }))
             });
         }
-        private static Joint ReadJoint(IEntityService entities, EntityReader reader)
+        private static Socket ReadJoint(IEntityService entities, EntityReader reader)
         {
-            return new Joint(
+            return new Socket(
                 nodeId: entities.GetId(reader.ReadVhId()),
                 index: reader.ReadByte(),
                 location: reader.ReadStruct<Location>());
         }
 
-        private static void WriteJoint(IEntityService entities, EntityWriter writer, Joint joint)
+        private static void WriteJoint(IEntityService entities, EntityWriter writer, Socket joint)
         {
             writer.Write(joint.Id.NodeId.VhId);
             writer.Write(joint.Id.Index);

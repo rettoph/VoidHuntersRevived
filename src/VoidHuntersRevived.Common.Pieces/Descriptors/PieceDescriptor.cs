@@ -20,6 +20,9 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
         {
             this.ExtendWith(new ComponentManager[]
             {
+                new ComponentManager<Plug>(
+                    builder: new ComponentBuilder<Plug>(in Plug.Default),
+                    serializer: ComponentSerializer<Plug>.Default),
                 new ComponentManager<Node>(
                     builder: new ComponentBuilder<Node>(),
                     serializer: new ComponentSerializer<Node>(

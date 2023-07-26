@@ -13,12 +13,12 @@ namespace VoidHuntersRevived.Game.Pieces
     {
         public static class HullSquare
         {
-            public static Resource<Joints> Joints = new($"{nameof(HullSquare)}.{nameof(Joints)}");
+            public static Resource<Sockets> Joints = new($"{nameof(HullSquare)}.{nameof(Joints)}");
         }
 
         public static class HullTriangle
         {
-            public static Resource<Joints> Joints = new($"{nameof(HullTriangle)}.{nameof(Joints)}");
+            public static Resource<Sockets> Joints = new($"{nameof(HullTriangle)}.{nameof(Joints)}");
         }
     }
 }

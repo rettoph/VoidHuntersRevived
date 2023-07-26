@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Game.Serialization.NetSerializers
             return new TractorBeamEmitter_TryDeactivate()
             {
                 ShipVhId = reader.GetVhId(),
-                AttachTo = reader.GetIf() ? new JointVhId(reader.GetVhId(), reader.GetByte()) : null
+                AttachTo = reader.GetIf() ? new SocketVhId(reader.GetVhId(), reader.GetByte()) : null
             };
         }
 

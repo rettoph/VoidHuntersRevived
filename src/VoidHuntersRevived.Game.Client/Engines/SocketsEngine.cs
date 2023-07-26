@@ -19,14 +19,14 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [AutoLoad]
     [Sequence<DrawEngineSequence>(DrawEngineSequence.PostDraw)]
     [SimulationTypeFilter(SimulationType.Predictive)]
-    internal class JointsEngine : BasicEngine, IStepEngine<GameTime>
+    internal class SocketsEngine : BasicEngine, IStepEngine<GameTime>
     {
         private readonly IScreen _screen;
         private readonly Camera2D _camera;
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private readonly PrimitiveShape _jointShape;
 
-        public JointsEngine(IScreen screen, Camera2D camera, PrimitiveBatch<VertexPositionColor> primitiveBatch)
+        public SocketsEngine(IScreen screen, Camera2D camera, PrimitiveBatch<VertexPositionColor> primitiveBatch)
         {
             _screen = screen;
             _camera = camera;
@@ -39,19 +39,19 @@ namespace VoidHuntersRevived.Game.Client.Engines
             });
         }
 
-        public string name { get; } = nameof(JointsEngine);
+        public string name { get; } = nameof(SocketsEngine);
 
         public void Step(in GameTime _param)
         {
             _primitiveBatch.Begin(_screen.Camera);
-            var groups = this.entitiesDB.FindGroups<Joints, Node>();
-            foreach (var ((joints, nodes, count), _) in this.entitiesDB.QueryEntities<Joints, Node>(groups))
+            var groups = this.entitiesDB.FindGroups<Sockets, Node>();
+            foreach (var ((joints, nodes, count), _) in this.entitiesDB.QueryEntities<Sockets, Node>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {
-                    for(int j=0; j < joints[i].Parents.count; j++)
+                    for(int j=0; j < joints[i].Items.count; j++)
                     {
-                        FixMatrix jointTransformation = joints[i].Parents[j].Location.Transformation * nodes[i].Transformation;
+                        FixMatrix jointTransformation = joints[i].Items[j].Location.Transformation * nodes[i].Transformation;
                         _primitiveBatch.Trace(_jointShape, Color.Red, jointTransformation.XnaMatrix);
                     }
                     

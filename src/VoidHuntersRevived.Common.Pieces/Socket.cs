@@ -8,14 +8,14 @@ using VoidHuntersRevived.Common.Physics.Components;
 
 namespace VoidHuntersRevived.Common.Pieces
 {
-    public struct Joint
+    public struct Socket
     {
-        public readonly JointId Id;
+        public readonly SocketId Id;
         public readonly Location Location;
 
-        public Joint(EntityId nodeId, byte index, Location location)
+        public Socket(EntityId nodeId, byte index, Location location)
         {
-            this.Id = new JointId(nodeId, index);
+            this.Id = new SocketId(nodeId, index);
             this.Location = location;
         }
     }

@@ -63,14 +63,14 @@ namespace VoidHuntersRevived.Game.Engines
             EntityId targetId = _entities.GetId(tractorBeamEmitter.TargetVhId);
             ref Tree target = ref this.entitiesDB.QueryEntity<Tree>(targetId.EGID);
 
-            Location targetHeadChildLocation = this.entitiesDB.QueryEntity<Joints>(target.HeadId.EGID).Child;
+            Location targetHeadChildLocation = this.entitiesDB.QueryEntity<Plug>(target.HeadId.EGID).Location;
             
-            if (_tractorBeamEmitterService.TryGetClosestOpenJoint(shipId, tactical.Value, out var openNodeJoint))
+            if (_tractorBeamEmitterService.TryGetClosestOpenSocket(shipId, tactical.Value, out var openSocketNode))
             {
-                FixMatrix potentialTransformation = targetHeadChildLocation.Transformation * openNodeJoint.Transformation;
+                FixMatrix potentialTransformation = targetHeadChildLocation.Transformation * openSocketNode.Transformation;
                 FixVector2 potentialPosition = FixVector2.Transform(FixVector2.Zero, potentialTransformation);
             
-                targetBody.SetTransform(potentialPosition, Fix64.Pi - openNodeJoint.Transformation.Radians());
+                targetBody.SetTransform(potentialPosition, Fix64.Pi - openSocketNode.Transformation.Radians());
             
                 return;
             }
