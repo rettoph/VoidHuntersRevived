@@ -63,19 +63,19 @@ namespace VoidHuntersRevived.Game.Engines
             EntityId targetId = _entities.GetId(tractorBeamEmitter.TargetVhId);
             ref Tree target = ref this.entitiesDB.QueryEntity<Tree>(targetId.EGID);
 
-            // Location targetHeadChildLocatio = this.entitiesDB.QueryEntity<Joints>(target.HeadId.EGID).Child;
-            // 
-            // if (_tractorBeamEmitterService.TryGetClosestOpenJoint(shipId, tactical.Value, out var openNodeJoint))
-            // {
-            //     FixMatrix potentialTransformation = targetHeadChildLocatio.Transformation * openNodeJoint.Transformation;
-            //     FixVector2 potentialPosition = FixVector2.Transform(FixVector2.Zero, potentialTransformation);
-            // 
-            //     targetBody.SetTransform(potentialPosition, Fix64.Pi - openNodeJoint.Transformation.Radians());
-            // 
-            //     return;
-            // }
+            Location targetHeadChildLocation = this.entitiesDB.QueryEntity<Joints>(target.HeadId.EGID).Child;
+            
+            if (_tractorBeamEmitterService.TryGetClosestOpenJoint(shipId, tactical.Value, out var openNodeJoint))
+            {
+                FixMatrix potentialTransformation = targetHeadChildLocation.Transformation * openNodeJoint.Transformation;
+                FixVector2 potentialPosition = FixVector2.Transform(FixVector2.Zero, potentialTransformation);
+            
+                targetBody.SetTransform(potentialPosition, Fix64.Pi - openNodeJoint.Transformation.Radians());
+            
+                return;
+            }
 
-            FixVector2 targetHeadChildNodePosition = FixVector2.Transform(FixVector2.Zero, FixMatrix.CreateRotationZ(targetBody.Rotation));
+            FixVector2 targetHeadChildNodePosition = FixVector2.Transform(FixVector2.Zero, targetHeadChildLocation.Transformation * FixMatrix.CreateRotationZ(targetBody.Rotation));
             targetBody.SetTransform(tactical.Value - targetHeadChildNodePosition, targetBody.Rotation);
         }
     }
