@@ -11,6 +11,8 @@ namespace VoidHuntersRevived.Domain.Physics
 {
     public class Body : IBody, IDisposable
     {
+        private CollisionGroup _collisionCategories;
+        private CollisionGroup _collidesWith;
         private readonly Space _space;
         private readonly Dictionary<VhId, Fixture> _fixtures;
 
@@ -30,8 +32,32 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public FixMatrix Transformation => FixMatrix.CreateRotationZ(this.Rotation) * FixMatrix.CreateTranslation(this.Position.X, this.Position.Y, Fix64.Zero);
 
-        public CollisionGroup CollisionCategories { get; set; }
-        public CollisionGroup CollidesWith { get; set; }
+        public CollisionGroup CollisionCategories
+        {
+            get => _collisionCategories;
+            set
+            {
+                foreach(Fixture fixture in _fixtures.Values)
+                {
+                    fixture._aether.CollisionCategories = (Category)value.Flags;
+                }
+
+                _collisionCategories = value;
+            }
+        }
+        public CollisionGroup CollidesWith
+        {
+            get => _collidesWith;
+            set
+            {
+                foreach (Fixture fixture in _fixtures.Values)
+                {
+                    fixture._aether.CollidesWith = (Category)value.Flags;
+                }
+
+                _collidesWith = value;
+            }
+        }
 
         public Body(Space space, VhId id)
         {

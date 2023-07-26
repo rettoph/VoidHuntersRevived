@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Physics
     internal sealed class Fixture : IFixture, IDisposable
     {
         private readonly Body _body;
-        private readonly AetherFixture _aether;
+        internal readonly AetherFixture _aether;
 
         public VhId Id { get; }
 

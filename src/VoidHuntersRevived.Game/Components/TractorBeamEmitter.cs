@@ -14,6 +14,6 @@ namespace VoidHuntersRevived.Game.Components
     public struct TractorBeamEmitter : IEntityComponent
     {
         public bool Active;
-        public VhId TargetVhId;
+        public EntityId TargetId;
     }
 }

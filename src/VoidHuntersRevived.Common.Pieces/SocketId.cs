@@ -7,8 +7,10 @@ using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Common.Pieces
 {
-    public struct SocketId
+    public struct SocketId : IEquatable<SocketId>
     {
+        public static readonly SocketId Empty = default!;
+
         public readonly EntityId NodeId;
         public readonly byte Index;
 
@@ -18,6 +20,33 @@ namespace VoidHuntersRevived.Common.Pieces
         {
             NodeId = nodeId;
             Index = index;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is SocketId id && Equals(id);
+        }
+
+        public bool Equals(SocketId other)
+        {
+            return EqualityComparer<EntityId>.Default.Equals(NodeId, other.NodeId) &&
+                   Index == other.Index &&
+                   EqualityComparer<SocketVhId>.Default.Equals(VhId, other.VhId);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(NodeId, Index, VhId);
+        }
+
+        public static bool operator ==(SocketId id1, SocketId id2)
+        {
+            return id1.NodeId.VhId.Value == id2.NodeId.VhId.Value && id1.Index == id2.Index;
+        }
+
+        public static bool operator !=(SocketId id1, SocketId id2)
+        {
+            return id1.NodeId.VhId.Value != id2.NodeId.VhId.Value || id1.Index != id2.Index;
         }
     }
 }

@@ -23,6 +23,9 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                 new ComponentManager<Plug>(
                     builder: new ComponentBuilder<Plug>(in Plug.Default),
                     serializer: ComponentSerializer<Plug>.Default),
+                new ComponentManager<Coupling>(
+                    builder: new ComponentBuilder<Coupling>(),
+                    serializer: ComponentSerializer<Coupling>.Default),
                 new ComponentManager<Node>(
                     builder: new ComponentBuilder<Node>(),
                     serializer: new ComponentSerializer<Node>(

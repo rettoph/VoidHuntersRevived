@@ -38,10 +38,18 @@ namespace VoidHuntersRevived.Game.Engines
             EntityId tractorBeamEmitterId = _entities.GetId(data.ShipVhId);
             ref TractorBeamEmitter tractorBeamEmitter = ref this.entitiesDB.QueryMappedEntities<TractorBeamEmitter>(tractorBeamEmitterId.EGID.groupID).Entity(tractorBeamEmitterId.EGID.entityID);
 
+            if(_entities.TryGetId(tractorBeamEmitter.TargetId.VhId, out _) == false)
+            {
+                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - TargetVhId {OldTargetId} not found.", nameof(TractorBeamEmitterDeactivationEngine), nameof(Process), nameof(TractorBeamEmitter_TryDeactivate), tractorBeamEmitter.TargetId.VhId.Value);
+
+                return;
+            }
+
             this.Simulation.Publish(eventId, new TractorBeamEmitter_Deactivate()
             {
                 TractorBeamEmitterVhId = data.ShipVhId,
-                TargetVhId = tractorBeamEmitter.TargetVhId
+                TargetVhId = tractorBeamEmitter.TargetId.VhId,
+                AttachTo = data.AttachTo
             });
         }
 
@@ -54,32 +62,23 @@ namespace VoidHuntersRevived.Game.Engines
             ref TractorBeamEmitter tractorBeamEmitter = ref tractorBeamEmitters[tractorBeamEmitterIndex];
             ref Tactical tactical = ref tacticals[tractorBeamEmitterIndex];
 
-            if (tractorBeamEmitter.TargetVhId.Value != data.TargetVhId.Value)
+            if (tractorBeamEmitter.TargetId.VhId.Value != data.TargetVhId.Value)
             {
-                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - TargetVhId has changed from {OldTargetId} to {NewTargetId}", nameof(TractorBeamEmitterDeactivationEngine), nameof(Process), nameof(TractorBeamEmitter_Deactivate), data.TargetVhId.Value, tractorBeamEmitter.TargetVhId.Value);
+                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - TargetVhId has changed from {OldTargetId} to {NewTargetId}", nameof(TractorBeamEmitterDeactivationEngine), nameof(Process), nameof(TractorBeamEmitter_Deactivate), data.TargetVhId.Value, tractorBeamEmitter.TargetId.VhId.Value);
 
                 return;
+            }
+
+            // Mark old tractored target as untractored
+            if (this.entitiesDB.TryQueryEntitiesAndIndex<Tractorable>(tractorBeamEmitter.TargetId.EGID, out uint index, out var tractorables))
+            {
+                tractorables[index].IsTractored = false;
             }
 
             // Ensure the emitter is deactivated no matter what
             tractorBeamEmitter.Active = false;
+            tractorBeamEmitter.TargetId = default;
             tactical.RemoveUse();
-
-            if (!_entities.TryGetId(tractorBeamEmitter.TargetVhId, out EntityId targetId))
-            {
-                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - TargetVhId {TargetVhId} map not found", nameof(TractorBeamEmitterDeactivationEngine), nameof(Process), nameof(TractorBeamEmitter_TryDeactivate), tractorBeamEmitter.TargetVhId.Value);
-
-                return;
-            }
-
-            if (!this.entitiesDB.TryQueryEntitiesAndIndex<Tractorable>(targetId.EGID, out uint tractorableIndex, out var tractorables))
-            {
-                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Tractorable entity not found", nameof(TractorBeamEmitterDeactivationEngine), nameof(Process), nameof(TractorBeamEmitter_TryDeactivate), tractorBeamEmitter.TargetVhId.Value);
-
-                return;
-            }
-
-            tractorables[tractorableIndex].IsTractored = false;
         }
     }
 }

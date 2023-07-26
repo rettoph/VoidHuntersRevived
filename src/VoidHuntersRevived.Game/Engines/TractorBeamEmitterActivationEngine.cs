@@ -98,11 +98,11 @@ namespace VoidHuntersRevived.Game.Engines
                     });
                 });
 
-            tractorBeamEmitter.TargetVhId = cloneId.VhId;
+            tractorBeamEmitter.TargetId = cloneId;
             tractorBeamEmitter.Active = true;
             tactical.AddUse();
 
-            _logger.Verbose("{ClassName}::{MethodName}<{GenericTypeName}> - TractorBeam {TractorBeamId} has selected {TargetId}", nameof(TractorBeamEmitterActivationEngine), nameof(Process), nameof(TractorBeamEmitter_Activate), tractorBeamEmitterId.VhId.Value, tractorBeamEmitter.TargetVhId.Value);
+            _logger.Verbose("{ClassName}::{MethodName}<{GenericTypeName}> - TractorBeam {TractorBeamId} has selected {TargetId}", nameof(TractorBeamEmitterActivationEngine), nameof(Process), nameof(TractorBeamEmitter_Activate), tractorBeamEmitterId.VhId.Value, tractorBeamEmitter.TargetId.VhId.Value);
         }
 
         public void Revert(VhId eventId, TractorBeamEmitter_Activate data)
@@ -112,9 +112,9 @@ namespace VoidHuntersRevived.Game.Engines
             var tractorBeamEmitters = this.entitiesDB.QueryEntitiesAndIndex<TractorBeamEmitter>(tractorBeamEmitterId.EGID, out uint index);
             ref TractorBeamEmitter tractorBeamEmitter = ref tractorBeamEmitters[index];
 
-            if (tractorBeamEmitter.TargetVhId.Value != eventId.Create(1).Value)
+            if (tractorBeamEmitter.TargetId.VhId.Value != eventId.Create(1).Value)
             {
-                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Target is no longer {OldTargetId}, now {NewTargetId}", nameof(TractorBeamEmitterActivationEngine), nameof(Revert), nameof(TractorBeamEmitter_Activate), eventId.Create(1).Value, tractorBeamEmitter.TargetVhId.Value);
+                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Target is no longer {OldTargetId}, now {NewTargetId}", nameof(TractorBeamEmitterActivationEngine), nameof(Revert), nameof(TractorBeamEmitter_Activate), eventId.Create(1).Value, tractorBeamEmitter.TargetId.VhId.Value);
                 return;
             }
 

@@ -58,9 +58,9 @@ namespace VoidHuntersRevived.Game.Engines
                 return;
             }
 
-            IBody targetBody = _space.GetBody(in tractorBeamEmitter.TargetVhId);
+            IBody targetBody = _space.GetBody(in tractorBeamEmitter.TargetId.VhId);
 
-            EntityId targetId = _entities.GetId(tractorBeamEmitter.TargetVhId);
+            EntityId targetId = _entities.GetId(tractorBeamEmitter.TargetId.VhId);
             ref Tree target = ref this.entitiesDB.QueryEntity<Tree>(targetId.EGID);
 
             Location targetHeadChildLocation = this.entitiesDB.QueryEntity<Plug>(target.HeadId.EGID).Location;
