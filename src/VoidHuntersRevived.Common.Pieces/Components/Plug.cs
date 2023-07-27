@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
     {
         public static readonly Plug Default = new Plug()
         {
-            Location = new Location(FixVector2.UnitY / (Fix64)2, Fix64.Zero)
+            Location = new Location(FixVector2.UnitX / (Fix64)2, Fix64.PiOver2)
         };
 
         public required Location Location { get; init; }

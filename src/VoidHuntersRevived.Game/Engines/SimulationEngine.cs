@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Game.Engines
 
         public void Process(VhId eventId, Simulation_Begin data)
         {
-            _treeFactory.Create(eventId.Create(1), EntityTypes.Chain, PieceTypes.HullSquare);
+            _treeFactory.Create(eventId.Create(1), EntityTypes.Chain, PieceTypes.HullTriangle);
         }
     }
 }

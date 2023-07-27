@@ -37,13 +37,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             descriptor.Serialize(this, writer, id.EGID, this.entitiesDB, index);
         }
 
-        public EntityId Deserialize(in VhId seed, EntityData data, bool confirmed)
+        public EntityId Deserialize(in VhId seed, EntityData data, EntityInitializerDelegate? initializer, bool confirmed)
         {
             _reader.Load(seed, data, confirmed);
-            return this.Deserialize(_reader);
+            return this.Deserialize(_reader, initializer);
         }
 
-        public EntityId Deserialize(EntityReader reader)
+        public EntityId Deserialize(EntityReader reader, EntityInitializerDelegate? initializerDelegate)
         {
             VhId vhid = reader.ReadVhId();
             VhId descriptorId = reader.ReadStruct<VhId>();
@@ -61,6 +61,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 {
                     reader.Load(readerState);
                     descriptor.Deserialize(this, reader, ref initializer, in id);
+
+                    initializerDelegate?.Invoke(this, ref initializer, in id);
 
                     reader.Busy = false;
                 }

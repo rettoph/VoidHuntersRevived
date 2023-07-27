@@ -115,7 +115,7 @@ namespace VoidHuntersRevived.Game.Services
                         && closestOpenSocketOnNodeDistance < closestOpenSocketDistance)
                     {
                         closestOpenSocketDistance = closestOpenSocketOnNodeDistance;
-                        socketNode = new SocketNode(ref closestOpenSocketOnNode.Joint, ref closestOpenSocketOnNode.Node);
+                        socketNode = new SocketNode(ref closestOpenSocketOnNode.Socket, ref closestOpenSocketOnNode.Node);
                         result = true;
                     }
                 }

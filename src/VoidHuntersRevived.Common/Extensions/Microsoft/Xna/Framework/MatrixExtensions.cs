@@ -16,7 +16,7 @@ namespace Microsoft.Xna.Framework
 
         public static float Radians(this Matrix matrix)
         {
-            return MathF.Atan2(matrix.M21, matrix.M11);
+            return (float)Math.Atan2(matrix.M12, matrix.M11);
         }
     }
 }

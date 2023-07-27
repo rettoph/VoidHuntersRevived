@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                         },
                         reader: (entities, reader, id) =>
                         {
-                            return new Tree(entities.Deserialize(reader));
+                            return new Tree(entities.Deserialize(reader, null));
                         }))
             });
         }

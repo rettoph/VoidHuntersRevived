@@ -25,15 +25,17 @@ namespace VoidHuntersRevived.Common.Pieces.Components
         {
             PolygonHelper.VertexAngle[] vertexAngles = PolygonHelper.CalculateVertexAngles(sides).ToArray();
 
-            NativeDynamicArrayCast<Socket> items = new NativeDynamicArrayCast<Socket>((uint)sides, Allocator.Persistent);
+            NativeDynamicArrayCast<Socket> items = new NativeDynamicArrayCast<Socket>((uint)sides - 1, Allocator.Persistent);
 
             for (int i = 1; i < vertexAngles.Length; i++)
             {
+                int nextI = (i + 1) % vertexAngles.Length;
                 FixVector2 start = vertexAngles[i].FixedVertex;
-                FixVector2 end = vertexAngles[(i + 1) % vertexAngles.Length].FixedVertex;
+                FixVector2 end = vertexAngles[nextI].FixedVertex;
                 FixVector2 center = (start + end) / (Fix64)2;
 
-                items.Set(i - 1, new Socket(nodeId, (byte)i, new Location(center, vertexAngles[i].Angle)));
+                var location = new Location(center, vertexAngles[i].Angle - Fix64.PiOver2);
+                items.Set(i - 1, new Socket(nodeId, (byte)i, location));
             }
 
             return new Sockets()

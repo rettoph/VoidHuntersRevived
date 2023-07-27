@@ -14,6 +14,8 @@ using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces.Factories;
 using Serilog;
 using Svelto.ECS;
+using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces;
 
 namespace VoidHuntersRevived.Game.Engines
 {
@@ -23,13 +25,16 @@ namespace VoidHuntersRevived.Game.Engines
         IEventEngine<TractorBeamEmitter_Deactivate>
     {
         private readonly IEntityService _entities;
+        private readonly INodeFactory _nodeFactory;
         private readonly ILogger _logger;
 
         public TractorBeamEmitterDeactivationEngine(
             IEntityService entities,
+            INodeFactory nodeFactory,
             ILogger logger)
         {
             _entities = entities;
+            _nodeFactory = nodeFactory;
             _logger = logger;
         }
 
@@ -69,11 +74,29 @@ namespace VoidHuntersRevived.Game.Engines
                 return;
             }
 
-            // Mark old tractored target as untractored
-            if (this.entitiesDB.TryQueryEntitiesAndIndex<Tractorable>(tractorBeamEmitter.TargetId.EGID, out uint index, out var tractorables))
+
+            if(data.AttachTo is null || true)
             {
-                tractorables[index].IsTractored = false;
+                // Mark old tractored target as untractored
+                if (this.entitiesDB.TryQueryEntitiesAndIndex<Tractorable>(tractorBeamEmitter.TargetId.EGID, out uint index, out var tractorables))
+                {
+                    tractorables[index].IsTractored = false;
+                }
             }
+            else
+            {
+                // return;
+                // EntityId socketsId = _entities.GetId(data.AttachTo.Value.NodeVhId);
+                // ref Sockets sockets = ref this.entitiesDB.QueryEntity<Sockets>(socketsId.EGID);
+                // ref Socket socket = ref sockets.Items[data.AttachTo.Value.Index];
+                // 
+                // _nodeFactory.Create(
+                //     socket: ref socket,
+                //     nodes: _entities.Serialize(tractorBeamEmitter.TargetId));
+                // 
+                // // _entities.Despawn(tractorBeamEmitter.TargetId);
+            }
+
 
             // Ensure the emitter is deactivated no matter what
             tractorBeamEmitter.Active = false;

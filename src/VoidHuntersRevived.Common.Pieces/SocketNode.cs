@@ -11,14 +11,14 @@ namespace VoidHuntersRevived.Common.Pieces
     public readonly ref struct SocketNode
     {
         public readonly ref Node Node;
-        public readonly ref Socket Joint;
+        public readonly ref Socket Socket;
 
-        public FixMatrix Transformation => Joint.Location.Transformation * Node.Transformation;
+        public FixMatrix Transformation => Socket.Location.Transformation * Node.Transformation;
 
         public SocketNode(ref Socket joint, ref Node node)
         {
             Node = ref node;
-            Joint = ref joint;
+            Socket = ref joint;
         }
     }
 }

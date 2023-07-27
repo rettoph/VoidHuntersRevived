@@ -66,6 +66,8 @@ namespace VoidHuntersRevived.Game.Engines
             {
                 VhId = targetTreeId.VhId
             });
+
+            _entities.Despawn(targetTreeId);
         }
 
         public void Process(VhId eventId, TractorBeamEmitter_Activate data)
@@ -89,7 +91,7 @@ namespace VoidHuntersRevived.Game.Engines
             EntityId cloneId = _treeFactory.Create(
                 vhid: eventId.Create(1),
                 tree: EntityTypes.Chain,
-                pieces: data.TargetData,
+                nodes: data.TargetData,
                 initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                 {
                     initializer.Init<Tractorable>(new Tractorable()

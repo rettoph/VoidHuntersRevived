@@ -41,12 +41,12 @@ namespace VoidHuntersRevived.Common.Pieces.Utilities
 
             for (int i = 1; i < sides; i++)
             {
-                angle += interval;
                 position += new FixVector2()
                 {
                     X = Fix64.Cos(angle),
                     Y = Fix64.Sin(angle)
                 };
+                angle += interval;
 
                 yield return new VertexAngle(position, angle);
             }

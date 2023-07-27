@@ -25,6 +25,9 @@ namespace VoidHuntersRevived.Common.Entities.Services
 
         #region Entity Spawning
         EntityId Spawn(IEntityType type, VhId vhid, EntityInitializerDelegate? initializer);
+        void Despawn(VhId vhid);
+        void Despawn(EGID egid);
+        void Despawn(EntityId id);
         #endregion
 
         #region Serialization
@@ -38,8 +41,8 @@ namespace VoidHuntersRevived.Common.Entities.Services
         void Serialize(EGID egid, EntityWriter writer);
         void Serialize(uint entityId, ExclusiveGroupStruct groupId, EntityWriter writer);
 
-        EntityId Deserialize(in VhId seed, EntityData data, bool confirmed);
-        EntityId Deserialize(EntityReader reader);
+        EntityId Deserialize(in VhId seed, EntityData data, EntityInitializerDelegate? initializer, bool confirmed = false);
+        EntityId Deserialize(EntityReader reader, EntityInitializerDelegate? initializer);
         #endregion
 
         #region Filters
