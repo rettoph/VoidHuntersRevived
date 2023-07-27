@@ -103,7 +103,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
                         for (int i = 0; i < nodeIndices.count; i++)
                         {
-                            nodes[nodeIndices[i]].Transformation = trees[treeIndex].Transformation;
+                            nodes[nodeIndices[i]].WorldTransform(trees[treeIndex].Transformation);
                         }
                     }
                 }

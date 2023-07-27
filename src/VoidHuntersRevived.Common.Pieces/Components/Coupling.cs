@@ -10,7 +10,6 @@ namespace VoidHuntersRevived.Common.Pieces.Components
     public struct Coupling : IEntityComponent
     {
         public readonly SocketId SocketId;
-        public FixMatrix Transformation;
 
         public Coupling(SocketId socketId)
         {

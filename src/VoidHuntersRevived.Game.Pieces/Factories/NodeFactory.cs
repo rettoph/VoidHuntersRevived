@@ -32,13 +32,19 @@ namespace VoidHuntersRevived.Game.Pieces.Factories
         public EntityId Create(ref Socket socket, EntityData nodes)
         {
             ref Node parent = ref this.entitiesDB.QueryEntity<Node>(socket.Id.NodeId.EGID);
-            _entities.Deserialize(
+            SocketId socketId = socket.Id;
+            EntityId nodeId = _entities.Deserialize(
                 seed: parent.TreeId.VhId, 
                 data: nodes, 
-                initializer: null, 
+                initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+                {
+                    initializer.Init<Coupling>(new Coupling(socketId));
+                }, 
                 confirmed: false);
 
-            throw new NotImplementedException();
+            socket.PlugId = nodeId;
+
+            return nodeId;
         }
     }
 }

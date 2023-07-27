@@ -12,6 +12,7 @@ namespace VoidHuntersRevived.Common.Pieces
     {
         public readonly SocketId Id;
         public readonly Location Location;
+        public EntityId PlugId { get; set; }
 
         public Socket(EntityId nodeId, byte index, Location location)
         {

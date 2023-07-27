@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Pieces.Factories;
 using VoidHuntersRevived.Game.Pieces.Factories;
+using VoidHuntersRevived.Game.Pieces.Services;
 
 namespace VoidHuntersRevived.Game.Pieces.Loaders
 {
@@ -19,6 +20,8 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
         {
             services.RegisterType<TreeFactory>().AsImplementedInterfaces().InstancePerLifetimeScope();
             services.RegisterType<NodeFactory>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+            services.RegisterType<SocketService>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }

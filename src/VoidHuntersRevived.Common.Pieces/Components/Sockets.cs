@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
                 FixVector2 center = (start + end) / (Fix64)2;
 
                 var location = new Location(center, vertexAngles[i].Angle - Fix64.PiOver2);
-                items.Set(i - 1, new Socket(nodeId, (byte)i, location));
+                items.Set(i - 1, new Socket(nodeId, (byte)(i - 1), location));
             }
 
             return new Sockets()

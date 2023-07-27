@@ -75,26 +75,25 @@ namespace VoidHuntersRevived.Game.Engines
             }
 
 
-            if(data.AttachTo is null || true)
+            if (data.AttachTo is null)
             {
-                // Mark old tractored target as untractored
-                if (this.entitiesDB.TryQueryEntitiesAndIndex<Tractorable>(tractorBeamEmitter.TargetId.EGID, out uint index, out var tractorables))
-                {
-                    tractorables[index].IsTractored = false;
-                }
+                this.entitiesDB.QueryEntity<Tractorable>(tractorBeamEmitter.TargetId.EGID).IsTractored = false;
             }
-            else
+            else 
             {
-                // return;
-                // EntityId socketsId = _entities.GetId(data.AttachTo.Value.NodeVhId);
-                // ref Sockets sockets = ref this.entitiesDB.QueryEntity<Sockets>(socketsId.EGID);
-                // ref Socket socket = ref sockets.Items[data.AttachTo.Value.Index];
-                // 
-                // _nodeFactory.Create(
-                //     socket: ref socket,
-                //     nodes: _entities.Serialize(tractorBeamEmitter.TargetId));
-                // 
-                // // _entities.Despawn(tractorBeamEmitter.TargetId);
+                EntityId socketsId = _entities.GetId(data.AttachTo.Value.NodeVhId);
+                ref Sockets sockets = ref this.entitiesDB.QueryEntity<Sockets>(socketsId.EGID);
+                ref Socket socket = ref sockets.Items[data.AttachTo.Value.Index];
+
+                var trees = this.entitiesDB.QueryEntitiesAndIndex<Tree>(tractorBeamEmitter.TargetId.EGID, out uint index);
+                ref Tree targetTree = ref trees[index];
+                
+                _nodeFactory.Create(
+                    socket: ref socket,
+                    nodes: _entities.Serialize(targetTree.HeadId));
+
+                // _entities.Despawn(tractorBeamEmitter.TargetId);
+                this.entitiesDB.QueryEntity<Tractorable>(tractorBeamEmitter.TargetId.EGID).IsTractored = false;
             }
 
 

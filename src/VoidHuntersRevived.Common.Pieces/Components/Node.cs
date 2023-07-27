@@ -16,12 +16,18 @@ namespace VoidHuntersRevived.Common.Pieces.Components
         public readonly EntityId Id;
         public readonly EntityId TreeId;
 
+        public FixMatrix LocalTransformation;
         public FixMatrix Transformation;
 
         public Node(EntityId id, EntityId treeId)
         {
             this.Id = id;
             this.TreeId = treeId;
+        }
+
+        public void WorldTransform(FixMatrix world)
+        {
+            this.Transformation = this.LocalTransformation * world;
         }
     }
 }
