@@ -16,6 +16,7 @@ using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces;
+using VoidHuntersRevived.Common.Pieces.Services;
 
 namespace VoidHuntersRevived.Game.Engines
 {
@@ -25,16 +26,16 @@ namespace VoidHuntersRevived.Game.Engines
         IEventEngine<TractorBeamEmitter_Deactivate>
     {
         private readonly IEntityService _entities;
-        private readonly INodeFactory _nodeFactory;
+        private readonly ISocketService _socketService;
         private readonly ILogger _logger;
 
         public TractorBeamEmitterDeactivationEngine(
             IEntityService entities,
-            INodeFactory nodeFactory,
+            ISocketService socketService,
             ILogger logger)
         {
             _entities = entities;
-            _nodeFactory = nodeFactory;
+            _socketService = socketService;
             _logger = logger;
         }
 
@@ -74,26 +75,27 @@ namespace VoidHuntersRevived.Game.Engines
                 return;
             }
 
-
-            if (data.AttachTo is null)
+            
+            try
             {
                 this.entitiesDB.QueryEntity<Tractorable>(tractorBeamEmitter.TargetId.EGID).IsTractored = false;
             }
-            else 
+            catch
+            {
+                var state = _entities.GetState(tractorBeamEmitter.TargetId);
+                Console.WriteLine(state);
+            }
+            
+
+            if (data.AttachTo is not null)
             {
                 EntityId socketsId = _entities.GetId(data.AttachTo.Value.NodeVhId);
                 ref Sockets sockets = ref this.entitiesDB.QueryEntity<Sockets>(socketsId.EGID);
                 ref Socket socket = ref sockets.Items[data.AttachTo.Value.Index];
 
-                var trees = this.entitiesDB.QueryEntitiesAndIndex<Tree>(tractorBeamEmitter.TargetId.EGID, out uint index);
-                ref Tree targetTree = ref trees[index];
-                
-                _nodeFactory.Create(
+                _socketService.Attach(
                     socket: ref socket,
-                    nodes: _entities.Serialize(targetTree.HeadId));
-
-                // _entities.Despawn(tractorBeamEmitter.TargetId);
-                this.entitiesDB.QueryEntity<Tractorable>(tractorBeamEmitter.TargetId.EGID).IsTractored = false;
+                    treeId: tractorBeamEmitter.TargetId);
             }
 
 

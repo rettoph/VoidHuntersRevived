@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Common.Physics
         CollisionGroup CollisionCategories { get; set; }
         CollisionGroup CollidesWith { get; set; }
 
-        IFixture Create(Polygon polygon, VhId id);
+        IFixture Create(VhId id, Polygon polygon, FixMatrix transformation);
         void Destroy(IFixture fixture);
         void Destroy(VhId id);
 

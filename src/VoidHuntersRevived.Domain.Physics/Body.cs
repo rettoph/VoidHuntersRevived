@@ -6,6 +6,7 @@ using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Common;
 using FixedMath64 = FixedMath.NET.Fix64;
 using tainicom.Aether.Physics2D.Dynamics;
+using VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Dynamics;
 
 namespace VoidHuntersRevived.Domain.Physics
 {
@@ -96,14 +97,14 @@ namespace VoidHuntersRevived.Domain.Physics
             _aether.ApplyLinearImpulse(impulse.AsAetherVector2());
         }
 
-        public IFixture Create(Polygon polygon, VhId id)
+        public IFixture Create(VhId id, Polygon polygon, FixMatrix transformation)
         {
             Fixture fixture = new Fixture(
+                id,
                 this,
-                polygon, 
+                polygon.ToShape(transformation), 
                 (Category)this.CollisionCategories.Flags,
-                (Category)this.CollidesWith.Flags,
-                id);
+                (Category)this.CollidesWith.Flags);
 
             _fixtures.Add(id, fixture);
 

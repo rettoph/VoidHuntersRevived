@@ -19,7 +19,6 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
         public void ConfigureServices(ContainerBuilder services)
         {
             services.RegisterType<TreeFactory>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            services.RegisterType<NodeFactory>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             services.RegisterType<SocketService>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }

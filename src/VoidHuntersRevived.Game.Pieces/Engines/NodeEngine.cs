@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             _logger = logger;
         }
 
-        public void Process(VhId eventId, DestroyNode data)
+        public void Process(VhId eventId, Node_Destroy data)
         {
             // this.Simulation.Entities.Destroy(data.NodeId);
         }
@@ -56,7 +56,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                 ref var filter = ref _entities.GetFilter<Node>(treeId, Tree.NodeFilterContextId);
                 filter.Add(ids[index], groupID, index);
 
-                this.Simulation.Publish(NameSpace<NodeEngine>.Instance, new CreateNode()
+                this.Simulation.Publish(NameSpace<NodeEngine>.Instance, new Node_Create()
                 {
                     TreeId = treeId.VhId,
                     NodeId = nodeVhId
@@ -76,7 +76,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                 ref var filter = ref _entities.GetFilter<Node>(treeId, Tree.NodeFilterContextId);
                 filter.Remove(ids[index], groupID);
 
-                this.Simulation.Publish(NameSpace<NodeEngine>.Instance, new DestroyNode()
+                this.Simulation.Publish(NameSpace<NodeEngine>.Instance, new Node_Destroy()
                 {
                     TreeId = treeId.VhId,
                     NodeId = nodeVhId

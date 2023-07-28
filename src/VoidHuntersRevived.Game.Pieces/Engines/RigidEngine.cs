@@ -21,8 +21,8 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 {
     [AutoLoad]
     internal sealed class RigidEngine : BasicEngine,
-        IEventEngine<CreateNode>,
-        IEventEngine<DestroyNode>
+        IEventEngine<Node_Create>,
+        IEventEngine<Node_Destroy>
     {
         private readonly ISpace _space;
         private readonly IEntityService _entities;
@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             _logger = logger;
         }
 
-        public void Process(VhId id, CreateNode data)
+        public void Process(VhId id, Node_Create data)
         {
             EntityId nodeId = _entities.GetId(data.NodeId);
 
@@ -51,10 +51,10 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             Node node = nodes[index];
             IBody body = _space.GetOrCreateBody(node.TreeId.VhId);
 
-            body.Create(rigid.Shapes[0], nodeId.VhId);
+            body.Create(nodeId.VhId, rigid.Shapes[0], node.LocalTransformation);
         }
 
-        public void Process(VhId eventId, DestroyNode data)
+        public void Process(VhId eventId, Node_Destroy data)
         {
             EntityId nodeId = _entities.GetId(data.NodeId);
 
@@ -73,7 +73,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             }
             else
             {
-                _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Unable to find body {BodyId} while attempting to remove fixture {FixtureId}", nameof(RigidEngine), nameof(Process), nameof(DestroyNode), node.TreeId.VhId.Value, nodeId.VhId.Value);
+                _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Unable to find body {BodyId} while attempting to remove fixture {FixtureId}", nameof(RigidEngine), nameof(Process), nameof(Node_Destroy), node.TreeId.VhId.Value, nodeId.VhId.Value);
             }
         }
     }

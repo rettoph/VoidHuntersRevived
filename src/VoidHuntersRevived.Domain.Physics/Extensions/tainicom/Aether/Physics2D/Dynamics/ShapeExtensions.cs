@@ -15,12 +15,12 @@ namespace VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D
 {
     public static class ShapeExtensions
     {
-        public static Shape ToShape(this Polygon polygon)
+        public static Shape ToShape(this Polygon polygon, FixMatrix transformation)
         {
             AetherVector2[] vertexes = new AetherVector2[polygon.Vertices.count];
             for(int i=0; i<polygon.Vertices.count; i++)
             {
-                vertexes[i] = polygon.Vertices[i].AsAetherVector2();
+                vertexes[i] = FixVector2.Transform(polygon.Vertices[i], transformation).AsAetherVector2();
             }
 
             AetherVertices vertices = new AetherVertices(vertexes);

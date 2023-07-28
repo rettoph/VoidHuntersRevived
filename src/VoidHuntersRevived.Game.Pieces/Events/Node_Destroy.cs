@@ -11,14 +11,14 @@ using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Game.Pieces.Events
 {
-    internal class DestroyNode : IEventData
+    internal class Node_Destroy : IEventData
     {
         public required VhId TreeId { get; init; }
         public required VhId NodeId { get; init; }
 
         public VhId CalculateHash(in VhId source)
         {
-            return HashBuilder<DestroyNode, VhId, VhId, VhId>.Instance.Calculate(source, this.NodeId, this.TreeId);
+            return HashBuilder<Node_Destroy, VhId, VhId, VhId>.Instance.Calculate(source, this.NodeId, this.TreeId);
         }
     }
 }

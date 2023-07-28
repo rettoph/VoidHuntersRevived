@@ -43,7 +43,6 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
 
             this.Seed = seed;
             this.Confirmed = confirmed;
-            this.Busy = true;
         }
         public void Load(EntityReaderState state)
         {
