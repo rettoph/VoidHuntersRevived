@@ -42,6 +42,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             });
         }
 
+        public void Flush()
+        {
+            _scheduler.SubmitEntities();
+        }
+
         public void Despawn(EGID egid)
         {
             this.Despawn(this.GetId(egid).VhId);

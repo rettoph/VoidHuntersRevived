@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Common.Pieces.Services
     public interface ISocketService
     {
         SocketNode GetSocketNode(SocketId socketId);
-        SocketNode GetSocketNode(SocketVhId socketVhId);
+        bool TryGetSocketNode(SocketVhId socketVhId, out SocketNode socketNode);
 
         void Attach(ref Socket socket, EntityId treeId);
     }

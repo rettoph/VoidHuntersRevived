@@ -28,6 +28,12 @@ namespace VoidHuntersRevived.Common.Entities.Services
         void Despawn(VhId vhid);
         void Despawn(EGID egid);
         void Despawn(EntityId id);
+
+        /// <summary>
+        /// "Submit" all Svelto changes now. This is automatically done every frame but 
+        /// it may be manually done if needed
+        /// </summary>
+        void Flush();
         #endregion
 
         #region Serialization

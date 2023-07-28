@@ -75,17 +75,10 @@ namespace VoidHuntersRevived.Game.Engines
                 return;
             }
 
-            
-            try
-            {
-                this.entitiesDB.QueryEntity<Tractorable>(tractorBeamEmitter.TargetId.EGID).IsTractored = false;
-            }
-            catch
-            {
-                var state = _entities.GetState(tractorBeamEmitter.TargetId);
-                Console.WriteLine(state);
-            }
-            
+            // Flush just in case the target was created in the same frame
+            _entities.Flush();
+            this.entitiesDB.QueryEntity<Tractorable>(tractorBeamEmitter.TargetId.EGID).IsTractored = false;
+
 
             if (data.AttachTo is not null)
             {

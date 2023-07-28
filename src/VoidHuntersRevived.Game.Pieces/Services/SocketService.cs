@@ -1,4 +1,5 @@
-﻿using Svelto.ECS;
+﻿using Serilog;
+using Svelto.ECS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,10 +21,12 @@ namespace VoidHuntersRevived.Game.Pieces.Services
         IEventEngine<Socket_Spawn>,
         IRevertEventEngine<Socket_Spawn>
     {
+        private readonly ILogger _logger;
         private readonly IEntityService _entities;
 
-        public SocketService(IEntityService entities)
+        public SocketService(IEntityService entities, ILogger logger)
         {
+            _logger = logger;
             _entities = entities;
         }
 
@@ -36,9 +39,16 @@ namespace VoidHuntersRevived.Game.Pieces.Services
             return new SocketNode(ref sockets[index].Items[socketId.Index], ref nodes[index]);
         }
 
-        public SocketNode GetSocketNode(SocketVhId socketVhId)
+        public bool TryGetSocketNode(SocketVhId socketVhId, out SocketNode socketNode)
         {
-            return this.GetSocketNode(new SocketId(_entities.GetId(socketVhId.NodeVhId), socketVhId.Index));
+            if(_entities.TryGetId(socketVhId.NodeVhId, out EntityId nodeId))
+            {
+                socketNode = this.GetSocketNode(new SocketId(nodeId, socketVhId.Index));
+                return true;
+            }
+
+            socketNode = default;
+            return false;
         }
 
         public void Attach(ref Socket socket, EntityId treeId)
@@ -56,7 +66,11 @@ namespace VoidHuntersRevived.Game.Pieces.Services
 
         public void Process(VhId eventId, Socket_Spawn data)
         {
-            SocketNode socketNode = this.GetSocketNode(data.SocketVhId);
+            if(!this.TryGetSocketNode(data.SocketVhId, out SocketNode socketNode))
+            {
+                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Unable to load SocketNode within node {NodeId}", nameof(SocketService), nameof(Process), nameof(Socket_Spawn), data.SocketVhId.NodeVhId.Value);
+                return;
+            }
 
             SocketId socketId = socketNode.Socket.Id;
             EntityId nodeId = _entities.Deserialize(
@@ -73,7 +87,11 @@ namespace VoidHuntersRevived.Game.Pieces.Services
 
         public void Revert(VhId eventId, Socket_Spawn data)
         {
-            SocketNode socketNode = this.GetSocketNode(data.SocketVhId);
+            if (!this.TryGetSocketNode(data.SocketVhId, out SocketNode socketNode))
+            {
+                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Unable to load SocketNode within node {NodeId}", nameof(SocketService), nameof(Revert), nameof(Socket_Spawn), data.SocketVhId.NodeVhId.Value);
+                return;
+            }
 
             socketNode.Socket.PlugId = default;
         }

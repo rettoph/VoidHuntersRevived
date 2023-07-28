@@ -96,9 +96,6 @@ namespace VoidHuntersRevived.Domain.Simulations
             _events.Enqueue(@event);
         }
 
-        public virtual void Input(VhId sender, IInputData data)
-        {
-            this.Publish(sender, data);
-        }
+        public abstract void Input(VhId sender, IInputData data);
     }
 }

@@ -77,7 +77,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
             this.Events.Revert();
 
-            if(_confirmedEvents.TryDequeue(out EventDto? confirmedEvent))
+            while(_confirmedEvents.TryDequeue(out EventDto? confirmedEvent))
             {
                 this.Events.Confirm(confirmedEvent);
             }
@@ -86,6 +86,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         private void HandleLockstepTick(EventDto @event)
         {
             _confirmedEvents.Enqueue(@event);
+        }
+
+        public override void Input(VhId sender, IInputData data)
+        {
+            this.Publish(sender, data);
         }
     }
 }
