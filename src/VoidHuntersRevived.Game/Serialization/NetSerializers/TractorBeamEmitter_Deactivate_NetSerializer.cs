@@ -19,18 +19,14 @@ namespace VoidHuntersRevived.Game.Serialization.NetSerializers
             return new TractorBeamEmitter_TryDeactivate()
             {
                 ShipVhId = reader.GetVhId(),
-                AttachTo = reader.GetIf() ? new SocketVhId(reader.GetVhId(), reader.GetByte()) : null
+                TargetVhId = reader.GetVhId()
             };
         }
 
         public override void Serialize(NetDataWriter writer, in TractorBeamEmitter_TryDeactivate instance)
         {
             writer.Put(instance.ShipVhId);
-            if(writer.PutIf(instance.AttachTo.HasValue))
-            {
-                writer.Put(instance.AttachTo!.Value.NodeVhId);
-                writer.Put(instance.AttachTo!.Value.Index);
-            }
+            writer.Put(instance.TargetVhId);
         }
     }
 }

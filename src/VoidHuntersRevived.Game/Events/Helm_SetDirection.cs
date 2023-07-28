@@ -1,11 +1,13 @@
 ﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Events;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Game.Enums;
 
 namespace VoidHuntersRevived.Game.Events
 {
+    [Predictable]
     public class Helm_SetDirection : IInputData
     {
         public required VhId ShipVhId { get; init; }

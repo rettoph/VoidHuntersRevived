@@ -96,7 +96,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     sender: eventId,
                     data: new Tactical_SetTarget()
                     {
-                        ShipVhId = _client.Users.Current.GetUserShipId(),
+                        ShipVhId = shipId.VhId,
                         Value = (FixVector2)this.CurrentTargetPosition
                     });
 
@@ -110,10 +110,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
             else
             {
-                SocketVhId? attachTo = null;
-                if (_tractorBeamEmitterService.TryGetClosestOpenSocket(shipId, (FixVector2)this.CurrentTargetPosition, out SocketNode socketNode))
+                TractorBeamEmitter tractorBeamEmitter = this.entitiesDB.QueryEntity<TractorBeamEmitter>(shipId.EGID);
+
+                if(tractorBeamEmitter.TargetId.VhId == default)
                 {
-                    attachTo = socketNode.Socket.Id.VhId;
+                    return;
                 }
 
                 this.Simulation.Input(
@@ -121,8 +122,14 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     data: new TractorBeamEmitter_TryDeactivate()
                     {
                         ShipVhId = shipId.VhId,
-                        AttachTo = attachTo
+                        TargetVhId = tractorBeamEmitter.TargetId.VhId
                     });
+
+                // SocketVhId? attachTo = null;
+                // if (_tractorBeamEmitterService.TryGetClosestOpenSocket(shipId, (FixVector2)this.CurrentTargetPosition, out SocketNode socketNode))
+                // {
+                //     attachTo = socketNode.Socket.Id.VhId;
+                // }
             }
         }
 

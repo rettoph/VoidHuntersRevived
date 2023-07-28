@@ -41,12 +41,9 @@ namespace VoidHuntersRevived.Game.Engines
 
         public void Process(VhId eventId, TractorBeamEmitter_TryDeactivate data)
         {
-            EntityId tractorBeamEmitterId = _entities.GetId(data.ShipVhId);
-            ref TractorBeamEmitter tractorBeamEmitter = ref this.entitiesDB.QueryMappedEntities<TractorBeamEmitter>(tractorBeamEmitterId.EGID.groupID).Entity(tractorBeamEmitterId.EGID.entityID);
-
-            if(_entities.TryGetId(tractorBeamEmitter.TargetId.VhId, out _) == false)
+            if(_entities.TryGetId(data.TargetVhId, out _) == false)
             {
-                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - TargetVhId {OldTargetId} not found.", nameof(TractorBeamEmitterDeactivationEngine), nameof(Process), nameof(TractorBeamEmitter_TryDeactivate), tractorBeamEmitter.TargetId.VhId.Value);
+                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - TargetVhId {TargetVhId} not found.", nameof(TractorBeamEmitterDeactivationEngine), nameof(Process), nameof(TractorBeamEmitter_TryDeactivate), data.TargetVhId);
 
                 return;
             }
@@ -54,8 +51,7 @@ namespace VoidHuntersRevived.Game.Engines
             this.Simulation.Publish(eventId, new TractorBeamEmitter_Deactivate()
             {
                 TractorBeamEmitterVhId = data.ShipVhId,
-                TargetVhId = tractorBeamEmitter.TargetId.VhId,
-                AttachTo = data.AttachTo
+                TargetVhId = data.TargetVhId
             });
         }
 
@@ -68,7 +64,7 @@ namespace VoidHuntersRevived.Game.Engines
             ref TractorBeamEmitter tractorBeamEmitter = ref tractorBeamEmitters[tractorBeamEmitterIndex];
             ref Tactical tactical = ref tacticals[tractorBeamEmitterIndex];
 
-            if (tractorBeamEmitter.TargetId.VhId.Value != data.TargetVhId.Value)
+            if (tractorBeamEmitter.TargetId.VhId != data.TargetVhId)
             {
                 _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - TargetVhId has changed from {OldTargetId} to {NewTargetId}", nameof(TractorBeamEmitterDeactivationEngine), nameof(Process), nameof(TractorBeamEmitter_Deactivate), data.TargetVhId.Value, tractorBeamEmitter.TargetId.VhId.Value);
 
@@ -80,21 +76,9 @@ namespace VoidHuntersRevived.Game.Engines
             this.entitiesDB.QueryEntity<Tractorable>(tractorBeamEmitter.TargetId.EGID).IsTractored = false;
 
 
-            if (data.AttachTo is not null)
-            {
-                EntityId socketsId = _entities.GetId(data.AttachTo.Value.NodeVhId);
-                ref Sockets sockets = ref this.entitiesDB.QueryEntity<Sockets>(socketsId.EGID);
-                ref Socket socket = ref sockets.Items[data.AttachTo.Value.Index];
-
-                _socketService.Attach(
-                    socket: ref socket,
-                    treeId: tractorBeamEmitter.TargetId);
-            }
-
-
-            // Ensure the emitter is deactivated no matter what
+            // Ensure the emitter is deactivated
             tractorBeamEmitter.Active = false;
-            tractorBeamEmitter.TargetId = default;
+            tractorBeamEmitter.TargetId = default!;
             tactical.RemoveUse();
         }
     }

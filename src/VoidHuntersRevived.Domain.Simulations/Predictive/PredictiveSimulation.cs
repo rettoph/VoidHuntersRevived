@@ -16,6 +16,8 @@ using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using Autofac;
+using System.Reflection;
+using VoidHuntersRevived.Common.Simulations.Attributes;
 
 namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
@@ -90,7 +92,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
         public override void Input(VhId sender, IInputData data)
         {
-            this.Publish(sender, data);
+            if(data.GetType().HasCustomAttribute<PredictableAttribute>())
+            {
+                this.Publish(sender, data);
+            }
         }
     }
 }

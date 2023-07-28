@@ -79,7 +79,7 @@ namespace VoidHuntersRevived.Game.Engines
                 this.Simulation.Publish(eventId, new TractorBeamEmitter_TryDeactivate()
                 {
                     ShipVhId = data.TractorBeamEmitterVhId,
-                    AttachTo = null
+                    TargetVhId = tractorBeamEmitter.TargetId.VhId
                 });
             }
 
