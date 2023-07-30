@@ -54,15 +54,22 @@ namespace VoidHuntersRevived.Game.Engines
                 _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - TreeId {TargetTreeId} not found.", nameof(TractorBeamEmitterActivationEngine), nameof(Process), nameof(TractorBeamEmitter_TryActivate), targetNode.TreeId.VhId.Value);
                 return;
             }
-            Tree targetTree = this.entitiesDB.QueryEntity<Tree>(targetTreeId.EGID);
 
             this.Simulation.Publish(eventId, new TractorBeamEmitter_Activate()
             {
                 TractorBeamEmitterVhId = data.ShipVhId,
-                TargetData = _entities.Serialize(targetTree.HeadId)
+                TargetData = _entities.Serialize(targetNodeId)
             });
 
-            _entities.Despawn(targetTreeId);
+            Tree targetTree = this.entitiesDB.QueryEntity<Tree>(targetTreeId.EGID);
+            if (targetNodeId.VhId == targetTree.HeadId.VhId)
+            { // We have targed the head, delete the entire tree
+                _entities.Despawn(targetTreeId);
+            }
+            else
+            { // We have targeted a node, just delete the node
+                _entities.Despawn(targetNodeId);
+            }
         }
 
         public void Process(VhId eventId, TractorBeamEmitter_Activate data)

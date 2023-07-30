@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Game.Common.Loaders
         {
             packs.Configure(VoidHuntersPack.Id, pack =>
             {
-                pack.Add(Resources.Colors.Orange, new Color(Color.Orange, 0.25f));
+                pack.Add(Resources.Colors.Orange, new Color(Color.Orange, 0.85f));
             });
         }
     }

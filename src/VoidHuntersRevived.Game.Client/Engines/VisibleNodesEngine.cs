@@ -27,7 +27,7 @@ using VoidHuntersRevived.Common.Simulations.Engines;
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    //[SimulationTypeFilter(SimulationType.Predictive)]
+    [SimulationTypeFilter(SimulationType.Predictive)]
     internal sealed class VisibleNodesEngine : BasicEngine, IStepEngine<GameTime>
     {
         private readonly short[] _indexBuffer;
@@ -58,6 +58,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         {
             var groups = this.entitiesDB.FindGroups<Visible, Node>();
 
+            _primitiveBatch.BlendState = BlendState.NonPremultiplied;
             _primitiveBatch.Begin(_camera);
             foreach (var ((vhids, visibles, nodes, count), _) in this.entitiesDB.QueryEntities<EntityId, Visible, Node>(groups))
             {
@@ -76,6 +77,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
             _primitiveBatch.End();
 
+            _primitiveBatch.BlendState = BlendState.AlphaBlend;
             _primitiveBatch.Begin(_screen.Camera);
             foreach (var ((vhids, visibles, nodes, count), _) in this.entitiesDB.QueryEntities<EntityId, Visible, Node>(groups))
             {
@@ -137,7 +139,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         {
             for (int i = 0; i < visible.Paths.count; i++)
             {
-                this.TracePath(in visible.Paths[i], ref transformation);
+                // this.TracePath(in visible.Paths[i], ref transformation);
             }
         }
 
