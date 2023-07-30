@@ -10,7 +10,7 @@ using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Game.Events
 {
-    internal class TractorBeamEmitter_TryAttach : IInputData
+    public class TractorBeamEmitter_TryAttach : IInputData
     {
         public required VhId ShipVhId { get; init; }
         public required VhId TargetVhId { get; init; }

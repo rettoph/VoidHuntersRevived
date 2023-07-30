@@ -22,8 +22,7 @@ namespace VoidHuntersRevived.Game.Engines
 {
     [AutoLoad]
     internal sealed class TractorBeamEmitterDeactivationEngine : BasicEngine,
-        IEventEngine<TractorBeamEmitter_TryDeactivate>,
-        IEventEngine<TractorBeamEmitter_Deactivate>
+        IEventEngine<TractorBeamEmitter_TryDeactivate>
     {
         private readonly IEntityService _entities;
         private readonly ISocketService _socketService;
@@ -48,16 +47,7 @@ namespace VoidHuntersRevived.Game.Engines
                 return;
             }
 
-            this.Simulation.Publish(eventId, new TractorBeamEmitter_Deactivate()
-            {
-                TractorBeamEmitterVhId = data.ShipVhId,
-                TargetVhId = data.TargetVhId
-            });
-        }
-
-        public void Process(VhId eventId, TractorBeamEmitter_Deactivate data)
-        {
-            EntityId tractorBeamEmitterId = _entities.GetId(data.TractorBeamEmitterVhId);
+            EntityId tractorBeamEmitterId = _entities.GetId(data.ShipVhId);
             var tractorBeamEmitters = this.entitiesDB.QueryEntitiesAndIndex<TractorBeamEmitter>(tractorBeamEmitterId.EGID, out uint tractorBeamEmitterIndex);
             var (tacticals, _) = this.entitiesDB.QueryEntities<Tactical>(tractorBeamEmitterId.EGID.groupID);
 
@@ -66,7 +56,7 @@ namespace VoidHuntersRevived.Game.Engines
 
             if (tractorBeamEmitter.TargetId.VhId != data.TargetVhId)
             {
-                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - TargetVhId has changed from {OldTargetId} to {NewTargetId}", nameof(TractorBeamEmitterDeactivationEngine), nameof(Process), nameof(TractorBeamEmitter_Deactivate), data.TargetVhId.Value, tractorBeamEmitter.TargetId.VhId.Value);
+                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - TargetVhId has changed from {OldTargetId} to {NewTargetId}", nameof(TractorBeamEmitterDeactivationEngine), nameof(Process), nameof(TractorBeamEmitter_TryDeactivate), data.TargetVhId.Value, tractorBeamEmitter.TargetId.VhId.Value);
 
                 return;
             }

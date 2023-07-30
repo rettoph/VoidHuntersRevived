@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Serilog;
 using Svelto.ECS;
 using System;
 using System.Collections.Generic;
@@ -20,26 +21,25 @@ namespace VoidHuntersRevived.Game.Engines
 {
     [AutoLoad]
     internal sealed class TractorBeamEmitterAttachmentEngine : BasicEngine,
-        IEventEngine<TractorBeamEmitter_Attach>
+        IEventEngine<TractorBeamEmitter_TryAttach>
     {
         private readonly IEntityService _entities;
         private readonly ISocketService _socketService;
+        private readonly ILogger _logger;
 
-        public TractorBeamEmitterAttachmentEngine(IEntityService entities, ISocketService socketService)
+        public TractorBeamEmitterAttachmentEngine(IEntityService entities, ISocketService socketService, ILogger logger)
         {
             _entities = entities;
             _socketService = socketService;
+            _logger = logger;
         }
 
-        public void Process(VhId eventId, TractorBeamEmitter_Attach data)
+        public void Process(VhId eventId, TractorBeamEmitter_TryAttach data)
         {
-            // EntityId socketsId = _entities.GetId(data.SocketVhId.NodeVhId);
-            // ref Sockets sockets = ref this.entitiesDB.QueryEntity<Sockets>(socketsId.EGID);
-            // ref Socket socket = ref sockets.Items[data.SocketVhId.Index];
-            // 
-            // _socketService.Attach(
-            //     socket: ref socket,
-            //     treeId: tractorBeamEmitter.TargetId);
+            // TODO: Ensure that the tractor beam owns the socketNode in question.
+            _socketService.Attach(
+                socketVhId: data.SocketVhId,
+                treeVhId: data.TargetVhId);
         }
     }
 }

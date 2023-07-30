@@ -107,7 +107,10 @@ namespace VoidHuntersRevived.Game.Engines
             EntityId tractorBeamEmitterId = _entities.GetId(data.TractorBeamEmitterVhId);
 
             var tractorBeamEmitters = this.entitiesDB.QueryEntitiesAndIndex<TractorBeamEmitter>(tractorBeamEmitterId.EGID, out uint index);
+            var (tacticals, _) = this.entitiesDB.QueryEntities<Tactical>(tractorBeamEmitterId.EGID.groupID);
+
             ref TractorBeamEmitter tractorBeamEmitter = ref tractorBeamEmitters[index];
+            ref Tactical tactical = ref tacticals[index];
 
             if (tractorBeamEmitter.TargetId.VhId.Value != eventId.Create(1).Value)
             {
@@ -115,7 +118,9 @@ namespace VoidHuntersRevived.Game.Engines
                 return;
             }
 
+            tactical.RemoveUse();
             tractorBeamEmitter.Active = false;
+            tractorBeamEmitter.TargetId = default;
         }
     }
 }

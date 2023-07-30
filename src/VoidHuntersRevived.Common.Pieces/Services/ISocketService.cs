@@ -12,6 +12,6 @@ namespace VoidHuntersRevived.Common.Pieces.Services
         SocketNode GetSocketNode(SocketId socketId);
         bool TryGetSocketNode(SocketVhId socketVhId, out SocketNode socketNode);
 
-        void Attach(ref Socket socket, EntityId treeId);
+        void Attach(SocketVhId socketVhId, VhId treeVhId);
     }
 }

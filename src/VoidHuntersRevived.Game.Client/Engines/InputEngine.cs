@@ -125,11 +125,17 @@ namespace VoidHuntersRevived.Game.Client.Engines
                         TargetVhId = tractorBeamEmitter.TargetId.VhId
                     });
 
-                // SocketVhId? attachTo = null;
-                // if (_tractorBeamEmitterService.TryGetClosestOpenSocket(shipId, (FixVector2)this.CurrentTargetPosition, out SocketNode socketNode))
-                // {
-                //     attachTo = socketNode.Socket.Id.VhId;
-                // }
+                if (_tractorBeamEmitterService.TryGetClosestOpenSocket(shipId, (FixVector2)this.CurrentTargetPosition, out SocketNode socketNode))
+                {
+                    this.Simulation.Input(
+                        sender: eventId,
+                        data: new TractorBeamEmitter_TryAttach()
+                        {
+                            ShipVhId = shipId.VhId,
+                            TargetVhId = tractorBeamEmitter.TargetId.VhId,
+                            SocketVhId = socketNode.Socket.Id.VhId
+                        });
+                }
             }
         }
 

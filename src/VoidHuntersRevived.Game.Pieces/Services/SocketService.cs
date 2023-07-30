@@ -14,6 +14,7 @@ using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Game.Pieces.Events;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Game.Pieces.Services
 {
@@ -51,15 +52,21 @@ namespace VoidHuntersRevived.Game.Pieces.Services
             return false;
         }
 
-        public void Attach(ref Socket socket, EntityId treeId)
+        public void Attach(SocketVhId socketVhId, VhId treeVhId)
         {
+            if(!_entities.TryGetId(treeVhId, out EntityId treeId))
+            {
+                _logger.Warning("{ClassName}::{MethodName} - TreeVhId {TreeVhId} not found.", nameof(SocketService), nameof(Attach), treeVhId.Value);
+                return;
+            }
+
             ref Tree tree = ref this.entitiesDB.QueryEntity<Tree>(treeId.EGID);
 
             this.Simulation.Publish(
                 sender: NameSpace<SocketService>.Instance,
                 data: new Socket_Spawn()
                 {
-                    SocketVhId = socket.Id.VhId,
+                    SocketVhId = socketVhId,
                     NodeData = _entities.Serialize(tree.HeadId)
                 });
         }
