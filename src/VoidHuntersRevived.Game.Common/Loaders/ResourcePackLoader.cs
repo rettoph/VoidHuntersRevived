@@ -20,6 +20,7 @@ namespace VoidHuntersRevived.Game.Common.Loaders
             packs.Configure(VoidHuntersPack.Id, pack =>
             {
                 pack.Add(Resources.Colors.Orange, new Color(Color.Orange, 0.85f));
+                pack.Add(Resources.Colors.TractorBeamHighlight, new Color(Color.LightGray, 0.25f));
             });
         }
     }

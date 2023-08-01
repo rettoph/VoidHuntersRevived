@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Svelto.DataStructures;
 using Svelto.ECS;
+using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Extensions.System;
 using VoidHuntersRevived.Common.Pieces.Utilities;
 
@@ -9,6 +10,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 {
     public struct Visible : IEntityComponent, IDisposable
     {
+        public required EntityResource<Color> Color { get; init; }
         public required NativeDynamicArrayCast<Shape> Shapes { get; init; }
         public required NativeDynamicArrayCast<Shape> Paths { get; init; }
 
@@ -34,11 +36,11 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 
             return new Visible()
             {
+                Color = color,
                 Shapes = new[]
                 {
                     new Shape()
                     {
-                        Color = color,
                         Vertices = vertexAngles.Select(x => x.XnaVertex.ToVector3()).ToNativeDynamicArray()
                     }
                 }.ToNativeDynamicArray(),
@@ -46,7 +48,6 @@ namespace VoidHuntersRevived.Common.Pieces.Components
                 {
                     new Shape()
                     {
-                        Color = color,
                         Vertices = vertexAngles.Select(x => x.XnaVertex.ToVector3()).Concat(vertexAngles.First().XnaVertex.ToVector3().Yield()).ToNativeDynamicArray()
                     }
                 }.ToNativeDynamicArray()

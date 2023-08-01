@@ -47,10 +47,12 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                     serializer: new ComponentSerializer<Rigid>(
                         writer: (entites, writer, instance) =>
                         {
+                            writer.WriteStruct(instance.Centeroid);
                             writer.WriteNativeDynamicArray(instance.Shapes, PolygonWriter);
                         },
                         reader: (entites, reader, id) => new Rigid()
                         {
+                            Centeroid = reader.ReadStruct<FixVector2>(),
                             Shapes = reader.ReadNativeDynamicArray<Polygon>(PolygonReader)
                         })),
                 new ComponentManager<Visible>(
@@ -58,11 +60,13 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                     serializer: new ComponentSerializer<Visible>(
                         writer: (entites, writer, instance) =>
                         {
+                            writer.WriteStruct(instance.Color);
                             writer.WriteNativeDynamicArray(instance.Shapes, ShapeWriter);
                             writer.WriteNativeDynamicArray(instance.Paths, ShapeWriter);
                         },
                         reader: (entites, reader, id) => new Visible()
                         {
+                            Color = reader.ReadStruct<EntityResource<Color>>(),
                             Shapes = reader.ReadNativeDynamicArray<Shape>(ShapeReader),
                             Paths = reader.ReadNativeDynamicArray<Shape>(ShapeReader)
                         })),
@@ -73,14 +77,12 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
         {
             return new Shape()
             {
-                Color = reader.ReadStruct<EntityResource<Color>>(),
                 Vertices = reader.ReadNativeDynamicArray<Vector3>()
             };
         }
 
         private void ShapeWriter(EntityWriter writer, Shape shape)
         {
-            writer.WriteStruct(shape.Color);
             writer.WriteNativeDynamicArray(shape.Vertices);
         }
 

@@ -4,6 +4,8 @@
     {
         VhId Id { get; }
 
+        FixVector2 Centeroid { get; }
+
         IBody Body { get; }
     }
 }

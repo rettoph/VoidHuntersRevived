@@ -14,6 +14,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
     public struct Rigid : IEntityComponent, IDisposable
     {
         public bool Disposed { get; set; }
+        public required FixVector2 Centeroid { get; init; }
         public required NativeDynamicArrayCast<Polygon> Shapes { get; init; }
 
         public void Dispose()
@@ -33,6 +34,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 
             Rigid rigid = new Rigid()
             {
+                Centeroid = shape.Centeroid,
                 Shapes = new[]
                 {
                     shape

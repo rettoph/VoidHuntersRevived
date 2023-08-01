@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Game.Services
 {
     public sealed class TractorBeamEmitterService : IQueryingEntitiesEngine
     {
-        private static Fix64 QueryRadius = (Fix64)5;
+        private static Fix64 QueryRadius = (Fix64)3;
         private static readonly Fix64 OpenNodemaximumDistance = Fix64.One;
 
         private readonly ISpace _space;
@@ -35,14 +35,17 @@ namespace VoidHuntersRevived.Game.Services
 
         public bool Query(EntityId tractorBeamEmitterId, FixVector2 target, out EntityId targetId)
         {
-            var tractorBeamEmitters = this.entitiesDB.QueryEntitiesAndIndex<TractorBeamEmitter>(tractorBeamEmitterId.EGID, out uint index);
+            if(!this.entitiesDB.TryQueryEntitiesAndIndex<TractorBeamEmitter>(tractorBeamEmitterId.EGID, out uint index, out var tractorBeamEmitters))
+            {
+                targetId = default;
+                return false;
+            }
 
             TractorBeamEmitter tractorBeamEmitter = tractorBeamEmitters[index];
 
             AABB aabb = new AABB(target, QueryRadius, QueryRadius);
             Fix64 minDistance = QueryRadius;
             VhId? callbackTargetId = default!;
-            int queryCount = 0;
 
             _space.QueryAABB(fixture =>
             {
@@ -50,15 +53,16 @@ namespace VoidHuntersRevived.Game.Services
 
                 // BEGIN NODE DISTANCE CHECK
                 EntityId fixtureNodeId = _entities.GetId(fixture.Id);
-                Node fixtureNode = this.entitiesDB.QueryEntity<Node>(fixtureNodeId.EGID);
-                FixVector2 fixtureNodePosition = FixVector2.Transform(FixVector2.Zero, fixtureNode.Transformation);
+
+                Node fixtureNode = this.entitiesDB.QueryEntitiesAndIndex<Node>(fixtureNodeId.EGID, out uint index)[index];
+                var (rigids, _) = this.entitiesDB.QueryEntities<Rigid>(fixtureNodeId.EGID.groupID);
+                Rigid fixtureRigid = rigids[index];
+
+
+                FixVector2 fixtureNodePosition = FixVector2.Transform(fixtureRigid.Centeroid, fixtureNode.Transformation);
                 FixVector2.Distance(ref target, ref fixtureNodePosition, out Fix64 fixtureNodeDistance);
 
-                if (fixtureNodeDistance < minDistance)
-                { // Node is closer than a previously scanned target
-                    minDistance = fixtureNodeDistance;
-                }
-                else
+                if (fixtureNodeDistance > minDistance)
                 { // Invalid Target - The distance is further away than the previously closest valid target
                     return true;
                 }
@@ -70,13 +74,18 @@ namespace VoidHuntersRevived.Game.Services
                 { // Target resides within a tractorable tree, so we want to grab the head
                     queryTargetId = fixtureNodeTree.HeadId.VhId;
                 }
+                else if(fixtureNode.TreeId.VhId == tractorBeamEmitterId.VhId && fixtureNodeTree.HeadId.VhId != fixture.Id)
+                {
+                    queryTargetId = fixture.Id;
+                }
                 else
                 { // Target is not in any way tractorable, we can disregard it
                     return true;
                 }
 
+                minDistance = fixtureNodeDistance;
                 callbackTargetId = queryTargetId;
-                return queryCount++ < 5; // Ensure we only check a maximum of 5 fixtures all the way through
+                return true; // Ensure we only check a maximum of 5 fixtures all the way through
 
             }, ref aabb);
 

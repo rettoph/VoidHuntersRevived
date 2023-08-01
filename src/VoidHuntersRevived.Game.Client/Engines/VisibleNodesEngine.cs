@@ -20,6 +20,7 @@ using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Engines;
@@ -31,20 +32,14 @@ namespace VoidHuntersRevived.Game.Client.Engines
     internal sealed class VisibleNodesEngine : BasicEngine, IStepEngine<GameTime>
     {
         private readonly short[] _indexBuffer;
-        private readonly IScreen _screen;
-        private readonly Camera2D _camera;
-        private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
-        private readonly IResourceProvider _resources;
+        private readonly IVisibleRenderingService _visibleRenderingService;
         private readonly ILogger _logger;
 
         public string name { get; } = nameof(VisibleNodesEngine);
 
-        public VisibleNodesEngine(IScreen screen, ILogger logger, Camera2D camera, PrimitiveBatch<VertexPositionColor> primitiveBatch, IResourceProvider resources)
+        public VisibleNodesEngine(ILogger logger, IVisibleRenderingService visibleRenderingService)
         {
-            _screen = screen;
-            _camera = camera;
-            _primitiveBatch = primitiveBatch;
-            _resources = resources;
+            _visibleRenderingService = visibleRenderingService;
             _indexBuffer = new short[3];
             _logger = logger;
         }
@@ -58,8 +53,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         {
             var groups = this.entitiesDB.FindGroups<Visible, Node>();
 
-            _primitiveBatch.BlendState = BlendState.NonPremultiplied;
-            _primitiveBatch.Begin(_camera);
+            _visibleRenderingService.BeginFill();
             foreach (var ((vhids, visibles, nodes, count), _) in this.entitiesDB.QueryEntities<EntityId, Visible, Node>(groups))
             {
                 for (int i = 0; i < count; i++)
@@ -67,7 +61,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     try
                     {
                         Matrix transformation = nodes[i].Transformation.XnaMatrix;
-                        this.FillShapes(in visibles[i], ref transformation);
+                        _visibleRenderingService.Fill(in visibles[i], ref transformation);
                     }
                     catch(Exception e)
                     {
@@ -75,10 +69,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     }
                 }
             }
-            _primitiveBatch.End();
+            _visibleRenderingService.End();
 
-            _primitiveBatch.BlendState = BlendState.AlphaBlend;
-            _primitiveBatch.Begin(_screen.Camera);
+            _visibleRenderingService.BeginTrace();
             foreach (var ((vhids, visibles, nodes, count), _) in this.entitiesDB.QueryEntities<EntityId, Visible, Node>(groups))
             {
                 for (int i = 0; i < count; i++)
@@ -86,7 +79,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     try
                     {
                         Matrix transformation = nodes[i].Transformation.XnaMatrix;
-                        this.TracePaths(in visibles[i], ref transformation);
+                        _visibleRenderingService.Trace(in visibles[i], ref transformation);
                     }
                     catch (Exception e)
                     {
@@ -94,78 +87,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     }
                 }
             }
-            _primitiveBatch.End();
-        }
-
-        private void FillShapes(in Visible visible, ref Matrix transformation)
-        {
-            for(int i=0; i<visible.Shapes.count; i++)
-            {
-                this.FillShape(in visible.Shapes[i], ref transformation);
-            }
-        }
-
-        private void FillShape(in Shape shape, ref Matrix transformation)
-        {
-            _primitiveBatch.EnsureCapacity(shape.Vertices.count);
-
-            Color color = _resources.Get(shape.Color);
-
-            ref VertexPositionColor v1 = ref _primitiveBatch.NextVertex(out _indexBuffer[0]);
-            v1.Color = color;
-            Vector3.Transform(ref shape.Vertices[0], ref transformation, out v1.Position);
-
-            ref VertexPositionColor v2 = ref _primitiveBatch.NextVertex(out _indexBuffer[1]);
-            v2.Color = color;
-            Vector3.Transform(ref shape.Vertices[1], ref transformation, out v2.Position);
-            
-
-            for (int i=2; i<shape.Vertices.count; i++)
-            {
-                ref VertexPositionColor v3 = ref _primitiveBatch.NextVertex(out _indexBuffer[2]);
-                v3.Color = color;
-                Vector3.Transform(ref shape.Vertices[i], ref transformation, out v3.Position);
-
-                _primitiveBatch.AddTriangleIndex(in _indexBuffer[0]);
-                _primitiveBatch.AddTriangleIndex(in _indexBuffer[1]);
-                _primitiveBatch.AddTriangleIndex(in _indexBuffer[2]);
-
-                _indexBuffer[1] = _indexBuffer[2];
-            }
-        }
-
-
-        private void TracePaths(in Visible visible, ref Matrix transformation)
-        {
-            for (int i = 0; i < visible.Paths.count; i++)
-            {
-                // this.TracePath(in visible.Paths[i], ref transformation);
-            }
-        }
-
-        private void TracePath(in Shape shape, ref Matrix transformation)
-        {
-            _primitiveBatch.EnsureCapacity(shape.Vertices.count);
-
-            Color color = _resources.Get(shape.Color);
-
-            ref VertexPositionColor v1 = ref _primitiveBatch.NextVertex(out _indexBuffer[0]);
-            v1.Color = color;
-            Vector3.Transform(ref shape.Vertices[0], ref transformation, out v1.Position);
-            v1.Position = _camera.Project(v1.Position);
-
-            for (int i = 1; i < shape.Vertices.count; i++)
-            {
-                ref VertexPositionColor v2 = ref _primitiveBatch.NextVertex(out _indexBuffer[1]);
-                v2.Color = color;
-                Vector3.Transform(ref shape.Vertices[i], ref transformation, out v2.Position);
-                v2.Position = _camera.Project(v2.Position);
-
-                _primitiveBatch.AddLineIndex(in _indexBuffer[0]);
-                _primitiveBatch.AddLineIndex(in _indexBuffer[1]);
-
-                _indexBuffer[0] = _indexBuffer[1];
-            }
+            _visibleRenderingService.End();
         }
     }
 }

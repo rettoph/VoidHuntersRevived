@@ -21,6 +21,8 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public IBody Body => _body;
 
+        public FixVector2 Centeroid { get; set; }
+
         public Fixture(VhId id, Body body, Shape shape, Category colissionCategories, Category collidesWith)
         {
             _body = body;

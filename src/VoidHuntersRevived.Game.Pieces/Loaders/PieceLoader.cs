@@ -21,6 +21,8 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
             services.RegisterType<TreeFactory>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             services.RegisterType<SocketService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+            services.RegisterType<VisibleRenderingService>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }

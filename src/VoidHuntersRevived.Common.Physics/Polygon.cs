@@ -14,6 +14,20 @@ namespace VoidHuntersRevived.Common.Physics
     {
         public NativeDynamicArrayCast<FixVector2> Vertices;
         public Fix64 Density;
+        public FixVector2 Centeroid
+        {
+            get
+            {
+                FixVector2 value = FixVector2.Zero;
+
+                for(int i=0; i<this.Vertices.count; i++)
+                {
+                    value += this.Vertices[i];
+                }
+
+                return value / (Fix64)this.Vertices.count;
+            }
+        }
 
         public Polygon(Fix64 density, params FixVector2[] vertices) : this(density, vertices.ToNativeDynamicArray())
         {
