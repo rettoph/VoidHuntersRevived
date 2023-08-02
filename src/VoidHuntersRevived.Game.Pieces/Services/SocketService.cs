@@ -78,6 +78,12 @@ namespace VoidHuntersRevived.Game.Pieces.Services
                 return;
             }
 
+            if(socketNode.Socket.PlugId.VhId != default)
+            {
+                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Socket {SocketNodeId}:{SocketIndex} already has existing attachment with {NodeId}", nameof(SocketService), nameof(Process), nameof(Socket_Spawn), socketNode.Socket.Id.NodeId.VhId.Value, socketNode.Socket.Id.Index, socketNode.Socket.PlugId.VhId.Value);
+                return;
+            }
+
             SocketId socketId = socketNode.Socket.Id;
             EntityId nodeId = _entities.Deserialize(
                 seed: socketNode.Node.TreeId.VhId,

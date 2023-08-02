@@ -27,6 +27,7 @@ using Svelto.ECS;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Game.Components;
 using VoidHuntersRevived.Common.Pieces;
+using VoidHuntersRevived.Common.Pieces.Components;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -87,7 +88,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             if (message.Value)
             {
-                if (!_tractorBeamEmitterService.Query(shipId, (FixVector2)this.CurrentTargetPosition, out EntityId targetId))
+                if (!_tractorBeamEmitterService.Query(shipId, (FixVector2)this.CurrentTargetPosition, out Component<Node> targetNode, out Component<Tree> targetTree))
                 {
                     return;
                 }
@@ -100,13 +101,26 @@ namespace VoidHuntersRevived.Game.Client.Engines
                         Value = (FixVector2)this.CurrentTargetPosition
                     });
 
-                this.Simulation.Input(
-                    sender: eventId,
-                    data: new TractorBeamEmitter_TryActivate()
-                    {
-                        ShipVhId = shipId.VhId,
-                        TargetVhId = targetId.VhId
-                    });
+                if(targetTree.Id.VhId == shipId.VhId)
+                {
+                    this.Simulation.Input(
+                        sender: eventId,
+                        data: new TractorBeamEmitter_TryDetach()
+                        {
+                            ShipVhId = shipId.VhId,
+                            TargetVhId = targetNode.Id.VhId
+                        });
+                }
+                else
+                {
+                    this.Simulation.Input(
+                        sender: eventId,
+                        data: new TractorBeamEmitter_TryActivate()
+                        {
+                            ShipVhId = shipId.VhId,
+                            TargetVhId = targetNode.Id.VhId
+                        });
+                }
             }
             else
             {
@@ -117,14 +131,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     return;
                 }
 
-                this.Simulation.Input(
-                    sender: eventId,
-                    data: new TractorBeamEmitter_TryDeactivate()
-                    {
-                        ShipVhId = shipId.VhId,
-                        TargetVhId = tractorBeamEmitter.TargetId.VhId
-                    });
-
                 if (_tractorBeamEmitterService.TryGetClosestOpenSocket(shipId, (FixVector2)this.CurrentTargetPosition, out SocketNode socketNode))
                 {
                     this.Simulation.Input(
@@ -134,6 +140,16 @@ namespace VoidHuntersRevived.Game.Client.Engines
                             ShipVhId = shipId.VhId,
                             TargetVhId = tractorBeamEmitter.TargetId.VhId,
                             SocketVhId = socketNode.Socket.Id.VhId
+                        });
+                }
+                else
+                {
+                    this.Simulation.Input(
+                        sender: eventId,
+                        data: new TractorBeamEmitter_TryDeactivate()
+                        {
+                            ShipVhId = shipId.VhId,
+                            TargetVhId = tractorBeamEmitter.TargetId.VhId
                         });
                 }
             }

@@ -84,15 +84,20 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            if (!_tractorBeamEmitterService.Query(shipId, (FixVector2)this.CurrentTargetPosition, out EntityId targetId))
+            if (!_tractorBeamEmitterService.Query(shipId, (FixVector2)this.CurrentTargetPosition, out Component<Node> targetNode, out _))
             {
                 return;
             }
 
             _visibleRenderingService.BeginFill();
-
-            this.FillVisibleRecursive(targetId.EGID);
-
+            try
+            {
+                this.FillVisibleRecursive(targetNode.Id.EGID);
+            }
+            catch(Exception e)
+            {
+                _logger.Warning(e, "{ClassName}::{MethodName} - Exception while attempting to render {TargetNodeVhId}. This may be caused by frame step desync and should self correct.", nameof(TractorBeamHighlightEngine), nameof(Step), targetNode.Id.VhId.Value);
+            }
             _visibleRenderingService.End();
         }
 

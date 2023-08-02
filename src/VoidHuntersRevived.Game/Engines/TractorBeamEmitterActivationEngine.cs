@@ -63,12 +63,16 @@ namespace VoidHuntersRevived.Game.Engines
 
             Tree targetTree = this.entitiesDB.QueryEntity<Tree>(targetTreeId.EGID);
             if (targetNodeId.VhId == targetTree.HeadId.VhId)
-            { // We have targed the head, delete the entire tree
+            { // We are grabbing an independent tree, just activate
                 _entities.Despawn(targetTreeId);
             }
             else
-            { // We have targeted a node, just delete the node
-                _entities.Despawn(targetNodeId);
+            { // We are targeting a piece within the current ship, attempt to detach
+                this.Simulation.Publish(eventId, new TractorBeamEmitter_TryDetach()
+                {
+                    ShipVhId = data.ShipVhId,
+                    TargetVhId = data.TargetVhId
+                });
             }
         }
 

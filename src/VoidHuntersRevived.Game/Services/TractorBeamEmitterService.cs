@@ -33,11 +33,12 @@ namespace VoidHuntersRevived.Game.Services
             // throw new NotImplementedException();
         }
 
-        public bool Query(EntityId tractorBeamEmitterId, FixVector2 target, out EntityId targetId)
+        public bool Query(EntityId tractorBeamEmitterId, FixVector2 target, out Component<Node> targetNode, out Component<Tree> targetTree)
         {
             if(!this.entitiesDB.TryQueryEntitiesAndIndex<TractorBeamEmitter>(tractorBeamEmitterId.EGID, out uint index, out var tractorBeamEmitters))
             {
-                targetId = default;
+                targetNode = default;
+                targetTree = default;
                 return false;
             }
 
@@ -45,36 +46,36 @@ namespace VoidHuntersRevived.Game.Services
 
             AABB aabb = new AABB(target, QueryRadius, QueryRadius);
             Fix64 minDistance = QueryRadius;
-            VhId? callbackTargetId = default!;
+            Component<Node>? callbackTargetNode = default!;
+            Component<Tree>? callbackTargetTree = default!;
 
             _space.QueryAABB(fixture =>
             {
                 VhId queryTargetId = default;
 
                 // BEGIN NODE DISTANCE CHECK
-                EntityId fixtureNodeId = _entities.GetId(fixture.Id);
+                EntityId queryNodeId = _entities.GetId(fixture.Id);
+                Node queryNode = this.entitiesDB.QueryEntitiesAndIndex<Node>(queryNodeId.EGID, out uint index)[index];
+                var (rigids, _) = this.entitiesDB.QueryEntities<Rigid>(queryNodeId.EGID.groupID);
+                Rigid queryRigid = rigids[index];
 
-                Node fixtureNode = this.entitiesDB.QueryEntitiesAndIndex<Node>(fixtureNodeId.EGID, out uint index)[index];
-                var (rigids, _) = this.entitiesDB.QueryEntities<Rigid>(fixtureNodeId.EGID.groupID);
-                Rigid fixtureRigid = rigids[index];
 
+                FixVector2 queryNodePosition = FixVector2.Transform(queryRigid.Centeroid, queryNode.Transformation);
+                FixVector2.Distance(ref target, ref queryNodePosition, out Fix64 queryNodeDistance);
 
-                FixVector2 fixtureNodePosition = FixVector2.Transform(fixtureRigid.Centeroid, fixtureNode.Transformation);
-                FixVector2.Distance(ref target, ref fixtureNodePosition, out Fix64 fixtureNodeDistance);
-
-                if (fixtureNodeDistance > minDistance)
+                if (queryNodeDistance > minDistance)
                 { // Invalid Target - The distance is further away than the previously closest valid target
                     return true;
                 }
 
                 // BEGIN NODE TREE CHECK
-                Tree fixtureNodeTree = this.entitiesDB.QueryEntity<Tree>(fixtureNode.TreeId.EGID);
+                Tree queryTree = this.entitiesDB.QueryEntity<Tree>(queryNode.TreeId.EGID);
 
-                if(this.entitiesDB.TryGetEntity<Tractorable>(fixtureNode.TreeId.EGID, out var tractorable) && tractorable.IsTractored == false)
+                if(this.entitiesDB.TryGetEntity<Tractorable>(queryNode.TreeId.EGID, out var tractorable) && tractorable.IsTractored == false)
                 { // Target resides within a tractorable tree, so we want to grab the head
-                    queryTargetId = fixtureNodeTree.HeadId.VhId;
+                    queryTargetId = queryTree.HeadId.VhId;
                 }
-                else if(fixtureNode.TreeId.VhId == tractorBeamEmitterId.VhId && fixtureNodeTree.HeadId.VhId != fixture.Id)
+                else if(queryNode.TreeId.VhId == tractorBeamEmitterId.VhId && queryTree.HeadId.VhId != fixture.Id)
                 {
                     queryTargetId = fixture.Id;
                 }
@@ -83,19 +84,22 @@ namespace VoidHuntersRevived.Game.Services
                     return true;
                 }
 
-                minDistance = fixtureNodeDistance;
-                callbackTargetId = queryTargetId;
+                minDistance = queryNodeDistance;
+                callbackTargetNode = new Component<Node>(queryNodeId, queryNode);
+                callbackTargetTree = new Component<Tree>(queryNode.TreeId, queryTree);
                 return true; // Ensure we only check a maximum of 5 fixtures all the way through
 
             }, ref aabb);
 
-            if (callbackTargetId is null)
+            if (callbackTargetNode is null || callbackTargetTree is null)
             {
-                targetId = default;
+                targetNode = default;
+                targetTree = default;
                 return false;
             }
 
-            targetId = _entities.GetId(callbackTargetId.Value);
+            targetNode = callbackTargetNode.Value;
+            targetTree = callbackTargetTree.Value;
             return true;
         }
 
@@ -146,18 +150,23 @@ namespace VoidHuntersRevived.Game.Services
         
             for (int j = 0; j < sockets.Items.count; j++)
             {
-                FixMatrix jointWorldTransformation = sockets.Items[j].Location.Transformation * node.Transformation;
+                ref Socket socket = ref sockets.Items[j];
+
+                if(socket.PlugId.VhId != default)
+                { // Socket is not open
+                    continue;
+                }
+
+                FixMatrix jointWorldTransformation = socket.Location.Transformation * node.Transformation;
                 FixVector2 jointWorldPosition = FixVector2.Transform(FixVector2.Zero, jointWorldTransformation);
-        
-                FixVector2.Distance(ref jointWorldPosition, ref target, out Fix64 jointDistanceFromTactical);
-        
-                if (jointDistanceFromTactical > closestOpenSocketDistance)
-                {
+                FixVector2.Distance(ref jointWorldPosition, ref target, out Fix64 jointDistanceFromTarget);
+                if (jointDistanceFromTarget > closestOpenSocketDistance)
+                { // Socket is further away than previously checked closest
                     continue;
                 }
         
-                closestOpenSocketDistance = jointDistanceFromTactical;
-                closestOpenSocketOnNode = new SocketNode(ref sockets.Items[j], ref node);
+                closestOpenSocketDistance = jointDistanceFromTarget;
+                closestOpenSocketOnNode = new SocketNode(ref socket, ref node);
                 result = true;
             }
         
