@@ -31,6 +31,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.GUI\Guppy.GUI.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Game.Ships\VoidHuntersRevived.Game.Ships.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Game\VoidHuntersRevived.Game.csproj" />
   </ItemGroup>
 

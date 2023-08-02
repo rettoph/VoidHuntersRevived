@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Domain.Physics.Loaders;
 using VoidHuntersRevived.Domain.Loaders;
 using VoidHuntersRevived.Game.Pieces.Loaders;
+using VoidHuntersRevived.Game.Ships.Loaders;
+using VoidHuntersRevived.Game.Common.Loaders;
 
 namespace VoidHuntersRevived.Domain
 {
@@ -20,7 +22,9 @@ namespace VoidHuntersRevived.Domain
         public void Configure(GuppyConfiguration configuration)
         {
             configuration.Assemblies.Load(typeof(DomainLoader).Assembly);
+            configuration.Assemblies.Load(typeof(EntityTypeLoader).Assembly);
             configuration.Assemblies.Load(typeof(PieceTypeLoader).Assembly);
+            configuration.Assemblies.Load(typeof(ShipsServiceLoader).Assembly);
         }
     }
 }

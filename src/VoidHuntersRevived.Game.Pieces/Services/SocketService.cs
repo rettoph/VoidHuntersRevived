@@ -11,23 +11,28 @@ using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Factories;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Game.Pieces.Events;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Game.Pieces.Services
 {
     internal sealed class SocketService : BasicEngine, ISocketService, IQueryingEntitiesEngine,
-        IEventEngine<Socket_Spawn>,
-        IRevertEventEngine<Socket_Spawn>
+        IEventEngine<Socket_Attach>,
+        IRevertEventEngine<Socket_Attach>,
+        IEventEngine<Socket_Detached>
     {
         private readonly ILogger _logger;
         private readonly IEntityService _entities;
+        private readonly ITreeFactory _treeFactory;
 
-        public SocketService(IEntityService entities, ILogger logger)
+        public SocketService(IEntityService entities, ITreeFactory treeFactory, ILogger logger)
         {
             _logger = logger;
             _entities = entities;
+            _treeFactory = treeFactory;
         }
 
         public SocketNode GetSocketNode(SocketId socketId)
@@ -53,41 +58,51 @@ namespace VoidHuntersRevived.Game.Pieces.Services
 
         public void Attach(SocketVhId socketVhId, VhId treeVhId)
         {
-            if(!_entities.TryGetId(treeVhId, out EntityId treeId))
-            {
-                _logger.Warning("{ClassName}::{MethodName} - TreeVhId {TreeVhId} not found.", nameof(SocketService), nameof(Attach), treeVhId.Value);
-                return;
-            }
-
-            ref Tree tree = ref this.entitiesDB.QueryEntity<Tree>(treeId.EGID);
-
             this.Simulation.Publish(
                 sender: NameSpace<SocketService>.Instance,
-                data: new Socket_Spawn()
+                data: new Socket_Attach()
                 {
                     SocketVhId = socketVhId,
-                    NodeData = _entities.Serialize(tree.HeadId)
+                    TreeVhId = treeVhId
                 });
         }
 
-        public void Process(VhId eventId, Socket_Spawn data)
+        public void Detach(SocketVhId socketVhId)
+        {
+            this.Simulation.Publish(
+                sender: NameSpace<SocketService>.Instance,
+                data: new Socket_Detached()
+                {
+                    SocketVhId = socketVhId
+                });
+        }
+
+        public void Process(VhId eventId, Socket_Attach data)
         {
             if(!this.TryGetSocketNode(data.SocketVhId, out SocketNode socketNode))
             {
-                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Unable to load SocketNode within node {NodeId}", nameof(SocketService), nameof(Process), nameof(Socket_Spawn), data.SocketVhId.NodeVhId.Value);
+                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Unable to load SocketNode within node {NodeId}", nameof(SocketService), nameof(Process), nameof(Socket_Attach), data.SocketVhId.NodeVhId.Value);
                 return;
             }
 
             if(socketNode.Socket.PlugId.VhId != default)
             {
-                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Socket {SocketNodeId}:{SocketIndex} already has existing attachment with {NodeId}", nameof(SocketService), nameof(Process), nameof(Socket_Spawn), socketNode.Socket.Id.NodeId.VhId.Value, socketNode.Socket.Id.Index, socketNode.Socket.PlugId.VhId.Value);
+                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Socket {SocketNodeId}:{SocketIndex} already has existing attachment with {NodeId}", nameof(SocketService), nameof(Process), nameof(Socket_Attach), socketNode.Socket.Id.NodeId.VhId.Value, socketNode.Socket.Id.Index, socketNode.Socket.PlugId.VhId.Value);
                 return;
             }
+
+            if (!_entities.TryGetId(data.TreeVhId, out EntityId treeId))
+            {
+                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - TreeVhId {TreeVhId} not found.", nameof(SocketService), nameof(Process), nameof(Socket_Attach), data.TreeVhId.Value);
+                return;
+            }
+
+            ref Tree tree = ref this.entitiesDB.QueryEntity<Tree>(treeId.EGID);
 
             SocketId socketId = socketNode.Socket.Id;
             EntityId nodeId = _entities.Deserialize(
                 seed: socketNode.Node.TreeId.VhId,
-                data: data.NodeData,
+                data: _entities.Serialize(tree.HeadId),
                 initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                 {
                     initializer.Init<Coupling>(new Coupling(socketId));
@@ -97,13 +112,28 @@ namespace VoidHuntersRevived.Game.Pieces.Services
             socketNode.Socket.PlugId = nodeId;
         }
 
-        public void Revert(VhId eventId, Socket_Spawn data)
+        public void Revert(VhId eventId, Socket_Attach data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Process(VhId eventId, Socket_Detached data)
         {
             if (!this.TryGetSocketNode(data.SocketVhId, out SocketNode socketNode))
             {
-                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Unable to load SocketNode within node {NodeId}", nameof(SocketService), nameof(Revert), nameof(Socket_Spawn), data.SocketVhId.NodeVhId.Value);
+                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Unable to load SocketNode within node {NodeId}", nameof(SocketService), nameof(Process), nameof(Socket_Detached), data.SocketVhId.NodeVhId.Value);
                 return;
             }
+
+            if (socketNode.Socket.PlugId.VhId == default)
+            {
+                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Socket {SocketNodeId}:{SocketIndex} has no attachment", nameof(SocketService), nameof(Process), nameof(Socket_Detached), socketNode.Socket.Id.NodeId.VhId.Value, socketNode.Socket.Id.Index, socketNode.Socket.PlugId.VhId.Value);
+                return;
+            }
+
+            //_treeFactory.Create(
+            //    vhid: eventId.Create(1)
+            //    tree: EntityTypes.Chain)
 
             socketNode.Socket.PlugId = default;
         }

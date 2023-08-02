@@ -9,12 +9,11 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Game.Client.Constants;
 using Guppy.MonoGame.Messages;
 using VoidHuntersRevived.Game.Common.Events;
-using VoidHuntersRevived.Game.Enums;
 using Guppy.Input.Enums;
-using VoidHuntersRevived.Game.Events;
 using VoidHuntersRevived.Game.Client.Messages;
 using Autofac;
 using Guppy.Common;
+using VoidHuntersRevived.Common.Ships.Enums;
 
 namespace VoidHuntersRevived.Game.Client.Loaders
 {

@@ -17,7 +17,6 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Game.Services;
 using Guppy.Network.Identity;
 using VoidHuntersRevived.Common.Entities.Services;
 using System.Text.RegularExpressions;
@@ -29,6 +28,7 @@ using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Pieces.Services;
 using static VoidHuntersRevived.Common.Resources;
+using VoidHuntersRevived.Game.Ships.Services;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {

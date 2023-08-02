@@ -10,7 +10,6 @@ using VoidHuntersRevived.Common.Simulations.Engines;
 using Guppy.Network.Peers;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Game.Common.Events;
-using VoidHuntersRevived.Game.Events;
 using Guppy.Common;
 using Guppy.Network.Identity;
 using VoidHuntersRevived.Game.Client.Messages;
@@ -20,14 +19,15 @@ using VoidHuntersRevived.Common;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using Guppy.MonoGame.Utilities.Cameras;
-using VoidHuntersRevived.Game.Services;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
-using VoidHuntersRevived.Game.Components;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Game.Ships.Services;
+using VoidHuntersRevived.Game.Ships.Events;
+using VoidHuntersRevived.Common.Ships.Components;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {

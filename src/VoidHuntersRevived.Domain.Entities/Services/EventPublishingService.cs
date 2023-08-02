@@ -133,7 +133,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             published = new PublishedEvent(@event);
             if (!_published.TryEnqueue(@event.Id, published))
             {
-                _logger.Warning($"{nameof(EventPublishingService)}::{nameof(Publish)} - Unable to publish '{@event.Data.GetType().Name}', '{@event.Id.Value}'; duplicate event.");
+                _logger.Warning("{ClassName}::{MethodName} - Unable to publish {EventName}, {EventId}; duplicate event.", nameof(EventPublishingService), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value);
                 return;
             }
 
