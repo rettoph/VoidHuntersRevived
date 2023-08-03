@@ -39,10 +39,17 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
         }
         private static Socket ReadJoint(IEntityService entities, EntityReader reader)
         {
-            return new Socket(
+            Socket socket = new Socket(
                 nodeId: entities.GetId(reader.ReadVhId()),
                 index: reader.ReadByte(),
                 location: reader.ReadStruct<Location>());
+
+            if(reader.ReadIf())
+            {
+                socket.PlugId = entities.Deserialize(reader, null);
+            }
+
+            return socket;
         }
 
         private static void WriteJoint(IEntityService entities, EntityWriter writer, Socket joint)
@@ -50,6 +57,11 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
             writer.Write(joint.Id.NodeId.VhId);
             writer.Write(joint.Id.Index);
             writer.WriteStruct<Location>(joint.Location);
+            
+            if(writer.WriteIf(joint.PlugId.VhId.Value != default))
+            {
+                entities.Serialize(joint.PlugId, writer);
+            }
         }
     }
 }

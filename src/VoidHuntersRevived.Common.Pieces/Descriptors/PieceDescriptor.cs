@@ -25,7 +25,34 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                     serializer: ComponentSerializer<Plug>.Default),
                 new ComponentManager<Coupling>(
                     builder: new ComponentBuilder<Coupling>(),
-                    serializer: ComponentSerializer<Coupling>.Default),
+                    serializer: new ComponentSerializer<Coupling>(
+                        writer: (entities, writer, coupling) =>
+                        {
+                            if(writer.WriteIf(coupling.SocketId != SocketId.Empty))
+                            {
+                                writer.Write(coupling.SocketId.NodeId.VhId);
+                                writer.Write(coupling.SocketId.Index);
+                            }
+                        },
+                        reader: (entities, reader, id) =>
+                        {
+                            if(reader.ReadIf())
+                            {
+                                VhId nodeVhId = reader.ReadVhId();
+                                byte index = reader.ReadByte();
+
+                                if(entities.TryGetId(nodeVhId, out EntityId nodeId))
+                                {
+                                    return new Coupling(
+                                        socketId: new SocketId(
+                                            nodeId: nodeId,
+                                            index: index)
+                                        );
+                                }
+                            }
+
+                            return default;
+                        })),
                 new ComponentManager<Node>(
                     builder: new ComponentBuilder<Node>(),
                     serializer: new ComponentSerializer<Node>(

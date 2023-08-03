@@ -60,9 +60,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 Initializer = (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                 {
                     reader.Load(readerState);
-                    descriptor.Deserialize(this, reader, ref initializer, in id);
+                    descriptor.Deserialize(entities, reader, ref initializer, in id);
 
-                    initializerDelegate?.Invoke(this, ref initializer, in id);
+                    initializerDelegate?.Invoke(entities, ref initializer, in id);
 
                     reader.Busy = false;
                 }

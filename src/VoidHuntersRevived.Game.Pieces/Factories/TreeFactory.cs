@@ -43,7 +43,14 @@ namespace VoidHuntersRevived.Game.Pieces.Factories
         {
             return _entities.Spawn(tree, vhid, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {
-                EntityId headId = entities.Deserialize(vhid, nodes, null, false);
+                EntityId headId = entities.Deserialize(
+                    seed: vhid, 
+                    data: nodes, 
+                    initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+                    {
+                        initializer.Init<Coupling>(new Coupling());
+                    }, 
+                    confirmed: false);
 
                 initializer.Init<Tree>(new Tree(headId));
                 initializerDelegate(entities, ref initializer, in id);

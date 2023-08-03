@@ -14,8 +14,8 @@ using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Factories;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Game.Common;
 using VoidHuntersRevived.Game.Pieces.Events;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Game.Pieces.Services
 {
@@ -37,6 +37,8 @@ namespace VoidHuntersRevived.Game.Pieces.Services
 
         public SocketNode GetSocketNode(SocketId socketId)
         {
+            _logger.Verbose("{ClassName}::{MethodName} - Locating {NodeId}:{SocketIndex} - Node EGID {EntityId}:{GroupId}", nameof(SocketService), nameof(GetSocketNode), socketId.NodeId.VhId.Value, socketId.Index, socketId.NodeId.EGID.entityID, socketId.NodeId.EGID.groupID);
+
             var nodes = this.entitiesDB.QueryEntitiesAndIndex<Node>(socketId.NodeId.EGID, out uint index);
             var (sockets, _) = this.entitiesDB.QueryEntities<Sockets>(socketId.NodeId.EGID.groupID);
 
@@ -67,13 +69,13 @@ namespace VoidHuntersRevived.Game.Pieces.Services
                 });
         }
 
-        public void Detach(SocketVhId socketVhId)
+        public void Detach(VhId couplingId)
         {
             this.Simulation.Publish(
                 sender: NameSpace<SocketService>.Instance,
                 data: new Socket_Detached()
                 {
-                    SocketVhId = socketVhId
+                    CouplingVhId = couplingId
                 });
         }
 
@@ -99,15 +101,21 @@ namespace VoidHuntersRevived.Game.Pieces.Services
 
             ref Tree tree = ref this.entitiesDB.QueryEntity<Tree>(treeId.EGID);
 
-            SocketId socketId = socketNode.Socket.Id;
+            SocketVhId socketVhId = socketNode.Socket.Id.VhId;
             EntityId nodeId = _entities.Deserialize(
                 seed: socketNode.Node.TreeId.VhId,
                 data: _entities.Serialize(tree.HeadId),
                 initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                 {
-                    initializer.Init<Coupling>(new Coupling(socketId));
+                    initializer.Init<Coupling>(new Coupling(
+                        socketId: new SocketId(
+                            nodeId: entities.GetId(socketVhId.NodeVhId),
+                            index: socketVhId.Index))
+                        );
                 },
             confirmed: false);
+
+            _entities.Despawn(treeId);
 
             socketNode.Socket.PlugId = nodeId;
         }
@@ -119,22 +127,30 @@ namespace VoidHuntersRevived.Game.Pieces.Services
 
         public void Process(VhId eventId, Socket_Detached data)
         {
-            if (!this.TryGetSocketNode(data.SocketVhId, out SocketNode socketNode))
+            if(!_entities.TryGetId(data.CouplingVhId, out EntityId couplingId))
             {
-                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Unable to load SocketNode within node {NodeId}", nameof(SocketService), nameof(Process), nameof(Socket_Detached), data.SocketVhId.NodeVhId.Value);
+                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Unable to find EntityId {CouplingVhId}", nameof(SocketService), nameof(Process), nameof(Socket_Detached), data.CouplingVhId.Value);
                 return;
             }
 
-            if (socketNode.Socket.PlugId.VhId == default)
+            if(!this.entitiesDB.TryGetEntity<Coupling>(couplingId.EGID, out Coupling coupling))
             {
-                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Socket {SocketNodeId}:{SocketIndex} has no attachment", nameof(SocketService), nameof(Process), nameof(Socket_Detached), socketNode.Socket.Id.NodeId.VhId.Value, socketNode.Socket.Id.Index, socketNode.Socket.PlugId.VhId.Value);
+                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Unable to find Coupling for {EntityVhId}", nameof(SocketService), nameof(Process), nameof(Socket_Detached), data.CouplingVhId.Value);
                 return;
             }
 
-            //_treeFactory.Create(
-            //    vhid: eventId.Create(1)
-            //    tree: EntityTypes.Chain)
+            SocketNode socketNode = this.GetSocketNode(coupling.SocketId);
 
+            _treeFactory.Create(
+                vhid: eventId.Create(1),
+                tree: EntityTypes.Chain,
+                nodes: _entities.Serialize(couplingId),
+                initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+                {
+
+                });
+
+            _entities.Despawn(socketNode.Socket.PlugId);
             socketNode.Socket.PlugId = default;
         }
     }

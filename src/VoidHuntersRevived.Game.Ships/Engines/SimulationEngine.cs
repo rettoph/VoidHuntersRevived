@@ -27,8 +27,12 @@ namespace VoidHuntersRevived.Game.Ships.Engines
 
         public void Process(VhId eventId, Simulation_Begin data)
         {
-            _treeFactory.Create(eventId.Create(1), EntityTypes.Chain, PieceTypes.HullTriangle);
-            _treeFactory.Create(eventId.Create(2), EntityTypes.UserShip, PieceTypes.HullSquare);
+            for(int i=0; i<3; i++)
+            {
+                _treeFactory.Create(eventId.Create(i), EntityTypes.Chain, EntityTypes.Pieces.HullTriangle);
+            }
+            
+            //_treeFactory.Create(eventId.Create(2), EntityTypes.UserShip, EntityTypes.Pieces.HullSquare);
         }
     }
 }

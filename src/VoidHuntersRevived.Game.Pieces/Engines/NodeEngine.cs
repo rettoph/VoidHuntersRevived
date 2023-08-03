@@ -91,6 +91,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                 node.LocalTransformation = FixMatrix.CreateTranslation(Fix64.Zero, Fix64.Zero, Fix64.Zero);
                 return;
             }
+            var id = this.entitiesDB.QueryEntityByIndex<EntityId>(index, groupID);
 
             ref Plug plug = ref this.entitiesDB.QueryEntityByIndex<Plug>(index, groupID);
             SocketNode socketNode = _sockets.GetSocketNode(coupling.SocketId);

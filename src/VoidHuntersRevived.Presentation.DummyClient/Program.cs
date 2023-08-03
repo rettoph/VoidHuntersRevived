@@ -1,6 +1,7 @@
 ﻿using VoidHuntersRevived.Application.Client;
 
-Thread.Sleep(50);
+Console.WriteLine("Press enter to begin");
+Console.ReadLine();
 
 using (var game = new VoidHuntersGame())
     game.Run();

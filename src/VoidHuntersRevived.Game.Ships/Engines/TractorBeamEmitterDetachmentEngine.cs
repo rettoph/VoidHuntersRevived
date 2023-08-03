@@ -41,12 +41,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
                 return;
             }
 
-            if(!this.entitiesDB.TryGetEntity<Coupling>(targetId.EGID, out Coupling coupling))
-            {
-                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Unable to locate coupling for entity {NodeId}", nameof(TractorBeamEmitterDetachmentEngine), nameof(Process), nameof(TractorBeamEmitter_TryDetach), data.TargetVhId);
-            }
-
-            _socketService.Detach(coupling.SocketId.VhId);
+            _socketService.Detach(targetId.VhId);
         }
     }
 }

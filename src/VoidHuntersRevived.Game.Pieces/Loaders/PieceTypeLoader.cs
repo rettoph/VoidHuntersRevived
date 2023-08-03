@@ -12,7 +12,7 @@ using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Loaders;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces.Components;
-
+using VoidHuntersRevived.Game.Common;
 using Colors = VoidHuntersRevived.Common.Resources.Colors;
 
 namespace VoidHuntersRevived.Game.Pieces.Loaders
@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
     {
         public void Configure(IEntityTypeService entityTypes)
         {
-            entityTypes.Configure(PieceTypes.HullTriangle, configuration =>
+            entityTypes.Configure(EntityTypes.Pieces.HullTriangle, configuration =>
             {
                 configuration.HasInitializer((IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                 {
@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
                 });
             });
 
-            entityTypes.Configure(PieceTypes.HullSquare, configuration =>
+            entityTypes.Configure(EntityTypes.Pieces.HullSquare, configuration =>
             {
                 configuration.HasInitializer((IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                 {

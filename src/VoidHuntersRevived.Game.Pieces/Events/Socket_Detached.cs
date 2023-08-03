@@ -13,11 +13,11 @@ namespace VoidHuntersRevived.Game.Pieces.Events
 {
     internal class Socket_Detached : IEventData
     {
-        public required SocketVhId SocketVhId { get; init; }
+        public required VhId CouplingVhId { get; init; }
 
         public VhId CalculateHash(in VhId source)
         {
-            return HashBuilder<Socket_Detached, VhId, SocketVhId>.Instance.Calculate(source, this.SocketVhId);
+            return HashBuilder<Socket_Detached, VhId, VhId>.Instance.Calculate(source, this.CouplingVhId);
         }
     }
 }
