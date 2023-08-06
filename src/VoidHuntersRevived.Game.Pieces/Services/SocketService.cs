@@ -16,6 +16,7 @@ using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Game.Common;
 using VoidHuntersRevived.Game.Pieces.Events;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Game.Pieces.Services
 {
@@ -69,14 +70,20 @@ namespace VoidHuntersRevived.Game.Pieces.Services
                 });
         }
 
-        public void Detach(VhId couplingId)
+        public bool TryDetach(EntityId couplingId, EntityInitializerDelegate initializer, out EntityId cloneId)
         {
+            VhId clonoeVhId = NameSpace<Socket_Detached>.Instance.Create(couplingId.VhId);
+
             this.Simulation.Publish(
                 sender: NameSpace<SocketService>.Instance,
                 data: new Socket_Detached()
                 {
-                    CouplingVhId = couplingId
+                    CouplingVhId = couplingId.VhId,
+                    CloneVhId = clonoeVhId,
+                    Initializer = initializer
                 });
+
+            return _entities.TryGetId(clonoeVhId, out cloneId);
         }
 
         public void Process(VhId eventId, Socket_Attach data)
@@ -139,16 +146,15 @@ namespace VoidHuntersRevived.Game.Pieces.Services
                 return;
             }
 
+            _entities.Flush();
+
             SocketNode socketNode = this.GetSocketNode(coupling.SocketId);
 
             _treeFactory.Create(
-                vhid: eventId.Create(1),
+                vhid: data.CloneVhId,
                 tree: EntityTypes.Chain,
                 nodes: _entities.Serialize(couplingId),
-                initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
-                {
-
-                });
+                initializer: data.Initializer);
 
             _entities.Despawn(socketNode.Socket.PlugId);
             socketNode.Socket.PlugId = default;
