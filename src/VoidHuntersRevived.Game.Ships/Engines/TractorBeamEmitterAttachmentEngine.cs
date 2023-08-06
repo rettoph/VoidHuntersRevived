@@ -44,6 +44,8 @@ namespace VoidHuntersRevived.Game.Ships.Engines
                 TargetVhId = data.TargetVhId
             });
 
+            _entities.Flush();
+
             _socketService.Attach(
                 socketVhId: data.SocketVhId,
                 treeVhId: data.TargetVhId);

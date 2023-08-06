@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
 
             _space.QueryAABB(fixture =>
             {
-                VhId queryTargetId = default;
+                EntityId queryTargetId = default;
 
                 // BEGIN NODE DISTANCE CHECK
                 EntityId queryNodeId = _entities.GetId(fixture.Id);
@@ -73,11 +73,11 @@ namespace VoidHuntersRevived.Game.Ships.Services
 
                 if(this.entitiesDB.TryGetEntity<Tractorable>(queryNode.TreeId.EGID, out var tractorable) && tractorable.IsTractored == false)
                 { // Target resides within a tractorable tree, so we want to grab the head
-                    queryTargetId = queryTree.HeadId.VhId;
+                    queryTargetId = queryTree.HeadId;
                 }
                 else if(queryNode.TreeId.VhId == tractorBeamEmitterId.VhId && queryTree.HeadId.VhId != fixture.Id)
                 {
-                    queryTargetId = fixture.Id;
+                    queryTargetId = queryNodeId;
                 }
                 else
                 { // Target is not in any way tractorable, we can disregard it
@@ -85,7 +85,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
                 }
 
                 minDistance = queryNodeDistance;
-                callbackTargetNode = new Component<Node>(queryNodeId, queryNode);
+                callbackTargetNode = new Component<Node>(queryTargetId, queryNode);
                 callbackTargetTree = new Component<Tree>(queryNode.TreeId, queryTree);
                 return true; // Ensure we only check a maximum of 5 fixtures all the way through
 
