@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Events;
+using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces.Components;
@@ -19,12 +20,18 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
     internal sealed class BodyTreeEngine : BasicEngine, 
         IStepEngine<Step>
     {
+        private readonly IEntityService _entities;
+
+        public BodyTreeEngine(IEntityService entities)
+        {
+            _entities = entities;
+        }
+
         public string name { get; } = nameof(BodyTreeEngine);
 
         public void Step(in Step _param)
         {
-            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = this.entitiesDB.FindGroups<Location, Tree>();
-            foreach (var ((bodies, trees, count), _) in this.entitiesDB.QueryEntities<Location, Tree>(groups))
+            foreach (var ((bodies, trees, count), _) in _entities.QueryEntities<Location, Tree>())
             {
                 for (int i = 0; i < count; i++)
                 {

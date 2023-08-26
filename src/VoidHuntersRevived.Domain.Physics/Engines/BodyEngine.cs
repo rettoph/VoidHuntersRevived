@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Location> entities, ExclusiveGroupStruct groupID)
         {
-            var (ids, collisions, _) = this.entitiesDB.QueryEntities<EntityId, Collision>(groupID);
+            var (ids, collisions, _) = _entities.QueryEntities<EntityId, Collision>(groupID);
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Location> entities, ExclusiveGroupStruct groupID)
         {
-            var (ids, _) = this.entitiesDB.QueryEntities<EntityId>(groupID);
+            var (ids, _) = _entities.QueryEntities<EntityId>(groupID);
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
@@ -54,8 +54,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         public void Step(in Step _param)
         {
-            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = this.entitiesDB.FindGroups<Location>();
-            foreach (var ((ids, bodies, count), _) in this.entitiesDB.QueryEntities<EntityId, Location>(groups))
+            foreach (var ((ids, bodies, count), _) in _entities.QueryEntities<EntityId, Location>())
             {
                 for (int i = 0; i < count; i++)
                 {

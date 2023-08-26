@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                this.SetLocalTransformation(ref nodes[index], index, groupID);
+                this.SetLocalTransformation(ref nodes[index], groupID, index);
 
                 EntityId treeId = nodes[index].TreeId;
                 VhId nodeVhId = _entities.GetId(ids[index], groupID).VhId;
@@ -84,16 +84,16 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             }
         }
 
-        private void SetLocalTransformation(ref Node node, uint index, ExclusiveGroupStruct groupID)
+        private void SetLocalTransformation(ref Node node, ExclusiveGroupStruct groupId, uint index)
         {
-            if (!this.entitiesDB.TryGetEntityByIndex<Coupling>(index, groupID, out Coupling coupling) || coupling.SocketId == SocketId.Empty)
+            if (!_entities.TryQueryByGroupIndex<Coupling>(groupId, index, out Coupling coupling) || coupling.SocketId == SocketId.Empty)
             {
                 node.LocalTransformation = FixMatrix.CreateTranslation(Fix64.Zero, Fix64.Zero, Fix64.Zero);
                 return;
             }
-            var id = this.entitiesDB.QueryEntityByIndex<EntityId>(index, groupID);
+            var id = _entities.QueryByGroupIndex<EntityId>(groupId, index);
 
-            ref Plug plug = ref this.entitiesDB.QueryEntityByIndex<Plug>(index, groupID);
+            ref Plug plug = ref _entities.QueryByGroupIndex<Plug>(groupId, index);
             SocketNode socketNode = _sockets.GetSocketNode(coupling.SocketId);
 
             node.LocalTransformation = plug.Location.Transformation.Invert() * socketNode.LocalTransformation;

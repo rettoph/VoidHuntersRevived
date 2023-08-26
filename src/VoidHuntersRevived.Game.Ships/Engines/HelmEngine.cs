@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
         public void Process(VhId vhid, Helm_SetDirection data)
         {
             EntityId id =_entities.GetId(data.ShipVhId);
-            ref Helm helm = ref entitiesDB.QueryMappedEntities<Helm>(id.EGID.groupID).Entity(id.EGID.entityID);
+            ref Helm helm = ref _entities.QueryById<Helm>(id);
 
             if (data.Value)
             {
@@ -53,8 +53,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
 
         public void Step(in Step _param)
         {
-            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = this.entitiesDB.FindGroups<Helm, Location>();
-            foreach (var ((helms, entityIds, count), groupId) in this.entitiesDB.QueryEntities<Helm>(groups))
+            foreach (var ((helms, _, entityIds, count), groupId) in _entities.QueryEntities<Helm, Location>())
             {
                 for (int i = 0; i < count; i++)
                 {

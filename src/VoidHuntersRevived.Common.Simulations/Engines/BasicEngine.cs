@@ -7,11 +7,10 @@ using VoidHuntersRevived.Common.Entities;
 namespace VoidHuntersRevived.Common.Simulations.Engines
 {
     [Service<IEngine>(ServiceLifetime.Scoped, true)]
-    public abstract class BasicEngine<TSimulation> : ISimulationEngine<TSimulation>, IQueryingEntitiesEngine
+    public abstract class BasicEngine<TSimulation> : ISimulationEngine<TSimulation>
         where TSimulation : ISimulation
     {
         public TSimulation Simulation { get; private set; } = default!;
-        public EntitiesDB entitiesDB { get; set; } = null!;
 
         public BasicEngine()
         {

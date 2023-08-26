@@ -47,11 +47,8 @@ namespace VoidHuntersRevived.Game.Ships.Engines
             }
 
             EntityId tractorBeamEmitterId = _entities.GetId(data.ShipVhId);
-            var tractorBeamEmitters = this.entitiesDB.QueryEntitiesAndIndex<TractorBeamEmitter>(tractorBeamEmitterId.EGID, out uint tractorBeamEmitterIndex);
-            var (tacticals, _) = this.entitiesDB.QueryEntities<Tactical>(tractorBeamEmitterId.EGID.groupID);
-
-            ref TractorBeamEmitter tractorBeamEmitter = ref tractorBeamEmitters[tractorBeamEmitterIndex];
-            ref Tactical tactical = ref tacticals[tractorBeamEmitterIndex];
+            ref TractorBeamEmitter tractorBeamEmitter = ref _entities.QueryById<TractorBeamEmitter>(tractorBeamEmitterId, out GroupIndex groupIndex);
+            ref Tactical tactical = ref _entities.QueryByGroupIndex<Tactical>(groupIndex);
 
             if (tractorBeamEmitter.TargetId.VhId != data.TargetVhId)
             {
@@ -62,7 +59,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
 
             // Flush just in case the target was created in the same frame
             _entities.Flush();
-            this.entitiesDB.QueryEntity<Tractorable>(tractorBeamEmitter.TargetId.EGID).IsTractored = false;
+            _entities.QueryById<Tractorable>(tractorBeamEmitter.TargetId).IsTractored = false;
 
 
             // Ensure the emitter is deactivated

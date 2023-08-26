@@ -17,7 +17,6 @@ using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Game.Pieces.Events;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Game.Pieces.Engines
 {
@@ -40,8 +39,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Rigid> entities, ExclusiveGroupStruct groupID)
         {
             var (rigids, _, _) = entities;
-            var (ids, _) = this.entitiesDB.QueryEntities<EntityId>(groupID);
-            var (nodes, _) = this.entitiesDB.QueryEntities<Node>(groupID);
+            var (ids, nodes, _) = _entities.QueryEntities<EntityId, Node>(groupID);
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
@@ -58,8 +56,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
         public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Rigid> entities, ExclusiveGroupStruct groupID)
         {
             var (rigids, _, _) = entities;
-            var (ids, _) = this.entitiesDB.QueryEntities<EntityId>(groupID);
-            var (nodes, _) = this.entitiesDB.QueryEntities<Node>(groupID);
+            var (ids, nodes, _) = _entities.QueryEntities<EntityId, Node>(groupID);
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {

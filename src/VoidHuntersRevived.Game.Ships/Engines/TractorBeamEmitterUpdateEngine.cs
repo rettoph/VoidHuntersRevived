@@ -41,8 +41,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
 
         public void Step(in Step _param)
         {
-            var groups = this.entitiesDB.FindGroups<Tactical, TractorBeamEmitter>();
-            foreach (var ((vhids, tacticals, tractorBeamEmitters, count), _) in this.entitiesDB.QueryEntities<EntityId, Tactical, TractorBeamEmitter>(groups))
+            foreach (var ((vhids, tacticals, tractorBeamEmitters, count), _) in _entities.QueryEntities<EntityId, Tactical, TractorBeamEmitter>())
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -61,9 +60,9 @@ namespace VoidHuntersRevived.Game.Ships.Engines
             IBody targetBody = _space.GetBody(in tractorBeamEmitter.TargetId.VhId);
 
             EntityId targetId = _entities.GetId(tractorBeamEmitter.TargetId.VhId);
-            ref Tree target = ref this.entitiesDB.QueryEntity<Tree>(targetId.EGID);
+            ref Tree target = ref _entities.QueryById<Tree>(targetId);
 
-            Location targetHeadChildLocation = this.entitiesDB.QueryEntity<Plug>(target.HeadId.EGID).Location;
+            Location targetHeadChildLocation = _entities.QueryById<Plug>(target.HeadId).Location;
             
             if (_tractorBeamEmitterService.TryGetClosestOpenSocket(shipId, tactical.Value, out var openSocketNode))
             {

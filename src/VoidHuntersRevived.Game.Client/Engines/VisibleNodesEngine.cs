@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
@@ -33,13 +34,15 @@ namespace VoidHuntersRevived.Game.Client.Engines
     {
         private readonly short[] _indexBuffer;
         private readonly IVisibleRenderingService _visibleRenderingService;
+        private readonly IEntityService _entities;
         private readonly ILogger _logger;
 
         public string name { get; } = nameof(VisibleNodesEngine);
 
-        public VisibleNodesEngine(ILogger logger, IVisibleRenderingService visibleRenderingService)
+        public VisibleNodesEngine(ILogger logger, IVisibleRenderingService visibleRenderingService, IEntityService entities)
         {
             _visibleRenderingService = visibleRenderingService;
+            _entities = entities;
             _indexBuffer = new short[3];
             _logger = logger;
         }
@@ -51,10 +54,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in GameTime _param)
         {
-            var groups = this.entitiesDB.FindGroups<Visible, Node>();
-
             _visibleRenderingService.BeginFill();
-            foreach (var ((vhids, visibles, nodes, count), _) in this.entitiesDB.QueryEntities<EntityId, Visible, Node>(groups))
+            foreach (var ((vhids, visibles, nodes, count), _) in _entities.QueryEntities<EntityId, Visible, Node>())
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -72,7 +73,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _visibleRenderingService.End();
 
             _visibleRenderingService.BeginTrace();
-            foreach (var ((vhids, visibles, nodes, count), _) in this.entitiesDB.QueryEntities<EntityId, Visible, Node>(groups))
+            foreach (var ((vhids, visibles, nodes, count), _) in _entities.QueryEntities<EntityId, Visible, Node>())
             {
                 for (int i = 0; i < count; i++)
                 {

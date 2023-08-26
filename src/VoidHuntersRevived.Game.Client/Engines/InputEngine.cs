@@ -124,7 +124,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
             else
             {
-                TractorBeamEmitter tractorBeamEmitter = this.entitiesDB.QueryEntity<TractorBeamEmitter>(shipId.EGID);
+                TractorBeamEmitter tractorBeamEmitter = _entities.QueryById<TractorBeamEmitter>(shipId);
 
                 if(tractorBeamEmitter.TargetId.VhId == default)
                 {
@@ -168,8 +168,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            ref Tactical tactical = ref this.entitiesDB.QueryEntity<Tactical>(localShipId.EGID);
-            if(tactical.Uses == 0)
+            ref Tactical tactical = ref _entities.QueryById<Tactical>(localShipId);
+            if (tactical.Uses == 0)
             {
                 return;
             }

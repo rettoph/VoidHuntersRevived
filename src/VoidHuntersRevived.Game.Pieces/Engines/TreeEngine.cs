@@ -90,8 +90,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
         public void Step(in Step _param)
         {
-            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = this.entitiesDB.FindGroups<Tree>();
-            foreach (var ((ids, trees, count), _) in this.entitiesDB.QueryEntities<EntityId, Tree>(groups))
+            foreach (var ((ids, trees, count), _) in _entities.QueryEntities<EntityId, Tree>())
             {
                 for (uint treeIndex = 0; treeIndex < count; treeIndex++)
                 {
@@ -99,7 +98,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
                     foreach (var (nodeIndices, group) in filter)
                     {
-                        var (nodes, _) = entitiesDB.QueryEntities<Node>(group);
+                        var (nodes, _) = _entities.QueryEntities<Node>(group);
 
                         for (int i = 0; i < nodeIndices.count; i++)
                         {

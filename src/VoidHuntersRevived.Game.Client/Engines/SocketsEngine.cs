@@ -13,6 +13,7 @@ using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Enums;
+using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -22,13 +23,15 @@ namespace VoidHuntersRevived.Game.Client.Engines
     internal class SocketsEngine : BasicEngine, IStepEngine<GameTime>
     {
         private readonly IScreen _screen;
+        private readonly IEntityService _entities;
         private readonly Camera2D _camera;
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private readonly PrimitiveShape _jointShape;
 
-        public SocketsEngine(IScreen screen, Camera2D camera, PrimitiveBatch<VertexPositionColor> primitiveBatch)
+        public SocketsEngine(IScreen screen, IEntityService entities, Camera2D camera, PrimitiveBatch<VertexPositionColor> primitiveBatch)
         {
             _screen = screen;
+            _entities = entities;
             _camera = camera;
             _primitiveBatch = primitiveBatch;
             _jointShape = new ProjectedShape(camera, new[]
@@ -44,8 +47,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public void Step(in GameTime _param)
         {
             _primitiveBatch.Begin(_screen.Camera);
-            var groups = this.entitiesDB.FindGroups<Sockets, Node>();
-            foreach (var ((joints, nodes, count), _) in this.entitiesDB.QueryEntities<Sockets, Node>(groups))
+            foreach (var ((joints, nodes, count), _) in _entities.QueryEntities<Sockets, Node>())
             {
                 for (int i = 0; i < count; i++)
                 {

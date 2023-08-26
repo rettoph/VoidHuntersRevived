@@ -1,4 +1,5 @@
-﻿using Svelto.ECS;
+﻿using Svelto.DataStructures;
+using Svelto.ECS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,22 +73,49 @@ namespace VoidHuntersRevived.Common.Entities.Services
         ref T QueryByGroupIndex<T>(in GroupIndex groupIndex)
             where T : unmanaged, IEntityComponent;
 
+        bool TryQueryByGroupIndex<T>(in GroupIndex groupIndex, out T value)
+            where T : unmanaged, IEntityComponent;
+
+        ref T QueryByGroupIndex<T>(ExclusiveGroupStruct groupId, uint index)
+            where T : unmanaged, IEntityComponent;
+
+        bool TryQueryByGroupIndex<T>(in ExclusiveGroupStruct groupId, uint index, out T value)
+            where T : unmanaged, IEntityComponent;
+
         bool HasAny<T>(ExclusiveGroupStruct groupID) 
             where T : unmanaged, IEntityComponent;
 
-        EntityCollection<T1> QueryEntities<T1>(ExclusiveGroupStruct groupID)
+        EntityCollection<T1> QueryEntities<T1>(ExclusiveGroupStruct groupId)
             where T1 : unmanaged, IEntityComponent;
 
-        EntityCollection<T1, T2> QueryEntities<T1, T2>(ExclusiveGroupStruct groupID)
+        EntityCollection<T1, T2> QueryEntities<T1, T2>(ExclusiveGroupStruct groupId)
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent;
 
-        EntityCollection<T1, T2, T3> QueryEntities<T1, T2, T3>(ExclusiveGroupStruct groupID)
+        EntityCollection<T1, T2, T3> QueryEntities<T1, T2, T3>(ExclusiveGroupStruct groupId)
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent;
 
-        EntityCollection<T1, T2, T3, T4> QueryEntities<T1, T2, T3, T4>(ExclusiveGroupStruct groupID)
+        EntityCollection<T1, T2, T3, T4> QueryEntities<T1, T2, T3, T4>(ExclusiveGroupStruct groupId)
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+            where T3 : unmanaged, IEntityComponent
+            where T4 : unmanaged, IEntityComponent;
+
+        public GroupsEnumerable<T1> QueryEntities<T1>()
+            where T1 : unmanaged, IEntityComponent;
+
+        public GroupsEnumerable<T1, T2> QueryEntities<T1, T2>()
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent;
+
+        public GroupsEnumerable<T1, T2, T3> QueryEntities<T1, T2, T3>()
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+            where T3 : unmanaged, IEntityComponent;
+
+        public GroupsEnumerable<T1, T2, T3, T4> QueryEntities<T1, T2, T3, T4>()
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent

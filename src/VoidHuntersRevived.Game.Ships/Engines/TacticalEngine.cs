@@ -37,15 +37,14 @@ namespace VoidHuntersRevived.Game.Ships.Engines
         public void Process(VhId eventId, Tactical_SetTarget data)
         {
             EntityId id = _entities.GetId(data.ShipVhId);
-            ref Tactical tactical = ref entitiesDB.QueryMappedEntities<Tactical>(id.EGID.groupID).Entity(id.EGID.entityID);
+            ref Tactical tactical = ref _entities.QueryById<Tactical>(id);
 
             tactical.Target = data.Value;
         }
 
         public void Step(in Step _param)
         {
-            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups = this.entitiesDB.FindGroups<Tactical>();
-            foreach (var ((tacticals, count), groupId) in this.entitiesDB.QueryEntities<Tactical>(groups))
+            foreach (var ((tacticals, count), groupId) in _entities.QueryEntities<Tactical>())
             {
                 for (int i = 0; i < count; i++)
                 {

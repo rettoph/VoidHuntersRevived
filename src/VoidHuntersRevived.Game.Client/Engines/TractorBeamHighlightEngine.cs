@@ -92,7 +92,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _visibleRenderingService.BeginFill();
             try
             {
-                this.FillVisibleRecursive(targetNode.Id.EGID);
+                this.FillVisibleRecursive(targetNode.Id);
             }
             catch(Exception e)
             {
@@ -101,21 +101,21 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _visibleRenderingService.End();
         }
 
-        private void FillVisibleRecursive(EGID egid)
+        private void FillVisibleRecursive(EntityId id)
         {
-            var nodes = this.entitiesDB.QueryEntitiesAndIndex<Node>(egid, out uint index);
-            var (visibles, _) = this.entitiesDB.QueryEntities<Visible>(egid.groupID);
+            ref Node node = ref _entities.QueryById<Node>(id, out GroupIndex groupIndex);
+            ref Visible visible = ref _entities.QueryByGroupIndex<Visible>(in groupIndex);
 
-            Matrix transformation = nodes[index].Transformation.XnaMatrix;
-            _visibleRenderingService.Fill(in visibles[index], ref transformation, _resources.Get(Colors.TractorBeamHighlight));
+            Matrix transformation = node.Transformation.XnaMatrix;
+            _visibleRenderingService.Fill(in visible, ref transformation, _resources.Get(Colors.TractorBeamHighlight));
 
-            if (this.entitiesDB.TryGetEntityByIndex<Sockets>(index, egid.groupID, out Sockets sockets))
+            if(_entities.TryQueryByGroupIndex<Sockets>(in groupIndex, out Sockets sockets))
             {
-                for(int i=0; i<sockets.Items.count; i++)
+                for (int i = 0; i < sockets.Items.count; i++)
                 {
-                    if(sockets.Items[i].PlugId.VhId != default)
+                    if (sockets.Items[i].PlugId.VhId != default)
                     {
-                        this.FillVisibleRecursive(sockets.Items[i].PlugId.EGID);
+                        this.FillVisibleRecursive(sockets.Items[i].PlugId);
                     }
                 }
             }

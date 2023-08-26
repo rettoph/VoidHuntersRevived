@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
                 return;
             }
 
-            Node targetNode = this.entitiesDB.QueryEntity<Node>(targetNodeId.EGID);
+            Node targetNode = _entities.QueryById<Node>(targetNodeId);
 
             if (!_entities.TryGetId(targetNode.TreeId.VhId, out EntityId targetTreeId) || _entities.GetState(targetTreeId) != EntityState.Spawned)
             {
@@ -62,18 +62,16 @@ namespace VoidHuntersRevived.Game.Ships.Engines
                 TargetData = _entities.Serialize(targetNodeId)
             });
 
-            Tree targetTree = this.entitiesDB.QueryEntity<Tree>(targetTreeId.EGID);
+            Tree targetTree = _entities.QueryById<Tree>(targetTreeId);
             _entities.Despawn(targetTreeId);
         }
 
         public void Process(VhId eventId, TractorBeamEmitter_Activate data)
         {
             EntityId tractorBeamEmitterId = _entities.GetId(data.TractorBeamEmitterVhId);
-            var tractorBeamEmitters = this.entitiesDB.QueryEntitiesAndIndex<TractorBeamEmitter>(tractorBeamEmitterId.EGID, out uint index);
-            var (tacticals, _) = this.entitiesDB.QueryEntities<Tactical>(tractorBeamEmitterId.EGID.groupID);
 
-            ref TractorBeamEmitter tractorBeamEmitter = ref tractorBeamEmitters[index];
-            ref Tactical tactical = ref tacticals[index];
+            ref TractorBeamEmitter tractorBeamEmitter = ref _entities.QueryById<TractorBeamEmitter>(tractorBeamEmitterId, out GroupIndex groupIndex);
+            ref Tactical tactical = ref _entities.QueryByGroupIndex<Tactical>(groupIndex);
 
             if (tractorBeamEmitter.Active)
             {
@@ -107,11 +105,8 @@ namespace VoidHuntersRevived.Game.Ships.Engines
         {
             EntityId tractorBeamEmitterId = _entities.GetId(data.TractorBeamEmitterVhId);
 
-            var tractorBeamEmitters = this.entitiesDB.QueryEntitiesAndIndex<TractorBeamEmitter>(tractorBeamEmitterId.EGID, out uint index);
-            var (tacticals, _) = this.entitiesDB.QueryEntities<Tactical>(tractorBeamEmitterId.EGID.groupID);
-
-            ref TractorBeamEmitter tractorBeamEmitter = ref tractorBeamEmitters[index];
-            ref Tactical tactical = ref tacticals[index];
+            ref TractorBeamEmitter tractorBeamEmitter = ref _entities.QueryById<TractorBeamEmitter>(tractorBeamEmitterId, out GroupIndex groupIndex);
+            ref Tactical tactical = ref _entities.QueryByGroupIndex<Tactical>(groupIndex);
 
             if (tractorBeamEmitter.TargetId.VhId.Value != eventId.Create(1).Value)
             {

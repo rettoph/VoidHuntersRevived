@@ -18,7 +18,7 @@ using VoidHuntersRevived.Game.Pieces.Events;
 
 namespace VoidHuntersRevived.Game.Pieces.Services
 {
-    internal sealed class SocketService : BasicEngine, ISocketService, IQueryingEntitiesEngine,
+    internal sealed class SocketService : BasicEngine, ISocketService,
         IEventEngine<Socket_Attach>,
         IRevertEventEngine<Socket_Attach>,
         IEventEngine<Socket_Detached>
@@ -38,11 +38,11 @@ namespace VoidHuntersRevived.Game.Pieces.Services
         {
             _logger.Verbose("{ClassName}::{MethodName} - Locating {NodeId}:{SocketIndex} - Node EGID {EntityId}:{GroupId}", nameof(SocketService), nameof(GetSocketNode), socketId.NodeId.VhId.Value, socketId.Index, socketId.NodeId.EGID.entityID, socketId.NodeId.EGID.groupID);
 
-            var nodes = this.entitiesDB.QueryEntitiesAndIndex<Node>(socketId.NodeId.EGID, out uint index);
-            var (sockets, _) = this.entitiesDB.QueryEntities<Sockets>(socketId.NodeId.EGID.groupID);
+            ref Node node = ref _entities.QueryById<Node>(socketId.NodeId, out GroupIndex groupIndex);
+            ref Sockets sockets = ref _entities.QueryByGroupIndex<Sockets>(groupIndex);
 
 
-            return new SocketNode(ref sockets[index].Items[socketId.Index], ref nodes[index]);
+            return new SocketNode(ref sockets.Items[socketId.Index], ref node);
         }
 
         public bool TryGetSocketNode(SocketVhId socketVhId, out SocketNode socketNode)
@@ -104,7 +104,7 @@ namespace VoidHuntersRevived.Game.Pieces.Services
                 return;
             }
 
-            ref Tree tree = ref this.entitiesDB.QueryEntity<Tree>(treeId.EGID);
+            ref Tree tree = ref _entities.QueryById<Tree>(treeId);
 
             SocketVhId socketVhId = socketNode.Socket.Id.VhId;
             EntityId nodeId = _entities.Deserialize(
@@ -138,7 +138,7 @@ namespace VoidHuntersRevived.Game.Pieces.Services
                 return;
             }
 
-            if(!this.entitiesDB.TryGetEntity<Coupling>(couplingId.EGID, out Coupling coupling))
+            if (!_entities.TryQueryById<Coupling>(couplingId, out Coupling coupling))
             {
                 _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Unable to find Coupling for {EntityVhId}", nameof(SocketService), nameof(Process), nameof(Socket_Detached), data.CouplingVhId.Value);
                 return;
