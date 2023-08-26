@@ -28,13 +28,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Serialize(EntityId id, EntityWriter writer)
         {
-            VoidHuntersEntityDescriptor descriptor = _descriptors.GetByEntityVhId(id.VhId);
+            ScopedVoidHuntersEntityDescriptor scopedDescriptor = _descriptors.Value.GetByEntityVhId(id.VhId);
 
             writer.Write(id.VhId);
-            writer.WriteStruct(descriptor.Id);
+            writer.WriteStruct(scopedDescriptor.GlobalDescriptor.Id);
 
             this.entitiesDB.QueryEntitiesAndIndex<EntityId>(id.EGID, out uint index);
-            descriptor.Serialize(this, writer, id.EGID, this.entitiesDB, index);
+            scopedDescriptor.Serialize(writer, id.EGID, this.entitiesDB, index);
         }
 
         public EntityId Deserialize(in VhId seed, EntityData data, EntityInitializerDelegate? initializer, bool confirmed)
@@ -48,19 +48,19 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             VhId vhid = reader.ReadVhId();
             VhId descriptorId = reader.ReadStruct<VhId>();
 
-            VoidHuntersEntityDescriptor descriptor = _descriptors.GetById(descriptorId);
+            ScopedVoidHuntersEntityDescriptor scopedDescriptor = _descriptors.Value.GetById(descriptorId);
             EntityReaderState readerState = reader.GetState();
 
-            _logger.Verbose("{ClassName}::{MathodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityService), nameof(Deserialize), vhid.Value, descriptor.Name, reader.Seed.Value);
+            _logger.Verbose("{ClassName}::{MathodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityService), nameof(Deserialize), vhid.Value, scopedDescriptor.GlobalDescriptor.Name, reader.Seed.Value);
 
             SpawnEntityDescriptor createEntityEvent = new SpawnEntityDescriptor()
             {
-                Descriptor = descriptor,
+                Descriptor = scopedDescriptor.GlobalDescriptor,
                 VhId = vhid,
                 Initializer = (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                 {
                     reader.Load(readerState);
-                    descriptor.Deserialize(entities, reader, ref initializer, in id);
+                    scopedDescriptor.Deserialize(reader, ref initializer, in id);
 
                     initializerDelegate?.Invoke(entities, ref initializer, in id);
 

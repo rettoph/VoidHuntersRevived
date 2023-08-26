@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 {
     internal partial class EntityService : IEntityService, IQueryingEntitiesEngine
     {
-        private readonly IEntityDescriptorService _descriptors;
+        private readonly Lazy<IScopedEntityDescriptorService> _descriptors;
         private readonly ILogger _logger;
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly SimpleEntitiesSubmissionScheduler _scheduler;
 
         public EntityService(
-            IEntityDescriptorService descriptors, 
+            Lazy<IScopedEntityDescriptorService> descriptors, 
             IEventPublishingService events, 
             ILogger logger, 
             EnginesRoot enginesRoot, 

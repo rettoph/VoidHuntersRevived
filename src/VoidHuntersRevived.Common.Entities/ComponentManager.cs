@@ -15,24 +15,34 @@ namespace VoidHuntersRevived.Common.Entities
     {
         public readonly Type Type;
         public readonly IComponentBuilder Builder;
-        public readonly ComponentSerializer Serializer;
+        public readonly ComponentSerializerFactory SerializerFactory;
 
-        internal ComponentManager(IComponentBuilder builder, ComponentSerializer serializer)
+        internal ComponentManager(IComponentBuilder builder, ComponentSerializerFactory serializerFactory)
         {
-            this.Serializer = serializer;
+            this.SerializerFactory = serializerFactory;
             this.Builder = builder;
             this.Type = this.Builder.GetEntityComponentType();
 
-            ThrowIf.Type.IsNotAssignableFrom(this.Serializer.Type, this.Builder.GetEntityComponentType());
+            ThrowIf.Type.IsNotAssignableFrom(this.SerializerFactory.Type, this.Builder.GetEntityComponentType());
         }
     }
 
     public sealed class ComponentManager<TComponent> : ComponentManager
         where TComponent : unmanaged, IEntityComponent
     {
-        public ComponentManager(ComponentBuilder<TComponent> builder, ComponentSerializer<TComponent> serializer) : base(builder, serializer)
+        public ComponentManager(ComponentBuilder<TComponent> builder, DefaultComponentSerializer<TComponent> serializer) : base(builder, new DefaultComponentSerializerFactory<TComponent>(serializer))
         {
 
         }
     }
+
+    public sealed class ComponentManager<TComponent, TSerializer> : ComponentManager
+        where TComponent : unmanaged, IEntityComponent
+        where TSerializer : ComponentSerializer
+    {
+        public ComponentManager(IComponentBuilder builder) : base(builder, new ComponentSerializerFactory<TComponent, TSerializer>())
+        {
+        }
+    }
+
 }

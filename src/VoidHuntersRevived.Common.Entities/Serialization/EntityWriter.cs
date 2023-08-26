@@ -55,17 +55,6 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             return value;
         }
 
-        public void WriteNativeDynamicArray<T>(IEntityService entities, NativeDynamicArrayCast<T> native, Action<IEntityService, EntityWriter, T> writer)
-            where T : unmanaged
-        {
-            this.Write(native.count);
-
-            for (int i = 0; i < native.count; i++)
-            {
-                writer(entities, this, native[i]);
-            }
-        }
-
         public void WriteNativeDynamicArray<T>(NativeDynamicArrayCast<T> native, Action<EntityWriter, T> writer)
             where T : unmanaged
         {

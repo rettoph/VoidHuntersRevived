@@ -62,21 +62,5 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
 
             return this;
         }
-
-        public void Serialize(IEntityService entities, EntityWriter writer, EGID egid, EntitiesDB entitiesDB, uint index)
-        {
-            foreach (ComponentManager componentManager in _componentManagers)
-            {
-                componentManager.Serializer.Serialize(entities, writer, index, egid.groupID, entitiesDB);
-            }
-        }
-
-        public void Deserialize(IEntityService entities, EntityReader reader, ref EntityInitializer initializer, in EntityId id)
-        {
-            foreach (ComponentManager componentManager in _componentManagers)
-            {
-                componentManager.Serializer.Deserialize(entities, reader, ref initializer, in id);
-            }
-        }
     }
 }

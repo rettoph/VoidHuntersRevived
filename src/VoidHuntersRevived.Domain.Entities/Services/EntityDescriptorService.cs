@@ -1,4 +1,5 @@
-﻿using Svelto.ECS;
+﻿using Autofac;
+using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Descriptors;
@@ -7,42 +8,40 @@ using VoidHuntersRevived.Domain.Entities.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    internal sealed class EntityDescriptorService : IEntityDescriptorService
+    internal sealed class EntityDescriptorService : IScopedEntityDescriptorService
     {
-        private Dictionary<Guid, VoidHuntersEntityDescriptor> _descriptors;
-        private Dictionary<Guid, VoidHuntersEntityDescriptorSpawner> _spawners;
-        private Dictionary<Guid, VoidHuntersEntityDescriptorSpawner> _instanceSpawners;
+        private Dictionary<Guid, ScopedVoidHuntersEntityDescriptor> _descriptors;
+        private Dictionary<Guid, ScopedVoidHuntersEntityDescriptor> _instanceDescriptors;
 
-        public EntityDescriptorService(IEnumerable<VoidHuntersEntityDescriptor> descriptors)
+        public EntityDescriptorService(ILifetimeScope scope, IEnumerable<VoidHuntersEntityDescriptor> descriptors)
         {
-            _descriptors = descriptors.ToDictionary(x => x.Id.Value, x => x);
-            _spawners = _descriptors.Values.ToDictionary(x => x.Id.Value, VoidHuntersEntityDescriptorSpawner.Build);
-            _instanceSpawners = new Dictionary<Guid, VoidHuntersEntityDescriptorSpawner>();
+            _descriptors = descriptors.ToDictionary(x => x.Id.Value, x => ScopedVoidHuntersEntityDescriptor.Build(x, scope));
+            _instanceDescriptors = new Dictionary<Guid, ScopedVoidHuntersEntityDescriptor>();
         }
 
-        public VoidHuntersEntityDescriptor GetById(VhId id)
+        public ScopedVoidHuntersEntityDescriptor GetById(VhId id)
         {
             return _descriptors[id.Value];
         }
 
-        public VoidHuntersEntityDescriptor GetByEntityVhId(VhId id)
+        public ScopedVoidHuntersEntityDescriptor GetByEntityVhId(VhId id)
         {
-            return _instanceSpawners[id.Value].Descriptor;
+            return _instanceDescriptors[id.Value];
         }
 
         public EntityInitializer Spawn(VoidHuntersEntityDescriptor descriptor, IEntityFactory factory, VhId vhid, out EntityId id)
         {
-            VoidHuntersEntityDescriptorSpawner spawner = _spawners[descriptor.Id.Value];
+            ScopedVoidHuntersEntityDescriptor spawner = _descriptors[descriptor.Id.Value];
             EntityInitializer initializer = spawner.Spawn(factory, vhid, out id);
 
-            _instanceSpawners.Add(vhid.Value, spawner);
+            _instanceDescriptors.Add(vhid.Value, spawner);
 
             return initializer;
         }
 
         public void Despawn(IEntityFunctions functions, in EntityId id)
         {
-            _instanceSpawners.Remove(id.VhId.Value, out var spawner);
+            _instanceDescriptors.Remove(id.VhId.Value, out var spawner);
             spawner!.Despawn(functions, id.EGID);
         }
     }

@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Game.Common.Descriptors
             {
                 new ComponentManager<Tractorable>(
                     builder: new ComponentBuilder<Tractorable>(),
-                    serializer: ComponentSerializer<Tractorable>.Default)
+                    serializer: DefaultComponentSerializer<Tractorable>.Default)
             });
         }
     }

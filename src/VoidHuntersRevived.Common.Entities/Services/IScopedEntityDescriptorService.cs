@@ -8,11 +8,11 @@ using VoidHuntersRevived.Common.Entities.Descriptors;
 
 namespace VoidHuntersRevived.Common.Entities.Services
 {
-    public interface IEntityDescriptorService
+    public interface IScopedEntityDescriptorService
     {
-        VoidHuntersEntityDescriptor GetById(VhId id);
+        ScopedVoidHuntersEntityDescriptor GetById(VhId id);
 
-        VoidHuntersEntityDescriptor GetByEntityVhId(VhId id);
+        ScopedVoidHuntersEntityDescriptor GetByEntityVhId(VhId id);
 
         EntityInitializer Spawn(VoidHuntersEntityDescriptor descriptor, IEntityFactory factory, VhId vhid, out EntityId id);
 

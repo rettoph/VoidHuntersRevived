@@ -10,6 +10,7 @@ using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Physics.Descriptors;
 using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Serialization.Components;
 
 namespace VoidHuntersRevived.Common.Pieces.Descriptors
 {
@@ -19,17 +20,8 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
         {
             this.ExtendWith(new ComponentManager[]
             {
-                new ComponentManager<Tree>(
-                    builder: new ComponentBuilder<Tree>(),
-                    serializer: new ComponentSerializer<Tree>(
-                        writer: (entities, writer, tree) =>
-                        {
-                            entities.Serialize(tree.HeadId, writer);
-                        },
-                        reader: (entities, reader, id) =>
-                        {
-                            return new Tree(entities.Deserialize(reader, null));
-                        }))
+                new ComponentManager<Tree, TreeSerializer>(
+                    builder: new ComponentBuilder<Tree>())
             });
         }
     }

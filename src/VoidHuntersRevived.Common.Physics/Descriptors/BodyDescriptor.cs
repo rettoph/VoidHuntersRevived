@@ -19,10 +19,10 @@ namespace VoidHuntersRevived.Common.Physics.Descriptors
             {
                 new ComponentManager<Collision>(
                     builder: new ComponentBuilder<Collision>(),
-                    serializer: ComponentSerializer<Collision>.Default),
+                    serializer: DefaultComponentSerializer<Collision>.Default),
                 new ComponentManager<Location>(
                     builder: new ComponentBuilder<Location>(),
-                    serializer: ComponentSerializer<Location>.Default)
+                    serializer: DefaultComponentSerializer<Location>.Default)
             });
         }
     }

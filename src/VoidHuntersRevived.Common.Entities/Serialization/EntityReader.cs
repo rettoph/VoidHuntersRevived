@@ -107,20 +107,6 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             }
         }
 
-        public NativeDynamicArrayCast<T> ReadNativeDynamicArray<T>(IEntityService entities, Func<IEntityService, EntityReader, T> reader)
-            where T : unmanaged
-        {
-            int count = this.ReadInt32();
-            NativeDynamicArrayCast<T> native = new NativeDynamicArrayCast<T>((uint)count, Allocator.Persistent);
-
-            for (int i = 0; i < count; i++)
-            {
-                native.Set(i, reader(entities, this));
-            }
-
-            return native;
-        }
-
         public NativeDynamicArrayCast<T> ReadNativeDynamicArray<T>(Func<EntityReader, T> reader)
             where T : unmanaged
         {

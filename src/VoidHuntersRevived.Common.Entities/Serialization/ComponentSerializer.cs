@@ -1,4 +1,6 @@
-﻿using Svelto.ECS;
+﻿using Guppy.Attributes;
+using Guppy.Enums;
+using Svelto.ECS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,46 +20,70 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             Type = type;
         }
 
-        public abstract void Serialize(IEntityService entities, EntityWriter writer, uint sourceIndex, ExclusiveGroupStruct groupId, EntitiesDB entitiesDB);
-        public abstract void Deserialize(IEntityService entities, EntityReader reader, ref EntityInitializer initializer, in EntityId id);
+        public abstract void Serialize(EntityWriter writer, uint sourceIndex, ExclusiveGroupStruct groupId, EntitiesDB entitiesDB);
+        public abstract void Deserialize(EntityReader reader, ref EntityInitializer initializer, in EntityId id);
     }
 
-    public class ComponentSerializer<T> : ComponentSerializer
+    [Service(ServiceLifetime.Scoped, null, true)]
+    public abstract class ComponentSerializer<TComponent> : ComponentSerializer
+        where TComponent : unmanaged, IEntityComponent
+    {
+        public ComponentSerializer() : base(typeof(TComponent))
+        {
+        }
+
+        public override void Serialize(EntityWriter writer, uint sourceIndex, ExclusiveGroupStruct groupId, EntitiesDB entitiesDB)
+        {
+            var (components, _) = entitiesDB.QueryEntities<TComponent>(groupId);
+            ref var component = ref components[sourceIndex];
+
+            this.Write(writer, component);
+        }
+        public override void Deserialize(EntityReader reader, ref EntityInitializer initializer, in EntityId id)
+        {
+            initializer.Init<TComponent>(this.Read(reader, id));
+        }
+
+        protected abstract void Write(EntityWriter writer, TComponent instance);
+        protected abstract TComponent Read(EntityReader reader, EntityId id);
+    }
+
+    public class DefaultComponentSerializer<T> : ComponentSerializer
         where T : unmanaged, IEntityComponent
     {
-        private Action<IEntityService, EntityWriter, T> _writer;
-        private Func<IEntityService, EntityReader, EntityId, T> _reader;
+        private Action<EntityWriter, T> _writer;
+        private Func<EntityReader, EntityId, T> _reader;
 
-        public ComponentSerializer(Action<IEntityService, EntityWriter, T> writer, Func<IEntityService, EntityReader, EntityId, T> reader) : base(typeof(T))
+        public DefaultComponentSerializer(Action<EntityWriter, T> writer, Func<EntityReader, EntityId, T> reader) : base(typeof(T))
         {
             _writer = writer;
             _reader = reader;
         }
 
-        public override void Serialize(IEntityService entities, EntityWriter writer, uint sourceIndex, ExclusiveGroupStruct groupId, EntitiesDB entitiesDB)
+        public override void Serialize(EntityWriter writer, uint sourceIndex, ExclusiveGroupStruct groupId, EntitiesDB entitiesDB)
         {
             var (components, _) = entitiesDB.QueryEntities<T>(groupId);
             ref var component = ref components[sourceIndex];
 
-            _writer(entities, writer, component);
+            _writer(writer, component);
         }
 
-        public override void Deserialize(IEntityService entities, EntityReader reader, ref EntityInitializer initializer, in EntityId id)
+        public override void Deserialize(EntityReader reader, ref EntityInitializer initializer, in EntityId id)
         {
-            initializer.Init<T>(_reader(entities, reader, id));
+            initializer.Init<T>(_reader(reader, id));
         }
 
 
-        public static ComponentSerializer<T> Default => new ComponentSerializer<T>(RawSerialize, RawDeserialize);
+        public static DefaultComponentSerializer<T> Default => new DefaultComponentSerializer<T>(RawSerialize, RawDeserialize);
 
-        private static unsafe void RawSerialize(IEntityService entities, EntityWriter writer, T component)
+        private static unsafe void RawSerialize(EntityWriter writer, T component)
         {
             byte* pBytes = (byte*)&component;
             var span = new ReadOnlySpan<byte>(pBytes, sizeof(T));
 
             writer.Write(span);
         }
-        private unsafe static T RawDeserialize(IEntityService entities, EntityReader reader, EntityId id)
+        private unsafe static T RawDeserialize(EntityReader reader, EntityId id)
         {
             Span<byte> span = stackalloc byte[sizeof(T)];
             reader.Read(span);

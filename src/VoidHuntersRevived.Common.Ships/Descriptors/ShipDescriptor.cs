@@ -19,13 +19,13 @@ namespace VoidHuntersRevived.Common.Ships.Descriptors
             {
                 new ComponentManager<Helm>(
                     builder: new ComponentBuilder<Helm>(),
-                    serializer: ComponentSerializer<Helm>.Default),
+                    serializer: DefaultComponentSerializer<Helm>.Default),
                 new ComponentManager<Tactical>(
                     builder: new ComponentBuilder<Tactical>(),
-                    serializer: ComponentSerializer<Tactical>.Default),
+                    serializer: DefaultComponentSerializer<Tactical>.Default),
                 new ComponentManager<TractorBeamEmitter>(
                     builder: new ComponentBuilder<TractorBeamEmitter>(),
-                    serializer: ComponentSerializer<TractorBeamEmitter>.Default)
+                    serializer: DefaultComponentSerializer<TractorBeamEmitter>.Default)
             });
         }
     }

@@ -15,6 +15,7 @@ using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Serialization.Components;
 
 namespace VoidHuntersRevived.Common.Pieces.Descriptors
 {
@@ -24,44 +25,9 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
         {
             this.ExtendWith(new ComponentManager[]
             {
-                new ComponentManager<Sockets>(
-                    builder: new ComponentBuilder<Sockets>(),
-                    serializer: new ComponentSerializer<Sockets>(
-                        writer: (entities, writer, instance) =>
-                        {
-                            writer.WriteNativeDynamicArray(entities, instance.Items, WriteJoint);
-                        },
-                        reader: (entities, reader, id) => new Sockets()
-                        {
-                            Items = reader.ReadNativeDynamicArray<Socket>(entities, ReadJoint),
-                        }))
+                new ComponentManager<Sockets, SocketsSerializer>(
+                    builder: new ComponentBuilder<Sockets>())
             });
-        }
-        private static Socket ReadJoint(IEntityService entities, EntityReader reader)
-        {
-            Socket socket = new Socket(
-                nodeId: entities.GetId(reader.ReadVhId()),
-                index: reader.ReadByte(),
-                location: reader.ReadStruct<Location>());
-
-            if(reader.ReadIf())
-            {
-                socket.PlugId = entities.Deserialize(reader, null);
-            }
-
-            return socket;
-        }
-
-        private static void WriteJoint(IEntityService entities, EntityWriter writer, Socket joint)
-        {
-            writer.Write(joint.Id.NodeId.VhId);
-            writer.Write(joint.Id.Index);
-            writer.WriteStruct<Location>(joint.Location);
-            
-            if(writer.WriteIf(joint.PlugId.VhId.Value != default))
-            {
-                entities.Serialize(joint.PlugId, writer);
-            }
         }
     }
 }

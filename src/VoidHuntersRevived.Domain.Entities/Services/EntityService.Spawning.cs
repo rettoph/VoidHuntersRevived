@@ -145,7 +145,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         private EntityId SpawnDescriptor(VoidHuntersEntityDescriptor descriptor, VhId vhid, EntityInitializerDelegate? initializerDelegate)
         {
-            EntityInitializer initializer = _descriptors.Spawn(descriptor, _factory, vhid, out EntityId id);
+            EntityInitializer initializer = _descriptors.Value.Spawn(descriptor, _factory, vhid, out EntityId id);
             this.Add(id);
 
             initializerDelegate?.Invoke(this, ref initializer, in id);
@@ -155,7 +155,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         private EntityId SpawnType(IEntityType type, VhId vhid, EntityInitializerDelegate? initializerDelegate)
         {
-            EntityInitializer initializer = _descriptors.Spawn(type.Descriptor, _factory, vhid, out EntityId id);
+            EntityInitializer initializer = _descriptors.Value.Spawn(type.Descriptor, _factory, vhid, out EntityId id);
             this.Add(id);
 
             _types.GetConfiguration(type).Initialize(this, ref initializer, in id);
@@ -168,7 +168,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private void DespawnEntity(VhId vhid)
         {
             EntityId id = this.Remove(vhid);
-            _descriptors.Despawn(_functions, in id);
+            _descriptors.Value.Despawn(_functions, in id);
         }
     }
 }
