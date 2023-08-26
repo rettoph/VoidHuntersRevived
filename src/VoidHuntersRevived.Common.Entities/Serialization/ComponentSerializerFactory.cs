@@ -41,20 +41,4 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             return scope.Resolve<TSerializer>();
         }
     }
-
-    internal class DefaultComponentSerializerFactory<TComponent> : ComponentSerializerFactory<TComponent>
-        where TComponent : unmanaged, IEntityComponent
-    {
-        private readonly ComponentSerializer _serializer;
-
-        public DefaultComponentSerializerFactory(DefaultComponentSerializer<TComponent> serializer)
-        {
-            _serializer = serializer;
-        }
-
-        public override ComponentSerializer Create(ILifetimeScope scope)
-        {
-            return _serializer;
-        }
-    }
 }

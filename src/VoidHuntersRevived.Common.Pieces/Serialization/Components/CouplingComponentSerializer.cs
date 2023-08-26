@@ -13,11 +13,11 @@ using VoidHuntersRevived.Common.Pieces.Components;
 namespace VoidHuntersRevived.Common.Pieces.Serialization.Components
 {
     [AutoLoad]
-    internal sealed class CouplingSerializer : ComponentSerializer<Coupling>
+    public sealed class CouplingComponentSerializer : ComponentSerializer<Coupling>
     {
         private readonly IEntityService _entities;
 
-        public CouplingSerializer(IEntityService entities)
+        public CouplingComponentSerializer(IEntityService entities)
         {
             _entities = entities;
         }

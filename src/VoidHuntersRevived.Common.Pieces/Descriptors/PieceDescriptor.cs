@@ -21,70 +21,12 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
         {
             this.ExtendWith(new ComponentManager[]
             {
-                new ComponentManager<Plug>(
-                    builder: new ComponentBuilder<Plug>(in Plug.Default),
-                    serializer: DefaultComponentSerializer<Plug>.Default),
-                new ComponentManager<Coupling, CouplingSerializer>(
-                    builder: new ComponentBuilder<Coupling>()),
-                new ComponentManager<Node, NodeSerializer>(
-                    builder: new ComponentBuilder<Node>()),
-                new ComponentManager<Rigid>(
-                    builder: new ComponentBuilder<Rigid>(),
-                    serializer: new DefaultComponentSerializer<Rigid>(
-                        writer: (writer, instance) =>
-                        {
-                            writer.WriteStruct(instance.Centeroid);
-                            writer.WriteNativeDynamicArray(instance.Shapes, PolygonWriter);
-                        },
-                        reader: (reader, id) => new Rigid()
-                        {
-                            Centeroid = reader.ReadStruct<FixVector2>(),
-                            Shapes = reader.ReadNativeDynamicArray<Polygon>(PolygonReader)
-                        })),
-                new ComponentManager<Visible>(
-                    builder: new ComponentBuilder<Visible>(),
-                    serializer: new DefaultComponentSerializer<Visible>(
-                        writer: (writer, instance) =>
-                        {
-                            writer.WriteStruct(instance.Color);
-                            writer.WriteNativeDynamicArray(instance.Shapes, ShapeWriter);
-                            writer.WriteNativeDynamicArray(instance.Paths, ShapeWriter);
-                        },
-                        reader: (reader, id) => new Visible()
-                        {
-                            Color = reader.ReadStruct<EntityResource<Color>>(),
-                            Shapes = reader.ReadNativeDynamicArray<Shape>(ShapeReader),
-                            Paths = reader.ReadNativeDynamicArray<Shape>(ShapeReader)
-                        })),
+                new ComponentManager<Plug, PlugComponentSerializer>(new ComponentBuilder<Plug>(in Plug.Default)),
+                new ComponentManager<Coupling, CouplingComponentSerializer>(new ComponentBuilder<Coupling>()),
+                new ComponentManager<Node, NodeComponentSerializer>(new ComponentBuilder<Node>()),
+                new ComponentManager<Rigid, RigidComponentSerializer>(new ComponentBuilder<Rigid>()),
+                new ComponentManager<Visible, VisibleComponentSerializer>(new ComponentBuilder<Visible>()),
             });
-        }
-
-        private Shape ShapeReader(EntityReader reader)
-        {
-            return new Shape()
-            {
-                Vertices = reader.ReadNativeDynamicArray<Vector3>()
-            };
-        }
-
-        private void ShapeWriter(EntityWriter writer, Shape shape)
-        {
-            writer.WriteNativeDynamicArray(shape.Vertices);
-        }
-
-        private Polygon PolygonReader(EntityReader reader)
-        {
-            return new Polygon()
-            {
-                Density = reader.ReadStruct<Fix64>(),
-                Vertices = reader.ReadNativeDynamicArray<FixVector2>()
-            };
-        }
-
-        private void PolygonWriter(EntityWriter writer, Polygon polygon)
-        {
-            writer.WriteStruct(polygon.Density);
-            writer.WriteNativeDynamicArray(polygon.Vertices);
         }
     }
 }

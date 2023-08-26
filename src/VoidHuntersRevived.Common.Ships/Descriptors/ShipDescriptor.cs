@@ -8,6 +8,7 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Pieces.Descriptors;
 using VoidHuntersRevived.Common.Ships.Components;
+using VoidHuntersRevived.Common.Ships.Serialization.Components;
 
 namespace VoidHuntersRevived.Common.Ships.Descriptors
 {
@@ -17,15 +18,9 @@ namespace VoidHuntersRevived.Common.Ships.Descriptors
         {
             this.ExtendWith(new ComponentManager[]
             {
-                new ComponentManager<Helm>(
-                    builder: new ComponentBuilder<Helm>(),
-                    serializer: DefaultComponentSerializer<Helm>.Default),
-                new ComponentManager<Tactical>(
-                    builder: new ComponentBuilder<Tactical>(),
-                    serializer: DefaultComponentSerializer<Tactical>.Default),
-                new ComponentManager<TractorBeamEmitter>(
-                    builder: new ComponentBuilder<TractorBeamEmitter>(),
-                    serializer: DefaultComponentSerializer<TractorBeamEmitter>.Default)
+                new ComponentManager<Helm, HelmComponentSerializer>(new ComponentBuilder<Helm>()),
+                new ComponentManager<Tactical, TacticalComponentSerializer>(new ComponentBuilder<Tactical>()),
+                new ComponentManager<TractorBeamEmitter, TractorBeamEmitterComponentSerializer>(new ComponentBuilder<TractorBeamEmitter>())
             });
         }
     }

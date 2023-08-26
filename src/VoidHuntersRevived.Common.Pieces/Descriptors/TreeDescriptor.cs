@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
         {
             this.ExtendWith(new ComponentManager[]
             {
-                new ComponentManager<Tree, TreeSerializer>(
+                new ComponentManager<Tree, TreeComponentSerializer>(
                     builder: new ComponentBuilder<Tree>())
             });
         }

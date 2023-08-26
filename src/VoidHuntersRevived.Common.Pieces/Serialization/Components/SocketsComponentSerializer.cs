@@ -14,11 +14,11 @@ using VoidHuntersRevived.Common.Pieces.Components;
 namespace VoidHuntersRevived.Common.Pieces.Serialization.Components
 {
     [AutoLoad]
-    internal class SocketsSerializer : ComponentSerializer<Sockets>
+    public class SocketsComponentSerializer : ComponentSerializer<Sockets>
     {
         private readonly IEntityService _entities;
 
-        public SocketsSerializer(IEntityService entities)
+        public SocketsComponentSerializer(IEntityService entities)
         {
             _entities = entities;
         }

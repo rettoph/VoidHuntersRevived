@@ -8,6 +8,7 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Pieces.Descriptors;
 using VoidHuntersRevived.Common.Ships.Components;
+using VoidHuntersRevived.Common.Ships.Serialization.Components;
 
 namespace VoidHuntersRevived.Game.Common.Descriptors
 {
@@ -17,9 +18,7 @@ namespace VoidHuntersRevived.Game.Common.Descriptors
         {
             this.ExtendWith(new[]
             {
-                new ComponentManager<Tractorable>(
-                    builder: new ComponentBuilder<Tractorable>(),
-                    serializer: DefaultComponentSerializer<Tractorable>.Default)
+                new ComponentManager<Tractorable, TractorableComponentSerializer>(new ComponentBuilder<Tractorable>())
             });
         }
     }

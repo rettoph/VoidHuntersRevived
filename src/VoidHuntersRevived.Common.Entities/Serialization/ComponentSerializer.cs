@@ -3,6 +3,7 @@ using Guppy.Enums;
 using Svelto.ECS;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -48,50 +49,26 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
         protected abstract TComponent Read(EntityReader reader, EntityId id);
     }
 
-    public class DefaultComponentSerializer<T> : ComponentSerializer
-        where T : unmanaged, IEntityComponent
+    public abstract class RawComponentSerializer<TComponent> : ComponentSerializer<TComponent>
+        where TComponent : unmanaged, IEntityComponent
     {
-        private Action<EntityWriter, T> _writer;
-        private Func<EntityReader, EntityId, T> _reader;
-
-        public DefaultComponentSerializer(Action<EntityWriter, T> writer, Func<EntityReader, EntityId, T> reader) : base(typeof(T))
+        protected unsafe override TComponent Read(EntityReader reader, EntityId id)
         {
-            _writer = writer;
-            _reader = reader;
-        }
-
-        public override void Serialize(EntityWriter writer, uint sourceIndex, ExclusiveGroupStruct groupId, EntitiesDB entitiesDB)
-        {
-            var (components, _) = entitiesDB.QueryEntities<T>(groupId);
-            ref var component = ref components[sourceIndex];
-
-            _writer(writer, component);
-        }
-
-        public override void Deserialize(EntityReader reader, ref EntityInitializer initializer, in EntityId id)
-        {
-            initializer.Init<T>(_reader(reader, id));
-        }
-
-
-        public static DefaultComponentSerializer<T> Default => new DefaultComponentSerializer<T>(RawSerialize, RawDeserialize);
-
-        private static unsafe void RawSerialize(EntityWriter writer, T component)
-        {
-            byte* pBytes = (byte*)&component;
-            var span = new ReadOnlySpan<byte>(pBytes, sizeof(T));
-
-            writer.Write(span);
-        }
-        private unsafe static T RawDeserialize(EntityReader reader, EntityId id)
-        {
-            Span<byte> span = stackalloc byte[sizeof(T)];
+            Span<byte> span = stackalloc byte[sizeof(TComponent)];
             reader.Read(span);
             fixed (byte* pBytes = &span[0])
             {
-                T* components = (T*)&pBytes[0];
+                TComponent* components = (TComponent*)&pBytes[0];
                 return components[0];
             }
+        }
+
+        protected unsafe override void Write(EntityWriter writer, TComponent instance)
+        {
+            byte* pBytes = (byte*)&instance;
+            var span = new ReadOnlySpan<byte>(pBytes, sizeof(TComponent));
+
+            writer.Write(span);
         }
     }
 }

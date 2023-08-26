@@ -27,18 +27,9 @@ namespace VoidHuntersRevived.Common.Entities
         }
     }
 
-    public sealed class ComponentManager<TComponent> : ComponentManager
-        where TComponent : unmanaged, IEntityComponent
-    {
-        public ComponentManager(ComponentBuilder<TComponent> builder, DefaultComponentSerializer<TComponent> serializer) : base(builder, new DefaultComponentSerializerFactory<TComponent>(serializer))
-        {
-
-        }
-    }
-
     public sealed class ComponentManager<TComponent, TSerializer> : ComponentManager
         where TComponent : unmanaged, IEntityComponent
-        where TSerializer : ComponentSerializer
+        where TSerializer : ComponentSerializer<TComponent>
     {
         public ComponentManager(IComponentBuilder builder) : base(builder, new ComponentSerializerFactory<TComponent, TSerializer>())
         {

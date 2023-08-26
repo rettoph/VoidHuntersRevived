@@ -8,6 +8,7 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Physics.Components;
+using VoidHuntersRevived.Common.Physics.Serialization.Components;
 
 namespace VoidHuntersRevived.Common.Physics.Descriptors
 {
@@ -17,12 +18,8 @@ namespace VoidHuntersRevived.Common.Physics.Descriptors
         {
             this.ExtendWith(new ComponentManager[]
             {
-                new ComponentManager<Collision>(
-                    builder: new ComponentBuilder<Collision>(),
-                    serializer: DefaultComponentSerializer<Collision>.Default),
-                new ComponentManager<Location>(
-                    builder: new ComponentBuilder<Location>(),
-                    serializer: DefaultComponentSerializer<Location>.Default)
+                new ComponentManager<Collision, CollisionComponentSerializer>(new ComponentBuilder<Collision>()),
+                new ComponentManager<Location, LocationComponentSerializer>(new ComponentBuilder<Location>())
             });
         }
     }

@@ -13,11 +13,11 @@ using VoidHuntersRevived.Common.Pieces.Components;
 namespace VoidHuntersRevived.Common.Pieces.Serialization.Components
 {
     [AutoLoad]
-    internal sealed class TreeSerializer : ComponentSerializer<Tree>
+    public sealed class TreeComponentSerializer : ComponentSerializer<Tree>
     {
         private readonly IEntityService _entities;
 
-        public TreeSerializer(IEntityService entities)
+        public TreeComponentSerializer(IEntityService entities)
         {
             _entities = entities;
         }
