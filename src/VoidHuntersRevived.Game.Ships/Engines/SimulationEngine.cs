@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
 
         public void Process(VhId eventId, Simulation_Begin data)
         {
-            for(int i=0; i<3; i++)
+            for(int i=0; i<1; i++)
             {
                 _treeFactory.Create(eventId.Create(i), EntityTypes.Chain, EntityTypes.Pieces.HullTriangle);
             }

@@ -7,58 +7,53 @@ using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Ships.Components;
+using VoidHuntersRevived.Common.Simulations.Engines;
 
 namespace VoidHuntersRevived.Game.Ships.Services
 {
-    public sealed class TractorBeamEmitterService : IQueryingEntitiesEngine
+    public sealed class TractorBeamEmitterService : IEngine
     {
         private static Fix64 QueryRadius = (Fix64)3;
         private static readonly Fix64 OpenNodemaximumDistance = Fix64.One;
 
         private readonly ISpace _space;
         private readonly IEntityService _entities;
+        private readonly INodeService _nodes;
+        private readonly ITreeService _trees;
 
-        public TractorBeamEmitterService(ISpace space, IEntityService entities)
+        public TractorBeamEmitterService(ISpace space, IEntityService entities, INodeService nodes, ITreeService trees)
         {
             _space = space;
             _entities = entities;
-            this.entitiesDB = null!;
+            _nodes = nodes;
+            _trees = trees;
         }
-
-        public EntitiesDB entitiesDB { get; set; }
 
         public void Ready()
         {
             // throw new NotImplementedException();
         }
 
-        public bool Query(EntityId tractorBeamEmitterId, FixVector2 target, out Component<Node> targetNode, out Component<Tree> targetTree)
+        public bool Query(EntityId tractorBeamEmitterId, FixVector2 target, out Node targetNode)
         {
-            if(!this.entitiesDB.TryQueryEntitiesAndIndex<TractorBeamEmitter>(tractorBeamEmitterId.EGID, out uint index, out var tractorBeamEmitters))
+            if(!_entities.TryQueryById(tractorBeamEmitterId, out TractorBeamEmitter tractorBeamEmitter))
             {
                 targetNode = default;
-                targetTree = default;
                 return false;
             }
 
-            TractorBeamEmitter tractorBeamEmitter = tractorBeamEmitters[index];
-
             AABB aabb = new AABB(target, QueryRadius, QueryRadius);
             Fix64 minDistance = QueryRadius;
-            Component<Node>? callbackTargetNode = default!;
-            Component<Tree>? callbackTargetTree = default!;
+            Node? callbackTargetNode = default!;
 
             _space.QueryAABB(fixture =>
             {
-                EntityId queryTargetId = default;
-
                 // BEGIN NODE DISTANCE CHECK
                 EntityId queryNodeId = _entities.GetId(fixture.Id);
-                Node queryNode = this.entitiesDB.QueryEntitiesAndIndex<Node>(queryNodeId.EGID, out uint index)[index];
-                var (rigids, _) = this.entitiesDB.QueryEntities<Rigid>(queryNodeId.EGID.groupID);
-                Rigid queryRigid = rigids[index];
-
+                ref Node queryNode = ref _entities.QueryById<Node>(queryNodeId, out GroupIndex nodeGroupIndex);
+                ref Rigid queryRigid  = ref _entities.QueryByGroupIndex<Rigid>(nodeGroupIndex);
 
                 FixVector2 queryNodePosition = FixVector2.Transform(queryRigid.Centeroid, queryNode.Transformation);
                 FixVector2.Distance(ref target, ref queryNodePosition, out Fix64 queryNodeDistance);
@@ -68,16 +63,13 @@ namespace VoidHuntersRevived.Game.Ships.Services
                     return true;
                 }
 
-                // BEGIN NODE TREE CHECK
-                Tree queryTree = this.entitiesDB.QueryEntity<Tree>(queryNode.TreeId.EGID);
-
-                if(this.entitiesDB.TryGetEntity<Tractorable>(queryNode.TreeId.EGID, out var tractorable) && tractorable.IsTractored == false)
+                if(_entities.TryQueryById(queryNode.TreeId, out Tractorable tractorable) && tractorable.IsTractored == false)
                 { // Target resides within a tractorable tree, so we want to grab the head
-                    queryTargetId = queryTree.HeadId;
+                    callbackTargetNode = _trees.GetHead(queryNode.TreeId);
                 }
-                else if(queryNode.TreeId.VhId == tractorBeamEmitterId.VhId && queryTree.HeadId.VhId != fixture.Id)
-                {
-                    queryTargetId = queryNodeId;
+                else if(queryNode.TreeId == tractorBeamEmitterId && !_nodes.IsHead(queryNode))
+                { // The node belongs to the current tractor beam emitter's ship and is not the head
+                    callbackTargetNode = queryNode;
                 }
                 else
                 { // Target is not in any way tractorable, we can disregard it
@@ -85,21 +77,19 @@ namespace VoidHuntersRevived.Game.Ships.Services
                 }
 
                 minDistance = queryNodeDistance;
-                callbackTargetNode = new Component<Node>(queryTargetId, queryNode);
-                callbackTargetTree = new Component<Tree>(queryNode.TreeId, queryTree);
+
+
                 return true; // Ensure we only check a maximum of 5 fixtures all the way through
 
             }, ref aabb);
 
-            if (callbackTargetNode is null || callbackTargetTree is null)
+            if (callbackTargetNode is null)
             {
                 targetNode = default;
-                targetTree = default;
                 return false;
             }
 
             targetNode = callbackTargetNode.Value;
-            targetTree = callbackTargetTree.Value;
             return true;
         }
 
@@ -113,12 +103,12 @@ namespace VoidHuntersRevived.Game.Ships.Services
         
             foreach (var (indeces, group) in filter)
             {
-                if (!this.entitiesDB.HasAny<Sockets>(group))
+                if (!_entities.HasAny<Sockets>(group))
                 {
                     continue;
                 }
-        
-                var (nodes, socketses, _) = entitiesDB.QueryEntities<Node, Sockets>(group);
+
+                var (nodes, socketses, _) = _entities.QueryEntities<Node, Sockets>(group);
         
                 for (int i = 0; i < indeces.count; i++)
                 {

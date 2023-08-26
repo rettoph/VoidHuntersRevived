@@ -88,7 +88,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             if (message.Value)
             {
-                if (!_tractorBeamEmitterService.Query(shipId, (FixVector2)this.CurrentTargetPosition, out Component<Node> targetNode, out Component<Tree> targetTree))
+                if (!_tractorBeamEmitterService.Query(shipId, (FixVector2)this.CurrentTargetPosition, out Node targetNode))
                 {
                     return;
                 }
@@ -101,7 +101,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                         Value = (FixVector2)this.CurrentTargetPosition
                     });
 
-                if(targetTree.Id.VhId == shipId.VhId)
+                if(targetNode.TreeId == shipId)
                 {
                     this.Simulation.Input(
                         sender: eventId,

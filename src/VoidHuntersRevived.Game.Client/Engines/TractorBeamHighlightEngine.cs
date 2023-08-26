@@ -84,7 +84,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            if (!_tractorBeamEmitterService.Query(shipId, (FixVector2)this.CurrentTargetPosition, out Component<Node> targetNode, out _))
+            if (!_tractorBeamEmitterService.Query(shipId, (FixVector2)this.CurrentTargetPosition, out Node targetNode))
             {
                 return;
             }

@@ -55,5 +55,43 @@ namespace VoidHuntersRevived.Common.Entities.Services
         ref EntityFilterCollection GetFilter<T>(EntityId id, FilterContextID filterContext)
             where T : unmanaged, IEntityComponent;
         #endregion
+
+        #region Querying
+        bool TryQueryById<T>(EntityId id, out T value)
+            where T : unmanaged, IEntityComponent;
+
+        bool TryQueryById<T>(EntityId id, out GroupIndex groupIndex, out T value)
+            where T : unmanaged, IEntityComponent;
+
+        ref T QueryById<T>(EntityId id)
+            where T : unmanaged, IEntityComponent;
+
+        ref T QueryById<T>(EntityId id, out GroupIndex groupIndex)
+            where T : unmanaged, IEntityComponent;
+
+        ref T QueryByGroupIndex<T>(in GroupIndex groupIndex)
+            where T : unmanaged, IEntityComponent;
+
+        bool HasAny<T>(ExclusiveGroupStruct groupID) 
+            where T : unmanaged, IEntityComponent;
+
+        EntityCollection<T1> QueryEntities<T1>(ExclusiveGroupStruct groupID)
+            where T1 : unmanaged, IEntityComponent;
+
+        EntityCollection<T1, T2> QueryEntities<T1, T2>(ExclusiveGroupStruct groupID)
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent;
+
+        EntityCollection<T1, T2, T3> QueryEntities<T1, T2, T3>(ExclusiveGroupStruct groupID)
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+            where T3 : unmanaged, IEntityComponent;
+
+        EntityCollection<T1, T2, T3, T4> QueryEntities<T1, T2, T3, T4>(ExclusiveGroupStruct groupID)
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+            where T3 : unmanaged, IEntityComponent
+            where T4 : unmanaged, IEntityComponent;
+        #endregion
     }
 }
