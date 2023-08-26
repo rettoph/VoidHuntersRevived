@@ -11,12 +11,10 @@ using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
-using VoidHuntersRevived.Common.Pieces.Factories;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Game.Common;
 using VoidHuntersRevived.Game.Pieces.Events;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Game.Pieces.Services
 {
@@ -27,13 +25,13 @@ namespace VoidHuntersRevived.Game.Pieces.Services
     {
         private readonly ILogger _logger;
         private readonly IEntityService _entities;
-        private readonly ITreeFactory _treeFactory;
+        private readonly ITreeService _trees;
 
-        public SocketService(IEntityService entities, ITreeFactory treeFactory, ILogger logger)
+        public SocketService(IEntityService entities, ITreeService trees, ILogger logger)
         {
             _logger = logger;
             _entities = entities;
-            _treeFactory = treeFactory;
+            _trees = trees;
         }
 
         public SocketNode GetSocketNode(SocketId socketId)
@@ -150,7 +148,7 @@ namespace VoidHuntersRevived.Game.Pieces.Services
 
             SocketNode socketNode = this.GetSocketNode(coupling.SocketId);
 
-            _treeFactory.Create(
+            _trees.Spawn(
                 vhid: data.CloneVhId,
                 tree: EntityTypes.Chain,
                 nodes: _entities.Serialize(couplingId),

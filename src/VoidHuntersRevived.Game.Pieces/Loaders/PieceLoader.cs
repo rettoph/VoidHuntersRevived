@@ -7,8 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Pieces.Factories;
-using VoidHuntersRevived.Game.Pieces.Factories;
 using VoidHuntersRevived.Game.Pieces.Services;
 
 namespace VoidHuntersRevived.Game.Pieces.Loaders
@@ -18,8 +16,6 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            services.RegisterType<TreeFactory>().AsImplementedInterfaces().InstancePerLifetimeScope();
-
             services.RegisterType<TreeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             services.RegisterType<NodeService>().AsImplementedInterfaces().InstancePerLifetimeScope();

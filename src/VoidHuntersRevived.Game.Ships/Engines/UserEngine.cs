@@ -16,11 +16,10 @@ using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Events;
-using VoidHuntersRevived.Common.Pieces.Components;
-using VoidHuntersRevived.Common.Pieces.Factories;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Game.Pieces;
 using VoidHuntersRevived.Game.Common;
+using VoidHuntersRevived.Common.Pieces.Services;
 
 namespace VoidHuntersRevived.Game.Ships.Engines
 {
@@ -29,12 +28,12 @@ namespace VoidHuntersRevived.Game.Ships.Engines
         IEventEngine<UserJoined>
     {
         private readonly NetScope _scope;
-        private readonly ITreeFactory _treeFactory;
+        private readonly ITreeService _trees;
 
-        public UserEngine(ITreeFactory treeFactory, NetScope scope)
+        public UserEngine(ITreeService trees, NetScope scope)
         {
             _scope = scope;
-            _treeFactory = treeFactory;
+            _trees = trees;
         }
 
         public string name { get; } = nameof(UserEngine);
@@ -43,7 +42,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
         {
             VhId shipId = _scope.Peer!.Users.UpdateOrCreate(data.UserId, data.Claims).GetUserShipId();
 
-            _treeFactory.Create(shipId, EntityTypes.UserShip, EntityTypes.Pieces.HullSquare);
+            _trees.Spawn(shipId, EntityTypes.UserShip, EntityTypes.Pieces.HullSquare);
             // _treeFactory.Create(id.Create(1), EntityTypes.Chain, PieceTypes.HullSquare);
         }
     }

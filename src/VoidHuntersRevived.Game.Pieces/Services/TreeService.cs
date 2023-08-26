@@ -11,7 +11,7 @@ using VoidHuntersRevived.Common.Pieces.Services;
 
 namespace VoidHuntersRevived.Game.Pieces.Services
 {
-    internal sealed class TreeService : ITreeService
+    internal partial class TreeService : ITreeService
     {
         private readonly IEntityService _entities;
 

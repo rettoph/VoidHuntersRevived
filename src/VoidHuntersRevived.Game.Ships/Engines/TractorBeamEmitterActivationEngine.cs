@@ -10,13 +10,13 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Events;
 using VoidHuntersRevived.Common.Pieces.Components;
-using VoidHuntersRevived.Common.Pieces.Factories;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Game.Ships.Events;
 using VoidHuntersRevived.Common.Entities.Services;
 using Serilog;
 using VoidHuntersRevived.Common.Ships.Components;
 using VoidHuntersRevived.Game.Common;
+using VoidHuntersRevived.Common.Pieces.Services;
 
 namespace VoidHuntersRevived.Game.Ships.Engines
 {
@@ -27,16 +27,16 @@ namespace VoidHuntersRevived.Game.Ships.Engines
         IRevertEventEngine<TractorBeamEmitter_Activate>
     {
         private readonly IEntityService _entities;
-        private readonly ITreeFactory _treeFactory;
+        private readonly ITreeService _trees;
         private readonly ILogger _logger;
 
         public TractorBeamEmitterActivationEngine(
-            IEntityService entities, 
-            ITreeFactory treeFactory,
+            IEntityService entities,
+            ITreeService trees,
             ILogger logger)
         {
             _entities = entities;
-            _treeFactory = treeFactory;
+            _trees = trees;
             _logger = logger;
         }
 
@@ -84,7 +84,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
                 });
             }
 
-            EntityId cloneId = _treeFactory.Create(
+            EntityId cloneId = _trees.Spawn(
                 vhid: eventId.Create(1),
                 tree: EntityTypes.Chain,
                 nodes: data.TargetData,

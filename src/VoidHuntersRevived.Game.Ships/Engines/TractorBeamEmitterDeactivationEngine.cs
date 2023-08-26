@@ -10,7 +10,6 @@ using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Game.Ships.Events;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Pieces.Factories;
 using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Pieces.Components;
