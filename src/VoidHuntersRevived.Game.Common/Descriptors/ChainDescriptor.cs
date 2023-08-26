@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Game.Common.Descriptors
         {
             this.ExtendWith(new[]
             {
-                new ComponentManager<Tractorable, TractorableComponentSerializer>(new ComponentBuilder<Tractorable>())
+                new ComponentManager<Tractorable, TractorableComponentSerializer>()
             });
         }
     }

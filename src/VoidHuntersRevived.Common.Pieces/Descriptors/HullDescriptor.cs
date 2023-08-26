@@ -25,8 +25,7 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
         {
             this.ExtendWith(new ComponentManager[]
             {
-                new ComponentManager<Sockets, SocketsComponentSerializer>(
-                    builder: new ComponentBuilder<Sockets>())
+                new ComponentManager<Sockets, SocketsComponentSerializer>()
             });
         }
     }

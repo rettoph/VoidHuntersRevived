@@ -34,6 +34,14 @@ namespace VoidHuntersRevived.Common.Entities
         public ComponentManager(IComponentBuilder builder) : base(builder, new ComponentSerializerFactory<TComponent, TSerializer>())
         {
         }
+        public ComponentManager() : this(new ComponentBuilder<TComponent>())
+        {
+
+        }
+        public ComponentManager(in TComponent initializer) : this(new ComponentBuilder<TComponent>(in initializer))
+        {
+
+        }
     }
 
 }

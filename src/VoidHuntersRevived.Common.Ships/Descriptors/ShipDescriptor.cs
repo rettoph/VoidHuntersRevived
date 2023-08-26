@@ -18,9 +18,9 @@ namespace VoidHuntersRevived.Common.Ships.Descriptors
         {
             this.ExtendWith(new ComponentManager[]
             {
-                new ComponentManager<Helm, HelmComponentSerializer>(new ComponentBuilder<Helm>()),
-                new ComponentManager<Tactical, TacticalComponentSerializer>(new ComponentBuilder<Tactical>()),
-                new ComponentManager<TractorBeamEmitter, TractorBeamEmitterComponentSerializer>(new ComponentBuilder<TractorBeamEmitter>())
+                new ComponentManager<Helm, HelmComponentSerializer>(),
+                new ComponentManager<Tactical, TacticalComponentSerializer>(),
+                new ComponentManager<TractorBeamEmitter, TractorBeamEmitterComponentSerializer>()
             });
         }
     }

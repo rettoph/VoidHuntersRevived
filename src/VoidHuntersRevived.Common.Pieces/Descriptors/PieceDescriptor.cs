@@ -21,11 +21,11 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
         {
             this.ExtendWith(new ComponentManager[]
             {
-                new ComponentManager<Plug, PlugComponentSerializer>(new ComponentBuilder<Plug>(in Plug.Default)),
-                new ComponentManager<Coupling, CouplingComponentSerializer>(new ComponentBuilder<Coupling>()),
-                new ComponentManager<Node, NodeComponentSerializer>(new ComponentBuilder<Node>()),
-                new ComponentManager<Rigid, RigidComponentSerializer>(new ComponentBuilder<Rigid>()),
-                new ComponentManager<Visible, VisibleComponentSerializer>(new ComponentBuilder<Visible>()),
+                new ComponentManager<Plug, PlugComponentSerializer>(in Plug.Default),
+                new ComponentManager<Coupling, CouplingComponentSerializer>(),
+                new ComponentManager<Node, NodeComponentSerializer>(),
+                new ComponentManager<Rigid, RigidComponentSerializer>(),
+                new ComponentManager<Visible, VisibleComponentSerializer>(),
             });
         }
     }
