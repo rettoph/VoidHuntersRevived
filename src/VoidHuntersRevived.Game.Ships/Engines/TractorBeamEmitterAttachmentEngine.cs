@@ -23,13 +23,13 @@ namespace VoidHuntersRevived.Game.Ships.Engines
         IEventEngine<TractorBeamEmitter_TryAttach>
     {
         private readonly IEntityService _entities;
-        private readonly ISocketService _socketService;
+        private readonly ISocketService _sockets;
         private readonly ILogger _logger;
 
         public TractorBeamEmitterAttachmentEngine(IEntityService entities, ISocketService socketService, ILogger logger)
         {
             _entities = entities;
-            _socketService = socketService;
+            _sockets = socketService;
             _logger = logger;
         }
 
@@ -46,9 +46,10 @@ namespace VoidHuntersRevived.Game.Ships.Engines
 
             _entities.Flush();
 
-            _socketService.Attach(
-                socketVhId: data.SocketVhId,
-                treeVhId: data.TargetVhId);
+            if(_sockets.TryGetSocketNode(data.SocketVhId, out SocketNode socketNode) && _entities.TryGetId(data.TargetVhId, out EntityId targetId))
+            {
+                _sockets.Attach(socketNode, _entities.QueryById<Tree>(targetId));
+            }
         }
     }
 }

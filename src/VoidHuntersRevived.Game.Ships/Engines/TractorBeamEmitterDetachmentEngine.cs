@@ -49,32 +49,32 @@ namespace VoidHuntersRevived.Game.Ships.Engines
                 return;
             }
 
-            EntityId tractorBeamEmitterId = _entities.GetId(data.ShipVhId);
-            ref TractorBeamEmitter tractorBeamEmitter = ref _entities.QueryById<TractorBeamEmitter>(tractorBeamEmitterId, out GroupIndex groupIndex);
-            ref Tactical tactical = ref _entities.QueryByGroupIndex<Tactical>(groupIndex);
-
-            if (tractorBeamEmitter.Active)
-            {
-                this.Simulation.Publish(eventId, new TractorBeamEmitter_TryDeactivate()
-                {
-                    ShipVhId = data.ShipVhId,
-                    TargetVhId = tractorBeamEmitter.TargetId.VhId
-                });
-            }
-
-            tractorBeamEmitter.TargetId = cloneId;
-            tractorBeamEmitter.Active = true;
-            tactical.AddUse();
-
-            _logger.Verbose("{ClassName}::{MethodName}<{GenericTypeName}> - TractorBeam {TractorBeamId} has detached and selected {TargetId}", nameof(TractorBeamEmitterActivationEngine), nameof(Process), nameof(TractorBeamEmitter_TryDetach), tractorBeamEmitterId.VhId.Value, tractorBeamEmitter.TargetId.VhId.Value);
+            // EntityId tractorBeamEmitterId = _entities.GetId(data.ShipVhId);
+            // ref TractorBeamEmitter tractorBeamEmitter = ref _entities.QueryById<TractorBeamEmitter>(tractorBeamEmitterId, out GroupIndex groupIndex);
+            // ref Tactical tactical = ref _entities.QueryByGroupIndex<Tactical>(groupIndex);
+            // 
+            // if (tractorBeamEmitter.Active)
+            // {
+            //     this.Simulation.Publish(eventId, new TractorBeamEmitter_TryDeactivate()
+            //     {
+            //         ShipVhId = data.ShipVhId,
+            //         TargetVhId = tractorBeamEmitter.TargetId.VhId
+            //     });
+            // }
+            // 
+            // tractorBeamEmitter.TargetId = cloneId;
+            // tractorBeamEmitter.Active = true;
+            // tactical.AddUse();
+            // 
+            // _logger.Verbose("{ClassName}::{MethodName}<{GenericTypeName}> - TractorBeam {TractorBeamId} has detached and selected {TargetId}", nameof(TractorBeamEmitterActivationEngine), nameof(Process), nameof(TractorBeamEmitter_TryDetach), tractorBeamEmitterId.VhId.Value, tractorBeamEmitter.TargetId.VhId.Value);
         }
 
         private void InitDetachedTree(IEntityService entities, ref EntityInitializer initializer, in EntityId id)
         {
-            initializer.Init<Tractorable>(new Tractorable()
-            {
-                IsTractored = true
-            });
+            // initializer.Init<Tractorable>(new Tractorable()
+            // {
+            //     IsTractored = true
+            // });
         }
     }
 }

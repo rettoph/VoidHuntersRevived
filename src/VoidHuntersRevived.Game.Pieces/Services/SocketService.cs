@@ -3,6 +3,7 @@ using Svelto.ECS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
@@ -57,59 +58,50 @@ namespace VoidHuntersRevived.Game.Pieces.Services
             return false;
         }
 
-        public void Attach(SocketVhId socketVhId, VhId treeVhId)
+        public ref EntityFilterCollection GetCouplingFilter(SocketId socketId)
+        {
+            return ref _entities.GetFilter<Coupling>(socketId.NodeId, socketId.FilterContextId);
+        }
+
+        public void Attach(SocketNode socketNode, Tree tree)
         {
             this.Simulation.Publish(
                 sender: NameSpace<SocketService>.Instance,
                 data: new Socket_Attach()
                 {
-                    SocketVhId = socketVhId,
-                    TreeVhId = treeVhId
+                    SocketVhId = socketNode.Socket.Id.VhId,
+                    NodeData = _entities.Serialize(tree.HeadId)
                 });
         }
 
         public bool TryDetach(EntityId couplingId, EntityInitializerDelegate initializer, out EntityId cloneId)
         {
-            VhId clonoeVhId = NameSpace<Socket_Detached>.Instance.Create(couplingId.VhId);
+            VhId cloneVhId = NameSpace<Socket_Detached>.Instance.Create(couplingId.VhId);
 
             this.Simulation.Publish(
                 sender: NameSpace<SocketService>.Instance,
                 data: new Socket_Detached()
                 {
                     CouplingVhId = couplingId.VhId,
-                    CloneVhId = clonoeVhId,
+                    CloneVhId = cloneVhId,
                     Initializer = initializer
                 });
 
-            return _entities.TryGetId(clonoeVhId, out cloneId);
+            return _entities.TryGetId(cloneVhId, out cloneId);
         }
 
         public void Process(VhId eventId, Socket_Attach data)
         {
             if(!this.TryGetSocketNode(data.SocketVhId, out SocketNode socketNode))
             {
-                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Unable to load SocketNode within node {NodeId}", nameof(SocketService), nameof(Process), nameof(Socket_Attach), data.SocketVhId.NodeVhId.Value);
+                _logger.Error("{ClassName}::{MethodName}<{GenericTypeName}> - Unable to load SocketNode within node {NodeId}", nameof(SocketService), nameof(Process), nameof(Socket_Attach), data.SocketVhId.NodeVhId.Value);
                 return;
             }
-
-            if(socketNode.Socket.PlugId.VhId != default)
-            {
-                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Socket {SocketNodeId}:{SocketIndex} already has existing attachment with {NodeId}", nameof(SocketService), nameof(Process), nameof(Socket_Attach), socketNode.Socket.Id.NodeId.VhId.Value, socketNode.Socket.Id.Index, socketNode.Socket.PlugId.VhId.Value);
-                return;
-            }
-
-            if (!_entities.TryGetId(data.TreeVhId, out EntityId treeId))
-            {
-                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - TreeVhId {TreeVhId} not found.", nameof(SocketService), nameof(Process), nameof(Socket_Attach), data.TreeVhId.Value);
-                return;
-            }
-
-            ref Tree tree = ref _entities.QueryById<Tree>(treeId);
 
             SocketVhId socketVhId = socketNode.Socket.Id.VhId;
             EntityId nodeId = _entities.Deserialize(
                 seed: socketNode.Node.TreeId.VhId,
-                data: _entities.Serialize(tree.HeadId),
+                data: data.NodeData,
                 initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                 {
                     initializer.Init<Coupling>(new Coupling(
@@ -118,11 +110,7 @@ namespace VoidHuntersRevived.Game.Pieces.Services
                             index: socketVhId.Index))
                         );
                 },
-            confirmed: false);
-
-            _entities.Despawn(treeId);
-
-            socketNode.Socket.PlugId = nodeId;
+                confirmed: false);
         }
 
         public void Revert(VhId eventId, Socket_Attach data)
@@ -154,8 +142,7 @@ namespace VoidHuntersRevived.Game.Pieces.Services
                 nodes: _entities.Serialize(couplingId),
                 initializer: data.Initializer);
 
-            _entities.Despawn(socketNode.Socket.PlugId);
-            socketNode.Socket.PlugId = default;
+            _entities.Despawn(couplingId);
         }
     }
 }

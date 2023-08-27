@@ -29,6 +29,7 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Pieces.Services;
 using static VoidHuntersRevived.Common.Resources;
 using VoidHuntersRevived.Game.Ships.Services;
+using System.Net.Sockets;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -41,6 +42,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly ILogger _logger;
         private readonly IEntityService _entities;
         private readonly IResourceProvider _resources;
+        private readonly ISocketService _sockets;
         private readonly Camera2D _camera;
         private readonly ClientPeer _client;
         private readonly TractorBeamEmitterService _tractorBeamEmitterService;
@@ -54,6 +56,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             IEntityService entities,
             IVisibleRenderingService visibleRenderingService,
             IResourceProvider resources,
+            ISocketService sockets,
             Camera2D camera, 
             ClientPeer client,
             TractorBeamEmitterService tractorBeamEmitterService)
@@ -62,6 +65,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _entities = entities;
             _visibleRenderingService = visibleRenderingService;
             _resources = resources;
+            _sockets = sockets;
             _logger = logger;
             _client = client;
             _tractorBeamEmitterService = tractorBeamEmitterService;
@@ -113,9 +117,15 @@ namespace VoidHuntersRevived.Game.Client.Engines
             {
                 for (int i = 0; i < sockets.Items.count; i++)
                 {
-                    if (sockets.Items[i].PlugId.VhId != default)
+                    var filter = _sockets.GetCouplingFilter(sockets.Items[i].Id);
+                    foreach (var (indices, groupId) in filter)
                     {
-                        this.FillVisibleRecursive(sockets.Items[i].PlugId);
+                        var (entityIds, _) = _entities.QueryEntities<EntityId>(groupId);
+
+                        for (int j = 0; j < indices.count; j++)
+                        {
+                            this.FillVisibleRecursive(entityIds[indices[j]]);
+                        }
                     }
                 }
             }

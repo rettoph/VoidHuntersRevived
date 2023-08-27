@@ -22,13 +22,15 @@ namespace VoidHuntersRevived.Game.Ships.Services
         private readonly IEntityService _entities;
         private readonly INodeService _nodes;
         private readonly ITreeService _trees;
+        private readonly ISocketService _sockets;
 
-        public TractorBeamEmitterService(ISpace space, IEntityService entities, INodeService nodes, ITreeService trees)
+        public TractorBeamEmitterService(ISpace space, IEntityService entities, INodeService nodes, ITreeService trees, ISocketService sockets)
         {
             _space = space;
             _entities = entities;
             _nodes = nodes;
             _trees = trees;
+            _sockets = sockets;
         }
 
         public void Ready()
@@ -142,8 +144,10 @@ namespace VoidHuntersRevived.Game.Ships.Services
             {
                 ref Socket socket = ref sockets.Items[j];
 
-                if(socket.PlugId.VhId != default)
-                { // Socket is not open
+                var filter = _sockets.GetCouplingFilter(socket.Id);
+                filter.ComputeFinalCount(out int count);
+                if(count > 0)
+                {
                     continue;
                 }
 

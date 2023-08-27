@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Svelto.ECS;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Physics.Components;
+using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Common.Pieces
 {
@@ -12,7 +14,6 @@ namespace VoidHuntersRevived.Common.Pieces
     {
         public readonly SocketId Id;
         public readonly Location Location;
-        public EntityId PlugId { get; set; }
 
         public Socket(EntityId nodeId, byte index, Location location)
         {

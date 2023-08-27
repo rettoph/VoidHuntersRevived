@@ -37,6 +37,10 @@ namespace VoidHuntersRevived.Common.Pieces.Serialization.Components
                             index: index)
                         );
                 }
+                else
+                {
+
+                }
             }
 
             return default;

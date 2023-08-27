@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Svelto.ECS;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
@@ -9,10 +11,26 @@ namespace VoidHuntersRevived.Common.Pieces
 {
     public struct SocketId : IEquatable<SocketId>
     {
+        private static Dictionary<byte, FilterContextID> _filterContexts = new Dictionary<byte, FilterContextID>();
+
         public static readonly SocketId Empty = default!;
 
         public readonly EntityId NodeId;
         public readonly byte Index;
+
+        public readonly FilterContextID FilterContextId
+        {
+            get
+            {
+                ref FilterContextID filterContextId = ref CollectionsMarshal.GetValueRefOrAddDefault(_filterContexts, Index, out bool exists);
+                if (!exists)
+                {
+                    filterContextId = FilterContextID.GetNewContextID();
+                }
+
+                return filterContextId;
+            }
+        }
 
         public SocketVhId VhId => new SocketVhId(NodeId.VhId, Index);
 
@@ -20,6 +38,8 @@ namespace VoidHuntersRevived.Common.Pieces
         {
             NodeId = nodeId;
             Index = index;
+
+
         }
 
         public override bool Equals(object? obj)

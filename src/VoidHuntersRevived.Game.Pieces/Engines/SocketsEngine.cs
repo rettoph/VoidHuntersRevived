@@ -20,11 +20,13 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
     internal sealed class SocketsEngine : BasicEngine, IReactOnRemoveEx<Sockets>
     {
         private readonly IEntityService _entities;
+        private readonly ISocketService _sockets;
         private readonly ILogger _logger;
 
-        public SocketsEngine(IEntityService entities, ILogger logger)
+        public SocketsEngine(IEntityService entities, ISocketService sockets, ILogger logger)
         {
             _entities = entities;
+            _sockets = sockets;
             _logger = logger;
         }
 
@@ -37,14 +39,16 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                 Sockets sockets = socketses[index];
                 for (int i=0; i < sockets.Items.count; i++)
                 {
-                    EntityId plugId = sockets.Items[i].PlugId;
-
-                    if(plugId == EntityId.Empty)
+                    var filter = _sockets.GetCouplingFilter(sockets.Items[i].Id);
+                    foreach (var (indices, groupId) in filter)
                     {
-                        continue;
-                    }
+                        var (entityIds, _) = _entities.QueryEntities<EntityId>(groupId);
 
-                    _entities.Despawn(plugId);
+                        for (int j = 0; j < indices.count; j++)
+                        {
+                            _entities.Despawn(entityIds[indices[j]]);
+                        }
+                    }
                 }
             }
         }
