@@ -13,6 +13,8 @@ namespace VoidHuntersRevived.Game.Ships.Events
 {
     public class Input_TractorBeamEmitter_Select : IInputData
     {
+        public bool IsPredictable => true;
+
         public required VhId ShipVhId { get; init; }
         public required VhId TargetVhId { get; init; }
 

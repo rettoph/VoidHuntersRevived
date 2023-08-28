@@ -9,6 +9,8 @@ namespace VoidHuntersRevived.Common.Simulations.Events
 {
     public class Simulation_Begin : IInputData
     {
+        public bool IsPredictable => false;
+
         public VhId ShipVhId => throw new NotImplementedException();
 
         public VhId CalculateHash(in VhId source)

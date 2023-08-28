@@ -14,6 +14,8 @@ namespace VoidHuntersRevived.Game.Pieces.Events
 {
     internal class Socket_Attach : IEventData
     {
+        public bool IsPredictable => true;
+
         public required SocketVhId SocketVhId { get; init; }
         public required EntityData NodeData { get; init; }
 

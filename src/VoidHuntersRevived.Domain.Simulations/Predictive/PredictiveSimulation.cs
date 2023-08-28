@@ -94,8 +94,39 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
                 _predictedEvents.TryDequeue(out _);
             }
 
+            this.Confirm();
+        }
+
+        public override void Input(VhId sender, IInputData data)
+        {
+            this.Publish(sender, data);
+        }
+
+        protected override void Publish(EventDto @event)
+        {
+            if(!@event.Data.IsPredictable)
+            {
+                this.logger.Verbose("{ClassName}::{MethodName} - Unable to predict {EventName}, {EventId}; IsPredictable = {IsPredictable}.", nameof(PredictiveSimulation), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value, @event.Data.IsPredictable);
+                return;
+            }
+
+            if (!_predictedEvents.TryEnqueue(@event.Id, new PredictedEvent(@event)))
+            {
+                this.logger.Warning("{ClassName}::{MethodName} - Unable to predict {EventName}, {EventId}; duplicate event?", nameof(PredictiveSimulation), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value);
+                return;
+            }
+
+            this.logger.Verbose("{ClassName}::{MethodName} - Predicting event {EventName}, {EventId}", nameof(PredictiveSimulation), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value);
+
+            base.Publish(@event);
+        }
+
+        private void Confirm()
+        {
             while (_confirmedEvents.TryDequeue(out EventDto? confirmedEvent))
             {
+                this.logger.Verbose("{ClassName}::{MethodName} - Confirming Event {EventName}, {EventId}", nameof(PredictiveSimulation), nameof(Confirm), confirmedEvent.Data.GetType().Name, confirmedEvent.Id.Value);
+
                 if (_predictedEvents.TryGet(confirmedEvent.Id, out PredictedEvent? published))
                 {
                     published.Status = PredictedEventStatus.Confirmed;
@@ -104,25 +135,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
                 base.Publish(confirmedEvent);
             }
-        }
-
-        public override void Input(VhId sender, IInputData data)
-        {
-            if(data.GetType().HasCustomAttribute<PredictableAttribute>())
-            {
-                this.Publish(sender, data);
-            }
-        }
-
-        protected override void Publish(EventDto @event)
-        {
-            if (!_predictedEvents.TryEnqueue(@event.Id, new PredictedEvent(@event)))
-            {
-                this.logger.Warning("{ClassName}::{MethodName} - Unable to publish {EventName}, {EventId}; duplicate event.", nameof(PredictiveSimulation), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value);
-                return;
-            }
-
-            base.Publish(@event);
         }
 
         private void HandleLockstepEvent(EventDto @event)

@@ -11,9 +11,10 @@ using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Game.Ships.Events
 {
-    [Predictable]
     public class Tactical_SetTarget : IInputData
     {
+        public bool IsPredictable => true;
+
         public required VhId ShipVhId { get; init; }
         public required FixVector2 Value { get; init; }
 

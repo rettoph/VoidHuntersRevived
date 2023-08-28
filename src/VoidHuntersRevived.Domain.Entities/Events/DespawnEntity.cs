@@ -13,6 +13,8 @@ namespace VoidHuntersRevived.Domain.Entities.Events
 {
     public sealed class DespawnEntity : IEventData
     {
+        public bool IsPredictable => false;
+
         public required VhId VhId { get; init; }
 
         public VhId CalculateHash(in VhId source)

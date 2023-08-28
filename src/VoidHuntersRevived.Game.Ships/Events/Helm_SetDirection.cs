@@ -7,9 +7,10 @@ using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Game.Ships.Events
 {
-    [Predictable]
     public class Helm_SetDirection : IInputData
     {
+        public bool IsPredictable => true;
+
         public required VhId ShipVhId { get; init; }
         public required Direction Which { get; init; }
         public required bool Value { get; init; }

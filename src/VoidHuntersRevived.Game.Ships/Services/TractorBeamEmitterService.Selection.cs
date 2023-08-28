@@ -41,7 +41,9 @@ namespace VoidHuntersRevived.Game.Ships.Services
 
         public void Deselect(EntityId tractorBeamEmitterId)
         {
+            _entities.Flush();
             ref var filter = ref this.GetTractorableFilter(tractorBeamEmitterId);
+
             foreach (var (indices, groupId) in filter)
             {
                 var (entityIds, trees, locations, _) = _entities.QueryEntities<EntityId, Tree, Location>(groupId);

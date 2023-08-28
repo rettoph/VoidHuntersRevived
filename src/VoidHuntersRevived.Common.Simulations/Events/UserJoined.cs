@@ -11,6 +11,8 @@ namespace VoidHuntersRevived.Common.Simulations.Events
 {
     public sealed class UserJoined : IInputData
     {
+        public bool IsPredictable => false;
+
         public VhId ShipVhId => throw new NotImplementedException();
 
         public required int UserId { get; init; }

@@ -14,6 +14,8 @@ namespace VoidHuntersRevived.Game.Ships.Events
 {
     internal sealed class TractorBeamEmitter_Select : IEventData
     {
+        public bool IsPredictable => true;
+
         public required VhId TractorBeamEmitterVhId { get; init; }
         public required EntityData TargetData { get; init; }
 

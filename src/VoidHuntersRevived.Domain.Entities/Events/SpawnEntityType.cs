@@ -7,6 +7,8 @@ namespace VoidHuntersRevived.Domain.Entities.Events
 {
     public sealed class SpawnEntityType : IEventData
     {
+        public bool IsPredictable => true;
+
         public required VhId VhId { get; init; }
         public required IEntityType Type { get; init; }
         public required EntityInitializerDelegate? Initializer { get; init; }

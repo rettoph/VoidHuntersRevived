@@ -37,6 +37,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             });
         }
 
+        private bool _flushing;
         public void Flush()
         {
             _scheduler.SubmitEntities();
@@ -61,7 +62,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Revert(VhId eventId, SpawnEntityDescriptor data)
         {
-            throw new NotImplementedException();
+            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to revert spawn EntityDescriptor {Id}, {Descriptor}", nameof(EntityService), nameof(Revert), nameof(SpawnEntityDescriptor), data.VhId.Value, data.Descriptor.Name);
+
+            this.DespawnEntity(data.VhId);
         }
 
         public void Process(VhId eventId, SpawnEntityType data)
@@ -73,7 +76,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Revert(VhId eventId, SpawnEntityType data)
         {
-            throw new NotImplementedException();
+            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to revert spawn EntityType {Id}, {Type}", nameof(EntityService), nameof(Revert), nameof(SpawnEntityType), data.VhId.Value, data.Type.Name);
+
+            this.DespawnEntity(data.VhId);
         }
 
         public void Process(VhId eventId, DespawnEntity data)
