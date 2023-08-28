@@ -32,6 +32,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Location> entities, ExclusiveGroupStruct groupID)
         {
+            var (locations, _) = entities;
             var (ids, collisions, _) = _entities.QueryEntities<EntityId, Collision>(groupID);
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
@@ -39,6 +40,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                 IBody body = _space.GetOrCreateBody(ids[index].VhId);
                 body.CollisionCategories = collisions[index].Categories;
                 body.CollidesWith = collisions[index].CollidesWith;
+                body.SetTransform(locations[index].Position, locations[index].Rotation);
             }
         }
 
@@ -58,12 +60,11 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             {
                 for (int i = 0; i < count; i++)
                 {
-                    IBody bodyInstance = _space.GetBody(ids[i].VhId);
-                    ref Location bodyComponent = ref bodies[i];
+                    IBody body = _space.GetBody(ids[i].VhId);
+                    ref Location location = ref bodies[i];
 
-                    bodyComponent.Position = bodyInstance.Position;
-                    bodyComponent.Rotation = bodyInstance.Rotation;
-                    // bodyComponent.Transformation = FixMatrix.CreateRotationZ(bodyComponent.Rotation) * FixMatrix.CreateTranslation(bodyComponent.Position.X, bodyComponent.Position.Y, Fix64.Zero);
+                    location.Position = body.Position;
+                    location.Rotation = body.Rotation;
                 }
             }
         }

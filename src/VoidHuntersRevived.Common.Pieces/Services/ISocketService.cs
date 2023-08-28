@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Common.Pieces.Services
         SocketNode GetSocketNode(SocketId socketId);
         bool TryGetSocketNode(SocketVhId socketVhId, out SocketNode socketNode);
 
-        void Attach(SocketNode socketNode, Tree tree);
+        void Attach(SocketId socketId, EntityId nodeId);
         bool TryDetach(EntityId couplingId, EntityInitializerDelegate initializer, out EntityId cloneId);
 
         ref EntityFilterCollection GetCouplingFilter(SocketId socketId);

@@ -28,6 +28,7 @@ using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Game.Ships.Services;
 using VoidHuntersRevived.Game.Ships.Events;
 using VoidHuntersRevived.Common.Ships.Components;
+using VoidHuntersRevived.Common.Ships.Services;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -41,7 +42,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly IEntityService _entities;
         private readonly ClientPeer _client;
         private readonly Camera2D _camera;
-        private readonly TractorBeamEmitterService _tractorBeamEmitterService;
+        private readonly ITractorBeamEmitterService _tractorBeamEmitters;
 
         private Vector2 CurrentTargetPosition => _camera.Unproject(Mouse.GetState().Position.ToVector2());
 
@@ -50,13 +51,13 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public InputEngine(
             IEntityService entities, 
             ClientPeer client, 
-            Camera2D camera, 
-            TractorBeamEmitterService tractorBeamEmitterService)
+            Camera2D camera,
+            ITractorBeamEmitterService tractorBeamEmitters)
         {
             _entities = entities;
             _client = client;
             _camera = camera;
-            _tractorBeamEmitterService = tractorBeamEmitterService;
+            _tractorBeamEmitters = tractorBeamEmitters;
         }
 
         public void Process(in Guid messageId, in Input_Helm_SetDirection message)
@@ -88,7 +89,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             if (message.Value)
             {
-                if (!_tractorBeamEmitterService.Query(shipId, (FixVector2)this.CurrentTargetPosition, out Node targetNode))
+                if (!_tractorBeamEmitters.Query(shipId, (FixVector2)this.CurrentTargetPosition, out Node targetNode))
                 {
                     return;
                 }
@@ -101,57 +102,22 @@ namespace VoidHuntersRevived.Game.Client.Engines
                         Value = (FixVector2)this.CurrentTargetPosition
                     });
 
-                if(targetNode.TreeId == shipId)
-                {
-                    this.Simulation.Input(
-                        sender: eventId,
-                        data: new TractorBeamEmitter_TryDetach()
-                        {
-                            ShipVhId = shipId.VhId,
-                            TargetVhId = targetNode.Id.VhId
-                        });
-                }
-                else
-                {
-                    this.Simulation.Input(
-                        sender: eventId,
-                        data: new TractorBeamEmitter_TryActivate()
-                        {
-                            ShipVhId = shipId.VhId,
-                            TargetVhId = targetNode.Id.VhId
-                        });
-                }
+                this.Simulation.Input(
+                    sender: eventId,
+                    data: new Input_TractorBeamEmitter_Select()
+                    {
+                        ShipVhId = shipId.VhId,
+                        TargetVhId = targetNode.Id.VhId
+                    });
             }
             else
             {
-                TractorBeamEmitter tractorBeamEmitter = _entities.QueryById<TractorBeamEmitter>(shipId);
-
-                if(tractorBeamEmitter.TargetId.VhId == default)
-                {
-                    return;
-                }
-
-                if (_tractorBeamEmitterService.TryGetClosestOpenSocket(shipId, (FixVector2)this.CurrentTargetPosition, out SocketNode socketNode))
-                {
-                    this.Simulation.Input(
-                        sender: eventId,
-                        data: new TractorBeamEmitter_TryAttach()
-                        {
-                            ShipVhId = shipId.VhId,
-                            TargetVhId = tractorBeamEmitter.TargetId.VhId,
-                            SocketVhId = socketNode.Socket.Id.VhId
-                        });
-                }
-                else
-                {
-                    this.Simulation.Input(
-                        sender: eventId,
-                        data: new TractorBeamEmitter_TryDeactivate()
-                        {
-                            ShipVhId = shipId.VhId,
-                            TargetVhId = tractorBeamEmitter.TargetId.VhId
-                        });
-                }
+                this.Simulation.Input(
+                    sender: eventId,
+                    data: new Input_TractorBeamEmitter_Deselect()
+                    {
+                        ShipVhId = shipId.VhId
+                    });
             }
         }
 

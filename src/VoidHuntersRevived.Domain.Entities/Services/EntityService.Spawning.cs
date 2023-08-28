@@ -19,9 +19,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         IEventEngine<DespawnEntity>,
         IRevertEventEngine<DespawnEntity>
     {
-        private readonly HashCache<VhId> _destroyed = new HashCache<VhId>(TimeSpan.FromSeconds(5));
-        private readonly Dictionary<VhId, EntityData> _backups = new Dictionary<VhId, EntityData>();
-
         public EntityId Spawn(IEntityType type, VhId vhid, EntityInitializerDelegate? initializer)
         {
             _events.Publish(NameSpace<EntityService>.Instance, new SpawnEntityType()
@@ -61,86 +58,36 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to spawn EntityDescriptor {Id}, {Descriptor}", nameof(EntityService), nameof(Process), nameof(SpawnEntityDescriptor), data.VhId.Value, data.Descriptor.Name);
 
-            if (_destroyed.Remove(data.VhId) != -1)
-            {
-                _logger.Warning("{ClassName}::{MethodName}<{EventName}> - Unable to spawn EntityDescriptor {Id}, Destroyed Count: {Count}", nameof(EntityService), nameof(Process), nameof(SpawnEntityDescriptor), data.VhId.Value, _destroyed.Count(data.VhId));
-
-                return;
-            }
-
             this.SpawnDescriptor(data.Descriptor, data.VhId, data.Initializer);
         }
 
         public void Revert(VhId eventId, SpawnEntityDescriptor data)
         {
-            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to Revert EntityDescriptor spawn {Id}, {Descriptor}", nameof(EntityService), nameof(Revert), nameof(SpawnEntityDescriptor), data.VhId.Value, data.Descriptor.Name);
-
-            if (_destroyed.Add(data.VhId) != 0)
-            {
-                _logger.Warning("{ClassName}::{MethodName}<{EventName}> - Unable to Revert EntityDescriptor spawn {Id}, Destroyed Count: {Count}", nameof(EntityService), nameof(Revert), nameof(SpawnEntityDescriptor), data.VhId.Value, _destroyed.Count(data.VhId));
-
-                return;
-            }
-            this.DespawnEntity(data.VhId);
+            throw new NotImplementedException();
         }
 
         public void Process(VhId eventId, SpawnEntityType data)
         {
             _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to spawn EntityType {Id}, {Type}", nameof(EntityService), nameof(Process), nameof(SpawnEntityType), data.VhId.Value, data.Type.Name);
 
-            if (_destroyed.Remove(data.VhId) != -1)
-            {
-                _logger.Warning("{ClassName}::{MethodName}<{EventName}> - Unable to spawn EntityType {Id}, Destroyed Count: {Count}", nameof(EntityService), nameof(Process), nameof(SpawnEntityType), data.VhId.Value, _destroyed.Count(data.VhId));
-                return;
-            }
-
             this.SpawnType(data.Type, data.VhId, data.Initializer);
         }
 
         public void Revert(VhId eventId, SpawnEntityType data)
         {
-            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to Revert EntityType spawn {Id}, {Type}", nameof(EntityService), nameof(Revert), nameof(SpawnEntityType), data.VhId.Value, data.Type.Name);
-
-            if (_destroyed.Add(data.VhId) != 0)
-            {
-                _logger.Warning("{ClassName}::{MethodName}<{EventName}> - Unable to Revert EntityType spawn {Id}, Destroyed Count: {Count}", nameof(EntityService), nameof(Revert), nameof(SpawnEntityType), data.VhId.Value, _destroyed.Count(data.VhId));
-                return;
-            }
-            this.DespawnEntity(data.VhId);
+            throw new NotImplementedException();
         }
 
         public void Process(VhId eventId, DespawnEntity data)
         {
             _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to despawn Entity {Id}", nameof(Services.EntityService), nameof(Process), nameof(Common.Entities.Events.DespawnEntity), data.VhId.Value);
 
-            if (_destroyed.Add(data.VhId) != 0)
-            {
-                _logger.Warning("{ClassName}::{MethodName}<{EventName}> - Unableto despawn Entity {Id}, Destroyed Count: {Count}", nameof(Services.EntityService), nameof(Process), nameof(Common.Entities.Events.DespawnEntity), data.VhId.Value, _destroyed.Count(data.VhId));
-
-                return;
-            }
-
-            EntityData backup = this.Serialize(this.GetId(data.VhId));
-            _backups[data.VhId] = backup;
             this.DespawnEntity(data.VhId);
         }
 
         public void Revert(VhId eventId, DespawnEntity data)
         {
-            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to Revert Entity despawn {Id}", nameof(Services.EntityService), nameof(Revert), nameof(Common.Entities.Events.DespawnEntity), data.VhId.Value);
-
-            if (_destroyed.Count(data.VhId) != 0)
-            {
-                _logger.Warning("{ClassName}::{MethodName}<{EventName}> - Unable to Revert Entity despawn {Id}, Destroyed Count: {Count}", nameof(Services.EntityService), nameof(Revert), nameof(Common.Entities.Events.DespawnEntity), data.VhId.Value, _destroyed.Count(data.VhId));
-                return;
-            }
-
-            if (!_backups.Remove(data.VhId, out EntityData? backup))
-            {
-                throw new Exception();
-            }
-
-            this.Deserialize(VhId.Empty, backup, null, true);
+            throw new NotImplementedException();
         }
 
         private EntityId SpawnDescriptor(VoidHuntersEntityDescriptor descriptor, VhId vhid, EntityInitializerDelegate? initializerDelegate)

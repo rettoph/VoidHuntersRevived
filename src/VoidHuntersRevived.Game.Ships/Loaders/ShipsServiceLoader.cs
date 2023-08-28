@@ -16,7 +16,9 @@ namespace VoidHuntersRevived.Game.Ships.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            services.RegisterType<TractorBeamEmitterService>().AsSelf().As<IEngine>().InstancePerLifetimeScope();
+            services.RegisterType<TractorBeamEmitterService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+            services.RegisterType<TacticalService>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }

@@ -11,6 +11,7 @@ using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Constants;
+using VoidHuntersRevived.Common.Ships.Components;
 
 namespace VoidHuntersRevived.Game.Common.Loaders
 {
@@ -23,6 +24,8 @@ namespace VoidHuntersRevived.Game.Common.Loaders
             {
                 configuration.HasInitializer((IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                 {
+                    initializer.Init<TractorBeamEmitter>(new TractorBeamEmitter(id));
+
                     initializer.Init<Collision>(new Collision()
                     {
                         Categories = CollisionGroups.ShipCategories,

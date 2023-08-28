@@ -49,6 +49,20 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
         protected abstract TComponent Read(EntityReader reader, EntityId id);
     }
 
+    public abstract class NotImplementedComponentSerializer<TComponent> : ComponentSerializer<TComponent>
+        where TComponent : unmanaged, IEntityComponent
+    {
+        protected override TComponent Read(EntityReader reader, EntityId id)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void Write(EntityWriter writer, TComponent instance)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public abstract class RawComponentSerializer<TComponent> : ComponentSerializer<TComponent>
         where TComponent : unmanaged, IEntityComponent
     {

@@ -39,12 +39,8 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
                 if(coupling.SocketId == default)
                 {
-                    _logger.Verbose("{ClassName}::{MethodName} - No coupling detected", nameof(CouplingEngine), nameof(Add));
-
                     continue;
                 }
-
-                _logger.Verbose("{ClassName}::{MethodName} - Adding coupling to {NodeId}:{Index}", nameof(CouplingEngine), nameof(Add), coupling.SocketId.NodeId.VhId.Value, coupling.SocketId.Index);
 
                 ref var filter = ref _sockets.GetCouplingFilter(coupling.SocketId);
                 filter.Add(ids[index], groupID, index);

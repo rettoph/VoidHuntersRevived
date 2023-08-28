@@ -30,6 +30,7 @@ using VoidHuntersRevived.Common.Pieces.Services;
 using static VoidHuntersRevived.Common.Resources;
 using VoidHuntersRevived.Game.Ships.Services;
 using System.Net.Sockets;
+using VoidHuntersRevived.Common.Ships.Services;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -45,7 +46,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly ISocketService _sockets;
         private readonly Camera2D _camera;
         private readonly ClientPeer _client;
-        private readonly TractorBeamEmitterService _tractorBeamEmitterService;
+        private readonly ITractorBeamEmitterService _tractorBeamEmitters;
 
         public string name { get; } = nameof(TractorBeamHighlightEngine);
 
@@ -59,7 +60,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             ISocketService sockets,
             Camera2D camera, 
             ClientPeer client,
-            TractorBeamEmitterService tractorBeamEmitterService)
+            ITractorBeamEmitterService tractorBeamEmitters)
         {
             _camera = camera;
             _entities = entities;
@@ -68,7 +69,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _sockets = sockets;
             _logger = logger;
             _client = client;
-            _tractorBeamEmitterService = tractorBeamEmitterService;
+            _tractorBeamEmitters = tractorBeamEmitters;
         }
 
         public override void Ready()
@@ -88,7 +89,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            if (!_tractorBeamEmitterService.Query(shipId, (FixVector2)this.CurrentTargetPosition, out Node targetNode))
+            if (!_tractorBeamEmitters.Query(shipId, (FixVector2)this.CurrentTargetPosition, out Node targetNode))
             {
                 return;
             }

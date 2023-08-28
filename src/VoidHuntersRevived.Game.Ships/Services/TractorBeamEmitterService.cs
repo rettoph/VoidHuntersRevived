@@ -1,4 +1,5 @@
-﻿using Svelto.ECS;
+﻿using Serilog;
+using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
@@ -9,11 +10,12 @@ using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Ships.Components;
+using VoidHuntersRevived.Common.Ships.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
 
 namespace VoidHuntersRevived.Game.Ships.Services
 {
-    public sealed class TractorBeamEmitterService : IEngine
+    public sealed partial class TractorBeamEmitterService : BasicEngine, ITractorBeamEmitterService
     {
         private static Fix64 QueryRadius = (Fix64)3;
         private static readonly Fix64 OpenNodemaximumDistance = Fix64.One;
@@ -23,19 +25,21 @@ namespace VoidHuntersRevived.Game.Ships.Services
         private readonly INodeService _nodes;
         private readonly ITreeService _trees;
         private readonly ISocketService _sockets;
+        private readonly ILogger _logger;
 
-        public TractorBeamEmitterService(ISpace space, IEntityService entities, INodeService nodes, ITreeService trees, ISocketService sockets)
+        public TractorBeamEmitterService(ISpace space, IEntityService entities, INodeService nodes, ITreeService trees, ISocketService sockets, ILogger logger)
         {
             _space = space;
             _entities = entities;
             _nodes = nodes;
             _trees = trees;
             _sockets = sockets;
+            _logger = logger;
         }
 
-        public void Ready()
+        public ref EntityFilterCollection GetTractorableFilter(EntityId tractorBeamEmitterId)
         {
-            // throw new NotImplementedException();
+            return ref _entities.GetFilter<Tractorable>(tractorBeamEmitterId, TractorBeamEmitter.TractorableFilterContext);
         }
 
         public bool Query(EntityId tractorBeamEmitterId, FixVector2 target, out Node targetNode)
@@ -65,7 +69,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
                     return true;
                 }
 
-                if(_entities.TryQueryById(queryNode.TreeId, out Tractorable tractorable) && tractorable.IsTractored == false)
+                if(_entities.TryQueryById(queryNode.TreeId, out Tractorable tractorable) && tractorable.TractorBeamEmitter == default)
                 { // Target resides within a tractorable tree, so we want to grab the head
                     callbackTargetNode = _trees.GetHead(queryNode.TreeId);
                 }

@@ -10,7 +10,7 @@ using VoidHuntersRevived.Common.Ships.Components;
 namespace VoidHuntersRevived.Common.Ships.Serialization.Components
 {
     [AutoLoad]
-    public sealed class TractorBeamEmitterComponentSerializer : RawComponentSerializer<TractorBeamEmitter>
+    public sealed class TractorBeamEmitterComponentSerializer : NotImplementedComponentSerializer<TractorBeamEmitter>
     {
     }
 }

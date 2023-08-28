@@ -11,18 +11,18 @@ using VoidHuntersRevived.Game.Ships.Events;
 namespace VoidHuntersRevived.Game.Ships.Serialization.NetSerializers
 {
     [AutoLoad]
-    internal class TractorBeamEmitter_TryActivate_NetSerializer : NetSerializer<TractorBeamEmitter_TryActivate>
+    internal class Input_TractorBeamEmitter_Select_NetSerializer : NetSerializer<Input_TractorBeamEmitter_Select>
     {
-        public override TractorBeamEmitter_TryActivate Deserialize(NetDataReader reader)
+        public override Input_TractorBeamEmitter_Select Deserialize(NetDataReader reader)
         {
-            return new TractorBeamEmitter_TryActivate()
+            return new Input_TractorBeamEmitter_Select()
             {
                 ShipVhId = reader.GetVhId(),
                 TargetVhId = reader.GetVhId()
             };
         }
 
-        public override void Serialize(NetDataWriter writer, in TractorBeamEmitter_TryActivate instance)
+        public override void Serialize(NetDataWriter writer, in Input_TractorBeamEmitter_Select instance)
         {
             writer.Put(instance.ShipVhId);
             writer.Put(instance.TargetVhId);

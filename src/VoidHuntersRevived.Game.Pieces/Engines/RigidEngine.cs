@@ -61,18 +61,11 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
                 EntityId id = ids[index];
-                Rigid rigid = rigids[index];
                 Node node = nodes[index];
 
                 if (_space.TryGetBody(node.TreeId.VhId, out IBody? body))
                 {
                     body.Destroy(id.VhId);
-
-                    _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Succesfully destroyed fixture {FixtureId} from body {BodyId}", nameof(RigidEngine), nameof(Remove), nameof(Rigid), id.VhId.Value, node.TreeId.VhId.Value);
-                }
-                else
-                {
-                    _logger.Warning("{ClassName}::{MethodName}<{EventName}> - Unable to find body {BodyId} while attempting to remove fixture {FixtureId}", nameof(RigidEngine), nameof(Remove), nameof(Rigid), node.TreeId.VhId.Value, id.VhId.Value);
                 }
             }
         }

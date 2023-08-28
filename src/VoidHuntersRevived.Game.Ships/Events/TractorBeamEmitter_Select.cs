@@ -11,14 +11,14 @@ using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Game.Ships.Events
 {
-    internal sealed class TractorBeamEmitter_Activate : IEventData
+    internal sealed class TractorBeamEmitter_Select : IEventData
     {
         public required VhId TractorBeamEmitterVhId { get; init; }
         public required EntityData TargetData { get; init; }
 
         public VhId CalculateHash(in VhId source)
         {
-            return HashBuilder<TractorBeamEmitter_Activate, VhId, VhId, VhId>.Instance.Calculate(source, this.TractorBeamEmitterVhId, this.TargetData.Id);
+            return HashBuilder<TractorBeamEmitter_Select, VhId, VhId, VhId>.Instance.Calculate(source, this.TractorBeamEmitterVhId, this.TargetData.Id);
         }
     }
 }

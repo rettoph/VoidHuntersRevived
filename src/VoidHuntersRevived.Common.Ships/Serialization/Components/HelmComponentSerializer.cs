@@ -10,7 +10,7 @@ using VoidHuntersRevived.Common.Ships.Components;
 namespace VoidHuntersRevived.Common.Ships.Serialization.Components
 {
     [AutoLoad]
-    public sealed class HelmComponentSerializer : RawComponentSerializer<Helm>
+    public sealed class HelmComponentSerializer : NotImplementedComponentSerializer<Helm>
     {
     }
 }

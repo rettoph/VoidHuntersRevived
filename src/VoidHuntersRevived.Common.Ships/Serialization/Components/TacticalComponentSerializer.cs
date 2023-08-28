@@ -10,7 +10,7 @@ using VoidHuntersRevived.Common.Ships.Components;
 namespace VoidHuntersRevived.Common.Ships.Serialization.Components
 {
     [AutoLoad]
-    public sealed class TacticalComponentSerializer : RawComponentSerializer<Tactical>
+    public sealed class TacticalComponentSerializer : NotImplementedComponentSerializer<Tactical>
     {
     }
 }

@@ -14,6 +14,7 @@ using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Common.Simulations.Exceptions;
 using VoidHuntersRevived.Game.Common;
 using VoidHuntersRevived.Game.Pieces.Events;
 
@@ -63,14 +64,14 @@ namespace VoidHuntersRevived.Game.Pieces.Services
             return ref _entities.GetFilter<Coupling>(socketId.NodeId, socketId.FilterContextId);
         }
 
-        public void Attach(SocketNode socketNode, Tree tree)
+        public void Attach(SocketId socketId, EntityId nodeId)
         {
             this.Simulation.Publish(
                 sender: NameSpace<SocketService>.Instance,
                 data: new Socket_Attach()
                 {
-                    SocketVhId = socketNode.Socket.Id.VhId,
-                    NodeData = _entities.Serialize(tree.HeadId)
+                    SocketVhId = socketId.VhId,
+                    NodeData = _entities.Serialize(nodeId)
                 });
         }
 
@@ -92,25 +93,33 @@ namespace VoidHuntersRevived.Game.Pieces.Services
 
         public void Process(VhId eventId, Socket_Attach data)
         {
-            if(!this.TryGetSocketNode(data.SocketVhId, out SocketNode socketNode))
+            try
             {
-                _logger.Error("{ClassName}::{MethodName}<{GenericTypeName}> - Unable to load SocketNode within node {NodeId}", nameof(SocketService), nameof(Process), nameof(Socket_Attach), data.SocketVhId.NodeVhId.Value);
-                return;
+                if (!this.TryGetSocketNode(data.SocketVhId, out SocketNode socketNode))
+                {
+                    throw new SimulationOutOfSyncException($"Unable to load {nameof(SocketNode)} within {nameof(Node)} {data.SocketVhId.NodeVhId.Value}");
+                }
+
+                SocketVhId socketVhId = socketNode.Socket.Id.VhId;
+                EntityId nodeId = _entities.Deserialize(
+                    seed: socketNode.Node.TreeId.VhId,
+                    data: data.NodeData,
+                    initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+                    {
+                        initializer.Init<Coupling>(new Coupling(
+                            socketId: new SocketId(
+                                nodeId: entities.GetId(socketVhId.NodeVhId),
+                                index: socketVhId.Index))
+                            );
+                    },
+                    confirmed: false);
+            }
+            catch(Exception ex)
+            {
+                _logger.Error(ex, "{ClassName}::{MethodName}<{GenericTypeName}> - Exception thrown", nameof(SocketService), nameof(Process), nameof(Socket_Attach));
+                throw new SimulationOutOfSyncException(ex.Message, ex);
             }
 
-            SocketVhId socketVhId = socketNode.Socket.Id.VhId;
-            EntityId nodeId = _entities.Deserialize(
-                seed: socketNode.Node.TreeId.VhId,
-                data: data.NodeData,
-                initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
-                {
-                    initializer.Init<Coupling>(new Coupling(
-                        socketId: new SocketId(
-                            nodeId: entities.GetId(socketVhId.NodeVhId),
-                            index: socketVhId.Index))
-                        );
-                },
-                confirmed: false);
         }
 
         public void Revert(VhId eventId, Socket_Attach data)

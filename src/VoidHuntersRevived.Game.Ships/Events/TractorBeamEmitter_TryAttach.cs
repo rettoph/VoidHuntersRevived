@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Game.Ships.Events
 
         public VhId CalculateHash(in VhId source)
         {
-            return HashBuilder<TractorBeamEmitter_TryActivate, VhId, VhId, VhId, SocketVhId>.Instance.Calculate(source, this.ShipVhId, this.TargetVhId, this.SocketVhId);
+            return HashBuilder<Input_TractorBeamEmitter_Select, VhId, VhId, VhId, SocketVhId>.Instance.Calculate(source, this.ShipVhId, this.TargetVhId, this.SocketVhId);
         }
     }
 }
