@@ -11,7 +11,6 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Entities.Services;
 
@@ -27,8 +26,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private IStepGroupEngine<Step> _stepEngines;
 
         public EnginesRoot Root => _enginesRoot;
-
-        public IEventPublishingService Events { get; private set; }
 
         public IEntityService Entities { get; private set; }
 
@@ -46,7 +43,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _engines = null!;
 
             this.Entities = null!;
-            this.Events = null!;
         }
 
         public IEngineService Load(params IState[] states)
@@ -54,7 +50,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _engines = _filtered.Instances<IEngine>(states).ToArray();
 
             this.Entities = this.Get<IEntityService>();
-            this.Events = this.Get<IEventPublishingService>();
 
             return this;
         }

@@ -3,8 +3,9 @@ using Guppy.Attributes;
 using Guppy.Loaders;
 using LiteNetLib;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Simulations;
 
-namespace VoidHuntersRevived.Domain.Entities.Loaders
+namespace VoidHuntersRevived.Domain.Simulations.Loaders
 {
     [AutoLoad]
     internal sealed class EventLoader : IServiceLoader

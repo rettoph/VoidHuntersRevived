@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Serialization;
+using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Events;
 using VoidHuntersRevived.Common.Utilities;
 

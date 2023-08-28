@@ -32,11 +32,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public IEnumerable<Tick> History => _history;
 
-        public event OnEventDelegate<EventDto>? OnEvent
-        {
-            add => this.Events.OnEvent += value;
-            remove => this.Events.OnEvent -= value;
-        }
+        public event OnEventDelegate<EventDto>? OnEvent;
 
         public LockstepSimulation(ILifetimeScope scope) : base(SimulationType.Lockstep, scope)
 
@@ -81,17 +77,17 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
             foreach (EventDto @event in tick.Events)
             {
-                this.Events.Publish(@event);
+                this.Publish(@event);
             }
 
             _history.Add(tick);
         }
 
-        protected override void DoStep(Step step)
+        protected override void Publish(EventDto @event)
         {
-            base.DoStep(step);
+            this.OnEvent?.Invoke(@event);
 
-            this.Events.Confirm();
+            base.Publish(@event);
         }
     }
 }

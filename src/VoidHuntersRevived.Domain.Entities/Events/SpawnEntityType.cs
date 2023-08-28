@@ -1,6 +1,9 @@
-﻿using VoidHuntersRevived.Common.Utilities;
+﻿using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Utilities;
 
-namespace VoidHuntersRevived.Common.Entities.Events
+namespace VoidHuntersRevived.Domain.Entities.Events
 {
     public sealed class SpawnEntityType : IEventData
     {

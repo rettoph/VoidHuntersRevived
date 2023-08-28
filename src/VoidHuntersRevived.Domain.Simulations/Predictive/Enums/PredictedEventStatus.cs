@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Domain.Entities
+namespace VoidHuntersRevived.Domain.Simulations.Predictive.Enums
 {
-    internal enum PublishedEventStatus
+    internal enum PredictedEventStatus
     {
         Unconfirmed,
         Confirmed,

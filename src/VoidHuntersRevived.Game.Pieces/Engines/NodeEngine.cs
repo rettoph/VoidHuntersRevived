@@ -1,16 +1,8 @@
 ﻿using Guppy.Attributes;
 using Serilog;
 using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.Pieces;
@@ -37,11 +29,6 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             _logger = logger;
         }
 
-        public void Process(VhId eventId, Node_Destroy data)
-        {
-            // this.Simulation.Entities.Destroy(data.NodeId);
-        }
-
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Node> entities, ExclusiveGroupStruct groupID)
         {
             var (nodes, ids, _) = entities;
@@ -55,12 +42,6 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
                 ref var filter = ref _entities.GetFilter<Node>(treeId, Tree.NodeFilterContextId);
                 filter.Add(ids[index], groupID, index);
-
-                this.Simulation.Publish(NameSpace<NodeEngine>.Instance, new Node_Create()
-                {
-                    TreeId = treeId.VhId,
-                    NodeId = nodeVhId
-                });
             }
         }
 
@@ -75,12 +56,6 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
                 ref var filter = ref _entities.GetFilter<Node>(treeId, Tree.NodeFilterContextId);
                 filter.Remove(ids[index], groupID);
-
-                this.Simulation.Publish(NameSpace<NodeEngine>.Instance, new Node_Destroy()
-                {
-                    TreeId = treeId.VhId,
-                    NodeId = nodeVhId
-                });
             }
         }
 

@@ -1,13 +1,11 @@
 ﻿using Guppy.Common.Collections;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Common.Entities.Events;
-using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Messages;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Utilities;
-using VoidHuntersRevived.Common.Entities.Engines;
+using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Domain.Entities.Events;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -21,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     {
         public EntityId Spawn(IEntityType type, VhId vhid, EntityInitializerDelegate? initializer)
         {
-            _events.Publish(NameSpace<EntityService>.Instance, new SpawnEntityType()
+            this.Simulation.Publish(NameSpace<EntityService>.Instance, new SpawnEntityType()
             {
                 Type = type,
                 VhId = vhid,
@@ -33,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Despawn(VhId vhid)
         {
-            _events.Publish(NameSpace<EntityService>.Instance, new DespawnEntity()
+            this.Simulation.Publish(NameSpace<EntityService>.Instance, new DespawnEntity()
             {
                 VhId = vhid
             });
@@ -80,7 +78,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, DespawnEntity data)
         {
-            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to despawn Entity {Id}", nameof(Services.EntityService), nameof(Process), nameof(Common.Entities.Events.DespawnEntity), data.VhId.Value);
+            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to despawn Entity {Id}", nameof(EntityService), nameof(Process), nameof(DespawnEntity), data.VhId.Value);
 
             this.DespawnEntity(data.VhId);
         }

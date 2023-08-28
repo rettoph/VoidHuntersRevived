@@ -18,6 +18,9 @@ using VoidHuntersRevived.Common.Simulations.Services;
 using Autofac;
 using System.Reflection;
 using VoidHuntersRevived.Common.Simulations.Attributes;
+using Guppy.Common.Collections;
+using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
+using VoidHuntersRevived.Domain.Simulations.Utilities;
 
 namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
@@ -27,6 +30,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         private Step _step;
         private double _lastStepTime;
         private IPredictiveSynchronizationEngine[] _synchronizations;
+        private readonly DictionaryQueue<VhId, PredictedEvent> _predictedEvents;
         private readonly Queue<EventDto> _confirmedEvents;
 
         public PredictiveSimulation(
@@ -36,6 +40,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             _step = new Step();
             _lockstep = lockstep.Instance;
             _synchronizations = Array.Empty<IPredictiveSynchronizationEngine>();
+            _predictedEvents = new DictionaryQueue<VhId, PredictedEvent>();
             _confirmedEvents = new Queue<EventDto>();
         }
 
@@ -43,7 +48,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         {
             base.Initialize(simulations);
 
-            _lockstep.OnEvent += this.HandleLockstepTick;
+            _lockstep.OnEvent += this.HandleLockstepEvent;
             _synchronizations = this.Engines.OfType<IPredictiveSynchronizationEngine>().ToArray();
 
             foreach(IPredictiveSynchronizationEngine synchronization in _synchronizations)
@@ -77,17 +82,28 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
                 synchronization.Synchronize(step);
             }
 
-            this.Events.Revert();
-
-            while(_confirmedEvents.TryDequeue(out EventDto? confirmedEvent))
+            while (_predictedEvents.TryPeek(out PredictedEvent? prediction) && prediction.Expired)
             {
-                this.Events.Confirm(confirmedEvent);
-            }
-        }
+                if (prediction.Status == PredictedEventStatus.Unconfirmed)
+                {
+                    this.Revert(prediction.Event);
 
-        private void HandleLockstepTick(EventDto @event)
-        {
-            _confirmedEvents.Enqueue(@event);
+                    prediction.Status = PredictedEventStatus.Reverted;
+                }
+
+                _predictedEvents.TryDequeue(out _);
+            }
+
+            while (_confirmedEvents.TryDequeue(out EventDto? confirmedEvent))
+            {
+                if (_predictedEvents.TryGet(confirmedEvent.Id, out PredictedEvent? published))
+                {
+                    published.Status = PredictedEventStatus.Confirmed;
+                    return;
+                }
+
+                base.Publish(confirmedEvent);
+            }
         }
 
         public override void Input(VhId sender, IInputData data)
@@ -96,6 +112,22 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             {
                 this.Publish(sender, data);
             }
+        }
+
+        protected override void Publish(EventDto @event)
+        {
+            if (!_predictedEvents.TryEnqueue(@event.Id, new PredictedEvent(@event)))
+            {
+                this.logger.Warning("{ClassName}::{MethodName} - Unable to publish {EventName}, {EventId}; duplicate event.", nameof(PredictiveSimulation), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value);
+                return;
+            }
+
+            base.Publish(@event);
+        }
+
+        private void HandleLockstepEvent(EventDto @event)
+        {
+            _confirmedEvents.Enqueue(@event);
         }
     }
 }

@@ -6,11 +6,11 @@ using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Common.Entities.Events;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Events;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -68,14 +68,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 }
             };
 
-            if (reader.Confirmed)
-            {
-                _events.Confirm(vhid, createEntityEvent);
-            }
-            else
-            {
-                _events.Publish(vhid, createEntityEvent);
-            }
+            this.Simulation.Publish(vhid, createEntityEvent);
 
             return this.GetId(vhid);
         }

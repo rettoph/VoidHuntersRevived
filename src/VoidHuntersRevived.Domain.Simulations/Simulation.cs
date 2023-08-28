@@ -15,17 +15,19 @@ using Guppy.Common;
 using Guppy.Network.Enums;
 using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Simulations.Enums;
+using VoidHuntersRevived.Domain.Simulations.Utilities;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
     public abstract partial class Simulation : ISimulation, IDisposable
     {
-        private Queue<EventDto> _events;
+        private readonly Dictionary<Type, EventPublisher> _publishers;
         private IStepGroupEngine<GameTime> _drawEnginesGroup;
+
+        protected readonly ILogger logger;
 
         public readonly SimulationType Type;
         public readonly IEngineService Engines;
-        public readonly IEventPublishingService Events;
         public readonly ILifetimeScope Scope;
 
         SimulationType ISimulation.Type => this.Type;
@@ -46,10 +48,12 @@ namespace VoidHuntersRevived.Domain.Simulations
 
             // Pass the current scoped netscope to the new child scope
             this.Engines = this.Scope.Resolve<IEngineService>().Load(new SimulationState(this));
-            this.Events = this.Scope.Resolve<IEventPublishingService>();
+
+            // Build an event publisher dictionary
+            this.logger = this.Scope.Resolve<ILogger>();
+            this._publishers = EventPublisher.BuildPublishers(this.Engines, this.logger);
 
             _drawEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<GameTime, DrawEngineSequence>(DrawEngineSequence.Draw);
-            _events = new Queue<EventDto>();
         }
 
         public virtual void Initialize(ISimulationService simulations)
@@ -86,14 +90,22 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.Engines.Step(step);
         }
 
-        public void Publish(VhId sender, IEventData data)
+        protected virtual void Revert(EventDto @event)
         {
-            this.Events.Publish(sender, data);
+            _publishers[@event.Data.GetType()].Revert(@event);
+        }
+        protected virtual void Publish(EventDto @event)
+        {
+            _publishers[@event.Data.GetType()].Publish(@event);
         }
 
-        protected virtual void Enqueue(EventDto @event)
+        public void Publish(VhId sender, IEventData data)
         {
-            _events.Enqueue(@event);
+            this.Publish(new EventDto()
+            {
+                Sender = sender,
+                Data = data
+            });
         }
 
         public abstract void Input(VhId sender, IInputData data);

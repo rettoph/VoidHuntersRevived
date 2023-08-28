@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Common.Entities.Engines
+namespace VoidHuntersRevived.Common.Simulations.Engines
 {
     public interface IEventEngine : IEngine
     {

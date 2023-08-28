@@ -1,7 +1,10 @@
-﻿using VoidHuntersRevived.Common.Entities.Descriptors;
+﻿using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Utilities;
 
-namespace VoidHuntersRevived.Common.Entities.Events
+namespace VoidHuntersRevived.Domain.Entities.Events
 {
     public sealed class SpawnEntityDescriptor : IEventData
     {

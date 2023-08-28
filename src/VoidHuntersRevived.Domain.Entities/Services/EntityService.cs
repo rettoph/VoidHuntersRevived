@@ -11,29 +11,27 @@ using VoidHuntersRevived.Common;
 using Serilog;
 using VoidHuntersRevived.Common.Entities;
 using Svelto.ECS.Schedulers;
+using VoidHuntersRevived.Common.Simulations.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    internal partial class EntityService : IEntityService, IQueryingEntitiesEngine
+    internal partial class EntityService : BasicEngine, IEntityService, IQueryingEntitiesEngine
     {
         private readonly Lazy<IScopedEntityDescriptorService> _descriptors;
         private readonly ILogger _logger;
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
-        private readonly IEventPublishingService _events;
         private readonly EntityTypeService _types;
         private readonly SimpleEntitiesSubmissionScheduler _scheduler;
 
         public EntityService(
             Lazy<IScopedEntityDescriptorService> descriptors, 
-            IEventPublishingService events, 
             ILogger logger, 
             EnginesRoot enginesRoot, 
             EntityTypeService types,
             SimpleEntitiesSubmissionScheduler scheduler)
         {
             _descriptors = descriptors;
-            _events = events;
             _logger = logger;
             _factory = enginesRoot.GenerateEntityFactory();
             _functions = enginesRoot.GenerateEntityFunctions();
@@ -42,9 +40,5 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         }
 
         public EntitiesDB entitiesDB { get; set; } = null!;
-
-        public void Ready()
-        {
-        }
     }
 }

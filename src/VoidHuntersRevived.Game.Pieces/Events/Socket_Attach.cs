@@ -7,6 +7,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Pieces;
+using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Game.Pieces.Events

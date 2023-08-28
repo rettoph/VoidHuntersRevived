@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Guppy.Attributes;
-using Guppy.Common.Providers;
 using Guppy.Loaders;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
@@ -28,8 +27,6 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
             builder.RegisterType<EntityDescriptorService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.RegisterType<EntitySubmissionEngine>().AsImplementedInterfaces().InstancePerLifetimeScope();
-
-            builder.RegisterType<EventPublishingService>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }
