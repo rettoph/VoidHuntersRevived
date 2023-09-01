@@ -12,33 +12,44 @@ using Serilog;
 using VoidHuntersRevived.Common.Entities;
 using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Common.Simulations.Engines;
+using Guppy.Common.Collections;
+using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Domain.Entities.Engines;
+using VoidHuntersRevived.Common.Entities.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
     internal partial class EntityService : BasicEngine, IEntityService, IQueryingEntitiesEngine
     {
-        private readonly Lazy<IScopedEntityDescriptorService> _descriptors;
+        private readonly IEngineService _engines;
         private readonly ILogger _logger;
-        private readonly IEntityFactory _factory;
-        private readonly IEntityFunctions _functions;
         private readonly EntityTypeService _types;
         private readonly SimpleEntitiesSubmissionScheduler _scheduler;
 
         public EntityService(
-            Lazy<IScopedEntityDescriptorService> descriptors, 
+            IEngineService engines, 
             ILogger logger, 
-            EnginesRoot enginesRoot, 
             EntityTypeService types,
-            SimpleEntitiesSubmissionScheduler scheduler)
+            SimpleEntitiesSubmissionScheduler scheduler,
+            IEnumerable<VoidHuntersEntityDescriptor> descriptors)
         {
-            _descriptors = descriptors;
+            _engines = engines;
             _logger = logger;
-            _factory = enginesRoot.GenerateEntityFactory();
-            _functions = enginesRoot.GenerateEntityFunctions();
             _types = types;
             _scheduler = scheduler;
+            _descriptors = new DoubleDictionary<VhId, Type, IVoidHuntersEntityDescriptorEngine>();
         }
 
         public EntitiesDB entitiesDB { get; set; } = null!;
+
+        public override void Ready()
+        {
+            base.Ready();
+
+            foreach (VoidHuntersEntityDescriptorEngine engine in _engines.OfType<IVoidHuntersEntityDescriptorEngine>())
+            {
+                _descriptors.TryAdd(engine.Descriptor.Id, engine.Descriptor.GetType(), engine);
+            }
+        }
     }
 }

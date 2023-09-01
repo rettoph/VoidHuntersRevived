@@ -8,6 +8,7 @@ using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Entities.Events;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Enums;
+using VoidHuntersRevived.Domain.Entities.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -62,21 +63,21 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             this.Despawn(id.VhId);
         }
 
-        public bool Exists(EntityId id)
+        public bool IsSpawned(EntityId id)
         {
             if(this.TryQueryById<EntityStatus>(id, out EntityStatus status))
             {
-                return status.Status == EntityStatusType.Spawned;
+                return status.IsSpawned();
             }
 
             return false;
         }
 
-        public bool Exists(in GroupIndex groupIndex)
+        public bool IsSpawned(in GroupIndex groupIndex)
         {
             if (this.TryQueryByGroupIndex<EntityStatus>(in groupIndex, out EntityStatus status))
             {
-                return status.Status == EntityStatusType.Spawned;
+                return status.IsSpawned();
             }
 
             return false;
@@ -84,14 +85,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, SpawnEntityDescriptor data)
         {
-            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to spawn EntityDescriptor {Id}, {Descriptor}", nameof(EntityService), nameof(Process), nameof(SpawnEntityDescriptor), data.VhId.Value, data.Descriptor.Name);
+            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to spawn EntityDescriptor {Id}, {Descriptor}", nameof(EntityService), nameof(Process), nameof(SpawnEntityDescriptor), data.VhId.Value, data.DescriptorId.Value);
 
-            this.SpawnDescriptor(data.Descriptor, data.VhId, data.Initializer);
+            this.SpawnDescriptor(data.DescriptorId, data.VhId, data.Initializer);
         }
 
         public void Revert(VhId eventId, SpawnEntityDescriptor data)
         {
-            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to revert spawn EntityDescriptor {Id}, {Descriptor}", nameof(EntityService), nameof(Revert), nameof(SpawnEntityDescriptor), data.VhId.Value, data.Descriptor.Name);
+            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to revert spawn EntityDescriptor {Id}, {Descriptor}", nameof(EntityService), nameof(Revert), nameof(SpawnEntityDescriptor), data.VhId.Value, data.DescriptorId.Value);
 
             EntityId id = this.GetId(data.VhId);
             this.SoftDespawnEntity(id);
@@ -128,8 +129,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             if(this.TryGetId(data.VhId, out EntityId id))
             {
-                ref EntityStatus status = ref this.QueryById<EntityStatus>(id, out GroupIndex groupIndex);
-                status.Status = EntityStatusType.Spawned;
+                this.RevertSoftDespawnEntity(id);
             }
         }
 
@@ -146,9 +146,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             throw new NotImplementedException();
         }
 
-        private EntityId SpawnDescriptor(VoidHuntersEntityDescriptor descriptor, VhId vhid, EntityInitializerDelegate? initializerDelegate)
+        private EntityId SpawnDescriptor(VhId descriptorId, VhId vhid, EntityInitializerDelegate? initializerDelegate)
         {
-            EntityInitializer initializer = _descriptors.Value.Spawn(descriptor, _factory, vhid, out EntityId id);
+            EntityInitializer initializer = this.GetDescriptorEngine(descriptorId).Spawn(vhid, out EntityId id);
             this.Add(id);
 
             initializerDelegate?.Invoke(this, ref initializer, in id);
@@ -158,7 +158,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         private EntityId SpawnType(IEntityType type, VhId vhid, EntityInitializerDelegate? initializerDelegate)
         {
-            EntityInitializer initializer = _descriptors.Value.Spawn(type.Descriptor, _factory, vhid, out EntityId id);
+            EntityInitializer initializer = this.GetDescriptorEngine(type.Descriptor.Id).Spawn(vhid, out EntityId id);
             this.Add(id);
 
             _types.GetConfiguration(type).Initialize(this, ref initializer, in id);
@@ -170,14 +170,22 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         private void SoftDespawnEntity(EntityId id)
         {
-            _descriptors.Value.SoftDespawn(this, in id);
+            DescriptorId descriptorId = this.QueryById<DescriptorId>(id, out GroupIndex groupIndex);
+            this.GetDescriptorEngine(descriptorId.Value).SoftDespawn(in id, groupIndex);
+        }
+
+        private void RevertSoftDespawnEntity(EntityId id)
+        {
+            DescriptorId descriptorId = this.QueryById<DescriptorId>(id, out GroupIndex groupIndex);
+            this.GetDescriptorEngine(descriptorId.Value).RevertSoftDespawn(in id, groupIndex);
         }
 
         private void HardDespawnEntity(EntityId id)
         {
-            this.Remove(id);
+            DescriptorId descriptorId = this.QueryById<DescriptorId>(id, out GroupIndex groupIndex);
+            this.GetDescriptorEngine(descriptorId.Value).HardDespawn(in id, groupIndex);
 
-            _descriptors.Value.HardDespawn(this, _functions, in id);
+            this.Remove(id);
         }
     }
 }

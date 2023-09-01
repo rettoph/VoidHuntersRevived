@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Domain.Entities.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Configurators
 {
@@ -20,6 +21,7 @@ namespace VoidHuntersRevived.Domain.Entities.Configurators
             foreach (Type descriptorType in descriptors)
             {
                 configuration.Builder.RegisterType(descriptorType).As<VoidHuntersEntityDescriptor>().SingleInstance();
+                configuration.Builder.RegisterType(typeof(VoidHuntersEntityDescriptorEngine<>).MakeGenericType(descriptorType)).AsImplementedInterfaces().InstancePerLifetimeScope();
             }
         }
     }

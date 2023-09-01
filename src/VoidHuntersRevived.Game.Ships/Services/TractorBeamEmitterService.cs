@@ -83,7 +83,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
                     return true;
                 }
 
-                if(!_entities.Exists(callbackTargetNode.Value.TreeId))
+                if(!_entities.IsSpawned(callbackTargetNode.Value.TreeId))
                 { // Tree has been soft despawned
                     return true;
                 }

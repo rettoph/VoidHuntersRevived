@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Serialization;
 
 namespace VoidHuntersRevived.Common.Entities.Services
@@ -34,8 +35,8 @@ namespace VoidHuntersRevived.Common.Entities.Services
         /// </summary>
         void Flush();
 
-        bool Exists(EntityId id);
-        bool Exists(in GroupIndex groupIndex);
+        bool IsSpawned(EntityId id);
+        bool IsSpawned(in GroupIndex groupIndex);
         #endregion
 
         #region Serialization
@@ -121,6 +122,10 @@ namespace VoidHuntersRevived.Common.Entities.Services
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent
             where T4 : unmanaged, IEntityComponent;
+        #endregion
+
+        #region Descriptors
+        internal IVoidHuntersEntityDescriptorEngine GetDescriptorEngine(VhId descriptorId);
         #endregion
     }
 }

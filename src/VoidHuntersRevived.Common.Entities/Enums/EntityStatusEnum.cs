@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Entities.Enums
 {
-    public enum EntityStatusType
+    public enum EntityStatusEnum
     {
         Spawned,
         SoftDespawned,

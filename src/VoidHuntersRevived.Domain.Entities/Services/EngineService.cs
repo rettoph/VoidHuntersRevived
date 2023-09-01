@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
+using Guppy.Common.Collections;
 using Guppy.Common.Extensions;
 using Guppy.Common.Providers;
 using Svelto.ECS;
@@ -11,8 +12,10 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Domain.Entities.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -27,8 +30,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EnginesRoot Root => _enginesRoot;
 
-        public IEntityService Entities { get; private set; }
-
         public EngineService(
             IBus bus, 
             IFilteredProvider filtered,
@@ -41,15 +42,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _enginesRoot = enginesRoot;
             _stepEngines = null!;
             _engines = null!;
-
-            this.Entities = null!;
         }
 
         public IEngineService Load(params IState[] states)
         {
             _engines = _filtered.Instances<IEngine>(states).ToArray();
-
-            this.Entities = this.Get<IEntityService>();
 
             return this;
         }

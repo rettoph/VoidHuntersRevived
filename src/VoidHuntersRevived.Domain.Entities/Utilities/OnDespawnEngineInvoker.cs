@@ -1,21 +1,14 @@
 ﻿using Svelto.DataStructures;
 using Svelto.ECS;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
-using VoidHuntersRevived.Common.Entities.Services;
-using static System.Formats.Asn1.AsnWriter;
 
-namespace VoidHuntersRevived.Common.Entities.Utilities
+namespace VoidHuntersRevived.Domain.Entities.Utilities
 {
     internal abstract class OnDespawnEngineInvoker
     {
-        public abstract void Invoke(IEntityService entities, EntityId id, GroupIndex groupIndex);
+        public abstract void Invoke(EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex);
 
         public static bool Create(Type componentType, IEnumerable<IEngine> engines, [MaybeNullWhen(false)] out OnDespawnEngineInvoker invoker)
         {
@@ -56,10 +49,9 @@ namespace VoidHuntersRevived.Common.Entities.Utilities
             _engines = new FasterList<IOnDespawnEngine<T>>(engines.OfType<IOnDespawnEngine<T>>().ToList());
         }
 
-        public override void Invoke(IEntityService entities, EntityId id, GroupIndex groupIndex)
+        public override void Invoke(EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex)
         {
-            ref T component = ref entities.QueryByGroupIndex<T>(groupIndex);
-
+            ref T component = ref entitiesDB.QueryEntityByIndex<T>(groupIndex.Index, groupIndex.GroupID);
             for(int i=0; i<_engines.count; i++)
             {
                 _engines[i].OnDespawn(id, ref component, in groupIndex);
