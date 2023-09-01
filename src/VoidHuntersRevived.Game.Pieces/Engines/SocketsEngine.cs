@@ -13,11 +13,13 @@ using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces.Services;
 using Serilog;
 using Guppy.Attributes;
+using VoidHuntersRevived.Common.Entities.Engines;
 
 namespace VoidHuntersRevived.Game.Pieces.Engines
 {
     [AutoLoad]
-    internal sealed class SocketsEngine : BasicEngine, IReactOnRemoveEx<Sockets>
+    internal sealed class SocketsEngine : BasicEngine,
+        IOnDespawnEngine<Sockets>
     {
         private readonly IEntityService _entities;
         private readonly ISocketService _sockets;
@@ -30,24 +32,18 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             _logger = logger;
         }
 
-        public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Sockets> entities, ExclusiveGroupStruct groupID)
+        public void OnDespawn(EntityId id, ref Sockets sockets, in GroupIndex groupIndex)
         {
-            var (socketses, ids, _) = entities;
-
-            for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
+            for (int i = 0; i < sockets.Items.count; i++)
             {
-                Sockets sockets = socketses[index];
-                for (int i=0; i < sockets.Items.count; i++)
+                var filter = _sockets.GetCouplingFilter(sockets.Items[i].Id);
+                foreach (var (indices, groupId) in filter)
                 {
-                    var filter = _sockets.GetCouplingFilter(sockets.Items[i].Id);
-                    foreach (var (indices, groupId) in filter)
-                    {
-                        var (entityIds, _) = _entities.QueryEntities<EntityId>(groupId);
+                    var (entityIds, _) = _entities.QueryEntities<EntityId>(groupId);
 
-                        for (int j = 0; j < indices.count; j++)
-                        {
-                            _entities.Despawn(entityIds[indices[j]]);
-                        }
+                    for (int j = 0; j < indices.count; j++)
+                    {
+                        _entities.Despawn(entityIds[indices[j]]);
                     }
                 }
             }

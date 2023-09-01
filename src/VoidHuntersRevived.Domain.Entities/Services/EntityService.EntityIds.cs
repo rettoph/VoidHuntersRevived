@@ -15,7 +15,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     {
         private readonly DoubleDictionary<VhId, EGID, EntityId> _ids = new DoubleDictionary<VhId, EGID, EntityId>();
         private readonly Queue<EntityId> _removed = new Queue<EntityId>();
-        private readonly Dictionary<EntityId, EntityState> _states = new Dictionary<EntityId, EntityState>();
 
         public string name { get; } = nameof(EntityService);
 
@@ -49,43 +48,24 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _ids.TryGet(new EGID(entityId, groupId), out id);
         }
 
-        public EntityState GetState(EntityId id)
-        {
-            if(_states.TryGetValue(id, out EntityState state))
-            {
-                return state;
-            }
-
-            return EntityState.Unknown;
-        }
-
         public void Step(in Step _param)
         {
             while (_removed.TryDequeue(out EntityId removed))
             {
                 _ids.Remove(removed.VhId, removed.EGID);
-                _states.Remove(removed);
             }
         }
 
-        internal EntityId Add(EntityId id)
+        private EntityId Add(EntityId id)
         {
             _ids.TryAdd(id.VhId, id.EGID, id);
-            _states.Add(id, EntityState.Spawned);
 
             return id;
         }
 
-        internal EntityId Remove(VhId vhid)
+        private EntityId Remove(EntityId id)
         {
-            ref EntityId id = ref _ids.TryGetRef(vhid, out bool isNullRef);
-            if (isNullRef)
-            {
-                throw new NullReferenceException();
-            }
-
             _removed.Enqueue(id);
-            _states[id] = EntityState.Despawned;
 
             return id;
         }

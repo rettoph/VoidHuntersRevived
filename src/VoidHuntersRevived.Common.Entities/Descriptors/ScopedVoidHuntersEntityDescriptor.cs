@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Guppy.Common;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using System;
@@ -7,8 +8,12 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Engines;
+using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Entities.Utilities;
 
 namespace VoidHuntersRevived.Common.Entities.Descriptors
 {
@@ -49,7 +54,8 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
         }
 
         public abstract EntityInitializer Spawn(IEntityFactory factory, VhId vhid, out EntityId id);
-        public abstract void Despawn(IEntityFunctions functions, in EGID egid);
+        public abstract void SoftDespawn(IEntityService entities, in EntityId id);
+        public abstract void HardDespawn(IEntityService entities, IEntityFunctions functions, in EntityId id);
 
         public static ScopedVoidHuntersEntityDescriptor Build(VoidHuntersEntityDescriptor descriptor, ILifetimeScope scope)
         {
@@ -65,9 +71,21 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
         public readonly ExclusiveGroup Group = new ExclusiveGroup();
         public new readonly TDescriptor GlobalDescriptor;
 
+        private FasterList<OnDespawnEngineInvoker> _onDespawnEngineInvokers;
+
         public ScopedEntityDescriptor(TDescriptor globalDescriptor, ILifetimeScope scope) : base(globalDescriptor, scope)
         {
             this.GlobalDescriptor = globalDescriptor;
+
+            var engines = scope.Resolve<IEngineService>().All();
+            _onDespawnEngineInvokers = new FasterList<OnDespawnEngineInvoker>();
+            foreach(Type componentType in this.GlobalDescriptor.ComponentManagers.Select(x => x.Type))
+            {
+                if(OnDespawnEngineInvoker.Create(componentType, engines, out var invoker))
+                {
+                    _onDespawnEngineInvokers.Add(invoker);
+                }
+            }    
         }
 
         public override EntityInitializer Spawn(IEntityFactory factory, VhId vhid, out EntityId id)
@@ -81,9 +99,23 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             return initializer;
         }
 
-        public override void Despawn(IEntityFunctions functions, in EGID egid)
+        public override void SoftDespawn(IEntityService entities, in EntityId id)
         {
-            functions.RemoveEntity<TDescriptor>(egid);
+            ref EntityStatus status = ref entities.QueryById<EntityStatus>(id, out GroupIndex groupIndex);
+            status.Status = EntityStatusType.SoftDespawned;
+
+            for(int i=0; i<_onDespawnEngineInvokers.count; i++)
+            {
+                _onDespawnEngineInvokers[i].Invoke(entities, id, groupIndex);
+            }
+        }
+
+        public override void HardDespawn(IEntityService entities, IEntityFunctions functions, in EntityId id)
+        {
+            ref EntityStatus status = ref entities.QueryById<EntityStatus>(id, out GroupIndex groupIndex);
+            status.Status = EntityStatusType.HardDespawned;
+
+            functions.RemoveEntity<TDescriptor>(id.EGID);
         }
     }
 }

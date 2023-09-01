@@ -2,6 +2,7 @@
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Simulations.Engines;
@@ -10,7 +11,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 {
     [AutoLoad]
     internal sealed class TreeEngine : BasicEngine,
-        IReactOnRemoveEx<Tree>,
+        IOnDespawnEngine<Tree>,
         IStepEngine<Step>
     {
         public string name { get; } = nameof(TreeEngine);
@@ -21,6 +22,11 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
         public TreeEngine(IEntityService entities)
         {
             _entities = entities;
+        }
+
+        public void OnDespawn(EntityId id, ref Tree component, in GroupIndex groupIndex)
+        {
+            _entities.Despawn(component.HeadId);
         }
 
         // public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Tree> entities, ExclusiveGroupStruct groupID)
@@ -57,18 +63,6 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
         //         });
         //     }
         // }
-
-        public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Tree> entities, ExclusiveGroupStruct treeGroupId)
-        {
-            var (trees, _, _) = entities;
-        
-            for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
-            {
-                EntityId headId = trees[index].HeadId;
-
-                _entities.Despawn(headId);
-            }
-        }
 
         public void Step(in Step _param)
         {

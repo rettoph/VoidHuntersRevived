@@ -30,18 +30,23 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EntityInitializer Spawn(VoidHuntersEntityDescriptor descriptor, IEntityFactory factory, VhId vhid, out EntityId id)
         {
-            ScopedVoidHuntersEntityDescriptor spawner = _descriptors[descriptor.Id.Value];
-            EntityInitializer initializer = spawner.Spawn(factory, vhid, out id);
+            ScopedVoidHuntersEntityDescriptor scopedDescriptor = _descriptors[descriptor.Id.Value];
+            EntityInitializer initializer = scopedDescriptor.Spawn(factory, vhid, out id);
 
-            _instanceDescriptors.Add(vhid.Value, spawner);
+            _instanceDescriptors.Add(vhid.Value, scopedDescriptor);
 
             return initializer;
         }
 
-        public void Despawn(IEntityFunctions functions, in EntityId id)
+        public void SoftDespawn(IEntityService entities, in EntityId id)
         {
-            _instanceDescriptors.Remove(id.VhId.Value, out var spawner);
-            spawner!.Despawn(functions, id.EGID);
+            _instanceDescriptors[id.VhId.Value].SoftDespawn(entities, in id);
+        }
+
+        public void HardDespawn(IEntityService entities, IEntityFunctions functions, in EntityId id)
+        {
+            _instanceDescriptors.Remove(id.VhId.Value, out var scopedDescriptor);
+            scopedDescriptor!.HardDespawn(entities, functions, id);
         }
     }
 }

@@ -20,6 +20,12 @@ namespace VoidHuntersRevived.Game.Ships.Services
     {
         public void Select(EntityId tractorBeamEmitterId, EntityId nodeId)
         {
+            if(!_entities.Exists(nodeId))
+            {
+                _logger.Warning("{ClassName}::{MethodName} - Entity {EntityVhId} does not exist", nameof(TractorBeamEmitterService), nameof(Select), nodeId.VhId.Value);
+                return;
+            }
+
             this.Simulation.Publish(
                 sender: NameSpace<TractorBeamEmitterService>.Instance,
                 data: new TractorBeamEmitter_Select()

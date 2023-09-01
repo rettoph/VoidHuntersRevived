@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Common.Entities
+namespace VoidHuntersRevived.Common.Entities.Enums
 {
-    public enum EntityState
+    public enum EntityStatusType
     {
-        Unknown,
         Spawned,
-        Despawned
+        SoftDespawned,
+        HardDespawned
     }
 }

@@ -6,6 +6,8 @@ using VoidHuntersRevived.Common.Messages;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Entities.Events;
+using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Enums;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -14,8 +16,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         IRevertEventEngine<SpawnEntityDescriptor>,
         IEventEngine<SpawnEntityType>,
         IRevertEventEngine<SpawnEntityType>,
-        IEventEngine<DespawnEntity>,
-        IRevertEventEngine<DespawnEntity>
+        IEventEngine<HardDespawnEntity>,
+        IRevertEventEngine<HardDespawnEntity>,
+        IEventEngine<SoftDespawnEntity>,
+        IRevertEventEngine<SoftDespawnEntity>
     {
         public EntityId Spawn(IEntityType type, VhId vhid, EntityInitializerDelegate? initializer)
         {
@@ -31,7 +35,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Despawn(VhId vhid)
         {
-            this.Simulation.Publish(NameSpace<EntityService>.Instance, new DespawnEntity()
+            this.Simulation.Publish(NameSpace<EntityService>.Instance, new SoftDespawnEntity()
+            {
+                VhId = vhid
+            });
+
+            this.Simulation.Publish(NameSpace<EntityService>.Instance, new HardDespawnEntity()
             {
                 VhId = vhid
             });
@@ -53,6 +62,26 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             this.Despawn(id.VhId);
         }
 
+        public bool Exists(EntityId id)
+        {
+            if(this.TryQueryById<EntityStatus>(id, out EntityStatus status))
+            {
+                return status.Status == EntityStatusType.Spawned;
+            }
+
+            return false;
+        }
+
+        public bool Exists(in GroupIndex groupIndex)
+        {
+            if (this.TryQueryByGroupIndex<EntityStatus>(in groupIndex, out EntityStatus status))
+            {
+                return status.Status == EntityStatusType.Spawned;
+            }
+
+            return false;
+        }
+
         public void Process(VhId eventId, SpawnEntityDescriptor data)
         {
             _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to spawn EntityDescriptor {Id}, {Descriptor}", nameof(EntityService), nameof(Process), nameof(SpawnEntityDescriptor), data.VhId.Value, data.Descriptor.Name);
@@ -64,7 +93,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to revert spawn EntityDescriptor {Id}, {Descriptor}", nameof(EntityService), nameof(Revert), nameof(SpawnEntityDescriptor), data.VhId.Value, data.Descriptor.Name);
 
-            this.DespawnEntity(data.VhId);
+            EntityId id = this.GetId(data.VhId);
+            this.SoftDespawnEntity(id);
+            this.HardDespawnEntity(id);
         }
 
         public void Process(VhId eventId, SpawnEntityType data)
@@ -78,17 +109,39 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to revert spawn EntityType {Id}, {Type}", nameof(EntityService), nameof(Revert), nameof(SpawnEntityType), data.VhId.Value, data.Type.Name);
 
-            this.DespawnEntity(data.VhId);
+            EntityId id = this.GetId(data.VhId);
+            this.SoftDespawnEntity(id);
+            this.HardDespawnEntity(id);
         }
 
-        public void Process(VhId eventId, DespawnEntity data)
+        public void Process(VhId eventId, SoftDespawnEntity data)
         {
-            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to despawn Entity {Id}", nameof(EntityService), nameof(Process), nameof(DespawnEntity), data.VhId.Value);
+            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to soft despawn Entity {Id}", nameof(Services.EntityService), nameof(Process), nameof(Events.SoftDespawnEntity), data.VhId.Value);
 
-            this.DespawnEntity(data.VhId);
+            EntityId id = this.GetId(data.VhId);
+            this.SoftDespawnEntity(id);
         }
 
-        public void Revert(VhId eventId, DespawnEntity data)
+        public void Revert(VhId eventId, SoftDespawnEntity data)
+        {
+            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to revert soft despawn Entity {Id}", nameof(EntityService), nameof(Revert), nameof(SpawnEntityType), data.VhId.Value);
+
+            if(this.TryGetId(data.VhId, out EntityId id))
+            {
+                ref EntityStatus status = ref this.QueryById<EntityStatus>(id, out GroupIndex groupIndex);
+                status.Status = EntityStatusType.Spawned;
+            }
+        }
+
+        public void Process(VhId eventId, HardDespawnEntity data)
+        {
+            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to hard despawn Entity {Id}", nameof(Services.EntityService), nameof(Process), nameof(Events.HardDespawnEntity), data.VhId.Value);
+
+            EntityId id = this.GetId(data.VhId);
+            this.HardDespawnEntity(id);
+        }
+
+        public void Revert(VhId eventId, HardDespawnEntity data)
         {
             throw new NotImplementedException();
         }
@@ -115,10 +168,16 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return id;
         }
 
-        private void DespawnEntity(VhId vhid)
+        private void SoftDespawnEntity(EntityId id)
         {
-            EntityId id = this.Remove(vhid);
-            _descriptors.Value.Despawn(_functions, in id);
+            _descriptors.Value.SoftDespawn(this, in id);
+        }
+
+        private void HardDespawnEntity(EntityId id)
+        {
+            this.Remove(id);
+
+            _descriptors.Value.HardDespawn(this, _functions, in id);
         }
     }
 }

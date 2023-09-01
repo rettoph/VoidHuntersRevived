@@ -3,6 +3,7 @@ using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Physics;
@@ -59,7 +60,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
                 // BEGIN NODE DISTANCE CHECK
                 EntityId queryNodeId = _entities.GetId(fixture.Id);
                 ref Node queryNode = ref _entities.QueryById<Node>(queryNodeId, out GroupIndex nodeGroupIndex);
-                ref Rigid queryRigid  = ref _entities.QueryByGroupIndex<Rigid>(nodeGroupIndex);
+                ref Rigid queryRigid = ref _entities.QueryByGroupIndex<Rigid>(nodeGroupIndex);
 
                 FixVector2 queryNodePosition = FixVector2.Transform(queryRigid.Centeroid, queryNode.Transformation);
                 FixVector2.Distance(ref target, ref queryNodePosition, out Fix64 queryNodeDistance);
@@ -79,6 +80,11 @@ namespace VoidHuntersRevived.Game.Ships.Services
                 }
                 else
                 { // Target is not in any way tractorable, we can disregard it
+                    return true;
+                }
+
+                if(!_entities.Exists(callbackTargetNode.Value.TreeId))
+                { // Tree has been soft despawned
                     return true;
                 }
 

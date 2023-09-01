@@ -16,8 +16,4 @@
   <ItemGroup>
     <PackageReference Include="Standart.Hash.xxHash" Version="4.0.5" PrivateAssets="compile" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Engines\" />
-  </ItemGroup>
 </Project>

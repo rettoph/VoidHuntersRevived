@@ -127,13 +127,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             {
                 this.logger.Verbose("{ClassName}::{MethodName} - Confirming Event {EventName}, {EventId}", nameof(PredictiveSimulation), nameof(Confirm), confirmedEvent.Data.GetType().Name, confirmedEvent.Id.Value);
 
-                if (_predictedEvents.TryGet(confirmedEvent.Id, out PredictedEvent? published))
+                if (!_predictedEvents.TryGet(confirmedEvent.Id, out PredictedEvent? published))
                 {
-                    published.Status = PredictedEventStatus.Confirmed;
-                    return;
+                    published = new PredictedEvent(confirmedEvent);
+                    _predictedEvents.TryEnqueue(confirmedEvent.Id, published);
+                    base.Publish(confirmedEvent);
                 }
 
-                base.Publish(confirmedEvent);
+                published.Status = PredictedEventStatus.Confirmed;
             }
         }
 

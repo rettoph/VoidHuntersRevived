@@ -33,13 +33,13 @@ namespace VoidHuntersRevived.Game.Ships.Engines
 
         public void Process(VhId eventId, Input_TractorBeamEmitter_Select data)
         {
-            if (!_entities.TryGetId(data.ShipVhId, out EntityId tractorBeamEmitterId) || _entities.GetState(tractorBeamEmitterId) != EntityState.Spawned)
+            if (!_entities.TryGetId(data.ShipVhId, out EntityId tractorBeamEmitterId))
             {
                 _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - ShipVhId {ShipId} not found.", nameof(TractorBeamEmitterInputEngine), nameof(Process), nameof(Input_TractorBeamEmitter_Select), data.ShipVhId.Value);
                 return;
             }
 
-            if (!_entities.TryGetId(data.TargetVhId, out EntityId targetNodeId) || _entities.GetState(targetNodeId) != EntityState.Spawned)
+            if (!_entities.TryGetId(data.TargetVhId, out EntityId targetNodeId))
             {
                 _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - TargetVhId {TargetId} not found.", nameof(TractorBeamEmitterInputEngine), nameof(Process), nameof(Input_TractorBeamEmitter_Select), data.TargetVhId.Value);
                 return;
@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
 
         public void Process(VhId eventId, Input_TractorBeamEmitter_Deselect data)
         {
-            if (!_entities.TryGetId(data.ShipVhId, out EntityId tractorBeamEmitterId) || _entities.GetState(tractorBeamEmitterId) != EntityState.Spawned)
+            if (!_entities.TryGetId(data.ShipVhId, out EntityId tractorBeamEmitterId))
             {
                 _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - ShipVhId {ShipId} not found.", nameof(TractorBeamEmitterInputEngine), nameof(Process), nameof(Input_TractorBeamEmitter_Deselect), data.ShipVhId.Value);
                 return;
