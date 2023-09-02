@@ -58,7 +58,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         private EntityId Add(EntityId id)
         {
-            _ids.TryAdd(id.VhId, id.EGID, id);
+            if(!_ids.TryAdd(id.VhId, id.EGID, id))
+            {
+                throw new Exception();
+            }
 
             return id;
         }

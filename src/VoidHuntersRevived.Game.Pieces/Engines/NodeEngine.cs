@@ -35,13 +35,20 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                this.SetLocalTransformation(ref nodes[index], groupID, index);
+                try
+                {
+                    this.SetLocalTransformation(ref nodes[index], groupID, index);
 
-                EntityId treeId = nodes[index].TreeId;
-                VhId nodeVhId = _entities.GetId(ids[index], groupID).VhId;
+                    EntityId treeId = nodes[index].TreeId;
+                    VhId nodeVhId = _entities.GetId(ids[index], groupID).VhId;
 
-                ref var filter = ref _entities.GetFilter<Node>(treeId, Tree.NodeFilterContextId);
-                filter.Add(ids[index], groupID, index);
+                    ref var filter = ref _entities.GetFilter<Node>(treeId, Tree.NodeFilterContextId);
+                    filter.Add(ids[index], groupID, index);
+                }
+                catch(Exception ex)
+                {
+                    var id = _entities.QueryByGroupIndex<EntityId>(groupID, index);
+                }
             }
         }
 
@@ -66,12 +73,20 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                 node.LocalTransformation = FixMatrix.CreateTranslation(Fix64.Zero, Fix64.Zero, Fix64.Zero);
                 return;
             }
-            var id = _entities.QueryByGroupIndex<EntityId>(groupId, index);
+            
+            try
+            {
+                ref Plug plug = ref _entities.QueryByGroupIndex<Plug>(groupId, index);
+                SocketNode socketNode = _sockets.GetSocketNode(coupling.SocketId);
 
-            ref Plug plug = ref _entities.QueryByGroupIndex<Plug>(groupId, index);
-            SocketNode socketNode = _sockets.GetSocketNode(coupling.SocketId);
-
-            node.LocalTransformation = plug.Location.Transformation.Invert() * socketNode.LocalTransformation;
+                node.LocalTransformation = plug.Location.Transformation.Invert() * socketNode.LocalTransformation;
+            }
+            catch(Exception ex)
+            {
+                var id = _entities.QueryByGroupIndex<EntityId>(groupId, index);
+                _logger.Error(ex, "{ClassName}::{MethodName} - There was a fatal error attempting to set node transformation for node {NodeId}.", nameof(NodeEngine), nameof(SetLocalTransformation), id.VhId.Value);
+                _entities.Despawn(id);
+            }
         }
     }
 }
