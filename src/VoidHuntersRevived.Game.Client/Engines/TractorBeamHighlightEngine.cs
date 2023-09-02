@@ -31,6 +31,7 @@ using static VoidHuntersRevived.Common.Resources;
 using VoidHuntersRevived.Game.Ships.Services;
 using System.Net.Sockets;
 using VoidHuntersRevived.Common.Ships.Services;
+using VoidHuntersRevived.Common.Entities.Components;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -108,7 +109,14 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         private void FillVisibleRecursive(EntityId id)
         {
-            ref Node node = ref _entities.QueryById<Node>(id, out GroupIndex groupIndex);
+            ref EntityStatus status = ref _entities.QueryById<EntityStatus>(id, out GroupIndex groupIndex);
+
+            if(!status.IsSpawned)
+            {
+                return;
+            }
+
+            ref Node node = ref _entities.QueryByGroupIndex<Node>(in groupIndex);
             ref Visible visible = ref _entities.QueryByGroupIndex<Visible>(in groupIndex);
 
             Matrix transformation = node.Transformation.XnaMatrix;

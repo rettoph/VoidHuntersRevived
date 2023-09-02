@@ -55,36 +55,42 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public void Step(in GameTime _param)
         {
             _visibleRenderingService.BeginFill();
-            foreach (var ((vhids, visibles, nodes, count), _) in _entities.QueryEntities<EntityId, Visible, Node>())
+            foreach (var ((ids, statuses, visibles, nodes, count), _) in _entities.QueryEntities<EntityId, EntityStatus, Visible, Node>())
             {
                 for (int i = 0; i < count; i++)
                 {
                     try
                     {
-                        Matrix transformation = nodes[i].Transformation.XnaMatrix;
-                        _visibleRenderingService.Fill(in visibles[i], ref transformation);
+                        if (statuses[i].IsSpawned)
+                        {
+                            Matrix transformation = nodes[i].Transformation.XnaMatrix;
+                            _visibleRenderingService.Fill(in visibles[i], ref transformation);
+                        }
                     }
                     catch(Exception e)
                     {
-                        _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to fill shapes for visible {VisibleVhId}", nameof(VisibleNodesEngine), nameof(Step), vhids[i].VhId.Value);
+                        _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to fill shapes for visible {VisibleVhId}", nameof(VisibleNodesEngine), nameof(Step), ids[i].VhId.Value);
                     }
                 }
             }
             _visibleRenderingService.End();
 
             _visibleRenderingService.BeginTrace();
-            foreach (var ((vhids, visibles, nodes, count), _) in _entities.QueryEntities<EntityId, Visible, Node>())
+            foreach (var ((ids, statuses, visibles, nodes, count), _) in _entities.QueryEntities<EntityId, EntityStatus, Visible, Node>())
             {
                 for (int i = 0; i < count; i++)
                 {
                     try
                     {
-                        Matrix transformation = nodes[i].Transformation.XnaMatrix;
-                        _visibleRenderingService.Trace(in visibles[i], ref transformation);
+                        if (statuses[i].IsSpawned)
+                        {
+                            Matrix transformation = nodes[i].Transformation.XnaMatrix;
+                            _visibleRenderingService.Trace(in visibles[i], ref transformation);
+                        }
                     }
                     catch (Exception e)
                     {
-                        _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to trace paths for visible {VisibleVhId}", nameof(VisibleNodesEngine), nameof(Step), vhids[i].VhId.Value);
+                        _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to trace paths for visible {VisibleVhId}", nameof(VisibleNodesEngine), nameof(Step), ids[i].VhId.Value);
                     }
                 }
             }

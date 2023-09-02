@@ -16,12 +16,9 @@ namespace VoidHuntersRevived.Common.Entities.Components
             Value = EntityStatusEnum.Spawned
         };
 
-        public EntityStatusEnum Value;
+        internal EntityStatusEnum Value;
 
-        public bool IsSpawned()
-        {
-            return this.Value == EntityStatusEnum.Spawned;
-        }
+        public bool IsSpawned => this.Value == EntityStatusEnum.Spawned;
 
         public override bool Equals([NotNullWhen(true)] object? obj)
         {

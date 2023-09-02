@@ -26,6 +26,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 value = components[index];
                 groupIndex = new GroupIndex(id.EGID.groupID, index);
+
+                return true;
             }
 
             value = default;

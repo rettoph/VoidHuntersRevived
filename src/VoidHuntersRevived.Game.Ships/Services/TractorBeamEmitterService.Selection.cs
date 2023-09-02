@@ -3,7 +3,9 @@ using System.Diagnostics;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.Physics.Components;
+using VoidHuntersRevived.Common.Physics.Extensions.FixedPoint;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Ships.Components;
 using VoidHuntersRevived.Common.Ships.Services;
@@ -20,21 +22,24 @@ namespace VoidHuntersRevived.Game.Ships.Services
     {
         public void Select(EntityId tractorBeamEmitterId, EntityId nodeId)
         {
-            if(!_entities.IsSpawned(nodeId))
+            if(!_entities.IsSpawned(nodeId, out GroupIndex nodeGroupIndex))
             {
                 _logger.Warning("{ClassName}::{MethodName} - Entity {EntityVhId} does not exist", nameof(TractorBeamEmitterService), nameof(Select), nodeId.VhId.Value);
                 return;
             }
+
+            ref Node node = ref _entities.QueryByGroupIndex<Node>(nodeGroupIndex);
 
             this.Simulation.Publish(
                 sender: NameSpace<TractorBeamEmitterService>.Instance,
                 data: new TractorBeamEmitter_Select()
                 {
                     TractorBeamEmitterVhId = tractorBeamEmitterId.VhId,
-                    TargetData = _entities.Serialize(nodeId)
+                    TargetData = _entities.Serialize(nodeId),
+                    Location = node.Transformation.ToLocation()
                 });
 
-            ref Node node = ref _entities.QueryById<Node>(nodeId);
+            
             if(_nodes.IsHead(in node))
             {
                 _entities.Despawn(node.TreeId);
@@ -88,6 +93,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
                             throw new ArgumentException($"Unable to locate {nameof(TractorBeamEmitter)} {data.TractorBeamEmitterVhId.Value}");
                         }
 
+                        initializer.Init<Location>(data.Location);
                         initializer.Init<Tractorable>(new Tractorable()
                         {
                             TractorBeamEmitter = tractorBeamEmitterId

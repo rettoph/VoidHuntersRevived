@@ -36,6 +36,7 @@ namespace VoidHuntersRevived.Common.Entities.Services
         void Flush();
 
         bool IsSpawned(EntityId id);
+        bool IsSpawned(EntityId id, out GroupIndex groupIndex);
         bool IsSpawned(in GroupIndex groupIndex);
         #endregion
 

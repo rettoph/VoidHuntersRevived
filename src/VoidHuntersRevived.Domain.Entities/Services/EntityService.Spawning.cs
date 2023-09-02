@@ -67,7 +67,17 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             if(this.TryQueryById<EntityStatus>(id, out EntityStatus status))
             {
-                return status.IsSpawned();
+                return status.IsSpawned;
+            }
+
+            return false;
+        }
+
+        public bool IsSpawned(EntityId id, out GroupIndex groupIndex)
+        {
+            if (this.TryQueryById<EntityStatus>(id, out groupIndex, out EntityStatus status))
+            {
+                return status.IsSpawned;
             }
 
             return false;
@@ -77,7 +87,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             if (this.TryQueryByGroupIndex<EntityStatus>(in groupIndex, out EntityStatus status))
             {
-                return status.IsSpawned();
+                return status.IsSpawned;
             }
 
             return false;

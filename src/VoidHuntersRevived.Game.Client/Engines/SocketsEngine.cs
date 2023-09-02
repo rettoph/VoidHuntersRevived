@@ -14,6 +14,7 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Enums;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Entities.Components;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -47,14 +48,17 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public void Step(in GameTime _param)
         {
             _primitiveBatch.Begin(_screen.Camera);
-            foreach (var ((joints, nodes, count), _) in _entities.QueryEntities<Sockets, Node>())
+            foreach (var ((statuses, joints, nodes, count), _) in _entities.QueryEntities<EntityStatus, Sockets, Node>())
             {
                 for (int i = 0; i < count; i++)
                 {
                     for(int j=0; j < joints[i].Items.count; j++)
                     {
-                        FixMatrix jointTransformation = joints[i].Items[j].Location.Transformation * nodes[i].Transformation;
-                        _primitiveBatch.Trace(_jointShape, Color.Red, jointTransformation.XnaMatrix);
+                        if (statuses[i].IsSpawned)
+                        {
+                            FixMatrix jointTransformation = joints[i].Items[j].Location.Transformation * nodes[i].Transformation;
+                            _primitiveBatch.Trace(_jointShape, Color.Red, jointTransformation.XnaMatrix);
+                        }
                     }
                     
                 }
