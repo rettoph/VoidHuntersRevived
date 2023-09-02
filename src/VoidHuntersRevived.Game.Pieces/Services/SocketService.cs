@@ -1,7 +1,9 @@
 ﻿using Serilog;
 using Svelto.ECS;
+using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
@@ -9,15 +11,13 @@ using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Exceptions;
 using VoidHuntersRevived.Game.Common;
-using VoidHuntersRevived.Game.Pieces.Events;
 
 namespace VoidHuntersRevived.Game.Pieces.Services
 {
-    internal sealed class SocketService : BasicEngine, ISocketService,
-        IEventEngine<Socket_Attach>,
-        IRevertEventEngine<Socket_Attach>,
-        IEventEngine<Socket_Detached>
+    internal sealed class SocketService : BasicEngine, ISocketService
     {
+        private static readonly Fix64 OpenNodemaximumDistance = Fix64.One;
+
         private readonly ILogger _logger;
         private readonly IEntityService _entities;
         private readonly ITreeService _trees;
@@ -57,94 +57,76 @@ namespace VoidHuntersRevived.Game.Pieces.Services
             return ref _entities.GetFilter<Coupling>(socketId.NodeId, socketId.FilterContextId);
         }
 
-        public void Attach(SocketId socketId, EntityId nodeId)
+        public bool TryGetClosestOpenSocket(EntityId treeId, FixVector2 worldPosition, [MaybeNullWhen(false)] out SocketNode socketNode)
         {
-            this.Simulation.Publish(
-                sender: NameSpace<SocketService>.Instance,
-                data: new Socket_Attach()
-                {
-                    SocketVhId = socketId.VhId,
-                    NodeData = _entities.Serialize(nodeId)
-                });
-        }
+            // Since ships are Trees the ShipId will be the filterId seen in NodeEngine
+            ref var filter = ref _entities.GetFilter<Node>(treeId, Tree.NodeFilterContextId);
+            Fix64 closestOpenSocketDistance = OpenNodemaximumDistance;
+            socketNode = default!;
+            bool result = false;
 
-        public bool TryDetach(EntityId couplingId, EntityInitializerDelegate initializer, out EntityId cloneId)
-        {
-            VhId cloneVhId = NameSpace<Socket_Detached>.Instance.Create(couplingId.VhId);
-
-            this.Simulation.Publish(
-                sender: NameSpace<SocketService>.Instance,
-                data: new Socket_Detached()
-                {
-                    CouplingVhId = couplingId.VhId,
-                    CloneVhId = cloneVhId,
-                    Initializer = initializer
-                });
-
-            return _entities.TryGetId(cloneVhId, out cloneId);
-        }
-
-        public void Process(VhId eventId, Socket_Attach data)
-        {
-            try
+            foreach (var (indeces, group) in filter)
             {
-                if (!this.TryGetSocketNode(data.SocketVhId, out SocketNode socketNode))
+                if (!_entities.HasAny<Sockets>(group))
                 {
-                    throw new SimulationOutOfSyncException($"Unable to load {nameof(SocketNode)} within {nameof(Node)} {data.SocketVhId.NodeVhId.Value}");
+                    continue;
                 }
 
-                SocketVhId socketVhId = socketNode.Socket.Id.VhId;
-                EntityId nodeId = _entities.Deserialize(
-                    seed: socketNode.Node.TreeId.VhId,
-                    data: data.NodeData,
-                    initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+                var (statuses, nodes, socketses, _) = _entities.QueryEntities<EntityStatus, Node, Sockets>(group);
+
+                for (int i = 0; i < indeces.count; i++)
+                {
+                    uint index = indeces[i];
+                    if (statuses[index].IsSpawned
+                        && this.TryGetClosestOpenSocketOnNode(worldPosition, ref nodes[index], ref socketses[index], out Fix64 closestOpenSocketOnNodeDistance, out var closestOpenSocketOnNode)
+                        && closestOpenSocketOnNodeDistance < closestOpenSocketDistance)
                     {
-                        initializer.Init<Coupling>(new Coupling(
-                            socketId: new SocketId(
-                                nodeId: entities.GetId(socketVhId.NodeVhId),
-                                index: socketVhId.Index))
-                            );
-                    },
-                    confirmed: false);
-            }
-            catch(Exception ex)
-            {
-                _logger.Error(ex, "{ClassName}::{MethodName}<{GenericTypeName}> - Exception thrown", nameof(SocketService), nameof(Process), nameof(Socket_Attach));
-                throw new SimulationOutOfSyncException(ex.Message, ex);
+                        closestOpenSocketDistance = closestOpenSocketOnNodeDistance;
+                        socketNode = new SocketNode(ref closestOpenSocketOnNode.Socket, ref closestOpenSocketOnNode.Node);
+                        result = true;
+                    }
+                }
             }
 
+            return result;
         }
 
-        public void Revert(VhId eventId, Socket_Attach data)
+        private bool TryGetClosestOpenSocketOnNode(
+            FixVector2 worldPosition,
+            ref Node node,
+            ref Sockets sockets,
+            out Fix64 closestOpenSocketDistance,
+            out SocketNode closestOpenSocketOnNode)
         {
-            throw new NotImplementedException();
-        }
+            closestOpenSocketDistance = OpenNodemaximumDistance;
+            closestOpenSocketOnNode = default!;
+            bool result = false;
 
-        public void Process(VhId eventId, Socket_Detached data)
-        {
-            if(!_entities.TryGetId(data.CouplingVhId, out EntityId couplingId))
+            for (int j = 0; j < sockets.Items.count; j++)
             {
-                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Unable to find EntityId {CouplingVhId}", nameof(SocketService), nameof(Process), nameof(Socket_Detached), data.CouplingVhId.Value);
-                return;
+                ref Socket socket = ref sockets.Items[j];
+
+                var filter = this.GetCouplingFilter(socket.Id);
+                filter.ComputeFinalCount(out int count);
+                if (count > 0)
+                {
+                    continue;
+                }
+
+                FixMatrix jointWorldTransformation = socket.Location.Transformation * node.Transformation;
+                FixVector2 jointWorldPosition = FixVector2.Transform(FixVector2.Zero, jointWorldTransformation);
+                FixVector2.Distance(ref jointWorldPosition, ref worldPosition, out Fix64 jointDistanceFromTarget);
+                if (jointDistanceFromTarget > closestOpenSocketDistance)
+                { // Socket is further away than previously checked closest
+                    continue;
+                }
+
+                closestOpenSocketDistance = jointDistanceFromTarget;
+                closestOpenSocketOnNode = new SocketNode(ref socket, ref node);
+                result = true;
             }
 
-            if (!_entities.TryQueryById<Coupling>(couplingId, out Coupling coupling))
-            {
-                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - Unable to find Coupling for {EntityVhId}", nameof(SocketService), nameof(Process), nameof(Socket_Detached), data.CouplingVhId.Value);
-                return;
-            }
-
-            _entities.Flush();
-
-            SocketNode socketNode = this.GetSocketNode(coupling.SocketId);
-
-            _trees.Spawn(
-                vhid: data.CloneVhId,
-                tree: EntityTypes.Chain,
-                nodes: _entities.Serialize(couplingId),
-                initializer: data.Initializer);
-
-            _entities.Despawn(couplingId);
+            return result;
         }
     }
 }

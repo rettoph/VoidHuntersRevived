@@ -15,7 +15,6 @@ namespace VoidHuntersRevived.Common.Ships.Services
     {
         ref EntityFilterCollection GetTractorableFilter(EntityId tractorBeamEmitterId);
         bool Query(EntityId tractorBeamEmitterId, FixVector2 target, out Node targetNode);
-        bool TryGetClosestOpenSocket(EntityId shipId, FixVector2 target, [MaybeNullWhen(false)] out SocketNode socketNode);
 
         void Select(EntityId tractorBeamEmitterId, EntityId nodeId);
         void Deselect(EntityId tractorBeamEmitterId);

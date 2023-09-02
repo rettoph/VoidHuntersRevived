@@ -12,7 +12,6 @@ using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Game.Pieces.Events;
 using Serilog;
 
 namespace VoidHuntersRevived.Game.Pieces.Engines

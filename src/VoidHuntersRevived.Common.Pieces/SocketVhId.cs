@@ -17,5 +17,15 @@ namespace VoidHuntersRevived.Common.Pieces
             NodeVhId = nodeVhId;
             Index = index;
         }
+
+        public static bool operator ==(SocketVhId socketVhId1, SocketVhId socketVhId2)
+        {
+            return socketVhId1.NodeVhId == socketVhId2.NodeVhId && socketVhId1.Index == socketVhId2.Index;
+        }
+
+        public static bool operator !=(SocketVhId socketVhId1, SocketVhId socketVhId2)
+        {
+            return socketVhId1.NodeVhId != socketVhId2.NodeVhId || socketVhId1.Index != socketVhId2.Index;
+        }
     }
 }

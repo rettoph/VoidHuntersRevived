@@ -11,6 +11,7 @@ using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Ships.Components;
 using VoidHuntersRevived.Common.Ships.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
@@ -26,6 +27,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
         private readonly ISpace _space;
         private readonly ILogger _logger;
         private readonly ITractorBeamEmitterService _tractorBeamEmitters;
+        private readonly ISocketService _sockets;
 
         public string name { get; } = nameof(TractorBeamEmitterUpdateEngine);
 
@@ -33,12 +35,14 @@ namespace VoidHuntersRevived.Game.Ships.Engines
             IEntityService entities, 
             ISpace space,
             ILogger logger,
-            ITractorBeamEmitterService tractorBeamEmitters)
+            ITractorBeamEmitterService tractorBeamEmitters,
+            ISocketService sockets)
         {
             _entities = entities;
             _space = space;
             _logger = logger;
             _tractorBeamEmitters = tractorBeamEmitters;
+            _sockets = sockets;
         }
 
         public void Step(in Step _param)
@@ -69,7 +73,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
 
                     Location targetHeadChildLocation = _entities.QueryById<Plug>(target.HeadId).Location;
 
-                    if (_tractorBeamEmitters.TryGetClosestOpenSocket(tractorBeamEmitterId, tactical.Value, out var openSocketNode))
+                    if (_sockets.TryGetClosestOpenSocket(tractorBeamEmitterId, tactical.Value, out var openSocketNode))
                     {
                         FixMatrix potentialTransformation = targetHeadChildLocation.Transformation.Invert() * openSocketNode.Transformation;
                         FixVector2 potentialPosition = FixVector2.Transform(FixVector2.Zero, potentialTransformation);

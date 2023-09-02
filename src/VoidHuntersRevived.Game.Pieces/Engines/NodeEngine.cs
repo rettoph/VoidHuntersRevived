@@ -10,7 +10,6 @@ using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Game.Pieces.Events;
 
 namespace VoidHuntersRevived.Game.Pieces.Engines
 {

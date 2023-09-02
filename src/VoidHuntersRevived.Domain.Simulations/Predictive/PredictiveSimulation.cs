@@ -75,6 +75,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
         protected override void DoStep(Step step)
         {
+            this.Confirm();
+
             base.DoStep(step);
 
             foreach(IPredictiveSynchronizationEngine synchronization in _synchronizations)
@@ -93,8 +95,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
                 _predictedEvents.TryDequeue(out _);
             }
-
-            this.Confirm();
         }
 
         public override void Input(VhId sender, IInputData data)

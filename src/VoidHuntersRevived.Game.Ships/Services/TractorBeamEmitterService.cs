@@ -19,7 +19,6 @@ namespace VoidHuntersRevived.Game.Ships.Services
     public sealed partial class TractorBeamEmitterService : BasicEngine, ITractorBeamEmitterService
     {
         private static Fix64 QueryRadius = (Fix64)3;
-        private static readonly Fix64 OpenNodemaximumDistance = Fix64.One;
 
         private readonly ISpace _space;
         private readonly IEntityService _entities;
@@ -103,78 +102,6 @@ namespace VoidHuntersRevived.Game.Ships.Services
 
             targetNode = callbackTargetNode.Value;
             return true;
-        }
-
-        public bool TryGetClosestOpenSocket(EntityId shipId, FixVector2 target, [MaybeNullWhen(false)] out SocketNode socketNode)
-        {
-            // Since ships are Trees the ShipId will be the filterId seen in NodeEngine
-            ref var filter = ref _entities.GetFilter<Node>(shipId, Tree.NodeFilterContextId);
-            Fix64 closestOpenSocketDistance = OpenNodemaximumDistance;
-            socketNode = default!;
-            bool result = false;
-        
-            foreach (var (indeces, group) in filter)
-            {
-                if (!_entities.HasAny<Sockets>(group))
-                {
-                    continue;
-                }
-
-                var (nodes, socketses, _) = _entities.QueryEntities<Node, Sockets>(group);
-        
-                for (int i = 0; i < indeces.count; i++)
-                {
-                    uint index = indeces[i];
-                    if (
-                        this.TryGetClosestOpenSocketOnNode(target, ref nodes[index], ref socketses[index], out Fix64 closestOpenSocketOnNodeDistance, out var closestOpenSocketOnNode)
-                        && closestOpenSocketOnNodeDistance < closestOpenSocketDistance)
-                    {
-                        closestOpenSocketDistance = closestOpenSocketOnNodeDistance;
-                        socketNode = new SocketNode(ref closestOpenSocketOnNode.Socket, ref closestOpenSocketOnNode.Node);
-                        result = true;
-                    }
-                }
-            }
-        
-            return result;
-        }
-        
-        private bool TryGetClosestOpenSocketOnNode(
-            FixVector2 target,
-            ref Node node,
-            ref Sockets sockets,
-            out Fix64 closestOpenSocketDistance,
-            out SocketNode closestOpenSocketOnNode)
-        {
-            closestOpenSocketDistance = OpenNodemaximumDistance;
-            closestOpenSocketOnNode = default!;
-            bool result = false;
-        
-            for (int j = 0; j < sockets.Items.count; j++)
-            {
-                ref Socket socket = ref sockets.Items[j];
-
-                var filter = _sockets.GetCouplingFilter(socket.Id);
-                filter.ComputeFinalCount(out int count);
-                if(count > 0)
-                {
-                    continue;
-                }
-
-                FixMatrix jointWorldTransformation = socket.Location.Transformation * node.Transformation;
-                FixVector2 jointWorldPosition = FixVector2.Transform(FixVector2.Zero, jointWorldTransformation);
-                FixVector2.Distance(ref jointWorldPosition, ref target, out Fix64 jointDistanceFromTarget);
-                if (jointDistanceFromTarget > closestOpenSocketDistance)
-                { // Socket is further away than previously checked closest
-                    continue;
-                }
-        
-                closestOpenSocketDistance = jointDistanceFromTarget;
-                closestOpenSocketOnNode = new SocketNode(ref socket, ref node);
-                result = true;
-            }
-        
-            return result;
         }
     }
 }

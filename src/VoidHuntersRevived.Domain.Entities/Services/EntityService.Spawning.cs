@@ -47,7 +47,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             });
         }
 
-        private bool _flushing;
         public void Flush()
         {
             _scheduler.SubmitEntities();

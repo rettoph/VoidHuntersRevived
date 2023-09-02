@@ -6,6 +6,7 @@ using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Physics.Extensions.FixedPoint;
+using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Ships.Components;
 using VoidHuntersRevived.Common.Ships.Services;
@@ -52,9 +53,11 @@ namespace VoidHuntersRevived.Game.Ships.Services
 
         public void Deselect(EntityId tractorBeamEmitterId)
         {
-            _entities.Flush();
-            ref var filter = ref this.GetTractorableFilter(tractorBeamEmitterId);
+            ref Tactical tactical = ref _entities.QueryById<Tactical>(tractorBeamEmitterId);
+            SocketVhId attachToSocketVhId = _sockets.TryGetClosestOpenSocket(tractorBeamEmitterId, tactical.Target, out SocketNode socketNode)
+                ? socketNode.Socket.Id.VhId : default;
 
+            ref var filter = ref this.GetTractorableFilter(tractorBeamEmitterId);
             foreach (var (indices, groupId) in filter)
             {
                 var (entityIds, trees, locations, _) = _entities.QueryEntities<EntityId, Tree, Location>(groupId);
@@ -70,7 +73,8 @@ namespace VoidHuntersRevived.Game.Ships.Services
                         {
                             TractorBeamEmitterVhId = tractorBeamEmitterId.VhId,
                             TargetData = _entities.Serialize(tree.HeadId),
-                            Location = locations[index]
+                            Location = locations[index],
+                            AttachToSocketVhId = attachToSocketVhId
                         });
 
                     _entities.Despawn(entityIds[index]);
@@ -111,18 +115,36 @@ namespace VoidHuntersRevived.Game.Ships.Services
         {
             try
             {
-                EntityId cloneId = _trees.Spawn(
-                    vhid: eventId.Create(1),
-                    tree: EntityTypes.Chain,
-                    nodes: data.TargetData,
-                    initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
-                    {
-                        initializer.Init<Location>(data.Location);
-                        initializer.Init<Tractorable>(new Tractorable()
+                if(_sockets.TryGetSocketNode(data.AttachToSocketVhId, out SocketNode attachToSocketNode))
+                { // Spawn a new piece attached to the input node
+                    EntityId nodeId = _entities.Deserialize(
+                        seed: attachToSocketNode.Node.TreeId.VhId,
+                        data: data.TargetData,
+                        initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                         {
-                            TractorBeamEmitter = default
+                            initializer.Init<Coupling>(new Coupling(
+                                socketId: new SocketId(
+                                    nodeId: entities.GetId(data.AttachToSocketVhId.NodeVhId),
+                                    index: data.AttachToSocketVhId.Index))
+                                );
+                        },
+                        confirmed: false);
+                }
+                else 
+                { // Spawn a new free floating chain
+                    EntityId cloneId = _trees.Spawn(
+                        vhid: eventId.Create(1),
+                        tree: EntityTypes.Chain,
+                        nodes: data.TargetData,
+                        initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+                        {
+                            initializer.Init<Location>(data.Location);
+                            initializer.Init<Tractorable>(new Tractorable()
+                            {
+                                TractorBeamEmitter = default
+                            });
                         });
-                    });
+                }
             }
             catch (Exception ex)
             {

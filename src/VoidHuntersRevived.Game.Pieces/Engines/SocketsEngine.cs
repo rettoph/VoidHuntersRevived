@@ -8,7 +8,6 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Game.Pieces.Events;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces.Services;
 using Serilog;

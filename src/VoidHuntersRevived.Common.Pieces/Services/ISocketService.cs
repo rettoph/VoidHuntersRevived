@@ -1,6 +1,7 @@
 ﻿using Svelto.ECS;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,9 +15,8 @@ namespace VoidHuntersRevived.Common.Pieces.Services
         SocketNode GetSocketNode(SocketId socketId);
         bool TryGetSocketNode(SocketVhId socketVhId, out SocketNode socketNode);
 
-        void Attach(SocketId socketId, EntityId nodeId);
-        bool TryDetach(EntityId couplingId, EntityInitializerDelegate initializer, out EntityId cloneId);
-
         ref EntityFilterCollection GetCouplingFilter(SocketId socketId);
+
+        bool TryGetClosestOpenSocket(EntityId treeId, FixVector2 worldPosition, [MaybeNullWhen(false)] out SocketNode socketNode);
     }
 }
