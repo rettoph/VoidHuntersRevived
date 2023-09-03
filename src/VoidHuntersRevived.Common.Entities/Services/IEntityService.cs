@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Common.Entities.Services
         void Serialize(EGID egid, EntityWriter writer);
         void Serialize(uint entityId, ExclusiveGroupStruct groupId, EntityWriter writer);
 
-        EntityId Deserialize(in VhId seed, EntityData data, EntityInitializerDelegate? initializer, bool confirmed = false);
+        EntityId Deserialize(in VhId seed, EntityData data, EntityInitializerDelegate? initializer, VhId injection = default);
         EntityId Deserialize(EntityReader reader, EntityInitializerDelegate? initializer);
         #endregion
 

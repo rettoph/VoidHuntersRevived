@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.Physics.Components;
@@ -60,19 +61,24 @@ namespace VoidHuntersRevived.Game.Ships.Services
             ref var filter = ref this.GetTractorableFilter(tractorBeamEmitterId);
             foreach (var (indices, groupId) in filter)
             {
-                var (entityIds, trees, locations, _) = _entities.QueryEntities<EntityId, Tree, Location>(groupId);
+                var (entityIds, entityStatuses, trees, locations, _) = _entities.QueryEntities<EntityId, EntityStatus, Tree, Location>(groupId);
 
                 for (int i = 0; i < indices.count; i++)
                 {
                     uint index = indices[i];
-                    Tree tree = trees[index];
+
+                    if (entityStatuses[index].IsDespawned)
+                    {
+                        _logger.Warning("{ClassName}::{MethodName} - Unable to deselect {TractorableId}, despawned. Multiple deslect calls in a single frame?", nameof(TractorBeamEmitterService), nameof(Deselect), entityIds[index].VhId.Value);
+                        continue;
+                    }
 
                     this.Simulation.Publish(
                         sender: NameSpace<TractorBeamEmitterService>.Instance,
                         data: new TractorBeamEmitter_Deselect()
                         {
                             TractorBeamEmitterVhId = tractorBeamEmitterId.VhId,
-                            TargetData = _entities.Serialize(tree.HeadId),
+                            TargetData = _entities.Serialize(trees[index].HeadId),
                             Location = locations[index],
                             AttachToSocketVhId = attachToSocketVhId
                         });
@@ -118,7 +124,8 @@ namespace VoidHuntersRevived.Game.Ships.Services
                 if(_sockets.TryGetSocketNode(data.AttachToSocketVhId, out SocketNode attachToSocketNode))
                 { // Spawn a new piece attached to the input node
                     EntityId nodeId = _entities.Deserialize(
-                        seed: attachToSocketNode.Node.TreeId.VhId,
+                        seed: eventId.Create(1),
+                        injection: attachToSocketNode.Node.TreeId.VhId,
                         data: data.TargetData,
                         initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                         {
@@ -127,13 +134,12 @@ namespace VoidHuntersRevived.Game.Ships.Services
                                     nodeId: entities.GetId(data.AttachToSocketVhId.NodeVhId),
                                     index: data.AttachToSocketVhId.Index))
                                 );
-                        },
-                        confirmed: false);
+                        });
                 }
                 else 
                 { // Spawn a new free floating chain
                     EntityId cloneId = _trees.Spawn(
-                        vhid: eventId.Create(1),
+                        vhid: eventId.Create(2),
                         tree: EntityTypes.Chain,
                         nodes: data.TargetData,
                         initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>

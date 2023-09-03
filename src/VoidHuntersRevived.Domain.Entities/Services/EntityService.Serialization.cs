@@ -38,9 +38,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             this.GetDescriptorEngine(descriptorId.Value).Serialize(writer, groupIndex);
         }
 
-        public EntityId Deserialize(in VhId seed, EntityData data, EntityInitializerDelegate? initializer, bool confirmed)
+        public EntityId Deserialize(in VhId seed, EntityData data, EntityInitializerDelegate? initializer, VhId injection = default)
         {
-            _reader.Load(seed, data, confirmed);
+            _reader.Load(seed, data, injection);
             return this.Deserialize(_reader, initializer);
         }
 

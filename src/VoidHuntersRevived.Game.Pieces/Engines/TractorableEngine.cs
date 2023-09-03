@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Ships.Components;
 using VoidHuntersRevived.Common.Ships.Services;
@@ -18,12 +20,14 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
     {
         private readonly ITractorBeamEmitterService _tractorBeamEmitters;
         private readonly ITacticalService _tacticals;
+        private readonly IEntityService _entities;
         private readonly ILogger _logger;
 
-        public TractorableEngine(ITractorBeamEmitterService tractorBeamEmitters, ITacticalService tacticals, ILogger logger)
+        public TractorableEngine(ITractorBeamEmitterService tractorBeamEmitters, ITacticalService tacticals, IEntityService entities, ILogger logger)
         {
             _tractorBeamEmitters = tractorBeamEmitters;
             _tacticals = tacticals;
+            _entities = entities;
             _logger = logger;
         }
 
@@ -45,6 +49,9 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                 filter.Add(ids[index], groupID, index);
 
                 _tacticals.AddUse(tractorable.TractorBeamEmitter);
+
+                EntityId tractorableId = _entities.QueryByGroupIndex<EntityId>(groupID, index);
+                _logger.Verbose("{ClassName}::{MethodName} - Added tractorable {TractorableId} to emitter {TractorBeamEmitterId}", nameof(TractorableEngine), nameof(Add), tractorableId.VhId.Value, tractorable.TractorBeamEmitter.VhId.Value);
             }
         }
 
@@ -65,6 +72,9 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                 filter.Remove(ids[index], groupID);
 
                 _tacticals.RemoveUse(tractorable.TractorBeamEmitter);
+
+                EntityId tractorableId = _entities.QueryByGroupIndex<EntityId>(groupID, index);
+                _logger.Verbose("{ClassName}::{MethodName} - Removed tractorable {TractorableId} from emitter {TractorBeamEmitterId}", nameof(TractorableEngine), nameof(Remove), tractorableId.VhId.Value, tractorable.TractorBeamEmitter.VhId.Value);
             }
         }
     }

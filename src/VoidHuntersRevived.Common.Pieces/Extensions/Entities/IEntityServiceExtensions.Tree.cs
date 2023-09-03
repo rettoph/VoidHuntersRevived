@@ -39,8 +39,7 @@ namespace VoidHuntersRevived.Common.Pieces.Extensions.Entities
                     initializer: (IEntityService entities, ref EntityInitializer init, in EntityId id) =>
                     {
                         init.Init<Coupling>(new Coupling());
-                    },
-                    confirmed: false);
+                    });
 
                 init.Init<Tree>(new Tree(headId));
                 initializer(entities, ref init, in id);

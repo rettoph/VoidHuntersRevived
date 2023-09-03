@@ -25,17 +25,16 @@ namespace VoidHuntersRevived.Common.Pieces.Serialization.Components
 
         protected override Node Read(EntityReader reader, EntityId id)
         {
-            // If no seed is passed the tree should be read, if a seed is passed we assume it is the id of the owning tree
-            // This is relevant during Node deletion revision and Tree creation from cloned data within TreeFactory
-            VhId treeVhId = reader.ReadVhId();
-            treeVhId = reader.Seed.Value == VhId.Empty.Value ? treeVhId : reader.Seed;
+            if(reader.Injection == default)
+            {
+                throw new Exception();
+            }
 
-            return new Node(id, _entities.GetId(treeVhId));
+            return new Node(id, _entities.GetId(reader.Injection));
         }
 
         protected override void Write(EntityWriter writer, Node instance)
         {
-            writer.Write(instance.TreeId.VhId);
         }
     }
 }

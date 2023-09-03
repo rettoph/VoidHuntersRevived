@@ -16,14 +16,14 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
 
         public bool Busy { get; set; }
         public VhId Seed { get; private set; }
-        public bool Confirmed { get; private set; }
+        public VhId Injection { get; private set; }
 
         public EntityReader() : base(new MemoryStream())
         {
             _loaded = new EntityData(VhId.Empty, Array.Empty<byte>());
         }
 
-        public void Load(VhId seed, EntityData data, bool confirmed)
+        public void Load(VhId seed, EntityData data, VhId injection)
         {
             if (this.Busy)
             {
@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             this.BaseStream.Flush();
 
             this.Seed = seed;
-            this.Confirmed = confirmed;
+            this.Injection = injection;
         }
         public void Load(EntityReaderState state)
         {
@@ -61,13 +61,13 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
 
             this.BaseStream.Position = state.Position;
             this.Seed = state.Seed;
-            this.Confirmed = state.Confirmed;
+            this.Injection = state.Injection;
             this.Busy = true;
         }
 
         public EntityReaderState GetState()
         {
-            return new EntityReaderState(_loaded!, this.Seed, (int)this.BaseStream.Position, this.Confirmed);
+            return new EntityReaderState(_loaded!, this.Seed, (int)this.BaseStream.Position, this.Injection);
         }
 
         /// <summary>
