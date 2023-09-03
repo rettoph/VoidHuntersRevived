@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                     this.SetLocalTransformation(ref nodes[index], groupID, index);
 
                     EntityId treeId = nodes[index].TreeId;
-                    VhId nodeVhId = _entities.GetId(ids[index], groupID).VhId;
+                    VhId nodeVhId = _entities.QueryByGroupIndex<EntityId>(groupID, index).VhId;
 
                     ref var filter = ref _entities.GetFilter<Node>(treeId, Tree.NodeFilterContextId);
                     filter.Add(ids[index], groupID, index);
@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
                 EntityId treeId = nodes[index].TreeId;
-                VhId nodeVhId = _entities.GetId(ids[index], groupID).VhId;
+                VhId nodeVhId = _entities.QueryByGroupIndex<EntityId>(groupID, index).VhId;
 
                 ref var filter = ref _entities.GetFilter<Node>(treeId, Tree.NodeFilterContextId);
                 filter.Remove(ids[index], groupID);
@@ -83,6 +83,15 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             }
             catch(Exception ex)
             {
+                //TODO: Investigate what might cause this error
+                // When this happens a valid piece gets eaten and destroyed
+                // its the opposite of a dupe glitch
+                // I can only replicate it by spam clicking the tractor beam selection buton and
+                // moving the mouse randomly. It doesnt occurre very often
+                // We set the transformation to zero so that the constructed rigid shape can still take form
+                // Without this it will default all vertices to 0,0 and fail an assert
+                node.LocalTransformation = FixMatrix.CreateTranslation(Fix64.Zero, Fix64.Zero, Fix64.Zero);
+
                 var id = _entities.QueryByGroupIndex<EntityId>(groupId, index);
                 _logger.Error(ex, "{ClassName}::{MethodName} - There was a fatal error attempting to set node transformation for node {NodeId}.", nameof(NodeEngine), nameof(SetLocalTransformation), id.VhId.Value);
                 _entities.Despawn(id);

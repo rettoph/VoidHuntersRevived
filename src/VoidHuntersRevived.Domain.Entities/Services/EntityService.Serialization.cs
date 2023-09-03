@@ -78,29 +78,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return this.Serialize(this.GetId(vhid));
         }
 
-        public EntityData Serialize(EGID egid)
-        {
-            return this.Serialize(this.GetId(egid));
-        }
-
-        public EntityData Serialize(uint entityId, ExclusiveGroupStruct groupId)
-        {
-            return this.Serialize(this.GetId(entityId, groupId));
-        }
-
         public void Serialize(VhId vhid, EntityWriter writer)
         {
             this.Serialize(this.GetId(vhid), writer);
-        }
-
-        public void Serialize(EGID egid, EntityWriter writer)
-        {
-            this.Serialize(this.GetId(egid), writer);
-        }
-
-        public void Serialize(uint entityId, ExclusiveGroupStruct groupId, EntityWriter writer)
-        {
-            this.Serialize(this.GetId(entityId, groupId), writer);
         }
     }
 }

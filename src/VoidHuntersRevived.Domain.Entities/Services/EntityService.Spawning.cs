@@ -52,11 +52,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _scheduler.SubmitEntities();
         }
 
-        public void Despawn(EGID egid)
-        {
-            this.Despawn(this.GetId(egid).VhId);
-        }
-
         public void Despawn(EntityId id)
         {
             this.Despawn(id.VhId);

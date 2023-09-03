@@ -57,7 +57,11 @@ namespace VoidHuntersRevived.Game.Ships.Services
             _space.QueryAABB(fixture =>
             {
                 // BEGIN NODE DISTANCE CHECK
-                EntityId queryNodeId = _entities.GetId(fixture.Id);
+                if(!_entities.TryGetId(fixture.Id, out EntityId queryNodeId))
+                {
+                    return true;
+                }
+
                 ref Node queryNode = ref _entities.QueryById<Node>(queryNodeId, out GroupIndex nodeGroupIndex);
                 ref Rigid queryRigid = ref _entities.QueryByGroupIndex<Rigid>(nodeGroupIndex);
 

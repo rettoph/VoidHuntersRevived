@@ -44,15 +44,17 @@ namespace VoidHuntersRevived.Game.Ships.Engines
 
         public void Step(in Step _param)
         {
-            foreach (var ((helms, _, entityIds, count), groupId) in _entities.QueryEntities<Helm, Location>())
+            foreach (var ((helms, _, nativeIds, count), groupId) in _entities.QueryEntities<Helm, Location>())
             {
-                for (int i = 0; i < count; i++)
+                var (entityIds, _) = _entities.QueryEntities<EntityId>(groupId);
+
+                for (int index = 0; index < count; index++)
                 {
-                    EntityId helmId = _entities.GetId(entityIds[i], groupId);
+                    EntityId helmId = entityIds[index];
                     IBody body = _space.GetBody(helmId.VhId);
 
                     FixVector2 impulse = FixVector2.Zero;
-                    Helm helm = helms[i];
+                    Helm helm = helms[index];
 
                     if(helm.Direction.HasFlag(Direction.Forward))
                     {

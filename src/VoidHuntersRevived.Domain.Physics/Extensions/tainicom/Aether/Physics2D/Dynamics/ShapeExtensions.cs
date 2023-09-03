@@ -20,7 +20,13 @@ namespace VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D
             AetherVector2[] vertexes = new AetherVector2[polygon.Vertices.count];
             for(int i=0; i<polygon.Vertices.count; i++)
             {
-                vertexes[i] = FixVector2.Transform(polygon.Vertices[i], transformation).AsAetherVector2();
+                var original = polygon.Vertices[i];
+                vertexes[i] = FixVector2.Transform(original, transformation).AsAetherVector2();
+            }
+
+            if (vertexes[0] == vertexes[1] && vertexes[0] == vertexes[2])
+            {
+
             }
 
             AetherVertices vertices = new AetherVertices(vertexes);

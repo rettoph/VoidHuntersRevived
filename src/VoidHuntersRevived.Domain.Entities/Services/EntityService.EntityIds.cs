@@ -11,10 +11,9 @@ using Guppy.Common.Collections;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    internal partial class EntityService : IStepEngine<Step>
+    internal partial class EntityService
     {
-        private readonly DoubleDictionary<VhId, EGID, EntityId> _ids = new DoubleDictionary<VhId, EGID, EntityId>();
-        private readonly Queue<EntityId> _removed = new Queue<EntityId>();
+        private readonly Dictionary<VhId, EntityId> _ids = new Dictionary<VhId, EntityId>();
 
         public string name { get; } = nameof(EntityService);
 
@@ -23,42 +22,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _ids[vhid];
         }
 
-        public EntityId GetId(EGID egid)
-        {
-            return _ids[egid];
-        }
-
-        public EntityId GetId(uint entityId, ExclusiveGroupStruct groupId)
-        {
-            return this.GetId(new EGID(entityId, groupId));
-        }
-
         public bool TryGetId(VhId vhid, out EntityId id)
         {
-            return _ids.TryGet(vhid, out id);
-        }
-
-        public bool TryGetId(EGID egid, out EntityId id)
-        {
-            return _ids.TryGet(egid, out id);
-        }
-
-        public bool TryGetId(uint entityId, ExclusiveGroupStruct groupId, out EntityId id)
-        {
-            return _ids.TryGet(new EGID(entityId, groupId), out id);
-        }
-
-        public void Step(in Step _param)
-        {
-            while (_removed.TryDequeue(out EntityId removed))
-            {
-                _ids.Remove(removed.VhId, removed.EGID);
-            }
+            return _ids.TryGetValue(vhid, out id);
         }
 
         private EntityId Add(EntityId id)
         {
-            if(!_ids.TryAdd(id.VhId, id.EGID, id))
+            if(!_ids.TryAdd(id.VhId, id))
             {
                 throw new Exception();
             }
@@ -68,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         private EntityId Remove(EntityId id)
         {
-            _removed.Enqueue(id);
+            _ids.Remove(id.VhId);
 
             return id;
         }
