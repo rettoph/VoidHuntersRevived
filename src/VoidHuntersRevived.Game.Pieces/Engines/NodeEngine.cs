@@ -63,6 +63,8 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
                 ref var filter = ref _entities.GetFilter<Node>(treeId, Tree.NodeFilterContextId);
                 filter.Remove(ids[index], groupID);
+
+                _logger.Verbose("{ClassName}::{MethodName} - Removed node {NodeId} from tree {TreeId}.", nameof(NodeEngine), nameof(Remove), nodeVhId.Value, treeId.VhId.Value);
             }
         }
 

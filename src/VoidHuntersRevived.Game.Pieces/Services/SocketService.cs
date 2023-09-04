@@ -107,8 +107,21 @@ namespace VoidHuntersRevived.Game.Pieces.Services
                 ref Socket socket = ref sockets.Items[j];
 
                 var filter = this.GetCouplingFilter(socket.Id);
-                filter.ComputeFinalCount(out int count);
-                if (count > 0)
+                int count = 0;
+                foreach (var (indices, groupId) in filter)
+                {
+                    var (entityStatuses, _) = _entities.QueryEntities<EntityStatus>(groupId);
+
+                    for (int i = 0; i < indices.count; i++)
+                    {
+                        if (entityStatuses[indices[i]].IsSpawned)
+                        {
+                            count++;
+                        }
+                    }
+                }
+
+                if(count > 0)
                 {
                     continue;
                 }
