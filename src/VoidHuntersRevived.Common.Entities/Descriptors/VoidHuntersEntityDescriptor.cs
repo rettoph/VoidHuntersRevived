@@ -1,4 +1,6 @@
-﻿using Standart.Hash.xxHash;
+﻿using Guppy.Resources;
+using Microsoft.Xna.Framework;
+using Standart.Hash.xxHash;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using Svelto.ECS.Internal;
@@ -39,15 +41,22 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             }
         }
         public string Name => _name ??= this.GetType().Name;
+        public Resource<Color> DefaultColor { get; }
 
         public IComponentBuilder[] componentsToBuild => _dynamicDescriptor.componentsToBuild;
 
         public IEnumerable<ComponentManager> ComponentManagers => _componentManagers;
 
-        protected unsafe VoidHuntersEntityDescriptor()
+        protected VoidHuntersEntityDescriptor() : this(Resources.Colors.None)
+        {
+
+        }
+        protected unsafe VoidHuntersEntityDescriptor(Resource<Color> defaultColor)
         {
             _dynamicDescriptor = DynamicEntityDescriptor<BaseEntityDescriptor>.CreateDynamicEntityDescriptor();
             _componentManagers = new List<ComponentManager>();
+
+            this.DefaultColor = defaultColor;
         }
 
         protected VoidHuntersEntityDescriptor ExtendWith(ComponentManager[] managers)
@@ -61,6 +70,19 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             }
 
             return this;
+        }
+
+        public bool HasAll(params Type[] componentTypes)
+        {
+            foreach(Type componentType in componentTypes)
+            {
+                if(this.ComponentManagers.Any(x => x.Type == componentType) == false)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

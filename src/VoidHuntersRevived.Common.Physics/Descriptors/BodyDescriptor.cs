@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Common.Physics.Descriptors
 {
     public abstract class BodyDescriptor : VoidHuntersEntityDescriptor
     {
-        public BodyDescriptor()
+        public BodyDescriptor() : base(Resources.Colors.None)
         {
             this.ExtendWith(new ComponentManager[]
             {

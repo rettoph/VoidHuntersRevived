@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Guppy.Resources;
+using Microsoft.Xna.Framework;
 using Svelto.ECS;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
 {
     public abstract class PieceDescriptor : VoidHuntersEntityDescriptor
     {
-        public PieceDescriptor()
+        public PieceDescriptor(Resource<Color> defaultColor) : base(defaultColor)
         {
             this.ExtendWith(new ComponentManager[]
             {

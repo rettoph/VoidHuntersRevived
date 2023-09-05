@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Svelto.DataStructures;
 using Svelto.ECS;
+using System.Text.RegularExpressions;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
@@ -20,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
         public abstract VoidHuntersEntityDescriptor Descriptor { get; }
 
-        public abstract EntityInitializer Spawn(VhId vhid, out EntityId id);
+        public abstract EntityInitializer Spawn(in VhId vhid, in TeamId teamId, out EntityId id);
 
         public abstract void SoftDespawn(in EntityId id, in GroupIndex groupIndex);
         public abstract void RevertSoftDespawn(in EntityId id, in GroupIndex groupIndex);
@@ -40,23 +41,28 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
         private readonly IEngineService _engines;
-        private readonly ExclusiveGroup _group;
         private readonly FasterList<OnDespawnEngineInvoker> _onDespawnEngineInvokers;
         private readonly FasterList<ComponentSerializer> _serializers;
+        private readonly Dictionary<TeamId, ITeamDescriptorGroup> _teamDescriptorGroups;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
         public override VoidHuntersEntityDescriptor Descriptor => _descriptor;
 
-        public VoidHuntersEntityDescriptorEngine(IEngineService engines, ILifetimeScope scope, EnginesRoot enginesRoot, IEnumerable<VoidHuntersEntityDescriptor> descriptors)
+        public VoidHuntersEntityDescriptorEngine(
+            ITeamDescriptorGroupService teamDescriptorGroups,
+            IEngineService engines, 
+            ILifetimeScope scope, 
+            EnginesRoot enginesRoot, 
+            IEnumerable<VoidHuntersEntityDescriptor> descriptors)
         {
             _descriptor = descriptors.OfType<TDescriptor>().Single()!;
             _factory = enginesRoot.GenerateEntityFactory();
             _functions = enginesRoot.GenerateEntityFunctions();
             _engines = engines;
             _onDespawnEngineInvokers = new FasterList<OnDespawnEngineInvoker>();
-            _group = new ExclusiveGroup();
             _descriptorComponent = new DescriptorId(_descriptor.Id);
+            _teamDescriptorGroups = teamDescriptorGroups.GetAllByDescriptor(_descriptor);
 
             _serializers = new FasterList<ComponentSerializer>(_descriptor.ComponentManagers.Count());
             foreach (ComponentManager manager in _descriptor.ComponentManagers)
@@ -94,14 +100,15 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             }
         }
 
-        public override EntityInitializer Spawn(VhId vhid, out EntityId id)
+        public override EntityInitializer Spawn(in VhId vhid, in TeamId teamId, out EntityId id)
         {
-            EGID egid = new EGID(EntityId++, _group);
+            EGID egid = new EGID(EntityId++, _teamDescriptorGroups[teamId].GroupId);
             id = new EntityId(egid, vhid);
 
             EntityInitializer initializer = _factory.BuildEntity(egid, _descriptor);
             initializer.Init(id);
             initializer.Init(_descriptorComponent);
+            initializer.Init(teamId);
             initializer.Init(new EntityStatus()
             {
                 Value = EntityStatusEnum.Spawned

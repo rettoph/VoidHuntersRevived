@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Common.Pieces.Services
         ref Node GetHead(in Tree tree);
         ref Node GetHead(in EntityId treeId);
 
-        EntityId Spawn(VhId vhid, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> node);
-        EntityId Spawn(VhId vhid, IEntityType<TreeDescriptor> tree, EntityData nodes, EntityInitializerDelegate initializer);
+        EntityId Spawn(VhId vhid, TeamId teamId, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> node);
+        EntityId Spawn(VhId vhid, TeamId teamId, IEntityType<TreeDescriptor> tree, EntityData nodes, EntityInitializerDelegate initializer);
     }
 }

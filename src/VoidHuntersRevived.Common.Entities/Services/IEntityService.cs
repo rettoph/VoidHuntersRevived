@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Common.Entities.Services
         #endregion
 
         #region Entity Spawning
-        EntityId Spawn(IEntityType type, VhId vhid, EntityInitializerDelegate? initializer);
+        EntityId Spawn(IEntityType type, VhId vhid, TeamId teamId, EntityInitializerDelegate? initializer);
         void Despawn(VhId vhid);
         void Despawn(EntityId id);
 
@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Common.Entities.Services
         void Serialize(EntityId id, EntityWriter writer);
         void Serialize(VhId vhid, EntityWriter writer);
 
-        EntityId Deserialize(in VhId seed, EntityData data, EntityInitializerDelegate? initializer, VhId injection = default);
+        EntityId Deserialize(in VhId seed, TeamId teamId, EntityData data, EntityInitializerDelegate? initializer, VhId injection = default);
         EntityId Deserialize(EntityReader reader, EntityInitializerDelegate? initializer);
         #endregion
 
@@ -110,6 +110,24 @@ namespace VoidHuntersRevived.Common.Entities.Services
             where T3 : unmanaged, IEntityComponent;
 
         public GroupsEnumerable<T1, T2, T3, T4> QueryEntities<T1, T2, T3, T4>()
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+            where T3 : unmanaged, IEntityComponent
+            where T4 : unmanaged, IEntityComponent;
+
+        public GroupsEnumerable<T1> QueryEntities<T1>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
+            where T1 : unmanaged, IEntityComponent;
+
+        public GroupsEnumerable<T1, T2> QueryEntities<T1, T2>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent;
+
+        public GroupsEnumerable<T1, T2, T3> QueryEntities<T1, T2, T3>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+            where T3 : unmanaged, IEntityComponent;
+
+        public GroupsEnumerable<T1, T2, T3, T4> QueryEntities<T1, T2, T3, T4>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent

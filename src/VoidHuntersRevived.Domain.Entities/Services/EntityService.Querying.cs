@@ -1,4 +1,5 @@
-﻿using Svelto.ECS;
+﻿using Svelto.DataStructures;
+using Svelto.ECS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -162,6 +163,36 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             where T4 : unmanaged, IEntityComponent
         {
             var groups = this.entitiesDB.FindGroups<T1, T2, T3, T4>();
+            return this.entitiesDB.QueryEntities<T1, T2, T3, T4>(groups);
+        }
+
+        public GroupsEnumerable<T1> QueryEntities<T1>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
+            where T1 : unmanaged, IEntityComponent
+        {
+            return this.entitiesDB.QueryEntities<T1>(groups);
+        }
+
+        public GroupsEnumerable<T1, T2> QueryEntities<T1, T2>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+        {
+            return this.entitiesDB.QueryEntities<T1, T2>(groups);
+        }
+
+        public GroupsEnumerable<T1, T2, T3> QueryEntities<T1, T2, T3>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+            where T3 : unmanaged, IEntityComponent
+        {
+            return this.entitiesDB.QueryEntities<T1, T2, T3>(groups);
+        }
+
+        public GroupsEnumerable<T1, T2, T3, T4> QueryEntities<T1, T2, T3, T4>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+            where T3 : unmanaged, IEntityComponent
+            where T4 : unmanaged, IEntityComponent
+        {
             return this.entitiesDB.QueryEntities<T1, T2, T3, T4>(groups);
         }
     }

@@ -4,6 +4,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Simulations.Engines;
 
@@ -66,7 +67,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
         public void Step(in Step _param)
         {
-            foreach (var ((ids, trees, count), _) in _entities.QueryEntities<EntityId, Tree>())
+            foreach (var ((ids, trees, locations, count), _) in _entities.QueryEntities<EntityId, Tree, Location>())
             {
                 for (uint treeIndex = 0; treeIndex < count; treeIndex++)
                 {
@@ -78,7 +79,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
                         for (int i = 0; i < nodeIndices.count; i++)
                         {
-                            nodes[nodeIndices[i]].WorldTransform(trees[treeIndex].Transformation);
+                            nodes[nodeIndices[i]].WorldTransform(locations[treeIndex].Transformation);
                         }
                     }
                 }

@@ -16,11 +16,11 @@ namespace VoidHuntersRevived.Game.Pieces.Services
 {
     internal partial class TreeService
     {
-        public EntityId Spawn(VhId vhid, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> head)
+        public EntityId Spawn(VhId vhid, TeamId teamId, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> head)
         {
-            return _entities.Spawn(tree, vhid, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+            return _entities.Spawn(tree, vhid, teamId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {
-                EntityId headId = entities.Spawn(head, vhid.Create(1), (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+                EntityId headId = entities.Spawn(head, vhid.Create(1), teamId , (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                 {
                     initializer.Init(new Node(id, entities.GetId(vhid)));
                 });
@@ -29,12 +29,13 @@ namespace VoidHuntersRevived.Game.Pieces.Services
             });
         }
 
-        public EntityId Spawn(VhId vhid, IEntityType<TreeDescriptor> tree, EntityData nodes, EntityInitializerDelegate initializerDelegate)
+        public EntityId Spawn(VhId vhid, TeamId teamId, IEntityType<TreeDescriptor> tree, EntityData nodes, EntityInitializerDelegate initializerDelegate)
         {
-            return _entities.Spawn(tree, vhid, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+            return _entities.Spawn(tree, vhid, teamId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {
                 EntityId headId = entities.Deserialize(
                     seed: HashBuilder<TreeService, VhId, byte>.Instance.Calculate(vhid, 1),
+                    teamId: teamId,
                     injection: vhid,
                     data: nodes,
                     initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>

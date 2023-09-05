@@ -23,11 +23,13 @@ namespace VoidHuntersRevived.Domain.Simulations
     {
         private readonly Dictionary<Type, EventPublisher> _publishers;
         private IStepGroupEngine<GameTime> _drawEnginesGroup;
+        private IStepGroupEngine<GameTimeTeam> _teamDrawEnginesGroup;
 
         protected readonly ILogger logger;
 
         public readonly SimulationType Type;
         public readonly IEngineService Engines;
+        public readonly ITeamService Teams;
         public readonly ILifetimeScope Scope;
 
         SimulationType ISimulation.Type => this.Type;
@@ -48,12 +50,14 @@ namespace VoidHuntersRevived.Domain.Simulations
 
             // Pass the current scoped netscope to the new child scope
             this.Engines = this.Scope.Resolve<IEngineService>().Load(new SimulationState(this));
+            this.Teams = this.Scope.Resolve<ITeamService>();
 
             // Build an event publisher dictionary
             this.logger = this.Scope.Resolve<ILogger>();
             this._publishers = EventPublisher.BuildPublishers(this.Engines, this.logger);
 
             _drawEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<GameTime, DrawEngineSequence>(DrawEngineSequence.Draw);
+            _teamDrawEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<GameTimeTeam, DrawEngineSequence>(DrawEngineSequence.Draw);
         }
 
         public virtual void Initialize(ISimulationService simulations)
@@ -74,6 +78,11 @@ namespace VoidHuntersRevived.Domain.Simulations
         public virtual void Draw(GameTime realTime)
         {
             _drawEnginesGroup.Step(realTime);
+
+            foreach(ITeam team in this.Teams.All())
+            {
+                _teamDrawEnginesGroup.Step(new GameTimeTeam(realTime, team));
+            }
         }
 
         public virtual void Update(GameTime realTime)

@@ -38,9 +38,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             this.GetDescriptorEngine(descriptorId.Value).Serialize(writer, groupIndex);
         }
 
-        public EntityId Deserialize(in VhId seed, EntityData data, EntityInitializerDelegate? initializer, VhId injection = default)
+        public EntityId Deserialize(in VhId seed, TeamId teamId, EntityData data, EntityInitializerDelegate? initializer, VhId injection = default)
         {
-            _reader.Load(seed, data, injection);
+            _reader.Load(seed, teamId, data, injection);
             return this.Deserialize(_reader, initializer);
         }
 
@@ -57,6 +57,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 DescriptorId = descriptorId,
                 VhId = vhid,
+                TeamId = reader.TeamId,
                 Initializer = (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                 {
                     reader.Load(readerState);

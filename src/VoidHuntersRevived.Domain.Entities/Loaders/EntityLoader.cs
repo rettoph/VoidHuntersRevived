@@ -15,6 +15,10 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
     {
         public void ConfigureServices(ContainerBuilder builder)
         {
+            builder.RegisterType<TeamService>().As<ITeamService>().InstancePerLifetimeScope();
+
+            builder.RegisterType<TeamDescriptorGroupService>().As<ITeamDescriptorGroupService>().InstancePerLifetimeScope();
+
             builder.RegisterType<EntityTypeService>().As<IEntityTypeService>().AsSelf().InstancePerLifetimeScope();
 
             builder.RegisterType<SimpleEntitiesSubmissionScheduler>().AsSelf().As<EntitiesSubmissionScheduler>().InstancePerLifetimeScope();

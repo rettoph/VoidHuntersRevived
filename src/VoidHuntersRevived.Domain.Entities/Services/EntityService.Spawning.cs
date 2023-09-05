@@ -22,12 +22,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         IEventEngine<SoftDespawnEntity>,
         IRevertEventEngine<SoftDespawnEntity>
     {
-        public EntityId Spawn(IEntityType type, VhId vhid, EntityInitializerDelegate? initializer)
+        public EntityId Spawn(IEntityType type, VhId vhid, TeamId teamId, EntityInitializerDelegate? initializer)
         {
             this.Simulation.Publish(NameSpace<EntityService>.Instance, new SpawnEntityType()
             {
                 Type = type,
                 VhId = vhid,
+                TeamId = teamId,
                 Initializer = initializer
             });
 
@@ -91,7 +92,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to spawn EntityDescriptor {Id}, {Descriptor}", nameof(EntityService), nameof(Process), nameof(SpawnEntityDescriptor), data.VhId.Value, data.DescriptorId.Value);
 
-            this.SpawnDescriptor(data.DescriptorId, data.VhId, data.Initializer);
+            this.SpawnDescriptor(data.DescriptorId, data.VhId, data.TeamId, data.Initializer);
         }
 
         public void Revert(VhId eventId, SpawnEntityDescriptor data)
@@ -107,7 +108,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to spawn EntityType {Id}, {Type}", nameof(EntityService), nameof(Process), nameof(SpawnEntityType), data.VhId.Value, data.Type.Name);
 
-            this.SpawnType(data.Type, data.VhId, data.Initializer);
+            this.SpawnType(data.Type, data.VhId, data.TeamId, data.Initializer);
         }
 
         public void Revert(VhId eventId, SpawnEntityType data)
@@ -150,9 +151,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             throw new NotImplementedException();
         }
 
-        private EntityId SpawnDescriptor(VhId descriptorId, VhId vhid, EntityInitializerDelegate? initializerDelegate)
+        private EntityId SpawnDescriptor(VhId descriptorId, in VhId vhid, in TeamId teamId, EntityInitializerDelegate? initializerDelegate)
         {
-            EntityInitializer initializer = this.GetDescriptorEngine(descriptorId).Spawn(vhid, out EntityId id);
+            EntityInitializer initializer = this.GetDescriptorEngine(descriptorId).Spawn(vhid, teamId, out EntityId id);
             this.Add(id);
 
             initializerDelegate?.Invoke(this, ref initializer, in id);
@@ -160,9 +161,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return id;
         }
 
-        private EntityId SpawnType(IEntityType type, VhId vhid, EntityInitializerDelegate? initializerDelegate)
+        private EntityId SpawnType(IEntityType type, in VhId vhid, in TeamId teamId, EntityInitializerDelegate? initializerDelegate)
         {
-            EntityInitializer initializer = this.GetDescriptorEngine(type.Descriptor.Id).Spawn(vhid, out EntityId id);
+            EntityInitializer initializer = this.GetDescriptorEngine(type.Descriptor.Id).Spawn(vhid, teamId, out EntityId id);
             this.Add(id);
 
             _types.GetConfiguration(type).Initialize(this, ref initializer, in id);

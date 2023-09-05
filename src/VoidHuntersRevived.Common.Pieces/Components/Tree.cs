@@ -14,7 +14,6 @@ namespace VoidHuntersRevived.Common.Pieces.Components
         public static readonly FilterContextID NodeFilterContextId = FilterContextID.GetNewContextID();
 
         public readonly EntityId HeadId;
-        public FixMatrix Transformation;
 
         public Tree(EntityId headId)
         {

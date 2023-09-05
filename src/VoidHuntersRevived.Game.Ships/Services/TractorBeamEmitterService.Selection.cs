@@ -94,6 +94,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
             {
                 EntityId cloneId = _trees.Spawn(
                     vhid: eventId.Create(1),
+                    teamId: TeamId.Default,
                     tree: EntityTypes.Chain,
                     nodes: data.TargetData,
                     initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
@@ -123,8 +124,11 @@ namespace VoidHuntersRevived.Game.Ships.Services
             {
                 if(_sockets.TryGetSocketNode(data.AttachToSocketVhId, out SocketNode attachToSocketNode))
                 { // Spawn a new piece attached to the input node
+                    TeamId teamId = _entities.QueryById<TeamId>(attachToSocketNode.Node.TreeId);
+
                     EntityId nodeId = _entities.Deserialize(
                         seed: eventId.Create(1),
+                        teamId: teamId,
                         injection: attachToSocketNode.Node.TreeId.VhId,
                         data: data.TargetData,
                         initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
@@ -140,6 +144,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
                 { // Spawn a new free floating chain
                     EntityId cloneId = _trees.Spawn(
                         vhid: eventId.Create(2),
+                        teamId: TeamId.Default,
                         tree: EntityTypes.Chain,
                         nodes: data.TargetData,
                         initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>

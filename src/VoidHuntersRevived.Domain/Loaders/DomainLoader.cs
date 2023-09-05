@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Loaders
         {
             services.Configure<LoggerConfiguration>(config =>
             {
-                config.MinimumLevel.Is(Serilog.Events.LogEventLevel.Verbose);
+                config.MinimumLevel.Is(Serilog.Events.LogEventLevel.Warning);
 
                 config
                     .WriteTo.File(

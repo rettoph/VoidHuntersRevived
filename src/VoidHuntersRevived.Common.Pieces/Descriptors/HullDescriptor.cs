@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
 {
     public class HullDescriptor : PieceDescriptor
     {
-        public HullDescriptor()
+        public HullDescriptor() : base(Resources.Colors.Orange)
         {
             this.ExtendWith(new ComponentManager[]
             {
