@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Game.Client.Constants
 
         public const string SetTractorBeamEmitterActive = "set_tractor_beam_emitter_active";
 
-        public const string TogglePredictive = "toggle_predictive";
-        public const string ToggleLockstep = "toggle_lockstep";
+        public const string ToggleLockstepWireframe = "toggle_lockstep_wireframe";
+        public const string ToggleFps = "toggle_fps";
     }
 }

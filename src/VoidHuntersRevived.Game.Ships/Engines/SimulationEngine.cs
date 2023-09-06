@@ -23,25 +23,28 @@ namespace VoidHuntersRevived.Game.Ships.Engines
 
         public void Process(VhId eventId, Simulation_Begin data)
         {
-            for(int i=0; i<1000; i++)
-            {
-                _trees.Spawn(eventId.Create(i), TeamId.TeamZero, EntityTypes.Chain, EntityTypes.Pieces.HullTriangle);
-            }
+            // for(int i=0; i<1; i++)
+            // {
+            //     _trees.Spawn(eventId.Create(i), TeamId.TeamZero, EntityTypes.Chain, EntityTypes.Pieces.HullTriangle);
+            // }
 
-            //for (int x = -30; x < 30; x++)
-            //{
-            //    for (int y = -30; y < 30; y++)
-            //    {
-            //        _trees.Spawn(eventId.Create(i++), TeamId.Default, EntityTypes.Chain, EntityTypes.Pieces.HullTriangle, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
-            //        {
-            //            initializer.Init(new Location()
-            //            {
-            //                Position = new FixVector2((Fix64)x, (Fix64)y)
-            //            });
-            //        });
-            //    }
-            //
-            //}
+            int i = 0;
+            int radius = 100;
+            int step = 2;
+            for (int x = -radius; x < radius; x += 2)
+            {
+                for (int y = -radius; y < radius; y += 2)
+                {
+                    _trees.Spawn(eventId.Create(i++), TeamId.TeamZero, EntityTypes.Chain, EntityTypes.Pieces.HullTriangle, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+                    {
+                        initializer.Init(new Location()
+                        {
+                            Position = new FixVector2((Fix64)x, (Fix64)y)
+                        });
+                    });
+                }
+            
+            }
 
             //_trees.Spawn(eventId.Create(2), EntityTypes.UserShip, EntityTypes.Pieces.HullSquare);
         }

@@ -15,6 +15,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         private readonly IDictionary<SimulationType, ISimulation> _simulations;
         private readonly IList<SimulationType> _types;
         private readonly IList<ISimulation> _list;
+        private readonly IList<ISimulation> _reversed;
 
         public ReadOnlyCollection<SimulationType> Types { get; }
 
@@ -32,6 +33,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             _simulations = new Dictionary<SimulationType, ISimulation>();
             _list = new List<ISimulation>();
             _types = new List<SimulationType>();
+            _reversed = new List<ISimulation>();
             this.Instances = new ReadOnlyCollection<ISimulation>(_list);
             this.Types = new ReadOnlyCollection<SimulationType>(_types);
             this.Flags = 0;
@@ -57,6 +59,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
                 _simulations.Add(simulation.Type, simulation);
                 _list.Add(simulation);
                 _types.Add(simulation.Type);
+                _reversed.Insert(0, simulation);
             }
         }
 
@@ -90,7 +93,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
         public void Draw(GameTime gameTime)
         {
-            foreach (ISimulation simulation in _simulations.Values)
+            foreach (ISimulation simulation in _reversed)
             {
                 simulation.Draw(gameTime);
             }
@@ -98,7 +101,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
         public void Update(GameTime gameTime)
         {
-            foreach (ISimulation simulation in _simulations.Values)
+            foreach (ISimulation simulation in _list)
             {
                 simulation.Update(gameTime);
             }

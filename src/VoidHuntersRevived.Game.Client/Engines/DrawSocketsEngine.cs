@@ -19,6 +19,7 @@ using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.FixedPoint.Utilities;
+using VoidHuntersRevived.Common.FixedPoint.Extensions;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -53,18 +54,29 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in GameTimeTeam _param)
         {
+            if(_camera.Zoom < 60)
+            {
+                return;
+            }
+
             _primitiveBatch.Begin(_screen.Camera);
             foreach (ITeamDescriptorGroup teamDescriptorGroup in _teamDescriptorGroups[_param.Team.Id])
             {
                 var (statuses, sockets, nodes, count) = _entities.QueryEntities<EntityStatus, Sockets, Node>(teamDescriptorGroup.GroupId);
                 for (int index = 0; index < count; index++)
                 {
+                    if (_camera.Frustum.Contains(nodes[index].Transformation.GetBoudingSphere(5f)) == ContainmentType.Disjoint)
+                    {
+                        continue;
+                    }
+
                     for (int j = 0; j < sockets[index].Items.count; j++)
                     {
                         if (statuses[index].IsSpawned)
                         {
-                            Matrix jointTransformation = FixMatrixHelper.FastMultiplyTransformationsToXnaMatrix(sockets[index].Items[j].Location.Transformation, nodes[index].Transformation);
-                            _primitiveBatch.Trace(_jointShape, teamDescriptorGroup.SecondaryColor, jointTransformation);
+                            Matrix socketsTransformation = FixMatrixHelper.FastMultiplyTransformationsToXnaMatrix(sockets[index].Items[j].Location.Transformation, nodes[index].Transformation);
+                           
+                            _primitiveBatch.Trace(_jointShape, teamDescriptorGroup.SecondaryColor, socketsTransformation);
                         }
                     }
 

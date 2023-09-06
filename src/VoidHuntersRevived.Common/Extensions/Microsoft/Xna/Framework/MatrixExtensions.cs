@@ -18,5 +18,10 @@ namespace Microsoft.Xna.Framework
         {
             return (float)Math.Atan2(matrix.M12, matrix.M11);
         }
+
+        public static BoundingSphere GetBoudingSphere(this Matrix matrix, float radius)
+        {
+            return new BoundingSphere(new Vector3(matrix.M41, matrix.M42, matrix.M43), radius);
+        }
     }
 }

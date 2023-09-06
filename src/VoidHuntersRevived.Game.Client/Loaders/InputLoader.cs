@@ -34,6 +34,16 @@ namespace VoidHuntersRevived.Game.Client.Loaders
                 (ButtonState.Pressed, new Input_TractorBeamEmitter_SetActive(true)),
                 (ButtonState.Released, new Input_TractorBeamEmitter_SetActive(false))
             });
+
+            services.AddInput(Inputs.ToggleLockstepWireframe, Keys.F12, new (ButtonState, IMessage)[]
+            {
+                (ButtonState.Released, new Input_Toggle_LockstepWireframe())
+            });
+
+            services.AddInput(Inputs.ToggleFps, Keys.F11, new (ButtonState, IMessage)[]
+            {
+                            (ButtonState.Released, new Input_Toggle_FPS())
+            });
         }
 
         private static void AddSetDirectionInput(ContainerBuilder services, string key, Keys defaultSource, Direction direction)

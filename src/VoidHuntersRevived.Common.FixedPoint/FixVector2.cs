@@ -25,6 +25,13 @@ namespace VoidHuntersRevived.Common
             result = Fix64.Sqrt(dx * dx + dy * dy);
         }
 
+        public static Fix64 Distance(FixVector2 v1, FixVector2 v2)
+        {
+            Fix64 dx = v1.X - v2.X;
+            Fix64 dy = v1.Y - v2.Y;
+            return Fix64.Sqrt(dx * dx + dy * dy);
+        }
+
         /// <summary>
         /// Creates a new <see cref="AetherVector2"/> that contains linear interpolation of the specified vectors.
         /// </summary>

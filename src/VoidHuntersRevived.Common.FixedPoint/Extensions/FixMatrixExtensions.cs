@@ -18,5 +18,10 @@ namespace VoidHuntersRevived.Common.FixedPoint.Extensions
         {
             return Fix64.Atan2(matrix.M12, matrix.M11);
         }
+
+        public static BoundingSphere GetBoudingSphere(this FixMatrix matrix, float radius)
+        {
+            return new BoundingSphere(new Vector3((float)matrix.M41, (float)matrix.M42, (float)matrix.M43), radius);
+        }
     }
 }
