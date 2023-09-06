@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Game.Pieces.Services
 {
     internal partial class TreeService
     {
-        public EntityId Spawn(VhId vhid, TeamId teamId, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> head)
+        public EntityId Spawn(VhId vhid, TeamId teamId, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> head, EntityInitializerDelegate? initializerDelegate = null)
         {
             return _entities.Spawn(tree, vhid, teamId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {
@@ -26,6 +26,7 @@ namespace VoidHuntersRevived.Game.Pieces.Services
                 });
 
                 initializer.Init(new Tree(headId));
+                initializerDelegate?.Invoke(entities, ref initializer, in id);
             });
         }
 

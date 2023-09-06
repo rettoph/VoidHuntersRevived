@@ -30,5 +30,11 @@ namespace VoidHuntersRevived.Game.Pieces.Services
             ref Tree tree = ref _entities.QueryById<Tree>(treeId);
             return ref this.GetHead(in tree);
         }
+
+        public ref Node GetHead(in GroupIndex treeGroupIndex)
+        {
+            ref Tree tree = ref _entities.QueryByGroupIndex<Tree>(treeGroupIndex);
+            return ref this.GetHead(in tree);
+        }
     }
 }

@@ -67,10 +67,15 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
         public void Step(in Step _param)
         {
-            foreach (var ((ids, trees, locations, count), _) in _entities.QueryEntities<EntityId, Tree, Location>())
+            foreach (var ((ids, _, locations, awake, count), _) in _entities.QueryEntities<EntityId, Tree, Location, Awake>())
             {
                 for (uint treeIndex = 0; treeIndex < count; treeIndex++)
                 {
+                    if (awake[treeIndex] == false)
+                    {
+                        continue;
+                    }
+
                     ref var filter = ref _entities.GetFilter<Node>(ids[treeIndex], Tree.NodeFilterContextId);
 
                     foreach (var (nodeIndices, group) in filter)

@@ -16,19 +16,19 @@ using VoidHuntersRevived.Common.Simulations.Engines;
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
-    internal sealed class BodyEngine : BasicEngine,
+    internal sealed class BodyLocationEngine : BasicEngine,
         IReactOnAddAndRemoveEx<Location>, IStepEngine<Step>
     {
         private readonly IEntityService _entities;
         private readonly ISpace _space;
 
-        public BodyEngine(IEntityService entities, ISpace space)
+        public BodyLocationEngine(IEntityService entities, ISpace space)
         {
             _entities = entities;
             _space = space;
         }
 
-        public string name { get; } = nameof(BodyEngine);
+        public string name { get; } = nameof(BodyLocationEngine);
 
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Location> entities, ExclusiveGroupStruct groupID)
         {
@@ -56,13 +56,18 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         public void Step(in Step _param)
         {
-            foreach (var ((ids, bodies, count), _) in _entities.QueryEntities<EntityId, Location>())
+            foreach (var ((ids, locations, awakes, count), _) in _entities.QueryEntities<EntityId, Location, Awake>())
             {
                 for (int i = 0; i < count; i++)
                 {
-                    IBody body = _space.GetBody(ids[i].VhId);
-                    ref Location location = ref bodies[i];
+                    if(awakes[i] == false)
+                    {
+                        continue;
+                    }
 
+                    IBody body = _space.GetBody(ids[i].VhId);
+
+                    ref Location location = ref locations[i];
                     location.Position = body.Position;
                     location.Rotation = body.Rotation;
                 }

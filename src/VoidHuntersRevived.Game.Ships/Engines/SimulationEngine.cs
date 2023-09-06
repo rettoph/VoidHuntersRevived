@@ -1,6 +1,9 @@
 ﻿using Guppy.Attributes;
+using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Events;
@@ -24,6 +27,21 @@ namespace VoidHuntersRevived.Game.Ships.Engines
             {
                 _trees.Spawn(eventId.Create(i), TeamId.Default, EntityTypes.Chain, EntityTypes.Pieces.HullTriangle);
             }
+
+            //for (int x = -30; x < 30; x++)
+            //{
+            //    for (int y = -30; y < 30; y++)
+            //    {
+            //        _trees.Spawn(eventId.Create(i++), TeamId.Default, EntityTypes.Chain, EntityTypes.Pieces.HullTriangle, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+            //        {
+            //            initializer.Init(new Location()
+            //            {
+            //                Position = new FixVector2((Fix64)x, (Fix64)y)
+            //            });
+            //        });
+            //    }
+            //
+            //}
 
             //_trees.Spawn(eventId.Create(2), EntityTypes.UserShip, EntityTypes.Pieces.HullSquare);
         }

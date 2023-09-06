@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [AutoLoad]
     [Sequence<DrawEngineSequence>(DrawEngineSequence.PostDraw)]
     [SimulationTypeFilter(SimulationType.Predictive)]
-    internal class SocketsEngine : BasicEngine, IStepEngine<GameTimeTeam>
+    internal class DrawSocketsEngine : BasicEngine, IStepEngine<GameTimeTeam>
     {
         private readonly IScreen _screen;
         private readonly IEntityService _entities;
@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly PrimitiveShape _jointShape;
         private readonly Dictionary<TeamId, ITeamDescriptorGroup[]> _teamDescriptorGroups;
 
-        public SocketsEngine(IScreen screen, IEntityService entities, ITeamDescriptorGroupService teamDescriptorGroups, Camera2D camera, PrimitiveBatch<VertexPositionColor> primitiveBatch)
+        public DrawSocketsEngine(IScreen screen, IEntityService entities, ITeamDescriptorGroupService teamDescriptorGroups, Camera2D camera, PrimitiveBatch<VertexPositionColor> primitiveBatch)
         {
             _screen = screen;
             _entities = entities;
@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             _teamDescriptorGroups = teamDescriptorGroups.GetAllWithComponentsByTeams(typeof(Sockets), typeof(Node));
         }
-        public string name { get; } = nameof(SocketsEngine);
+        public string name { get; } = nameof(DrawSocketsEngine);
 
         public void Step(in GameTimeTeam _param)
         {
@@ -63,8 +63,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     {
                         if (statuses[index].IsSpawned)
                         {
-                            FixMatrix jointTransformation = FixMatrixHelper.FastMultiplyTransformations(sockets[index].Items[j].Location.Transformation, nodes[index].Transformation);
-                            _primitiveBatch.Trace(_jointShape, teamDescriptorGroup.Color, jointTransformation.XnaMatrix);
+                            Matrix jointTransformation = FixMatrixHelper.FastMultiplyTransformationsToXnaMatrix(sockets[index].Items[j].Location.Transformation, nodes[index].Transformation);
+                            _primitiveBatch.Trace(_jointShape, teamDescriptorGroup.Color, jointTransformation);
                         }
                     }
 

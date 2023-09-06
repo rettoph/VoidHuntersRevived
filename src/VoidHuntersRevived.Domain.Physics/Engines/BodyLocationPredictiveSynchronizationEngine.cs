@@ -1,19 +1,24 @@
-﻿using Autofac;
-using Guppy.Attributes;
-using VoidHuntersRevived.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Physics;
-using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
+using VoidHuntersRevived.Common;
+using Guppy.Attributes;
+using Autofac;
+using VoidHuntersRevived.Common.Simulations.Engines;
 
-namespace VoidHuntersRevived.Game.Ships.Engines
+namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
-    internal class PredictiveShipSynchronizationEngine : BasicEngine, IPredictiveSynchronizationEngine
+    internal class BodyLocationPredictiveSynchronizationEngine : BasicEngine, IPredictiveSynchronizationEngine
     {
         private readonly ISpace _predictiveSpace;
         private ISpace _lockstepSpace;
 
-        public PredictiveShipSynchronizationEngine(ISpace space)
+        public BodyLocationPredictiveSynchronizationEngine(ISpace space)
         {
             _predictiveSpace = space;
             _lockstepSpace = null!;
@@ -28,12 +33,18 @@ namespace VoidHuntersRevived.Game.Ships.Engines
         {
             Fix64 damping = step.ElapsedTime;
 
-            foreach (IBody predictiveBody in _predictiveSpace.AllBodies())
+            foreach(IBody lockstepBody in _lockstepSpace.AllBodies())
             {
-                if(!_lockstepSpace.TryGetBody(predictiveBody.Id, out IBody? lockstepBody))
+                if(lockstepBody.Awake == false)
                 {
                     continue;
                 }
+
+                if (!_predictiveSpace.TryGetBody(lockstepBody.Id, out IBody? predictiveBody))
+                {
+                    continue;
+                }
+
 
                 predictiveBody.SetTransform(
                     position: FixVector2.Lerp(predictiveBody.Position, lockstepBody.Position, damping),

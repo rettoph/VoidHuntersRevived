@@ -29,5 +29,15 @@ namespace VoidHuntersRevived.Game.Pieces.Services
         {
             return this.GetTree(node).HeadId == node.Id;
         }
+
+        public bool IsHead(in Node node, in GroupIndex treeGroupIndex)
+        {
+            if(_entities.TryQueryByGroupIndex<Tree>(treeGroupIndex, out Tree tree))
+            {
+                return tree.HeadId == node.Id;
+            }
+
+            return false;
+        }
     }
 }

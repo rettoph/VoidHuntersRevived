@@ -73,11 +73,12 @@ namespace VoidHuntersRevived.Game.Ships.Services
                     return true;
                 }
 
-                if(_entities.TryQueryById(queryNode.TreeId, out Tractorable tractorable) && tractorable.TractorBeamEmitter == default)
+                ref Tree tree = ref _entities.QueryById<Tree>(queryNode.TreeId, out GroupIndex treeGroupIndex);
+                if(_entities.TryQueryByGroupIndex(treeGroupIndex, out Tractorable tractorable) && tractorable.TractorBeamEmitter == default)
                 { // Target resides within a tractorable tree, so we want to grab the head
-                    callbackTargetNode = _trees.GetHead(queryNode.TreeId);
+                    callbackTargetNode = tree.HeadId == queryNode.Id ? queryNode : _entities.QueryById<Node>(tree.HeadId);
                 }
-                else if(queryNode.TreeId == tractorBeamEmitterId && !_nodes.IsHead(queryNode))
+                else if(queryNode.TreeId == tractorBeamEmitterId && tree.HeadId != queryNode.Id)
                 { // The node belongs to the current tractor beam emitter's ship and is not the head
                     callbackTargetNode = queryNode;
                 }
@@ -86,7 +87,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
                     return true;
                 }
 
-                if(!_entities.IsSpawned(callbackTargetNode.Value.TreeId))
+                if(!_entities.IsSpawned(treeGroupIndex))
                 { // Tree has been soft despawned
                     return true;
                 }

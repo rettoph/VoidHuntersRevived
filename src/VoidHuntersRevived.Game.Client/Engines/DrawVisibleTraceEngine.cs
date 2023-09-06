@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [AutoLoad]
     [SimulationTypeFilter(SimulationType.Predictive)]
     [Sequence<DrawEngineSequence>(DrawEngineSequence.PostDraw)]
-    internal sealed class VisibleTraceEngine : BasicEngine, IStepEngine<GameTimeTeam>
+    internal sealed class DrawVisibleTraceEngine : BasicEngine, IStepEngine<GameTimeTeam>
     {
         private readonly short[] _indexBuffer;
         private readonly IVisibleRenderingService _visibleRenderingService;
@@ -44,9 +44,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly ILogger _logger;
         private readonly Dictionary<TeamId, ITeamDescriptorGroup[]> _teamDescriptorGroups;
 
-        public string name { get; } = nameof(VisibleFillEngine);
+        public string name { get; } = nameof(DrawVisibleFillEngine);
 
-        public VisibleTraceEngine(
+        public DrawVisibleTraceEngine(
             ILogger logger, 
             IVisibleRenderingService visibleRenderingService, 
             IEntityService entities, 
@@ -79,12 +79,12 @@ namespace VoidHuntersRevived.Game.Client.Engines
                         {
                             Matrix transformation = nodes[index].Transformation.XnaMatrix;
                             _visibleRenderingService.Trace(in visibles[index], ref transformation, teamDescriptorGroup.Color);
-                            //_visibleRenderingService.Fill(in visibles[i], ref transformation, this.Simulation.Type == SimulationType.Predictive ? Color.Green : Color.Red);
+                            // _visibleRenderingService.Trace(in visibles[index], ref transformation, this.Simulation.Type == SimulationType.Predictive ? Color.Yellow : Color.Red);
                         }
                     }
                     catch (Exception e)
                     {
-                        _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to fill shapes for visible {VisibleVhId}", nameof(VisibleFillEngine), nameof(Step), ids[index].VhId.Value);
+                        _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to fill shapes for visible {VisibleVhId}", nameof(DrawVisibleFillEngine), nameof(Step), ids[index].VhId.Value);
                     }
                 }
             }

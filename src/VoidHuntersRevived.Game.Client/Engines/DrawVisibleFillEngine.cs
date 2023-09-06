@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [AutoLoad]
     [SimulationTypeFilter(SimulationType.Predictive)]
     [Sequence<DrawEngineSequence>(DrawEngineSequence.Draw)]
-    internal sealed class VisibleFillEngine : BasicEngine, IStepEngine<GameTimeTeam>
+    internal sealed class DrawVisibleFillEngine : BasicEngine, IStepEngine<GameTimeTeam>
     {
         private readonly short[] _indexBuffer;
         private readonly IVisibleRenderingService _visibleRenderingService;
@@ -44,9 +44,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly ILogger _logger;
         private readonly Dictionary<TeamId, ITeamDescriptorGroup[]> _teamDescriptorGroups;
 
-        public string name { get; } = nameof(VisibleFillEngine);
+        public string name { get; } = nameof(DrawVisibleFillEngine);
 
-        public VisibleFillEngine(
+        public DrawVisibleFillEngine(
             ILogger logger, 
             IVisibleRenderingService visibleRenderingService, 
             IEntityService entities, 
@@ -70,7 +70,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _visibleRenderingService.BeginFill();
             foreach (ITeamDescriptorGroup teamDescriptorGroup in _teamDescriptorGroups[_param.Team.Id])
             {
-                var (ids, statuses, visibles, nodes, count) = _entities.QueryEntities<EntityId, EntityStatus, Visible, Node>(teamDescriptorGroup.GroupId);
+                var (statuses, visibles, nodes, count) = _entities.QueryEntities<EntityStatus, Visible, Node>(teamDescriptorGroup.GroupId);
                 for (int index = 0; index < count; index++)
                 {
                     try
@@ -84,7 +84,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     }
                     catch (Exception e)
                     {
-                        _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to fill shapes for visible {VisibleVhId}", nameof(VisibleFillEngine), nameof(Step), ids[index].VhId.Value);
+                        var (ids, _) = _entities.QueryEntities<EntityId>(teamDescriptorGroup.GroupId);
+                        _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to fill shapes for visible {VisibleVhId}", nameof(DrawVisibleFillEngine), nameof(Step), ids[index].VhId.Value);
                     }
                 }
             }

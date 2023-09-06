@@ -60,6 +60,8 @@ namespace VoidHuntersRevived.Domain.Physics
             }
         }
 
+        public bool Awake => _aether.Awake;
+
         public Body(Space space, VhId id)
         {
             _space = space;
@@ -76,6 +78,7 @@ namespace VoidHuntersRevived.Domain.Physics
             FixedMath64 fixedMathRotation = Unsafe.As<Fix64, FixedMath64>(ref rotation);
 
             _aether.SetTransformIgnoreContacts(ref aetherPosition, fixedMathRotation);
+            _aether.Awake = true;
         }
 
         public void SetVelocity(FixVector2 linear, Fix64 angular)
