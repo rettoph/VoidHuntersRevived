@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
                 configuration.HasInitializer((IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                 {
                     initializer.Init<Rigid>(Rigid.Polygon(Fix64.One, 3));
-                    initializer.Init<Visible>(Visible.Polygon(Colors.Orange, 3));
+                    initializer.Init<Visible>(Visible.Polygon(Colors.HullPrimaryColor, 3));
                     initializer.Init<Sockets>(Sockets.Polygon(id, 3));
                 });
             });
@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
                 configuration.HasInitializer((IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                 {
                     initializer.Init<Rigid>(Rigid.Polygon(Fix64.One, 4));
-                    initializer.Init<Visible>(Visible.Polygon(Colors.Orange, 4));
+                    initializer.Init<Visible>(Visible.Polygon(Colors.HullPrimaryColor, 4));
                     initializer.Init<Sockets>(Sockets.Polygon(id, 4));
                 });
             });

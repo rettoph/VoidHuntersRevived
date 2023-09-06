@@ -94,7 +94,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
             {
                 EntityId cloneId = _trees.Spawn(
                     vhid: eventId.Create(1),
-                    teamId: TeamId.Default,
+                    teamId: TeamId.TeamZero,
                     tree: EntityTypes.Chain,
                     nodes: data.TargetData,
                     initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
@@ -144,7 +144,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
                 { // Spawn a new free floating chain
                     EntityId cloneId = _trees.Spawn(
                         vhid: eventId.Create(2),
-                        teamId: TeamId.Default,
+                        teamId: TeamId.TeamZero,
                         tree: EntityTypes.Chain,
                         nodes: data.TargetData,
                         initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>

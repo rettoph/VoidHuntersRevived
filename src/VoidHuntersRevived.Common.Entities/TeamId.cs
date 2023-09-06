@@ -12,8 +12,8 @@ namespace VoidHuntersRevived.Common.Entities
 {
     public struct TeamId : IEquatable<TeamId>, IEntityComponent
     {
-        public static readonly TeamId Default = new TeamId(nameof(Default));
-        public static readonly TeamId Blue = new TeamId(nameof(Blue));
+        public static readonly TeamId TeamZero = new TeamId(nameof(TeamZero));
+        public static readonly TeamId TeamOne = new TeamId(nameof(TeamOne));
 
         public readonly VhId Value;
 

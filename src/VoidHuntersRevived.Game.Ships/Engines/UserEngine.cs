@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
         {
             VhId shipId = _scope.Peer!.Users.UpdateOrCreate(data.UserId, data.Claims).GetUserShipId();
 
-            _trees.Spawn(shipId, TeamId.Blue, EntityTypes.UserShip, EntityTypes.Pieces.HullSquare);
+            _trees.Spawn(shipId, TeamId.TeamOne, EntityTypes.UserShip, EntityTypes.Pieces.HullSquare);
             // _treeFactory.Create(id.Create(1), EntityTypes.Chain, PieceTypes.HullSquare);
         }
     }
