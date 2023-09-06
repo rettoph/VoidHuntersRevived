@@ -31,13 +31,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
         }
 
-        public void Register(in TeamId id, Resource<string> name, Resource<Color> color)
+        public void Register(in TeamId id, Resource<string> name, Resource<Color> primaryColor, Resource<Color> secondaryColor)
         {
             _teams.Add(id, new Team()
             {
                 Id = id,
                 Name = _resources.Get(name) ?? string.Empty,
-                Color = _resources.Get(color)
+                PrimaryColor = _resources.Get(primaryColor),
+                SecondaryColor = _resources.Get(secondaryColor)
             });
         }
 

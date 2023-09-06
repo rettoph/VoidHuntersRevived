@@ -16,8 +16,8 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
     {
         public void Configure(ITeamService teams)
         {
-            teams.Register(TeamId.Default, Resources.Strings.DefaultTeam, Resources.Colors.None);
-            teams.Register(TeamId.Blue, Resources.Strings.BlueTeam, Resources.Colors.Blue);
+            teams.Register(TeamId.Default, Resources.Strings.DefaultTeam, Resources.Colors.None, Resources.Colors.None);
+            teams.Register(TeamId.Blue, Resources.Strings.BlueTeam, Resources.Colors.Blue, Resources.Colors.LightBlue);
         }
     }
 }

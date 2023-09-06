@@ -42,9 +42,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _primitiveBatch = primitiveBatch;
             _jointShape = new ProjectedShape(camera, new[]
             {
-                new Vector2(-0.1f, -0.15f),
+                new Vector2(-0.05f, -0.05f),
                 new Vector2(0f, 0f),
-                new Vector2(-0.1f, 0.15f),
+                new Vector2(-0.05f, 0.05f),
             });
 
             _teamDescriptorGroups = teamDescriptorGroups.GetAllWithComponentsByTeams(typeof(Sockets), typeof(Node));
@@ -64,7 +64,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                         if (statuses[index].IsSpawned)
                         {
                             Matrix jointTransformation = FixMatrixHelper.FastMultiplyTransformationsToXnaMatrix(sockets[index].Items[j].Location.Transformation, nodes[index].Transformation);
-                            _primitiveBatch.Trace(_jointShape, teamDescriptorGroup.Color, jointTransformation);
+                            _primitiveBatch.Trace(_jointShape, teamDescriptorGroup.SecondaryColor, jointTransformation);
                         }
                     }
 

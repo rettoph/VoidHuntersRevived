@@ -15,6 +15,8 @@ namespace VoidHuntersRevived.Domain.Entities
 
         public string Name { get; init; }
 
-        public Color Color { get; init; }
+        public Color PrimaryColor { get; init; }
+
+        public Color SecondaryColor { get; init; }
     }
 }

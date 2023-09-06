@@ -41,22 +41,24 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             }
         }
         public string Name => _name ??= this.GetType().Name;
-        public Resource<Color> DefaultColor { get; }
+        public Resource<Color> PrimaryColor { get; }
+        public Resource<Color> SecondaryColor { get; }
 
         public IComponentBuilder[] componentsToBuild => _dynamicDescriptor.componentsToBuild;
 
         public IEnumerable<ComponentManager> ComponentManagers => _componentManagers;
 
-        protected VoidHuntersEntityDescriptor() : this(Resources.Colors.None)
+        protected VoidHuntersEntityDescriptor() : this(Resources.Colors.None, Resources.Colors.None)
         {
 
         }
-        protected unsafe VoidHuntersEntityDescriptor(Resource<Color> defaultColor)
+        protected unsafe VoidHuntersEntityDescriptor(Resource<Color> primaryColor, Resource<Color> secondaryColor)
         {
             _dynamicDescriptor = DynamicEntityDescriptor<BaseEntityDescriptor>.CreateDynamicEntityDescriptor();
             _componentManagers = new List<ComponentManager>();
 
-            this.DefaultColor = defaultColor;
+            this.PrimaryColor = primaryColor;
+            this.SecondaryColor = secondaryColor;
         }
 
         protected VoidHuntersEntityDescriptor ExtendWith(ComponentManager[] managers)

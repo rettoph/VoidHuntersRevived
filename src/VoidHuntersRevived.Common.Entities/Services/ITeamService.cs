@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Common.Entities.Services
 {
     public interface ITeamService
     {
-        void Register(in TeamId id, Resource<string> name, Resource<Color> color);
+        void Register(in TeamId id, Resource<string> name, Resource<Color> primaryColor, Resource<Color> secondaryColor);
 
         IEnumerable<ITeam> All();
     }

@@ -22,7 +22,9 @@ namespace VoidHuntersRevived.Common
             public static readonly Resource<Color> None = new Resource<Color>($"{nameof(Colors)}.{nameof(None)}");
 
             public static readonly Resource<Color> Orange = new Resource<Color>($"{nameof(Colors)}.{nameof(Orange)}");
+            public static readonly Resource<Color> Yellow = new Resource<Color>($"{nameof(Colors)}.{nameof(Yellow)}");
             public static readonly Resource<Color> Blue = new Resource<Color>($"{nameof(Colors)}.{nameof(Blue)}");
+            public static readonly Resource<Color> LightBlue = new Resource<Color>($"{nameof(Colors)}.{nameof(LightBlue)}");
 
             public static readonly Resource<Color> TractorBeamHighlight = new Resource<Color>($"{nameof(Colors)}.{nameof(TractorBeamHighlight)}");
         }

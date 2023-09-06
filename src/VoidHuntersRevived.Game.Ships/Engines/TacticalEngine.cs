@@ -31,6 +31,11 @@ namespace VoidHuntersRevived.Game.Ships.Engines
             ref Tactical tactical = ref _entities.QueryById<Tactical>(id);
 
             tactical.Target = data.Value;
+
+            if(data.Snap)
+            {
+                tactical.Value = data.Value;
+            }
         }
 
         public void Step(in Step _param)

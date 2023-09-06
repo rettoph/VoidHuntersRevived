@@ -11,6 +11,7 @@ namespace VoidHuntersRevived.Common.Entities
     {
         TeamId Id { get; }
         string Name { get; }
-        Color Color { get; }
+        Color PrimaryColor { get; }
+        Color SecondaryColor { get; }
     }
 }

@@ -1,10 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 
 namespace VoidHuntersRevived.Common.Entities
@@ -15,6 +10,7 @@ namespace VoidHuntersRevived.Common.Entities
         VoidHuntersEntityDescriptor Descriptor { get; }
         ExclusiveGroupStruct GroupId { get; }
 
-        Color Color { get; }
+        Color PrimaryColor { get; }
+        Color SecondaryColor { get; }
     }
 }

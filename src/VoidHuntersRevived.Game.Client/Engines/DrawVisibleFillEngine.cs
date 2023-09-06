@@ -78,7 +78,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                         if (statuses[index].IsSpawned)
                         {
                             Matrix transformation = nodes[index].Transformation.XnaMatrix;
-                            _visibleRenderingService.Fill(in visibles[index], ref transformation, teamDescriptorGroup.Color);
+                            _visibleRenderingService.Fill(in visibles[index], ref transformation, teamDescriptorGroup.PrimaryColor);
                             //_visibleRenderingService.Fill(in visibles[i], ref transformation, this.Simulation.Type == SimulationType.Predictive ? Color.Green : Color.Red);
                         }
                     }

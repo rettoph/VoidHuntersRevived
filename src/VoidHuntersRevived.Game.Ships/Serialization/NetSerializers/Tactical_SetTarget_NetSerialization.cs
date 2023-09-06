@@ -18,7 +18,8 @@ namespace VoidHuntersRevived.Game.Ships.Serialization.NetSerializers
             return new Tactical_SetTarget()
             {
                 ShipVhId = reader.GetVhId(),
-                Value = reader.GetFixVector2()
+                Value = reader.GetFixVector2(),
+                Snap = reader.GetBool()
             };
         }
 
@@ -26,6 +27,7 @@ namespace VoidHuntersRevived.Game.Ships.Serialization.NetSerializers
         {
             writer.Put(instance.ShipVhId);
             writer.Put(instance.Value);
+            writer.Put(instance.Snap);
         }
     }
 }

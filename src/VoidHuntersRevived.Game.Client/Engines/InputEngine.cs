@@ -99,7 +99,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     data: new Tactical_SetTarget()
                     {
                         ShipVhId = shipId.VhId,
-                        Value = (FixVector2)this.CurrentTargetPosition
+                        Value = (FixVector2)this.CurrentTargetPosition,
+                        Snap = true
                     });
 
                 this.Simulation.Input(
@@ -145,7 +146,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 data: new Tactical_SetTarget()
                 {
                     ShipVhId = localShipVhId,
-                    Value = (FixVector2)this.CurrentTargetPosition
+                    Value = (FixVector2)this.CurrentTargetPosition,
+                    Snap = false
                 });
         }
     }
