@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Common.Physics
 {
     public interface IBody
     {
-        VhId Id { get; }
+        EntityId Id { get; }
 
         ISpace? Space { get; }
 
@@ -23,6 +24,7 @@ namespace VoidHuntersRevived.Common.Physics
         CollisionGroup CollidesWith { get; set; }
 
         bool Awake { get; }
+        bool SleepingAllowed { get; set; }
 
         IFixture Create(VhId id, Polygon polygon, FixMatrix transformation);
         void Destroy(IFixture fixture);

@@ -23,5 +23,19 @@ namespace VoidHuntersRevived.Common.FixedPoint.Extensions
         {
             return new BoundingSphere(new Vector3((float)matrix.M41, (float)matrix.M42, (float)matrix.M43), radius);
         }
+
+        public static Matrix ToTransformationXnaMatrix(this FixMatrix matrix)
+        {
+            float cos = (float)matrix.M11;
+            float sin = (float)matrix.M12;
+            float x = (float)matrix.M41;
+            float y = (float)matrix.M42;
+            return new Matrix(
+                cos,    sin,    0f,     0f,
+                -sin,   cos,    0f,     0f,
+                0f,     0f,     1f,     0f,
+                x,      y,      0f,     1f
+            );
+        }
     }
 }

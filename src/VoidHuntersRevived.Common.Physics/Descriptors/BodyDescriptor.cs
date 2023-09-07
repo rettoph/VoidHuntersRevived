@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Common.Physics.Descriptors
             {
                 new ComponentManager<Collision, CollisionComponentSerializer>(),
                 new ComponentManager<Location, LocationComponentSerializer>(),
-                new ComponentManager<Awake, AwakeComponentSerializer>(),
+                new ComponentManager<Awake, AwakeComponentSerializer>(new Awake(true)),
             });
         }
     }

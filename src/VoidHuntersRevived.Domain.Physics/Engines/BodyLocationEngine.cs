@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common.Attributes;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using System;
@@ -33,13 +34,14 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Location> entities, ExclusiveGroupStruct groupID)
         {
             var (locations, _) = entities;
-            var (ids, collisions, _) = _entities.QueryEntities<EntityId, Collision>(groupID);
+            var (ids, collisions, awakes, _) = _entities.QueryEntities<EntityId, Collision, Awake>(groupID);
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                IBody body = _space.GetOrCreateBody(ids[index].VhId);
+                IBody body = _space.GetOrCreateBody(ids[index]);
                 body.CollisionCategories = collisions[index].Categories;
                 body.CollidesWith = collisions[index].CollidesWith;
+                body.SleepingAllowed = awakes[index].SleepingAllowed;
                 body.SetTransform(locations[index].Position, locations[index].Rotation);
             }
         }
@@ -50,7 +52,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                _space.DestroyBody(ids[index].VhId);
+                _space.DestroyBody(ids[index]);
             }
         }
 
@@ -65,7 +67,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                         continue;
                     }
 
-                    IBody body = _space.GetBody(ids[i].VhId);
+                    IBody body = _space.GetBody(ids[i]);
 
                     ref Location location = ref locations[i];
                     location.Position = body.Position;

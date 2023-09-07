@@ -21,7 +21,7 @@ namespace Microsoft.Xna.Framework
 
         public static BoundingSphere GetBoudingSphere(this Matrix matrix, float radius)
         {
-            return new BoundingSphere(new Vector3(matrix.M41, matrix.M42, matrix.M43), radius);
+            return new BoundingSphere(new Vector3(matrix.M41, matrix.M42, 0), radius);
         }
     }
 }

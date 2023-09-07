@@ -30,12 +30,12 @@ namespace VoidHuntersRevived.Common.Entities
 
         public override bool Equals([NotNullWhen(true)] object? obj)
         {
-            return base.Equals(obj);
+            throw new NotImplementedException();
         }
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            throw new NotImplementedException();
         }
 
         public static bool operator ==(EntityId id1, EntityId id2)

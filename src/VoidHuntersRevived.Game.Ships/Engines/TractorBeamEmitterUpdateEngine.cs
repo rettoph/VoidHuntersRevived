@@ -66,7 +66,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
                 for (int i = 0; i< indices.count; i++)
                 {
                     ref EntityId tractorableId = ref entityIds[indices[i]];
-                    IBody targetBody = _space.GetBody(in tractorableId.VhId);
+                    IBody targetBody = _space.GetBody(in tractorableId);
 
                     EntityId targetId = _entities.GetId(tractorableId.VhId);
                     ref Tree target = ref _entities.QueryById<Tree>(targetId);

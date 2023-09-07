@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.FixedPoint;
 
 namespace VoidHuntersRevived.Common.Physics
@@ -16,11 +17,11 @@ namespace VoidHuntersRevived.Common.Physics
 
     public interface ISpace
     {
-        IBody GetOrCreateBody(in VhId id);
-        void DestroyBody(in VhId id);
-        IBody GetBody(in VhId id);
+        IBody GetOrCreateBody(in EntityId id);
+        void DestroyBody(in EntityId id);
+        IBody GetBody(in EntityId id);
         IEnumerable<IBody> AllBodies();
-        bool TryGetBody(in VhId id, [MaybeNullWhen(false)] out IBody body);
+        bool TryGetBody(in EntityId id, [MaybeNullWhen(false)] out IBody body);
 
         void QueryAABB(QueryReportFixtureDelegate callback, ref AABB aabb);
         void Step(Step step);

@@ -12,6 +12,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Ships.Services;
@@ -107,7 +108,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             ref Node node = ref _entities.QueryByGroupIndex<Node>(in groupIndex);
             ref Visible visible = ref _entities.QueryByGroupIndex<Visible>(in groupIndex);
 
-            Matrix transformation = node.Transformation.XnaMatrix;
+            Matrix transformation = node.Transformation.ToTransformationXnaMatrix();
             _visibleRenderingService.Fill(in visible, ref transformation, _resources.Get(Colors.TractorBeamHighlight));
 
             if(_entities.TryQueryByGroupIndex<Sockets>(in groupIndex, out Sockets sockets))

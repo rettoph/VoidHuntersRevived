@@ -5,44 +5,50 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Physics;
 using System.Diagnostics.CodeAnalysis;
+using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Physics
 {
     public class Space : ISpace
     {
-        private readonly Dictionary<VhId, Body> _bodies;
+        private readonly Dictionary<uint, Body> _bodies;
 
         internal readonly AetherWorld _aether;
+
+        public event OnEventDelegate<IBody> OnBodyAwakeChanged;
 
         public Space()
         {
             _aether = new AetherWorld(AetherVector2.Zero);
-            _bodies = new Dictionary<VhId, Body>();
+            _bodies = new Dictionary<uint, Body>();
+
+            _aether.BodyAwakeChanged += this.HandleBodyAwakeChanged;
         }
 
-        public IBody GetOrCreateBody(in VhId id)
+        public IBody GetOrCreateBody(in EntityId id)
         {
-            if(_bodies.TryGetValue(id, out Body? cached))
+            if(_bodies.TryGetValue(id.EGID.entityID, out Body? cached))
             {
                 return cached;
 
             }
             
             Body body = new Body(this, id);
-            _bodies.Add(id, body);
+            _bodies.Add(id.EGID.entityID, body);
+            this.OnBodyAwakeChanged(body);
 
             return body;
         }
 
-        public void DestroyBody(in VhId id)
+        public void DestroyBody(in EntityId id)
         {
-            _bodies.Remove(id, out var body);
+            _bodies.Remove(id.EGID.entityID, out var body);
             body!.Dispose();
         }
 
-        public IBody GetBody(in VhId id)
+        public IBody GetBody(in EntityId id)
         {
-            return _bodies[id];
+            return _bodies[id.EGID.entityID];
         }
 
         public void QueryAABB(QueryReportFixtureDelegate callback, ref AABB aabb)
@@ -63,9 +69,9 @@ namespace VoidHuntersRevived.Domain.Physics
             return _bodies.Values;
         }
 
-        public bool TryGetBody(in VhId id, [MaybeNullWhen(false)] out IBody body)
+        public bool TryGetBody(in EntityId id, [MaybeNullWhen(false)] out IBody body)
         {
-            if(_bodies.TryGetValue(id, out Body? instance))
+            if(_bodies.TryGetValue(id.EGID.entityID, out Body? instance))
             {
                 body = instance;
                 return true;
@@ -73,6 +79,11 @@ namespace VoidHuntersRevived.Domain.Physics
 
             body = null;
             return false;
+        }
+
+        private void HandleBodyAwakeChanged(AetherWorld sender, AetherBody body)
+        {
+            this.OnBodyAwakeChanged((IBody)body.Tag);
         }
     }
 }

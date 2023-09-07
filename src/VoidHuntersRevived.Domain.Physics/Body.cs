@@ -7,6 +7,7 @@ using VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Com
 using FixedMath64 = FixedMath.NET.Fix64;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Dynamics;
+using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Physics
 {
@@ -29,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public Fix64 AngularVelocity => (Fix64)_aether.AngularVelocity;
 
-        public VhId Id { get; }
+        public EntityId Id { get; }
 
         public FixMatrix Transformation => FixMatrix.CreateRotationZ(this.Rotation) * FixMatrix.CreateTranslation(this.Position.X, this.Position.Y, Fix64.Zero);
 
@@ -61,8 +62,13 @@ namespace VoidHuntersRevived.Domain.Physics
         }
 
         public bool Awake => _aether.Awake;
+        public bool SleepingAllowed
+        {
+            get => _aether.SleepingAllowed;
+            set => _aether.SleepingAllowed = value;
+        }
 
-        public Body(Space space, VhId id)
+        public Body(Space space, EntityId id)
         {
             _space = space;
             _aether = space._aether.CreateBody(AetherVector2.Zero, FixedMath64.Zero, BodyType.Dynamic);

@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Physics.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            services.RegisterType<Space>().As<ISpace>().InstancePerLifetimeScope();
+            services.RegisterType<Space>().AsSelf().As<ISpace>().InstancePerLifetimeScope();
         }
     }
 }

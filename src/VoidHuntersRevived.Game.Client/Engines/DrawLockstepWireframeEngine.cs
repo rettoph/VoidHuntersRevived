@@ -22,6 +22,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
@@ -86,7 +87,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     {
                         if (statuses[index].IsSpawned)
                         {
-                            Matrix transformation = nodes[index].Transformation.XnaMatrix;
+                            Matrix transformation = nodes[index].Transformation.ToTransformationXnaMatrix();
                             _visibleRenderingService.Trace(in visibles[index], ref transformation, Color.Red);
                             // _visibleRenderingService.Trace(in visibles[index], ref transformation, this.Simulation.Type == SimulationType.Predictive ? Color.Yellow : Color.Red);
                         }

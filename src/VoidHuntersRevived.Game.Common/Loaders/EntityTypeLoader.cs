@@ -31,6 +31,8 @@ namespace VoidHuntersRevived.Game.Common.Loaders
                         Categories = CollisionGroups.ShipCategories,
                         CollidesWith = CollisionGroups.ShipCollidesWith
                     });
+
+                    initializer.Init<Awake>(new Awake(false));
                 });
             });
 

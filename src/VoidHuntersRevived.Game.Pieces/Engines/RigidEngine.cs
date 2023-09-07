@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                 Rigid rigid = rigids[index];
                 Node node = nodes[index];
 
-                IBody body = _space.GetOrCreateBody(node.TreeId.VhId);
+                IBody body = _space.GetOrCreateBody(node.TreeId);
 
                 body.Create(id.VhId, rigid.Shapes[0], node.LocalTransformation);
             }
@@ -60,7 +60,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                 EntityId id = ids[index];
                 Node node = nodes[index];
 
-                if (_space.TryGetBody(node.TreeId.VhId, out IBody? body))
+                if (_space.TryGetBody(node.TreeId, out IBody? body))
                 {
                     body.Destroy(id.VhId);
                 }

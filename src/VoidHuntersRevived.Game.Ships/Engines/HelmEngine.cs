@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
                 for (int index = 0; index < count; index++)
                 {
                     EntityId helmId = entityIds[index];
-                    IBody body = _space.GetBody(helmId.VhId);
+                    IBody body = _space.GetBody(helmId);
 
                     FixVector2 impulse = FixVector2.Zero;
                     Helm helm = helms[index];
