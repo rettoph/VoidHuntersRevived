@@ -88,7 +88,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         {
             foreach (ComponentSerializer serializer in _serializers)
             {
-                serializer.Serialize(writer, groupIndex.Index, groupIndex.GroupID, entitiesDB);
+                serializer.Serialize(writer, in groupIndex, entitiesDB);
             }
         }
 

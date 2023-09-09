@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Domain.Physics
 {
     public class Space : ISpace
     {
-        private readonly Dictionary<uint, Body> _bodies;
+        private readonly Dictionary<VhId, Body> _bodies;
 
         internal readonly AetherWorld _aether;
 
@@ -20,21 +20,21 @@ namespace VoidHuntersRevived.Domain.Physics
         public Space()
         {
             _aether = new AetherWorld(AetherVector2.Zero);
-            _bodies = new Dictionary<uint, Body>();
+            _bodies = new Dictionary<VhId, Body>();
 
             _aether.BodyAwakeChanged += this.HandleBodyAwakeChanged;
         }
 
         public IBody GetOrCreateBody(in EntityId id)
         {
-            if(_bodies.TryGetValue(id.EGID.entityID, out Body? cached))
+            if(_bodies.TryGetValue(id.VhId, out Body? cached))
             {
                 return cached;
 
             }
             
             Body body = new Body(this, id);
-            _bodies.Add(id.EGID.entityID, body);
+            _bodies.Add(id.VhId, body);
             this.OnBodyAwakeChanged(body);
 
             return body;
@@ -42,13 +42,13 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public void DestroyBody(in EntityId id)
         {
-            _bodies.Remove(id.EGID.entityID, out var body);
+            _bodies.Remove(id.VhId, out var body);
             body!.Dispose();
         }
 
         public IBody GetBody(in EntityId id)
         {
-            return _bodies[id.EGID.entityID];
+            return _bodies[id.VhId];
         }
 
         public void QueryAABB(QueryReportFixtureDelegate callback, ref AABB aabb)
@@ -71,7 +71,7 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public bool TryGetBody(in EntityId id, [MaybeNullWhen(false)] out IBody body)
         {
-            if(_bodies.TryGetValue(id.EGID.entityID, out Body? instance))
+            if(_bodies.TryGetValue(id.VhId, out Body? instance))
             {
                 body = instance;
                 return true;

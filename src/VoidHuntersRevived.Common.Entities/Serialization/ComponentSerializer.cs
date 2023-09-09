@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             Type = type;
         }
 
-        public abstract void Serialize(EntityWriter writer, uint sourceIndex, ExclusiveGroupStruct groupId, EntitiesDB entitiesDB);
+        public abstract void Serialize(EntityWriter writer, in GroupIndex groupIndex, EntitiesDB entitiesDB);
         public abstract void Deserialize(EntityReader reader, ref EntityInitializer initializer, in EntityId id);
     }
 
@@ -33,10 +33,10 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
         {
         }
 
-        public override void Serialize(EntityWriter writer, uint sourceIndex, ExclusiveGroupStruct groupId, EntitiesDB entitiesDB)
+        public override void Serialize(EntityWriter writer, in GroupIndex groupIndex, EntitiesDB entitiesDB)
         {
-            var (components, _) = entitiesDB.QueryEntities<TComponent>(groupId);
-            ref var component = ref components[sourceIndex];
+            var (components, _) = entitiesDB.QueryEntities<TComponent>(groupIndex.GroupID);
+            ref var component = ref components[groupIndex.Index];
 
             this.Write(writer, component);
         }
