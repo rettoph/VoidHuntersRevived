@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Options;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces.Components;
@@ -23,17 +24,12 @@ namespace VoidHuntersRevived.Common.Pieces.Serialization.Components
             _entities = entities;
         }
 
-        protected override Node Read(EntityReader reader, EntityId id)
+        protected override Node Read(in DeserializationOptions options, EntityReader reader, in EntityId id)
         {
-            if(reader.Injection == default)
-            {
-                throw new Exception();
-            }
-
-            return new Node(id, _entities.GetId(reader.Injection));
+            return new Node(id, _entities.GetId(options.Owner));
         }
 
-        protected override void Write(EntityWriter writer, Node instance)
+        protected override void Write(EntityWriter writer, in Node instance, in SerializationOptions options)
         {
         }
     }

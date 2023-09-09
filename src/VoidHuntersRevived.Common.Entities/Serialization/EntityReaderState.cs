@@ -9,18 +9,12 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
     public struct EntityReaderState
     {
         public readonly EntityData Data;
-        public readonly VhId Seed;
-        public readonly TeamId TeamId;
         public readonly int Position;
-        public readonly VhId Injection;
 
-        public EntityReaderState(EntityData data, VhId seed, TeamId teamId, int position, VhId injection)
+        public EntityReaderState(EntityData data, int position)
         {
             Data = data;
-            Seed = seed;
-            TeamId = teamId;
             Position = position;
-            Injection = injection;
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Common.Entities.Options;
 using VoidHuntersRevived.Common.Entities.Serialization;
 
 namespace VoidHuntersRevived.Common.Entities.Engines
@@ -20,7 +21,7 @@ namespace VoidHuntersRevived.Common.Entities.Engines
 
         void HardDespawn(in EntityId id, in GroupIndex groupIndex);
 
-        void Serialize(EntityWriter writer, in GroupIndex groupIndex);
-        void Deserialize(EntityReader reader, ref EntityInitializer initializer, in EntityId id);
+        void Serialize(EntityWriter writer, in GroupIndex groupIndex, in SerializationOptions options);
+        void Deserialize(in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id);
     }
 }

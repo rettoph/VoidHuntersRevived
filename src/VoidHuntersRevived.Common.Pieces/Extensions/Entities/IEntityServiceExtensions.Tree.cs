@@ -9,6 +9,7 @@ using VoidHuntersRevived.Common.Pieces.Descriptors;
 using VoidHuntersRevived.Common.Entities.Services;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Entities.Options;
 
 namespace VoidHuntersRevived.Common.Pieces.Extensions.Entities
 {
@@ -34,8 +35,11 @@ namespace VoidHuntersRevived.Common.Pieces.Extensions.Entities
             entities.Spawn(tree, vhid, teamId, (IEntityService entities, ref EntityInitializer init, in EntityId id) =>
             {
                 EntityId headId = entities.Deserialize(
-                    seed: vhid,
-                    teamId: teamId,
+                    options: new DeserializationOptions()
+                    {
+                        Seed = vhid,
+                        TeamId = teamId,
+                    },
                     data: nodes,
                     initializer: (IEntityService entities, ref EntityInitializer init, in EntityId id) =>
                     {

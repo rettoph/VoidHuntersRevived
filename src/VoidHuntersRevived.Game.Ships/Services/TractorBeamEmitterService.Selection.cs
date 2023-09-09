@@ -3,6 +3,7 @@ using System.Diagnostics;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Options;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.Physics.Components;
@@ -37,7 +38,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
                 data: new TractorBeamEmitter_Select()
                 {
                     TractorBeamEmitterVhId = tractorBeamEmitterId.VhId,
-                    TargetData = _entities.Serialize(nodeId),
+                    TargetData = _entities.Serialize(nodeId, SerializationOptions.Default),
                     Location = node.Transformation.ToLocation()
                 });
 
@@ -78,7 +79,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
                         data: new TractorBeamEmitter_Deselect()
                         {
                             TractorBeamEmitterVhId = tractorBeamEmitterId.VhId,
-                            TargetData = _entities.Serialize(trees[index].HeadId),
+                            TargetData = _entities.Serialize(trees[index].HeadId, SerializationOptions.Default),
                             Location = locations[index],
                             AttachToSocketVhId = attachToSocketVhId
                         });
@@ -127,9 +128,12 @@ namespace VoidHuntersRevived.Game.Ships.Services
                     TeamId teamId = _entities.QueryById<TeamId>(attachToSocketNode.Node.TreeId);
 
                     EntityId nodeId = _entities.Deserialize(
-                        seed: eventId.Create(1),
-                        teamId: teamId,
-                        injection: attachToSocketNode.Node.TreeId.VhId,
+                        options: new DeserializationOptions
+                        {
+                            Seed = eventId.Create(1),
+                            TeamId = teamId,
+                            Owner = attachToSocketNode.Node.TreeId.VhId
+                        },
                         data: data.TargetData,
                         initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                         {

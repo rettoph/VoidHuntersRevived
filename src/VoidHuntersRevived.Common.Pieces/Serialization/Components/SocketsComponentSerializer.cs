@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Enums;
+using VoidHuntersRevived.Common.Entities.Options;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics.Components;
@@ -26,36 +28,36 @@ namespace VoidHuntersRevived.Common.Pieces.Serialization.Components
             _sockets = sockets;
         }
 
-        protected override Sockets Read(EntityReader reader, EntityId id)
+        protected override Sockets Read(in DeserializationOptions options, EntityReader reader, in EntityId id)
         {
             return new Sockets()
             {
-                Items = reader.ReadNativeDynamicArray<Socket>(ReadSocket),
+                Items = reader.ReadNativeDynamicArray<Socket>(ReadSocket, in options),
             };
         }
 
-        protected override void Write(EntityWriter writer, Sockets instance)
+        protected override void Write(EntityWriter writer, in Sockets instance, in SerializationOptions options)
         {
-            writer.WriteNativeDynamicArray(instance.Items, WriteSocket);
+            writer.WriteNativeDynamicArray(instance.Items, WriteSocket, in options);
         }
 
-        private Socket ReadSocket(EntityReader reader)
+        private Socket ReadSocket(DeserializationOptions options, EntityReader reader)
         {
             Socket socket = new Socket(
-                nodeId: _entities.GetId(reader.ReadVhId()),
+                nodeId: _entities.GetId(reader.ReadVhId(options.Seed)),
                 index: reader.ReadByte(),
                 location: reader.ReadStruct<Location>());
 
             int count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                _entities.Deserialize(reader, null);
+                _entities.Deserialize(options, reader, null);
             }
 
             return socket;
         }
 
-        private void WriteSocket(EntityWriter writer, Socket socket)
+        private void WriteSocket(EntityWriter writer, Socket socket, SerializationOptions options)
         {
             writer.Write(socket.Id.NodeId.VhId);
             writer.Write(socket.Id.Index);
@@ -63,6 +65,11 @@ namespace VoidHuntersRevived.Common.Pieces.Serialization.Components
 
             var start = writer.BaseStream.Position;
             writer.Write(0);
+
+            if (options.Recursion == Recursion.None)
+            {
+                return;
+            }
 
             var filter = _sockets.GetCouplingFilter(socket.Id);
             int count = 0;
@@ -73,7 +80,7 @@ namespace VoidHuntersRevived.Common.Pieces.Serialization.Components
                 for (int i = 0; i < indices.count; i++)
                 {
                     count++;
-                    _entities.Serialize(entityIds[indices[i]], writer);
+                    _entities.Serialize(entityIds[indices[i]], writer, options);
                 }
             }
 

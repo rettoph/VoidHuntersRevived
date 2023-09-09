@@ -11,6 +11,7 @@ using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Descriptors;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Utilities;
+using VoidHuntersRevived.Common.Entities.Options;
 
 namespace VoidHuntersRevived.Game.Pieces.Services
 {
@@ -35,9 +36,12 @@ namespace VoidHuntersRevived.Game.Pieces.Services
             return _entities.Spawn(tree, vhid, teamId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {
                 EntityId headId = entities.Deserialize(
-                    seed: HashBuilder<TreeService, VhId, byte>.Instance.Calculate(vhid, 1),
-                    teamId: teamId,
-                    injection: vhid,
+                    options: new DeserializationOptions
+                    {
+                        Seed = HashBuilder<TreeService, VhId, byte>.Instance.Calculate(vhid, 1),
+                        TeamId = teamId,
+                        Owner = vhid
+                    },
                     data: nodes,
                     initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                     {

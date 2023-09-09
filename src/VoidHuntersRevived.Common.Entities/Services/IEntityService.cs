@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Engines;
+using VoidHuntersRevived.Common.Entities.Options;
 using VoidHuntersRevived.Common.Entities.Serialization;
 
 namespace VoidHuntersRevived.Common.Entities.Services
@@ -36,14 +37,11 @@ namespace VoidHuntersRevived.Common.Entities.Services
         #endregion
 
         #region Serialization
-        EntityData Serialize(EntityId id);
-        EntityData Serialize(VhId vhid);
+        EntityData Serialize(EntityId id, SerializationOptions options);
+        void Serialize(EntityId id, EntityWriter writer, SerializationOptions options);
 
-        void Serialize(EntityId id, EntityWriter writer);
-        void Serialize(VhId vhid, EntityWriter writer);
-
-        EntityId Deserialize(in VhId seed, TeamId teamId, EntityData data, EntityInitializerDelegate? initializer, VhId injection = default);
-        EntityId Deserialize(EntityReader reader, EntityInitializerDelegate? initializer);
+        EntityId Deserialize(DeserializationOptions options, EntityData data, EntityInitializerDelegate? initializer);
+        EntityId Deserialize(DeserializationOptions options, EntityReader reader, EntityInitializerDelegate? initializer);
         #endregion
 
         #region Filters

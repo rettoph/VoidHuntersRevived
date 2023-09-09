@@ -1,25 +1,18 @@
 ﻿using Svelto.DataStructures;
 using Svelto.ECS;
+using VoidHuntersRevived.Common.Entities.Options;
 using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Common.Entities.Serialization
 {
     public sealed class EntityWriter : BinaryWriter
     {
-        public bool Busy;
-
         public EntityWriter() : base(new MemoryStream())
         {
         }
 
         public void Reset()
         {
-            if (this.Busy)
-            {
-                throw new Exception();
-            }
-
-            this.Busy = true;
             this.BaseStream.Position = 0;
         }
 
@@ -29,7 +22,6 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
 
             this.BaseStream.Position = 0;
             this.BaseStream.Read(bytes, 0, bytes.Length);
-            this.Busy = false;
 
             return new EntityData(id, bytes);
         }
@@ -55,24 +47,24 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             return value;
         }
 
-        public void WriteNativeDynamicArray<T>(NativeDynamicArrayCast<T> native, Action<EntityWriter, T> writer)
+        public void WriteNativeDynamicArray<T>(NativeDynamicArrayCast<T> native, Action<EntityWriter, T, SerializationOptions> writer, in SerializationOptions options)
             where T : unmanaged
         {
             this.Write(native.count);
 
             for (int i = 0; i < native.count; i++)
             {
-                writer(this, native[i]);
+                writer(this, native[i], options);
             }
         }
 
         public void WriteNativeDynamicArray<T>(NativeDynamicArrayCast<T> native)
             where T : unmanaged
         {
-            this.WriteNativeDynamicArray<T>(native, DefaultNativeDynamicArrayItemWriter<T>);
+            this.WriteNativeDynamicArray<T>(native, DefaultNativeDynamicArrayItemWriter<T>, SerializationOptions.Default);
         }
 
-        private static void DefaultNativeDynamicArrayItemWriter<T>(EntityWriter writer, T item)
+        private static void DefaultNativeDynamicArrayItemWriter<T>(EntityWriter writer, T item, SerializationOptions options)
             where T : unmanaged
         {
             writer.WriteStruct<T>(item);

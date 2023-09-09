@@ -8,6 +8,7 @@ using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Enums;
+using VoidHuntersRevived.Common.Entities.Options;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Domain.Entities.Utilities;
@@ -28,9 +29,9 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
         public abstract void HardDespawn(in EntityId id, in GroupIndex groupIndex);
 
-        public abstract void Serialize(EntityWriter writer, in GroupIndex groupIndex);
+        public abstract void Serialize(EntityWriter writer, in GroupIndex groupIndex, in SerializationOptions options);
 
-        public abstract void Deserialize(EntityReader reader, ref EntityInitializer initializer, in EntityId id);
+        public abstract void Deserialize(in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id);
     }
 
     internal sealed class VoidHuntersEntityDescriptorEngine<TDescriptor> : VoidHuntersEntityDescriptorEngine, IQueryingEntitiesEngine
@@ -84,19 +85,19 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             }
         }
 
-        public override void Serialize(EntityWriter writer, in GroupIndex groupIndex)
+        public override void Serialize(EntityWriter writer, in GroupIndex groupIndex, in SerializationOptions options)
         {
             foreach (ComponentSerializer serializer in _serializers)
             {
-                serializer.Serialize(writer, in groupIndex, entitiesDB);
+                serializer.Serialize(writer, in groupIndex, entitiesDB, in options);
             }
         }
 
-        public override void Deserialize(EntityReader reader, ref EntityInitializer initializer, in EntityId id)
+        public override void Deserialize(in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id)
         {
             foreach (ComponentSerializer serializer in _serializers)
             {
-                serializer.Deserialize(reader, ref initializer, in id);
+                serializer.Deserialize(in options, reader, ref initializer, in id);
             }
         }
 
