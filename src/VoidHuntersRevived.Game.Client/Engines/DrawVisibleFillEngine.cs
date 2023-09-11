@@ -68,10 +68,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in GameTimeTeam _param)
         {
-            _visibleRenderingService.BeginFill();
             foreach (ITeamDescriptorGroup teamDescriptorGroup in _teamDescriptorGroups[_param.Team.Id])
             {
                 var (statuses, visibles, nodes, count) = _entities.QueryEntities<EntityStatus, Visible, Node>(teamDescriptorGroup.GroupId);
+
+                _visibleRenderingService.BeginFill();
                 for (int index = 0; index < count; index++)
                 {
                     try
@@ -89,8 +90,28 @@ namespace VoidHuntersRevived.Game.Client.Engines
                         _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to fill shapes for visible {VisibleVhId}", nameof(DrawVisibleFillEngine), nameof(Step), ids[index].VhId.Value);
                     }
                 }
+                _visibleRenderingService.End();
+
+                _visibleRenderingService.BeginTrace();
+                for (int index = 0; index < count; index++)
+                {
+                    try
+                    {
+                        if (statuses[index].IsSpawned)
+                        {
+                            Matrix transformation = nodes[index].Transformation.ToTransformationXnaMatrix();
+                            _visibleRenderingService.Trace(in visibles[index], ref transformation, teamDescriptorGroup.SecondaryColor);
+                            // _visibleRenderingService.Trace(in visibles[index], ref transformation, this.Simulation.Type == SimulationType.Predictive ? Color.Yellow : Color.Red);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        var (ids, _) = _entities.QueryEntities<EntityId>(teamDescriptorGroup.GroupId);
+                        _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to fill shapes for visible {VisibleVhId}", nameof(DrawVisibleFillEngine), nameof(Step), ids[index].VhId.Value);
+                    }
+                }
+                _visibleRenderingService.End();
             }
-            _visibleRenderingService.End();
         }
     }
 }

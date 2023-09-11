@@ -49,12 +49,6 @@ namespace VoidHuntersRevived.Game.Pieces.Services
             _primitiveBatch.End();
         }
 
-        public void Fill(in Visible visible, ref Matrix transformation)
-        {
-            Color color = _resources.Get(visible.Color);
-            this.Fill(in visible, ref transformation, in color);
-        }
-
         public void Fill(in Visible visible, ref Matrix transformation, in Color color)
         {
             if (_camera.Frustum.Contains(transformation.GetBoudingSphere(5f)) == ContainmentType.Disjoint)
@@ -66,12 +60,6 @@ namespace VoidHuntersRevived.Game.Pieces.Services
             {
                 this.FillShape(in visible.Shapes[i], ref transformation, color);
             }
-        }
-
-        public void Trace(in Visible visible, ref Matrix transformation)
-        {
-            Color color = _resources.Get(visible.Color);
-            this.Trace(in visible, ref transformation, in color);
         }
 
         public void Trace(in Visible visible, ref Matrix transformation, in Color color)

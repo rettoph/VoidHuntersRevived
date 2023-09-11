@@ -12,6 +12,10 @@ namespace VoidHuntersRevived.Common
         public Fix64 X;
         public Fix64 Y;
 
+        public FixVector2(decimal x, decimal y) : this((Fix64)x, (Fix64)y)
+        {
+
+        }
         public FixVector2(Fix64 x, Fix64 y)
         {
             this.X = x;

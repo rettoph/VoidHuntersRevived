@@ -21,13 +21,18 @@ namespace VoidHuntersRevived.Game.Common.Loaders
             packs.Configure(VoidHuntersPack.Id, pack =>
             {
                 pack.Add(Resources.Strings.TeamZeroName, Localization.en_US, "Default");
-                pack.Add(Resources.Strings.TeamOneName, Localization.en_US, "Blue");
+                pack.Add(Resources.Strings.TeamOneName, Localization.en_US, "Blue Team");
 
                 pack.Add(Resources.Colors.None, default);
+
                 pack.Add(Resources.Colors.HullPrimaryColor, new Color(Color.Orange, 0.85f));
                 pack.Add(Resources.Colors.HullSecondaryColor, new Color(Color.Yellow, 0.85f));
+                pack.Add(Resources.Colors.ThrusterPrimaryColor, new Color(Color.Green, 0.85f));
+                pack.Add(Resources.Colors.ThrusterSecondaryColor, new Color(Color.LightGreen, 0.85f));
+
                 pack.Add(Resources.Colors.TeamOnePrimaryColor, new Color(0, 200, 255, 230));
                 pack.Add(Resources.Colors.TeamOneSecondaryColor, new Color(0, 255, 247, 230));
+
                 pack.Add(Resources.Colors.TractorBeamHighlight, new Color(Color.LightGray, 0.25f));
             });
         }

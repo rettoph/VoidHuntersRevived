@@ -10,7 +10,6 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 {
     public struct Visible : IEntityComponent, IDisposable
     {
-        public required EntityResource<Color> Color { get; init; }
         public required NativeDynamicArrayCast<Shape> Shapes { get; init; }
         public required NativeDynamicArrayCast<Shape> Paths { get; init; }
 
@@ -30,13 +29,12 @@ namespace VoidHuntersRevived.Common.Pieces.Components
             this.Paths.Dispose();
         }
 
-        public static Visible Polygon(Resource<Color> color, int sides)
+        public static Visible Polygon(int sides)
         {
             IEnumerable<PolygonHelper.VertexAngle> vertexAngles = PolygonHelper.CalculateVertexAngles(sides);
 
             return new Visible()
             {
-                Color = color,
                 Shapes = new[]
                 {
                     new Shape()

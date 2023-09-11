@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
 {
     public abstract class PieceDescriptor : VoidHuntersEntityDescriptor
     {
-        public PieceDescriptor(Resource<Color> primaryColor, Resource<Color> secondaryColor) : base(primaryColor, secondaryColor)
+        public PieceDescriptor(Resource<Color> primaryColor, Resource<Color> secondaryColor, int order) : base(primaryColor, secondaryColor, order)
         {
             this.ExtendWith(new ComponentManager[]
             {

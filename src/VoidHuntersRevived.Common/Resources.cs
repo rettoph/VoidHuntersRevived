@@ -23,6 +23,10 @@ namespace VoidHuntersRevived.Common
 
             public static readonly Resource<Color> HullPrimaryColor = new Resource<Color>($"{nameof(Colors)}.{nameof(HullPrimaryColor)}");
             public static readonly Resource<Color> HullSecondaryColor = new Resource<Color>($"{nameof(Colors)}.{nameof(HullSecondaryColor)}");
+
+            public static readonly Resource<Color> ThrusterPrimaryColor = new Resource<Color>($"{nameof(Colors)}.{nameof(ThrusterPrimaryColor)}");
+            public static readonly Resource<Color> ThrusterSecondaryColor = new Resource<Color>($"{nameof(Colors)}.{nameof(ThrusterSecondaryColor)}");
+
             public static readonly Resource<Color> TeamOnePrimaryColor = new Resource<Color>($"{nameof(Colors)}.{nameof(TeamOnePrimaryColor)}");
             public static readonly Resource<Color> TeamOneSecondaryColor = new Resource<Color>($"{nameof(Colors)}.{nameof(TeamOneSecondaryColor)}");
 

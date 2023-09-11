@@ -16,10 +16,8 @@ namespace VoidHuntersRevived.Common.Pieces.Services
         void BeginTrace();
         void End();
 
-        void Fill(in Visible visible, ref Matrix transformation);
         void Fill(in Visible visible, ref Matrix transformation, in Color color);
 
-        void Trace(in Visible visible, ref Matrix transformation);
         void Trace(in Visible visible, ref Matrix transformation, in Color color);
     }
 }

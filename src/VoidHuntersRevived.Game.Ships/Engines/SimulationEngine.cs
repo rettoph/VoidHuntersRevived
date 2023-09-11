@@ -23,10 +23,10 @@ namespace VoidHuntersRevived.Game.Ships.Engines
 
         public void Process(VhId eventId, Simulation_Begin data)
         {
-            //for(int i=0; i<1; i++)
-            //{
-            //    _trees.Spawn(eventId.Create(i), TeamId.TeamZero, EntityTypes.Chain, EntityTypes.Pieces.HullTriangle);
-            //}
+            for(int j=0; j<1; j++)
+            {
+                _trees.Spawn(eventId.Create(j+987), TeamId.TeamZero, EntityTypes.Chain, EntityTypes.Pieces.HullTriangle);
+            }
 
             int i = 0;
             int radius = 2;
@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
             {
                 for (int y = -radius; y < radius; y += step)
                 {
-                    _trees.Spawn(eventId.Create(i++), TeamId.TeamZero, EntityTypes.Chain, EntityTypes.Pieces.HullTriangle, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+                    _trees.Spawn(eventId.Create(i++), TeamId.TeamZero, EntityTypes.Chain, EntityTypes.Pieces.Thruster, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                     {
                         initializer.Init(new Location()
                         {

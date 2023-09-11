@@ -16,6 +16,8 @@ namespace VoidHuntersRevived.Game.Common
         {
             public static EntityType<HullDescriptor> HullSquare = new(nameof(HullSquare));
             public static EntityType<HullDescriptor> HullTriangle = new(nameof(HullTriangle));
+
+            public static EntityType<ThrusterDescriptor> Thruster = new(nameof(Thruster));
         }
     }
 }

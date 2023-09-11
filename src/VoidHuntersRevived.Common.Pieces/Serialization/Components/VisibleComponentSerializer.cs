@@ -20,7 +20,6 @@ namespace VoidHuntersRevived.Common.Pieces.Serialization.Components
         {
             return new Visible()
             {
-                Color = reader.ReadStruct<EntityResource<Color>>(),
                 Shapes = reader.ReadNativeDynamicArray<Shape>(ShapeReader, options),
                 Paths = reader.ReadNativeDynamicArray<Shape>(ShapeReader, options)
             };
@@ -28,7 +27,6 @@ namespace VoidHuntersRevived.Common.Pieces.Serialization.Components
 
         protected override void Write(EntityWriter writer, in Visible instance, in SerializationOptions options)
         {
-            writer.WriteStruct(instance.Color);
             writer.WriteNativeDynamicArray(instance.Shapes, ShapeWriter, options);
             writer.WriteNativeDynamicArray(instance.Paths, ShapeWriter, options);
         }

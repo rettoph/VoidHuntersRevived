@@ -60,7 +60,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             return _teamDescriptorGroupsByTeam.ToDictionary(
                 keySelector: x => x.Key,
-                elementSelector: x => x.Value.Where(d => d.Descriptor.HasAll(components)).ToArray());
+                elementSelector: x => x.Value.Where(d => d.Descriptor.HasAll(components)).OrderBy(x => x.Descriptor.Order).ToArray());
         }
     }
 }
