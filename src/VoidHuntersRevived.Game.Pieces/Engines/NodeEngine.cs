@@ -70,12 +70,14 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
         private void SetLocalTransformation(ref Node node, ExclusiveGroupStruct groupId, uint index)
         {
+            _logger.Verbose("{ClassName}::{MethodName} - Preparing to set {LocalTransformation} for {Node} {NodeId}", nameof(NodeEngine), nameof(SetLocalTransformation), nameof(Node.LocalTransformation), nameof(Node), node.Id.VhId.Value);
+
             if (!_entities.TryQueryByGroupIndex<Coupling>(groupId, index, out Coupling coupling) || coupling.SocketId == SocketId.Empty)
             {
                 node.LocalTransformation = FixMatrix.CreateTranslation(Fix64.Zero, Fix64.Zero, Fix64.Zero);
                 return;
             }
-            
+
             try
             {
                 ref Plug plug = ref _entities.QueryByGroupIndex<Plug>(groupId, index);
@@ -83,7 +85,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
 
                 node.LocalTransformation = plug.Location.Transformation.Invert() * socketNode.LocalTransformation;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 //TODO: Investigate what might cause this error
                 // When this happens a valid piece gets eaten and destroyed
@@ -97,6 +99,12 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
                 var id = _entities.QueryByGroupIndex<EntityId>(groupId, index);
                 _logger.Error(ex, "{ClassName}::{MethodName} - There was a fatal error attempting to set node transformation for node {NodeId}.", nameof(NodeEngine), nameof(SetLocalTransformation), id.VhId.Value);
                 _entities.Despawn(id);
+            }
+
+
+            if(node.LocalTransformation == default)
+            {
+
             }
         }
     }

@@ -25,12 +25,12 @@ namespace VoidHuntersRevived.Game.Ships.Engines
         {
             for(int j=0; j<1; j++)
             {
-                _trees.Spawn(eventId.Create(j+987), TeamId.TeamZero, EntityTypes.Chain, EntityTypes.Pieces.HullTriangle);
+                _trees.Spawn(eventId.Create(int.MaxValue), TeamId.TeamZero, EntityTypes.Chain, EntityTypes.Pieces.HullTriangle);
             }
 
             int i = 0;
-            int radius = 2;
-            int step = 1;
+            int radius = 10;
+            int step = 2;
             for (int x = -radius; x < radius; x += step)
             {
                 for (int y = -radius; y < radius; y += step)

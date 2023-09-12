@@ -59,6 +59,9 @@ namespace VoidHuntersRevived.Common.Entities.Services
         ref T QueryById<T>(EntityId id)
             where T : unmanaged, IEntityComponent;
 
+        ref T QueryById<T>(EntityId id, out bool exists)
+            where T : unmanaged, IEntityComponent;
+
         ref T QueryById<T>(EntityId id, out GroupIndex groupIndex)
             where T : unmanaged, IEntityComponent;
 

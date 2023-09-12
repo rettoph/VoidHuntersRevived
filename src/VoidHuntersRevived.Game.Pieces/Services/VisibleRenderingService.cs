@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Game.Pieces.Services
 
         public void BeginTrace()
         {
-            _primitiveBatch.BlendState = BlendState.AlphaBlend;
+            _primitiveBatch.BlendState = BlendState.Additive;
             _primitiveBatch.Begin(_screen.Camera);
         }
 
@@ -51,11 +51,6 @@ namespace VoidHuntersRevived.Game.Pieces.Services
 
         public void Fill(in Visible visible, ref Matrix transformation, in Color color)
         {
-            if (_camera.Frustum.Contains(transformation.GetBoudingSphere(5f)) == ContainmentType.Disjoint)
-            {
-                return;
-            }
-
             for (int i = 0; i < visible.Shapes.count; i++)
             {
                 this.FillShape(in visible.Shapes[i], ref transformation, color);
@@ -64,11 +59,6 @@ namespace VoidHuntersRevived.Game.Pieces.Services
 
         public void Trace(in Visible visible, ref Matrix transformation, in Color color)
         {
-            if(_camera.Frustum.Contains(transformation.GetBoudingSphere(5f)) == ContainmentType.Disjoint)
-            {
-                return;
-            }
-
             for (int i = 0; i < visible.Paths.count; i++)
             {
                 this.TracePath(in visible.Paths[i], ref transformation, color);

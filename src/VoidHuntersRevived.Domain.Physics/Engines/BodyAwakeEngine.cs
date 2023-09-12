@@ -13,6 +13,7 @@ using VoidHuntersRevived.Common.Entities.Services;
 using Guppy.Attributes;
 using Guppy.Common.Attributes;
 using VoidHuntersRevived.Common.Simulations.Enums;
+using Serilog;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
@@ -22,14 +23,16 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
     {
         public string name { get; } = nameof(BodyAwakeEngine);
 
+        private readonly ILogger _logger;
         private readonly IEntityService _entities;
         private readonly Space _space;
         private readonly Queue<IBody> _awakeChangedBodies;
 
-        public BodyAwakeEngine(IEntityService entities, Space space)
+        public BodyAwakeEngine(IEntityService entities, ILogger logger, Space space)
         {
             _entities = entities;
             _space = space;
+            _logger = logger;
             _awakeChangedBodies = new Queue<IBody>();
 
             _space.OnBodyAwakeChanged += this.HandleBodyAwakeChanged;
@@ -50,8 +53,16 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
             while(_awakeChangedBodies.TryDequeue(out IBody? body))
             {
-                ref Awake awake = ref _entities.QueryById<Awake>(body.Id);
-                awake.Value = body.Awake;
+                ref Awake awake = ref _entities.QueryById<Awake>(body.Id, out bool exists);
+
+                if(exists)
+                {
+                    awake.Value = body.Awake;
+                }
+                else
+                {
+                    _logger.Warning("{ClassName}::{MethodName} - Awake state changed to {AwakeValue} for body {BodyId}, but entity not found.", nameof(BodyAwakeEngine), nameof(Step), body.Awake, body.Id);
+                }
             }
         }
 

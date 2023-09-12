@@ -3,6 +3,8 @@ using Svelto.ECS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -42,6 +44,19 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             var components = this.entitiesDB.QueryEntitiesAndIndex<T>(id.EGID, out uint index);
 
             return ref components[index];
+        }
+
+        public ref T QueryById<T>(EntityId id, out bool exists)
+            where T : unmanaged, IEntityComponent
+        {
+            if (this.entitiesDB.TryQueryEntitiesAndIndex<T>(id.EGID, out uint index, out var components))
+            {
+                exists = true;
+                return ref components[index];
+            }
+
+            exists = false;
+            return ref Unsafe.NullRef<T>(); ;
         }
 
         public ref T QueryById<T>(EntityId id, out GroupIndex groupIndex)

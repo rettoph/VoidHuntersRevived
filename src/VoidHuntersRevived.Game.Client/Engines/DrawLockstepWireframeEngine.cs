@@ -94,7 +94,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     }
                     catch (Exception e)
                     {
-                        _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to fill shapes for visible {VisibleVhId}", nameof(DrawVisibleFillEngine), nameof(Step), ids[index].VhId.Value);
+                        _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to fill shapes for visible {VisibleVhId}", nameof(DrawLockstepWireframeEngine), nameof(Step), ids[index].VhId.Value);
                     }
                 }
             }
