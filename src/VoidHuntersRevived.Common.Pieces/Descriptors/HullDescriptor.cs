@@ -25,7 +25,27 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
         {
             this.ExtendWith(new ComponentManager[]
             {
-                new ComponentManager<Sockets, SocketsComponentSerializer>()
+                //new ComponentManager<Sockets, SocketsComponentSerializer>(),
+                new ComponentManager<Sockets<Location>, SocketLocationsComponentSerializer>(),
+                new ComponentManager<Sockets<SocketId>, SocketIdsComponentSerializer>(),
+            });
+
+            this.WithPostInitializer(this.BuildSocketIds);
+        }
+
+        private void BuildSocketIds(IEntityService entities, ref EntityInitializer initializer, in EntityId id)
+        {
+            ref Sockets<Location> socketLocations = ref initializer.Get<Sockets<Location>>();
+            NativeDynamicArrayCast<SocketId> socketIds = new NativeDynamicArrayCast<SocketId>((uint)socketLocations.Items.count, Allocator.Persistent);
+
+            for(byte i=0; i< socketLocations.Items.count; i++)
+            {
+                socketIds.Set(i, new SocketId(id, i));
+            }
+
+            initializer.Init<Sockets<SocketId>>(new Sockets<SocketId>()
+            {
+                Items = socketIds
             });
         }
     }

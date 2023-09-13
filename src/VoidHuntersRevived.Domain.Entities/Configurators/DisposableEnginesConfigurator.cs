@@ -20,24 +20,20 @@ namespace VoidHuntersRevived.Domain.Entities.Configurators
     {
         public void Configure(GuppyConfiguration configuration)
         {
-            foreach (Type disposableComponent in configuration.Assemblies.GetTypes<IEntityComponent>().Where(this.ShouldAutoDisposeComponentPerInstance))
+            foreach (Type disposableComponent in configuration.Assemblies.GetTypes<IEntityComponent>())
             {
-                configuration.Builder.RegisterType(typeof(InstanceDisposableEngine<>).MakeGenericType(disposableComponent))
-                    .As<IEngine>()
-                    .InstancePerLifetimeScope();
+                foreach(AutoDisposeComponentAttribute autoDisposeAttr in disposableComponent.GetCustomAttributes<AutoDisposeComponentAttribute>(true))
+                {
+                    if(autoDisposeAttr.Scope == AutoDisposeScope.Instance)
+                    {
+                        configuration.Builder.RegisterType(typeof(InstanceDisposableEngine<>)
+                            .MakeGenericType(autoDisposeAttr.GetDisposableComponentType(disposableComponent)))
+                            .As<IEngine>()
+                            .InstancePerLifetimeScope();
+                    }
+                }
+
             }
-        }
-
-        private bool ShouldAutoDisposeComponentPerInstance(Type type)
-        {
-            if (type.IsAssignableTo<IDisposable>() == false)
-            {
-                return false;
-            }
-
-            AutoDisposeAttribute? autoDisposeAttr = type.GetCustomAttribute<AutoDisposeAttribute>(true);
-
-            return (autoDisposeAttr?.Scope ?? AutoDisposeScope.None) == AutoDisposeScope.Instance;
         }
     }
 }

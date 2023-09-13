@@ -19,6 +19,8 @@ using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.FixedPoint.Utilities;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using Guppy.MonoGame;
+using VoidHuntersRevived.Common.Pieces;
+using VoidHuntersRevived.Common.Physics.Components;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -47,7 +49,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 new Vector2(-0.05f, 0.05f),
             });
 
-            _teamDescriptorGroups = teamDescriptorGroups.GetAllWithComponentsByTeams(typeof(Sockets), typeof(Node));
+            _teamDescriptorGroups = teamDescriptorGroups.GetAllWithComponentsByTeams(typeof(Sockets<SocketId>), typeof(Sockets<Location>), typeof(Node));
         }
         public string name { get; } = nameof(DrawSocketsEngine);
 
@@ -61,21 +63,22 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _primitiveBatch.Begin(_screen.Camera);
             foreach (ITeamDescriptorGroup teamDescriptorGroup in _teamDescriptorGroups[_param.Team.Id])
             {
-                var (statuses, sockets, nodes, count) = _entities.QueryEntities<EntityStatus, Sockets, Node>(teamDescriptorGroup.GroupId);
-                for (int index = 0; index < count; index++)
+                var (statuses, nodes, socketLocationses, count) = _entities.QueryEntities<EntityStatus, Node, Sockets<Location>>(teamDescriptorGroup.GroupId);
+                for (uint index = 0; index < count; index++)
                 {
                     if (_camera.Frustum.Contains(nodes[index].Transformation.GetBoudingSphere(5f)) == ContainmentType.Disjoint)
                     {
                         continue;
                     }
 
-                    for (int j = 0; j < sockets[index].Items.count; j++)
+                    Sockets<Location> socketLocations = socketLocationses[index];
+                    Node node = nodes[index];
+                    for (int j = 0; j < socketLocations.Items.count; j++)
                     {
                         if (statuses[index].IsSpawned)
                         {
-                            Matrix socketsTransformation = FixMatrixHelper.FastMultiplyTransformationsToXnaMatrix(sockets[index].Items[j].Location.Transformation, nodes[index].Transformation);
-                           
-                            _primitiveBatch.Trace(_jointShape, teamDescriptorGroup.SecondaryColor, socketsTransformation);
+                            Matrix transformationMatrix = FixMatrixHelper.FastMultiplyTransformationsToXnaMatrix(socketLocations.Items[j].Transformation, node.Transformation);
+                            _primitiveBatch.Trace(_jointShape, teamDescriptorGroup.SecondaryColor, transformationMatrix);
                         }
                     }
 

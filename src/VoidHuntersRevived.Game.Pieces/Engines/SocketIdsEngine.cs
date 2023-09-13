@@ -13,29 +13,30 @@ using VoidHuntersRevived.Common.Pieces.Services;
 using Serilog;
 using Guppy.Attributes;
 using VoidHuntersRevived.Common.Entities.Engines;
+using VoidHuntersRevived.Common.Pieces;
 
 namespace VoidHuntersRevived.Game.Pieces.Engines
 {
     [AutoLoad]
-    internal sealed class SocketsEngine : BasicEngine,
-        IOnDespawnEngine<Sockets>
+    internal sealed class SocketIdsEngine : BasicEngine,
+        IOnDespawnEngine<Sockets<SocketId>>
     {
         private readonly IEntityService _entities;
         private readonly ISocketService _sockets;
         private readonly ILogger _logger;
 
-        public SocketsEngine(IEntityService entities, ISocketService sockets, ILogger logger)
+        public SocketIdsEngine(IEntityService entities, ISocketService sockets, ILogger logger)
         {
             _entities = entities;
             _sockets = sockets;
             _logger = logger;
         }
 
-        public void OnDespawn(EntityId id, ref Sockets sockets, in GroupIndex groupIndex)
+        public void OnDespawn(EntityId id, ref Sockets<SocketId> sockets, in GroupIndex groupIndex)
         {
             for (int i = 0; i < sockets.Items.count; i++)
             {
-                var filter = _sockets.GetCouplingFilter(sockets.Items[i].Id);
+                var filter = _sockets.GetCouplingFilter(sockets.Items[i]);
                 foreach (var (indices, groupId) in filter)
                 {
                     var (entityIds, _) = _entities.QueryEntities<EntityId>(groupId);

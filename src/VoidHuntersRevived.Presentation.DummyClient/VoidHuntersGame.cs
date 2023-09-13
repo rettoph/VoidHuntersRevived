@@ -61,8 +61,7 @@ namespace VoidHuntersRevived.Application.Client
             {
                 builder.ConfigureMonoGame(this, _graphics, this.Content, this.Window)
                     .ConfigureNetwork()
-                    .ConfigureResources()
-                    .ConfigureGUI();
+                    .ConfigureResources();
             });
 
             // _engine.Guppies.Create<ServerGameGuppy>();

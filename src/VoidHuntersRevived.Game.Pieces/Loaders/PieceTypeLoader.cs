@@ -31,14 +31,14 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
             {
                 configuration.InitializeComponent<Rigid>(Rigid.Polygon(Fix64.One, 3));
                 configuration.InitializeComponent<Visible>(Visible.Polygon(3));
-                configuration.InitializeComponent<Sockets>(id => Sockets.Polygon(id, 3));
+                configuration.InitializeComponent<Sockets<Location>>(Sockets<Location>.Polygon(3));
             });
 
             entityTypes.Configure(EntityTypes.Pieces.HullSquare, configuration =>
             {
                 configuration.InitializeComponent<Rigid>(Rigid.Polygon(Fix64.One, 4));
                 configuration.InitializeComponent<Visible>(Visible.Polygon(4));
-                configuration.InitializeComponent<Sockets>(id => Sockets.Polygon(id, 4));
+                configuration.InitializeComponent<Sockets<Location>>(Sockets<Location>.Polygon(4));
             });
 
             entityTypes.Configure(EntityTypes.Pieces.Thruster, configuration =>

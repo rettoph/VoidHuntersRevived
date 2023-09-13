@@ -20,11 +20,11 @@ namespace VoidHuntersRevived.Game.Pieces.Services
 {
     internal partial class SocketService : ISocketService
     {
-        public EntityId Spawn(SocketNode socketNode, VhId nodeVhId, IEntityType<PieceDescriptor> node, EntityInitializerDelegate? initializerDelegate = null)
+        public EntityId Spawn(Socket socket, VhId nodeVhId, IEntityType<PieceDescriptor> node, EntityInitializerDelegate? initializerDelegate = null)
         {
-            TeamId teamId = _entities.QueryById<TeamId>(socketNode.Node.TreeId);
-            SocketVhId socketVhId = socketNode.Socket.Id.VhId;
-            VhId treeId = socketNode.Node.TreeId.VhId;
+            TeamId teamId = _entities.QueryById<TeamId>(socket.Node.TreeId);
+            SocketVhId socketVhId = socket.Id.VhId;
+            VhId treeId = socket.Node.TreeId.VhId;
 
             return _entities.Spawn(node, nodeVhId, teamId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {
@@ -39,17 +39,17 @@ namespace VoidHuntersRevived.Game.Pieces.Services
             });
         }
 
-        public EntityId Spawn(SocketNode socketNode, EntityData nodes, EntityInitializerDelegate? initializerDelegate = null)
+        public EntityId Spawn(Socket socket, EntityData nodes, EntityInitializerDelegate? initializerDelegate = null)
         {
-            TeamId teamId = _entities.QueryById<TeamId>(socketNode.Node.TreeId);
-            SocketVhId socketVhId = socketNode.Socket.Id.VhId;
+            TeamId teamId = _entities.QueryById<TeamId>(socket.Node.TreeId);
+            SocketVhId socketVhId = socket.Id.VhId;
 
             EntityId nodeId = _entities.Deserialize(
                 options: new DeserializationOptions
                 {
                     Seed = HashBuilder<SocketService,  SocketVhId>.Instance.Calculate(socketVhId),
                     TeamId = teamId,
-                    Owner = socketNode.Node.TreeId.VhId
+                    Owner = socket.Node.TreeId.VhId
                 },
                 data: nodes,
                 initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>

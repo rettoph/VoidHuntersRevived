@@ -14,14 +14,14 @@ namespace VoidHuntersRevived.Common.Pieces.Services
 {
     public interface ISocketService
     {
-        SocketNode GetSocketNode(SocketId socketId);
-        bool TryGetSocketNode(SocketVhId socketVhId, out SocketNode socketNode);
+        Socket GetSocket(SocketId socketId);
+        bool TryGetSocket(SocketVhId socketVhId, out Socket socketNode);
 
         ref EntityFilterCollection GetCouplingFilter(SocketId socketId);
 
-        bool TryGetClosestOpenSocket(EntityId treeId, FixVector2 worldPosition, [MaybeNullWhen(false)] out SocketNode socketNode);
+        bool TryGetClosestOpenSocket(EntityId treeId, FixVector2 worldPosition, [MaybeNullWhen(false)] out Socket socket);
 
-        EntityId Spawn(SocketNode socketNode, VhId nodeVhId, IEntityType<PieceDescriptor> node, EntityInitializerDelegate? initializer = null);
-        EntityId Spawn(SocketNode socketNode, EntityData nodes, EntityInitializerDelegate? initializer = null);
+        EntityId Spawn(Socket socket, VhId nodeVhId, IEntityType<PieceDescriptor> node, EntityInitializerDelegate? initializer = null);
+        EntityId Spawn(Socket socket, EntityData nodes, EntityInitializerDelegate? initializer = null);
     }
 }

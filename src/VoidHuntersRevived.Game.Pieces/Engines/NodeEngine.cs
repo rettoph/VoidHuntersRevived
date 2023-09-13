@@ -81,7 +81,7 @@ namespace VoidHuntersRevived.Game.Pieces.Engines
             try
             {
                 ref Plug plug = ref _entities.QueryByGroupIndex<Plug>(groupId, index);
-                SocketNode socketNode = _sockets.GetSocketNode(coupling.SocketId);
+                Socket socketNode = _sockets.GetSocket(coupling.SocketId);
 
                 node.LocalTransformation = plug.Location.Transformation.Invert() * socketNode.LocalTransformation;
             }

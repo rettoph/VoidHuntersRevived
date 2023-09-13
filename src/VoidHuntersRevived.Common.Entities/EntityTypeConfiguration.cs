@@ -49,6 +49,8 @@ namespace VoidHuntersRevived.Common.Entities
         {
             initializer.Init<EntityTypeId>(this.Type.Id);
             _initializer?.Invoke(entities, ref initializer, in id);
+
+            this.Type.Descriptor.PostInitialize(entities, ref initializer, in id);
         }
 
         public void Dispose()

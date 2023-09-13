@@ -14,21 +14,23 @@ using VoidHuntersRevived.Common.Pieces.Utilities;
 
 namespace VoidHuntersRevived.Common.Pieces.Components
 {
-    [AutoDispose(AutoDisposeScope.Instance)]
-    public struct Sockets : IEntityComponent, IDisposable
+    [AutoDisposeComponent<Location>(AutoDisposeScope.Type)]
+    [AutoDisposeComponent<SocketId>(AutoDisposeScope.Instance)]
+    public struct Sockets<T> : IEntityComponent, IDisposable
+        where T : unmanaged
     {
-        public required NativeDynamicArrayCast<Socket> Items { get; init; }
+        public required NativeDynamicArrayCast<T> Items { get; init; }
 
         public void Dispose()
         {
             this.Items.Dispose();
         }
 
-        public static Sockets Polygon(in EntityId nodeId, int sides)
+        public static Sockets<Location> Polygon(int sides)
         {
             PolygonHelper.VertexAngle[] vertexAngles = PolygonHelper.CalculateVertexAngles(sides).ToArray();
 
-            NativeDynamicArrayCast<Socket> items = new NativeDynamicArrayCast<Socket>((uint)sides - 1, Allocator.Persistent);
+            NativeDynamicArrayCast<Location> items = new NativeDynamicArrayCast<Location>((uint)sides - 1, Allocator.Persistent);
 
             for (int i = 1; i < vertexAngles.Length; i++)
             {
@@ -38,10 +40,10 @@ namespace VoidHuntersRevived.Common.Pieces.Components
                 FixVector2 center = (start + end) / (Fix64)2;
 
                 var location = new Location(center, vertexAngles[i].Angle - Fix64.PiOver2);
-                items.Set(i - 1, new Socket(nodeId, (byte)(i - 1), location));
+                items.Set(i - 1, location);
             }
 
-            return new Sockets()
+            return new Sockets<Location>()
             {
                 Items = items
             };

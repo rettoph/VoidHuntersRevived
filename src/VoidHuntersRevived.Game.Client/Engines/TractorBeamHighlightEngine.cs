@@ -13,6 +13,7 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
+using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Ships.Services;
@@ -111,11 +112,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
             Matrix transformation = node.Transformation.ToTransformationXnaMatrix();
             _visibleRenderingService.Fill(in visible, ref transformation, _resources.Get(Colors.TractorBeamHighlight));
 
-            if(_entities.TryQueryByGroupIndex<Sockets>(in groupIndex, out Sockets sockets))
+            if(_entities.TryQueryByGroupIndex<Sockets<SocketId>>(in groupIndex, out Sockets<SocketId> sockets))
             {
                 for (int i = 0; i < sockets.Items.count; i++)
                 {
-                    var filter = _sockets.GetCouplingFilter(sockets.Items[i].Id);
+                    var filter = _sockets.GetCouplingFilter(sockets.Items[i]);
                     foreach (var (indices, groupId) in filter)
                     {
                         var (entityIds, _) = _entities.QueryEntities<EntityId>(groupId);

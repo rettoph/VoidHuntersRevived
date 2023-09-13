@@ -23,6 +23,7 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
     {
         private DynamicEntityDescriptor<BaseEntityDescriptor> _dynamicDescriptor;
         private readonly List<ComponentManager> _componentManagers;
+        private EntityInitializerDelegate? _postInitializer;
 
         private EntityDescriptorId? _id;
         private string? _name;
@@ -76,6 +77,13 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             return this;
         }
 
+        protected VoidHuntersEntityDescriptor WithPostInitializer(EntityInitializerDelegate initializer)
+        {
+            _postInitializer += initializer;
+
+            return this;
+        }
+
         public bool HasAll(params Type[] componentTypes)
         {
             foreach(Type componentType in componentTypes)
@@ -87,6 +95,11 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             }
 
             return true;
+        }
+
+        internal void PostInitialize(IEntityService entities, ref EntityInitializer initializer, in EntityId id)
+        {
+            _postInitializer?.Invoke(entities, ref initializer, in id);
         }
     }
 }

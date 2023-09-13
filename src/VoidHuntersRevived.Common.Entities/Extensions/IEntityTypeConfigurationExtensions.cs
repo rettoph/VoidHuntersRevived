@@ -1,4 +1,5 @@
-﻿using Svelto.ECS;
+﻿using Guppy.Attributes;
+using Svelto.ECS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,10 @@ namespace VoidHuntersRevived.Common.Entities
                         return;
                     }
 
-                    AutoDisposeAttribute? autoDisposeAttr = instance.GetType().GetCustomAttribute<AutoDisposeAttribute>();
+                    AutoDisposeComponentAttribute? autoDisposeAttr = instance.GetType()
+                        .GetCustomAttributes(true)
+                        .OfType<AutoDisposeComponentAttribute>()
+                        .FirstOrDefault(x => x.GetDisposableComponentType(typeof(T)) == typeof(T));
                     if((autoDisposeAttr?.Scope ?? AutoDisposeScope.None) == AutoDisposeScope.Type)
                     {
                         disposable.Dispose();
