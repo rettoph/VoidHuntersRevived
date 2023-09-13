@@ -125,24 +125,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
             {
                 if(_sockets.TryGetSocketNode(data.AttachToSocketVhId, out SocketNode attachToSocketNode))
                 { // Spawn a new piece attached to the input node
-                    TeamId teamId = _entities.QueryById<TeamId>(attachToSocketNode.Node.TreeId);
-
-                    EntityId nodeId = _entities.Deserialize(
-                        options: new DeserializationOptions
-                        {
-                            Seed = eventId.Create(1),
-                            TeamId = teamId,
-                            Owner = attachToSocketNode.Node.TreeId.VhId
-                        },
-                        data: data.TargetData,
-                        initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
-                        {
-                            initializer.Init<Coupling>(new Coupling(
-                                socketId: new SocketId(
-                                    nodeId: entities.GetId(data.AttachToSocketVhId.NodeVhId),
-                                    index: data.AttachToSocketVhId.Index))
-                                );
-                        });
+                    _sockets.Spawn(attachToSocketNode, data.TargetData);
                 }
                 else 
                 { // Spawn a new free floating chain

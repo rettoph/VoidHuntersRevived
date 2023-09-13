@@ -14,7 +14,7 @@ using VoidHuntersRevived.Common.Pieces.Components;
 namespace VoidHuntersRevived.Common.Pieces.Serialization.Components
 {
     [AutoLoad]
-    public sealed class VisibleComponentSerializer : ComponentSerializer<Visible>
+    public sealed class VisibleComponentSerializer : DoNotSerializeComponentSerializer<Visible>
     {
         protected override Visible Read(in DeserializationOptions options, EntityReader reader, in EntityId id)
         {

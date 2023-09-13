@@ -10,9 +10,9 @@ namespace VoidHuntersRevived.Common.Entities
 {
     public interface IEntityType
     {
+        EntityTypeId Id { get; }
         VoidHuntersEntityDescriptor Descriptor { get; }
         string Name { get; }
-        VhId Id { get; }
 
         IEntityTypeConfiguration BuildConfiguration();
     }

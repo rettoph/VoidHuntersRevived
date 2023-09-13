@@ -7,11 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Attributes;
+using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces.Utilities;
 
 namespace VoidHuntersRevived.Common.Pieces.Components
 {
+    [AutoDispose(AutoDisposeScope.Instance)]
     public struct Sockets : IEntityComponent, IDisposable
     {
         public required NativeDynamicArrayCast<Socket> Items { get; init; }

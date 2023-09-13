@@ -14,8 +14,9 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
         {
             new ComponentBuilder<EntityStatus>(),
             new ComponentBuilder<EntityId>(),
-            new ComponentBuilder<DescriptorId>(),
-            new ComponentBuilder<TeamId>()
+            new ComponentBuilder<EntityDescriptorId>(),
+            new ComponentBuilder<TeamId>(),
+            new ComponentBuilder<EntityTypeId>()
         };
 
         public IComponentBuilder[] componentsToBuild => _componentsToBuild;

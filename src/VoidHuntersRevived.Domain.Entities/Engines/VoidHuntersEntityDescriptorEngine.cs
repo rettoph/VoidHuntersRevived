@@ -37,7 +37,6 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
     internal sealed class VoidHuntersEntityDescriptorEngine<TDescriptor> : VoidHuntersEntityDescriptorEngine, IQueryingEntitiesEngine
         where TDescriptor : VoidHuntersEntityDescriptor, new()
     {
-        private readonly DescriptorId _descriptorComponent;
         private readonly TDescriptor _descriptor;
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
@@ -62,7 +61,6 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             _functions = enginesRoot.GenerateEntityFunctions();
             _engines = engines;
             _onDespawnEngineInvokers = new FasterList<OnDespawnEngineInvoker>();
-            _descriptorComponent = new DescriptorId(_descriptor.Id);
             _teamDescriptorGroups = teamDescriptorGroups.GetAllByDescriptor(_descriptor);
 
             _serializers = new FasterList<ComponentSerializer>(_descriptor.ComponentManagers.Count());
@@ -108,7 +106,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
             EntityInitializer initializer = _factory.BuildEntity(egid, _descriptor);
             initializer.Init(id);
-            initializer.Init(_descriptorComponent);
+            initializer.Init(_descriptor.Id);
             initializer.Init(teamId);
             initializer.Init(new EntityStatus()
             {

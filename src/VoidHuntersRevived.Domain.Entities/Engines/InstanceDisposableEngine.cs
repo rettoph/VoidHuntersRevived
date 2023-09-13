@@ -4,12 +4,12 @@ using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Entities.Engines
 {
-    internal sealed class DisposableEngine<T> : IEngine, IReactOnRemoveEx<T>, IQueryingEntitiesEngine
+    internal sealed class InstanceDisposableEngine<T> : IEngine, IReactOnRemoveEx<T>, IQueryingEntitiesEngine
         where T : unmanaged, IEntityComponent, IDisposable
     {
         private readonly ILogger _logger;
 
-        public DisposableEngine(ILogger logger)
+        public InstanceDisposableEngine(ILogger logger)
         {
             _logger = logger;
         }
@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                _logger.Verbose("{ClassName}::{MethodName} - Disposing of {ComponentType} for {VhId}", nameof(DisposableEngine<T>), nameof(Remove), typeof(T).Name, ids[index].VhId.Value);
+                _logger.Verbose("{ClassName}::{MethodName} - Disposing of {ComponentType} for {VhId}", nameof(InstanceDisposableEngine<T>), nameof(Remove), typeof(T).Name, ids[index].VhId.Value);
                 components[index].Dispose();
             }
         }

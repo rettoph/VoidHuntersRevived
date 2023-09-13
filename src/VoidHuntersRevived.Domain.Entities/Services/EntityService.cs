@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _logger = logger;
             _types = types;
             _scheduler = scheduler;
-            _descriptors = new DoubleDictionary<VhId, Type, IVoidHuntersEntityDescriptorEngine>();
+            _descriptors = new DoubleDictionary<EntityDescriptorId, Type, IVoidHuntersEntityDescriptorEngine>();
         }
 
         public EntitiesDB entitiesDB { get; set; } = null!;

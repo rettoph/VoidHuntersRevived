@@ -136,7 +136,7 @@ namespace VoidHuntersRevived.Common.Entities.Services
         #endregion
 
         #region Descriptors
-        internal IVoidHuntersEntityDescriptorEngine GetDescriptorEngine(VhId descriptorId);
+        internal IVoidHuntersEntityDescriptorEngine GetDescriptorEngine(EntityDescriptorId descriptorId);
         #endregion
     }
 }

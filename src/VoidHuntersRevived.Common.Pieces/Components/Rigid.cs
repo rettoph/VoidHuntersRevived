@@ -11,7 +11,7 @@ using VoidHuntersRevived.Common.Pieces.Utilities;
 
 namespace VoidHuntersRevived.Common.Pieces.Components
 {
-    public struct Rigid : IEntityComponent, IDisposable
+    public struct Rigid : IEntityComponent
     {
         public required FixVector2 Centeroid { get; init; }
         public required NativeDynamicArrayCast<Polygon> Shapes { get; init; }

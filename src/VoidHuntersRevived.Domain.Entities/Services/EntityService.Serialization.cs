@@ -11,7 +11,6 @@ using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Events;
-using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Domain.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Options;
@@ -32,11 +31,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Serialize(EntityId id, EntityWriter writer, SerializationOptions options)
         {
-            DescriptorId descriptorId = this.QueryById<DescriptorId>(id, out GroupIndex groupIndex);
+            EntityTypeId typeId = this.QueryById<EntityTypeId>(id, out GroupIndex groupIndex);
+            EntityDescriptorId descriptorId = this.QueryByGroupIndex<EntityDescriptorId>(in groupIndex);
             
             writer.Write(id.VhId);
-            writer.WriteStruct(descriptorId.Value);
-            this.GetDescriptorEngine(descriptorId.Value).Serialize(writer, in groupIndex, in options);
+            writer.WriteStruct(typeId);
+            this.GetDescriptorEngine(descriptorId).Serialize(writer, in groupIndex, in options);
         }
 
         public EntityId Deserialize(DeserializationOptions options, EntityData data, EntityInitializerDelegate? initializer)
@@ -48,21 +48,22 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public EntityId Deserialize(DeserializationOptions options, EntityReader reader, EntityInitializerDelegate? initializerDelegate)
         {
             VhId vhid = reader.ReadVhId(options.Seed);
-            VhId descriptorId = reader.ReadStruct<VhId>();
+            EntityTypeId typeId = reader.ReadStruct<EntityTypeId>();
+            IEntityType type = _types.GetById(typeId);
 
             EntityReaderState readerState = reader.GetState();
 
-            _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityService), nameof(Deserialize), vhid.Value, descriptorId.Value, options.Seed.Value);
+            _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityService), nameof(Deserialize), vhid.Value, typeId.Value, options.Seed.Value);
 
-            SpawnEntityDescriptor createEntityEvent = new SpawnEntityDescriptor()
+            SpawnEntity createEntityEvent = new SpawnEntity()
             {
-                DescriptorId = descriptorId,
+                Type = type,
                 VhId = vhid,
                 TeamId = options.TeamId,
                 Initializer = (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                 {
                     reader.Load(readerState);
-                    entities.GetDescriptorEngine(descriptorId).Deserialize(in options, reader, ref initializer, in id);
+                    entities.GetDescriptorEngine(type.Descriptor.Id).Deserialize(in options, reader, ref initializer, in id);
 
                     initializerDelegate?.Invoke(entities, ref initializer, in id);
                 }

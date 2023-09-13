@@ -4,9 +4,11 @@ using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Descriptors;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Exceptions;
@@ -14,7 +16,7 @@ using VoidHuntersRevived.Game.Common;
 
 namespace VoidHuntersRevived.Game.Pieces.Services
 {
-    internal sealed class SocketService : BasicEngine, ISocketService
+    internal sealed partial class SocketService : BasicEngine, ISocketService
     {
         private static readonly Fix64 OpenNodemaximumDistance = Fix64.One;
 

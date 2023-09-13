@@ -80,6 +80,7 @@ namespace VoidHuntersRevived.Common.Pieces.Serialization.Components
                 for (int i = 0; i < indices.count; i++)
                 {
                     count++;
+                    
                     _entities.Serialize(entityIds[indices[i]], writer, options);
                 }
             }

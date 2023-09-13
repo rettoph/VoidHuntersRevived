@@ -29,37 +29,29 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
         {
             entityTypes.Configure(EntityTypes.Pieces.HullTriangle, configuration =>
             {
-                configuration.HasInitializer((IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
-                {
-                    initializer.Init<Rigid>(Rigid.Polygon(Fix64.One, 3));
-                    initializer.Init<Visible>(Visible.Polygon(3));
-                    initializer.Init<Sockets>(Sockets.Polygon(id, 3));
-                });
+                configuration.InitializeComponent<Rigid>(Rigid.Polygon(Fix64.One, 3));
+                configuration.InitializeComponent<Visible>(Visible.Polygon(3));
+                configuration.InitializeComponent<Sockets>(id => Sockets.Polygon(id, 3));
             });
 
             entityTypes.Configure(EntityTypes.Pieces.HullSquare, configuration =>
             {
-                configuration.HasInitializer((IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
-                {
-                    initializer.Init<Rigid>(Rigid.Polygon(Fix64.One, 4));
-                    initializer.Init<Visible>(Visible.Polygon(4));
-                    initializer.Init<Sockets>(Sockets.Polygon(id, 4));
-                });
+                configuration.InitializeComponent<Rigid>(Rigid.Polygon(Fix64.One, 4));
+                configuration.InitializeComponent<Visible>(Visible.Polygon(4));
+                configuration.InitializeComponent<Sockets>(id => Sockets.Polygon(id, 4));
             });
 
             entityTypes.Configure(EntityTypes.Pieces.Thruster, configuration =>
             {
-                configuration.HasInitializer((IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+                configuration.InitializeComponent<Plug>(new Plug()
                 {
-                    initializer.Init<Plug>(new Plug()
+                    Location = new Location(FixVector2.Zero, Fix64.Pi)
+                });
+                configuration.InitializeComponent<Rigid>(new Rigid()
+                {
+                    Centeroid = FixVector2.Zero,
+                    Shapes = new[]
                     {
-                        Location = new Location(FixVector2.Zero, Fix64.Pi)
-                    });
-                    initializer.Init<Rigid>(new Rigid()
-                    {
-                        Centeroid = FixVector2.Zero,
-                        Shapes = new[]
-                        {
                             new Polygon()
                             {
                                 Vertices = new[]
@@ -71,10 +63,10 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
                                 }.ToNativeDynamicArray()
                             }
                         }.ToNativeDynamicArray()
-                    });
-                    initializer.Init<Visible>(new Visible()
-                    {
-                        Shapes = new[] {
+                });
+                configuration.InitializeComponent<Visible>(new Visible()
+                {
+                    Shapes = new[] {
                             new Shape()
                             {
                                 Vertices = new[]
@@ -86,7 +78,7 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
                                 }.ToNativeDynamicArray()
                             }
                         }.ToNativeDynamicArray(),
-                        Paths = new[] {
+                    Paths = new[] {
                             new Shape()
                             {
                                 Vertices = new[]
@@ -99,7 +91,6 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
                                 }.ToNativeDynamicArray()
                             }
                         }.ToNativeDynamicArray()
-                    });
                 });
             });
         }

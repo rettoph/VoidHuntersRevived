@@ -6,8 +6,11 @@ using Svelto.ECS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities.Attributes;
+using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Domain.Entities.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Configurators
@@ -17,12 +20,24 @@ namespace VoidHuntersRevived.Domain.Entities.Configurators
     {
         public void Configure(GuppyConfiguration configuration)
         {
-            foreach (Type disposableComponent in configuration.Assemblies.GetTypes<IEntityComponent>().Where(x => x.IsAssignableTo<IDisposable>()))
+            foreach (Type disposableComponent in configuration.Assemblies.GetTypes<IEntityComponent>().Where(this.ShouldAutoDisposeComponentPerInstance))
             {
-                configuration.Builder.RegisterType(typeof(DisposableEngine<>).MakeGenericType(disposableComponent))
+                configuration.Builder.RegisterType(typeof(InstanceDisposableEngine<>).MakeGenericType(disposableComponent))
                     .As<IEngine>()
                     .InstancePerLifetimeScope();
             }
+        }
+
+        private bool ShouldAutoDisposeComponentPerInstance(Type type)
+        {
+            if (type.IsAssignableTo<IDisposable>() == false)
+            {
+                return false;
+            }
+
+            AutoDisposeAttribute? autoDisposeAttr = type.GetCustomAttribute<AutoDisposeAttribute>(true);
+
+            return (autoDisposeAttr?.Scope ?? AutoDisposeScope.None) == AutoDisposeScope.Instance;
         }
     }
 }

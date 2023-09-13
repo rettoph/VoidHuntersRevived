@@ -22,29 +22,21 @@ namespace VoidHuntersRevived.Game.Common.Loaders
         {
             entityTypes.Configure(EntityTypes.UserShip, configuration =>
             {
-                configuration.HasInitializer((IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+                configuration.InitializeComponent<Awake>(new Awake(sleepingAllowed: false));
+                configuration.InitializeComponent<TractorBeamEmitter>(id => new TractorBeamEmitter(id));
+                configuration.InitializeComponent<Collision>(new Collision()
                 {
-                    initializer.Init<TractorBeamEmitter>(new TractorBeamEmitter(id));
-
-                    initializer.Init<Collision>(new Collision()
-                    {
-                        Categories = CollisionGroups.ShipCategories,
-                        CollidesWith = CollisionGroups.ShipCollidesWith
-                    });
-
-                    initializer.Init<Awake>(new Awake(false));
+                    Categories = CollisionGroups.ShipCategories,
+                    CollidesWith = CollisionGroups.ShipCollidesWith
                 });
             });
 
             entityTypes.Configure(EntityTypes.Chain, configuration =>
             {
-                configuration.HasInitializer((IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+                configuration.InitializeComponent<Collision>(new Collision()
                 {
-                    initializer.Init<Collision>(new Collision()
-                    {
-                        Categories = CollisionGroups.FreeFloatingCategories,
-                        CollidesWith = CollisionGroups.FreeFloatingCollidesWith
-                    });
+                    Categories = CollisionGroups.FreeFloatingCategories,
+                    CollidesWith = CollisionGroups.FreeFloatingCollidesWith
                 });
             });
         }

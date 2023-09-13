@@ -9,12 +9,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     public sealed class EntityTypeService : IEntityTypeService
     {
         private readonly Dictionary<IEntityType, IEntityTypeConfiguration> _configurations;
-        private readonly Dictionary<VhId, IEntityType> _ids;
+        private readonly Dictionary<EntityTypeId, IEntityType> _ids;
 
         public EntityTypeService(IFiltered<IEntityTypeLoader> loaders)
         {
             _configurations = new Dictionary<IEntityType, IEntityTypeConfiguration>();
-            _ids = new Dictionary<VhId, IEntityType>();
+            _ids = new Dictionary<EntityTypeId, IEntityType>();
 
             foreach (IEntityTypeLoader loader in loaders.Instances)
             {
@@ -56,7 +56,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _configurations.Values;
         }
 
-        public IEntityType GetById(VhId id)
+        public IEntityType GetById(EntityTypeId id)
         {
             return _ids[id];
         }

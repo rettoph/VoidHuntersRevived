@@ -87,4 +87,31 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             writer.Write(span);
         }
     }
+
+    public abstract class DoNotSerializeComponentSerializer<TComponent> : ComponentSerializer<TComponent>
+        where TComponent : unmanaged, IEntityComponent
+    {
+        public DoNotSerializeComponentSerializer()
+        {
+        }
+
+        public override void Serialize(EntityWriter writer, in GroupIndex groupIndex, EntitiesDB entitiesDB, in SerializationOptions options)
+        {
+
+        }
+        public override void Deserialize(in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id)
+        {
+
+        }
+
+        protected override void Write(EntityWriter writer, in TComponent instance, in SerializationOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override TComponent Read(in DeserializationOptions options, EntityReader reader, in EntityId id)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

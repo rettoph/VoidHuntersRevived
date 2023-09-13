@@ -17,6 +17,7 @@ namespace VoidHuntersRevived.Common.Entities
         where TDescriptor : VoidHuntersEntityDescriptor, new()
     {
         private EntityInitializerDelegate? _initializer;
+        private Action? _disposer;
 
         public IEntityType<TDescriptor> Type { get; }
         IEntityType IEntityTypeConfiguration.Type => Type;
@@ -26,16 +27,33 @@ namespace VoidHuntersRevived.Common.Entities
             Type = type;
         }
 
-        public IEntityTypeConfiguration HasInitializer(EntityInitializerDelegate initializer)
+        public IEntityTypeConfiguration InitializeComponent<T>(IEntityTypeComponentValue<T> componentInitializer)
+            where T : unmanaged, IEntityComponent
         {
-            _initializer += initializer;
+            if(!this.Type.Descriptor.ComponentManagers.Any(x => x.Type == typeof(T)))
+            {
+                throw new Exception();
+            }
+
+            _initializer += (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+            {
+                initializer.Init<T>(componentInitializer.GetInstance(id));
+            };
+
+            _disposer += componentInitializer.Dispose;
 
             return this;
         }
 
         public void Initialize(IEntityService entities, ref EntityInitializer initializer, in EntityId id)
         {
+            initializer.Init<EntityTypeId>(this.Type.Id);
             _initializer?.Invoke(entities, ref initializer, in id);
+        }
+
+        public void Dispose()
+        {
+            _disposer?.Invoke();
         }
     }
 }
