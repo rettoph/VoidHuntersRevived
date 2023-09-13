@@ -8,7 +8,7 @@ using VoidHuntersRevived.Common.Pieces.Utilities;
 
 namespace VoidHuntersRevived.Common.Pieces.Components
 {
-    public struct Visible : IEntityComponent, IDisposable
+    public struct Visible : IEntityComponent, IDisposable, IPieceComponent
     {
         public required NativeDynamicArrayCast<Shape> Shapes { get; init; }
         public required NativeDynamicArrayCast<Shape> Paths { get; init; }

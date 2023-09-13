@@ -1,16 +1,10 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
-using Guppy.GUI;
 using Guppy.Input.Messages;
+using Guppy.MonoGame;
 using Guppy.MonoGame.Utilities.Cameras;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended.Screens;
 using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations.Engines;
 
 namespace VoidHuntersRevived.Game.Client.Engines

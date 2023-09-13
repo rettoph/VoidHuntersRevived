@@ -1,7 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.Common.Attributes;
-using Guppy.GUI;
 using Guppy.MonoGame.Primitives;
 using Guppy.MonoGame.Utilities.Cameras;
 using Guppy.Resources;

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -14,6 +14,12 @@
     <ProjectReference Include="..\VoidHuntersRevived.Game.Common\VoidHuntersRevived.Game.Common.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Game.Pieces\VoidHuntersRevived.Game.Pieces.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Game.Ships\VoidHuntersRevived.Game.Ships.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Content\Game\Pieces\HullSquare.piece">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

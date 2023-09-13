@@ -1,5 +1,4 @@
-﻿using Guppy.GUI;
-using Guppy.MonoGame;
+﻿using Guppy.MonoGame;
 using Microsoft.Xna.Framework;
 
 namespace VoidHuntersRevived.Game.Client.GameComponents

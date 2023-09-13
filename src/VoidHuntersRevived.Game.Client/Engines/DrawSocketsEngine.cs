@@ -1,11 +1,9 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.Attributes;
-using Guppy.GUI;
 using Guppy.MonoGame.Primitives;
 using Guppy.MonoGame.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Screens;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Pieces.Components;
@@ -20,6 +18,7 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.FixedPoint.Utilities;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
+using Guppy.MonoGame;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {

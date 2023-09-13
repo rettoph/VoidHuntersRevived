@@ -1,19 +1,11 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.Utilities;
-using Guppy.GUI;
-using Guppy.GUI.Elements;
-using Guppy.GUI.Loaders;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Constants;
-using VoidHuntersRevived.Game.Client.Constants;
 
 namespace VoidHuntersRevived.Game.Client.Loaders
 {
+    /*
     [AutoLoad]
     internal sealed class StageLoader_Main : IStageLoader
     {
@@ -38,4 +30,5 @@ namespace VoidHuntersRevived.Game.Client.Loaders
                 });
         }
     }
+    */
 }

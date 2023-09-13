@@ -1,0 +1,11 @@
+{
+  "Descriptor": "Hull",
+  "Components": [
+    {
+      "Type": "Rigid",
+      "Value": {
+
+      }
+    }
+  ]
+}
