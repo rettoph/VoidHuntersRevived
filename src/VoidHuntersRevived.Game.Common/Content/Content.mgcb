@@ -13,10 +13,10 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Game/Fonts/BiomeLight-Normal.spritefont
+#begin Common/Fonts/BiomeLight-Normal.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:Game/Fonts/BiomeLight-Normal.spritefont
+/build:Common/Fonts/BiomeLight-Normal.spritefont
 

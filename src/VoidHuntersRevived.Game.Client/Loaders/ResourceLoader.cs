@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 
-namespace VoidHuntersRevived.Game.Loaders
+namespace VoidHuntersRevived.Game.Common.Loaders
 {
     [AutoLoad]
     internal class ResourceLoader : IResourceLoader

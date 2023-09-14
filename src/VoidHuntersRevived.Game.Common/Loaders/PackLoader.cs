@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Game.Common;
 
-namespace VoidHuntersRevived.Game.Loaders
+namespace VoidHuntersRevived.Game.Common.Loaders
 {
     [AutoLoad]
     internal sealed class PackLoader : IPackLoader

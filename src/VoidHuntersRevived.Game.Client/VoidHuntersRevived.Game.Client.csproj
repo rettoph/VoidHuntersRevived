@@ -12,22 +12,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Content\Effects\Compiled\*.mgfx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Content\Effects\Compiled\Bloom.mgfx" />
-    <None Remove="Content\Effects\Compiled\Explosion.mgfx" />
-    <None Remove="Content\Effects\Compiled\GaussianBlur.mgfx" />
-    <None Remove="Content\Effects\Compiled\Trail.mgfx" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Game.Ships\VoidHuntersRevived.Game.Ships.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Game\VoidHuntersRevived.Game.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Content\Client\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Content\Client\Effects\Compiled\*.mgfx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

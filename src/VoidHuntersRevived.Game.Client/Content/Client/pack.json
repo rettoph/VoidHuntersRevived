@@ -1,0 +1,10 @@
+{
+  "Id": "bfd07a87-bb3c-4fd2-a6f9-4c7ebd70c973",
+  "Name": "Void Hunters Revived - Client",
+  "Import": {
+    "en-US": [
+      "fonts.json"
+    ]
+  }
+
+}
