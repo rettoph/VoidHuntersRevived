@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Common.Pieces
 
         public string Key { get; set; } = string.Empty;
         public VoidHuntersEntityDescriptor Descriptor { get; set; } = null!;
-        public IPieceComponent[] Components { get; set; } = Array.Empty<IPieceComponent>();
+        public Dictionary<string, IPieceComponent> Components { get; set; } = new Dictionary<string, IPieceComponent>();
 
         private static IEntityType<PieceDescriptor> BuildEntityType(VoidHuntersEntityDescriptor descriptor, string key)
         {

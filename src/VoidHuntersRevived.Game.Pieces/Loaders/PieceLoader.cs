@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            services.RegisterType<PolymorphicConverter<IPieceComponent>>().As<JsonConverter>().SingleInstance();
+            services.RegisterType<DictionaryPolymorphicConverter<IPieceComponent>>().As<JsonConverter>().SingleInstance();
             services.RegisterType<RigidJsonConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<VisibleJsonConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<ShapeJsonConverter>().As<JsonConverter>().SingleInstance();

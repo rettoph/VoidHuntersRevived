@@ -1,131 +1,119 @@
 {
   "Key": "HullSquare",
   "Descriptor": "HullDescriptor",
-  "Components": [
-    {
-      "Type": "Rigid",
-      "Value": {
-        "Centeroid": {
-          "X": 0.5,
-          "Y": 0.5
-        },
-        "Shapes": [
-          {
-            "Density": 1,
-            "Vertices": [
-              {
-                "X": 0,
-                "Y": 0
-              },
-              {
-                "X": 1,
-                "Y": 0
-              },
-              {
-                "X": 1,
-                "Y": 1
-              },
-              {
-                "X": 0,
-                "Y": 1
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "Type": "Visible",
-      "Value": {
-        "Fill": [
-          {
-            "Vertices": [
-              {
-                "X": 0,
-                "Y": 0
-              },
-              {
-                "X": 1,
-                "Y": 0
-              },
-              {
-                "X": 1,
-                "Y": 1
-              },
-              {
-                "X": 0,
-                "Y": 1
-              }
-            ]
-          }
-        ],
-        "Trace": [
-          {
-            "Vertices": [
-              {
-                "X": 0,
-                "Y": 0
-              },
-              {
-                "X": 1,
-                "Y": 0
-              },
-              {
-                "X": 1,
-                "Y": 1
-              },
-              {
-                "X": 0,
-                "Y": 1
-              },
-              {
-                "X": 0,
-                "Y": 0
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "Type": "Sockets.Location",
-      "Value": {
-        "Items": [
-          {
-            "Position": {
-              "X": 1,
-              "Y": 0.5
+  "Components": {
+    "Rigid": {
+      "Centeroid": {
+        "X": 0.5,
+        "Y": 0.5
+      },
+      "Shapes": [
+        {
+          "Density": 1,
+          "Vertices": [
+            {
+              "X": 0,
+              "Y": 0
             },
-            "Rotation": 0
-          },
-          {
-            "Position": {
-              "X": 0.5,
+            {
+              "X": 1,
+              "Y": 0
+            },
+            {
+              "X": 1,
               "Y": 1
             },
-            "Rotation": 1.5707963267
-          },
-          {
-            "Position": {
+            {
               "X": 0,
-              "Y": 0.5
-            },
-            "Rotation": 3.1415926535
-          }
-        ]
-      }
+              "Y": 1
+            }
+          ]
+        }
+      ]
     },
-    {
-      "Type": "Plug",
-      "Value": {
-        "Location": {
+    "Visible": {
+      "Fill": [
+        {
+          "Vertices": [
+            {
+              "X": 0,
+              "Y": 0
+            },
+            {
+              "X": 1,
+              "Y": 0
+            },
+            {
+              "X": 1,
+              "Y": 1
+            },
+            {
+              "X": 0,
+              "Y": 1
+            }
+          ]
+        }
+      ],
+      "Trace": [
+        {
+          "Vertices": [
+            {
+              "X": 0,
+              "Y": 0
+            },
+            {
+              "X": 1,
+              "Y": 0
+            },
+            {
+              "X": 1,
+              "Y": 1
+            },
+            {
+              "X": 0,
+              "Y": 1
+            },
+            {
+              "X": 0,
+              "Y": 0
+            }
+          ]
+        }
+      ]
+    },
+    "Sockets.Location": {
+      "Items": [
+        {
+          "Position": {
+            "X": 1,
+            "Y": 0.5
+          },
+          "Rotation": 0
+        },
+        {
           "Position": {
             "X": 0.5,
-            "Y": 0
+            "Y": 1
           },
           "Rotation": 1.5707963267
+        },
+        {
+          "Position": {
+            "X": 0,
+            "Y": 0.5
+          },
+          "Rotation": 3.1415926535
         }
+      ]
+    },
+    "Plug": {
+      "Location": {
+        "Position": {
+          "X": 0.5,
+          "Y": 0
+        },
+        "Rotation": 1.5707963267
       }
     }
-  ]
+  }
 }

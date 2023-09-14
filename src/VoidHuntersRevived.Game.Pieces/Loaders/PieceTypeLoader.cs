@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
             {
                 entityTypes.Configure(piece.EntityType, configuration =>
                 {
-                    foreach (IPieceComponent component in piece.Components)
+                    foreach (IPieceComponent component in piece.Components.Values)
                     {
                         configuration.InitializeComponent(component);
                     }
