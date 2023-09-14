@@ -1,4 +1,5 @@
 ﻿using Guppy.Resources;
+using Guppy.Resources.Attributes;
 using Microsoft.Xna.Framework;
 using Svelto.DataStructures;
 using Svelto.ECS;
@@ -8,25 +9,26 @@ using VoidHuntersRevived.Common.Pieces.Utilities;
 
 namespace VoidHuntersRevived.Common.Pieces.Components
 {
+    [PolymorphicJsonType(nameof(Visible))]
     public struct Visible : IEntityComponent, IDisposable, IPieceComponent
     {
-        public required NativeDynamicArrayCast<Shape> Shapes { get; init; }
-        public required NativeDynamicArrayCast<Shape> Paths { get; init; }
+        public required NativeDynamicArrayCast<Shape> Fill { get; init; }
+        public required NativeDynamicArrayCast<Shape> Trace { get; init; }
 
         public void Dispose()
         {
-            for (int i = 0; i < this.Shapes.count; i++)
+            for (int i = 0; i < this.Fill.count; i++)
             {
-                this.Shapes[i].Dispose();
+                this.Fill[i].Dispose();
             }
 
-            for (int i = 0; i < this.Paths.count; i++)
+            for (int i = 0; i < this.Trace.count; i++)
             {
-                this.Paths[i].Dispose();
+                this.Trace[i].Dispose();
             }
 
-            this.Shapes.Dispose();
-            this.Paths.Dispose();
+            this.Fill.Dispose();
+            this.Trace.Dispose();
         }
 
         public static Visible Polygon(int sides)
@@ -35,14 +37,14 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 
             return new Visible()
             {
-                Shapes = new[]
+                Fill = new[]
                 {
                     new Shape()
                     {
                         Vertices = vertexAngles.Select(x => x.XnaVertex.ToVector3()).ToNativeDynamicArray()
                     }
                 }.ToNativeDynamicArray(),
-                Paths = new[]
+                Trace = new[]
                 {
                     new Shape()
                     {

@@ -5,6 +5,7 @@ using Guppy.Files.Enums;
 using Guppy.Files.Helpers;
 using Guppy.Files.Providers;
 using Guppy.Loaders;
+using Microsoft.Xna.Framework;
 using Serilog;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Common;
@@ -40,7 +41,9 @@ namespace VoidHuntersRevived.Domain.Loaders
 
             services.RegisterType<Fix64Converter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<FixVector2Converter>().As<JsonConverter>().SingleInstance();
+            services.RegisterType<Vector3Converter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<NativeDynamicArrayCastJsonConverter<FixVector2>>().As<JsonConverter>().SingleInstance();
+            services.RegisterType<NativeDynamicArrayCastJsonConverter<Vector3>>().As<JsonConverter>().SingleInstance();
         }
     }
 }

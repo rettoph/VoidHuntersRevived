@@ -21,6 +21,7 @@ namespace VoidHuntersRevived.Common.Entities
             method.Invoke(null, new object[] { configuration, component });
             return configuration;
         }
+
         public static IEntityTypeConfiguration InitializeComponent<T>(this IEntityTypeConfiguration configuration, T instance)
             where T : unmanaged, IEntityComponent
         {

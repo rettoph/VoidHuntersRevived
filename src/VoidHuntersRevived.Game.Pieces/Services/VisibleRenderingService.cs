@@ -51,17 +51,17 @@ namespace VoidHuntersRevived.Game.Pieces.Services
 
         public void Fill(in Visible visible, ref Matrix transformation, in Color color)
         {
-            for (int i = 0; i < visible.Shapes.count; i++)
+            for (int i = 0; i < visible.Fill.count; i++)
             {
-                this.FillShape(in visible.Shapes[i], ref transformation, color);
+                this.FillShape(in visible.Fill[i], ref transformation, color);
             }
         }
 
         public void Trace(in Visible visible, ref Matrix transformation, in Color color)
         {
-            for (int i = 0; i < visible.Paths.count; i++)
+            for (int i = 0; i < visible.Trace.count; i++)
             {
-                this.TracePath(in visible.Paths[i], ref transformation, color);
+                this.TracePath(in visible.Trace[i], ref transformation, color);
             }
         }
 

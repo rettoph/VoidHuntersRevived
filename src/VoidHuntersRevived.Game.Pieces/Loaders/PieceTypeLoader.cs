@@ -44,7 +44,6 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
                         configuration.InitializeComponent(component);
                     }
 
-                    configuration.InitializeComponent<Visible>(Visible.Polygon(4));
                     configuration.InitializeComponent<Sockets<Location>>(Sockets<Location>.Polygon(4));
                 });
             }
@@ -88,7 +87,7 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
                 });
                 configuration.InitializeComponent<Visible>(new Visible()
                 {
-                    Shapes = new[] {
+                    Fill = new[] {
                             new Shape()
                             {
                                 Vertices = new[]
@@ -100,7 +99,7 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
                                 }.ToNativeDynamicArray()
                             }
                         }.ToNativeDynamicArray(),
-                    Paths = new[] {
+                    Trace = new[] {
                             new Shape()
                             {
                                 Vertices = new[]

@@ -12,6 +12,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Physics;
+using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Domain.Serialization.Json;
 using VoidHuntersRevived.Game.Pieces.Serialization.Json;
@@ -26,7 +27,10 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
         {
             services.RegisterType<PolymorphicConverter<IPieceComponent>>().As<JsonConverter>().SingleInstance();
             services.RegisterType<NativeDynamicArrayCastJsonConverter<Polygon>>().As<JsonConverter>().SingleInstance();
+            services.RegisterType<NativeDynamicArrayCastJsonConverter<Shape>>().As<JsonConverter>().SingleInstance();
             services.RegisterType<RigidJsonConverter>().As<JsonConverter>().SingleInstance();
+            services.RegisterType<VisibleJsonConverter>().As<JsonConverter>().SingleInstance();
+            services.RegisterType<ShapeJsonConverter>().As<JsonConverter>().SingleInstance();
 
             services.RegisterType<PieceService>().AsImplementedInterfaces().SingleInstance();
             

@@ -20,15 +20,15 @@ namespace VoidHuntersRevived.Common.Pieces.Serialization.Components
         {
             return new Visible()
             {
-                Shapes = reader.ReadNativeDynamicArray<Shape>(ShapeReader, options),
-                Paths = reader.ReadNativeDynamicArray<Shape>(ShapeReader, options)
+                Fill = reader.ReadNativeDynamicArray<Shape>(ShapeReader, options),
+                Trace = reader.ReadNativeDynamicArray<Shape>(ShapeReader, options)
             };
         }
 
         protected override void Write(EntityWriter writer, in Visible instance, in SerializationOptions options)
         {
-            writer.WriteNativeDynamicArray(instance.Shapes, ShapeWriter, options);
-            writer.WriteNativeDynamicArray(instance.Paths, ShapeWriter, options);
+            writer.WriteNativeDynamicArray(instance.Fill, ShapeWriter, options);
+            writer.WriteNativeDynamicArray(instance.Trace, ShapeWriter, options);
         }
 
         private Shape ShapeReader(DeserializationOptions options, EntityReader reader)
