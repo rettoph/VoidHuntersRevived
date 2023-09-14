@@ -6,6 +6,7 @@ using VoidHuntersRevived.Game;
 using VoidHuntersRevived.Game.Server;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Game.Common;
 
 namespace VoidHuntersRevived.Application.Client
 {
@@ -39,7 +40,7 @@ namespace VoidHuntersRevived.Application.Client
             _graphics.ApplyChanges();
 
             
-            _engine = new GuppyEngine(new[] { 
+            _engine = new GuppyEngine(VoidHuntersRevivedGame.Company, VoidHuntersRevivedGame.Name, new[] { 
                 typeof(GameGuppy).Assembly, 
                 typeof(LocalGameGuppy).Assembly,
                 typeof(IGameGuppy).Assembly,

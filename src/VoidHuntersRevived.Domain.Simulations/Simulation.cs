@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Domain.Simulations
 
             this.Scope = scope.BeginLifetimeScope(builder =>
             {
-                builder.Configure<LoggerConfiguration>(configuration =>
+                builder.Configure<LoggerConfiguration>((scope, configuration) =>
                 {
                     configuration.Enrich.WithProperty("PeerType", scope.Resolve<NetScope>().Peer?.Type ?? PeerType.None);
                     configuration.Enrich.WithProperty("SimulationType", this.Type);
