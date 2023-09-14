@@ -35,7 +35,9 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
 
         public void Configure(IEntityTypeService entityTypes)
         {
-            foreach(Piece piece in _pieces.All())
+            var test = Sockets<Location>.Polygon(4);
+
+            foreach (Piece piece in _pieces.All())
             {
                 entityTypes.Configure(piece.EntityType, configuration =>
                 {
@@ -43,8 +45,6 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
                     {
                         configuration.InitializeComponent(component);
                     }
-
-                    configuration.InitializeComponent<Sockets<Location>>(Sockets<Location>.Polygon(4));
                 });
             }
 

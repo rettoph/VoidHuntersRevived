@@ -1,4 +1,5 @@
-﻿using Svelto.Common;
+﻿using Guppy.Resources.Attributes;
+using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using System;
@@ -16,7 +17,8 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 {
     [AutoDisposeComponent<Location>(AutoDisposeScope.Type)]
     [AutoDisposeComponent<SocketId>(AutoDisposeScope.Instance)]
-    public struct Sockets<T> : IEntityComponent, IDisposable
+    [PolymorphicJsonType<Sockets<Location>>($"{nameof(Sockets)}.{nameof(Location)}")]
+    public struct Sockets<T> : IEntityComponent, IDisposable, IPieceComponent
         where T : unmanaged
     {
         public required NativeDynamicArrayCast<T> Items { get; init; }

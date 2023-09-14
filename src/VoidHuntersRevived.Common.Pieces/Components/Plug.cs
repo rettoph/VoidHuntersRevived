@@ -1,4 +1,5 @@
-﻿using Svelto.ECS;
+﻿using Guppy.Resources.Attributes;
+using Svelto.ECS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,8 @@ using VoidHuntersRevived.Common.Physics.Components;
 
 namespace VoidHuntersRevived.Common.Pieces.Components
 {
-    public struct Plug : IEntityComponent
+    [PolymorphicJsonType(nameof(Plug))]
+    public struct Plug : IEntityComponent, IPieceComponent
     {
         public static readonly Plug Default = new Plug()
         {
