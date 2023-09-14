@@ -114,6 +114,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Game.Shi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Common.Ships", "src\VoidHuntersRevived.Common.Ships\VoidHuntersRevived.Common.Ships.csproj", "{141EBC55-8306-437A-B982-5E5C6108E70C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Files", "libraries\Guppy\src\Guppy.Files\Guppy.Files.csproj", "{70AC5F19-144A-4995-B0D6-AA518865D00C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -934,6 +936,30 @@ Global
 		{141EBC55-8306-437A-B982-5E5C6108E70C}.SlowSubmissionRelease|x64.Build.0 = Release|Any CPU
 		{141EBC55-8306-437A-B982-5E5C6108E70C}.SlowSubmissionRelease|x86.ActiveCfg = Release|Any CPU
 		{141EBC55-8306-437A-B982-5E5C6108E70C}.SlowSubmissionRelease|x86.Build.0 = Release|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.Debug|x64.Build.0 = Debug|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.Debug|x86.Build.0 = Debug|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.Release|x64.ActiveCfg = Release|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.Release|x64.Build.0 = Release|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.Release|x86.ActiveCfg = Release|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.Release|x86.Build.0 = Release|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.SlowSubmissionDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.SlowSubmissionDebug|Any CPU.Build.0 = Debug|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.SlowSubmissionDebug|x64.ActiveCfg = Debug|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.SlowSubmissionDebug|x64.Build.0 = Debug|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.SlowSubmissionDebug|x86.ActiveCfg = Debug|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.SlowSubmissionDebug|x86.Build.0 = Debug|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.SlowSubmissionRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.SlowSubmissionRelease|Any CPU.Build.0 = Release|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.SlowSubmissionRelease|x64.ActiveCfg = Release|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.SlowSubmissionRelease|x64.Build.0 = Release|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.SlowSubmissionRelease|x86.ActiveCfg = Release|Any CPU
+		{70AC5F19-144A-4995-B0D6-AA518865D00C}.SlowSubmissionRelease|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -984,6 +1010,7 @@ Global
 		{BD674B57-1B60-456F-BE27-3F876F01D3D7} = {E45E3FCD-2AA8-46E5-9956-44A76EEB3BDA}
 		{FFE245E4-ABC9-46E8-A039-58A04F2F03D1} = {6AF146E0-CC82-43A5-9B26-E5EC1C416076}
 		{141EBC55-8306-437A-B982-5E5C6108E70C} = {E45E3FCD-2AA8-46E5-9956-44A76EEB3BDA}
+		{70AC5F19-144A-4995-B0D6-AA518865D00C} = {DA5CAD48-BEB9-4316-814A-820EA2A21081}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FCB1CA3-2B6C-469F-B569-084FC0B57488}

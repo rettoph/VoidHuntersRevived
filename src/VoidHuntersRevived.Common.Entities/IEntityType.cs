@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Common.Entities
     {
         EntityTypeId Id { get; }
         VoidHuntersEntityDescriptor Descriptor { get; }
-        string Name { get; }
+        string Key { get; }
 
         IEntityTypeConfiguration BuildConfiguration();
     }

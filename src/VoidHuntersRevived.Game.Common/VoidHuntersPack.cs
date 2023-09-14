@@ -10,6 +10,6 @@ namespace VoidHuntersRevived.Game.Common
     {
         public static readonly Guid Id = new Guid("E32C3D67-246B-48FB-B99A-FBE8A0474EBC");
         public const string Name = "Void Hunters Revived - Resources";
-        public const string Directory = "Content/Game";
+        public static readonly string Directory = Path.Combine("Content", "Game");
     }
 }

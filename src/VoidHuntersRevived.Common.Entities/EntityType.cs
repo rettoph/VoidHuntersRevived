@@ -16,17 +16,17 @@ namespace VoidHuntersRevived.Common.Entities
 
         public readonly EntityTypeId Id;
         public readonly VoidHuntersEntityDescriptor Descriptor;
-        public readonly string Name;
+        public readonly string Key;
 
         EntityTypeId IEntityType.Id => this.Id;
         VoidHuntersEntityDescriptor IEntityType.Descriptor => this.Descriptor;
-        string IEntityType.Name => this.Name;
+        string IEntityType.Key => this.Key;
 
-        internal unsafe EntityType(VhId nameSpace, string name, VoidHuntersEntityDescriptor descriptor)
+        internal unsafe EntityType(VhId nameSpace, string key, VoidHuntersEntityDescriptor descriptor)
         {
-            this.Name = name;
+            this.Key = key;
 
-            uint128 nameHash = xxHash128.ComputeHash(name);
+            uint128 nameHash = xxHash128.ComputeHash(key);
             VhId* pNameHash = (VhId*)&nameHash;
 
             this.Id = new EntityTypeId(nameSpace.Create(pNameHash[0]));
@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Common.Entities
 
         TDescriptor IEntityType<TDescriptor>.Descriptor => this.Descriptor;
 
-        public EntityType(string name) : base(NameSpace<TDescriptor>.Instance, name, new TDescriptor())
+        public EntityType(string key) : base(NameSpace<TDescriptor>.Instance, key, new TDescriptor())
         {
             this.Descriptor = new TDescriptor();
         }

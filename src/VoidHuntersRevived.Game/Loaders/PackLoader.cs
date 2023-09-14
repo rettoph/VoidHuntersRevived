@@ -1,4 +1,6 @@
 ﻿using Guppy.Attributes;
+using Guppy.Files.Enums;
+using Guppy.Files.Services;
 using Guppy.Resources.Constants;
 using Guppy.Resources.Loaders;
 using Guppy.Resources.Providers;
@@ -28,10 +30,7 @@ namespace VoidHuntersRevived.Game.Loaders
         {
             _content.RootDirectory = VoidHuntersPack.Directory;
 
-            packs.Configure(VoidHuntersPack.Id, pack =>
-            {
-                pack.Add(Resources.Fonts.Default, _content.Load<SpriteFont>("Fonts/BiomeLight-Normal"));
-            });
+            packs.Register(FileType.CurrentDirectory, Path.Combine(VoidHuntersPack.Directory, "pack.json"));
         }
     }
 }

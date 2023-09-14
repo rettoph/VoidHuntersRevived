@@ -1,0 +1,12 @@
+{
+  "Id": "ddc54b75-2d7a-4bc1-af56-c12e8de853ea",
+  "Name": "Void Hunters Revived",
+  "Import": {
+    "en-US": [
+      "fonts.json",
+      "colors.json",
+      "strings.json"
+    ]
+  }
+
+}

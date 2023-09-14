@@ -12,10 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <MonoGameContentReference Include="Content\Content.mgcb" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="Content\Effects\Compiled\*.mgfx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
