@@ -8,8 +8,9 @@ using VoidHuntersRevived.Game;
 using VoidHuntersRevived.Game.Server;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Game.Common;
 
-var engine = new GuppyEngine(new[] { typeof(GameGuppy).Assembly, typeof(ServerGameGuppy).Assembly, typeof(IGameGuppy).Assembly, typeof(VoidHuntersEntityDescriptor).Assembly })
+var engine = new GuppyEngine(VoidHuntersRevivedGame.Company, VoidHuntersRevivedGame.Name, new[] { typeof(GameGuppy).Assembly, typeof(ServerGameGuppy).Assembly, typeof(IGameGuppy).Assembly, typeof(VoidHuntersEntityDescriptor).Assembly })
     .Start(builder =>
     {
         builder.ConfigureGame()

@@ -1,4 +1,5 @@
-﻿using Svelto.DataStructures;
+﻿using Guppy.Resources.Attributes;
+using Svelto.DataStructures;
 using Svelto.ECS;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using VoidHuntersRevived.Common.Pieces.Utilities;
 
 namespace VoidHuntersRevived.Common.Pieces.Components
 {
+    [PolymorphicJsonType(nameof(Rigid))]
     public struct Rigid : IEntityComponent, IDisposable, IPieceComponent
     {
         public required FixVector2 Centeroid { get; init; }

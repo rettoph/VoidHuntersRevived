@@ -18,19 +18,25 @@ namespace VoidHuntersRevived.Domain.Physics.Serialization.Json.Converters
             NativeDynamicArrayCast<FixVector2> vertices = default;
             Fix64 density = Fix64.Zero;
 
+            reader.CheckToken(JsonTokenType.StartObject, true);
+            reader.Read();
+
             while(reader.ReadPropertyName(out string? property))
             {
                 switch(property)
                 {
                     case nameof(Polygon.Density):
-                        density = Fix64.FromRaw(reader.ReadInt64());
+                        density = JsonSerializer.Deserialize<Fix64>(ref reader, options);
+                        reader.Read();
                         break;
                     case nameof(Polygon.Vertices):
-                        vertices = new NativeDynamicArrayCast<FixVector2>(JsonSerializer.Deserialize<NativeDynamicArray>(ref reader, options));
+                        vertices = JsonSerializer.Deserialize<NativeDynamicArrayCast<FixVector2>>(ref reader, options);
                         reader.Read();
                         break;
                 }
             }
+
+            reader.CheckToken(JsonTokenType.EndObject, true);
 
             return new Polygon(density, vertices); ;
         }

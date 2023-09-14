@@ -3,9 +3,9 @@
   "Name": "Void Hunters Revived - Common",
   "Import": {
     "en-US": [
-      "fonts.json",
       "colors.json",
-      "strings.json"
+      "strings.json",
+      "pieces.json"
     ]
   }
 

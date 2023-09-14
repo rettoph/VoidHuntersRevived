@@ -29,4 +29,12 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Content\Client\Content.mgcb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <MonoGameContentReference Include="Content\Content.mgcb" />
+  </ItemGroup>
+
 </Project>

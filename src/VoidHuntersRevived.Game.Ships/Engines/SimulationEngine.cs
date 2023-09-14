@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
             }
 
             int i = 0;
-            int radius = 10;
+            int radius = 0;
             int step = 2;
             for (int x = -radius; x < radius; x += step)
             {

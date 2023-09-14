@@ -6,7 +6,10 @@ using Guppy.Files.Helpers;
 using Guppy.Files.Providers;
 using Guppy.Loaders;
 using Serilog;
+using System.Text.Json.Serialization;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.GameComponents;
+using VoidHuntersRevived.Domain.Serialization.Json;
 
 namespace VoidHuntersRevived.Domain.Loaders
 {
@@ -26,13 +29,18 @@ namespace VoidHuntersRevived.Domain.Loaders
                 config
                     .WriteTo.File(
                         path: path, 
-                        outputTemplate: "[{PeerType}][{SimulationType}][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"
+                        outputTemplate: "[{PeerType}][{SimulationType}][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}",
+                        retainedFileCountLimit: 5
                     )
                     .WriteTo.Console(outputTemplate: "[{PeerType}][{SimulationType}][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
             });
 
 
             services.RegisterType<LaunchComponent>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+            services.RegisterType<Fix64Converter>().As<JsonConverter>().SingleInstance();
+            services.RegisterType<FixVector2Converter>().As<JsonConverter>().SingleInstance();
+            services.RegisterType<NativeDynamicArrayCastJsonConverter<FixVector2>>().As<JsonConverter>().SingleInstance();
         }
     }
 }

@@ -12,8 +12,9 @@ namespace VoidHuntersRevived.Common.Physics
 {
     public struct Polygon : IDisposable
     {
-        public NativeDynamicArrayCast<FixVector2> Vertices;
         public Fix64 Density;
+        public NativeDynamicArrayCast<FixVector2> Vertices;
+
         public FixVector2 Centeroid
         {
             get

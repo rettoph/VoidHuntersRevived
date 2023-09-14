@@ -13,6 +13,14 @@ namespace VoidHuntersRevived.Common.Entities
 {
     public static class IEntityTypeConfigurationExtensions
     {
+        private static MethodInfo _initializeComponentMethodInfo = typeof(IEntityTypeConfigurationExtensions).GetMethod(nameof(InitializeComponent), 1, new Type[] { typeof(IEntityTypeConfiguration), Type.MakeGenericMethodParameter(0) }) ?? throw new Exception();
+        public static IEntityTypeConfiguration InitializeComponent(this IEntityTypeConfiguration configuration, IEntityComponent component)
+        {
+            var method = _initializeComponentMethodInfo.MakeGenericMethod(component.GetType());
+
+            method.Invoke(null, new object[] { configuration, component });
+            return configuration;
+        }
         public static IEntityTypeConfiguration InitializeComponent<T>(this IEntityTypeConfiguration configuration, T instance)
             where T : unmanaged, IEntityComponent
         {

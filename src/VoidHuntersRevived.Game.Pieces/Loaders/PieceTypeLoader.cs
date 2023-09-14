@@ -17,6 +17,7 @@ using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Game.Common;
 using Colors = VoidHuntersRevived.Common.Resources.Colors;
 
@@ -25,8 +26,29 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
     [AutoLoad]
     public sealed class PieceTypeLoader : IEntityTypeLoader
     {
+        private readonly IPieceService _pieces;
+
+        public PieceTypeLoader(IPieceService pieces)
+        {
+            _pieces = pieces;
+        }
+
         public void Configure(IEntityTypeService entityTypes)
         {
+            foreach(Piece piece in _pieces.All())
+            {
+                entityTypes.Configure(piece.EntityType, configuration =>
+                {
+                    foreach (IPieceComponent component in piece.Components)
+                    {
+                        configuration.InitializeComponent(component);
+                    }
+
+                    configuration.InitializeComponent<Visible>(Visible.Polygon(4));
+                    configuration.InitializeComponent<Sockets<Location>>(Sockets<Location>.Polygon(4));
+                });
+            }
+
             entityTypes.Configure(EntityTypes.Pieces.HullTriangle, configuration =>
             {
                 configuration.InitializeComponent<Rigid>(Rigid.Polygon(Fix64.One, 3));
@@ -34,12 +56,12 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
                 configuration.InitializeComponent<Sockets<Location>>(Sockets<Location>.Polygon(3));
             });
 
-            entityTypes.Configure(EntityTypes.Pieces.HullSquare, configuration =>
-            {
-                configuration.InitializeComponent<Rigid>(Rigid.Polygon(Fix64.One, 4));
-                configuration.InitializeComponent<Visible>(Visible.Polygon(4));
-                configuration.InitializeComponent<Sockets<Location>>(Sockets<Location>.Polygon(4));
-            });
+            // entityTypes.Configure(EntityTypes.Pieces.HullSquare, configuration =>
+            // {
+            //     configuration.InitializeComponent<Rigid>(Rigid.Polygon(Fix64.One, 4));
+            //     configuration.InitializeComponent<Visible>(Visible.Polygon(4));
+            //     configuration.InitializeComponent<Sockets<Location>>(Sockets<Location>.Polygon(4));
+            // });
 
             entityTypes.Configure(EntityTypes.Pieces.Thruster, configuration =>
             {

@@ -3,9 +3,12 @@ using Guppy.Attributes;
 using Guppy.Loaders;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
+using System.Text.Json.Serialization;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Domain.Entities.Configurators;
 using VoidHuntersRevived.Domain.Entities.Engines;
+using VoidHuntersRevived.Domain.Entities.Serialization.Json;
 using VoidHuntersRevived.Domain.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Loaders
@@ -30,6 +33,8 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
             builder.RegisterType<EntityService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.RegisterType<EntitySubmissionEngine>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+            builder.RegisterType<VoidHuntersEntityDescriptorConverter>().As<JsonConverter>().SingleInstance();
         }
     }
 }

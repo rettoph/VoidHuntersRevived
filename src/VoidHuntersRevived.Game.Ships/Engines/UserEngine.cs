@@ -4,6 +4,7 @@ using Guppy.Network.Identity;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Pieces.Descriptors;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Events;
@@ -17,11 +18,13 @@ namespace VoidHuntersRevived.Game.Ships.Engines
     {
         private readonly NetScope _scope;
         private readonly ITreeService _trees;
+        private readonly IPieceService _pieces;
 
-        public UserEngine(ITreeService trees, NetScope scope)
+        public UserEngine(ITreeService trees, IPieceService pieces, NetScope scope)
         {
             _scope = scope;
             _trees = trees;
+            _pieces = pieces;
         }
 
         public string name { get; } = nameof(UserEngine);
@@ -30,7 +33,9 @@ namespace VoidHuntersRevived.Game.Ships.Engines
         {
             VhId shipId = _scope.Peer!.Users.UpdateOrCreate(data.UserId, data.Claims).GetUserShipId();
 
-            _trees.Spawn(shipId, TeamId.TeamOne, EntityTypes.UserShip, EntityTypes.Pieces.HullSquare);
+            var hull = _pieces.All<HullDescriptor>().First();
+
+            _trees.Spawn(shipId, TeamId.TeamOne, EntityTypes.UserShip, hull.EntityType);
             // _treeFactory.Create(id.Create(1), EntityTypes.Chain, PieceTypes.HullSquare);
         }
     }
