@@ -1,0 +1,100 @@
+{
+  "Key": "HullTriangle",
+  "Descriptor": "HullDescriptor",
+  "Components": {
+    "Rigid": {
+      "Centeroid": {
+        "X": 0.5,
+        "Y": 0.2886751345
+      },
+      "Shapes": [
+        {
+          "Density": 1,
+          "Vertices": [
+            {
+              "X": 0,
+              "Y": 0
+            },
+            {
+              "X": 1,
+              "Y": 0
+            },
+            {
+              "X": 0.5,
+              "Y": 0.8660254038
+            }
+          ]
+        }
+      ]
+    },
+    "Visible": {
+      "Fill": [
+        {
+          "Vertices": [
+            {
+              "X": 0,
+              "Y": 0
+            },
+            {
+              "X": 1,
+              "Y": 0
+            },
+            {
+              "X": 0.5,
+              "Y": 0.8660254038
+            }
+          ]
+        }
+      ],
+      "Trace": [
+        {
+          "Vertices": [
+            {
+              "X": 0,
+              "Y": 0
+            },
+            {
+              "X": 1,
+              "Y": 0
+            },
+            {
+              "X": 0.5,
+              "Y": 0.8660254038
+            },
+            {
+              "X": 0,
+              "Y": 0
+            }
+          ]
+        }
+      ]
+    },
+    "Sockets.Location": {
+      "Items": [
+        {
+          "Position": {
+            "X": 0.75,
+            "Y": 0.4330127018
+          },
+          "Rotation": 0.5235987757
+        },
+        {
+          "Position": {
+            "X": 0.25,
+            "Y": 0.4330127018
+          },
+          "Rotation": 2.6179938782
+        }
+      ]
+    },
+    "Plug": {
+      "Location": {
+        "Position": {
+          "X": 0.5,
+          "Y": 0
+        },
+        "Rotation": 1.5707963267
+      }
+    }
+  }
+}

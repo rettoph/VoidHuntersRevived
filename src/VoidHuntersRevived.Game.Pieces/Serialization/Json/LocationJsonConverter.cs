@@ -39,11 +39,7 @@ namespace VoidHuntersRevived.Game.Pieces.Serialization.Json
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            return new Location()
-            {
-                Position = position,
-                Rotation = rotation
-            };
+            return new Location(position, rotation);
         }
 
         public override void Write(Utf8JsonWriter writer, Location value, JsonSerializerOptions options)

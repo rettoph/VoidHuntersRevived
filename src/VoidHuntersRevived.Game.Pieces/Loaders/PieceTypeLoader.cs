@@ -35,7 +35,9 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
 
         public void Configure(IEntityTypeService entityTypes)
         {
-            var test = Sockets<Location>.Polygon(4);
+            //var rigid = Rigid.Polygon(Fix64.One, 3);
+            //var visible = Sockets<Location>.Polygon(3);
+            //var sockets = Sockets<Location>.Polygon(3);
 
             foreach (Piece piece in _pieces.All())
             {
@@ -48,12 +50,12 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
                 });
             }
 
-            entityTypes.Configure(EntityTypes.Pieces.HullTriangle, configuration =>
-            {
-                configuration.InitializeComponent<Rigid>(Rigid.Polygon(Fix64.One, 3));
-                configuration.InitializeComponent<Visible>(Visible.Polygon(3));
-                configuration.InitializeComponent<Sockets<Location>>(Sockets<Location>.Polygon(3));
-            });
+            // entityTypes.Configure(EntityTypes.Pieces.HullTriangle, configuration =>
+            // {
+            //     configuration.InitializeComponent<Rigid>(Rigid.Polygon(Fix64.One, 3));
+            //     configuration.InitializeComponent<Visible>(Visible.Polygon(3));
+            //     configuration.InitializeComponent<Sockets<Location>>(Sockets<Location>.Polygon(3));
+            // });
 
             // entityTypes.Configure(EntityTypes.Pieces.HullSquare, configuration =>
             // {
@@ -62,58 +64,58 @@ namespace VoidHuntersRevived.Game.Pieces.Loaders
             //     configuration.InitializeComponent<Sockets<Location>>(Sockets<Location>.Polygon(4));
             // });
 
-            entityTypes.Configure(EntityTypes.Pieces.Thruster, configuration =>
-            {
-                configuration.InitializeComponent<Plug>(new Plug()
-                {
-                    Location = new Location(FixVector2.Zero, Fix64.Pi)
-                });
-                configuration.InitializeComponent<Rigid>(new Rigid()
-                {
-                    Centeroid = FixVector2.Zero,
-                    Shapes = new[]
-                    {
-                            new Polygon()
-                            {
-                                Vertices = new[]
-                                {
-                                    new FixVector2(0.25m, -0.2m),
-                                    new FixVector2(0.25m, 0.2m),
-                                    new FixVector2(-0.25m,0.35m),
-                                    new FixVector2(-0.25m,-0.35m)
-                                }.ToNativeDynamicArray()
-                            }
-                        }.ToNativeDynamicArray()
-                });
-                configuration.InitializeComponent<Visible>(new Visible()
-                {
-                    Fill = new[] {
-                            new Shape()
-                            {
-                                Vertices = new[]
-                                {
-                                    new Vector3(0.25f, -0.2f, 0),
-                                    new Vector3(0.25f, 0.2f, 0),
-                                    new Vector3(-0.25f,0.35f, 0),
-                                    new Vector3(-0.25f,-0.35f, 0)
-                                }.ToNativeDynamicArray()
-                            }
-                        }.ToNativeDynamicArray(),
-                    Trace = new[] {
-                            new Shape()
-                            {
-                                Vertices = new[]
-                                {
-                                    new Vector3(0.25f, -0.2f, 0),
-                                    new Vector3(0.25f, 0.2f, 0),
-                                    new Vector3(-0.25f,0.35f, 0),
-                                    new Vector3(-0.25f,-0.35f, 0),
-                                    new Vector3(0.25f, -0.2f, 0)
-                                }.ToNativeDynamicArray()
-                            }
-                        }.ToNativeDynamicArray()
-                });
-            });
+            //entityTypes.Configure(EntityTypes.Pieces.Thruster, configuration =>
+            //{
+            //    configuration.InitializeComponent<Plug>(new Plug()
+            //    {
+            //        Location = new Location(FixVector2.Zero, Fix64.Pi)
+            //    });
+            //    configuration.InitializeComponent<Rigid>(new Rigid()
+            //    {
+            //        Centeroid = FixVector2.Zero,
+            //        Shapes = new[]
+            //        {
+            //                new Polygon()
+            //                {
+            //                    Vertices = new[]
+            //                    {
+            //                        new FixVector2(0.25m, -0.2m),
+            //                        new FixVector2(0.25m, 0.2m),
+            //                        new FixVector2(-0.25m,0.35m),
+            //                        new FixVector2(-0.25m,-0.35m)
+            //                    }.ToNativeDynamicArray()
+            //                }
+            //            }.ToNativeDynamicArray()
+            //    });
+            //    configuration.InitializeComponent<Visible>(new Visible()
+            //    {
+            //        Fill = new[] {
+            //                new Shape()
+            //                {
+            //                    Vertices = new[]
+            //                    {
+            //                        new Vector3(0.25f, -0.2f, 0),
+            //                        new Vector3(0.25f, 0.2f, 0),
+            //                        new Vector3(-0.25f,0.35f, 0),
+            //                        new Vector3(-0.25f,-0.35f, 0)
+            //                    }.ToNativeDynamicArray()
+            //                }
+            //            }.ToNativeDynamicArray(),
+            //        Trace = new[] {
+            //                new Shape()
+            //                {
+            //                    Vertices = new[]
+            //                    {
+            //                        new Vector3(0.25f, -0.2f, 0),
+            //                        new Vector3(0.25f, 0.2f, 0),
+            //                        new Vector3(-0.25f,0.35f, 0),
+            //                        new Vector3(-0.25f,-0.35f, 0),
+            //                        new Vector3(0.25f, -0.2f, 0)
+            //                    }.ToNativeDynamicArray()
+            //                }
+            //            }.ToNativeDynamicArray()
+            //    });
+            //});
         }
     }
 }

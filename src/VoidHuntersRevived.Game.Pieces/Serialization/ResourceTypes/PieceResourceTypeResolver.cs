@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Game.Pieces.Serialization.ResourceTypes
                 true);
 
             value = piece.Value;
-            return value != default;
+            return piece.Success;
         }
     }
 }
