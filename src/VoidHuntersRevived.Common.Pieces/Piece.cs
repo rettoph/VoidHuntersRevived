@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Common.Pieces
 {
     public record Piece
     {
-        public static readonly Resource<Piece> Resource = new Resource<Piece>(nameof(Piece));
+        public static readonly Resource<Piece> Resource = new Resource<Piece>($"{nameof(Piece)}s");
 
         private IEntityType<PieceDescriptor>? _entityType;
         public IEntityType<PieceDescriptor> EntityType => _entityType ??= BuildEntityType(this.Descriptor, this.Key);
