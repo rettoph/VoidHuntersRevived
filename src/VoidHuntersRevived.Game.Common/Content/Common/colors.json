@@ -1,10 +1,10 @@
 {
-  "Colors.None": "0,0,0,0",
-  "Colors.HullPrimaryColor": "255,165,0,204",
-  "Colors.HullSecondaryColor": "255,255,0,204",
-  "Colors.ThrusterPrimaryColor": "0,128,0,204",
-  "Colors.ThrusterSecondaryColor": "144,238,144,204",
-  "Colors.TeamOnePrimaryColor": "0,200,255,204",
-  "Colors.TeamOneSecondaryColor": "0,255,247,204",
-  "Colors.TractorBeamHighlight": "211,211,211,100"
+  "Color.None": "0,0,0,0",
+  "Color.HullPrimaryColor": "255,165,0,204",
+  "Color.HullSecondaryColor": "255,255,0,204",
+  "Color.ThrusterPrimaryColor": "0,128,0,204",
+  "Color.ThrusterSecondaryColor": "144,238,144,204",
+  "Color.TeamOnePrimaryColor": "0,200,255,204",
+  "Color.TeamOneSecondaryColor": "0,255,247,204",
+  "Color.TractorBeamHighlight": "211,211,211,100"
 }

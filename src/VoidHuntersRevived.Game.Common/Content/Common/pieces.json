@@ -1,7 +1,5 @@
 {
-  "Pieces": [
-    "Pieces\\HullSquare.piece",
-    "Pieces\\HullTriangle.piece",
-    "Pieces\\Thruster.piece"
-  ]
+  "Piece.HullSquare": "Pieces\\HullSquare.piece",
+  "Piece.HullTriangle": "Pieces\\HullTriangle.piece",
+  "Piece.Thruster": "Pieces\\Thruster.piece"
 }

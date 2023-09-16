@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Game.Pieces.Services
 
         public PieceService(IResourceProvider resources, IEnumerable<Piece> pieces)
         {
-            _pieces = pieces.Concat(resources.GetAll(Piece.Resource)).ToArray();
+            _pieces = pieces.Concat(resources.GetAll<Piece>().Select(x => x.Item2)).ToArray();
             _byDescriptor = new Dictionary<Type, Piece[]>();
         }
 

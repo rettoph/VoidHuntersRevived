@@ -3,7 +3,7 @@ using Guppy.Files;
 using Guppy.Files.Enums;
 using Guppy.Files.Services;
 using Guppy.Resources;
-using Guppy.Resources.Serialization.Resources;
+using Guppy.Resources.ResourceTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,15 +11,15 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Pieces;
 
-namespace VoidHuntersRevived.Game.Pieces.Serialization.ResourceTypes
+namespace VoidHuntersRevived.Game.Pieces.ResourceTypes
 {
     [AutoLoad]
-    internal class PieceResourceTypeResolver : ResourceTypeResolver<Piece>
+    internal class PieceResourceType : ResourceType<Piece>
     {
         private readonly IFileService _files;
         private string _root;
 
-        public PieceResourceTypeResolver(IFileService files)
+        public PieceResourceType(IFileService files)
         {
             _files = files;
             _root = string.Empty;
@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Game.Pieces.Serialization.ResourceTypes
                 true);
 
             value = piece.Value;
-            return piece.Success;
+            return value != default;
         }
     }
 }

@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public DrawFpsEngine(SpriteBatch spriteBatch, IResourceProvider resources)
         {
             _spriteBatch = spriteBatch;
-            _font = resources.Get(Resources.Fonts.Default) ?? throw new ArgumentException();
+            _font = resources.Get(Resources.SpriteFonts.Default) ?? throw new ArgumentException();
             _sampleBuffer = new Buffer<double>(20);
             _sampleSum = 0;
             _enabled = true;

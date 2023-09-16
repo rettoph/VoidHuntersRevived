@@ -3,7 +3,7 @@
   "Name": "Void Hunters Revived - Client",
   "Import": {
     "en-US": [
-      "fonts.json"
+      "spritefonts.json"
     ]
   }
 
