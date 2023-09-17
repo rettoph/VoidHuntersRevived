@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 
-namespace VoidHuntersRevived.Game.Pieces.Serialization.Json
+namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 {
     internal class SocketsJsonConverter : GenericTypeDefinitionJsonConverter
     {

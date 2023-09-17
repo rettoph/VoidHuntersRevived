@@ -13,7 +13,6 @@
     <ProjectReference Include="..\VoidHuntersRevived.Common.Ships\VoidHuntersRevived.Common.Ships.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Simulations\VoidHuntersRevived.Common.Simulations.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Game.Common\VoidHuntersRevived.Game.Common.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Game.Pieces\VoidHuntersRevived.Game.Pieces.csproj" />
   </ItemGroup>
 
 </Project>

@@ -12,6 +12,7 @@ using VoidHuntersRevived.Domain.Simulations.Loaders;
 using VoidHuntersRevived.Domain.Physics.Loaders;
 using VoidHuntersRevived.Domain.Loaders;
 using VoidHuntersRevived.Domain.Entities.Loaders;
+using VoidHuntersRevived.Domain.Pieces.Loaders;
 
 namespace VoidHuntersRevived.Domain
 {
@@ -23,6 +24,7 @@ namespace VoidHuntersRevived.Domain
             configuration.Assemblies.Load(typeof(SimulationLoader).Assembly);
             configuration.Assemblies.Load(typeof(PhysicsLoader).Assembly);
             configuration.Assemblies.Load(typeof(EntityLoader).Assembly);
+            configuration.Assemblies.Load(typeof(PieceLoader).Assembly);
         }
     }
 }

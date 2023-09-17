@@ -10,7 +10,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 
-namespace VoidHuntersRevived.Game.Pieces.Serialization.Json
+namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 {
     internal class VisibleJsonConverter : JsonConverter<Visible>
     {

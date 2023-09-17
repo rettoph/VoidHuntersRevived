@@ -15,7 +15,7 @@ using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Exceptions;
 using VoidHuntersRevived.Game.Common;
 
-namespace VoidHuntersRevived.Game.Pieces.Services
+namespace VoidHuntersRevived.Domain.Pieces.Services
 {
     internal sealed partial class SocketService : BasicEngine, ISocketService
     {

@@ -15,7 +15,7 @@ using Guppy.Attributes;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Pieces;
 
-namespace VoidHuntersRevived.Game.Pieces.Engines
+namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
     internal sealed class SocketIdsEngine : BasicEngine,

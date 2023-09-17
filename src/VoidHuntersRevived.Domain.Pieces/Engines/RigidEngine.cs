@@ -15,7 +15,7 @@ using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Simulations.Engines;
 
-namespace VoidHuntersRevived.Game.Pieces.Engines
+namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
     internal sealed class RigidEngine : BasicEngine,

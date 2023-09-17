@@ -13,7 +13,7 @@ using VoidHuntersRevived.Common.Ships.Components;
 using VoidHuntersRevived.Common.Ships.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
 
-namespace VoidHuntersRevived.Game.Pieces.Engines
+namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
     internal sealed class TractorableEngine : BasicEngine, IReactOnAddEx<Tractorable>, IReactOnRemoveEx<Tractorable>

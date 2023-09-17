@@ -13,7 +13,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Common.Entities.Options;
 
-namespace VoidHuntersRevived.Game.Pieces.Services
+namespace VoidHuntersRevived.Domain.Pieces.Services
 {
     internal partial class TreeService
     {

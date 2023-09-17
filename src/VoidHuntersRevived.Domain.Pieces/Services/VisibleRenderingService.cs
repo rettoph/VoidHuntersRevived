@@ -13,7 +13,7 @@ using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
 
-namespace VoidHuntersRevived.Game.Pieces.Services
+namespace VoidHuntersRevived.Domain.Pieces.Services
 {
     internal sealed class VisibleRenderingService : IVisibleRenderingService
     {

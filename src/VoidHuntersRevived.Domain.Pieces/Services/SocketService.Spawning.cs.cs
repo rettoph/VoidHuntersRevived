@@ -16,7 +16,7 @@ using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Common;
 
-namespace VoidHuntersRevived.Game.Pieces.Services
+namespace VoidHuntersRevived.Domain.Pieces.Services
 {
     internal partial class SocketService : ISocketService
     {

@@ -9,7 +9,7 @@ using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
 
-namespace VoidHuntersRevived.Game.Pieces.Services
+namespace VoidHuntersRevived.Domain.Pieces.Services
 {
     internal sealed class NodeService : INodeService
     {

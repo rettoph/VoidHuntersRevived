@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Pieces;
 
-namespace VoidHuntersRevived.Game.Pieces.ResourceTypes
+namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes
 {
     [AutoLoad]
     internal class PieceResourceType : ResourceType<Piece>

@@ -10,7 +10,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces.Components;
 
-namespace VoidHuntersRevived.Game.Pieces.Serialization.Json
+namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 {
     internal class LocationJsonConverter : JsonConverter<Location>
     {

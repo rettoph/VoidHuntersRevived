@@ -1,22 +1,21 @@
-﻿using Microsoft.Xna.Framework;
-using Svelto.DataStructures;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Pieces;
+using VoidHuntersRevived.Common.Physics.Components;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Pieces.Components;
 
-namespace VoidHuntersRevived.Game.Pieces.Serialization.Json
+namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 {
-    internal class ShapeJsonConverter : JsonConverter<Shape>
+    internal class PlugJsonConverter : JsonConverter<Plug>
     {
-        public override Shape Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override Plug Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            NativeDynamicArrayCast<Vector3> vertices = default;
+            Location location = default;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -25,8 +24,8 @@ namespace VoidHuntersRevived.Game.Pieces.Serialization.Json
             {
                 switch (propertyName)
                 {
-                    case nameof(Shape.Vertices):
-                        vertices = JsonSerializer.Deserialize<NativeDynamicArrayCast<Vector3>>(ref reader, options);
+                    case nameof(Plug.Location):
+                        location = JsonSerializer.Deserialize<Location>(ref reader, options);
                         reader.Read();
                         break;
                 }
@@ -34,13 +33,13 @@ namespace VoidHuntersRevived.Game.Pieces.Serialization.Json
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            return new Shape()
+            return new Plug()
             {
-                Vertices = vertices
+                Location = location
             };
         }
 
-        public override void Write(Utf8JsonWriter writer, Shape value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, Plug value, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }

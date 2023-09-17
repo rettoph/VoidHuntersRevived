@@ -14,7 +14,7 @@ using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using Serilog;
 
-namespace VoidHuntersRevived.Game.Pieces.Engines
+namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
     internal sealed class CouplingEngine : BasicEngine, IReactOnAddEx<Coupling>, IReactOnAddAndRemoveEx<Coupling>

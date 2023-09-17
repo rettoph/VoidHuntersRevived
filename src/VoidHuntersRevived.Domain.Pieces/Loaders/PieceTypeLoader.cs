@@ -21,10 +21,10 @@ using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Game.Common;
 using Colors = VoidHuntersRevived.Common.Resources.Colors;
 
-namespace VoidHuntersRevived.Game.Pieces.Loaders
+namespace VoidHuntersRevived.Domain.Pieces.Loaders
 {
     [AutoLoad]
-    public sealed class PieceTypeLoader : IEntityTypeLoader
+    internal sealed class PieceTypeLoader : IEntityTypeLoader
     {
         private readonly IPieceService _pieces;
 
