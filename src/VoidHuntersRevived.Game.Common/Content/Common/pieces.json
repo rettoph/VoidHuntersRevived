@@ -1,5 +1,5 @@
 {
-  "Piece.HullSquare": "Pieces\\HullSquare.piece",
-  "Piece.HullTriangle": "Pieces\\HullTriangle.piece",
-  "Piece.Thruster": "Pieces\\Thruster.piece"
+  "Piece.Hull.Square": "Pieces\\hull.square.json",
+  "Piece.Hull.Triangle": "Pieces\\hull.triangle.json",
+  "Piece.Thruster": "Pieces\\thruster.json"
 }

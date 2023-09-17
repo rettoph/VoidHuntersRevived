@@ -1,5 +1,5 @@
 {
-  "Key": "Thruster",
+  "Key": "Piece.Thruster",
   "Descriptor": "ThrusterDescriptor",
   "Components": {
     "Rigid": {

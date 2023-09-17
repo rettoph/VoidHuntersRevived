@@ -29,8 +29,7 @@
     <None Update="Content\Common\*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    
-    <None Update="Content\Common\Pieces\*.piece">
+    <None Update="Content\Common\Pieces\*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
