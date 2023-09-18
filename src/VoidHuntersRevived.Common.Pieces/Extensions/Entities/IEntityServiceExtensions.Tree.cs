@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Common.Pieces.Extensions.Entities
 {
     public static class IEntityServiceExtensions
     {
-        public static void SpawnTree(this IEntityService entities, VhId vhid, TeamId teamId, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> head)
+        public static void SpawnTree(this IEntityService entities, VhId vhid, Id<ITeam> teamId, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> head)
         {
             entities.Spawn(tree, vhid, teamId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {
@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Common.Pieces.Extensions.Entities
             });
         }
 
-        public static void SpawnTree(this IEntityService entities, VhId vhid, TeamId teamId, IEntityType<TreeDescriptor> tree, EntityData nodes, EntityInitializerDelegate initializer)
+        public static void SpawnTree(this IEntityService entities, VhId vhid, Id<ITeam> teamId, IEntityType<TreeDescriptor> tree, EntityData nodes, EntityInitializerDelegate initializer)
         {
             entities.Spawn(tree, vhid, teamId, (IEntityService entities, ref EntityInitializer init, in EntityId id) =>
             {

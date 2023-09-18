@@ -7,25 +7,25 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Entities
 {
-    public struct EntityDescriptorId : IEntityComponent, IEquatable<EntityDescriptorId>
+    public struct Id<T> : IEntityComponent
     {
         private readonly VhId _value;
 
         public VhId Value => _value;
 
-        public EntityDescriptorId(VhId value)
+        public Id(VhId value)
         {
             _value = value;
         }
 
         public override bool Equals(object? obj)
         {
-            return obj is EntityDescriptorId id && Equals(id);
+            return obj is Id<T> id && Equals(id);
         }
 
-        public bool Equals(EntityDescriptorId other)
+        public bool Equals(Id<T> other)
         {
-            return _value.Equals(other._value);
+            return _value.Value == other._value.Value;
         }
 
         public override int GetHashCode()
@@ -33,14 +33,19 @@ namespace VoidHuntersRevived.Common.Entities
             return HashCode.Combine(_value);
         }
 
-        public static bool operator ==(EntityDescriptorId left, EntityDescriptorId right)
+        public static bool operator ==(Id<T> left, Id<T> right)
         {
             return left.Equals(right);
         }
 
-        public static bool operator !=(EntityDescriptorId left, EntityDescriptorId right)
+        public static bool operator !=(Id<T> left, Id<T> right)
         {
             return !(left == right);
+        }
+
+        public static Id<T> FromString(string input)
+        {
+            return new Id<T>(VhId.HashString(input));
         }
     }
 }

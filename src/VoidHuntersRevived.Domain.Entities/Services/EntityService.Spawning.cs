@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         IEventEngine<SoftDespawnEntity>,
         IRevertEventEngine<SoftDespawnEntity>
     {
-        public EntityId Spawn(IEntityType type, VhId vhid, TeamId teamId, EntityInitializerDelegate? initializer)
+        public EntityId Spawn(IEntityType type, VhId vhid, Id<ITeam> teamId, EntityInitializerDelegate? initializer)
         {
             this.Simulation.Publish(NameSpace<EntityService>.Instance, new SpawnEntity()
             {
@@ -133,7 +133,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             throw new NotImplementedException();
         }
 
-        private EntityId SpawnEntity(IEntityType type, in VhId vhid, in TeamId teamId, EntityInitializerDelegate? initializerDelegate)
+        private EntityId SpawnEntity(IEntityType type, in VhId vhid, in Id<ITeam> teamId, EntityInitializerDelegate? initializerDelegate)
         {
             EntityInitializer initializer = this.GetDescriptorEngine(type.Descriptor.Id).Spawn(vhid, teamId, out EntityId id);
             this.Add(id);
@@ -147,19 +147,19 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         private void SoftDespawnEntity(EntityId id)
         {
-            EntityDescriptorId descriptorId = this.QueryById<EntityDescriptorId>(id, out GroupIndex groupIndex);
+            Id<IEntityComponent> descriptorId = this.QueryById<Id<IEntityComponent>>(id, out GroupIndex groupIndex);
             this.GetDescriptorEngine(descriptorId).SoftDespawn(in id, groupIndex);
         }
 
         private void RevertSoftDespawnEntity(EntityId id)
         {
-            EntityDescriptorId descriptorId = this.QueryById<EntityDescriptorId>(id, out GroupIndex groupIndex);
+            Id<IEntityComponent> descriptorId = this.QueryById<Id<IEntityComponent>>(id, out GroupIndex groupIndex);
             this.GetDescriptorEngine(descriptorId).RevertSoftDespawn(in id, groupIndex);
         }
 
         private void HardDespawnEntity(EntityId id)
         {
-            EntityDescriptorId descriptorId = this.QueryById<EntityDescriptorId>(id, out GroupIndex groupIndex);
+            Id<IEntityComponent> descriptorId = this.QueryById<Id<IEntityComponent>>(id, out GroupIndex groupIndex);
             this.GetDescriptorEngine(descriptorId).HardDespawn(in id, groupIndex);
 
             this.Remove(id);

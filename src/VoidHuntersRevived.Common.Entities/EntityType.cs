@@ -14,11 +14,11 @@ namespace VoidHuntersRevived.Common.Entities
     {
         private static List<EntityType> _list = new List<EntityType>();
 
-        public readonly EntityTypeId Id;
+        public readonly Id<IEntityType> Id;
         public readonly VoidHuntersEntityDescriptor Descriptor;
         public readonly string Key;
 
-        EntityTypeId IEntityType.Id => this.Id;
+        Id<IEntityType> IEntityResource<IEntityType>.Id => this.Id;
         VoidHuntersEntityDescriptor IEntityType.Descriptor => this.Descriptor;
         string IEntityType.Key => this.Key;
 
@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Common.Entities
         {
             this.Key = key;
 
-            this.Id = new EntityTypeId(nameSpace.Create(key));
+            this.Id = new Id<IEntityType>(nameSpace.Create(key));
 
             _list.Add(this);
             this.Descriptor = descriptor;

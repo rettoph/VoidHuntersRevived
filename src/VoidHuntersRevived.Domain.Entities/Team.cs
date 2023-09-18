@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Domain.Entities
 {
     internal class Team : ITeam
     {
-        public TeamId Id { get; init; }
+        public Id<ITeam> Id { get; init; }
 
         public string Name { get; init; }
 

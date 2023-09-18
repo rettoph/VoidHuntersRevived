@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly IVisibleRenderingService _visibleRenderingService;
         private readonly IEntityService _entities;
         private readonly ILogger _logger;
-        private readonly Dictionary<TeamId, ITeamDescriptorGroup[]> _teamDescriptorGroups;
+        private readonly Dictionary<Id<ITeam>, ITeamDescriptorGroup[]> _teamDescriptorGroups;
         private bool _visible;
 
         public string name { get; } = nameof(DrawLockstepWireframeEngine);

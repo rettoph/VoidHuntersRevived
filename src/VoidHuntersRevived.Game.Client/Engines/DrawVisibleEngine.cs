@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly IVisibleRenderingService _visibleRenderingService;
         private readonly IEntityService _entities;
         private readonly ILogger _logger;
-        private readonly Dictionary<TeamId, ITeamDescriptorGroup[]> _teamDescriptorGroups;
+        private readonly Dictionary<Id<ITeam>, ITeamDescriptorGroup[]> _teamDescriptorGroups;
         private readonly Camera2D _camera;
 
         public string name { get; } = nameof(DrawVisibleEngine);
@@ -65,7 +65,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
         }
 
-        private void DrawHighResolution(TeamId teamId)
+        private void DrawHighResolution(Id<ITeam> teamId)
         {
             foreach (ITeamDescriptorGroup teamDescriptorGroup in _teamDescriptorGroups[teamId])
             {
@@ -103,7 +103,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
         }
 
-        private void DrawLowResolution(TeamId teamId)
+        private void DrawLowResolution(Id<ITeam> teamId)
         {
             foreach (ITeamDescriptorGroup teamDescriptorGroup in _teamDescriptorGroups[teamId])
             {

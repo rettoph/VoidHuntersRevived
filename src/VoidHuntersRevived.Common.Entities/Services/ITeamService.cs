@@ -8,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Entities.Services
 {
-    public interface ITeamService
+    public interface ITeamService : IEntityResourceService<ITeam>
     {
-        void Register(in TeamId id, Resource<string> name, Resource<Color> primaryColor, Resource<Color> secondaryColor);
-
-        IEnumerable<ITeam> All();
+        void Register(in Id<ITeam> id, Resource<string> name, Resource<Color> primaryColor, Resource<Color> secondaryColor);
     }
 }

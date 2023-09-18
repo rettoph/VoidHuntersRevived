@@ -31,8 +31,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Serialize(EntityId id, EntityWriter writer, SerializationOptions options)
         {
-            EntityTypeId typeId = this.QueryById<EntityTypeId>(id, out GroupIndex groupIndex);
-            EntityDescriptorId descriptorId = this.QueryByGroupIndex<EntityDescriptorId>(in groupIndex);
+            Id<IEntityType> typeId = this.QueryById<Id<IEntityType>>(id, out GroupIndex groupIndex);
+            Id<IEntityComponent> descriptorId = this.QueryByGroupIndex<Id<IEntityComponent>>(in groupIndex);
             
             writer.Write(id.VhId);
             writer.WriteStruct(typeId);
@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public EntityId Deserialize(DeserializationOptions options, EntityReader reader, EntityInitializerDelegate? initializerDelegate)
         {
             VhId vhid = reader.ReadVhId(options.Seed);
-            EntityTypeId typeId = reader.ReadStruct<EntityTypeId>();
+            Id<IEntityType> typeId = reader.ReadStruct<Id<IEntityType>>();
             IEntityType type = _types.GetById(typeId);
 
             EntityReaderState readerState = reader.GetState();

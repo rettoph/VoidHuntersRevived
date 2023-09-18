@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     internal sealed class TeamDescriptorGroupService : ITeamDescriptorGroupService
     {
         private Dictionary<ExclusiveGroupStruct, ITeamDescriptorGroup> _teamDescriptorGroupsByGroupId;
-        private Dictionary<TeamId, ITeamDescriptorGroup[]> _teamDescriptorGroupsByTeam;
+        private Dictionary<Id<ITeam>, ITeamDescriptorGroup[]> _teamDescriptorGroupsByTeam;
 
         public TeamDescriptorGroupService(IResourceProvider resources, ITeamService teams, IEnumerable<VoidHuntersEntityDescriptor> descriptors)
         {
@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             foreach(VoidHuntersEntityDescriptor descriptor in descriptors)
             {
-                foreach(ITeam team in teams.All())
+                foreach(ITeam team in teams.GetAll())
                 {
                     ExclusiveGroupStruct groupId = GetExclusiveGroupStruct(descriptor, team);
 
@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _teamDescriptorGroupsByTeam = _teamDescriptorGroupsByGroupId.Values.GroupBy(x => x.Team.Id).ToDictionary(x => x.Key, x => x.ToArray());
         }
 
-        public Dictionary<TeamId, ITeamDescriptorGroup> GetAllByDescriptor(VoidHuntersEntityDescriptor descriptor)
+        public Dictionary<Id<ITeam>, ITeamDescriptorGroup> GetAllByDescriptor(VoidHuntersEntityDescriptor descriptor)
         {
             return _teamDescriptorGroupsByGroupId.Values.Where(x => x.Descriptor == descriptor).ToDictionary(x => x.Team.Id, x => x);
         }
@@ -56,7 +56,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
         }
 
-        public Dictionary<TeamId, ITeamDescriptorGroup[]> GetAllWithComponentsByTeams(params Type[] components)
+        public Dictionary<Id<ITeam>, ITeamDescriptorGroup[]> GetAllWithComponentsByTeams(params Type[] components)
         {
             return _teamDescriptorGroupsByTeam.ToDictionary(
                 keySelector: x => x.Key,

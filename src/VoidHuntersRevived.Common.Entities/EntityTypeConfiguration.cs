@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Common.Entities
 
         public void Initialize(IEntityService entities, ref EntityInitializer initializer, in EntityId id)
         {
-            initializer.Init<EntityTypeId>(this.Type.Id);
+            initializer.Init<Id<IEntityType>>(this.Type.Id);
             _initializer?.Invoke(entities, ref initializer, in id);
 
             this.Type.Descriptor.PostInitialize(entities, ref initializer, in id);

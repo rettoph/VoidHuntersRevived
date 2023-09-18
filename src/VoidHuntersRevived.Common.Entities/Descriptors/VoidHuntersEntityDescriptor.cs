@@ -25,9 +25,9 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
         private readonly List<ComponentManager> _componentManagers;
         private EntityInitializerDelegate? _postInitializer;
 
-        private EntityDescriptorId? _id;
+        private Id<IEntityComponent>? _id;
         private string? _name;
-        public unsafe EntityDescriptorId Id
+        public unsafe Id<IEntityComponent> Id
         {
             get
             {
@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
                     uint128 nameHash = xxHash128.ComputeHash(this.GetType().AssemblyQualifiedName);
                     VhId* pNameHash = (VhId*)&nameHash;
 
-                    _id = new EntityDescriptorId(NameSpace<VoidHuntersEntityDescriptor>.Instance.Create(pNameHash[0]));
+                    _id = new Id<IEntityComponent>(NameSpace<VoidHuntersEntityDescriptor>.Instance.Create(pNameHash[0]));
                 }
                 return _id.Value;
             }

@@ -8,9 +8,8 @@ using VoidHuntersRevived.Common.Entities.Descriptors;
 
 namespace VoidHuntersRevived.Common.Entities
 {
-    public interface IEntityType
+    public interface IEntityType : IEntityResource<IEntityType>
     {
-        EntityTypeId Id { get; }
         VoidHuntersEntityDescriptor Descriptor { get; }
         string Key { get; }
 

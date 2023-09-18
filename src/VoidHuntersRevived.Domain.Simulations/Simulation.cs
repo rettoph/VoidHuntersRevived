@@ -79,7 +79,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             _drawEnginesGroup.Step(realTime);
 
-            foreach(ITeam team in this.Teams.All())
+            foreach(ITeam team in this.Teams.GetAll())
             {
                 _teamDrawEnginesGroup.Step(new GameTimeTeam(realTime, team));
             }

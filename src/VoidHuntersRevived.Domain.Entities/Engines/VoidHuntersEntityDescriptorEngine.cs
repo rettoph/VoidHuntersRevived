@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
         public abstract VoidHuntersEntityDescriptor Descriptor { get; }
 
-        public abstract EntityInitializer Spawn(in VhId vhid, in TeamId teamId, out EntityId id);
+        public abstract EntityInitializer Spawn(in VhId vhid, in Id<ITeam> teamId, out EntityId id);
 
         public abstract void SoftDespawn(in EntityId id, in GroupIndex groupIndex);
         public abstract void RevertSoftDespawn(in EntityId id, in GroupIndex groupIndex);
@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         private readonly IEngineService _engines;
         private readonly FasterList<OnDespawnEngineInvoker> _onDespawnEngineInvokers;
         private readonly FasterList<ComponentSerializer> _serializers;
-        private readonly Dictionary<TeamId, ITeamDescriptorGroup> _teamDescriptorGroups;
+        private readonly Dictionary<Id<ITeam>, ITeamDescriptorGroup> _teamDescriptorGroups;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
@@ -99,7 +99,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             }
         }
 
-        public override EntityInitializer Spawn(in VhId vhid, in TeamId teamId, out EntityId id)
+        public override EntityInitializer Spawn(in VhId vhid, in Id<ITeam> teamId, out EntityId id)
         {
             EGID egid = new EGID(EntityId++, _teamDescriptorGroups[teamId].GroupId);
             id = new EntityId(egid, vhid);

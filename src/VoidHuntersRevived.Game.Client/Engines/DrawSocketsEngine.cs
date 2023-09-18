@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly Camera2D _camera;
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private readonly PrimitiveShape _jointShape;
-        private readonly Dictionary<TeamId, ITeamDescriptorGroup[]> _teamDescriptorGroups;
+        private readonly Dictionary<Id<ITeam>, ITeamDescriptorGroup[]> _teamDescriptorGroups;
 
         public DrawSocketsEngine(IScreen screen, IEntityService entities, ITeamDescriptorGroupService teamDescriptorGroups, Camera2D camera, PrimitiveBatch<VertexPositionColor> primitiveBatch)
         {

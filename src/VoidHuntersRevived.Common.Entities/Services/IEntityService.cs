@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Common.Entities.Services
         #endregion
 
         #region Entity Spawning
-        EntityId Spawn(IEntityType type, VhId vhid, TeamId teamId, EntityInitializerDelegate? initializer);
+        EntityId Spawn(IEntityType type, VhId vhid, Id<ITeam> teamId, EntityInitializerDelegate? initializer);
         void Despawn(VhId vhid);
         void Despawn(EntityId id);
 
@@ -136,7 +136,7 @@ namespace VoidHuntersRevived.Common.Entities.Services
         #endregion
 
         #region Descriptors
-        internal IVoidHuntersEntityDescriptorEngine GetDescriptorEngine(EntityDescriptorId descriptorId);
+        internal IVoidHuntersEntityDescriptorEngine GetDescriptorEngine(Id<IEntityComponent> descriptorId);
         #endregion
     }
 }

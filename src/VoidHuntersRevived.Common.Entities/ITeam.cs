@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Common.Entities
 {
     public interface ITeam
     {
-        TeamId Id { get; }
+        Id<ITeam> Id { get; }
         string Name { get; }
         Color PrimaryColor { get; }
         Color SecondaryColor { get; }

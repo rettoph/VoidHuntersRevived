@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
     {
         public EntityId Spawn(Socket socket, VhId nodeVhId, IEntityType<PieceDescriptor> node, EntityInitializerDelegate? initializerDelegate = null)
         {
-            TeamId teamId = _entities.QueryById<TeamId>(socket.Node.TreeId);
+            Id<ITeam> teamId = _entities.QueryById<Id<ITeam>>(socket.Node.TreeId);
             SocketVhId socketVhId = socket.Id.VhId;
             VhId treeId = socket.Node.TreeId.VhId;
 
@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
         public EntityId Spawn(Socket socket, EntityData nodes, EntityInitializerDelegate? initializerDelegate = null)
         {
-            TeamId teamId = _entities.QueryById<TeamId>(socket.Node.TreeId);
+            Id<ITeam> teamId = _entities.QueryById<Id<ITeam>>(socket.Node.TreeId);
             SocketVhId socketVhId = socket.Id.VhId;
 
             EntityId nodeId = _entities.Deserialize(

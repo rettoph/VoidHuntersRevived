@@ -17,12 +17,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 {
     internal sealed class TeamService : ITeamService
     {
-        private Dictionary<TeamId, ITeam> _teams;
+        private Dictionary<Id<ITeam>, ITeam> _teams;
         private readonly IResourceProvider _resources;
 
         public TeamService(IResourceProvider resources, IFiltered<ITeamLoader> loaders)
         {
-            _teams = new Dictionary<TeamId, ITeam>();
+            _teams = new Dictionary<Id<ITeam>, ITeam>();
             _resources = resources;
 
             foreach (ITeamLoader loader in loaders.Instances)
@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
         }
 
-        public void Register(in TeamId id, Resource<string> name, Resource<Color> primaryColor, Resource<Color> secondaryColor)
+        public void Register(in Id<ITeam> id, Resource<string> name, Resource<Color> primaryColor, Resource<Color> secondaryColor)
         {
             _teams.Add(id, new Team()
             {
@@ -42,7 +42,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             });
         }
 
-        public IEnumerable<ITeam> All()
+        public ITeam GetById(Id<ITeam> id)
+        {
+            return _teams[id];
+        }
+
+        public IEnumerable<ITeam> GetAll()
         {
             return _teams.Values.AsEnumerable();
         }

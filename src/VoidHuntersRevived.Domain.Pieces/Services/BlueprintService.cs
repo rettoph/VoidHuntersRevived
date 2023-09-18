@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Services;
 
@@ -20,6 +21,16 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                 .Select(x => x.Item2)
                 .Concat(blueprints)
                 .ToDictionary(x => x.Id, x => x);
+        }
+
+        public Blueprint GetById(Id<Blueprint> id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Blueprint> GetAll()
+        {
+            throw new NotImplementedException();
         }
     }
 }

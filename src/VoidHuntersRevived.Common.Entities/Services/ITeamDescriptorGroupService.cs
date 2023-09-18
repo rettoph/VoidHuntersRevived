@@ -13,8 +13,8 @@ namespace VoidHuntersRevived.Common.Entities.Services
     {
         ITeamDescriptorGroup GetByGroupId(ExclusiveGroupStruct groupId);
 
-        Dictionary<TeamId, ITeamDescriptorGroup> GetAllByDescriptor(VoidHuntersEntityDescriptor descriptor);
+        Dictionary<Id<ITeam>, ITeamDescriptorGroup> GetAllByDescriptor(VoidHuntersEntityDescriptor descriptor);
 
-        Dictionary<TeamId, ITeamDescriptorGroup[]> GetAllWithComponentsByTeams(params Type[] components);
+        Dictionary<Id<ITeam>, ITeamDescriptorGroup[]> GetAllWithComponentsByTeams(params Type[] components);
     }
 }
