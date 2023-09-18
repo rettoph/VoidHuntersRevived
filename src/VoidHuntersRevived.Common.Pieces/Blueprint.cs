@@ -9,7 +9,7 @@ using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Common.Pieces
 {
-    public class Blueprint
+    public class Blueprint : IEntityResource<Blueprint>
     {
         [JsonIgnore]
         public Id<Blueprint> Id => new Id<Blueprint>(HashBuilder<Blueprint, VhId, VhId>.Instance.Calculate(this.Name, this.Piece.Hash));

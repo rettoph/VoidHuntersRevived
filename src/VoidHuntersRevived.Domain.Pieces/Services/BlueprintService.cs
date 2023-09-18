@@ -13,14 +13,16 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 {
     internal sealed class BlueprintService : IBlueprintService
     {
-        private Dictionary<Id<Blueprint>, Blueprint> _blueprints;
+        private readonly Dictionary<Id<Blueprint>, Blueprint> _blueprints;
 
         public BlueprintService(IResourceProvider resources, IEnumerable<Blueprint> blueprints)
         {
-            _blueprints = resources.GetAll<Blueprint>()
-                .Select(x => x.Item2)
-                .Concat(blueprints)
-                .ToDictionary(x => x.Id, x => x);
+            _blueprints = new Dictionary<Id<Blueprint>, Blueprint>();
+
+            foreach (Blueprint blueprint in resources.GetAll<Blueprint>().Select(x => x.Item2).Concat(blueprints))
+            {
+
+            }
         }
 
         public Blueprint GetById(Id<Blueprint> id)

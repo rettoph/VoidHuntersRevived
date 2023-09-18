@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Common.Pieces.Services
 {
-    public interface IBlueprintService
+    public interface IBlueprintService : IEntityResourceService<Blueprint>
     {
-        Blueprint GetById(Id<Blueprint> id);
-        IEnumerable<Blueprint> GetAll();
     }
 }

@@ -19,7 +19,7 @@ using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Common.Entities.Descriptors
 {
-    public abstract class VoidHuntersEntityDescriptor : IDynamicEntityDescriptor
+    public abstract class VoidHuntersEntityDescriptor : IDynamicEntityDescriptor, IEntityResource<IEntityComponent>
     {
         private DynamicEntityDescriptor<BaseEntityDescriptor> _dynamicDescriptor;
         private readonly List<ComponentManager> _componentManagers;

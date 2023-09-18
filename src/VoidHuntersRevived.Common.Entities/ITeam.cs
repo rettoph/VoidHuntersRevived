@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Entities
 {
-    public interface ITeam
+    public interface ITeam : IEntityResource<ITeam>
     {
-        Id<ITeam> Id { get; }
         string Name { get; }
         Color PrimaryColor { get; }
         Color SecondaryColor { get; }
