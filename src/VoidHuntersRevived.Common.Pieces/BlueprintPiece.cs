@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Common.Pieces
 {
-    public class Blueprint
+    public class BlueprintPiece
     {
         [JsonIgnore]
-        public Id<Blueprint> Id => new Id<Blueprint>(this.Piece.Hash);
+        public VhId Hash => HashBuilder<BlueprintPiece, VhId>.Instance.Calculate(this.Key);
 
-        public string Name { get; set; } = string.Empty;
-        public BlueprintPiece Piece { get; set; }
+        public string Key { get; set; } = string.Empty;
     }
 }

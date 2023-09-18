@@ -33,6 +33,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Loaders
             services.RegisterType<PlugJsonConverter>().As<JsonConverter>().SingleInstance();
 
             services.RegisterType<PieceService>().AsImplementedInterfaces().SingleInstance();
+            services.RegisterType<BlueprintService>().AsImplementedInterfaces().SingleInstance();
             
             services.RegisterType<TreeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 

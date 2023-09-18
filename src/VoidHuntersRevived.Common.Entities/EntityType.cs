@@ -26,10 +26,7 @@ namespace VoidHuntersRevived.Common.Entities
         {
             this.Key = key;
 
-            uint128 nameHash = xxHash128.ComputeHash(key);
-            VhId* pNameHash = (VhId*)&nameHash;
-
-            this.Id = new EntityTypeId(nameSpace.Create(pNameHash[0]));
+            this.Id = new EntityTypeId(nameSpace.Create(key));
 
             _list.Add(this);
             this.Descriptor = descriptor;

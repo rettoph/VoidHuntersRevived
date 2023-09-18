@@ -19,12 +19,14 @@ namespace VoidHuntersRevived.Game.Ships.Engines
         private readonly NetScope _scope;
         private readonly ITreeService _trees;
         private readonly IPieceService _pieces;
+        private readonly IBlueprintService _blueprints;
 
-        public UserEngine(ITreeService trees, IPieceService pieces, NetScope scope)
+        public UserEngine(ITreeService trees, IPieceService pieces, IBlueprintService blueprints, NetScope scope)
         {
             _scope = scope;
             _trees = trees;
             _pieces = pieces;
+            _blueprints = blueprints;
         }
 
         public string name { get; } = nameof(UserEngine);

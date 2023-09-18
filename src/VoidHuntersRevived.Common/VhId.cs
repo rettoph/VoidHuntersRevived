@@ -50,5 +50,18 @@ namespace VoidHuntersRevived.Common
         {
             return left.Value != right.Value;
         }
+
+        public static unsafe VhId HashString(string value)
+        {
+            uint128 nameHash = xxHash128.ComputeHash(value);
+            VhId* pNameHash = (VhId*)&nameHash;
+
+            return pNameHash[0];
+        }
+
+        public static implicit operator VhId(string value)
+        {
+            return VhId.HashString(value);
+        }
     }
 }

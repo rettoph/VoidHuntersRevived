@@ -94,10 +94,7 @@ namespace VoidHuntersRevived.Common
 
         public static unsafe VhId Create(this VhId nameSpace, string name)
         {
-            uint128 nameHash = xxHash128.ComputeHash(name);
-            VhId* pNameHash = (VhId*)&nameHash;
-
-            return nameSpace.Create(pNameHash[0]);
+            return nameSpace.Create(VhId.HashString(name));
         }
     }
 }
