@@ -18,5 +18,6 @@ namespace VoidHuntersRevived.Common.Pieces.Services
 
         EntityId Spawn(VhId vhid, Id<ITeam> teamId, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> node, EntityInitializerDelegate? initializer = null);
         EntityId Spawn(VhId vhid, Id<ITeam> teamId, IEntityType<TreeDescriptor> tree, EntityData nodes, EntityInitializerDelegate initializer);
+        EntityId Spawn(VhId vhid, Id<ITeam> teamId, IEntityType<TreeDescriptor> tree, IBlueprint blueprint, EntityInitializerDelegate? initializer = null);
     }
 }

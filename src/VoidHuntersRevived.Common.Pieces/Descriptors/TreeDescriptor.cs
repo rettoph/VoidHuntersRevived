@@ -20,7 +20,8 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
         {
             this.ExtendWith(new ComponentManager[]
             {
-                new ComponentManager<Tree, TreeComponentSerializer>()
+                new ComponentManager<Tree, TreeComponentSerializer>(),
+                new ComponentManager<Id<BlueprintDto>, BlueprintIdComponentSerializer>()
             });
         }
     }

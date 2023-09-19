@@ -88,14 +88,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, SpawnEntity data)
         {
-            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to spawn EntityType {Id}, {Type}", nameof(EntityService), nameof(Process), nameof(SpawnEntity), data.VhId.Value, data.Type.Key);
+            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to spawn Entity {Id}, {Type}", nameof(EntityService), nameof(Process), nameof(SpawnEntity), data.VhId.Value, data.Type.Key);
 
             this.SpawnEntity(data.Type, data.VhId, data.TeamId, data.Initializer);
         }
 
         public void Revert(VhId eventId, SpawnEntity data)
         {
-            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to revert spawn EntityType {Id}, {Type}", nameof(EntityService), nameof(Revert), nameof(SpawnEntity), data.VhId.Value, data.Type.Key);
+            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to revert spawn Entity {Id}, {Type}", nameof(EntityService), nameof(Revert), nameof(SpawnEntity), data.VhId.Value, data.Type.Key);
 
             EntityId id = this.GetId(data.VhId);
             this.SoftDespawnEntity(id);

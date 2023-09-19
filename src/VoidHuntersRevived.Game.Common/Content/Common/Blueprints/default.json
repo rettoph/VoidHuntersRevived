@@ -1,6 +1,6 @@
 {
   "Name": "Default",
-  "Piece": {
+  "Head": {
     "Key": "Piece.Hull.Square"
   }
 }

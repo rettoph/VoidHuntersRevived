@@ -14,18 +14,20 @@ using Guppy.Files.Services;
 namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes
 {
     [AutoLoad]
-    internal class BlueprintResourceType : ResourceType<Blueprint>
+    internal class BlueprintDtoResourceType : ResourceType<BlueprintDto>
     {
         private readonly IFileService _files;
 
-        public BlueprintResourceType(IFileService files)
+        public override string Name => "Blueprint";
+
+        public BlueprintDtoResourceType(IFileService files)
         {
             _files = files;
         }
 
-        protected override bool TryResolve(Resource<Blueprint> resource, string input, string root, out Blueprint value)
+        protected override bool TryResolve(Resource<BlueprintDto> resource, string input, string root, out BlueprintDto value)
         {
-            IFile<Blueprint> blueprint = _files.Get<Blueprint>(
+            IFile<BlueprintDto> blueprint = _files.Get<BlueprintDto>(
                 FileType.Source,
                 Path.Combine(root, input),
                 true);

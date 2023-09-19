@@ -1,8 +1,10 @@
 ﻿using Autofac;
 using Guppy.Attributes;
+using Guppy.Common.Extensions.Autofac;
 using Guppy.Loaders;
 using Guppy.Network;
 using Guppy.Resources.Serialization.Json.Converters;
+using Serilog;
 using Svelto.ECS;
 using System;
 using System.Collections.Generic;
@@ -11,6 +13,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
@@ -42,6 +45,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Loaders
             services.RegisterType<SocketService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             services.RegisterType<VisibleRenderingService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+            services.Configure<LoggerConfiguration>((scope, config) =>
+            {
+                config.Destructure.AsScalar(typeof(Id<IBlueprint>));
+            });
         }
     }
 }

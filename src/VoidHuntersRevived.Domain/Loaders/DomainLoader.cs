@@ -9,6 +9,8 @@ using Microsoft.Xna.Framework;
 using Serilog;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Domain.GameComponents;
 using VoidHuntersRevived.Domain.Serialization.Json;
 
@@ -26,6 +28,8 @@ namespace VoidHuntersRevived.Domain.Loaders
                 DirectoryHelper.EnsureDirectoryExists(path);
 
                 config.MinimumLevel.Is(Serilog.Events.LogEventLevel.Verbose);
+
+                config.Destructure.AsScalar<VhId>();
 
                 config
                     .WriteTo.File(

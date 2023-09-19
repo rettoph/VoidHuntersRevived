@@ -9,12 +9,12 @@ using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Common.Pieces
 {
-    public class Blueprint : IEntityResource<Blueprint>
+    public class BlueprintDto
     {
         [JsonIgnore]
-        public Id<Blueprint> Id => new Id<Blueprint>(HashBuilder<Blueprint, VhId, VhId>.Instance.Calculate(this.Name, this.Piece.Hash));
+        public Id<IBlueprint> Id => new Id<IBlueprint>(HashBuilder<BlueprintDto, VhId, VhId>.Instance.Calculate(this.Name, this.Head.Hash));
 
         public string Name { get; set; } = string.Empty;
-        public BlueprintPiece Piece { get; set; } = default!;
+        public BlueprintPieceDto Head { get; set; } = default!;
     }
 }

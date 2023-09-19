@@ -1,6 +1,8 @@
 ﻿using Autofac;
 using Guppy.Attributes;
+using Guppy.Common.Extensions.Autofac;
 using Guppy.Loaders;
+using Serilog;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using System.Text.Json.Serialization;
@@ -35,6 +37,13 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
             builder.RegisterType<EntitySubmissionEngine>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.RegisterType<VoidHuntersEntityDescriptorConverter>().As<JsonConverter>().SingleInstance();
+
+            builder.Configure<LoggerConfiguration>((scope, config) =>
+            {
+                config.Destructure.AsScalar(typeof(Id<IEntityComponent>));
+                config.Destructure.AsScalar(typeof(Id<ITeam>));
+                config.Destructure.AsScalar(typeof(Id<IEntityType>));
+            });
         }
     }
 }

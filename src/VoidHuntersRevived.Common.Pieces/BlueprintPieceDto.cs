@@ -8,10 +8,10 @@ using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Common.Pieces
 {
-    public class BlueprintPiece
+    public class BlueprintPieceDto
     {
         [JsonIgnore]
-        public VhId Hash => HashBuilder<BlueprintPiece, VhId>.Instance.Calculate(this.Key);
+        public VhId Hash => HashBuilder<BlueprintPieceDto, VhId>.Instance.Calculate(this.Key);
 
         public string Key { get; set; } = string.Empty;
     }

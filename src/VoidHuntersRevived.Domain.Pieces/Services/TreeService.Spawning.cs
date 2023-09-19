@@ -12,6 +12,8 @@ using VoidHuntersRevived.Common.Pieces.Descriptors;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Common.Entities.Options;
+using VoidHuntersRevived.Common.Pieces;
+using VoidHuntersRevived.Common.Pieces.Extensions.Entities;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
@@ -50,6 +52,17 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
                 initializer.Init<Tree>(new Tree(headId));
                 initializerDelegate(entities, ref initializer, in id);
+            });
+        }
+
+        public EntityId Spawn(VhId vhid, Id<ITeam> teamId, IEntityType<TreeDescriptor> tree, IBlueprint blueprint, EntityInitializerDelegate? initializerDelegate = null)
+        {
+            return _entities.Spawn(tree, vhid, teamId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+            {
+                EntityId headId = entities.Spawn(vhid, teamId, blueprint);
+
+                initializer.Init(new Tree(headId));
+                initializerDelegate?.Invoke(entities, ref initializer, in id);
             });
         }
     }

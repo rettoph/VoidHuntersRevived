@@ -1,6 +1,7 @@
 ﻿using Guppy.Resources.Providers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -15,11 +16,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
     {
         private Piece[] _pieces;
         private Dictionary<Type, Piece[]> _byDescriptor;
+        private Dictionary<string, Piece> _byKey;
 
         public PieceService(IResourceProvider resources, IEnumerable<Piece> pieces)
         {
             _pieces = pieces.Concat(resources.GetAll<Piece>().Select(x => x.Item2)).ToArray();
             _byDescriptor = new Dictionary<Type, Piece[]>();
+            _byKey = _pieces.ToDictionary(x => x.Key, x => x);
         }
 
         public Piece[] All<TDescriptor>() where TDescriptor : PieceDescriptor
@@ -37,6 +40,16 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         public Piece[] All()
         {
             return _pieces;
+        }
+
+        public Piece GetByKey(string key)
+        {
+            return _byKey[key];
+        }
+
+        public bool TryGetByKey(string key, [MaybeNullWhen(false)]  out Piece piece)
+        {
+            return _byKey.TryGetValue(key, out piece);
         }
     }
 }

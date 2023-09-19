@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Entities
 {
-    public struct Id<T> : IEntityComponent
+    public struct Id<T> : IEntityComponent, IEquatable<Id<T>>
     {
         private readonly VhId _value;
 
@@ -46,6 +46,11 @@ namespace VoidHuntersRevived.Common.Entities
         public static Id<T> FromString(string input)
         {
             return new Id<T>(VhId.HashString(input));
+        }
+
+        public override string ToString()
+        {
+            return typeof(T).Name + ":" + _value.ToString();
         }
     }
 }
