@@ -1,6 +1,53 @@
 {
   "Name": "Default",
   "Head": {
-    "Key": "Piece.Hull.Square"
+    "Key": "Piece.Hull.Square",
+    "Children": [
+      [
+        {
+          "Key": "Piece.Hull.Triangle",
+          "Children": [
+            [
+              {
+                "Key": "Piece.Thruster"
+              }
+            ],
+            [
+              {
+                "Key": "Piece.Thruster"
+              }
+            ]
+          ]
+        }
+      ],
+      [
+        {
+          "Key": "Piece.Hull.Triangle"
+        },
+        {
+          "Key": "Piece.Hull.Square"
+        },
+        {
+          "Key": "Piece.Thruster"
+        }
+      ],
+      [
+        {
+          "Key": "Piece.Hull.Triangle",
+          "Children": [
+            [
+              {
+                "Key": "Piece.Thruster"
+              }
+            ],
+            [
+              {
+                "Key": "Piece.Thruster"
+              }
+            ]
+          ]
+        }
+      ]
+    ]
   }
 }

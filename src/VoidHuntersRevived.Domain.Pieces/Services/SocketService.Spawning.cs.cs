@@ -30,9 +30,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             {
                 initializer.Init(new Node(id, entities.GetId(treeId)));
                 initializer.Init<Coupling>(new Coupling(
-                socketId: new SocketId(
-                    nodeId: entities.GetId(socketVhId.NodeVhId),
-                    index: socketVhId.Index))
+                    socketId: new SocketId(
+                        nodeId: entities.GetId(socketVhId.NodeVhId),
+                        index: socketVhId.Index))
                 );
 
                 initializerDelegate?.Invoke(entities, ref initializer, in id);

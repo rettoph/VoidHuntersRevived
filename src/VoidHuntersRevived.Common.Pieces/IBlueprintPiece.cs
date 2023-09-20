@@ -8,6 +8,8 @@ namespace VoidHuntersRevived.Common.Pieces
 {
     public interface IBlueprintPiece
     {
-        public Piece Type { get; }
+        Piece Piece { get; }
+
+        IBlueprintPiece[][] Children { get; }
     }
 }
