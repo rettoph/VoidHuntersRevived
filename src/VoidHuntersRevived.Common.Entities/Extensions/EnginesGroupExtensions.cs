@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Common.Entities.Extensions
         }
 
         private class SimpleEnginesGroup<TInterface, TParameter> : UnsortedEnginesGroup<TInterface, TParameter>
-            where TInterface : IStepEngine<TParameter>
+            where TInterface : class, IStepEngine<TParameter>
         {
             public SimpleEnginesGroup(IEnumerable<TInterface> engines) : base(new FasterList<TInterface>(engines.ToArray()))
             {
