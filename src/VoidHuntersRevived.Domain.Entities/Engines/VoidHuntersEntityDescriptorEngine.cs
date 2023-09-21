@@ -22,7 +22,8 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
         public abstract VoidHuntersEntityDescriptor Descriptor { get; }
 
-        public abstract EntityInitializer Spawn(in VhId vhid, in Id<ITeam> teamId, out EntityId id);
+        public abstract EntityInitializer HardSpawn(in VhId vhid, in Id<ITeam> teamId, out EntityId id);
+        public abstract void SoftSpawn(in EntityId id, in GroupIndex groupIndex);
 
         public abstract void SoftDespawn(in EntityId id, in GroupIndex groupIndex);
         public abstract void RevertSoftDespawn(in EntityId id, in GroupIndex groupIndex);
@@ -41,7 +42,8 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
         private readonly IEngineService _engines;
-        private readonly FasterList<OnDespawnEngineInvoker> _onDespawnEngineInvokers;
+        private readonly FasterList<ComponentEngineInvoker> _onDespawnEngineInvokers;
+        private readonly FasterList<ComponentEngineInvoker> _onSpawnEngineInvokers;
         private readonly FasterList<ComponentSerializer> _serializers;
         private readonly Dictionary<Id<ITeam>, ITeamDescriptorGroup> _teamDescriptorGroups;
 
@@ -60,7 +62,8 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             _factory = enginesRoot.GenerateEntityFactory();
             _functions = enginesRoot.GenerateEntityFunctions();
             _engines = engines;
-            _onDespawnEngineInvokers = new FasterList<OnDespawnEngineInvoker>();
+            _onDespawnEngineInvokers = new FasterList<ComponentEngineInvoker>();
+            _onSpawnEngineInvokers = new FasterList<ComponentEngineInvoker>();
             _teamDescriptorGroups = teamDescriptorGroups.GetAllByDescriptor(_descriptor);
 
             _serializers = new FasterList<ComponentSerializer>(_descriptor.ComponentManagers.Count());
@@ -76,9 +79,14 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             
             foreach (Type componentType in _descriptor.ComponentManagers.Select(x => x.Type))
             {
-                if (OnDespawnEngineInvoker.Create(componentType, engines, out var invoker))
+                if (ComponentEngineInvoker.Create(typeof(OnDespawnEngineInvoker<>), typeof(IOnDespawnEngine<>), componentType, engines, out var invoker))
                 {
                     _onDespawnEngineInvokers.Add(invoker);
+                }
+
+                if (ComponentEngineInvoker.Create(typeof(OnSpawnEngineInvoker<>), typeof(IOnSpawnEngine<>), componentType, engines, out invoker))
+                {
+                    _onSpawnEngineInvokers.Add(invoker);
                 }
             }
         }
@@ -99,7 +107,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             }
         }
 
-        public override EntityInitializer Spawn(in VhId vhid, in Id<ITeam> teamId, out EntityId id)
+        public override EntityInitializer HardSpawn(in VhId vhid, in Id<ITeam> teamId, out EntityId id)
         {
             EGID egid = new EGID(EntityId++, _teamDescriptorGroups[teamId].GroupId);
             id = new EntityId(egid, vhid);
@@ -114,6 +122,13 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             });
 
             return initializer;
+        }
+        public override void SoftSpawn(in EntityId id, in GroupIndex groupIndex)
+        {
+            for (int i = 0; i < _onSpawnEngineInvokers.count; i++)
+            {
+                _onSpawnEngineInvokers[i].Invoke(entitiesDB, id, groupIndex);
+            }
         }
 
         public override void SoftDespawn(in EntityId id, in GroupIndex groupIndex)

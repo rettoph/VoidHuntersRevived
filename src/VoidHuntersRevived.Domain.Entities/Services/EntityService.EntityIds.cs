@@ -14,6 +14,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     internal partial class EntityService
     {
         private readonly Dictionary<VhId, EntityId> _ids = new Dictionary<VhId, EntityId>();
+        private readonly Queue<EntityId> _added = new Queue<EntityId>();
 
         public string name { get; } = nameof(EntityService);
 
@@ -33,6 +34,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 throw new Exception();
             }
+
+            _added.Enqueue(id);
 
             return id;
         }

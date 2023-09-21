@@ -6,17 +6,17 @@ using VoidHuntersRevived.Common.Entities.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Utilities
 {
-    internal abstract class OnDespawnEngineInvoker
+    internal abstract class ComponentEngineInvoker
     {
         public abstract void Invoke(EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex);
 
-        public static bool Create(Type componentType, IEnumerable<IEngine> engines, [MaybeNullWhen(false)] out OnDespawnEngineInvoker invoker)
+        public static bool Create(Type componentEngineInvokerType, Type engineType, Type componentType, IEnumerable<IEngine> engines, [MaybeNullWhen(false)] out ComponentEngineInvoker invoker)
         {
             List<IEngine> onDespawnEngines = new List<IEngine>();
 
             foreach (IEngine engine in engines)
             {
-                foreach (Type onDespawnEngineType in engine.GetType().GetConstructedGenericTypes(typeof(IOnDespawnEngine<>)))
+                foreach (Type onDespawnEngineType in engine.GetType().GetConstructedGenericTypes(engineType))
                 {
                     if (componentType == onDespawnEngineType.GenericTypeArguments[0])
                     {
@@ -32,14 +32,34 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
                 return false;
             }
 
-            Type invokerType = typeof(OnDespawnEngineInvoker<>).MakeGenericType(componentType);
-            invoker = (OnDespawnEngineInvoker)Activator.CreateInstance(invokerType, onDespawnEngines)!;
+            Type invokerType = componentEngineInvokerType.MakeGenericType(componentType);
+            invoker = (ComponentEngineInvoker)Activator.CreateInstance(invokerType, onDespawnEngines)!;
 
             return true;
         }
     }
 
-    internal class OnDespawnEngineInvoker<T> : OnDespawnEngineInvoker
+    internal class OnSpawnEngineInvoker<T> : ComponentEngineInvoker
+        where T : unmanaged, IEntityComponent
+    {
+        private FasterList<IOnSpawnEngine<T>> _engines;
+
+        public OnSpawnEngineInvoker(IEnumerable<IEngine> engines)
+        {
+            _engines = new FasterList<IOnSpawnEngine<T>>(engines.OfType<IOnSpawnEngine<T>>().ToList());
+        }
+
+        public override void Invoke(EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex)
+        {
+            ref T component = ref entitiesDB.QueryEntityByIndex<T>(groupIndex.Index, groupIndex.GroupID);
+            for(int i=0; i<_engines.count; i++)
+            {
+                _engines[i].OnSpawn(id, ref component, in groupIndex);
+            }
+        }
+    }
+
+    internal class OnDespawnEngineInvoker<T> : ComponentEngineInvoker
         where T : unmanaged, IEntityComponent
     {
         private FasterList<IOnDespawnEngine<T>> _engines;
@@ -52,7 +72,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         public override void Invoke(EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex)
         {
             ref T component = ref entitiesDB.QueryEntityByIndex<T>(groupIndex.Index, groupIndex.GroupID);
-            for(int i=0; i<_engines.count; i++)
+            for (int i = 0; i < _engines.count; i++)
             {
                 _engines[i].OnDespawn(id, ref component, in groupIndex);
             }

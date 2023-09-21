@@ -14,7 +14,8 @@ namespace VoidHuntersRevived.Common.Entities.Engines
     {
         VoidHuntersEntityDescriptor Descriptor { get; }
 
-        EntityInitializer Spawn(in VhId vhid, in Id<ITeam> teamId, out EntityId id);
+        EntityInitializer HardSpawn(in VhId vhid, in Id<ITeam> teamId, out EntityId id);
+        void SoftSpawn(in EntityId id, in GroupIndex groupIndex);
 
         void SoftDespawn(in EntityId id, in GroupIndex groupIndex);
         void RevertSoftDespawn(in EntityId id, in GroupIndex groupIndex);

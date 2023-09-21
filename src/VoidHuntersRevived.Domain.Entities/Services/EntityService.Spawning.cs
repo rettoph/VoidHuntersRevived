@@ -49,6 +49,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public void Flush()
         {
             _scheduler.SubmitEntities();
+
+            while (_added.TryDequeue(out EntityId id))
+            {
+                Id<IEntityComponent> descriptorId = this.QueryById<Id<IEntityComponent>>(id, out GroupIndex groupIndex);
+                this.GetDescriptorEngine(descriptorId).SoftSpawn(in id, groupIndex);
+            }
         }
 
         public void Despawn(EntityId id)
@@ -135,7 +141,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         private EntityId SpawnEntity(IEntityType type, in VhId vhid, in Id<ITeam> teamId, EntityInitializerDelegate? initializerDelegate)
         {
-            EntityInitializer initializer = this.GetDescriptorEngine(type.Descriptor.Id).Spawn(vhid, teamId, out EntityId id);
+            EntityInitializer initializer = this.GetDescriptorEngine(type.Descriptor.Id).HardSpawn(vhid, teamId, out EntityId id);
             this.Add(id);
 
             _types.GetConfiguration(type).Initialize(this, ref initializer, in id);

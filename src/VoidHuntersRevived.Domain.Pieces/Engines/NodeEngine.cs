@@ -1,6 +1,8 @@
 ﻿using Guppy.Attributes;
 using Serilog;
 using Svelto.ECS;
+using System.Text.RegularExpressions;
+using System;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
@@ -16,6 +18,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
     [AutoLoad]
     internal sealed class NodeEngine : BasicEngine,
         IReactOnAddEx<Node>,
+        IOnSpawnEngine<Node>,
         IReactOnRemoveEx<Node>
     {
         private readonly ISocketService _sockets;
@@ -35,21 +38,17 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                try
-                {
-                    this.SetLocalTransformation(ref nodes[index], groupID, index);
+                EntityId treeId = nodes[index].TreeId;
+                VhId nodeVhId = _entities.QueryByGroupIndex<EntityId>(groupID, index).VhId;
 
-                    EntityId treeId = nodes[index].TreeId;
-                    VhId nodeVhId = _entities.QueryByGroupIndex<EntityId>(groupID, index).VhId;
-
-                    ref var filter = ref _entities.GetFilter<Node>(treeId, Tree.NodeFilterContextId);
-                    filter.Add(ids[index], groupID, index);
-                }
-                catch(Exception ex)
-                {
-                    var id = _entities.QueryByGroupIndex<EntityId>(groupID, index);
-                }
+                ref var filter = ref _entities.GetFilter<Node>(treeId, Tree.NodeFilterContextId);
+                filter.Add(ids[index], groupID, index);
             }
+        }
+
+        public void OnSpawn(EntityId id, ref Node component, in GroupIndex groupIndex)
+        {
+            this.SetLocalTransformation(ref component, groupIndex);
         }
 
         public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Node> entities, ExclusiveGroupStruct groupID)
@@ -68,11 +67,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
         }
 
-        private void SetLocalTransformation(ref Node node, ExclusiveGroupStruct groupId, uint index)
+        private void SetLocalTransformation(ref Node node, in GroupIndex groupIndex)
         {
             _logger.Verbose("{ClassName}::{MethodName} - Preparing to set {LocalTransformation} for {Node} {NodeId}", nameof(NodeEngine), nameof(SetLocalTransformation), nameof(Node.LocalTransformation), nameof(Node), node.Id.VhId.Value);
 
-            if (!_entities.TryQueryByGroupIndex<Coupling>(groupId, index, out Coupling coupling) || coupling.SocketId == SocketId.Empty)
+            if (!_entities.TryQueryByGroupIndex<Coupling>(groupIndex, out Coupling coupling) || coupling.SocketId == SocketId.Empty)
             {
                 node.LocalTransformation = FixMatrix.CreateTranslation(Fix64.Zero, Fix64.Zero, Fix64.Zero);
                 return;
@@ -80,7 +79,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
             try
             {
-                ref Plug plug = ref _entities.QueryByGroupIndex<Plug>(groupId, index);
+                ref Plug plug = ref _entities.QueryByGroupIndex<Plug>(groupIndex);
                 Socket socketNode = _sockets.GetSocket(coupling.SocketId);
 
                 node.LocalTransformation = plug.Location.Transformation.Invert() * socketNode.LocalTransformation;
@@ -96,7 +95,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 // Without this it will default all vertices to 0,0 and fail an assert
                 node.LocalTransformation = FixMatrix.CreateTranslation(Fix64.Zero, Fix64.Zero, Fix64.Zero);
 
-                var id = _entities.QueryByGroupIndex<EntityId>(groupId, index);
+                var id = _entities.QueryByGroupIndex<EntityId>(groupIndex);
                 _logger.Error(ex, "{ClassName}::{MethodName} - There was a fatal error attempting to set node transformation for node {NodeId}.", nameof(NodeEngine), nameof(SetLocalTransformation), id.VhId.Value);
                 _entities.Despawn(id);
             }

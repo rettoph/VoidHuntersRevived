@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Domain.Loaders
                 var path = fileTypePaths.GetFullPath(FileType.AppData, Path.Combine("logs", $"log_{DateTime.Now.ToString("yyyy-dd-M")}.txt"));
                 DirectoryHelper.EnsureDirectoryExists(path);
 
-                config.MinimumLevel.Is(Serilog.Events.LogEventLevel.Verbose);
+                config.MinimumLevel.Is(Serilog.Events.LogEventLevel.Warning);
 
                 config.Destructure.AsScalar<VhId>();
 

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Pieces.Components;
@@ -19,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
     internal sealed class RigidEngine : BasicEngine,
-        IReactOnAddEx<Rigid>,
+        IOnSpawnEngine<Rigid>,
         IReactOnRemoveEx<Rigid>
     {
         private readonly ISpace _space;
@@ -33,21 +34,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             _logger = logger;
         }
 
-        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Rigid> entities, ExclusiveGroupStruct groupID)
+        public void OnSpawn(EntityId id, ref Rigid rigid, in GroupIndex groupIndex)
         {
-            var (rigids, _, _) = entities;
-            var (ids, nodes, _) = _entities.QueryEntities<EntityId, Node>(groupID);
+            Node node = _entities.QueryByGroupIndex<Node>(in groupIndex);
 
-            for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
-            {
-                EntityId id = ids[index];
-                Rigid rigid = rigids[index];
-                Node node = nodes[index];
+            IBody body = _space.GetOrCreateBody(node.TreeId);
 
-                IBody body = _space.GetOrCreateBody(node.TreeId);
-
-                body.Create(id.VhId, rigid.Shapes[0], node.LocalTransformation);
-            }
+            body.Create(id.VhId, rigid.Shapes[0], node.LocalTransformation);
         }
 
         public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Rigid> entities, ExclusiveGroupStruct groupID)
