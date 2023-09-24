@@ -10,8 +10,6 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
 {
     public sealed class Tick
     {
-        private static readonly VhId Namespace = new VhId("41CC9725-EC8B-4987-ADDE-8899C13C4820");
-
         public readonly int Id;
         public readonly EventDto[] Events;
         public readonly VhId Hash;
@@ -20,7 +18,7 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
         {
             Id = id;
             Events = events;
-            Hash = Namespace.Create(Id);
+            Hash = NameSpace<Tick>.Instance.Create(Id);
 
             foreach(EventDto @event in events)
             {

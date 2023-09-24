@@ -5,27 +5,29 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Physics.Components;
+using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Events;
 using VoidHuntersRevived.Common.Ships.Components;
 using VoidHuntersRevived.Common.Ships.Enums;
 using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Game.Ships.Events;
 
 namespace VoidHuntersRevived.Game.Ships.Engines
 {
     [AutoLoad]
     internal sealed class HelmEngine : BasicEngine,
-        IEventEngine<Helm_SetDirection>, IStepEngine<Step>
+        IEventEngine<Helm_SetDirection>
     {
         private readonly IEntityService _entities;
         private readonly ISpace _space;
+        private EntityId _dirtyHelmId;
 
         public HelmEngine(IEntityService entities, ISpace space)
         {
             _entities = entities;
             _space = space;
         }
-
-        public string name { get; } = nameof(HelmEngine);
 
         public void Process(VhId vhid, Helm_SetDirection data)
         {
@@ -39,44 +41,6 @@ namespace VoidHuntersRevived.Game.Ships.Engines
             else
             {
                 helm.Direction &= ~data.Which;
-            }
-        }
-
-        public void Step(in Step _param)
-        {
-            foreach (var ((helms, _, nativeIds, count), groupId) in _entities.QueryEntities<Helm, Location>())
-            {
-                var (entityIds, _) = _entities.QueryEntities<EntityId>(groupId);
-
-                for (int index = 0; index < count; index++)
-                {
-                    EntityId helmId = entityIds[index];
-                    IBody body = _space.GetBody(helmId);
-
-                    FixVector2 impulse = FixVector2.Zero;
-                    Helm helm = helms[index];
-
-                    if(helm.Direction.HasFlag(Direction.Forward))
-                    {
-                        impulse -= FixVector2.UnitY;
-                    }
-                    if (helm.Direction.HasFlag(Direction.Backward))
-                    {
-                        impulse += FixVector2.UnitY;
-                    }
-                    if (helm.Direction.HasFlag(Direction.TurnLeft))
-                    {
-                        impulse -= FixVector2.UnitX;
-                    }
-                    if (helm.Direction.HasFlag(Direction.TurnRight))
-                    {
-                        impulse += FixVector2.UnitX;
-                    }
-
-                    impulse *= _param.ElapsedTime;
-
-                    body.ApplyLinearImpulse(impulse);
-                }
             }
         }
     }

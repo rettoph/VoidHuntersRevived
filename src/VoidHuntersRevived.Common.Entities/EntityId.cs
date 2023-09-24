@@ -28,14 +28,15 @@ namespace VoidHuntersRevived.Common.Entities
             this.VhId = vhId;
         }
 
-        public override bool Equals([NotNullWhen(true)] object? obj)
+        public override bool Equals(object? obj)
         {
-            throw new NotImplementedException();
+            return obj is EntityId id &&
+                   VhId.Equals(id.VhId);
         }
 
         public override int GetHashCode()
         {
-            throw new NotImplementedException();
+            return HashCode.Combine(VhId);
         }
 
         public static bool operator ==(EntityId id1, EntityId id2)

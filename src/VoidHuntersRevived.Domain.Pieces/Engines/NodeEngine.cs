@@ -12,6 +12,10 @@ using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
+using Guppy.Common.Collections;
+using VoidHuntersRevived.Common.Utilities;
+using VoidHuntersRevived.Common.Pieces.Events;
+using VoidHuntersRevived.Common.Entities.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
@@ -19,30 +23,41 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
     internal sealed class NodeEngine : BasicEngine,
         IReactOnAddEx<Node>,
         IOnSpawnEngine<Node>,
-        IReactOnRemoveEx<Node>
+        IReactOnRemoveEx<Node>,
+        IStepEngine<Step>
     {
         private readonly ISocketService _sockets;
         private readonly IEntityService _entities;
-        private readonly ILogger _logger; 
+        private readonly ILogger _logger;
+        private readonly DictionaryQueue<EntityId, VhId> _dirtyTrees;
 
         public NodeEngine(IEntityService entities, ISocketService sockets, ILogger logger)
         {
             _entities = entities;
             _sockets = sockets;
             _logger = logger;
+            _dirtyTrees = new DictionaryQueue<EntityId, VhId>();
         }
+
+        public string name { get; } = nameof(NodeEngine);
 
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Node> entities, ExclusiveGroupStruct groupID)
         {
-            var (nodes, ids, _) = entities;
+            var (nodes, _, _) = entities;
+            var (ids, _) = _entities.QueryEntities<EntityId>(groupID);
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                EntityId treeId = nodes[index].TreeId;
-                VhId nodeVhId = _entities.QueryByGroupIndex<EntityId>(groupID, index).VhId;
+                Node node = nodes[index];
+                EntityId id = ids[index];
 
-                ref var filter = ref _entities.GetFilter<Node>(treeId, Tree.NodeFilterContextId);
-                filter.Add(ids[index], groupID, index);
+                ref var filter = ref _entities.GetFilter<Node>(node.TreeId, Tree.NodeFilterContextId);
+                filter.Add(id.EGID, index);
+
+                ref VhId dirtyEventId = ref _dirtyTrees.GetOrEnqueue(node.TreeId, out bool alreadyDirty);
+                dirtyEventId = alreadyDirty 
+                    ? HashBuilder<IReactOnAddEx<Node>, VhId, VhId>.Instance.Calculate(dirtyEventId, node.Id.VhId) 
+                    : HashBuilder<IReactOnAddEx<Node>, VhId>.Instance.Calculate(node.Id.VhId);
             }
         }
 
@@ -53,17 +68,35 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Node> entities, ExclusiveGroupStruct groupID)
         {
-            var (nodes, ids, _) = entities;
+            var (nodes, _, _) = entities;
+            var (ids, _) = _entities.QueryEntities<EntityId>(groupID);
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                EntityId treeId = nodes[index].TreeId;
-                VhId nodeVhId = _entities.QueryByGroupIndex<EntityId>(groupID, index).VhId;
+                Node node = nodes[index];
+                EntityId id = ids[index];
 
-                ref var filter = ref _entities.GetFilter<Node>(treeId, Tree.NodeFilterContextId);
-                filter.Remove(ids[index], groupID);
+                ref var filter = ref _entities.GetFilter<Node>(node.TreeId, Tree.NodeFilterContextId);
+                filter.Remove(id.EGID);
 
-                _logger.Verbose("{ClassName}::{MethodName} - Removed node {NodeId} from tree {TreeId}.", nameof(NodeEngine), nameof(Remove), nodeVhId.Value, treeId.VhId.Value);
+                ref VhId dirtyEventId = ref _dirtyTrees.GetOrEnqueue(node.TreeId, out bool alreadyDirty);
+                dirtyEventId = alreadyDirty
+                    ? HashBuilder<IReactOnRemoveEx<Node>, VhId, VhId>.Instance.Calculate(dirtyEventId, node.Id.VhId)
+                    : HashBuilder<IReactOnRemoveEx<Node>, VhId>.Instance.Calculate(node.Id.VhId);
+            }
+        }
+
+        public void Step(in Step param)
+        {
+            while(_dirtyTrees.TryDequeue(out EntityId dirtyTreeId, out VhId cleaTreeEventSender))
+            {
+                if(_entities.IsSpawned(dirtyTreeId))
+                {
+                    this.Simulation.Publish(cleaTreeEventSender, new Tree_Clean()
+                    {
+                        TreeId = dirtyTreeId.VhId
+                    });
+                }
             }
         }
 
@@ -98,12 +131,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 var id = _entities.QueryByGroupIndex<EntityId>(groupIndex);
                 _logger.Error(ex, "{ClassName}::{MethodName} - There was a fatal error attempting to set node transformation for node {NodeId}.", nameof(NodeEngine), nameof(SetLocalTransformation), id.VhId.Value);
                 _entities.Despawn(id);
-            }
-
-
-            if(node.LocalTransformation == default)
-            {
-
             }
         }
     }

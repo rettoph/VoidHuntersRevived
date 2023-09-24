@@ -10,6 +10,8 @@ namespace VoidHuntersRevived.Common.Ships.Components
 {
     public struct Helm : IEntityComponent
     {
+        public static readonly FilterContextID ThrustableFilterContextId = FilterContextID.GetNewContextID();
+
         public Direction Direction;
 
         public Helm()

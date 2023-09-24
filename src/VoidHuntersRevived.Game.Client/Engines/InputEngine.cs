@@ -142,7 +142,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
 
             this.Simulation.Input(
-                sender: NameSpace<Tick>.Instance.Create(_param.Id),
+                sender: _param.Hash,
                 data: new Tactical_SetTarget()
                 {
                     ShipVhId = localShipVhId,
