@@ -1,6 +1,5 @@
 ﻿using Guppy.Common;
-using VoidHuntersRevived.Common.Ships.Enums;
-using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Pieces.Enums;
 
 namespace VoidHuntersRevived.Game.Common.Events
 {

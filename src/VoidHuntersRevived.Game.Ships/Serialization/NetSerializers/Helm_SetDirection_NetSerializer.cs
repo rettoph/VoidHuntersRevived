@@ -1,8 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Network;
 using LiteNetLib.Utils;
-using System;
-using VoidHuntersRevived.Common.Ships.Enums;
+using VoidHuntersRevived.Common.Pieces.Enums;
 using VoidHuntersRevived.Game.Ships.Events;
 
 namespace VoidHuntersRevived.Game.Ships.Serialization.NetSerializers

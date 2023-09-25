@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -418,6 +419,27 @@ namespace VoidHuntersRevived.Common
         public static Fix64 Lerp(Fix64 v1, Fix64 v2, Fix64 amount)
         {
             return v1 + (v2 - v1) * amount;
+        }
+
+        public static Fix64 WrapAngle(Fix64 angle)
+        {
+            if (angle > -Fix64.Pi && angle <= Fix64.Pi)
+            {
+                return angle;
+            }
+
+            angle %= Fix64.PiTimes2;
+            if (angle <= -Fix64.Pi)
+            {
+                return angle + Fix64.PiTimes2;
+            }
+
+            if (angle > Fix64.Pi)
+            {
+                return angle - Fix64.PiTimes2;
+            }
+
+            return angle;
         }
     }
 }

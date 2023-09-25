@@ -22,6 +22,8 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public ISpace? Space => _space;
 
+        public FixVector2 LocalCenter => _aether.LocalCenter.AsFixVector2();
+
         public FixVector2 Position => _aether.Position.AsFixVector2();
 
         public Fix64 Rotation => (Fix64)_aether.Rotation;

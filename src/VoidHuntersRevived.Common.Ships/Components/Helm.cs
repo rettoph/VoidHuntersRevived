@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Ships.Enums;
+using VoidHuntersRevived.Common.Pieces.Enums;
 
 namespace VoidHuntersRevived.Common.Ships.Components
 {

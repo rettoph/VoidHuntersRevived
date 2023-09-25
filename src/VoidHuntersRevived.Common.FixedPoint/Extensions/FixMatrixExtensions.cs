@@ -19,6 +19,17 @@ namespace VoidHuntersRevived.Common.FixedPoint.Extensions
             return Fix64.Atan2(matrix.M12, matrix.M11);
         }
 
+        public static FixMatrix ToRotationMatrix(this FixMatrix matrix)
+        {
+            var result = FixMatrix.Identity;
+            result.M11 = matrix.M11;
+            result.M12 = matrix.M12;
+            result.M21 = matrix.M21;
+            result.M22 = matrix.M22;
+
+            return result;
+        }
+
         public static BoundingSphere GetBoudingSphere(this FixMatrix matrix, float radius)
         {
             return new BoundingSphere(new Vector3((float)matrix.M41, (float)matrix.M42, (float)matrix.M43), radius);

@@ -34,6 +34,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Loaders
             services.RegisterType<SocketsJsonConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<LocationJsonConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<PlugJsonConverter>().As<JsonConverter>().SingleInstance();
+            services.RegisterType<ThrustableJsonConverter>().As<JsonConverter>().SingleInstance();
 
             services.RegisterType<PieceService>().AsImplementedInterfaces().SingleInstance();
             services.RegisterType<BlueprintService>().AsImplementedInterfaces().SingleInstance();

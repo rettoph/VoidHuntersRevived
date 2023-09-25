@@ -13,6 +13,7 @@ namespace VoidHuntersRevived.Common.Physics
 
         ISpace? Space { get; }
 
+        FixVector2 LocalCenter { get; }
         FixVector2 Position { get; }
         Fix64 Rotation { get; }
         FixMatrix Transformation { get; }

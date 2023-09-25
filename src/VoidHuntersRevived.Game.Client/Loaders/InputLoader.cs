@@ -1,19 +1,13 @@
-﻿using Guppy.Attributes;
+﻿using Autofac;
+using Guppy.Attributes;
+using Guppy.Common;
+using Guppy.Input.Enums;
 using Guppy.Loaders;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Pieces.Enums;
 using VoidHuntersRevived.Game.Client.Constants;
-using Guppy.MonoGame.Messages;
-using VoidHuntersRevived.Game.Common.Events;
-using Guppy.Input.Enums;
 using VoidHuntersRevived.Game.Client.Messages;
-using Autofac;
-using Guppy.Common;
-using VoidHuntersRevived.Common.Ships.Enums;
+using VoidHuntersRevived.Game.Common.Events;
 
 namespace VoidHuntersRevived.Game.Client.Loaders
 {

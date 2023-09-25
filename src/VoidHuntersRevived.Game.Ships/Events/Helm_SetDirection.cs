@@ -1,8 +1,6 @@
 ﻿using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Ships.Enums;
+using VoidHuntersRevived.Common.Pieces.Enums;
 using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Attributes;
-using VoidHuntersRevived.Common.Simulations.Events;
 using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Game.Ships.Events

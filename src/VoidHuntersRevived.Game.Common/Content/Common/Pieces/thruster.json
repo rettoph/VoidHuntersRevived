@@ -89,6 +89,16 @@
         },
         "Rotation": 3.1415926535
       }
+    },
+    "Thrustable": {
+      "MaxImpulse": {
+        "X": 10,
+        "Y": 0
+      },
+      "ImpulsePoint": {
+        "X": 0,
+        "Y": 0
+      }
     }
   }
 }

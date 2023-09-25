@@ -8,7 +8,6 @@ using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Events;
 using VoidHuntersRevived.Common.Ships.Components;
-using VoidHuntersRevived.Common.Ships.Enums;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Game.Ships.Events;
