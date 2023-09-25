@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.FixedPoint.Extensions;
 
 namespace VoidHuntersRevived.Common.Physics.Components
 {
@@ -14,7 +15,16 @@ namespace VoidHuntersRevived.Common.Physics.Components
         private Fix64 _rotation;
         private FixMatrix _transformation;
 
-        public FixMatrix Transformation => _transformation;
+        public FixMatrix Transformation
+        {
+            get => _transformation;
+            set
+            {
+                _transformation = value;
+                _rotation = _transformation.Radians();
+            }
+        }
+
         public FixVector2 Position
         {
             set

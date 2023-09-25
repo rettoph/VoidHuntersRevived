@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
     {
         public override Thrustable Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            FixVector2 maxImpulse = default;
+            FixPolar maxImpulse = default;
             FixVector2 impulsePoint = default;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
                 switch(propertyName)
                 {
                     case nameof(Thrustable.MaxImpulse):
-                        maxImpulse = JsonSerializer.Deserialize<FixVector2>(ref reader, options);
+                        maxImpulse = JsonSerializer.Deserialize<FixPolar>(ref reader, options);
                         reader.Read();
                         break;
                     case nameof(Thrustable.ImpulsePoint):

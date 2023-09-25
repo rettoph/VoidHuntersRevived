@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Common.Pieces
         public readonly SocketId Id;
         public readonly Location Location;
 
-        public FixMatrix LocalTransformation => FixMatrixHelper.FastMultiplyTransformations(this.Location.Transformation, Node.LocalTransformation);
+        public FixMatrix LocalTransformation => FixMatrixHelper.FastMultiplyTransformations(this.Location.Transformation, Node.LocalLocation.Transformation);
         public FixMatrix Transformation => FixMatrixHelper.FastMultiplyTransformations(this.Location.Transformation, Node.Transformation);
 
         //public Matrix XnaLocalTransformation => FixMatrixHelper.FastMultiplyTransformationsToXnaMatrix(this.Location.Transformation, Node.Transformation);

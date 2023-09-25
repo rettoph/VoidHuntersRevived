@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
         [JsonIgnore]
         public Direction Direction;
 
-        public FixVector2 MaxImpulse { get; init; }
+        public FixPolar MaxImpulse { get; init; }
 
         public FixVector2 ImpulsePoint { get; init; }
     }

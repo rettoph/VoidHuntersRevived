@@ -102,11 +102,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         private void SetLocalTransformation(ref Node node, in GroupIndex groupIndex)
         {
-            _logger.Verbose("{ClassName}::{MethodName} - Preparing to set {LocalTransformation} for {Node} {NodeId}", nameof(NodeEngine), nameof(SetLocalTransformation), nameof(Node.LocalTransformation), nameof(Node), node.Id.VhId.Value);
+            _logger.Verbose("{ClassName}::{MethodName} - Preparing to set {LocalTransformation} for {Node} {NodeId}", nameof(NodeEngine), nameof(SetLocalTransformation), nameof(Node.LocalLocation), nameof(Node), node.Id.VhId.Value);
 
             if (!_entities.TryQueryByGroupIndex<Coupling>(groupIndex, out Coupling coupling) || coupling.SocketId == SocketId.Empty)
             {
-                node.LocalTransformation = FixMatrix.CreateTranslation(Fix64.Zero, Fix64.Zero, Fix64.Zero);
+                node.LocalLocation.Transformation = FixMatrix.CreateTranslation(Fix64.Zero, Fix64.Zero, Fix64.Zero);
                 return;
             }
 
@@ -115,7 +115,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 ref Plug plug = ref _entities.QueryByGroupIndex<Plug>(groupIndex);
                 Socket socketNode = _sockets.GetSocket(coupling.SocketId);
 
-                node.LocalTransformation = plug.Location.Transformation.Invert() * socketNode.LocalTransformation;
+                node.LocalLocation.Transformation = plug.Location.Transformation.Invert() * socketNode.LocalTransformation;
             }
             catch (Exception ex)
             {
@@ -126,7 +126,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 // moving the mouse randomly. It doesnt occurre very often
                 // We set the transformation to zero so that the constructed rigid shape can still take form
                 // Without this it will default all vertices to 0,0 and fail an assert
-                node.LocalTransformation = FixMatrix.CreateTranslation(Fix64.Zero, Fix64.Zero, Fix64.Zero);
+                node.LocalLocation.Transformation = FixMatrix.CreateTranslation(Fix64.Zero, Fix64.Zero, Fix64.Zero);
 
                 var id = _entities.QueryByGroupIndex<EntityId>(groupIndex);
                 _logger.Error(ex, "{ClassName}::{MethodName} - There was a fatal error attempting to set node transformation for node {NodeId}.", nameof(NodeEngine), nameof(SetLocalTransformation), id.VhId.Value);

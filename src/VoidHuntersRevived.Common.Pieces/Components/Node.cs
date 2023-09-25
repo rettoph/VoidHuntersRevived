@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.FixedPoint.Utilities;
+using VoidHuntersRevived.Common.Physics.Components;
 
 namespace VoidHuntersRevived.Common.Pieces.Components
 {
@@ -17,7 +18,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
         public readonly EntityId Id;
         public readonly EntityId TreeId;
 
-        public FixMatrix LocalTransformation;
+        public Location LocalLocation;
         public FixMatrix Transformation;
 
         public Node(EntityId id, EntityId treeId)
@@ -28,7 +29,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 
         public void WorldTransform(FixMatrix world)
         {
-            this.Transformation = FixMatrixHelper.FastMultiplyTransformations(this.LocalTransformation, world);
+            this.Transformation = FixMatrixHelper.FastMultiplyTransformations(this.LocalLocation.Transformation, world);
         }
     }
 }

@@ -36,5 +36,14 @@ namespace VoidHuntersRevived.Common.Physics
 
         void ApplyAngularImpulse(Fix64 impulse);
         void ApplyLinearImpulse(FixVector2 impulse);
+
+        /// <summary>
+        /// Apply a force at a world point. If the force is not
+        /// applied at the center of mass, it will generate a torque and
+        /// affect the angular velocity. This wakes up the body.
+        /// </summary>
+        /// <param name="force">The world force vector, usually in Newtons (N).</param>
+        /// <param name="point">The world position of the point of application.</param>
+        void ApplyForce(FixVector2 force, FixVector2 point);
     }
 }

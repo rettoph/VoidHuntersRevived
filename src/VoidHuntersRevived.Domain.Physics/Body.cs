@@ -8,6 +8,7 @@ using FixedMath64 = FixedMath.NET.Fix64;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common.Entities;
+using System;
 
 namespace VoidHuntersRevived.Domain.Physics
 {
@@ -76,6 +77,8 @@ namespace VoidHuntersRevived.Domain.Physics
             _aether = space._aether.CreateBody(AetherVector2.Zero, FixedMath64.Zero, BodyType.Dynamic);
             _fixtures = new Dictionary<VhId, Fixture>();
             _aether.Tag = this;
+            _aether.AngularDamping = (Fix64)1m;
+            _aether.LinearDamping = (Fix64)1m;
 
             this.Id = id;
         }
@@ -101,6 +104,14 @@ namespace VoidHuntersRevived.Domain.Physics
         public void ApplyAngularImpulse(Fix64 impulse)
         {
             _aether.ApplyAngularImpulse(impulse);
+        }
+
+        public void ApplyForce(FixVector2 force, FixVector2 point)
+        {
+            AetherVector2 aetherForce = Unsafe.As<FixVector2, AetherVector2>(ref force);
+            AetherVector2 aetherPoint = Unsafe.As<FixVector2, AetherVector2>(ref point);
+
+            _aether.ApplyForce(aetherForce, aetherPoint);
         }
 
         public void ApplyLinearImpulse(FixVector2 impulse)

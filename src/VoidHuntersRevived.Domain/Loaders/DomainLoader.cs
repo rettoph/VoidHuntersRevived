@@ -44,6 +44,7 @@ namespace VoidHuntersRevived.Domain.Loaders
             services.RegisterType<LaunchComponent>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             services.RegisterType<Fix64Converter>().As<JsonConverter>().SingleInstance();
+            services.RegisterType<FixPolarConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<FixVector2Converter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<Vector3Converter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<NativeDynamicArrayCastJsonConverter>().As<JsonConverter>().SingleInstance();

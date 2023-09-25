@@ -92,8 +92,8 @@
     },
     "Thrustable": {
       "MaxImpulse": {
-        "X": 10,
-        "Y": 0
+        "Length": 5,
+        "Radians": 0
       },
       "ImpulsePoint": {
         "X": 0,

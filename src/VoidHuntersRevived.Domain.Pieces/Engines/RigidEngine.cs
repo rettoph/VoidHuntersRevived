@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
             IBody body = _space.GetOrCreateBody(node.TreeId);
 
-            body.Create(id.VhId, rigid.Shapes[0], node.LocalTransformation);
+            body.Create(id.VhId, rigid.Shapes[0], node.LocalLocation.Transformation);
         }
 
         public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Rigid> entities, ExclusiveGroupStruct groupID)

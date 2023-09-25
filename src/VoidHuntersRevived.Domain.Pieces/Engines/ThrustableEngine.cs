@@ -25,13 +25,16 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
     [AutoLoad]
     internal class ThrustableEngine : BasicEngine,
         IReactOnAddEx<Thrustable>,
-        IEventEngine<Tree_Clean>
+        IEventEngine<Tree_Clean>,
+        IStepEngine<Step>
     {
         private readonly IEntityService _entities;
         private readonly ISpace _space;
 
         private static readonly Fix64 Buffer = (Fix64)0.01m;
         private static readonly Fix64 BufferPi = Fix64.Pi - Buffer;
+
+        public string name { get; } = nameof(ThrustableEngine);
 
         public ThrustableEngine(IEntityService entities, ISpace space)
         {
@@ -84,6 +87,46 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
         }
 
+        public void Step(in Step param)
+        {
+            foreach (var ((ids, helms, count), groupId) in _entities.QueryEntities<EntityId, Helm>())
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    EntityId helmId = ids[i];
+                    Helm helm = helms[i];
+                    IBody body = _space.GetBody(helmId);
+                    ref var helmThrustables = ref _entities.GetFilter<Thrustable>(helmId, Helm.ThrustableFilterContextId);
+
+                    this.ApplyImpulse(param, body, helm.Direction, ref helmThrustables);
+                }
+            }
+        }
+
+        private void ApplyImpulse(Step step, IBody body, Direction direction, ref EntityFilterCollection helmThrustables)
+        {
+            foreach (var (indices, group) in helmThrustables)
+            {
+                var (thrustables, nodes, _) = _entities.QueryEntities<Thrustable, Node>(group);
+
+                for (int i = 0; i < indices.count; i++)
+                {
+                    ref Thrustable thrustable = ref thrustables[i];
+
+                    if((thrustable.Direction & direction) == 0)
+                    {
+                        continue;
+                    }    
+
+                    ref Node node = ref nodes[i];
+
+                    body.ApplyForce(
+                        force: FixPolar.Rotate(thrustable.MaxImpulse, body.Rotation + node.LocalLocation.Rotation).ToVector2(),
+                        point: FixVector2.Transform(thrustable.ImpulsePoint, node.Transformation));
+                }
+            }
+        }
+
         private void CleanThrustable(IBody treeBody, ref Thrustable thrustable, ref Node node)
         {
             thrustable.Direction = Direction.None;
@@ -91,9 +134,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             // The chain's center of mass
             var com = treeBody.LocalCenter;
             // The point acceleration is applied
-            var ip = FixVector2.Transform(thrustable.ImpulsePoint, node.LocalTransformation);
+            var ip = FixVector2.Transform(thrustable.ImpulsePoint, node.LocalLocation.Transformation);
             // The impulse to be applied...
-            var i = FixVector2.Transform(thrustable.MaxImpulse, node.LocalTransformation.ToRotationMatrix());
+            var i = FixPolar.Rotate(thrustable.MaxImpulse, node.LocalLocation.Rotation).ToVector2();
             // The point acceleration is targeting
             var it = ip + i;
 

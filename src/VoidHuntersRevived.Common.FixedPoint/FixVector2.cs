@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Autofac.Features.Metadata;
+using Microsoft.Xna.Framework;
+using VoidHuntersRevived.Common.FixedPoint;
 
 namespace VoidHuntersRevived.Common
 {
@@ -11,6 +13,8 @@ namespace VoidHuntersRevived.Common
 
         public Fix64 X;
         public Fix64 Y;
+
+        public Fix64 Length => Fix64.Sqrt(this.X * this.X + this.Y * this.Y);
 
         public FixVector2(decimal x, decimal y) : this((Fix64)x, (Fix64)y)
         {
@@ -34,6 +38,13 @@ namespace VoidHuntersRevived.Common
             Fix64 dx = v1.X - v2.X;
             Fix64 dy = v1.Y - v2.Y;
             return Fix64.Sqrt(dx * dx + dy * dy);
+        }
+
+        public FixPolar ToPolar()
+        {
+            return new FixPolar(
+                length: this.Length,
+                radians: Fix64.Atan2(this.X, this.Y));
         }
 
         /// <summary>
@@ -193,6 +204,18 @@ namespace VoidHuntersRevived.Common
         public static explicit operator FixVector2(Vector2 vector2)
         {
             return new FixVector2((Fix64)vector2.X, (Fix64)vector2.Y);
+        }
+
+        public static FixVector2 FromPolar(Fix64 length, Fix64 radians)
+        {
+            return new FixVector2(
+                x: Fix64.Cos(radians) * length,
+                y: Fix64.Sin(radians) * length);
+        }
+
+        public static FixVector2 Rotate(FixVector2 vector2, Fix64 radians)
+        {
+            return FixVector2.FromPolar(vector2.Length, Fix64.Atan2(vector2.X, vector2.Y) + radians);
         }
     }
 }
