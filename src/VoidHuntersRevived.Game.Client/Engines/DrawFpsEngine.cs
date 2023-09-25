@@ -18,7 +18,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     internal class DrawFpsEngine : BasicEngine, IStepEngine<GameTime>,
-        ISubscriber<Input_Toggle_FPS>
+        ISubscriber<Input_Toggle_FPS>,
+        ISubscriber<Input_Invoke_Garbage_Collection>
     {
         private bool _enabled;
 
@@ -61,6 +62,12 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public void Process(in Guid messageId, in Input_Toggle_FPS message)
         {
             _enabled = !_enabled;
+        }
+
+        public void Process(in Guid messageId, in Input_Invoke_Garbage_Collection message)
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
     }
 }

@@ -31,6 +31,7 @@ namespace VoidHuntersRevived.Common
             public static readonly Resource<Color> TeamOneSecondaryColor = Resource.Get<Color>($"{nameof(Color)}.{nameof(TeamOneSecondaryColor)}");
 
             public static readonly Resource<Color> TractorBeamHighlight = Resource.Get<Color>($"{nameof(Color)}.{nameof(TractorBeamHighlight)}");
+            public static readonly Resource<Color> ActiveThrustableHighlight = Resource.Get<Color>($"{nameof(Color)}.{nameof(TractorBeamHighlight)}");
         }
     }
 }

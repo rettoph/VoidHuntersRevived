@@ -36,7 +36,12 @@ namespace VoidHuntersRevived.Game.Client.Loaders
 
             services.AddInput(Inputs.ToggleFps, Keys.F11, new (ButtonState, IMessage)[]
             {
-                            (ButtonState.Released, new Input_Toggle_FPS())
+                (ButtonState.Released, new Input_Toggle_FPS())
+            });
+
+            services.AddInput(Inputs.InvokeGarbageCollection, Keys.F10, new (ButtonState, IMessage)[]
+            {
+                (ButtonState.Released, new Input_Invoke_Garbage_Collection())
             });
         }
 

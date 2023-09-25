@@ -64,11 +64,9 @@ namespace VoidHuntersRevived.Common.Physics.Components
             this.Position = position;
             this.Rotation = rotation;
         }
-
-        public void Reset()
+        public Location()
         {
-            _transformation.M33 = Fix64.One;
-            _transformation.M44 = Fix64.One;
+            _transformation = FixMatrix.Identity;
         }
     }
 }

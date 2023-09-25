@@ -26,12 +26,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
     internal sealed class PredictiveSimulation : Simulation
     {
+        private static readonly Pool<PredictedEvent> PredictionPool = new Pool<PredictedEvent>(ushort.MaxValue);
         private readonly ILockstepSimulation _lockstep;
         private Step _step;
         private double _lastStepTime;
         private IPredictiveSynchronizationEngine[] _synchronizations;
         private readonly DictionaryQueue<VhId, PredictedEvent> _predictedEvents;
         private readonly Queue<EventDto> _confirmedEvents;
+
 
         public PredictiveSimulation(
             IFiltered<ILockstepSimulation> lockstep,
@@ -93,7 +95,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
                     prediction.Status = PredictedEventStatus.Reverted;
                 }
 
-                _predictedEvents.TryDequeue(out _);
+                if(_predictedEvents.TryDequeue(out PredictedEvent? oldPrediction))
+                {
+                    PredictionPool.TryReturn(ref oldPrediction);
+                }
             }
         }
 
@@ -110,7 +115,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
                 return;
             }
 
-            if (!_predictedEvents.TryEnqueue(@event.Id, new PredictedEvent(@event)))
+            if (!_predictedEvents.TryEnqueue(@event.Id, this.GetPredictionEvent(@event)))
             {
                 this.logger.Warning("{ClassName}::{MethodName} - Unable to predict {EventName}, {EventId}; duplicate event?", nameof(PredictiveSimulation), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value);
                 return;
@@ -129,7 +134,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
                 if (!_predictedEvents.TryGet(confirmedEvent.Id, out PredictedEvent? published))
                 {
-                    published = new PredictedEvent(confirmedEvent);
+                    published = this.GetPredictionEvent(confirmedEvent);
                     _predictedEvents.TryEnqueue(confirmedEvent.Id, published);
                     base.Publish(confirmedEvent);
                 }
@@ -141,6 +146,17 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         private void HandleLockstepEvent(EventDto @event)
         {
             _confirmedEvents.Enqueue(@event);
+        }
+
+        private PredictedEvent GetPredictionEvent(EventDto @event)
+        {
+            if (!PredictionPool.TryPull(out PredictedEvent? prediction))
+            {
+                prediction = new PredictedEvent();
+            }
+
+            prediction.Event = @event;
+            return prediction;
         }
     }
 }

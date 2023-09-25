@@ -98,12 +98,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                     IBody body = _space.GetBody(helmId);
                     ref var helmThrustables = ref _entities.GetFilter<Thrustable>(helmId, Helm.ThrustableFilterContextId);
 
-                    this.ApplyImpulse(param, body, helm.Direction, ref helmThrustables);
+                    this.TryApplyImpulse(param, body, helm.Direction, ref helmThrustables);
                 }
             }
         }
 
-        private void ApplyImpulse(Step step, IBody body, Direction direction, ref EntityFilterCollection helmThrustables)
+        private void TryApplyImpulse(Step step, IBody body, Direction direction, ref EntityFilterCollection helmThrustables)
         {
             foreach (var (indices, group) in helmThrustables)
             {
@@ -111,14 +111,15 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
                 for (int i = 0; i < indices.count; i++)
                 {
-                    ref Thrustable thrustable = ref thrustables[i];
+                    uint index = indices[i];
+                    ref Thrustable thrustable = ref thrustables[index];
 
                     if((thrustable.Direction & direction) == 0)
                     {
                         continue;
                     }    
 
-                    ref Node node = ref nodes[i];
+                    ref Node node = ref nodes[index];
 
                     body.ApplyForce(
                         force: FixPolar.Rotate(thrustable.MaxImpulse, body.Rotation + node.LocalLocation.Rotation).ToVector2(),

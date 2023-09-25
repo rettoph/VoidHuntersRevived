@@ -13,16 +13,20 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
     {
         public static readonly TimeSpan Lifetime = TimeSpan.FromSeconds(5);
 
-        public readonly EventDto Event;
-        public PredictedEventStatus Status;
-        public DateTime PublishedAt;
+        private EventDto _event = null!;
 
-        public PredictedEvent(EventDto @event)
+        public EventDto Event
         {
-            Event = @event;
-            PublishedAt = DateTime.Now;
-            Status = PredictedEventStatus.Unconfirmed;
+            get => _event;
+            set
+            {
+                _event = value;
+                PublishedAt = DateTime.Now;
+                Status = PredictedEventStatus.Unconfirmed;
+            }
         }
+        public PredictedEventStatus Status { get; set; }
+        public DateTime PublishedAt { get; private set; }
 
         public bool Expired => DateTime.Now - PublishedAt >= Lifetime;
     }

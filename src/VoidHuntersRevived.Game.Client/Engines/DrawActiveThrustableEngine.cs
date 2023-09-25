@@ -1,0 +1,111 @@
+﻿using Guppy.Attributes;
+using Guppy.Common.Attributes;
+using Guppy.MonoGame.Utilities.Cameras;
+using Guppy.Resources.Providers;
+using Microsoft.Xna.Framework;
+using Serilog;
+using Svelto.ECS;
+using System;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.FixedPoint.Extensions;
+using VoidHuntersRevived.Common.Physics;
+using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Enums;
+using VoidHuntersRevived.Common.Pieces.Services;
+using VoidHuntersRevived.Common.Ships.Components;
+using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Attributes;
+using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Common.Simulations.Enums;
+using VoidHuntersRevived.Domain.Simulations;
+using VoidHuntersRevived.Game.Common;
+using static VoidHuntersRevived.Common.Resources;
+
+namespace VoidHuntersRevived.Game.Client.Engines
+{
+    [AutoLoad]
+    [SimulationTypeFilter(SimulationType.Predictive)]
+    [Sequence<DrawEngineSequence>(DrawEngineSequence.PreDraw)]
+    internal sealed class DrawActiveThrustableEngine : BasicEngine, IStepEngine<GameTimeTeam>
+    {
+        private readonly short[] _indexBuffer;
+        private readonly IVisibleRenderingService _visibleRenderingService;
+        private readonly IEntityService _entities;
+        private readonly ILogger _logger;
+        private readonly Dictionary<Id<ITeam>, ITeamDescriptorGroup[]> _teamDescriptorGroups;
+        private readonly IResourceProvider _resources;
+        private readonly Camera2D _camera;
+
+        public string name { get; } = nameof(DrawVisibleEngine);
+
+        public DrawActiveThrustableEngine(
+            ILogger logger,
+            IVisibleRenderingService visibleRenderingService,
+            IEntityService entities,
+            ITeamDescriptorGroupService teamDescriptorGroups,
+            IResourceProvider resources,
+            Camera2D camera)
+        {
+            _visibleRenderingService = visibleRenderingService;
+            _resources = resources;
+            _entities = entities;
+            _indexBuffer = new short[3];
+            _logger = logger;
+            _camera = camera;
+
+            _teamDescriptorGroups = teamDescriptorGroups.GetAllWithComponentsByTeams(typeof(Visible), typeof(Node));
+        }
+
+        public override void Initialize(ISimulation simulation)
+        {
+            base.Initialize(simulation);
+        }
+
+        public void Step(in GameTimeTeam _param)
+        {
+            Color activeThrustableHighlight = _resources.Get(Colors.ActiveThrustableHighlight);
+            _visibleRenderingService.BeginFill();
+            foreach (var ((ids, helms, count), groupId) in _entities.QueryEntities<EntityId, Helm>())
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    EntityId helmId = ids[i];
+                    Helm helm = helms[i];
+
+                    ref var helmThrustables = ref _entities.GetFilter<Thrustable>(helmId, Helm.ThrustableFilterContextId);
+
+                    this.TryDrawThrustableImpulse(_param, helm.Direction, ref helmThrustables, in activeThrustableHighlight);
+                }
+            }
+
+            _visibleRenderingService.End();
+        }
+
+        private void TryDrawThrustableImpulse(GameTimeTeam param, Direction direction, ref EntityFilterCollection helmThrustables, in Color activeThrustableHighlight)
+        {
+            foreach (var (indices, group) in helmThrustables)
+            {
+                var (thrustables, visibles, nodes, _) = _entities.QueryEntities<Thrustable, Visible, Node>(group);
+
+                for (int i = 0; i < indices.count; i++)
+                {
+                    uint index = indices[i];
+                    ref Thrustable thrustable = ref thrustables[index];
+
+                    if ((thrustable.Direction & direction) == 0)
+                    {
+                        continue;
+                    }
+
+                    ref Node node = ref nodes[index];
+
+                    Matrix transformation = node.Transformation.ToTransformationXnaMatrix();
+                    _visibleRenderingService.Fill(in visibles[index], ref transformation, activeThrustableHighlight);
+                }
+            }
+        }
+    }
+}

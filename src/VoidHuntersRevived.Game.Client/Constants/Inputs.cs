@@ -21,5 +21,6 @@ namespace VoidHuntersRevived.Game.Client.Constants
 
         public const string ToggleLockstepWireframe = "toggle_lockstep_wireframe";
         public const string ToggleFps = "toggle_fps";
+        public const string InvokeGarbageCollection = "invoke_garbage_collection";
     }
 }
