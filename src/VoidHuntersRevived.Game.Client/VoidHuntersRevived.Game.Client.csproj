@@ -31,10 +31,19 @@
 
   <ItemGroup>
     <None Remove="Content\Client\Content.mgcb" />
+    <None Remove="Content\Client\Effects\VisibleFill.fx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Content\Client\Effects\VisibleFill.fx" />
   </ItemGroup>
 
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="pwsh.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File $(ProjectDir)Content\CompileEffects.ps1" />
+  </Target>
 
 </Project>
