@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
+using Guppy.Common.Attributes;
 using Guppy.Common.Collections;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
@@ -11,15 +12,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Simulations.Attributes;
+using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Common.Simulations.Enums;
 using VoidHuntersRevived.Game.Client.Messages;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
+    [Sequence<DrawEngineSequence>(DrawEngineSequence.PostDraw)]
+    [SimulationTypeFilter(SimulationType.Predictive)]
     internal class DrawFpsEngine : BasicEngine, IStepEngine<GameTime>,
-        ISubscriber<Input_Toggle_FPS>,
-        ISubscriber<Input_Invoke_Garbage_Collection>
+        ISubscriber<Input_Toggle_FPS>
     {
         private bool _enabled;
 
@@ -62,12 +67,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public void Process(in Guid messageId, in Input_Toggle_FPS message)
         {
             _enabled = !_enabled;
-        }
-
-        public void Process(in Guid messageId, in Input_Invoke_Garbage_Collection message)
-        {
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
         }
     }
 }
