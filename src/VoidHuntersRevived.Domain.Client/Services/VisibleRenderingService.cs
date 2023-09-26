@@ -9,11 +9,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Client.Services;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
+using VoidHuntersRevived.Domain.Client.Graphics.Vertices;
+using VoidHuntersRevived.Game.Client.Graphics.Effects;
 
-namespace VoidHuntersRevived.Domain.Pieces.Services
+namespace VoidHuntersRevived.Domain.Client.Services
 {
     internal sealed class VisibleRenderingService : IVisibleRenderingService
     {
@@ -22,11 +25,18 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private readonly IResourceProvider _resources;
         private readonly IScreen _screen;
+        private readonly PrimitiveBatch<VertexVisibleFill, VisibleFillEffect> _fillPrimitiveBatch;
 
-        public VisibleRenderingService(Camera2D camera, PrimitiveBatch<VertexPositionColor> primitiveBatch, IResourceProvider resources, IScreen screen)
+        public VisibleRenderingService(
+            Camera2D camera,
+            PrimitiveBatch<VertexPositionColor> primitiveBatch,
+            PrimitiveBatch<VertexVisibleFill, VisibleFillEffect> fillPrimitiveBatch,
+            IResourceProvider resources, 
+            IScreen screen)
         {
             _resources = resources;
             _primitiveBatch = primitiveBatch;
+            _fillPrimitiveBatch = fillPrimitiveBatch;
             _camera = camera;
             _screen = screen;
             _indexBuffer = new short[3];

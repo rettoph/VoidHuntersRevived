@@ -4,6 +4,7 @@ using Guppy.MonoGame.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Serilog;
 using Svelto.ECS;
+using VoidHuntersRevived.Common.Client.Services;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;

@@ -45,8 +45,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Loaders
 
             services.RegisterType<SocketService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-            services.RegisterType<VisibleRenderingService>().AsImplementedInterfaces().InstancePerLifetimeScope();
-
             services.Configure<LoggerConfiguration>((scope, config) =>
             {
                 config.Destructure.AsScalar(typeof(Id<IBlueprint>));

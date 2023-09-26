@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Input;
 using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Client.Services;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;

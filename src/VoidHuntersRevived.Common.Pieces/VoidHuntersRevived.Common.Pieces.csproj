@@ -11,7 +11,6 @@
     <ProjectReference Include="..\VoidHuntersRevived.Common.Entities\VoidHuntersRevived.Common.Entities.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Physics\VoidHuntersRevived.Common.Physics.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Simulations\VoidHuntersRevived.Common.Simulations.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Common\VoidHuntersRevived.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

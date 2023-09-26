@@ -18,6 +18,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Client.Services;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;

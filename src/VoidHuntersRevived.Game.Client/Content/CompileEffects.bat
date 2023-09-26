@@ -20,8 +20,8 @@ set /p profile=
 echo Using Profile: %profile%
 FOR /f %%i in ('@findstr /i "\/Platform:" Content.mgcb') DO SET platform=%%i
 SET platform=%platform:/Platform:=%
-if not exist "Effects\Compiled" mkdir Effects\Compiled
+if not exist "Client\Effects\Compiled" mkdir Client\Effects\Compiled
 
-FOR %%I IN (Effects\*.fx) DO (
-	mgfxc %%I Effects\Compiled\%%~nI.mgfx /Profile:%profile%
+FOR %%I IN (Client\Effects\*.fx) DO (
+	mgfxc %%I Client\Effects\Compiled\%%~nI.mgfx /Profile:%profile%
 )
