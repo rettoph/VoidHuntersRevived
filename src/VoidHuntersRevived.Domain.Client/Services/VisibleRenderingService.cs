@@ -39,70 +39,57 @@ namespace VoidHuntersRevived.Domain.Client.Services
             _fillPrimitiveBatch = fillPrimitiveBatch;
             _camera = camera;
             _screen = screen;
-            _indexBuffer = new short[3];
+            _indexBuffer = new short[4];
         }
 
-        public void BeginFill(Color color)
+        public void Begin(Color color)
         {
             _fillPrimitiveBatch.BlendState = BlendState.NonPremultiplied;
             _fillPrimitiveBatch.Begin(_camera);
             _fillPrimitiveBatch.Effect.Color = color;
         }
 
-        public void BeginTrace(Color color)
-        {
-            _tracePrimitiveBatch.BlendState = BlendState.Additive;
-            _tracePrimitiveBatch.Begin(_screen.Camera);
-        }
-
-        public void EndTrace()
-        {
-            _tracePrimitiveBatch.End();
-        }
-
-        public void EndFill()
+        public void End()
         {
             _fillPrimitiveBatch.End();
         }
 
-        public void Fill(in Visible visible, ref Matrix transformation)
+        public void Draw(in Visible visible, ref Matrix transformation)
         {
-            for (int i = 0; i < visible.Fill.count; i++)
+            for (int i = 0; i < visible.TraceVertices.count; i++)
             {
-                this.FillShape(in visible.Fill[i], ref transformation);
+                this.Trace(in visible.TraceVertices[i], ref transformation);
             }
         }
 
-        public void Trace(in Visible visible, ref Matrix transformation)
+        private void Trace(in Shape shape, ref Matrix transformation)
         {
-            for (int i = 0; i < visible.Trace.count; i++)
-            {
-                this.TracePath(in visible.Trace[i], ref transformation);
-            }
-        }
+            _fillPrimitiveBatch.EnsureCapacity(4);
 
-        private void FillShape(in Shape shape, ref Matrix transformation)
-        {
-            _fillPrimitiveBatch.EnsureCapacity(shape.Vertices.count);
-
+            // First Pass
             ref VertexVisible v1 = ref _fillPrimitiveBatch.NextVertex(out _indexBuffer[0]);
             Vector2.Transform(ref shape.Vertices[0], ref transformation, out v1.Position);
+            v1.Outer = true;
 
             ref VertexVisible v2 = ref _fillPrimitiveBatch.NextVertex(out _indexBuffer[1]);
             Vector2.Transform(ref shape.Vertices[1], ref transformation, out v2.Position);
+            v2.Outer = true;
 
+            ref VertexVisible v3 = ref _fillPrimitiveBatch.NextVertex(out _indexBuffer[2]);
+            Vector2.Transform(ref shape.Vertices[2], ref transformation, out v3.Position);
+            v3.Outer = false;
 
-            for (int i = 2; i < shape.Vertices.count; i++)
-            {
-                ref VertexVisible v3 = ref _fillPrimitiveBatch.NextVertex(out _indexBuffer[2]);
-                Vector2.Transform(ref shape.Vertices[i], ref transformation, out v3.Position);
+            ref VertexVisible v4 = ref _fillPrimitiveBatch.NextVertex(out _indexBuffer[3]);
+            Vector2.Transform(ref shape.Vertices[3], ref transformation, out v4.Position);
+            v4.Outer = false;
 
-                _fillPrimitiveBatch.AddTriangleIndex(in _indexBuffer[0]);
-                _fillPrimitiveBatch.AddTriangleIndex(in _indexBuffer[1]);
-                _fillPrimitiveBatch.AddTriangleIndex(in _indexBuffer[2]);
+            _fillPrimitiveBatch.AddTriangleIndex(in _indexBuffer[0]);
+            _fillPrimitiveBatch.AddTriangleIndex(in _indexBuffer[1]);
+            _fillPrimitiveBatch.AddTriangleIndex(in _indexBuffer[2]);
 
-                _indexBuffer[1] = _indexBuffer[2];
-            }
+            _fillPrimitiveBatch.AddTriangleIndex(in _indexBuffer[0]);
+            _fillPrimitiveBatch.AddTriangleIndex(in _indexBuffer[2]);
+            _fillPrimitiveBatch.AddTriangleIndex(in _indexBuffer[3]);
         }
 
         private void TracePath(in Shape shape, ref Matrix transformation)

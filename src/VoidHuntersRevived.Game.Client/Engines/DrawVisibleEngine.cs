@@ -16,6 +16,7 @@ using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Enums;
 using VoidHuntersRevived.Domain.Simulations;
+using VoidHuntersRevived.Game.Common;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -56,61 +57,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in GameTimeTeam _param)
         {
-            if (_camera.Zoom > 20)
-            {
-                this.DrawHighResolution(_param.Team.Id);
-            }
-            else
-            {
-                this.DrawLowResolution(_param.Team.Id);
-            }
-        }
-
-        private void DrawHighResolution(Id<ITeam> teamId)
-        {
-            foreach (ITeamDescriptorGroup teamDescriptorGroup in _teamDescriptorGroups[teamId])
+            foreach (ITeamDescriptorGroup teamDescriptorGroup in _teamDescriptorGroups[_param.Team.Id])
             {
                 var (statuses, visibles, nodes, count) = _entities.QueryEntities<EntityStatus, Visible, Node>(teamDescriptorGroup.GroupId);
 
-
-                for (int index = 0; index < count; index++)
-                {
-                    try
-                    {
-                        if (statuses[index].IsSpawned)
-                        {
-                            Matrix transformation = nodes[index].Transformation.ToTransformationXnaMatrix();
-
-                            if (!_camera.Contains(transformation))
-                            {
-                                continue;
-                            }
-
-                            _visibleRenderingService.BeginFill(teamDescriptorGroup.PrimaryColor);
-                            _visibleRenderingService.Fill(in visibles[index], ref transformation);
-                            _visibleRenderingService.EndFill();
-
-                            _visibleRenderingService.BeginTrace(teamDescriptorGroup.SecondaryColor);
-                            _visibleRenderingService.Trace(in visibles[index], ref transformation);
-                            _visibleRenderingService.EndTrace();
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        var (ids, _) = _entities.QueryEntities<EntityId>(teamDescriptorGroup.GroupId);
-                        _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to fill shapes for visible {VisibleVhId}", nameof(DrawVisibleEngine), nameof(Step), ids[index].VhId.Value);
-                    }
-                }
-            }
-        }
-
-        private void DrawLowResolution(Id<ITeam> teamId)
-        {
-            foreach (ITeamDescriptorGroup teamDescriptorGroup in _teamDescriptorGroups[teamId])
-            {
-                var (statuses, visibles, nodes, count) = _entities.QueryEntities<EntityStatus, Visible, Node>(teamDescriptorGroup.GroupId);
-
-                _visibleRenderingService.BeginFill(teamDescriptorGroup.PrimaryColor);
+                _visibleRenderingService.Begin(teamDescriptorGroup.PrimaryColor);
                 for (int index = 0; index < count; index++)
                 {
                     try
@@ -125,7 +76,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                             }
 
 
-                            _visibleRenderingService.Fill(in visibles[index], ref transformation);
+                            _visibleRenderingService.Draw(in visibles[index], ref transformation);
                         }
                     }
                     catch (Exception e)
@@ -134,32 +85,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                         _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to fill shapes for visible {VisibleVhId}", nameof(DrawVisibleEngine), nameof(Step), ids[index].VhId.Value);
                     }
                 }
-                _visibleRenderingService.EndFill();
-
-                _visibleRenderingService.BeginTrace();
-                for (int index = 0; index < count; index++)
-                {
-                    try
-                    {
-                        if (statuses[index].IsSpawned)
-                        {
-                            Matrix transformation = nodes[index].Transformation.ToTransformationXnaMatrix();
-                
-                            if (_camera.Frustum.Contains(transformation.GetBoudingSphere(5f)) == ContainmentType.Disjoint)
-                            {
-                                continue;
-                            }
-                
-                            _visibleRenderingService.Trace(in visibles[index], ref transformation, teamDescriptorGroup.SecondaryColor);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        var (ids, _) = _entities.QueryEntities<EntityId>(teamDescriptorGroup.GroupId);
-                        _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to fill shapes for visible {VisibleVhId}", nameof(DrawVisibleEngine), nameof(Step), ids[index].VhId.Value);
-                    }
-                }
-                _visibleRenderingService.EndTrace();
+                _visibleRenderingService.End();
             }
         }
     }

@@ -5,13 +5,9 @@ namespace VoidHuntersRevived.Common.Client.Services
 {
     public interface IVisibleRenderingService
     {
-        void BeginFill(Color color);
-        void BeginTrace(Color color);
-        void EndTrace();
-        void EndFill();
+        void Begin(Color color);
+        void End();
 
-        void Fill(in Visible visible, ref Matrix transformation);
-        
-        void Trace(in Visible visible, ref Matrix transformation);
+        void Draw(in Visible visible, ref Matrix transformation);
     }
 }

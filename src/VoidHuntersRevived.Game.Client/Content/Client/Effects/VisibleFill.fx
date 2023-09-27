@@ -7,12 +7,15 @@
     #define PS_SHADERMODEL ps_4_0_level_9_1
 #endif
 
+static const int IsTraceFlag = 1 << 0;
+
 matrix WorldViewProjection;
 float4 Color;
 
 struct VertexShaderInput
 {
     float2 Position : TEXCOORD0;
+    int Flags : TEXCOORD1;
 };
 
 struct VertexShaderOutput
@@ -26,14 +29,18 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     VertexShaderOutput output = (VertexShaderOutput) 0;
 
     output.Position = mul(float4(input.Position, 0, 1), WorldViewProjection);
-    output.Color = Color;
+    
+    if ((input.Flags & IsTraceFlag) == 0)
+    {
+        output.Color = Color;
+    }
+    else
+    {
+        output.Color = float4(1, 0, 0, 1);
+    }
+    
 
     return output;
-}
-
-float4 MainPS(VertexShaderOutput input) : COLOR
-{
-    return input.Color;
 }
 
 technique BasicColorDrawing
@@ -41,6 +48,5 @@ technique BasicColorDrawing
     pass P0
     {
         VertexShader = compile VS_SHADERMODEL MainVS();
-        PixelShader = compile PS_SHADERMODEL MainPS();
     }
 };

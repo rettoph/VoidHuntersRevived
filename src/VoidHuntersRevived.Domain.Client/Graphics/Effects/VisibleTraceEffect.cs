@@ -1,4 +1,5 @@
-﻿using Guppy.Resources.Providers;
+﻿using Guppy.MonoGame.Graphics.Effects;
+using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -10,7 +11,7 @@ using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Client.Graphics.Effects
 {
-    public class VisibleTraceEffect
+    public class VisibleTraceEffect : EffectMatricesEffect
     {
         private EffectParameter _color;
 
