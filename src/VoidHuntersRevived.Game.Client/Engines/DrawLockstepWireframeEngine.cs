@@ -98,7 +98,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     }
                 }
             }
-            _visibleRenderingService.End();
+            _visibleRenderingService.EndTrace();
         }
 
         public void Process(in Guid messageId, in Input_Toggle_LockstepWireframe message)

@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Common.Pieces
 {
     public struct Shape : IDisposable
     {
-        public required NativeDynamicArrayCast<Vector3> Vertices { get; init; }
+        public required NativeDynamicArrayCast<Vector2> Vertices { get; init; }
 
         public void Dispose()
         {

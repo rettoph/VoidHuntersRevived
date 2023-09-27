@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
     {
         public override Shape Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            NativeDynamicArrayCast<Vector3> vertices = default;
+            NativeDynamicArrayCast<Vector2> vertices = default;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
                 switch (propertyName)
                 {
                     case nameof(Shape.Vertices):
-                        vertices = JsonSerializer.Deserialize<NativeDynamicArrayCast<Vector3>>(ref reader, options);
+                        vertices = JsonSerializer.Deserialize<NativeDynamicArrayCast<Vector2>>(ref reader, options);
                         reader.Read();
                         break;
                 }

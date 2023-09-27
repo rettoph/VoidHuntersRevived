@@ -26,7 +26,7 @@ using static VoidHuntersRevived.Common.Resources;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
-    [AutoLoad]
+    //[AutoLoad]
     [Sequence<DrawEngineSequence>(DrawEngineSequence.PostDraw)]
     [SimulationTypeFilter(SimulationType.Predictive)]
     internal class TractorBeamHighlightEngine : BasicEngine, IStepEngine<GameTime>
@@ -86,7 +86,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            _visibleRenderingService.BeginFill();
+            _visibleRenderingService.BeginFill(_resources.Get(Colors.TractorBeamHighlight));
             try
             {
                 this.FillVisibleRecursive(targetNode.Id);
@@ -95,7 +95,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             {
                 _logger.Warning(e, "{ClassName}::{MethodName} - Exception while attempting to render {TargetNodeVhId}. This may be caused by frame step desync and should self correct.", nameof(TractorBeamHighlightEngine), nameof(Step), targetNode.Id.VhId.Value);
             }
-            _visibleRenderingService.End();
+            _visibleRenderingService.EndFill();
         }
 
         private void FillVisibleRecursive(EntityId id)
@@ -111,7 +111,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             ref Visible visible = ref _entities.QueryByGroupIndex<Visible>(in groupIndex);
 
             Matrix transformation = node.Transformation.ToTransformationXnaMatrix();
-            _visibleRenderingService.Fill(in visible, ref transformation, _resources.Get(Colors.TractorBeamHighlight));
+            _visibleRenderingService.Fill(in visible, ref transformation);
 
             if(_entities.TryQueryByGroupIndex<Sockets<SocketId>>(in groupIndex, out Sockets<SocketId> sockets))
             {

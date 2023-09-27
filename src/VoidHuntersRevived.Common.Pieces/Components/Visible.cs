@@ -41,14 +41,14 @@ namespace VoidHuntersRevived.Common.Pieces.Components
                 {
                     new Shape()
                     {
-                        Vertices = vertexAngles.Select(x => x.XnaVertex.ToVector3()).ToNativeDynamicArray()
+                        Vertices = vertexAngles.Select(x => x.XnaVertex).ToNativeDynamicArray()
                     }
                 }.ToNativeDynamicArray(),
                 Trace = new[]
                 {
                     new Shape()
                     {
-                        Vertices = vertexAngles.Select(x => x.XnaVertex.ToVector3()).Concat(vertexAngles.First().XnaVertex.ToVector3().Yield()).ToNativeDynamicArray()
+                        Vertices = vertexAngles.Select(x => x.XnaVertex).Concat(vertexAngles.First().XnaVertex.Yield()).ToNativeDynamicArray()
                     }
                 }.ToNativeDynamicArray()
             };

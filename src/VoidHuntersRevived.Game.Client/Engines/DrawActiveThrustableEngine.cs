@@ -27,7 +27,7 @@ using static VoidHuntersRevived.Common.Resources;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
-    [AutoLoad]
+    //[AutoLoad]
     [SimulationTypeFilter(SimulationType.Predictive)]
     [Sequence<DrawEngineSequence>(DrawEngineSequence.PreDraw)]
     internal sealed class DrawActiveThrustableEngine : BasicEngine, IStepEngine<GameTimeTeam>
@@ -68,7 +68,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public void Step(in GameTimeTeam _param)
         {
             Color activeThrustableHighlight = _resources.Get(Colors.ActiveThrustableHighlight);
-            _visibleRenderingService.BeginFill();
+            _visibleRenderingService.BeginFill(activeThrustableHighlight);
             foreach (var ((ids, helms, count), groupId) in _entities.QueryEntities<EntityId, Helm>())
             {
                 for (int i = 0; i < count; i++)
@@ -78,14 +78,14 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
                     ref var helmThrustables = ref _entities.GetFilter<Thrustable>(helmId, Helm.ThrustableFilterContextId);
 
-                    this.TryDrawThrustableImpulse(_param, helm.Direction, ref helmThrustables, in activeThrustableHighlight);
+                    this.TryDrawThrustableImpulse(_param, helm.Direction, ref helmThrustables);
                 }
             }
 
-            _visibleRenderingService.End();
+            _visibleRenderingService.EndFill();
         }
 
-        private void TryDrawThrustableImpulse(GameTimeTeam param, Direction direction, ref EntityFilterCollection helmThrustables, in Color activeThrustableHighlight)
+        private void TryDrawThrustableImpulse(GameTimeTeam param, Direction direction, ref EntityFilterCollection helmThrustables)
         {
             foreach (var (indices, group) in helmThrustables)
             {
@@ -104,7 +104,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     ref Node node = ref nodes[index];
 
                     Matrix transformation = node.Transformation.ToTransformationXnaMatrix();
-                    _visibleRenderingService.Fill(in visibles[index], ref transformation, activeThrustableHighlight);
+                    _visibleRenderingService.Fill(in visibles[index], ref transformation);
                 }
             }
         }

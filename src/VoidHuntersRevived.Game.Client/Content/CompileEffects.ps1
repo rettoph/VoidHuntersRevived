@@ -49,6 +49,9 @@ foreach ($file in $files)
             $newCache[$file.Name] = $hash
         }
     }
+    else {
+        $newCache[$file.Name] = $hash
+    }
 }
 
 Set-Content $cacheFile (ConvertTo-Json $newCache)

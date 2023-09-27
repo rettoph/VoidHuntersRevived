@@ -86,13 +86,13 @@ namespace VoidHuntersRevived.Game.Client.Engines
                                 continue;
                             }
 
-                            _visibleRenderingService.BeginFill();
-                            _visibleRenderingService.Fill(in visibles[index], ref transformation, teamDescriptorGroup.PrimaryColor);
-                            _visibleRenderingService.End();
+                            _visibleRenderingService.BeginFill(teamDescriptorGroup.PrimaryColor);
+                            _visibleRenderingService.Fill(in visibles[index], ref transformation);
+                            _visibleRenderingService.EndFill();
 
-                            _visibleRenderingService.BeginTrace();
-                            _visibleRenderingService.Trace(in visibles[index], ref transformation, teamDescriptorGroup.SecondaryColor);
-                            _visibleRenderingService.End();
+                            _visibleRenderingService.BeginTrace(teamDescriptorGroup.SecondaryColor);
+                            _visibleRenderingService.Trace(in visibles[index], ref transformation);
+                            _visibleRenderingService.EndTrace();
                         }
                     }
                     catch (Exception e)
@@ -110,7 +110,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             {
                 var (statuses, visibles, nodes, count) = _entities.QueryEntities<EntityStatus, Visible, Node>(teamDescriptorGroup.GroupId);
 
-                _visibleRenderingService.BeginFill();
+                _visibleRenderingService.BeginFill(teamDescriptorGroup.PrimaryColor);
                 for (int index = 0; index < count; index++)
                 {
                     try
@@ -125,7 +125,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                             }
 
 
-                            _visibleRenderingService.Fill(in visibles[index], ref transformation, teamDescriptorGroup.PrimaryColor);
+                            _visibleRenderingService.Fill(in visibles[index], ref transformation);
                         }
                     }
                     catch (Exception e)
@@ -134,7 +134,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                         _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to fill shapes for visible {VisibleVhId}", nameof(DrawVisibleEngine), nameof(Step), ids[index].VhId.Value);
                     }
                 }
-                _visibleRenderingService.End();
+                _visibleRenderingService.EndFill();
 
                 _visibleRenderingService.BeginTrace();
                 for (int index = 0; index < count; index++)
@@ -144,12 +144,12 @@ namespace VoidHuntersRevived.Game.Client.Engines
                         if (statuses[index].IsSpawned)
                         {
                             Matrix transformation = nodes[index].Transformation.ToTransformationXnaMatrix();
-
+                
                             if (_camera.Frustum.Contains(transformation.GetBoudingSphere(5f)) == ContainmentType.Disjoint)
                             {
                                 continue;
                             }
-
+                
                             _visibleRenderingService.Trace(in visibles[index], ref transformation, teamDescriptorGroup.SecondaryColor);
                         }
                     }
@@ -159,7 +159,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                         _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to fill shapes for visible {VisibleVhId}", nameof(DrawVisibleEngine), nameof(Step), ids[index].VhId.Value);
                     }
                 }
-                _visibleRenderingService.End();
+                _visibleRenderingService.EndTrace();
             }
         }
     }

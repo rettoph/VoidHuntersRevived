@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Common.Pieces.Serialization.Components
         {
             return new Shape()
             {
-                Vertices = reader.ReadNativeDynamicArray<Vector3>()
+                Vertices = reader.ReadNativeDynamicArray<Vector2>()
             };
         }
 
