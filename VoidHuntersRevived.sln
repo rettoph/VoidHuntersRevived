@@ -116,9 +116,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Files", "libraries\Gu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Domain.Pieces", "src\VoidHuntersRevived.Domain.Pieces\VoidHuntersRevived.Domain.Pieces.csproj", "{C88A638B-DA50-4DD2-8824-DCD64E08C656}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Common.Client", "src\VoidHuntersRevived.Common.Client\VoidHuntersRevived.Common.Client.csproj", "{6F99355B-532F-4252-B034-9FB575EB89AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Common.Client", "src\VoidHuntersRevived.Common.Client\VoidHuntersRevived.Common.Client.csproj", "{6F99355B-532F-4252-B034-9FB575EB89AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Domain.Client", "src\VoidHuntersRevived.Domain.Client\VoidHuntersRevived.Domain.Client.csproj", "{7C6A4353-DB93-4CAB-B161-F13D7A7AFA73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Domain.Client", "src\VoidHuntersRevived.Domain.Client\VoidHuntersRevived.Domain.Client.csproj", "{7C6A4353-DB93-4CAB-B161-F13D7A7AFA73}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

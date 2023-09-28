@@ -29,15 +29,16 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     VertexShaderOutput output = (VertexShaderOutput) 0;
 
     output.Position = mul(float4(input.Position, 0, 1), WorldViewProjection);
-    
-    if ((input.Flags & IsTraceFlag) == 0)
-    {
-        output.Color = Color;
-    }
-    else
-    {
-        output.Color = float4(1, 0, 0, 1);
-    }
+    output.Color = Color;
+
+    //if ((input.Flags & IsTraceFlag) == 0)
+    //{
+    //    output.Color = Color;
+    //}
+    //else
+    //{
+    //    output.Color = float4(1, 0, 0, 1);
+    //}
     
 
     return output;

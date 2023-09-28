@@ -15,11 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\VoidHuntersRevived.Common.Pieces\VoidHuntersRevived.Common.Pieces.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Ships\VoidHuntersRevived.Common.Ships.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Simulations\VoidHuntersRevived.Common.Simulations.csproj" />
