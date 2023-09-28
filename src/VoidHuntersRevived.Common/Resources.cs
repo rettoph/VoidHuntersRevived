@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Common
 
         public static class EffectCodes
         {
-            public static readonly Resource<EffectCode> VisibleFill = Resource.Get<EffectCode>($"{nameof(EffectCode)}.{nameof(VisibleFill)}");
+            public static readonly Resource<EffectCode> Visible = Resource.Get<EffectCode>($"{nameof(EffectCode)}.{nameof(Visible)}");
         }
     }
 }

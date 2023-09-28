@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             {
                 var (statuses, visibles, nodes, count) = _entities.QueryEntities<EntityStatus, Visible, Node>(teamDescriptorGroup.GroupId);
 
-                _visibleRenderingService.Begin(teamDescriptorGroup.PrimaryColor);
+                _visibleRenderingService.Begin(teamDescriptorGroup.PrimaryColor, teamDescriptorGroup.SecondaryColor);
                 for (int index = 0; index < count; index++)
                 {
                     try

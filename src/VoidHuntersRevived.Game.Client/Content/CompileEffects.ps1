@@ -38,11 +38,12 @@ foreach ($file in $files)
     if($dirty -eq $true)
     {
         $compiledPath = $mgfxPath + $file.BaseName + ".mgfx"
-        $allOutput = & mgfxc $file.FullName $compiledPath /Profile:OpenGL 2>&1
+        $allOutput = & "$($PSScriptRoot)\..\..\..\libraries\Guppy\libraries\MonoGame\Artifacts\MonoGame.Effect.Compiler\Release\mgfxc.exe" $file.FullName $compiledPath /Profile:OpenGL 2>&1
         $stderr = $allOutput | Where-Object { $_ -is [System.Management.Automation.ErrorRecord] }
         if($null -ne $stderr)
         {
             "error $($stderr.Exception)"
+            exit 1
         }
         else
         {

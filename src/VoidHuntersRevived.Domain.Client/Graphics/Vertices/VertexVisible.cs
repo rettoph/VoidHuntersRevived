@@ -27,6 +27,14 @@ namespace VoidHuntersRevived.Domain.Client.Graphics.Vertices
         [FieldOffset(8)]
         private BitVector32 _flags;
 
+        public bool Trace
+        {
+            set
+            {
+                _flags[1] = value;
+            }
+        }
+
         public bool Outer
         {
             set

@@ -4,13 +4,23 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <MonoGamePlatform>DesktopGL</MonoGamePlatform>
   </PropertyGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Game.Ships\VoidHuntersRevived.Game.Ships.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Game\VoidHuntersRevived.Game.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <MonoGameContentReference Include="Content\Content.mgcb" />
+  </ItemGroup>
+  
   <ItemGroup>
     <None Update="Content\Client\*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -25,15 +35,15 @@
 
   <ItemGroup>
     <None Remove="Content\Client\Content.mgcb" />
-    <None Remove="Content\Client\Effects\VisibleFill.fx" />
+    <None Remove="Content\Client\Effects\Visible.fx" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Content\Client\Effects\VisibleFill.fx" />
+    <EmbeddedResource Include="Content\Client\Effects\Visible.fx" />
   </ItemGroup>
 
   <ItemGroup>
-    <MonoGameContentReference Include="Content\Content.mgcb" />
+    <Folder Include="Content\Client\Effects\Compiled\" />
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">

@@ -86,7 +86,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            _visibleRenderingService.Begin(_resources.Get(Colors.TractorBeamHighlight));
+            _visibleRenderingService.Begin(_resources.Get(Colors.TractorBeamHighlight), Color.Transparent);
             try
             {
                 this.FillVisibleRecursive(targetNode.Id);

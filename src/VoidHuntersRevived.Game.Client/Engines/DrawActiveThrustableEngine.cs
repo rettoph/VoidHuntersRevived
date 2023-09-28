@@ -68,7 +68,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public void Step(in GameTimeTeam _param)
         {
             Color activeThrustableHighlight = _resources.Get(Colors.ActiveThrustableHighlight);
-            _visibleRenderingService.Begin(activeThrustableHighlight);
+            _visibleRenderingService.Begin(activeThrustableHighlight, Color.Transparent);
             foreach (var ((ids, helms, count), groupId) in _entities.QueryEntities<EntityId, Helm>())
             {
                 for (int i = 0; i < count; i++)
