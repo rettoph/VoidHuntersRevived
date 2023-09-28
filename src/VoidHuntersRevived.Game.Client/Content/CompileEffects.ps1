@@ -2,12 +2,22 @@
 
 $InformationPreference = 'Continue'
 
+
 $cacheFile = $PSScriptRoot + "\.fx.cache.json"
 $fxPath = $PSScriptRoot + "\Client\Effects\"
 $mgfxPath = $PSScriptRoot + "\Client\Effects\Compiled\"
+$mgfxcPath = $PSScriptRoot + "\..\..\..\libraries\Guppy\libraries\MonoGame\Artifacts\MonoGame.Effect.Compiler\Release\mgfxc.exe"
 [hashtable]$cache = Get-Content $cacheFile | ConvertFrom-Json -AsHashtable
 [hashtable]$newCache = @{}
 Write-Information "Loaded cache: $($cacheFile)"
+
+$mgfxcExists = Test-Path -Path $mgfxcPath -PathType Leaf
+if($mgfxcExists -eq $false)
+{
+    Write-Information "Publishing mgfxc.exe"
+    $mgfxcProj = $PSScriptRoot + "\..\..\..\libraries\Guppy\libraries\MonoGame\Tools\MonoGame.Effect.Compiler\MonoGame.Effect.Compiler.csproj"
+    dotnet publish $mgfxcProj -c Release
+}
 
 $files = Get-ChildItem $fxPath -Filter "*.fx"
 
@@ -27,7 +37,7 @@ function CheckCacheDirty($file, $newHash)
 
     $dirty = $newHash -ne $oldHash
 
-    return $dirty
+    return $true
 }
 
 foreach ($file in $files)
@@ -38,7 +48,7 @@ foreach ($file in $files)
     if($dirty -eq $true)
     {
         $compiledPath = $mgfxPath + $file.BaseName + ".mgfx"
-        $allOutput = & "$($PSScriptRoot)\..\..\..\libraries\Guppy\libraries\MonoGame\Artifacts\MonoGame.Effect.Compiler\Release\mgfxc.exe" $file.FullName $compiledPath /Profile:OpenGL 2>&1
+        $allOutput = & $mgfxcPath $file.FullName $compiledPath /Profile:OpenGL 2>&1
         $stderr = $allOutput | Where-Object { $_ -is [System.Management.Automation.ErrorRecord] }
         if($null -ne $stderr)
         {
