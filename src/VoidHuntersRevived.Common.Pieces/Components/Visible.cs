@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
     [PolymorphicJsonType(nameof(Visible))]
     public struct Visible : IEntityComponent, IDisposable, IPieceComponent
     {
-        private static Vector2 UnitX = Vector2.UnitX * 0.1f;
+        private static Vector2 UnitX = Vector2.UnitX * 0.075f;
         private static readonly Matrix OuterScaleMatrix = Matrix.CreateScale(0.1f);
         private static readonly Matrix InnerScaleMatrix = Matrix.CreateScale(-0.1f);
 

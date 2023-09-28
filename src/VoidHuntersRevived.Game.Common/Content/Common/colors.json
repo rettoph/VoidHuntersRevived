@@ -3,7 +3,7 @@
   "Color.HullPrimaryColor": "255,165,0,204",
   "Color.HullSecondaryColor": "255,255,0,255",
   "Color.ThrusterPrimaryColor": "0,128,0,204",
-  "Color.ThrusterSecondaryColor": "144,238,144,255",
+  "Color.ThrusterSecondaryColor": "0,204,0,255",
   "Color.TeamOnePrimaryColor": "0,200,255,204",
   "Color.TeamOneSecondaryColor": "0,255,247,255",
   "Color.TractorBeamHighlight": "211,211,211,100",

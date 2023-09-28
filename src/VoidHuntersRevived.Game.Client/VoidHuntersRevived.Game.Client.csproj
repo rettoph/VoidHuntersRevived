@@ -22,9 +22,9 @@
   </ItemGroup>
   
   <ItemGroup>
-    <None Update="Content\Client\*.json">
+    <EmbeddedResource Include="Content\Client\**\*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -34,16 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Content\Client\Content.mgcb" />
-    <None Remove="Content\Client\Effects\Visible.fx" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Content\Client\Effects\Visible.fx" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Content\Client\Effects\Compiled\" />
+    <EmbeddedResource Include="Content\Client\Effects\*.fx" />
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">

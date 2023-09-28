@@ -49,8 +49,9 @@ namespace VoidHuntersRevived.Domain.Client.Services
             _primitiveBatch.Effect.PrimaryColor = primaryColor;
             _primitiveBatch.Effect.SecondaryColor = secondaryColor;
 
-            float zoom = 10 / (-_camera.Zoom - 10) + 1;
-            _primitiveBatch.Effect.Zoom = zoom;
+            float zoom = 30 / (-_camera.Zoom - 30) + 1;
+            _primitiveBatch.Effect.TraceScale = zoom;
+            _primitiveBatch.Effect.TraceDiffusionScale = MathHelper.Lerp(zoom, 1, 0.75f);
         }
 
         public void End()

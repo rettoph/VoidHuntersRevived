@@ -17,7 +17,8 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Effects
     {
         private EffectParameter _primaryColor;
         private EffectParameter _secondaryColor;
-        private EffectParameter _zoom;
+        private EffectParameter _traceScale;
+        private EffectParameter _traceDiffustionScale;
 
         public Color PrimaryColor
         {
@@ -29,16 +30,22 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Effects
             set => _secondaryColor.SetValue(value.ToVector4());
         }
 
-        public float Zoom
+        public float TraceScale
         {
-            set => _zoom.SetValue(value);
+            set => _traceScale.SetValue(value);
+        }
+
+        public float TraceDiffusionScale
+        {
+            set => _traceDiffustionScale.SetValue(value);
         }
 
         public VisibleEffect(GraphicsDevice graphics, IResourceProvider resources) : base(graphics, resources.Get(Resources.EffectCodes.Visible))
         {
-            _primaryColor = this.Parameters["PrimaryColor"];
-            _secondaryColor = this.Parameters["SecondaryColor"];
-            _zoom = this.Parameters["Zoom"];
+            _primaryColor = this.Parameters[nameof(PrimaryColor)];
+            _secondaryColor = this.Parameters[nameof(SecondaryColor)];
+            _traceScale = this.Parameters[nameof(TraceScale)];
+            _traceDiffustionScale = this.Parameters[nameof(TraceDiffusionScale)];
         }
     }
 }
