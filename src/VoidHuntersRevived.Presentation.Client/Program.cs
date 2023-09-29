@@ -1,4 +1,5 @@
-﻿using System.Runtime;
+﻿using System.Numerics;
+using System.Runtime;
 using VoidHuntersRevived.Application.Client;
 
 // using (var game = new VoidHuntersGame())

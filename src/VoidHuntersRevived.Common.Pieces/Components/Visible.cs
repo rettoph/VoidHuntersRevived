@@ -1,12 +1,9 @@
 ﻿using Guppy.MonoGame.Helpers;
-using Guppy.Resources;
 using Guppy.Resources.Attributes;
 using Microsoft.Xna.Framework;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS;
-using System.Drawing;
-using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Extensions.System;
 using VoidHuntersRevived.Common.Pieces.Utilities;
 
@@ -78,68 +75,28 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 
         private void PopulateTraceVertices(ref NativeDynamicArrayCast<Shape> traceVertices, ref int traceVerticesIndex, ref Shape shape)
         {
-            Span<Vector2> inners = stackalloc Vector2[shape.Vertices.count];
-            Span<Vector2> outers = stackalloc Vector2[shape.Vertices.count];
-
-            this.CalculateVertexOffsets(
-                vertex: shape.Vertices[0], 
-                next: shape.Vertices[1], 
-                prev: shape.Vertices[shape.Vertices.count - 1] == shape.Vertices[0] ? shape.Vertices[shape.Vertices.count - 2] : null, 
-                inner: out inners[0], 
-                outer: out outers[0]);
-
-            for (int i = 1; i < shape.Vertices.count - 1; i++)
+            for (int i = 0; i < shape.Vertices.count; i++)
             {
-                this.CalculateVertexOffsets(
-                    vertex: shape.Vertices[i],
-                    next: shape.Vertices[i+1],
-                    prev: shape.Vertices[i-1],
-                    inner: out inners[i],
-                    outer: out outers[i]);
-            }
-
-
-            this.CalculateVertexOffsets(
-                vertex: shape.Vertices[shape.Vertices.count - 1],
-                next: shape.Vertices[shape.Vertices.count - 1] == shape.Vertices[0] ? shape.Vertices[1] : null,
-                prev: shape.Vertices[shape.Vertices.count - 2],
-                inner: out inners[shape.Vertices.count - 1],
-                outer: out outers[shape.Vertices.count - 1]);
-
-            for (int i = 0; i < shape.Vertices.count - 1; i++)
-            {
-                NativeDynamicArrayCast<Vector2> shapeVertices = new NativeDynamicArrayCast<Vector2>(4, Allocator.Persistent);
-                shapeVertices.Set(0, outers[i]);
-                shapeVertices.Set(1, outers[i + 1]);
-                shapeVertices.Set(2, inners[i + 1]);
-                shapeVertices.Set(3, inners[i]);
-
-                traceVertices.Set(traceVerticesIndex++, new Shape()
-                {
-                    Vertices = shapeVertices
-                });
+                traceVertices.Set(traceVerticesIndex++, this.ConstructTraceSegment(
+                    segStart: TryGetVertex(ref shape, i) ?? throw new Exception(),
+                    segEnd: TryGetVertex(ref shape, i+1) ?? throw new Exception(),
+                    next: TryGetVertex(ref shape, i+2),
+                    prev: TryGetVertex(ref shape, i-1)));
             }
         }
 
-        private void CalculateVertexOffsets(Vector2 vertex, Vector2? next, Vector2? prev, out Vector2 inner, out Vector2 outer)
+        private Shape ConstructTraceSegment(Vector2 segStart, Vector2 segEnd, Vector2? next, Vector2? prev)
         {
-            if(next is null && prev is null)
-            {
-                throw new ArgumentException();
-            }
+            next ??= segStart;
+            prev ??= segEnd;
 
-            float prevAngle = prev?.Angle(vertex) ?? next!.Value.Angle(vertex) + MathHelper.Pi;
-            float nextAngle = next?.Angle(vertex) ?? prevAngle + MathHelper.Pi;
-            float angle = (prevAngle - nextAngle) / 2;
-            float targetAngle = prevAngle - angle;
+            float segAngleStart = segStart.Angle(prev.Value, segEnd);
+            float segAngleEnd = segEnd.Angle(segStart, next.Value);
 
-            var triangle1 = TriangleHelper.Solve(A: angle, B: MathHelper.PiOver2, a: 1f);
+            float gridAngleStart = segStart.Angle(prev.Value);
+            float gridAngleEnd = segEnd.Angle(next.Value);
 
-            Matrix transformationInner = Matrix.CreateScale(triangle1.b) * Matrix.CreateRotationZ(targetAngle) * Matrix.CreateTranslation(vertex.X, vertex.Y, 0);
-            Matrix transformationOuter = Matrix.CreateScale(triangle1.b) * Matrix.CreateRotationZ(targetAngle + MathHelper.Pi) * Matrix.CreateTranslation(vertex.X, vertex.Y, 0);
-
-            Vector2.Transform(ref UnitX, ref transformationInner, out inner);
-            Vector2.Transform(ref UnitX, ref transformationOuter, out outer);
+            return default;
         }
 
         public static Visible Polygon(int sides)
@@ -163,6 +120,27 @@ namespace VoidHuntersRevived.Common.Pieces.Components
                     }
                 }.ToNativeDynamicArray()
             };
+        }
+
+        private static Vector2? TryGetVertex(ref Shape shape, int index)
+        {
+            bool wrap = shape.Vertices[shape.Vertices.count - 1] == shape.Vertices[0];
+            if (index < 0 && wrap)
+            {
+                return shape.Vertices[shape.Vertices.count + index - 1];
+            }
+
+            if(index >= shape.Vertices.count && wrap)
+            {
+                return shape.Vertices[index % shape.Vertices.count];
+            }
+
+            if (index < shape.Vertices.count)
+            {
+                return shape.Vertices[index];
+            }
+
+            return null;
         }
     }
 }
