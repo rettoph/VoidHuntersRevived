@@ -61,10 +61,10 @@ namespace VoidHuntersRevived.Domain.Client.Services
 
         public void Draw(in Visible visible, ref Matrix transformation)
         {
-            for (int i = 0; i < visible.Fill.count; i++)
-            {
-                this.FillShape(in visible.Fill[i], ref transformation);
-            }
+            // for (int i = 0; i < visible.Fill.count; i++)
+            // {
+            //     this.FillShape(in visible.Fill[i], ref transformation);
+            // }
 
             for (int i = 0; i < visible.TraceVertices.count; i++)
             {
@@ -74,32 +74,28 @@ namespace VoidHuntersRevived.Domain.Client.Services
 
         private void Trace(in Shape shape, ref Matrix transformation)
         {
-            _primitiveBatch.EnsureCapacity(4);
+            _primitiveBatch.EnsureCapacity(shape.Vertices.count);
 
-            // First Pass
             ref VertexVisible v1 = ref _primitiveBatch.NextVertex(out _indexBuffer[0]);
             Vector2.Transform(ref shape.Vertices[0], ref transformation, out v1.Position);
-            v1.Outer = true;
+            v1.Trace = false;
 
             ref VertexVisible v2 = ref _primitiveBatch.NextVertex(out _indexBuffer[1]);
             Vector2.Transform(ref shape.Vertices[1], ref transformation, out v2.Position);
-            v2.Outer = true;
+            v2.Trace = false;
 
-            ref VertexVisible v3 = ref _primitiveBatch.NextVertex(out _indexBuffer[2]);
-            Vector2.Transform(ref shape.Vertices[2], ref transformation, out v3.Position);
-            v3.Outer = false;
+            for (int i = 2; i < shape.Vertices.count; i++)
+            {
+                ref VertexVisible v3 = ref _primitiveBatch.NextVertex(out _indexBuffer[2]);
+                Vector2.Transform(ref shape.Vertices[i], ref transformation, out v3.Position);
+                v3.Trace = false;
 
-            ref VertexVisible v4 = ref _primitiveBatch.NextVertex(out _indexBuffer[3]);
-            Vector2.Transform(ref shape.Vertices[3], ref transformation, out v4.Position);
-            v4.Outer = false;
+                _primitiveBatch.AddTriangleIndex(in _indexBuffer[0]);
+                _primitiveBatch.AddTriangleIndex(in _indexBuffer[1]);
+                _primitiveBatch.AddTriangleIndex(in _indexBuffer[2]);
 
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[0]);
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[1]);
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[2]);
-
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[0]);
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[2]);
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[3]);
+                _indexBuffer[1] = _indexBuffer[2];
+            }
         }
 
         private void FillShape(in Shape shape, ref Matrix transformation)

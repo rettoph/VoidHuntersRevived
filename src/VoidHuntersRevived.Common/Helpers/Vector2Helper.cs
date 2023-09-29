@@ -26,5 +26,12 @@ namespace VoidHuntersRevived.Common.Helpers
 
             return vertices;
         }
+
+        public static Vector2 FromPolar(float radians, float length)
+        {
+            return new Vector2(
+                x: MathF.Cos(radians) * length,
+                y: MathF.Sin(radians) * length);
+        }
     }
 }

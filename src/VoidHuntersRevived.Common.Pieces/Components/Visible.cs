@@ -1,18 +1,21 @@
-﻿using Guppy.MonoGame.Helpers;
+﻿using Guppy.Common.Extensions.System;
+using Guppy.MonoGame.Helpers;
 using Guppy.Resources.Attributes;
 using Microsoft.Xna.Framework;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Extensions.System;
+using VoidHuntersRevived.Common.Helpers;
 using VoidHuntersRevived.Common.Pieces.Utilities;
+using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Common.Pieces.Components
 {
     [PolymorphicJsonType(nameof(Visible))]
     public struct Visible : IEntityComponent, IDisposable, IPieceComponent
     {
-        private static Vector2 UnitX = Vector2.UnitX * 0.075f;
+        private static float TraceThickness = 0.12f;
         private static readonly Matrix OuterScaleMatrix = Matrix.CreateScale(0.1f);
         private static readonly Matrix InnerScaleMatrix = Matrix.CreateScale(-0.1f);
 
@@ -75,7 +78,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 
         private void PopulateTraceVertices(ref NativeDynamicArrayCast<Shape> traceVertices, ref int traceVerticesIndex, ref Shape shape)
         {
-            for (int i = 0; i < shape.Vertices.count; i++)
+            for (int i = 0; i < shape.Vertices.count - 1; i++)
             {
                 traceVertices.Set(traceVerticesIndex++, this.ConstructTraceSegment(
                     segStart: TryGetVertex(ref shape, i) ?? throw new Exception(),
@@ -85,18 +88,38 @@ namespace VoidHuntersRevived.Common.Pieces.Components
             }
         }
 
+        /// <summary>
+        /// https://www.desmos.com/calculator/fu01mebdae
+        /// </summary>
+        /// <param name="segStart"></param>
+        /// <param name="segEnd"></param>
+        /// <param name="next"></param>
+        /// <param name="prev"></param>
+        /// <returns></returns>
         private Shape ConstructTraceSegment(Vector2 segStart, Vector2 segEnd, Vector2? next, Vector2? prev)
         {
             next ??= segStart;
             prev ??= segEnd;
 
             float segAngleStart = segStart.Angle(prev.Value, segEnd);
-            float segAngleEnd = segEnd.Angle(segStart, next.Value);
+            float segAngleEnd = segEnd.Angle(next.Value, segStart);
 
-            float gridAngleStart = segStart.Angle(prev.Value);
-            float gridAngleEnd = segEnd.Angle(next.Value);
+            float gridAngleStartPrev = segStart.Angle(prev.Value);
+            float gridAngleEndNext = segEnd.Angle(next.Value);
+            float gridAngleStartEnd = segStart.Angle(segEnd);
+            float gridAngleEndStart = segEnd.Angle(segStart);
 
-            return default;
+            Vector2[] vertices = new Vector2[6];
+            vertices[0] = segStart + Vector2Helper.FromPolar(gridAngleStartPrev + (segAngleStart / 2) + (segAngleStart < 0 ? MathHelper.Pi : 0), TraceThickness);
+            vertices[1] = segStart + Vector2Helper.FromPolar(gridAngleStartPrev + (segAngleStart / 2) + (segAngleStart < 0 ? 0 : MathHelper.Pi), MathF.Abs(AAS(segAngleStart / 2)));
+            vertices[2] = segStart + Vector2Helper.FromPolar(gridAngleStartEnd + (segAngleStart < 0 ? -MathHelper.PiOver2 : MathHelper.PiOver2), TraceThickness);
+            vertices[3] = segEnd + Vector2Helper.FromPolar(gridAngleEndStart + (segAngleEnd < 0 ? -MathHelper.PiOver2 : MathHelper.PiOver2), TraceThickness);
+            vertices[4] = segEnd + Vector2Helper.FromPolar(gridAngleEndNext + (segAngleEnd / 2) + (segAngleEnd < 0 ? MathHelper.Pi :0), MathF.Abs(AAS(segAngleEnd / 2)));
+            vertices[5] = segEnd + Vector2Helper.FromPolar(gridAngleEndNext + (segAngleEnd / 2) + (segAngleEnd < 0 ? 0 : MathHelper.Pi), TraceThickness);
+
+            Vector2[] convex = GiftWrap.GetConvexHull(vertices);
+
+            return new Shape() { Vertices = convex.ToNativeDynamicArray() };
         }
 
         public static Visible Polygon(int sides)
@@ -127,12 +150,14 @@ namespace VoidHuntersRevived.Common.Pieces.Components
             bool wrap = shape.Vertices[shape.Vertices.count - 1] == shape.Vertices[0];
             if (index < 0 && wrap)
             {
-                return shape.Vertices[shape.Vertices.count + index - 1];
+                index = shape.Vertices.count + index - 1;
+                return shape.Vertices[index];
             }
 
             if(index >= shape.Vertices.count && wrap)
             {
-                return shape.Vertices[index % shape.Vertices.count];
+                index = (index % shape.Vertices.count) + 1;
+                return shape.Vertices[index];
             }
 
             if (index < shape.Vertices.count)
@@ -141,6 +166,26 @@ namespace VoidHuntersRevived.Common.Pieces.Components
             }
 
             return null;
+        }
+
+        private static float PiOrZero(float radians)
+        {
+            return radians >= MathHelper.Pi ? MathHelper.Pi : 0;
+        }
+
+        private static float IPiOrZero(float radians)
+        {
+            return radians >= MathHelper.Pi ? 0 : MathHelper.Pi;
+        }
+
+        private static float Sign(float radians, float value)
+        {
+            return (radians >= MathHelper.Pi ? 1f : -1f) * value;
+        }
+
+        private static float AAS(float a1)
+        {
+            return a1 == 0 ? 0 : (TraceThickness * MathF.Sin(MathHelper.PiOver2)) / MathF.Sin(a1);
         }
     }
 }
