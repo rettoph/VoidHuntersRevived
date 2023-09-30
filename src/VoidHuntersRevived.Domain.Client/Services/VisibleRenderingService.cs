@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Domain.Client.Services
             _primitiveBatch.Effect.PrimaryColor = primaryColor;
             _primitiveBatch.Effect.SecondaryColor = secondaryColor;
 
-            float scale = 20 / (-_camera.Zoom - 20) + 1;
+            float scale = 2 / (-_camera.Zoom - 2) + 1;
             _primitiveBatch.Effect.TraceScale = scale;
             _primitiveBatch.Effect.TraceDiffusionScale = MathHelper.Lerp(scale, 1, 0.75f);
         }

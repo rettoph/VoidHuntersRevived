@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
     [PolymorphicJsonType(nameof(Visible))]
     public struct Visible : IEntityComponent, IDisposable, IPieceComponent
     {
-        private static float TraceThickness = 0.1f;
+        private static float TraceThickness = 1f;
         private static readonly Matrix OuterScaleMatrix = Matrix.CreateScale(0.1f);
         private static readonly Matrix InnerScaleMatrix = Matrix.CreateScale(-0.1f);
 
@@ -158,7 +158,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
                 // are clockwise and in such an order that the inner/outer
                 // bools are correct. It will probably need a double check.
                 // Check out VisibleRenderingService.cs and Visible.fx
-                throw new Exception();
+                throw new NotImplementedException();
             }
 
             return new TraceVertices() { 
