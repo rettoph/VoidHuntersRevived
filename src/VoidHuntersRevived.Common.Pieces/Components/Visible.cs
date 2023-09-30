@@ -1,5 +1,4 @@
-﻿using Guppy.Common.Extensions.System;
-using Guppy.MonoGame.Helpers;
+﻿using Guppy.MonoGame.Helpers;
 using Guppy.Resources.Attributes;
 using Microsoft.Xna.Framework;
 using Svelto.Common;
@@ -7,6 +6,7 @@ using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Extensions.System;
 using VoidHuntersRevived.Common.Helpers;
+using VoidHuntersRevived.Common.Pieces.Enums;
 using VoidHuntersRevived.Common.Pieces.Utilities;
 using VoidHuntersRevived.Common.Utilities;
 
@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
     [PolymorphicJsonType(nameof(Visible))]
     public struct Visible : IEntityComponent, IDisposable, IPieceComponent
     {
-        private static float TraceThickness = 0.12f;
+        private static float TraceThickness = 0.1f;
         private static readonly Matrix OuterScaleMatrix = Matrix.CreateScale(0.1f);
         private static readonly Matrix InnerScaleMatrix = Matrix.CreateScale(-0.1f);
 
@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
                     mostVertices = Math.Max(mostVertices, shape.Vertices.count);
                 }
 
-                NativeDynamicArrayCast<Shape> traceVertices = new NativeDynamicArrayCast<Shape>((uint)traceVertexShapeCount, Allocator.Persistent);
+                NativeDynamicArrayCast<TraceVertices> traceVertices = new NativeDynamicArrayCast<TraceVertices>((uint)traceVertexShapeCount, Allocator.Persistent);
                 int traceVerticesIndex = 0;
 
                 for (int i = 0; i < value.count; i++)
@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
             }
         }
 
-        public NativeDynamicArrayCast<Shape> TraceVertices { get; private set; }
+        public NativeDynamicArrayCast<TraceVertices> TraceVertices { get; private set; }
 
         public void Dispose()
         {
@@ -76,7 +76,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
             this.TraceVertices.Dispose();
         }
 
-        private void PopulateTraceVertices(ref NativeDynamicArrayCast<Shape> traceVertices, ref int traceVerticesIndex, ref Shape shape)
+        private void PopulateTraceVertices(ref NativeDynamicArrayCast<TraceVertices> traceVertices, ref int traceVerticesIndex, ref Shape shape)
         {
             for (int i = 0; i < shape.Vertices.count - 1; i++)
             {
@@ -88,15 +88,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
             }
         }
 
-        /// <summary>
-        /// https://www.desmos.com/calculator/fu01mebdae
-        /// </summary>
-        /// <param name="segStart"></param>
-        /// <param name="segEnd"></param>
-        /// <param name="next"></param>
-        /// <param name="prev"></param>
-        /// <returns></returns>
-        private Shape ConstructTraceSegment(Vector2 segStart, Vector2 segEnd, Vector2? next, Vector2? prev)
+        private TraceVertices ConstructTraceSegment(Vector2 segStart, Vector2 segEnd, Vector2? next, Vector2? prev)
         {
             next ??= segStart;
             prev ??= segEnd;
@@ -109,17 +101,69 @@ namespace VoidHuntersRevived.Common.Pieces.Components
             float gridAngleStartEnd = segStart.Angle(segEnd);
             float gridAngleEndStart = segEnd.Angle(segStart);
 
-            Vector2[] vertices = new Vector2[6];
-            vertices[0] = segStart + Vector2Helper.FromPolar(gridAngleStartPrev + (segAngleStart / 2) + (segAngleStart < 0 ? MathHelper.Pi : 0), TraceThickness);
-            vertices[1] = segStart + Vector2Helper.FromPolar(gridAngleStartPrev + (segAngleStart / 2) + (segAngleStart < 0 ? 0 : MathHelper.Pi), MathF.Abs(AAS(segAngleStart / 2)));
-            vertices[2] = segStart + Vector2Helper.FromPolar(gridAngleStartEnd + (segAngleStart < 0 ? -MathHelper.PiOver2 : MathHelper.PiOver2), TraceThickness);
-            vertices[3] = segEnd + Vector2Helper.FromPolar(gridAngleEndStart + (segAngleEnd < 0 ? -MathHelper.PiOver2 : MathHelper.PiOver2), TraceThickness);
-            vertices[4] = segEnd + Vector2Helper.FromPolar(gridAngleEndNext + (segAngleEnd / 2) + (segAngleEnd < 0 ? MathHelper.Pi :0), MathF.Abs(AAS(segAngleEnd / 2)));
-            vertices[5] = segEnd + Vector2Helper.FromPolar(gridAngleEndNext + (segAngleEnd / 2) + (segAngleEnd < 0 ? 0 : MathHelper.Pi), TraceThickness);
+            // For reference, see
+            // https://www.desmos.com/calculator/px5jojwo7f
+            Vector2[] vertices = new Vector2[8];
 
-            Vector2[] convex = GiftWrap.GetConvexHull(vertices);
+            // start
+            vertices[0] = segStart;
 
-            return new Shape() { Vertices = convex.ToNativeDynamicArray() };
+            //start outer
+            vertices[1] = segStart + Vector2Helper.FromPolar(gridAngleStartPrev + (segAngleStart / 2) + (segAngleStart < 0 ? MathHelper.Pi : 0), TraceThickness);
+
+            //start corner
+            vertices[2] = segStart + Vector2Helper.FromPolar(gridAngleStartPrev + MathHelper.Pi, TraceThickness);
+
+            // start inner
+            vertices[3] = segStart + Vector2Helper.FromPolar(gridAngleStartPrev + (segAngleStart / 2) + (segAngleStart < 0 ? 0 : MathHelper.Pi), MathF.Abs(AAS(segAngleStart / 2)));
+
+            //end
+            vertices[4] = segEnd;
+
+            // end corner
+            vertices[5] = segEnd + Vector2Helper.FromPolar(gridAngleEndNext + MathHelper.Pi, TraceThickness);
+
+            // end outer
+            vertices[6] = segEnd + Vector2Helper.FromPolar(gridAngleEndNext + (segAngleEnd / 2) + (segAngleEnd < 0 ? 0 : MathHelper.Pi), TraceThickness);
+
+            // end inner
+            vertices[7] = segEnd + Vector2Helper.FromPolar(gridAngleEndNext + (segAngleEnd / 2) + (segAngleEnd < 0 ? MathHelper.Pi :0), MathF.Abs(AAS(segAngleEnd / 2)));
+            
+
+            // If both angles are nexative or both angles are positive
+            // that means the outer triangles are inverse
+            // if they are opposite; the triangles are calculated in the right order
+            // https://i.imgur.com/JNnG0MK.jpg
+            TraceVertex[] traceVertices = new TraceVertex[8];
+            if (segAngleStart * segAngleEnd < 0)
+            { // Convex shape, no flip required
+                traceVertices[0] = new TraceVertex(vertices[0], false);
+                traceVertices[1] = new TraceVertex(vertices[1], true);
+                traceVertices[2] = new TraceVertex(vertices[2], true);
+                traceVertices[3] = new TraceVertex(vertices[3], true);
+                traceVertices[4] = new TraceVertex(vertices[4], false);
+                traceVertices[5] = new TraceVertex(vertices[5], true);
+                traceVertices[6] = new TraceVertex(vertices[6], true);
+                traceVertices[7] = new TraceVertex(vertices[7], true);
+            }
+            else 
+            { // Concave shape, flip required
+                // Swapping these vertices should fix
+                // the angle mismatch
+                Vector2 placeholder = vertices[4];
+                vertices[4] = vertices[5];
+                vertices[5] = placeholder;
+
+                // This probably wont work. I need to make sure the vertices
+                // are clockwise and in such an order that the inner/outer
+                // bools are correct. It will probably need a double check.
+                // Check out VisibleRenderingService.cs and Visible.fx
+                throw new Exception();
+            }
+
+            return new TraceVertices() { 
+                Items = traceVertices.ToNativeDynamicArray()
+            };
         }
 
         public static Visible Polygon(int sides)
@@ -166,21 +210,6 @@ namespace VoidHuntersRevived.Common.Pieces.Components
             }
 
             return null;
-        }
-
-        private static float PiOrZero(float radians)
-        {
-            return radians >= MathHelper.Pi ? MathHelper.Pi : 0;
-        }
-
-        private static float IPiOrZero(float radians)
-        {
-            return radians >= MathHelper.Pi ? 0 : MathHelper.Pi;
-        }
-
-        private static float Sign(float radians, float value)
-        {
-            return (radians >= MathHelper.Pi ? 1f : -1f) * value;
         }
 
         private static float AAS(float a1)

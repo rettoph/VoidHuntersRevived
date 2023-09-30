@@ -1,9 +1,6 @@
 ﻿#define VS_SHADERMODEL vs_5_0 
 #define PS_SHADERMODEL ps_5_0 
 
-static const float BezierP1 = 1.0f;
-static const float BezierP2 = 0.0f;
-
 static const int IsTraceFlag = 1 << 0;
 static const int IsOuterFlag = 1 << 1;
 
@@ -26,9 +23,6 @@ struct VertexShaderOutput
     float Depth : TEXCOORD0;
 };
 
-static const float ThreeTimesBezierP1 = 3.0 * BezierP1;
-static const float ThreeTimesBezierP2 = 3.0 * BezierP2;
-
 VertexShaderOutput MainVS(in VertexShaderInput input)
 {
     VertexShaderOutput output = (VertexShaderOutput) 0;
@@ -46,7 +40,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
         
         if ((input.Flags & IsOuterFlag) == 0)
         {
-            output.Depth = -1.0f;
+            output.Depth = 0.0f;
         }
         else
         {
@@ -56,12 +50,6 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     
 
     return output;
-}
-
-float Bezier(float x)
-{
-    float oneMinusX = 1.0f - x;
-    return (ThreeTimesBezierP1 * pow(oneMinusX, 2)) + (ThreeTimesBezierP2 * pow(x, 2) * oneMinusX) + pow(x, 3);
 }
 
 float TraceDiffusionAlpha(float depth)
@@ -81,7 +69,8 @@ float4 MainPS(VertexShaderOutput input) : SV_Target0
     {
         return input.Color * float4(1, 1, 1, TraceDiffusionAlpha(depth));
     }
-    
+
+
     return input.Color;
 }
 
