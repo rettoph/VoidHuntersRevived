@@ -27,7 +27,7 @@ using static VoidHuntersRevived.Common.Resources;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
-    //[AutoLoad]
+    [AutoLoad]
     [SimulationTypeFilter(SimulationType.Predictive)]
     [Sequence<DrawEngineSequence>(DrawEngineSequence.PreDraw)]
     internal sealed class DrawActiveThrustableEngine : BasicEngine, IStepEngine<GameTimeTeam>

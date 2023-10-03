@@ -26,7 +26,7 @@ using static VoidHuntersRevived.Common.Resources;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
-    //[AutoLoad]
+    [AutoLoad]
     [Sequence<DrawEngineSequence>(DrawEngineSequence.PostDraw)]
     [SimulationTypeFilter(SimulationType.Predictive)]
     internal class TractorBeamHighlightEngine : BasicEngine, IStepEngine<GameTime>
@@ -86,7 +86,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            _visibleRenderingService.Begin(_resources.Get(Colors.TractorBeamHighlight), Color.Transparent);
+            _visibleRenderingService.Begin(_resources.Get(Colors.TractorBeamHighlight), Color.Red);
             try
             {
                 this.FillVisibleRecursive(targetNode.Id);
