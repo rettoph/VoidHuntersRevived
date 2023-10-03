@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
             {
                 _trace = value;
 
-                NativeDynamicArrayCast<TraceVertices> traceVertices = new NativeDynamicArrayCast<TraceVertices>((uint)value.count, Allocator.Persistent);
+                NativeDynamicArrayCast<Shape> traceVertices = new NativeDynamicArrayCast<Shape>((uint)value.count, Allocator.Persistent);
 
                 for (int i = 0; i < value.count; i++)
                 {
@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
             }
         }
 
-        public NativeDynamicArrayCast<TraceVertices> TraceVertices { get; private set; }
+        public NativeDynamicArrayCast<Shape> TraceVertices { get; private set; }
 
         public void Dispose()
         {
@@ -64,25 +64,25 @@ namespace VoidHuntersRevived.Common.Pieces.Components
             this.TraceVertices.Dispose();
         }
 
-        private TraceVertices BuildTraceVertices(ref Shape shape)
+        private Shape BuildTraceVertices(ref Shape shape)
         {
-            TraceVertices traceVertices = new TraceVertices()
-            {
-                Items = new NativeDynamicArrayCast<Vector2>((uint)shape.Vertices.count * 5, Allocator.Persistent)
-            };
+            NativeDynamicArrayCast<Vector2> vertices = new NativeDynamicArrayCast<Vector2>((uint)shape.Vertices.count * 5, Allocator.Persistent);
 
             uint index = 0;
             for (int i = 0; i < shape.Vertices.count; i++)
             {
                 this.PopulateTraceVertices(
-                    vertices: ref traceVertices.Items,
+                    vertices: ref vertices,
                     index: ref index,
                     p1: TryGetVertex(ref shape, i - 1),
                     vertex: TryGetVertex(ref shape, i) ?? throw new Exception(),
                     p2: TryGetVertex(ref shape, i + 1));
             }
 
-            return traceVertices;
+            return new Shape()
+            {
+                Vertices = vertices
+            };
         }
 
         private void PopulateTraceVertices(ref NativeDynamicArrayCast<Vector2> vertices, ref uint index, Vector2? p1, Vector2 vertex, Vector2? p2)

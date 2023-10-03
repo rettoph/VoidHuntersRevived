@@ -72,26 +72,26 @@ namespace VoidHuntersRevived.Domain.Client.Services
             }
         }
 
-        private void Trace(ref TraceVertices vertices, ref Matrix transformation)
+        private void Trace(ref Shape vertices, ref Matrix transformation)
         {
-            _primitiveBatch.EnsureCapacity(vertices.Items.count);
+            _primitiveBatch.EnsureCapacity(vertices.Vertices.count);
             int offset1 = 0;
             int offset2 = 5;
             int placeholder = 0;
 
-            this.GetTraceVertexIndex(ref transformation, ref vertices.Items[offset1 + 0], true,  out _indexBuffer[offset1 + 0]);
-            this.GetTraceVertexIndex(ref transformation, ref vertices.Items[offset1 + 1], true,  out _indexBuffer[offset1 + 1]);
-            this.GetTraceVertexIndex(ref transformation, ref vertices.Items[offset1 + 2], true,  out _indexBuffer[offset1 + 2]);
-            this.GetTraceVertexIndex(ref transformation, ref vertices.Items[offset1 + 3], true,  out _indexBuffer[offset1 + 3]);
-            this.GetTraceVertexIndex(ref transformation, ref vertices.Items[offset1 + 4], false, out _indexBuffer[offset1 + 4]);
+            this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[offset1 + 0], true,  out _indexBuffer[offset1 + 0]);
+            this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[offset1 + 1], true,  out _indexBuffer[offset1 + 1]);
+            this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[offset1 + 2], true,  out _indexBuffer[offset1 + 2]);
+            this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[offset1 + 3], true,  out _indexBuffer[offset1 + 3]);
+            this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[offset1 + 4], false, out _indexBuffer[offset1 + 4]);
 
-            for (int i = 5; i < vertices.Items.count; i+=5)
+            for (int i = 5; i < vertices.Vertices.count; i+=5)
             {
-                this.GetTraceVertexIndex(ref transformation, ref vertices.Items[i + 0], true,  out _indexBuffer[offset2 + 0]);
-                this.GetTraceVertexIndex(ref transformation, ref vertices.Items[i + 1], true,  out _indexBuffer[offset2 + 1]);
-                this.GetTraceVertexIndex(ref transformation, ref vertices.Items[i + 2], true,  out _indexBuffer[offset2 + 2]);
-                this.GetTraceVertexIndex(ref transformation, ref vertices.Items[i + 3], true,  out _indexBuffer[offset2 + 3]);
-                this.GetTraceVertexIndex(ref transformation, ref vertices.Items[i + 4], false, out _indexBuffer[offset2 + 4]);
+                this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[i + 0], true,  out _indexBuffer[offset2 + 0]);
+                this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[i + 1], true,  out _indexBuffer[offset2 + 1]);
+                this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[i + 2], true,  out _indexBuffer[offset2 + 2]);
+                this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[i + 3], true,  out _indexBuffer[offset2 + 3]);
+                this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[i + 4], false, out _indexBuffer[offset2 + 4]);
 
                 _primitiveBatch.AddTriangleIndex(in _indexBuffer[offset1 + 4]);
                 _primitiveBatch.AddTriangleIndex(in _indexBuffer[offset1 + 1]);
