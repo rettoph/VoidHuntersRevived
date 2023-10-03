@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
     [PolymorphicJsonType(nameof(Visible))]
     public struct Visible : IEntityComponent, IDisposable, IPieceComponent
     {
-        private static float TraceThickness = 1f;
+        private static float TraceThickness = 0.1f;
         private static readonly Matrix OuterScaleMatrix = Matrix.CreateScale(0.1f);
         private static readonly Matrix InnerScaleMatrix = Matrix.CreateScale(-0.1f);
 
@@ -108,27 +108,26 @@ namespace VoidHuntersRevived.Common.Pieces.Components
             // start
             vertices[0] = segStart;
 
-            //start outer
-            vertices[1] = segStart + Vector2Helper.FromPolar(gridAngleStartPrev + (segAngleStart / 2) + (segAngleStart < 0 ? MathHelper.Pi : 0), TraceThickness);
+            // start corner
+            vertices[1] = CalculateCorner(prev.Value, segStart, segEnd);
 
-            //start corner
-            vertices[2] = segStart + Vector2Helper.FromPolar(gridAngleStartPrev + MathHelper.Pi, TraceThickness);
+            // start edge
+            vertices[2] = CalculateEdge(prev.Value, segStart, segEnd);
 
             // start inner
-            vertices[3] = segStart + Vector2Helper.FromPolar(gridAngleStartPrev + (segAngleStart / 2) + (segAngleStart < 0 ? 0 : MathHelper.Pi), MathF.Abs(AAS(segAngleStart / 2)));
+            vertices[3] = CalculateInner(prev.Value, segStart, segEnd);
 
-            //end
+            // end
             vertices[4] = segEnd;
 
-            // end corner
-            vertices[5] = segEnd + Vector2Helper.FromPolar(gridAngleEndNext + MathHelper.Pi, TraceThickness);
+            // end edge
+            vertices[5] = CalculateEdge(next.Value, segEnd, segStart);
 
-            // end outer
-            vertices[6] = segEnd + Vector2Helper.FromPolar(gridAngleEndNext + (segAngleEnd / 2) + (segAngleEnd < 0 ? 0 : MathHelper.Pi), TraceThickness);
+            // end corner
+            vertices[6] = CalculateCorner(segStart, segEnd, next.Value);
 
             // end inner
-            vertices[7] = segEnd + Vector2Helper.FromPolar(gridAngleEndNext + (segAngleEnd / 2) + (segAngleEnd < 0 ? MathHelper.Pi :0), MathF.Abs(AAS(segAngleEnd / 2)));
-            
+            vertices[7] = CalculateInner(segStart, segEnd, next.Value);
 
             // If both angles are nexative or both angles are positive
             // that means the outer triangles are inverse
@@ -215,6 +214,31 @@ namespace VoidHuntersRevived.Common.Pieces.Components
         private static float AAS(float a1)
         {
             return a1 == 0 ? 0 : (TraceThickness * MathF.Sin(MathHelper.PiOver2)) / MathF.Sin(a1);
+        }
+
+
+        private Vector2 CalculateCorner(Vector2 p1, Vector2 vertex, Vector2 p2)
+        {
+            float angle = vertex.Angle(p1, p2);
+            float gridAngle = vertex.Angle(p1);
+            return vertex + Vector2Helper.FromPolar(gridAngle + (angle / 2) + (angle < 0 ? MathHelper.Pi : 0), TraceThickness);
+        }
+
+        private Vector2 CalculateEdge(Vector2 p1, Vector2 vertex, Vector2 p2)
+        {
+            float angle = vertex.Angle(p1, p2);
+            float gridAngle = vertex.Angle(p1);
+
+            return vertex + Vector2Helper.FromPolar(gridAngle + MathHelper.Pi, TraceThickness);
+        }
+
+        private Vector2 CalculateInner(Vector2 p1, Vector2 vertex, Vector2 p2)
+        {
+            float angle = vertex.Angle(p1, p2);
+            float gridAngle = vertex.Angle(p1);
+
+            return vertex + Vector2Helper.FromPolar(gridAngle + (angle / 2), MathF.Abs(AAS(angle / 2)));
+
         }
     }
 }

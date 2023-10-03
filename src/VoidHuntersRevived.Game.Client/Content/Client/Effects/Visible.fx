@@ -59,16 +59,16 @@ float TraceDiffusionAlpha(float depth)
 
 float4 MainPS(VertexShaderOutput input) : SV_Target0
 {    
-    float depth = 1 - abs(input.Depth);
-    
-    if (depth < TraceScale)
-    {
-        return float4(0, 0, 0, 0);
-    }
-    else if (depth < TraceDiffusionScale)
-    {
-        return input.Color * float4(1, 1, 1, TraceDiffusionAlpha(depth));
-    }
+    //float depth = 1 - abs(input.Depth);
+    //
+    //if (depth < TraceScale)
+    //{
+    //    return float4(0, 0, 0, 0);
+    //}
+    //else if (depth < TraceDiffusionScale)
+    //{
+    //    return input.Color * float4(1, 1, 1, TraceDiffusionAlpha(depth));
+    //}
 
 
     return input.Color;

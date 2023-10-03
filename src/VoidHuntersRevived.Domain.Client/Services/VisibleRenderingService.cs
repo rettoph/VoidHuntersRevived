@@ -92,19 +92,19 @@ namespace VoidHuntersRevived.Domain.Client.Services
             _primitiveBatch.AddTriangleIndex(in _indexBuffer[0]);
             _primitiveBatch.AddTriangleIndex(in _indexBuffer[2]);
             _primitiveBatch.AddTriangleIndex(in _indexBuffer[5]);
-
+            
             _primitiveBatch.AddTriangleIndex(in _indexBuffer[4]);
             _primitiveBatch.AddTriangleIndex(in _indexBuffer[5]);
             _primitiveBatch.AddTriangleIndex(in _indexBuffer[6]);
-
+            
             _primitiveBatch.AddTriangleIndex(in _indexBuffer[5]);
             _primitiveBatch.AddTriangleIndex(in _indexBuffer[4]);
             _primitiveBatch.AddTriangleIndex(in _indexBuffer[0]);
-
+            
             _primitiveBatch.AddTriangleIndex(in _indexBuffer[3]);
             _primitiveBatch.AddTriangleIndex(in _indexBuffer[0]);
             _primitiveBatch.AddTriangleIndex(in _indexBuffer[4]);
-
+            
             _primitiveBatch.AddTriangleIndex(in _indexBuffer[4]);
             _primitiveBatch.AddTriangleIndex(in _indexBuffer[7]);
             _primitiveBatch.AddTriangleIndex(in _indexBuffer[3]);
