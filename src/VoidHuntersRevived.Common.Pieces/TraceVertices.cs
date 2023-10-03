@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Common.Pieces
 {
     public struct TraceVertices : IDisposable
     {
-        public NativeDynamicArrayCast<TraceVertex> Items;
+        public NativeDynamicArrayCast<Vector2> Items;
 
         public void Dispose()
         {

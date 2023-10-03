@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Client.Services
             _primitiveBatch = fillPrimitiveBatch;
             _camera = camera;
             _screen = screen;
-            _indexBuffer = new short[8];
+            _indexBuffer = new short[10];
         }
 
         public void Begin(Color primaryColor, Color secondaryColor)
@@ -74,48 +74,85 @@ namespace VoidHuntersRevived.Domain.Client.Services
 
         private void Trace(ref TraceVertices vertices, ref Matrix transformation)
         {
-            _primitiveBatch.EnsureCapacity(8);
+            _primitiveBatch.EnsureCapacity(vertices.Items.count);
+            int offset1 = 0;
+            int offset2 = 5;
+            int placeholder = 0;
 
-            this.GetTraceVertexIndex(ref transformation, ref vertices.Items[0], out _indexBuffer[0]);
-            this.GetTraceVertexIndex(ref transformation, ref vertices.Items[1], out _indexBuffer[1]);
-            this.GetTraceVertexIndex(ref transformation, ref vertices.Items[2], out _indexBuffer[2]);
-            this.GetTraceVertexIndex(ref transformation, ref vertices.Items[3], out _indexBuffer[3]);
-            this.GetTraceVertexIndex(ref transformation, ref vertices.Items[4], out _indexBuffer[4]);
-            this.GetTraceVertexIndex(ref transformation, ref vertices.Items[5], out _indexBuffer[5]);
-            this.GetTraceVertexIndex(ref transformation, ref vertices.Items[6], out _indexBuffer[6]);
-            this.GetTraceVertexIndex(ref transformation, ref vertices.Items[7], out _indexBuffer[7]);
+            this.GetTraceVertexIndex(ref transformation, ref vertices.Items[offset1 + 0], true,  out _indexBuffer[offset1 + 0]);
+            this.GetTraceVertexIndex(ref transformation, ref vertices.Items[offset1 + 1], true,  out _indexBuffer[offset1 + 1]);
+            this.GetTraceVertexIndex(ref transformation, ref vertices.Items[offset1 + 2], true,  out _indexBuffer[offset1 + 2]);
+            this.GetTraceVertexIndex(ref transformation, ref vertices.Items[offset1 + 3], true,  out _indexBuffer[offset1 + 3]);
+            this.GetTraceVertexIndex(ref transformation, ref vertices.Items[offset1 + 4], false, out _indexBuffer[offset1 + 4]);
 
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[0]);
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[1]);
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[2]);
+            for (int i = 5; i < vertices.Items.count; i+=5)
+            {
+                this.GetTraceVertexIndex(ref transformation, ref vertices.Items[i + 0], true,  out _indexBuffer[offset2 + 0]);
+                this.GetTraceVertexIndex(ref transformation, ref vertices.Items[i + 1], true,  out _indexBuffer[offset2 + 1]);
+                this.GetTraceVertexIndex(ref transformation, ref vertices.Items[i + 2], true,  out _indexBuffer[offset2 + 2]);
+                this.GetTraceVertexIndex(ref transformation, ref vertices.Items[i + 3], true,  out _indexBuffer[offset2 + 3]);
+                this.GetTraceVertexIndex(ref transformation, ref vertices.Items[i + 4], false, out _indexBuffer[offset2 + 4]);
 
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[0]);
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[2]);
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[5]);
-            
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[4]);
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[5]);
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[6]);
-            
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[5]);
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[4]);
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[0]);
-            
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[3]);
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[0]);
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[4]);
-            
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[4]);
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[7]);
-            _primitiveBatch.AddTriangleIndex(in _indexBuffer[3]);
+                _primitiveBatch.AddTriangleIndex(in _indexBuffer[offset1 + 4]);
+                _primitiveBatch.AddTriangleIndex(in _indexBuffer[offset1 + 1]);
+                _primitiveBatch.AddTriangleIndex(in _indexBuffer[offset1 + 2]);
+
+                _primitiveBatch.AddTriangleIndex(in _indexBuffer[offset1 + 4]);
+                _primitiveBatch.AddTriangleIndex(in _indexBuffer[offset1 + 2]);
+                _primitiveBatch.AddTriangleIndex(in _indexBuffer[offset1 + 3]);
+
+                _primitiveBatch.AddTriangleIndex(in _indexBuffer[offset1 + 4]);
+                _primitiveBatch.AddTriangleIndex(in _indexBuffer[offset1 + 3]);
+                _primitiveBatch.AddTriangleIndex(in _indexBuffer[offset2 + 1]);
+
+                _primitiveBatch.AddTriangleIndex(in _indexBuffer[offset2 + 1]);
+                _primitiveBatch.AddTriangleIndex(in _indexBuffer[offset2 + 4]);
+                _primitiveBatch.AddTriangleIndex(in _indexBuffer[offset1 + 4]);
+
+                _primitiveBatch.AddTriangleIndex(in _indexBuffer[offset1 + 0]);
+                _primitiveBatch.AddTriangleIndex(in _indexBuffer[offset1 + 4]);
+                _primitiveBatch.AddTriangleIndex(in _indexBuffer[offset2 + 4]);
+
+                _primitiveBatch.AddTriangleIndex(in _indexBuffer[offset2 + 4]);
+                _primitiveBatch.AddTriangleIndex(in _indexBuffer[offset2 + 0]);
+                _primitiveBatch.AddTriangleIndex(in _indexBuffer[offset1 + 0]);
+
+                placeholder = offset1;
+                offset1 = offset2;
+                offset2 = placeholder;
+            }
+
+            //_primitiveBatch.AddTriangleIndex(in _indexBuffer[0]);
+            //_primitiveBatch.AddTriangleIndex(in _indexBuffer[1]);
+            //_primitiveBatch.AddTriangleIndex(in _indexBuffer[2]);
+            //
+            //_primitiveBatch.AddTriangleIndex(in _indexBuffer[0]);
+            //_primitiveBatch.AddTriangleIndex(in _indexBuffer[2]);
+            //_primitiveBatch.AddTriangleIndex(in _indexBuffer[5]);
+            //
+            //_primitiveBatch.AddTriangleIndex(in _indexBuffer[4]);
+            //_primitiveBatch.AddTriangleIndex(in _indexBuffer[5]);
+            //_primitiveBatch.AddTriangleIndex(in _indexBuffer[6]);
+            //
+            //_primitiveBatch.AddTriangleIndex(in _indexBuffer[5]);
+            //_primitiveBatch.AddTriangleIndex(in _indexBuffer[4]);
+            //_primitiveBatch.AddTriangleIndex(in _indexBuffer[0]);
+            //
+            //_primitiveBatch.AddTriangleIndex(in _indexBuffer[3]);
+            //_primitiveBatch.AddTriangleIndex(in _indexBuffer[0]);
+            //_primitiveBatch.AddTriangleIndex(in _indexBuffer[4]);
+            //
+            //_primitiveBatch.AddTriangleIndex(in _indexBuffer[4]);
+            //_primitiveBatch.AddTriangleIndex(in _indexBuffer[7]);
+            //_primitiveBatch.AddTriangleIndex(in _indexBuffer[3]);
 
         }
 
-        private void GetTraceVertexIndex(ref Matrix transformation, ref TraceVertex trace, out short index)
+        private void GetTraceVertexIndex(ref Matrix transformation, ref Vector2 trace, bool outer, out short index)
         {
             ref VertexVisible vertex = ref _primitiveBatch.NextVertex(out index);
-            Vector2.Transform(ref trace.Position, ref transformation, out vertex.Position);
-            vertex.Outer = trace.Outer;
+            Vector2.Transform(ref trace, ref transformation, out vertex.Position);
+            vertex.Outer = outer;
         }
 
         private void FillShape(in Shape shape, ref Matrix transformation)
