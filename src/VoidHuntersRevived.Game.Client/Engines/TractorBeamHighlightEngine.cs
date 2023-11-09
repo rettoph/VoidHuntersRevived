@@ -110,7 +110,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             ref Node node = ref _entities.QueryByGroupIndex<Node>(in groupIndex);
             ref Visible visible = ref _entities.QueryByGroupIndex<Visible>(in groupIndex);
 
-            Matrix transformation = node.Transformation.ToTransformationXnaMatrix();
+            Matrix transformation = node.XnaTransformation;
             _visibleRenderingService.Draw(in visible, ref transformation);
 
             if(_entities.TryQueryByGroupIndex<Sockets<SocketId>>(in groupIndex, out Sockets<SocketId> sockets))

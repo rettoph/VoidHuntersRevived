@@ -17,6 +17,10 @@ namespace VoidHuntersRevived.Common.Physics
 
     public interface ISpace
     {
+        event OnEventDelegate<IBody> OnBodyEnabled;
+        event OnEventDelegate<IBody> OnBodyDisabled;
+        event OnEventDelegate<IBody> OnBodyAwakeChanged;
+
         IBody GetOrCreateBody(in EntityId id);
         void DestroyBody(in EntityId id);
         IBody GetBody(in EntityId id);

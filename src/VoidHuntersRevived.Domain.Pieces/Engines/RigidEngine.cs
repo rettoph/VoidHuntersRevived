@@ -19,9 +19,7 @@ using VoidHuntersRevived.Common.Simulations.Engines;
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    internal sealed class RigidEngine : BasicEngine,
-        IOnSpawnEngine<Rigid>,
-        IReactOnRemoveEx<Rigid>
+    internal sealed class RigidEngine : BasicEngine
     {
         private readonly ISpace _space;
         private readonly IEntityService _entities;
@@ -32,15 +30,23 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             _space = space;
             _entities = entities;
             _logger = logger;
+
+            _space.OnBodyEnabled += this.HandleBodyEnabled;
         }
 
-        public void OnSpawn(EntityId id, ref Rigid rigid, in GroupIndex groupIndex)
+        private void HandleBodyEnabled(IBody body)
         {
-            Node node = _entities.QueryByGroupIndex<Node>(in groupIndex);
+            if(_entities.TryQueryById<Rigid>(body.Id, out GroupIndex groupIndex, out Rigid rigid) == false)
+            {
+                return;
+            }
 
-            IBody body = _space.GetOrCreateBody(node.TreeId);
+            if(_entities.TryQueryByGroupIndex<Node>(groupIndex, out Node node) == false)
+            {
+                return;
+            }
 
-            body.Create(id.VhId, rigid.Shapes[0], node.LocalLocation.Transformation);
+            body.Create(body.Id.VhId, rigid.Shapes[0], node.LocalLocation.Transformation);
         }
 
         public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Rigid> entities, ExclusiveGroupStruct groupID)

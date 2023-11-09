@@ -9,19 +9,20 @@ using VoidHuntersRevived.Common;
 using Guppy.Common.Collections;
 using VoidHuntersRevived.Common.Entities;
 using Svelto.ECS;
+using VoidHuntersRevived.Common.Entities.Descriptors;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
     internal partial class EntityService
     {
-        private readonly DoubleDictionary<Id<IEntityComponent>, Type, IVoidHuntersEntityDescriptorEngine> _descriptors;
+        private readonly DoubleDictionary<Id<VoidHuntersEntityDescriptor>, Type, IVoidHuntersEntityDescriptorEngine> _descriptors;
 
-        private IVoidHuntersEntityDescriptorEngine GetDescriptorEngine(Id<IEntityComponent> descriptorId)
+        private IVoidHuntersEntityDescriptorEngine GetDescriptorEngine(Id<VoidHuntersEntityDescriptor> descriptorId)
         {
             return _descriptors[descriptorId];
         }
 
-        IVoidHuntersEntityDescriptorEngine IEntityService.GetDescriptorEngine(Id<IEntityComponent> descriptorId)
+        IVoidHuntersEntityDescriptorEngine IEntityService.GetDescriptorEngine(Id<VoidHuntersEntityDescriptor> descriptorId)
         {
             return _descriptors[descriptorId];
         }

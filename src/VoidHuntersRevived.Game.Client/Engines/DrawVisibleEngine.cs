@@ -4,11 +4,13 @@ using Guppy.MonoGame.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Serilog;
 using Svelto.ECS;
+using System.Drawing;
 using VoidHuntersRevived.Common.Client.Services;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
+using VoidHuntersRevived.Common.Physics.Extensions.FixedPoint;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations;
@@ -57,26 +59,27 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in GameTimeTeam _param)
         {
+            var bounds = _camera.Frustum.ToBounds2D();
+
             foreach (ITeamDescriptorGroup teamDescriptorGroup in _teamDescriptorGroups[_param.Team.Id])
             {
                 var (statuses, visibles, nodes, count) = _entities.QueryEntities<EntityStatus, Visible, Node>(teamDescriptorGroup.GroupId);
 
                 _visibleRenderingService.Begin(teamDescriptorGroup.PrimaryColor, teamDescriptorGroup.SecondaryColor);
+
                 for (int index = 0; index < count; index++)
                 {
                     try
                     {
                         if (statuses[index].IsSpawned)
                         {
-                            Matrix transformation = nodes[index].Transformation.ToTransformationXnaMatrix();
-
-                            if (_camera.Frustum.Contains(transformation.GetBoudingSphere(5f)) == ContainmentType.Disjoint)
+                            ref Node node = ref nodes[index];
+                            Matrix transformation = node.XnaTransformation;
+                            
+                            if(bounds.Contains(transformation))
                             {
-                                continue;
+                                _visibleRenderingService.Draw(in visibles[index], ref transformation);
                             }
-
-
-                            _visibleRenderingService.Draw(in visibles[index], ref transformation);
                         }
                     }
                     catch (Exception e)

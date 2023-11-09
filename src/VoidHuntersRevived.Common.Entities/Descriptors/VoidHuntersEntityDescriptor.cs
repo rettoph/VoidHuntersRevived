@@ -19,15 +19,15 @@ using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Common.Entities.Descriptors
 {
-    public abstract class VoidHuntersEntityDescriptor : IDynamicEntityDescriptor, IEntityResource<IEntityComponent>
+    public abstract class VoidHuntersEntityDescriptor : IDynamicEntityDescriptor, IEntityResource<VoidHuntersEntityDescriptor>
     {
         private DynamicEntityDescriptor<BaseEntityDescriptor> _dynamicDescriptor;
         private readonly List<ComponentManager> _componentManagers;
         private EntityInitializerDelegate? _postInitializer;
 
-        private Id<IEntityComponent>? _id;
+        private Id<VoidHuntersEntityDescriptor>? _id;
         private string? _name;
-        public unsafe Id<IEntityComponent> Id
+        public unsafe Id<VoidHuntersEntityDescriptor> Id
         {
             get
             {
@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
                     uint128 nameHash = xxHash128.ComputeHash(this.GetType().AssemblyQualifiedName);
                     VhId* pNameHash = (VhId*)&nameHash;
 
-                    _id = new Id<IEntityComponent>(NameSpace<VoidHuntersEntityDescriptor>.Instance.Create(pNameHash[0]));
+                    _id = new Id<VoidHuntersEntityDescriptor>(NameSpace<VoidHuntersEntityDescriptor>.Instance.Create(pNameHash[0]));
                 }
                 return _id.Value;
             }

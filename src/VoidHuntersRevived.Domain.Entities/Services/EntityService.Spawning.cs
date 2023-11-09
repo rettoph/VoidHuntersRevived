@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             while (_added.TryDequeue(out EntityId id))
             {
-                Id<IEntityComponent> descriptorId = this.QueryById<Id<IEntityComponent>>(id, out GroupIndex groupIndex);
+                Id<VoidHuntersEntityDescriptor> descriptorId = this.QueryById<Id<VoidHuntersEntityDescriptor>>(id, out GroupIndex groupIndex);
                 this.GetDescriptorEngine(descriptorId).SoftSpawn(in id, groupIndex);
             }
         }
@@ -153,19 +153,19 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         private void SoftDespawnEntity(EntityId id)
         {
-            Id<IEntityComponent> descriptorId = this.QueryById<Id<IEntityComponent>>(id, out GroupIndex groupIndex);
+            Id<VoidHuntersEntityDescriptor> descriptorId = this.QueryById<Id<VoidHuntersEntityDescriptor>>(id, out GroupIndex groupIndex);
             this.GetDescriptorEngine(descriptorId).SoftDespawn(in id, groupIndex);
         }
 
         private void RevertSoftDespawnEntity(EntityId id)
         {
-            Id<IEntityComponent> descriptorId = this.QueryById<Id<IEntityComponent>>(id, out GroupIndex groupIndex);
+            Id<VoidHuntersEntityDescriptor> descriptorId = this.QueryById<Id<VoidHuntersEntityDescriptor>>(id, out GroupIndex groupIndex);
             this.GetDescriptorEngine(descriptorId).RevertSoftDespawn(in id, groupIndex);
         }
 
         private void HardDespawnEntity(EntityId id)
         {
-            Id<IEntityComponent> descriptorId = this.QueryById<Id<IEntityComponent>>(id, out GroupIndex groupIndex);
+            Id<VoidHuntersEntityDescriptor> descriptorId = this.QueryById<Id<VoidHuntersEntityDescriptor>>(id, out GroupIndex groupIndex);
             this.GetDescriptorEngine(descriptorId).HardDespawn(in id, groupIndex);
 
             this.Remove(id);

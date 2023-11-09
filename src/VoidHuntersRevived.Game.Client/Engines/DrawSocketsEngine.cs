@@ -21,6 +21,8 @@ using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using Guppy.MonoGame;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Physics.Components;
+using VoidHuntersRevived.Common.Client.Services;
+using System.Drawing;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -42,7 +44,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _entities = entities;
             _camera = camera;
             _primitiveBatch = primitiveBatch;
-            _jointShape = new ProjectedShape(camera, new[]
+            _jointShape = new PrimitiveShape(new[]
             {
                 new Vector2(-0.05f, -0.05f),
                 new Vector2(0f, 0f),
@@ -60,19 +62,21 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            _primitiveBatch.Begin(_screen.Camera);
+            var bounds = _camera.Frustum.ToBounds2D();
+
+            _primitiveBatch.Begin(_camera);
             foreach (ITeamDescriptorGroup teamDescriptorGroup in _teamDescriptorGroups[_param.Team.Id])
             {
                 var (statuses, nodes, socketLocationses, count) = _entities.QueryEntities<EntityStatus, Node, Sockets<Location>>(teamDescriptorGroup.GroupId);
                 for (uint index = 0; index < count; index++)
                 {
-                    if (_camera.Frustum.Contains(nodes[index].Transformation.GetBoudingSphere(5f)) == ContainmentType.Disjoint)
+                    Node node = nodes[index];
+                    if (bounds.Contains(node.XnaTransformation) == false)
                     {
                         continue;
                     }
 
                     Sockets<Location> socketLocations = socketLocationses[index];
-                    Node node = nodes[index];
                     for (int j = 0; j < socketLocations.Items.count; j++)
                     {
                         if (statuses[index].IsSpawned)
@@ -81,7 +85,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
                             _primitiveBatch.Trace(_jointShape, teamDescriptorGroup.SecondaryColor, transformationMatrix);
                         }
                     }
-
                 }
             }
             _primitiveBatch.End();

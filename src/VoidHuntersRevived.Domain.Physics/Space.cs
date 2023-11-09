@@ -15,6 +15,8 @@ namespace VoidHuntersRevived.Domain.Physics
 
         internal readonly AetherWorld _aether;
 
+        public event OnEventDelegate<IBody> OnBodyEnabled;
+        public event OnEventDelegate<IBody> OnBodyDisabled;
         public event OnEventDelegate<IBody> OnBodyAwakeChanged;
 
         public Space()
@@ -23,6 +25,10 @@ namespace VoidHuntersRevived.Domain.Physics
             _bodies = new Dictionary<VhId, Body>();
 
             _aether.BodyAwakeChanged += this.HandleBodyAwakeChanged;
+
+            this.OnBodyEnabled = null!;
+            this.OnBodyDisabled = null!;
+            this.OnBodyAwakeChanged = null!;
         }
 
         public IBody GetOrCreateBody(in EntityId id)

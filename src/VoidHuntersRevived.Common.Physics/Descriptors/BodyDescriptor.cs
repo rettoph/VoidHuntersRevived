@@ -19,7 +19,8 @@ namespace VoidHuntersRevived.Common.Physics.Descriptors
             this.ExtendWith(new ComponentManager[]
             {
                 new ComponentManager<Collision, CollisionComponentSerializer>(),
-                new ComponentManager<Location, LocationComponentSerializer>(),
+                new ComponentManager<Location, LocationComponentSerializer>(new Location()),
+                new ComponentManager<Enabled, EnabledComponentSerializer>(),
                 new ComponentManager<Awake, AwakeComponentSerializer>(new Awake(true)),
             });
         }

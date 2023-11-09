@@ -53,7 +53,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Initialize()
         {
-            foreach (IEngine engine in _engines)
+            foreach (IEngine engine in _engines.Sequence(InitializeSequence.Initialize))
             {
                 if (engine is ISubscriber subscriber)
                 {

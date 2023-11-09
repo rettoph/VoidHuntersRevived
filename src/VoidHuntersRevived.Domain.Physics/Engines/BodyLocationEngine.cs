@@ -17,8 +17,7 @@ using VoidHuntersRevived.Common.Simulations.Engines;
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
-    internal sealed class BodyLocationEngine : BasicEngine,
-        IReactOnAddAndRemoveEx<Location>, IStepEngine<Step>
+    internal sealed class BodyLocationEngine : BasicEngine, IStepEngine<Step>
     {
         private readonly IEntityService _entities;
         private readonly ISpace _space;
@@ -27,42 +26,19 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         {
             _entities = entities;
             _space = space;
+
+            _space.OnBodyEnabled += this.HandleBodyEnabled;
         }
 
         public string name { get; } = nameof(BodyLocationEngine);
 
-        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Location> entities, ExclusiveGroupStruct groupID)
-        {
-            var (locations, _) = entities;
-            var (ids, collisions, awakes, _) = _entities.QueryEntities<EntityId, Collision, Awake>(groupID);
-
-            for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
-            {
-                IBody body = _space.GetOrCreateBody(ids[index]);
-                body.CollisionCategories = collisions[index].Categories;
-                body.CollidesWith = collisions[index].CollidesWith;
-                body.SleepingAllowed = awakes[index].SleepingAllowed;
-                body.SetTransform(locations[index].Position, locations[index].Rotation);
-            }
-        }
-
-        public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Location> entities, ExclusiveGroupStruct groupID)
-        {
-            var (ids, _) = _entities.QueryEntities<EntityId>(groupID);
-
-            for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
-            {
-                _space.DestroyBody(ids[index]);
-            }
-        }
-
         public void Step(in Step _param)
         {
-            foreach (var ((ids, locations, awakes, count), _) in _entities.QueryEntities<EntityId, Location, Awake>())
+            foreach (var ((ids, locations, enableds, awakes, count), _) in _entities.QueryEntities<EntityId, Location, Enabled, Awake>())
             {
                 for (int i = 0; i < count; i++)
                 {
-                    if(awakes[i] == false)
+                    if(enableds[i] == false || awakes[i] == false)
                     {
                         continue;
                     }
@@ -74,6 +50,13 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                     location.Rotation = body.Rotation;
                 }
             }
+        }
+
+        private void HandleBodyEnabled(IBody body)
+        {
+            ref Collision collision = ref _entities.QueryById<Collision>(body.Id);
+            body.CollisionCategories = collision.Categories;
+            body.CollidesWith = collision.CollidesWith;
         }
     }
 }

@@ -210,5 +210,35 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             return this.entitiesDB.QueryEntities<T1, T2, T3, T4>(groups);
         }
+
+        public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1>()
+            where T1 : unmanaged, IEntityComponent
+        {
+            return this.entitiesDB.FindGroups<T1>();
+        }
+
+        public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2>()
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+        {
+            return this.entitiesDB.FindGroups<T1, T2>();
+        }
+
+        public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2, T3>()
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+            where T3 : unmanaged, IEntityComponent
+        {
+            return this.entitiesDB.FindGroups<T1, T2, T3>();
+        }
+
+        public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2, T3, T4>()
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+            where T3 : unmanaged, IEntityComponent
+            where T4 : unmanaged, IEntityComponent
+        {
+            return this.entitiesDB.FindGroups<T1, T2, T3, T4>();
+        }
     }
 }

@@ -13,6 +13,7 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.Physics;
+using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Enums;
 using VoidHuntersRevived.Common.Pieces.Events;
@@ -71,6 +72,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             {
                 return;
             }
+            if(_entities.TryQueryById<Enabled>(treeId, out Enabled enabled) == false || enabled == false)
+            {
+                return;
+            }
 
             IBody treeBody = _space.GetBody(treeId);
             ref var filter = ref _entities.GetFilter<Thrustable>(treeId, Helm.ThrustableFilterContextId);
@@ -89,12 +94,19 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         public void Step(in Step param)
         {
-            foreach (var ((ids, helms, count), groupId) in _entities.QueryEntities<EntityId, Helm>())
+            foreach (var ((ids, enableds, helms, count), groupId) in _entities.QueryEntities<EntityId, Enabled, Helm>())
             {
                 for (int i = 0; i < count; i++)
                 {
                     EntityId helmId = ids[i];
                     Helm helm = helms[i];
+                    Enabled enabled = enableds[i];
+
+                    if(enabled == false)
+                    {
+                        continue;
+                    }
+
                     IBody body = _space.GetBody(helmId);
                     ref var helmThrustables = ref _entities.GetFilter<Thrustable>(helmId, Helm.ThrustableFilterContextId);
 

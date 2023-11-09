@@ -29,14 +29,14 @@ namespace VoidHuntersRevived.Game.Ships.Engines
         public void Process(VhId eventId, Simulation_Begin data)
         {
             //_trees.Spawn(eventId.Create(1), Teams.TeamZero, EntityTypes.Chain, _pieces.All<ThrusterDescriptor>().First().EntityType, null);
-            _trees.Spawn(eventId.Create(int.MaxValue), Teams.TeamZero, EntityTypes.Chain, _blueprints.GetAll().First(), null);
+            //_trees.Spawn(eventId.Create(int.MaxValue), Teams.TeamZero, EntityTypes.Chain, _blueprints.GetAll().First(), null);
             //for(int j=0; j<1; j++)
             //{
             //    _trees.Spawn(eventId.Create(int.MaxValue), Teams.TeamZero, EntityTypes.Chain, EntityTypes.Pieces.HullTriangle);
             //}
 
             int i = 0;
-            int radius = 200;
+            int radius = 20;
             int step = 2;
             for (int x = -radius; x < radius; x += step)
             {

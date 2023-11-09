@@ -102,8 +102,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     }
 
                     ref Node node = ref nodes[index];
+                    Matrix transformation = node.XnaTransformation;
 
-                    Matrix transformation = node.Transformation.ToTransformationXnaMatrix();
                     _visibleRenderingService.Draw(in visibles[index], ref transformation);
                 }
             }

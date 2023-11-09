@@ -14,6 +14,7 @@ using Guppy.Attributes;
 using Guppy.Common.Attributes;
 using VoidHuntersRevived.Common.Simulations.Enums;
 using Serilog;
+using tainicom.Aether.Physics2D.Dynamics;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
@@ -35,6 +36,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             _logger = logger;
             _awakeChangedBodies = new Queue<IBody>();
 
+            _space.OnBodyEnabled += this.HandleBodyEnabled;
             _space.OnBodyAwakeChanged += this.HandleBodyAwakeChanged;
         }
 
@@ -64,6 +66,12 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                     _logger.Warning("{ClassName}::{MethodName} - Awake state changed to {AwakeValue} for body {BodyId}, but entity not found.", nameof(BodyAwakeEngine), nameof(Step), body.Awake, body.Id);
                 }
             }
+        }
+
+        private void HandleBodyEnabled(IBody body)
+        {
+            ref Awake awake = ref _entities.QueryById<Awake>(body.Id);
+            body.SleepingAllowed = awake.SleepingAllowed;
         }
 
         private void HandleBodyAwakeChanged(IBody args)

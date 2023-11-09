@@ -16,9 +16,11 @@ using Guppy.Common.Collections;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Domain.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Engines;
+using Guppy.Common.Attributes;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
+    [Sequence<InitializeSequence>(InitializeSequence.PreInitialize)]
     internal partial class EntityService : BasicEngine, IEntityService, IQueryingEntitiesEngine
     {
         private readonly IEngineService _engines;
@@ -37,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _logger = logger;
             _types = types;
             _scheduler = scheduler;
-            _descriptors = new DoubleDictionary<Id<IEntityComponent>, Type, IVoidHuntersEntityDescriptorEngine>();
+            _descriptors = new DoubleDictionary<Id<VoidHuntersEntityDescriptor>, Type, IVoidHuntersEntityDescriptorEngine>();
         }
 
         public EntitiesDB entitiesDB { get; set; } = null!;

@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public void Serialize(EntityId id, EntityWriter writer, SerializationOptions options)
         {
             Id<IEntityType> typeId = this.QueryById<Id<IEntityType>>(id, out GroupIndex groupIndex);
-            Id<IEntityComponent> descriptorId = this.QueryByGroupIndex<Id<IEntityComponent>>(in groupIndex);
+            Id<VoidHuntersEntityDescriptor> descriptorId = this.QueryByGroupIndex<Id<VoidHuntersEntityDescriptor>>(in groupIndex);
             
             writer.Write(id.VhId);
             writer.WriteStruct(typeId);

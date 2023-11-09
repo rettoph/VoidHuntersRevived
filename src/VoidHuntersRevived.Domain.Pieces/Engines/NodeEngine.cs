@@ -16,6 +16,7 @@ using Guppy.Common.Collections;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Common.Pieces.Events;
 using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Physics.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
@@ -61,9 +62,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
         }
 
-        public void OnSpawn(EntityId id, ref Node component, in GroupIndex groupIndex)
+        public void OnSpawn(EntityId id, ref Node node, in GroupIndex groupIndex)
         {
-            this.SetLocalTransformation(ref component, groupIndex);
+            this.SetLocalTransformation(ref node, groupIndex);
         }
 
         public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Node> entities, ExclusiveGroupStruct groupID)
@@ -106,7 +107,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
             if (!_entities.TryQueryByGroupIndex<Coupling>(groupIndex, out Coupling coupling) || coupling.SocketId == SocketId.Empty)
             {
-                node.LocalLocation.Transformation = FixMatrix.CreateTranslation(Fix64.Zero, Fix64.Zero, Fix64.Zero);
+                node.SetLocationTransformation(FixMatrix.Identity);
                 return;
             }
 
@@ -115,18 +116,18 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 ref Plug plug = ref _entities.QueryByGroupIndex<Plug>(groupIndex);
                 Socket socketNode = _sockets.GetSocket(coupling.SocketId);
 
-                node.LocalLocation.Transformation = plug.Location.Transformation.Invert() * socketNode.LocalTransformation;
+                node.SetLocationTransformation(plug.Location.Transformation.Invert() * socketNode.LocalTransformation);
             }
             catch (Exception ex)
             {
                 //TODO: Investigate what might cause this error
                 // When this happens a valid piece gets eaten and destroyed
                 // its the opposite of a dupe glitch
-                // I can only replicate it by spam clicking the tractor beam selection buton and
+                // I can only replicate it by spam clicking the tractor beam selection button and
                 // moving the mouse randomly. It doesnt occurre very often
                 // We set the transformation to zero so that the constructed rigid shape can still take form
                 // Without this it will default all vertices to 0,0 and fail an assert
-                node.LocalLocation.Transformation = FixMatrix.CreateTranslation(Fix64.Zero, Fix64.Zero, Fix64.Zero);
+                node.SetLocationTransformation(FixMatrix.Identity);
 
                 var id = _entities.QueryByGroupIndex<EntityId>(groupIndex);
                 _logger.Error(ex, "{ClassName}::{MethodName} - There was a fatal error attempting to set node transformation for node {NodeId}.", nameof(NodeEngine), nameof(SetLocalTransformation), id.VhId.Value);

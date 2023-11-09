@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Options;
 using VoidHuntersRevived.Common.Entities.Serialization;
@@ -98,37 +99,55 @@ namespace VoidHuntersRevived.Common.Entities.Services
             where T3 : unmanaged, IEntityComponent
             where T4 : unmanaged, IEntityComponent;
 
-        public GroupsEnumerable<T1> QueryEntities<T1>()
+        GroupsEnumerable<T1> QueryEntities<T1>()
             where T1 : unmanaged, IEntityComponent;
 
-        public GroupsEnumerable<T1, T2> QueryEntities<T1, T2>()
+        GroupsEnumerable<T1, T2> QueryEntities<T1, T2>()
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent;
 
-        public GroupsEnumerable<T1, T2, T3> QueryEntities<T1, T2, T3>()
+        GroupsEnumerable<T1, T2, T3> QueryEntities<T1, T2, T3>()
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent;
 
-        public GroupsEnumerable<T1, T2, T3, T4> QueryEntities<T1, T2, T3, T4>()
+        GroupsEnumerable<T1, T2, T3, T4> QueryEntities<T1, T2, T3, T4>()
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent
             where T4 : unmanaged, IEntityComponent;
 
-        public GroupsEnumerable<T1> QueryEntities<T1>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
+        GroupsEnumerable<T1> QueryEntities<T1>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
             where T1 : unmanaged, IEntityComponent;
 
-        public GroupsEnumerable<T1, T2> QueryEntities<T1, T2>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
+        GroupsEnumerable<T1, T2> QueryEntities<T1, T2>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent;
 
-        public GroupsEnumerable<T1, T2, T3> QueryEntities<T1, T2, T3>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
+        GroupsEnumerable<T1, T2, T3> QueryEntities<T1, T2, T3>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent;
 
-        public GroupsEnumerable<T1, T2, T3, T4> QueryEntities<T1, T2, T3, T4>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
+        GroupsEnumerable<T1, T2, T3, T4> QueryEntities<T1, T2, T3, T4>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+            where T3 : unmanaged, IEntityComponent
+            where T4 : unmanaged, IEntityComponent;
+
+        LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1>()
+            where T1 : unmanaged, IEntityComponent;
+
+        LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2>()
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent;
+
+        LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2, T3>()
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+            where T3 : unmanaged, IEntityComponent;
+
+        LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2, T3, T4>()
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent
@@ -136,7 +155,7 @@ namespace VoidHuntersRevived.Common.Entities.Services
         #endregion
 
         #region Descriptors
-        internal IVoidHuntersEntityDescriptorEngine GetDescriptorEngine(Id<IEntityComponent> descriptorId);
+        internal IVoidHuntersEntityDescriptorEngine GetDescriptorEngine(Id<VoidHuntersEntityDescriptor> descriptorId);
         #endregion
     }
 }
