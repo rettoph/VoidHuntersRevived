@@ -54,9 +54,8 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         private void HandleBodyEnabled(IBody body)
         {
-            ref Collision collision = ref _entities.QueryById<Collision>(body.Id);
-            body.CollisionCategories = collision.Categories;
-            body.CollidesWith = collision.CollidesWith;
+            ref Location location = ref _entities.QueryById<Location>(body.Id);
+            body.SetTransform(location.Position, location.Rotation);
         }
     }
 }

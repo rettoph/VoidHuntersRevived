@@ -172,7 +172,6 @@ namespace VoidHuntersRevived.Common.Pieces.Components
             float gridAngle = vertex.Angle(p1);
 
             return vertex + Vector2Helper.FromPolar(gridAngle + (angle / 2), MathF.Abs(AAS(angle / 2)));
-
         }
     }
 }

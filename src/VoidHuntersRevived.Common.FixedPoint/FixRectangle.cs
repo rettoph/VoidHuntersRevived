@@ -12,8 +12,6 @@ namespace VoidHuntersRevived.Common.FixedPoint
     /// <summary>
     /// Describes a 2D-FixRectangle. 
     /// </summary>
-    [DataContract]
-    [DebuggerDisplay("{DebugDisplayString,nq}")]
     public struct FixRectangle
     {
         private static FixRectangle emptyFixRectangle = new FixRectangle();
@@ -103,6 +101,12 @@ namespace VoidHuntersRevived.Common.FixedPoint
         {
             return this.Left < transformation.M41 && transformation.M41 < this.Right
                 && this.Top < transformation.M42 && transformation.M42 < this.Bottom;
+        }
+
+        public bool Contains(FixVector2 position)
+        {
+            return this.Left < position.X && position.X < this.Right
+                && this.Top < position.Y && position.Y < this.Bottom;
         }
     }
 }

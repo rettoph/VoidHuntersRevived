@@ -5,6 +5,7 @@ using Svelto.ECS;
 using System.Net.Sockets;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.Physics;
@@ -61,30 +62,33 @@ namespace VoidHuntersRevived.Game.Ships.Engines
             ref var filter = ref _tractorBeamEmitters.GetTractorableFilter(tractorBeamEmitterId);
             foreach (var (indices, groupId) in filter)
             {
-                var (entityIds, _) = _entities.QueryEntities<EntityId>(groupId);
+                var (entityIds, statuses, _) = _entities.QueryEntities<EntityId, EntityStatus>(groupId);
 
                 for (int i = 0; i< indices.count; i++)
                 {
-                    ref EntityId tractorableId = ref entityIds[indices[i]];
-                    IBody targetBody = _space.GetBody(in tractorableId);
-
-                    EntityId targetId = _entities.GetId(tractorableId.VhId);
-                    ref Tree target = ref _entities.QueryById<Tree>(targetId);
-
-                    Location targetHeadChildLocation = _entities.QueryById<Plug>(target.HeadId).Location;
-
-                    if (_sockets.TryGetClosestOpenSocket(tractorBeamEmitterId, tactical.Value, out var openSocketNode))
+                    if (statuses[indices[i]].IsSpawned)
                     {
-                        FixMatrix potentialTransformation = targetHeadChildLocation.Transformation.Invert() * openSocketNode.Transformation;
-                        FixVector2 potentialPosition = FixVector2.Transform(FixVector2.Zero, potentialTransformation);
+                        ref EntityId tractorableId = ref entityIds[indices[i]];
+                        IBody targetBody = _space.GetBody(in tractorableId);
 
-                        targetBody.SetTransform(potentialPosition, potentialTransformation.Radians());
+                        EntityId targetId = _entities.GetId(tractorableId.VhId);
+                        ref Tree target = ref _entities.QueryById<Tree>(targetId);
 
-                        return;
+                        Location targetHeadChildLocation = _entities.QueryById<Plug>(target.HeadId).Location;
+
+                        if (_sockets.TryGetClosestOpenSocket(tractorBeamEmitterId, tactical.Value, out var openSocketNode))
+                        {
+                            FixMatrix potentialTransformation = targetHeadChildLocation.Transformation.Invert() * openSocketNode.Transformation;
+                            FixVector2 potentialPosition = FixVector2.Transform(FixVector2.Zero, potentialTransformation);
+
+                            targetBody.SetTransform(potentialPosition, potentialTransformation.Radians());
+
+                            return;
+                        }
+
+                        FixVector2 targetHeadChildNodePosition = FixVector2.Transform(FixVector2.Zero, targetHeadChildLocation.Transformation * FixMatrix.CreateRotationZ(targetBody.Rotation));
+                        targetBody.SetTransform(tactical.Value - targetHeadChildNodePosition, targetBody.Rotation);
                     }
-
-                    FixVector2 targetHeadChildNodePosition = FixVector2.Transform(FixVector2.Zero, targetHeadChildLocation.Transformation * FixMatrix.CreateRotationZ(targetBody.Rotation));
-                    targetBody.SetTransform(tactical.Value - targetHeadChildNodePosition, targetBody.Rotation);
                 }
             }
         }

@@ -13,13 +13,16 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics;
+using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    internal sealed class RigidEngine : BasicEngine
+    internal sealed class RigidEngine : BasicEngine,
+        IOnSpawnEngine<Rigid>
     {
         private readonly ISpace _space;
         private readonly IEntityService _entities;
@@ -36,17 +39,28 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         private void HandleBodyEnabled(IBody body)
         {
-            if(_entities.TryQueryById<Rigid>(body.Id, out GroupIndex groupIndex, out Rigid rigid) == false)
+            if(_entities.HasAny<Tree>(body.Id.EGID.groupID) == false)
             {
                 return;
             }
 
-            if(_entities.TryQueryByGroupIndex<Node>(groupIndex, out Node node) == false)
+            ref var filter = ref _entities.GetFilter<Node>(body.Id, Tree.NodeFilterContextId);
+            foreach (var (indices, group) in filter)
             {
-                return;
-            }
+                if(_entities.HasAny<Rigid>(group))
+                {
+                    var (nodes, rigids, _) = _entities.QueryEntities<Node, Rigid>(group);
 
-            body.Create(body.Id.VhId, rigid.Shapes[0], node.LocalLocation.Transformation);
+                    for (int i = 0; i < indices.count; i++)
+                    {
+                        uint index = indices[i];
+                        Node node = nodes[index];
+                        Rigid rigid = rigids[index];
+
+                        this.CreateFixtures(body, node, rigid);
+                    }
+                }
+            }
         }
 
         public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Rigid> entities, ExclusiveGroupStruct groupID)
@@ -61,8 +75,29 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
                 if (_space.TryGetBody(node.TreeId, out IBody? body))
                 {
-                    body.Destroy(id.VhId);
+                    body.Destroy(id.VhId.Create(0));
                 }
+            }
+        }
+
+        public void OnSpawn(EntityId id, ref Rigid component, in GroupIndex groupIndex)
+        {
+            Node node = _entities.QueryByGroupIndex<Node>(groupIndex);
+
+            if (_entities.TryQueryById<Enabled>(node.TreeId, out Enabled enabled) == true && enabled)
+            {
+                IBody body = _space.GetBody(node.TreeId);
+                this.CreateFixtures(body, node, component);
+            }
+        }
+
+        private void CreateFixtures(IBody body, Node node, Rigid rigid)
+        {
+            for(int i=0;i<rigid.Shapes.count; i++)
+            {
+                VhId rigidShapeId = node.Id.VhId.Create(i);
+                _logger.Verbose("{ClassName}::{MethodName} - Creating fixture for tree {TreeId}; {RigidShapeId}", nameof(RigidEngine), nameof(CreateFixtures), body.Id.VhId, rigidShapeId);
+                body.Create(rigidShapeId, node.Id, rigid.Shapes[i], node.LocalLocation.Transformation);
             }
         }
     }

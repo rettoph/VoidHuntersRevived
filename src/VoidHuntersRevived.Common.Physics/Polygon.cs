@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Extensions.System;
+using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Common.Physics
 {
@@ -14,6 +15,7 @@ namespace VoidHuntersRevived.Common.Physics
     {
         public Fix64 Density;
         public NativeDynamicArrayCast<FixVector2> Vertices;
+        public readonly VhId Id;
 
         public FixVector2 Centeroid
         {
@@ -37,6 +39,13 @@ namespace VoidHuntersRevived.Common.Physics
         {
             this.Density = density;
             this.Vertices = vertices;
+
+            this.Id = NameSpace<Polygon>.Instance;
+
+            for(int i=0; i<vertices.count; i++)
+            {
+                this.Id = this.Id.Create(HashBuilder<FixVector2, FixVector2>.Instance.Calculate(vertices[i]));
+            }
         }
 
         public void Dispose()

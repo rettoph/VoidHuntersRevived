@@ -64,6 +64,7 @@ namespace VoidHuntersRevived.Domain.Physics
             }
         }
 
+        public bool Enabled { get; private set; }
         public bool Awake => _aether.Awake;
         public bool SleepingAllowed
         {
@@ -81,6 +82,7 @@ namespace VoidHuntersRevived.Domain.Physics
             _aether.LinearDamping = (Fix64)1m;
 
             this.Id = id;
+            this.Enabled = true;
         }
 
         public void SetTransform(FixVector2 position, Fix64 rotation)
@@ -119,10 +121,11 @@ namespace VoidHuntersRevived.Domain.Physics
             _aether.ApplyLinearImpulse(impulse.AsAetherVector2());
         }
 
-        public IFixture Create(VhId id, Polygon polygon, FixMatrix transformation)
+        public IFixture Create(VhId id, EntityId entityId, Polygon polygon, FixMatrix transformation)
         {
             Fixture fixture = new Fixture(
                 id,
+                entityId,
                 this,
                 polygon.ToShape(transformation), 
                 (Category)this.CollisionCategories.Flags,
@@ -158,6 +161,7 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public void Dispose()
         {
+            this.Enabled = false;
             _space._aether.Remove(_aether);
         }
     }

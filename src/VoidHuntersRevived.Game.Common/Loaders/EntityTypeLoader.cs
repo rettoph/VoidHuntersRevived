@@ -1,4 +1,5 @@
-﻿using Guppy.Attributes;
+﻿using FixedMath.NET;
+using Guppy.Attributes;
 using Svelto.ECS;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,11 @@ namespace VoidHuntersRevived.Game.Common.Loaders
                 {
                     Categories = CollisionGroups.ShipCategories,
                     CollidesWith = CollisionGroups.ShipCollidesWith
+                });
+                configuration.InitializeComponent<PhysicsBubble>(new PhysicsBubble()
+                {
+                    Enabled = true,
+                    Radius = (Fix64)25
                 });
             });
 

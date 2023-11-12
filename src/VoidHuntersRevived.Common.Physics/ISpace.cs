@@ -21,11 +21,13 @@ namespace VoidHuntersRevived.Common.Physics
         event OnEventDelegate<IBody> OnBodyDisabled;
         event OnEventDelegate<IBody> OnBodyAwakeChanged;
 
-        IBody GetOrCreateBody(in EntityId id);
-        void DestroyBody(in EntityId id);
+        void EnableBody(in EntityId id);
+        void DisableBody(in EntityId id);
+
         IBody GetBody(in EntityId id);
         IEnumerable<IBody> AllBodies();
         bool TryGetBody(in EntityId id, [MaybeNullWhen(false)] out IBody body);
+        int BodyCount();
 
         void QueryAABB(QueryReportFixtureDelegate callback, ref AABB aabb);
         void Step(Step step);

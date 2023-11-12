@@ -9,6 +9,7 @@ using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Dynamics;
 using tainicom.Aether.Physics2D.Dynamics;
 using tainicom.Aether.Physics2D.Collision.Shapes;
+using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Physics
 {
@@ -19,11 +20,13 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public VhId Id { get; }
 
+        public EntityId EntityId { get; }
+
         public IBody Body => _body;
 
         public FixVector2 Centeroid { get; set; }
 
-        public Fixture(VhId id, Body body, Shape shape, Category colissionCategories, Category collidesWith)
+        public Fixture(VhId id, EntityId entityId, Body body, Shape shape, Category colissionCategories, Category collidesWith)
         {
             _body = body;
             _aether = _body._aether.CreateFixture(shape);
@@ -32,6 +35,7 @@ namespace VoidHuntersRevived.Domain.Physics
             _aether.CollidesWith = collidesWith;
 
             this.Id = id;
+            this.EntityId = entityId;
         }
 
         public void Dispose()

@@ -56,47 +56,45 @@ namespace VoidHuntersRevived.Game.Ships.Services
 
             _space.QueryAABB(fixture =>
             {
-                // BEGIN NODE DISTANCE CHECK
-                if(!_entities.TryGetId(fixture.Id, out EntityId queryNodeId))
+                if(_entities.IsSpawned(fixture.EntityId))
                 {
-                    return true;
+                    ref Node queryNode = ref _entities.QueryById<Node>(fixture.EntityId, out GroupIndex nodeGroupIndex);
+                    ref Rigid queryRigid = ref _entities.QueryByGroupIndex<Rigid>(nodeGroupIndex);
+
+                    FixVector2 queryNodePosition = FixVector2.Transform(queryRigid.Centeroid, queryNode.Transformation);
+                    FixVector2.Distance(ref target, ref queryNodePosition, out Fix64 queryNodeDistance);
+
+                    if (queryNodeDistance > minDistance)
+                    { // Invalid Target - The distance is further away than the previously closest valid target
+                        return true;
+                    }
+
+                    ref Tree tree = ref _entities.QueryById<Tree>(queryNode.TreeId, out GroupIndex treeGroupIndex);
+                    if (_entities.TryQueryByGroupIndex(treeGroupIndex, out Tractorable tractorable) && tractorable.TractorBeamEmitter == default)
+                    { // Target resides within a tractorable tree, so we want to grab the head
+                        callbackTargetNode = tree.HeadId == queryNode.Id ? queryNode : _entities.QueryById<Node>(tree.HeadId);
+                    }
+                    else if (queryNode.TreeId == tractorBeamEmitterId && tree.HeadId != queryNode.Id)
+                    { // The node belongs to the current tractor beam emitter's ship and is not the head
+                        callbackTargetNode = queryNode;
+                    }
+                    else
+                    { // Target is not in any way tractorable, we can disregard it
+                        return true;
+                    }
+
+                    if (!_entities.IsSpawned(treeGroupIndex))
+                    { // Tree has been soft despawned
+                        return true;
+                    }
+
+                    minDistance = queryNodeDistance;
+
+
+                    return true; // Ensure we only check a maximum of 5 fixtures all the way through
                 }
 
-                ref Node queryNode = ref _entities.QueryById<Node>(queryNodeId, out GroupIndex nodeGroupIndex);
-                ref Rigid queryRigid = ref _entities.QueryByGroupIndex<Rigid>(nodeGroupIndex);
-
-                FixVector2 queryNodePosition = FixVector2.Transform(queryRigid.Centeroid, queryNode.Transformation);
-                FixVector2.Distance(ref target, ref queryNodePosition, out Fix64 queryNodeDistance);
-
-                if (queryNodeDistance > minDistance)
-                { // Invalid Target - The distance is further away than the previously closest valid target
-                    return true;
-                }
-
-                ref Tree tree = ref _entities.QueryById<Tree>(queryNode.TreeId, out GroupIndex treeGroupIndex);
-                if(_entities.TryQueryByGroupIndex(treeGroupIndex, out Tractorable tractorable) && tractorable.TractorBeamEmitter == default)
-                { // Target resides within a tractorable tree, so we want to grab the head
-                    callbackTargetNode = tree.HeadId == queryNode.Id ? queryNode : _entities.QueryById<Node>(tree.HeadId);
-                }
-                else if(queryNode.TreeId == tractorBeamEmitterId && tree.HeadId != queryNode.Id)
-                { // The node belongs to the current tractor beam emitter's ship and is not the head
-                    callbackTargetNode = queryNode;
-                }
-                else
-                { // Target is not in any way tractorable, we can disregard it
-                    return true;
-                }
-
-                if(!_entities.IsSpawned(treeGroupIndex))
-                { // Tree has been soft despawned
-                    return true;
-                }
-
-                minDistance = queryNodeDistance;
-
-
-                return true; // Ensure we only check a maximum of 5 fixtures all the way through
-
+                return false;
             }, ref aabb);
 
             if (callbackTargetNode is null)

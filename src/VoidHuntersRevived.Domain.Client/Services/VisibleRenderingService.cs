@@ -85,7 +85,8 @@ namespace VoidHuntersRevived.Domain.Client.Services
             this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[offset1 + 3], true,  out _indexBuffer[offset1 + 3]);
             this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[offset1 + 4], false, out _indexBuffer[offset1 + 4]);
 
-            for (int i = 5; i < vertices.Vertices.count; i+=5)
+            int vertexCount = vertices.Vertices.count;
+            for (int i = 5; i < vertexCount; i+=5)
             {
                 this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[i + 0], true,  out _indexBuffer[offset2 + 0]);
                 this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[i + 1], true,  out _indexBuffer[offset2 + 1]);

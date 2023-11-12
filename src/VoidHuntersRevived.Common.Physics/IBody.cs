@@ -24,10 +24,11 @@ namespace VoidHuntersRevived.Common.Physics
         CollisionGroup CollisionCategories { get; set; }
         CollisionGroup CollidesWith { get; set; }
 
+        bool Enabled { get; }
         bool Awake { get; }
         bool SleepingAllowed { get; set; }
 
-        IFixture Create(VhId id, Polygon polygon, FixMatrix transformation);
+        IFixture Create(VhId id, EntityId entityId, Polygon polygon, FixMatrix transformation);
         void Destroy(IFixture fixture);
         void Destroy(VhId id);
 

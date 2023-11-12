@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Game.Client.Loaders
         {
             services.RegisterType<InvokeGarbageCollectionComponent>().As<IGameComponent>().SingleInstance();
             services.RegisterType<ScreenComponent>().As<IGameComponent>().InstancePerLifetimeScope();
-            services.RegisterType<Camera2D>().As<Camera>().AsSelf().InstancePerLifetimeScope();
+            services.RegisterType<Camera2D>().As<Camera>().AsSelf().SingleInstance();
         }
     }
 }
