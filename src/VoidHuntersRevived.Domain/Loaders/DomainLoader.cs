@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Domain.Loaders
                 var path = fileTypePaths.GetFullPath(FileType.AppData, Path.Combine("logs", $"log_{DateTime.Now.ToString("yyyy-dd-M")}.txt"));
                 DirectoryHelper.EnsureDirectoryExists(path);
 
-                config.MinimumLevel.Is(Serilog.Events.LogEventLevel.Verbose);
+                config.MinimumLevel.Is(Serilog.Events.LogEventLevel.Debug);
 
                 config.Destructure.AsScalar<VhId>();
 
@@ -39,9 +39,6 @@ namespace VoidHuntersRevived.Domain.Loaders
                     )
                     .WriteTo.Console(outputTemplate: "[{PeerType}][{SimulationType}][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
             });
-
-
-            services.RegisterType<LaunchComponent>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             services.RegisterType<Fix64Converter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<FixPolarConverter>().As<JsonConverter>().SingleInstance();

@@ -1,4 +1,5 @@
 ﻿using Guppy;
+using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.MonoGame;
 using Microsoft.Xna.Framework;
@@ -13,7 +14,8 @@ using VoidHuntersRevived.Game.Client.Messages;
 
 namespace VoidHuntersRevived.Game.Client.GameComponents
 {
-    internal class InvokeGarbageCollectionComponent : IGameComponent,
+    [AutoLoad]
+    internal class InvokeGarbageCollectionComponent : IGuppyComponent,
         ISubscriber<Input_Invoke_Garbage_Collection>
     {
         private ILogger _logger;
@@ -25,8 +27,9 @@ namespace VoidHuntersRevived.Game.Client.GameComponents
             _logger = logger;
         }
 
-        public void Initialize()
+        public void Initialize(IGuppy guppy)
         {
+            //
         }
 
         public void Process(in Guid messageId, in Input_Invoke_Garbage_Collection message)

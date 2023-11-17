@@ -17,7 +17,6 @@ namespace VoidHuntersRevived.Game.Server
 
         public ServerGameGuppy(ServerPeer server, NetScope netScope, ISimulationService simulations) : base(simulations)
         {
-            this.Visible = false;
             this.Server = server;
             this.NetScope = netScope;
 

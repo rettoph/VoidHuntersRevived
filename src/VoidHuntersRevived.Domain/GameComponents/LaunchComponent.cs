@@ -1,5 +1,7 @@
 ﻿using Guppy;
+using Guppy.Attributes;
 using Guppy.Common;
+using Guppy.MonoGame;
 using Guppy.Providers;
 using Microsoft.Xna.Framework;
 using System;
@@ -11,7 +13,8 @@ using VoidHuntersRevived.Common.Messages;
 
 namespace VoidHuntersRevived.Domain.GameComponents
 {
-    internal sealed class LaunchComponent : IGameComponent,
+    [AutoLoad]
+    internal sealed class LaunchComponent : IGuppyComponent,
         ISubscriber<Launch>
     {
         private readonly IGuppy _guppy;
@@ -25,9 +28,9 @@ namespace VoidHuntersRevived.Domain.GameComponents
             bus.Subscribe(this);
         }
 
-        public void Initialize()
+        public void Initialize(IGuppy guppy)
         {
-            // throw new NotImplementedException();
+            //
         }
 
         public void Process(in Guid messageId, in Launch message)

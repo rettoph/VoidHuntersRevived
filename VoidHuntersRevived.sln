@@ -124,6 +124,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MonoGame", "MonoGame", "{4B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.Framework.DesktopGL", "libraries\Guppy\libraries\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj", "{EB4E031B-1106-4D41-AA08-B9E0425155DF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guppy.MonoGame.Common", "libraries\Guppy\src\Guppy.MonoGame.Common\Guppy.MonoGame.Common.csproj", "{5B75F4A1-82E6-4F55-9000-669D84730DCA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1040,6 +1042,30 @@ Global
 		{EB4E031B-1106-4D41-AA08-B9E0425155DF}.SlowSubmissionRelease|x64.Build.0 = Release|Any CPU
 		{EB4E031B-1106-4D41-AA08-B9E0425155DF}.SlowSubmissionRelease|x86.ActiveCfg = Release|Any CPU
 		{EB4E031B-1106-4D41-AA08-B9E0425155DF}.SlowSubmissionRelease|x86.Build.0 = Release|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.Debug|x64.Build.0 = Debug|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.Debug|x86.Build.0 = Debug|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.Release|x64.ActiveCfg = Release|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.Release|x64.Build.0 = Release|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.Release|x86.ActiveCfg = Release|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.Release|x86.Build.0 = Release|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.SlowSubmissionDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.SlowSubmissionDebug|Any CPU.Build.0 = Debug|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.SlowSubmissionDebug|x64.ActiveCfg = Debug|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.SlowSubmissionDebug|x64.Build.0 = Debug|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.SlowSubmissionDebug|x86.ActiveCfg = Debug|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.SlowSubmissionDebug|x86.Build.0 = Debug|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.SlowSubmissionRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.SlowSubmissionRelease|Any CPU.Build.0 = Release|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.SlowSubmissionRelease|x64.ActiveCfg = Release|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.SlowSubmissionRelease|x64.Build.0 = Release|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.SlowSubmissionRelease|x86.ActiveCfg = Release|Any CPU
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA}.SlowSubmissionRelease|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1095,6 +1121,7 @@ Global
 		{7C6A4353-DB93-4CAB-B161-F13D7A7AFA73} = {D96DE0C0-0199-4613-9C86-4D5A8A7EDC3A}
 		{4B96B90C-16F6-4D1A-A44B-56BFEA97B629} = {3A698F3F-DCBE-489C-A0EA-547213E89575}
 		{EB4E031B-1106-4D41-AA08-B9E0425155DF} = {4B96B90C-16F6-4D1A-A44B-56BFEA97B629}
+		{5B75F4A1-82E6-4F55-9000-669D84730DCA} = {DA5CAD48-BEB9-4316-814A-820EA2A21081}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FCB1CA3-2B6C-469F-B569-084FC0B57488}

@@ -18,8 +18,6 @@ namespace VoidHuntersRevived.Game.Client.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            services.RegisterType<InvokeGarbageCollectionComponent>().As<IGameComponent>().SingleInstance();
-            services.RegisterType<ScreenComponent>().As<IGameComponent>().InstancePerLifetimeScope();
             services.RegisterType<Camera2D>().As<Camera>().AsSelf().SingleInstance();
         }
     }
