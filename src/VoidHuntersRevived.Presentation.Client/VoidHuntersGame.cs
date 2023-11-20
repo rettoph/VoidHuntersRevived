@@ -7,6 +7,7 @@ using VoidHuntersRevived.Game.Server;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Game.Common;
+using Guppy.MonoGame;
 
 namespace VoidHuntersRevived.Application.Client
 {
@@ -14,6 +15,7 @@ namespace VoidHuntersRevived.Application.Client
     {
         private readonly GraphicsDeviceManager _graphics;
         private GuppyEngine _engine;
+        private GameLoop _loop;
 
 
         // https://community.monogame.net/t/start-in-maximized-window/12264
@@ -23,6 +25,7 @@ namespace VoidHuntersRevived.Application.Client
 
         public VoidHuntersGame()
         {
+            _loop = null!;
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
@@ -65,6 +68,7 @@ namespace VoidHuntersRevived.Application.Client
                     .ConfigureNetwork()
                     .ConfigureResources();
             });
+            _loop = _engine.Guppies.Create<GameLoop>();
 
             _engine.Guppies.Create<ServerGameGuppy>();
             _engine.Guppies.Create<MultiplayerGameGuppy>();
@@ -111,7 +115,7 @@ namespace VoidHuntersRevived.Application.Client
             // TODO: Add your update logic here
             base.Update(gameTime);
 
-            _engine.Update(gameTime);
+            _loop.Update(gameTime);
         }
 
         /// <summary>
@@ -124,7 +128,7 @@ namespace VoidHuntersRevived.Application.Client
 
             GraphicsDevice.Clear(Color.Black);
 
-            _engine.Draw(gameTime);
+            _loop.Draw(gameTime);
         }
     }
 }

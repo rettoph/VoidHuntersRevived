@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Game.Client
             this.Client.Connect(host, port, Claim.Create("username", "Rettoph", ClaimAccessibility.Public));
         }
 
-        protected override void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 

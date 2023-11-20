@@ -8,7 +8,6 @@ using Svelto.ECS.Schedulers;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Domain.Entities.Configurators;
 using VoidHuntersRevived.Domain.Entities.Engines;
 using VoidHuntersRevived.Domain.Entities.Serialization.Json;
 using VoidHuntersRevived.Domain.Entities.Services;

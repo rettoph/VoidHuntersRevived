@@ -7,20 +7,20 @@ using Guppy.MonoGame.Providers;
 using VoidHuntersRevived.Common.Messages;
 using VoidHuntersRevived.Game.Common;
 
-namespace VoidHuntersRevived.Game.Client.Loaders
+namespace VoidHuntersRevived.Game.Client.GuppyComponents
 {
     [AutoLoad]
     [GuppyFilter<MainMenuGuppy>()]
-    internal sealed class MenuLoader : IGuppyLoader
+    internal sealed class MenuComponent : IGuppyComponent
     {
         private IMenuProvider _menus;
 
-        public MenuLoader(IMenuProvider menus)
+        public MenuComponent(IMenuProvider menus)
         {
             _menus = menus;
         }
 
-        public void Load(IGuppy guppy)
+        public void Initialize(IGuppy guppy)
         {
             _menus.Get(Menus.Main).Add(new[]
             {

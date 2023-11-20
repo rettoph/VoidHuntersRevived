@@ -14,16 +14,16 @@ using VoidHuntersRevived.Domain.Pieces.Loaders;
 using VoidHuntersRevived.Game.Ships.Loaders;
 using VoidHuntersRevived.Game.Common.Loaders;
 
-namespace VoidHuntersRevived.Domain
+namespace VoidHuntersRevived.Game.Loaders
 {
     [AutoLoad]
-    internal sealed class GuppyConfigurator : IGuppyConfigurator
+    internal sealed class AssemblyLoader : IAssemblyLoader
     {
-        public void Configure(GuppyConfiguration configuration)
+        public void ConfigureAssemblies(IAssemblyProvider assemblies)
         {
-            configuration.Assemblies.Load(typeof(DomainLoader).Assembly);
-            configuration.Assemblies.Load(typeof(EntityTypeLoader).Assembly);
-            configuration.Assemblies.Load(typeof(ShipsServiceLoader).Assembly);
+            assemblies.Load(typeof(DomainLoader).Assembly);
+            assemblies.Load(typeof(EntityTypeLoader).Assembly);
+            assemblies.Load(typeof(ShipsServiceLoader).Assembly);
         }
     }
 }

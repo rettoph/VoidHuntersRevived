@@ -22,14 +22,14 @@ namespace VoidHuntersRevived.Game
             this.Simulations.Initialize();
         }
 
-        protected override void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
             this.Simulations.Update(gameTime);
         }
 
-        protected override void Draw(GameTime gameTime)
+        public override void Draw(GameTime gameTime)
         {
             this.Simulations.Draw(gameTime);
 
