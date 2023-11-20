@@ -15,10 +15,12 @@ using VoidHuntersRevived.Common.FixedPoint;
 using Guppy.Common.Collections;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Components;
+using Guppy.Common.Attributes;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
+    [Sequence<StepSequence>(StepSequence.PostResourceManagerUpdate)]
     internal class BodyPhysicsBubbleEngine : BasicEngine, IStepEngine<Step>, IOnDespawnEngine<Enabled>
     {
         private static readonly Fix64 Two = (Fix64)2;

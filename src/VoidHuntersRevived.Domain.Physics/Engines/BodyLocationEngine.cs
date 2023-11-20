@@ -17,6 +17,7 @@ using VoidHuntersRevived.Common.Simulations.Engines;
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
+    [Sequence<StepSequence>(StepSequence.PostResourceManagerUpdate)]
     internal sealed class BodyLocationEngine : BasicEngine, IStepEngine<Step>
     {
         private readonly IEntityService _entities;

@@ -12,7 +12,7 @@ using VoidHuntersRevived.Game.Common;
 
 namespace VoidHuntersRevived.Game.Client
 {
-    public class MainMenuGuppy : FrameableGuppy
+    public class MainMenuGuppy : MonoGameGuppy
     {
         private readonly Menu _menu;
 

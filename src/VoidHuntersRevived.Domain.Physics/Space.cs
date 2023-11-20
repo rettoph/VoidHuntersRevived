@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Physics
         {
             if (_bodies.TryGetValue(id.VhId, out Body? cached) == false)
             {
-                _logger.Debug("{ClassName}::{MethodName} - Enabling {Id}", nameof(Space), nameof(EnableBody), id.VhId);
+                _logger.Verbose("{ClassName}::{MethodName} - Enabling {Id}", nameof(Space), nameof(EnableBody), id.VhId);
                 Body body = new Body(this, id);
                 _bodies.Add(id.VhId, body);
                 this.OnBodyAwakeChanged(body);
@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Domain.Physics
         {
             if(_bodies.Remove(id.VhId, out var body))
             {
-                _logger.Debug("{ClassName}::{MethodName} - Disabling {Id}", nameof(Space), nameof(EnableBody), id.VhId);
+                _logger.Verbose("{ClassName}::{MethodName} - Disabling {Id}", nameof(Space), nameof(EnableBody), id.VhId);
                 body!.Dispose();
                 this.OnBodyDisabled?.Invoke(body);
             }

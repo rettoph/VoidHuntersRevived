@@ -79,7 +79,7 @@ namespace VoidHuntersRevived.Domain.Physics
             _fixtures = new Dictionary<VhId, Fixture>();
             _aether.Tag = this;
             _aether.AngularDamping = (Fix64)1m;
-            _aether.LinearDamping = (Fix64)1m;
+            _aether.LinearDamping = (Fix64)0.25m;
 
             this.Id = id;
             this.Enabled = true;

@@ -28,5 +28,10 @@ namespace VoidHuntersRevived.Common
         {
             return new FixPolar(polar.Length, polar.Radians + radians);
         }
+
+        public static FixPolar operator *(FixPolar polar, Fix64 ratio)
+        {
+            return new FixPolar(polar.Length * ratio, polar.Radians);
+        }
     }
 }

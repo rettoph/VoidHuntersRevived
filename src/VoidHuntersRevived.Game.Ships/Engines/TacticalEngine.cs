@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
@@ -10,6 +11,7 @@ using VoidHuntersRevived.Game.Ships.Events;
 namespace VoidHuntersRevived.Game.Ships.Engines
 {
     [AutoLoad]
+    [Sequence<StepSequence>(StepSequence.PreStep)]
     internal sealed class TacticalEngine : BasicEngine,
         IEventEngine<Tactical_SetTarget>,
         IStepEngine<Step>

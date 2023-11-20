@@ -30,7 +30,7 @@ using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Common.Simulations.Enums;
+using Guppy.MonoGame.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Game.Client.Messages;
 
@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [SimulationTypeFilter(SimulationType.Lockstep)]
-    [Sequence<DrawEngineSequence>(DrawEngineSequence.PostDraw)]
+    [Sequence<DrawSequence>(DrawSequence.PostDraw)]
     internal sealed class DrawLockstepWireframeEngine : BasicEngine, IStepEngine<GameTimeTeam>,
         ISubscriber<Input_Toggle_LockstepWireframe>
     {

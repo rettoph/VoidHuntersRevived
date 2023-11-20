@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
             {
                 initializer.Init(new Location()
                 {
-                    Position = new FixVector2(5, 5)
+                    Position = new FixVector2(0, 0)
                 });
 
             });

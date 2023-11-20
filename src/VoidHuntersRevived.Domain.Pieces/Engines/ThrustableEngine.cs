@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common.Attributes;
 using Microsoft.Xna.Framework;
 using Svelto.ECS;
 using System;
@@ -24,6 +25,7 @@ using VoidHuntersRevived.Domain.Pieces.Services;
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
+    [Sequence<StepSequence>(StepSequence.Step)]
     internal class ThrustableEngine : BasicEngine,
         IReactOnAddEx<Thrustable>,
         IEventEngine<Tree_Clean>,

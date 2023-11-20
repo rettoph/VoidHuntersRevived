@@ -63,7 +63,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 _enginesRoot.AddEngine(engine);
             }
 
-            _stepEngines = _engines.CreateSequencedStepEnginesGroup<Step, StepSequence>(StepSequence.PostEntitySubmit);
+            _stepEngines = _engines.CreateSequencedStepEnginesGroup<Step, StepSequence>(StepSequence.Step);
         }
 
         public void Dispose()

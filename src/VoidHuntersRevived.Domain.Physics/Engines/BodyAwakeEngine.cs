@@ -12,14 +12,14 @@ using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
 using Guppy.Attributes;
 using Guppy.Common.Attributes;
-using VoidHuntersRevived.Common.Simulations.Enums;
+using Guppy.MonoGame.Common.Enums;
 using Serilog;
 using tainicom.Aether.Physics2D.Dynamics;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
-    [Sequence<StepSequence>(StepSequence.Cleanup)]
+    [Sequence<StepSequence>(StepSequence.PostResourceManagerUpdate)]
     internal sealed class BodyAwakeEngine : BasicEngine, IStepEngine<Step>
     {
         public string name { get; } = nameof(BodyAwakeEngine);

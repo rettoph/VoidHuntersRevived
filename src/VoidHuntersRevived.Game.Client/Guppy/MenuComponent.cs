@@ -7,7 +7,7 @@ using Guppy.MonoGame.Providers;
 using VoidHuntersRevived.Common.Messages;
 using VoidHuntersRevived.Game.Common;
 
-namespace VoidHuntersRevived.Game.Client.GuppyComponents
+namespace VoidHuntersRevived.Game.Client.Guppy
 {
     [AutoLoad]
     [GuppyFilter<MainMenuGuppy>()]

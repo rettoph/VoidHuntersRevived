@@ -20,7 +20,7 @@ using VoidHuntersRevived.Common.Ships.Components;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Common.Simulations.Enums;
+using Guppy.MonoGame.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Game.Common;
 using static VoidHuntersRevived.Common.Resources;
@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [SimulationTypeFilter(SimulationType.Predictive)]
-    [Sequence<DrawEngineSequence>(DrawEngineSequence.PreDraw)]
+    [Sequence<DrawSequence>(DrawSequence.PreDraw)]
     internal sealed class DrawActiveThrustableEngine : BasicEngine, IStepEngine<GameTimeTeam>
     {
         private readonly short[] _indexBuffer;

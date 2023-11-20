@@ -15,13 +15,13 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Common.Simulations.Enums;
+using Guppy.MonoGame.Common.Enums;
 using VoidHuntersRevived.Game.Client.Messages;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [Sequence<DrawEngineSequence>(DrawEngineSequence.PostDraw)]
+    [Sequence<DrawSequence>(DrawSequence.PostDraw)]
     [SimulationTypeFilter(SimulationType.Predictive)]
     internal class DrawFpsEngine : BasicEngine, IStepEngine<GameTime>,
         ISubscriber<Input_Toggle_FPS>

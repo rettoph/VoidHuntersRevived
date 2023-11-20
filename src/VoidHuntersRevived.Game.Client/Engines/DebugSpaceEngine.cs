@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations.Attributes;
-using VoidHuntersRevived.Common.Simulations.Enums;
+using Guppy.MonoGame.Common.Enums;
 using VoidHuntersRevived.Common.Simulations;
 using Microsoft.Xna.Framework;
 using Svelto.ECS;
@@ -19,7 +19,7 @@ using VoidHuntersRevived.Common.Physics;
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [Sequence<DrawEngineSequence>(DrawEngineSequence.PostDraw)]
+    [Sequence<DrawSequence>(DrawSequence.PostDraw)]
     [SimulationTypeFilter(SimulationType.Predictive)]
     public class DebugSpaceEngine : BasicEngine, IStepEngine<GameTime>
     {

@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
@@ -13,6 +14,7 @@ using VoidHuntersRevived.Common.Simulations.Engines;
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
+    [Sequence<StepSequence>(StepSequence.PreStep)]
     internal sealed class TreeEngine : BasicEngine,
         IOnSpawnEngine<Tree>,
         IOnDespawnEngine<Tree>,

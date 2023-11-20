@@ -9,7 +9,7 @@
       },
       "Shapes": [
         {
-          "Density": 1,
+          "Density": 0.5,
           "Vertices": [
             {
               "X": 0,

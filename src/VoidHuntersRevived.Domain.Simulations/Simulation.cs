@@ -14,8 +14,9 @@ using Guppy.Network;
 using Guppy.Common;
 using Guppy.Network.Enums;
 using VoidHuntersRevived.Common.Entities.Extensions;
-using VoidHuntersRevived.Common.Simulations.Enums;
+using Guppy.MonoGame.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Utilities;
+using Guppy.MonoGame.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
@@ -56,8 +57,8 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.logger = this.Scope.Resolve<ILogger>();
             this._publishers = EventPublisher.BuildPublishers(this.Engines, this.logger);
 
-            _drawEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<GameTime, DrawEngineSequence>(DrawEngineSequence.Draw);
-            _teamDrawEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<GameTimeTeam, DrawEngineSequence>(DrawEngineSequence.Draw);
+            _drawEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<GameTime, DrawSequence>(DrawSequence.Draw);
+            _teamDrawEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<GameTimeTeam, DrawSequence>(DrawSequence.Draw);
         }
 
         public virtual void Initialize(ISimulationService simulations)

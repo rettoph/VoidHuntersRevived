@@ -13,44 +13,34 @@ using Guppy.MonoGame.Common;
 using Microsoft.Xna.Framework;
 using Guppy.Common.Attributes;
 using Guppy.MonoGame.Common.Enums;
-using VoidHuntersRevived.Game.Server;
-using Guppy.Network.Identity.Providers;
-using Guppy.Network.Identity;
 using Guppy.Enums;
 
-namespace VoidHuntersRevived.Game.Client.GuppyComponents
+namespace VoidHuntersRevived.Game.Client.Guppy
 {
     [AutoLoad]
-    [GuppyFilter<ServerGameGuppy>]
+    [GuppyFilter<MultiplayerGameGuppy>]
     [Sequence<InitializeSequence>(InitializeSequence.PreInitialize)]
     [Sequence<UpdateSequence>(UpdateSequence.PostUpdate)]
-    internal class ServerPeerComponent : IGuppyComponent, IGuppyUpdateable
+    internal class ClientPeerComponent : IGuppyComponent, IGuppyUpdateable
     {
-        public readonly ServerPeer _server;
+        public readonly ClientPeer _client;
         public readonly NetScope _scope;
 
-        public ServerPeerComponent(ServerPeer server, NetScope scope)
+        public ClientPeerComponent(ClientPeer client, NetScope scope)
         {
-            _server = server;
+            _client = client;
             _scope = scope;
         }
 
         public void Initialize(IGuppy guppy)
         {
-            _server.Bind(_scope, NetScopeIds.Game);
-            _server.Start(1337);
-
-            _server.Users.OnUserConnected += this.HandleUserConnected;
+            _client.Start();
+            _client.Bind(_scope, NetScopeIds.Game);
         }
 
         public void Update(GameTime gameTime)
         {
-            _server.Flush();
-        }
-
-        private void HandleUserConnected(IUserProvider sender, User args)
-        {
-            _server.Scopes[NetScopeIds.Game].Users.Add(args);
+            _client.Flush();
         }
     }
 }

@@ -10,18 +10,19 @@ using Svelto.ECS;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Common.Simulations.Enums;
+using Guppy.MonoGame.Common.Enums;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [SimulationTypeFilter(SimulationType.Predictive)]
-    [Sequence<DrawEngineSequence>(DrawEngineSequence.PreDraw)]
+    [SimulationTypeFilter(SimulationType.Lockstep)]
+    [Sequence<DrawSequence>(DrawSequence.PreDraw)]
     internal sealed class CameraEngine : BasicEngine, IStepEngine<GameTime>,
         ISubscriber<CursorScroll>
     {
         private readonly Camera2D _camera;
         private readonly IScreen _screen;
+        private Vector2 _offset;
 
         public CameraEngine(IScreen screen, Camera2D camera)
         {
@@ -39,23 +40,25 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             if(Keyboard.GetState().IsKeyDown(Keys.Up))
             {
-                _camera.TargetPosition -= Vector2.UnitY * (float)_param.ElapsedGameTime.TotalSeconds;
+                _offset -= Vector2.UnitY * (float)_param.ElapsedGameTime.TotalSeconds;
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
             {
-                _camera.TargetPosition += Vector2.UnitY * (float)_param.ElapsedGameTime.TotalSeconds;
+                _offset += Vector2.UnitY * (float)_param.ElapsedGameTime.TotalSeconds;
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
-                _camera.TargetPosition -= Vector2.UnitX * (float)_param.ElapsedGameTime.TotalSeconds;
+                _offset -= Vector2.UnitX * (float)_param.ElapsedGameTime.TotalSeconds;
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
             {
-                _camera.TargetPosition += Vector2.UnitX * (float)_param.ElapsedGameTime.TotalSeconds;
+                _offset += Vector2.UnitX * (float)_param.ElapsedGameTime.TotalSeconds;
             }
+
+            _camera.TargetPosition = _offset;
         }
 
         public void Process(in Guid messageId, in CursorScroll message)

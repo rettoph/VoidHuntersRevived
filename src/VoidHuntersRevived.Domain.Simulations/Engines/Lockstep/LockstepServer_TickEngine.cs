@@ -16,6 +16,8 @@ using Guppy.Network.Enums;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using Serilog;
+using Guppy.Common.Attributes;
+using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 {

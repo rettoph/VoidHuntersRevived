@@ -21,13 +21,13 @@ using VoidHuntersRevived.Common.Ships.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Common.Simulations.Enums;
+using Guppy.MonoGame.Common.Enums;
 using static VoidHuntersRevived.Common.Resources;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [Sequence<DrawEngineSequence>(DrawEngineSequence.PostDraw)]
+    [Sequence<DrawSequence>(DrawSequence.PostDraw)]
     [SimulationTypeFilter(SimulationType.Predictive)]
     internal class TractorBeamHighlightEngine : BasicEngine, IStepEngine<GameTime>
     {

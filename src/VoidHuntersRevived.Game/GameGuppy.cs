@@ -6,7 +6,7 @@ using Autofac;
 
 namespace VoidHuntersRevived.Game
 {
-    public abstract class GameGuppy : FrameableGuppy, IGameGuppy
+    public abstract class GameGuppy : MonoGameGuppy, IGameGuppy
     {
     }
 }

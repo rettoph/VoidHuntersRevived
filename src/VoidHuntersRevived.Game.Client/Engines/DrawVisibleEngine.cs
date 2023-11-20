@@ -16,15 +16,16 @@ using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Common.Simulations.Enums;
+using Guppy.MonoGame.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Game.Common;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [SimulationTypeFilter(SimulationType.Predictive)]
-    [Sequence<DrawEngineSequence>(DrawEngineSequence.Draw)]
+    [GuppyFilter<LocalGameGuppy>]
+    //[SimulationTypeFilter(SimulationType.Predictive)]
+    [Sequence<DrawSequence>(DrawSequence.Draw)]
     internal sealed class DrawVisibleEngine : BasicEngine, IStepEngine<GameTimeTeam>
     {
         private readonly short[] _indexBuffer;
