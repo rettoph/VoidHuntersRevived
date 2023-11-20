@@ -12,39 +12,5 @@ namespace VoidHuntersRevived.Game.Server
 {
     public sealed class ServerGameGuppy : GameGuppy
     {
-        public readonly ServerPeer Server;
-        public readonly NetScope NetScope;
-
-        public ServerGameGuppy(ServerPeer server, NetScope netScope, ISimulationService simulations) : base(simulations)
-        {
-            this.Server = server;
-            this.NetScope = netScope;
-
-            this.Server.Users.OnUserConnected += this.HandleUserConnected;
-        }
-
-        public override void Initialize(ILifetimeScope scope)
-        {
-            this.Server.Bind(this.NetScope, NetScopeIds.Game);
-
-            this.Server.Start(1337);
-
-
-            this.Simulations.Configure(SimulationType.Lockstep);
-
-            base.Initialize(scope);
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-
-            this.Server.Flush();
-        }
-
-        private void HandleUserConnected(IUserProvider sender, User args)
-        {
-            this.Server.Scopes[NetScopeIds.Game].Users.Add(args);
-        }
     }
 }

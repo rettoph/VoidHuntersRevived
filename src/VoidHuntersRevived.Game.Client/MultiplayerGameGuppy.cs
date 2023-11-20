@@ -18,20 +18,14 @@ namespace VoidHuntersRevived.Game.Client
     public class MultiplayerGameGuppy : LocalGameGuppy
     {
         public readonly ClientPeer Client;
-        public readonly NetScope NetScope;
 
-        public MultiplayerGameGuppy(ClientPeer client, NetScope netScope, ISimulationService simulations) : base(simulations)
+        public MultiplayerGameGuppy(ClientPeer client)
         {
             this.Client = client;
-            this.NetScope = netScope;
         }
 
         public override void Initialize(ILifetimeScope scope)
         {
-            this.Client.Start();
-
-            this.Client.Bind(this.NetScope, NetScopeIds.Game);
-
             base.Initialize(scope);
 
             this.Connect("localhost", 1337);
@@ -40,13 +34,6 @@ namespace VoidHuntersRevived.Game.Client
         public void Connect(string host, int port)
         {
             this.Client.Connect(host, port, Claim.Create("username", "Rettoph", ClaimAccessibility.Public));
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-
-            this.Client.Flush();
         }
     }
 }

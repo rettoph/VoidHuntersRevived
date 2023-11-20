@@ -9,6 +9,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 {
     internal sealed partial class SimulationService : ISimulationService
     {
+        private bool _configured;
         private bool _initialized;
         private readonly IBus _bus;
         private readonly ILifetimeScope _scope;
@@ -41,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
         public void Configure(SimulationType simulationTypeFlags)
         {
-            if (_initialized)
+            if (_configured || _initialized)
             {
                 throw new InvalidOperationException();
             }
@@ -61,6 +62,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
                 _types.Add(simulation.Type);
                 _reversed.Insert(0, simulation);
             }
+
+            _configured = true;
         }
 
         public void Initialize()
@@ -68,6 +71,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             if (_initialized)
             {
                 throw new InvalidOperationException();
+            }
+
+            if (_configured == false)
+            {
+                throw new InvalidOperationException($"{nameof(SimulationService)}::{nameof(Initialize)} - Ensure {nameof(Configure)} is called before running {nameof(Initialize)}");
             }
 
             foreach (ISimulation simulation in _simulations.Values)
