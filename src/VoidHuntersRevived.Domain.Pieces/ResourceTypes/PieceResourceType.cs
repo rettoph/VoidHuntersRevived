@@ -8,13 +8,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Pieces;
 
 namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes
 {
     [AutoLoad]
-    internal class PieceResourceType : ResourceType<Piece>
+    internal class PieceResourceType : SimpleResourceType<Piece>
     {
         private readonly IFileService _files;
 
@@ -23,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes
             _files = files;
         }
 
-        protected override bool TryResolve(Resource<Piece> resource, string input, string root, out Piece value)
+        protected override bool TryResolve(Resource<Piece> resource, string root, string input, out Piece value)
         {
             IFile<Piece> piece = _files.Get<Piece>(
                 FileType.Source,

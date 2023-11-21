@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Game.Client.Guppy
     [GuppyFilter<MultiplayerGameGuppy>]
     [Sequence<InitializeSequence>(InitializeSequence.PreInitialize)]
     [Sequence<UpdateSequence>(UpdateSequence.PostUpdate)]
-    internal class ClientPeerComponent : IGuppyComponent, IGuppyUpdateable
+    internal class ClientPeerComponent : IGuppyComponent, IUpdateableComponent
     {
         public readonly ClientPeer _client;
         public readonly NetScope _scope;

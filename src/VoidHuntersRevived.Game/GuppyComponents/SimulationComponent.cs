@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Game.GuppyComponents
     [Sequence<InitializeSequence>(InitializeSequence.PostInitialize)]
     [Sequence<UpdateSequence>(UpdateSequence.Update)]
     [Sequence<DrawSequence>(DrawSequence.Draw)]
-    internal class SimulationComponent : IGuppyComponent, IGuppyUpdateable, IGuppyDrawable
+    internal class SimulationComponent : IGuppyComponent, IUpdateableComponent, IDrawableComponent
     {
         private readonly ISimulationService _simulations;
 

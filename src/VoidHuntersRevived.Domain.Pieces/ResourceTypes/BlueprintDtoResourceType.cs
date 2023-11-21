@@ -10,11 +10,12 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Pieces;
 using Guppy.Files.Services;
+using System.Text.Json;
 
 namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes
 {
     [AutoLoad]
-    internal class BlueprintDtoResourceType : ResourceType<BlueprintDto>
+    internal class BlueprintDtoResourceType : SimpleResourceType<BlueprintDto>
     {
         private readonly IFileService _files;
 
@@ -25,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes
             _files = files;
         }
 
-        protected override bool TryResolve(Resource<BlueprintDto> resource, string input, string root, out BlueprintDto value)
+        protected override bool TryResolve(Resource<BlueprintDto> resource, string root, string input, out BlueprintDto value)
         {
             IFile<BlueprintDto> blueprint = _files.Get<BlueprintDto>(
                 FileType.Source,

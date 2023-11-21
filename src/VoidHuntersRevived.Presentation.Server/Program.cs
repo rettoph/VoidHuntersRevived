@@ -18,7 +18,7 @@ var engine = new GuppyEngine(VoidHuntersRevivedGame.Company, VoidHuntersRevivedG
             .ConfigureResources();
     });
 
-var guppy = (IGuppyUpdateable)engine.Guppies.Create<ServerGameGuppy>();
+var guppy = (IUpdateableComponent)engine.Guppies.Create<ServerGameGuppy>();
 
 var source = new CancellationTokenSource();
 
