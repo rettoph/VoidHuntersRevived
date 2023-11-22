@@ -12,5 +12,9 @@ namespace VoidHuntersRevived.Game.Server
 {
     public sealed class ServerGameGuppy : GameGuppy
     {
+        public override void Draw(GameTime gameTime)
+        {
+            //base.Draw(gameTime);
+        }
     }
 }

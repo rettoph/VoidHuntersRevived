@@ -17,6 +17,10 @@ namespace VoidHuntersRevived.Domain.Physics
 
         internal readonly AetherWorld _aether;
 
+        public int BodyCount => _aether.BodyList.Count;
+
+        public int ContactCount => _aether.ContactCount;
+
         public event OnEventDelegate<IBody> OnBodyEnabled;
         public event OnEventDelegate<IBody> OnBodyDisabled;
         public event OnEventDelegate<IBody> OnBodyAwakeChanged;
@@ -59,11 +63,6 @@ namespace VoidHuntersRevived.Domain.Physics
         public IBody GetBody(in EntityId id)
         {
             return _bodies[id.VhId];
-        }
-
-        public int BodyCount()
-        {
-            return _bodies.Count;
         }
 
         public void QueryAABB(QueryReportFixtureDelegate callback, ref AABB aabb)

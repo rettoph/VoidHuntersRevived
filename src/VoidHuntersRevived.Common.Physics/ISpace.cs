@@ -17,6 +17,9 @@ namespace VoidHuntersRevived.Common.Physics
 
     public interface ISpace
     {
+        int BodyCount { get; }
+        int ContactCount { get; }
+
         event OnEventDelegate<IBody> OnBodyEnabled;
         event OnEventDelegate<IBody> OnBodyDisabled;
         event OnEventDelegate<IBody> OnBodyAwakeChanged;
@@ -27,7 +30,6 @@ namespace VoidHuntersRevived.Common.Physics
         IBody GetBody(in EntityId id);
         IEnumerable<IBody> AllBodies();
         bool TryGetBody(in EntityId id, [MaybeNullWhen(false)] out IBody body);
-        int BodyCount();
 
         void QueryAABB(QueryReportFixtureDelegate callback, ref AABB aabb);
         void Step(Step step);
