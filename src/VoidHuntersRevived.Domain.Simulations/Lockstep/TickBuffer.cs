@@ -23,16 +23,16 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
             public void Add(Node child)
             {
-                Node head = this;
+                Node parent = this;
 
-                while (head.TryAdd(child) == false)
+                while (parent.TryAdd(child) == false)
                 {
-                    if (head.Child is null)
+                    if (parent.Child is null)
                     {
                         break;
                     }
 
-                    head = head.Child;
+                    parent = parent.Child;
                 }
             }
 
@@ -93,6 +93,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public Tick? Tail => _tail?.Data;
         public Tick? Popped { get; private set; }
 
+        public int Count { get; private set; }
+
         public Tick? this[int index]
         {
             get
@@ -132,6 +134,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                 }
 
                 this.Popped = tick;
+                this.Count--;
                 return true;
             }
 
@@ -152,7 +155,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             if (_head is null)
             {
                 _head = node;
-                UpdateTail();
+                this.UpdateTail();
+                this.Count++;
                 return;
             }
 
@@ -161,12 +165,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                 var old = _head;
                 _head = node;
                 _head.Add(old);
-                UpdateTail();
+                this.UpdateTail();
+                this.Count++;
                 return;
             }
 
             _head.Add(node);
             this.UpdateTail();
+            this.Count++;
         }
 
         private void UpdateTail()
@@ -183,6 +189,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         {
             _head = null;
             _tail = null;
+            this.Count = 0;
         }
     }
 }

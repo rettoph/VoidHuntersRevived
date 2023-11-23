@@ -240,5 +240,19 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             return this.entitiesDB.FindGroups<T1, T2, T3, T4>();
         }
+
+        public int CalculateTotal<T>()
+            where T : unmanaged, IEntityComponent
+        {
+            var groups = this.FindGroups<T>();
+            int total = 0;
+
+            foreach(var ((_, count), _) in this.QueryEntities<T>(groups))
+            {
+                total += count;
+            }
+
+            return total;
+        }
     }
 }

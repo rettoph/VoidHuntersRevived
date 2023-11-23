@@ -30,11 +30,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
     {
         private readonly IBus _bus;
         private readonly List<EventDto> _inputs;
-        private readonly int _stepsPerTick;
-        private int _stepsSinceTick;
         private TimeSpan _timeSinceStep;
         private TimeSpan _stepTimeSpan;
         private Step _step;
+
+        internal readonly int _stepsPerTick;
+        internal int _stepsSinceTick;
 
         public LockstepSimulation_Server(
             ISettingProvider settings,

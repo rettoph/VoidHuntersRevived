@@ -152,6 +152,9 @@ namespace VoidHuntersRevived.Common.Entities.Services
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent
             where T4 : unmanaged, IEntityComponent;
+
+        int CalculateTotal<T>()
+            where T : unmanaged, IEntityComponent;
         #endregion
 
         #region Descriptors

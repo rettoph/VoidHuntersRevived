@@ -3,6 +3,7 @@ using Guppy.Attributes;
 using Guppy.Common.Autofac;
 using Guppy.Loaders;
 using LiteNetLib;
+using System.Runtime.CompilerServices;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Constants;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
@@ -11,6 +12,8 @@ using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 using VoidHuntersRevived.Domain.Simulations.Predictive;
 using VoidHuntersRevived.Domain.Simulations.Services;
+
+[assembly: InternalsVisibleTo("VoidHuntersRevived.Domain.Debugging")]
 
 namespace VoidHuntersRevived.Domain.Simulations.Loaders
 {

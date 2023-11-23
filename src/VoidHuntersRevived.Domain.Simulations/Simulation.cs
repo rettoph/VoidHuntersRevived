@@ -16,7 +16,6 @@ using Guppy.Network.Enums;
 using VoidHuntersRevived.Common.Entities.Extensions;
 using Guppy.MonoGame.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Utilities;
-using Guppy.MonoGame.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
@@ -32,6 +31,8 @@ namespace VoidHuntersRevived.Domain.Simulations
         public readonly IEngineService Engines;
         public readonly ITeamService Teams;
         public readonly ILifetimeScope Scope;
+
+        public Step CurrentStep { get; private set; }
 
         SimulationType ISimulation.Type => this.Type;
         ILifetimeScope ISimulation.Scope => this.Scope;
@@ -59,6 +60,8 @@ namespace VoidHuntersRevived.Domain.Simulations
 
             _drawEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<GameTime, DrawSequence>(DrawSequence.Draw);
             _teamDrawEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<GameTimeTeam, DrawSequence>(DrawSequence.Draw);
+
+            this.CurrentStep = new Step();
         }
 
         public virtual void Initialize(ISimulationService simulations)
@@ -98,6 +101,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         protected virtual void DoStep(Step step)
         {
             this.Engines.Step(step);
+            this.CurrentStep = step;
         }
 
         protected virtual void Revert(EventDto @event)

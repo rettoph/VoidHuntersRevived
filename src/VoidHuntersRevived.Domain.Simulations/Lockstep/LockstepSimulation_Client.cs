@@ -27,10 +27,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         IDisposable
     {
         private readonly NetScope _netScope;
-        private readonly TickBuffer _ticks;
-        private readonly int _stepsPerTick;
-        private int _stepsSinceTick;
         private Step _step;
+
+        internal readonly TickBuffer _ticks;
+        internal readonly int _stepsPerTick;
+        internal int _stepsSinceTick;
+        private TimeSpan _timeSinceStep;
+        private TimeSpan _stepTimeSpan;
 
         public LockstepSimulation_Client(
             NetScope netScope,
@@ -44,11 +47,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _ticks = ticks;
             _stepsSinceTick = 0;
             _stepsPerTick = settings.Get<int>(Settings.StepsPerTick).Value;
+            _stepTimeSpan = TimeSpan.FromSeconds((float)stepInterval);
             _step = new Step()
             {
                 ElapsedTime = stepInterval,
                 TotalTime = stepInterval
             };
+        }
+
+        public override void Update(GameTime realTime)
+        {
+            _timeSinceStep += realTime.ElapsedGameTime;
+
+            base.Update(realTime);
         }
 
         protected override bool TryGetNextStep(GameTime realTime, [MaybeNullWhen(false)] out Step step)
@@ -64,6 +75,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                 return false;
             }
 
+            if (_timeSinceStep < _stepTimeSpan && _ticks.Count == 0)
+            {
+                step = null;
+                return false;
+            }
+
             _step.TotalTime += _step.ElapsedTime;
             step = _step;
             return true;
@@ -74,6 +91,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             base.DoStep(step);
 
             _stepsSinceTick++;
+            _timeSinceStep -= _stepTimeSpan;
         }
 
         protected override bool TryGetNextTick(Tick current, [MaybeNullWhen(false)] out Tick next)
