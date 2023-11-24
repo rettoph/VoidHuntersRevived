@@ -13,14 +13,15 @@ namespace VoidHuntersRevived.Domain.Serialization.Json
     {
         public override Fix64 Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            Fix64 value = (Fix64)reader.GetDecimal();
+            double doubleValue = reader.GetDouble();
+            Fix64 fix64Value = (Fix64)doubleValue;
 
-            return value;
+            return fix64Value;
         }
 
         public override void Write(Utf8JsonWriter writer, Fix64 value, JsonSerializerOptions options)
         {
-            throw new NotImplementedException();
+            writer.WriteNumberValue((double)value);
         }
     }
 }

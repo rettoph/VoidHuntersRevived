@@ -41,12 +41,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             ISettingProvider settings,
             ILifetimeScope scope) : base(scope)
         {
-            Fix64 stepInterval = settings.Get<Fix64>(Settings.StepInterval).Value;
+            Fix64 stepInterval = settings.Get(Settings.StepInterval).Value;
 
             _netScope = netScope;
             _ticks = ticks;
             _stepsSinceTick = 0;
-            _stepsPerTick = settings.Get<int>(Settings.StepsPerTick).Value;
+            _stepsPerTick = settings.Get(Settings.StepsPerTick).Value;
             _stepTimeSpan = TimeSpan.FromSeconds((float)stepInterval);
             _step = new Step()
             {

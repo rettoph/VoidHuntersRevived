@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Common
 
         public Fix64 Length => Fix64.Sqrt(this.X * this.X + this.Y * this.Y);
 
-        public FixVector2(decimal x, decimal y) : this((Fix64)x, (Fix64)y)
+        public FixVector2(double x, double y) : this((Fix64)x, (Fix64)y)
         {
 
         }

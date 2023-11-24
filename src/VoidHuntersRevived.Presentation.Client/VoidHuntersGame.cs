@@ -102,6 +102,8 @@ namespace VoidHuntersRevived.Application.Client
         {
             base.OnExiting(sender, args);
 
+            _engine.Dispose();
+
             Environment.Exit(0);
         }
 

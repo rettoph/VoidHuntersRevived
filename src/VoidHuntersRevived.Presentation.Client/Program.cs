@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using System.Runtime;
+using System.Text.Json;
 using VoidHuntersRevived.Application.Client;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
@@ -9,7 +10,6 @@ using VoidHuntersRevived.Common.FixedPoint.Extensions;
 
 GCLatencyMode oldMode = GCSettings.LatencyMode;
 Console.ResetColor();
-
 
 try
 {

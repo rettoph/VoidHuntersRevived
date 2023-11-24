@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guppy.Resources;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace VoidHuntersRevived.Common.Constants
 {
     public static class Settings
     {
-        public const string StepInterval = "step_interval";
-        public const string StepsPerTick = "steps_per_tick";
+        public static readonly Setting<Fix64> StepInterval = Setting.Get<Fix64>(nameof(StepInterval));
+        public static readonly Setting<int> StepsPerTick = Setting.Get<int>(nameof(StepsPerTick));
     }
 }

@@ -42,12 +42,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             ILifetimeScope scope,
             IBus bus) : base(scope)
         {
-            Fix64 stepInterval = settings.Get<Fix64>(Settings.StepInterval).Value;
+            Fix64 stepInterval = settings.Get(Settings.StepInterval).Value;
 
             _bus = bus;
             _stepsSinceTick = 0;
             _inputs = new List<EventDto>();
-            _stepsPerTick = settings.Get<int>(Settings.StepsPerTick).Value;
+            _stepsPerTick = settings.Get(Settings.StepsPerTick).Value;
             _stepTimeSpan = TimeSpan.FromSeconds((float)stepInterval);
             _step = new Step()
             {
