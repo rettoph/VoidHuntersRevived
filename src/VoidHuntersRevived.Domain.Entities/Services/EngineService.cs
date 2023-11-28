@@ -3,6 +3,7 @@ using Guppy.Common;
 using Guppy.Common.Collections;
 using Guppy.Common.Extensions;
 using Guppy.Common.Providers;
+using Guppy.Common.Services;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using System;
@@ -23,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     {
         private readonly EnginesRoot _enginesRoot;
         private readonly SimpleEntitiesSubmissionScheduler _submission;
-        private readonly IBus _bus;
+        private readonly IBulkSubscriptionService _bulkSubscriptionService;
         private readonly IFilteredProvider _filtered;
         private IEngine[] _engines;
         private IStepGroupEngine<Step> _stepEngines;
@@ -31,12 +32,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public EnginesRoot Root => _enginesRoot;
 
         public EngineService(
-            IBus bus, 
+            IBulkSubscriptionService bulkSubscriptionService, 
             IFilteredProvider filtered,
             EnginesRoot enginesRoot,
             SimpleEntitiesSubmissionScheduler simpleEntitiesSubmissionScheduler)
         {
-            _bus = bus;
+            _bulkSubscriptionService = bulkSubscriptionService;
             _filtered = filtered;
             _submission = simpleEntitiesSubmissionScheduler;
             _enginesRoot = enginesRoot;
@@ -55,10 +56,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             foreach (IEngine engine in _engines.Sequence(InitializeSequence.Initialize))
             {
-                if (engine is ISubscriber subscriber)
-                {
-                    _bus.Subscribe(subscriber);
-                }
+                _bulkSubscriptionService.Subscribe(engine.Yield());
 
                 _enginesRoot.AddEngine(engine);
             }
@@ -68,7 +66,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Dispose()
         {
-            _bus.UnsubscribeMany(this.OfType<ISubscriber>());
+            _bulkSubscriptionService.Unsubscribe(_engines);
         }
 
         public IEnumerable<T> OfType<T>()

@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Game.Client.Messages
 {
-    internal class Input_Toggle_FPS : Message<Input_Toggle_FPS>
+    internal class Input_Toggle_FPS : Message<Input_Toggle_FPS>, IInput
     {
     }
 }

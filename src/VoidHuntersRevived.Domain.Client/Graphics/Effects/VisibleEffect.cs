@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Effects
             set => _traceDiffustionScale.SetValue(value);
         }
 
-        public VisibleEffect(GraphicsDevice graphics, IResourceProvider resources) : base(graphics, resources.Get(Resources.EffectCodes.Visible))
+        public VisibleEffect(GraphicsDevice graphics, IResourceProvider resources) : base(graphics, resources.Get(Resources.EffectCodes.Visible).Value)
         {
             _primaryColor = this.Parameters[nameof(PrimaryColor)];
             _secondaryColor = this.Parameters[nameof(SecondaryColor)];

@@ -11,6 +11,7 @@ using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using Guppy.MonoGame.Common.Enums;
+using Guppy.Input;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -18,7 +19,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [SimulationTypeFilter(SimulationType.Lockstep)]
     [Sequence<DrawSequence>(DrawSequence.PreDraw)]
     internal sealed class CameraEngine : BasicEngine, IStepEngine<GameTime>,
-        ISubscriber<CursorScroll>
+        IInputSubscriber<CursorScroll>
     {
         private readonly Camera2D _camera;
         private readonly IScreen _screen;

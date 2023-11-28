@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Guppy.Attributes;
 using Guppy.Common;
+using Guppy.Input;
 using Guppy.Input.Enums;
 using Guppy.Loaders;
 using Microsoft.Xna.Framework.Input;
@@ -23,23 +24,23 @@ namespace VoidHuntersRevived.Game.Client.Loaders
             InputLoader.AddSetDirectionInput(services, Inputs.SetDirectionRight, Keys.E, Direction.Right);
             InputLoader.AddSetDirectionInput(services, Inputs.SetDirectionLeft, Keys.Q, Direction.Left);
 
-            services.AddInput(Inputs.SetTractorBeamEmitterActive, CursorButtons.Right, new(ButtonState, IMessage)[]
+            services.AddInput(Inputs.SetTractorBeamEmitterActive, CursorButtons.Right, new(ButtonState, IInput)[]
 {
                 (ButtonState.Pressed, new Input_TractorBeamEmitter_SetActive(true)),
                 (ButtonState.Released, new Input_TractorBeamEmitter_SetActive(false))
             });
 
-            services.AddInput(Inputs.ToggleLockstepWireframe, Keys.F12, new (ButtonState, IMessage)[]
+            services.AddInput(Inputs.ToggleLockstepWireframe, Keys.F12, new (ButtonState, IInput)[]
             {
                 (ButtonState.Released, new Input_Toggle_LockstepWireframe())
             });
 
-            services.AddInput(Inputs.ToggleFps, Keys.F11, new (ButtonState, IMessage)[]
+            services.AddInput(Inputs.ToggleFps, Keys.F11, new (ButtonState, IInput)[]
             {
                 (ButtonState.Released, new Input_Toggle_FPS())
             });
 
-            services.AddInput(Inputs.InvokeGarbageCollection, Keys.F10, new (ButtonState, IMessage)[]
+            services.AddInput(Inputs.InvokeGarbageCollection, Keys.F10, new (ButtonState, IInput)[]
             {
                 (ButtonState.Released, new Input_Invoke_Garbage_Collection())
             });

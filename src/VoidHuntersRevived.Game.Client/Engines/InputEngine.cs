@@ -29,14 +29,15 @@ using VoidHuntersRevived.Game.Ships.Services;
 using VoidHuntersRevived.Game.Ships.Events;
 using VoidHuntersRevived.Common.Ships.Components;
 using VoidHuntersRevived.Common.Ships.Services;
+using Guppy.Input;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [PeerTypeFilter(PeerType.Client)]
-    internal class InputEngine : BasicEngine, 
-        ISubscriber<Input_Helm_SetDirection>,
-        ISubscriber<Input_TractorBeamEmitter_SetActive>,
+    internal class InputEngine : BasicEngine,
+        IInputSubscriber<Input_Helm_SetDirection>,
+        IInputSubscriber<Input_TractorBeamEmitter_SetActive>,
         IStepEngine<Tick>
     {
         private readonly IEntityService _entities;

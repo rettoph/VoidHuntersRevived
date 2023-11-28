@@ -31,9 +31,11 @@ namespace VoidHuntersRevived.Domain.Debugging.Components
         private readonly ISimulationService _simulations;
         private (Simulation, ISpace, IEntityService)[] _data;
         private ILockstepSimulation? _lockstep;
+        private readonly IGui _gui;
 
-        public SimulationDebugComponent(ISimulationService simulations)
+        public SimulationDebugComponent(IGui gui, ISimulationService simulations)
         {
+            _gui = gui;
             _simulations = simulations;
             _data = Array.Empty<(Simulation, ISpace, IEntityService)>();
         }
@@ -45,63 +47,58 @@ namespace VoidHuntersRevived.Domain.Debugging.Components
             _data = _simulations.Instances.Select(x => ((x as Simulation)!, x.Scope.Resolve<ISpace>(), x.Scope.Resolve<IEntityService>())).ToArray();
         }
 
-        public void Initialize(IGui gui)
-        {
-            //throw new NotImplementedException();
-        }
-
-        public void RenderDebugInfo(IGui gui, GameTime gameTime)
+        public void RenderDebugInfo(GameTime gameTime)
         {
 
-            gui.TextCentered("Simulation Info");
+            _gui.TextCentered("Simulation Info");
 
-            if (gui.BeginTable($"#{nameof(SimulationDebugComponent)}_Table", 7, GuiTableFlags.RowBg | GuiTableFlags.NoClip | GuiTableFlags.Borders))
+            if (_gui.BeginTable($"#{nameof(SimulationDebugComponent)}_Table", 7, GuiTableFlags.RowBg | GuiTableFlags.NoClip | GuiTableFlags.Borders))
             {
-                gui.TableSetupColumn("Simulation", GuiTableColumnFlags.WidthStretch);
+                _gui.TableSetupColumn("Simulation", GuiTableColumnFlags.WidthStretch);
 
-                gui.TableSetupColumn("Entities", GuiTableColumnFlags.WidthStretch);
+                _gui.TableSetupColumn("Entities", GuiTableColumnFlags.WidthStretch);
 
-                gui.TableSetupColumn("Trees", GuiTableColumnFlags.WidthStretch);
+                _gui.TableSetupColumn("Trees", GuiTableColumnFlags.WidthStretch);
 
-                gui.TableSetupColumn("Nodes", GuiTableColumnFlags.WidthStretch);
+                _gui.TableSetupColumn("Nodes", GuiTableColumnFlags.WidthStretch);
 
-                gui.TableSetupColumn("Bodies", GuiTableColumnFlags.WidthStretch);
+                _gui.TableSetupColumn("Bodies", GuiTableColumnFlags.WidthStretch);
 
-                gui.TableSetupColumn("Contacts", GuiTableColumnFlags.WidthStretch);
+                _gui.TableSetupColumn("Contacts", GuiTableColumnFlags.WidthStretch);
 
-                gui.TableSetupColumn("Elapsed Time", GuiTableColumnFlags.WidthStretch);
+                _gui.TableSetupColumn("Elapsed Time", GuiTableColumnFlags.WidthStretch);
 
-                gui.TableHeadersRow();
+                _gui.TableHeadersRow();
 
                 foreach ((Simulation simulation, ISpace space, IEntityService entities) in _data)
                 {
-                    gui.TableNextRow();
+                    _gui.TableNextRow();
 
-                    gui.TableNextColumn();
-                    gui.Text(simulation.Type.ToString());
+                    _gui.TableNextColumn();
+                    _gui.Text(simulation.Type.ToString());
 
-                    gui.TableNextColumn();
-                    gui.Text(entities.CalculateTotal<EntityId>().ToString("#,###,##0"));
+                    _gui.TableNextColumn();
+                    _gui.Text(entities.CalculateTotal<EntityId>().ToString("#,###,##0"));
 
-                    gui.TableNextColumn();
-                    gui.Text(entities.CalculateTotal<Tree>().ToString("#,###,##0"));
+                    _gui.TableNextColumn();
+                    _gui.Text(entities.CalculateTotal<Tree>().ToString("#,###,##0"));
 
-                    gui.TableNextColumn();
-                    gui.Text(entities.CalculateTotal<Node>().ToString("#,###,##0"));
+                    _gui.TableNextColumn();
+                    _gui.Text(entities.CalculateTotal<Node>().ToString("#,###,##0"));
 
-                    gui.TableNextColumn();
-                    gui.Text(space.BodyCount.ToString("#,##0"));
+                    _gui.TableNextColumn();
+                    _gui.Text(space.BodyCount.ToString("#,##0"));
 
-                    gui.TableNextColumn();
-                    gui.Text(space.ContactCount.ToString("#,##0"));
+                    _gui.TableNextColumn();
+                    _gui.Text(space.ContactCount.ToString("#,##0"));
 
-                    gui.TableNextColumn();
-                    
-                    gui.Text(TimeSpan.FromSeconds((float)simulation.CurrentStep.TotalTime).ToString(@"hh\:mm\:ss\.FFFFFFF").PadRight(16, '0'));
+                    _gui.TableNextColumn();
+
+                    _gui.Text(TimeSpan.FromSeconds((float)simulation.CurrentStep.TotalTime).ToString(@"hh\:mm\:ss\.FFFFFFF").PadRight(16, '0'));
                 }
             }
 
-            gui.EndTable();
+            _gui.EndTable();
         }
     }
 }

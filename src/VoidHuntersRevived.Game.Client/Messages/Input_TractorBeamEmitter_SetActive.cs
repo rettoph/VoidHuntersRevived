@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Game.Client.Messages
 {
-    internal sealed class Input_TractorBeamEmitter_SetActive : Message<Input_TractorBeamEmitter_SetActive>
+    internal sealed class Input_TractorBeamEmitter_SetActive : Message<Input_TractorBeamEmitter_SetActive>, IInput
     {
         public readonly bool Value;
 

@@ -8,6 +8,10 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Game.Common;
 using Guppy.MonoGame;
+using Autofac;
+using Guppy.MonoGame.Common;
+using Guppy.MonoGame.Extensions;
+using System.Xml.Linq;
 
 namespace VoidHuntersRevived.Application.Client
 {
@@ -15,7 +19,7 @@ namespace VoidHuntersRevived.Application.Client
     {
         private readonly GraphicsDeviceManager _graphics;
         private GuppyEngine _engine;
-        private GameLoop _loop;
+        private IGame _game;
 
 
         // https://community.monogame.net/t/start-in-maximized-window/12264
@@ -25,7 +29,7 @@ namespace VoidHuntersRevived.Application.Client
 
         public VoidHuntersGame()
         {
-            _loop = null!;
+            _game = null!;
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
@@ -62,16 +66,17 @@ namespace VoidHuntersRevived.Application.Client
             base.Initialize();
 
             // SDL_MaximizeWindow(this.Window.Handle);
-            _engine.Start(builder =>
+            _game = _engine.StartGame(builder =>
             {
                 builder.ConfigureMonoGame(this, _graphics, this.Content, this.Window)
                     .ConfigureNetwork()
                     .ConfigureResources();
             });
-            _loop = _engine.Guppies.Create<GameLoop>();
 
-            _engine.Guppies.Create<ServerGameGuppy>();
-            _engine.Guppies.Create<MultiplayerGameGuppy>();
+            _game.Initialize();
+
+            _game.Guppies.Create<ServerGameGuppy>();
+            _game.Guppies.Create<MultiplayerGameGuppy>();
             //_engine.Guppies.Create<EditorGuppy>();
         }
 
@@ -102,8 +107,6 @@ namespace VoidHuntersRevived.Application.Client
         {
             base.OnExiting(sender, args);
 
-            _engine.Dispose();
-
             Environment.Exit(0);
         }
 
@@ -117,7 +120,7 @@ namespace VoidHuntersRevived.Application.Client
             // TODO: Add your update logic here
             base.Update(gameTime);
 
-            _loop.Update(gameTime);
+            _game.Update(gameTime);
         }
 
         /// <summary>
@@ -130,7 +133,7 @@ namespace VoidHuntersRevived.Application.Client
 
             GraphicsDevice.Clear(Color.Black);
 
-            _loop.Draw(gameTime);
+            _game.Draw(gameTime);
         }
     }
 }
