@@ -96,16 +96,21 @@ namespace VoidHuntersRevived.Application.Client
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+            _game.Dispose();
         }
 
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
+
+            _game.Dispose();
         }
 
         protected override void OnExiting(object sender, EventArgs args)
         {
             base.OnExiting(sender, args);
+
+            _game.Dispose();
 
             Environment.Exit(0);
         }

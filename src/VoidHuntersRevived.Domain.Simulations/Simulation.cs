@@ -17,6 +17,7 @@ using VoidHuntersRevived.Common.Entities.Extensions;
 using Guppy.MonoGame.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Utilities;
 using Guppy.Common.Services;
+using Guppy;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {

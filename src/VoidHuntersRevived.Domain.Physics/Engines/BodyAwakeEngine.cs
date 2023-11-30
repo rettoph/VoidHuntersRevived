@@ -63,7 +63,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                 }
                 else
                 {
-                    _logger.Warning("{ClassName}::{MethodName} - Awake state changed to {AwakeValue} for body {BodyId}, but entity not found.", nameof(BodyAwakeEngine), nameof(Step), body.Awake, body.Id);
+                    _logger.Warning("{ClassName}::{MethodName} - Awake state changed to {AwakeValue} for body {BodyId}, but entity not found.", nameof(BodyAwakeEngine), nameof(Step), body.Awake, body.Id.VhId);
                 }
             }
         }

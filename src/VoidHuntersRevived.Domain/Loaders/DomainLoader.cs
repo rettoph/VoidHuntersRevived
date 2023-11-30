@@ -1,10 +1,14 @@
 ﻿using Autofac;
 using Guppy.Attributes;
+using Guppy.Common.Autofac;
 using Guppy.Common.Extensions.Autofac;
 using Guppy.Files.Enums;
 using Guppy.Files.Helpers;
 using Guppy.Files.Providers;
 using Guppy.Loaders;
+using Guppy.MonoGame;
+using Guppy.MonoGame.Extensions.Serilog;
+using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Serilog;
 using System.Text.Json.Serialization;
@@ -27,17 +31,25 @@ namespace VoidHuntersRevived.Domain.Loaders
                 var path = fileTypePaths.GetFullPath(FileType.AppData, Path.Combine("logs", $"log_{DateTime.Now.ToString("yyyy-dd-M")}.txt"));
                 DirectoryHelper.EnsureDirectoryExists(path);
 
-                config.MinimumLevel.Is(Serilog.Events.LogEventLevel.Verbose);
-
                 config.Destructure.AsScalar<VhId>();
 
                 config
                     .WriteTo.File(
-                        path: path, 
+                        path: path,
                         outputTemplate: "[{PeerType}][{SimulationType}][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}",
-                        retainedFileCountLimit: 5
-                    )
-                    .WriteTo.Console(outputTemplate: "[{PeerType}][{SimulationType}][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
+                        retainedFileCountLimit: 5,
+                        shared: true
+                    );
+
+                try
+                {
+                    var terminal = scope.Resolve<ITerminal>();
+                    config.WriteTo.Terminal(terminal, "[{PeerType}][{SimulationType}][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
+                }
+                catch
+                {
+                    config.WriteTo.Console(outputTemplate: "[{PeerType}][{SimulationType}][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
+                }
             });
 
             services.RegisterType<Fix64Converter>().As<JsonConverter>().SingleInstance();

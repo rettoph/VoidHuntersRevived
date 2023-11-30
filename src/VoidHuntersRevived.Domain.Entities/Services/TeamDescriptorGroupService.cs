@@ -43,17 +43,20 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _teamDescriptorGroupsByGroupId[groupId];
         }
 
+        private static Dictionary<string, ExclusiveGroup> _exclusiveGroups = new Dictionary<string, ExclusiveGroup>();
         private static ExclusiveGroupStruct GetExclusiveGroupStruct(VoidHuntersEntityDescriptor descriptor, ITeam team)
         {
             string groupName = $"{descriptor.Name}.{team.Name}";
-            try
+
+            if(_exclusiveGroups.TryGetValue(groupName, out ExclusiveGroup? exclusiveGroup))
             {
-                return ExclusiveGroup.Search(groupName);
+                return exclusiveGroup;
             }
-            catch
-            {
-                return new ExclusiveGroup(groupName);
-            }
+            
+            exclusiveGroup = new ExclusiveGroup(groupName);
+            _exclusiveGroups.Add(groupName, exclusiveGroup);
+
+            return exclusiveGroup;
         }
 
         public Dictionary<Id<ITeam>, ITeamDescriptorGroup[]> GetAllWithComponentsByTeams(params Type[] components)
