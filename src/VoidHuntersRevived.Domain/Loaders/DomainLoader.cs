@@ -2,6 +2,7 @@
 using Guppy.Attributes;
 using Guppy.Common.Autofac;
 using Guppy.Common.Extensions.Autofac;
+using Guppy.Extensions.Autofac;
 using Guppy.Files.Enums;
 using Guppy.Files.Helpers;
 using Guppy.Files.Providers;

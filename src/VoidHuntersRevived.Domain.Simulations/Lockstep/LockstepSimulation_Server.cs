@@ -21,6 +21,7 @@ using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using Autofac;
 using VoidHuntersRevived.Common.Simulations.Events;
+using Guppy.Messaging;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
@@ -136,7 +137,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _stepsSinceTick = 0;
         }
 
-        public void Process(in Guid messsageId, in INetIncomingMessage<EventDto> message)
+        public void Process(in Guid messsageId, INetIncomingMessage<EventDto> message)
         {
             if (message.Body.Data is not IInputData)
             {

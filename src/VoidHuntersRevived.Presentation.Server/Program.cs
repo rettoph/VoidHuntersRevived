@@ -9,21 +9,22 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Game.Common;
 using Guppy.MonoGame.Common;
+using Guppy.MonoGame.Extensions;
 
-var engine = new GuppyEngine(VoidHuntersRevivedGame.Company, VoidHuntersRevivedGame.Name, new[] { typeof(GameGuppy).Assembly, typeof(ServerGameGuppy).Assembly, typeof(IGameGuppy).Assembly, typeof(VoidHuntersEntityDescriptor).Assembly })
-    .Start(builder =>
+var game = new GuppyEngine(VoidHuntersRevivedGame.Company, VoidHuntersRevivedGame.Name, new[] { typeof(GameGuppy).Assembly, typeof(ServerGameGuppy).Assembly, typeof(IGameGuppy).Assembly, typeof(VoidHuntersEntityDescriptor).Assembly })
+    .StartGame(builder =>
     {
         builder.ConfigureGame()
             .ConfigureNetwork()
             .ConfigureResources();
     });
 
-var guppy = (IUpdateableComponent)engine.Guppies.Create<ServerGameGuppy>();
+game.Guppies.Create<ServerGameGuppy>();
 
 var source = new CancellationTokenSource();
 
 TaskHelper.CreateLoop(
-    guppy.Update, 
+    game.Update, 
     TimeSpan.FromMilliseconds(16), 
     source.Token
 ).GetAwaiter().GetResult();

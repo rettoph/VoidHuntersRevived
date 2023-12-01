@@ -1,6 +1,7 @@
 ﻿using Guppy;
 using Guppy.Attributes;
 using Guppy.Common;
+using Guppy.Messaging;
 using Guppy.MonoGame;
 using Microsoft.Xna.Framework;
 using Serilog;
@@ -32,7 +33,7 @@ namespace VoidHuntersRevived.Game.Client.GameComponents
             //
         }
 
-        public void Process(in Guid messageId, in Input_Invoke_Garbage_Collection message)
+        public void Process(in Guid messageId, Input_Invoke_Garbage_Collection message)
         {
             if(DateTime.Now - _lastInvocation < TimeSpan.FromMilliseconds(100))
             {

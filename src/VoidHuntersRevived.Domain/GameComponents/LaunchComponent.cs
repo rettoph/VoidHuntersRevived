@@ -1,6 +1,7 @@
 ﻿using Guppy;
 using Guppy.Attributes;
 using Guppy.Common;
+using Guppy.Messaging;
 using Guppy.MonoGame;
 using Guppy.Providers;
 using Microsoft.Xna.Framework;
@@ -33,7 +34,7 @@ namespace VoidHuntersRevived.Domain.GameComponents
             //
         }
 
-        public void Process(in Guid messageId, in Launch message)
+        public void Process(in Guid messageId, Launch message)
         {
             _guppies.Create(message.GuppyType);
             _guppy.Dispose();

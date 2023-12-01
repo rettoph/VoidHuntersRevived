@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _tractorBeamEmitters = tractorBeamEmitters;
         }
 
-        public void Process(in Guid messageId, in Input_Helm_SetDirection message)
+        public void Process(in Guid messageId, Input_Helm_SetDirection message)
         {
             if (_client.Users.Current is null)
             {
@@ -78,7 +78,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 });
         }
 
-        public void Process(in Guid messageId, in Input_TractorBeamEmitter_SetActive message)
+        public void Process(in Guid messageId, Input_TractorBeamEmitter_SetActive message)
         {
             if (_client.Users.Current is null)
             {

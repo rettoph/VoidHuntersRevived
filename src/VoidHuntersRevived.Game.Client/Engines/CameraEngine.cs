@@ -62,7 +62,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _camera.TargetPosition = _offset;
         }
 
-        public void Process(in Guid messageId, in CursorScroll message)
+        public void Process(in Guid messageId, CursorScroll message)
         {
             _camera.TargetZoom *= ((float)Math.Pow(1.5, message.Delta / 120));
         }

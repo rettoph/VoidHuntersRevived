@@ -33,6 +33,7 @@ using VoidHuntersRevived.Common.Simulations.Engines;
 using Guppy.MonoGame.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Game.Client.Messages;
+using Guppy.Messaging;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -101,7 +102,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             //_visibleRenderingService.EndTrace();
         }
 
-        public void Process(in Guid messageId, in Input_Toggle_LockstepWireframe message)
+        public void Process(in Guid messageId, Input_Toggle_LockstepWireframe message)
         {
             _visible = !_visible;
         }

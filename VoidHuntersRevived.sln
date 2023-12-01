@@ -130,7 +130,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.GUI.ImGuiNETSourceGen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.GUI", "libraries\Guppy\src\Guppy.GUI\Guppy.GUI.csproj", "{919DD860-878E-43AC-8DCE-04DBC41A098A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Domain.Debugging", "src\VoidHuntersRevived.Domain.Debugging\VoidHuntersRevived.Domain.Debugging.csproj", "{DB7288AF-3822-4A88-B4A8-65CF3A668A27}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Domain.Debugging", "src\VoidHuntersRevived.Domain.Debugging\VoidHuntersRevived.Domain.Debugging.csproj", "{DB7288AF-3822-4A88-B4A8-65CF3A668A27}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Messaging", "libraries\Guppy\src\Guppy.Messaging\Guppy.Messaging.csproj", "{C14479E1-CFF0-4AEF-91D7-4B04126F0668}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1144,6 +1146,30 @@ Global
 		{DB7288AF-3822-4A88-B4A8-65CF3A668A27}.SlowSubmissionRelease|x64.Build.0 = Release|Any CPU
 		{DB7288AF-3822-4A88-B4A8-65CF3A668A27}.SlowSubmissionRelease|x86.ActiveCfg = Release|Any CPU
 		{DB7288AF-3822-4A88-B4A8-65CF3A668A27}.SlowSubmissionRelease|x86.Build.0 = Release|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.Debug|x64.Build.0 = Debug|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.Debug|x86.Build.0 = Debug|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.Release|x64.ActiveCfg = Release|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.Release|x64.Build.0 = Release|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.Release|x86.ActiveCfg = Release|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.Release|x86.Build.0 = Release|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.SlowSubmissionDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.SlowSubmissionDebug|Any CPU.Build.0 = Debug|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.SlowSubmissionDebug|x64.ActiveCfg = Debug|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.SlowSubmissionDebug|x64.Build.0 = Debug|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.SlowSubmissionDebug|x86.ActiveCfg = Debug|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.SlowSubmissionDebug|x86.Build.0 = Debug|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.SlowSubmissionRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.SlowSubmissionRelease|Any CPU.Build.0 = Release|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.SlowSubmissionRelease|x64.ActiveCfg = Release|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.SlowSubmissionRelease|x64.Build.0 = Release|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.SlowSubmissionRelease|x86.ActiveCfg = Release|Any CPU
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668}.SlowSubmissionRelease|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1203,6 +1229,7 @@ Global
 		{CFADB61E-BEEC-4BC5-86D9-57DD63BE7F7E} = {DA5CAD48-BEB9-4316-814A-820EA2A21081}
 		{919DD860-878E-43AC-8DCE-04DBC41A098A} = {DA5CAD48-BEB9-4316-814A-820EA2A21081}
 		{DB7288AF-3822-4A88-B4A8-65CF3A668A27} = {D96DE0C0-0199-4613-9C86-4D5A8A7EDC3A}
+		{C14479E1-CFF0-4AEF-91D7-4B04126F0668} = {DA5CAD48-BEB9-4316-814A-820EA2A21081}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FCB1CA3-2B6C-469F-B569-084FC0B57488}

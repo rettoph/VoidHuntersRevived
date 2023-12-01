@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
+using Guppy.Messaging;
 using Guppy.Network;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
@@ -36,17 +37,17 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
             _logger = logger;
         }
 
-        public void Process(in Guid messsageId, in INetIncomingMessage<Tick> message)
+        public void Process(in Guid messsageId, INetIncomingMessage<Tick> message)
         {
             _ticks.Enqueue(message.Body);
         }
 
-        public void Process(in Guid messsageId, in INetIncomingMessage<TickHistoryStart> message)
+        public void Process(in Guid messsageId, INetIncomingMessage<TickHistoryStart> message)
         {
             _ticks.Clear();
         }
 
-        public void Process(in Guid messsageId, in INetIncomingMessage<TickHistoryItem> message)
+        public void Process(in Guid messsageId, INetIncomingMessage<TickHistoryItem> message)
         {
             for (int id = (_ticks.Tail?.Id ?? _ticks.Popped?.Id ?? 0) + 1; id < message.Body.Tick.Id; id++)
             {
@@ -56,7 +57,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
             _ticks.Enqueue(message.Body.Tick);
         }
 
-        public void Process(in Guid messsageId, in INetIncomingMessage<TickHistoryEnd> message)
+        public void Process(in Guid messsageId, INetIncomingMessage<TickHistoryEnd> message)
         {
             for (int id = (_ticks.Tail?.Id ?? _ticks.Popped?.Id ?? 0) + 1; id < message.Body.CurrentTickId; id++)
             {
