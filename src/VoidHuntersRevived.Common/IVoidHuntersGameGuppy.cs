@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common
 {
-    public interface IGameGuppy : IGuppy
+    public interface IVoidHuntersGameGuppy : IGuppy
     {
     }
 }

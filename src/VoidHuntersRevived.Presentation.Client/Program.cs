@@ -1,4 +1,5 @@
-﻿using Guppy.Common;
+﻿using Autofac;
+using Guppy.Common;
 using System.Numerics;
 using System.Runtime;
 using System.Text.Json;
@@ -24,3 +25,6 @@ finally
     //GC.EndNoGCRegion();
     GCSettings.LatencyMode = oldMode;
 }
+
+class Test
+{ }

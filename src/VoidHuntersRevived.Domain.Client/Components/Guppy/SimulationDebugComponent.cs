@@ -3,8 +3,8 @@ using Guppy;
 using Guppy.Attributes;
 using Guppy.Common.Attributes;
 using Guppy.Enums;
+using Guppy.Game.Components;
 using Guppy.GUI;
-using Guppy.MonoGame.Components;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -21,10 +21,10 @@ using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Domain.Simulations;
 
-namespace VoidHuntersRevived.Domain.Debugging.Components
+namespace VoidHuntersRevived.Domain.Client.Components.Guppy
 {
     [AutoLoad]
-    [GuppyFilter<IGameGuppy>]
+    [GuppyFilter<IVoidHuntersGameGuppy>]
     [Sequence<InitializeSequence>(InitializeSequence.PostInitialize)]
     internal class SimulationDebugComponent : GuppyComponent, IDebugComponent
     {

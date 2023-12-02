@@ -24,23 +24,23 @@ namespace VoidHuntersRevived.Game.Client.Loaders
             InputLoader.AddSetDirectionInput(services, Inputs.SetDirectionRight, Keys.E, Direction.Right);
             InputLoader.AddSetDirectionInput(services, Inputs.SetDirectionLeft, Keys.Q, Direction.Left);
 
-            services.AddInput(Inputs.SetTractorBeamEmitterActive, CursorButtons.Right, new(ButtonState, IInput)[]
+            services.RegisterInput(Inputs.SetTractorBeamEmitterActive, CursorButtons.Right, new(ButtonState, IInput)[]
 {
                 (ButtonState.Pressed, new Input_TractorBeamEmitter_SetActive(true)),
                 (ButtonState.Released, new Input_TractorBeamEmitter_SetActive(false))
             });
 
-            services.AddInput(Inputs.ToggleLockstepWireframe, Keys.F12, new (ButtonState, IInput)[]
+            services.RegisterInput(Inputs.ToggleLockstepWireframe, Keys.F12, new (ButtonState, IInput)[]
             {
                 (ButtonState.Released, new Input_Toggle_LockstepWireframe())
             });
 
-            services.AddInput(Inputs.ToggleFps, Keys.F11, new (ButtonState, IInput)[]
+            services.RegisterInput(Inputs.ToggleFps, Keys.F11, new (ButtonState, IInput)[]
             {
                 (ButtonState.Released, new Input_Toggle_FPS())
             });
 
-            services.AddInput(Inputs.InvokeGarbageCollection, Keys.F10, new (ButtonState, IInput)[]
+            services.RegisterInput(Inputs.InvokeGarbageCollection, Keys.F10, new (ButtonState, IInput)[]
             {
                 (ButtonState.Released, new Input_Invoke_Garbage_Collection())
             });
@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Game.Client.Loaders
 
         private static void AddSetDirectionInput(ContainerBuilder services, string key, Keys defaultSource, Direction direction)
         {
-            services.AddInput(key, defaultSource, new[]
+            services.RegisterInput(key, defaultSource, new[]
             {
                 (KeyState.Down, new Input_Helm_SetDirection()
                 {

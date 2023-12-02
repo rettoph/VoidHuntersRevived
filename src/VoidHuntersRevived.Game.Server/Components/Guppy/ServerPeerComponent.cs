@@ -1,6 +1,5 @@
 ﻿using Guppy;
 using Guppy.Attributes;
-using Guppy.MonoGame;
 using Guppy.Network.Peers;
 using Guppy.Network;
 using System;
@@ -9,22 +8,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Constants;
-using Guppy.MonoGame.Common;
+using Guppy.Game;
 using Microsoft.Xna.Framework;
 using Guppy.Common.Attributes;
-using Guppy.MonoGame.Common.Enums;
 using VoidHuntersRevived.Game.Server;
 using Guppy.Network.Identity.Providers;
 using Guppy.Network.Identity;
 using Guppy.Enums;
+using Guppy.Game.Common.Enums;
+using Guppy.Game.Common;
+using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Common.Simulations;
 
-namespace VoidHuntersRevived.Game.Client.Guppy
+namespace VoidHuntersRevived.Game.Server.Components.Guppy
 {
     [AutoLoad]
     [GuppyFilter<ServerGameGuppy>]
-    [Sequence<InitializeSequence>(InitializeSequence.PreInitialize)]
+    [Sequence<InitializeSequence>(InitializeSequence.Setup)]
     [Sequence<UpdateSequence>(UpdateSequence.PostUpdate)]
-    internal class ServerPeerComponent : IGuppyComponent, IUpdateableComponent
+    internal class ServerPeerComponent : IGuppyComponent, IGuppyUpdateable
     {
         public readonly ServerPeer _server;
         public readonly NetScope _scope;
@@ -40,7 +42,7 @@ namespace VoidHuntersRevived.Game.Client.Guppy
             _server.Bind(_scope, NetScopeIds.Game);
             _server.Start(1337);
 
-            _server.Users.OnUserConnected += this.HandleUserConnected;
+            _server.Users.OnUserConnected += HandleUserConnected;
         }
 
         public void Update(GameTime gameTime)

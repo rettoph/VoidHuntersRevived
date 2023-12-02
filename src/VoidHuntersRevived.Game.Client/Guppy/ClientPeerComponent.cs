@@ -1,6 +1,5 @@
 ﻿using Guppy;
 using Guppy.Attributes;
-using Guppy.MonoGame;
 using Guppy.Network.Peers;
 using Guppy.Network;
 using System;
@@ -9,22 +8,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Constants;
-using Guppy.MonoGame.Common;
+using Guppy.Game;
 using Microsoft.Xna.Framework;
 using Guppy.Common.Attributes;
-using Guppy.MonoGame.Common.Enums;
+using Guppy.Game.Common.Enums;
 using Guppy.Enums;
+using Guppy.Game.Common;
+using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Game.Client.Guppy
 {
     [AutoLoad]
     [GuppyFilter<MultiplayerGameGuppy>]
-    [Sequence<InitializeSequence>(InitializeSequence.PreInitialize)]
+    [Sequence<InitializeSequence>(InitializeSequence.Setup)]
     [Sequence<UpdateSequence>(UpdateSequence.PostUpdate)]
-    internal class ClientPeerComponent : IGuppyComponent, IUpdateableComponent
+    internal class ClientPeerComponent : IGuppyComponent, IGuppyUpdateable
     {
-        public readonly ClientPeer _client;
-        public readonly NetScope _scope;
+        private readonly ClientPeer _client;
+        private readonly NetScope _scope;
 
         public ClientPeerComponent(ClientPeer client, NetScope scope)
         {

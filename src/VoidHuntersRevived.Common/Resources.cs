@@ -1,5 +1,4 @@
-﻿using Guppy.MonoGame.Graphics.Effects;
-using Guppy.Resources;
+﻿using Guppy.Resources;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -11,11 +10,6 @@ namespace VoidHuntersRevived.Common
         {
             public static readonly Resource<string> TeamZeroName = Resource.Get<string>($"{nameof(String)}.{nameof(TeamZeroName)}");
             public static readonly Resource<string> TeamOneName = Resource.Get<string>($"{nameof(String)}.{nameof(TeamOneName)}");
-        }
-
-        public static class SpriteFonts
-        {
-            public static readonly Resource<SpriteFont> Default = Resource.Get<SpriteFont>($"{nameof(SpriteFont)}.{nameof(Default)}");
         }
 
         public static class Colors
@@ -33,11 +27,6 @@ namespace VoidHuntersRevived.Common
 
             public static readonly Resource<Color> TractorBeamHighlight = Resource.Get<Color>($"{nameof(Color)}.{nameof(TractorBeamHighlight)}");
             public static readonly Resource<Color> ActiveThrustableHighlight = Resource.Get<Color>($"{nameof(Color)}.{nameof(TractorBeamHighlight)}");
-        }
-
-        public static class EffectCodes
-        {
-            public static readonly Resource<EffectCode> Visible = Resource.Get<EffectCode>($"{nameof(EffectCode)}.{nameof(Visible)}");
         }
     }
 }

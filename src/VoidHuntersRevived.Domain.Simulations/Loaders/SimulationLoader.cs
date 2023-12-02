@@ -13,7 +13,7 @@ using VoidHuntersRevived.Domain.Simulations.Messages;
 using VoidHuntersRevived.Domain.Simulations.Predictive;
 using VoidHuntersRevived.Domain.Simulations.Services;
 
-[assembly: InternalsVisibleTo("VoidHuntersRevived.Domain.Debugging")]
+[assembly: InternalsVisibleTo("VoidHuntersRevived.Domain.Client")]
 
 namespace VoidHuntersRevived.Domain.Simulations.Loaders
 {
@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
         {
             services.RegisterType<LockstepSimulation_Server>().AsImplementedInterfaces().InstancePerLifetimeScope();
             services.RegisterType<LockstepSimulation_Client>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            services.RegisterType<TickBuffer>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.Guppy);
+            services.RegisterType<TickBuffer>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
 
             services.AddNetMessageType<Tick>(DeliveryMethod.ReliableUnordered, 0);
             services.AddNetMessageType<TickHistoryStart>(DeliveryMethod.ReliableOrdered, 0);

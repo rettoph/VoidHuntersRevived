@@ -12,17 +12,16 @@ using VoidHuntersRevived.Domain.Loaders;
 using VoidHuntersRevived.Domain.Pieces.Loaders;
 using VoidHuntersRevived.Game.Ships.Loaders;
 using VoidHuntersRevived.Game.Common.Loaders;
+using VoidHuntersRevived.Domain.Client.Loaders;
 
-namespace VoidHuntersRevived.Game.Loaders
+namespace VoidHuntersRevived.Game.Client.Loaders
 {
     [AutoLoad]
     internal sealed class AssemblyLoader : IAssemblyLoader
     {
         public void ConfigureAssemblies(IAssemblyProvider assemblies)
         {
-            assemblies.Load(typeof(DomainLoader).Assembly);
-            assemblies.Load(typeof(EntityTypeLoader).Assembly);
-            assemblies.Load(typeof(ShipsServiceLoader).Assembly);
+            assemblies.Load(typeof(ClientLoader).Assembly);
         }
     }
 }

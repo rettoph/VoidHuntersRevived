@@ -2,7 +2,6 @@
 using Guppy.Attributes;
 using Guppy.Common.Attributes;
 using Guppy.Enums;
-using Guppy.MonoGame;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +10,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 
-namespace VoidHuntersRevived.Game.Server.GuppyComponents
+namespace VoidHuntersRevived.Game.Server.Guppy
 {
     [AutoLoad]
     [GuppyFilter<ServerGameGuppy>]

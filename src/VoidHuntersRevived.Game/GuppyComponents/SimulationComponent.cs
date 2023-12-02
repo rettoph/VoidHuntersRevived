@@ -2,9 +2,9 @@
 using Guppy.Attributes;
 using Guppy.Common.Attributes;
 using Guppy.Enums;
-using Guppy.MonoGame;
-using Guppy.MonoGame.Common;
-using Guppy.MonoGame.Common.Enums;
+using Guppy.Game;
+using Guppy.Game.Common;
+using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Game.GuppyComponents
     [Sequence<InitializeSequence>(InitializeSequence.PostInitialize)]
     [Sequence<UpdateSequence>(UpdateSequence.Update)]
     [Sequence<DrawSequence>(DrawSequence.Draw)]
-    internal class SimulationComponent : IGuppyComponent, IUpdateableComponent, IDrawableComponent
+    internal class SimulationComponent : IGuppyComponent, IGuppyUpdateable, IGuppyDrawable
     {
         private readonly ISimulationService _simulations;
 

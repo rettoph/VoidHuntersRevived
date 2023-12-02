@@ -30,7 +30,7 @@ using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using Guppy.MonoGame.Common.Enums;
+using Guppy.Game.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Game.Client.Messages;
 using Guppy.Messaging;

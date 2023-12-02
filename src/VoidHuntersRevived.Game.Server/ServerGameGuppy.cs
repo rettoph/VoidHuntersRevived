@@ -10,11 +10,7 @@ using VoidHuntersRevived.Common.Simulations.Services;
 
 namespace VoidHuntersRevived.Game.Server
 {
-    public sealed class ServerGameGuppy : GameGuppy
+    public sealed class ServerGameGuppy : VoidHuntersGameGuppy
     {
-        public override void Draw(GameTime gameTime)
-        {
-            //base.Draw(gameTime);
-        }
     }
 }

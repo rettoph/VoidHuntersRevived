@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Client;
 
 namespace VoidHuntersRevived.Game.Client.Graphics.Effects
 {

@@ -12,7 +12,6 @@ using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
 using Guppy.Attributes;
 using Guppy.Common.Attributes;
-using Guppy.MonoGame.Common.Enums;
 using Serilog;
 using tainicom.Aether.Physics2D.Dynamics;
 

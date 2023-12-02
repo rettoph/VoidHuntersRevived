@@ -21,7 +21,7 @@ using VoidHuntersRevived.Common.Ships.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using Guppy.MonoGame.Common.Enums;
+using Guppy.Game.Common.Enums;
 using static VoidHuntersRevived.Common.Resources;
 
 namespace VoidHuntersRevived.Game.Client.Engines

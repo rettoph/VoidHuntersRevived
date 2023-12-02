@@ -8,13 +8,15 @@
 
   <ItemGroup>
     <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.MonoGame\Guppy.MonoGame.csproj" />
+    <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Game\Guppy.Game.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Resources\Guppy.Resources.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Client\VoidHuntersRevived.Common.Client.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Pieces\VoidHuntersRevived.Common.Pieces.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Domain.Simulations\VoidHuntersRevived.Domain.Simulations.csproj" />
   </ItemGroup>
 
 </Project>

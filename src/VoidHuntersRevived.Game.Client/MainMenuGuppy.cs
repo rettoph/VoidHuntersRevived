@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Guppy.Common;
+using Guppy.Game;
 using Guppy.MonoGame;
 using Guppy.MonoGame.Providers;
 using Guppy.Network;
@@ -12,7 +13,7 @@ using VoidHuntersRevived.Game.Common;
 
 namespace VoidHuntersRevived.Game.Client
 {
-    public class MainMenuGuppy : MonoGameGuppy
+    public class MainMenuGuppy : GameGuppy
     {
         private readonly Menu _menu;
 

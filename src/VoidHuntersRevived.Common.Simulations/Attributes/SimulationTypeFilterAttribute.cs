@@ -1,7 +1,7 @@
-﻿using Guppy.Attributes;
+﻿using Autofac;
+using Guppy.Attributes;
 using Guppy.Common.Extensions.Autofac;
 using Guppy.Common.Filters;
-using Guppy.Configurations;
 
 namespace VoidHuntersRevived.Common.Simulations.Attributes
 {
@@ -14,9 +14,9 @@ namespace VoidHuntersRevived.Common.Simulations.Attributes
             this.SimulationType = simulationType;
         }
 
-        protected override void Configure(GuppyConfiguration configuration, Type classType)
+        protected override void Configure(ContainerBuilder builder, Type classType)
         {
-            configuration.Builder.AddFilter(new ServiceFilter<SimulationType>(classType, this.SimulationType));
+            builder.RegisterFilter(new ServiceFilter<SimulationType>(classType, this.SimulationType));
         }
     }
 }

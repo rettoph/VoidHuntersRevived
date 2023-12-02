@@ -14,10 +14,11 @@ using Guppy.Network;
 using Guppy.Common;
 using Guppy.Network.Enums;
 using VoidHuntersRevived.Common.Entities.Extensions;
-using Guppy.MonoGame.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Utilities;
 using Guppy.Common.Services;
 using Guppy;
+using Guppy.Extensions.Autofac;
+using Guppy.Game.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
@@ -43,7 +44,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             this.Type = type;
 
-            this.Scope = scope.BeginLifetimeScope(builder =>
+            this.Scope = scope.BeginGuppyScope(nameof(Simulation), builder =>
             {
                 builder.Configure<LoggerConfiguration>((scope, configuration) =>
                 {

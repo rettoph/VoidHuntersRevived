@@ -10,8 +10,8 @@ using Svelto.ECS;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using Guppy.MonoGame.Common.Enums;
 using Guppy.Input;
+using Guppy.Game.Common.Enums;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {

@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Guppy.Attributes;
 using Guppy.Common.Extensions.Autofac;
+using Guppy.Extensions.Autofac;
 using Guppy.Loaders;
 using Guppy.Network;
 using Guppy.Resources.Serialization.Json.Converters;

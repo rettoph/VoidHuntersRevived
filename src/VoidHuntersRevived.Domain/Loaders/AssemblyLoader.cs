@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoidHuntersRevived.Domain.Client.Loaders;
-using VoidHuntersRevived.Domain.Debugging.Loaders;
 using VoidHuntersRevived.Domain.Entities.Loaders;
 using VoidHuntersRevived.Domain.Physics.Loaders;
 using VoidHuntersRevived.Domain.Pieces.Loaders;
@@ -24,8 +22,6 @@ namespace VoidHuntersRevived.Domain.Loaders
             assemblies.Load(typeof(PhysicsLoader).Assembly);
             assemblies.Load(typeof(EntityLoader).Assembly);
             assemblies.Load(typeof(PieceLoader).Assembly);
-            assemblies.Load(typeof(ClientLoader).Assembly);
-            assemblies.Load(typeof(DebuggerLoader).Assembly);
         }
     }
 }

@@ -10,7 +10,7 @@ using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using Guppy.MonoGame.Common.Enums;
+using Guppy.Game.Common.Enums;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Domain.Simulations;

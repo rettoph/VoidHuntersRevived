@@ -22,7 +22,7 @@ using VoidHuntersRevived.Common.Entities.Extensions;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
-    [GuppyFilter<IGameGuppy>()]
+    [GuppyFilter<IVoidHuntersGameGuppy>()]
     internal abstract class LockstepSimulation : Simulation, ILockstepSimulation
     {
         private readonly IStepGroupEngine<Tick> _tickStepEnginesGroup;

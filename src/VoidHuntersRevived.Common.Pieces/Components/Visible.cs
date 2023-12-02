@@ -1,5 +1,4 @@
-﻿using Guppy.MonoGame.Helpers;
-using Guppy.Resources.Attributes;
+﻿using Guppy.Resources.Attributes;
 using Microsoft.Xna.Framework;
 using Svelto.Common;
 using Svelto.DataStructures;

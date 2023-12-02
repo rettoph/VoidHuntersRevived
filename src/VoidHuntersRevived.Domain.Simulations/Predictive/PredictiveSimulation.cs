@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
     internal sealed class PredictiveSimulation : Simulation
     {
         private static readonly Pool<PredictedEvent> PredictionPool = new Pool<PredictedEvent>(ushort.MaxValue);
-        private readonly ILockstepSimulation _lockstep;
+        private ILockstepSimulation _lockstep;
         private Step _step;
         private double _lastStepTime;
         private IPredictiveSynchronizationEngine[] _synchronizations;
@@ -36,11 +36,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
 
         public PredictiveSimulation(
-            IFiltered<ILockstepSimulation> lockstep,
             ILifetimeScope scope) : base(SimulationType.Predictive, scope)
         {
+            _lockstep = null!;
             _step = new Step();
-            _lockstep = lockstep.Instance;
             _synchronizations = Array.Empty<IPredictiveSynchronizationEngine>();
             _predictedEvents = new DictionaryQueue<VhId, PredictedEvent>();
             _confirmedEvents = new Queue<EventDto>();
@@ -50,6 +49,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         {
             base.Initialize(simulations);
 
+            _lockstep = simulations.First(SimulationType.Lockstep) as ILockstepSimulation ?? throw new NotImplementedException();
             _lockstep.OnEvent += this.HandleLockstepEvent;
             _synchronizations = this.Engines.OfType<IPredictiveSynchronizationEngine>().ToArray();
 

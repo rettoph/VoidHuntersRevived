@@ -4,7 +4,7 @@ using VoidHuntersRevived.Common.Simulations.Services;
 
 namespace VoidHuntersRevived.Game.Client
 {
-    public class LocalGameGuppy : GameGuppy
+    public class LocalGameGuppy : VoidHuntersGameGuppy
     {
     }
 }

@@ -10,12 +10,6 @@ namespace VoidHuntersRevived.Domain.Loaders
     [AutoLoad]
     internal sealed class SettingLoader : ISettingLoader
     {
-        public IEnumerable<Setting> GetSettings(ISettingProvider settings)
-        {
-            yield return Settings.StepInterval;
-            yield return Settings.StepsPerTick;
-        }
-
         public void Load(ISettingProvider settings)
         {
             settings.Register(Settings.StepInterval, (Fix64)20 / (Fix64)1000);

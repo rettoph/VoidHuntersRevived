@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Application.Client
             _engine = new GuppyEngine(VoidHuntersRevivedGame.Company, VoidHuntersRevivedGame.Name, new[] { 
                 typeof(GameGuppy).Assembly, 
                 typeof(LocalGameGuppy).Assembly,
-                typeof(IGameGuppy).Assembly,
+                typeof(IVoidHuntersGameGuppy).Assembly,
                 typeof(VoidHuntersEntityDescriptor).Assembly,
             });
         }
@@ -60,7 +60,7 @@ namespace VoidHuntersRevived.Application.Client
             // SDL_MaximizeWindow(this.Window.Handle);
             _engine.Start(builder =>
             {
-                builder.ConfigureMonoGame(this, _graphics, this.Content, this.Window)
+                builder.RegisterMonoGame(this, _graphics, this.Content, this.Window)
                     .ConfigureNetwork()
                     .ConfigureResources();
             });

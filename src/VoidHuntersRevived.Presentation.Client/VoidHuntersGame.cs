@@ -9,9 +9,11 @@ using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Game.Common;
 using Guppy.MonoGame;
 using Autofac;
-using Guppy.MonoGame.Common;
+using Guppy.Game;
 using Guppy.MonoGame.Extensions;
 using System.Xml.Linq;
+using Guppy.Game.Extensions;
+using Guppy.Game.Common;
 
 namespace VoidHuntersRevived.Application.Client
 {
@@ -46,11 +48,11 @@ namespace VoidHuntersRevived.Application.Client
             _graphics.GraphicsProfile = GraphicsProfile.HiDef;
             _graphics.ApplyChanges();
 
-            
+
             _engine = new GuppyEngine(VoidHuntersRevivedGame.Company, VoidHuntersRevivedGame.Name, new[] { 
-                typeof(GameGuppy).Assembly, 
+                typeof(VoidHuntersGameGuppy).Assembly, 
                 typeof(LocalGameGuppy).Assembly,
-                typeof(IGameGuppy).Assembly,
+                typeof(IVoidHuntersGameGuppy).Assembly,
                 typeof(VoidHuntersEntityDescriptor).Assembly,
             });
         }
@@ -68,14 +70,12 @@ namespace VoidHuntersRevived.Application.Client
             // SDL_MaximizeWindow(this.Window.Handle);
             _game = _engine.StartGame(builder =>
             {
-                builder.ConfigureMonoGame(this, _graphics, this.Content, this.Window)
-                    .ConfigureNetwork()
-                    .ConfigureResources();
+                builder.RegisterMonoGame(this, _graphics, this.Content, this.Window);
             });
 
             _game.Initialize();
 
-            _game.Guppies.Create<ServerGameGuppy>();
+            //_game.Guppies.Create<ServerGameGuppy>();
             _game.Guppies.Create<MultiplayerGameGuppy>();
             //_engine.Guppies.Create<EditorGuppy>();
         }

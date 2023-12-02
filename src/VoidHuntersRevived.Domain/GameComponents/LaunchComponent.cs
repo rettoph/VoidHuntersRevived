@@ -2,7 +2,6 @@
 using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.Messaging;
-using Guppy.MonoGame;
 using Guppy.Providers;
 using Microsoft.Xna.Framework;
 using System;

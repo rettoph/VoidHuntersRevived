@@ -2,8 +2,8 @@
 using Guppy.Attributes;
 using Guppy.Common.Attributes;
 using Guppy.Enums;
+using Guppy.Game.Components;
 using Guppy.GUI;
-using Guppy.MonoGame.Components;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -15,10 +15,10 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 
-namespace VoidHuntersRevived.Domain.Debugging.Components
+namespace VoidHuntersRevived.Domain.Client.Components.Guppy
 {
     [AutoLoad]
-    [GuppyFilter<IGameGuppy>]
+    [GuppyFilter<IVoidHuntersGameGuppy>]
     [Sequence<InitializeSequence>(InitializeSequence.PostInitialize)]
     internal class LockstepSimulation_ClientDebugComponent : GuppyComponent, IDebugComponent
     {
@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Debugging.Components
         {
             base.Initialize(guppy);
 
-            if(_simulations.Flags.HasFlag(SimulationType.Lockstep) == false)
+            if (_simulations.Flags.HasFlag(SimulationType.Lockstep) == false)
             {
                 _enabled = false;
                 return;
@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Domain.Debugging.Components
 
         public void RenderDebugInfo(GameTime gameTime)
         {
-            if(_enabled == false)
+            if (_enabled == false)
             {
                 return;
             }

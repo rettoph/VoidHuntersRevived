@@ -9,7 +9,7 @@ using VoidHuntersRevived.Game.Common;
 
 namespace VoidHuntersRevived.Game.Client.Guppy
 {
-    [AutoLoad]
+    //[AutoLoad]
     [GuppyFilter<MainMenuGuppy>()]
     internal sealed class MenuComponent : IGuppyComponent
     {
