@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Files;
 using Guppy.Files.Enums;
+using Guppy.Files.Helpers;
 using Guppy.Files.Services;
 using Guppy.Resources;
 using Guppy.Resources.ResourceTypes;
@@ -28,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes
         {
             IFile<Piece> piece = _files.Get<Piece>(
                 FileType.Source,
-                Path.Combine(root, input),
+                DirectoryHelper.Combine(root, input),
                 true);
 
             value = piece.Value;

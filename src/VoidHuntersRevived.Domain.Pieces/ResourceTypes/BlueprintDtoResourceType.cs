@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Pieces;
 using Guppy.Files.Services;
 using System.Text.Json;
+using Guppy.Files.Helpers;
 
 namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes
 {
@@ -30,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes
         {
             IFile<BlueprintDto> blueprint = _files.Get<BlueprintDto>(
                 FileType.Source,
-                Path.Combine(root, input),
+                DirectoryHelper.Combine(root, input),
                 true);
 
             value = blueprint.Value;

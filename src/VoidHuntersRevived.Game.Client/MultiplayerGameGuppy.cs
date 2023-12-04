@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Game.Client
         {
             base.Initialize(scope);
 
-            this.Connect("localhost", 1337);
+            this.Connect("192.168.0.24", 1337);
         }
 
         public void Connect(string host, int port)
