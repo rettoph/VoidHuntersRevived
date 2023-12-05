@@ -22,7 +22,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
     internal sealed class RigidEngine : BasicEngine,
-        IOnSpawnEngine<Rigid>
+        IOnSpawnEngine<Rigid>,
+        IOnDespawnEngine<Rigid>
     {
         private readonly ISpace _space;
         private readonly IEntityService _entities;
@@ -63,23 +64,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
         }
 
-        public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Rigid> entities, ExclusiveGroupStruct groupID)
-        {
-            var (rigids, _, _) = entities;
-            var (ids, nodes, _) = _entities.QueryEntities<EntityId, Node>(groupID);
-
-            for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
-            {
-                EntityId id = ids[index];
-                Node node = nodes[index];
-
-                if (_space.TryGetBody(node.TreeId, out IBody? body))
-                {
-                    body.Destroy(id.VhId.Create(0));
-                }
-            }
-        }
-
         public void OnSpawn(EntityId id, ref Rigid component, in GroupIndex groupIndex)
         {
             Node node = _entities.QueryByGroupIndex<Node>(groupIndex);
@@ -91,6 +75,18 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
         }
 
+        public void OnDespawn(EntityId id, ref Rigid component, in GroupIndex groupIndex)
+        {
+            Node node = _entities.QueryByGroupIndex<Node>(groupIndex);
+
+            if (_entities.TryQueryById<Enabled>(node.TreeId, out Enabled enabled) == true 
+                && enabled 
+                && _space.TryGetBody(node.TreeId, out IBody? body))
+            {
+                this.DestroyFixtures(body, node, component);
+            }
+        }
+
         private void CreateFixtures(IBody body, Node node, Rigid rigid)
         {
             for(int i=0;i<rigid.Shapes.count; i++)
@@ -98,6 +94,16 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 VhId rigidShapeId = node.Id.VhId.Create(i);
                 _logger.Verbose("{ClassName}::{MethodName} - Creating fixture for tree {TreeId}; {RigidShapeId}", nameof(RigidEngine), nameof(CreateFixtures), body.Id.VhId, rigidShapeId);
                 body.Create(rigidShapeId, node.Id, rigid.Shapes[i], node.LocalLocation.Transformation);
+            }
+        }
+
+        private void DestroyFixtures(IBody body, Node node, Rigid rigid)
+        {
+            for (int i = 0; i < rigid.Shapes.count; i++)
+            {
+                VhId rigidShapeId = node.Id.VhId.Create(i);
+                _logger.Verbose("{ClassName}::{MethodName} - Destroying fixture for tree {TreeId}; {RigidShapeId}", nameof(RigidEngine), nameof(CreateFixtures), body.Id.VhId, rigidShapeId);
+                body.Destroy(rigidShapeId);
             }
         }
     }
