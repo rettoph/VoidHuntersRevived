@@ -1,5 +1,5 @@
 ﻿using Guppy.Common;
-using Guppy.Input;
+using Guppy.Game.Input;
 using Guppy.Messaging;
 using VoidHuntersRevived.Common.Pieces.Enums;
 

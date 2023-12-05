@@ -3,7 +3,7 @@ using Guppy.Attributes;
 using Guppy.Common.Attributes;
 using Guppy.Enums;
 using Guppy.Game.Components;
-using Guppy.GUI;
+using Guppy.Game.ImGui;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -26,11 +26,11 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
         private LockstepSimulation_Client? _client;
         private LockstepSimulation_Server? _server;
         private bool _enabled;
-        private readonly IGui _gui;
+        private readonly IImGui _imgui;
 
-        public LockstepSimulation_ClientDebugComponent(IGui gui, ISimulationService simulations)
+        public LockstepSimulation_ClientDebugComponent(IImGui imgui, ISimulationService simulations)
         {
-            _gui = gui;
+            _imgui = imgui;
             _simulations = simulations;
         }
 
@@ -59,27 +59,27 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
 
             if (_server is not null)
             {
-                _gui.Text(nameof(LockstepSimulation_Server));
-                _gui.Indent();
+                _imgui.Text(nameof(LockstepSimulation_Server));
+                _imgui.Indent();
 
-                _gui.Text($"Tick: {_server.CurrentTick.Id}");
-                _gui.Text($"Step: {_server._stepsSinceTick}/{_server._stepsPerTick}");
+                _imgui.Text($"Tick: {_server.CurrentTick.Id}");
+                _imgui.Text($"Step: {_server._stepsSinceTick}/{_server._stepsPerTick}");
 
-                _gui.Unindent();
+                _imgui.Unindent();
             }
 
             if (_client is not null)
             {
-                _gui.Text(nameof(LockstepSimulation_Client));
-                _gui.Indent();
+                _imgui.Text(nameof(LockstepSimulation_Client));
+                _imgui.Indent();
 
-                _gui.Text($"Tick: {_client.CurrentTick.Id}");
-                _gui.Text($"Step: {_client._stepsSinceTick}/{_client._stepsPerTick}");
-                _gui.Text($"Buffer Head: {(_client._ticks.Head?.Id.ToString()) ?? "null"}");
-                _gui.Text($"Buffer Tail: {(_client._ticks.Tail?.Id.ToString()) ?? "null"}");
-                _gui.Text($"Buffer Count: {_client._ticks.Count}");
+                _imgui.Text($"Tick: {_client.CurrentTick.Id}");
+                _imgui.Text($"Step: {_client._stepsSinceTick}/{_client._stepsPerTick}");
+                _imgui.Text($"Buffer Head: {(_client._ticks.Head?.Id.ToString()) ?? "null"}");
+                _imgui.Text($"Buffer Tail: {(_client._ticks.Tail?.Id.ToString()) ?? "null"}");
+                _imgui.Text($"Buffer Count: {_client._ticks.Count}");
 
-                _gui.Unindent();
+                _imgui.Unindent();
             }
         }
     }

@@ -29,7 +29,7 @@ using VoidHuntersRevived.Game.Ships.Services;
 using VoidHuntersRevived.Game.Ships.Events;
 using VoidHuntersRevived.Common.Ships.Components;
 using VoidHuntersRevived.Common.Ships.Services;
-using Guppy.Input;
+using Guppy.Game.Input;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {

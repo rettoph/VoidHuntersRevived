@@ -1,7 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.Common.Attributes;
-using Guppy.Input.Messages;
+using Guppy.Game.Input.Messages;
 using Guppy.MonoGame;
 using Guppy.MonoGame.Utilities.Cameras;
 using Microsoft.Xna.Framework;
@@ -10,7 +10,7 @@ using Svelto.ECS;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using Guppy.Input;
+using Guppy.Game.Input;
 using Guppy.Game.Common.Enums;
 
 namespace VoidHuntersRevived.Game.Client.Engines

@@ -7,7 +7,7 @@ using Guppy.Enums;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Components;
-using Guppy.GUI;
+using Guppy.Game.ImGui;
 using Guppy.MonoGame.Utilities.Cameras;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
@@ -42,19 +42,19 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
         private readonly ISimulationService _simulations;
         private (Simulation, ISpace, IEntityService, DebugView, Ref<bool>)[] _data;
         private ILockstepSimulation? _lockstep;
-        private readonly IGui _gui;
+        private readonly IImGui _imgui;
         private readonly GraphicsDevice _graphics;
         private readonly Camera2D _camera;
         private readonly SpriteFont _font;
 
         public SimulationDebugComponent(
-            IGui gui, 
+            IImGui imgui, 
             ISimulationService simulations,
             IResourceProvider resources,
             GraphicsDevice graphics,
             Camera2D camera)
         {
-            _gui = gui;
+            _imgui = imgui;
             _simulations = simulations;
             _graphics = graphics;
             _camera = camera;
@@ -89,62 +89,62 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
         public void RenderDebugInfo(GameTime gameTime)
         {
 
-            _gui.TextCentered("Simulation Info");
+            _imgui.TextCentered("Simulation Info");
 
-            if (_gui.BeginTable($"#{nameof(SimulationDebugComponent)}_Table", 8, GuiTableFlags.RowBg | GuiTableFlags.NoClip | GuiTableFlags.Borders))
+            if (_imgui.BeginTable($"#{nameof(SimulationDebugComponent)}_Table", 8, ImGuiTableFlags.RowBg | ImGuiTableFlags.NoClip | ImGuiTableFlags.Borders))
             {
-                _gui.TableSetupColumn("Simulation", GuiTableColumnFlags.WidthStretch);
+                _imgui.TableSetupColumn("Simulation", ImGuiTableColumnFlags.WidthStretch);
 
-                _gui.TableSetupColumn("Entities", GuiTableColumnFlags.WidthStretch);
+                _imgui.TableSetupColumn("Entities", ImGuiTableColumnFlags.WidthStretch);
 
-                _gui.TableSetupColumn("Trees", GuiTableColumnFlags.WidthStretch);
+                _imgui.TableSetupColumn("Trees", ImGuiTableColumnFlags.WidthStretch);
 
-                _gui.TableSetupColumn("Nodes", GuiTableColumnFlags.WidthStretch);
+                _imgui.TableSetupColumn("Nodes", ImGuiTableColumnFlags.WidthStretch);
 
-                _gui.TableSetupColumn("Bodies", GuiTableColumnFlags.WidthStretch);
+                _imgui.TableSetupColumn("Bodies", ImGuiTableColumnFlags.WidthStretch);
 
-                _gui.TableSetupColumn("Contacts", GuiTableColumnFlags.WidthStretch);
+                _imgui.TableSetupColumn("Contacts", ImGuiTableColumnFlags.WidthStretch);
 
-                _gui.TableSetupColumn("Elapsed Time", GuiTableColumnFlags.WidthStretch);
+                _imgui.TableSetupColumn("Elapsed Time", ImGuiTableColumnFlags.WidthStretch);
 
-                _gui.TableSetupColumn("Aether", GuiTableColumnFlags.WidthStretch);
+                _imgui.TableSetupColumn("Aether", ImGuiTableColumnFlags.WidthStretch);
 
-                _gui.TableHeadersRow();
+                _imgui.TableHeadersRow();
 
                 foreach ((Simulation simulation, ISpace space, IEntityService entities, _, Ref<bool> aether) in _data)
                 {
-                    _gui.TableNextRow();
+                    _imgui.TableNextRow();
 
-                    _gui.TableNextColumn();
-                    _gui.Text(simulation.Type.ToString());
+                    _imgui.TableNextColumn();
+                    _imgui.Text(simulation.Type.ToString());
 
-                    _gui.TableNextColumn();
-                    _gui.Text(entities.CalculateTotal<EntityId>().ToString("#,###,##0"));
+                    _imgui.TableNextColumn();
+                    _imgui.Text(entities.CalculateTotal<EntityId>().ToString("#,###,##0"));
 
-                    _gui.TableNextColumn();
-                    _gui.Text(entities.CalculateTotal<Tree>().ToString("#,###,##0"));
+                    _imgui.TableNextColumn();
+                    _imgui.Text(entities.CalculateTotal<Tree>().ToString("#,###,##0"));
 
-                    _gui.TableNextColumn();
-                    _gui.Text(entities.CalculateTotal<Node>().ToString("#,###,##0"));
+                    _imgui.TableNextColumn();
+                    _imgui.Text(entities.CalculateTotal<Node>().ToString("#,###,##0"));
 
-                    _gui.TableNextColumn();
-                    _gui.Text(space.BodyCount.ToString("#,##0"));
+                    _imgui.TableNextColumn();
+                    _imgui.Text(space.BodyCount.ToString("#,##0"));
 
-                    _gui.TableNextColumn();
-                    _gui.Text(space.ContactCount.ToString("#,##0"));
+                    _imgui.TableNextColumn();
+                    _imgui.Text(space.ContactCount.ToString("#,##0"));
 
-                    _gui.TableNextColumn();
-                    _gui.Text(TimeSpan.FromSeconds((float)simulation.CurrentStep.TotalTime).ToString(@"hh\:mm\:ss\.FFFFFFF").PadRight(16, '0'));
+                    _imgui.TableNextColumn();
+                    _imgui.Text(TimeSpan.FromSeconds((float)simulation.CurrentStep.TotalTime).ToString(@"hh\:mm\:ss\.FFFFFFF").PadRight(16, '0'));
 
-                    _gui.TableNextColumn();
-                    if(_gui.Button(simulation.Type.ToString(), $"Toggle ({(aether ? "enabled" : "disabled")})"))
+                    _imgui.TableNextColumn();
+                    if(_imgui.Button(simulation.Type.ToString(), $"Toggle ({(aether ? "enabled" : "disabled")})"))
                     {
                         aether.Value = !aether;
                     }
                 }
             }
 
-            _gui.EndTable();
+            _imgui.EndTable();
         }
 
         private DebugView BuildDebugView(World world)
