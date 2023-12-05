@@ -12,7 +12,7 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Game.Client;
 
-namespace VoidHuntersRevived.Game.Client.Guppy
+namespace VoidHuntersRevived.Game.Client.Components.Guppy
 {
     [AutoLoad]
     [GuppyFilter<LocalGameGuppy>]

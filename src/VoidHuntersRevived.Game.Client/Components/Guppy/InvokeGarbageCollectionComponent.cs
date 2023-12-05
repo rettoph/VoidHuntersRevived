@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Game.Client.Engines;
 using VoidHuntersRevived.Game.Client.Messages;
 
-namespace VoidHuntersRevived.Game.Client.GameComponents
+namespace VoidHuntersRevived.Game.Client.Components.Guppy
 {
     [AutoLoad]
     internal class InvokeGarbageCollectionComponent : IGuppyComponent,

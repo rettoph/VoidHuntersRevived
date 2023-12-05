@@ -25,9 +25,9 @@ namespace VoidHuntersRevived.Domain.Physics
         public event OnEventDelegate<IBody> OnBodyDisabled;
         public event OnEventDelegate<IBody> OnBodyAwakeChanged;
 
-        public Space(ILogger logger)
+        public Space(ILogger logger, AetherWorld aether)
         {
-            _aether = new AetherWorld(AetherVector2.Zero);
+            _aether = aether;
             _bodies = new Dictionary<VhId, Body>();
             _logger = logger;
 
