@@ -17,7 +17,7 @@ using Guppy.Game.Common;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Common.Simulations;
 
-namespace VoidHuntersRevived.Game.Client.Guppy
+namespace VoidHuntersRevived.Game.Client.Components.Guppy
 {
     [AutoLoad]
     [GuppyFilter<MultiplayerGameGuppy>]
