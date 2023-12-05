@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Guppy;
 using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.Common.Attributes;
 using Guppy.Enums;
 using Guppy.Game.Common;
@@ -8,6 +9,7 @@ using Guppy.Game.Common.Enums;
 using Guppy.Game.Components;
 using Guppy.GUI;
 using Guppy.MonoGame.Utilities.Cameras;
+using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -19,6 +21,7 @@ using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Diagnostics;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Client;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics;
@@ -37,26 +40,26 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
     internal class SimulationDebugComponent : GuppyComponent, IDebugComponent, IGuppyDrawable
     {
         private readonly ISimulationService _simulations;
-        private (Simulation, ISpace, IEntityService, DebugView)[] _data;
+        private (Simulation, ISpace, IEntityService, DebugView, Ref<bool>)[] _data;
         private ILockstepSimulation? _lockstep;
         private readonly IGui _gui;
         private readonly GraphicsDevice _graphics;
-        private readonly ContentManager _content;
         private readonly Camera2D _camera;
+        private readonly SpriteFont _font;
 
         public SimulationDebugComponent(
             IGui gui, 
             ISimulationService simulations,
+            IResourceProvider resources,
             GraphicsDevice graphics,
-            ContentManager content,
             Camera2D camera)
         {
             _gui = gui;
             _simulations = simulations;
             _graphics = graphics;
-            _content = content;
             _camera = camera;
-            _data = Array.Empty<(Simulation, ISpace, IEntityService, DebugView)>();
+            _data = Array.Empty<(Simulation, ISpace, IEntityService, DebugView, Ref<bool>)>();
+            _font = resources.Get(Common.Client.Resources.SpriteFonts.Default);
         }
 
         public override void Initialize(IGuppy guppy)
@@ -67,15 +70,19 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
                 (x as Simulation)!, 
                 x.Scope.Resolve<ISpace>(), 
                 x.Scope.Resolve<IEntityService>(), 
-                this.BuildDebugView(x.Scope.Resolve<World>())
+                this.BuildDebugView(x.Scope.Resolve<World>()),
+                new Ref<bool>(false)
             )).ToArray();
         }
 
         public void Draw(GameTime gameTime)
         {
-            foreach(var (_, _, _, debugView) in _data)
+            foreach(var (_, _, _, debugView, enabled) in _data)
             {
-                debugView.RenderDebugData(_camera.Projection, _camera.View);
+                if(enabled)
+                {
+                    debugView.RenderDebugData(_camera.Projection, _camera.View);
+                }
             }
         }
 
@@ -84,7 +91,7 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
 
             _gui.TextCentered("Simulation Info");
 
-            if (_gui.BeginTable($"#{nameof(SimulationDebugComponent)}_Table", 7, GuiTableFlags.RowBg | GuiTableFlags.NoClip | GuiTableFlags.Borders))
+            if (_gui.BeginTable($"#{nameof(SimulationDebugComponent)}_Table", 8, GuiTableFlags.RowBg | GuiTableFlags.NoClip | GuiTableFlags.Borders))
             {
                 _gui.TableSetupColumn("Simulation", GuiTableColumnFlags.WidthStretch);
 
@@ -100,9 +107,11 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
 
                 _gui.TableSetupColumn("Elapsed Time", GuiTableColumnFlags.WidthStretch);
 
+                _gui.TableSetupColumn("Aether", GuiTableColumnFlags.WidthStretch);
+
                 _gui.TableHeadersRow();
 
-                foreach ((Simulation simulation, ISpace space, IEntityService entities, _) in _data)
+                foreach ((Simulation simulation, ISpace space, IEntityService entities, _, Ref<bool> aether) in _data)
                 {
                     _gui.TableNextRow();
 
@@ -125,8 +134,13 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
                     _gui.Text(space.ContactCount.ToString("#,##0"));
 
                     _gui.TableNextColumn();
-
                     _gui.Text(TimeSpan.FromSeconds((float)simulation.CurrentStep.TotalTime).ToString(@"hh\:mm\:ss\.FFFFFFF").PadRight(16, '0'));
+
+                    _gui.TableNextColumn();
+                    if(_gui.Button(simulation.Type.ToString(), $"Toggle ({(aether ? "enabled" : "disabled")})"))
+                    {
+                        aether.Value = !aether;
+                    }
                 }
             }
 
@@ -136,7 +150,7 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
         private DebugView BuildDebugView(World world)
         {
             DebugView debugView = new DebugView(world);
-            debugView.LoadContent(_graphics, _content);
+            debugView.LoadContent(_graphics, _font);
 
             return debugView;
         }
