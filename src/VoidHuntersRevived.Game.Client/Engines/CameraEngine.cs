@@ -2,8 +2,8 @@
 using Guppy.Common;
 using Guppy.Common.Attributes;
 using Guppy.Game.Input.Messages;
-using Guppy.MonoGame;
-using Guppy.MonoGame.Utilities.Cameras;
+using Guppy.Game.MonoGame;
+using Guppy.Game.MonoGame.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Svelto.ECS;

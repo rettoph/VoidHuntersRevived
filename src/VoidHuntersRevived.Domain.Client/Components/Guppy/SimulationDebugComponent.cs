@@ -8,7 +8,7 @@ using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Components;
 using Guppy.Game.ImGui;
-using Guppy.MonoGame.Utilities.Cameras;
+using Guppy.Game.MonoGame.Utilities.Cameras;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;

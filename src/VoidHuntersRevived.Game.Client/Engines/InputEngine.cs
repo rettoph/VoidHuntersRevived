@@ -18,7 +18,7 @@ using Guppy.Network.Enums;
 using VoidHuntersRevived.Common;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
-using Guppy.MonoGame.Utilities.Cameras;
+using Guppy.Game.MonoGame.Utilities.Cameras;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
 using Svelto.ECS;

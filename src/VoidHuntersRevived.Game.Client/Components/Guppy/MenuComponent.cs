@@ -1,9 +1,9 @@
 ﻿using Guppy;
 using Guppy.Attributes;
 using Guppy.Loaders;
-using Guppy.MonoGame;
-using Guppy.MonoGame.Loaders;
-using Guppy.MonoGame.Providers;
+using Guppy.Game.MonoGame;
+using Guppy.Game.MonoGame.Loaders;
+using Guppy.Game.MonoGame.Providers;
 using VoidHuntersRevived.Common.Messages;
 using VoidHuntersRevived.Game.Common;
 

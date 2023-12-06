@@ -1,5 +1,5 @@
 ﻿using Guppy.Attributes;
-using Guppy.MonoGame.Graphics.Effects;
+using Guppy.Game.MonoGame.Graphics.Effects;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

@@ -1,4 +1,4 @@
-﻿using Guppy.MonoGame.Graphics.Effects;
+﻿using Guppy.Game.MonoGame.Graphics.Effects;
 using Guppy.Resources;
 using Microsoft.Xna.Framework.Graphics;
 using System;

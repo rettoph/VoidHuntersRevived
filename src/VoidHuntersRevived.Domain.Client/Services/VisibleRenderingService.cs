@@ -1,6 +1,6 @@
-﻿using Guppy.MonoGame;
-using Guppy.MonoGame.Primitives;
-using Guppy.MonoGame.Utilities.Cameras;
+﻿using Guppy.Game.MonoGame;
+using Guppy.Game.MonoGame.Primitives;
+using Guppy.Game.MonoGame.Utilities.Cameras;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

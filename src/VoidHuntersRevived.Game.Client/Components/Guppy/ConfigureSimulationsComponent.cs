@@ -2,7 +2,7 @@
 using Guppy.Attributes;
 using Guppy.Common.Attributes;
 using Guppy.Enums;
-using Guppy.MonoGame;
+using Guppy.Game.MonoGame;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Guppy.Attributes;
 using Guppy.Loaders;
-using Guppy.MonoGame.Utilities.Cameras;
+using Guppy.Game.MonoGame.Utilities.Cameras;
 
 namespace VoidHuntersRevived.Game.Client.Loaders
 {

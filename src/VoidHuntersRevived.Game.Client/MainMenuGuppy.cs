@@ -1,8 +1,8 @@
 ﻿using Autofac;
 using Guppy.Common;
 using Guppy.Game;
-using Guppy.MonoGame;
-using Guppy.MonoGame.Providers;
+using Guppy.Game.MonoGame;
+using Guppy.Game.MonoGame.Providers;
 using Guppy.Network;
 using Guppy.Network.Peers;
 using Microsoft.Xna.Framework;

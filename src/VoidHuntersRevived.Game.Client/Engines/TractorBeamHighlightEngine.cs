@@ -1,6 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.Attributes;
-using Guppy.MonoGame.Utilities.Cameras;
+using Guppy.Game.MonoGame.Utilities.Cameras;
 using Guppy.Network.Identity;
 using Guppy.Network.Peers;
 using Guppy.Resources.Providers;
