@@ -3,6 +3,7 @@ using Guppy;
 using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.Common.Attributes;
+using Guppy.Common.Extensions;
 using Guppy.Enums;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
@@ -23,10 +24,12 @@ using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Client;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Domain.Simulations;
@@ -37,29 +40,19 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
     [GuppyFilter<IVoidHuntersGameGuppy>]
     [Sequence<InitializeSequence>(InitializeSequence.PostInitialize)]
     [Sequence<DrawSequence>(DrawSequence.PostDraw)]
-    internal class SimulationDebugComponent : GuppyComponent, IDebugComponent, IGuppyDrawable
+    internal class SimulationDebugComponent : GuppyComponent, IDebugComponent
     {
         private readonly ISimulationService _simulations;
-        private (Simulation, ISpace, IEntityService, DebugView, Ref<bool>)[] _data;
-        private ILockstepSimulation? _lockstep;
+        private (Simulation, Dictionary<string, IDebugEngine[]>)[] _data;
         private readonly IImGui _imgui;
-        private readonly GraphicsDevice _graphics;
-        private readonly Camera2D _camera;
-        private readonly SpriteFont _font;
 
         public SimulationDebugComponent(
             IImGui imgui, 
-            ISimulationService simulations,
-            IResourceProvider resources,
-            GraphicsDevice graphics,
-            Camera2D camera)
+            ISimulationService simulations)
         {
             _imgui = imgui;
             _simulations = simulations;
-            _graphics = graphics;
-            _camera = camera;
-            _data = Array.Empty<(Simulation, ISpace, IEntityService, DebugView, Ref<bool>)>();
-            _font = resources.Get(Common.Client.Resources.SpriteFonts.Default);
+            _data = Array.Empty<(Simulation, Dictionary<string, IDebugEngine[]>)>();
         }
 
         public override void Initialize(IGuppy guppy)
@@ -68,91 +61,35 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
 
             _data = _simulations.Instances.Select(x => (
                 (x as Simulation)!, 
-                x.Scope.Resolve<ISpace>(), 
-                x.Scope.Resolve<IEntityService>(), 
-                this.BuildDebugView(x.Scope.Resolve<World>()),
-                new Ref<bool>(false)
+                x.Scope.Resolve<IEngineService>().OfType<IDebugEngine>().Sequence(DrawSequence.Draw).GroupBy(x => x.Group).ToDictionary(x => x.Key, x => x.ToArray())
             )).ToArray();
-        }
-
-        public void Draw(GameTime gameTime)
-        {
-            foreach(var (_, _, _, debugView, enabled) in _data)
-            {
-                if(enabled)
-                {
-                    debugView.RenderDebugData(_camera.Projection, _camera.View);
-                }
-            }
         }
 
         public void RenderDebugInfo(GameTime gameTime)
         {
-
-            _imgui.TextCentered("Simulation Info");
-
-            if (_imgui.BeginTable($"#{nameof(SimulationDebugComponent)}_Table", 8, ImGuiTableFlags.RowBg | ImGuiTableFlags.NoClip | ImGuiTableFlags.Borders))
+            foreach(var (simulation, engineGroups) in _data)
             {
-                _imgui.TableSetupColumn("Simulation", ImGuiTableColumnFlags.WidthStretch);
+                _imgui.BeginChild($"{simulation.Type}", Vector2.Zero, ImGuiChildFlags.AlwaysAutoResize | ImGuiChildFlags.AutoResizeY);
 
-                _imgui.TableSetupColumn("Entities", ImGuiTableColumnFlags.WidthStretch);
+                _imgui.Text($"Simulation: {simulation.Type}");
 
-                _imgui.TableSetupColumn("Trees", ImGuiTableColumnFlags.WidthStretch);
+                _imgui.Indent();
 
-                _imgui.TableSetupColumn("Nodes", ImGuiTableColumnFlags.WidthStretch);
-
-                _imgui.TableSetupColumn("Bodies", ImGuiTableColumnFlags.WidthStretch);
-
-                _imgui.TableSetupColumn("Contacts", ImGuiTableColumnFlags.WidthStretch);
-
-                _imgui.TableSetupColumn("Elapsed Time", ImGuiTableColumnFlags.WidthStretch);
-
-                _imgui.TableSetupColumn("Aether", ImGuiTableColumnFlags.WidthStretch);
-
-                _imgui.TableHeadersRow();
-
-                foreach ((Simulation simulation, ISpace space, IEntityService entities, _, Ref<bool> aether) in _data)
+                foreach(var (group, engines) in engineGroups)
                 {
-                    _imgui.TableNextRow();
-
-                    _imgui.TableNextColumn();
-                    _imgui.Text(simulation.Type.ToString());
-
-                    _imgui.TableNextColumn();
-                    _imgui.Text(entities.CalculateTotal<EntityId>().ToString("#,###,##0"));
-
-                    _imgui.TableNextColumn();
-                    _imgui.Text(entities.CalculateTotal<Tree>().ToString("#,###,##0"));
-
-                    _imgui.TableNextColumn();
-                    _imgui.Text(entities.CalculateTotal<Node>().ToString("#,###,##0"));
-
-                    _imgui.TableNextColumn();
-                    _imgui.Text(space.BodyCount.ToString("#,##0"));
-
-                    _imgui.TableNextColumn();
-                    _imgui.Text(space.ContactCount.ToString("#,##0"));
-
-                    _imgui.TableNextColumn();
-                    _imgui.Text(TimeSpan.FromSeconds((float)simulation.CurrentStep.TotalTime).ToString(@"hh\:mm\:ss\.FFFFFFF").PadRight(16, '0'));
-
-                    _imgui.TableNextColumn();
-                    if(_imgui.Button(simulation.Type.ToString(), $"Toggle ({(aether ? "enabled" : "disabled")})"))
+                    foreach (IDebugEngine engine in engines)
                     {
-                        aether.Value = !aether;
+                        engine.RenderDebugInfo(gameTime);
                     }
+
+                    _imgui.NewLine();
                 }
+
+
+                _imgui.Unindent();
+
+                _imgui.EndChild();
             }
-
-            _imgui.EndTable();
-        }
-
-        private DebugView BuildDebugView(World world)
-        {
-            DebugView debugView = new DebugView(world);
-            debugView.LoadContent(_graphics, _font);
-
-            return debugView;
         }
     }
 }

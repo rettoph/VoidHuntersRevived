@@ -20,8 +20,8 @@ using VoidHuntersRevived.Common;
 namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 {
     [AutoLoad]
-    [PeerTypeFilter(PeerType.Server)]
-    [SimulationTypeFilter(SimulationType.Lockstep)]
+    [PeerFilter(PeerType.Server)]
+    [SimulationFilter(SimulationType.Lockstep)]
     internal class LockstepServer_UserEngine : BasicEngine
     {
         private readonly NetScope _scope;

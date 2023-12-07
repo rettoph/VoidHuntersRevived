@@ -22,7 +22,7 @@ using Autofac;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
-    [PeerTypeFilter(PeerType.Client)]
+    [PeerFilter(PeerType.Client)]
     internal sealed class LockstepSimulation_Client : LockstepSimulation,
         IDisposable
     {

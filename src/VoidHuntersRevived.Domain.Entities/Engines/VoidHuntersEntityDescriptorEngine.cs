@@ -11,11 +11,12 @@ using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Common.Entities.Options;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Entities.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Engines
 {
-    internal abstract class VoidHuntersEntityDescriptorEngine : IVoidHuntersEntityDescriptorEngine
+    internal abstract class VoidHuntersEntityDescriptorEngine : BasicEngine, IVoidHuntersEntityDescriptorEngine
     {
         [ThreadStatic]
         internal static uint EntityId;
@@ -35,13 +36,12 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         public abstract void Deserialize(in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id);
     }
 
-    internal sealed class VoidHuntersEntityDescriptorEngine<TDescriptor> : VoidHuntersEntityDescriptorEngine, IQueryingEntitiesEngine
+    internal sealed class VoidHuntersEntityDescriptorEngine<TDescriptor> : VoidHuntersEntityDescriptorEngine, IQueryingEntitiesEngine, IEngineEngine
         where TDescriptor : VoidHuntersEntityDescriptor, new()
     {
         private readonly TDescriptor _descriptor;
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
-        private readonly IEngineService _engines;
         private readonly FasterList<ComponentEngineInvoker> _onDespawnEngineInvokers;
         private readonly FasterList<ComponentEngineInvoker> _onSpawnEngineInvokers;
         private readonly FasterList<ComponentSerializer> _serializers;
@@ -53,7 +53,6 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
         public VoidHuntersEntityDescriptorEngine(
             ITeamDescriptorGroupService teamDescriptorGroups,
-            IEngineService engines, 
             ILifetimeScope scope, 
             EnginesRoot enginesRoot, 
             IEnumerable<VoidHuntersEntityDescriptor> descriptors)
@@ -61,7 +60,6 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             _descriptor = descriptors.OfType<TDescriptor>().Single()!;
             _factory = enginesRoot.GenerateEntityFactory();
             _functions = enginesRoot.GenerateEntityFunctions();
-            _engines = engines;
             _onDespawnEngineInvokers = new FasterList<ComponentEngineInvoker>();
             _onSpawnEngineInvokers = new FasterList<ComponentEngineInvoker>();
             _teamDescriptorGroups = teamDescriptorGroups.GetAllByDescriptor(_descriptor);
@@ -73,10 +71,8 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             }
         }
 
-        public void Ready()
+        public void Initialize(IEngine[] engines)
         {
-            var engines = _engines.All();
-            
             foreach (Type componentType in _descriptor.ComponentManagers.Select(x => x.Type))
             {
                 if (ComponentEngineInvoker.Create(typeof(OnDespawnEngineInvoker<>), typeof(IOnDespawnEngine<>), componentType, engines, out var invoker))

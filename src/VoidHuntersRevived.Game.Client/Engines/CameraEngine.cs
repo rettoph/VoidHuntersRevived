@@ -16,7 +16,7 @@ using Guppy.Game.Common.Enums;
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [SimulationTypeFilter(SimulationType.Lockstep)]
+    [SimulationFilter(SimulationType.Lockstep)]
     [Sequence<DrawSequence>(DrawSequence.PreDraw)]
     internal sealed class CameraEngine : BasicEngine, IStepEngine<GameTime>,
         IInputSubscriber<CursorScroll>

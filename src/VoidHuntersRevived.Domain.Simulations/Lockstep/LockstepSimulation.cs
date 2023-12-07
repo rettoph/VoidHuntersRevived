@@ -19,6 +19,7 @@ using VoidHuntersRevived.Common.Entities;
 using Autofac;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities.Extensions;
+using VoidHuntersRevived.Domain.Entities.Extensions;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
@@ -41,16 +42,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _history = new List<Tick>();
 
             this.CurrentTick = Tick.First();
-        }
-
-        public override void Initialize(ISimulationService simulations)
-        {
-            base.Initialize(simulations);
-
-            foreach (ISimulationEngine<ILockstepSimulation> system in this.Engines.OfType<ISimulationEngine<ILockstepSimulation>>())
-            {
-                system.Initialize(this);
-            }
         }
 
         public override void Update(GameTime realTime)

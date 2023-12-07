@@ -20,8 +20,8 @@ using VoidHuntersRevived.Domain.Simulations.Messages;
 namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 {
     [AutoLoad]
-    [PeerTypeFilter(PeerType.Client)]
-    [SimulationTypeFilter(SimulationType.Lockstep)]
+    [PeerFilter(PeerType.Client)]
+    [SimulationFilter(SimulationType.Lockstep)]
     internal class LockstepClient_TickEngine : BasicEngine,
         ISubscriber<INetIncomingMessage<Tick>>,
         ISubscriber<INetIncomingMessage<TickHistoryStart>>,

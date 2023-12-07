@@ -9,7 +9,7 @@ using VoidHuntersRevived.Common.Simulations.Lockstep;
 
 namespace VoidHuntersRevived.Common.Simulations.Engines
 {
-    [SimulationTypeFilter(SimulationType.Predictive)]
+    [SimulationFilter(SimulationType.Predictive)]
     public interface IPredictiveSynchronizationEngine : IEngine
     {
         void Initialize(ILockstepSimulation lockstep);

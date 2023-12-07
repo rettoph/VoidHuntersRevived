@@ -19,6 +19,7 @@ using Guppy.Common.Services;
 using Guppy;
 using Guppy.Extensions.Autofac;
 using Guppy.Game.Common.Enums;
+using VoidHuntersRevived.Domain.Entities.Extensions;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
@@ -46,6 +47,8 @@ namespace VoidHuntersRevived.Domain.Simulations
 
             this.Scope = scope.BeginGuppyScope(nameof(Simulation), builder =>
             {
+                builder.RegisterInstance<ISimulation>(this);
+
                 builder.Configure<LoggerConfiguration>((scope, configuration) =>
                 {
                     configuration.Enrich.WithProperty("PeerType", scope.Resolve<NetScope>().Peer?.Type ?? PeerType.None);
@@ -54,7 +57,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             });
 
             // Pass the current scoped netscope to the new child scope
-            this.Engines = this.Scope.Resolve<IEngineService>().Load(new SimulationState(this));
+            this.Engines = this.Scope.Resolve<IEngineService>();
             this.Teams = this.Scope.Resolve<ITeamService>();
 
             // Build an event publisher dictionary
@@ -71,10 +74,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             this.Engines.Initialize();
 
-            foreach(ISimulationEngine<ISimulation> engine in this.Engines.OfType<ISimulationEngine<ISimulation>>())
-            {
-                engine.Initialize(this);
-            }
+            this.Engines.InitializeSimulationEngines(this);
         }
 
         public virtual void Dispose()

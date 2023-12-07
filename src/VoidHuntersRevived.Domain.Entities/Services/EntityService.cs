@@ -21,21 +21,17 @@ using Guppy.Common.Attributes;
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
     [Sequence<InitializeSequence>(InitializeSequence.PreInitialize)]
-    internal partial class EntityService : BasicEngine, IEntityService, IQueryingEntitiesEngine
+    internal partial class EntityService : BasicEngine, IEntityService, IQueryingEntitiesEngine, IEngineEngine
     {
-        private readonly IEngineService _engines;
         private readonly ILogger _logger;
         private readonly EntityTypeService _types;
         private readonly SimpleEntitiesSubmissionScheduler _scheduler;
 
         public EntityService(
-            IEngineService engines, 
             ILogger logger, 
             EntityTypeService types,
-            SimpleEntitiesSubmissionScheduler scheduler,
-            IEnumerable<VoidHuntersEntityDescriptor> descriptors)
+            SimpleEntitiesSubmissionScheduler scheduler)
         {
-            _engines = engines;
             _logger = logger;
             _types = types;
             _scheduler = scheduler;
@@ -44,11 +40,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
-        public override void Ready()
+        public void Initialize(IEngine[] engines)
         {
-            base.Ready();
-
-            foreach (VoidHuntersEntityDescriptorEngine engine in _engines.OfType<IVoidHuntersEntityDescriptorEngine>())
+            foreach (VoidHuntersEntityDescriptorEngine engine in engines.OfType<IVoidHuntersEntityDescriptorEngine>())
             {
                 _descriptors.TryAdd(engine.Descriptor.Id, engine.Descriptor.GetType(), engine);
             }

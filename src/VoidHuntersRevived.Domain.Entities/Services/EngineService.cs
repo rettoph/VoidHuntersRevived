@@ -14,8 +14,11 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Entities.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
@@ -23,9 +26,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     internal sealed class EngineService : IEngineService, IDisposable
     {
         private readonly EnginesRoot _enginesRoot;
-        private readonly SimpleEntitiesSubmissionScheduler _submission;
         private readonly IBulkSubscriptionService _bulkSubscriptionService;
-        private readonly IFilteredProvider _filtered;
         private IEngine[] _engines;
         private IStepGroupEngine<Step> _stepEngines;
 
@@ -33,23 +34,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EngineService(
             IBulkSubscriptionService bulkSubscriptionService, 
-            IFilteredProvider filtered,
-            EnginesRoot enginesRoot,
-            SimpleEntitiesSubmissionScheduler simpleEntitiesSubmissionScheduler)
+            IFiltered<IEngine> engines,
+            EnginesRoot enginesRoot)
         {
             _bulkSubscriptionService = bulkSubscriptionService;
-            _filtered = filtered;
-            _submission = simpleEntitiesSubmissionScheduler;
             _enginesRoot = enginesRoot;
             _stepEngines = null!;
-            _engines = null!;
-        }
-
-        public IEngineService Load(params IState[] states)
-        {
-            _engines = _filtered.Instances<IEngine>(states).ToArray();
-
-            return this;
+            _engines = engines.Instances.ToArray();
         }
 
         public void Initialize()
@@ -59,6 +50,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 _bulkSubscriptionService.Subscribe(engine.Yield());
 
                 _enginesRoot.AddEngine(engine);
+
+                if(engine is IEngineEngine engineEngine)
+                {
+                    engineEngine.Initialize(_engines);
+                }
             }
 
             _stepEngines = _engines.CreateSequencedStepEnginesGroup<Step, StepSequence>(StepSequence.Step);

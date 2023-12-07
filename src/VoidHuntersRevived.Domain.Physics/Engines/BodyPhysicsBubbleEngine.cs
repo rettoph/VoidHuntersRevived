@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         private readonly IEntityService _entities;
         private readonly ISpace _space;
         private FixRectangle[] _bubbleBuffer;
-        private int _bubbleBufferTail;
+        private int _bubbleBufferCount;
 
         public string name { get; } = nameof(BodyPhysicsBubbleEngine);
 
@@ -37,12 +37,12 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             _entities = entities;
             _space = space;
             _bubbleBuffer = new FixRectangle[8];
-            _bubbleBufferTail = 0;
+            _bubbleBufferCount = 0;
         }
 
         public void Step(in Step param)
         {
-            _bubbleBufferTail = 0;
+            _bubbleBufferCount = 0;
             foreach (var ((bubbles, locations, count), _) in _entities.QueryEntities<PhysicsBubble, Location>())
             {
                 this.EnsureBubbleBufferCapacity(count);
@@ -56,7 +56,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                         Location location = locations[i];
                         Fix64 diameter = physicsBubble.Radius * Two;
 
-                        _bubbleBuffer[_bubbleBufferTail++] = new FixRectangle()
+                        _bubbleBuffer[_bubbleBufferCount++] = new FixRectangle()
                         {
                             X = location.Position.X - physicsBubble.Radius,
                             Y = location.Position.Y - physicsBubble.Radius,
@@ -103,7 +103,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         private void EnsureBubbleBufferCapacity(int count)
         {
-            int requiredLength = _bubbleBufferTail + count;
+            int requiredLength = _bubbleBufferCount + count;
             if (requiredLength < _bubbleBuffer.Length)
             {
                 return;
@@ -114,7 +114,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         private bool WithinPhysicsBubble(Location location)
         {
-            for(int i=0; i<_bubbleBufferTail; i++)
+            for(int i=0; i<_bubbleBufferCount; i++)
             {
                 if (_bubbleBuffer[i].Contains(location.Position) == false)
                 {

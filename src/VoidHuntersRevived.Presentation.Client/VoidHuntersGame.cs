@@ -49,12 +49,7 @@ namespace VoidHuntersRevived.Application.Client
             _graphics.ApplyChanges();
 
 
-            _engine = new GuppyEngine(VoidHuntersRevivedGame.Company, VoidHuntersRevivedGame.Name, new[] { 
-                typeof(VoidHuntersGameGuppy).Assembly, 
-                typeof(LocalGameGuppy).Assembly,
-                typeof(IVoidHuntersGameGuppy).Assembly,
-                typeof(VoidHuntersEntityDescriptor).Assembly,
-            });
+            _engine = new GuppyEngine(VoidHuntersRevivedGame.Company, VoidHuntersRevivedGame.Name);
         }
 
         /// <summary>

@@ -34,7 +34,7 @@ using Guppy.Game.Input;
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [PeerTypeFilter(PeerType.Client)]
+    [PeerFilter(PeerType.Client)]
     internal class InputEngine : BasicEngine,
         IInputSubscriber<Input_Helm_SetDirection>,
         IInputSubscriber<Input_TractorBeamEmitter_SetActive>,

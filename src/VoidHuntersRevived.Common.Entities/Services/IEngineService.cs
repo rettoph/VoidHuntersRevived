@@ -11,8 +11,6 @@ namespace VoidHuntersRevived.Common.Entities.Services
 {
     public interface IEngineService : IDisposable
     {
-        IEngineService Load(params IState[] states);
-
         void Initialize();
 
         IEnumerable<T> OfType<T>();

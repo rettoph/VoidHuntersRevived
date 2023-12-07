@@ -1,19 +1,24 @@
 ﻿using Autofac;
 using Guppy.Attributes;
 using Guppy.Common.Autofac;
-using Guppy.Common.Extensions.Autofac;
 using Guppy.Extensions.Autofac;
 using Guppy.Files.Enums;
 using Guppy.Files.Helpers;
 using Guppy.Files.Providers;
 using Guppy.Game.Common;
+using Guppy.Game.Extensions.Serilog;
 using Guppy.Loaders;
 using Serilog;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Game.Server.Loaders
+namespace VoidHuntersRevived.Presentation.Client.Loaders
 {
     [AutoLoad]
-    internal sealed class MainLoader : IServiceLoader
+    internal class MainLoader : IServiceLoader
     {
         public void ConfigureServices(ContainerBuilder services)
         {
@@ -32,7 +37,7 @@ namespace VoidHuntersRevived.Game.Server.Loaders
                             retainedFileCountLimit: 5,
                             shared: true
                         )
-                        .WriteTo.Console(outputTemplate: "[{PeerType}][{SimulationType}][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
+                        .WriteTo.Terminal(scope.Resolve<ITerminal>(), outputTemplate: "[{PeerType}][{SimulationType}][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
                 }
             });
         }

@@ -25,7 +25,7 @@ using Guppy.Messaging;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
-    [PeerTypeFilter(PeerType.Server)]
+    [PeerFilter(PeerType.Server)]
     internal sealed class LockstepSimulation_Server : LockstepSimulation,
         ISubscriber<INetIncomingMessage<EventDto>>
     {

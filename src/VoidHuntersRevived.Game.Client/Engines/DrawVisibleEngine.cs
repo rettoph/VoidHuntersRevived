@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [GuppyFilter<LocalGameGuppy>]
-    [SimulationTypeFilter(SimulationType.Predictive)]
+    [SimulationFilter(SimulationType.Predictive)]
     [Sequence<DrawSequence>(DrawSequence.Draw)]
     internal sealed class DrawVisibleEngine : BasicEngine, IStepEngine<GameTimeTeam>
     {

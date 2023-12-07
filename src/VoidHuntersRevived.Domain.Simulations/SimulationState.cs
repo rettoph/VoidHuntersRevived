@@ -1,5 +1,8 @@
-﻿using Guppy;
+﻿using Autofac;
+using Guppy;
 using Guppy.Attributes;
+using Guppy.Extensions.Autofac;
+using Guppy.Network.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,18 +12,38 @@ using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
-    internal sealed class SimulationState : State<SimulationType>
+    [AutoLoad]
+    internal sealed class SimulationState : State
     {
-        public readonly ISimulation _simulation;
+        public readonly ISimulation? _simulation;
 
-        public SimulationState(ISimulation simulation)
+        public SimulationState(ILifetimeScope scope)
         {
-            _simulation = simulation;
+            if (scope.HasTag(nameof(Simulation)))
+            {
+                _simulation = scope.Resolve<ISimulation>();
+            }
+
         }
 
-        public override SimulationType GetValue()
+        public override bool Matches(object? value)
         {
-            return _simulation.Type;
+            if (_simulation is null)
+            {
+                return false;
+            }
+
+            if (value is Type simulationType)
+            {
+                return _simulation.GetType().IsAssignableTo(simulationType);
+            }
+
+            if (value is SimulationType simulationTypeEnum)
+            {
+                return _simulation.Type == simulationTypeEnum;
+            }
+
+            return false;
         }
     }
 }

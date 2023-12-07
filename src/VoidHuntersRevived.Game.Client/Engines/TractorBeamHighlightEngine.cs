@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [Sequence<DrawSequence>(DrawSequence.PostDraw)]
-    [SimulationTypeFilter(SimulationType.Predictive)]
+    [SimulationFilter(SimulationType.Predictive)]
     internal class TractorBeamHighlightEngine : BasicEngine, IStepEngine<GameTime>
     {
         private readonly IVisibleRenderingService _visibleRenderingService;

@@ -38,7 +38,7 @@ using Guppy.Messaging;
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [SimulationTypeFilter(SimulationType.Lockstep)]
+    [SimulationFilter(SimulationType.Lockstep)]
     [Sequence<DrawSequence>(DrawSequence.PostDraw)]
     internal sealed class DrawLockstepWireframeEngine : BasicEngine, IStepEngine<GameTimeTeam>,
         ISubscriber<Input_Toggle_LockstepWireframe>

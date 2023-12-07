@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [Sequence<DrawSequence>(DrawSequence.PostDraw)]
-    [SimulationTypeFilter(SimulationType.Predictive)]
+    [SimulationFilter(SimulationType.Predictive)]
     internal class DrawSocketsEngine : BasicEngine, IStepEngine<GameTimeTeam>
     {
         private readonly IScreen _screen;

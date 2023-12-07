@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations.Services;
 
-namespace VoidHuntersRevived.Game.GuppyComponents
+namespace VoidHuntersRevived.Game.Components.Guppy
 {
     [AutoLoad]
     [GuppyFilter<GameGuppy>]

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Simulations.Engines
 {
-    public interface ISimulationEngine<TSimulation> : IEngine, IGetReadyEngine
+    public interface ISimulationEngine<in TSimulation> : IEngine
         where TSimulation : ISimulation
     {
         void Initialize(TSimulation simulation);
