@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
     internal class SimulationDebugComponent : GuppyComponent, IDebugComponent
     {
         private readonly ISimulationService _simulations;
-        private (Simulation, Dictionary<string, IDebugEngine[]>)[] _data;
+        private (Simulation, Dictionary<string, ISimpleDebugEngine.SimpleDebugLine[]>, int)[] _data;
         private readonly IImGui _imgui;
 
         public SimulationDebugComponent(
@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
         {
             _imgui = imgui;
             _simulations = simulations;
-            _data = Array.Empty<(Simulation, Dictionary<string, IDebugEngine[]>)>();
+            _data = Array.Empty<(Simulation, Dictionary<string, ISimpleDebugEngine.SimpleDebugLine[]>, int)>();
         }
 
         public override void Initialize(IGuppy guppy)
@@ -61,13 +61,20 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
 
             _data = _simulations.Instances.Select(x => (
                 (x as Simulation)!, 
-                x.Scope.Resolve<IEngineService>().OfType<IDebugEngine>().Sequence(DrawSequence.Draw).GroupBy(x => x.Group).ToDictionary(x => x.Key, x => x.ToArray())
+                x.Scope.Resolve<IEngineService>().OfType<ISimpleDebugEngine>()
+                    .Sequence(DrawSequence.Draw)
+                    .SelectMany(x => x.Lines)
+                    .GroupBy(x => x.Group)
+                    .ToDictionary(x => x.Key, x => x.ToArray()),
+                 x.Scope.Resolve<IEngineService>().OfType<ISimpleDebugEngine>()
+                    .SelectMany(x => x.Lines)
+                    .Max(x => x.Title.Length)
             )).ToArray();
         }
 
         public void RenderDebugInfo(GameTime gameTime)
         {
-            foreach(var (simulation, engineGroups) in _data)
+            foreach(var (simulation, groupedLines, padLeft) in _data)
             {
                 _imgui.BeginChild($"{simulation.Type}", Vector2.Zero, ImGuiChildFlags.AlwaysAutoResize | ImGuiChildFlags.AutoResizeY);
 
@@ -75,11 +82,13 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
 
                 _imgui.Indent();
 
-                foreach(var (group, engines) in engineGroups)
+                foreach(var (group, lines) in groupedLines)
                 {
-                    foreach (IDebugEngine engine in engines)
+                    foreach (ISimpleDebugEngine.SimpleDebugLine line in lines)
                     {
-                        engine.RenderDebugInfo(gameTime);
+                        _imgui.Text($"{line.Title.PadLeft(padLeft, ' ')}: ");
+                        _imgui.SameLine();
+                        _imgui.TextColored(Color.Cyan.ToVector4(), line.Value());
                     }
 
                     _imgui.NewLine();
