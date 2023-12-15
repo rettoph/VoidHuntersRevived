@@ -54,9 +54,14 @@ namespace VoidHuntersRevived.Domain.Client.Engines
 
         public void DrawDebugger(GameTime gameTime)
         {
-            if (_imgui.Button($"{(_enabled ? "Disable" : "Enable")} DebugView"))
+            var buttonStyle = _enabled ? Guppy.Game.MonoGame.Resources.ImGuiStyles.ButtonRed : Guppy.Game.MonoGame.Resources.ImGuiStyles.ButtonGreen;
+
+            using (_imgui.Apply(buttonStyle))
             {
-                _enabled = !_enabled;
+                if (_imgui.Button($"{(_enabled ? "Disable" : "Enable")} DebugView"))
+                {
+                    _enabled = !_enabled;
+                }
             }
         }
     }

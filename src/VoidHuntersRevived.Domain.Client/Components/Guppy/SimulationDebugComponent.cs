@@ -61,22 +61,27 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
 
             public void DrawImGui(IImGui imgui, GameTime gameTime)
             {
-                foreach (ISimpleDebugEngine.SimpleDebugLine line in _lines)
+                if(imgui.CollapsingHeader(_group))
                 {
-                    string title = line.Title.PadLeft(_titleLength, ' ') + ":";
-                    string value = line.Value();
+                    imgui.Indent();
 
-                    imgui.Text(title);
-                    imgui.SameLine();
-                    imgui.TextColored(Color.Cyan.ToVector4(), value);
+                    foreach (ISimpleDebugEngine.SimpleDebugLine line in _lines)
+                    {
+                        string title = line.Title.PadLeft(_titleLength, ' ') + ":";
+                        string value = line.Value();
+
+                        imgui.Text(title);
+                        imgui.SameLine();
+                        imgui.TextColored(Color.Cyan.ToVector4(), value);
+                    }
+
+                    foreach (var engine in _engines)
+                    {
+                        engine.DrawDebugger(gameTime);
+                    }
+
+                    imgui.Unindent();
                 }
-
-                foreach(var engine in _engines)
-                {
-                    engine.DrawDebugger(gameTime);
-                }
-
-                imgui.NewLine();
             }
         }
         private readonly ISimulationService _simulations;
@@ -145,14 +150,12 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
 
                 _imgui.Text($"Simulation: {simulation.Type}");
 
-                _imgui.Indent();
-
                 foreach(var (group, renderer) in renderers)
                 {
                     renderer.DrawImGui(_imgui, gameTime);
                 }
 
-                _imgui.Unindent();
+                _imgui.NewLine();
 
                 _imgui.EndChild();
             }
