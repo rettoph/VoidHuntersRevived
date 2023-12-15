@@ -1,20 +1,11 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
-using Guppy.Game;
-using Guppy.Game.ImGui;
-using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities;
+using Guppy.Resources.Providers;
+using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Common.Entities.Engines;
-using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations.Engines;
 
-namespace VoidHuntersRevived.Domain.Pieces.Engines.Debug
+namespace VoidHuntersRevived.Domain.Physics.Engines.Debug
 {
     [AutoLoad]
     internal class AetherWorldDebugEngine : BasicEngine, ISimpleDebugEngine
@@ -26,13 +17,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines.Debug
 
         public ISimpleDebugEngine.SimpleDebugLine[] Lines { get; }
 
-        public AetherWorldDebugEngine(AetherWorld world)
+        public AetherWorldDebugEngine(AetherWorld world, IOptional<GraphicsDevice> graphics, IResourceProvider resources)
         {
             _world = world;
             this.Lines = new[]
             {
-                new ISimpleDebugEngine.SimpleDebugLine(nameof(AetherWorld), Bodies, this.GetBodiesValue),
-                new ISimpleDebugEngine.SimpleDebugLine(nameof(AetherWorld), Contacts, this.GetContactsValue),
+                new ISimpleDebugEngine.SimpleDebugLine(typeof(AetherWorld).Name, Bodies, this.GetBodiesValue),
+                new ISimpleDebugEngine.SimpleDebugLine(typeof(AetherWorld).Name, Contacts, this.GetContactsValue),
             };
         }
 
