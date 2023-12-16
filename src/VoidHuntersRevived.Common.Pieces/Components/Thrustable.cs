@@ -10,7 +10,7 @@ using VoidHuntersRevived.Common.Pieces.Enums;
 
 namespace VoidHuntersRevived.Common.Pieces.Components
 {
-    [PolymorphicJsonType(nameof(Thrustable))]
+    [PolymorphicJsonType<IPieceComponent>(nameof(Thrustable))]
     public struct Thrustable : IEntityComponent, IPieceComponent
     {
         [JsonIgnore]

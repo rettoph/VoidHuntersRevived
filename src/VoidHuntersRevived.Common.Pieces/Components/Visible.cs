@@ -11,7 +11,7 @@ using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Common.Pieces.Components
 {
-    [PolymorphicJsonType(nameof(Visible))]
+    [PolymorphicJsonType<IPieceComponent>(nameof(Visible))]
     public struct Visible : IEntityComponent, IDisposable, IPieceComponent
     {
         private static float TraceThickness = 1f;

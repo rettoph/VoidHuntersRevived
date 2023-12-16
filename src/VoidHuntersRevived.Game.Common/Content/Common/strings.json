@@ -1,4 +1,9 @@
-{
-  "String.TeamZeroName": "Default",
-  "String.TeamOneName": "Blue Team"
-}
+[
+  {
+    "type": "String",
+    "values": {
+      "String.TeamZeroName": "Default",
+      "String.TeamOneName": "Blue Team"
+    }
+  }
+]

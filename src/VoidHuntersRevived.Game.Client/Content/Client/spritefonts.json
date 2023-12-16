@@ -1,3 +1,8 @@
-{
-  "SpriteFont.Default": "Fonts\\BiomeLight-Normal"
-}
+[
+  {
+    "type": "SpriteFont",
+    "values": {
+      "SpriteFont.Default": "Fonts\\BiomeLight-Normal"
+    }
+  }
+]

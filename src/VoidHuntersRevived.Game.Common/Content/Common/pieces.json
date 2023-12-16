@@ -1,5 +1,10 @@
-{
-  "Piece.Hull.Triangle": "Pieces\\hull.triangle.json",
-  "Piece.Hull.Square": "Pieces\\hull.square.json",
-  "Piece.Thruster": "Pieces\\thruster.json"
-}
+[
+  {
+    "type": "Piece",
+    "values": {
+      "Piece.Hull.Triangle": "Pieces\\hull.triangle.json",
+      "Piece.Hull.Square": "Pieces\\hull.square.json",
+      "Piece.Thruster": "Pieces\\thruster.json"
+    }
+  }
+]

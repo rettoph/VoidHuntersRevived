@@ -1,3 +1,8 @@
-{
-  "EffectCode.Visible": "Effects\\Compiled\\Visible.mgfx"
-}
+[
+  {
+    "type": "EffectCode",
+    "values": {
+      "EffectCode.Visible": "Effects\\Compiled\\Visible.mgfx"
+    }
+  }
+]

@@ -1,3 +1,8 @@
-{
-  "Blueprint.Default": "Blueprints\\default.json"
-}
+[
+  {
+    "type": "Blueprint",
+    "values": {
+      "Blueprint.Default": "Blueprints\\default.json"
+    }
+  }
+]

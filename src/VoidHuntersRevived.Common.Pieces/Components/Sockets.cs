@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 {
     [AutoDisposeComponent<Location>(AutoDisposeScope.Type)]
     [AutoDisposeComponent<SocketId>(AutoDisposeScope.Instance)]
-    [PolymorphicJsonType<Sockets<Location>>($"{nameof(Sockets)}.{nameof(Location)}")]
+    [PolymorphicJsonType<IPieceComponent>($"{nameof(Sockets)}.{nameof(Location)}", typeof(Sockets<Location>))]
     public struct Sockets<T> : IEntityComponent, IDisposable, IPieceComponent
         where T : unmanaged
     {
