@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Simulations.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Engines.Debug
@@ -26,19 +27,14 @@ namespace VoidHuntersRevived.Domain.Entities.Engines.Debug
 
         public ISimpleDebugEngine.SimpleDebugLine[] Lines { get; }
 
-        public EntitiesDebugEngine(IEntityService entities)
+        public EntitiesDebugEngine(IEntityService entities, IImGui imgui)
         {
             _entities = entities;
 
             this.Lines = new[]
             {
-                new ISimpleDebugEngine.SimpleDebugLine(nameof(IEntityService), Entities, this.GetEntitiesValue)
+                new ISimpleDebugEngine.SimpleDebugLine(nameof(IEntityService), Entities, () => _entities.CalculateTotal<EntityId>().ToString("#,###,##0"))
             };
-        }
-
-        private string GetEntitiesValue()
-        {
-            return _entities.CalculateTotal<EntityId>().ToString("#,###,##0");
         }
     }
 }

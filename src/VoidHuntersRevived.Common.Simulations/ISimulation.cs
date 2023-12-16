@@ -7,6 +7,7 @@ namespace VoidHuntersRevived.Common.Simulations
 {
     public interface ISimulation
     {
+        VhId Id { get; }
         SimulationType Type { get; }
         ILifetimeScope Scope { get; }
 

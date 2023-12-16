@@ -120,7 +120,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
             catch (Exception ex)
             {
-                //TODO: Investigate what might cause this error
+                // TODO: Investigate what might cause this error
                 // When this happens a valid piece gets eaten and destroyed
                 // its the opposite of a dupe glitch
                 // I can only replicate it by spam clicking the tractor beam selection button and

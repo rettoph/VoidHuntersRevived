@@ -23,9 +23,9 @@ namespace VoidHuntersRevived.Domain.Client.Engines
 {
     [AutoLoad]
     [Sequence<DrawSequence>(DrawSequence.PostDraw)]
-    internal class AetherWorldDebugViewEngine : BasicEngine, IDrawDebuggerEngine, IStepEngine<GameTime>
+    internal class AetherWorldDebugViewEngine : BasicEngine, IDebugEngine, IStepEngine<GameTime>
     {
-        public string Group => typeof(World).Name;
+        public string? Group => typeof(World).Name;
 
         public string name { get; } = nameof(AetherWorldDebugViewEngine);
 
@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Domain.Client.Engines
             _debug.RenderDebugData(_camera.Projection, _camera.View);
         }
 
-        public void DrawDebugger(GameTime gameTime)
+        public void RenderDebugInfo(GameTime gameTime)
         {
             var buttonStyle = _enabled ? Guppy.Game.MonoGame.Resources.ImGuiStyles.ButtonRed : Guppy.Game.MonoGame.Resources.ImGuiStyles.ButtonGreen;
 

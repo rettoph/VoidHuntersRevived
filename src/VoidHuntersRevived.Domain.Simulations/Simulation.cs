@@ -20,6 +20,7 @@ using Guppy;
 using Guppy.Extensions.Autofac;
 using Guppy.Game.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Extensions;
+using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
@@ -35,6 +36,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         public readonly ITeamService Teams;
         public readonly ILifetimeScope Scope;
 
+        public VhId Id { get; }
         public Step CurrentStep { get; private set; }
 
         SimulationType ISimulation.Type => this.Type;
@@ -42,6 +44,7 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         protected Simulation(SimulationType type, ILifetimeScope scope)
         {
+            this.Id = HashBuilder<Simulation, ulong, SimulationType>.Instance.Calculate(scope.Resolve<IGuppy>().Id, type);
             this.Type = type;
 
             this.Scope = scope.BeginGuppyScope(nameof(Simulation), builder =>

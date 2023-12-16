@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Svelto.ECS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Entities.Engines
 {
-    public interface IDrawDebuggerEngine
+    public interface IDebugEngine : IEngine
     {
-        string Group => string.Empty;
+        string? Group => string.Empty;
 
-        void DrawDebugger(GameTime gameTime);
+        void RenderDebugInfo(GameTime gameTime);
     }
 }

@@ -42,16 +42,16 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
     [GuppyFilter<IVoidHuntersGameGuppy>]
     [Sequence<InitializeSequence>(InitializeSequence.PostInitialize)]
     [Sequence<DrawSequence>(DrawSequence.PostDraw)]
-    internal class SimulationDebugComponent : GuppyComponent, IDebugComponent
+    internal class DebugEngineComponent : GuppyComponent, IDebugComponent
     {
         private class DebugEngineGroupRenderer
         {
             private readonly string _group;
             private int _titleLength;
             private ISimpleDebugEngine.SimpleDebugLine[] _lines;
-            private IDrawDebuggerEngine[] _engines;
+            private IDebugEngine[] _engines;
 
-            public DebugEngineGroupRenderer(string group, ISimpleDebugEngine.SimpleDebugLine[] lines, IDrawDebuggerEngine[] engines)
+            public DebugEngineGroupRenderer(string group, ISimpleDebugEngine.SimpleDebugLine[] lines, IDebugEngine[] engines)
             {
                 _group = group;
                 _titleLength = lines.Length == 0 ? 0 : lines.Max(x => x.Title.Length);
@@ -77,7 +77,7 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
 
                     foreach (var engine in _engines)
                     {
-                        engine.DrawDebugger(gameTime);
+                        engine.RenderDebugInfo(gameTime);
                     }
 
                     imgui.Unindent();
@@ -89,7 +89,7 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
         private readonly IImGui _imgui;
         private IGuppy _guppy;
 
-        public SimulationDebugComponent(
+        public DebugEngineComponent(
             IImGui imgui, 
             ISimulationService simulations)
         {
@@ -117,9 +117,10 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
                     .GroupBy(x => x.Group)
                     .ToDictionary(x => x.Key, x => x.ToArray());
 
-                var engines = simulation.Scope.Resolve<IEngineService>().OfType<IDrawDebuggerEngine>()
+                var engines = simulation.Scope.Resolve<IEngineService>().OfType<IDebugEngine>()
+                    .Where(x => x.Group is not null)
                     .Sequence(DrawSequence.Draw)
-                    .GroupBy(x => x.Group)
+                    .GroupBy(x => x.Group!)
                     .ToDictionary(x => x.Key, x => x.ToArray());
 
                 var groups = simpleEngines.Select(x => x.Key).Concat(engines.Select(x => x.Key)).Distinct().ToArray();
@@ -133,7 +134,7 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
 
                     if (engines.TryGetValue(group, out var groupedEngines) == false)
                     {
-                        groupedEngines = Array.Empty<IDrawDebuggerEngine>();
+                        groupedEngines = Array.Empty<IDebugEngine>();
                     }
 
                     renderers.Add(group, new DebugEngineGroupRenderer(group, groupedSimpleEngines, groupedEngines));

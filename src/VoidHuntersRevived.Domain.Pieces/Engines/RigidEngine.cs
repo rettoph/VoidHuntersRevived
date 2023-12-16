@@ -73,6 +73,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 IBody body = _space.GetBody(node.TreeId);
                 this.CreateFixtures(body, node, component);
             }
+            else
+            {
+                _logger.Warning("{ClassName}::{MethodName} - Unable to create fixtures for node {NodeId} on tree {TreeId}, enabled = {Enabled}.", nameof(RigidEngine), nameof(OnSpawn), id.VhId, node.TreeId.VhId, enabled.Value);
+            }
         }
 
         public void OnDespawn(EntityId id, ref Rigid component, in GroupIndex groupIndex)
@@ -84,6 +88,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 && _space.TryGetBody(node.TreeId, out IBody? body))
             {
                 this.DestroyFixtures(body, node, component);
+            }
+            else
+            {
+                _logger.Warning("{ClassName}::{MethodName} - Unable to destroy fixtures for node {NodeId} on tree {TreeId}, enabled = {Enabled}.", nameof(RigidEngine), nameof(OnDespawn), id.VhId, node.TreeId.VhId, enabled.Value);
             }
         }
 
