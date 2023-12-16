@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Application.Client
     {
         private readonly GraphicsDeviceManager _graphics;
         private GuppyEngine _engine;
-        private IGame _game;
+        private IGame? _game;
 
 
         // https://community.monogame.net/t/start-in-maximized-window/12264
@@ -31,7 +31,6 @@ namespace VoidHuntersRevived.Application.Client
 
         public VoidHuntersGame()
         {
-            _game = null!;
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
@@ -63,16 +62,22 @@ namespace VoidHuntersRevived.Application.Client
             base.Initialize();
 
             // SDL_MaximizeWindow(this.Window.Handle);
-            _game = _engine.StartGame(builder =>
+            Task.Run(() =>
             {
-                builder.RegisterMonoGame(this, _graphics, this.Content, this.Window);
+                var game = _engine.StartGame(builder =>
+                {
+                    builder.RegisterMonoGame(this, _graphics, this.Content, this.Window);
+                });
+
+                game.Initialize();
+
+                game.Guppies.Create<ServerGameGuppy>();
+                game.Guppies.Create<MultiplayerGameGuppy>();
+                //_engine.Guppies.Create<EditorGuppy>();
+
+                _game = game;
             });
 
-            _game.Initialize();
-
-            _game.Guppies.Create<ServerGameGuppy>();
-            _game.Guppies.Create<MultiplayerGameGuppy>();
-            //_engine.Guppies.Create<EditorGuppy>();
         }
 
         /// <summary>
@@ -91,21 +96,21 @@ namespace VoidHuntersRevived.Application.Client
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
-            _game.Dispose();
+            _game?.Dispose();
         }
 
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
 
-            _game.Dispose();
+            _game?.Dispose();
         }
 
         protected override void OnExiting(object sender, EventArgs args)
         {
             base.OnExiting(sender, args);
 
-            _game.Dispose();
+            _game?.Dispose();
 
             Environment.Exit(0);
         }
@@ -120,7 +125,7 @@ namespace VoidHuntersRevived.Application.Client
             // TODO: Add your update logic here
             base.Update(gameTime);
 
-            _game.Update(gameTime);
+            _game?.Update(gameTime);
         }
 
         /// <summary>
@@ -133,7 +138,7 @@ namespace VoidHuntersRevived.Application.Client
 
             GraphicsDevice.Clear(Color.Black);
 
-            _game.Draw(gameTime);
+            _game?.Draw(gameTime);
         }
     }
 }
