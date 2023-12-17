@@ -2,8 +2,11 @@
 using Guppy.Attributes;
 using Guppy.Commands.Messages;
 using Guppy.Common.Attributes;
+using Guppy.Common.Enums;
+using Guppy.Common.Services;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui;
+using Guppy.Game.ImGui.Services;
 using Microsoft.Xna.Framework;
 using Svelto.ECS;
 using System;
@@ -37,8 +40,17 @@ namespace VoidHuntersRevived.Domain.Client.Engines
         private readonly IEntityService _entities;
         private readonly IEntityTypeService _entityTypes;
         private readonly ITeamDescriptorGroupService _teams;
+        private readonly IImGuiObjectExplorerService _objectExplorer;
+        private readonly IObjectTextFilterService _objectFilter;
         private readonly IImGui _imgui;
         private bool _entityViewerEnabled;
+        private string _filter;
+
+        private Dictionary<uint, TextFilterResult> _filterResults;
+        private Vector4 _redForeground = Color.Red.ToVector4();
+        private Vector4 _greenForeground = Color.LightGreen.ToVector4();
+        private Vector4 _redBackground = Color.DarkRed.ToVector4();
+        private Vector4 _greenBackground = Color.DarkGreen.ToVector4();
 
         public EntityViewerEngine(
             IGuppy guppy, 
@@ -46,6 +58,8 @@ namespace VoidHuntersRevived.Domain.Client.Engines
             IEntityService entities, 
             IEntityTypeService entityTypes,
             ITeamDescriptorGroupService teams,
+            IImGuiObjectExplorerService objectExplorer,
+            IObjectTextFilterService objectFilter,
             IImGui imgui)
         {
             _simulation = simulation;
@@ -53,7 +67,11 @@ namespace VoidHuntersRevived.Domain.Client.Engines
             _entities = entities;
             _entityTypes = entityTypes;
             _teams = teams;
+            _objectExplorer = objectExplorer;
             _imgui = imgui;
+            _objectFilter = objectFilter;
+            _filter = string.Empty;
+            _filterResults = new Dictionary<uint, TextFilterResult>();
         }
 
         public void RenderDebugInfo(GameTime gameTime)
@@ -78,6 +96,8 @@ namespace VoidHuntersRevived.Domain.Client.Engines
 
             _imgui.Begin($"Entity Viewer - {_simulation.Type}, {_guppy.Name} {_guppy.Id}", ref _entityViewerEnabled);
 
+            _imgui.InputText("Filter", ref _filter, 255);
+
             GroupsEnumerable<EntityId, Id<IEntityType>, EntityStatus> groups = _entities.QueryEntities<EntityId, Id<IEntityType>, EntityStatus>();
             foreach (var ((ids, types, statuses, count), groupId) in groups)
             {
@@ -92,36 +112,77 @@ namespace VoidHuntersRevived.Domain.Client.Engines
 
         private void RenderTeamDescriptorGroup(ExclusiveGroupStruct groupId, ITeamDescriptorGroup teamDescriptorGroup, Svelto.DataStructures.NB<EntityId> ids, Svelto.DataStructures.NB<Id<IEntityType>> types, Svelto.DataStructures.NB<EntityStatus> statuses, int count)
         {
-            string headerTitle = $"Group: {groupId.id}, Team: {teamDescriptorGroup.Team.Name}, Descriptor: {teamDescriptorGroup.Descriptor.Name}, Count: {count}";
-
-            if (_imgui.CollapsingHeader(headerTitle))
+            using(_imgui.ApplyID($"{nameof(EntityViewerEngine)}_{nameof(ExclusiveGroupStruct)}_{groupId.id}"))
             {
-                _imgui.Indent();
-                for (int i = 0; i < count; i++)
+                uint id = _imgui.GetID(nameof(TextFilterResult));
+                ref TextFilterResult result = ref this.GetFilterResult(id);
+                string label = $"Group: {groupId.id}, Team: {teamDescriptorGroup.Team.Name}, Descriptor: {teamDescriptorGroup.Descriptor.Name}, Count: {count}";
+                Vector4? color = result switch
                 {
-                    this.RenderEntityData(ids[i], teamDescriptorGroup.Descriptor, _entityTypes.GetById(types[i]), statuses[i]);
+                    TextFilterResult.NotMatched => _redBackground,
+                    TextFilterResult.Matched => _greenBackground,
+                    _ => null
+                };
+
+                result = this.BasicFilter(label);
+                if (_imgui.CollapsingHeader(label, color))
+                {
+                    _imgui.Indent();
+                    for (int i = 0; i < count; i++)
+                    {
+                        result = result.Max(this.RenderEntityData(ids[i], teamDescriptorGroup.Descriptor, _entityTypes.GetById(types[i]), statuses[i]));
+                    }
+                    _imgui.Unindent();
                 }
-                _imgui.Unindent();
+                else
+                {
+                    for (int i = 0; i < count; i++)
+                    {
+                        result = result.Max(this.FilterEntityData(ids[i], teamDescriptorGroup.Descriptor, _entityTypes.GetById(types[i])));
+                    }
+                }
             }
+
         }
-        private void RenderEntityData(EntityId entityId, VoidHuntersEntityDescriptor descriptor, IEntityType type, EntityStatus status)
-        {
-            bool filtered = false;
 
-            string headerTitle = $"Vhid: {entityId.VhId}, Type: {type.Key}, IsDespawned: {status.IsDespawned}";
-            _imgui.PushID($"#{nameof(RenderEntityData)}#{entityId.VhId}");
-            if (_imgui.CollapsingHeader(headerTitle))
+        private TextFilterResult RenderEntityData(EntityId entityId, VoidHuntersEntityDescriptor descriptor, IEntityType type, EntityStatus status)
+        {
+            using(_imgui.ApplyID($"{nameof(EntityId)}_{entityId.VhId.Value}"))
             {
-                _imgui.Indent();
-                _entities.QueryById<EntityId>(entityId, out GroupIndex groupIndex);
-                foreach (Type componentType in descriptor.ComponentManagers.Select(x => x.Type))
+                uint id = _imgui.GetID(nameof(TextFilterResult));
+                ref TextFilterResult result = ref this.GetFilterResult(id);
+                string label = $"Vhid: {entityId.VhId}, Type: {type.Key}, IsDespawned: {status.IsDespawned}";
+                Vector4? color = result switch
                 {
-                    object component = GetComponent(componentType, _entities, ref groupIndex);
-                    filtered |= _imgui.ObjectViewer(component);
+                    TextFilterResult.NotMatched => _redBackground,
+                    TextFilterResult.Matched => _greenBackground,
+                    _ => null
+                };
+
+                result = this.BasicFilter(label);
+
+                if (_imgui.CollapsingHeader(label, color))
+                {
+                    _entities.QueryById<EntityId>(entityId, out GroupIndex groupIndex);
+
+                    _imgui.Indent();
+                    foreach (Type componentType in descriptor.ComponentManagers.Select(x => x.Type))
+                    {
+                        using (_imgui.ApplyID(componentType.AssemblyQualifiedName ?? string.Empty))
+                        {
+                            object component = GetComponent(componentType, _entities, ref groupIndex);
+                            result = result.Max(_objectExplorer.DrawObjectExplorer(component, _filter));
+                        }
+                    }
+                    _imgui.Unindent();
                 }
-                _imgui.Unindent();
+                else
+                {
+                    result = result.Max(this.FilterEntityData(entityId, descriptor, type));
+                }
+
+                return result;
             }
-            _imgui.PopID();
         }
 
         private static MethodInfo QueryByGroupIndexMethod = typeof(IEntityService).GetMethod(nameof(IEntityService.QueryByGroupIndex), 1, new[] { typeof(GroupIndex).MakeByRefType() }) ?? throw new Exception();
@@ -132,10 +193,43 @@ namespace VoidHuntersRevived.Domain.Client.Engines
             return component ?? new object();
         }
 
-        private Dictionary<uint, bool> _headerStates = new Dictionary<uint, bool>();
-        private ref bool GetFiltered(uint id)
+        private ref TextFilterResult GetFilterResult(uint id)
         {
-            return ref CollectionsMarshal.GetValueRefOrAddDefault(_headerStates, id, out _);
+            ref TextFilterResult result = ref CollectionsMarshal.GetValueRefOrAddDefault(_filterResults, id, out _);
+
+            return ref result;
+        }
+
+        private TextFilterResult BasicFilter(string input)
+        {
+            if(_filter.IsNullOrEmpty())
+            {
+                return TextFilterResult.None;
+            }
+
+            if(input.Contains(_filter))
+            {
+                return TextFilterResult.Matched;
+            }
+
+            return TextFilterResult.NotMatched;
+        }
+
+        private TextFilterResult FilterEntityData(EntityId entityId, VoidHuntersEntityDescriptor descriptor, IEntityType type)
+        {
+            _entities.QueryById<EntityId>(entityId, out GroupIndex groupIndex);
+            TextFilterResult result = this.BasicFilter($"{entityId.VhId}{descriptor.Name}{type.Key}");
+
+            foreach (Type componentType in descriptor.ComponentManagers.Select(x => x.Type))
+            {
+                using (_imgui.ApplyID(componentType.AssemblyQualifiedName ?? string.Empty))
+                {
+                    object component = GetComponent(componentType, _entities, ref groupIndex);
+                    result = result.Max(_objectFilter.Filter(component, _filter));
+                }
+            }
+
+            return result;
         }
     }
 }

@@ -110,7 +110,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             for (int i = 0; i < rigid.Shapes.count; i++)
             {
                 VhId rigidShapeId = node.Id.VhId.Create(i);
-                _logger.Verbose("{ClassName}::{MethodName} - Destroying fixture for tree {TreeId}; {RigidShapeId}", nameof(RigidEngine), nameof(CreateFixtures), body.Id.VhId, rigidShapeId);
+                _logger.Verbose("{ClassName}::{MethodName} - Destroying fixture for tree {TreeId}; {RigidShapeId}", nameof(RigidEngine), nameof(DestroyFixtures), body.Id.VhId, rigidShapeId);
                 body.Destroy(rigidShapeId);
             }
         }

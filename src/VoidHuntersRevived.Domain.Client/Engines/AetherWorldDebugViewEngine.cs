@@ -3,6 +3,7 @@ using Guppy.Attributes;
 using Guppy.Common.Attributes;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui;
+using Guppy.Game.ImGui.Services;
 using Guppy.Game.MonoGame.Utilities.Cameras;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
@@ -34,16 +35,19 @@ namespace VoidHuntersRevived.Domain.Client.Engines
         private readonly ISimulation _simulation;
         private readonly IGuppy _guppy;
         private readonly IImGui _imgui;
+        private readonly IImGuiObjectExplorerService _objectExplorer;
         private readonly World _world;
         private readonly DebugView _debug;
         private readonly Camera2D _camera;
         private bool _debugViewEnabled;
         private bool _aetherViewerEnabled;
+        private string _filter;
 
         public AetherWorldDebugViewEngine(
             ISimulation simulation,
             IGuppy guppy,
-            IImGui imgui, 
+            IImGui imgui,
+            IImGuiObjectExplorerService objectExplorer,
             World world, 
             GraphicsDevice graphics, 
             IResourceProvider resources, 
@@ -52,10 +56,12 @@ namespace VoidHuntersRevived.Domain.Client.Engines
             _simulation = simulation;
             _guppy = guppy;
             _imgui = imgui;
+            _objectExplorer = objectExplorer;
             _world = world;
             _debug = new DebugView(world);
             _camera = camera;
             _debug.LoadContent(graphics, resources.Get(Resources.SpriteFonts.Default));
+            _filter = string.Empty;
         }
 
         public void Step(in GameTime param)
@@ -76,7 +82,12 @@ namespace VoidHuntersRevived.Domain.Client.Engines
             }
 
             _imgui.Begin($"Aether Viewer - {_simulation.Type}, {_guppy.Name} {_guppy.Id}", ref _aetherViewerEnabled);
-            _imgui.ObjectViewer(_world, "", 7);
+
+            _imgui.InputText("Filter", ref _filter, 255);
+
+            _objectExplorer.DrawObjectExplorer(_world.BodyList, _filter, 8);
+            _objectExplorer.DrawObjectExplorer(_world.ContactManager, _filter, 8);
+
             _imgui.End();
         }
 
