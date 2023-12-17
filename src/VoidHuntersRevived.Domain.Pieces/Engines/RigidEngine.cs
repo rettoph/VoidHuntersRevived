@@ -67,21 +67,24 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         public void OnSpawn(EntityId id, ref Rigid component, in GroupIndex groupIndex)
         {
             Node node = _entities.QueryByGroupIndex<Node>(groupIndex);
+            bool queryResult = false;
 
-            if (_entities.TryQueryById<Enabled>(node.TreeId, out Enabled enabled) == true && enabled)
+            if ((queryResult = _entities.TryQueryById<Enabled>(node.TreeId, out Enabled enabled)) == true && enabled)
             {
                 IBody body = _space.GetBody(node.TreeId);
                 this.CreateFixtures(body, node, component);
             }
             else
             {
-                _logger.Warning("{ClassName}::{MethodName} - Unable to create fixtures for node {NodeId} on tree {TreeId}, enabled = {Enabled}.", nameof(RigidEngine), nameof(OnSpawn), id.VhId, node.TreeId.VhId, enabled.Value);
+                _logger.Warning("{ClassName}::{MethodName} - Unable to create fixtures for node {NodeId} on tree {TreeId}, queryResult = {QueryResult}, enabled = {Enabled}.", nameof(RigidEngine), nameof(OnSpawn), id.VhId, node.TreeId.VhId, queryResult, enabled.Value);
             }
         }
 
         public void OnDespawn(EntityId id, ref Rigid component, in GroupIndex groupIndex)
         {
             Node node = _entities.QueryByGroupIndex<Node>(groupIndex);
+            bool queryResult = false;
+            bool getBodyResult = false;
 
             if (_entities.TryQueryById<Enabled>(node.TreeId, out Enabled enabled) == true 
                 && enabled 
@@ -91,7 +94,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
             else
             {
-                _logger.Warning("{ClassName}::{MethodName} - Unable to destroy fixtures for node {NodeId} on tree {TreeId}, enabled = {Enabled}.", nameof(RigidEngine), nameof(OnDespawn), id.VhId, node.TreeId.VhId, enabled.Value);
+                _logger.Warning("{ClassName}::{MethodName} - Unable to destroy fixtures for node {NodeId} on tree {TreeId}, queryResult = {QueryResult}, enabled = {Enabled}, getBodyResult = {GetBodyResult}.", nameof(RigidEngine), nameof(OnDespawn), id.VhId, node.TreeId.VhId, queryResult, enabled.Value, getBodyResult);
             }
         }
 
