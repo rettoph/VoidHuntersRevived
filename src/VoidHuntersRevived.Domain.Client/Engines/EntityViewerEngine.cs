@@ -37,6 +37,7 @@ namespace VoidHuntersRevived.Domain.Client.Engines
         private readonly ITeamDescriptorGroupService _teams;
         private readonly IImGui _imgui;
         private bool _entityViewerEnabled;
+        private string _filter;
 
         public EntityViewerEngine(
             IGuppy guppy, 
@@ -46,6 +47,7 @@ namespace VoidHuntersRevived.Domain.Client.Engines
             ITeamDescriptorGroupService teams,
             IImGui imgui)
         {
+            _filter = string.Empty;
             _simulation = simulation;
             _guppy = guppy;
             _entities = entities;
@@ -74,7 +76,9 @@ namespace VoidHuntersRevived.Domain.Client.Engines
                 return;
             }
 
-            _imgui.Begin($"Entity Viewer - {_simulation.Type}, {_guppy.Name} {_guppy.Id}");
+            _imgui.Begin($"Entity Viewer - {_simulation.Type}, {_guppy.Name} {_guppy.Id}", ref _entityViewerEnabled);
+
+            _imgui.InputText("Filter", ref _filter, 255);
 
             GroupsEnumerable<EntityId, Id<IEntityType>, EntityStatus> groups = _entities.QueryEntities<EntityId, Id<IEntityType>, EntityStatus>();
             foreach (var ((ids, types, statuses, count), groupId) in groups)
@@ -103,12 +107,14 @@ namespace VoidHuntersRevived.Domain.Client.Engines
 
         private void RenderEntityData(EntityId entityId, VoidHuntersEntityDescriptor descriptor)
         {
+            _imgui.PushID($"#{nameof(RenderEntityData)}#{entityId.VhId}");
             _entities.QueryById<EntityId>(entityId, out GroupIndex groupIndex);
             foreach(Type componentType in descriptor.ComponentManagers.Select(x => x.Type))
             {
                 object component = GetComponent(componentType, _entities, ref groupIndex);
-                RenderObjectInstance(null, null, componentType, component, _imgui, 0);
+                _imgui.ObjectViewer(component, _filter);
             }
+            _imgui.PopID();
         }
 
         private static MethodInfo QueryByGroupIndexMethod = typeof(IEntityService).GetMethod(nameof(IEntityService.QueryByGroupIndex), 1, new[] { typeof(GroupIndex).MakeByRefType() }) ?? throw new Exception();
@@ -117,75 +123,6 @@ namespace VoidHuntersRevived.Domain.Client.Engines
             object? component = QueryByGroupIndexMethod.MakeGenericMethod(type).Invoke(entities, new object[] { groupIndex });
 
             return component ?? new object();
-        }
-
-        private static void RenderObjectInstance(int? index, string? name, Type type, object? instance, IImGui imgui, int depth)
-        {
-            StringBuilder text = new StringBuilder();
-
-            if(index is not null)
-            {
-                text.Append($"{index}: ");
-            }
-
-            text.Append($"{type.GetFormattedName()} ");
-
-            if(name is not null)
-            {
-                text.Append($"{name} ");
-            }
-
-            text.Append("- ");
-
-            if(instance is null)
-            {
-                text.Append("null");
-            }
-            else
-            {
-                text.Append(instance?.ToString());
-            }
-
-            if (type.IsPrimitive || type == typeof(string) || depth > 5)
-            {
-                imgui.Text(text.ToString());
-                return;
-            }
-
-            if(imgui.CollapsingHeader(text.ToString()))
-            {
-                imgui.Indent();
-
-                foreach (PropertyInfo property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty))
-                {
-                    if (property.GetGetMethod()!.GetParameters().Length != 0)
-                    {
-                        continue;
-                    }
-
-                    object? propertyValue = property.GetValue(instance);
-
-                    RenderObjectInstance(null, property.Name, property.PropertyType, propertyValue, imgui, depth++);
-                }
-
-                foreach (FieldInfo field in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
-                {
-                    object? fieldValue = field.GetValue(instance);
-
-                    RenderObjectInstance(null, field.Name, field.FieldType, fieldValue, imgui, depth + 1);
-                }
-
-                if(instance is IEnumerable enumerable)
-                {
-                    int itemIndex = 0;
-                    foreach(var item in enumerable)
-                    {
-                        RenderObjectInstance(itemIndex++, null, item.GetType(), item, imgui, depth + 1);
-                    }
-                }
-
-                imgui.Unindent();
-            }
         }
     }
 }
