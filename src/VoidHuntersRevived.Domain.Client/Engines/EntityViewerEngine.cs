@@ -11,7 +11,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
@@ -37,7 +39,6 @@ namespace VoidHuntersRevived.Domain.Client.Engines
         private readonly ITeamDescriptorGroupService _teams;
         private readonly IImGui _imgui;
         private bool _entityViewerEnabled;
-        private string _filter;
 
         public EntityViewerEngine(
             IGuppy guppy, 
@@ -47,7 +48,6 @@ namespace VoidHuntersRevived.Domain.Client.Engines
             ITeamDescriptorGroupService teams,
             IImGui imgui)
         {
-            _filter = string.Empty;
             _simulation = simulation;
             _guppy = guppy;
             _entities = entities;
@@ -78,41 +78,48 @@ namespace VoidHuntersRevived.Domain.Client.Engines
 
             _imgui.Begin($"Entity Viewer - {_simulation.Type}, {_guppy.Name} {_guppy.Id}", ref _entityViewerEnabled);
 
-            _imgui.InputText("Filter", ref _filter, 255);
-
             GroupsEnumerable<EntityId, Id<IEntityType>, EntityStatus> groups = _entities.QueryEntities<EntityId, Id<IEntityType>, EntityStatus>();
             foreach (var ((ids, types, statuses, count), groupId) in groups)
             {
                 ITeamDescriptorGroup teamDescriptorGroup = _teams.GetByGroupId(groupId);
 
-                if (_imgui.CollapsingHeader($"Group: {groupId.id}, Team: {teamDescriptorGroup.Team.Name}, Descriptor: {teamDescriptorGroup.Descriptor.Name}, Count: {count}"))
-                {
-                    _imgui.Indent();
-                    for (int i = 0; i < count; i++)
-                    {
-                        if (_imgui.CollapsingHeader($"Vhid: {ids[i].VhId}, Type: {_entityTypes.GetById(types[i]).Key}, IsDespawned: {statuses[i].IsDespawned}"))
-                        {
-                            _imgui.Indent();
-                            this.RenderEntityData(ids[i], teamDescriptorGroup.Descriptor);
-                            _imgui.Unindent();
-                        }
-                    }
-                    _imgui.Unindent();
-                }
+                this.RenderTeamDescriptorGroup(groupId, teamDescriptorGroup, ids, types, statuses, count);
             }
 
             _imgui.End();
             //throw new NotImplementedException();
         }
 
-        private void RenderEntityData(EntityId entityId, VoidHuntersEntityDescriptor descriptor)
+        private void RenderTeamDescriptorGroup(ExclusiveGroupStruct groupId, ITeamDescriptorGroup teamDescriptorGroup, Svelto.DataStructures.NB<EntityId> ids, Svelto.DataStructures.NB<Id<IEntityType>> types, Svelto.DataStructures.NB<EntityStatus> statuses, int count)
         {
-            _imgui.PushID($"#{nameof(RenderEntityData)}#{entityId.VhId}");
-            _entities.QueryById<EntityId>(entityId, out GroupIndex groupIndex);
-            foreach(Type componentType in descriptor.ComponentManagers.Select(x => x.Type))
+            string headerTitle = $"Group: {groupId.id}, Team: {teamDescriptorGroup.Team.Name}, Descriptor: {teamDescriptorGroup.Descriptor.Name}, Count: {count}";
+
+            if (_imgui.CollapsingHeader(headerTitle))
             {
-                object component = GetComponent(componentType, _entities, ref groupIndex);
-                _imgui.ObjectViewer(component, _filter);
+                _imgui.Indent();
+                for (int i = 0; i < count; i++)
+                {
+                    this.RenderEntityData(ids[i], teamDescriptorGroup.Descriptor, _entityTypes.GetById(types[i]), statuses[i]);
+                }
+                _imgui.Unindent();
+            }
+        }
+        private void RenderEntityData(EntityId entityId, VoidHuntersEntityDescriptor descriptor, IEntityType type, EntityStatus status)
+        {
+            bool filtered = false;
+
+            string headerTitle = $"Vhid: {entityId.VhId}, Type: {type.Key}, IsDespawned: {status.IsDespawned}";
+            _imgui.PushID($"#{nameof(RenderEntityData)}#{entityId.VhId}");
+            if (_imgui.CollapsingHeader(headerTitle))
+            {
+                _imgui.Indent();
+                _entities.QueryById<EntityId>(entityId, out GroupIndex groupIndex);
+                foreach (Type componentType in descriptor.ComponentManagers.Select(x => x.Type))
+                {
+                    object component = GetComponent(componentType, _entities, ref groupIndex);
+                    filtered |= _imgui.ObjectViewer(component);
+                }
+                _imgui.Unindent();
             }
             _imgui.PopID();
         }
@@ -123,6 +130,12 @@ namespace VoidHuntersRevived.Domain.Client.Engines
             object? component = QueryByGroupIndexMethod.MakeGenericMethod(type).Invoke(entities, new object[] { groupIndex });
 
             return component ?? new object();
+        }
+
+        private Dictionary<uint, bool> _headerStates = new Dictionary<uint, bool>();
+        private ref bool GetFiltered(uint id)
+        {
+            return ref CollectionsMarshal.GetValueRefOrAddDefault(_headerStates, id, out _);
         }
     }
 }

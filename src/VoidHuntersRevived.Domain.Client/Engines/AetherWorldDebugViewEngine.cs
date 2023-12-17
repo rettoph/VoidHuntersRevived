@@ -76,7 +76,7 @@ namespace VoidHuntersRevived.Domain.Client.Engines
             }
 
             _imgui.Begin($"Aether Viewer - {_simulation.Type}, {_guppy.Name} {_guppy.Id}", ref _aetherViewerEnabled);
-            _imgui.ObjectViewer(_world);
+            _imgui.ObjectViewer(_world, "", 7);
             _imgui.End();
         }
 
