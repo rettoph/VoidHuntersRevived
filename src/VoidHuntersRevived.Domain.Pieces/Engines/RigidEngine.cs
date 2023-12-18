@@ -42,11 +42,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         {
             if(_entities.HasAny<Tree>(body.Id.EGID.groupID) == false)
             {
+                _logger.Warning("{ClassName}::{MethodName} - No Tree detected. BodyId = {BodyId}", nameof(RigidEngine), nameof(HandleBodyEnabled), body.Id.VhId);
                 return;
-            }
-            else
-            {
-                _logger.Warning("{ClassName}::{MethodName} - No Tree detected", nameof(RigidEngine), nameof(HandleBodyEnabled), body.Id.VhId);
             }
 
             ref var filter = ref _entities.GetFilter<Node>(body.Id, Tree.NodeFilterContextId);
