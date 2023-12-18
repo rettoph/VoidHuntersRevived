@@ -85,8 +85,15 @@ namespace VoidHuntersRevived.Domain.Client.Engines
 
             _imgui.InputText("Filter", ref _filter, 255);
 
-            _objectExplorer.DrawObjectExplorer(_world.BodyList, _filter, 8);
-            _objectExplorer.DrawObjectExplorer(_world.ContactManager, _filter, 8);
+            using (_imgui.ApplyID(nameof(World.BodyList)))
+            {
+                _objectExplorer.DrawObjectExplorer(_world.BodyList, _filter, 8, new HashSet<object>() { _world });
+            }
+
+            using (_imgui.ApplyID(nameof(World.ContactManager)))
+            {
+                _objectExplorer.DrawObjectExplorer(_world.ContactManager, _filter, 8);
+            }
 
             _imgui.End();
         }

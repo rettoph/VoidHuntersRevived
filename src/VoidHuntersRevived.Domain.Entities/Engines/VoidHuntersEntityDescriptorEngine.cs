@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Serilog;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using System.Text.RegularExpressions;
@@ -119,6 +120,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
             return initializer;
         }
+
         public override void SoftSpawn(in EntityId id, in GroupIndex groupIndex)
         {
             for (int i = 0; i < _onSpawnEngineInvokers.count; i++)

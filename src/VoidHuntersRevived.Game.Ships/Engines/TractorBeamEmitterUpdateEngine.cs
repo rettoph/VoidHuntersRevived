@@ -89,6 +89,11 @@ namespace VoidHuntersRevived.Game.Ships.Engines
                         FixVector2 targetHeadChildNodePosition = FixVector2.Transform(FixVector2.Zero, targetHeadChildLocation.Transformation * FixMatrix.CreateRotationZ(targetBody.Rotation));
                         targetBody.SetTransform(tactical.Value - targetHeadChildNodePosition, targetBody.Rotation);
                     }
+                    else
+                    {
+                        ref EntityId tractorableId = ref entityIds[indices[i]];
+                        _logger.Warning("{ClassName}::{MethodName} - TractorBeamEmitter = {TractorBeamEmitterId}, Tractorable = {TractorableId}, IsSpawned = false.", nameof(TractorBeamEmitter), nameof(UpdateTractorBeamEmitterTractorables), tractorBeamEmitterId.VhId, tractorableId.VhId);
+                    }
                 }
             }
         }

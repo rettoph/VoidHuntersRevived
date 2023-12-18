@@ -44,6 +44,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             {
                 return;
             }
+            else
+            {
+                _logger.Warning("{ClassName}::{MethodName} - No Tree detected", nameof(RigidEngine), nameof(HandleBodyEnabled), body.Id.VhId);
+            }
 
             ref var filter = ref _entities.GetFilter<Node>(body.Id, Tree.NodeFilterContextId);
             foreach (var (indices, group) in filter)
@@ -58,6 +62,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                         Node node = nodes[index];
                         Rigid rigid = rigids[index];
 
+                        _logger.Verbose("{ClassName}::{MethodName} - BodyId = {BodyId}, NodeId = {EntityId}", nameof(RigidEngine), nameof(HandleBodyEnabled), body.Id.VhId, node.Id.VhId);
                         this.CreateFixtures(body, node, rigid);
                     }
                 }
@@ -66,6 +71,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         public void OnSpawn(EntityId id, ref Rigid component, in GroupIndex groupIndex)
         {
+            _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(RigidEngine), nameof(OnSpawn), id.VhId);
+
             Node node = _entities.QueryByGroupIndex<Node>(groupIndex);
             bool queryResult = false;
 
@@ -82,13 +89,15 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         public void OnDespawn(EntityId id, ref Rigid component, in GroupIndex groupIndex)
         {
+            _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(RigidEngine), nameof(OnDespawn), id.VhId);
+
             Node node = _entities.QueryByGroupIndex<Node>(groupIndex);
             bool queryResult = false;
             bool getBodyResult = false;
 
-            if (_entities.TryQueryById<Enabled>(node.TreeId, out Enabled enabled) == true 
+            if ((queryResult = _entities.TryQueryById<Enabled>(node.TreeId, out Enabled enabled)) == true 
                 && enabled 
-                && _space.TryGetBody(node.TreeId, out IBody? body))
+                && (getBodyResult = _space.TryGetBody(node.TreeId, out IBody? body)))
             {
                 this.DestroyFixtures(body, node, component);
             }
@@ -103,7 +112,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             for(int i=0;i<rigid.Shapes.count; i++)
             {
                 VhId rigidShapeId = node.Id.VhId.Create(i);
-                _logger.Verbose("{ClassName}::{MethodName} - Creating fixture for tree {TreeId}; {RigidShapeId}", nameof(RigidEngine), nameof(CreateFixtures), body.Id.VhId, rigidShapeId);
+                _logger.Verbose("{ClassName}::{MethodName} - Creating fixture for tree {TreeId}; NodeId = {NodeId}, RigidShapeId = {RigidShapeId}", nameof(RigidEngine), nameof(CreateFixtures), body.Id.VhId, node.Id.VhId, rigidShapeId);
                 body.Create(rigidShapeId, node.Id, rigid.Shapes[i], node.LocalLocation.Transformation);
             }
         }
@@ -113,7 +122,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             for (int i = 0; i < rigid.Shapes.count; i++)
             {
                 VhId rigidShapeId = node.Id.VhId.Create(i);
-                _logger.Verbose("{ClassName}::{MethodName} - Destroying fixture for tree {TreeId}; {RigidShapeId}", nameof(RigidEngine), nameof(DestroyFixtures), body.Id.VhId, rigidShapeId);
+                _logger.Verbose("{ClassName}::{MethodName} - Destroying fixture for tree {TreeId}; NodeId = {NodeId}, RigidShapeId = {RigidShapeId}", nameof(RigidEngine), nameof(DestroyFixtures), body.Id.VhId, node.Id.VhId, rigidShapeId);
                 body.Destroy(rigidShapeId);
             }
         }

@@ -64,6 +64,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         public void OnSpawn(EntityId id, ref Node node, in GroupIndex groupIndex)
         {
+            _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(NodeEngine), nameof(OnSpawn), id.VhId);
+
             this.SetLocalTransformation(ref node, groupIndex);
         }
 

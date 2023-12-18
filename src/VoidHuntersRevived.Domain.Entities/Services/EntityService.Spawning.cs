@@ -52,8 +52,19 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             while (_added.TryDequeue(out EntityId id))
             {
-                Id<VoidHuntersEntityDescriptor> descriptorId = this.QueryById<Id<VoidHuntersEntityDescriptor>>(id, out GroupIndex groupIndex);
-                this.GetDescriptorEngine(descriptorId).SoftSpawn(in id, groupIndex);
+                EntityStatus status = this.QueryById<EntityStatus>(id, out GroupIndex groupIndex);
+
+                if(status.IsDespawned == false)
+                {
+                    _logger.Verbose("{ClassName}<{GenericType}>::{MethodName} - Soft spawning entity {EntityId}", nameof(EntityService), nameof(Flush), id.VhId);
+
+                    Id<VoidHuntersEntityDescriptor> descriptorId = this.QueryByGroupIndex<Id<VoidHuntersEntityDescriptor>>(in groupIndex);
+                    this.GetDescriptorEngine(descriptorId).SoftSpawn(in id, groupIndex);
+                }
+                else
+                {
+                    _logger.Warning("{ClassName}::{MethodName} - Unable to SoftSpawn {EntityId}, IsDespawned = {IsDespawned}", nameof(EntityService), nameof(Flush), id.VhId, status.IsDespawned);
+                }
             }
         }
 
@@ -94,14 +105,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, SpawnEntity data)
         {
-            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to spawn Entity {Id}, {Type}", nameof(EntityService), nameof(Process), nameof(SpawnEntity), data.VhId.Value, data.Type.Key);
+            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to spawn Entity {Id}, {Type}", nameof(EntityService), nameof(Process), nameof(Events.SpawnEntity), data.VhId.Value, data.Type.Key);
 
             this.SpawnEntity(data.Type, data.VhId, data.TeamId, data.Initializer);
         }
 
         public void Revert(VhId eventId, SpawnEntity data)
         {
-            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to revert spawn Entity {Id}, {Type}", nameof(EntityService), nameof(Revert), nameof(SpawnEntity), data.VhId.Value, data.Type.Key);
+            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to revert spawn Entity {Id}, {Type}", nameof(EntityService), nameof(Revert), nameof(Events.SpawnEntity), data.VhId.Value, data.Type.Key);
 
             EntityId id = this.GetId(data.VhId);
             this.SoftDespawnEntity(id);
@@ -118,7 +129,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Revert(VhId eventId, SoftDespawnEntity data)
         {
-            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to revert soft despawn Entity {Id}", nameof(EntityService), nameof(Revert), nameof(SpawnEntity), data.VhId.Value);
+            _logger.Verbose("{ClassName}::{MethodName}<{EventName}> - Attempting to revert soft despawn Entity {Id}", nameof(EntityService), nameof(Revert), nameof(Events.SoftDespawnEntity), data.VhId.Value);
 
             if(this.TryGetId(data.VhId, out EntityId id))
             {
