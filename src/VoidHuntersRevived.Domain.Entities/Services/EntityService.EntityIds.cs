@@ -13,8 +13,16 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 {
     internal partial class EntityService
     {
+        private enum EntityModification
+        {
+            SoftSpawn,
+            SoftDespawn,
+            RevertSoftDespawn,
+            HardDespawn
+        }
+
         private readonly Dictionary<VhId, EntityId> _ids = new Dictionary<VhId, EntityId>();
-        private readonly Queue<EntityId> _added = new Queue<EntityId>();
+        private readonly Queue<(EntityModification, EntityId)> _modifications = new Queue<(EntityModification, EntityId)>();
 
         public string name { get; } = nameof(EntityService);
 
@@ -28,23 +36,30 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _ids.TryGetValue(vhid, out id);
         }
 
-        private EntityId Add(EntityId id)
+        private bool AddId(EntityId id)
         {
-            if(!_ids.TryAdd(id.VhId, id))
+            if(_ids.TryAdd(id.VhId, id))
             {
-                throw new Exception();
+                return true;
             }
 
-            _added.Enqueue(id);
-
-            return id;
+            throw new Exception();
         }
 
-        private EntityId Remove(EntityId id)
+        private void EnqueuEntityModification(EntityModification type, EntityId id)
         {
-            _ids.Remove(id.VhId);
+            _logger.Verbose("{ClassName}::{MethodName} - EntityModification = {EntityModification}, EntityId = {EntityId}", nameof(EntityService), nameof(EnqueuEntityModification), type, id.VhId);
+            _modifications.Enqueue((type, id));
+        }
 
-            return id;
+        private bool RemoveId(EntityId id)
+        {
+            if(_ids.Remove(id.VhId))
+            {
+                return true;
+            }
+
+            throw new Exception();
         }
     }
 }
