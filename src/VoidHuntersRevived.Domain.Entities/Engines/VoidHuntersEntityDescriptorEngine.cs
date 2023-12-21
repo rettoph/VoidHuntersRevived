@@ -139,10 +139,16 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
                 _onDespawnEngineInvokers[i].Invoke(entitiesDB, id, groupIndex);
             }
         }
+
         public override void RevertSoftDespawn(in EntityId id, in GroupIndex groupIndex)
         {
             ref var status = ref entitiesDB.QueryEntityByIndex<EntityStatus>(groupIndex.Index, groupIndex.GroupID);
             status.Value = EntityStatusEnum.Spawned;
+
+            for (int i = 0; i < _onSpawnEngineInvokers.count; i++)
+            {
+                _onSpawnEngineInvokers[i].Invoke(entitiesDB, id, groupIndex);
+            }
         }
 
         public override void HardDespawn(in EntityId id, in GroupIndex groupIndex)

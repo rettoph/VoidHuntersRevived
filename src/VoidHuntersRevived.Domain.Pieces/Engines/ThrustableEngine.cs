@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.Physics;
@@ -27,7 +29,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
     [AutoLoad]
     [Sequence<StepSequence>(StepSequence.Step)]
     internal class ThrustableEngine : BasicEngine,
-        IReactOnAddEx<Thrustable>,
+        IOnSpawnEngine<Thrustable>,
+        IOnDespawnEngine<Thrustable>,
         IEventEngine<Tree_Clean>,
         IStepEngine<Step>
     {
@@ -45,23 +48,30 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             _space = space;
         }
 
-        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Thrustable> entities, ExclusiveGroupStruct groupID)
+        public void OnSpawn(EntityId id, ref Thrustable component, in GroupIndex groupIndex)
         {
-            var (_, ids, _) = entities;
-            var (nodes, _) = _entities.QueryEntities<Node>(groupID);
+            Node node = _entities.QueryByGroupIndex<Node>(in groupIndex);
 
-            for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
+            if (_entities.HasAny<Helm>(node.TreeId.EGID.groupID) == false)
             {
-                Node node = nodes[index];
-
-                if (_entities.HasAny<Helm>(node.TreeId.EGID.groupID) == false)
-                {
-                    continue;
-                }
-
-                ref var filter = ref _entities.GetFilter<Thrustable>(node.TreeId, Helm.ThrustableFilterContextId);
-                filter.Add(ids[index], groupID, index);
+                return;
             }
+
+            ref var filter = ref _entities.GetFilter<Thrustable>(node.TreeId, Helm.ThrustableFilterContextId);
+            filter.Add(id, groupIndex);
+        }
+
+        public void OnDespawn(EntityId id, ref Thrustable component, in GroupIndex groupIndex)
+        {
+            Node node = _entities.QueryByGroupIndex<Node>(in groupIndex);
+
+            if (_entities.HasAny<Helm>(node.TreeId.EGID.groupID) == false)
+            {
+                return;
+            }
+
+            ref var filter = ref _entities.GetFilter<Thrustable>(node.TreeId, Helm.ThrustableFilterContextId);
+            filter.Remove(id);
         }
 
         public void Process(VhId eventId, Tree_Clean data)
@@ -110,16 +120,16 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                     }
 
                     IBody body = _space.GetBody(helmId);
-                    ref var helmThrustables = ref _entities.GetFilter<Thrustable>(helmId, Helm.ThrustableFilterContextId);
+                    ref var filter = ref _entities.GetFilter<Thrustable>(helmId, Helm.ThrustableFilterContextId);
 
-                    this.TryApplyImpulse(param, body, helm.Direction, ref helmThrustables);
+                    this.TryApplyImpulse(param, body, helm.Direction, ref filter);
                 }
             }
         }
 
-        private void TryApplyImpulse(Step step, IBody body, Direction direction, ref EntityFilterCollection helmThrustables)
+        private void TryApplyImpulse(Step step, IBody body, Direction direction, ref EntityFilterCollection filter)
         {
-            foreach (var (indices, group) in helmThrustables)
+            foreach (var (indices, group) in filter)
             {
                 var (thrustables, nodes, _) = _entities.QueryEntities<Thrustable, Node>(group);
 

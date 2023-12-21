@@ -30,35 +30,54 @@ using VoidHuntersRevived.Game.Ships.Events;
 using VoidHuntersRevived.Common.Ships.Components;
 using VoidHuntersRevived.Common.Ships.Services;
 using Guppy.Game.Input;
+using Autofac;
+using VoidHuntersRevived.Common.Pieces.Services;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [PeerFilter(PeerType.Client)]
+    [SimulationFilter(SimulationType.Lockstep)]
     internal class InputEngine : BasicEngine,
         IInputSubscriber<Input_Helm_SetDirection>,
         IInputSubscriber<Input_TractorBeamEmitter_SetActive>,
         IStepEngine<Tick>
     {
-        private readonly IEntityService _entities;
         private readonly ClientPeer _client;
         private readonly Camera2D _camera;
-        private readonly ITractorBeamEmitterService _tractorBeamEmitters;
+        private readonly ISimulationService _simulations;
+
+        private IEntityService _entities;
+        private ITractorBeamEmitterService _tractorBeamEmitters;
+        private ISocketService _sockets;
 
         private Vector2 CurrentTargetPosition => _camera.Unproject(Mouse.GetState().Position.ToVector2());
 
         public string name { get; } = nameof(InputEngine);
 
         public InputEngine(
-            IEntityService entities, 
             ClientPeer client, 
             Camera2D camera,
-            ITractorBeamEmitterService tractorBeamEmitters)
+            ISimulationService simulations)
         {
-            _entities = entities;
             _client = client;
             _camera = camera;
-            _tractorBeamEmitters = tractorBeamEmitters;
+            _simulations = simulations;
+
+            _entities = null!;
+            _tractorBeamEmitters = null!;
+            _sockets = null!;
+        }
+
+        public override void Initialize(ISimulation simulation)
+        {
+            base.Initialize(simulation);
+
+            var inputScope = _simulations.First(SimulationType.Predictive, SimulationType.Lockstep).Scope;
+
+            _entities = inputScope.Resolve<IEntityService>();
+            _tractorBeamEmitters = inputScope.Resolve<ITractorBeamEmitterService>();
+            _sockets = inputScope.Resolve<ISocketService>();
         }
 
         public void Process(in Guid messageId, Input_Helm_SetDirection message)
@@ -68,7 +87,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            this.Simulation.Input(
+            _simulations.Input(
                 sender: new VhId(messageId),
                 data: new Helm_SetDirection()
                 {
@@ -95,7 +114,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     return;
                 }
 
-                this.Simulation.Input(
+                _simulations.Input(
                     sender: eventId,
                     data: new Tactical_SetTarget()
                     {
@@ -104,7 +123,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                         Snap = true
                     });
 
-                this.Simulation.Input(
+                _simulations.Input(
                     sender: eventId,
                     data: new Input_TractorBeamEmitter_Select()
                     {
@@ -114,11 +133,15 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
             else
             {
-                this.Simulation.Input(
+                ref Tactical tactical = ref _entities.QueryById<Tactical>(shipId);
+
+                _simulations.Input(
                     sender: eventId,
                     data: new Input_TractorBeamEmitter_Deselect()
                     {
-                        ShipVhId = shipId.VhId
+                        ShipVhId = shipId.VhId,
+                        AttachToSocketVhId =_sockets.TryGetClosestOpenSocket(shipId, tactical.Target, out Socket socket)
+                            ? socket.Id.VhId : default
                     });
             }
         }
@@ -130,8 +153,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            VhId localShipVhId = _client.Users.Current.GetUserShipId();
-            if(!_entities.TryGetId(localShipVhId, out EntityId localShipId))
+            VhId shipVhId = _client.Users.Current.GetUserShipId();
+            if(!_entities.TryGetId(shipVhId, out EntityId localShipId))
             {
                 return;
             }
@@ -142,11 +165,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            this.Simulation.Input(
+            _simulations.Input(
                 sender: _param.Hash,
                 data: new Tactical_SetTarget()
                 {
-                    ShipVhId = localShipVhId,
+                    ShipVhId = shipVhId,
                     Value = (FixVector2)this.CurrentTargetPosition,
                     Snap = false
                 });

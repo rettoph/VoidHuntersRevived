@@ -131,4 +131,29 @@ namespace VoidHuntersRevived.Common.Utilities
                 .Calculate();
         }
     }
+
+    public class HashBuilder<TNameSpace, TName1, TName2, TName3, TName4, TName5> : HashBuilder<VhId>
+        where TName1 : unmanaged
+        where TName2 : unmanaged
+        where TName3 : unmanaged
+        where TName4 : unmanaged
+        where TName5 : unmanaged
+    {
+        public static readonly HashBuilder<TNameSpace, TName1, TName2, TName3, TName4, TName5> Instance = new HashBuilder<TNameSpace, TName1, TName2, TName3, TName4, TName5>();
+
+        public unsafe HashBuilder() : base(NameSpace<TNameSpace>.Instance, sizeof(TName1) + sizeof(TName2) + sizeof(TName3) + sizeof(TName4) + sizeof(TName5))
+        {
+        }
+
+        public VhId Calculate(in TName1 value1, in TName2 value2, in TName3 value3, in TName4 value4, in TName5 value5)
+        {
+            return this.Reset()
+                .Append(in value1)
+                .Append(in value2)
+                .Append(in value3)
+                .Append(in value4)
+                .Append(in value5)
+                .Calculate();
+        }
+    }
 }

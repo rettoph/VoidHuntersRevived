@@ -22,9 +22,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
     internal sealed class NodeEngine : BasicEngine,
-        IReactOnAddEx<Node>,
         IOnSpawnEngine<Node>,
-        IReactOnRemoveEx<Node>,
+        IOnDespawnEngine<Node>,
         IStepEngine<Step>
     {
         private readonly ISocketService _sockets;
@@ -42,51 +41,32 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         public string name { get; } = nameof(NodeEngine);
 
-        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Node> entities, ExclusiveGroupStruct groupID)
-        {
-            var (nodes, _, _) = entities;
-            var (ids, _) = _entities.QueryEntities<EntityId>(groupID);
-
-            for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
-            {
-                Node node = nodes[index];
-                EntityId id = ids[index];
-
-                ref var filter = ref _entities.GetFilter<Node>(node.TreeId, Tree.NodeFilterContextId);
-                filter.Add(id.EGID, index);
-
-                ref VhId dirtyEventId = ref _dirtyTrees.GetOrEnqueue(node.TreeId, out bool alreadyDirty);
-                dirtyEventId = alreadyDirty 
-                    ? HashBuilder<IReactOnAddEx<Node>, VhId, VhId>.Instance.Calculate(dirtyEventId, node.Id.VhId) 
-                    : HashBuilder<IReactOnAddEx<Node>, VhId>.Instance.Calculate(node.Id.VhId);
-            }
-        }
-
         public void OnSpawn(EntityId id, ref Node node, in GroupIndex groupIndex)
         {
             _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(NodeEngine), nameof(OnSpawn), id.VhId);
 
+            ref var filter = ref _entities.GetFilter<Node>(node.TreeId, Tree.NodeFilterContextId);
+            filter.Add(id, groupIndex);
+
+            ref VhId dirtyEventId = ref _dirtyTrees.GetOrEnqueue(node.TreeId, out bool alreadyDirty);
+            dirtyEventId = alreadyDirty
+                ? HashBuilder<IReactOnAddEx<Node>, VhId, VhId>.Instance.Calculate(dirtyEventId, node.Id.VhId)
+                : HashBuilder<IReactOnAddEx<Node>, VhId>.Instance.Calculate(node.Id.VhId);
+
             this.SetLocalTransformation(ref node, groupIndex);
         }
 
-        public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Node> entities, ExclusiveGroupStruct groupID)
+        public void OnDespawn(EntityId id, ref Node node, in GroupIndex groupIndex)
         {
-            var (nodes, _, _) = entities;
-            var (ids, _) = _entities.QueryEntities<EntityId>(groupID);
+            _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(NodeEngine), nameof(OnDespawn), id.VhId);
 
-            for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
-            {
-                Node node = nodes[index];
-                EntityId id = ids[index];
+            ref var filter = ref _entities.GetFilter<Node>(node.TreeId, Tree.NodeFilterContextId);
+            filter.Remove(id.EGID);
 
-                ref var filter = ref _entities.GetFilter<Node>(node.TreeId, Tree.NodeFilterContextId);
-                filter.Remove(id.EGID);
-
-                ref VhId dirtyEventId = ref _dirtyTrees.GetOrEnqueue(node.TreeId, out bool alreadyDirty);
-                dirtyEventId = alreadyDirty
-                    ? HashBuilder<IReactOnRemoveEx<Node>, VhId, VhId>.Instance.Calculate(dirtyEventId, node.Id.VhId)
-                    : HashBuilder<IReactOnRemoveEx<Node>, VhId>.Instance.Calculate(node.Id.VhId);
-            }
+            ref VhId dirtyEventId = ref _dirtyTrees.GetOrEnqueue(node.TreeId, out bool alreadyDirty);
+            dirtyEventId = alreadyDirty
+                ? HashBuilder<IReactOnRemoveEx<Node>, VhId, VhId>.Instance.Calculate(dirtyEventId, node.Id.VhId)
+                : HashBuilder<IReactOnRemoveEx<Node>, VhId>.Instance.Calculate(node.Id.VhId);
         }
 
         public void Step(in Step param)

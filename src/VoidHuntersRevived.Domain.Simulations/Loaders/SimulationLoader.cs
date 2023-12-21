@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            services.RegisterType<SimulationService>().As<ISimulationService>().InstancePerLifetimeScope();
+            services.RegisterType<SimulationService>().As<ISimulationService>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
 
             this.ConfigureLockstep(services);
             this.ConfigurePredictive(services);

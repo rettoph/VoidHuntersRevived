@@ -3,6 +3,7 @@ using Guppy.Common;
 using Guppy.Messaging;
 using Microsoft.Xna.Framework;
 using System.Collections.ObjectModel;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 
@@ -113,6 +114,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             foreach (ISimulation simulation in _list)
             {
                 simulation.Update(gameTime);
+            }
+        }
+
+        public void Input(VhId sender, IInputData data)
+        {
+            foreach(ISimulation simulation in _list)
+            {
+                simulation.Input(sender, data);
             }
         }
     }

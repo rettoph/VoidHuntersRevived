@@ -17,6 +17,9 @@ namespace VoidHuntersRevived.Common.Ships.Services
         bool Query(EntityId tractorBeamEmitterId, FixVector2 target, out Node targetNode);
 
         void Select(EntityId tractorBeamEmitterId, EntityId nodeId);
+
+        [Obsolete]
         void Deselect(EntityId tractorBeamEmitterId);
+        void Deselect(EntityId tractorBeamEmitterId, SocketVhId? attachToSocketVhId);
     }
 }

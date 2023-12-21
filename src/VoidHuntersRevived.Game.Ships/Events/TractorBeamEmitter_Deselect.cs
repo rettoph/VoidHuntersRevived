@@ -14,11 +14,11 @@ namespace VoidHuntersRevived.Game.Ships.Events
         public required VhId TractorBeamEmitterVhId { get; init; }
         public required EntityData TargetData { get; init; }
         public required Location Location { get; init; }
-        public required SocketVhId AttachToSocketVhId { get; init; }
+        public required SocketVhId? AttachToSocketVhId { get; init; }
 
         public VhId CalculateHash(in VhId source)
         {
-            return HashBuilder<TractorBeamEmitter_Deselect, VhId, VhId, VhId, SocketVhId>.Instance.Calculate(source, this.TractorBeamEmitterVhId, this.TargetData.Id, this.AttachToSocketVhId);
+            return HashBuilder<TractorBeamEmitter_Deselect, VhId, VhId, VhId, bool, SocketVhId>.Instance.Calculate(source, this.TractorBeamEmitterVhId, this.TargetData.Id, this.AttachToSocketVhId.HasValue, this.AttachToSocketVhId!.Value);
         }
     }
 }

@@ -56,7 +56,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
                 return;
             }
 
-            _tractorBeamEmitters.Deselect(tractorBeamEmitterId);
+            _tractorBeamEmitters.Deselect(tractorBeamEmitterId, data.AttachToSocketVhId);
         }
     }
 }
