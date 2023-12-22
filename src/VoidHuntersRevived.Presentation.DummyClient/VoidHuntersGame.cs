@@ -3,9 +3,17 @@ using Microsoft.Xna.Framework;
 using Guppy;
 using VoidHuntersRevived.Game.Client;
 using VoidHuntersRevived.Game;
+using VoidHuntersRevived.Game.Server;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Game.Common;
+using Guppy.Game.MonoGame;
+using Autofac;
+using Guppy.Game;
+using Guppy.Game.MonoGame.Extensions;
+using System.Xml.Linq;
+using Guppy.Game.Extensions;
+using Guppy.Game.Common;
 
 namespace VoidHuntersRevived.Application.Client
 {
@@ -13,6 +21,7 @@ namespace VoidHuntersRevived.Application.Client
     {
         private readonly GraphicsDeviceManager _graphics;
         private GuppyEngine _engine;
+        private IGame? _game;
 
 
         // https://community.monogame.net/t/start-in-maximized-window/12264
@@ -38,13 +47,8 @@ namespace VoidHuntersRevived.Application.Client
             _graphics.GraphicsProfile = GraphicsProfile.HiDef;
             _graphics.ApplyChanges();
 
-            
-            _engine = new GuppyEngine(VoidHuntersRevivedGame.Company, VoidHuntersRevivedGame.Name, new[] { 
-                typeof(GameGuppy).Assembly, 
-                typeof(LocalGameGuppy).Assembly,
-                typeof(IVoidHuntersGameGuppy).Assembly,
-                typeof(VoidHuntersEntityDescriptor).Assembly,
-            });
+
+            _engine = new GuppyEngine(VoidHuntersRevivedGame.Company, VoidHuntersRevivedGame.Name);
         }
 
         /// <summary>
@@ -58,16 +62,20 @@ namespace VoidHuntersRevived.Application.Client
             base.Initialize();
 
             // SDL_MaximizeWindow(this.Window.Handle);
-            _engine.Start(builder =>
+            Task.Run(() =>
             {
-                builder.RegisterMonoGame(this, _graphics, this.Content, this.Window)
-                    .ConfigureNetwork()
-                    .ConfigureResources();
+                var game = _engine.StartGame(builder =>
+                {
+                    builder.RegisterMonoGame(this, _graphics, this.Content, this.Window);
+                });
+
+                game.Initialize();
+
+                game.Guppies.Create<MultiplayerGameGuppy>();
+
+                _game = game;
             });
 
-            // _engine.Guppies.Create<ServerGameGuppy>();
-            _engine.Guppies.Create<MultiplayerGameGuppy>();
-            //_engine.Guppies.Create<EditorGuppy>();
         }
 
         /// <summary>
@@ -86,16 +94,21 @@ namespace VoidHuntersRevived.Application.Client
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+            _game?.Dispose();
         }
 
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
+
+            _game?.Dispose();
         }
 
         protected override void OnExiting(object sender, EventArgs args)
         {
             base.OnExiting(sender, args);
+
+            _game?.Dispose();
 
             Environment.Exit(0);
         }
@@ -110,7 +123,7 @@ namespace VoidHuntersRevived.Application.Client
             // TODO: Add your update logic here
             base.Update(gameTime);
 
-            _engine.Update(gameTime);
+            _game?.Update(gameTime);
         }
 
         /// <summary>
@@ -123,7 +136,7 @@ namespace VoidHuntersRevived.Application.Client
 
             GraphicsDevice.Clear(Color.Black);
 
-            _engine.Draw(gameTime);
+            _game?.Draw(gameTime);
         }
     }
 }

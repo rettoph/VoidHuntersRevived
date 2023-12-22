@@ -26,6 +26,3 @@ finally
     //GC.EndNoGCRegion();
     GCSettings.LatencyMode = oldMode;
 }
-
-class Test
-{ }
