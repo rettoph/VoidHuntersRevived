@@ -19,8 +19,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 {
     internal abstract class VoidHuntersEntityDescriptorEngine : BasicEngine, IVoidHuntersEntityDescriptorEngine
     {
-        [ThreadStatic]
-        internal static uint EntityId;
+        internal static AsyncLocal<uint> EntityId = new AsyncLocal<uint>();
 
         public abstract VoidHuntersEntityDescriptor Descriptor { get; }
 
@@ -106,7 +105,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
         public override EntityInitializer HardSpawn(in VhId vhid, in Id<ITeam> teamId, out EntityId id)
         {
-            EGID egid = new EGID(EntityId++, _teamDescriptorGroups[teamId].GroupId);
+            EGID egid = new EGID(EntityId.Value++, _teamDescriptorGroups[teamId].GroupId);
             id = new EntityId(egid, vhid);
 
             EntityInitializer initializer = _factory.BuildEntity(egid, _descriptor);
