@@ -15,6 +15,7 @@ namespace VoidHuntersRevived.Application.Client
         private readonly GraphicsDeviceManager _graphics;
         private GuppyEngine _engine;
         private IGame? _game;
+        private readonly bool _internalServer;
 
 
         // https://community.monogame.net/t/start-in-maximized-window/12264
@@ -22,8 +23,9 @@ namespace VoidHuntersRevived.Application.Client
         // public static extern void SDL_MaximizeWindow(IntPtr window);
 
 
-        public VoidHuntersGame()
+        public VoidHuntersGame(bool internalServer = false)
         {
+            _internalServer = internalServer;
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
@@ -64,7 +66,11 @@ namespace VoidHuntersRevived.Application.Client
 
                 game.Initialize();
 
-                game.Guppies.Create<ServerGameGuppy>();
+                if (_internalServer)
+                {
+                    game.Guppies.Create<ServerGameGuppy>();
+                }
+
                 game.Guppies.Create<MultiplayerGameGuppy>();
                 //_engine.Guppies.Create<EditorGuppy>();
 

@@ -1,0 +1,46 @@
+/*
+    This is a configuration file for the SwitchStartupProject Visual Studio Extension
+    See https://heptapod.host/thirteen/switchstartupproject/blob/branch/current/Configuration.md
+*/
+{
+  /*  Configuration File Version  */
+  "Version": 3,
+
+  /*  Create an item in the dropdown list for each project in the solution?  */
+  "ListAllProjects": false,
+
+  "MultiProjectConfigurations": {
+    "Client (Internal Server)": {
+      "Projects": {
+        "VoidHuntersRevived.Presentation.Client": {
+          "CommandLineArguments": "true"
+        }
+      }
+    },
+    "Client + Server": {
+      "Projects": {
+        "VoidHuntersRevived.Presentation.Client": {
+          "CommandLineArguments": "false"
+        },
+        "VoidHuntersRevived.Presentation.Server": {}
+      }
+    },
+    "Client + Server + DummyClient": {
+      "Projects": {
+        "VoidHuntersRevived.Presentation.Client": {
+          "CommandLineArguments": "false"
+        },
+        "VoidHuntersRevived.Presentation.Server": {},
+        "VoidHuntersRevived.Presentation.DummyClient": {}
+      }
+    },
+    "Client (Internal Server) + DummyClient": {
+      "Projects": {
+        "VoidHuntersRevived.Presentation.Client": {
+          "CommandLineArguments": "true"
+        },
+        "VoidHuntersRevived.Presentation.DummyClient": {}
+      }
+    }
+  }
+}
