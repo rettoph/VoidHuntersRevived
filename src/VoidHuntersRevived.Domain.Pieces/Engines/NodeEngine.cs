@@ -17,6 +17,7 @@ using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Common.Pieces.Events;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Physics.Components;
+using VoidHuntersRevived.Common.Ships.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
@@ -53,7 +54,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 ? HashBuilder<IReactOnAddEx<Node>, VhId, VhId>.Instance.Calculate(dirtyEventId, node.Id.VhId)
                 : HashBuilder<IReactOnAddEx<Node>, VhId>.Instance.Calculate(node.Id.VhId);
 
-            this.SetLocalTransformation(ref node, groupIndex);
+            ref Location treeLocation = ref _entities.QueryById<Location>(node.TreeId);
+            this.SetLocalTransformation(ref node, groupIndex, in treeLocation);
         }
 
         public void OnDespawn(EntityId id, ref Node node, in GroupIndex groupIndex)
@@ -71,21 +73,24 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         public void Step(in Step param)
         {
-            while(_dirtyTrees.TryDequeue(out EntityId dirtyTreeId, out VhId cleaTreeEventSender))
+            while(_dirtyTrees.TryDequeue(out EntityId dirtyTreeId, out VhId cleanTreeEventSender))
             {
                 if(_entities.IsSpawned(dirtyTreeId))
                 {
-                    this.Simulation.Publish(cleaTreeEventSender, new Tree_Clean()
+                    this.Simulation.Publish(cleanTreeEventSender, new Tree_Clean()
                     {
+                        IsLocalOnly = false,
                         TreeId = dirtyTreeId.VhId
                     });
                 }
             }
         }
 
-        private void SetLocalTransformation(ref Node node, in GroupIndex groupIndex)
+        private void SetLocalTransformation(ref Node node, in GroupIndex groupIndex, in Location treeLocation)
         {
             _logger.Verbose("{ClassName}::{MethodName} - Preparing to set {LocalTransformation} for {Node} {NodeId}", nameof(NodeEngine), nameof(SetLocalTransformation), nameof(Node.LocalLocation), nameof(Node), node.Id.VhId.Value);
+
+            node.WorldTransform(treeLocation.Transformation);
 
             if (!_entities.TryQueryByGroupIndex<Coupling>(groupIndex, out Coupling coupling) || coupling.SocketId == SocketId.Empty)
             {
@@ -99,9 +104,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 Socket socketNode = _sockets.GetSocket(coupling.SocketId);
 
                 node.SetLocationTransformation(plug.Location.Transformation.Invert() * socketNode.LocalTransformation);
-
-                ref Location worldLocation = ref _entities.QueryById<Location>(node.TreeId);
-                node.WorldTransform(worldLocation.Transformation);
             }
             catch (Exception ex)
             {

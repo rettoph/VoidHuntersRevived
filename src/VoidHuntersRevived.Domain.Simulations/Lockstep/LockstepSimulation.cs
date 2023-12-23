@@ -35,8 +35,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         internal TimeSpan stepTimeSpan;
         internal Fix64 stepInterval;
         internal Step step;
-        internal int stepsThisFrame;
-        bool firstOfFrame;
 
 
         public Tick CurrentTick { get; private set; }
@@ -67,8 +65,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public override void Update(GameTime realTime)
         {
             this.timeSinceStep += realTime.ElapsedGameTime;
-            this.firstOfFrame = true;
-            this.stepsThisFrame = 0;
 
             base.Update(realTime);
 
@@ -80,14 +76,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         protected override void DoStep(Step step)
         {
-            if (firstOfFrame == true)
-            {
-                this.stepsThisFrame = 0;
-                firstOfFrame = false;
-            }
-
-            this.stepsThisFrame++;
-
             base.DoStep(step);
 
             this.stepsSinceTick++;

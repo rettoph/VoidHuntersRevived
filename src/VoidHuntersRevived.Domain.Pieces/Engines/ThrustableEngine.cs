@@ -76,15 +76,15 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         public void Process(VhId eventId, Tree_Clean data)
         {
-            if(!_entities.TryGetId(data.TreeId, out EntityId treeId))
+            if (!_entities.TryGetId(data.TreeId, out EntityId treeId))
             {
                 return;
             }
-            if(!_entities.HasAny<Helm>(treeId.EGID.groupID))
+            if (!_entities.HasAny<Helm>(treeId.EGID.groupID))
             {
                 return;
             }
-            if(_entities.TryQueryById<Enabled>(treeId, out Enabled enabled) == false || enabled == false)
+            if (_entities.TryQueryById<Enabled>(treeId, out Enabled enabled) == false || enabled == false)
             {
                 return;
             }

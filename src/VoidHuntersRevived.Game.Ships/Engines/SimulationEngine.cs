@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
             int i = 0;
             int radius = 2;
             int step = 2;
-            FixVector2 offset = new FixVector2(25, 0);
+            FixVector2 offset = new FixVector2(0, 0);
             for (int x = -radius; x < radius; x += step)
             {
                 for (int y = -radius; y < radius; y += step)

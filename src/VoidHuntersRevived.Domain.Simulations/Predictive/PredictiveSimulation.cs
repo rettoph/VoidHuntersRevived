@@ -145,7 +145,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
         private void HandleLockstepEvent(EventDto @event)
         {
-            _confirmedEvents.Enqueue(@event);
+            if(@event.Data.IsLocalOnly)
+            {
+                _confirmedEvents.Enqueue(@event);
+            }
         }
 
         private PredictedEvent GetPredictionEvent(EventDto @event)

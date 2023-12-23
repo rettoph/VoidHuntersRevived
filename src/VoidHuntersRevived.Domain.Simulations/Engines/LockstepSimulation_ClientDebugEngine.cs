@@ -28,7 +28,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines
         public const string BufferCount = nameof(BufferCount);
         public const string TimeSinceStep = nameof(TimeSinceStep);
         public const string StepTimespan = nameof(StepTimespan);
-        public const string StepsThisFrame = nameof(StepsThisFrame);
 
         public ISimpleDebugEngine.SimpleDebugLine[] Lines { get; }
 
@@ -44,7 +43,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines
                 new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), BufferCount, () => this.Simulation._ticks.Count.ToString("#,##0")),
                 new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), TimeSinceStep, () => this.Simulation.timeSinceStep.ToString(@"hh\:mm\:ss\.FFFFFFF")),
                 new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), StepTimespan, () => this.Simulation.stepTimeSpan.ToString(@"hh\:mm\:ss\.FFFFFFF")),
-                new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), StepsThisFrame, () => this.Simulation.stepsThisFrame.ToString()),
             };
         }
     }
