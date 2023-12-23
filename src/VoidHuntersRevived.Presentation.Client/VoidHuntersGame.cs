@@ -71,7 +71,7 @@ namespace VoidHuntersRevived.Application.Client
 
                 game.Initialize();
 
-                //game.Guppies.Create<ServerGameGuppy>();
+                game.Guppies.Create<ServerGameGuppy>();
                 game.Guppies.Create<MultiplayerGameGuppy>();
                 //_engine.Guppies.Create<EditorGuppy>();
 

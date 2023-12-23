@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines
             this.Lines = new[]
             {
                 new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), Tick, () => this.Simulation.CurrentTick.Id.ToString("#,###,##0")),
-                new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), Step, () => $"{this.Simulation._stepsSinceTick}/{this.Simulation._stepsPerTick}"),
+                new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), Step, () => $"{this.Simulation.stepsSinceTick}/{this.Simulation.stepsPerTick}"),
             };
         }
     }

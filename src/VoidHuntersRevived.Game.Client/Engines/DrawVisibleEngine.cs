@@ -81,6 +81,10 @@ namespace VoidHuntersRevived.Game.Client.Engines
                             {
                                 _visibleRenderingService.Draw(in visibles[index], ref transformation);
                             }
+                            else
+                            {
+
+                            }
                         }
                     }
                     catch (Exception e)

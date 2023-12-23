@@ -99,6 +99,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 Socket socketNode = _sockets.GetSocket(coupling.SocketId);
 
                 node.SetLocationTransformation(plug.Location.Transformation.Invert() * socketNode.LocalTransformation);
+
+                ref Location worldLocation = ref _entities.QueryById<Location>(node.TreeId);
+                node.WorldTransform(worldLocation.Transformation);
             }
             catch (Exception ex)
             {

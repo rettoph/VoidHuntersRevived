@@ -27,94 +27,69 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         IDisposable
     {
         private readonly NetScope _netScope;
-        private Step _step;
 
         internal readonly TickBuffer _ticks;
-        internal readonly int _stepsPerTick;
-        internal int _stepsSinceTick;
-        private TimeSpan _timeSinceStep;
-        private TimeSpan _stepTimeSpan;
 
         public LockstepSimulation_Client(
             NetScope netScope,
             TickBuffer ticks,
             ISettingProvider settings,
-            ILifetimeScope scope) : base(scope)
+            ILifetimeScope scope) : base(settings, scope)
         {
-            Fix64 stepInterval = settings.Get(Settings.StepInterval).Value;
-
             _netScope = netScope;
             _ticks = ticks;
-            _stepsSinceTick = 0;
-            _stepsPerTick = settings.Get(Settings.StepsPerTick).Value;
-            _stepTimeSpan = TimeSpan.FromSeconds((float)stepInterval);
-            _step = new Step()
-            {
-                ElapsedTime = stepInterval,
-                TotalTime = stepInterval
-            };
         }
 
         public override void Update(GameTime realTime)
         {
-            _timeSinceStep += realTime.ElapsedGameTime;
-
             base.Update(realTime);
-        }
-
-        protected override bool TryGetNextStep(GameTime realTime, [MaybeNullWhen(false)] out Step step)
-        {
-            if (_stepsSinceTick > _stepsPerTick)
-            {
-                throw new Exception();
-            }
-
-            if (_stepsSinceTick == _stepsPerTick)
-            {
-                step = null;
-                return false;
-            }
-
-            if (_timeSinceStep < _stepTimeSpan && _ticks.Count == 0)
-            {
-                step = null;
-                return false;
-            }
-
-            _step.TotalTime += _step.ElapsedTime;
-            step = _step;
-            return true;
         }
 
         protected override void DoStep(Step step)
         {
             base.DoStep(step);
 
-            _stepsSinceTick++;
-            _timeSinceStep -= _stepTimeSpan;
+            this.timeSinceStep = TimeSpan.Zero;
         }
 
-        protected override bool TryGetNextTick(Tick current, [MaybeNullWhen(false)] out Tick next)
+        protected override bool TryGetNextStep(GameTime realTime, [MaybeNullWhen(false)] out Step step)
         {
-            if (_stepsSinceTick > _stepsPerTick)
+            if (this.stepsSinceTick > this.stepsPerTick)
             {
                 throw new Exception();
             }
 
-            if (_stepsSinceTick < _stepsPerTick)
+            if (this.stepsSinceTick == this.stepsPerTick)
+            {
+                step = null;
+                return false;
+            }
+
+            if (this.timeSinceStep < this.stepTimeSpan && _ticks.Count == 0)
+            {
+                step = null;
+                return false;
+            }
+
+            this.step.TotalTime += this.step.ElapsedTime;
+            step = this.step;
+            return true;
+        }
+
+        protected override bool TryGetNextTick(Tick current, [MaybeNullWhen(false)] out Tick next)
+        {
+            if (this.stepsSinceTick > this.stepsPerTick)
+            {
+                throw new Exception();
+            }
+
+            if (this.stepsSinceTick < this.stepsPerTick)
             {
                 next = null;
                 return false;
             }
 
             return _ticks.TryPop(current.Id + 1, out next);
-        }
-
-        protected override void DoTick(Tick tick)
-        {
-            base.DoTick(tick);
-
-            _stepsSinceTick = 0;
         }
 
         public override void Input(VhId sender, IInputData data)

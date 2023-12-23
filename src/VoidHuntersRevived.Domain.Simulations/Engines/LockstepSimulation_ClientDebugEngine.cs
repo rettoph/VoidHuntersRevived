@@ -26,6 +26,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines
         public const string BufferHead = nameof(BufferHead);
         public const string BufferTail = nameof(BufferTail);
         public const string BufferCount = nameof(BufferCount);
+        public const string TimeSinceStep = nameof(TimeSinceStep);
+        public const string StepTimespan = nameof(StepTimespan);
+        public const string StepsThisFrame = nameof(StepsThisFrame);
 
         public ISimpleDebugEngine.SimpleDebugLine[] Lines { get; }
 
@@ -34,10 +37,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines
             this.Lines = new[]
             {
                 new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), Tick, () => this.Simulation.CurrentTick.Id.ToString("#,###,##0")),
-                new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), Step, () => $"{this.Simulation._stepsSinceTick}/{this.Simulation._stepsPerTick}"),
+                new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), Step, () => $"{this.Simulation.stepsSinceTick}/{this.Simulation.stepsPerTick}"),
                 new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), BufferHead, () => $"{(this.Simulation._ticks.Head?.Id.ToString()) ?? "null"}"),
                 new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), BufferTail, () => $"{(this.Simulation._ticks.Tail?.Id.ToString()) ?? "null"}"),
                 new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), BufferCount, () => this.Simulation._ticks.Count.ToString("#,##0")),
+                new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), BufferCount, () => this.Simulation._ticks.Count.ToString("#,##0")),
+                new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), TimeSinceStep, () => this.Simulation.timeSinceStep.ToString(@"hh\:mm\:ss\.FFFFFFF")),
+                new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), StepTimespan, () => this.Simulation.stepTimeSpan.ToString(@"hh\:mm\:ss\.FFFFFFF")),
+                new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), StepsThisFrame, () => this.Simulation.stepsThisFrame.ToString()),
             };
         }
     }

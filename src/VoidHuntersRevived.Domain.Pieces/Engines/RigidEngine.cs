@@ -71,16 +71,18 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(RigidEngine), nameof(OnSpawn), id.VhId);
 
             Node node = _entities.QueryByGroupIndex<Node>(groupIndex);
-            bool queryResult = false;
 
-            if ((queryResult = _entities.TryQueryById<Enabled>(node.TreeId, out Enabled enabled)) == true && enabled)
+            if (_entities.TryQueryById<Enabled>(node.TreeId, out Enabled enabled) == true)
             {
-                IBody body = _space.GetBody(node.TreeId);
-                this.CreateFixtures(body, node, component);
+                if(enabled)
+                {
+                    IBody body = _space.GetBody(node.TreeId);
+                    this.CreateFixtures(body, node, component);
+                }
             }
             else
             {
-                _logger.Warning("{ClassName}::{MethodName} - Unable to create fixtures for node {NodeId} on tree {TreeId}, queryResult = {QueryResult}, enabled = {Enabled}.", nameof(RigidEngine), nameof(OnSpawn), id.VhId, node.TreeId.VhId, queryResult, enabled.Value);
+                _logger.Warning("{ClassName}::{MethodName} - Unable to create fixtures for node {NodeId} on tree {TreeId}.", nameof(RigidEngine), nameof(OnSpawn), id.VhId, node.TreeId.VhId);
             }
         }
 
@@ -89,18 +91,25 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(RigidEngine), nameof(OnDespawn), id.VhId);
 
             Node node = _entities.QueryByGroupIndex<Node>(groupIndex);
-            bool queryResult = false;
-            bool getBodyResult = false;
 
-            if ((queryResult = _entities.TryQueryById<Enabled>(node.TreeId, out Enabled enabled)) == true 
-                && enabled 
-                && (getBodyResult = _space.TryGetBody(node.TreeId, out IBody? body)))
+            if (_entities.TryQueryById<Enabled>(node.TreeId, out Enabled enabled) == true)
             {
-                this.DestroyFixtures(body, node, component);
+                if(enabled)
+                {
+                    if(_space.TryGetBody(node.TreeId, out IBody? body) == true)
+                    {
+                        this.DestroyFixtures(body, node, component);
+                    }
+                    else
+                    {
+                        _logger.Warning("{ClassName}::{MethodName} - Unable to destroy fixtures for node {NodeId} on tree {TreeId}. Body not found.", nameof(RigidEngine), nameof(OnDespawn), id.VhId, node.TreeId.VhId);
+                    }
+                }
+                
             }
             else
             {
-                _logger.Warning("{ClassName}::{MethodName} - Unable to destroy fixtures for node {NodeId} on tree {TreeId}, queryResult = {QueryResult}, enabled = {Enabled}, getBodyResult = {GetBodyResult}.", nameof(RigidEngine), nameof(OnDespawn), id.VhId, node.TreeId.VhId, queryResult, enabled.Value, getBodyResult);
+                _logger.Warning("{ClassName}::{MethodName} - Unable to destroy fixtures for node {NodeId} on tree {TreeId}. Tree not found.", nameof(RigidEngine), nameof(OnDespawn), id.VhId, node.TreeId.VhId);
             }
         }
 
