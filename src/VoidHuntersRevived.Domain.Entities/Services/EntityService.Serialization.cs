@@ -1,19 +1,11 @@
 ﻿using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Threading.Tasks;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Common.Entities.Options;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Events;
-using VoidHuntersRevived.Domain.Entities.Engines;
-using VoidHuntersRevived.Common.Entities.Engines;
-using VoidHuntersRevived.Common.Entities.Options;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -33,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             Id<IEntityType> typeId = this.QueryById<Id<IEntityType>>(id, out GroupIndex groupIndex);
             Id<VoidHuntersEntityDescriptor> descriptorId = this.QueryByGroupIndex<Id<VoidHuntersEntityDescriptor>>(in groupIndex);
-            
+
             writer.Write(id.VhId);
             writer.WriteStruct(typeId);
             this.GetDescriptorEngine(descriptorId).Serialize(writer, in groupIndex, in options);

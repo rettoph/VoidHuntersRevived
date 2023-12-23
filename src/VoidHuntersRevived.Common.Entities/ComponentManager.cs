@@ -1,12 +1,5 @@
-﻿using Autofac;
-using Guppy.Common;
+﻿using Guppy.Common;
 using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Serialization;
 
 namespace VoidHuntersRevived.Common.Entities

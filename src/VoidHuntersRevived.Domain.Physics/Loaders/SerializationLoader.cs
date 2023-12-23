@@ -1,8 +1,8 @@
-﻿using Guppy.Loaders;
-using System.Text.Json.Serialization;
+﻿using Autofac;
 using Guppy.Attributes;
+using Guppy.Loaders;
+using System.Text.Json.Serialization;
 using VoidHuntersRevived.Domain.Physics.Serialization.Json.Converters;
-using Autofac;
 
 namespace VoidHuntersRevived.Domain.Physics.Loaders
 {

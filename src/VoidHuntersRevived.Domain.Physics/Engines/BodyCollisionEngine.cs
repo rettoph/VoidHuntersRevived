@@ -1,16 +1,8 @@
 ﻿using Guppy.Attributes;
-using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Physics;
+using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {

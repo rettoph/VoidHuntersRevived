@@ -1,17 +1,16 @@
 ﻿using Guppy.Attributes;
-using Guppy.Common;
 using Guppy.Common.Attributes;
+using Guppy.Game.Common.Enums;
+using Guppy.Game.Input;
 using Guppy.Game.Input.Messages;
 using Guppy.Game.MonoGame;
 using Guppy.Game.MonoGame.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using Guppy.Game.Input;
-using Guppy.Game.Common.Enums;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -39,7 +38,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _screen.Camera.Update(_param);
             _camera.Update(_param);
 
-            if(Keyboard.GetState().IsKeyDown(Keys.Up))
+            if (Keyboard.GetState().IsKeyDown(Keys.Up))
             {
                 _offset -= Vector2.UnitY * (float)_param.ElapsedGameTime.TotalSeconds;
             }

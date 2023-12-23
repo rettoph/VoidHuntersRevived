@@ -1,8 +1,6 @@
 ﻿using Autofac;
-using Serilog;
 using Svelto.DataStructures;
 using Svelto.ECS;
-using System.Text.RegularExpressions;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
@@ -53,8 +51,8 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
         public VoidHuntersEntityDescriptorEngine(
             ITeamDescriptorGroupService teamDescriptorGroups,
-            ILifetimeScope scope, 
-            EnginesRoot enginesRoot, 
+            ILifetimeScope scope,
+            EnginesRoot enginesRoot,
             IEnumerable<VoidHuntersEntityDescriptor> descriptors)
         {
             _descriptor = descriptors.OfType<TDescriptor>().Single()!;

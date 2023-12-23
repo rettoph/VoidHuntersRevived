@@ -1,11 +1,6 @@
 ﻿using Guppy.Resources.Attributes;
 using Svelto.DataStructures;
 using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Extensions.System;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Pieces.Utilities;
@@ -20,7 +15,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 
         public void Dispose()
         {
-            for(int i=0; i<this.Shapes.count; i++)
+            for (int i = 0; i < this.Shapes.count; i++)
             {
                 this.Shapes[i].Dispose();
             }

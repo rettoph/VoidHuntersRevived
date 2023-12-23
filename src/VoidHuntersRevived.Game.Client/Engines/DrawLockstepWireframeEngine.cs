@@ -1,39 +1,18 @@
 ﻿using Guppy.Attributes;
-using Guppy.Common;
 using Guppy.Common.Attributes;
-using Guppy.Game.MonoGame.Primitives;
-using Guppy.Game.MonoGame.Utilities.Cameras;
-using Guppy.Resources;
-using Guppy.Resources.Providers;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using Guppy.Game.Common.Enums;
+using Guppy.Messaging;
 using Serilog;
-using Svelto.DataStructures;
 using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Client.Services;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.FixedPoint.Extensions;
-using VoidHuntersRevived.Common.Physics;
-using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
-using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using Guppy.Game.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Game.Client.Messages;
-using Guppy.Messaging;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -53,9 +32,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public string name { get; } = nameof(DrawLockstepWireframeEngine);
 
         public DrawLockstepWireframeEngine(
-            ILogger logger, 
-            IVisibleRenderingService visibleRenderingService, 
-            IEntityService entities, 
+            ILogger logger,
+            IVisibleRenderingService visibleRenderingService,
+            IEntityService entities,
             ITeamDescriptorGroupService teamDescriptorGroups)
         {
             _visibleRenderingService = visibleRenderingService;
@@ -73,7 +52,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in GameTimeTeam _param)
         {
-            if(!_visible)
+            if (!_visible)
             {
                 return;
             }

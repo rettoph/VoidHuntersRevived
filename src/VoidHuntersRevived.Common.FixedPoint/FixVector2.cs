@@ -1,6 +1,4 @@
-﻿using Autofac.Features.Metadata;
-using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Common.FixedPoint;
+﻿using Microsoft.Xna.Framework;
 
 namespace VoidHuntersRevived.Common
 {

@@ -1,15 +1,6 @@
 ﻿using Svelto.DataStructures;
 using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
@@ -25,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public bool TryQueryById<T>(EntityId id, out GroupIndex groupIndex, out T value)
             where T : unmanaged, IEntityComponent
         {
-            if(this.entitiesDB.TryQueryEntitiesAndIndex<T>(id.EGID, out uint index, out var components))
+            if (this.entitiesDB.TryQueryEntitiesAndIndex<T>(id.EGID, out uint index, out var components))
             {
                 value = components[index];
                 groupIndex = new GroupIndex(id.EGID.groupID, index);
@@ -249,7 +240,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             var groups = this.FindGroups<T>();
             int total = 0;
 
-            foreach(var ((_, count), _) in this.QueryEntities<T>(groups))
+            foreach (var ((_, count), _) in this.QueryEntities<T>(groups))
             {
                 total += count;
             }

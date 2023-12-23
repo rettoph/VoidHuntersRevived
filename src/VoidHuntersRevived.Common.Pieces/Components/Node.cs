@@ -1,13 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Svelto.Common;
-using Svelto.DataStructures;
 using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.FixedPoint.Utilities;
@@ -32,7 +24,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
         {
             get
             {
-                if(_dirtyTransformation == false)
+                if (_dirtyTransformation == false)
                 {
                     return _transformation;
                 }

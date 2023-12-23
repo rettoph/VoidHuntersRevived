@@ -1,25 +1,16 @@
 ﻿using Guppy.Attributes;
+using Serilog;
 using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Pieces;
+using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using Serilog;
-using VoidHuntersRevived.Common.Entities.Engines;
-using System.Text.RegularExpressions;
 
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    internal sealed class CouplingEngine : BasicEngine, 
+    internal sealed class CouplingEngine : BasicEngine,
         IOnSpawnEngine<Coupling>,
         IOnDespawnEngine<Coupling>
     {

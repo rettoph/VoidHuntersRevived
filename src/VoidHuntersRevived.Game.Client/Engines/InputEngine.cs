@@ -1,37 +1,30 @@
-﻿using Guppy.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Simulations.Attributes;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Engines;
-using Guppy.Network.Peers;
-using VoidHuntersRevived.Common.Simulations.Services;
-using VoidHuntersRevived.Game.Common.Events;
-using Guppy.Common;
-using Guppy.Network.Identity;
-using VoidHuntersRevived.Game.Client.Messages;
+﻿using Autofac;
+using Guppy.Attributes;
+using Guppy.Game.Input;
+using Guppy.Game.MonoGame.Utilities.Cameras;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
-using VoidHuntersRevived.Common;
-using Microsoft.Xna.Framework.Input;
+using Guppy.Network.Identity;
+using Guppy.Network.Peers;
 using Microsoft.Xna.Framework;
-using Guppy.Game.MonoGame.Utilities.Cameras;
+using Microsoft.Xna.Framework.Input;
+using Svelto.ECS;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
-using Svelto.ECS;
-using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
-using VoidHuntersRevived.Game.Ships.Services;
-using VoidHuntersRevived.Game.Ships.Events;
+using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Ships.Components;
 using VoidHuntersRevived.Common.Ships.Services;
-using Guppy.Game.Input;
-using Autofac;
-using VoidHuntersRevived.Common.Pieces.Services;
+using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Attributes;
+using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Common.Simulations.Lockstep;
+using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Game.Client.Messages;
+using VoidHuntersRevived.Game.Common.Events;
+using VoidHuntersRevived.Game.Ships.Events;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -56,7 +49,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public string name { get; } = nameof(InputEngine);
 
         public InputEngine(
-            ClientPeer client, 
+            ClientPeer client,
             Camera2D camera,
             ISimulationService simulations)
         {
@@ -140,7 +133,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     data: new Input_TractorBeamEmitter_Deselect()
                     {
                         ShipVhId = shipId.VhId,
-                        AttachToSocketVhId =_sockets.TryGetClosestOpenSocket(shipId, tactical.Target, out Socket socket)
+                        AttachToSocketVhId = _sockets.TryGetClosestOpenSocket(shipId, tactical.Target, out Socket socket)
                             ? socket.Id.VhId : default
                     });
             }
@@ -154,7 +147,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
 
             VhId shipVhId = _client.Users.Current.GetUserShipId();
-            if(!_entities.TryGetId(shipVhId, out EntityId localShipId))
+            if (!_entities.TryGetId(shipVhId, out EntityId localShipId))
             {
                 return;
             }

@@ -1,28 +1,24 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.Attributes;
+using Guppy.Game.Common.Enums;
+using Guppy.Game.MonoGame;
 using Guppy.Game.MonoGame.Primitives;
 using Guppy.Game.MonoGame.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Pieces.Components;
-using VoidHuntersRevived.Common.Simulations.Attributes;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Engines;
-using Guppy.Game.Common.Enums;
-using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Domain.Simulations;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Pieces.Services;
-using VoidHuntersRevived.Common.FixedPoint.Utilities;
-using VoidHuntersRevived.Common.FixedPoint.Extensions;
-using Guppy.Game.MonoGame;
-using VoidHuntersRevived.Common.Pieces;
-using VoidHuntersRevived.Common.Physics.Components;
-using VoidHuntersRevived.Common.Client.Services;
 using System.Drawing;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.FixedPoint.Utilities;
+using VoidHuntersRevived.Common.Physics.Components;
+using VoidHuntersRevived.Common.Pieces;
+using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Attributes;
+using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Domain.Simulations;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -57,7 +53,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in GameTimeTeam _param)
         {
-            if(_camera.Zoom < 60)
+            if (_camera.Zoom < 60)
             {
                 return;
             }

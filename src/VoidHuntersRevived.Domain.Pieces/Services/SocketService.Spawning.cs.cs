@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities.Serialization;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Pieces.Descriptors;
-using VoidHuntersRevived.Common.Pieces;
-using VoidHuntersRevived.Common.Pieces.Services;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities.Options;
-using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Pieces.Components;
-using VoidHuntersRevived.Common.Utilities;
+﻿using Svelto.ECS;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Options;
+using VoidHuntersRevived.Common.Entities.Serialization;
+using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Pieces;
+using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Descriptors;
+using VoidHuntersRevived.Common.Pieces.Services;
+using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
@@ -47,7 +41,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             EntityId nodeId = _entities.Deserialize(
                 options: new DeserializationOptions
                 {
-                    Seed = HashBuilder<SocketService,  SocketVhId>.Instance.Calculate(socketVhId),
+                    Seed = HashBuilder<SocketService, SocketVhId>.Instance.Calculate(socketVhId),
                     TeamId = teamId,
                     Owner = socket.Node.TreeId.VhId
                 },

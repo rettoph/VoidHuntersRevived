@@ -1,12 +1,7 @@
 ﻿using Guppy;
 using Guppy.Resources.Providers;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Descriptors;
 using VoidHuntersRevived.Common.Pieces.Services;
@@ -43,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         {
             ref Piece[]? pieces = ref CollectionsMarshal.GetValueRefOrAddDefault(_byDescriptor, typeof(TDescriptor), out bool exists);
 
-            if(exists == false)
+            if (exists == false)
             {
                 pieces = _pieces.Where(x => x.Descriptor.GetType().IsAssignableFrom(typeof(TDescriptor))).ToArray();
             }
@@ -61,7 +56,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             return _byKey[key];
         }
 
-        public bool TryGetByKey(string key, [MaybeNullWhen(false)]  out Piece piece)
+        public bool TryGetByKey(string key, [MaybeNullWhen(false)] out Piece piece)
         {
             return _byKey.TryGetValue(key, out piece);
         }

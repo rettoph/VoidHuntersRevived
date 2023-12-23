@@ -1,38 +1,16 @@
 ﻿using Autofac;
 using Guppy;
 using Guppy.Attributes;
-using Guppy.Commands.Messages;
-using Guppy.Common;
 using Guppy.Common.Attributes;
 using Guppy.Common.Extensions;
 using Guppy.Enums;
-using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Components;
 using Guppy.Game.ImGui;
-using Guppy.Game.MonoGame.Utilities.Cameras;
-using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using tainicom.Aether.Physics2D.Diagnostics;
-using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Client;
-using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Physics;
-using VoidHuntersRevived.Common.Pieces.Components;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
 using VoidHuntersRevived.Domain.Simulations;
 
@@ -61,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
 
             public void DrawImGui(IImGui imgui, GameTime gameTime)
             {
-                if(imgui.CollapsingHeader(_group))
+                if (imgui.CollapsingHeader(_group))
                 {
                     imgui.Indent();
 
@@ -90,7 +68,7 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
         private IGuppy _guppy;
 
         public DebugEngineComponent(
-            IImGui imgui, 
+            IImGui imgui,
             ISimulationService simulations)
         {
             _guppy = null!;
@@ -109,7 +87,7 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
                 (x as Simulation)!,
                 new Dictionary<string, DebugEngineGroupRenderer>())).ToArray();
 
-            foreach(var (simulation, renderers) in _data)
+            foreach (var (simulation, renderers) in _data)
             {
                 var simpleEngines = simulation.Scope.Resolve<IEngineService>().OfType<ISimpleDebugEngine>()
                     .Sequence(DrawSequence.Draw)
@@ -125,9 +103,9 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
 
                 var groups = simpleEngines.Select(x => x.Key).Concat(engines.Select(x => x.Key)).Distinct().ToArray();
 
-                foreach(var group in groups)
+                foreach (var group in groups)
                 {
-                    if(simpleEngines.TryGetValue(group, out var groupedSimpleEngines) == false)
+                    if (simpleEngines.TryGetValue(group, out var groupedSimpleEngines) == false)
                     {
                         groupedSimpleEngines = Array.Empty<ISimpleDebugEngine.SimpleDebugLine>();
                     }
@@ -151,7 +129,7 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
 
                 _imgui.Text($"Simulation: {simulation.Type}");
 
-                foreach(var (group, renderer) in renderers)
+                foreach (var (group, renderer) in renderers)
                 {
                     renderer.DrawImGui(_imgui, gameTime);
                 }

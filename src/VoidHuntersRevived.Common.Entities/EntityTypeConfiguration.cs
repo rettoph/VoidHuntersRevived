@@ -1,13 +1,4 @@
-﻿using Guppy.Common.Helpers;
-using Svelto.DataStructures;
-using Svelto.ECS;
-using Svelto.ECS.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Services;
 
@@ -30,7 +21,7 @@ namespace VoidHuntersRevived.Common.Entities
         public IEntityTypeConfiguration InitializeComponent<T>(IEntityTypeComponentValue<T> componentInitializer)
             where T : unmanaged, IEntityComponent
         {
-            if(!this.Type.Descriptor.ComponentManagers.Any(x => x.Type == typeof(T)))
+            if (!this.Type.Descriptor.ComponentManagers.Any(x => x.Type == typeof(T)))
             {
                 throw new Exception();
             }

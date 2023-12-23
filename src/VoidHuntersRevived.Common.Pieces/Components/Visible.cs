@@ -5,9 +5,7 @@ using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Extensions.System;
 using VoidHuntersRevived.Common.Helpers;
-using VoidHuntersRevived.Common.Pieces.Enums;
 using VoidHuntersRevived.Common.Pieces.Utilities;
-using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Common.Pieces.Components
 {
@@ -130,7 +128,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
                 return shape.Vertices[index];
             }
 
-            if(index >= shape.Vertices.count && wrap)
+            if (index >= shape.Vertices.count && wrap)
             {
                 index = (index % shape.Vertices.count) + 1;
                 return shape.Vertices[index];

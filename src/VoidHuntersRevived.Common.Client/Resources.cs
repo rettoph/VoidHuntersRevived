@@ -1,11 +1,6 @@
 ﻿using Guppy.Game.MonoGame.Graphics.Effects;
 using Guppy.Resources;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Client
 {

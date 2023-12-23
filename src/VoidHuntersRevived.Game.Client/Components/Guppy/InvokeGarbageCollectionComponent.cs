@@ -1,16 +1,7 @@
 ﻿using Guppy;
 using Guppy.Attributes;
-using Guppy.Common;
 using Guppy.Messaging;
-using Guppy.Game.MonoGame;
-using Microsoft.Xna.Framework;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Game.Client.Engines;
 using VoidHuntersRevived.Game.Client.Messages;
 
 namespace VoidHuntersRevived.Game.Client.Components.Guppy
@@ -35,19 +26,19 @@ namespace VoidHuntersRevived.Game.Client.Components.Guppy
 
         public void Process(in Guid messageId, Input_Invoke_Garbage_Collection message)
         {
-            if(DateTime.Now - _lastInvocation < TimeSpan.FromMilliseconds(100))
+            if (DateTime.Now - _lastInvocation < TimeSpan.FromMilliseconds(100))
             {
                 return;
             }
 
             if (DateTime.Now - _lastInvocation < TimeSpan.FromSeconds(5))
             {
-                if(DateTime.Now - _lastWarning < TimeSpan.FromMilliseconds(100))
+                if (DateTime.Now - _lastWarning < TimeSpan.FromMilliseconds(100))
                 {
                     _lastWarning = DateTime.Now;
                     return;
                 }
-                
+
                 _logger.Warning("{ClassName}::{MethodName} - Too soon, try again later.", nameof(InvokeGarbageCollectionComponent), nameof(Process));
 
                 return;

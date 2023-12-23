@@ -1,25 +1,12 @@
-﻿using Guppy.Attributes;
-using Guppy.Common;
-using Guppy.Common.Collections;
+﻿using Guppy.Common;
 using Guppy.Common.Extensions;
-using Guppy.Common.Providers;
 using Guppy.Common.Services;
 using Svelto.ECS;
-using Svelto.ECS.Schedulers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Domain.Entities.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -33,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public EnginesRoot Root => _enginesRoot;
 
         public EngineService(
-            IBulkSubscriptionService bulkSubscriptionService, 
+            IBulkSubscriptionService bulkSubscriptionService,
             IFiltered<IEngine> engines,
             EnginesRoot enginesRoot)
         {
@@ -51,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
                 _enginesRoot.AddEngine(engine);
 
-                if(engine is IEngineEngine engineEngine)
+                if (engine is IEngineEngine engineEngine)
                 {
                     engineEngine.Initialize(_engines);
                 }

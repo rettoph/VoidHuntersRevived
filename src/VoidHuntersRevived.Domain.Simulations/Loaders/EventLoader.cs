@@ -2,7 +2,6 @@
 using Guppy.Attributes;
 using Guppy.Loaders;
 using LiteNetLib;
-using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Domain.Simulations.Loaders

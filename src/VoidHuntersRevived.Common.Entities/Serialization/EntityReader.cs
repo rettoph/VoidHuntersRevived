@@ -1,13 +1,6 @@
 ﻿using Svelto.Common;
 using Svelto.DataStructures;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Options;
-using VoidHuntersRevived.Common.Entities.Services;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VoidHuntersRevived.Common.Entities.Serialization
 {
@@ -80,7 +73,7 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             Span<byte> bytes = stackalloc byte[sizeof(T)];
             this.Read(bytes);
 
-            fixed(byte* pbytes = &bytes[0])
+            fixed (byte* pbytes = &bytes[0])
             {
                 T* value = (T*)&pbytes[0];
 

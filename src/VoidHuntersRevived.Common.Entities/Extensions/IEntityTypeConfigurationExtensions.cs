@@ -1,11 +1,5 @@
-﻿using Guppy.Attributes;
-using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Svelto.ECS;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Attributes;
 using VoidHuntersRevived.Common.Entities.Enums;
 
@@ -30,7 +24,7 @@ namespace VoidHuntersRevived.Common.Entities
                 Instance = instance,
                 Dispose = () =>
                 {
-                    if(instance is not IDisposable disposable)
+                    if (instance is not IDisposable disposable)
                     {
                         return;
                     }
@@ -39,7 +33,7 @@ namespace VoidHuntersRevived.Common.Entities
                         .GetCustomAttributes(true)
                         .OfType<AutoDisposeComponentAttribute>()
                         .FirstOrDefault(x => x.GetDisposableComponentType(typeof(T)) == typeof(T));
-                    if((autoDisposeAttr?.Scope ?? AutoDisposeScope.None) == AutoDisposeScope.Type)
+                    if ((autoDisposeAttr?.Scope ?? AutoDisposeScope.None) == AutoDisposeScope.Type)
                     {
                         disposable.Dispose();
                     }

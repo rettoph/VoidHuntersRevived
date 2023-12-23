@@ -1,14 +1,11 @@
-﻿using Guppy.Common.Collections;
-using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Messages;
+﻿using Svelto.ECS;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Entities.Events;
-using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.Entities.Enums;
-using VoidHuntersRevived.Domain.Entities.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -57,7 +54,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 _logger.Verbose("{ClassName}::{MethodName} - EntityModificationType = {EntityModificationType}, EntityId = {EntityId}", nameof(EntityService), nameof(Flush), request.ModificationType, request.Id.VhId);
 
-                switch(request.ModificationType)
+                switch (request.ModificationType)
                 {
                     case EntityModificationType.SoftSpawn:
                         this.SoftSpawnEntity(in request.Id);
@@ -82,7 +79,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public bool IsSpawned(EntityId id)
         {
-            if(this.TryQueryById<EntityStatus>(id, out EntityStatus status))
+            if (this.TryQueryById<EntityStatus>(id, out EntityStatus status))
             {
                 return status.IsSpawned;
             }
@@ -167,7 +164,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Revert(VhId eventId, SoftDespawnEntity data)
         {
-            if(this.TryGetId(data.VhId, out EntityId id))
+            if (this.TryGetId(data.VhId, out EntityId id))
             {
                 this.EnqueuEntityModification(new EntityModificationRequest(EntityModificationType.RevertSoftDespawn, id));
             }
@@ -216,7 +213,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             ref EntityStatus status = ref this.QueryById<EntityStatus>(request.Id, out GroupIndex groupIndex, out bool exists);
 
-            if(exists && status.Value == EntityStatusEnum.SoftDespawnEnqueued)
+            if (exists && status.Value == EntityStatusEnum.SoftDespawnEnqueued)
             {
                 Id<VoidHuntersEntityDescriptor> descriptorId = this.QueryByGroupIndex<Id<VoidHuntersEntityDescriptor>>(in groupIndex);
                 this.GetDescriptorEngine(descriptorId).SoftDespawn(in request.Id, in groupIndex, ref status);

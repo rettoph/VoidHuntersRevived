@@ -1,27 +1,17 @@
-﻿using Guppy.Common;
-using Guppy.Common.Providers;
+﻿using Autofac;
+using Guppy.Messaging;
 using Guppy.Network;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
-using Serilog;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Constants;
-using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Events;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
-using Autofac;
-using VoidHuntersRevived.Common.Simulations.Events;
-using Guppy.Messaging;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
@@ -101,7 +91,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         protected override bool TryGetNextTick(Tick current, [MaybeNullWhen(false)] out Tick next)
         {
-            if(this.stepsSinceTick != this.stepsPerTick)
+            if (this.stepsSinceTick != this.stepsPerTick)
             {
                 next = null;
                 return false;

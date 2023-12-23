@@ -1,9 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.FixedPoint.Utilities
 {
@@ -24,9 +19,9 @@ namespace VoidHuntersRevived.Common.FixedPoint.Utilities
             Fix64 sin2 = transformation2.M12;
 
             FixMatrix result = new FixMatrix(
-                cos1cos2 - sin1sin2,    cos1sin2 + sin1cos2,    Fix64.Zero, Fix64.Zero,
-                -sin1cos2 - cos1sin2,   cos1cos2 - sin1sin2,    Fix64.Zero, Fix64.Zero,
-                Fix64.Zero,             Fix64.Zero,             Fix64.One,  Fix64.Zero,
+                cos1cos2 - sin1sin2, cos1sin2 + sin1cos2, Fix64.Zero, Fix64.Zero,
+                -sin1cos2 - cos1sin2, cos1cos2 - sin1sin2, Fix64.Zero, Fix64.Zero,
+                Fix64.Zero, Fix64.Zero, Fix64.One, Fix64.Zero,
                 (x1 * cos2) - (y1 * sin2) + x2, (x1 * sin2) + (y1 * cos2) + y2, Fix64.Zero, Fix64.One
             );
 

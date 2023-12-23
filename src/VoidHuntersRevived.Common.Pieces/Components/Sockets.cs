@@ -2,12 +2,6 @@
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Attributes;
 using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Common.Physics.Components;

@@ -1,11 +1,5 @@
 ﻿using Svelto.DataStructures;
 using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Options;
@@ -82,7 +76,7 @@ namespace VoidHuntersRevived.Common.Entities.Services
         bool TryQueryByGroupIndex<T>(in ExclusiveGroupStruct groupId, uint index, out T value)
             where T : unmanaged, IEntityComponent;
 
-        bool HasAny<T>(ExclusiveGroupStruct groupID) 
+        bool HasAny<T>(ExclusiveGroupStruct groupID)
             where T : unmanaged, IEntityComponent;
 
         EntityCollection<T1> QueryEntities<T1>(ExclusiveGroupStruct groupId)

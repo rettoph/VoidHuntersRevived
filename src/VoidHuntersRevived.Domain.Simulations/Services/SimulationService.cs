@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             IEnumerable<ISimulation> simulations = _scope.Resolve<IFiltered<ISimulation>>().Instances;
             foreach (ISimulation simulation in simulations)
             {
-                if(!this.Flags.HasFlag(simulation.Type))
+                if (!this.Flags.HasFlag(simulation.Type))
                 {
                     continue;
                 }
@@ -90,9 +90,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
         public ISimulation First(params SimulationType[] types)
         {
-            foreach(SimulationType type in types)
+            foreach (SimulationType type in types)
             {
-                if(_simulations.TryGetValue(type, out var simulation))
+                if (_simulations.TryGetValue(type, out var simulation))
                 {
                     return simulation;
                 }
@@ -119,7 +119,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
         public void Input(VhId sender, IInputData data)
         {
-            foreach(ISimulation simulation in _list)
+            foreach (ISimulation simulation in _list)
             {
                 simulation.Input(sender, data);
             }

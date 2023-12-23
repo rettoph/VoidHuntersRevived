@@ -1,7 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Autofac;
+using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common.Simulations.Services;
-using VoidHuntersRevived.Common.Entities;
-using Autofac;
 
 namespace VoidHuntersRevived.Common.Simulations
 {

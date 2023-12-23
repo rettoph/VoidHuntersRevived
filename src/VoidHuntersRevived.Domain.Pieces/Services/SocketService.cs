@@ -4,16 +4,12 @@ using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
-using VoidHuntersRevived.Common.Pieces.Descriptors;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Common.Simulations.Exceptions;
-using VoidHuntersRevived.Game.Common;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
@@ -46,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
         public bool TryGetSocket(SocketVhId socketVhId, out Socket socket)
         {
-            if(_entities.TryGetId(socketVhId.NodeVhId, out EntityId nodeId))
+            if (_entities.TryGetId(socketVhId.NodeVhId, out EntityId nodeId))
             {
                 socket = this.GetSocket(new SocketId(nodeId, socketVhId.Index));
                 return true;
@@ -125,7 +121,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                     }
                 }
 
-                if(count > 0)
+                if (count > 0)
                 {
                     continue;
                 }

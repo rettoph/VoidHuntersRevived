@@ -1,23 +1,15 @@
 ﻿using Autofac;
 using Guppy.Attributes;
-using Guppy.Common;
 using Guppy.Common.Autofac;
-using Guppy.Common.Extensions.Autofac;
 using Guppy.Extensions.Autofac;
 using Guppy.Files.Enums;
 using Guppy.Files.Helpers;
 using Guppy.Files.Providers;
 using Guppy.Loaders;
-using Guppy.Resources.Providers;
 using Guppy.Resources.Serialization.Json;
-using Microsoft.Xna.Framework;
 using Serilog;
-using Serilog.Events;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Pieces;
-using VoidHuntersRevived.Domain.GameComponents;
 using VoidHuntersRevived.Domain.Serialization.Json;
 
 namespace VoidHuntersRevived.Domain.Loaders
@@ -31,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Loaders
             {
                 config.Destructure.AsScalar<VhId>();
 
-                if(scope.IsTag(LifetimeScopeTags.MainScope))
+                if (scope.IsTag(LifetimeScopeTags.MainScope))
                 {
                     var fileTypePaths = scope.Resolve<IFileTypePathProvider>();
                     var path = fileTypePaths.GetFullPath(FileType.AppData, Path.Combine("logs", $"log_{DateTime.Now.ToString("yyyy-dd-M")}.txt"));

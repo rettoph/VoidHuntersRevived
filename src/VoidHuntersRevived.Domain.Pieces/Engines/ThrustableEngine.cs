@@ -1,20 +1,11 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.Attributes;
-using Microsoft.Xna.Framework;
 using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces.Components;
@@ -22,7 +13,6 @@ using VoidHuntersRevived.Common.Pieces.Enums;
 using VoidHuntersRevived.Common.Pieces.Events;
 using VoidHuntersRevived.Common.Ships.Components;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Domain.Pieces.Services;
 
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
@@ -114,7 +104,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                     Helm helm = helms[i];
                     Enabled enabled = enableds[i];
 
-                    if(enabled == false)
+                    if (enabled == false)
                     {
                         continue;
                     }
@@ -138,10 +128,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                     uint index = indices[i];
                     ref Thrustable thrustable = ref thrustables[index];
 
-                    if((thrustable.Direction & direction) == 0)
+                    if ((thrustable.Direction & direction) == 0)
                     {
                         continue;
-                    }    
+                    }
 
                     ref Node node = ref nodes[index];
 

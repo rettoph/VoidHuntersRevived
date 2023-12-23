@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using Serilog;
 using Svelto.ECS;
-using System.Net.Sockets;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
@@ -10,13 +9,11 @@ using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Physics.Components;
-using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Ships.Components;
 using VoidHuntersRevived.Common.Ships.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Game.Ships.Services;
 
 namespace VoidHuntersRevived.Game.Ships.Engines
 {
@@ -33,7 +30,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
         public string name { get; } = nameof(TractorBeamEmitterUpdateEngine);
 
         public TractorBeamEmitterUpdateEngine(
-            IEntityService entities, 
+            IEntityService entities,
             ISpace space,
             ILogger logger,
             ITractorBeamEmitterService tractorBeamEmitters,
@@ -64,7 +61,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
             {
                 var (entityIds, statuses, _) = _entities.QueryEntities<EntityId, EntityStatus>(groupId);
 
-                for (int i = 0; i< indices.count; i++)
+                for (int i = 0; i < indices.count; i++)
                 {
                     if (statuses[indices[i]].IsDespawned == false)
                     {

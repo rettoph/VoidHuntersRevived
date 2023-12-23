@@ -1,17 +1,11 @@
 ﻿using Guppy.Attributes;
-using Guppy.Files.Enums;
 using Guppy.Files;
+using Guppy.Files.Enums;
+using Guppy.Files.Helpers;
+using Guppy.Files.Services;
 using Guppy.Resources;
 using Guppy.Resources.ResourceTypes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Pieces;
-using Guppy.Files.Services;
-using System.Text.Json;
-using Guppy.Files.Helpers;
 
 namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes
 {

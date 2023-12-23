@@ -1,11 +1,4 @@
-﻿using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Svelto.ECS
+﻿namespace Svelto.ECS
 {
     public static class EntitiesDBExtensions
     {
@@ -25,7 +18,7 @@ namespace Svelto.ECS
         public static bool TryGetEntityByIndex<T>(this EntitiesDB entitiesDB, uint index, ExclusiveGroupStruct groupID, out T entity)
             where T : unmanaged, IEntityComponent
         {
-            if(!entitiesDB.HasAny<T>(groupID))
+            if (!entitiesDB.HasAny<T>(groupID))
             {
                 entity = default;
                 return false;

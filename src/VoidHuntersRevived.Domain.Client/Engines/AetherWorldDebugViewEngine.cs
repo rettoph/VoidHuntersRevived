@@ -9,15 +9,9 @@ using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Diagnostics;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common.Client;
-using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
@@ -48,9 +42,9 @@ namespace VoidHuntersRevived.Domain.Client.Engines
             IGuppy guppy,
             IImGui imgui,
             IImGuiObjectExplorerService objectExplorer,
-            World world, 
-            GraphicsDevice graphics, 
-            IResourceProvider resources, 
+            World world,
+            GraphicsDevice graphics,
+            IResourceProvider resources,
             Camera2D camera)
         {
             _simulation = simulation;
@@ -76,7 +70,7 @@ namespace VoidHuntersRevived.Domain.Client.Engines
 
         public void DrawImGui(GameTime gameTime)
         {
-            if(_aetherViewerEnabled == false)
+            if (_aetherViewerEnabled == false)
             {
                 return;
             }

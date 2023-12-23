@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
 
 namespace VoidHuntersRevived.Common.Utilities
 {
@@ -37,10 +31,10 @@ namespace VoidHuntersRevived.Common.Utilities
 
         public IEnumerable<T> Prune()
         {
-            while(_cached.Count > 0 && DateTime.Now - _cached.Peek().CachedAt > _maximumAge)
+            while (_cached.Count > 0 && DateTime.Now - _cached.Peek().CachedAt > _maximumAge)
             {
                 _item = _cached.Dequeue();
-                if(_count.Remove(_item.Value))
+                if (_count.Remove(_item.Value))
                 {
                     yield return _item.Value;
                 }

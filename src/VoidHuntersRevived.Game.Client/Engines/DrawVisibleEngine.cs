@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.Attributes;
+using Guppy.Game.Common.Enums;
 using Guppy.Game.MonoGame.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Serilog;
@@ -9,16 +10,11 @@ using VoidHuntersRevived.Common.Client.Services;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.FixedPoint.Extensions;
-using VoidHuntersRevived.Common.Physics.Extensions.FixedPoint;
 using VoidHuntersRevived.Common.Pieces.Components;
-using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using Guppy.Game.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations;
-using VoidHuntersRevived.Game.Common;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -38,9 +34,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public string name { get; } = nameof(DrawVisibleEngine);
 
         public DrawVisibleEngine(
-            ILogger logger, 
-            IVisibleRenderingService visibleRenderingService, 
-            IEntityService entities, 
+            ILogger logger,
+            IVisibleRenderingService visibleRenderingService,
+            IEntityService entities,
             ITeamDescriptorGroupService teamDescriptorGroups,
             Camera2D camera)
         {
@@ -76,8 +72,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
                         {
                             ref Node node = ref nodes[index];
                             Matrix transformation = node.XnaTransformation;
-                            
-                            if(bounds.Contains(transformation))
+
+                            if (bounds.Contains(transformation))
                             {
                                 _visibleRenderingService.Draw(in visibles[index], ref transformation);
                             }

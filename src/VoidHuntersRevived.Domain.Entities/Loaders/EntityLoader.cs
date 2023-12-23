@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Guppy.Attributes;
-using Guppy.Common.Extensions.Autofac;
 using Guppy.Extensions.Autofac;
 using Guppy.Loaders;
 using Serilog;

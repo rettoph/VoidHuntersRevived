@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
 
             tactical.Target = data.Value;
 
-            if(data.Snap)
+            if (data.Snap)
             {
                 tactical.Value = data.Value;
             }

@@ -1,19 +1,14 @@
 ﻿using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Options;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Descriptors;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Utilities;
-using VoidHuntersRevived.Common.Entities.Options;
-using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Extensions.Entities;
+using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
@@ -23,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         {
             return _entities.Spawn(tree, vhid, teamId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {
-                EntityId headId = entities.Spawn(head, vhid.Create(1), teamId , (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+                EntityId headId = entities.Spawn(head, vhid.Create(1), teamId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                 {
                     initializer.Init(new Node(id, entities.GetId(vhid)));
                 });

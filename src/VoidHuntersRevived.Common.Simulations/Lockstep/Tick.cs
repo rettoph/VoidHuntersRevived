@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities;
-
-namespace VoidHuntersRevived.Common.Simulations.Lockstep
+﻿namespace VoidHuntersRevived.Common.Simulations.Lockstep
 {
     public sealed class Tick
     {
@@ -20,7 +12,7 @@ namespace VoidHuntersRevived.Common.Simulations.Lockstep
             Events = events;
             Hash = NameSpace<Tick>.Instance.Create(Id);
 
-            foreach(EventDto @event in events)
+            foreach (EventDto @event in events)
             {
                 Hash = Hash.Create(@event.Id);
             }

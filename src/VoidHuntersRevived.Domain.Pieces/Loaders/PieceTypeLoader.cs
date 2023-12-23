@@ -1,25 +1,10 @@
 ﻿using Guppy.Attributes;
-using Guppy.Resources.Providers;
-using Microsoft.Xna.Framework;
-using Svelto.DataStructures;
-using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Loaders;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Physics;
-using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
-using VoidHuntersRevived.Game.Common;
-using Colors = VoidHuntersRevived.Common.Resources.Colors;
 
 namespace VoidHuntersRevived.Domain.Pieces.Loaders
 {

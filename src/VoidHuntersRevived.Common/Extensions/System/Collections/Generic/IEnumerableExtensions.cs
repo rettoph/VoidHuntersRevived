@@ -1,11 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Svelto.Common;
 using Svelto.DataStructures;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace System.Collections.Generic
 {
@@ -16,7 +11,7 @@ namespace System.Collections.Generic
             int count = 0;
             Vector2 sum = Vector2.Zero;
 
-            foreach(Vector2 vector in values)
+            foreach (Vector2 vector in values)
             {
                 sum += vector;
                 count++;
@@ -31,7 +26,7 @@ namespace System.Collections.Generic
             NativeDynamicArrayCast<T> native = new NativeDynamicArrayCast<T>((uint)items.Count(), allocator);
 
             int index = 0;
-            foreach(T item in items)
+            foreach (T item in items)
             {
                 native.Set(index++, item);
             }

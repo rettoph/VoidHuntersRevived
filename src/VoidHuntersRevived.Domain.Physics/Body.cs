@@ -1,14 +1,12 @@
 ﻿using System.Runtime.CompilerServices;
 using tainicom.Aether.Physics2D.Common;
+using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Common;
-using FixedMath64 = FixedMath.NET.Fix64;
-using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Dynamics;
-using VoidHuntersRevived.Common.Entities;
-using System;
+using FixedMath64 = FixedMath.NET.Fix64;
 
 namespace VoidHuntersRevived.Domain.Physics
 {
@@ -42,7 +40,7 @@ namespace VoidHuntersRevived.Domain.Physics
             get => _collisionCategories;
             set
             {
-                foreach(Fixture fixture in _fixtures.Values)
+                foreach (Fixture fixture in _fixtures.Values)
                 {
                     fixture._aether.CollisionCategories = (Category)value.Flags;
                 }
@@ -127,7 +125,7 @@ namespace VoidHuntersRevived.Domain.Physics
                 id,
                 entityId,
                 this,
-                polygon.ToShape(transformation), 
+                polygon.ToShape(transformation),
                 (Category)this.CollisionCategories.Flags,
                 (Category)this.CollidesWith.Flags);
 
@@ -143,7 +141,7 @@ namespace VoidHuntersRevived.Domain.Physics
                 return;
             }
 
-            if(!_fixtures.Remove(casted.Id))
+            if (!_fixtures.Remove(casted.Id))
             {
                 return;
             }
@@ -153,7 +151,7 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public void Destroy(VhId id)
         {
-            if(_fixtures.Remove(id, out Fixture? fixture))
+            if (_fixtures.Remove(id, out Fixture? fixture))
             {
                 fixture.Dispose();
             }

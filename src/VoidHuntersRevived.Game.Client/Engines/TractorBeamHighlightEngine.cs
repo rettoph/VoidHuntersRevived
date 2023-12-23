@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.Attributes;
+using Guppy.Game.Common.Enums;
 using Guppy.Game.MonoGame.Utilities.Cameras;
 using Guppy.Network.Identity;
 using Guppy.Network.Peers;
@@ -13,7 +14,6 @@ using VoidHuntersRevived.Common.Client.Services;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
@@ -21,7 +21,6 @@ using VoidHuntersRevived.Common.Ships.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using Guppy.Game.Common.Enums;
 using static VoidHuntersRevived.Common.Resources;
 
 namespace VoidHuntersRevived.Game.Client.Engines
@@ -45,12 +44,12 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private Vector2 CurrentTargetPosition => _camera.Unproject(Mouse.GetState().Position.ToVector2());
 
         public TractorBeamHighlightEngine(
-            ILogger logger, 
+            ILogger logger,
             IEntityService entities,
             IVisibleRenderingService visibleRenderingService,
             IResourceProvider resources,
             ISocketService sockets,
-            Camera2D camera, 
+            Camera2D camera,
             ClientPeer client,
             ITractorBeamEmitterService tractorBeamEmitters)
         {
@@ -91,7 +90,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             {
                 this.FillVisibleRecursive(targetNode.Id);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _logger.Warning(e, "{ClassName}::{MethodName} - Exception while attempting to render {TargetNodeVhId}. This may be caused by frame step desync and should self correct.", nameof(TractorBeamHighlightEngine), nameof(Step), targetNode.Id.VhId.Value);
             }
@@ -102,7 +101,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         {
             ref EntityStatus status = ref _entities.QueryById<EntityStatus>(id, out GroupIndex groupIndex);
 
-            if(!status.IsSpawned)
+            if (!status.IsSpawned)
             {
                 return;
             }
@@ -113,7 +112,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             Matrix transformation = node.XnaTransformation;
             _visibleRenderingService.Draw(in visible, ref transformation);
 
-            if(_entities.TryQueryByGroupIndex<Sockets<SocketId>>(in groupIndex, out Sockets<SocketId> sockets))
+            if (_entities.TryQueryByGroupIndex<Sockets<SocketId>>(in groupIndex, out Sockets<SocketId> sockets))
             {
                 for (int i = 0; i < sockets.Items.count; i++)
                 {

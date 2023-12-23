@@ -1,11 +1,4 @@
-﻿using Svelto.Common;
-using Svelto.DataStructures;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Svelto.DataStructures;
 using VoidHuntersRevived.Common.Extensions.System;
 using VoidHuntersRevived.Common.Utilities;
 
@@ -23,7 +16,7 @@ namespace VoidHuntersRevived.Common.Physics
             {
                 FixVector2 value = FixVector2.Zero;
 
-                for(int i=0; i<this.Vertices.count; i++)
+                for (int i = 0; i < this.Vertices.count; i++)
                 {
                     value += this.Vertices[i];
                 }
@@ -42,7 +35,7 @@ namespace VoidHuntersRevived.Common.Physics
 
             this.Id = NameSpace<Polygon>.Instance;
 
-            for(int i=0; i<vertices.count; i++)
+            for (int i = 0; i < vertices.count; i++)
             {
                 this.Id = this.Id.Create(HashBuilder<FixVector2, FixVector2>.Instance.Calculate(vertices[i]));
             }

@@ -1,10 +1,5 @@
 ﻿using Svelto.Common;
 using Svelto.DataStructures;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Extensions.System
 {
@@ -15,7 +10,7 @@ namespace VoidHuntersRevived.Common.Extensions.System
         {
             NativeDynamicArrayCast<T> native = new NativeDynamicArrayCast<T>((uint)array.Length, Allocator.Persistent);
 
-            for(int i=0; i<array.Length; i++)
+            for (int i = 0; i < array.Length; i++)
             {
                 native.Set(i, array[i]);
             }

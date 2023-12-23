@@ -1,12 +1,10 @@
-﻿using System.Runtime.CompilerServices;
-using tainicom.Aether.Physics2D.Common;
+﻿using Serilog;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Physics;
-using System.Diagnostics.CodeAnalysis;
-using VoidHuntersRevived.Common.Entities;
-using Serilog;
 
 namespace VoidHuntersRevived.Domain.Physics
 {
@@ -52,7 +50,7 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public void DisableBody(in EntityId id)
         {
-            if(_bodies.Remove(id.VhId, out var body))
+            if (_bodies.Remove(id.VhId, out var body))
             {
                 _logger.Verbose("{ClassName}::{MethodName} - Disabling {Id}", nameof(Space), nameof(EnableBody), id.VhId);
                 body!.Dispose();
@@ -85,7 +83,7 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public bool TryGetBody(in EntityId id, [MaybeNullWhen(false)] out IBody body)
         {
-            if(_bodies.TryGetValue(id.VhId, out Body? instance))
+            if (_bodies.TryGetValue(id.VhId, out Body? instance))
             {
                 body = instance;
                 return true;

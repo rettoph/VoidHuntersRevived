@@ -1,6 +1,5 @@
 ﻿using Guppy;
 using Guppy.Attributes;
-using Guppy.Commands.Messages;
 using Guppy.Common.Attributes;
 using Guppy.Common.Enums;
 using Guppy.Common.Services;
@@ -10,15 +9,8 @@ using Guppy.Game.ImGui.Services;
 using Microsoft.Xna.Framework;
 using Svelto.ECS;
 using Svelto.ECS.Internal;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Descriptors;
@@ -26,7 +18,6 @@ using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Domain.Simulations;
 
 namespace VoidHuntersRevived.Domain.Client.Engines
 {
@@ -54,9 +45,9 @@ namespace VoidHuntersRevived.Domain.Client.Engines
         private Vector4 _greenBackground = Color.DarkGreen.ToVector4();
 
         public EntityViewerEngine(
-            IGuppy guppy, 
-            ISimulation simulation, 
-            IEntityService entities, 
+            IGuppy guppy,
+            ISimulation simulation,
+            IEntityService entities,
             IEntityTypeService entityTypes,
             ITeamDescriptorGroupService teams,
             IImGuiObjectExplorerService objectExplorer,
@@ -90,7 +81,7 @@ namespace VoidHuntersRevived.Domain.Client.Engines
 
         public void DrawImGui(GameTime gameTime)
         {
-            if(_entityViewerEnabled == false)
+            if (_entityViewerEnabled == false)
             {
                 return;
             }
@@ -113,7 +104,7 @@ namespace VoidHuntersRevived.Domain.Client.Engines
 
         private void RenderTeamDescriptorGroup(ExclusiveGroupStruct groupId, ITeamDescriptorGroup teamDescriptorGroup, Svelto.DataStructures.NB<EntityId> ids, Svelto.DataStructures.NB<Id<IEntityType>> types, Svelto.DataStructures.NB<EntityStatus> statuses, NativeEntityIDs nativeIds, int count)
         {
-            using(_imgui.ApplyID($"{nameof(EntityViewerEngine)}_{nameof(ExclusiveGroupStruct)}_{groupId.id}"))
+            using (_imgui.ApplyID($"{nameof(EntityViewerEngine)}_{nameof(ExclusiveGroupStruct)}_{groupId.id}"))
             {
                 uint id = _imgui.GetID(nameof(TextFilterResult));
                 ref TextFilterResult result = ref this.GetFilterResult(id);
@@ -148,7 +139,7 @@ namespace VoidHuntersRevived.Domain.Client.Engines
 
         private TextFilterResult RenderEntityData(EntityId entityId, VoidHuntersEntityDescriptor descriptor, IEntityType type, EntityStatus status, uint nativeId)
         {
-            using(_imgui.ApplyID($"{nameof(EntityId)}_{entityId.VhId.Value}"))
+            using (_imgui.ApplyID($"{nameof(EntityId)}_{entityId.VhId.Value}"))
             {
                 uint id = _imgui.GetID(nameof(TextFilterResult));
                 ref TextFilterResult result = ref this.GetFilterResult(id);
@@ -208,12 +199,12 @@ namespace VoidHuntersRevived.Domain.Client.Engines
 
         private TextFilterResult BasicFilter(string input)
         {
-            if(_filter.IsNullOrEmpty())
+            if (_filter.IsNullOrEmpty())
             {
                 return TextFilterResult.None;
             }
 
-            if(input.Contains(_filter))
+            if (input.Contains(_filter))
             {
                 return TextFilterResult.Matched;
             }

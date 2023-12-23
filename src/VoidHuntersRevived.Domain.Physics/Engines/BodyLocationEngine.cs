@@ -1,12 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.Attributes;
-using Svelto.DataStructures;
 using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
@@ -39,7 +33,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             {
                 for (int i = 0; i < count; i++)
                 {
-                    if(enableds[i] == false || awakes[i] == false)
+                    if (enableds[i] == false || awakes[i] == false)
                     {
                         continue;
                     }

@@ -1,9 +1,4 @@
 ﻿using Standart.Hash.xxHash;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common
 {
@@ -35,7 +30,7 @@ namespace VoidHuntersRevived.Common
 
         public static unsafe VhId Create(this VhId nameSpace, VhId name)
         {
-            if(nameSpace.Value == default)
+            if (nameSpace.Value == default)
             {
                 return name;
             }

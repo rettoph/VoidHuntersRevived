@@ -1,17 +1,7 @@
-﻿using Guppy.Network.Identity.Enums;
-using Guppy.Network.Peers;
-using Guppy.Network;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Constants;
-using VoidHuntersRevived.Common.Simulations.Services;
-using VoidHuntersRevived.Common.Simulations;
+﻿using Autofac;
 using Guppy.Network.Identity.Claims;
-using Microsoft.Xna.Framework;
-using Autofac;
+using Guppy.Network.Identity.Enums;
+using Guppy.Network.Peers;
 
 namespace VoidHuntersRevived.Game.Client
 {

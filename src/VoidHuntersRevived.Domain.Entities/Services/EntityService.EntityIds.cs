@@ -1,15 +1,5 @@
-﻿using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Messages;
-using VoidHuntersRevived.Common;
-using Guppy.Common.Collections;
-using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Common.Entities.Components;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -26,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 return _ids[vhid];
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -39,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         private bool AddId(EntityId id)
         {
-            if(_ids.TryAdd(id.VhId, id))
+            if (_ids.TryAdd(id.VhId, id))
             {
                 return true;
             }
@@ -55,7 +45,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         private bool RemoveId(EntityId id)
         {
-            if(_ids.Remove(id.VhId))
+            if (_ids.Remove(id.VhId))
             {
                 return true;
             }

@@ -1,20 +1,7 @@
 ﻿using Guppy.Resources;
 using Microsoft.Xna.Framework;
 using Standart.Hash.xxHash;
-using Svelto.DataStructures;
 using Svelto.ECS;
-using Svelto.ECS.Internal;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Common.Entities.Descriptors
@@ -31,7 +18,7 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
         {
             get
             {
-                if(_id is null)
+                if (_id is null)
                 {
                     uint128 nameHash = xxHash128.ComputeHash(this.GetType().AssemblyQualifiedName);
                     VhId* pNameHash = (VhId*)&nameHash;
@@ -69,7 +56,7 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             var builders = managers.Select(x => x.Builder).ToArray();
             _dynamicDescriptor.ExtendWith(builders);
 
-            foreach(ComponentManager manager in managers)
+            foreach (ComponentManager manager in managers)
             {
                 _componentManagers.Add(manager);
             }
@@ -86,9 +73,9 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
 
         public bool HasAll(params Type[] componentTypes)
         {
-            foreach(Type componentType in componentTypes)
+            foreach (Type componentType in componentTypes)
             {
-                if(this.ComponentManagers.Any(x => x.Type == componentType) == false)
+                if (this.ComponentManagers.Any(x => x.Type == componentType) == false)
                 {
                     return false;
                 }

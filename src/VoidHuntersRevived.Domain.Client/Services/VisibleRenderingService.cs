@@ -4,15 +4,9 @@ using Guppy.Game.MonoGame.Utilities.Cameras;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Client.Services;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
-using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Domain.Client.Graphics.Vertices;
 using VoidHuntersRevived.Game.Client.Graphics.Effects;
 
@@ -31,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Client.Services
             Camera2D camera,
             PrimitiveBatch<VertexPositionColor> tracePrimitiveBatch,
             PrimitiveBatch<VertexVisible, VisibleEffect> fillPrimitiveBatch,
-            IResourceProvider resources, 
+            IResourceProvider resources,
             IScreen screen)
         {
             _resources = resources;
@@ -79,19 +73,19 @@ namespace VoidHuntersRevived.Domain.Client.Services
             int offset2 = 5;
             int placeholder = 0;
 
-            this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[offset1 + 0], true,  out _indexBuffer[offset1 + 0]);
-            this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[offset1 + 1], true,  out _indexBuffer[offset1 + 1]);
-            this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[offset1 + 2], true,  out _indexBuffer[offset1 + 2]);
-            this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[offset1 + 3], true,  out _indexBuffer[offset1 + 3]);
+            this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[offset1 + 0], true, out _indexBuffer[offset1 + 0]);
+            this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[offset1 + 1], true, out _indexBuffer[offset1 + 1]);
+            this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[offset1 + 2], true, out _indexBuffer[offset1 + 2]);
+            this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[offset1 + 3], true, out _indexBuffer[offset1 + 3]);
             this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[offset1 + 4], false, out _indexBuffer[offset1 + 4]);
 
             int vertexCount = vertices.Vertices.count;
-            for (int i = 5; i < vertexCount; i+=5)
+            for (int i = 5; i < vertexCount; i += 5)
             {
-                this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[i + 0], true,  out _indexBuffer[offset2 + 0]);
-                this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[i + 1], true,  out _indexBuffer[offset2 + 1]);
-                this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[i + 2], true,  out _indexBuffer[offset2 + 2]);
-                this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[i + 3], true,  out _indexBuffer[offset2 + 3]);
+                this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[i + 0], true, out _indexBuffer[offset2 + 0]);
+                this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[i + 1], true, out _indexBuffer[offset2 + 1]);
+                this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[i + 2], true, out _indexBuffer[offset2 + 2]);
+                this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[i + 3], true, out _indexBuffer[offset2 + 3]);
                 this.GetTraceVertexIndex(ref transformation, ref vertices.Vertices[i + 4], false, out _indexBuffer[offset2 + 4]);
 
                 _primitiveBatch.AddTriangleIndex(in _indexBuffer[offset1 + 4]);

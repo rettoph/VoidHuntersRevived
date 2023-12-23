@@ -1,21 +1,15 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common.Attributes;
 using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Physics.Components;
-using VoidHuntersRevived.Common.Physics;
-using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.FixedPoint;
-using Guppy.Common.Collections;
-using VoidHuntersRevived.Common.Entities.Engines;
-using VoidHuntersRevived.Common.Entities.Components;
-using Guppy.Common.Attributes;
+using VoidHuntersRevived.Common.Physics;
+using VoidHuntersRevived.Common.Physics.Components;
+using VoidHuntersRevived.Common.Simulations.Engines;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
@@ -114,7 +108,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         private bool WithinPhysicsBubble(Location location)
         {
-            for(int i=0; i<_bubbleBufferCount; i++)
+            for (int i = 0; i < _bubbleBufferCount; i++)
             {
                 if (_bubbleBuffer[i].Contains(location.Position) == false)
                 {
@@ -129,7 +123,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         public void OnDespawn(EntityId id, ref Enabled component, in GroupIndex groupIndex)
         {
-            if(component.Value == false)
+            if (component.Value == false)
             {
                 return;
             }

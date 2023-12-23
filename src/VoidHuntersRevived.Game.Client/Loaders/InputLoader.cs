@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Guppy.Attributes;
-using Guppy.Common;
 using Guppy.Game.Input;
 using Guppy.Game.Input.Enums;
 using Guppy.Loaders;
@@ -24,7 +23,7 @@ namespace VoidHuntersRevived.Game.Client.Loaders
             InputLoader.AddSetDirectionInput(services, Inputs.SetDirectionRight, Keys.E, Direction.Right);
             InputLoader.AddSetDirectionInput(services, Inputs.SetDirectionLeft, Keys.Q, Direction.Left);
 
-            services.RegisterInput(Inputs.SetTractorBeamEmitterActive, CursorButtons.Right, new(ButtonState, IInput)[]
+            services.RegisterInput(Inputs.SetTractorBeamEmitterActive, CursorButtons.Right, new (ButtonState, IInput)[]
 {
                 (ButtonState.Pressed, new Input_TractorBeamEmitter_SetActive(true)),
                 (ButtonState.Released, new Input_TractorBeamEmitter_SetActive(false))

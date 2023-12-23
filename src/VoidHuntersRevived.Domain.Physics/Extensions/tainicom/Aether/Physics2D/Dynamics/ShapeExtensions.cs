@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using tainicom.Aether.Physics2D.Collision.Shapes;
+﻿using tainicom.Aether.Physics2D.Collision.Shapes;
 using tainicom.Aether.Physics2D.Common;
 using tainicom.Aether.Physics2D.Common.ConvexHull;
 using VoidHuntersRevived.Common;
@@ -18,7 +13,7 @@ namespace VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D
         public static Shape ToShape(this Polygon polygon, FixMatrix transformation)
         {
             AetherVector2[] vertexes = new AetherVector2[polygon.Vertices.count];
-            for(int i=0; i<polygon.Vertices.count; i++)
+            for (int i = 0; i < polygon.Vertices.count; i++)
             {
                 var original = polygon.Vertices[i];
                 vertexes[i] = FixVector2.Transform(original, transformation).AsAetherVector2();

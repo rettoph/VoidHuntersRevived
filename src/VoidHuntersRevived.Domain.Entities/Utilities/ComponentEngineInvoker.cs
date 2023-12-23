@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
                 }
             }
 
-            if(onDespawnEngines.Count == 0)
+            if (onDespawnEngines.Count == 0)
             {
                 invoker = null;
                 return false;
@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         public override void Invoke(EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex)
         {
             ref T component = ref entitiesDB.QueryEntityByIndex<T>(groupIndex.Index, groupIndex.GroupID);
-            for(int i=0; i<_engines.count; i++)
+            for (int i = 0; i < _engines.count; i++)
             {
                 _engines[i].OnSpawn(id, ref component, in groupIndex);
             }

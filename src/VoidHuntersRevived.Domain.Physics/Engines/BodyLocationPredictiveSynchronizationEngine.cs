@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Physics;
-using VoidHuntersRevived.Common.Simulations.Lockstep;
-using VoidHuntersRevived.Common;
+﻿using Autofac;
 using Guppy.Attributes;
-using Autofac;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Common.Simulations.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
@@ -33,9 +28,9 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         {
             Fix64 damping = step.ElapsedTime;
 
-            foreach(IBody lockstepBody in _lockstepSpace.AllBodies())
+            foreach (IBody lockstepBody in _lockstepSpace.AllBodies())
             {
-                if(lockstepBody.Awake == false)
+                if (lockstepBody.Awake == false)
                 {
                     continue;
                 }

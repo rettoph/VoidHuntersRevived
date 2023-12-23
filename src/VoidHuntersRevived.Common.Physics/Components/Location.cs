@@ -1,11 +1,4 @@
 ﻿using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
 
 namespace VoidHuntersRevived.Common.Physics.Components

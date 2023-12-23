@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Physics;
-using VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Dynamics;
+﻿using tainicom.Aether.Physics2D.Collision.Shapes;
 using tainicom.Aether.Physics2D.Dynamics;
-using tainicom.Aether.Physics2D.Collision.Shapes;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Physics;
 
 namespace VoidHuntersRevived.Domain.Physics
 {

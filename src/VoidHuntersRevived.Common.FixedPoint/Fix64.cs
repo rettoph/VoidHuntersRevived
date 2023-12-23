@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.CompilerServices;
 using FixedMath64 = FixedMath.NET.Fix64;
 
 namespace VoidHuntersRevived.Common
@@ -331,7 +325,7 @@ namespace VoidHuntersRevived.Common
 
         public override bool Equals(object? obj)
         {
-            if(obj is null)
+            if (obj is null)
             {
                 return false;
             }

@@ -4,7 +4,6 @@ using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics.Components;
@@ -37,7 +36,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         public void OnSpawn(EntityId id, ref Tree component, in GroupIndex groupIndex)
         {
-            if(_teamDescriptorGroups.GetByGroupId(groupIndex.GroupID).Descriptor is not TreeDescriptor)
+            if (_teamDescriptorGroups.GetByGroupId(groupIndex.GroupID).Descriptor is not TreeDescriptor)
             {
                 throw new Exception();
             }

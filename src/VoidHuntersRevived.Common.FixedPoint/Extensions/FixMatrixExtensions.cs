@@ -1,9 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.FixedPoint.Extensions
 {
@@ -42,10 +37,10 @@ namespace VoidHuntersRevived.Common.FixedPoint.Extensions
             float x = (float)matrix.M41;
             float y = (float)matrix.M42;
             return new Matrix(
-                cos,    sin,    0f,     0f,
-                -sin,   cos,    0f,     0f,
-                0f,     0f,     1f,     0f,
-                x,      y,      0f,     1f
+                cos, sin, 0f, 0f,
+                -sin, cos, 0f, 0f,
+                0f, 0f, 1f, 0f,
+                x, y, 0f, 1f
             );
         }
     }

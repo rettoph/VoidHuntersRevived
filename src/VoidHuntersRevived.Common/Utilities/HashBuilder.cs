@@ -1,10 +1,4 @@
 ﻿using Standart.Hash.xxHash;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Utilities
 {
@@ -34,7 +28,7 @@ namespace VoidHuntersRevived.Common.Utilities
             {
                 byte* pBytes = (byte*)pValue;
 
-                for(int i=0; i<sizeof(T); i++)
+                for (int i = 0; i < sizeof(T); i++)
                 {
                     _buffer[_index++] = pBytes[i];
                 }
@@ -55,7 +49,7 @@ namespace VoidHuntersRevived.Common.Utilities
     public class HashBuilder<TNameSpace, TName1> : HashBuilder<VhId>
         where TName1 : unmanaged
     {
-        public static readonly HashBuilder<TNameSpace, TName1> Instance = new HashBuilder<TNameSpace, TName1> ();
+        public static readonly HashBuilder<TNameSpace, TName1> Instance = new HashBuilder<TNameSpace, TName1>();
 
         public unsafe HashBuilder() : base(NameSpace<TNameSpace>.Instance, sizeof(TName1))
         {

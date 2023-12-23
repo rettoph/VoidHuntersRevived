@@ -1,14 +1,7 @@
 ﻿using Guppy.Attributes;
-using Guppy.Attributes;
 using Guppy.Network;
 using Guppy.Network.Identity.Claims;
-using Guppy.Network.Messages;
 using LiteNetLib.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Simulations.Events;
 
 namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers

@@ -1,5 +1,5 @@
-﻿using Svelto.ECS;
-using Serilog;
+﻿using Serilog;
+using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Entities.Engines

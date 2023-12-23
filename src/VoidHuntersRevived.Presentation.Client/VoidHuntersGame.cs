@@ -1,19 +1,12 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using Guppy;
-using VoidHuntersRevived.Game.Client;
-using VoidHuntersRevived.Game;
-using VoidHuntersRevived.Game.Server;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Game.Common;
-using Guppy.Game.MonoGame;
-using Autofac;
-using Guppy.Game;
-using Guppy.Game.MonoGame.Extensions;
-using System.Xml.Linq;
-using Guppy.Game.Extensions;
+﻿using Guppy;
 using Guppy.Game.Common;
+using Guppy.Game.Extensions;
+using Guppy.Game.MonoGame;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using VoidHuntersRevived.Game.Client;
+using VoidHuntersRevived.Game.Common;
+using VoidHuntersRevived.Game.Server;
 
 namespace VoidHuntersRevived.Application.Client
 {

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities.Enums;
+﻿using VoidHuntersRevived.Common.Entities.Enums;
 
 namespace VoidHuntersRevived.Common.Entities.Attributes
 {
@@ -25,12 +20,12 @@ namespace VoidHuntersRevived.Common.Entities.Attributes
 
         public Type GetDisposableComponentType(Type componentType)
         {
-            if(this.GenericParameters.Length == 0)
+            if (this.GenericParameters.Length == 0)
             {
                 return componentType;
             }
 
-            if(componentType.IsGenericType)
+            if (componentType.IsGenericType)
             {
                 componentType = componentType.GetGenericTypeDefinition();
             }

@@ -1,13 +1,10 @@
 ﻿using Serilog;
 using Svelto.ECS;
-using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Physics;
-using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Ships.Components;
@@ -44,7 +41,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
 
         public bool Query(EntityId tractorBeamEmitterId, FixVector2 target, out Node targetNode)
         {
-            if(!_entities.TryQueryById(tractorBeamEmitterId, out TractorBeamEmitter tractorBeamEmitter))
+            if (!_entities.TryQueryById(tractorBeamEmitterId, out TractorBeamEmitter tractorBeamEmitter))
             {
                 targetNode = default;
                 return false;
@@ -56,7 +53,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
 
             _space.QueryAABB(fixture =>
             {
-                if(_entities.IsSpawned(fixture.EntityId))
+                if (_entities.IsSpawned(fixture.EntityId))
                 {
                     ref Node queryNode = ref _entities.QueryById<Node>(fixture.EntityId, out GroupIndex nodeGroupIndex);
                     ref Rigid queryRigid = ref _entities.QueryByGroupIndex<Rigid>(nodeGroupIndex);

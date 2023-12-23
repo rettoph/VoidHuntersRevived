@@ -1,11 +1,6 @@
 ﻿using Svelto.DataStructures;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Physics;
 
@@ -21,9 +16,9 @@ namespace VoidHuntersRevived.Domain.Physics.Serialization.Json.Converters
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
 
-            while(reader.ReadPropertyName(out string? property))
+            while (reader.ReadPropertyName(out string? property))
             {
-                switch(property)
+                switch (property)
                 {
                     case nameof(Polygon.Density):
                         density = JsonSerializer.Deserialize<Fix64>(ref reader, options);

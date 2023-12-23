@@ -1,10 +1,5 @@
 ﻿using Guppy.Resources.Providers;
 using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Services;
@@ -20,9 +15,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             _teamDescriptorGroupsByGroupId = new Dictionary<ExclusiveGroupStruct, ITeamDescriptorGroup>();
 
-            foreach(VoidHuntersEntityDescriptor descriptor in descriptors)
+            foreach (VoidHuntersEntityDescriptor descriptor in descriptors)
             {
-                foreach(ITeam team in teams.GetAll())
+                foreach (ITeam team in teams.GetAll())
                 {
                     ExclusiveGroupStruct groupId = GetExclusiveGroupStruct(descriptor, team);
 
@@ -48,11 +43,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             string groupName = $"{descriptor.Name}.{team.Name}";
 
-            if(_exclusiveGroups.TryGetValue(groupName, out ExclusiveGroup? exclusiveGroup))
+            if (_exclusiveGroups.TryGetValue(groupName, out ExclusiveGroup? exclusiveGroup))
             {
                 return exclusiveGroup;
             }
-            
+
             exclusiveGroup = new ExclusiveGroup(groupName);
             _exclusiveGroups.Add(groupName, exclusiveGroup);
 

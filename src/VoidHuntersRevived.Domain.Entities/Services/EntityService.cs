@@ -1,22 +1,14 @@
-﻿using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common.Entities.Serialization;
-using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Utilities;
-using VoidHuntersRevived.Common;
-using Serilog;
-using VoidHuntersRevived.Common.Entities;
-using Svelto.ECS.Schedulers;
-using VoidHuntersRevived.Common.Simulations.Engines;
+﻿using Guppy.Common.Attributes;
 using Guppy.Common.Collections;
+using Serilog;
+using Svelto.ECS;
+using Svelto.ECS.Schedulers;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Domain.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Engines;
-using Guppy.Common.Attributes;
+using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Domain.Entities.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -28,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly SimpleEntitiesSubmissionScheduler _scheduler;
 
         public EntityService(
-            ILogger logger, 
+            ILogger logger,
             EntityTypeService types,
             SimpleEntitiesSubmissionScheduler scheduler)
         {

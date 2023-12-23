@@ -1,5 +1,4 @@
 ﻿using Guppy.Common;
-using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Loaders;
 using VoidHuntersRevived.Common.Entities.Services;
@@ -14,7 +13,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public EntityTypeService(IFiltered<IEntityTypeLoader> loaders)
         {
             _configurations = new Dictionary<IEntityType, IEntityTypeConfiguration>();
-            _ids = new Dictionary<Id<IEntityType>, IEntityType >();
+            _ids = new Dictionary<Id<IEntityType>, IEntityType>();
 
             foreach (IEntityTypeLoader loader in loaders.Instances)
             {
@@ -24,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Register(params IEntityType[] types)
         {
-            foreach(EntityType type in types)
+            foreach (EntityType type in types)
             {
                 this.GetOrCreateConfiguration(type);
             }
@@ -37,7 +36,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         internal IEntityTypeConfiguration GetOrCreateConfiguration(IEntityType type)
         {
-            if(!_configurations.TryGetValue(type, out IEntityTypeConfiguration? configuration))
+            if (!_configurations.TryGetValue(type, out IEntityTypeConfiguration? configuration))
             {
                 _configurations[type] = configuration = type.BuildConfiguration();
                 _ids.Add(type.Id, type);

@@ -1,12 +1,10 @@
 ﻿using Svelto.ECS;
 using System.Diagnostics;
-using System.Xml.Linq;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Options;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Physics.Extensions.FixedPoint;
 using VoidHuntersRevived.Common.Pieces;
@@ -26,7 +24,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
     {
         public void Select(EntityId tractorBeamEmitterId, EntityId nodeId)
         {
-            if(!_entities.IsSpawned(nodeId, out GroupIndex nodeGroupIndex))
+            if (!_entities.IsSpawned(nodeId, out GroupIndex nodeGroupIndex))
             {
                 _logger.Warning("{ClassName}::{MethodName} - Entity {EntityVhId} does not exist", nameof(TractorBeamEmitterService), nameof(Select), nodeId.VhId.Value);
                 return;
@@ -43,8 +41,8 @@ namespace VoidHuntersRevived.Game.Ships.Services
                     Location = node.Transformation.ToLocation()
                 });
 
-            
-            if(_nodes.IsHead(in node))
+
+            if (_nodes.IsHead(in node))
             {
                 _entities.Despawn(node.TreeId);
             }
@@ -118,7 +116,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
                         });
                     });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.Error(ex, "{ClassName}::{MethodName}<{GenericTypeName}> - Exception thrown", nameof(TractorBeamEmitterService), nameof(Process), nameof(TractorBeamEmitter_Select));
                 throw new SimulationOutOfSyncException(ex.Message, ex);
@@ -129,11 +127,11 @@ namespace VoidHuntersRevived.Game.Ships.Services
         {
             try
             {
-                if(data.AttachToSocketVhId.HasValue && _sockets.TryGetSocket(data.AttachToSocketVhId.Value, out Socket attachToSocket))
+                if (data.AttachToSocketVhId.HasValue && _sockets.TryGetSocket(data.AttachToSocketVhId.Value, out Socket attachToSocket))
                 { // Spawn a new piece attached to the input node
                     _sockets.Spawn(attachToSocket, data.TargetData);
                 }
-                else 
+                else
                 { // Spawn a new free floating chain
                     EntityId cloneId = _trees.Spawn(
                         vhid: eventId.Create(2),

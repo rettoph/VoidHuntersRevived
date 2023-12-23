@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Specialized;
 
 namespace VoidHuntersRevived.Common.Physics
 {
@@ -18,7 +13,7 @@ namespace VoidHuntersRevived.Common.Physics
         {
             get
             {
-                for(byte i=0; i<32; i++)
+                for (byte i = 0; i < 32; i++)
                 {
                     if (_flags[0x1 << i])
                     {
@@ -44,7 +39,7 @@ namespace VoidHuntersRevived.Common.Physics
 
         public void Append(params CollisionCategory[] categories)
         {
-            foreach(CollisionCategory category in categories)
+            foreach (CollisionCategory category in categories)
             {
                 _flags[category._mask] = true;
             }

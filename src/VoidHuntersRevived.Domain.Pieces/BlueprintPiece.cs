@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Physics.Components;
+﻿using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
-using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Pieces
 {
@@ -22,7 +13,7 @@ namespace VoidHuntersRevived.Domain.Pieces
 
         public BlueprintPiece(BlueprintPieceDto dto, IPieceService pieces)
         {
-            if(!pieces.TryGetByKey(dto.Key, out Piece? piece))
+            if (!pieces.TryGetByKey(dto.Key, out Piece? piece))
             {
                 throw new ArgumentException($"Unknown {nameof(Common.Pieces.Piece)}.{nameof(Common.Pieces.Piece.Key)} - {dto.Key}");
             }
@@ -46,23 +37,23 @@ namespace VoidHuntersRevived.Domain.Pieces
                 return Array.Empty<IBlueprintPiece[]>();
             }
 
-            if(descriptorHasSockets == false)
+            if (descriptorHasSockets == false)
             {
                 return Array.Empty<IBlueprintPiece[]>();
             }
 
             Sockets<Location> sockets = piece.Components.Values.OfType<Sockets<Location>>().SingleOrDefault();
 
-            if(sockets.Items.count < dto.Children!.Length)
+            if (sockets.Items.count < dto.Children!.Length)
             {
                 throw new ArgumentException($"Too many children defined. Expected {sockets.Items.count} and found {dto.Children.Length}, {nameof(BlueprintPieceDto)}.{nameof(BlueprintPieceDto.Key)} = {dto.Key}");
             }
 
             IBlueprintPiece[][] children = new IBlueprintPiece[sockets.Items.count][];
 
-            for(int i=0; i<sockets.Items.count; i++)
+            for (int i = 0; i < sockets.Items.count; i++)
             {
-                if(dto.Children.Length <= i || dto.Children[i] is null)
+                if (dto.Children.Length <= i || dto.Children[i] is null)
                 {
                     children[i] = Array.Empty<IBlueprintPiece>();
                     continue;

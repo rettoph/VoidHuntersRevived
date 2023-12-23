@@ -1,15 +1,8 @@
 ﻿using Guppy.Resources.Providers;
 using Serilog;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Services;
 
@@ -27,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             _logger = logger;
             _blueprints = new Dictionary<Id<IBlueprint>, Blueprint>();
 
-            foreach(BlueprintDto dto in resources.GetAll<BlueprintDto>()
+            foreach (BlueprintDto dto in resources.GetAll<BlueprintDto>()
                 .Select(x => x.Item2)
                 .Concat(blueprints))
             {
@@ -56,7 +49,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                     _logger.Verbose("{ClassName}::{MethodName} - Preparing to create {BluePrint} instance for {BlueprintId} ({BlueprintName})", nameof(BlueprintService), nameof(TryGetByDto), nameof(IBlueprint), blueprintDto.Id, blueprintDto.Name);
                     blueprintInstance = new Blueprint(blueprintDto, _pieces);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     _blueprints.Remove(blueprintDto.Id);
                     _logger.Error(e, "{ClassName}::{MethodName} - There was an exception creating blueprint instance", nameof(BlueprintService), nameof(TryGetByDto));

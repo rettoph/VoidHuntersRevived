@@ -2,7 +2,6 @@
 using Guppy.Network;
 using Guppy.Network.Providers;
 using LiteNetLib.Utils;
-using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 
@@ -25,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
             var id = reader.GetInt();
             var count = reader.GetByte();
 
-            if(count == 0)
+            if (count == 0)
             {
                 return Tick.Empty(id);
             }
@@ -34,7 +33,7 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
 
             for (var i = 0; i < count; i++)
             {
-                if(_serializers.Deserialize(reader) is EventDto input)
+                if (_serializers.Deserialize(reader) is EventDto input)
                 {
                     items[i] = input;
                 }

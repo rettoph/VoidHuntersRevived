@@ -1,9 +1,4 @@
-﻿using Guppy.Attributes;
-using Guppy.Common.Utilities;
-using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Common.Constants;
-
-namespace VoidHuntersRevived.Game.Client.Loaders
+﻿namespace VoidHuntersRevived.Game.Client.Loaders
 {
     /*
     [AutoLoad]

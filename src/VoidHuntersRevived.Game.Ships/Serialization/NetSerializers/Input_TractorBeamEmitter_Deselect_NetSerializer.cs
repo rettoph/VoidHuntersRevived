@@ -1,11 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Network;
 using LiteNetLib.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Game.Ships.Events;
 
@@ -27,7 +22,7 @@ namespace VoidHuntersRevived.Game.Ships.Serialization.NetSerializers
         {
             writer.Put(instance.ShipVhId);
 
-            if(writer.PutIf(instance.AttachToSocketVhId.HasValue))
+            if (writer.PutIf(instance.AttachToSocketVhId.HasValue))
             {
                 writer.Put(instance.AttachToSocketVhId!.Value.NodeVhId);
                 writer.Put(instance.AttachToSocketVhId.Value.Index);

@@ -1,19 +1,13 @@
-﻿using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Physics.Components;
-using VoidHuntersRevived.Common.Physics;
-using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Common.Entities.Services;
-using Guppy.Attributes;
+﻿using Guppy.Attributes;
 using Guppy.Common.Attributes;
 using Serilog;
-using tainicom.Aether.Physics2D.Dynamics;
+using Svelto.ECS;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Physics;
+using VoidHuntersRevived.Common.Physics.Components;
+using VoidHuntersRevived.Common.Simulations.Engines;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
@@ -52,11 +46,11 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             //    }
             //}
 
-            while(_awakeChangedBodies.TryDequeue(out IBody? body))
+            while (_awakeChangedBodies.TryDequeue(out IBody? body))
             {
                 ref Awake awake = ref _entities.QueryById<Awake>(body.Id, out _, out bool exists);
 
-                if(exists)
+                if (exists)
                 {
                     awake.Value = body.Awake;
                 }

@@ -1,23 +1,19 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common.Collections;
 using Serilog;
 using Svelto.ECS;
-using System.Text.RegularExpressions;
-using System;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
+using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Events;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using Guppy.Common.Collections;
 using VoidHuntersRevived.Common.Utilities;
-using VoidHuntersRevived.Common.Pieces.Events;
-using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.Physics.Components;
-using VoidHuntersRevived.Common.Ships.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
@@ -73,9 +69,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         public void Step(in Step param)
         {
-            while(_dirtyTrees.TryDequeue(out EntityId dirtyTreeId, out VhId cleanTreeEventSender))
+            while (_dirtyTrees.TryDequeue(out EntityId dirtyTreeId, out VhId cleanTreeEventSender))
             {
-                if(_entities.IsSpawned(dirtyTreeId))
+                if (_entities.IsSpawned(dirtyTreeId))
                 {
                     this.Simulation.Publish(cleanTreeEventSender, new Tree_Clean()
                     {
