@@ -13,11 +13,15 @@ using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using Serilog;
+using VoidHuntersRevived.Common.Entities.Engines;
+using System.Text.RegularExpressions;
 
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    internal sealed class CouplingEngine : BasicEngine, IReactOnAddEx<Coupling>, IReactOnAddAndRemoveEx<Coupling>
+    internal sealed class CouplingEngine : BasicEngine, 
+        IOnSpawnEngine<Coupling>,
+        IOnDespawnEngine<Coupling>
     {
         private readonly ISocketService _sockets;
         private readonly ILogger _logger;
@@ -28,40 +32,26 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             _logger = logger;
         }
 
-        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Coupling> entities, ExclusiveGroupStruct groupID)
+        public void OnSpawn(EntityId id, ref Coupling coupling, in GroupIndex groupIndex)
         {
-            var (couplings, ids, _) = entities;
-
-            for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
+            if (coupling.SocketId == default)
             {
-                ref Coupling coupling = ref couplings[index];
-
-                if(coupling.SocketId == default)
-                {
-                    continue;
-                }
-
-                ref var filter = ref _sockets.GetCouplingFilter(coupling.SocketId);
-                filter.Add(ids[index], groupID, index);
+                return;
             }
+
+            ref var filter = ref _sockets.GetCouplingFilter(coupling.SocketId);
+            filter.Add(in id, in groupIndex);
         }
 
-        public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Coupling> entities, ExclusiveGroupStruct groupID)
+        public void OnDespawn(EntityId id, ref Coupling coupling, in GroupIndex groupIndex)
         {
-            var (couplings, ids, _) = entities;
-
-            for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
+            if (coupling.SocketId == default)
             {
-                ref Coupling coupling = ref couplings[index];
-
-                if (coupling.SocketId == default)
-                {
-                    continue;
-                }
-
-                ref var filter = ref _sockets.GetCouplingFilter(coupling.SocketId);
-                filter.Remove(ids[index], groupID);
+                return;
             }
+
+            ref var filter = ref _sockets.GetCouplingFilter(coupling.SocketId);
+            filter.Remove(in id);
         }
     }
 }

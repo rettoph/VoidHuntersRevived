@@ -1,28 +1,21 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.Attributes;
+using Guppy.Game.Common.Enums;
 using Guppy.Game.MonoGame.Utilities.Cameras;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Serilog;
 using Svelto.ECS;
-using System;
-using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Client.Services;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.FixedPoint.Extensions;
-using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Enums;
-using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Ships.Components;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using Guppy.Game.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations;
-using VoidHuntersRevived.Game.Common;
 using static VoidHuntersRevived.Common.Resources;
 
 namespace VoidHuntersRevived.Game.Client.Engines

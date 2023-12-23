@@ -44,7 +44,8 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                         continue;
                     }
 
-                    IBody body = _space.GetBody(ids[i]);
+                    EntityId id = ids[i];
+                    IBody body = _space.GetBody(id);
 
                     ref Location location = ref locations[i];
                     location.Position = body.Position;

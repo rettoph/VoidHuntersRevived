@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
             while(_awakeChangedBodies.TryDequeue(out IBody? body))
             {
-                ref Awake awake = ref _entities.QueryById<Awake>(body.Id, out bool exists);
+                ref Awake awake = ref _entities.QueryById<Awake>(body.Id, out _, out bool exists);
 
                 if(exists)
                 {

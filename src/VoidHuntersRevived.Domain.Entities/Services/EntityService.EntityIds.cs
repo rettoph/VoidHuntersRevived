@@ -8,27 +8,28 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Messages;
 using VoidHuntersRevived.Common;
 using Guppy.Common.Collections;
+using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Common.Entities.Components;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
     internal partial class EntityService
     {
-        private enum EntityModification
-        {
-            SoftSpawn,
-            SoftDespawn,
-            RevertSoftDespawn,
-            HardDespawn
-        }
-
         private readonly Dictionary<VhId, EntityId> _ids = new Dictionary<VhId, EntityId>();
-        private readonly Queue<(EntityModification, EntityId)> _modifications = new Queue<(EntityModification, EntityId)>();
+        private readonly Queue<EntityModificationRequest> _modifications = new Queue<EntityModificationRequest>();
 
         public string name { get; } = nameof(EntityService);
 
         public EntityId GetId(VhId vhid)
         {
-            return _ids[vhid];
+            try
+            {
+                return _ids[vhid];
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public bool TryGetId(VhId vhid, out EntityId id)
@@ -46,10 +47,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             throw new Exception();
         }
 
-        private void EnqueuEntityModification(EntityModification type, EntityId id)
+        private void EnqueuEntityModification(EntityModificationRequest request)
         {
-            _logger.Verbose("{ClassName}::{MethodName} - EntityModification = {EntityModification}, EntityId = {EntityId}", nameof(EntityService), nameof(EnqueuEntityModification), type, id.VhId);
-            _modifications.Enqueue((type, id));
+            _logger.Verbose("{ClassName}::{MethodName} - EntityModificationType = {EntityModificationType}, EntityId = {EntityId}", nameof(EntityService), nameof(EnqueuEntityModification), request.ModificationType, request.Id.VhId);
+            _modifications.Enqueue(request);
         }
 
         private bool RemoveId(EntityId id)

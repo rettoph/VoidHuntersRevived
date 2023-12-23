@@ -35,6 +35,10 @@ namespace VoidHuntersRevived.Common.Entities.Services
         bool IsSpawned(EntityId id);
         bool IsSpawned(EntityId id, out GroupIndex groupIndex);
         bool IsSpawned(in GroupIndex groupIndex);
+
+        bool IsDespawned(EntityId id);
+        bool IsDespawned(EntityId id, out GroupIndex groupIndex);
+        bool IsDespawned(in GroupIndex groupIndex);
         #endregion
 
         #region Serialization
@@ -60,10 +64,10 @@ namespace VoidHuntersRevived.Common.Entities.Services
         ref T QueryById<T>(EntityId id)
             where T : unmanaged, IEntityComponent;
 
-        ref T QueryById<T>(EntityId id, out bool exists)
+        ref T QueryById<T>(EntityId id, out GroupIndex groupIndex)
             where T : unmanaged, IEntityComponent;
 
-        ref T QueryById<T>(EntityId id, out GroupIndex groupIndex)
+        ref T QueryById<T>(EntityId id, out GroupIndex groupIndex, out bool exists)
             where T : unmanaged, IEntityComponent;
 
         ref T QueryByGroupIndex<T>(in GroupIndex groupIndex)

@@ -46,19 +46,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return ref components[index];
         }
 
-        public ref T QueryById<T>(EntityId id, out bool exists)
-            where T : unmanaged, IEntityComponent
-        {
-            if (this.entitiesDB.TryQueryEntitiesAndIndex<T>(id.EGID, out uint index, out var components))
-            {
-                exists = true;
-                return ref components[index];
-            }
-
-            exists = false;
-            return ref Unsafe.NullRef<T>(); ;
-        }
-
         public ref T QueryById<T>(EntityId id, out GroupIndex groupIndex)
             where T : unmanaged, IEntityComponent
         {
@@ -67,6 +54,21 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             groupIndex = new GroupIndex(id.EGID.groupID, index);
 
             return ref components[index];
+        }
+
+        public ref T QueryById<T>(EntityId id, out GroupIndex groupIndex, out bool exists)
+            where T : unmanaged, IEntityComponent
+        {
+            if (this.entitiesDB.TryQueryEntitiesAndIndex<T>(id.EGID, out uint index, out var components))
+            {
+                exists = true;
+                groupIndex = new GroupIndex(id.EGID.groupID, index);
+                return ref components[index];
+            }
+
+            groupIndex = default!;
+            exists = false;
+            return ref Unsafe.NullRef<T>(); ;
         }
 
         public bool HasAny<T>(ExclusiveGroupStruct groupID)

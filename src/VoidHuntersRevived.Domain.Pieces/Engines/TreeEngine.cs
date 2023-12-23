@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.Attributes;
+using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
@@ -25,16 +26,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         private HashSet<EGID> _removedNodes = new HashSet<EGID>();
         private readonly IEntityService _entities;
         private ITeamDescriptorGroupService _teamDescriptorGroups;
+        private readonly ILogger _logger;
 
-        public TreeEngine(IEntityService entities, ITeamDescriptorGroupService teamDescriptorGroupService)
+        public TreeEngine(IEntityService entities, ITeamDescriptorGroupService teamDescriptorGroupService, ILogger logger)
         {
             _entities = entities;
             _teamDescriptorGroups = teamDescriptorGroupService;
-        }
-
-        public void OnDespawn(EntityId id, ref Tree component, in GroupIndex groupIndex)
-        {
-            _entities.Despawn(component.HeadId);
+            _logger = logger;
         }
 
         public void OnSpawn(EntityId id, ref Tree component, in GroupIndex groupIndex)
@@ -49,6 +47,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
             this.TransformNodes(ref location, ref filter);
         }
+
+        public void OnDespawn(EntityId id, ref Tree component, in GroupIndex groupIndex)
+        {
+            _logger.Verbose("{ClassName}::{MethodName} - Despawning Tree {TreeId}, HeadId = {HeadId}", nameof(TreeEngine), nameof(OnDespawn), id.VhId, component.HeadId.VhId);
+            _entities.Despawn(component.HeadId);
+        }
+
 
         public void Step(in Step _param)
         {

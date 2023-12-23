@@ -11,15 +11,15 @@ namespace VoidHuntersRevived.Common.Entities.Components
 {
     public struct EntityStatus : IEntityComponent
     {
-        public static readonly EntityStatus Spawned = new EntityStatus()
-        {
-            Value = EntityStatusEnum.Spawned
-        };
+        public EntityStatusEnum Value;
 
-        internal EntityStatusEnum Value;
+        public EntityStatus(EntityStatusEnum value)
+        {
+            this.Value = value;
+        }
 
         public bool IsSpawned => this.Value == EntityStatusEnum.Spawned;
-        public bool IsDespawned => this.Value != EntityStatusEnum.Spawned;
+        public bool IsDespawned => this.Value > EntityStatusEnum.Spawned;
 
         public override bool Equals([NotNullWhen(true)] object? obj)
         {

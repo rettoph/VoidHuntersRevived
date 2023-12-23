@@ -22,6 +22,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     {
         public EntityId Spawn(IEntityType type, VhId vhid, Id<ITeam> teamId, EntityInitializerDelegate? initializer)
         {
+            _logger.Verbose("{ClassName}::{MethodName} - EntityVhId = {EntityVhId}", nameof(EntityService), nameof(Spawn), vhid);
+
             this.Simulation.Publish(NameSpace<EntityService>.Instance, new SpawnEntity()
             {
                 Type = type,
@@ -35,6 +37,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Despawn(VhId vhid)
         {
+            _logger.Verbose("{ClassName}::{MethodName} - EntityVhId = {EntityVhId}", nameof(EntityService), nameof(Despawn), vhid);
             this.Simulation.Publish(NameSpace<EntityService>.Instance, new SoftDespawnEntity()
             {
                 VhId = vhid
@@ -50,28 +53,25 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             _scheduler.SubmitEntities();
 
-            while (_modifications.TryDequeue(out (EntityModification type, EntityId id) modification))
+            while (_modifications.TryDequeue(out EntityModificationRequest request))
             {
-                switch(modification.type)
+                _logger.Verbose("{ClassName}::{MethodName} - EntityModificationType = {EntityModificationType}, EntityId = {EntityId}", nameof(EntityService), nameof(Flush), request.ModificationType, request.Id.VhId);
+
+                switch(request.ModificationType)
                 {
-                    case EntityModification.SoftSpawn:
-                        this.SoftSpawnEntity(modification.id);
+                    case EntityModificationType.SoftSpawn:
+                        this.SoftSpawnEntity(in request.Id);
                         break;
-                    case EntityModification.SoftDespawn:
-                        this.SoftDespawnEntity(modification.id);
+                    case EntityModificationType.SoftDespawn:
+                        this.SoftDespawnEntity(in request);
                         break;
-                    case EntityModification.HardDespawn:
-                        this.HardDespawnEntity(modification.id);
+                    case EntityModificationType.HardDespawn:
+                        this.HardDespawnEntity(in request);
                         break;
-                    case EntityModification.RevertSoftDespawn:
-                        this.RevertSoftDespawnEntity(modification.id);
+                    case EntityModificationType.RevertSoftDespawn:
+                        this.RevertSoftDespawnEntity(in request);
                         break;
                 }
-            }
-
-            if(_modifications.Count > 0)
-            {
-
             }
         }
 
@@ -110,6 +110,36 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return false;
         }
 
+        public bool IsDespawned(EntityId id)
+        {
+            if (this.TryQueryById<EntityStatus>(id, out EntityStatus status))
+            {
+                return status.IsDespawned;
+            }
+
+            return false;
+        }
+
+        public bool IsDespawned(EntityId id, out GroupIndex groupIndex)
+        {
+            if (this.TryQueryById<EntityStatus>(id, out groupIndex, out EntityStatus status))
+            {
+                return status.IsDespawned;
+            }
+
+            return false;
+        }
+
+        public bool IsDespawned(in GroupIndex groupIndex)
+        {
+            if (this.TryQueryByGroupIndex<EntityStatus>(in groupIndex, out EntityStatus status))
+            {
+                return status.IsDespawned;
+            }
+
+            return false;
+        }
+
         public void Process(VhId eventId, SpawnEntity data)
         {
             this.SpawnEntity(data.Type, data.VhId, data.TeamId, data.Initializer);
@@ -118,32 +148,39 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public void Revert(VhId eventId, SpawnEntity data)
         {
             EntityId id = this.GetId(data.VhId);
-            this.EnqueuEntityModification(EntityModification.SoftDespawn, id);
-            this.EnqueuEntityModification(EntityModification.HardDespawn, id);
+
+            this.EnqueuEntityModification(new EntityModificationRequest(EntityModificationType.SoftDespawn, id));
+            this.EnqueuEntityModification(new EntityModificationRequest(EntityModificationType.HardDespawn, id));
+
+            ref var status = ref this.QueryById<EntityStatus>(id);
+            status.Value = EntityStatusEnum.SoftDespawnEnqueued;
         }
 
         public void Process(VhId eventId, SoftDespawnEntity data)
         {
             EntityId id = this.GetId(data.VhId);
-            this.EnqueuEntityModification(EntityModification.SoftDespawn, id);
+            this.EnqueuEntityModification(new EntityModificationRequest(EntityModificationType.SoftDespawn, id));
+
+            ref var status = ref this.QueryById<EntityStatus>(id);
+            status.Value = EntityStatusEnum.SoftDespawnEnqueued;
         }
 
         public void Revert(VhId eventId, SoftDespawnEntity data)
         {
             if(this.TryGetId(data.VhId, out EntityId id))
             {
-                this.EnqueuEntityModification(EntityModification.RevertSoftDespawn, id);
+                this.EnqueuEntityModification(new EntityModificationRequest(EntityModificationType.RevertSoftDespawn, id));
             }
             else
             {
-                _logger.Warning("{ClassName}::{MethodName}<{EventName}> - Unable to revert soft despawn Entity {Id}", nameof(EntityService), nameof(Revert), nameof(Events.SoftDespawnEntity), data.VhId.Value);
+                _logger.Warning("{ClassName}::{MethodName}<{EventName}> - Unable to revert soft despawn Entity {Id}.", nameof(EntityService), nameof(Revert), nameof(Events.SoftDespawnEntity), data.VhId.Value);
             }
         }
 
         public void Process(VhId eventId, HardDespawnEntity data)
         {
             EntityId id = this.GetId(data.VhId);
-            this.EnqueuEntityModification(EntityModification.HardDespawn, id);
+            this.EnqueuEntityModification(new EntityModificationRequest(EntityModificationType.HardDespawn, id));
         }
 
         public void Revert(VhId eventId, HardDespawnEntity data)
@@ -155,7 +192,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             EntityInitializer initializer = this.GetDescriptorEngine(type.Descriptor.Id).HardSpawn(vhid, teamId, out EntityId id);
             this.AddId(id);
-            this.EnqueuEntityModification(EntityModification.SoftSpawn, id);
+            this.EnqueuEntityModification(new EntityModificationRequest(EntityModificationType.SoftSpawn, id));
 
             _types.GetConfiguration(type).Initialize(this, ref initializer, in id);
 
@@ -164,30 +201,65 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return id;
         }
 
-        private void SoftSpawnEntity(EntityId id)
+        private void SoftSpawnEntity(in EntityId id)
         {
-            Id<VoidHuntersEntityDescriptor> descriptorId = this.QueryById<Id<VoidHuntersEntityDescriptor>>(id, out GroupIndex groupIndex);
-            this.GetDescriptorEngine(descriptorId).SoftSpawn(in id, groupIndex);
+            ref EntityStatus status = ref this.QueryById<EntityStatus>(id, out GroupIndex groupIndex, out bool exists);
+
+            if (exists && status.Value == EntityStatusEnum.NotSpawned)
+            {
+                Id<VoidHuntersEntityDescriptor> descriptorId = this.QueryByGroupIndex<Id<VoidHuntersEntityDescriptor>>(in groupIndex);
+                this.GetDescriptorEngine(descriptorId).SoftSpawn(in id, in groupIndex, ref status);
+            }
+            else
+            {
+                _logger.Warning("{ClassName}::{MethdName} - Id = {Id}, Exists = {Exists}, Status = {Status}", nameof(EntityService), nameof(SoftSpawnEntity), id.VhId, exists, exists ? status.Value : null);
+            }
         }
 
-        private void SoftDespawnEntity(EntityId id)
+        private void SoftDespawnEntity(in EntityModificationRequest request)
         {
-            Id<VoidHuntersEntityDescriptor> descriptorId = this.QueryById<Id<VoidHuntersEntityDescriptor>>(id, out GroupIndex groupIndex);
-            this.GetDescriptorEngine(descriptorId).SoftDespawn(in id, groupIndex);
+            ref EntityStatus status = ref this.QueryById<EntityStatus>(request.Id, out GroupIndex groupIndex, out bool exists);
+
+            if(exists && status.Value == EntityStatusEnum.SoftDespawnEnqueued)
+            {
+                Id<VoidHuntersEntityDescriptor> descriptorId = this.QueryByGroupIndex<Id<VoidHuntersEntityDescriptor>>(in groupIndex);
+                this.GetDescriptorEngine(descriptorId).SoftDespawn(in request.Id, in groupIndex, ref status);
+            }
+            else
+            {
+                _logger.Warning("{ClassName}::{MethdName} - Id = {Id}, Exists = {Exists}, Status = {Status}", nameof(EntityService), nameof(SoftDespawnEntity), request.Id.VhId, exists, exists ? status.Value : null);
+            }
         }
 
-        private void RevertSoftDespawnEntity(EntityId id)
+        private void RevertSoftDespawnEntity(in EntityModificationRequest request)
         {
-            Id<VoidHuntersEntityDescriptor> descriptorId = this.QueryById<Id<VoidHuntersEntityDescriptor>>(id, out GroupIndex groupIndex);
-            this.GetDescriptorEngine(descriptorId).RevertSoftDespawn(in id, groupIndex);
+            ref EntityStatus status = ref this.QueryById<EntityStatus>(request.Id, out GroupIndex groupIndex, out bool exists);
+
+            if (exists && status.Value == EntityStatusEnum.SoftDespawned)
+            {
+                Id<VoidHuntersEntityDescriptor> descriptorId = this.QueryByGroupIndex<Id<VoidHuntersEntityDescriptor>>(in groupIndex);
+                this.GetDescriptorEngine(descriptorId).RevertSoftDespawn(in request.Id, in groupIndex, ref status);
+            }
+            else
+            {
+                _logger.Warning("{ClassName}::{MethdName} - Id = {Id}, Exists = {Exists}, Status = {Status}", nameof(EntityService), nameof(RevertSoftDespawnEntity), request.Id.VhId, exists, exists ? status.Value : null);
+            }
         }
 
-        private void HardDespawnEntity(EntityId id)
+        private void HardDespawnEntity(in EntityModificationRequest request)
         {
-            Id<VoidHuntersEntityDescriptor> descriptorId = this.QueryById<Id<VoidHuntersEntityDescriptor>>(id, out GroupIndex groupIndex);
-            this.GetDescriptorEngine(descriptorId).HardDespawn(in id, groupIndex);
+            ref EntityStatus status = ref this.QueryById<EntityStatus>(request.Id, out GroupIndex groupIndex, out bool exists);
 
-            this.RemoveId(id);
+            if (exists && status.Value == EntityStatusEnum.SoftDespawned)
+            {
+                Id<VoidHuntersEntityDescriptor> descriptorId = this.QueryByGroupIndex<Id<VoidHuntersEntityDescriptor>>(in groupIndex);
+                this.GetDescriptorEngine(descriptorId).HardDespawn(in request.Id, in groupIndex, ref status);
+                this.RemoveId(request.Id);
+            }
+            else
+            {
+                _logger.Warning("{ClassName}::{MethdName} - Id = {Id}, Exists = {Exists}, Status = {Status}", nameof(EntityService), nameof(HardDespawnEntity), request.Id.VhId, exists, exists ? status.Value : null);
+            }
         }
     }
 }

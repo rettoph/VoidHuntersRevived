@@ -24,12 +24,12 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         public abstract VoidHuntersEntityDescriptor Descriptor { get; }
 
         public abstract EntityInitializer HardSpawn(in VhId vhid, in Id<ITeam> teamId, out EntityId id);
-        public abstract void SoftSpawn(in EntityId id, in GroupIndex groupIndex);
+        public abstract void SoftSpawn(in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
 
-        public abstract void SoftDespawn(in EntityId id, in GroupIndex groupIndex);
-        public abstract void RevertSoftDespawn(in EntityId id, in GroupIndex groupIndex);
+        public abstract void SoftDespawn(in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
+        public abstract void RevertSoftDespawn(in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
 
-        public abstract void HardDespawn(in EntityId id, in GroupIndex groupIndex);
+        public abstract void HardDespawn(in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
 
         public abstract void Serialize(EntityWriter writer, in GroupIndex groupIndex, in SerializationOptions options);
 
@@ -112,36 +112,13 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             initializer.Init(id);
             initializer.Init(_descriptor.Id);
             initializer.Init(teamId);
-            initializer.Init(new EntityStatus()
-            {
-                Value = EntityStatusEnum.Spawned
-            });
+            initializer.Init(new EntityStatus(EntityStatusEnum.NotSpawned));
 
             return initializer;
         }
 
-        public override void SoftSpawn(in EntityId id, in GroupIndex groupIndex)
+        public override void SoftSpawn(in EntityId id, in GroupIndex groupIndex, ref EntityStatus status)
         {
-            for (int i = 0; i < _onSpawnEngineInvokers.count; i++)
-            {
-                _onSpawnEngineInvokers[i].Invoke(entitiesDB, id, groupIndex);
-            }
-        }
-
-        public override void SoftDespawn(in EntityId id, in GroupIndex groupIndex)
-        {
-            ref var status = ref entitiesDB.QueryEntityByIndex<EntityStatus>(groupIndex.Index, groupIndex.GroupID);
-            status.Value = EntityStatusEnum.SoftDespawned;
-
-            for (int i = 0; i < _onDespawnEngineInvokers.count; i++)
-            {
-                _onDespawnEngineInvokers[i].Invoke(entitiesDB, id, groupIndex);
-            }
-        }
-
-        public override void RevertSoftDespawn(in EntityId id, in GroupIndex groupIndex)
-        {
-            ref var status = ref entitiesDB.QueryEntityByIndex<EntityStatus>(groupIndex.Index, groupIndex.GroupID);
             status.Value = EntityStatusEnum.Spawned;
 
             for (int i = 0; i < _onSpawnEngineInvokers.count; i++)
@@ -150,9 +127,28 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             }
         }
 
-        public override void HardDespawn(in EntityId id, in GroupIndex groupIndex)
+        public override void SoftDespawn(in EntityId id, in GroupIndex groupIndex, ref EntityStatus status)
         {
-            ref var status = ref entitiesDB.QueryEntityByIndex<EntityStatus>(groupIndex.Index, groupIndex.GroupID);
+            status.Value = EntityStatusEnum.SoftDespawned;
+
+            for (int i = 0; i < _onDespawnEngineInvokers.count; i++)
+            {
+                _onDespawnEngineInvokers[i].Invoke(entitiesDB, id, groupIndex);
+            }
+        }
+
+        public override void RevertSoftDespawn(in EntityId id, in GroupIndex groupIndex, ref EntityStatus status)
+        {
+            status.Value = EntityStatusEnum.Spawned;
+
+            for (int i = 0; i < _onSpawnEngineInvokers.count; i++)
+            {
+                _onSpawnEngineInvokers[i].Invoke(entitiesDB, id, groupIndex);
+            }
+        }
+
+        public override void HardDespawn(in EntityId id, in GroupIndex groupIndex, ref EntityStatus status)
+        {
             status.Value = EntityStatusEnum.HardDespawned;
 
             _functions.RemoveEntity<TDescriptor>(id.EGID);
