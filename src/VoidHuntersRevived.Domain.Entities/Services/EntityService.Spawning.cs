@@ -171,10 +171,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 this.EnqueuEntityModification(new EntityModificationRequest(EntityModificationType.RevertSoftDespawn, id));
             }
-            else
-            {
-                _logger.Warning("{ClassName}::{MethodName}<{EventName}> - Unable to revert soft despawn Entity {Id}.", nameof(EntityService), nameof(Revert), nameof(Events.SoftDespawnEntity), data.VhId.Value);
-            }
         }
 
         public void Process(VhId eventId, HardDespawnEntity data)

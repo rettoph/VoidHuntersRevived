@@ -5,8 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Ships.Components;
@@ -16,7 +18,9 @@ using VoidHuntersRevived.Common.Simulations.Engines;
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    internal sealed class TractorableEngine : BasicEngine, IReactOnAddEx<Tractorable>, IReactOnRemoveEx<Tractorable>
+    internal sealed class TractorableEngine : BasicEngine,
+        IOnSpawnEngine<Tractorable>,
+        IOnDespawnEngine<Tractorable>
     {
         private readonly ITractorBeamEmitterService _tractorBeamEmitters;
         private readonly ITacticalService _tacticals;
@@ -31,51 +35,33 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             _logger = logger;
         }
 
-        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Tractorable> entities, ExclusiveGroupStruct groupID)
+        public void OnSpawn(EntityId id, ref Tractorable tractorable, in GroupIndex groupIndex)
         {
-            var (tractorables, ids, _) = entities;
-
-            for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
+            if (tractorable.TractorBeamEmitter == default)
             {
-                ref Tractorable tractorable = ref tractorables[index];
-
-                if (tractorable.TractorBeamEmitter == default)
-                {
-                    continue;
-                }
-
-                // Add the tractorable to its owning tractor beam emitter's filter
-                ref var filter = ref _tractorBeamEmitters.GetTractorableFilter(tractorable.TractorBeamEmitter);
-                filter.Add(ids[index], groupID, index);
-
-                _tacticals.AddUse(tractorable.TractorBeamEmitter);
-
-                EntityId tractorableId = _entities.QueryByGroupIndex<EntityId>(groupID, index);
-                _logger.Verbose("{ClassName}::{MethodName} - Added tractorable {TractorableId} to emitter {TractorBeamEmitterId}", nameof(TractorableEngine), nameof(Add), tractorableId.VhId.Value, tractorable.TractorBeamEmitter.VhId.Value);
+                return;
             }
+
+            // Add the tractorable to its owning tractor beam emitter's filter
+            ref var filter = ref _tractorBeamEmitters.GetTractorableFilter(tractorable.TractorBeamEmitter);
+            filter.Add(in id, in groupIndex);
+
+            _tacticals.AddUse(tractorable.TractorBeamEmitter);
+            _logger.Verbose("{ClassName}::{MethodName} - Added tractorable {TractorableId} to emitter {TractorBeamEmitterId}", nameof(TractorableEngine), nameof(OnSpawn), id.VhId.Value, tractorable.TractorBeamEmitter.VhId.Value);
         }
 
-        public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<Tractorable> entities, ExclusiveGroupStruct groupID)
+        public void OnDespawn(EntityId id, ref Tractorable tractorable, in GroupIndex groupIndex)
         {
-            var (tractorables, ids, _) = entities;
-
-            for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
+            if (tractorable.TractorBeamEmitter == default)
             {
-                ref Tractorable tractorable = ref tractorables[index];
-
-                if (tractorable.TractorBeamEmitter == default)
-                {
-                    continue;
-                }
-
-                ref var filter = ref _tractorBeamEmitters.GetTractorableFilter(tractorable.TractorBeamEmitter);
-                filter.Remove(ids[index], groupID);
-
-                _tacticals.RemoveUse(tractorable.TractorBeamEmitter);
-
-                EntityId tractorableId = _entities.QueryByGroupIndex<EntityId>(groupID, index);
-                _logger.Verbose("{ClassName}::{MethodName} - Removed tractorable {TractorableId} from emitter {TractorBeamEmitterId}", nameof(TractorableEngine), nameof(Remove), tractorableId.VhId.Value, tractorable.TractorBeamEmitter.VhId.Value);
+                return;
             }
+
+            ref var filter = ref _tractorBeamEmitters.GetTractorableFilter(tractorable.TractorBeamEmitter);
+            filter.Remove(id);
+
+            _tacticals.RemoveUse(tractorable.TractorBeamEmitter);
+            _logger.Verbose("{ClassName}::{MethodName} - Removed tractorable {TractorableId} from emitter {TractorBeamEmitterId}", nameof(TractorableEngine), nameof(OnDespawn), id, tractorable.TractorBeamEmitter.VhId.Value);
         }
     }
 }

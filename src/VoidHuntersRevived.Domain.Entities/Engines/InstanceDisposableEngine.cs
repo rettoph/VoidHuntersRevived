@@ -7,6 +7,8 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
     internal sealed class InstanceDisposableEngine<T> : IEngine, IReactOnRemoveEx<T>, IQueryingEntitiesEngine
         where T : unmanaged, IEntityComponent, IDisposable
     {
+        private static readonly string _tName = typeof(T).GetFormattedName();
+
         private readonly ILogger _logger;
 
         public InstanceDisposableEngine(ILogger logger)
@@ -28,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                _logger.Verbose("{ClassName}::{MethodName} - Disposing of {ComponentType} for {VhId}", nameof(InstanceDisposableEngine<T>), nameof(Remove), typeof(T).Name, ids[index].VhId.Value);
+                _logger.Verbose("{ClassName}<{TName}>::{MethodName} - Disposing of {ComponentType} for {VhId}", nameof(InstanceDisposableEngine<T>), _tName, nameof(Remove), _tName, ids[index].VhId.Value);
                 components[index].Dispose();
             }
         }

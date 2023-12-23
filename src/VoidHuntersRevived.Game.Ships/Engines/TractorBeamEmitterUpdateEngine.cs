@@ -66,7 +66,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
 
                 for (int i = 0; i< indices.count; i++)
                 {
-                    if (statuses[indices[i]].IsSpawned)
+                    if (statuses[indices[i]].IsDespawned == false)
                     {
                         ref EntityId tractorableId = ref entityIds[indices[i]];
                         IBody targetBody = _space.GetBody(in tractorableId);
@@ -92,7 +92,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
                     else
                     {
                         ref EntityId tractorableId = ref entityIds[indices[i]];
-                        _logger.Warning("{ClassName}::{MethodName} - TractorBeamEmitter = {TractorBeamEmitterId}, Tractorable = {TractorableId}, IsSpawned = false.", nameof(TractorBeamEmitter), nameof(UpdateTractorBeamEmitterTractorables), tractorBeamEmitterId.VhId, tractorableId.VhId);
+                        _logger.Warning("{ClassName}::{MethodName} - TractorBeamEmitter = {TractorBeamEmitterId}, Tractorable = {TractorableId}, IsSpawned = false.", nameof(TractorBeamEmitterUpdateEngine), nameof(UpdateTractorBeamEmitterTractorables), tractorBeamEmitterId.VhId, tractorableId.VhId);
                     }
                 }
             }
