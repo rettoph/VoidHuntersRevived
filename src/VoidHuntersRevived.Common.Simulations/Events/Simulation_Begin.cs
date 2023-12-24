@@ -6,7 +6,7 @@ namespace VoidHuntersRevived.Common.Simulations.Events
     {
         public bool IsPredictable => false;
 
-        public VhId ShipVhId => throw new NotImplementedException();
+        public VhId ShipVhId => default!;
 
         public VhId CalculateHash(in VhId source)
         {

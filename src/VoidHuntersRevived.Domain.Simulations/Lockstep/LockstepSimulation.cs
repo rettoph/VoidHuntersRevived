@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                 TotalTime = this.stepInterval
             };
 
-            this.CurrentTick = Tick.First();
+            this.CurrentTick = Tick.First(Array.Empty<EventDto>());
         }
 
         public override void Update(GameTime realTime)

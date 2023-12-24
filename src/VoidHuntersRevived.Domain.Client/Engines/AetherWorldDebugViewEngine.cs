@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Client.Engines
         private readonly DebugView _debug;
         private readonly Camera2D _camera;
         private bool _debugViewEnabled;
-        private bool _aetherViewerEnabled;
+        private bool _aetherExplorerEnabled;
         private string _filter;
 
         public AetherWorldDebugViewEngine(
@@ -70,12 +70,12 @@ namespace VoidHuntersRevived.Domain.Client.Engines
 
         public void DrawImGui(GameTime gameTime)
         {
-            if (_aetherViewerEnabled == false)
+            if (_aetherExplorerEnabled == false)
             {
                 return;
             }
 
-            _imgui.Begin($"Aether Viewer - {_simulation.Type}, {_guppy.Name} {_guppy.Id}", ref _aetherViewerEnabled);
+            _imgui.Begin($"Aether Explorer - {_simulation.Type}, {_guppy.Name} {_guppy.Id}", ref _aetherExplorerEnabled);
 
             _imgui.InputText("Filter", ref _filter, 255);
 
@@ -104,13 +104,13 @@ namespace VoidHuntersRevived.Domain.Client.Engines
                 }
             }
 
-            buttonStyle = _aetherViewerEnabled ? Guppy.Game.MonoGame.Resources.ImGuiStyles.ButtonRed : Guppy.Game.MonoGame.Resources.ImGuiStyles.ButtonGreen;
+            buttonStyle = _aetherExplorerEnabled ? Guppy.Game.MonoGame.Resources.ImGuiStyles.ButtonRed : Guppy.Game.MonoGame.Resources.ImGuiStyles.ButtonGreen;
 
             using (_imgui.Apply(buttonStyle))
             {
-                if (_imgui.Button($"{(_aetherViewerEnabled ? "Disable" : "Enable")} Aether Viewer"))
+                if (_imgui.Button($"{(_aetherExplorerEnabled ? "Disable" : "Enable")} Aether Explorer"))
                 {
-                    _aetherViewerEnabled = !_aetherViewerEnabled;
+                    _aetherExplorerEnabled = !_aetherExplorerEnabled;
                 }
             }
         }

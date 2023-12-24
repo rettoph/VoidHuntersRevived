@@ -7,7 +7,7 @@ namespace VoidHuntersRevived.Common.Simulations.Events
     {
         public bool IsPredictable => false;
 
-        public VhId ShipVhId => throw new NotImplementedException();
+        public VhId ShipVhId => default!;
 
         public required int UserId { get; init; }
         public required Claim[] Claims { get; init; }

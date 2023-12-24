@@ -33,35 +33,44 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 
         public void Process(in Guid messsageId, INetIncomingMessage<Tick> message)
         {
-            _ticks.Enqueue(message.Body);
+            TickBuffer.EnqueueTickResponse response = _ticks.TryEnqueue(message.Body);
+            _logger.Verbose("{ClassName}::{MethodName}<{T}> - Attempted to enqueue Tick {Id}, Response = {Response}", nameof(LockstepClient_TickEngine), nameof(Process), nameof(Tick), message.Body.Id, response);
         }
 
         public void Process(in Guid messsageId, INetIncomingMessage<TickHistoryStart> message)
         {
             //_ticks.Clear();
+            _logger.Verbose("{ClassName}::{MethodName}<{T}> - CurrentTickId = {CurrentTickId}", nameof(LockstepClient_TickEngine), nameof(Process), nameof(TickHistoryStart), message.Body.CurrentTickId);
         }
 
         public void Process(in Guid messsageId, INetIncomingMessage<TickHistoryItem> message)
         {
+            TickBuffer.EnqueueTickResponse response = TickBuffer.EnqueueTickResponse.NotEnqueued;
             Tick? previous = _ticks.Previous(message.Body.Tick.Id);
             int id = (previous?.Id ?? 0) + 1;
 
+            _logger.Verbose("{ClassName}::{MethodName}<{T}> - TickId = {CurrentTickId}, PreviousTickId = {PreviousTickId}", nameof(LockstepClient_TickEngine), nameof(Process), nameof(TickHistoryItem), message.Body.Tick.Id, previous?.Id ?? 0);
             for (; id < message.Body.Tick.Id; id++)
             {
-                _ticks.Enqueue(Tick.Empty(id));
+                response = _ticks.TryEnqueue(Tick.Empty(id));
+                _logger.Verbose("{ClassName}::{MethodName}<{T}> - Attempted to enqueue empty Tick {TickId}, Response = {Response}", nameof(LockstepClient_TickEngine), nameof(Process), nameof(TickHistoryItem), id, response);
             }
 
-            _ticks.Enqueue(message.Body.Tick);
+            response = _ticks.TryEnqueue(message.Body.Tick);
+            _logger.Verbose("{ClassName}::{MethodName}<{T}> - Attempted to enqueue Tick {TickId}, Response = {Response}", nameof(LockstepClient_TickEngine), nameof(Process), nameof(TickHistoryItem), id, response);
         }
 
         public void Process(in Guid messsageId, INetIncomingMessage<TickHistoryEnd> message)
         {
+            TickBuffer.EnqueueTickResponse response = TickBuffer.EnqueueTickResponse.NotEnqueued;
             Tick? previous = _ticks.Previous(message.Body.CurrentTickId);
             int id = (previous?.Id ?? 0) + 1;
 
+            _logger.Verbose("{ClassName}::{MethodName}<{T}> - CurrentTickId = {CurrentTickId}, PreviousId = {PreviousId}", nameof(LockstepClient_TickEngine), nameof(Process), nameof(TickHistoryEnd), message.Body.CurrentTickId, previous?.Id ?? 0);
             for (; id < message.Body.CurrentTickId; id++)
             {
-                _ticks.Enqueue(Tick.Empty(id));
+                response = _ticks.TryEnqueue(Tick.Empty(id));
+                _logger.Verbose("{ClassName}::{MethodName}<{T}> - Attempted to enqueue empty Tick {TickId}, Response = {Response}", nameof(LockstepClient_TickEngine), nameof(Process), nameof(TickHistoryEnd), id, response);
             }
         }
     }

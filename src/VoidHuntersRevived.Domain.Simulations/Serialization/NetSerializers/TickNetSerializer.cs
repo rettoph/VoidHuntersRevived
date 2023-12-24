@@ -3,6 +3,7 @@ using Guppy.Network;
 using Guppy.Network.Providers;
 using LiteNetLib.Utils;
 using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Common.Simulations.Enums;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
@@ -21,12 +22,22 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
 
         public override Tick Deserialize(NetDataReader reader)
         {
+            var hash = reader.GetVhId();
             var id = reader.GetInt();
+            var queue = reader.GetEnum<TickQueue>();
             var count = reader.GetByte();
+            Tick tick = default!;
 
             if (count == 0)
             {
-                return Tick.Empty(id);
+                tick = Tick.Empty(id, queue);
+
+                if(tick.Hash != hash)
+                {
+                    throw new Exception();
+                }
+
+                return tick;
             }
 
             var items = new EventDto[count];
@@ -39,14 +50,20 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
                 }
             }
 
-            var instance = Tick.Create(id, items);
+            tick = Tick.Create(id, items, queue);
+            if (tick.Hash != hash)
+            {
+                throw new Exception();
+            }
 
-            return instance;
+            return tick;
         }
 
         public override void Serialize(NetDataWriter writer, in Tick instance)
         {
+            writer.Put(instance.Hash);
             writer.Put(instance.Id);
+            writer.Put(instance.Queue);
 
             var count = (byte)instance.Events.Length;
 
