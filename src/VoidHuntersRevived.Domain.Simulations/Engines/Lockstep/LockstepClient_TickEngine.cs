@@ -43,7 +43,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 
         public void Process(in Guid messsageId, INetIncomingMessage<TickHistoryItem> message)
         {
-            for (int id = (_ticks.Tail?.Id ?? _ticks.Popped?.Id ?? 0) + 1; id < message.Body.Tick.Id; id++)
+            Tick? previous = _ticks.Previous(message.Body.Tick.Id);
+            int id = (previous?.Id ?? 0) + 1;
+
+            for (; id < message.Body.Tick.Id; id++)
             {
                 _ticks.Enqueue(Tick.Empty(id));
             }
@@ -53,8 +56,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 
         public void Process(in Guid messsageId, INetIncomingMessage<TickHistoryEnd> message)
         {
-            _logger.Warning($"{message.Body.CurrentTickId}");
-            for (int id = (_ticks.Tail?.Id ?? _ticks.Popped?.Id ?? 0) + 1; id < message.Body.CurrentTickId; id++)
+            Tick? previous = _ticks.Previous(message.Body.CurrentTickId);
+            int id = (previous?.Id ?? 0) + 1;
+
+            for (; id < message.Body.CurrentTickId; id++)
             {
                 _ticks.Enqueue(Tick.Empty(id));
             }

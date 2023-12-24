@@ -1,10 +1,11 @@
-﻿using System.Diagnostics;
+﻿using System.Collections;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
-    public sealed class TickBuffer
+    public sealed class TickBuffer : IEnumerable<Tick>
     {
         [DebuggerDisplay("Id: {Data.Id}")]
         private sealed class Node
@@ -88,10 +89,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         private Node? _head;
         private Node? _tail;
+        private Node? _popped;
 
         public Tick? Head => _head?.Data;
         public Tick? Tail => _tail?.Data;
-        public Tick? Popped { get; private set; }
+        public Tick? Popped => _popped?.Data;
 
         public int Count { get; private set; }
 
@@ -126,6 +128,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             if (_head.Id == id)
             {
                 tick = _head.Data;
+                _popped = _head;
+
                 _head = _head.Child;
 
                 if (_head is null)
@@ -133,8 +137,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                     _tail = null;
                 }
 
-                this.Popped = tick;
                 this.Count--;
+
                 return true;
             }
 
@@ -189,7 +193,115 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         {
             _head = null;
             _tail = null;
+            _popped = null;
+
             this.Count = 0;
+        }
+
+        public int? IndexOf(int id)
+        {
+            if(_head is null || id < _head.Id)
+            {
+                return null;
+            }
+
+            int index = 0;
+            Node? node = _head;
+
+            while(node is not null)
+            {
+                if(node.Id > id)
+                {
+                    return null;
+                }
+
+                if(node.Id == id)
+                {
+                    return index;
+                }
+
+                node = node.Child;
+                index++;
+            }
+
+            return null;
+        }
+
+        public Tick? Previous(int id)
+        {
+            if (_head is null || id < _head.Id)
+            {
+                return null;
+            }
+
+            int index = 0;
+            Node? previous = null;
+            Node? node = _head;
+
+            while (node is not null)
+            {
+                if (node.Id > id)
+                {
+                    return null;
+                }
+
+                if (node.Id == id)
+                {
+                    return previous?.Data;
+                }
+
+                previous = node;
+                node = node.Child;
+                index++;
+            }
+
+            return null;
+        }
+
+        public Tick? Next(int id)
+        {
+            if (_head is null || id < _head.Id)
+            {
+                return null;
+            }
+
+            int index = 0;
+            Node? node = _head;
+
+            while (node is not null)
+            {
+                if (node.Id > id)
+                {
+                    return null;
+                }
+
+                if (node.Id == id)
+                {
+                    return node.Child?.Data;
+                }
+
+                node = node.Child;
+                index++;
+            }
+
+            return null;
+        }
+
+        public IEnumerator<Tick> GetEnumerator()
+        {
+            Node? node = _head;
+
+            while(node is not null)
+            {
+                yield return node.Data;
+
+                node = node.Child;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 }
