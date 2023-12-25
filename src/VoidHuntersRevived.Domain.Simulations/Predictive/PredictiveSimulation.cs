@@ -1,4 +1,4 @@
-﻿using Autofac;
+using Autofac;
 using Guppy.Common.Collections;
 using Microsoft.Xna.Framework;
 using System.Diagnostics.CodeAnalysis;
@@ -98,7 +98,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         {
             if (!@event.Data.IsPredictable)
             {
+#if DEBUG
                 this.logger.Verbose("{ClassName}::{MethodName} - Unable to predict {EventName}, {EventId}; IsPredictable = {IsPredictable}.", nameof(PredictiveSimulation), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value, @event.Data.IsPredictable);
+#endif
                 return;
             }
 
@@ -108,7 +110,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
                 return;
             }
 
+#if DEBUG
             this.logger.Verbose("{ClassName}::{MethodName} - Predicting event {EventName}, {EventId}", nameof(PredictiveSimulation), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value);
+#endif
 
             base.Publish(@event);
         }
@@ -117,7 +121,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         {
             while (_confirmedEvents.TryDequeue(out EventDto? confirmedEvent))
             {
+#if DEBUG
                 this.logger.Verbose("{ClassName}::{MethodName} - Confirming Event {EventName}, {EventId}", nameof(PredictiveSimulation), nameof(Confirm), confirmedEvent.Data.GetType().Name, confirmedEvent.Id.Value);
+#endif
 
                 if (!_predictedEvents.TryGet(confirmedEvent.Id, out PredictedEvent? published))
                 {
@@ -150,3 +156,4 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         }
     }
 }
+

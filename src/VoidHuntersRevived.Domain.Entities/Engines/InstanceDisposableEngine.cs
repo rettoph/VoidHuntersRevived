@@ -1,4 +1,4 @@
-﻿using Serilog;
+using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
 
@@ -30,9 +30,12 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
+#if DEBUG
                 _logger.Verbose("{ClassName}<{TName}>::{MethodName} - Disposing of {ComponentType} for {VhId}", nameof(InstanceDisposableEngine<T>), _tName, nameof(Remove), _tName, ids[index].VhId.Value);
+#endif
                 components[index].Dispose();
             }
         }
     }
 }
+

@@ -1,4 +1,4 @@
-﻿using Guppy.Attributes;
+using Guppy.Attributes;
 using Guppy.Common.Attributes;
 using Serilog;
 using Svelto.ECS;
@@ -49,7 +49,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         public void OnDespawn(EntityId id, ref Tree component, in GroupIndex groupIndex)
         {
+#if DEBUG
             _logger.Verbose("{ClassName}::{MethodName} - Despawning Tree {TreeId}, HeadId = {HeadId}", nameof(TreeEngine), nameof(OnDespawn), id.VhId, component.HeadId.VhId);
+#endif
             _entities.Despawn(component.HeadId);
         }
 
@@ -86,3 +88,4 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         }
     }
 }
+

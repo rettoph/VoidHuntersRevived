@@ -1,4 +1,4 @@
-﻿using Guppy.Resources.Providers;
+using Guppy.Resources.Providers;
 using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
@@ -46,7 +46,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             {
                 try
                 {
+#if DEBUG
                     _logger.Verbose("{ClassName}::{MethodName} - Preparing to create {BluePrint} instance for {BlueprintId} ({BlueprintName})", nameof(BlueprintService), nameof(TryGetByDto), nameof(IBlueprint), blueprintDto.Id, blueprintDto.Name);
+#endif
                     blueprintInstance = new Blueprint(blueprintDto, _pieces);
                 }
                 catch (Exception e)
@@ -63,3 +65,4 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         }
     }
 }
+

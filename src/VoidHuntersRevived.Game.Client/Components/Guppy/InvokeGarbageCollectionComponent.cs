@@ -1,4 +1,4 @@
-﻿using Guppy;
+using Guppy;
 using Guppy.Attributes;
 using Guppy.Messaging;
 using Serilog;
@@ -45,12 +45,16 @@ namespace VoidHuntersRevived.Game.Client.Components.Guppy
             }
 
             long preAllocatedBytes = GC.GetTotalMemory(true);
+#if DEBUG
             _logger.Debug("{ClassName}::{MethodName} - Invoking garbage collection.", nameof(InvokeGarbageCollectionComponent), nameof(Process));
+#endif
             GC.Collect();
             GC.WaitForPendingFinalizers();
             long postAllocatedBytes = GC.GetTotalMemory(true);
 
+#if DEBUG
             _logger.Debug("{ClassName}::{MethodName} - Done. Cleared {Memory}", nameof(InvokeGarbageCollectionComponent), nameof(Process), BytesToString(preAllocatedBytes - postAllocatedBytes));
+#endif
 
             _lastInvocation = DateTime.Now;
         }
@@ -67,3 +71,4 @@ namespace VoidHuntersRevived.Game.Client.Components.Guppy
         }
     }
 }
+

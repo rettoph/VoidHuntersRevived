@@ -1,4 +1,4 @@
-﻿using Serilog;
+using Serilog;
 using System.Runtime.CompilerServices;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Services;
@@ -60,7 +60,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
 
         private void Publish(in VhId id, T data)
         {
+#if DEBUG
             _logger.Verbose("{ClassName}::{MethodName} - Publishing Event {EventId} {EventType}", nameof(EventPublisher), nameof(Publish), id.Value, typeof(T).Name);
+#endif
 
             foreach (IEventEngine<T> subscriber in _subscribers)
             {
@@ -80,7 +82,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
                 return;
             }
 
+#if DEBUG
             _logger.Verbose("{ClassName}::{MethodName} - Reverting Event {EventId} {EventType}", nameof(EventPublisher), nameof(Revert), id.Value, typeof(T).Name);
+#endif
             foreach (IRevertEventEngine<T> reverter in _reverters)
             {
                 reverter.Revert(id, data);
@@ -88,3 +92,4 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
         }
     }
 }
+

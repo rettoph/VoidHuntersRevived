@@ -1,4 +1,4 @@
-﻿using Serilog;
+using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using VoidHuntersRevived.Common;
@@ -40,7 +40,9 @@ namespace VoidHuntersRevived.Domain.Physics
         {
             if (_bodies.TryGetValue(id.VhId, out Body? cached) == false)
             {
+#if DEBUG
                 _logger.Verbose("{ClassName}::{MethodName} - Enabling {Id}", nameof(Space), nameof(EnableBody), id.VhId);
+#endif
                 Body body = new Body(this, id);
                 _bodies.Add(id.VhId, body);
                 this.OnBodyAwakeChanged(body);
@@ -52,7 +54,9 @@ namespace VoidHuntersRevived.Domain.Physics
         {
             if (_bodies.Remove(id.VhId, out var body))
             {
+#if DEBUG
                 _logger.Verbose("{ClassName}::{MethodName} - Disabling {Id}", nameof(Space), nameof(EnableBody), id.VhId);
+#endif
                 body!.Dispose();
                 this.OnBodyDisabled?.Invoke(body);
             }

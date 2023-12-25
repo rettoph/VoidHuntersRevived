@@ -41,20 +41,63 @@ function Publish-VoidHunters()
         [VoidHuntersRuntimeIdentifier]$runtime = [VoidHuntersRuntimeIdentifier]::win_x64,
         [bool]$selfContained = $false,
         [bool]$singleFile = $false,
-        [bool]$cleanup = $false
+        [bool]$cleanup = $false,
+        [bool]$addLoggerConditionals = $true,
+        [bool]$logOutput = $true
     )
 
     $path = GetVoidHuntersProjectPath $project
     $rid = VoidHuntersRuntimeIdentifierString $runtime
-    $directory = $PSScriptRoot + "\..\..\publish\" + $rid + "\" + $project
+    $directory = $PSScriptRoot + "\..\..\publish\" + $rid + "\" + $configuration + "\" + $project + "\"
 
 	if(Test-Path $directory)
 	{
 		Remove-Item $directory\* -Recurse -Force
 	}
 
+    if($addLoggerConditionals)
+    {
+        Write-Information $SourcePath
+        $files = Get-ChildItem $SourcePath -Recurse -Include "*.cs"
+        foreach ($file in $files)
+        {
+            $content = Get-Content -Path $file.FullName -Raw
+            $contentMatches = [regex]::Matches($content, "(?<!#if DEBUG\n)(?<!#if DEBUG\r\n)^( |\t|)*.*logger\.(Verbose|Debug)\(.*?\);(\n|\r\n)", [Text.RegularExpressions.RegexOptions]'Multiline')
+            
+            if($contentMatches.Count -gt 0)
+            {
+                $start = "#if DEBUG`n";
+                $end = "#endif`n"
+                $index = 0;
+                $newContent = $content;
+                foreach($contentMatch in $contentMatches)
+                {
+                    if($logOutput)
+                    {
+                        "Adding conditionals to  logger.Verbose invocation in " + $file.Name + " at " + $contentMatch.Index + ", '" + $contentMatch.Value + "'"
+                    }
+                    $offset = $contentMatch.Index + (($start.Length + $end.Length) * $index);
+                    $newContent = $newContent.Insert($offset, $start)
+                    $newContent = $newContent.Insert($offset + $start.Length + $contentMatch.Length, $end);
+
+                    $index = $index + 1;
+                }
+
+                Set-Content -Path $file.FullName -Value $newContent
+            }
+        }
+    }
+
     $build = "dotnet publish $path -c $configuration -r $rid -p:PublishSingleFile=$singleFile --self-contained $selfContained -o $directory"
-    $output = & Invoke-Expression $build
+    if($logOutput)
+    {
+        Invoke-Expression $build
+    }
+    else 
+    {
+        $output = & Invoke-Expression $build
+    }
+    
 	
     if($cleanup)
     {

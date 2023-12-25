@@ -1,4 +1,4 @@
-﻿using Guppy.Attributes;
+using Guppy.Attributes;
 using Guppy.Common.Collections;
 using Serilog;
 using Svelto.ECS;
@@ -40,7 +40,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         public void OnSpawn(EntityId id, ref Node node, in GroupIndex groupIndex)
         {
+#if DEBUG
             _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(NodeEngine), nameof(OnSpawn), id.VhId);
+#endif
 
             ref var filter = ref _entities.GetFilter<Node>(node.TreeId, Tree.NodeFilterContextId);
             filter.Add(id, groupIndex);
@@ -56,7 +58,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         public void OnDespawn(EntityId id, ref Node node, in GroupIndex groupIndex)
         {
+#if DEBUG
             _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(NodeEngine), nameof(OnDespawn), id.VhId);
+#endif
 
             ref var filter = ref _entities.GetFilter<Node>(node.TreeId, Tree.NodeFilterContextId);
             filter.Remove(id.EGID);
@@ -84,7 +88,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         private void SetLocalTransformation(ref Node node, in GroupIndex groupIndex, in Location treeLocation)
         {
+#if DEBUG
             _logger.Verbose("{ClassName}::{MethodName} - Preparing to set {LocalTransformation} for {Node} {NodeId}", nameof(NodeEngine), nameof(SetLocalTransformation), nameof(Node.LocalLocation), nameof(Node), node.Id.VhId.Value);
+#endif
 
             node.WorldTransform(treeLocation.Transformation);
 
@@ -119,3 +125,4 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         }
     }
 }
+

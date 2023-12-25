@@ -1,4 +1,4 @@
-﻿using Serilog;
+using Serilog;
 using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
@@ -30,7 +30,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
         public Socket GetSocket(SocketId socketId)
         {
+#if DEBUG
             _logger.Verbose("{ClassName}::{MethodName} - Locating {NodeId}:{SocketIndex} - Node EGID {EntityId}:{GroupId}", nameof(SocketService), nameof(GetSocket), socketId.NodeId.VhId.Value, socketId.Index, socketId.NodeId.EGID.entityID, socketId.NodeId.EGID.groupID);
+#endif
 
             ref Node node = ref _entities.QueryById<Node>(socketId.NodeId, out GroupIndex groupIndex);
             var (socketIds, socketLocations, _) = _entities.QueryEntities<Sockets<SocketId>, Sockets<Location>>(groupIndex.GroupID);
@@ -142,3 +144,4 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         }
     }
 }
+

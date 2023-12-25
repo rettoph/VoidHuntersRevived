@@ -1,4 +1,4 @@
-﻿using Svelto.ECS;
+using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
@@ -19,7 +19,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     {
         public EntityId Spawn(IEntityType type, VhId vhid, Id<ITeam> teamId, EntityInitializerDelegate? initializer)
         {
+#if DEBUG
             _logger.Verbose("{ClassName}::{MethodName} - EntityVhId = {EntityVhId}", nameof(EntityService), nameof(Spawn), vhid);
+#endif
 
             this.Simulation.Publish(NameSpace<EntityService>.Instance, new SpawnEntity()
             {
@@ -34,7 +36,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Despawn(VhId vhid)
         {
+#if DEBUG
             _logger.Verbose("{ClassName}::{MethodName} - EntityVhId = {EntityVhId}", nameof(EntityService), nameof(Despawn), vhid);
+#endif
             this.Simulation.Publish(NameSpace<EntityService>.Instance, new SoftDespawnEntity()
             {
                 VhId = vhid
@@ -52,7 +56,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             while (_modifications.TryDequeue(out EntityModificationRequest request))
             {
+#if DEBUG
                 _logger.Verbose("{ClassName}::{MethodName} - EntityModificationType = {EntityModificationType}, EntityId = {EntityId}", nameof(EntityService), nameof(Flush), request.ModificationType, request.Id.VhId);
+#endif
 
                 switch (request.ModificationType)
                 {
@@ -256,3 +262,4 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         }
     }
 }
+
