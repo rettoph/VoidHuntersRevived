@@ -1,10 +1,10 @@
 Import-Module -Name ($PSScriptRoot + "\source-module.ps1") -Force
 
-class VoidHuntersOverride
+class VoidHuntersEditor
 {
     [hashtable]$originals
 
-    VoidHuntersOverride()
+    VoidHuntersEditor()
     {
         $this.originals = @{}
     }
@@ -26,7 +26,7 @@ class VoidHuntersOverride
             $this.originals.Add($file.FullName, $this.GetContent($file))
         }
 
-        Set-Content -Path $file.FullName -Value ([byte[]][char[]]$content) -AsByteStream
+        [IO.File]::WriteAllText($file.FullName, $content, [Text.Encoding]::UTF8)
     }
 
     [void] RemoveAll([string]$regex)
@@ -54,15 +54,10 @@ class VoidHuntersOverride
 
     [void] Reset()
     {
-        foreach($kvp in $this.originals)
+        foreach($kvp in $this.originals.GetEnumerator())
         {
-            Set-Content -Path $kvp.key -Value ([byte[]][char[]]$kvp.value) -AsByteStream
+            [IO.File]::WriteAllText($kvp.key, $kvp.value, [Text.Encoding]::UTF8)
         }
     }
 }
-
-
-$override = [VoidHuntersOverride]::new()
-
-$override.RemoveAll('^( |\t)*?.*?(l|L)ogger\.Verbose\(.*?\);\s*$')
 

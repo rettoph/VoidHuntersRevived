@@ -1,4 +1,46 @@
-Import-Module -Name ($PSScriptRoot + "\modules\publish-module.ps1") -Force
+Import-Module -Name ($PSScriptRoot + "\refresh-modules.ps1") -Force
 
-Publish-VoidHunters Client Release win_x64 $true $true $true $true
-Publish-VoidHunters Server Release win_x64 $true $true $true
+###############################################
+#                CONFIGURATION                #
+###############################################
+$projects = @( [VoidHuntersProject]::Client, [VoidHuntersProject]::Server )
+$rids = [VoidHuntersRuntimeIdentifier].GetEnumValues()
+$configuration = [VoidHuntersConfiguration]::Release
+$selfContained = $true
+$singleFile = $true
+$cleanup = $true
+$zip = $true
+$resetPublishFolder = $true
+
+###############################################
+#                 DANGER ZONE                 #
+###############################################
+if($resetPublishFolder -eq $true)
+{
+    $publishDirectory = $PSScriptRoot + "\..\publish"
+    if(Test-Path $publishDirectory)
+    {
+        Remove-Item $publishDirectory\* -Recurse -Force
+    }
+}
+
+if($configuration -eq [VoidHuntersConfiguration]::Release)
+{
+    $editor = [VoidHuntersEditor]::new()
+
+    # Remove all Verbose logger calls
+    $editor.RemoveAll('^( |\t)*?.*?(l|L)ogger\.Verbose\(.*?\);\s*$')
+}
+
+foreach($project in $projects)
+{
+    foreach($rid in $rids)
+    {
+        Publish-VoidHunters -project $project -configuration $configuration -runtime $rid -selfContained $selfContained -singleFile $singleFile -cleanup $cleanup -zip $zip
+    }
+}
+
+if($configuration -eq [VoidHuntersConfiguration]::Release)
+{
+    $editor.Reset()
+}

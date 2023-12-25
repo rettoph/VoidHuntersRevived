@@ -42,67 +42,38 @@ function Publish-VoidHunters()
         [bool]$selfContained = $false,
         [bool]$singleFile = $false,
         [bool]$cleanup = $false,
-        [bool]$addLoggerConditionals = $true,
-        [bool]$logOutput = $true
+        [bool]$zip = $false
     )
 
     $path = GetVoidHuntersProjectPath $project
     $rid = VoidHuntersRuntimeIdentifierString $runtime
-    $directory = $PSScriptRoot + "\..\..\publish\" + $rid + "\" + $configuration + "\" + $project + "\"
+    $directory = $PSScriptRoot + "\..\..\publish\" + $project + "\" + $configuration + "\" + $rid + "\"
 
 	if(Test-Path $directory)
 	{
 		Remove-Item $directory\* -Recurse -Force
 	}
 
-    if($addLoggerConditionals)
-    {
-        Write-Information $SourcePath
-        $files = Get-ChildItem $SourcePath -Recurse -Include "*.cs"
-        foreach ($file in $files)
-        {
-            $content = Get-Content -Path $file.FullName -Raw
-            $contentMatches = [regex]::Matches($content, "(?<!#if DEBUG\n)(?<!#if DEBUG\r\n)^( |\t|)*.*logger\.(Verbose|Debug)\(.*?\);(\n|\r\n)", [Text.RegularExpressions.RegexOptions]'Multiline')
-            
-            if($contentMatches.Count -gt 0)
-            {
-                $start = "#if DEBUG`n";
-                $end = "#endif`n"
-                $index = 0;
-                $newContent = $content;
-                foreach($contentMatch in $contentMatches)
-                {
-                    if($logOutput)
-                    {
-                        "Adding conditionals to  logger.Verbose invocation in " + $file.Name + " at " + $contentMatch.Index + ", '" + $contentMatch.Value + "'"
-                    }
-                    $offset = $contentMatch.Index + (($start.Length + $end.Length) * $index);
-                    $newContent = $newContent.Insert($offset, $start)
-                    $newContent = $newContent.Insert($offset + $start.Length + $contentMatch.Length, $end);
-
-                    $index = $index + 1;
-                }
-
-                Set-Content -Path $file.FullName -Value $newContent
-            }
-        }
-    }
-
     $build = "dotnet publish $path -c $configuration -r $rid -p:PublishSingleFile=$singleFile --self-contained $selfContained -o $directory"
-    if($logOutput)
-    {
-        Invoke-Expression $build
-    }
-    else 
-    {
-        $output = & Invoke-Expression $build
-    }
-    
-	
+    Invoke-Expression $build
+    	
     if($cleanup)
     {
         Remove-Item $directory\*.pdb -Recurse -Force
         Remove-Item $directory\*.xml -Recurse -Force
+    }
+
+    if($zip)
+    {
+        $zipPath = $PSScriptRoot + "\..\..\publish\VoidHuntersRevived_" + ($project.ToString() + "_" + $configuration + "_" + $rid).ToLower() + ".zip"
+        if(Test-Path $zipPath)
+        {
+            Remove-Item $zipPath -Force
+        }
+        
+        Compress-Archive ($directory + "\*") -DestinationPath $zipPath
+        
+        return $zipPath 
     }
 
     return Resolve-Path $directory
