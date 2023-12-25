@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
             {
                 tick = Tick.Empty(id, queue);
 
-                if (tick.Hash != hash)
+                if(tick.Hash != hash)
                 {
                     throw new Exception();
                 }

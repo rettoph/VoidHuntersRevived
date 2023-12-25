@@ -1,4 +1,4 @@
-using Svelto.ECS;
+﻿using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Descriptors;
@@ -45,9 +45,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             EntityReaderState readerState = reader.GetState();
 
-#if DEBUG
             _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityService), nameof(Deserialize), vhid.Value, typeId.Value, options.Seed.Value);
-#endif
 
             SpawnEntity createEntityEvent = new SpawnEntity()
             {
@@ -69,4 +67,3 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         }
     }
 }
-

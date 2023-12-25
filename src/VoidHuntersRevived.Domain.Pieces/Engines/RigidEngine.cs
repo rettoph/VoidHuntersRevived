@@ -1,4 +1,4 @@
-using Guppy.Attributes;
+﻿using Guppy.Attributes;
 using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
@@ -51,9 +51,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                         Node node = nodes[index];
                         Rigid rigid = rigids[index];
 
-#if DEBUG
                         _logger.Verbose("{ClassName}::{MethodName} - BodyId = {BodyId}, NodeId = {EntityId}", nameof(RigidEngine), nameof(HandleBodyEnabled), body.Id.VhId, node.Id.VhId);
-#endif
                         this.CreateFixtures(body, node, rigid);
                     }
                 }
@@ -62,9 +60,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         public void OnSpawn(EntityId id, ref Rigid component, in GroupIndex groupIndex)
         {
-#if DEBUG
             _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(RigidEngine), nameof(OnSpawn), id.VhId);
-#endif
 
             Node node = _entities.QueryByGroupIndex<Node>(groupIndex);
 
@@ -84,9 +80,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         public void OnDespawn(EntityId id, ref Rigid component, in GroupIndex groupIndex)
         {
-#if DEBUG
             _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(RigidEngine), nameof(OnDespawn), id.VhId);
-#endif
 
             Node node = _entities.QueryByGroupIndex<Node>(groupIndex);
 
@@ -116,9 +110,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             for (int i = 0; i < rigid.Shapes.count; i++)
             {
                 VhId rigidShapeId = node.Id.VhId.Create(i);
-#if DEBUG
                 _logger.Verbose("{ClassName}::{MethodName} - Creating fixture for tree {TreeId}; NodeId = {NodeId}, RigidShapeId = {RigidShapeId}", nameof(RigidEngine), nameof(CreateFixtures), body.Id.VhId, node.Id.VhId, rigidShapeId);
-#endif
                 body.Create(rigidShapeId, node.Id, rigid.Shapes[i], node.LocalLocation.Transformation);
             }
         }
@@ -128,12 +120,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             for (int i = 0; i < rigid.Shapes.count; i++)
             {
                 VhId rigidShapeId = node.Id.VhId.Create(i);
-#if DEBUG
                 _logger.Verbose("{ClassName}::{MethodName} - Destroying fixture for tree {TreeId}; NodeId = {NodeId}, RigidShapeId = {RigidShapeId}", nameof(RigidEngine), nameof(DestroyFixtures), body.Id.VhId, node.Id.VhId, rigidShapeId);
-#endif
                 body.Destroy(rigidShapeId);
             }
         }
     }
 }
-

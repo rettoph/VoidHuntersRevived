@@ -1,4 +1,4 @@
-using VoidHuntersRevived.Common;
+﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
@@ -39,9 +39,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         private void EnqueuEntityModification(EntityModificationRequest request)
         {
-#if DEBUG
             _logger.Verbose("{ClassName}::{MethodName} - EntityModificationType = {EntityModificationType}, EntityId = {EntityId}", nameof(EntityService), nameof(EnqueuEntityModification), request.ModificationType, request.Id.VhId);
-#endif
             _modifications.Enqueue(request);
         }
 
@@ -56,4 +54,3 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         }
     }
 }
-
