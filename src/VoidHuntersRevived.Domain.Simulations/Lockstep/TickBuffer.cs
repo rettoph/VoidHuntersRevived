@@ -68,12 +68,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             {
                 if (child.Data.Id == Data.Id)
                 {
-                    if(Data.Hash != child.Data.Hash)
+                    if (Data.Hash != child.Data.Hash)
                     {
                         Data = child.Data;
                         return EnqueueTickResponse.DuplicateMismatch;
                     }
-                    
+
                     return EnqueueTickResponse.DuplicateMatch;
                 }
 
@@ -186,7 +186,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             {
                 var old = _head;
                 _head = node;
-                if((response = _head.Add(old)) == EnqueueTickResponse.Enqueued)
+                if ((response = _head.Add(old)) == EnqueueTickResponse.Enqueued)
                 {
                     this.UpdateTail();
                     this.Count++;
@@ -195,7 +195,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                 return response;
             }
 
-            if((response = _head.Add(node)) == EnqueueTickResponse.Enqueued)
+            if ((response = _head.Add(node)) == EnqueueTickResponse.Enqueued)
             {
                 this.UpdateTail();
                 this.Count++;
@@ -225,7 +225,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public int? IndexOf(int id)
         {
-            if(_head is null || id < _head.Id)
+            if (_head is null || id < _head.Id)
             {
                 return null;
             }
@@ -233,14 +233,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             int index = 0;
             Node? node = _head;
 
-            while(node is not null)
+            while (node is not null)
             {
-                if(node.Id > id)
+                if (node.Id > id)
                 {
                     return null;
                 }
 
-                if(node.Id == id)
+                if (node.Id == id)
                 {
                     return index;
                 }
@@ -312,7 +312,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         {
             Node? node = _head;
 
-            while(node is not null)
+            while (node is not null)
             {
                 yield return node.Data;
 
