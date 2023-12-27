@@ -1,12 +1,5 @@
-﻿using Autofac;
-using Guppy.Common;
-using System.Numerics;
-using System.Runtime;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using System.Runtime;
 using VoidHuntersRevived.Application.Client;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.FixedPoint.Extensions;
 
 // using (var game = new VoidHuntersGame())
 //     game.Run();
@@ -16,6 +9,9 @@ Console.ResetColor();
 
 try
 {
+    Console.WriteLine("Enter to begin");
+    Console.ReadLine();
+
     GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
     //GC.TryStartNoGCRegion(256 * 1024 * 1024);
     using (var game = new VoidHuntersGame())

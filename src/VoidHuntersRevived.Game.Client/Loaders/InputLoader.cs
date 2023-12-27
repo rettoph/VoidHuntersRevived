@@ -43,6 +43,12 @@ namespace VoidHuntersRevived.Game.Client.Loaders
             {
                 (ButtonState.Released, new Input_Invoke_Garbage_Collection())
             });
+
+            services.RegisterInput(Inputs.SpamClick, Keys.NumPad0, new (ButtonState, IInput)[]
+            {
+                (ButtonState.Pressed, Input_Spam_Click.True),
+                (ButtonState.Released, Input_Spam_Click.False),
+            });
         }
 
         private static void AddSetDirectionInput(ContainerBuilder services, string key, Keys defaultSource, Direction direction)

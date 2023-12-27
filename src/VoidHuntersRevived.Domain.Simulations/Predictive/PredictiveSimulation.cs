@@ -7,6 +7,7 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Domain.Simulations.Messages;
 using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations.Predictive
@@ -117,6 +118,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         {
             while (_confirmedEvents.TryDequeue(out EventDto? confirmedEvent))
             {
+                if (confirmedEvent.Data is EndOfTick endOfTick)
+                {
+                    this.logger.Verbose("{ClassName}::{MethodName} - End of Tick {TickId}", nameof(PredictiveSimulation), nameof(Confirm), endOfTick.TickId);
+
+                    break;
+                }
+
                 this.logger.Verbose("{ClassName}::{MethodName} - Confirming Event {EventName}, {EventId}", nameof(PredictiveSimulation), nameof(Confirm), confirmedEvent.Data.GetType().Name, confirmedEvent.Id.Value);
 
                 if (!_predictedEvents.TryGet(confirmedEvent.Id, out PredictedEvent? published))
@@ -132,7 +140,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
         private void HandleLockstepEvent(EventDto @event)
         {
-            if (@event.Data.IsLocalOnly)
+            if (@event.Data.IsPrivate == false)
             {
                 _confirmedEvents.Enqueue(@event);
             }

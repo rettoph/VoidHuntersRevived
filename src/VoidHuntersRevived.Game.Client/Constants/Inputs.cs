@@ -16,5 +16,7 @@
         public const string ToggleLockstepWireframe = "toggle_lockstep_wireframe";
         public const string ToggleFps = "toggle_fps";
         public const string InvokeGarbageCollection = "invoke_garbage_collection";
+
+        public const string SpamClick = "spam_click";
     }
 }

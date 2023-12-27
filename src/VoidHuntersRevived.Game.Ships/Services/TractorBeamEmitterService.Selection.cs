@@ -24,31 +24,42 @@ namespace VoidHuntersRevived.Game.Ships.Services
     {
         public void Select(EntityId tractorBeamEmitterId, EntityId nodeId)
         {
-            if (!_entities.IsSpawned(nodeId, out GroupIndex nodeGroupIndex))
+            if (_entities.IsSpawned(nodeId, out GroupIndex nodeGroupIndex))
             {
-                _logger.Warning("{ClassName}::{MethodName} - Entity {EntityVhId} does not exist", nameof(TractorBeamEmitterService), nameof(Select), nodeId.VhId.Value);
-                return;
-            }
-
-            ref Node node = ref _entities.QueryByGroupIndex<Node>(nodeGroupIndex);
-
-            this.Simulation.Publish(
-                sender: NameSpace<TractorBeamEmitterService>.Instance,
-                data: new TractorBeamEmitter_Select()
+                ref Node node = ref _entities.QueryByGroupIndex<Node>(nodeGroupIndex);
+                if (_entities.IsSpawned(node.TreeId))
                 {
-                    TractorBeamEmitterVhId = tractorBeamEmitterId.VhId,
-                    TargetData = _entities.Serialize(nodeId, SerializationOptions.Default),
-                    Location = node.Transformation.ToLocation()
-                });
+                    _logger.Verbose("{ClassName}::{MethodName} - Selecting {NodeId} with TractorBeamEmitter {TractorBeamEmitterId}", nameof(TractorBeamEmitterService), nameof(Select), nodeId.VhId, tractorBeamEmitterId.VhId);
+
+                    this.Simulation.Publish(
+                        sender: NameSpace<TractorBeamEmitterService>.Instance,
+                        data: new TractorBeamEmitter_Select()
+                        {
+                            TractorBeamEmitterVhId = tractorBeamEmitterId.VhId,
+                            TargetData = _entities.Serialize(nodeId, SerializationOptions.Default),
+                            Location = node.Transformation.ToLocation()
+                        });
 
 
-            if (_nodes.IsHead(in node))
-            {
-                _entities.Despawn(node.TreeId);
+                    if (_nodes.IsHead(in node))
+                    {
+                        _logger.Verbose("{ClassName}::{MethodName} - Despawning Node {NodeVhId} Tree {TreeId}", nameof(TractorBeamEmitterService), nameof(Select), nodeId.VhId, node.TreeId.VhId);
+                        _entities.Despawn(node.TreeId);
+                    }
+                    else
+                    {
+                        _logger.Verbose("{ClassName}::{MethodName} - Despawning Node {NodeVhId}", nameof(TractorBeamEmitterService), nameof(Select), nodeId.VhId);
+                        _entities.Despawn(nodeId);
+                    }
+                }
+                else
+                {
+                    _logger.Warning("{ClassName}::{MethodName} - Node {NodeId} Tree {TreeId} does not exist", nameof(TractorBeamEmitterService), nameof(Select), nodeId.VhId, node.TreeId.VhId);
+                }
             }
             else
             {
-                _entities.Despawn(nodeId);
+                _logger.Warning("{ClassName}::{MethodName} - Node {NodeId} does not exist", nameof(TractorBeamEmitterService), nameof(Select), nodeId.VhId);
             }
         }
 

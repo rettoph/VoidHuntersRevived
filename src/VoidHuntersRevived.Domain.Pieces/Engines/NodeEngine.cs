@@ -75,7 +75,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 {
                     this.Simulation.Publish(cleanTreeEventSender, new Tree_Clean()
                     {
-                        IsLocalOnly = false,
+                        IsPrivate = true,
                         TreeId = dirtyTreeId.VhId
                     });
                 }

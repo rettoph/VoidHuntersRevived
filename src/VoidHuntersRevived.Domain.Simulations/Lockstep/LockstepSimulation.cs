@@ -9,6 +9,7 @@ using VoidHuntersRevived.Common.Constants;
 using VoidHuntersRevived.Common.Entities.Extensions;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Messages;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
@@ -92,6 +93,15 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             {
                 this.Publish(@event);
             }
+
+            this.OnEvent?.Invoke(new EventDto()
+            {
+                Sender = NameSpace<LockstepSimulation>.Instance,
+                Data = new EndOfTick()
+                {
+                    TickId = tick.Id
+                }
+            });
 
             _history.Add(tick);
         }

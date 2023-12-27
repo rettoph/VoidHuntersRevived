@@ -34,8 +34,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
     internal class InputEngine : BasicEngine,
         IInputSubscriber<Input_Helm_SetDirection>,
         IInputSubscriber<Input_TractorBeamEmitter_SetActive>,
+        IInputSubscriber<Input_Spam_Click>,
         IStepEngine<Tick>
     {
+        private bool _spamClick;
+
         private readonly ClientPeer _client;
         private readonly Camera2D _camera;
         private readonly ISimulationService _simulations;
@@ -152,6 +155,16 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
+            if (_spamClick)
+            {
+                int count = Random.Shared.Next(0, 5);
+                for (int i = 0; i < count; i++)
+                {
+                    this.Process(Guid.NewGuid(), new Input_TractorBeamEmitter_SetActive(true));
+                    this.Process(Guid.NewGuid(), new Input_TractorBeamEmitter_SetActive(false));
+                }
+            }
+
             ref Tactical tactical = ref _entities.QueryById<Tactical>(localShipId);
             if (tactical.Uses == 0)
             {
@@ -166,6 +179,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     Value = (FixVector2)this.CurrentTargetPosition,
                     Snap = false
                 });
+        }
+
+        public void Process(in Guid messageId, Input_Spam_Click message)
+        {
+            _spamClick = message.Value;
         }
     }
 }

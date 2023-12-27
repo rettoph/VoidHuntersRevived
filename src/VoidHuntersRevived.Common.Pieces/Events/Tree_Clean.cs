@@ -6,7 +6,7 @@ namespace VoidHuntersRevived.Common.Pieces.Events
     public class Tree_Clean : IEventData
     {
         public bool IsPredictable => true;
-        public bool IsLocalOnly { get; init; } = true;
+        public bool IsPrivate { get; init; } = false;
 
         public required VhId TreeId { get; init; }
 
