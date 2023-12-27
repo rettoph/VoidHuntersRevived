@@ -55,7 +55,7 @@ function Publish-VoidHunters()
 	}
 
     $build = "dotnet publish $path -c $configuration -r $rid -p:PublishSingleFile=$singleFile --self-contained $selfContained -o $directory"
-    Invoke-Expression $build
+    & Invoke-Expression $build | Out-Null
     	
     if($cleanup)
     {
