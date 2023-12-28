@@ -89,6 +89,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
                         continue;
                     }
 
+                    _logger.Verbose("{ClassName}::{MethodName} - Attempting to deselect {TreeId} with emitter {TractorBeamEmitterId}", nameof(TractorBeamEmitterService), nameof(Deselect), entityIds[index].VhId.Value, tractorBeamEmitterId.VhId);
                     this.Simulation.Publish(
                         sender: NameSpace<TractorBeamEmitterService>.Instance,
                         data: new TractorBeamEmitter_Deselect()

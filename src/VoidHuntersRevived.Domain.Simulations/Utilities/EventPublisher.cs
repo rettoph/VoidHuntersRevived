@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
                         subscriptions[subscriberType.GenericTypeArguments[0]] = subSystems = new List<IEventEngine>();
                     }
 
-                    subSystems.Add(system); ;
+                    subSystems.Add(system);
                 }
             }
 

@@ -5,7 +5,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
     internal class PredictedEvent
     {
-        public static readonly TimeSpan Lifetime = TimeSpan.FromSeconds(5);
+        public static readonly TimeSpan Lifetime = TimeSpan.FromSeconds(1);
 
         private EventDto _event = null!;
 

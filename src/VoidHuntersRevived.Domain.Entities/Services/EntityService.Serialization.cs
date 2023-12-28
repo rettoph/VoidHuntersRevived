@@ -26,6 +26,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             Id<IEntityType> typeId = this.QueryById<Id<IEntityType>>(id, out GroupIndex groupIndex);
             Id<VoidHuntersEntityDescriptor> descriptorId = this.QueryByGroupIndex<Id<VoidHuntersEntityDescriptor>>(in groupIndex);
 
+            _logger.Verbose("{ClassName}::{MethodName} - Preparing to serialize {EntityId} of type {EntityType}", nameof(EntityService), nameof(Serialize), id.VhId, typeId.Value);
+
             writer.Write(id.VhId);
             writer.WriteStruct(typeId);
             this.GetDescriptorEngine(descriptorId).Serialize(writer, in groupIndex, in options);

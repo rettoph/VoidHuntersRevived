@@ -130,14 +130,15 @@ namespace VoidHuntersRevived.Game.Client.Engines
             else
             {
                 ref Tactical tactical = ref _entities.QueryById<Tactical>(shipId);
+                SocketVhId? attachToSocket = _sockets.TryGetClosestOpenSocket(shipId, tactical.Target, out Socket socket)
+                            ? socket.Id.VhId : null;
 
                 _simulations.Input(
                     sender: eventId,
                     data: new Input_TractorBeamEmitter_Deselect()
                     {
                         ShipVhId = shipId.VhId,
-                        AttachToSocketVhId = _sockets.TryGetClosestOpenSocket(shipId, tactical.Target, out Socket socket)
-                            ? socket.Id.VhId : default
+                        AttachToSocketVhId = attachToSocket
                     });
             }
         }
@@ -157,12 +158,14 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             if (_spamClick)
             {
-                int count = Random.Shared.Next(0, 5);
-                for (int i = 0; i < count; i++)
-                {
-                    this.Process(Guid.NewGuid(), new Input_TractorBeamEmitter_SetActive(true));
-                    this.Process(Guid.NewGuid(), new Input_TractorBeamEmitter_SetActive(false));
-                }
+                this.Process(Guid.NewGuid(), new Input_TractorBeamEmitter_SetActive(true));
+                this.Process(Guid.NewGuid(), new Input_TractorBeamEmitter_SetActive(false));
+                int count = Random.Shared.Next(5, 15);
+                //for (int i = 0; i < count; i++)
+                //{
+                //    this.Process(Guid.NewGuid(), new Input_TractorBeamEmitter_SetActive(true));
+                //    this.Process(Guid.NewGuid(), new Input_TractorBeamEmitter_SetActive(false));
+                //}
             }
 
             ref Tactical tactical = ref _entities.QueryById<Tactical>(localShipId);
