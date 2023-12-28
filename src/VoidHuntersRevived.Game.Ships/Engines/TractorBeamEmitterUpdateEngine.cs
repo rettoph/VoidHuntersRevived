@@ -14,6 +14,7 @@ using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Ships.Components;
 using VoidHuntersRevived.Common.Ships.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Game.Ships.Engines
 {
@@ -93,7 +94,10 @@ namespace VoidHuntersRevived.Game.Ships.Engines
                         {
                             ref EntityId tractorableId = ref entityIds[index];
                             _logger.Warning("{ClassName}::{MethodName} - TractorBeamEmitter = {TractorBeamEmitterId}, Tractorable = {TractorableId}, Enabled = false.", nameof(TractorBeamEmitterUpdateEngine), nameof(UpdateTractorBeamEmitterTractorables), tractorBeamEmitterId.VhId, tractorableId.VhId);
-                            _tractorBeamEmitters.Deselect(tractorBeamEmitterId, null);
+                            _tractorBeamEmitters.Deselect(
+                                sourceId: HashBuilder<TractorBeamEmitterUpdateEngine, VhId>.Instance.Calculate(tractorableId.VhId),
+                                tractorBeamEmitterId: tractorBeamEmitterId,
+                                attachToSocketVhId: null);
                         }
                     }
                     else

@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Serilog;
 using Svelto.ECS;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
@@ -28,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             _logger = logger;
         }
 
-        public void OnSpawn(EntityId id, ref Tractorable tractorable, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, EntityId id, ref Tractorable tractorable, in GroupIndex groupIndex)
         {
             if (tractorable.TractorBeamEmitter == default)
             {
@@ -43,7 +44,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             _logger.Verbose("{ClassName}::{MethodName} - Added tractorable {TractorableId} to emitter {TractorBeamEmitterId}", nameof(TractorableEngine), nameof(OnSpawn), id.VhId.Value, tractorable.TractorBeamEmitter.VhId.Value);
         }
 
-        public void OnDespawn(EntityId id, ref Tractorable tractorable, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, EntityId id, ref Tractorable tractorable, in GroupIndex groupIndex)
         {
             if (tractorable.TractorBeamEmitter == default)
             {

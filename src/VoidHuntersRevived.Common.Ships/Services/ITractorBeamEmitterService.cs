@@ -10,10 +10,10 @@ namespace VoidHuntersRevived.Common.Ships.Services
         ref EntityFilterCollection GetTractorableFilter(EntityId tractorBeamEmitterId);
         bool Query(EntityId tractorBeamEmitterId, FixVector2 target, out Node targetNode);
 
-        void Select(EntityId tractorBeamEmitterId, EntityId nodeId);
+        void Select(VhId sourceId, EntityId tractorBeamEmitterId, EntityId nodeId);
 
         [Obsolete]
-        void Deselect(EntityId tractorBeamEmitterId);
-        void Deselect(EntityId tractorBeamEmitterId, SocketVhId? attachToSocketVhId);
+        void Deselect(VhId sourceId, EntityId tractorBeamEmitterId);
+        void Deselect(VhId sourceId, EntityId tractorBeamEmitterId, SocketVhId? attachToSocketVhId);
     }
 }

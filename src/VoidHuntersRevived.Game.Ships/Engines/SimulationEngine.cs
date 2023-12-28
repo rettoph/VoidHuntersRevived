@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
             {
                 for (int y = -radius; y < radius; y += step)
                 {
-                    _trees.Spawn(eventId.Create(i++), Teams.TeamZero, EntityTypes.Chain, _pieces.All()[i % _pieces.All().Length].EntityType, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+                    _trees.Spawn(eventId, eventId.Create(i++), Teams.TeamZero, EntityTypes.Chain, _pieces.All()[i % _pieces.All().Length].EntityType, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                     {
                         initializer.Init(new Location()
                         {

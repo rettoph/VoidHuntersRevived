@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
         IEventEngine<TractorBeamEmitter_Select>,
         IEventEngine<TractorBeamEmitter_Deselect>
     {
-        public void Select(EntityId tractorBeamEmitterId, EntityId nodeId)
+        public void Select(VhId sourceId, EntityId tractorBeamEmitterId, EntityId nodeId)
         {
             if (_entities.IsSpawned(nodeId, out GroupIndex nodeGroupIndex))
             {
@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
                     _logger.Verbose("{ClassName}::{MethodName} - Selecting {NodeId} with TractorBeamEmitter {TractorBeamEmitterId}", nameof(TractorBeamEmitterService), nameof(Select), nodeId.VhId, tractorBeamEmitterId.VhId);
 
                     this.Simulation.Publish(
-                        sourceId: NameSpace<TractorBeamEmitterService>.Instance,
+                        sourceId: NameSpace<TractorBeamEmitterService>.Instance.Create(sourceId),
                         data: new TractorBeamEmitter_Select()
                         {
                             TractorBeamEmitterVhId = tractorBeamEmitterId.VhId,
@@ -44,12 +44,12 @@ namespace VoidHuntersRevived.Game.Ships.Services
                     if (_nodes.IsHead(in node))
                     {
                         _logger.Verbose("{ClassName}::{MethodName} - Despawning Node {NodeVhId} Tree {TreeId}", nameof(TractorBeamEmitterService), nameof(Select), nodeId.VhId, node.TreeId.VhId);
-                        _entities.Despawn(node.TreeId);
+                        _entities.Despawn(sourceId, node.TreeId);
                     }
                     else
                     {
                         _logger.Verbose("{ClassName}::{MethodName} - Despawning Node {NodeVhId}", nameof(TractorBeamEmitterService), nameof(Select), nodeId.VhId);
-                        _entities.Despawn(nodeId);
+                        _entities.Despawn(sourceId, nodeId);
                     }
                 }
                 else
@@ -63,16 +63,16 @@ namespace VoidHuntersRevived.Game.Ships.Services
             }
         }
 
-        public void Deselect(EntityId tractorBeamEmitterId)
+        public void Deselect(VhId sourceId, EntityId tractorBeamEmitterId)
         {
             ref Tactical tactical = ref _entities.QueryById<Tactical>(tractorBeamEmitterId);
             SocketVhId? attachToSocketVhId = _sockets.TryGetClosestOpenSocket(tractorBeamEmitterId, tactical.Target, out Socket socket)
                 ? socket.Id.VhId : default;
 
-            this.Deselect(tractorBeamEmitterId, attachToSocketVhId);
+            this.Deselect(sourceId, tractorBeamEmitterId, attachToSocketVhId);
         }
 
-        public void Deselect(EntityId tractorBeamEmitterId, SocketVhId? attachToSocketVhId)
+        public void Deselect(VhId sourceId, EntityId tractorBeamEmitterId, SocketVhId? attachToSocketVhId)
         {
             ref var filter = ref this.GetTractorableFilter(tractorBeamEmitterId);
             foreach (var (indices, groupId) in filter)
@@ -91,7 +91,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
 
                     _logger.Verbose("{ClassName}::{MethodName} - Attempting to deselect {TreeId} with emitter {TractorBeamEmitterId}", nameof(TractorBeamEmitterService), nameof(Deselect), entityIds[index].VhId.Value, tractorBeamEmitterId.VhId);
                     this.Simulation.Publish(
-                        sourceId: NameSpace<TractorBeamEmitterService>.Instance,
+                        sourceId: NameSpace<TractorBeamEmitterService>.Instance.Create(sourceId),
                         data: new TractorBeamEmitter_Deselect()
                         {
                             TractorBeamEmitterVhId = tractorBeamEmitterId.VhId,
@@ -100,7 +100,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
                             AttachToSocketVhId = attachToSocketVhId
                         });
 
-                    _entities.Despawn(entityIds[index]);
+                    _entities.Despawn(sourceId, entityIds[index]);
                 }
             }
         }
@@ -110,6 +110,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
             try
             {
                 EntityId cloneId = _trees.Spawn(
+                    sourceId: eventId,
                     vhid: eventId.Create(1),
                     teamId: Teams.TeamZero,
                     tree: EntityTypes.Chain,
@@ -141,11 +142,12 @@ namespace VoidHuntersRevived.Game.Ships.Services
             {
                 if (data.AttachToSocketVhId.HasValue && _sockets.TryGetSocket(data.AttachToSocketVhId.Value, out Socket attachToSocket))
                 { // Spawn a new piece attached to the input node
-                    _sockets.Spawn(attachToSocket, data.TargetData);
+                    _sockets.Spawn(eventId, attachToSocket, data.TargetData);
                 }
                 else
                 { // Spawn a new free floating chain
                     EntityId cloneId = _trees.Spawn(
+                        sourceId: eventId,
                         vhid: eventId.Create(2),
                         teamId: Teams.TeamZero,
                         tree: EntityTypes.Chain,

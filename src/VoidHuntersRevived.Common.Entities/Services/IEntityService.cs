@@ -16,9 +16,9 @@ namespace VoidHuntersRevived.Common.Entities.Services
         #endregion
 
         #region Entity Spawning
-        EntityId Spawn(IEntityType type, VhId vhid, Id<ITeam> teamId, EntityInitializerDelegate? initializer);
-        void Despawn(VhId vhid);
-        void Despawn(EntityId id);
+        EntityId Spawn(VhId sourceId, IEntityType type, VhId vhid, Id<ITeam> teamId, EntityInitializerDelegate? initializer);
+        void Despawn(VhId sourceId, VhId vhid);
+        void Despawn(VhId sourceId, EntityId id);
 
         /// <summary>
         /// "Submit" all Svelto changes now. This is automatically done every frame but 
@@ -39,8 +39,8 @@ namespace VoidHuntersRevived.Common.Entities.Services
         EntityData Serialize(EntityId id, SerializationOptions options);
         void Serialize(EntityId id, EntityWriter writer, SerializationOptions options);
 
-        EntityId Deserialize(DeserializationOptions options, EntityData data, EntityInitializerDelegate? initializer);
-        EntityId Deserialize(DeserializationOptions options, EntityReader reader, EntityInitializerDelegate? initializer);
+        EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, EntityInitializerDelegate? initializer);
+        EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityReader reader, EntityInitializerDelegate? initializer);
         #endregion
 
         #region Filters

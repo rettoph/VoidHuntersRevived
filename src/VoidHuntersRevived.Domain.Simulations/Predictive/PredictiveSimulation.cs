@@ -105,7 +105,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
             if (!_predictedEvents.TryEnqueue(@event.Id, this.GetPredictionEvent(@event)))
             {
-                this.logger.Warning("{ClassName}::{MethodName} - Unable to predict {EventName}, {EventId}; duplicate event?", nameof(PredictiveSimulation), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value);
+                this.logger.Error("{ClassName}::{MethodName} - Unable to predict {EventName}, {EventId}; duplicate event?", nameof(PredictiveSimulation), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value);
                 return;
             }
 

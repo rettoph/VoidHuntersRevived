@@ -22,12 +22,12 @@ namespace VoidHuntersRevived.Common.Pieces.Serialization.Components
             _sockets = sockets;
         }
 
-        public override void Deserialize(in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id)
+        public override void Deserialize(in VhId sourceId, in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id)
         {
             int count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                _entities.Deserialize(options, reader, null);
+                _entities.Deserialize(sourceId, options, reader, null);
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Serilog;
 using Svelto.ECS;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
@@ -26,7 +27,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             _logger = logger;
         }
 
-        public void OnDespawn(EntityId id, ref Sockets<SocketId> sockets, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, EntityId id, ref Sockets<SocketId> sockets, in GroupIndex groupIndex)
         {
             for (int i = 0; i < sockets.Items.count; i++)
             {
@@ -37,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
                     for (int j = 0; j < indices.count; j++)
                     {
-                        _entities.Despawn(entityIds[indices[j]]);
+                        _entities.Despawn(sourceEventId, entityIds[indices[j]]);
                     }
                 }
             }

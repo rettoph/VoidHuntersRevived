@@ -33,13 +33,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             this.GetDescriptorEngine(descriptorId).Serialize(writer, in groupIndex, in options);
         }
 
-        public EntityId Deserialize(DeserializationOptions options, EntityData data, EntityInitializerDelegate? initializer)
+        public EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, EntityInitializerDelegate? initializer)
         {
             _reader.Load(data);
-            return this.Deserialize(options, _reader, initializer);
+            return this.Deserialize(sourceId, options, _reader, initializer);
         }
 
-        public EntityId Deserialize(DeserializationOptions options, EntityReader reader, EntityInitializerDelegate? initializerDelegate)
+        public EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityReader reader, EntityInitializerDelegate? initializerDelegate)
         {
             VhId vhid = reader.ReadVhId(options.Seed);
             Id<IEntityType> typeId = reader.ReadStruct<Id<IEntityType>>();
@@ -57,13 +57,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 Initializer = (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                 {
                     reader.Load(readerState);
-                    entities.GetDescriptorEngine(type.Descriptor.Id).Deserialize(in options, reader, ref initializer, in id);
+                    entities.GetDescriptorEngine(type.Descriptor.Id).Deserialize(in sourceId, in options, reader, ref initializer, in id);
 
                     initializerDelegate?.Invoke(entities, ref initializer, in id);
                 }
             };
 
-            this.Simulation.Publish(vhid, createEntityEvent);
+            this.Simulation.Publish(sourceId, createEntityEvent);
 
             return this.GetId(vhid);
         }

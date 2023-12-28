@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             _space = space;
         }
 
-        public void OnSpawn(EntityId id, ref Thrustable component, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, EntityId id, ref Thrustable component, in GroupIndex groupIndex)
         {
             Node node = _entities.QueryByGroupIndex<Node>(in groupIndex);
 
@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             filter.Add(id, groupIndex);
         }
 
-        public void OnDespawn(EntityId id, ref Thrustable component, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, EntityId id, ref Thrustable component, in GroupIndex groupIndex)
         {
             Node node = _entities.QueryByGroupIndex<Node>(in groupIndex);
 

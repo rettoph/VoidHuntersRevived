@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
         }
 
         public abstract void Serialize(EntityWriter writer, in GroupIndex groupIndex, EntitiesDB entitiesDB, in SerializationOptions options);
-        public abstract void Deserialize(in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id);
+        public abstract void Deserialize(in VhId sourceId, in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id);
     }
 
     [Service(ServiceLifetime.Scoped, null, true)]
@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
 
             this.Write(writer, component, in options);
         }
-        public override void Deserialize(in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id)
+        public override void Deserialize(in VhId sourceId, in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id)
         {
             initializer.Init<TComponent>(this.Read(in options, reader, in id));
         }
@@ -91,7 +91,7 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
         {
 
         }
-        public override void Deserialize(in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id)
+        public override void Deserialize(in VhId sourceId, in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id)
         {
 
         }

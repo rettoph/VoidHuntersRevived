@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
 
         public string name { get; } = nameof(UserEngine);
 
-        public void Process(VhId id, UserJoined data)
+        public void Process(VhId eventId, UserJoined data)
         {
             VhId shipId = _scope.Peer!.Users.UpdateOrCreate(data.UserId, data.Claims).GetUserShipId();
 
@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
             // _treeFactory.Create(id.Create(1), EntityTypes.Chain, PieceTypes.HullSquare);
 
             var blueprint = _blueprints.GetAll().First();
-            _trees.Spawn(shipId, Teams.TeamOne, EntityTypes.UserShip, blueprint, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+            _trees.Spawn(eventId, shipId, Teams.TeamOne, EntityTypes.UserShip, blueprint, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {
                 initializer.Init(new Location()
                 {

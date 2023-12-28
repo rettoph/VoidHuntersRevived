@@ -10,15 +10,15 @@ namespace VoidHuntersRevived.Common.Entities.Engines
     {
         VoidHuntersEntityDescriptor Descriptor { get; }
 
-        EntityInitializer HardSpawn(in VhId vhid, in Id<ITeam> teamId, out EntityId id);
-        void SoftSpawn(in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
+        EntityInitializer HardSpawn(in VhId sourceEventId, in VhId vhid, in Id<ITeam> teamId, out EntityId id);
+        void SoftSpawn(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
 
-        void SoftDespawn(in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
-        void RevertSoftDespawn(in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
+        void SoftDespawn(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
+        void RevertSoftDespawn(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
 
-        void HardDespawn(in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
+        void HardDespawn(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
 
         void Serialize(EntityWriter writer, in GroupIndex groupIndex, in SerializationOptions options);
-        void Deserialize(in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id);
+        void Deserialize(in VhId sourceId, in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Serilog;
 using Svelto.ECS;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Pieces.Components;
@@ -23,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             _logger = logger;
         }
 
-        public void OnSpawn(EntityId id, ref Coupling coupling, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, EntityId id, ref Coupling coupling, in GroupIndex groupIndex)
         {
             if (coupling.SocketId == default)
             {
@@ -34,7 +35,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             filter.Add(in id, in groupIndex);
         }
 
-        public void OnDespawn(EntityId id, ref Coupling coupling, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, EntityId id, ref Coupling coupling, in GroupIndex groupIndex)
         {
             if (coupling.SocketId == default)
             {

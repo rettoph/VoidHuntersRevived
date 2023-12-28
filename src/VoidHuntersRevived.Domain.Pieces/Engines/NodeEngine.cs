@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         public string name { get; } = nameof(NodeEngine);
 
-        public void OnSpawn(EntityId id, ref Node node, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, EntityId id, ref Node node, in GroupIndex groupIndex)
         {
             _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(NodeEngine), nameof(OnSpawn), id.VhId);
 
@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             this.SetLocalTransformation(ref node, groupIndex, in treeLocation);
         }
 
-        public void OnDespawn(EntityId id, ref Node node, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, EntityId id, ref Node node, in GroupIndex groupIndex)
         {
             _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(NodeEngine), nameof(OnDespawn), id.VhId);
 
@@ -69,11 +69,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         public void Step(in Step param)
         {
-            while (_dirtyTrees.TryDequeue(out EntityId dirtyTreeId, out VhId cleanTreeEventSourceId))
+            while (_dirtyTrees.TryDequeue(out EntityId dirtyTreeId, out VhId dirtyTreeEventId))
             {
                 if (_entities.IsSpawned(dirtyTreeId))
                 {
-                    this.Simulation.Publish(cleanTreeEventSourceId, new Tree_Clean()
+                    this.Simulation.Publish(dirtyTreeEventId, new Tree_Clean()
                     {
                         IsPrivate = true,
                         TreeId = dirtyTreeId.VhId
@@ -114,7 +114,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
                 var id = _entities.QueryByGroupIndex<EntityId>(groupIndex);
                 _logger.Error(ex, "{ClassName}::{MethodName} - There was a fatal error attempting to set node transformation for node {NodeId}.", nameof(NodeEngine), nameof(SetLocalTransformation), id.VhId.Value);
-                _entities.Despawn(id);
+                _entities.Despawn(NameSpace<NodeEngine>.Instance, id);
             }
         }
     }

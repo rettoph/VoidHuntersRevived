@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
                 return;
             }
 
-            _tractorBeamEmitters.Select(tractorBeamEmitterId, targetNodeId);
+            _tractorBeamEmitters.Select(eventId, tractorBeamEmitterId, targetNodeId);
         }
 
         public void Process(VhId eventId, Input_TractorBeamEmitter_Deselect data)
@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Game.Ships.Engines
                 return;
             }
 
-            _tractorBeamEmitters.Deselect(tractorBeamEmitterId, data.AttachToSocketVhId);
+            _tractorBeamEmitters.Deselect(eventId, tractorBeamEmitterId, data.AttachToSocketVhId);
         }
     }
 }
