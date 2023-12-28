@@ -160,12 +160,12 @@ namespace VoidHuntersRevived.Game.Client.Engines
             {
                 this.Process(Guid.NewGuid(), new Input_TractorBeamEmitter_SetActive(true));
                 this.Process(Guid.NewGuid(), new Input_TractorBeamEmitter_SetActive(false));
-                int count = Random.Shared.Next(5, 15);
-                //for (int i = 0; i < count; i++)
-                //{
-                //    this.Process(Guid.NewGuid(), new Input_TractorBeamEmitter_SetActive(true));
-                //    this.Process(Guid.NewGuid(), new Input_TractorBeamEmitter_SetActive(false));
-                //}
+                int count = Random.Shared.Next(1, 5);
+                for (int i = 0; i < count; i++)
+                {
+                    this.Process(Guid.NewGuid(), new Input_TractorBeamEmitter_SetActive(true));
+                    this.Process(Guid.NewGuid(), new Input_TractorBeamEmitter_SetActive(false));
+                }
             }
 
             ref Tactical tactical = ref _entities.QueryById<Tactical>(localShipId);
