@@ -81,11 +81,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             return _ticks.TryPop(current.Id + 1, out next);
         }
 
-        public override void Input(VhId sender, IInputData data)
+        public override void Input(VhId sourceId, IInputData data)
         {
             _netScope.Messages.Create(new EventDto()
             {
-                Sender = sender,
+                SourceId = sourceId,
                 Data = data
             }).Enqueue();
         }

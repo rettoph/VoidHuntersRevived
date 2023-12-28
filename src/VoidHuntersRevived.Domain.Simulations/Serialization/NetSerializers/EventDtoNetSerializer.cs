@@ -22,14 +22,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
         {
             return new EventDto()
             {
-                Sender = reader.GetVhId(),
+                SourceId = reader.GetVhId(),
                 Data = (IEventData)_serializers.Deserialize(reader)
             };
         }
 
         public override void Serialize(NetDataWriter writer, in EventDto instance)
         {
-            writer.Put(instance.Sender);
+            writer.Put(instance.SourceId);
             _serializers.Serialize(writer, instance.Data);
         }
     }

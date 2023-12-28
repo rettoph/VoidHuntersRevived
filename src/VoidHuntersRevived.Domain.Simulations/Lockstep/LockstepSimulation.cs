@@ -96,7 +96,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
             this.OnEvent?.Invoke(new EventDto()
             {
-                Sender = NameSpace<LockstepSimulation>.Instance,
+                SourceId = NameSpace<LockstepSimulation>.Instance,
                 Data = new EndOfTick()
                 {
                     TickId = tick.Id

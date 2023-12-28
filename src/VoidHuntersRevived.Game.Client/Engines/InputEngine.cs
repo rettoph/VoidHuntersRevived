@@ -84,7 +84,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
 
             _simulations.Input(
-                sender: new VhId(messageId),
+                sourceId: new VhId(messageId),
                 data: new Helm_SetDirection()
                 {
                     ShipVhId = _client.Users.Current.GetUserShipId(),
@@ -111,7 +111,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 }
 
                 _simulations.Input(
-                    sender: eventId,
+                    sourceId: eventId,
                     data: new Tactical_SetTarget()
                     {
                         ShipVhId = shipId.VhId,
@@ -120,7 +120,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     });
 
                 _simulations.Input(
-                    sender: eventId,
+                    sourceId: eventId,
                     data: new Input_TractorBeamEmitter_Select()
                     {
                         ShipVhId = shipId.VhId,
@@ -134,7 +134,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                             ? socket.Id.VhId : null;
 
                 _simulations.Input(
-                    sender: eventId,
+                    sourceId: eventId,
                     data: new Input_TractorBeamEmitter_Deselect()
                     {
                         ShipVhId = shipId.VhId,
@@ -175,7 +175,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
 
             _simulations.Input(
-                sender: _param.Hash,
+                sourceId: _param.Hash,
                 data: new Tactical_SetTarget()
                 {
                     ShipVhId = shipVhId,

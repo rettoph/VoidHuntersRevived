@@ -16,8 +16,8 @@ namespace VoidHuntersRevived.Common.Simulations
 
         void Update(GameTime realTime);
 
-        void Publish(VhId sender, IEventData data);
+        void Publish(VhId sourceId, IEventData data);
 
-        void Input(VhId sender, IInputData data);
+        void Input(VhId sourceId, IInputData data);
     }
 }

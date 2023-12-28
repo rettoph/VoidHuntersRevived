@@ -117,11 +117,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             }
         }
 
-        public void Input(VhId sender, IInputData data)
+        public void Input(VhId sourceId, IInputData data)
         {
             foreach (ISimulation simulation in _list)
             {
-                simulation.Input(sender, data);
+                simulation.Input(sourceId, data);
             }
         }
     }

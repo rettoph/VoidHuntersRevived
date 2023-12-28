@@ -69,11 +69,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         public void Step(in Step param)
         {
-            while (_dirtyTrees.TryDequeue(out EntityId dirtyTreeId, out VhId cleanTreeEventSender))
+            while (_dirtyTrees.TryDequeue(out EntityId dirtyTreeId, out VhId cleanTreeEventSourceId))
             {
                 if (_entities.IsSpawned(dirtyTreeId))
                 {
-                    this.Simulation.Publish(cleanTreeEventSender, new Tree_Clean()
+                    this.Simulation.Publish(cleanTreeEventSourceId, new Tree_Clean()
                     {
                         IsPrivate = true,
                         TreeId = dirtyTreeId.VhId

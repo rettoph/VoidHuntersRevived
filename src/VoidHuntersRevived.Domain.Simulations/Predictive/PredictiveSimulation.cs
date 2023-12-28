@@ -90,9 +90,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             }
         }
 
-        public override void Input(VhId sender, IInputData data)
+        public override void Input(VhId sourceId, IInputData data)
         {
-            this.Publish(sender, data);
+            this.Publish(sourceId, data);
         }
 
         protected override void Publish(EventDto @event)

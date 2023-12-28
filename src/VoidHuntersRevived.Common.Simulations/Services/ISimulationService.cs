@@ -21,6 +21,6 @@ namespace VoidHuntersRevived.Common.Simulations.Services
 
         void Update(GameTime gameTime);
 
-        void Input(VhId sender, IInputData data);
+        void Input(VhId sourceId, IInputData data);
     }
 }

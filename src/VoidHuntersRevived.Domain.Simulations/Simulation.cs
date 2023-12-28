@@ -107,15 +107,15 @@ namespace VoidHuntersRevived.Domain.Simulations
             _publishers[@event.Data.GetType()].Publish(@event);
         }
 
-        public void Publish(VhId sender, IEventData data)
+        public void Publish(VhId sourceId, IEventData data)
         {
             this.Publish(new EventDto()
             {
-                Sender = sender,
+                SourceId = sourceId,
                 Data = data
             });
         }
 
-        public abstract void Input(VhId sender, IInputData data);
+        public abstract void Input(VhId sourceId, IInputData data);
     }
 }

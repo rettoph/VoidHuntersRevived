@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
                     _logger.Verbose("{ClassName}::{MethodName} - Selecting {NodeId} with TractorBeamEmitter {TractorBeamEmitterId}", nameof(TractorBeamEmitterService), nameof(Select), nodeId.VhId, tractorBeamEmitterId.VhId);
 
                     this.Simulation.Publish(
-                        sender: NameSpace<TractorBeamEmitterService>.Instance,
+                        sourceId: NameSpace<TractorBeamEmitterService>.Instance,
                         data: new TractorBeamEmitter_Select()
                         {
                             TractorBeamEmitterVhId = tractorBeamEmitterId.VhId,
@@ -91,7 +91,7 @@ namespace VoidHuntersRevived.Game.Ships.Services
 
                     _logger.Verbose("{ClassName}::{MethodName} - Attempting to deselect {TreeId} with emitter {TractorBeamEmitterId}", nameof(TractorBeamEmitterService), nameof(Deselect), entityIds[index].VhId.Value, tractorBeamEmitterId.VhId);
                     this.Simulation.Publish(
-                        sender: NameSpace<TractorBeamEmitterService>.Instance,
+                        sourceId: NameSpace<TractorBeamEmitterService>.Instance,
                         data: new TractorBeamEmitter_Deselect()
                         {
                             TractorBeamEmitterVhId = tractorBeamEmitterId.VhId,

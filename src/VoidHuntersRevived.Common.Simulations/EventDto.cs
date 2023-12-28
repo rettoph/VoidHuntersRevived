@@ -3,9 +3,9 @@
     public class EventDto
     {
         private VhId? _id;
-        public VhId Id => _id ??= this.Data.CalculateHash(this.Sender);
+        public VhId Id => _id ??= this.Data.CalculateHash(this.SourceId);
 
-        public required VhId Sender { get; init; }
+        public required VhId SourceId { get; init; }
         public required IEventData Data { get; init; }
     }
 }
