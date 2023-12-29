@@ -2,8 +2,6 @@
 using Guppy.Common.Attributes;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.MonoGame.Utilities.Cameras;
-using Guppy.Network.Identity;
-using Guppy.Network.Peers;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -36,8 +34,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly IResourceProvider _resources;
         private readonly ISocketService _sockets;
         private readonly Camera2D _camera;
-        private readonly ClientPeer _client;
         private readonly ITractorBeamEmitterService _tractorBeamEmitters;
+        private readonly IUserShipService _userShips;
 
         public string name { get; } = nameof(TractorBeamHighlightEngine);
 
@@ -50,8 +48,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
             IResourceProvider resources,
             ISocketService sockets,
             Camera2D camera,
-            ClientPeer client,
-            ITractorBeamEmitterService tractorBeamEmitters)
+            ITractorBeamEmitterService tractorBeamEmitters,
+            IUserShipService userShips)
         {
             _camera = camera;
             _entities = entities;
@@ -59,8 +57,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _resources = resources;
             _sockets = sockets;
             _logger = logger;
-            _client = client;
             _tractorBeamEmitters = tractorBeamEmitters;
+            _userShips = userShips;
         }
 
         public override void Ready()
@@ -70,17 +68,12 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in GameTime _param)
         {
-            if (_client.Users.Current is null)
+            if (_userShips.TryGetCurrentUserShipId(out EntityId shipId) == false)
             {
                 return;
             }
 
-            if (!_entities.TryGetId(_client.Users.Current.GetUserShipId(), out EntityId shipId))
-            {
-                return;
-            }
-
-            if (!_tractorBeamEmitters.Query(shipId, (FixVector2)this.CurrentTargetPosition, out Node targetNode))
+            if (_tractorBeamEmitters.Query(shipId, (FixVector2)this.CurrentTargetPosition, out Node targetNode) == false)
             {
                 return;
             }

@@ -4,8 +4,6 @@ using Guppy.Game.Input;
 using Guppy.Game.MonoGame.Utilities.Cameras;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
-using Guppy.Network.Identity;
-using Guppy.Network.Peers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Svelto.ECS;
@@ -39,30 +37,29 @@ namespace VoidHuntersRevived.Game.Client.Engines
     {
         private bool _spamClick;
 
-        private readonly ClientPeer _client;
         private readonly Camera2D _camera;
         private readonly ISimulationService _simulations;
 
         private IEntityService _entities;
         private ITractorBeamEmitterService _tractorBeamEmitters;
         private ISocketService _sockets;
+        private IUserShipService _userShips;
 
         private Vector2 CurrentTargetPosition => _camera.Unproject(Mouse.GetState().Position.ToVector2());
 
         public string name { get; } = nameof(InputEngine);
 
         public InputEngine(
-            ClientPeer client,
             Camera2D camera,
             ISimulationService simulations)
         {
-            _client = client;
             _camera = camera;
             _simulations = simulations;
 
             _entities = null!;
             _tractorBeamEmitters = null!;
             _sockets = null!;
+            _userShips = null!;
         }
 
         public override void Initialize(ISimulation simulation)
@@ -74,11 +71,12 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _entities = inputScope.Resolve<IEntityService>();
             _tractorBeamEmitters = inputScope.Resolve<ITractorBeamEmitterService>();
             _sockets = inputScope.Resolve<ISocketService>();
+            _userShips = inputScope.Resolve<IUserShipService>();
         }
 
         public void Process(in Guid messageId, Input_Helm_SetDirection message)
         {
-            if (_client.Users.Current is null)
+            if (_userShips.TryGetCurrentUserShipId(out EntityId shipId) == false)
             {
                 return;
             }
@@ -87,7 +85,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 sourceId: new VhId(messageId),
                 data: new Helm_SetDirection()
                 {
-                    ShipVhId = _client.Users.Current.GetUserShipId(),
+                    ShipVhId = shipId.VhId,
                     Which = message.Which,
                     Value = message.Value
                 });
@@ -95,17 +93,16 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Process(in Guid messageId, Input_TractorBeamEmitter_SetActive message)
         {
-            if (_client.Users.Current is null)
+            if (_userShips.TryGetCurrentUserShipId(out EntityId shipId) == false)
             {
                 return;
             }
 
             VhId eventId = new VhId(messageId);
-            EntityId shipId = _entities.GetId(_client.Users.Current.GetUserShipId());
 
             if (message.Value)
             {
-                if (!_tractorBeamEmitters.Query(shipId, (FixVector2)this.CurrentTargetPosition, out Node targetNode))
+                if (_tractorBeamEmitters.Query(shipId, (FixVector2)this.CurrentTargetPosition, out Node targetNode) == false)
                 {
                     return;
                 }
@@ -145,13 +142,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in Tick _param)
         {
-            if (_client.Users.Current is null)
-            {
-                return;
-            }
-
-            VhId shipVhId = _client.Users.Current.GetUserShipId();
-            if (!_entities.TryGetId(shipVhId, out EntityId localShipId))
+            if (_userShips.TryGetCurrentUserShipId(out EntityId shipId) == false)
             {
                 return;
             }
@@ -168,7 +159,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 }
             }
 
-            ref Tactical tactical = ref _entities.QueryById<Tactical>(localShipId);
+            ref Tactical tactical = ref _entities.QueryById<Tactical>(shipId);
             if (tactical.Uses == 0)
             {
                 return;
@@ -178,7 +169,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 sourceId: _param.Hash,
                 data: new Tactical_SetTarget()
                 {
-                    ShipVhId = shipVhId,
+                    ShipVhId = shipId.VhId,
                     Value = (FixVector2)this.CurrentTargetPosition,
                     Snap = false
                 });

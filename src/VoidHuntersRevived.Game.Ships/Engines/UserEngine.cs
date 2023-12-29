@@ -1,6 +1,5 @@
 ﻿using Guppy.Attributes;
 using Guppy.Network;
-using Guppy.Network.Identity;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
@@ -8,6 +7,7 @@ using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces.Descriptors;
 using VoidHuntersRevived.Common.Pieces.Services;
+using VoidHuntersRevived.Common.Ships.Components;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Events;
 using VoidHuntersRevived.Game.Common;
@@ -35,21 +35,19 @@ namespace VoidHuntersRevived.Game.Ships.Engines
 
         public void Process(VhId eventId, UserJoined data)
         {
-            VhId shipId = _scope.Peer!.Users.UpdateOrCreate(data.UserId, data.Claims).GetUserShipId();
-
             var hull = _pieces.All<HullDescriptor>().Last();
 
             //_trees.Spawn(shipId, Teams.TeamOne, EntityTypes.UserShip, hull.EntityType);
             // _treeFactory.Create(id.Create(1), EntityTypes.Chain, PieceTypes.HullSquare);
 
             var blueprint = _blueprints.GetAll().First();
-            _trees.Spawn(eventId, shipId, Teams.TeamOne, EntityTypes.UserShip, blueprint, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+            _trees.Spawn(eventId, eventId.Create(1), Teams.TeamOne, EntityTypes.UserShip, blueprint, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {
                 initializer.Init(new Location()
                 {
                     Position = new FixVector2(0, 0)
                 });
-
+                initializer.Init(new UserId(data.UserId));
             });
         }
     }

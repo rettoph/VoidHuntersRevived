@@ -7,7 +7,7 @@ using VoidHuntersRevived.Common.Ships.Serialization.Components;
 
 namespace VoidHuntersRevived.Common.Ships.Descriptors
 {
-    public class ShipDescriptor : TreeDescriptor
+    public abstract class ShipDescriptor : TreeDescriptor
     {
         public ShipDescriptor()
         {

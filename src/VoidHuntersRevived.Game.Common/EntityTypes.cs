@@ -8,7 +8,7 @@ namespace VoidHuntersRevived.Game.Common
     public static class EntityTypes
     {
         public static readonly EntityType<ChainDescriptor> Chain = new(nameof(Chain));
-        public static readonly EntityType<ShipDescriptor> UserShip = new(nameof(UserShip));
+        public static readonly EntityType<UserShipDescriptor> UserShip = new(nameof(UserShip));
 
         public static class Pieces
         {

@@ -13,6 +13,8 @@ namespace VoidHuntersRevived.Game.Ships.Loaders
             services.RegisterType<TractorBeamEmitterService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             services.RegisterType<TacticalService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+            services.RegisterType<UserShipService>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }
