@@ -144,22 +144,25 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Revert(VhId eventId, SpawnEntity data)
         {
-            EntityId id = this.GetId(data.VhId);
+            if (this.TryGetId(data.VhId, out EntityId id))
+            {
+                this.EnqueuEntityModification(new EntityModificationRequest(eventId, EntityModificationType.SoftDespawn, id));
+                this.EnqueuEntityModification(new EntityModificationRequest(eventId, EntityModificationType.HardDespawn, id));
 
-            this.EnqueuEntityModification(new EntityModificationRequest(eventId, EntityModificationType.SoftDespawn, id));
-            this.EnqueuEntityModification(new EntityModificationRequest(eventId, EntityModificationType.HardDespawn, id));
-
-            ref var status = ref this.QueryById<EntityStatus>(id);
-            status.Value = EntityStatusEnum.SoftDespawnEnqueued;
+                ref var status = ref this.QueryById<EntityStatus>(id);
+                status.Value = EntityStatusEnum.SoftDespawnEnqueued;
+            }
         }
 
         public void Process(VhId eventId, SoftDespawnEntity data)
         {
-            EntityId id = this.GetId(data.VhId);
-            this.EnqueuEntityModification(new EntityModificationRequest(eventId, EntityModificationType.SoftDespawn, id));
+            if (this.TryGetId(data.VhId, out EntityId id))
+            {
+                this.EnqueuEntityModification(new EntityModificationRequest(eventId, EntityModificationType.SoftDespawn, id));
 
-            ref var status = ref this.QueryById<EntityStatus>(id);
-            status.Value = EntityStatusEnum.SoftDespawnEnqueued;
+                ref var status = ref this.QueryById<EntityStatus>(id);
+                status.Value = EntityStatusEnum.SoftDespawnEnqueued;
+            }
         }
 
         public void Revert(VhId eventId, SoftDespawnEntity data)
@@ -172,8 +175,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, HardDespawnEntity data)
         {
-            EntityId id = this.GetId(data.VhId);
-            this.EnqueuEntityModification(new EntityModificationRequest(eventId, EntityModificationType.HardDespawn, id));
+            if (this.TryGetId(data.VhId, out EntityId id))
+            {
+                this.EnqueuEntityModification(new EntityModificationRequest(eventId, EntityModificationType.HardDespawn, id));
+            }
         }
 
         public void Revert(VhId eventId, HardDespawnEntity data)
