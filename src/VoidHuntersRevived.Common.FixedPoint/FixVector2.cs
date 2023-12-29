@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using XnaVector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace VoidHuntersRevived.Common
 {
@@ -132,6 +133,15 @@ namespace VoidHuntersRevived.Common
             FixVector2[] destinationArray)
         {
             Transform(sourceArray, 0, ref matrix, destinationArray, 0, sourceArray.Length);
+        }
+
+        public XnaVector2 ToXna()
+        {
+            return new XnaVector2()
+            {
+                X = (float)this.X,
+                Y = (float)this.Y
+            };
         }
 
         public static FixVector2 operator +(FixVector2 left, FixVector2 right)
