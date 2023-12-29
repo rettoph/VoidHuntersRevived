@@ -200,17 +200,26 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 ref EntityStatus status = ref this.QueryById<EntityStatus>(id, out _, out bool exists);
 
-                int spawnCount = 0;
-                if (exists && (spawnCount = status.Increment(EntityModificationTypeEnum.Despawned)) == 0)
+                
+                if (exists)
                 {
-                    _modifications.Enqueue(new EventDto()
+                    int spawnCount = 0;
+
+                    if ((spawnCount = status.Increment(EntityModificationTypeEnum.Despawned)) == 0)
                     {
-                        SourceId = NameSpace<EntityService>.Instance.Create(eventId),
-                        Data = new SoftDespawnEntity()
+                        _modifications.Enqueue(new EventDto()
                         {
-                            VhId = data.VhId
-                        }
-                    });
+                            SourceId = NameSpace<EntityService>.Instance.Create(eventId),
+                            Data = new SoftDespawnEntity()
+                            {
+                                VhId = data.VhId
+                            }
+                        });
+                    }
+                    else
+                    {
+                        _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}, SpawnCount = {SpawnCount}", nameof(EntityService), nameof(Revert), nameof(SpawnEntity), id.VhId, exists, exists ? status.Value : null, spawnCount);
+                    }
 
                     _modifications.Enqueue(new EventDto()
                     {
@@ -227,7 +236,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 }
                 else
                 {
-                    _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}, SpawnCount = {SpawnCount}", nameof(EntityService), nameof(Revert), nameof(SpawnEntity), id.VhId, exists, exists ? status.Value : null, spawnCount);
+                    _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}", nameof(EntityService), nameof(Revert), nameof(SpawnEntity), id.VhId, exists, exists ? status.Value : null);
                 }
             }
             else
@@ -333,7 +342,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 ref EntityStatus status = ref this.QueryById<EntityStatus>(id, out GroupIndex groupIndex, out bool exists);
 
-                if (exists && status.Increment(EntityModificationTypeEnum.Spawned) == 1)
+                int spawnedCount = 0;
+                if (exists && (spawnedCount = status.Increment(EntityModificationTypeEnum.Spawned)) == 1)
                 {
                     _modifications.Enqueue(new EventDto()
                     {
@@ -348,7 +358,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 }
                 else
                 {
-                    _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}", nameof(EntityService), nameof(Revert), nameof(DespawnEntity), id.VhId, exists, exists ? status.Value : null);
+                    _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}, SpawnedCount = {SpawnedCount}", nameof(EntityService), nameof(Revert), nameof(DespawnEntity), id.VhId, exists, exists ? status.Value : null, spawnedCount);
                 }
             }
             else
