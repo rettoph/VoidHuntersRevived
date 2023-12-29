@@ -106,7 +106,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _history.Add(tick);
         }
 
-        protected override void Publish(EventDto @event)
+        public override void Publish(EventDto @event)
         {
             this.OnEvent?.Invoke(@event);
 

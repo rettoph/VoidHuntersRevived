@@ -95,7 +95,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             this.Publish(sourceId, data);
         }
 
-        protected override void Publish(EventDto @event)
+        public override void Publish(EventDto @event)
         {
             if (!@event.Data.IsPredictable)
             {

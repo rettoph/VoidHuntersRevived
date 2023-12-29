@@ -14,7 +14,6 @@ namespace VoidHuntersRevived.Common.Entities.Engines
         void SoftSpawn(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
 
         void SoftDespawn(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
-        void RevertSoftDespawn(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
 
         void HardDespawn(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
 

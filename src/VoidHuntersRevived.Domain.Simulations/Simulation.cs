@@ -102,7 +102,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             _publishers[@event.Data.GetType()].Revert(@event);
         }
-        protected virtual void Publish(EventDto @event)
+        public virtual void Publish(EventDto @event)
         {
             _publishers[@event.Data.GetType()].Publish(@event);
         }

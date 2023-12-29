@@ -6,7 +6,8 @@ namespace VoidHuntersRevived.Domain.Entities.Events
 {
     public sealed class HardDespawnEntity : IEventData
     {
-        public bool IsPredictable => false;
+        public required bool IsPrivate { get; init; }
+        public required bool IsPredictable { get; init; }
 
         public required VhId VhId { get; init; }
 

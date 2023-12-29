@@ -6,7 +6,6 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Engines;
-using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Common.Entities.Options;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities.Services;
@@ -25,7 +24,6 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         public abstract void SoftSpawn(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
 
         public abstract void SoftDespawn(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
-        public abstract void RevertSoftDespawn(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
 
         public abstract void HardDespawn(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
 
@@ -110,15 +108,12 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             initializer.Init(id);
             initializer.Init(_descriptor.Id);
             initializer.Init(teamId);
-            initializer.Init(new EntityStatus(EntityStatusEnum.NotSpawned));
 
             return initializer;
         }
 
         public override void SoftSpawn(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status)
         {
-            status.Value = EntityStatusEnum.Spawned;
-
             for (int i = 0; i < _onSpawnEngineInvokers.count; i++)
             {
                 _onSpawnEngineInvokers[i].Invoke(sourceEventId, entitiesDB, id, groupIndex);
@@ -127,28 +122,14 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
         public override void SoftDespawn(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status)
         {
-            status.Value = EntityStatusEnum.SoftDespawned;
-
             for (int i = 0; i < _onDespawnEngineInvokers.count; i++)
             {
                 _onDespawnEngineInvokers[i].Invoke(sourceEventId, entitiesDB, id, groupIndex);
             }
         }
 
-        public override void RevertSoftDespawn(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status)
-        {
-            status.Value = EntityStatusEnum.Spawned;
-
-            for (int i = 0; i < _onSpawnEngineInvokers.count; i++)
-            {
-                _onSpawnEngineInvokers[i].Invoke(sourceEventId, entitiesDB, id, groupIndex);
-            }
-        }
-
         public override void HardDespawn(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status)
         {
-            status.Value = EntityStatusEnum.HardDespawned;
-
             _functions.RemoveEntity<TDescriptor>(id.EGID);
         }
     }
