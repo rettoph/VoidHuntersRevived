@@ -103,12 +103,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
                 return;
             }
 
-            if (!_predictedEvents.TryEnqueue(@event.Id, this.GetPredictionEvent(@event)))
+            ref PredictedEvent? predictiveEvent = ref _predictedEvents.GetOrEnqueue(@event.Id, out bool exists);
+            if (exists == true)
             {
                 this.logger.Error("{ClassName}::{MethodName} - Unable to predict {EventName}, {EventId}; duplicate event?", nameof(PredictiveSimulation), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value);
                 return;
             }
 
+            predictiveEvent = this.GetPredictionEvent(@event);
             this.logger.Verbose("{ClassName}::{MethodName} - Predicting event {EventName}, {EventId}", nameof(PredictiveSimulation), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value);
 
             base.Publish(@event);
@@ -153,6 +155,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
                 prediction = new PredictedEvent();
             }
 
+            prediction.Status = @event.Data.IsPrivate ? PredictedEventStatus.Confirmed : PredictedEventStatus.Unconfirmed;
             prediction.Event = @event;
             return prediction;
         }

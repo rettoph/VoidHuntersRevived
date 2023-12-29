@@ -5,7 +5,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
     internal class PredictedEvent
     {
-        public static readonly TimeSpan Lifetime = TimeSpan.FromSeconds(1);
+        public static readonly TimeSpan Lifetime = TimeSpan.FromSeconds(5);
 
         private EventDto _event = null!;
 
@@ -16,7 +16,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             {
                 _event = value;
                 PublishedAt = DateTime.Now;
-                Status = PredictedEventStatus.Unconfirmed;
             }
         }
         public PredictedEventStatus Status { get; set; }
