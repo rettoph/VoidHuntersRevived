@@ -10,6 +10,13 @@
   "ListAllProjects": false,
 
   "MultiProjectConfigurations": {
+    "Client": {
+      "Projects": {
+        "VoidHuntersRevived.Presentation.Client": {
+          "CommandLineArguments": "false"
+        }
+      }
+    },
     "Client (Internal Server)": {
       "Projects": {
         "VoidHuntersRevived.Presentation.Client": {

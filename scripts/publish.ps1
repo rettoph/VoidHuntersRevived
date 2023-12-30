@@ -4,7 +4,7 @@ Import-Module -Name ($PSScriptRoot + "\refresh-modules.ps1") -Force
 #                CONFIGURATION                #
 ###############################################
 $projects = @( [VoidHuntersProject]::Client, [VoidHuntersProject]::Server )
-$rids = [VoidHuntersRuntimeIdentifier].GetEnumValues()
+$rids = @( [VoidHuntersRuntimeIdentifier]::win_x64, [VoidHuntersRuntimeIdentifier]::linux_x64, [VoidHuntersRuntimeIdentifier]::linux_arm64 )
 $configuration = [VoidHuntersConfiguration]::Release
 $selfContained = $true
 $singleFile = $true
@@ -32,6 +32,7 @@ if($configuration -eq [VoidHuntersConfiguration]::Release)
     $editor.RemoveAll('^( |\t)*?.*?(l|L)ogger\.Verbose\(.*?\);\s*$')
 }
 
+dotnet build-server shutdown
 foreach($project in $projects)
 {
     foreach($rid in $rids)

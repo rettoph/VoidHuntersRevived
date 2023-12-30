@@ -25,7 +25,7 @@ else
             Host = "";
             Username = "";
             Password = "";
-            Folder = "/home/anthony/VoidHuntersRevived";
+            Folder = "/home/anthony/VoidHuntersRevived/";
             Launch = "VoidHuntersRevived.Presentation.Server";
         };
         Build = @{
@@ -47,6 +47,7 @@ else
 # Build locally...
 "$($stopwatch.Elapsed.ToString("m\:ss\.ff")): Building Project: '" + $config.Build.Project + "' - " + $config.Build.Runtime
 $path = Publish-VoidHunters -project $config.Build.Project -configuration $config.Build.Configuration -runtime $config.Build.Runtime -selfContained $config.Build.SelfContained
+$path = $path.Path.TrimEnd('\')
 
 # Connect to server...
 "$($stopwatch.Elapsed.ToString("m\:ss\.ff")): Establishing connection with " + $config.Remote.Host
@@ -130,8 +131,14 @@ function CleanFile($file)
     {
         $target.directory = RemoteDestination($file.DirectoryName)
 
-        Write-Information "Uploading file: '$($target.path)'"
+        Write-Information "Uploading file: '$($file.FullName)' => '$($target.directory)'"
+
         Set-SFTPItem -SessionId $sftp.SessionId -Destination $target.directory -Path $file.FullName -Force
+        if($? -ne $true)
+        {
+            Write-Information $path
+            Write-Information "error"
+        }
     }
 
     return $target
