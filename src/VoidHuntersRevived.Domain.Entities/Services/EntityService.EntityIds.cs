@@ -1,14 +1,12 @@
 ﻿using System.Runtime.InteropServices;
 using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
     internal partial class EntityService
     {
         private readonly Dictionary<VhId, EntityId> _ids = new Dictionary<VhId, EntityId>();
-        private readonly Queue<EventDto> _modifications = new Queue<EventDto>();
 
         public string name { get; } = nameof(EntityService);
 

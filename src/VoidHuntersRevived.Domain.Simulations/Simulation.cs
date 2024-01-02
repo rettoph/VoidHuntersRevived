@@ -21,6 +21,7 @@ namespace VoidHuntersRevived.Domain.Simulations
 {
     public abstract partial class Simulation : ISimulation, IDisposable
     {
+        private readonly Queue<EventDto> _enqueued;
         private readonly Dictionary<Type, EventPublisher> _publishers;
         private IStepGroupEngine<GameTime> _drawEnginesGroup;
 
@@ -39,6 +40,8 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         protected Simulation(SimulationType type, ILifetimeScope scope)
         {
+            _enqueued = new Queue<EventDto>();
+
             this.Id = HashBuilder<Simulation, ulong, SimulationType>.Instance.Calculate(scope.Resolve<IGuppy>().Id, type);
             this.Type = type;
 
@@ -95,6 +98,11 @@ namespace VoidHuntersRevived.Domain.Simulations
         protected virtual void DoStep(Step step)
         {
             this.Engines.Step(step);
+            while (_enqueued.TryDequeue(out EventDto? enqueued))
+            {
+                this.Publish(enqueued);
+            }
+
             this.CurrentStep = step;
         }
 
@@ -117,5 +125,24 @@ namespace VoidHuntersRevived.Domain.Simulations
         }
 
         public abstract void Input(VhId sourceId, IInputData data);
+
+        public void Enqueue(VhId sourceId, IEventData data)
+        {
+            this.Enqueue(new EventDto()
+            {
+                SourceId = sourceId,
+                Data = data
+            });
+        }
+        public void Enqueue(EventDto @event)
+        {
+            if (@event.Data.IsPrivate == true)
+            {
+                _enqueued.Enqueue(@event);
+                return;
+            }
+
+            this.logger.Error("{ClassName}::{MethodName} - Failed to enqueue event {Id}; Type = {Type}, IsPrivate = {IsPrivate}", nameof(Simulation), nameof(Enqueue), @event.Id, @event.Data.GetType().GetFormattedName(), @event.Data.IsPrivate);
+        }
     }
 }

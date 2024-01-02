@@ -1,5 +1,4 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
@@ -54,11 +53,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public void Flush()
         {
             _scheduler.SubmitEntities();
-
-            while (_modifications.TryDequeue(out EventDto? modification) == true)
-            {
-                this.Simulation.Publish(modification);
-            }
         }
 
         public bool IsSpawned(EntityId id)
@@ -127,7 +121,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             if (this.TryGetId(data.VhId, out EntityId id) == false)
             {
-                _modifications.Enqueue(new EventDto()
+                this.Simulation.Enqueue(new EventDto()
                 {
                     SourceId = NameSpace<EntityService>.Instance.Create(eventId),
                     Data = new SoftSpawnEntity()
@@ -209,7 +203,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
                     if ((spawnCount = status.Increment(EntityModificationTypeEnum.Despawned)) == 0)
                     {
-                        _modifications.Enqueue(new EventDto()
+                        this.Simulation.Enqueue(new EventDto()
                         {
                             SourceId = NameSpace<EntityService>.Instance.Create(eventId),
                             Data = new SoftDespawnEntity()
@@ -223,7 +217,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                         _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}, SpawnCount = {SpawnCount}", nameof(EntityService), nameof(Revert), nameof(SpawnEntity), id.VhId, exists, exists ? status.Value : null, spawnCount);
                     }
 
-                    _modifications.Enqueue(new EventDto()
+                    this.Simulation.Enqueue(new EventDto()
                     {
                         SourceId = NameSpace<EntityService>.Instance.Create(eventId),
                         Data = new HardDespawnEntity()
@@ -256,7 +250,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 int spawnedCount = 0;
                 if (exists && (spawnedCount = status.Increment(EntityModificationTypeEnum.Despawned)) == 0)
                 {
-                    _modifications.Enqueue(new EventDto()
+                    this.Simulation.Enqueue(new EventDto()
                     {
                         SourceId = NameSpace<EntityService>.Instance.Create(eventId),
                         Data = new SoftDespawnEntity()
@@ -312,7 +306,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, EnqueueHardDespawn data)
         {
-            _modifications.Enqueue(new EventDto()
+            this.Simulation.Enqueue(new EventDto()
             {
                 SourceId = NameSpace<EntityService>.Instance.Create(eventId),
                 Data = new HardDespawnEntity()
@@ -365,7 +359,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 int spawnedCount = 0;
                 if (exists && (spawnedCount = status.Increment(EntityModificationTypeEnum.Spawned)) == 1)
                 {
-                    _modifications.Enqueue(new EventDto()
+                    this.Simulation.Enqueue(new EventDto()
                     {
                         SourceId = NameSpace<EntityService>.Instance.Create(eventId),
                         Data = new SoftSpawnEntity()
