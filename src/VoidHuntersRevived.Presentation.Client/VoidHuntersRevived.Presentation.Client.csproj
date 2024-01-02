@@ -11,5 +11,6 @@
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Game.MonoGame\Guppy.Game.MonoGame.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Game.Client\VoidHuntersRevived.Game.Client.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Game.Server\VoidHuntersRevived.Game.Server.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Presentation.Core\VoidHuntersRevived.Presentation.Core.csproj" />
   </ItemGroup>
 </Project>

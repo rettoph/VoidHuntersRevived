@@ -14,7 +14,7 @@ using VoidHuntersRevived.Common.Ships.Components;
 using VoidHuntersRevived.Common.Ships.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Exceptions;
-using VoidHuntersRevived.Domain.Ships.Events;
+using VoidHuntersRevived.Common.Ships.Events;
 
 namespace VoidHuntersRevived.Domain.Ships.Services
 {

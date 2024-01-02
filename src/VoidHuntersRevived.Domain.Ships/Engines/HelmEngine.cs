@@ -5,7 +5,7 @@ using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Ships.Components;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Domain.Ships.Events;
+using VoidHuntersRevived.Common.Ships.Events;
 
 namespace VoidHuntersRevived.Domain.Ships.Engines
 {

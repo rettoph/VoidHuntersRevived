@@ -2,7 +2,7 @@
 using Guppy.Network;
 using LiteNetLib.Utils;
 using VoidHuntersRevived.Common.Pieces.Enums;
-using VoidHuntersRevived.Domain.Ships.Events;
+using VoidHuntersRevived.Common.Ships.Events;
 
 namespace VoidHuntersRevived.Domain.Ships.Serialization.NetSerializers
 {

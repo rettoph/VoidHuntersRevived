@@ -1,12 +1,11 @@
 ﻿using Autofac;
-using Guppy;
 using Guppy.Commands.Services;
 using Guppy.Game.Extensions;
 using Guppy.Game.Helpers;
-using VoidHuntersRevived.Game.Common;
 using VoidHuntersRevived.Game.Server;
+using VoidHuntersRevived.Presentation.Core;
 
-var game = new GuppyEngine(VoidHuntersRevivedGame.Company, $"{VoidHuntersRevivedGame.Name}.Server").StartGame();
+var game = new VoidHuntersEngine("Server").StartGame();
 AppDomain.CurrentDomain.ProcessExit += new EventHandler((sender, args) =>
 {
     game.Dispose();

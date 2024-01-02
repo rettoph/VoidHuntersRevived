@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VoidHuntersRevived.Game.Client\VoidHuntersRevived.Game.Client.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Presentation.Core\VoidHuntersRevived.Presentation.Core.csproj" />
   </ItemGroup>
 
 </Project>

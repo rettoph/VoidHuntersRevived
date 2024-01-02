@@ -1,27 +1,19 @@
 ﻿using Guppy;
 using Guppy.Attributes;
-using Guppy.Commands.Messages;
 using Guppy.Game.ImGui;
 using Guppy.Game.ImGui.Services;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Domain.Simulations;
-using VoidHuntersRevived.Domain.Simulations.Lockstep;
+using VoidHuntersRevived.Common.Simulations.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Client.Engines
 {
     [AutoLoad]
-    [SimulationFilter<LockstepSimulation>]
-    internal class LockstepSimulationTickExplorerDebugEngine : BasicEngine<LockstepSimulation>, IDebugEngine, IImGuiComponent
+    [SimulationFilter<ILockstepSimulation>]
+    internal class LockstepSimulationTickExplorerDebugEngine : BasicEngine<ILockstepSimulation>, IDebugEngine, IImGuiComponent
     {
         public string? Group => nameof(ISimulation);
 
@@ -32,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Client.Engines
         private string _filter;
 
         public LockstepSimulationTickExplorerDebugEngine(
-            IImGui imgui, 
+            IImGui imgui,
             IImGuiObjectExplorerService objectExplorer,
             IGuppy guppy)
         {
@@ -52,7 +44,7 @@ namespace VoidHuntersRevived.Domain.Client.Engines
             _imgui.Begin($"Tick History Explorer - {this.Simulation.Type}, {_guppy.Name} {_guppy.Id}", ref _historyViewerEnabled);
             _imgui.InputText("Filter", ref _filter, 255);
 
-            using (_imgui.ApplyID(nameof(LockstepSimulation.History)))
+            using (_imgui.ApplyID(nameof(ILockstepSimulation.History)))
             {
                 _objectExplorer.DrawObjectExplorer(this.Simulation.History, _filter, 8);
             }

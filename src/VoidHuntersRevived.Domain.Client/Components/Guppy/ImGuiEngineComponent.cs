@@ -9,8 +9,8 @@ using Guppy.Game.ImGui;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
-using VoidHuntersRevived.Domain.Simulations;
 
 namespace VoidHuntersRevived.Domain.Client.Components.Guppy
 {
@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
     {
         private IGuppy _guppy;
         private readonly IImGui _imgui;
-        private (Simulation, IImGuiComponent[])[] _data;
+        private (ISimulation, IImGuiComponent[])[] _data;
         private readonly ISimulationService _simulations;
 
         public ImGuiEngineComponent(
@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
             _guppy = null!;
             _imgui = imgui;
             _simulations = simulations;
-            _data = Array.Empty<(Simulation, IImGuiComponent[])>();
+            _data = Array.Empty<(ISimulation, IImGuiComponent[])>();
         }
 
         public override void Initialize(IGuppy guppy)
@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
 
             _guppy = guppy;
             _data = _simulations.Instances.Select(x => (
-                (x as Simulation)!,
+                (x as ISimulation)!,
                 x.Scope.Resolve<IEngineService>().OfType<IImGuiComponent>().Sequence(DrawSequence.Draw).ToArray()
             )).ToArray();
         }

@@ -9,12 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VoidHuntersRevived.Game.Server\VoidHuntersRevived.Game.Server.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Game\VoidHuntersRevived.Game.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\VoidHuntersRevived.Domain.Simulations\VoidHuntersRevived.Domain.Simulations.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Domain\VoidHuntersRevived.Domain.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Presentation.Core\VoidHuntersRevived.Presentation.Core.csproj" />
   </ItemGroup>
 
 </Project>

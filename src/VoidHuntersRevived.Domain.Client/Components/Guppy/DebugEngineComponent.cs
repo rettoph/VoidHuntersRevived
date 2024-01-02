@@ -11,8 +11,8 @@ using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
-using VoidHuntersRevived.Domain.Simulations;
 
 namespace VoidHuntersRevived.Domain.Client.Components.Guppy
 {
@@ -63,7 +63,7 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
             }
         }
         private readonly ISimulationService _simulations;
-        private (Simulation, Dictionary<string, DebugEngineGroupRenderer>)[] _data;
+        private (ISimulation, Dictionary<string, DebugEngineGroupRenderer>)[] _data;
         private readonly IImGui _imgui;
         private IGuppy _guppy;
 
@@ -74,7 +74,7 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
             _guppy = null!;
             _imgui = imgui;
             _simulations = simulations;
-            _data = Array.Empty<(Simulation, Dictionary<string, DebugEngineGroupRenderer>)>();
+            _data = Array.Empty<(ISimulation, Dictionary<string, DebugEngineGroupRenderer>)>();
         }
 
         public override void Initialize(IGuppy guppy)
@@ -84,7 +84,7 @@ namespace VoidHuntersRevived.Domain.Client.Components.Guppy
             _guppy = guppy;
 
             _data = _simulations.Instances.Select(x => (
-                (x as Simulation)!,
+                (x as ISimulation)!,
                 new Dictionary<string, DebugEngineGroupRenderer>())).ToArray();
 
             foreach (var (simulation, renderers) in _data)

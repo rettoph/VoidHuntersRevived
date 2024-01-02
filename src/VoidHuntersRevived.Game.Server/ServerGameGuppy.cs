@@ -1,4 +1,6 @@
-﻿namespace VoidHuntersRevived.Game.Server
+﻿using VoidHuntersRevived.Game.Core;
+
+namespace VoidHuntersRevived.Game.Server
 {
     public sealed class ServerGameGuppy : VoidHuntersGameGuppy
     {

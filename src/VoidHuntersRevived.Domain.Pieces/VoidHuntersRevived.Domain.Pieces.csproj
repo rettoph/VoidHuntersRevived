@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VoidHuntersRevived.Common.Pieces\VoidHuntersRevived.Common.Pieces.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Game.Common\VoidHuntersRevived.Game.Common.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Common.Ships\VoidHuntersRevived.Common.Ships.csproj" />
   </ItemGroup>
 
 </Project>

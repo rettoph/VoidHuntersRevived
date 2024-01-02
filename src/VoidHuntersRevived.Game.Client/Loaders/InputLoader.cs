@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using VoidHuntersRevived.Common.Pieces.Enums;
 using VoidHuntersRevived.Game.Client.Constants;
 using VoidHuntersRevived.Game.Client.Messages;
-using VoidHuntersRevived.Game.Common.Events;
+using VoidHuntersRevived.Game.Core.Events;
 
 namespace VoidHuntersRevived.Game.Client.Loaders
 {

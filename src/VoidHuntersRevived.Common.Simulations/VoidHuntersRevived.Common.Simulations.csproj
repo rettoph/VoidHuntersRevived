@@ -12,10 +12,7 @@
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Common\Guppy.Common.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Game\Guppy.Game.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Common.Entities\VoidHuntersRevived.Common.Entities.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Common.FixedPoint\VoidHuntersRevived.Common.FixedPoint.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Physics\VoidHuntersRevived.Common.Physics.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Common.Core\VoidHuntersRevived.Common.Core.csproj" />
   </ItemGroup>
   
 </Project>

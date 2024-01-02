@@ -1,19 +1,18 @@
-﻿using Guppy;
-using Guppy.Game.Common;
+﻿using Guppy.Game.Common;
 using Guppy.Game.Extensions;
 using Guppy.Game.MonoGame;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Game.Client;
-using VoidHuntersRevived.Game.Common;
 using VoidHuntersRevived.Game.Server;
+using VoidHuntersRevived.Presentation.Core;
 
 namespace VoidHuntersRevived.Application.Client
 {
     public sealed class VoidHuntersGame : Microsoft.Xna.Framework.Game
     {
         private readonly GraphicsDeviceManager _graphics;
-        private GuppyEngine _engine;
+        private VoidHuntersEngine _engine;
         private IGame? _game;
         private readonly bool _internalServer;
 
@@ -43,7 +42,7 @@ namespace VoidHuntersRevived.Application.Client
             _graphics.ApplyChanges();
 
 
-            _engine = new GuppyEngine(VoidHuntersRevivedGame.Company, VoidHuntersRevivedGame.Name);
+            _engine = new VoidHuntersEngine();
         }
 
         /// <summary>
