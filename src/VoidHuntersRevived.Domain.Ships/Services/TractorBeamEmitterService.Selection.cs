@@ -11,10 +11,11 @@ using VoidHuntersRevived.Common.Physics.Extensions.FixedPoint;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Ships.Components;
+using VoidHuntersRevived.Common.Ships.Events;
 using VoidHuntersRevived.Common.Ships.Services;
+using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Exceptions;
-using VoidHuntersRevived.Common.Ships.Events;
 
 namespace VoidHuntersRevived.Domain.Ships.Services
 {
@@ -72,36 +73,47 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             this.Deselect(sourceId, tractorBeamEmitterId, attachToSocketVhId);
         }
 
+        private Queue<(EntityId id, EntityId headId, Location location)> _deselecteds = new Queue<(EntityId id, EntityId head, Location location)>();
         public void Deselect(VhId sourceId, EntityId tractorBeamEmitterId, SocketVhId? attachToSocketVhId)
         {
             ref var filter = ref this.GetTractorableFilter(tractorBeamEmitterId);
             foreach (var (indices, groupId) in filter)
             {
-                var (entityIds, entityStatuses, trees, locations, _) = _entities.QueryEntities<EntityId, EntityStatus, Tree, Location>(groupId);
+                var (entityIds, statuses, trees, locations, _) = _entities.QueryEntities<EntityId, EntityStatus, Tree, Location>(groupId);
 
                 for (int i = 0; i < indices.count; i++)
                 {
                     uint index = indices[i];
 
-                    if (entityStatuses[index].IsDespawned)
+                    if (statuses[index].IsDespawned)
                     {
                         _logger.Warning("{ClassName}::{MethodName} - Unable to deselect {TractorableId}, despawned. Multiple deselect calls in a single frame?", nameof(TractorBeamEmitterService), nameof(Deselect), entityIds[index].VhId.Value);
                         continue;
                     }
 
-                    _logger.Verbose("{ClassName}::{MethodName} - Attempting to deselect {TreeId} with emitter {TractorBeamEmitterId}", nameof(TractorBeamEmitterService), nameof(Deselect), entityIds[index].VhId.Value, tractorBeamEmitterId.VhId);
-                    this.Simulation.Publish(
-                        sourceId: NameSpace<TractorBeamEmitterService>.Instance.Create(sourceId),
-                        data: new TractorBeamEmitter_Deselect()
-                        {
-                            TractorBeamEmitterVhId = tractorBeamEmitterId.VhId,
-                            TargetData = _entities.Serialize(trees[index].HeadId, SerializationOptions.Default),
-                            Location = locations[index],
-                            AttachToSocketVhId = attachToSocketVhId
-                        });
+                    EntityId id = entityIds[index];
+                    _deselecteds.Enqueue((id, trees[index].HeadId, locations[index]));
 
-                    _entities.Despawn(sourceId, entityIds[index]);
+                    filter.Remove(id);
                 }
+            }
+
+            VhId nextSourceId = NameSpace<TractorBeamEmitterService>.Instance.Create(sourceId);
+            while (_deselecteds.TryDequeue(out (EntityId id, EntityId headId, Location location) deselected))
+            {
+                _logger.Verbose("{ClassName}::{MethodName} - Attempting to deselect {TreeId} with emitter {TractorBeamEmitterId}", nameof(TractorBeamEmitterService), nameof(Deselect), deselected.id.VhId.Value, tractorBeamEmitterId.VhId);
+                this.Simulation.Publish(new EventDto()
+                {
+                    SourceId = nextSourceId,
+                    Data = new TractorBeamEmitter_Deselect()
+                    {
+                        TractorBeamEmitterVhId = tractorBeamEmitterId.VhId,
+                        TargetData = _entities.Serialize(deselected.headId, SerializationOptions.Default),
+                        Location = deselected.location,
+                        AttachToSocketVhId = attachToSocketVhId
+                    }
+                });
+                _entities.Despawn(nextSourceId, deselected.id);
             }
         }
 

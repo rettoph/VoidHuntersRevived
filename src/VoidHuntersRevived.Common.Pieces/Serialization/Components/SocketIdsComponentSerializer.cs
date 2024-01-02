@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Common.Pieces.Serialization.Components
 
         private int WriteSocketCouplings(EntityWriter writer, SocketId socketId, SerializationOptions options)
         {
-            var filter = _sockets.GetCouplingFilter(socketId);
+            ref var filter = ref _sockets.GetCouplingFilter(socketId);
             int count = 0;
 
             foreach (var (indices, groupId) in filter)

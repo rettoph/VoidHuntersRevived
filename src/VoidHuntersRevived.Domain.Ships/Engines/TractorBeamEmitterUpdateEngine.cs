@@ -66,11 +66,12 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
                 for (int i = 0; i < indices.count; i++)
                 {
                     uint index = indices[i];
+                    ref EntityId tractorableId = ref entityIds[index];
+
                     if (statuses[index].IsDespawned == false)
                     {
                         if (enableds[index] == true)
                         {
-                            ref EntityId tractorableId = ref entityIds[index];
                             IBody targetBody = _space.GetBody(in tractorableId);
 
                             EntityId targetId = _entities.GetId(tractorableId.VhId);
@@ -93,8 +94,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
                         }
                         else
                         {
-                            ref EntityId tractorableId = ref entityIds[index];
-                            _logger.Warning("{ClassName}::{MethodName} - TractorBeamEmitter = {TractorBeamEmitterId}, Tractorable = {TractorableId}, Enabled = false.", nameof(TractorBeamEmitterUpdateEngine), nameof(UpdateTractorBeamEmitterTractorables), tractorBeamEmitterId.VhId, tractorableId.VhId);
+                            _logger.Warning("{ClassName}::{MethodName} - TractorBeamEmitter = {TractorBeamEmitterId}, Tractorable = {TractorableId}, Enabled = {Enabled}.", nameof(TractorBeamEmitterUpdateEngine), nameof(UpdateTractorBeamEmitterTractorables), tractorBeamEmitterId.VhId, tractorableId.VhId, enableds[index]);
                             _tractorBeamEmitters.Deselect(
                                 sourceId: HashBuilder<TractorBeamEmitterUpdateEngine, VhId>.Instance.Calculate(tractorableId.VhId),
                                 tractorBeamEmitterId: tractorBeamEmitterId,
@@ -103,8 +103,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
                     }
                     else
                     {
-                        ref EntityId tractorableId = ref entityIds[index];
-                        _logger.Warning("{ClassName}::{MethodName} - TractorBeamEmitter = {TractorBeamEmitterId}, Tractorable = {TractorableId}, IsSpawned = false.", nameof(TractorBeamEmitterUpdateEngine), nameof(UpdateTractorBeamEmitterTractorables), tractorBeamEmitterId.VhId, tractorableId.VhId);
+                        _logger.Warning("{ClassName}::{MethodName} - TractorBeamEmitter = {TractorBeamEmitterId}, Tractorable = {TractorableId}, IsDespawned = {IsDespawned}.", nameof(TractorBeamEmitterUpdateEngine), nameof(UpdateTractorBeamEmitterTractorables), tractorBeamEmitterId.VhId, tractorableId.VhId, statuses[index].IsDespawned);
                     }
                 }
             }

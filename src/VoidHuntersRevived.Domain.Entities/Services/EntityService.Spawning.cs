@@ -196,7 +196,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 ref EntityStatus status = ref this.QueryById<EntityStatus>(id, out _, out bool exists);
 
-
                 if (exists)
                 {
                     int spawnCount = 0;
@@ -377,7 +376,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
             else
             {
-                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to despawn entity, unknown VhId {VhId}", nameof(EntityService), nameof(Revert), nameof(DespawnEntity), data.VhId);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to revert despawn entity, unknown VhId {VhId}, Id not found.", nameof(EntityService), nameof(Revert), nameof(DespawnEntity), data.VhId);
             }
         }
     }

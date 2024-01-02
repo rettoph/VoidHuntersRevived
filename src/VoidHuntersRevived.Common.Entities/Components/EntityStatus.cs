@@ -7,11 +7,6 @@ namespace VoidHuntersRevived.Common.Entities.Components
     public unsafe struct EntityStatus : IEntityComponent
     {
         private fixed int _modificationsCount[2];
-#if DEBUG
-        private int _modificationsCount0 => (int)_modificationsCount[0];
-        private int _modificationsCount1 => (int)_modificationsCount[1];
-        private int _spawnedCount => this.GetSpawnedCount();
-#endif
 
         public EntityStatusEnum Value;
 
