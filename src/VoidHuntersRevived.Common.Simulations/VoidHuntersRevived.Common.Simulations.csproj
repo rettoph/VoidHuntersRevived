@@ -15,7 +15,7 @@
     <ProjectReference Include="..\VoidHuntersRevived.Common.Entities\VoidHuntersRevived.Common.Entities.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.FixedPoint\VoidHuntersRevived.Common.FixedPoint.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Physics\VoidHuntersRevived.Common.Physics.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Common\VoidHuntersRevived.Common.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Common.Core\VoidHuntersRevived.Common.Core.csproj" />
   </ItemGroup>
   
 </Project>

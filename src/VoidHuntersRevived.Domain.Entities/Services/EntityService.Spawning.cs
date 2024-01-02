@@ -1,5 +1,6 @@
 ﻿using Svelto.ECS;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Descriptors;

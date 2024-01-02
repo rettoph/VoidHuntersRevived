@@ -14,11 +14,9 @@
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Resources\Guppy.Resources.csproj" />
     <ProjectReference Include="..\..\libraries\Svelto.ECS\com.sebaslab.svelto.common\Svelto.Common.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Common.FixedPoint\VoidHuntersRevived.Common.FixedPoint.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Standart.Hash.xxHash" Version="4.0.5" PrivateAssets="compile" />
+    <ProjectReference Include="..\VoidHuntersRevived.Common.Entities\VoidHuntersRevived.Common.Entities.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Common.Pieces\VoidHuntersRevived.Common.Pieces.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Common.Ships\VoidHuntersRevived.Common.Ships.csproj" />
   </ItemGroup>
 
 </Project>

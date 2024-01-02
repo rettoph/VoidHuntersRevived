@@ -3,8 +3,8 @@ using Microsoft.Xna.Framework;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Extensions.System;
-using VoidHuntersRevived.Common.Helpers;
+using VoidHuntersRevived.Common.Core.Extensions.System;
+using VoidHuntersRevived.Common.Core.Helpers;
 using VoidHuntersRevived.Common.Pieces.Utilities;
 
 namespace VoidHuntersRevived.Common.Pieces.Components

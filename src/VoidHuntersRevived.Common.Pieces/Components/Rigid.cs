@@ -1,7 +1,7 @@
 ﻿using Guppy.Resources.Attributes;
 using Svelto.DataStructures;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Extensions.System;
+using VoidHuntersRevived.Common.Core.Extensions.System;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Pieces.Utilities;
 

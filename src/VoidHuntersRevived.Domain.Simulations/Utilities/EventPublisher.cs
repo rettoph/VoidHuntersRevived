@@ -1,6 +1,6 @@
 ﻿using Serilog;
 using System.Runtime.CompilerServices;
-using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Engines;

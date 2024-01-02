@@ -1,8 +1,9 @@
 ﻿using Svelto.ECS;
+using VoidHuntersRevived.Common.Core;
+using VoidHuntersRevived.Common.Core.Utilities;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces.Components;
-using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Common.Pieces.Extensions.Entities
 {

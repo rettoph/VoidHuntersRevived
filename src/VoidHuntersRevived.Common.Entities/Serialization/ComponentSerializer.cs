@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Enums;
 using Svelto.ECS;
+using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities.Options;
 
 namespace VoidHuntersRevived.Common.Entities.Serialization

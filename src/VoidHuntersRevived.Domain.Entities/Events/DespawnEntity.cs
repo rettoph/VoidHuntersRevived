@@ -1,6 +1,6 @@
-﻿using VoidHuntersRevived.Common;
+﻿using VoidHuntersRevived.Common.Core;
+using VoidHuntersRevived.Common.Core.Utilities;
 using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Events
 {

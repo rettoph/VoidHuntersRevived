@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Game.Loaders
         {
             assemblies.Load(typeof(DomainLoader).Assembly);
             assemblies.Load(typeof(EntityTypeLoader).Assembly);
-            assemblies.Load(typeof(ShipsServiceLoader).Assembly);
+            assemblies.Load(typeof(ShipLoader).Assembly);
         }
     }
 }

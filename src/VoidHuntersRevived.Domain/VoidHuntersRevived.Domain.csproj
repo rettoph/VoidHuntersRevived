@@ -14,6 +14,7 @@
     <ProjectReference Include="..\..\libraries\Guppy\src\Guppy.Game\Guppy.Game.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Simulations\VoidHuntersRevived.Common.Simulations.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Pieces\VoidHuntersRevived.Domain.Pieces.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Domain.Ships\VoidHuntersRevived.Domain.Ships.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Simulations\VoidHuntersRevived.Domain.Simulations.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Physics\VoidHuntersRevived.Domain.Physics.csproj" PrivateAssets="buildTransitive" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Simulations\VoidHuntersRevived.Domain.Simulations.csproj" PrivateAssets="buildTransitive" />

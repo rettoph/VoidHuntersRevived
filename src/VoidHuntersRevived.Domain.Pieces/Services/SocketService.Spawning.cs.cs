@@ -1,5 +1,6 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Core;
+using VoidHuntersRevived.Common.Core.Utilities;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Options;
 using VoidHuntersRevived.Common.Entities.Serialization;
@@ -8,7 +9,6 @@ using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Descriptors;
 using VoidHuntersRevived.Common.Pieces.Services;
-using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {

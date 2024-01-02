@@ -1,5 +1,5 @@
-﻿using FixedMath.NET;
-using Guppy.Attributes;
+﻿using Guppy.Attributes;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Loaders;
 using VoidHuntersRevived.Common.Entities.Services;

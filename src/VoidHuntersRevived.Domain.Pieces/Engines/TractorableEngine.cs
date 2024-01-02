@@ -1,7 +1,7 @@
 ﻿using Guppy.Attributes;
 using Serilog;
 using Svelto.ECS;
-using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;

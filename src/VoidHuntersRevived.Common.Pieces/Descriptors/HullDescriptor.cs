@@ -1,6 +1,7 @@
 ﻿using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS;
+using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics.Components;

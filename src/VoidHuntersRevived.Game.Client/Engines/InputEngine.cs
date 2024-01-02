@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces;
@@ -20,9 +21,9 @@ using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Domain.Ships.Events;
 using VoidHuntersRevived.Game.Client.Messages;
 using VoidHuntersRevived.Game.Common.Events;
-using VoidHuntersRevived.Game.Ships.Events;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {

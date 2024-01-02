@@ -10,6 +10,7 @@ using Guppy.Resources.Serialization.Json;
 using Serilog;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Domain.Serialization.Json;
 
 namespace VoidHuntersRevived.Domain.Loaders

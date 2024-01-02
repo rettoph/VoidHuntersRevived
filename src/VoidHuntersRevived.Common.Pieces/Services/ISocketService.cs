@@ -1,5 +1,6 @@
 ﻿using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
+using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Pieces.Descriptors;

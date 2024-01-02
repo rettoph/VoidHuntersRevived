@@ -1,13 +1,13 @@
 ﻿using Guppy.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Common.Simulations.Events;
-using VoidHuntersRevived.Game.Common;
 
 namespace VoidHuntersRevived.Game.Ships.Engines
 {

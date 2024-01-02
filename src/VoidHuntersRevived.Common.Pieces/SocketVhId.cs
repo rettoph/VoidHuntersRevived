@@ -1,4 +1,6 @@
-﻿namespace VoidHuntersRevived.Common.Pieces
+﻿using VoidHuntersRevived.Common.Core;
+
+namespace VoidHuntersRevived.Common.Pieces
 {
     public struct SocketVhId
     {

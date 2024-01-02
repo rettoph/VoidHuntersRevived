@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Client.Services;
+using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces.Components;
@@ -16,7 +17,6 @@ using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Simulations;
-using static VoidHuntersRevived.Common.Resources;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -60,7 +60,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in GameTimeTeam _param)
         {
-            Color activeThrustableHighlight = _resources.Get(Colors.ActiveThrustableHighlight);
+            Color activeThrustableHighlight = _resources.Get(Resources.Colors.ActiveThrustableHighlight);
             _visibleRenderingService.Begin(activeThrustableHighlight, Color.Transparent);
             foreach (var ((ids, helms, count), groupId) in _entities.QueryEntities<EntityId, Helm>())
             {

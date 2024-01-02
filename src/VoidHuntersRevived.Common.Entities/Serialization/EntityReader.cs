@@ -1,5 +1,6 @@
 ﻿using Svelto.Common;
 using Svelto.DataStructures;
+using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities.Options;
 
 namespace VoidHuntersRevived.Common.Entities.Serialization

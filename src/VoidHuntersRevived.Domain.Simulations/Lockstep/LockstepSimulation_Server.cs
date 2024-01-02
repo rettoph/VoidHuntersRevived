@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Constants;
+using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Events;
 using VoidHuntersRevived.Common.Simulations.Lockstep;

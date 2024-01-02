@@ -2,6 +2,7 @@
 using tainicom.Aether.Physics2D.Common;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Common;

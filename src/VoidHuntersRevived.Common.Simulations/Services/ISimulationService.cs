@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.ObjectModel;
+using VoidHuntersRevived.Common.Core;
 
 namespace VoidHuntersRevived.Common.Simulations.Services
 {

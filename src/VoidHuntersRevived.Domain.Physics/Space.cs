@@ -1,7 +1,7 @@
 ﻿using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Physics;

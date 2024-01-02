@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Options;
 using VoidHuntersRevived.Common.Entities.Serialization;

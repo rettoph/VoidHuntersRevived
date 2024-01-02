@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
+using VoidHuntersRevived.Common.Core;
+using VoidHuntersRevived.Common.Core.Utilities;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Common.Pieces
 {

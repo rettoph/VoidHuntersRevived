@@ -3,7 +3,7 @@ using Guppy.Common;
 using Guppy.Messaging;
 using Microsoft.Xna.Framework;
 using System.Collections.ObjectModel;
-using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Services;
 

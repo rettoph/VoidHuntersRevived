@@ -1,4 +1,6 @@
-﻿namespace VoidHuntersRevived.Common.Simulations
+﻿using VoidHuntersRevived.Common.Core;
+
+namespace VoidHuntersRevived.Common.Simulations
 {
     public class EventDto
     {

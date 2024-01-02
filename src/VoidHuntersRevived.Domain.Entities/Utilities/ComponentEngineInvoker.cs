@@ -1,7 +1,7 @@
 ﻿using Svelto.DataStructures;
 using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
-using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
 

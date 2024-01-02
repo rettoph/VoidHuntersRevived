@@ -1,4 +1,5 @@
-﻿using VoidHuntersRevived.Common.Entities;
+﻿using VoidHuntersRevived.Common.Core;
+using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Common.Ships.Services
 {

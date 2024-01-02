@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Standart.Hash.xxHash;
 using Svelto.ECS;
+using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Common.Entities.Descriptors

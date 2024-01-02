@@ -1,4 +1,5 @@
-﻿using VoidHuntersRevived.Common.Entities.Descriptors;
+﻿using VoidHuntersRevived.Common.Core;
+using VoidHuntersRevived.Common.Entities.Descriptors;
 
 namespace VoidHuntersRevived.Common.Entities
 {

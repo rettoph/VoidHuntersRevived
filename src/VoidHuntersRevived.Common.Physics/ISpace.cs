@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.FixedPoint;
 

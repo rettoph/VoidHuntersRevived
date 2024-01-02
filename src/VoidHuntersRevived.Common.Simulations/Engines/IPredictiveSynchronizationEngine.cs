@@ -1,4 +1,5 @@
 ﻿using Svelto.ECS;
+using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Lockstep;
 

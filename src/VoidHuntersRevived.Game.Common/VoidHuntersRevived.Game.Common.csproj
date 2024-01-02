@@ -10,11 +10,16 @@
     <ProjectReference Include="..\VoidHuntersRevived.Common.Pieces\VoidHuntersRevived.Common.Pieces.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Ships\VoidHuntersRevived.Common.Ships.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Common.Simulations\VoidHuntersRevived.Common.Simulations.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Common\VoidHuntersRevived.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Content\Common\**\*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Descriptors\" />
   </ItemGroup>
 </Project>

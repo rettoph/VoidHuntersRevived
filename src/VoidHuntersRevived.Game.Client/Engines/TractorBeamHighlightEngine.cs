@@ -9,6 +9,7 @@ using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Client.Services;
+using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;
@@ -19,7 +20,6 @@ using VoidHuntersRevived.Common.Ships.Services;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using static VoidHuntersRevived.Common.Resources;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -78,7 +78,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            _visibleRenderingService.Begin(_resources.Get(Colors.TractorBeamHighlight), Color.Red);
+            _visibleRenderingService.Begin(_resources.Get(Resources.Colors.TractorBeamHighlight), Color.Red);
             try
             {
                 this.FillVisibleRecursive(targetNode.Id);

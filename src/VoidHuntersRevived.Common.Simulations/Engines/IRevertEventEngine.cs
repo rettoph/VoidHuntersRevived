@@ -1,4 +1,6 @@
-﻿namespace VoidHuntersRevived.Common.Simulations.Engines
+﻿using VoidHuntersRevived.Common.Core;
+
+namespace VoidHuntersRevived.Common.Simulations.Engines
 {
     public interface IRevertEventEngine : IEventEngine
     {
