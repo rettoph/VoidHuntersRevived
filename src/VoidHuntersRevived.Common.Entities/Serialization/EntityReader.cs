@@ -1,48 +1,47 @@
-﻿using Svelto.Common;
+﻿using Serilog;
+using Svelto.Common;
 using Svelto.DataStructures;
+using Svelto.ECS;
+using System.Reflection.PortableExecutable;
 using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities.Options;
+using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Common.Entities.Serialization
 {
     public class EntityReader : BinaryReader
     {
+        private static unsafe long EntityHeaderSize = sizeof(VhId) + sizeof(Id<IEntityType>);
+
+        private readonly IEntityTypeService _types;
+        private readonly IEntityService _entities;
+        private readonly ILogger _logger;
+
         private EntityData _loaded;
 
-        public EntityReader() : base(new MemoryStream())
+        public EntityReader(IEntityTypeService types, IEntityService entities, ILogger logger) : base(new MemoryStream())
         {
-            _loaded = new EntityData(VhId.Empty, Array.Empty<byte>());
+            _loaded = EntityData.Default;
+            _types = types;
+            _entities = entities;
+            _logger = logger;
         }
 
-        public void Load(EntityData data)
+        public void Load(EntityData data, long position)
         {
-            if (_loaded.Id.Value != data.Id.Value)
+            if(_loaded.Id.Value == data.Id.Value)
             {
-                this.BaseStream.Position = 0;
-                this.BaseStream.Write(data.Bytes, 0, data.Bytes.Length);
-
-                _loaded = data;
+                this.BaseStream.Position = position;
+                return;
             }
 
             this.BaseStream.Position = 0;
+            this.BaseStream.Write(data.Bytes, 0, data.Bytes.Length);
             this.BaseStream.Flush();
-        }
-        public void Load(EntityReaderState state)
-        {
-            if (_loaded.Id.Value != state.Data.Id.Value)
-            {
-                this.BaseStream.Position = state.Position;
-                this.BaseStream.Write(state.Data.Bytes, state.Position, state.Data.Bytes.Length - state.Position);
 
-                _loaded = state.Data;
-            }
+            this.BaseStream.Position = position;
 
-            this.BaseStream.Position = state.Position;
-        }
-
-        public EntityReaderState GetState()
-        {
-            return new EntityReaderState(_loaded!, (int)this.BaseStream.Position);
+            _loaded = data;
         }
 
         /// <summary>
@@ -106,6 +105,38 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             where T : unmanaged
         {
             return reader.ReadStruct<T>();
+        }
+
+        internal EntityId Deserialize(VhId sourceId, EntityData data, DeserializationOptions options, EntityInitializerDelegate? initializerDelegate)
+        {
+            for(int i = data.Positions.Length - 1; i > -1; i--)
+            {
+                this.InternalDeserialize(sourceId, data, data.Positions[i], options, null);
+            }
+
+            VhId vhid = this.InternalDeserialize(sourceId, data, 0, options, initializerDelegate);
+
+            return _entities.GetId(vhid);
+        }
+
+        private VhId InternalDeserialize(VhId sourceId, EntityData data, long position, DeserializationOptions options, EntityInitializerDelegate? initializerDelegate)
+        {
+            this.Load(data, position);
+            VhId vhid = this.ReadVhId(options.Seed);
+            Id<IEntityType> typeId = this.ReadStruct<Id<IEntityType>>();
+            IEntityType type = _types.GetById(typeId);
+
+            _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityReader), nameof(InternalDeserialize), vhid.Value, typeId.Value, options.Seed.Value);
+
+            _entities.Spawn(sourceId, type, vhid, options.TeamId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+            {
+                this.Load(data, position + EntityReader.EntityHeaderSize);
+                entities.GetDescriptorEngine(type.Descriptor.Id).Deserialize(in sourceId, in options, this, ref initializer, in id);
+
+                initializerDelegate?.Invoke(entities, ref initializer, in id);
+            });
+
+            return vhid;
         }
     }
 }
