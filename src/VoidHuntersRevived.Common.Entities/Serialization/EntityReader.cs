@@ -2,7 +2,6 @@
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS;
-using System.Reflection.PortableExecutable;
 using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities.Options;
 using VoidHuntersRevived.Common.Entities.Services;
@@ -29,7 +28,7 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
 
         public void Load(EntityData data, long position)
         {
-            if(_loaded.Id.Value == data.Id.Value)
+            if (_loaded.Id.Value == data.Id.Value)
             {
                 this.BaseStream.Position = position;
                 return;
@@ -109,12 +108,12 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
 
         internal EntityId Deserialize(VhId sourceId, EntityData data, DeserializationOptions options, EntityInitializerDelegate? initializerDelegate)
         {
-            for(int i = data.Positions.Length - 1; i > -1; i--)
+            VhId vhid = this.InternalDeserialize(sourceId, data, 0, options, initializerDelegate);
+
+            for (uint i = 0; i < data.Positions.Length; i++)
             {
                 this.InternalDeserialize(sourceId, data, data.Positions[i], options, null);
             }
-
-            VhId vhid = this.InternalDeserialize(sourceId, data, 0, options, initializerDelegate);
 
             return _entities.GetId(vhid);
         }

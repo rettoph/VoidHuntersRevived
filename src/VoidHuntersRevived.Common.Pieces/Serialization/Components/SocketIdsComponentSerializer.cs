@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Common.Pieces.Serialization.Components
 
                 for (int i = 0; i < indices.count; i++)
                 {
-                    writer.Enqueue(entityIds[indices[i]]);
+                    writer.Push(entityIds[indices[i]]);
                 }
             }
         }

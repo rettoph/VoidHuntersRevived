@@ -9,14 +9,14 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
 {
     public sealed class EntityWriter : BinaryWriter
     {
-        private readonly Queue<EntityId> _nested;
+        private readonly Stack<EntityId> _nested;
         private readonly List<long> _positions;
         private readonly IEntityService _entities;
         private readonly ILogger _logger;
 
         public EntityWriter(IEntityService entities, ILogger logger) : base(new MemoryStream())
         {
-            _nested = new Queue<EntityId>();
+            _nested = new Stack<EntityId>();
             _positions = new List<long>();
             _entities = entities;
             _logger = logger;
@@ -66,9 +66,9 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             writer.WriteStruct<T>(item);
         }
 
-        public void Enqueue(EntityId id)
+        public void Push(EntityId id)
         {
-            _nested.Enqueue(id);
+            _nested.Push(id);
         }
 
         internal EntityData Serialize(EntityId id, SerializationOptions options)
@@ -78,7 +78,7 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             this.BaseStream.Position = 0;
 
             this.InternalSerialize(id, options);
-            while (_nested.TryDequeue(out EntityId nestedId))
+            while (_nested.TryPop(out EntityId nestedId))
             {
                 _positions.Add(this.BaseStream.Position);
                 this.InternalSerialize(nestedId, options);
