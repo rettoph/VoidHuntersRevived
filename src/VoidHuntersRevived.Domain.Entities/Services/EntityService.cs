@@ -6,6 +6,7 @@ using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Engines;
+using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
 using VoidHuntersRevived.Domain.Entities.Engines;
@@ -18,6 +19,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly ILogger _logger;
         private readonly EntityTypeService _types;
         private readonly SimpleEntitiesSubmissionScheduler _scheduler;
+        private readonly EntityReader _reader;
+        private readonly EntityWriter _writer;
 
         public EntityService(
             ILogger logger,
@@ -28,6 +31,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _types = types;
             _scheduler = scheduler;
             _descriptors = new DoubleDictionary<Id<VoidHuntersEntityDescriptor>, Type, IVoidHuntersEntityDescriptorEngine>();
+            _writer = new EntityWriter(this, _logger);
+            _reader = new EntityReader(_types, this, _logger);
         }
 
         public EntitiesDB entitiesDB { get; set; } = null!;

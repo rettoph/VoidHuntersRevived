@@ -38,10 +38,8 @@ namespace VoidHuntersRevived.Common.Entities.Services
 
         #region Serialization
         EntityData Serialize(EntityId id, SerializationOptions options);
-        void Serialize(EntityId id, EntityWriter writer, SerializationOptions options);
 
         EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, EntityInitializerDelegate? initializer);
-        EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityReader reader, EntityInitializerDelegate? initializer);
         #endregion
 
         #region Filters
