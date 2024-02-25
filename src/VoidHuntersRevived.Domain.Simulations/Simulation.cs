@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Domain.Simulations
 
                 builder.Configure<LoggerConfiguration>((scope, configuration) =>
                 {
-                    configuration.Enrich.WithProperty("PeerType", scope.Resolve<NetScope>().Peer?.Type ?? PeerType.None);
+                    configuration.Enrich.WithProperty("PeerType", scope.Resolve<INetScope>().Peer?.Type ?? PeerType.None);
                     configuration.Enrich.WithProperty("SimulationType", this.Type);
                 });
             });

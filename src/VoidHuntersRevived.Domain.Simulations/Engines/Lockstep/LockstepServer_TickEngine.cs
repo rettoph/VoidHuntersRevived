@@ -21,11 +21,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
         ITickEngine,
         IEventEngine<UserJoined>
     {
-        private readonly NetScope _scope;
+        private readonly INetScope _scope;
         private readonly List<Tick> _history;
         private readonly ILogger _logger;
 
-        public LockstepServer_TickEngine(ILogger logger, NetScope scope)
+        public LockstepServer_TickEngine(ILogger logger, INetScope scope)
         {
             _scope = scope;
             _history = new List<Tick>();

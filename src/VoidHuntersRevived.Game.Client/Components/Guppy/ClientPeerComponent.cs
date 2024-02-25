@@ -17,10 +17,10 @@ namespace VoidHuntersRevived.Game.Client.Components.Guppy
     [Sequence<UpdateSequence>(UpdateSequence.PostUpdate)]
     internal class ClientPeerComponent : IGuppyComponent, IGuppyUpdateable
     {
-        private readonly ClientPeer _client;
-        private readonly NetScope _scope;
+        private readonly IClientPeer _client;
+        private readonly INetScope _scope;
 
-        public ClientPeerComponent(ClientPeer client, NetScope scope)
+        public ClientPeerComponent(IClientPeer client, INetScope scope)
         {
             _client = client;
             _scope = scope;
@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Guppy
         public void Initialize(IGuppy guppy)
         {
             _client.Start();
-            _client.Bind(_scope, NetScopeIds.Game);
+            _scope.AttachPeer(_client, NetScopeIds.Game);
         }
 
         public void Update(GameTime gameTime)

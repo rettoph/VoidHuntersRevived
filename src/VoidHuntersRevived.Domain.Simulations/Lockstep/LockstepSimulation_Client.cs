@@ -15,12 +15,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
     internal sealed class LockstepSimulation_Client : LockstepSimulation,
         IDisposable
     {
-        private readonly NetScope _netScope;
+        private readonly INetScope _netScope;
 
         internal readonly TickBuffer _ticks;
 
         public LockstepSimulation_Client(
-            NetScope netScope,
+            INetScope netScope,
             TickBuffer ticks,
             ISettingProvider settings,
             ILifetimeScope scope) : base(settings, scope)

@@ -106,12 +106,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public void Process(in Guid messsageId, INetIncomingMessage<EventDto> message)
         {
-            if (message.Body.Data is not IInputData)
+            if (message.Body.Data is not IInputData input)
             {
                 throw new InvalidOperationException();
             }
 
-            this.Input(message.Body.SourceId, (IInputData)message.Body.Data);
+            this.Input(message.Body.SourceId, input);
         }
     }
 }

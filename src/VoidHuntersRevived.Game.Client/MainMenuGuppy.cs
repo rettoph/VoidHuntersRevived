@@ -15,13 +15,13 @@ namespace VoidHuntersRevived.Game.Client
         private readonly Menu _menu;
 
         public MainMenuGuppy(
-            ClientPeer client,
-            NetScope netScope,
+            IClientPeer client,
+            INetScope netScope,
             IMenuProvider menus)
         {
             _menu = menus.Get(Menus.Main);
 
-            client.Bind(netScope, NetScopeIds.MainMenu);
+            netScope.AttachPeer(client, NetScopeIds.MainMenu);
         }
 
         public override void Initialize(ILifetimeScope scope)

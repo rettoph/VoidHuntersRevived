@@ -18,12 +18,12 @@ namespace VoidHuntersRevived.Game.Core.Engines
     internal sealed class UserEngine : BasicEngine, IGetReadyEngine,
         IEventEngine<UserJoined>
     {
-        private readonly NetScope _scope;
+        private readonly INetScope _scope;
         private readonly ITreeService _trees;
         private readonly IPieceService _pieces;
         private readonly IBlueprintService _blueprints;
 
-        public UserEngine(ITreeService trees, IPieceService pieces, IBlueprintService blueprints, NetScope scope)
+        public UserEngine(ITreeService trees, IPieceService pieces, IBlueprintService blueprints, INetScope scope)
         {
             _scope = scope;
             _trees = trees;

@@ -7,9 +7,9 @@ namespace VoidHuntersRevived.Game.Client
 {
     public class MultiplayerGameGuppy : LocalGameGuppy
     {
-        public readonly ClientPeer Client;
+        public readonly IClientPeer Client;
 
-        public MultiplayerGameGuppy(ClientPeer client)
+        public MultiplayerGameGuppy(IClientPeer client)
         {
             this.Client = client;
         }
