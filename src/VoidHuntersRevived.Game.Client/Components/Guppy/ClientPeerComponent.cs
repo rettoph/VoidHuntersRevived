@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Guppy
         public void Initialize(IGuppy guppy)
         {
             _client.Start();
-            _scope.AttachPeer(_client, NetScopeIds.Game);
+            _client.Groups.GetById(NetScopeIds.Game).Attach(_scope);
         }
 
         public void Update(GameTime gameTime)

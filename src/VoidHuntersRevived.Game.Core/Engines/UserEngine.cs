@@ -18,12 +18,12 @@ namespace VoidHuntersRevived.Game.Core.Engines
     internal sealed class UserEngine : BasicEngine, IGetReadyEngine,
         IEventEngine<UserJoined>
     {
-        private readonly INetScope _scope;
+        private readonly INetGroup _scope;
         private readonly ITreeService _trees;
         private readonly IPieceService _pieces;
         private readonly IBlueprintService _blueprints;
 
-        public UserEngine(ITreeService trees, IPieceService pieces, IBlueprintService blueprints, INetScope scope)
+        public UserEngine(ITreeService trees, IPieceService pieces, IBlueprintService blueprints, INetGroup scope)
         {
             _scope = scope;
             _trees = trees;
@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Game.Core.Engines
                 {
                     Position = new FixVector2(0, 0)
                 });
-                initializer.Init(new UserId(data.UserId));
+                initializer.Init(new UserId(data.UserDto.Id));
             });
         }
     }

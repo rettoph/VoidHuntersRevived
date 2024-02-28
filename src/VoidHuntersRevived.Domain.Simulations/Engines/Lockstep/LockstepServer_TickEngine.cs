@@ -21,13 +21,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
         ITickEngine,
         IEventEngine<UserJoined>
     {
-        private readonly INetScope _scope;
+        private readonly INetGroup _group;
         private readonly List<Tick> _history;
         private readonly ILogger _logger;
 
-        public LockstepServer_TickEngine(ILogger logger, INetScope scope)
+        public LockstepServer_TickEngine(ILogger logger, INetGroup gropu)
         {
-            _scope = scope;
+            _group = gropu;
             _history = new List<Tick>();
             _logger = logger;
         }
@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 
         public void Process(VhId id, UserJoined data)
         {
-            User? user = _scope.Peer!.Users.UpdateOrCreate(data.UserId, data.Claims);
+            User? user = _group.Peer!.Users.UpdateOrCreate(data.UserDto);
 
             if (user.NetPeer is null)
             {
@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 
             var currentTickId = this.Simulation.CurrentTick.Id;
 
-            _scope.Messages.Create(new TickHistoryStart()
+            _group.CreateMessage(new TickHistoryStart()
             {
                 CurrentTickId = currentTickId
             }).AddRecipient(user.NetPeer).Enqueue();
@@ -57,13 +57,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
                     break;
                 }
 
-                _scope.Messages.Create(new TickHistoryItem()
+                _group.CreateMessage(new TickHistoryItem()
                 {
                     Tick = tick
                 }).AddRecipient(user.NetPeer).Enqueue();
             }
 
-            _scope.Messages.Create(new TickHistoryEnd()
+            _group.CreateMessage(new TickHistoryEnd()
             {
                 CurrentTickId = currentTickId
             }).AddRecipient(user.NetPeer).Enqueue();
@@ -72,8 +72,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
         public void Step(in Tick tick)
         {
             // Broadcast the current tick to all connected peers
-            _scope.Messages.Create(in tick)
-                .AddRecipients(_scope.Users.Peers)
+            _group.CreateMessage(in tick)
+                .AddRecipients(_group.Users.Peers)
                 .Enqueue();
 
             if (tick.Events.Length == 0)

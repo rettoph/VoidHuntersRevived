@@ -2,6 +2,7 @@
 using Guppy.Network;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
+using Guppy.Network.Extensions.Identity;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Enums;
 using Guppy.Network.Identity.Services;
@@ -18,9 +19,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
     [SimulationFilter(SimulationType.Lockstep)]
     internal class LockstepServer_UserEngine : BasicEngine
     {
-        private readonly INetScope _scope;
+        private readonly INetGroup _scope;
 
-        public LockstepServer_UserEngine(INetScope scope)
+        public LockstepServer_UserEngine(INetGroup scope)
         {
             _scope = scope;
         }
@@ -36,8 +37,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
         {
             this.Simulation.Input(VhId.NewId(), new UserJoined()
             {
-                UserId = args.Id,
-                Claims = args.Where(x => x.Accessibility == ClaimAccessibility.Public).ToArray()
+                UserDto = args.ToDto(ClaimAccessibility.Public)
             });
         }
     }

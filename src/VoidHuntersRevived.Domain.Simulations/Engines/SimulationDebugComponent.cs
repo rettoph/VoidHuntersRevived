@@ -2,6 +2,8 @@
 using Guppy.Common.Attributes;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui;
+using Guppy.StateMachine;
+using Guppy.StateMachine.Services;
 using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
@@ -14,16 +16,24 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines
     [Sequence<DrawSequence>(DrawSequence.PreDraw)]
     internal class SimulationDebugComponent : BasicEngine<Simulation>, ISimpleDebugEngine
     {
+        private readonly IStateService _states;
+
         public const string Time = nameof(Time);
 
         public ISimpleDebugEngine.SimpleDebugLine[] Lines { get; }
 
-        public SimulationDebugComponent(IImGui imgui)
+        public SimulationDebugComponent(IImGui imgui, IStateService states)
         {
-            Lines = new[]
+            _states = states;
+
+            this.Lines = new ISimpleDebugEngine.SimpleDebugLine[1 + states.GetAll().Count()];
+            this.Lines[0] = new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), Time, () => TimeSpan.FromSeconds((float)Simulation.CurrentStep.TotalTime).ToString(@"hh\:mm\:ss\.FFFFFFF").PadRight(16, '0'));
+
+            int index = 1;
+            foreach (IState state in _states.GetAll())
             {
-                new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), Time, () => TimeSpan.FromSeconds((float)Simulation.CurrentStep.TotalTime).ToString(@"hh\:mm\:ss\.FFFFFFF").PadRight(16, '0'))
-            };
+                this.Lines[index++] = new ISimpleDebugEngine.SimpleDebugLine(nameof(IStateService), $"{state.Key.Type.FullName}<{state.Key.Value}>", () => state.Value?.ToString() ?? string.Empty);
+            }
         }
     }
 }

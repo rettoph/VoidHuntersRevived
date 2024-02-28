@@ -6,6 +6,7 @@ using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Guppy.Network;
 using Guppy.Network.Identity;
+using Guppy.Network.Identity.Claims;
 using Guppy.Network.Identity.Services;
 using Guppy.Network.Peers;
 using Microsoft.Xna.Framework;
@@ -30,8 +31,8 @@ namespace VoidHuntersRevived.Game.Server.Components.Guppy
 
         public void Initialize(IGuppy guppy)
         {
-            _scope.AttachPeer(_server, NetScopeIds.Game);
-            _server.Start(1337);
+            _server.Start(1337, Claim.Public("username", "System"));
+            _server.Groups.GetById(NetScopeIds.Game).Attach(_scope);
 
             _server.Users.OnUserConnected += HandleUserConnected;
         }
@@ -43,7 +44,7 @@ namespace VoidHuntersRevived.Game.Server.Components.Guppy
 
         private void HandleUserConnected(IUserService sender, User args)
         {
-            _server.Scopes[NetScopeIds.Game].Users.Add(args);
+            _server.Groups.GetById(NetScopeIds.Game).Users.Add(args);
         }
     }
 }

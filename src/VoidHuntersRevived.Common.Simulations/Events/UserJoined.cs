@@ -1,4 +1,4 @@
-﻿using Guppy.Network.Identity.Claims;
+﻿using Guppy.Network.Identity.Dtos;
 using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Core.Utilities;
 
@@ -10,12 +10,11 @@ namespace VoidHuntersRevived.Common.Simulations.Events
 
         public VhId ShipVhId => default!;
 
-        public required int UserId { get; init; }
-        public required Claim[] Claims { get; init; }
+        public required UserDto UserDto { get; init; }
 
         public VhId CalculateHash(in VhId source)
         {
-            return HashBuilder<UserJoined, int>.Instance.Calculate(this.UserId);
+            return HashBuilder<UserJoined, int>.Instance.Calculate(this.UserDto.Id);
         }
     }
 }
