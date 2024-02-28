@@ -2,8 +2,6 @@
 using Guppy;
 using Guppy.Extensions.Autofac;
 using Guppy.Game.Common.Enums;
-using Guppy.Network;
-using Guppy.Network.Enums;
 using Microsoft.Xna.Framework;
 using Serilog;
 using Svelto.ECS;
@@ -48,12 +46,6 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.Scope = scope.BeginGuppyScope(nameof(Simulation), builder =>
             {
                 builder.RegisterInstance<ISimulation>(this);
-
-                builder.Configure<LoggerConfiguration>((scope, configuration) =>
-                {
-                    configuration.Enrich.WithProperty("PeerType", scope.Resolve<INetScope>()?.Type ?? PeerType.None);
-                    configuration.Enrich.WithProperty("SimulationType", this.Type);
-                });
             });
 
             // Pass the current scoped netscope to the new child scope

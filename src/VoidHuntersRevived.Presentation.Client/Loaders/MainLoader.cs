@@ -8,7 +8,11 @@ using Guppy.Files.Providers;
 using Guppy.Game.Common;
 using Guppy.Game.Extensions.Serilog;
 using Guppy.Loaders;
+using Guppy.Network.Enums;
+using Guppy.StateMachine;
+using Guppy.StateMachine.Services;
 using Serilog;
+using VoidHuntersRevived.Common.Simulations;
 
 namespace VoidHuntersRevived.Presentation.Client.Loaders
 {
@@ -33,6 +37,10 @@ namespace VoidHuntersRevived.Presentation.Client.Loaders
                             shared: true
                         )
                         .WriteTo.Terminal(scope.Resolve<ITerminal>(), outputTemplate: "[{PeerType}][{SimulationType}][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
+
+                    IStateService states = scope.Resolve<IStateService>();
+                    config.Enrich.WithProperty("PeerType", states.GetByKey(StateKey<PeerType>.Create()).Value);
+                    config.Enrich.WithProperty("SimulationType", states.GetByKey(StateKey<SimulationType>.Create()).Value);
                 }
             });
         }
