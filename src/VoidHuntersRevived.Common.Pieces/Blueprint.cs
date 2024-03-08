@@ -1,18 +1,18 @@
-﻿using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Core.Utilities;
-using VoidHuntersRevived.Common.Entities;
+﻿using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Common.Pieces
 {
-    public sealed class Blueprint
+    public sealed class Blueprint : IEntityResource<Blueprint>
     {
+        Id<Blueprint> IEntityResource<Blueprint>.Id => this.Id;
+
         public readonly Id<Blueprint> Id;
         public readonly string Name;
         public readonly IBlueprintPiece Head;
 
-        public Blueprint(string name, IBlueprintPiece head)
+        public Blueprint(Id<Blueprint> id, string name, IBlueprintPiece head)
         {
-            this.Id = HashBuilder<Blueprint, VhId, VhId>.Instance.CalculateId(VhId.HashString(name), head.Id.Value);
+            this.Id = id;
             this.Name = name;
             this.Head = head;
         }

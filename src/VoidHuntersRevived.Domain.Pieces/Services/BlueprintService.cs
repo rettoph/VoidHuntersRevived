@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         {
             _pieces = pieces;
             _logger = logger;
-            _blueprints = new Dictionary<Id<Blueprint>, Blueprint>();
+            _blueprints = resources.GetAll<Blueprint>().Select(x => x.Item2).Concat(blueprints).ToDictionary(x => x.Id, x => x);
         }
 
         public Blueprint GetById(Id<Blueprint> id)

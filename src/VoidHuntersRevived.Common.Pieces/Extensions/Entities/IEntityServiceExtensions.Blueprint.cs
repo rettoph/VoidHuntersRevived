@@ -11,12 +11,12 @@ namespace VoidHuntersRevived.Common.Pieces.Extensions.Entities
     {
         public static EntityId Spawn(this IEntityService entities, VhId sourceId, VhId treeId, Id<ITeam> teamId, Blueprint blueprint)
         {
-            VhId vhid = HashBuilder<BlueprintPieceDto, VhId, Id<Blueprint>>.Instance.Calculate(treeId, blueprint.Id);
+            VhId vhid = HashBuilder<Blueprint, VhId, Id<Blueprint>>.Instance.Calculate(treeId, blueprint.Id);
 
             return entities.Spawn(sourceId, treeId, teamId, vhid, blueprint.Head, default);
         }
 
-        private static EntityId Spawn(this IEntityService entities, VhId sourceId, VhId treeId, Id<ITeam> teamId, VhId vhid, BlueprintPiece blueprintPiece, SocketVhId socketVhId)
+        private static EntityId Spawn(this IEntityService entities, VhId sourceId, VhId treeId, Id<ITeam> teamId, VhId vhid, IBlueprintPiece blueprintPiece, SocketVhId socketVhId)
         {
             return entities.Spawn(sourceId, blueprintPiece.PieceType.EntityType, vhid, teamId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {
@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Common.Pieces.Extensions.Entities
                 {
                     for (int j = 0; j < blueprintPiece.Children[i].Length; j++)
                     {
-                        VhId childVhId = HashBuilder<BlueprintPieceDto, VhId, VhId, int, int>.Instance.Calculate(
+                        VhId childVhId = HashBuilder<Blueprint, VhId, VhId, int, int>.Instance.Calculate(
                             treeId,
                             id.VhId,
                             i,

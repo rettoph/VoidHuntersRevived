@@ -1,5 +1,4 @@
-﻿using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Physics.Components;
+﻿using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
@@ -9,15 +8,14 @@ namespace VoidHuntersRevived.Domain.Pieces
     internal sealed class BlueprintPiece : IBlueprintPiece
     {
         private readonly string _pieceTypeKey;
-        private readonly IPieceTypeService _pieceTypes;
+        private readonly Lazy<IPieceTypeService> _pieceTypes;
         private PieceType? _pieceType;
         private bool _initialized;
 
-        public Id<IBlueprintPiece> Id { get; }
         public PieceType PieceType => _pieceType ??= this.InitializePieceType();
         public IBlueprintPiece[][] Children { get; }
 
-        public BlueprintPiece(string pieceTypeKey, IBlueprintPiece[][] children, IPieceTypeService pieceTypes)
+        public BlueprintPiece(string pieceTypeKey, IBlueprintPiece[][] children, Lazy<IPieceTypeService> pieceTypes)
         {
             _pieceTypeKey = pieceTypeKey;
             _pieceTypes = pieceTypes;
@@ -27,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Pieces
 
         private PieceType InitializePieceType()
         {
-            if (!_pieceTypes.TryGetByKey(_pieceTypeKey, out PieceType? pieceType))
+            if (!_pieceTypes.Value.TryGetByKey(_pieceTypeKey, out PieceType? pieceType))
             {
                 throw new ArgumentException($"Unknown {nameof(Common.Pieces.PieceType)}.{nameof(Common.Pieces.PieceType.Key)} - {_pieceTypeKey}");
             }

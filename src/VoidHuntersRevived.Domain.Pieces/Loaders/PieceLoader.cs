@@ -18,6 +18,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
+            services.RegisterType<BlueprintConverter>().As<JsonConverter>().SingleInstance();
+            services.RegisterType<BlueprintPieceConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<PieceTypeConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<DictionaryPolymorphicConverter<IPieceComponent>>().As<JsonConverter>().SingleInstance();
             services.RegisterType<RigidJsonConverter>().As<JsonConverter>().SingleInstance();
