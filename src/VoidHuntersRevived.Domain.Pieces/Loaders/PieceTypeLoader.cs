@@ -2,7 +2,6 @@
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Loaders;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
 
@@ -11,9 +10,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Loaders
     [AutoLoad]
     internal sealed class PieceTypeLoader : IEntityTypeLoader
     {
-        private readonly IPieceService _pieces;
+        private readonly IPieceTypeService _pieces;
 
-        public PieceTypeLoader(IPieceService pieces)
+        public PieceTypeLoader(IPieceTypeService pieces)
         {
             _pieces = pieces;
         }
@@ -24,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Loaders
             //var visible = Sockets<Location>.Polygon(3);
             //var sockets = Sockets<Location>.Polygon(3);
 
-            foreach (Piece piece in _pieces.All())
+            foreach (PieceType piece in _pieces.All())
             {
                 entityTypes.Configure(piece.EntityType, configuration =>
                 {

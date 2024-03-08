@@ -1,0 +1,49 @@
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Common.Pieces;
+using VoidHuntersRevived.Common.Pieces.Components;
+
+namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
+{
+    internal sealed class PieceTypeConverter : JsonConverter<PieceType>
+    {
+        public override PieceType? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            string key = string.Empty;
+            VoidHuntersEntityDescriptor descriptor = default!;
+            Dictionary<string, IPieceComponent> components = default!;
+
+            reader.CheckToken(JsonTokenType.StartObject, true);
+            reader.Read();
+
+            while (reader.ReadPropertyName(out string? propertyName))
+            {
+                switch (propertyName)
+                {
+                    case nameof(PieceType.Key):
+                        key = JsonSerializer.Deserialize<string>(ref reader, options) ?? throw new NotImplementedException();
+                        reader.Read();
+                        break;
+                    case nameof(PieceType.Descriptor):
+                        descriptor = JsonSerializer.Deserialize<VoidHuntersEntityDescriptor>(ref reader, options) ?? throw new NotImplementedException();
+                        reader.Read();
+                        break;
+                    case nameof(PieceType.Components):
+                        components = JsonSerializer.Deserialize<Dictionary<string, IPieceComponent>>(ref reader, options) ?? throw new NotImplementedException();
+                        reader.Read();
+                        break;
+                }
+            }
+
+            reader.CheckToken(JsonTokenType.EndObject, true);
+
+            return new PieceType(key, descriptor, components);
+        }
+
+        public override void Write(Utf8JsonWriter writer, PieceType value, JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

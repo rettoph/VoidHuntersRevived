@@ -58,10 +58,5 @@ namespace VoidHuntersRevived.Common.Core
 
             return pNameHash[0];
         }
-
-        public static implicit operator VhId(string value)
-        {
-            return VhId.HashString(value);
-        }
     }
 }

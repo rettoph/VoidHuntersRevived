@@ -1,8 +1,8 @@
 ﻿using Guppy.Resources;
 using Microsoft.Xna.Framework;
-using Standart.Hash.xxHash;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Core;
+using VoidHuntersRevived.Common.Core.Utilities;
 using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Common.Entities.Descriptors
@@ -12,23 +12,10 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
         private DynamicEntityDescriptor<BaseEntityDescriptor> _dynamicDescriptor;
         private readonly List<ComponentManager> _componentManagers;
         private EntityInitializerDelegate? _postInitializer;
-
         private Id<VoidHuntersEntityDescriptor>? _id;
         private string? _name;
-        public unsafe Id<VoidHuntersEntityDescriptor> Id
-        {
-            get
-            {
-                if (_id is null)
-                {
-                    uint128 nameHash = xxHash128.ComputeHash(this.GetType().AssemblyQualifiedName);
-                    VhId* pNameHash = (VhId*)&nameHash;
 
-                    _id = new Id<VoidHuntersEntityDescriptor>(NameSpace<VoidHuntersEntityDescriptor>.Instance.Create(pNameHash[0]));
-                }
-                return _id.Value;
-            }
-        }
+        public Id<VoidHuntersEntityDescriptor> Id => _id ??= HashBuilder<VoidHuntersEntityDescriptor, VhId>.Instance.CalculateId(VhId.HashString(this.GetType().AssemblyQualifiedName ?? throw new NotImplementedException()));
         public string Name => _name ??= this.GetType().Name;
         public Resource<Color> PrimaryColor { get; } = Resources.Colors.None;
         public Resource<Color> SecondaryColor { get; } = Resources.Colors.None;

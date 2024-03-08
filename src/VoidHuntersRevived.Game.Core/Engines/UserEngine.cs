@@ -20,10 +20,10 @@ namespace VoidHuntersRevived.Game.Core.Engines
     {
         private readonly INetGroup _scope;
         private readonly ITreeService _trees;
-        private readonly IPieceService _pieces;
+        private readonly IPieceTypeService _pieces;
         private readonly IBlueprintService _blueprints;
 
-        public UserEngine(ITreeService trees, IPieceService pieces, IBlueprintService blueprints, INetGroup scope)
+        public UserEngine(ITreeService trees, IPieceTypeService pieces, IBlueprintService blueprints, INetGroup scope)
         {
             _scope = scope;
             _trees = trees;

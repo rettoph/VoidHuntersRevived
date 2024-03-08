@@ -17,6 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Descriptors\" />
+    <Compile Remove="Descriptors\**" />
+    <EmbeddedResource Remove="Descriptors\**" />
+    <None Remove="Descriptors\**" />
   </ItemGroup>
 </Project>

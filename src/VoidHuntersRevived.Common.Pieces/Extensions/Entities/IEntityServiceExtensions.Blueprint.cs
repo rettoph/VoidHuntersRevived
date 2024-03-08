@@ -9,16 +9,16 @@ namespace VoidHuntersRevived.Common.Pieces.Extensions.Entities
 {
     public static class IEntityServiceExtensions
     {
-        public static EntityId Spawn(this IEntityService entities, VhId sourceId, VhId treeId, Id<ITeam> teamId, IBlueprint blueprint)
+        public static EntityId Spawn(this IEntityService entities, VhId sourceId, VhId treeId, Id<ITeam> teamId, Blueprint blueprint)
         {
-            VhId vhid = HashBuilder<BlueprintPieceDto, VhId, Id<IBlueprint>>.Instance.Calculate(treeId, blueprint.Id);
+            VhId vhid = HashBuilder<BlueprintPieceDto, VhId, Id<Blueprint>>.Instance.Calculate(treeId, blueprint.Id);
 
             return entities.Spawn(sourceId, treeId, teamId, vhid, blueprint.Head, default);
         }
 
-        private static EntityId Spawn(this IEntityService entities, VhId sourceId, VhId treeId, Id<ITeam> teamId, VhId vhid, IBlueprintPiece blueprintPiece, SocketVhId socketVhId)
+        private static EntityId Spawn(this IEntityService entities, VhId sourceId, VhId treeId, Id<ITeam> teamId, VhId vhid, BlueprintPiece blueprintPiece, SocketVhId socketVhId)
         {
-            return entities.Spawn(sourceId, blueprintPiece.Piece.EntityType, vhid, teamId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+            return entities.Spawn(sourceId, blueprintPiece.PieceType.EntityType, vhid, teamId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {
                 initializer.Init(new Node(id, entities.GetId(treeId)));
                 if (socketVhId != default)

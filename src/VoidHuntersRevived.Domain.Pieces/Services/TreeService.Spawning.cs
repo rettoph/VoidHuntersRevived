@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             });
         }
 
-        public EntityId Spawn(VhId sourceId, VhId vhid, Id<ITeam> teamId, IEntityType<TreeDescriptor> tree, IBlueprint blueprint, EntityInitializerDelegate? initializerDelegate = null)
+        public EntityId Spawn(VhId sourceId, VhId vhid, Id<ITeam> teamId, IEntityType<TreeDescriptor> tree, Blueprint blueprint, EntityInitializerDelegate? initializerDelegate = null)
         {
             return _entities.Spawn(sourceId, tree, vhid, teamId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {

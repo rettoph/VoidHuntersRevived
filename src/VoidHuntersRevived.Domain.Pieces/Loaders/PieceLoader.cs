@@ -18,6 +18,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
+            services.RegisterType<PieceTypeConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<DictionaryPolymorphicConverter<IPieceComponent>>().As<JsonConverter>().SingleInstance();
             services.RegisterType<RigidJsonConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<VisibleJsonConverter>().As<JsonConverter>().SingleInstance();
@@ -27,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Loaders
             services.RegisterType<PlugJsonConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<ThrustableJsonConverter>().As<JsonConverter>().SingleInstance();
 
-            services.RegisterType<PieceService>().AsImplementedInterfaces().SingleInstance();
+            services.RegisterType<PieceTypeService>().AsImplementedInterfaces().SingleInstance();
             services.RegisterType<BlueprintService>().AsImplementedInterfaces().SingleInstance();
 
             services.RegisterType<TreeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
@@ -38,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Loaders
 
             services.Configure<LoggerConfiguration>((scope, config) =>
             {
-                config.Destructure.AsScalar(typeof(Id<IBlueprint>));
+                config.Destructure.AsScalar(typeof(Id<Blueprint>));
             });
         }
     }

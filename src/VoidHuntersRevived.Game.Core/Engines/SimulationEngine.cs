@@ -15,10 +15,10 @@ namespace VoidHuntersRevived.Game.Core.Engines
     internal sealed class SimulationEngine : BasicEngine, IEventEngine<Simulation_Begin>
     {
         private readonly ITreeService _trees;
-        private readonly IPieceService _pieces;
+        private readonly IPieceTypeService _pieces;
         private readonly IBlueprintService _blueprints;
 
-        public SimulationEngine(ITreeService treeFactory, IPieceService pieces, IBlueprintService blueprints)
+        public SimulationEngine(ITreeService treeFactory, IPieceTypeService pieces, IBlueprintService blueprints)
         {
             _trees = treeFactory;
             _pieces = pieces;

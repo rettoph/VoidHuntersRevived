@@ -10,20 +10,20 @@ using VoidHuntersRevived.Common.Pieces;
 namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes
 {
     [AutoLoad]
-    internal class BlueprintDtoResourceType : SimpleResourceType<BlueprintDto>
+    internal class BlueprintResourceType : SimpleResourceType<Blueprint>
     {
         private readonly IFileService _files;
 
         public override string Name => "Blueprint";
 
-        public BlueprintDtoResourceType(IFileService files)
+        public BlueprintResourceType(IFileService files)
         {
             _files = files;
         }
 
-        protected override bool TryResolve(Resource<BlueprintDto> resource, string root, string input, out BlueprintDto value)
+        protected override bool TryResolve(Resource<Blueprint> resource, string root, string input, out Blueprint value)
         {
-            IFile<BlueprintDto> blueprint = _files.Get<BlueprintDto>(
+            IFile<Blueprint> blueprint = _files.Get<Blueprint>(
                 FileType.Source,
                 DirectoryHelper.Combine(root, input),
                 true);

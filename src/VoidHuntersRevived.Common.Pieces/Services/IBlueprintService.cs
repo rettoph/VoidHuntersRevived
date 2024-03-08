@@ -3,9 +3,9 @@ using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Common.Pieces.Services
 {
-    public interface IBlueprintService : IEntityResourceService<IBlueprint>
+    public interface IBlueprintService : IEntityResourceService<Blueprint>
     {
-        // IBlueprintSpawner GetBlueprintSpawner(BlueprintDto blueprint);
-        bool TryGetByDto(BlueprintDto blueprintDto, [MaybeNullWhen(false)] out IBlueprint blueprint);
+        // BlueprintSpawner GetBlueprintSpawner(BlueprintDto blueprint);
+        bool TryGetByDto(BlueprintDto blueprintDto, [MaybeNullWhen(false)] out Blueprint blueprint);
     }
 }

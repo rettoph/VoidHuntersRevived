@@ -10,18 +10,20 @@ using VoidHuntersRevived.Common.Pieces;
 namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes
 {
     [AutoLoad]
-    internal class PieceResourceType : SimpleResourceType<Piece>
+    internal class PieceResourceType : SimpleResourceType<PieceType>
     {
         private readonly IFileService _files;
+
+        public override string Name => "PieceType";
 
         public PieceResourceType(IFileService files)
         {
             _files = files;
         }
 
-        protected override bool TryResolve(Resource<Piece> resource, string root, string input, out Piece value)
+        protected override bool TryResolve(Resource<PieceType> resource, string root, string input, out PieceType value)
         {
-            IFile<Piece> piece = _files.Get<Piece>(
+            IFile<PieceType> piece = _files.Get<PieceType>(
                 FileType.Source,
                 DirectoryHelper.Combine(root, input),
                 true);
