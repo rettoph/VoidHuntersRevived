@@ -1,7 +1,5 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Pieces;
 
 namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
@@ -10,7 +8,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
     {
         public override Blueprint? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            Id<Blueprint> id = default!;
             string name = string.Empty;
             IBlueprintPiece head = default!;
 
@@ -21,10 +18,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
             {
                 switch (propertyName)
                 {
-                    case nameof(Blueprint.Id):
-                        id = new Id<Blueprint>(new VhId(JsonSerializer.Deserialize<Guid>(ref reader, options)));
-                        reader.Read();
-                        break;
                     case nameof(Blueprint.Name):
                         name = JsonSerializer.Deserialize<string>(ref reader, options) ?? throw new NotImplementedException();
                         reader.Read();
@@ -38,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            return new Blueprint(id, name, head);
+            return new Blueprint(name, head);
         }
 
         public override void Write(Utf8JsonWriter writer, Blueprint value, JsonSerializerOptions options)

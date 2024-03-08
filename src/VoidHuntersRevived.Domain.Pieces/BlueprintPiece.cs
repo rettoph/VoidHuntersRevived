@@ -30,11 +30,14 @@ namespace VoidHuntersRevived.Domain.Pieces
                 throw new ArgumentException($"Unknown {nameof(Common.Pieces.PieceType)}.{nameof(Common.Pieces.PieceType.Key)} - {_pieceTypeKey}");
             }
 
-            Sockets<Location> sockets = pieceType.Components.Values.OfType<Sockets<Location>>().SingleOrDefault();
-
-            if (sockets.Items.count != this.Children!.Length)
+            if (this.Children!.Length > 0)
             {
-                throw new ArgumentException($"Unexpected amount of children defined. Expected {sockets.Items.count} and found {this.Children.Length}, {nameof(BlueprintPiece)}.{nameof(BlueprintPiece.PieceType)} = {_pieceType.Key}");
+                Sockets<Location> sockets = pieceType.Components.Values.OfType<Sockets<Location>>().First();
+
+                if (sockets.Items.count != this.Children.Length)
+                {
+                    throw new ArgumentException($"Unexpected amount of children defined. Expected {sockets.Items.count} and found {this.Children.Length}, {nameof(BlueprintPiece)}.{nameof(BlueprintPiece.PieceType)} = {_pieceType.Key}");
+                }
             }
 
             return pieceType;
