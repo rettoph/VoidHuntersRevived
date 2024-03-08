@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Game.Client.Loaders
             InputLoader.AddSetDirectionInput(services, Inputs.SetDirectionLeft, Keys.Q, Direction.Left);
 
             services.RegisterInput(Inputs.SetTractorBeamEmitterActive, CursorButtons.Right, new (ButtonState, IInput)[]
-{
+            {
                 (ButtonState.Pressed, new Input_TractorBeamEmitter_SetActive(true)),
                 (ButtonState.Released, new Input_TractorBeamEmitter_SetActive(false))
             });

@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Presentation.Server.Loaders
             {
                 if (scope.HasTag(LifetimeScopeTags.GuppyScope))
                 {
-                    var fileTypePaths = scope.Resolve<IFileTypePathProvider>();
+                    var fileTypePaths = scope.Resolve<IFilePathProvider>();
                     var path = fileTypePaths.GetFullPath(FileType.AppData, Path.Combine("logs", $"log_{DateTime.Now.ToString("yyyy-dd-M")}.txt"));
                     DirectoryHelper.EnsureDirectoryExists(path);
 

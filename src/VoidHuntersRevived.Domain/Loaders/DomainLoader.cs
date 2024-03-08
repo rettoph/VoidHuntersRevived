@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Loaders
 
                 if (scope.IsTag(LifetimeScopeTags.MainScope))
                 {
-                    var fileTypePaths = scope.Resolve<IFileTypePathProvider>();
+                    var fileTypePaths = scope.Resolve<IFilePathProvider>();
                     var path = fileTypePaths.GetFullPath(FileType.AppData, Path.Combine("logs", $"log_{DateTime.Now.ToString("yyyy-dd-M")}.txt"));
                     DirectoryHelper.EnsureDirectoryExists(path);
 
