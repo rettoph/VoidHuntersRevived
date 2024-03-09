@@ -2,7 +2,7 @@
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Providers;
+using VoidHuntersRevived.Common.Entities.Initializers;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces.Constants;
@@ -10,21 +10,23 @@ using VoidHuntersRevived.Common.Pieces.Constants;
 namespace VoidHuntersRevived.Game.Core.Initializers
 {
     [AutoLoad]
-    internal class ChainInitializer : IEntityInitializer
+    internal class ChainInitializer : SimpleTypeEntityInitializer
     {
-        public void Initialize(IEntityTypeInitializerBuilderService builder)
+        public ChainInitializer() : base([ EntityTypes.Chain ])
         {
-            builder.Configure(EntityTypes.Chain, configuration =>
+
+        }
+
+        public override InstanceEntityInitializerDelegate? InstanceInitializer(IEntityType entityType)
+        {
+            return (IEntityService entites, ref EntityInitializer initializer, in EntityId id) =>
             {
-                configuration.InitializeInstance((IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+                initializer.Init(new Collision()
                 {
-                    initializer.Init(new Collision()
-                    {
-                        Categories = CollisionGroups.FreeFloatingCategories,
-                        CollidesWith = CollisionGroups.FreeFloatingCollidesWith
-                    });
+                    Categories = CollisionGroups.FreeFloatingCategories,
+                    CollidesWith = CollisionGroups.FreeFloatingCollidesWith
                 });
-            });
+            };
         }
     }
 }

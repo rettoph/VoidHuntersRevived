@@ -15,31 +15,16 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
 
         public IEntityType Type { get; }
 
-        public EntityTypeInitializer(IEntityType type, IEnumerable<BaseEntityInitializerBuilder> partialInitializers)
+        public EntityTypeInitializer(IEntityType type, IEnumerable<IEntityInitializer> initializers)
         {
             this.Type = type;
 
-            foreach (BaseEntityInitializerBuilder partialInitializer in partialInitializers)
+            foreach (IEntityInitializer initializer in initializers)
             {
-                if (partialInitializer.InstanceInitializer is not null)
-                {
-                    InstanceEntityInitializer += partialInitializer.InstanceInitializer;
-                }
-
-                if (partialInitializer.InstanceDisposer is not null)
-                {
-                    InstanceEntityDisposer += partialInitializer.InstanceDisposer;
-                }
-
-                if (partialInitializer.StaticInitializer is not null)
-                {
-                    StaticEntityInitializer += partialInitializer.StaticInitializer;
-                }
-
-                if (partialInitializer.StaticDisposer is not null)
-                {
-                    StaticEntityDisposer += partialInitializer.StaticDisposer;
-                }
+                InstanceEntityInitializer += initializer.InstanceInitializer(this.Type);
+                InstanceEntityDisposer += initializer.InstanceDisposer(this.Type);
+                StaticEntityInitializer += initializer.StaticInitializer(this.Type);
+                StaticEntityDisposer += initializer.StaticDisposer(this.Type);
             }
 
             if (InstanceEntityInitializer is null)
