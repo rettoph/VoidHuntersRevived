@@ -8,14 +8,14 @@ using VoidHuntersRevived.Common.Entities.Descriptors;
 
 namespace VoidHuntersRevived.Common.Entities.Initializers
 {
-    public abstract class SimpleDescriptorEntityInitializer<TDescriptor> : IEntityInitializer
+    internal abstract class SimpleDescriptorEntityInitializer<TDescriptor> : IEntityInitializer
         where TDescriptor : VoidHuntersEntityDescriptor
     {
-        public IEntityType[] RegisterTypes { get; }
+        public IEntityType[] ExplicitEntityTypes { get; }
 
         protected SimpleDescriptorEntityInitializer()
         {
-            this.RegisterTypes = Array.Empty<IEntityType>();
+            this.ExplicitEntityTypes = Array.Empty<IEntityType>();
         }
 
         public bool ShouldInitialize(IEntityType entityType)

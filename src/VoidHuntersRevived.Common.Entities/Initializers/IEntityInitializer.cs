@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Common.Entities.Initializers
         /// never be built. It is important that entities to be created in game are, in some fasion,
         /// defined by an <see cref="IEntityInitializer"/>.
         /// </summary>
-        IEntityType[] RegisterTypes { get; }
+        IEntityType[] ExplicitEntityTypes { get; }
 
         /// <summary>
         /// Indicates wether or not the current <see cref="IEntityInitializer"/> should be used when

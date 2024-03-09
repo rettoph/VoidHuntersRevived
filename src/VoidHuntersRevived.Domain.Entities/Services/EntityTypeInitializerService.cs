@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EntityTypeInitializerService(IFiltered<IEntityInitializer> initializers)
         {
-            _initializers = initializers.Instances.SelectMany(init => init.RegisterTypes).Distinct().ToDictionary(
+            _initializers = initializers.Instances.SelectMany(init => init.ExplicitEntityTypes).Distinct().ToDictionary(
                 keySelector: type => type,
                 elementSelector: type => (IEntityTypeInitializer)new EntityTypeInitializer(type, initializers.Instances.Where(init => init.ShouldInitialize(type))));
         }

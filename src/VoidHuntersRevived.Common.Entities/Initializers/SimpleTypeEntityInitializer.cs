@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 
 namespace VoidHuntersRevived.Common.Entities.Initializers
 {
-    public abstract class SimpleTypeEntityInitializer : IEntityInitializer
+    internal abstract class SimpleTypeEntityInitializer : IEntityInitializer
     {
-        public IEntityType[] RegisterTypes { get; }
+        public IEntityType[] ExplicitEntityTypes { get; }
 
         protected SimpleTypeEntityInitializer(IEntityType[] types)
         {
-            this.RegisterTypes = types;
+            this.ExplicitEntityTypes = types;
 
         }
 
         public bool ShouldInitialize(IEntityType entityType)
         {
-            return this.RegisterTypes.Contains(entityType);
+            return this.ExplicitEntityTypes.Contains(entityType);
         }
 
         public virtual InstanceEntityInitializerDelegate? InstanceInitializer(IEntityType entityType)

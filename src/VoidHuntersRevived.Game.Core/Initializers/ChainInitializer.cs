@@ -10,23 +10,20 @@ using VoidHuntersRevived.Common.Pieces.Constants;
 namespace VoidHuntersRevived.Game.Core.Initializers
 {
     [AutoLoad]
-    internal class ChainInitializer : SimpleTypeEntityInitializer
+    internal class ChainInitializer : BaseEntityInitializer
     {
         public ChainInitializer() : base([ EntityTypes.Chain ])
         {
-
+            this.WithInstanceInitializer(EntityTypes.Chain, this.InitializeChain);
         }
 
-        public override InstanceEntityInitializerDelegate? InstanceInitializer(IEntityType entityType)
+        private void InitializeChain(IEntityService entities, ref EntityInitializer initializer, in EntityId id)
         {
-            return (IEntityService entites, ref EntityInitializer initializer, in EntityId id) =>
+            initializer.Init(new Collision()
             {
-                initializer.Init(new Collision()
-                {
-                    Categories = CollisionGroups.FreeFloatingCategories,
-                    CollidesWith = CollisionGroups.FreeFloatingCollidesWith
-                });
-            };
+                Categories = CollisionGroups.FreeFloatingCategories,
+                CollidesWith = CollisionGroups.FreeFloatingCollidesWith
+            });
         }
     }
 }

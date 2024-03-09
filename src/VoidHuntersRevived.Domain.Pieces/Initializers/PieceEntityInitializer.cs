@@ -13,55 +13,37 @@ using VoidHuntersRevived.Common.Pieces.Services;
 namespace VoidHuntersRevived.Domain.Pieces.Initializers
 {
     [AutoLoad]
-    internal class PieceEntityInitializer : IEntityInitializer
+    internal class PieceEntityInitializer : BaseEntityInitializer
     {
         private readonly Dictionary<IEntityType, PieceType> _pieceTypes;
         private readonly IPieceTypeService _pieces;
-
-        public IEntityType[] RegisterTypes { get; }
 
         public PieceEntityInitializer(IPieceTypeService pieces)
         {
             _pieces = pieces;
             _pieceTypes = _pieces.All().ToDictionary(x => x.EntityType as IEntityType, x => x);
 
-            this.RegisterTypes = _pieceTypes.Keys.ToArray();
-        }
-
-        public bool ShouldInitialize(IEntityType entityType)
-        {
-            return this.RegisterTypes.Contains(entityType);
-        }
-
-        public InstanceEntityInitializerDelegate? InstanceInitializer(IEntityType entityType)
-        {
-            PieceType pieceType = _pieceTypes[entityType];
-
-            InstanceEntityInitializerDelegate result = (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+            foreach(PieceType piece in _pieces.All())
             {
-                initializer.Init(pieceType.Id);
-            };
+                StaticEntityInitializerDelegate? staticInitializer = EntityInitializerHelper.BuildStaticEntityInitializerDelegate(piece.StaticComponents.Values);
+                InstanceEntityInitializerDelegate? instanceInitializer = (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+                {
+                    initializer.Init(piece.Id);
+                };
 
-            result += EntityInitializerHelper.BuildInstanceEntityInitializerDelegate(pieceType.InstanceComponents.Values);
+                instanceInitializer += EntityInitializerHelper.BuildInstanceEntityInitializerDelegate(piece.InstanceComponents.Values);
 
-            return result;
-        }
 
-        public DisposeEntityInitializerDelegate? InstanceDisposer(IEntityType entityType)
-        {
-            return null;
-        }
+                if (staticInitializer is not null)
+                {
+                    this.WithStaticInitializer(piece.EntityType, staticInitializer);
+                }
 
-        public StaticEntityInitializerDelegate? StaticInitializer(IEntityType entityType)
-        {
-            PieceType pieceType = _pieceTypes[entityType];
-
-            return EntityInitializerHelper.BuildStaticEntityInitializerDelegate(pieceType.StaticComponents.Values);
-        }
-
-        public DisposeEntityInitializerDelegate? StaticDisposer(IEntityType entityType)
-        {
-            return null;
+                if (instanceInitializer is not null)
+                {
+                    this.WithInstanceInitializer(piece.EntityType, instanceInitializer);
+                }
+            }
         }
     }
 }
