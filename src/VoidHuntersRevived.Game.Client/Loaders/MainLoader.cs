@@ -1,8 +1,9 @@
 ﻿using Autofac;
 using Guppy.Attributes;
-using Guppy.Files.Enums;
+using Guppy.Files;
 using Guppy.Game.MonoGame.Utilities.Cameras;
 using Guppy.Loaders;
+using Guppy.Resources.Configuration;
 using Guppy.Resources.Extensions.Autofac;
 
 namespace VoidHuntersRevived.Game.Client.Loaders
@@ -14,9 +15,9 @@ namespace VoidHuntersRevived.Game.Client.Loaders
         {
             services.RegisterType<Camera2D>().As<Camera>().AsSelf().SingleInstance();
 
-            services.ConfigureResourcePacks((scope, packs) =>
+            services.RegisterResourcePack(new ResourcePackConfiguration()
             {
-                packs.Add(FileType.CurrentDirectory, Path.Combine(VoidHuntersPack.Directory, "pack.json"));
+                EntryDirectory = DirectoryLocation.CurrentDirectory(VoidHuntersPack.Directory)
             });
         }
     }

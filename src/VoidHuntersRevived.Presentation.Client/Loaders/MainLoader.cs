@@ -25,13 +25,13 @@ namespace VoidHuntersRevived.Presentation.Client.Loaders
             {
                 if (scope.HasTag(LifetimeScopeTags.GuppyScope))
                 {
-                    var fileTypePaths = scope.Resolve<IFilePathProvider>();
-                    var path = fileTypePaths.GetFullPath(FileType.AppData, Path.Combine("logs", $"log_{DateTime.Now.ToString("yyyy-dd-M")}.txt"));
-                    DirectoryHelper.EnsureDirectoryExists(path);
+                    var fileTypePaths = scope.Resolve<IPathProvider>();
+                    var source = fileTypePaths.GetSourceLocation(DirectoryType.AppData, "logs", $"log_{DateTime.Now.ToString("yyyy-dd-M")}.txt");
+                    DirectoryHelper.EnsureDirectoryExists(source);
 
                     config
                         .WriteTo.File(
-                            path: path,
+                            path: source.Path,
                             outputTemplate: "[{PeerType}][{SimulationType}][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}",
                             retainedFileCountLimit: 5,
                             shared: true

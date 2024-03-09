@@ -1,7 +1,5 @@
 ﻿using Guppy.Attributes;
 using Guppy.Files;
-using Guppy.Files.Enums;
-using Guppy.Files.Helpers;
 using Guppy.Files.Services;
 using Guppy.Resources;
 using Guppy.Resources.ResourceTypes;
@@ -21,11 +19,10 @@ namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes
             _files = files;
         }
 
-        protected override bool TryResolve(Resource<PieceType> resource, string root, string input, out PieceType value)
+        protected override bool TryResolve(Resource<PieceType> resource, DirectoryLocation root, string input, out PieceType value)
         {
             IFile<PieceType> piece = _files.Get<PieceType>(
-                FileType.Source,
-                DirectoryHelper.Combine(root, input),
+                new FileLocation(root, input),
                 true);
 
             value = piece.Value;

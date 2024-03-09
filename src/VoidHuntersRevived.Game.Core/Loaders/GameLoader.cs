@@ -1,7 +1,8 @@
 ﻿using Autofac;
 using Guppy.Attributes;
-using Guppy.Files.Enums;
+using Guppy.Files;
 using Guppy.Loaders;
+using Guppy.Resources.Configuration;
 using Guppy.Resources.Extensions.Autofac;
 
 namespace VoidHuntersRevived.Game.Core.Loaders
@@ -11,9 +12,9 @@ namespace VoidHuntersRevived.Game.Core.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            services.ConfigureResourcePacks((scope, packs) =>
+            services.RegisterResourcePack(new ResourcePackConfiguration()
             {
-                packs.Add(FileType.CurrentDirectory, Path.Combine(VoidHuntersPack.Directory, "pack.json"));
+                EntryDirectory = DirectoryLocation.CurrentDirectory(VoidHuntersPack.Directory)
             });
         }
     }
