@@ -17,22 +17,23 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     internal partial class EntityService : BasicEngine, IEntityService, IQueryingEntitiesEngine, IEngineEngine
     {
         private readonly ILogger _logger;
-        private readonly EntityTypeService _types;
+        private readonly IEntityTypeInitializerService _entityTypeInitializer;
         private readonly SimpleEntitiesSubmissionScheduler _scheduler;
         private readonly EntityReader _reader;
         private readonly EntityWriter _writer;
 
         public EntityService(
             ILogger logger,
-            EntityTypeService types,
+            IEntityTypeInitializerService entityTypeInitializer,
+            IEntityTypeService entityTypes,
             SimpleEntitiesSubmissionScheduler scheduler)
         {
             _logger = logger;
-            _types = types;
+            _entityTypeInitializer = entityTypeInitializer;
             _scheduler = scheduler;
             _descriptors = new DoubleDictionary<Id<VoidHuntersEntityDescriptor>, Type, IVoidHuntersEntityDescriptorEngine>();
             _writer = new EntityWriter(this, _logger);
-            _reader = new EntityReader(_types, this, _logger);
+            _reader = new EntityReader(entityTypes, this, _logger);
         }
 
         public EntitiesDB entitiesDB { get; set; } = null!;

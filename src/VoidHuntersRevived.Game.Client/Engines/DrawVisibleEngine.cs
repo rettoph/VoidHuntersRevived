@@ -95,6 +95,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in GameTime param)
         {
+            return;
             foreach (var ((statics, static_visibles, static_count), static_group) in _entities.QueryEntities<StaticEntity, Visible>())
             {
                 for (int i_static = 0; i_static < static_count; i_static++)

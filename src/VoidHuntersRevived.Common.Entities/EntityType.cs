@@ -25,8 +25,6 @@ namespace VoidHuntersRevived.Common.Entities
             this.Descriptor = descriptor;
         }
 
-        public abstract IEntityTypeConfiguration BuildConfiguration();
-
         public static IEnumerable<EntityType> All()
         {
             return _list;
@@ -43,11 +41,6 @@ namespace VoidHuntersRevived.Common.Entities
         public EntityType(string key) : base(NameSpace<TDescriptor>.Instance, key, new TDescriptor())
         {
             this.Descriptor = new TDescriptor();
-        }
-
-        public override IEntityTypeConfiguration BuildConfiguration()
-        {
-            return new EntityTypeConfiguration<TDescriptor>(this);
         }
     }
 }

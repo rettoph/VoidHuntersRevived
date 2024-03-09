@@ -3,8 +3,9 @@ using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Common.Entities.Initializers;
+using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Domain.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Engines
 {
@@ -27,23 +28,24 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
         public EntitiesDB entitiesDB { get; set; } = default!;
 
-        public StaticEntityEngine(EnginesRoot enginesRoot, EntityTypeService entityTypes)
+        public StaticEntityEngine(EnginesRoot enginesRoot, IEntityTypeInitializerService entityTypeInitializers)
         {
             IEntityFactory factory = enginesRoot.GenerateEntityFactory();
 
             uint id = 0;
-            foreach (IEntityType type in entityTypes.GetAll())
+            foreach (IEntityTypeInitializer typeInitializer in entityTypeInitializers.GetAll())
             {
-                EGID staticEgid = new EGID(id++, GetExclusiveGroupStruct(type.Descriptor));
+                EGID staticEgid = new EGID(id++, GetExclusiveGroupStruct(typeInitializer.Type.Descriptor));
                 CombinedFilterID instanceEntitiesFilterId = new CombinedFilterID((int)id, StaticEntity.InstanceEntitiesFilterContextId);
 
-                EntityInitializer initializer = factory.BuildEntity(staticEgid, type.Descriptor.StaticDescriptor);
-                initializer.Init(new StaticEntity(instanceEntitiesFilterId));
+                EntityInitializer entityInitializer = factory.BuildEntity(staticEgid, typeInitializer.Type.Descriptor.StaticDescriptor);
+                entityInitializer.Init(new StaticEntity(instanceEntitiesFilterId));
 
-                IEntityTypeConfiguration configuration = entityTypes.GetConfiguration(type);
-
-                configuration.InitializeStatic(ref initializer);
-                configuration.InitializeInstanceComponent<InstanceEntity>(new InstanceEntity(staticEgid, instanceEntitiesFilterId));
+                typeInitializer.InitializeStatic(ref entityInitializer);
+                typeInitializer.InstanceEntityInitializer += (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+                {
+                    initializer.Init(new InstanceEntity(staticEgid, instanceEntitiesFilterId));
+                };
             }
         }
 

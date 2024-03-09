@@ -156,7 +156,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 EntityInitializer initializer = this.GetDescriptorEngine(data.Type.Descriptor.Id).HardSpawn(eventId, data.VhId, data.TeamId, out id);
                 initializer.Init(new EntityStatus(EntityStatusEnum.HardSpawned));
-                _types.GetConfiguration(data.Type).InitializeInstance(this, ref initializer, in id);
+                _entityTypeInitializer.Get(data.Type).InitializeInstance(this, ref initializer, in id);
                 data.Initializer?.Invoke(this, ref initializer, in id);
             }
             else

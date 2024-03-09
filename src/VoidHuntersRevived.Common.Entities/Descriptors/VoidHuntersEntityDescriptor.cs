@@ -7,7 +7,7 @@ using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Common.Entities.Descriptors
 {
-    public abstract class VoidHuntersEntityDescriptor : IDynamicEntityDescriptor, IEntityResource<VoidHuntersEntityDescriptor>
+    public abstract class VoidHuntersEntityDescriptor : IDynamicEntityDescriptor, IEntityResource<VoidHuntersEntityDescriptor>, IEquatable<VoidHuntersEntityDescriptor?>
     {
         private DynamicEntityDescriptor<StaticEntityDescriptor> _staticDescriptor;
         private DynamicEntityDescriptor<InstanceEntityDescriptor> _instanceDescriptor;
@@ -86,6 +86,32 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
         internal void PostInitialize(IEntityService entities, ref EntityInitializer initializer, in EntityId id)
         {
             _postInitializer?.Invoke(entities, ref initializer, in id);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as VoidHuntersEntityDescriptor);
+        }
+
+        public bool Equals(VoidHuntersEntityDescriptor? other)
+        {
+            return other is not null &&
+                   this.GetType() == other.GetType();
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.GetType());
+        }
+
+        public static bool operator ==(VoidHuntersEntityDescriptor? left, VoidHuntersEntityDescriptor? right)
+        {
+            return EqualityComparer<VoidHuntersEntityDescriptor>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(VoidHuntersEntityDescriptor? left, VoidHuntersEntityDescriptor? right)
+        {
+            return !(left == right);
         }
     }
 }

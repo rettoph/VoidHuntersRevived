@@ -6,8 +6,6 @@ namespace VoidHuntersRevived.Common.Entities
     {
         VoidHuntersEntityDescriptor Descriptor { get; }
         string Key { get; }
-
-        IEntityTypeConfiguration BuildConfiguration();
     }
 
     public interface IEntityType<out T> : IEntityType
