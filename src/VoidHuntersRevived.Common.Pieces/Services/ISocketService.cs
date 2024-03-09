@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Common.Pieces.Services
 
         bool TryGetClosestOpenSocket(EntityId treeId, FixVector2 worldPosition, [MaybeNullWhen(false)] out Socket socket);
 
-        EntityId Spawn(VhId sourceId, Socket socket, VhId nodeVhId, IEntityType<PieceDescriptor> node, EntityInitializerDelegate? initializer = null);
-        EntityId Spawn(VhId sourceId, Socket socket, EntityData nodes, EntityInitializerDelegate? initializer = null);
+        EntityId Spawn(VhId sourceId, Socket socket, VhId nodeVhId, IEntityType<PieceDescriptor> node, InstanceEntityInitializerDelegate? initializer = null);
+        EntityId Spawn(VhId sourceId, Socket socket, EntityData nodes, InstanceEntityInitializerDelegate? initializer = null);
     }
 }

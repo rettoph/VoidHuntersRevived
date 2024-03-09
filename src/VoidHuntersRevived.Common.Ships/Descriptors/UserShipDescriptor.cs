@@ -8,7 +8,7 @@ namespace VoidHuntersRevived.Common.Ships.Descriptors
     {
         public UserShipDescriptor()
         {
-            this.ExtendWith(new[]
+            this.WithInstanceComponents(new[]
             {
                 new ComponentManager<UserId, UserIdComponentSerializer>(),
             });

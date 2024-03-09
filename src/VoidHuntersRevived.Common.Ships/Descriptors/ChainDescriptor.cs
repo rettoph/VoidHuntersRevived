@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Common.Ships.Descriptors
     {
         public ChainDescriptor()
         {
-            this.ExtendWith(new[]
+            this.WithInstanceComponents(new[]
             {
                 new ComponentManager<Tractorable, TractorableComponentSerializer>()
             });

@@ -1,7 +1,7 @@
 {
   "Key": "Piece.Hull.Square",
   "Descriptor": "HullDescriptor",
-  "Components": {
+  "InstanceComponents": {
     "Rigid": {
       "Centeroid": {
         "X": 0.5,
@@ -31,6 +31,42 @@
         }
       ]
     },
+    "Sockets.Location": {
+      "Items": [
+        {
+          "Position": {
+            "X": 1,
+            "Y": 0.5
+          },
+          "Rotation": 0
+        },
+        {
+          "Position": {
+            "X": 0.5,
+            "Y": 1
+          },
+          "Rotation": 1.5707963267
+        },
+        {
+          "Position": {
+            "X": 0,
+            "Y": 0.5
+          },
+          "Rotation": 3.1415926535
+        }
+      ]
+    },
+    "Plug": {
+      "Location": {
+        "Position": {
+          "X": 0.5,
+          "Y": 0
+        },
+        "Rotation": 1.5707963267
+      }
+    }
+  },
+  "StaticComponents": {
     "Visible": {
       "Fill": [
         {
@@ -80,40 +116,6 @@
           ]
         }
       ]
-    },
-    "Sockets.Location": {
-      "Items": [
-        {
-          "Position": {
-            "X": 1,
-            "Y": 0.5
-          },
-          "Rotation": 0
-        },
-        {
-          "Position": {
-            "X": 0.5,
-            "Y": 1
-          },
-          "Rotation": 1.5707963267
-        },
-        {
-          "Position": {
-            "X": 0,
-            "Y": 0.5
-          },
-          "Rotation": 3.1415926535
-        }
-      ]
-    },
-    "Plug": {
-      "Location": {
-        "Position": {
-          "X": 0.5,
-          "Y": 0
-        },
-        "Rotation": 1.5707963267
-      }
     }
   }
 }

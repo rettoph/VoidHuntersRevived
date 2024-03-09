@@ -28,9 +28,16 @@ namespace VoidHuntersRevived.Domain.Pieces.Loaders
             {
                 entityTypes.Configure(piece.EntityType, configuration =>
                 {
-                    foreach (IPieceComponent component in piece.Components.Values)
+                    configuration.InitializeInstanceComponent(piece.Id);
+
+                    foreach (IPieceComponent component in piece.InstanceComponents.Values)
                     {
-                        configuration.InitializeComponent(component);
+                        configuration.InitializeInstanceComponent(component);
+                    }
+
+                    foreach (IPieceComponent component in piece.StaticComponents.Values)
+                    {
+                        configuration.InitializeStaticComponent(component);
                     }
                 });
             }

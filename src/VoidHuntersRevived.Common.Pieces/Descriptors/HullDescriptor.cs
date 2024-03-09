@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
     {
         public HullDescriptor() : base(Resources.Colors.HullPrimaryColor, Resources.Colors.HullSecondaryColor, 0)
         {
-            this.ExtendWith(new ComponentManager[]
+            this.WithInstanceComponents(new ComponentManager[]
             {
                 //new ComponentManager<Sockets, SocketsComponentSerializer>(),
                 new ComponentManager<Sockets<Location>, SocketLocationsComponentSerializer>(),

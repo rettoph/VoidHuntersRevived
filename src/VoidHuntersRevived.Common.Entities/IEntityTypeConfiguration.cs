@@ -7,9 +7,13 @@ namespace VoidHuntersRevived.Common.Entities
     {
         public IEntityType Type { get; }
 
-        void Initialize(IEntityService entities, ref EntityInitializer initializer, in EntityId id);
+        void InitializeInstance(IEntityService entities, ref EntityInitializer initializer, in EntityId id);
+        void InitializeStatic(ref EntityInitializer initializer);
 
-        IEntityTypeConfiguration InitializeComponent<T>(IEntityTypeComponentValue<T> componentInitializer)
+        IEntityTypeConfiguration InitializeInstanceComponent<T>(IEntityTypeComponentInitializer<T> componentInitializer)
+            where T : unmanaged, IEntityComponent;
+
+        IEntityTypeConfiguration InitializeStaticComponent<T>(T instance)
             where T : unmanaged, IEntityComponent;
     }
 }

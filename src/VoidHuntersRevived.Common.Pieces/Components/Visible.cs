@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using Svelto.Common;
 using Svelto.DataStructures;
-using Svelto.ECS;
 using VoidHuntersRevived.Common.Core.Extensions.System;
 using VoidHuntersRevived.Common.Core.Helpers;
 using VoidHuntersRevived.Common.Pieces.Utilities;
@@ -10,7 +9,7 @@ using VoidHuntersRevived.Common.Pieces.Utilities;
 namespace VoidHuntersRevived.Common.Pieces.Components
 {
     [PolymorphicJsonType<IPieceComponent>(nameof(Visible))]
-    public struct Visible : IEntityComponent, IDisposable, IPieceComponent
+    public struct Visible : IDisposable, IPieceComponent
     {
         private static float TraceThickness = 1f;
         private static readonly Matrix OuterScaleMatrix = Matrix.CreateScale(0.1f);
@@ -30,10 +29,10 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 
                 for (int i = 0; i < value.count; i++)
                 {
-                    traceVertices.Set(i, this.BuildTraceVertices(ref value[i]));
+                    traceVertices.Set(i, BuildTraceVertices(ref value[i]));
                 }
 
-                this.TraceVertices = traceVertices;
+                TraceVertices = traceVertices;
             }
         }
 
@@ -41,24 +40,24 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 
         public void Dispose()
         {
-            for (int i = 0; i < this.Fill.count; i++)
+            for (int i = 0; i < Fill.count; i++)
             {
-                this.Fill[i].Dispose();
+                Fill[i].Dispose();
             }
 
-            for (int i = 0; i < this.Trace.count; i++)
+            for (int i = 0; i < Trace.count; i++)
             {
-                this.Trace[i].Dispose();
+                Trace[i].Dispose();
             }
 
-            for (int i = 0; i < this.TraceVertices.count; i++)
+            for (int i = 0; i < TraceVertices.count; i++)
             {
-                this.TraceVertices[i].Dispose();
+                TraceVertices[i].Dispose();
             }
 
-            this.Fill.Dispose();
-            this.Trace.Dispose();
-            this.TraceVertices.Dispose();
+            Fill.Dispose();
+            Trace.Dispose();
+            TraceVertices.Dispose();
         }
 
         private Shape BuildTraceVertices(ref Shape shape)
@@ -68,7 +67,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
             uint index = 0;
             for (int i = 0; i < shape.Vertices.count; i++)
             {
-                this.PopulateTraceVertices(
+                PopulateTraceVertices(
                     vertices: ref vertices,
                     index: ref index,
                     p1: TryGetVertex(ref shape, i - 1),
@@ -130,7 +129,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 
             if (index >= shape.Vertices.count && wrap)
             {
-                index = (index % shape.Vertices.count) + 1;
+                index = index % shape.Vertices.count + 1;
                 return shape.Vertices[index];
             }
 
@@ -144,7 +143,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 
         private static float AAS(float a1)
         {
-            return a1 == 0 ? 0 : (TraceThickness * MathF.Sin(MathHelper.PiOver2)) / MathF.Sin(a1);
+            return a1 == 0 ? 0 : TraceThickness * MathF.Sin(MathHelper.PiOver2) / MathF.Sin(a1);
         }
 
 
@@ -152,7 +151,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
         {
             float angle = vertex.Angle(p1, p2);
             float gridAngle = vertex.Angle(p1);
-            return vertex + Vector2Helper.FromPolar(gridAngle + (angle / 2) + (angle < 0 ? MathHelper.Pi : 0), TraceThickness);
+            return vertex + Vector2Helper.FromPolar(gridAngle + angle / 2 + (angle < 0 ? MathHelper.Pi : 0), TraceThickness);
         }
 
         private Vector2 CalculateEdge(Vector2 p1, Vector2 vertex, Vector2 p2)
@@ -168,7 +167,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
             float angle = vertex.Angle(p1, p2);
             float gridAngle = vertex.Angle(p1);
 
-            return vertex + Vector2Helper.FromPolar(gridAngle + (angle / 2), MathF.Abs(AAS(angle / 2)));
+            return vertex + Vector2Helper.FromPolar(gridAngle + angle / 2, MathF.Abs(AAS(angle / 2)));
         }
     }
 }

@@ -1,7 +1,7 @@
 {
   "Key": "Piece.Thruster",
   "Descriptor": "ThrusterDescriptor",
-  "Components": {
+  "InstanceComponents": {
     "Rigid": {
       "Centeroid": {
         "X": 0,
@@ -31,6 +31,27 @@
         }
       ]
     },
+    "Plug": {
+      "Location": {
+        "Position": {
+          "X": 0,
+          "Y": 0
+        },
+        "Rotation": 3.1415926535
+      }
+    },
+    "Thrustable": {
+      "MaxImpulse": {
+        "Length": 5,
+        "Radians": 0
+      },
+      "ImpulsePoint": {
+        "X": 0,
+        "Y": 0
+      }
+    }
+  },
+  "StaticComponents": {
     "Visible": {
       "Fill": [
         {
@@ -80,25 +101,6 @@
           ]
         }
       ]
-    },
-    "Plug": {
-      "Location": {
-        "Position": {
-          "X": 0,
-          "Y": 0
-        },
-        "Rotation": 3.1415926535
-      }
-    },
-    "Thrustable": {
-      "MaxImpulse": {
-        "Length": 5,
-        "Radians": 0
-      },
-      "ImpulsePoint": {
-        "X": 0,
-        "Y": 0
-      }
     }
   }
 }

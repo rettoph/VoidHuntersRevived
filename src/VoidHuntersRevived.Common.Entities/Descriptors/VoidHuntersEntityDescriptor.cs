@@ -9,9 +9,10 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
 {
     public abstract class VoidHuntersEntityDescriptor : IDynamicEntityDescriptor, IEntityResource<VoidHuntersEntityDescriptor>
     {
-        private DynamicEntityDescriptor<BaseEntityDescriptor> _dynamicDescriptor;
+        private DynamicEntityDescriptor<StaticEntityDescriptor> _staticDescriptor;
+        private DynamicEntityDescriptor<InstanceEntityDescriptor> _instanceDescriptor;
         private readonly List<ComponentManager> _componentManagers;
-        private EntityInitializerDelegate? _postInitializer;
+        private InstanceEntityInitializerDelegate? _postInitializer;
         private Id<VoidHuntersEntityDescriptor>? _id;
         private string? _name;
 
@@ -21,9 +22,11 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
         public Resource<Color> SecondaryColor { get; } = Resources.Colors.None;
         public int Order { get; } = 0;
 
-        public IComponentBuilder[] componentsToBuild => _dynamicDescriptor.componentsToBuild;
+        public IComponentBuilder[] componentsToBuild => _instanceDescriptor.componentsToBuild;
 
         public IEnumerable<ComponentManager> ComponentManagers => _componentManagers;
+
+        public IEntityDescriptor StaticDescriptor => _staticDescriptor;
 
         protected VoidHuntersEntityDescriptor() : this(Resources.Colors.None, Resources.Colors.None, 0)
         {
@@ -31,7 +34,8 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
         }
         protected unsafe VoidHuntersEntityDescriptor(Resource<Color> primaryColor, Resource<Color> secondaryColor, int order)
         {
-            _dynamicDescriptor = DynamicEntityDescriptor<BaseEntityDescriptor>.CreateDynamicEntityDescriptor();
+            _staticDescriptor = DynamicEntityDescriptor<StaticEntityDescriptor>.CreateDynamicEntityDescriptor();
+            _instanceDescriptor = DynamicEntityDescriptor<InstanceEntityDescriptor>.CreateDynamicEntityDescriptor();
             _componentManagers = new List<ComponentManager>();
 
             this.PrimaryColor = primaryColor;
@@ -39,10 +43,10 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             this.Order = order;
         }
 
-        protected VoidHuntersEntityDescriptor ExtendWith(ComponentManager[] managers)
+        protected VoidHuntersEntityDescriptor WithInstanceComponents(ComponentManager[] managers)
         {
             var builders = managers.Select(x => x.Builder).ToArray();
-            _dynamicDescriptor.ExtendWith(builders);
+            _instanceDescriptor.ExtendWith(builders);
 
             foreach (ComponentManager manager in managers)
             {
@@ -52,7 +56,14 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             return this;
         }
 
-        protected VoidHuntersEntityDescriptor WithPostInitializer(EntityInitializerDelegate initializer)
+        protected VoidHuntersEntityDescriptor WithStaticComponents(IComponentBuilder[] builders)
+        {
+            _staticDescriptor.ExtendWith(builders);
+
+            return this;
+        }
+
+        protected VoidHuntersEntityDescriptor WithPostInitializer(InstanceEntityInitializerDelegate initializer)
         {
             _postInitializer += initializer;
 

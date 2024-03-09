@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Common.Physics.Descriptors
     {
         public BodyDescriptor() : base()
         {
-            this.ExtendWith(new ComponentManager[]
+            this.WithInstanceComponents(new ComponentManager[]
             {
                 new ComponentManager<Collision, CollisionComponentSerializer>(),
                 new ComponentManager<Location, LocationComponentSerializer>(new Location()),

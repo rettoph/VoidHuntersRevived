@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Domain.Entities.Events
         public required VhId VhId { get; init; }
         public required Id<ITeam> TeamId { get; init; }
         public required IEntityType Type { get; init; }
-        public required EntityInitializerDelegate? Initializer { get; init; }
+        public required InstanceEntityInitializerDelegate? Initializer { get; init; }
 
         public VhId CalculateHash(in VhId source)
         {

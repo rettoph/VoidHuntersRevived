@@ -10,8 +10,10 @@ using VoidHuntersRevived.Common.Client.Services;
 using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Enums;
+using VoidHuntersRevived.Common.Pieces.Services;
 using VoidHuntersRevived.Common.Ships.Components;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
@@ -27,6 +29,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly short[] _indexBuffer;
         private readonly IVisibleRenderingService _visibleRenderingService;
         private readonly IEntityService _entities;
+        private readonly IPieceTypeService _pieceTypes;
         private readonly ILogger _logger;
         private readonly Dictionary<Id<ITeam>, ITeamDescriptorGroup[]> _teamDescriptorGroups;
         private readonly IResourceProvider _resources;
@@ -38,6 +41,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             ILogger logger,
             IVisibleRenderingService visibleRenderingService,
             IEntityService entities,
+            IPieceTypeService pieceTypes,
             ITeamDescriptorGroupService teamDescriptorGroups,
             IResourceProvider resources,
             Camera2D camera)
@@ -45,6 +49,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _visibleRenderingService = visibleRenderingService;
             _resources = resources;
             _entities = entities;
+            _pieceTypes = pieceTypes;
             _indexBuffer = new short[3];
             _logger = logger;
             _camera = camera;
@@ -81,7 +86,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         {
             foreach (var (indices, group) in helmThrustables)
             {
-                var (thrustables, visibles, nodes, _) = _entities.QueryEntities<Thrustable, Visible, Node>(group);
+                var (pieceTypes, thrustables, nodes, _) = _entities.QueryEntities<Id<PieceType>, Thrustable, Node>(group);
 
                 for (int i = 0; i < indices.count; i++)
                 {
@@ -96,7 +101,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     ref Node node = ref nodes[index];
                     Matrix transformation = node.XnaTransformation;
 
-                    _visibleRenderingService.Draw(in visibles[index], ref transformation);
+                    // _visibleRenderingService.Draw(in visibles[index], ref transformation);
                 }
             }
         }

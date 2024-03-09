@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Common.Ships.Descriptors
     {
         public ShipDescriptor()
         {
-            this.ExtendWith(new ComponentManager[]
+            this.WithInstanceComponents(new ComponentManager[]
             {
                 new ComponentManager<PhysicsBubble, PhysicsBubbleComponentSerializer>(),
                 new ComponentManager<Helm, HelmComponentSerializer>(),

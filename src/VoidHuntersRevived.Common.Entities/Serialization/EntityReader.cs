@@ -106,7 +106,7 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             return reader.ReadStruct<T>();
         }
 
-        internal EntityId Deserialize(VhId sourceId, EntityData data, DeserializationOptions options, EntityInitializerDelegate? initializerDelegate)
+        internal EntityId Deserialize(VhId sourceId, EntityData data, DeserializationOptions options, InstanceEntityInitializerDelegate? initializerDelegate)
         {
             VhId vhid = this.InternalDeserialize(sourceId, data, 0, options, initializerDelegate);
 
@@ -118,7 +118,7 @@ namespace VoidHuntersRevived.Common.Entities.Serialization
             return _entities.GetId(vhid);
         }
 
-        private VhId InternalDeserialize(VhId sourceId, EntityData data, long position, DeserializationOptions options, EntityInitializerDelegate? initializerDelegate)
+        private VhId InternalDeserialize(VhId sourceId, EntityData data, long position, DeserializationOptions options, InstanceEntityInitializerDelegate? initializerDelegate)
         {
             this.Load(data, position);
             VhId vhid = this.ReadVhId(options.Seed);

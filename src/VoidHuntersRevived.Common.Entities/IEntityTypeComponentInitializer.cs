@@ -2,7 +2,7 @@
 
 namespace VoidHuntersRevived.Common.Entities
 {
-    public interface IEntityTypeComponentValue<T> : IDisposable
+    public interface IEntityTypeComponentInitializer<T> : IDisposable
         where T : unmanaged, IEntityComponent
     {
         T GetInstance(EntityId id);

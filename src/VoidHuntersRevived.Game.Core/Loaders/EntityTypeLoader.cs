@@ -16,14 +16,14 @@ namespace VoidHuntersRevived.Game.Core.Loaders
         {
             entityTypes.Configure(EntityTypes.UserShip, configuration =>
             {
-                configuration.InitializeComponent<Awake>(new Awake(sleepingAllowed: false));
-                configuration.InitializeComponent<TractorBeamEmitter>(id => new TractorBeamEmitter(id));
-                configuration.InitializeComponent<Collision>(new Collision()
+                configuration.InitializeInstanceComponent<Awake>(new Awake(sleepingAllowed: false));
+                configuration.InitializeInstanceComponent<TractorBeamEmitter>(id => new TractorBeamEmitter(id));
+                configuration.InitializeInstanceComponent<Collision>(new Collision()
                 {
                     Categories = CollisionGroups.ShipCategories,
                     CollidesWith = CollisionGroups.ShipCollidesWith
                 });
-                configuration.InitializeComponent<PhysicsBubble>(new PhysicsBubble()
+                configuration.InitializeInstanceComponent<PhysicsBubble>(new PhysicsBubble()
                 {
                     Enabled = true,
                     Radius = (Fix64)25
@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Game.Core.Loaders
 
             entityTypes.Configure(EntityTypes.Chain, configuration =>
             {
-                configuration.InitializeComponent<Collision>(new Collision()
+                configuration.InitializeInstanceComponent<Collision>(new Collision()
                 {
                     Categories = CollisionGroups.FreeFloatingCategories,
                     CollidesWith = CollisionGroups.FreeFloatingCollidesWith

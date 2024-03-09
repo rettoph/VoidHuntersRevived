@@ -1,5 +1,6 @@
 ﻿using Guppy.Resources;
 using Microsoft.Xna.Framework;
+using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Pieces.Components;
@@ -11,13 +12,18 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
     {
         public PieceDescriptor(Resource<Color> primaryColor, Resource<Color> secondaryColor, int order) : base(primaryColor, secondaryColor, order)
         {
-            this.ExtendWith(new ComponentManager[]
+            this.WithInstanceComponents(new ComponentManager[]
             {
+                new ComponentManager<Id<PieceType>, PieceTypeIdComponentSerializer>(),
                 new ComponentManager<Plug, PlugComponentSerializer>(in Plug.Default),
                 new ComponentManager<Coupling, CouplingComponentSerializer>(),
                 new ComponentManager<Node, NodeComponentSerializer>(),
-                new ComponentManager<Rigid, RigidComponentSerializer>(),
-                new ComponentManager<Visible, VisibleComponentSerializer>(),
+                new ComponentManager<Rigid, RigidComponentSerializer>()
+            });
+
+            this.WithStaticComponents(new IComponentBuilder[]
+            {
+                new ComponentBuilder<Visible>()
             });
         }
     }

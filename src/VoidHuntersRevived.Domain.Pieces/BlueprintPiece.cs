@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Pieces
 
             if (this.Children!.Length > 0)
             {
-                Sockets<Location> sockets = pieceType.Components.Values.OfType<Sockets<Location>>().First();
+                Sockets<Location> sockets = pieceType.InstanceComponents.Values.OfType<Sockets<Location>>().First();
 
                 if (sockets.Items.count != this.Children.Length)
                 {

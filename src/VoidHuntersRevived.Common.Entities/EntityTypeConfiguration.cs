@@ -7,7 +7,9 @@ namespace VoidHuntersRevived.Common.Entities
     internal sealed class EntityTypeConfiguration<TDescriptor> : IEntityTypeConfiguration
         where TDescriptor : VoidHuntersEntityDescriptor, new()
     {
-        private EntityInitializerDelegate? _initializer;
+        private StaticEntityInitializerDelegate? _staticInitializer;
+        private InstanceEntityInitializerDelegate? _instanceInitializer;
+
         private Action? _disposer;
 
         public IEntityType<TDescriptor> Type { get; }
@@ -18,15 +20,20 @@ namespace VoidHuntersRevived.Common.Entities
             Type = type;
         }
 
-        public IEntityTypeConfiguration InitializeComponent<T>(IEntityTypeComponentValue<T> componentInitializer)
+        public void Dispose()
+        {
+            _disposer?.Invoke();
+        }
+
+        public IEntityTypeConfiguration InitializeInstanceComponent<T>(IEntityTypeComponentInitializer<T> componentInitializer)
             where T : unmanaged, IEntityComponent
         {
-            if (!this.Type.Descriptor.ComponentManagers.Any(x => x.Type == typeof(T)))
+            if (!this.Type.Descriptor.componentsToBuild.Any(x => x.GetEntityComponentType() == typeof(T)))
             {
                 throw new Exception();
             }
 
-            _initializer += (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+            _instanceInitializer += (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {
                 initializer.Init<T>(componentInitializer.GetInstance(id));
             };
@@ -36,17 +43,39 @@ namespace VoidHuntersRevived.Common.Entities
             return this;
         }
 
-        public void Initialize(IEntityService entities, ref EntityInitializer initializer, in EntityId id)
+        public void InitializeInstance(IEntityService entities, ref EntityInitializer initializer, in EntityId id)
         {
             initializer.Init<Id<IEntityType>>(this.Type.Id);
-            _initializer?.Invoke(entities, ref initializer, in id);
+            _instanceInitializer?.Invoke(entities, ref initializer, in id);
 
             this.Type.Descriptor.PostInitialize(entities, ref initializer, in id);
         }
 
-        public void Dispose()
+        public IEntityTypeConfiguration InitializeStaticComponent<T>(T instance)
+            where T : unmanaged, IEntityComponent
         {
-            _disposer?.Invoke();
+            if (!this.Type.Descriptor.StaticDescriptor.componentsToBuild.Any(x => x.GetEntityComponentType() == typeof(T)))
+            {
+                throw new Exception();
+            }
+
+            _staticInitializer += (ref EntityInitializer initializer) =>
+            {
+                initializer.Init<T>(instance);
+            };
+
+            if (instance is IDisposable disposable)
+            {
+                _disposer += disposable.Dispose;
+            }
+
+
+            return this;
+        }
+
+        public void InitializeStatic(ref EntityInitializer initializer)
+        {
+            _staticInitializer?.Invoke(ref initializer);
         }
     }
 }

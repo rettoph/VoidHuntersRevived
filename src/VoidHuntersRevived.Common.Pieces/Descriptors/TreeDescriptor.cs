@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
     {
         public TreeDescriptor()
         {
-            this.ExtendWith(new ComponentManager[]
+            this.WithInstanceComponents(new ComponentManager[]
             {
                 new ComponentManager<Tree, TreeComponentSerializer>(),
                 new ComponentManager<Id<Blueprint>, BlueprintIdComponentSerializer>()

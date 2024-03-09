@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         IEventEngine<EnqueueHardDespawn>,
         IEventEngine<HardDespawnEntity>
     {
-        public EntityId Spawn(VhId sourceId, IEntityType type, VhId vhid, Id<ITeam> teamId, EntityInitializerDelegate? initializer)
+        public EntityId Spawn(VhId sourceId, IEntityType type, VhId vhid, Id<ITeam> teamId, InstanceEntityInitializerDelegate? initializer)
         {
             this.Simulation.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity()
             {
@@ -156,7 +156,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 EntityInitializer initializer = this.GetDescriptorEngine(data.Type.Descriptor.Id).HardSpawn(eventId, data.VhId, data.TeamId, out id);
                 initializer.Init(new EntityStatus(EntityStatusEnum.HardSpawned));
-                _types.GetConfiguration(data.Type).Initialize(this, ref initializer, in id);
+                _types.GetConfiguration(data.Type).InitializeInstance(this, ref initializer, in id);
                 data.Initializer?.Invoke(this, ref initializer, in id);
             }
             else

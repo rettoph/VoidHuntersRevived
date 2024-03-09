@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
     {
         public ThrusterDescriptor() : base(Resources.Colors.ThrusterPrimaryColor, Resources.Colors.ThrusterSecondaryColor, -1)
         {
-            this.ExtendWith(new[]
+            this.WithInstanceComponents(new[]
             {
                 new ComponentManager<Thrustable, ThrustableComponentSerializer>()
             });

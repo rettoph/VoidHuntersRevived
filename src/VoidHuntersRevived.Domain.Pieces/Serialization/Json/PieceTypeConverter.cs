@@ -12,7 +12,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
         {
             string key = string.Empty;
             VoidHuntersEntityDescriptor descriptor = default!;
-            Dictionary<string, IPieceComponent> components = default!;
+            Dictionary<Type, IPieceComponent> instanceComponents = default!;
+            Dictionary<Type, IPieceComponent> staticComponents = default!;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -29,8 +30,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
                         descriptor = JsonSerializer.Deserialize<VoidHuntersEntityDescriptor>(ref reader, options) ?? throw new NotImplementedException();
                         reader.Read();
                         break;
-                    case nameof(PieceType.Components):
-                        components = JsonSerializer.Deserialize<Dictionary<string, IPieceComponent>>(ref reader, options) ?? throw new NotImplementedException();
+                    case nameof(PieceType.InstanceComponents):
+                        instanceComponents = JsonSerializer.Deserialize<Dictionary<Type, IPieceComponent>>(ref reader, options) ?? throw new NotImplementedException();
+                        reader.Read();
+                        break;
+                    case nameof(PieceType.StaticComponents):
+                        staticComponents = JsonSerializer.Deserialize<Dictionary<Type, IPieceComponent>>(ref reader, options) ?? throw new NotImplementedException();
                         reader.Read();
                         break;
                 }
@@ -38,7 +43,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            return new PieceType(key, descriptor, components);
+            return new PieceType(key, descriptor, instanceComponents ?? new Dictionary<Type, IPieceComponent>(), staticComponents ?? new Dictionary<Type, IPieceComponent>());
         }
 
         public override void Write(Utf8JsonWriter writer, PieceType value, JsonSerializerOptions options)
